@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public PPU ppu;
 		public APU apu;
 		public byte[] ram;
-		NESWatch[] sysbus_watch = new NESWatch[65536];
 		public byte[] CIRAM; //AKA nametables
 		string game_name = ""; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
@@ -49,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// cheat addr index tracker
 		// disables all cheats each frame
 		public int[] cheat_indexes = new int[0x10000];
+		public byte[] cheat_active = new byte[0x10000];
 		public int num_cheats;
 
 		// new input system
@@ -295,12 +295,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						Board.WRAM[i] = 0xFF;
 					}
-
-				}
-
-				
+				}			
 			}
-
 		}
 
 		public long CycleCount => ppu.TotalCycles;
@@ -414,11 +410,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			videoProvider.FillFrameBuffer();
 
-			//turn off all cheats
-			for (int d=0;d<num_cheats;d++)
-			{
-				RemoveGameGenie(cheat_indexes[d]);
-			}
+			// turn off all cheats
+			// any cheats still active will be re-applied by the buspoke at the start of the next frame
 			num_cheats = 0;
 		}
 
@@ -831,7 +824,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				ApplyGameGenie(addr, value, null); //Apply a cheat to the remaining regions since they have no direct access, this may not be the best way to handle this situation
+				// apply a cheat to non-writable memory
+				ApplyCheat(addr, value, null);
 			}
 		}
 
@@ -841,7 +835,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr >= 0x4020)
 			{
-				ret = Board.PeekCart(addr); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				//easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				ret = Board.PeekCart(addr);
 			}
 			else if (addr < 0x0800)
 			{
@@ -879,7 +874,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (addr >= 0x8000)
 			{
-				ret = Board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				//easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
+				ret = Board.ReadPRG(addr - 0x8000);
 			}
 			else if (addr < 0x0800)
 			{
@@ -906,13 +902,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = Board.ReadWRAM(addr - 0x6000);
 			}
 
-			//handle breakpoints and stuff.
-			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
-			//but since freeze is a common case, it was implemented through its own mechanisms
-			if (sysbus_watch[addr] != null)
+			// handle cheats (currently cheats can only freeze read only areas)
+			// there is no way to distinguish between a memory poke and a memory freeze
+			if (num_cheats !=0)
 			{
-				sysbus_watch[addr].Sync();
-				ret = sysbus_watch[addr].ApplyGameGenie(ret);
+				for (int i = 0; i < num_cheats; i++)
+				{
+					if(cheat_indexes[i] == addr)
+					{
+						ret = cheat_active[addr];
+					}
+				}
 			}
 
 			MemoryCallbacks.CallReads(addr, "System Bus");
@@ -921,21 +921,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		public void ApplyGameGenie(int addr, byte value, byte? compare)
+		public void ApplyCheat(int addr, byte value, byte? compare)
 		{
-			if (addr < sysbus_watch.Length)
+			if (addr <= 0xFFFF)
 			{
 				cheat_indexes[num_cheats] = addr;
+				cheat_active[addr] = value;
 				num_cheats++;
-				GetWatch(NESWatch.EDomain.Sysbus, addr).SetGameGenie(compare, value);
-			}
-		}
-
-		public void RemoveGameGenie(int addr)
-		{
-			if (addr < sysbus_watch.Length)
-			{
-				GetWatch(NESWatch.EDomain.Sysbus, addr).RemoveGameGenie();
 			}
 		}
 

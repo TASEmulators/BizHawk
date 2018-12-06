@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Default mapper with no bank switching
@@ -27,6 +29,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return 0;
+				}
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x8000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else
+			{
+				if (Core.cart_RAM != null)
+				{
+					SetCDLRAM(flags, addr - 0xA000);
+				}
+				else
+				{
+					return;
 				}
 			}
 		}

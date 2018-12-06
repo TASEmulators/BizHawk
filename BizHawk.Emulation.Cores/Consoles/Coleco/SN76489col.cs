@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -144,7 +142,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void generate_sound(int cycles_to_do)
 		{
 			// there are 16 cpu cycles for every psg cycle
-
 			for (int i = 0; i < cycles_to_do; i++)
 			{
 				psg_clock++;
@@ -195,7 +192,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 						noise_clock *= 2;					
 					}
-
 					
 					if (clock_A == 0)
 					{

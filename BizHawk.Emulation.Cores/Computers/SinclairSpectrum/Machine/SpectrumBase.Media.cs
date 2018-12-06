@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -141,6 +142,66 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         diskImages.Add(m);
                         Spectrum._diskInfo.Add(Spectrum._gameInfo[cnt]);
                         break;
+                    case SpectrumMediaType.DiskDoubleSided:
+                        // this is a bit tricky. we will attempt to parse the double sided disk image byte array,
+                        // then output two separate image byte arrays
+                        List<byte[]> working = new List<byte[]>();
+                        foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
+                        {
+                            bool found = false;
+
+                            switch (type)
+                            {
+                                case DiskType.CPCExtended:
+                                    found = CPCExtendedFloppyDisk.SplitDoubleSided(m, working);
+                                    break;
+                                case DiskType.CPC:
+                                    found = CPCFloppyDisk.SplitDoubleSided(m, working);
+                                    break;
+                                case DiskType.UDI:
+                                    found =  UDI1_0FloppyDisk.SplitDoubleSided(m, working);
+                                    break;
+                            }
+
+                            if (found)
+                            {
+                                // add side 1
+                                diskImages.Add(working[0]);
+                                // add side 2
+                                diskImages.Add(working[1]);
+
+                                Common.GameInfo one = new Common.GameInfo();
+                                Common.GameInfo two = new Common.GameInfo();
+                                var gi = Spectrum._gameInfo[cnt];
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    Common.GameInfo work = new Common.GameInfo();
+                                    if (i == 0)
+                                    {
+                                        work = one;
+                                    }
+                                    else if (i == 1)
+                                    {
+                                        work = two;
+                                    }
+
+                                    work.FirmwareHash = gi.FirmwareHash;
+                                    work.Hash = gi.Hash;
+                                    work.Name = gi.Name + " (Parsed Side " + (i + 1) + ")";
+                                    work.Region = gi.Region;
+                                    work.NotInDatabase = gi.NotInDatabase;
+                                    work.Status = gi.Status;
+                                    work.System = gi.System;
+
+                                    Spectrum._diskInfo.Add(work);
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        break;
                 }
 
                 cnt++;
@@ -192,12 +253,37 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			if (hdr.ToUpper().Contains("EXTENDED CPC DSK") || hdr.ToUpper().Contains("MV - CPC"))
             {
                 // spectrum .dsk disk file
-                return SpectrumMediaType.Disk;
+                // check for number of sides
+                var sides = data[0x31];
+                if (sides == 1)
+                    return SpectrumMediaType.Disk;
+                else
+                    return SpectrumMediaType.DiskDoubleSided;
             }
 			if (hdr.ToUpper().StartsWith("FDI"))
             {
                 // spectrum .fdi disk file
                 return SpectrumMediaType.Disk;
+            }
+            if (hdr.ToUpper().StartsWith("CAPS"))
+            {
+                // IPF format file
+                return SpectrumMediaType.Disk;
+            }
+            if (hdr.ToUpper().StartsWith("UDI!") && data[0x08] == 0)
+            {
+                // UDI v1.0
+                if (hdr.StartsWith("udi!"))
+                {
+                    throw new NotSupportedException("ZXHawk currently does not supported UDIv1.0 with compression.");
+                }
+                else
+                {
+                    if (data[0x0A] == 0x01)
+                        return SpectrumMediaType.DiskDoubleSided;
+                    else
+                        return SpectrumMediaType.Disk;
+                }
             }
 
             // tape checking
@@ -231,6 +317,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
 		None,
 		Tape,
-		Disk
+		Disk,
+        DiskDoubleSided
     }
 }

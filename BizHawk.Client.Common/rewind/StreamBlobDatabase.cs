@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			_mCapacity = capacity;
 			if (onDisk)
 			{
-				var path = TempFileCleaner.GetTempFilename("rewindbuf");
+				var path = TempFileManager.GetTempFilename("rewindbuf");
 
 				// I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 				// Otherwise we would have a more complex tempfile management problem here.

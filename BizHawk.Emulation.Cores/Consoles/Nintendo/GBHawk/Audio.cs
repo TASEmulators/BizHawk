@@ -1073,8 +1073,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public bool CanProvideAsync => false;
 
-		public short[] AudioSamples = new short[150000];
-
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Sync)

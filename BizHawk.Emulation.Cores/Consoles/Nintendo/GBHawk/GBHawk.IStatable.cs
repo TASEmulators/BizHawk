@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
+			ser.Sync("REG_FF0F_OLD", ref REG_FF0F_OLD);
 
 			// memory domains
 			ser.Sync("RAM", ref RAM, false);

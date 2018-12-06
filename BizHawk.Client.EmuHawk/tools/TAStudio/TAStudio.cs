@@ -15,6 +15,7 @@ using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -63,13 +64,15 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
-				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
-				AutoRestoreOnMouseUpOnly = false; // default to taseditor way, must be harmless since we suspend rerecord counting while drawing
+				SeekingCutoffInterval = 2;
+				AutoRestoreOnMouseUpOnly = false;
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
 				SingleClickFloatEdit = false;
+				OldControlSchemeForBranches = false;
+				LoadBranchOnDoubleClick = true;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
@@ -88,13 +91,15 @@ namespace BizHawk.Client.EmuHawk
 			public bool FollowCursorAlwaysScroll { get; set; }
 			public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
-			public int SeekingCutoffInterval { get; set; }
-			public bool AutoRestoreOnMouseUpOnly { get; set; }
+			public int SeekingCutoffInterval { get; set; } // unused, relying on VisibleRows is smarter
+			public bool AutoRestoreOnMouseUpOnly { get; set; } // default to taseditor way, must be harmless since we suspend rerecord counting while drawing
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
 			public bool SingleClickFloatEdit { get; set; }
+			public bool OldControlSchemeForBranches { get; set; } // branch loading will behave differently depending on the recording mode
+			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
 			public bool DenoteStatesWithBGColor { get; set; }
 			public bool DenoteMarkersWithIcons { get; set; }
@@ -283,12 +288,27 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Settings.MainVerticalSplitDistance > 0)
 			{
-				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+				try
+				{
+					MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+				}
+				catch (Exception)
+				{
+					MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
+				}
+				
 			}
 
 			if (Settings.BranchMarkerSplitDistance > 0)
 			{
-				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+				try
+				{
+					BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+				}
+				catch (Exception)
+				{
+					BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
+				}
 			}
 
 			RefreshDialog();
@@ -309,7 +329,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Warning);
 
 				box.SetButtons(
-					new[] { "Switch", "Cancel" },
+					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
 				box.MaximumSize = new Size(475, 350);
@@ -323,7 +343,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					return false;
+					//return false;
+				}
+			}
+			else if (Emulator is QuickNES) // Copy pasta of unsustainable logic, even better
+			{
+				var box = new CustomControls.MsgBox(
+					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Continue" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
+				{
+					Global.Config.NES_InQuickNES = false;
+					Mainform.RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					//return false;
 				}
 			}
 
@@ -433,7 +478,11 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name == "Close"
 					|| c.Name == "Disc Select"
 					|| c.Name.StartsWith("Tilt")
-					|| c.Name.StartsWith("Key "));
+					|| c.Name.StartsWith("Key ")
+					|| c.Name.EndsWith("Tape")
+					|| c.Name.EndsWith("Disk")
+					|| c.Name.EndsWith("Block")
+					|| c.Name.EndsWith("Status"));
 
 			foreach (var column in columnsToHide)
 			{
@@ -807,7 +856,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
-			SetSplicer();
+			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 

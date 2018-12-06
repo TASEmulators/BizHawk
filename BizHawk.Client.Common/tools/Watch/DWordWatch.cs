@@ -217,9 +217,9 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
-					return $"{val / 4096.0:0.######}";
+					return $"{(int)val / 4096.0:0.######}";
 				case DisplayType.FixedPoint_16_16:
-					return $"{val / 65536.0:0.######}";
+					return $"{(int)val / 65536.0:0.######}";
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);

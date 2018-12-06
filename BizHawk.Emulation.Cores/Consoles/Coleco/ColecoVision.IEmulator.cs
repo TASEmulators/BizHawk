@@ -73,8 +73,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			int changes_1 = change1 > 0 ? (int)Math.Floor(change1) : (int)Math.Ceiling(change1);
 			int changes_2 = change2 > 0 ? (int)Math.Floor(change2) : (int)Math.Ceiling(change2);
 
-			
-
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
 				_vdp.RenderScanline(scanLine);

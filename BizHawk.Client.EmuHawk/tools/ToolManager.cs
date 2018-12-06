@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Client.EmuHawk.CoreExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -743,13 +744,30 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<ToolAttribute>()
 				.FirstOrDefault();
 
-			// If no supported systems mentioned assume all
-			if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
+            // start with the assumption that if no supported systems are mentioned and no unsupported cores are mentioned
+            // then this is available for all
+            bool supported = true;
+            
+            if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
 			{
-				return attr.SupportedSystems.Contains(Global.Emulator.SystemId);
-			}
+                // supported systems are available
+                supported = attr.SupportedSystems.Contains(Global.Emulator.SystemId);
 
-			return true;
+                if (supported)
+                {
+                    // check for a core not supported override
+                    if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                        supported = false; 
+                }
+			}
+            else if (attr?.UnsupportedCores != null && attr.UnsupportedCores.Any())
+            {
+                // no supported system specified, but unsupported cores are
+                if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                    supported = false;
+            }
+
+			return supported;
 		}
 
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired

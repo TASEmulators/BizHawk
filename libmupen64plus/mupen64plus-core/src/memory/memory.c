@@ -3741,7 +3741,14 @@ unsigned int *fast_mem_access(unsigned int address)
         address = virtual_to_physical_address(address, 2);
 
     if ((address & 0x1FFFFFFF) >= 0x10000000)
-        return (unsigned int *)rom + ((address & 0x1FFFFFFF) - 0x10000000)/4;
+		{
+			unsigned int ofs = ((address & 0x1FFFFFFF) - 0x10000000)/4;
+			if(ofs < rom_size/4)
+        return (unsigned int *)rom + ofs;
+			else {
+				return NULL;
+			}
+		}
     else if ((address & 0x1FFFFFFF) < 0x800000)
         return (unsigned int *)rdram + (address & 0x1FFFFFFF)/4;
     else if (address >= 0xa4000000 && address <= 0xa4001000)

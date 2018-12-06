@@ -212,14 +212,19 @@ public:
 	unsigned read(const unsigned P, const unsigned long cycleCounter) {
 		if (readCallback)
 			readCallback(P, (cycleCounter - basetime) >> 1);
-		if(cdCallback)
-		{
-			CDMapResult map = CDMap(P);
-			if(map.type != eCDLog_AddrType_None)
-				cdCallback(map.addr,map.type,eCDLog_Flags_Data);
+		bool biosRange = ((!gbIsCgb_ && P < 0x100) || (gbIsCgb_ && P < 0x900 && (P < 0x100 || P >= 0x200)));
+		if(biosMode) {
+			if (biosRange)
+				return readBios(P);
 		}
-		if (biosMode && ((!gbIsCgb_ && P < 0x100) || (gbIsCgb_ && P < 0x900 && (P < 0x100 || P >= 0x200)))) {
-			return readBios(P);
+		else
+		{
+			if(cdCallback)
+			{
+				CDMapResult map = CDMap(P);
+				if(map.type != eCDLog_AddrType_None)
+					cdCallback(map.addr,map.type,eCDLog_Flags_Data);
+			}
 		}
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
@@ -227,14 +232,19 @@ public:
 	unsigned read_excb(const unsigned P, const unsigned long cycleCounter, bool first) {
 		if (execCallback)
 			execCallback(P, (cycleCounter - basetime) >> 1);
-		if(cdCallback)
-		{
-			CDMapResult map = CDMap(P);
-			if(map.type != eCDLog_AddrType_None)
-				cdCallback(map.addr,map.type,first?eCDLog_Flags_ExecFirst : eCDLog_Flags_ExecOperand);
+		bool biosRange = ((!gbIsCgb_ && P < 0x100) || (gbIsCgb_ && P < 0x900 && (P < 0x100 || P >= 0x200)));
+		if (biosMode) {
+			if(biosRange)
+				return readBios(P);
 		}
-		if (biosMode && ((!gbIsCgb_ && P < 0x100) || (gbIsCgb_ && P < 0x900 && (P < 0x100 || P >= 0x200)))) {
-			return readBios(P);
+		else
+		{
+			if(cdCallback)
+			{
+				CDMapResult map = CDMap(P);
+				if(map.type != eCDLog_AddrType_None)
+					cdCallback(map.addr,map.type,first?eCDLog_Flags_ExecFirst : eCDLog_Flags_ExecOperand);
+			}
 		}
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
@@ -260,7 +270,7 @@ public:
 			nontrivial_write(P, data, cycleCounter);
 		if (writeCallback)
 			writeCallback(P, (cycleCounter - basetime) >> 1);
-		if(cdCallback)
+		if(cdCallback && !biosMode)
 		{
 			CDMapResult map = CDMap(P);
 			if(map.type != eCDLog_AddrType_None)
@@ -275,7 +285,7 @@ public:
 			nontrivial_ff_write(P, data, cycleCounter);
 		if (writeCallback)
 			writeCallback(P, (cycleCounter - basetime) >> 1);
-		if(cdCallback)
+		if(cdCallback && !biosMode)
 		{
 			CDMapResult map = CDMap(P);
 			if(map.type != eCDLog_AddrType_None)

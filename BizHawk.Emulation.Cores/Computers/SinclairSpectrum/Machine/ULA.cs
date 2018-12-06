@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     {
                         // time to raise the interrupt
                         InterruptRaised = true;
-                        _machine.CPU.FlagI = true;
+						_machine.CPU.FlagI = true;
                         FrameEnd = true;
                         ULACycleCounter = InterruptStartTime;
                         CalcFlashCounter();

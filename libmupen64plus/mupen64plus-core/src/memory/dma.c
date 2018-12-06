@@ -341,7 +341,6 @@ void dma_si_write(void)
     if (si_register.si_pif_addr_wr64b != 0x1FC007C0)
     {
         DebugMessage(M64MSG_ERROR, "dma_si_write(): unknown SI use");
-        stop=1;
     }
 
     for (i=0; i<(64/4); i++)
@@ -361,7 +360,6 @@ void dma_si_read(void)
     if (si_register.si_pif_addr_rd64b != 0x1FC007C0)
     {
         DebugMessage(M64MSG_ERROR, "dma_si_read(): unknown SI use");
-        stop=1;
     }
 
     update_pif_read();

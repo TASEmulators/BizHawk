@@ -17,22 +17,26 @@ namespace BizHawk.Client.EmuHawk
 {
 	static class Program
 	{
+		static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
+
 		static Program()
 		{
 			//this needs to be done before the warnings/errors show up
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			PlatformSpecificLinkedLibs libLoader = RunningOnUnix ? (PlatformSpecificLinkedLibs) new UnixMono() : (PlatformSpecificLinkedLibs) new Win32();
+
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
-#if WINDOWS
+
 			//try loading libraries we know we'll need
 			//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
 			//but oddly it lets us proceed and we'll then catch it here
-			var d3dx9 = Win32.LoadLibrary("d3dx9_43.dll");
-			var vc2015 = Win32.LoadLibrary("vcruntime140.dll");
-			var vc2012 = Win32.LoadLibrary("msvcr120.dll"); //TODO - check version?
-			var vc2010 = Win32.LoadLibrary("msvcr100.dll"); //TODO - check version?
-			var vc2010p = Win32.LoadLibrary("msvcp100.dll");
+			var d3dx9 = libLoader.LoadPlatformSpecific("d3dx9_43.dll");
+			var vc2015 = libLoader.LoadPlatformSpecific("vcruntime140.dll");
+			var vc2012 = libLoader.LoadPlatformSpecific("msvcr120.dll"); //TODO - check version?
+			var vc2010 = libLoader.LoadPlatformSpecific("msvcr100.dll"); //TODO - check version?
+			var vc2010p = libLoader.LoadPlatformSpecific("msvcp100.dll");
 			bool fail = false, warn = false;
 			warn |= d3dx9 == IntPtr.Zero;
 			fail |= vc2015 == IntPtr.Zero;
@@ -56,27 +60,28 @@ namespace BizHawk.Client.EmuHawk
 					System.Diagnostics.Process.GetCurrentProcess().Kill();
 			}
 
-			Win32.FreeLibrary(d3dx9);
-			Win32.FreeLibrary(vc2015);
-			Win32.FreeLibrary(vc2012);
-			Win32.FreeLibrary(vc2010);
-			Win32.FreeLibrary(vc2010p);
+			libLoader.FreePlatformSpecific(d3dx9);
+			libLoader.FreePlatformSpecific(vc2015);
+			libLoader.FreePlatformSpecific(vc2012);
+			libLoader.FreePlatformSpecific(vc2010);
+			libLoader.FreePlatformSpecific(vc2010p);
 
-			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-			SetDllDirectory(dllDir);
-			
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			if (!RunningOnUnix)
+			{
+				// this will look in subdirectory "dll" to load pinvoked stuff
+				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				SetDllDirectory(dllDir);
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-			WhackAllMOTW(dllDir);
+				//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+				AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
-			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+				//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+				//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+				//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+				WhackAllMOTW(dllDir);
 
-#endif
+				//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+			}
 		}
 
 		[STAThread]
@@ -85,15 +90,177 @@ namespace BizHawk.Client.EmuHawk
 			return SubMain(args);
 		}
 
-		private static class Win32
+		private interface PlatformSpecificLinkedLibs
+		{
+			IntPtr LoadPlatformSpecific(string dllToLoad);
+			IntPtr GetProcAddr(IntPtr hModule, string procName);
+			void FreePlatformSpecific(IntPtr hModule);
+		}
+		private class Win32 : PlatformSpecificLinkedLibs
 		{
 			[DllImport("kernel32.dll")]
-			public static extern IntPtr LoadLibrary(string dllToLoad);
+			private static extern IntPtr LoadLibrary(string dllToLoad);
 			[DllImport("kernel32.dll")]
-			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 			[DllImport("kernel32.dll")]
-			public static extern bool FreeLibrary(IntPtr hModule);
+			private static extern void FreeLibrary(IntPtr hModule);
+			public IntPtr LoadPlatformSpecific(string dllToLoad)
+			{
+				return LoadLibrary(dllToLoad);
+			}
+			public IntPtr GetProcAddr(IntPtr hModule, string procName)
+			{
+				return GetProcAddress(hModule, procName);
+			}
+			public void FreePlatformSpecific(IntPtr hModule)
+			{
+				FreeLibrary(hModule);
+			}
 		}
+		private class UnixMono : PlatformSpecificLinkedLibs
+		{
+			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
+			const int RTLD_NOW = 2;
+			[DllImport("libdl.so")]
+			private static extern IntPtr dlopen(String fileName, int flags);
+			[DllImport("libdl.so")]
+			private static extern IntPtr dlerror();
+			[DllImport("libdl.so")]
+			private static extern IntPtr dlsym(IntPtr handle, String symbol);
+			[DllImport("libdl.so")]
+			private static extern int dlclose(IntPtr handle);
+			public IntPtr LoadPlatformSpecific(string dllToLoad)
+			{
+				return dlopen(dllToLoad + ".so", RTLD_NOW);
+			}
+			public IntPtr GetProcAddr(IntPtr hModule, string procName)
+			{
+				dlerror();
+				var res = dlsym(hModule, procName);
+				var errPtr = dlerror();
+				if (errPtr != IntPtr.Zero) throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(errPtr));
+				return res;
+			}
+			public void FreePlatformSpecific(IntPtr hModule)
+			{
+				dlclose(hModule);
+			}
+		}
+
+		private interface PlatformSpecificMainLoopCrashHandler
+		{
+			void TryCatchFinally(string[] args);
+		}
+		private class Win32MainLoopCrashHandler : PlatformSpecificMainLoopCrashHandler
+		{
+			public void TryCatchFinally(string[] args)
+			{
+				try
+				{
+					if (Global.Config.SingleInstanceMode)
+					{
+						try
+						{
+							new SingleInstanceController(args).Run(args);
+						}
+						catch (ObjectDisposedException)
+						{
+							// Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error
+						}
+					}
+					else
+					{
+						using (var mf = new MainForm(args))
+						{
+							var title = mf.Text;
+							mf.Show();
+							mf.Text = title;
+							try
+							{
+								GlobalWin.ExitCode = mf.ProgramRunLoop();
+							}
+							catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+							{
+								var result = MessageBox.Show(
+									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+									"Fatal error: " + e.GetType().Name,
+									MessageBoxButtons.YesNo,
+									MessageBoxIcon.Exclamation
+									);
+								if (result == DialogResult.Yes)
+								{
+									Global.MovieSession.Movie.Save();
+								}
+							}
+						}
+					}
+				}
+				catch (Exception e) when (!Debugger.IsAttached)
+				{
+					new ExceptionBox(e).ShowDialog();
+				}
+				finally
+				{
+					if (GlobalWin.Sound != null)
+					{
+						GlobalWin.Sound.Dispose();
+						GlobalWin.Sound = null;
+					}
+					GlobalWin.GL.Dispose();
+					Input.Cleanup();
+				}
+			}
+		}
+		private class UnixMonoMainLoopCrashHandler : PlatformSpecificMainLoopCrashHandler
+		{
+			// Identical to the implementation in Win32MainLoopCrashHandler sans the single-instance check.
+			public void TryCatchFinally(string[] args)
+			{
+				try
+				{
+					using (var mf = new MainForm(args))
+					{
+						var title = mf.Text;
+						mf.Show();
+						mf.Text = title;
+						try
+						{
+							GlobalWin.ExitCode = mf.ProgramRunLoop();
+						}
+						catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+						{
+							var result = MessageBox.Show(
+								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+								"Fatal error: " + e.GetType().Name,
+								MessageBoxButtons.YesNo,
+								MessageBoxIcon.Exclamation
+								);
+							if (result == DialogResult.Yes)
+							{
+								Global.MovieSession.Movie.Save();
+							}
+						}
+					}
+				}
+				catch (Exception e) when (!Debugger.IsAttached)
+				{
+					new ExceptionBox(e).ShowDialog();
+				}
+				finally
+				{
+					if (GlobalWin.Sound != null)
+					{
+						GlobalWin.Sound.Dispose();
+						GlobalWin.Sound = null;
+					}
+					GlobalWin.GL.Dispose();
+					Input.Cleanup();
+				}
+			}
+		}
+		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = RunningOnUnix
+			? (PlatformSpecificMainLoopCrashHandler) new UnixMonoMainLoopCrashHandler()
+			: (PlatformSpecificMainLoopCrashHandler) new Win32MainLoopCrashHandler();
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -115,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileCleaner.Start();
+			BizHawk.Common.TempFileManager.Start();
 
 
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
@@ -155,6 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
+			if (RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
@@ -202,71 +370,19 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
-			//The relevant initialization happened just before in "create IGL context".
-			//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
-			//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
-			//pasting should be safe (not affecting the jit order of things)
-			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-			SetDllDirectory(dllDir);
+			if (!RunningOnUnix)
+			{
+				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
+				//The relevant initialization happened just before in "create IGL context".
+				//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
+				//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
+				//pasting should be safe (not affecting the jit order of things)
+				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				SetDllDirectory(dllDir);
+			}
 
-			try
-			{
-#if WINDOWS
-				if (Global.Config.SingleInstanceMode)
-				{
-					try
-					{
-						new SingleInstanceController(args).Run(args);
-					}
-					catch (ObjectDisposedException)
-					{
-						/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
-					}
-				}
-				else
-#endif
-				{
-					using (var mf = new MainForm(args))
-					{
-						var title = mf.Text;
-						mf.Show();
-						mf.Text = title;
-
-						try
-						{
-							GlobalWin.ExitCode = mf.ProgramRunLoop();
-						}
-						catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
-						{
-							var result = MessageBox.Show(
-								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-								"Fatal error: " + e.GetType().Name,
-								MessageBoxButtons.YesNo,
-								MessageBoxIcon.Exclamation
-								);
-							if (result == DialogResult.Yes)
-							{
-								Global.MovieSession.Movie.Save();
-							}
-						}
-					}
-				}
-			}
-			catch (Exception e) when (!Debugger.IsAttached)
-			{
-				new ExceptionBox(e).ShowDialog();
-			}
-			finally
-			{
-				if (GlobalWin.Sound != null)
-				{
-					GlobalWin.Sound.Dispose();
-					GlobalWin.Sound = null;
-				}
-				GlobalWin.GL.Dispose();
-				Input.Cleanup();
-			}
+			// Using a simple conditional to skip the single-instancing step caused crashes on GNU+Linux, even though the single-instancing step wasn't being executed. Something about the way instantiation works in C# means this workaround is possible.
+			mainLoopCrashHandler.TryCatchFinally(args);
 
 			//cleanup:
 			//cleanup IGL stuff so we can get better refcounts when exiting process, for debugging

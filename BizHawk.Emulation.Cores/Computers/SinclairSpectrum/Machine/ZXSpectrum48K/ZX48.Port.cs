@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if ((port & 0x0001) != 0)
                 return;
 
+            LastFe = value;
+
             // store the last OUT byte
             LastULAOutByte = value;
 

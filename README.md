@@ -35,6 +35,8 @@ Never mix different versions of BizHawk. Keep each version in its own folder.
  * TI-83 Calculator
  * Wonderswan and Wonderswan Color 
  * Apple II
+ * Commodore 64
+ * Sinclair ZX Spectrum
 
 ## Resources
 

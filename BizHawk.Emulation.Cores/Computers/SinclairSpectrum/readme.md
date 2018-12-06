@@ -29,4 +29,14 @@ Any questions, issues or bug reports, either use the GitHub issue tracker, or po
 
 http://tasvideos.org/forum/viewtopic.php?t=20004
 
+### Work in Progress
+* Pentagon Emulation
+- I have started the setup for pentagon 128 clone emulation. This is currently marked as 'NOT WORKING' in the core model selection dialog. I suggest you stay away from it for now.
+- Model boots using external pentagon and trdos roms
+- Tape works
+- BetaDisk interface (and TRDOS file import) not yet implemented (BIG JOBS!)
+- Screen and memory contention timings still to do
+- Probably AY chip timing is wrong
+- Still need to verify exact CPU clock speed
+
 -Asnivor

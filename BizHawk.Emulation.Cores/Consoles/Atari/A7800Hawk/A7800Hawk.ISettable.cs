@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-
 using Newtonsoft.Json;
 
 using BizHawk.Common;

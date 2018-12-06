@@ -821,10 +821,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetupControlsAndProperties()
 		{
-			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
+			TieBreaker1Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker2Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 
 			StartFromSlotBox.SelectedIndex = 0;
 
@@ -864,6 +864,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currentDomain = MemoryDomains[name];
 			_bigEndian = MemoryDomains[name].EndianType == MemoryDomain.Endian.Big;
+
+			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
+			TieBreaker1Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker2Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 		}
 
 		private int GetRamvalue(int addr)

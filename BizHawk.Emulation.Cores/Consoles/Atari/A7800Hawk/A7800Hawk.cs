@@ -89,6 +89,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			CoreComm = comm;
 
+			_blip.SetRates(1789773, 44100);
+
 			_settings = (A7800Settings)settings ?? new A7800Settings();
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
@@ -192,6 +194,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					s_mapper = "0";
 				}
+
+				if (cart_2.Bit(0)) { is_pokey = true; }
 			}
 			else
 			{
@@ -210,9 +214,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 			}
 
-			Reset_Mapper(s_mapper);
-
 			_rom = rom;
+
+			Reset_Mapper(s_mapper);
+			
 			_hsbios = highscoreBios;
 			_bios = _isPAL ? palBios : ntscBios;
 
@@ -280,7 +285,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 
-			_spf = (_frameHz > 55) ? 740 : 880;
+			master_audio_clock = 0;
+			samp_c = samp_l = 0;
 		}
 
 		private void ExecFetch(ushort addr)
@@ -320,6 +326,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			mapper.Core = this;
+			mapper.mask = _rom.Length / 0x4000 - 1;
 		}
 
 		/*

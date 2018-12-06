@@ -203,8 +203,15 @@ namespace BizHawk.Client.Common
 				errorMsg = except.ToString();
 			}
 
-			m.Filename += "." + BkmMovie.Extension;
-
+			if (m != null)
+			{
+				m.Filename += "." + BkmMovie.Extension;
+			}
+			else
+			{
+				throw new Exception(errorMsg);
+			}
+			
 			return m;
 		}
 

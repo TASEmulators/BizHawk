@@ -30,6 +30,7 @@
 		Libretro,
 		VirtualBoy,
 		NeoGeoPocket,
-        ZXSpectrum
+        ZXSpectrum,
+        AmstradCPC
 	}
 }

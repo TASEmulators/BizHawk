@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Interrupt flags
 				case 0xFF0F:
-					ret = REG_FF0F;
+					ret = REG_FF0F_OLD;
 					break;
 
 				// audio regs
@@ -316,6 +316,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
 						GBC_compat = false;
+						// cpu operation is a function of hardware only
+						//cpu.is_GBC = GBC_compat;
 					}
 					break;
 

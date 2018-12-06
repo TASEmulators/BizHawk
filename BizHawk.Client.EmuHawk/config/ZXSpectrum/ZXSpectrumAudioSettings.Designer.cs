@@ -49,7 +49,7 @@
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 298);
+            this.OkBtn.Location = new System.Drawing.Point(303, 298);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -61,7 +61,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 298);
+            this.CancelBtn.Location = new System.Drawing.Point(369, 298);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -100,10 +100,10 @@
             // 
             // lblBorderInfo
             // 
-            this.lblBorderInfo.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBorderInfo.Location = new System.Drawing.Point(175, 245);
+            this.lblBorderInfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBorderInfo.Location = new System.Drawing.Point(175, 236);
             this.lblBorderInfo.Name = "lblBorderInfo";
-            this.lblBorderInfo.Size = new System.Drawing.Size(196, 37);
+            this.lblBorderInfo.Size = new System.Drawing.Size(254, 59);
             this.lblBorderInfo.TabIndex = 24;
             this.lblBorderInfo.Text = "Selects a particular panning configuration for the 3ch AY-3-8912 Programmable Sou" +
     "nd Generator (128K models only)";
@@ -114,7 +114,7 @@
             this.tapeVolumetrackBar.Location = new System.Drawing.Point(12, 60);
             this.tapeVolumetrackBar.Maximum = 100;
             this.tapeVolumetrackBar.Name = "tapeVolumetrackBar";
-            this.tapeVolumetrackBar.Size = new System.Drawing.Size(359, 45);
+            this.tapeVolumetrackBar.Size = new System.Drawing.Size(417, 45);
             this.tapeVolumetrackBar.TabIndex = 25;
             // 
             // label3
@@ -140,7 +140,7 @@
             this.earVolumetrackBar.Location = new System.Drawing.Point(12, 124);
             this.earVolumetrackBar.Maximum = 100;
             this.earVolumetrackBar.Name = "earVolumetrackBar";
-            this.earVolumetrackBar.Size = new System.Drawing.Size(359, 45);
+            this.earVolumetrackBar.Size = new System.Drawing.Size(417, 45);
             this.earVolumetrackBar.TabIndex = 27;
             // 
             // label5
@@ -157,7 +157,7 @@
             this.ayVolumetrackBar.Location = new System.Drawing.Point(12, 188);
             this.ayVolumetrackBar.Maximum = 100;
             this.ayVolumetrackBar.Name = "ayVolumetrackBar";
-            this.ayVolumetrackBar.Size = new System.Drawing.Size(359, 45);
+            this.ayVolumetrackBar.Size = new System.Drawing.Size(417, 45);
             this.ayVolumetrackBar.TabIndex = 29;
             // 
             // ZXSpectrumAudioSettings
@@ -166,7 +166,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 333);
+            this.ClientSize = new System.Drawing.Size(441, 333);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.ayVolumetrackBar);
             this.Controls.Add(this.label4);
@@ -179,6 +179,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ZXSpectrumAudioSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

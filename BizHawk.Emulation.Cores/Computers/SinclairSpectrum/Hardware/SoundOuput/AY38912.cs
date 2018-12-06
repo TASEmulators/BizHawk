@@ -167,6 +167,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
+        /// <summary>
+        /// Used for snapshot generation
+        /// </summary>
+        /// <returns></returns>
+        public int[] ExportRegisters()
+        {
+            return _registers;
+        }
+
         #endregion
 
         #region Public Methods
@@ -176,6 +185,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void Reset()
         {
+            for (int i = 0; i < 16; i++)
+            {
+                if (i == 6)
+                    _registers[i] = 0xff;
+                else
+                    _registers[i] = 0;
+            }
+
             /*
             _noiseVal = 0x0FFFF;
             _outABC = 0;

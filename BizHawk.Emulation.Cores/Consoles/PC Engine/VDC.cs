@@ -49,7 +49,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public int RequestedFrameWidth => ((Registers[HDR] & 0x3F) + 1) * 8;
 		public int RequestedFrameHeight => (Registers[VDW] & 0x1FF) + 1;
-		public int DisplayStartLine => (Registers[VPR] >> 8) + 3 + (Registers[VPR] & 0x1F);
+		public int DisplayStartLine => (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F);
+		public int ViewStartLine => (Registers[VPR] >> 8) + 2;
 
 		private const int MAWR = 0;  // Memory Address Write Register
 		private const int MARR = 1;  // Memory Address Read Register
@@ -118,8 +119,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Registers[RegisterLatch] &= 0xFF00;
 				Registers[RegisterLatch] |= value;
 
-				if (RegisterLatch == BYR) { latch_bgy = true; }
-					//BackgroundY = Registers[BYR] & 0x1FF;
+				if (RegisterLatch == BYR)
+					BackgroundY = Registers[BYR] & 0x1FF;
 
 				RegisterCommit(RegisterLatch, msbComplete: false);
 			}
@@ -154,8 +155,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					break;
 				case BYR:
 					Registers[BYR] &= 0x1FF;
-					latch_bgy = true;
-					//BackgroundY = Registers[BYR];
+					BackgroundY = Registers[BYR];
 					break;
 				case HDR: // Horizontal Display Register - update framebuffer size
 					FrameWidth = RequestedFrameWidth;
@@ -267,8 +267,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int tileNo = addr >> 4;
 			int tileLineOffset = addr & 0x7;
 
-			int bitplane01 = VRAM[(tileNo * 16) + tileLineOffset];
-			int bitplane23 = VRAM[(tileNo * 16) + tileLineOffset + 8];
+			int bitplane01 = VRAM[((tileNo * 16) + tileLineOffset) & 0x7FFF];
+			int bitplane23 = VRAM[((tileNo * 16) + tileLineOffset + 8) & 0x7FFF];
 
 			int patternBufferBase = (tileNo * 64) + (tileLineOffset * 8);
 
@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int line = addr & 0x0F;
 
 			int ofs = (tileNo * 256) + (line * 16) + 15;
-			ushort value = VRAM[addr];
+			ushort value = VRAM[addr & 0x7FFF];
 			byte bitAnd = (byte)(~(1 << bitplane));
 			byte bitOr = (byte)(1 << bitplane);
 
@@ -322,7 +322,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			ser.Sync("ScanLine", ref ScanLine);
 			ser.Sync("BackgroundY", ref BackgroundY);
-			ser.Sync("latch_bgy", ref latch_bgy);
 			ser.Sync("RCRCounter", ref RCRCounter);
 			ser.Sync("ActiveLine", ref ActiveLine);
 			ser.EndSection();

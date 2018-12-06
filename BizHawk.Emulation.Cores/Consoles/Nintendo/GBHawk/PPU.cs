@@ -66,8 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int tile_byte;
 		public int sprite_fetch_cycles;
 		public bool fetch_sprite;
-		public bool fetch_sprite_01;
-		public bool fetch_sprite_4;
 		public bool going_to_fetch;
 		public bool first_fetch;
 		public int sprite_fetch_counter;
@@ -77,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int temp_fetch;
 		public int tile_inc;
 		public bool pre_render;
+		public bool pre_render_2;
 		public byte[] tile_data = new byte[3];
 		public byte[] tile_data_latch = new byte[3];
 		public int latch_counter;
@@ -94,7 +93,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int sprite_ordered_index;
 		public bool blank_frame;
 		public bool window_latch;
+		public int consecutive_sprite;
+		public int last_eval;
 
+		public int total_counter;
 		// windowing state
 		public int window_counter;
 		public bool window_pre_render;
@@ -218,8 +220,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("tile_byte", ref tile_byte);
 			ser.Sync("sprite_fetch_cycles", ref sprite_fetch_cycles);
 			ser.Sync("fetch_sprite", ref fetch_sprite);
-			ser.Sync("fetch_sprite_01", ref fetch_sprite_01);
-			ser.Sync("fetch_sprite_4", ref fetch_sprite_4);
 			ser.Sync("going_to_fetch", ref going_to_fetch);
 			ser.Sync("first_fetch", ref first_fetch);
 			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
@@ -229,6 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("temp_fetch", ref temp_fetch);
 			ser.Sync("tile_inc", ref tile_inc);
 			ser.Sync("pre_render", ref pre_render);
+			ser.Sync("pre_render_2", ref pre_render_2);
 			ser.Sync("tile_data", ref tile_data, false);
 			ser.Sync("tile_data_latch", ref tile_data_latch, false);
 			ser.Sync("latch_counter", ref latch_counter);
@@ -246,6 +247,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
 			ser.Sync("blank_frame", ref blank_frame);
 			ser.Sync("window_latch", ref window_latch);
+			ser.Sync("consecutive_sprite", ref consecutive_sprite);
+			ser.Sync("last_eval", ref last_eval);
 
 			ser.Sync("window_counter", ref window_counter);
 			ser.Sync("window_pre_render", ref window_pre_render);

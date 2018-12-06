@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -26,6 +27,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -482,7 +484,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Warning);
 
 				box.SetButtons(
-					new[] { "Switch", "Cancel" },
+					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
 				box.MaximumSize = new Size(475, 350);
@@ -496,7 +498,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					return;
+					// Do nothing and allow the user to continue to record the movie
+				}
+			}
+			else if (Emulator is QuickNES) // This is unsustainable :( But mixing the logic together is even worse, this needs to be rethought
+			{
+				var box = new MsgBox(
+					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Continue" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
+				{
+					Global.Config.NES_InQuickNES = false;
+					RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					// Do nothing and allow the user to continue to record the movie
 				}
 			}
 
@@ -2506,6 +2533,8 @@ namespace BizHawk.Client.EmuHawk
         {
             ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
+            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
             if (Emulator is ZXSpectrum)
             {
                 var speccy = (ZXSpectrum)Emulator;
@@ -2528,14 +2557,18 @@ namespace BizHawk.Client.EmuHawk
                         speccy._machine.TapeMediaIndex = dummy;
                     };
 
-                    ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
-                }                
+                    items.Add(menuItem);
+                }
             }
+
+            ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
         }
 
         private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
         {
             ZXSpectrumDisksSubMenu.DropDownItems.Clear();
+
+            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
             if (Emulator is ZXSpectrum)
             {
@@ -2559,9 +2592,140 @@ namespace BizHawk.Client.EmuHawk
                         speccy._machine.DiskMediaIndex = dummy;
                     };
 
-                    ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
+                    items.Add(menuItem);
                 }
             }
+
+            ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
+        }
+
+        private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog zxSnapExpDialog = new SaveFileDialog();
+            zxSnapExpDialog.RestoreDirectory = true;
+            zxSnapExpDialog.Title = "EXPERIMENTAL - Export 3rd party snapshot formats";
+            zxSnapExpDialog.DefaultExt = "szx";
+            zxSnapExpDialog.Filter = "ZX-State files (*.szx)|*.szx";
+            zxSnapExpDialog.SupportMultiDottedExtensions = true;
+
+            try
+            {
+                var res = zxSnapExpDialog.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    var speccy = (ZXSpectrum)Emulator;
+                    var snap = speccy.GetSZXSnapshot();
+                    File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
+                    //File.WriteAllText(zxSnapExpDialog.FileName, snap);
+                }
+            }
+            catch (Exception ex)
+            {
+                var ee = ex;
+            }
+        }
+
+        #endregion
+
+        #region AmstradCPC
+
+        private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCCoreEmulationSettings().ShowDialog();
+        }
+
+        private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCAudioSettings().ShowDialog();
+        }
+
+        private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCPokeMemory().ShowDialog();
+        }
+
+        private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Emulator is AmstradCPC)
+            {
+                AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
+                AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
+            }
+        }
+
+        private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+            AmstradCPCTapesSubMenu.DropDownItems.Clear();
+
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
+			if (Emulator is AmstradCPC)
+            {
+                var ams = (AmstradCPC)Emulator;
+                var currSel = ams._machine.TapeMediaIndex;
+
+                for (int i = 0; i < ams._tapeInfo.Count; i++)
+                {
+                    string name = ams._tapeInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        ams._machine.TapeMediaIndex = dummy;
+                    };
+
+					items.Add(menuItem);
+				}
+            }
+
+			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
+
+        private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+			AmstradCPCDisksSubMenu.DropDownItems.Clear();
+
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
+			if (Emulator is AmstradCPC)
+            {
+                var ams = (AmstradCPC)Emulator;
+                var currSel = ams._machine.DiskMediaIndex;
+
+                for (int i = 0; i < ams._diskInfo.Count; i++)
+                {
+                    string name = ams._diskInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        ams._machine.DiskMediaIndex = dummy;
+                    };
+
+					items.Add(menuItem);
+				}
+            }
+
+			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
+
+        private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCNonSyncSettings().ShowDialog();
         }
 
         #endregion

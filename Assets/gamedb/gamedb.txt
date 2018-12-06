@@ -23,6 +23,9 @@
 #include gamedb_user.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt
+#include gamedb_zxspectrum.txt
+#include gamedb_amstradcpc.txt
+#include gamedb_ngp.txt
 
 ; ************ TI-83 ************
 

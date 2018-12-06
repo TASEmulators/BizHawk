@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
@@ -12,6 +12,8 @@ namespace BizHawk.Client.Common
 	{
 		[Name("BizState 1", "0")]
 		public static BinaryStateLump Versiontag { get; private set; }
+		[Name("BizVersion", "txt")]
+		public static BinaryStateLump BizVersion { get; private set; }
 		[Name("Core", "bin")]
 		public static BinaryStateLump Corestate { get; private set; }
 		[Name("Framebuffer", "bmp")]
@@ -322,6 +324,13 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
+		private static void WriteEmuVersion(Stream s)
+		{
+			var sw = new StreamWriter(s);
+			sw.WriteLine(VersionInfo.GetEmuVersion());
+			sw.Flush();
+		}
+
 		public BinaryStateSaver(string path, bool notamovie = true) // notamovie is hack, really should have separate something
 		{
 			////_zip = new IonicZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);
@@ -332,6 +341,7 @@ namespace BizHawk.Client.Common
 			if (notamovie)
 			{
 				PutLump(BinaryStateLump.Versiontag, WriteVersion);
+				PutLump(BinaryStateLump.BizVersion, WriteEmuVersion);
 			}
 		}
 

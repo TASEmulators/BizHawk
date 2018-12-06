@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
@@ -22,8 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public A7800Hawk Core { get; set; }
 
-		public readonly short[] LocalAudioCycles = new short[2000];
-		public int AudioClocks;
+		public int LocalAudioCycles;
 
 		// state variables
 		public byte[] Regs = new byte[16];
@@ -45,33 +43,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		}
 
-		public void sample()
+		public int sample()
 		{
-			LocalAudioCycles[AudioClocks] += (short)(ch_vol[0] + ch_vol[1] + ch_vol[2] + ch_vol[3]);
-			AudioClocks++;
-		}
+			LocalAudioCycles = 0;
+			LocalAudioCycles += ch_vol[0];
+			LocalAudioCycles += ch_vol[1];
+			LocalAudioCycles += ch_vol[2];
+			LocalAudioCycles += ch_vol[3];
 
-		public void GetSamples(short[] samples)
-		{
-			if (AudioClocks > 0)
-			{
-				var samples31Khz = new short[AudioClocks]; // mono
-
-				for (int i = 0; i < AudioClocks; i++)
-				{
-					samples31Khz[i] = LocalAudioCycles[i];
-					LocalAudioCycles[i] = 0;
-				}
-
-				// convert from 31khz to 44khz
-				for (var i = 0; i < samples.Length / 2; i++)
-				{
-					samples[i * 2] = samples31Khz[(int)(((double)samples31Khz.Length / (double)(samples.Length / 2)) * i)];
-					samples[(i * 2) + 1] = samples[i * 2];
-				}
-			}
-
-			AudioClocks = 0;
+			return LocalAudioCycles;
 		}
 
 		public byte ReadReg(int reg)
@@ -136,27 +116,43 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (Regs[8].Bit(6))
 			{
 				clock_ch[0] = true;
-				clock_ch[2] = true;
 			}
 			else
 			{
 				inc_ch[0]++;
-				inc_ch[2]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[0] >= 114) { inc_ch[0] = 0; clock_ch[0] = true; }
-					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }
+					if (inc_ch[0] >= 114) { inc_ch[0] = 0; clock_ch[0] = true; }					
 				}
 				else
 				{
 					if (inc_ch[0] >= 28) { inc_ch[0] = 0; clock_ch[0] = true; }
+				}
+			}
+
+			if (Regs[8].Bit(5))
+			{
+				clock_ch[2] = true;
+			}
+			else
+			{
+				inc_ch[2]++;
+				if (Regs[8].Bit(0))
+				{
+					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }					
+				}
+				else
+				{
 					if (inc_ch[2] >= 28) { inc_ch[2] = 0; clock_ch[2] = true; }
 				}
 			}
 
 			if (Regs[8].Bit(4))
 			{
-				if (clock_ch[0]) { clock_ch[1] = true; }
+				if (clock_ch[0])
+				{
+					clock_ch[1] = true;					
+				}
 			}
 			else
 			{
@@ -164,6 +160,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (Regs[8].Bit(0))
 				{
 					if (inc_ch[1] >= 114) { inc_ch[1] = 0; clock_ch[1] = true; }
+									
 				}
 				else
 				{
@@ -173,14 +170,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (Regs[8].Bit(3))
 			{
-				if (clock_ch[2]) { clock_ch[3] = true; }
+				if (clock_ch[2])
+				{
+					clock_ch[3] = true;
+				}
 			}
 			else
 			{
 				inc_ch[3]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }
+					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }								
 				}
 				else
 				{
@@ -198,7 +198,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					ch_div[i]++;
 
-					if (ch_div[i] >= (Regs[i * 2] + 1))
+					int test = (Regs[i * 2] + 1);
+
+					if ((i == 1) && Regs[8].Bit(4))
+					{
+						test = Regs[i * 2] * 256 + Regs[0] + 1;
+					}
+
+					if ((i == 3) && Regs[8].Bit(3))
+					{
+						test = Regs[i * 2] * 256 + Regs[2] + 1;
+					}
+
+					if (ch_div[i] >= test)
 					{
 						ch_div[i] = 0;
 
@@ -223,10 +235,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						else if (((Regs[i * 2 + 1] & 0xF0) == 0x20) || ((Regs[i * 2 + 1] & 0xF0) == 0x60))
 						{
 							// 5 bit poly
-							if (ch_src[i])
-							{
+							//if (ch_src[i])
+							//{
 								ch_out[i] = poly5.Bit(4);
-							}
+							//}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0x40)
 						{
@@ -243,27 +255,33 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0x80)
 						{
 							// 17 bit poly
-							if (ch_src[i])
-							{
+							//if (ch_src[i])
+							//{
 								ch_out[i] = poly17.Bit(16);
-							}
+							//}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xA0)
 						{
 							// tone
-							if (ch_src[i])
-							{
+							//if (ch_src[i])
+							//{
 								ch_out[i] = !ch_out[i];
-							}
+							//}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xC0)
 						{
 							// 4 bit poly
-							if (ch_src[i])
-							{
+							//if (ch_src[i])
+							//{
 								ch_out[i] = poly4.Bit(3);
-							}					
+							//}					
 						}
+						else if ((Regs[i * 2 + 1] & 0xF0) == 0xE0)
+						{
+							// tone
+							ch_out[i] = !ch_out[i];
+						}
+
 						ch_src[i] = !ch_src[i];
 
 						// for channels 1 and 2, an optional high pass filter exists
@@ -309,8 +327,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("high_pass_1", ref high_pass_1);
 			ser.Sync("high_pass_2", ref high_pass_2);
 
-		ser.EndSection();
+			ser.EndSection();
 		}
-
 	}
 }

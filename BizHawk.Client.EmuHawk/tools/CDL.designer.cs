@@ -66,6 +66,7 @@
 			this.colFlag20 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag40 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag80 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.miAutoResume = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -92,6 +93,7 @@
             this.RecentSubMenu,
             this.miAutoStart,
             this.miAutoSave,
+            this.miAutoResume,
             this.toolStripSeparator2,
             this.ClearMenuItem,
             this.DisassembleMenuItem,
@@ -173,6 +175,7 @@
 			this.miAutoSave.Name = "miAutoSave";
 			this.miAutoSave.Size = new System.Drawing.Size(193, 22);
 			this.miAutoSave.Text = "Auto-Save";
+			this.miAutoSave.Click += new System.EventHandler(this.miAutoSave_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -365,6 +368,13 @@
 			// 
 			this.colFlag80.Text = "0x80";
 			// 
+			// miAutoResume
+			// 
+			this.miAutoResume.Name = "miAutoResume";
+			this.miAutoResume.Size = new System.Drawing.Size(193, 22);
+			this.miAutoResume.Text = "Auto-Resume";
+			this.miAutoResume.Click += new System.EventHandler(this.miAutoResume_Click);
+			// 
 			// CDL
 			// 
 			this.AllowDrop = true;
@@ -380,9 +390,9 @@
 			this.Name = "CDL";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Code Data Logger";
-			this.Load += new System.EventHandler(this.PCECDL_Load);
-			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragEnter);
+			this.Load += new System.EventHandler(this.CDL_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CDL_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CDL_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -431,6 +441,6 @@
 		private System.Windows.Forms.ToolStripMenuItem miAutoStart;
 		private System.Windows.Forms.ToolStripMenuItem miAutoSave;
 		private ToolStripEx toolStrip1;
-
+		private System.Windows.Forms.ToolStripMenuItem miAutoResume;
 	}
 }

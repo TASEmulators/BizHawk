@@ -24,6 +24,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 						continue;
 					string name = Marshal.PtrToStringAnsi(pname);
+
+					var endian = name == "Z80 RAM"
+							? MemoryDomain.Endian.Little
+							: MemoryDomain.Endian.Big;
+
 					if (name == "VRAM")
 					{
 						// vram pokes need to go through hook which invalidates cached tiles
@@ -47,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					else
 					{
 						// TODO: are the Z80 domains really Swap16 in the core?  Check this
-						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, MemoryDomain.Endian.Big, area, size, name != "MD CART" && name != "CD BOOT ROM", _elf));
+						mm.Add(new MemoryDomainIntPtrSwap16Monitor(name, endian, area, size, name != "MD CART" && name != "CD BOOT ROM", _elf));
 					}
 				}
 				var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,

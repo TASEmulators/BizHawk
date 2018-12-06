@@ -18,6 +18,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			INC16_Func(src_l, src_h);
 		}
 
+		public void Read_INC_TR_PC_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
+		{
+			Regs[dest_h] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[DB] = Regs[dest_h];
+			INC16_Func(src_l, src_h);
+			TR16_Func(PCl, PCh, dest_l, dest_h);
+		}
+
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
@@ -38,10 +46,24 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			DEC16_Func(dest_l, dest_h);
 		}
 
+		public void Write_TR_PC_Func(ushort dest_l, ushort dest_h, ushort src)
+		{
+			Regs[DB] = Regs[src];
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			TR16_Func(PCl, PCh, Z, W);
+		}
+
 		public void OUT_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
 			WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
+		}
+
+		public void OUT_INC_Func(ushort dest_l, ushort dest_h, ushort src)
+		{
+			Regs[DB] = Regs[src];
+			WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
+			INC16_Func(dest_l, dest_h);
 		}
 
 		public void IN_Func(ushort dest, ushort src_l, ushort src_h)
@@ -58,7 +80,30 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Flag3 = Regs[dest].Bit(3);
 		}
 
-		public void TR_Func(ushort dest, ushort src)
+		public void IN_INC_Func(ushort dest, ushort src_l, ushort src_h)
+		{
+			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[DB] = Regs[dest];
+
+			FlagZ = Regs[dest] == 0;
+			FlagP = TableParity[Regs[dest]];
+			FlagH = false;
+			FlagN = false;
+			FlagS = Regs[dest].Bit(7);
+			Flag5 = Regs[dest].Bit(5);
+			Flag3 = Regs[dest].Bit(3);
+
+			INC16_Func(src_l, src_h);
+		}
+
+		public void IN_A_N_INC_Func(ushort dest, ushort src_l, ushort src_h)
+        {
+            Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+            Regs[DB] = Regs[dest];
+			INC16_Func(src_l, src_h);
+        }
+
+        public void TR_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
 		}

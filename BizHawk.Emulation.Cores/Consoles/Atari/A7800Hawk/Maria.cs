@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
@@ -71,6 +70,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int header_counter;
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
+		public ushort addr_t;
+		public int ch_size;
+		public int scan_index;
+		public int read_time;
+		public bool zero_hole; // the first DMA hole does not save cycles
 
 		// variables for drawing a pixel
 		int color;
@@ -79,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		int temp_bit_0;
 		int temp_bit_1;
 		int disp_mode;
+		byte BG_latch_1;
 		int pixel;
 
 		// each frame contains 263 scanlines
@@ -185,9 +190,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 				}
 
-				if (cycle == 428 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
+				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					//Console.WriteLine(scanline);
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
@@ -210,7 +214,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					pixel = cycle - 133;
 					local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
-					disp_mode = Core.Maria_regs[0x1C] & 0x3;
+
+					if (cycle == 133)
+					{
+						disp_mode = Core.Maria_regs[0x1C] & 0x3;
+					}
+					BG_latch_1 = Core.Maria_regs[0];
+
+					
 
 					color = line_ram[local_GFX_index, pixel];
 
@@ -261,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					else
 					{
-						scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
+						scanline_buffer[pixel] = _palette[BG_latch_1];
 					}
 					
 					// send buffer to the video buffer
@@ -427,101 +438,136 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					if (DMA_phase_counter == 1)
 					{
-						ushort addr_t = 0;
+						addr_t = 0;
+						scan_index = 0;
+						read_time = 0;
+						zero_hole = false;
 
 						// in 5 byte mode, we first have to check if we are in direct or indirect mode
 						if (GFX_Objects[header_counter].ind_mode)
 						{
-							int ch_size = 0;
+							ch_size = 0;
 
 							if (Core.Maria_regs[0x1C].Bit(4))
 							{
-								graphics_read_time = 9 * GFX_Objects[header_counter].width;
+								graphics_read_time = 9;
 								ch_size = 2;
 							}
 							else
 							{
-								graphics_read_time = 6 * GFX_Objects[header_counter].width;
+								graphics_read_time = 6;
 								ch_size = 1;
-							}
-
-							// the address here is specified by CHAR_BASE maria registers
-							// ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
-							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
-							{
-								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
-								addr_t |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
-
-								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
-								{
-									if (i * ch_size < 128)
-									{
-										GFX_Objects[header_counter].obj[i * ch_size] = 0;
-									}
-									if ((i * ch_size + 1 < 128) && (ch_size == 2))
-									{
-										GFX_Objects[header_counter].obj[i * ch_size + 1] = 0;
-									}
-									if (i != 0)
-									{
-										if (ch_size == 1)
-										{
-											graphics_read_time -= 6;
-										}
-										else
-										{
-											graphics_read_time -= 9;
-										}
-									}
-									
-								}
-								else
-								{
-									if (i * ch_size < 128)
-									{
-										GFX_Objects[header_counter].obj[i * ch_size] = ReadMemory(addr_t);
-										fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 0, ch_size, GFX_Objects[header_counter].obj[i * ch_size], GFX_Objects[header_counter].write_mode);
-									}
-									if (((i * ch_size + 1) < 128) && (ch_size == 2))
-									{
-										GFX_Objects[header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr_t + 1));
-										fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 1, ch_size, GFX_Objects[header_counter].obj[i * ch_size + 1], GFX_Objects[header_counter].write_mode);
-									}
-								}
 							}
 						}
 						else
 						{
-							graphics_read_time = 3 * GFX_Objects[header_counter].width;
+							graphics_read_time = 3;
+						}
 
-							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
+						if (graphics_read_time == 0)
+						{
+							// We have read the graphics data, for this header, now return to the header list 
+							// This loop will continue until a header indicates its time to stop
+							DMA_phase = DMA_HEADER;
+							DMA_phase_counter = 0;
+							return;
+						}
+					}
+
+					if (read_time == 0)
+					{
+						bool skip = true;
+
+						while (skip)
+						{ 
+							if (GFX_Objects[header_counter].ind_mode)
 							{
-								addr_t = (ushort)(GFX_Objects[header_counter].addr + (current_DLL_offset << 8) + i);
+								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + scan_index));
+								addr_t |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
+							}
+							else
+							{
+								addr_t = (ushort)(GFX_Objects[header_counter].addr + (current_DLL_offset << 8) + scan_index);
+							}
 
-								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
+							if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
+							{
+								if (GFX_Objects[header_counter].ind_mode)
 								{
-									GFX_Objects[header_counter].obj[i] = 0;
-									if (i != 0)
-									{ 
-										graphics_read_time -= 3;
+									if (scan_index * ch_size < 128)
+									{
+										GFX_Objects[header_counter].obj[scan_index * ch_size] = 0;
+									}
+									if ((scan_index * ch_size + 1 < 128) && (ch_size == 2))
+									{
+										GFX_Objects[header_counter].obj[scan_index * ch_size + 1] = 0;
 									}
 								}
 								else
 								{
-									GFX_Objects[header_counter].obj[i] = ReadMemory(addr_t);
-									fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 0, 1, GFX_Objects[header_counter].obj[i], GFX_Objects[header_counter].write_mode);
+									GFX_Objects[header_counter].obj[scan_index] = 0;
 								}
+
+								if (scan_index == 0)
+								{
+									skip = false;
+									zero_hole = true;
+								}
+								else
+								{
+									scan_index++;
+									if (scan_index == GFX_Objects[header_counter].width)
+									{
+										skip = false;
+									}
+								}
+							}
+							else
+							{
+								skip = false;
 							}
 						}
 					}
 
-					if (DMA_phase_counter == graphics_read_time || graphics_read_time == 0)
+					read_time++;
+					if (read_time == graphics_read_time)
+					{
+						if (!zero_hole)
+						{
+							// in 5 byte mode, we first have to check if we are in direct or indirect mode
+							if (GFX_Objects[header_counter].ind_mode)
+							{
+								if (scan_index * ch_size < 128)
+								{
+									GFX_Objects[header_counter].obj[scan_index * ch_size] = ReadMemory(addr_t);
+									fill_line_ram(GFX_Objects[header_counter].h_pos * 2, scan_index, 0, ch_size, GFX_Objects[header_counter].obj[scan_index * ch_size], GFX_Objects[header_counter].write_mode);
+								}
+								if (((scan_index * ch_size + 1) < 128) && (ch_size == 2))
+								{
+									GFX_Objects[header_counter].obj[scan_index * ch_size + 1] = ReadMemory((ushort)(addr_t + 1));
+									fill_line_ram(GFX_Objects[header_counter].h_pos * 2, scan_index, 1, ch_size, GFX_Objects[header_counter].obj[scan_index * ch_size + 1], GFX_Objects[header_counter].write_mode);
+								}
+							}
+							else
+							{
+								GFX_Objects[header_counter].obj[scan_index] = ReadMemory(addr_t);
+								fill_line_ram(GFX_Objects[header_counter].h_pos * 2, scan_index, 0, 1, GFX_Objects[header_counter].obj[scan_index], GFX_Objects[header_counter].write_mode);
+							}
+						}
+
+						zero_hole = false;
+						scan_index++;
+						read_time = 0;
+					}
+
+					if (scan_index == GFX_Objects[header_counter].width)
 					{
 						// We have read the graphics data, for this header, now return to the header list 
 						// This loop will continue until a header indicates its time to stop
 						DMA_phase = DMA_HEADER;
 						DMA_phase_counter = 0;
 					}
+
 					return;
 				}
 

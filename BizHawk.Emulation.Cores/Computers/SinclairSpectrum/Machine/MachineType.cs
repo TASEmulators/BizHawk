@@ -34,6 +34,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sinclair Spectrum 128 +3 model
         /// </summary>
-        ZXSpectrum128Plus3
+        ZXSpectrum128Plus3,
+
+		/// <summary>
+		/// Russian 128k pentagon clone
+		/// </summary>
+		Pentagon128,
     }
 }

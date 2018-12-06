@@ -8,6 +8,8 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
+// ReSharper disable StringLiteralTypo
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
@@ -340,6 +342,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("local curSpeed = client.getconfig().SpeedPercent")]
+		[LuaMethod("getconfig", "gets the current config settings object")]
+		public object GetConfig()
+		{
+			return Global.Config;
+		}
+
 		[LuaMethodExample("client.togglepause( );")]
 		[LuaMethod("togglepause", "Toggles the current pause state")]
 		public static void TogglePause()
@@ -390,6 +399,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return GlobalWin.MainForm.DesktopLocation.Y;
 		}
+
+        [LuaMethodExample("local incbhver = client.getversion( );")]
+        [LuaMethod("getversion", "Returns the current stable BizHawk version")]
+        public static string GetVersion()
+        {
+            return VersionInfo.Mainversion;            
+        }
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]

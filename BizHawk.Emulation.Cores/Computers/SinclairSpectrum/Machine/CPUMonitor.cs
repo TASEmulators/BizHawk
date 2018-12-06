@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     case MachineType.ZXSpectrum128Plus3:
                         return _cpu.MEMRQ[_cpu.bus_pntr];
                     default:
-                        return _cpu.BUSRQ[_cpu.mem_pntr];
+						return _cpu.BUSRQ[_cpu.mem_pntr];
                 }
             }
         }
@@ -389,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             // fetch instruction without incrementing pc
             //_cpu.FetchInstruction(_cpu.FetchMemory(firstByte));
+            
         }
 
         #endregion

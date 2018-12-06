@@ -206,6 +206,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
+
+			// Z80 SP initialization
+			// stops a few SMS and GG games from crashing
+			Cpu.Regs[Cpu.SPl] = 0xF0;
+			Cpu.Regs[Cpu.SPh] = 0xDF;
 		}
 
 		// Constants

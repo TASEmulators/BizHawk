@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
+		// Updating reg FF0F seemsto be delayed by one cycle
+		// tests 
+		public byte REG_FF0F_OLD = 0xE0;
 
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
@@ -353,13 +356,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if ((_rom.HashMD5(0,_rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
+			if ((_rom.HashMD5(0, _rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
 				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
 				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")				
 				)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
+			}
+			
+			// Wisdom Tree does not identify their mapper, so use hash instead
+			if ((_rom.HashMD5(0, _rom.Length) == "2C07CAEE51A1F0C91C72C7C6F380B0F6") || // Joshua
+				(_rom.HashMD5(0, _rom.Length) == "37E017C8D1A45BAB609FB5B43FB64337") || // Spiritual Warfare
+				(_rom.HashMD5(0, _rom.Length) == "AB1FA0ED0207B1D0D5F401F0CD17BEBF") || // Exodus
+				(_rom.HashMD5(0, _rom.Length) == "BA2AC3587B3E1B36DE52E740274071B0") || // Bible - KJV
+				(_rom.HashMD5(0, _rom.Length) == "8CDDB8B2DCD3EC1A3FDD770DF8BDA07C")    // Bible - NIV
+				)
+			{
+				Console.WriteLine("Using Wisdom Tree Mapper");
+				mapper = new MapperWT();
+				mppr = "Wtree";
 			}
 
 			// special case for bootlegs

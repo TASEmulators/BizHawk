@@ -78,7 +78,5 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				SyncAllByteArrayDomains();
 			}
 		}
-
-		private byte[] _stateBuffer;
 	}
 }

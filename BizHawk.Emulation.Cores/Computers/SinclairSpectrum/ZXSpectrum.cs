@@ -62,7 +62,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 deterministicEmulation = deterministic.Value;
             }
 
-            switch (SyncSettings.MachineType)
+            MachineType = SyncSettings.MachineType;
+
+            switch (MachineType)
             {
                 case MachineType.ZXSpectrum16:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
@@ -88,6 +90,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
+				case MachineType.Pentagon128:
+					ControllerDefinition = ZXSpectrumControllerDefinition;
+					Init(MachineType.Pentagon128, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
+					break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
             }
@@ -146,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly TraceBuffer _tracer;
         public IController _controller;
         public SpectrumBase _machine;
+        public MachineType MachineType;
 
         public List<GameInfo> _gameInfo;
 
@@ -261,6 +268,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     _machine.InitROM(romDataP3);
                     //System.Windows.Forms.MessageBox.Show("+3 is not working at all yet :/");
                     break;
+				case MachineType.Pentagon128:
+					_machine = new Pentagon128(this, _cpu, borderType, files, joys);
+					var _systemRomPen128 = GetFirmware(0x8000, "PentagonROM");
+					var _systemRomTrdos = GetFirmware(0x4000, "TRDOSROM");
+					var conc = _systemRomPen128.Concat(_systemRomTrdos).ToArray();
+					var romDataPen128 = RomData.InitROM(machineType, conc);					
+					_machine.InitROM(romDataPen128);
+					break;
             }
         }
 

@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				Name = "Gameboy Controller",
+				Name = "Gameboy Controller H",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()

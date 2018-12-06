@@ -34,7 +34,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1737,6 +1736,7 @@ namespace BizHawk.Client.EmuHawk
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			pCFXToolStripMenuItem.Visible = false;
             zXSpectrumToolStripMenuItem.Visible = false;
+            amstradCPCToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1777,10 +1777,7 @@ namespace BizHawk.Client.EmuHawk
 					AtariSubMenu.Visible = true;
 					break;
 				case "A78":
-					if (Emulator is A7800Hawk)
-					{
-						A7800SubMenu.Visible = true;
-					}
+					A7800SubMenu.Visible = true;
 					break;
 				case "PSX":
 					PSXSubMenu.Visible = true;
@@ -1836,6 +1833,14 @@ namespace BizHawk.Client.EmuHawk
 					break;
                 case "ZXSpectrum":
                     zXSpectrumToolStripMenuItem.Visible = true;
+#if DEBUG
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
+#else
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+#endif
+                    break;
+                case "AmstradCPC":
+                    amstradCPCToolStripMenuItem.Visible = true;
                     break;
 			}
 		}
@@ -2098,7 +2103,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;*.cdt;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2119,14 +2124,15 @@ namespace BizHawk.Client.EmuHawk
 						"PlayStation", "*.cue;*.ccd;*.mds;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
-						"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
+						"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
 						"WonderSwan", "*.ws;*.wsc;%ARCH%",
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-                        "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+						"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+						"Amstrad CPC", "*.cdt;*.dsk;%ARCH%",
 						"All Files", "*.*");
 				}
 
@@ -2155,9 +2161,9 @@ namespace BizHawk.Client.EmuHawk
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"Virtual Boy", "*.vb;%ARCH%",
 					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
-                    "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-                    "All Files", "*.*");
+					"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
+					"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+					"All Files", "*.*");
 			}
 		}
 
@@ -2178,7 +2184,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(ofd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
 
 			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
@@ -2778,9 +2783,14 @@ namespace BizHawk.Client.EmuHawk
             {
                 var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
                 CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+            }
 
-            }			
-		}
+            if (Emulator.SystemId == "AmstradCPC")
+            {
+                var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator as Emulation.Cores.Computers.AmstradCPC.AmstradCPC;
+                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+            }
+        }
 
 		private void ToggleKeyPriority()
 		{
@@ -3539,8 +3549,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private LoadRomArgs _currentLoadRomArgs;
 
-		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, LoadRomArgs args)
+		{
+			bool ret = _LoadRom(path, args);
+			if(!ret) return false;
+
+			//what's the meaning of the last rom path when opening an archive? based on the archive file location
+			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
+			{
+				var leftpart = path.Split('|')[0];
+				Global.Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftpart));
+			}
+
+			return true;
+		}
+
+		// Still needs a good bit of refactoring
+		public bool _LoadRom(string path, LoadRomArgs args)
 		{
 			path = HawkFile.Util_ResolveLink(path);
 
@@ -3563,9 +3588,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			try
-			{
-				// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
-				bool deterministic = args.Deterministic ?? Global.MovieSession.QueuedMovie != null;
+			{                
+                bool deterministic;
+
+                if (args.Deterministic == null)
+                {
+                    // force deterministic in this case
+                    // this is usually null for most cores
+                    // previously this was getting set to false if a movie was not queued for recording - surely that can't be good..
+                    deterministic = true;
+                }
+                else
+                {
+                    // a value was actually supplied somehow - use this
+                    deterministic = args.Deterministic.Value;
+                }
+
+                if (Global.MovieSession.QueuedMovie != null)
+                {
+                    // movies should require deterministic emulation in ALL cases
+                    // if the core is managing its own DE through SyncSettings a 'deterministic' bool should be passed into the core's constructor
+                    // it is then up to the core itself to override its own local DeterministicEmulation setting
+                    deterministic = true;
+                }
 
 				if (!GlobalWin.Tools.AskSave())
 				{
@@ -3648,37 +3693,42 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-                    if (Path.GetExtension(loaderName.Replace("*OpenRom*", "").Replace("|", "")).ToLower() == ".xml")
-                    {
-                        // this is a multi-disk bundler file
-                        // determine the xml assets and create RomStatusDetails for all of them
-                        var xmlGame = XmlGame.Create(new HawkFile(loaderName.Replace("*OpenRom*", "")));
+					if (ioa is OpenAdvanced_OpenRom)
+					{
+						OpenAdvanced_OpenRom ioa_openRom = ioa as OpenAdvanced_OpenRom;
 
-                        StringWriter xSw = new StringWriter();
+						if (Path.GetExtension(ioa_openRom.Path.Replace("|","")).ToLower() == ".xml")
+						{
+							// this is a multi-disk bundler file
+							// determine the xml assets and create RomStatusDetails for all of them
+							var xmlGame = XmlGame.Create(new HawkFile(ioa_openRom.Path));
 
-                        for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
-                        {
-                            var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
+							StringWriter xSw = new StringWriter();
 
-                            if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
-                            {
-                                xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
-                                xSw.WriteLine("SHA1:N/A");
-                                xSw.WriteLine("MD5:N/A");
-                                xSw.WriteLine();
-                            }
-                            else
-                            {
-                                xSw.WriteLine(xmlGame.Assets[xg].Key);
-                                xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
-                                xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
-                                xSw.WriteLine();
-                            }
-                        }
+							for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
+							{
+								var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
 
-                        Emulator.CoreComm.RomStatusDetails = xSw.ToString();
-                        Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
-                    }
+								if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
+								{
+									xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+									xSw.WriteLine("SHA1:N/A");
+									xSw.WriteLine("MD5:N/A");
+									xSw.WriteLine();
+								}
+								else
+								{
+									xSw.WriteLine(xmlGame.Assets[xg].Key);
+									xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
+									xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
+									xSw.WriteLine();
+								}
+							}
+
+							Emulator.CoreComm.RomStatusDetails = xSw.ToString();
+							Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+						}
+					}
 
 					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
@@ -3709,15 +3759,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-                    if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-                    {
-                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
-                    }
-                    else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
-                    {
-                        // single disc game
-                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
-                    }
+					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+					{
+						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+					}
+					else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
+					{
+						// single disc game
+						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+					}
 
 					if (Emulator.HasBoardInfo())
 					{
@@ -4376,7 +4426,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
-                
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
@@ -4422,7 +4471,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (isRewinding)
 					{
-						runFrame = true; // TODO: the master should be deciding this!
+						runFrame = Emulator.Frame > 1; // TODO: the master should be deciding this!
 						Master.Rewind();
 					}
 				}
@@ -4456,7 +4505,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Global.Rewinder.Rewind(1);
+					runFrame = Global.Rewinder.Rewind(1) && Emulator.Frame > 1;
 
 					if (runFrame && Global.MovieSession.Movie.IsRecording)
 					{

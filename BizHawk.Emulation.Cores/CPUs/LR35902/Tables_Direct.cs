@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private void NOP_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{IDLE,					
 						IDLE,
 						HALT_CHK,
 						OP };
