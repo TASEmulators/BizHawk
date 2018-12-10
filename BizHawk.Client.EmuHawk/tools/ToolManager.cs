@@ -8,9 +8,11 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -729,6 +731,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return false;
 			}
+
+			if (t == typeof(LuaConsole) && PlatformLinkedLibSingleton.RunningOnUnix) return false;
 
 			var tool = Assembly
 					.GetExecutingAssembly()
