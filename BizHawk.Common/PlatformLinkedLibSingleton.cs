@@ -26,13 +26,13 @@ namespace BizHawk.Common
 		{
 			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
 			const int RTLD_NOW = 2;
-			[DllImport("libdl.so")]
+			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlopen(String fileName, int flags);
-			[DllImport("libdl.so")]
+			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlerror();
-			[DllImport("libdl.so")]
+			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlsym(IntPtr handle, String symbol);
-			[DllImport("libdl.so")]
+			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
 			{
