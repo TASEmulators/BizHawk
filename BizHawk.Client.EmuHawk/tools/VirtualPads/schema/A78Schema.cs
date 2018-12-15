@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Trigger",
+						Name = "P" + controller + " Button",
 						DisplayName = "1",
 						Location = new Point(120, 24),
 						Type = PadSchema.PadInputType.Boolean
