@@ -75,13 +75,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					//if (!STAT.Bit(6)) { LYC_INT = false; }
 					if (!STAT.Bit(4)) { VBL_INT = false; }
-					break; 
+					break;
 				case 0xFF42: // SCY
 					scroll_y = value;
-					break; 
+					break;
 				case 0xFF43: // SCX
 					scroll_x = value;
-					break; 
+					break;
 				case 0xFF44: // LY
 					LY = 0; /*reset*/
 					break;
@@ -455,6 +455,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				fetch_sprite = false;
 				going_to_fetch = false;
 				first_fetch = true;
+				consecutive_sprite = -render_offset + 8;
 				no_sprites = false;
 				evaled_sprites = 0;
 				window_pre_render = false;
@@ -852,8 +853,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					tile_data_latch[0] = tile_data[0];
 					tile_data_latch[1] = tile_data[1];
 				}
-
-				if (consecutive_sprite > 0) { consecutive_sprite -= 1; }
 			}
 
 			// every in range sprite takes 6 cycles to process
@@ -892,10 +891,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else if (((last_eval + render_offset) % 8) == 5) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
+
+						consecutive_sprite = (int)Math.Floor((double)(last_eval + render_offset) / 8) * 8 + 8 - render_offset;
+
+						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
+						if (last_eval == 0 && render_offset != 0)
+						{
+							sprite_fetch_counter += render_offset;
+						}
 					}
 
 					total_counter += sprite_fetch_counter;
-					consecutive_sprite = last_eval + (8 - (last_eval % 8));
 
 					first_fetch = false;
 				}
