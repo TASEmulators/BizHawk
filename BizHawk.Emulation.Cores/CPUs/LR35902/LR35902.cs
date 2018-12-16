@@ -396,11 +396,22 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 						else
 						{
-							cur_instr = new ushort[]
-										{HALT_CHK,
-										IDLE,									
-										IDLE,									
+							if (is_GBC)
+							{
+								cur_instr = new ushort[]
+										{IDLE,
+										IDLE,
+										HALT_CHK,
 										HALT, 0 };
+							}
+							else
+							{
+								cur_instr = new ushort[]
+										{HALT_CHK,
+										IDLE,
+										IDLE,
+										HALT, 0 };
+							}
 						}
 						
 					}

@@ -405,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// also the LCD doesn't turn on right away
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
-					cycle = 6;
+					cycle = 8;
 				}
 
 				// the VBL stat is continuously asserted
