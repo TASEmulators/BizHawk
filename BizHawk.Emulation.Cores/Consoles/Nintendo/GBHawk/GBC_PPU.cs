@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
@@ -138,8 +137,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LYC = value;
 					if (LCDC.Bit(7))
 					{
-						if (LY != LYC) { STAT &= 0xFB; }
-						else { STAT |= 0x4; }
+						if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
+						else { STAT |= 0x4; LYC_INT = true; }
+
+						// special case: at cycle 454, some strange things are happening, and it appears as though LY becomes LY + 1
+						// two cycles ahead of where it's supposed to. this is probably related to strange behaviour around cycle 452
+						if ((LY_inc == 0) && cycle == 6)
+						{
+							//if (0 == LYC) { STAT |= 0x4; LYC_INT = true; }
+							//else { STAT &= 0xFB; LYC_INT = false; }
+						}
 					}
 					break;
 				case 0xFF46: // DMA 
@@ -362,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 
-						STAT &= 0xFC;
+						//STAT &= 0xFC;
 
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
@@ -396,14 +403,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					STAT &= 0xFC;
 
 					// also the LCD doesn't turn on right away
-
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
-					cycle = 8;
+					cycle = 6;
 				}
 
 				// the VBL stat is continuously asserted
-				if ((LY >= 144))
+				if (LY >= 144)
 				{
 					if (STAT.Bit(4))
 					{
@@ -440,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (STAT.Bit(5)) { VBL_INT = false; }
 					}
 
-					if ((cycle == 6) && (LY == 153))
+					if ((cycle == 8) && (LY == 153))
 					{
 						LY = 0;
 						LY_inc = 0;
@@ -506,6 +512,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (LY != 0)
 								{
 									HBL_INT = false;
+									
 									if (STAT.Bit(5)) { OAM_INT = true; }
 								}
 							}
@@ -513,7 +520,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								// apparently, writes can make it to OAM one cycle longer then reads
 								OAM_access_write = false;
-
+								
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
@@ -539,6 +546,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									OAM_INT = false;
 									OAM_access_write = false;
 									VRAM_access_write = false;
+
+									// x-scroll is expected to be latched one cycle later 
+									// this is fine since nothing has started in the rendering until the second cycle
+									// calculate the column number of the tile to start with
+									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									render_offset = scroll_x % 8;
 								}
 
 								// render the screen and handle hblank
@@ -646,10 +659,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
-				// calculate the column number of the tile to start with
-				x_tile = (int)Math.Floor((float)(scroll_x) / 8);
-				render_offset = scroll_x % 8;
-
 				OAM_scan_index = 0;
 				read_case = 0;
 				internal_cycle = 0;
@@ -683,7 +692,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (SL_sprites_index == 0) { no_sprites = true; }
 				// it is much easier to process sprites if we order them according to the rules of sprite priority first
 				if (!no_sprites) { reorder_and_assemble_sprites(); }
-
 			}
 
 			// before anything else, we have to check if windowing is in effect
@@ -847,7 +855,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 1;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -1094,23 +1101,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
-						if (hbl_countdown > 0)
-						{
-							hbl_countdown--;
-							STAT &= 0xFC;
-							STAT |= 0x00;
+						STAT &= 0xFC;
+						STAT |= 0x00;
 
-							if (hbl_countdown == 0)
-							{
-								if (STAT.Bit(3)) { HBL_INT = true; }
+						if (STAT.Bit(3)) { HBL_INT = true; }
 
-								OAM_access_read = true;
-								OAM_access_write = true;
-								VRAM_access_read = true;
-								VRAM_access_write = true;
-							}
-						}					
+						OAM_access_read = true;
+						OAM_access_write = true;
+						VRAM_access_read = true;
+						VRAM_access_write = true;
 						break;
 
 					case 9:

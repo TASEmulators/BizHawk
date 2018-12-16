@@ -1,7 +1,5 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -197,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// the VBL stat is continuously asserted
-				if ((LY >= 144))
+				if (LY >= 144)
 				{
 					if (STAT.Bit(4))
 					{
@@ -333,6 +331,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									OAM_INT = false;
 									OAM_access_write = false;
 									VRAM_access_write = false;
+
+									// x-scroll is expected to be latched one cycle later 
+									// this is fine since nothing has started in the rendering until the second cycle
+									// calculate the column number of the tile to start with
+									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									render_offset = scroll_x % 8;
 								}
 
 								// render the screen and handle hblank
@@ -422,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// might be needed, not sure yet
 		public override void latch_delay()
 		{
-			//BGP_l = BGP;
+			
 		}
 
 		public override void render(int render_cycle)
@@ -439,10 +443,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				*/
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
-
-				// calculate the column number of the tile to start with
-				x_tile = (int)Math.Floor((float)(scroll_x) / 8);
-				render_offset = scroll_x % 8;
 
 				OAM_scan_index = 0;
 				read_case = 0;
@@ -479,7 +479,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (SL_sprites_index == 0) { no_sprites = true; }
 				// it is much easier to process sprites if we order them according to the rules of sprite priority first
 				if (!no_sprites) { reorder_and_assemble_sprites(); }
-
 			}
 
 			// before anything else, we have to check if windowing is in effect
@@ -592,7 +591,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 1;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -818,23 +816,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
-						if (hbl_countdown > 0)
-						{
-							hbl_countdown--;
-							STAT &= 0xFC;
-							STAT |= 0x00;
+						STAT &= 0xFC;
+						STAT |= 0x00;
 
-							if (hbl_countdown == 0)
-							{
-								if (STAT.Bit(3)) { HBL_INT = true; }
+						if (STAT.Bit(3)) { HBL_INT = true; }
 
-								OAM_access_read = true;
-								OAM_access_write = true;
-								VRAM_access_read = true;
-								VRAM_access_write = true;
-							}
-						}						
+						OAM_access_read = true;
+						OAM_access_write = true;
+						VRAM_access_read = true;
+						VRAM_access_write = true;					
 						break;
 
 					case 9:
