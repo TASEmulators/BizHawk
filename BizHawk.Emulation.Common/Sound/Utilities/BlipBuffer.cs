@@ -1,5 +1,3 @@
-﻿using BizHawk.Common;
-
 using System;
 using System.Runtime.InteropServices;
 
