@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { 0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0 };
-			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 		}
 
 		// Mode 0 interrupts only take effect if a CALL or RST is on the data bus
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0 };
-			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 1 };
         }
 
 		// Just jump to $0038
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
-			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
         }
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0 ,0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0 };
-			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
         }
 
 		private void ResetInterrupts()
