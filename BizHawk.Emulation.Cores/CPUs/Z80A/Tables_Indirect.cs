@@ -16,7 +16,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, 0, src_h, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 8;
 		}
 
 		private void BIT_OP_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
@@ -33,7 +33,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, 0, src_h, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 8;
 		}
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
@@ -51,7 +51,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, 0 };
-			IRQS = 5;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 1 };
+			IRQS = 5;
 		}
 
 		private void REG_OP_IND_INC(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -64,7 +64,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1};
+			IRQS = 4;
 		}
 
 		private void REG_OP_IND(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -77,7 +77,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1 };
+			IRQS = 4;
 		}
 
 		// different because HL doesn't effect WZ
@@ -91,7 +91,7 @@
 
 			BUSRQ = new ushort[] { 0, H, 0, 0 };
 			MEMRQ = new ushort[] { 0, H, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1 };
+			IRQS = 4;
 		}
 
 		private void LD_16_IND_nn(ushort src_l, ushort src_h)
@@ -113,7 +113,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0 };
-			IRQS = 13;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 13;
 		}
 
 		private void LD_IND_16_nn(ushort dest_l, ushort dest_h)
@@ -135,7 +135,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0 };
-			IRQS = 13;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 13;
 		}
 
 		private void LD_8_IND_nn(ushort src)
@@ -154,7 +154,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0 };
-			IRQS = 10;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 10;
 		}
 
 		private void LD_IND_8_nn(ushort dest)
@@ -173,7 +173,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, W, 0, 0 };
-			IRQS = 10;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 10;
 		}
 
 		private void LD_8_IND(ushort dest_l, ushort dest_h, ushort src)
@@ -186,7 +186,7 @@
 
 			BUSRQ = new ushort[] { 0, dest_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, dest_h, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1 };
+			IRQS = 4;
 		}
 
 		// seperate HL needed since it doesn't effect the WZ pair
@@ -200,7 +200,7 @@
 
 			BUSRQ = new ushort[] { 0, H, 0, 0 };
 			MEMRQ = new ushort[] { 0, H, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1 };
+			IRQS = 4;
 		}
 
 		private void LD_8_IND_IND(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -216,7 +216,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, dest_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, dest_h, 0, 0 };
-			IRQS = 7;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 7;
 		}
 
 		private void LD_IND_8_INC(ushort dest, ushort src_l, ushort src_h)
@@ -229,7 +229,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0 };
-			IRQS = 4;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 1 };
+			IRQS = 4;
 		}
 
 		private void LD_IND_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -245,7 +245,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, src_h, 0, 0 };
-			IRQS = 7;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 7;
 		}
 
 		private void INC_8_IND(ushort src_l, ushort src_h)
@@ -262,7 +262,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, 0, src_h, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 8;
 		}
 
 		private void DEC_8_IND(ushort src_l, ushort src_h)
@@ -279,7 +279,7 @@
 
 			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, src_h, 0, 0 };
 			MEMRQ = new ushort[] { 0, src_h, 0, 0, 0, src_h, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 8;
 		}
 
 		// NOTE: WZ implied for the wollowing 3 functions
@@ -297,7 +297,7 @@
 
 			BUSRQ = new ushort[] { 0, W, 0, 0, W, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, W, 0, 0, 0, W, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 8;
 		}
 
 		private void I_BIT_OP(ushort operation, ushort bit, ushort dest)
@@ -314,7 +314,7 @@
 
 			BUSRQ = new ushort[] { 0, W, 0, 0, W, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, W, 0, 0, 0, W, 0, 0 };
-			IRQS = 8;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 1};
+			IRQS = 8;
 		}
 
 		private void I_BIT_TE(ushort bit)
@@ -328,7 +328,7 @@
 
 			BUSRQ = new ushort[] { 0, W, 0, 0, W };
 			MEMRQ = new ushort[] { 0, W, 0, 0, 0 };
-			IRQS = 5;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 1 };
+			IRQS = 5;
 		}
 
 		private void I_OP_n(ushort operation, ushort src_l, ushort src_h)
@@ -353,7 +353,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0, W, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, 0, 0, 0, 0, 0, W, 0, 0, 0, W, 0, 0 };
-			IRQS = 16;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 16;
 		}
 
 		private void I_OP_n_n(ushort src_l, ushort src_h)
@@ -374,7 +374,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, PCh, PCh, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, 0, 0, W, 0, 0 };
-			IRQS = 12;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 12;
 		}
 
 		private void I_REG_OP_IND_n(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -395,7 +395,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, 0, 0, 0, 0, 0, W, 0, 0 };
-			IRQS = 12;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 12;
 		}
 
 		private void I_LD_8_IND_n(ushort dest_l, ushort dest_h, ushort src)
@@ -416,7 +416,7 @@
 
 			BUSRQ = new ushort[] { 0, PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, Z, 0, 0 };
 			MEMRQ = new ushort[] { 0, PCh, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0 };
-			IRQS = 12;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 12;
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
@@ -434,7 +434,7 @@
 
 			BUSRQ = new ushort[] { 0, H, 0, 0, D, 0, 0, D, D };
 			MEMRQ = new ushort[] { 0, H, 0, 0, D, 0, 0, 0, 0 };
-			IRQS = 9;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 9;
 		}
 
 		private void CP_OP_R(ushort operation, ushort repeat_instr)
@@ -452,7 +452,7 @@
 
 			BUSRQ = new ushort[] { 0, H, 0, 0, H, H, H, H, H };
 			MEMRQ = new ushort[] { 0, H, 0, 0, 0, 0, 0, 0, 0 };
-			IRQS = 9;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 9;
 		}
 
 		private void IN_OP_R(ushort operation, ushort repeat_instr)
@@ -470,7 +470,7 @@
 
 			BUSRQ = new ushort[] { 0, I, BIO1, BIO2, BIO3, BIO4, H, 0, 0};
 			MEMRQ = new ushort[] { 0, 0, BIO1, BIO2, BIO3, BIO4, H, 0, 0 };
-			IRQS = 9;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 9;
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
@@ -488,7 +488,7 @@
 
 			BUSRQ = new ushort[] { 0, I, H, 0, 0, BIO1, BIO2, BIO3, BIO4 };
 			MEMRQ = new ushort[] { 0, 0, H, 0, 0, BIO1, BIO2, BIO3, BIO4 };
-			IRQS = 9;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 9;
 		}
 
 		// this is an indirect change of a a 16 bit register with memory
@@ -514,7 +514,7 @@
 
 			BUSRQ = new ushort[] { 0, dest_h, 0, 0, dest_h, 0, 0, dest_h, dest_h, 0, 0, dest_h, 0, 0, dest_h, dest_h };
 			MEMRQ = new ushort[] { 0, dest_h, 0, 0, dest_h, 0, 0, 0, dest_h, 0, 0, dest_h, 0, 0, 0, 0 };
-			IRQS = 16;// BUSRQ.Length;// new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+			IRQS = 16;
 		}
 	}
 }
