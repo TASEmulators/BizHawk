@@ -24,10 +24,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public int bus_pntr = 0;
 		public int mem_pntr = 0;
 		public int irq_pntr = 0;
-		public ushort[] cur_instr;
-		public ushort[] BUSRQ;
-		public ushort[] MEMRQ;
-		public ushort[] IRQS;
+		public ushort[] cur_instr = new ushort[38];		// fixed size - do not change at runtime
+		public ushort[] BUSRQ = new ushort[19];         // fixed size - do not change at runtime
+		public ushort[] MEMRQ = new ushort[19];         // fixed size - do not change at runtime
+		public int IRQS;
 		public byte opcode;
 		public bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		public bool halted;
