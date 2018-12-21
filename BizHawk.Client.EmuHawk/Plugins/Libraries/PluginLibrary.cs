@@ -55,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 //		private FormsPluginLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
-		private EmulatorPluginLibrary EmulatorLuaLibrary => (EmulatorPluginLibrary)Libraries[typeof(EmulatorPluginLibrary)];
-		public GUIPluginLibrary GuiLibrary => (GUIPluginLibrary)Libraries[typeof(GUIPluginLibrary)];
+//		private EmulatorPluginLibrary EmuPluginLibrary => (EmulatorPluginLibrary)Libraries[typeof(EmulatorPluginLibrary)];
+		private GUIPluginLibrary GuiLibrary => (GUIPluginLibrary)Libraries[typeof(GUIPluginLibrary)];
 
 		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
