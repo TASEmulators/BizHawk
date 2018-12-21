@@ -456,7 +456,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte read_2004()
 		{
 			byte ret;
-			Console.WriteLine("read 2004");
+			// Console.WriteLine("read 2004");
 			// behaviour depends on whether things are being rendered or not
 			if (PPUON)
 			{
