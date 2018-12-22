@@ -219,6 +219,53 @@ namespace BizHawk.Client.ApiHawk
 			method.Invoke(clientMainFormInstance, new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false });
 		}
 
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		/// <param name="right">Right padding</param>
+		/// <param name="bottom">Bottom padding</param>
+		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+		{
+			FieldInfo f = clientAssembly.GetType("BizHawk.Game.EmuHawk.GlobalWin").GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			f = f.FieldType.GetField("GameExtraPadding");
+			f.SetValue(displayManager, new Padding(left, top, right, bottom));
+
+			MethodInfo resize = mainFormClass.GetMethod("FrameBufferResized");
+			resize.Invoke(clientMainFormInstance, null);
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		public static void SetGameExtraPadding(int left)
+		{
+			SetGameExtraPadding(left, 0, 0, 0);
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		public static void SetGameExtraPadding(int left, int top)
+		{
+			SetGameExtraPadding(left, top, 0, 0);
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		/// <param name="right">Right padding</param>
+		public static void SetGameExtraPadding(int left, int top, int right)
+		{
+			SetGameExtraPadding(left, top, right, 0);
+		}
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -227,7 +274,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
-		public static void SetExtraPadding(int left, int top, int right, int bottom)
+		public static void SetClientExtraPadding(int left, int top, int right, int bottom)
 		{
 			FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
 			object displayManager = f.GetValue(null);
@@ -242,9 +289,9 @@ namespace BizHawk.Client.ApiHawk
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
 		/// </summary>
 		/// <param name="left">Left padding</param>
-		public static void SetExtraPadding(int left)
+		public static void SetClientExtraPadding(int left)
 		{
-			SetExtraPadding(left, 0, 0, 0);
+			SetClientExtraPadding(left, 0, 0, 0);
 		}
 
 		/// <summary>
@@ -252,9 +299,9 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="left">Left padding</param>
 		/// <param name="top">Top padding</param>
-		public static void SetExtraPadding(int left, int top)
+		public static void SetClientExtraPadding(int left, int top)
 		{
-			SetExtraPadding(left, top, 0, 0);
+			SetClientExtraPadding(left, top, 0, 0);
 		}
 
 		/// <summary>
@@ -263,9 +310,9 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="left">Left padding</param>
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
-		public static void SetExtraPadding(int left, int top, int right)
+		public static void SetClientExtraPadding(int left, int top, int right)
 		{
-			SetExtraPadding(left, top, right, 0);
+			SetClientExtraPadding(left, top, right, 0);
 		}
 
 
