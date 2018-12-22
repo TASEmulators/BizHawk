@@ -1,7 +1,5 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -75,13 +73,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					//if (!STAT.Bit(6)) { LYC_INT = false; }
 					if (!STAT.Bit(4)) { VBL_INT = false; }
-					break; 
+					break;
 				case 0xFF42: // SCY
 					scroll_y = value;
-					break; 
+					break;
 				case 0xFF43: // SCX
 					scroll_x = value;
-					break; 
+					break;
 				case 0xFF44: // LY
 					LY = 0; /*reset*/
 					break;
@@ -197,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// the VBL stat is continuously asserted
-				if ((LY >= 144))
+				if (LY >= 144)
 				{
 					if (STAT.Bit(4))
 					{
@@ -333,6 +331,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									OAM_INT = false;
 									OAM_access_write = false;
 									VRAM_access_write = false;
+
+									// x-scroll is expected to be latched one cycle later 
+									// this is fine since nothing has started in the rendering until the second cycle
+									// calculate the column number of the tile to start with
+									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									render_offset = scroll_x % 8;
 								}
 
 								// render the screen and handle hblank
@@ -422,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// might be needed, not sure yet
 		public override void latch_delay()
 		{
-			//BGP_l = BGP;
+			
 		}
 
 		public override void render(int render_cycle)
@@ -440,10 +444,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
-				// calculate the column number of the tile to start with
-				x_tile = (int)Math.Floor((float)(scroll_x) / 8);
-				render_offset = scroll_x % 8;
-
 				OAM_scan_index = 0;
 				read_case = 0;
 				internal_cycle = 0;
@@ -455,6 +455,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				fetch_sprite = false;
 				going_to_fetch = false;
 				first_fetch = true;
+				consecutive_sprite = -render_offset + 8;
 				no_sprites = false;
 				evaled_sprites = 0;
 				window_pre_render = false;
@@ -478,7 +479,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (SL_sprites_index == 0) { no_sprites = true; }
 				// it is much easier to process sprites if we order them according to the rules of sprite priority first
 				if (!no_sprites) { reorder_and_assemble_sprites(); }
-
 			}
 
 			// before anything else, we have to check if windowing is in effect
@@ -591,7 +591,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 1;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -817,23 +816,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
-						if (hbl_countdown > 0)
-						{
-							hbl_countdown--;
-							STAT &= 0xFC;
-							STAT |= 0x00;
+						STAT &= 0xFC;
+						STAT |= 0x00;
 
-							if (hbl_countdown == 0)
-							{
-								if (STAT.Bit(3)) { HBL_INT = true; }
+						if (STAT.Bit(3)) { HBL_INT = true; }
 
-								OAM_access_read = true;
-								OAM_access_write = true;
-								VRAM_access_read = true;
-								VRAM_access_write = true;
-							}
-						}						
+						OAM_access_read = true;
+						OAM_access_write = true;
+						VRAM_access_read = true;
+						VRAM_access_write = true;					
 						break;
 
 					case 9:
@@ -852,8 +843,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					tile_data_latch[0] = tile_data[0];
 					tile_data_latch[1] = tile_data[1];
 				}
-
-				if (consecutive_sprite > 0) { consecutive_sprite -= 1; }
 			}
 
 			// every in range sprite takes 6 cycles to process
@@ -892,10 +881,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else if (((last_eval + render_offset) % 8) == 5) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
 						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
+
+						consecutive_sprite = (int)Math.Floor((double)(last_eval + render_offset) / 8) * 8 + 8 - render_offset;
+
+						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
+						if (last_eval == 0 && render_offset != 0)
+						{
+							sprite_fetch_counter += render_offset;
+						}
 					}
 
 					total_counter += sprite_fetch_counter;
-					consecutive_sprite = last_eval + (8 - (last_eval % 8));
 
 					first_fetch = false;
 				}

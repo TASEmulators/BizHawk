@@ -9,7 +9,6 @@
 using System;
 using BizHawk.Common;
 
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	sealed partial class PPU
@@ -307,6 +306,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
 		byte reg_2003;
+		public byte reg_2006_2;
 
 		void regs_reset()
 		{
@@ -450,12 +450,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				OAM[reg_2003] = value;
 				reg_2003++;
-			}
-			
+			}	
 		}
+
 		byte read_2004()
 		{
 			byte ret;
+			// Console.WriteLine("read 2004");
 			// behaviour depends on whether things are being rendered or not
 			if (PPUON)
 			{
@@ -526,6 +527,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._v = (value >> 3) & 1;
 				ppur._fv = (value >> 4) & 3;
 				//nes.LogLine("addr wrote fv = {0}", ppur._fv);
+				reg_2006_2 = value;
 			}
 			else
 			{
@@ -534,13 +536,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._ht = value & 31;
 
 				// testing indicates that this operation is delayed by 3 pixels
-				// ppur.install_latches();
-
+				//ppur.install_latches();				
 				install_2006 = 3;
 			}
 
 			vtoggle ^= true;
-
 		}
 		byte read_2006() { return ppu_open_bus; }
 		byte peek_2006() { return ppu_open_bus; }

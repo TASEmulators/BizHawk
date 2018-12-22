@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
@@ -131,7 +130,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return sum >= 2000;
 		}
 
-
 		//when the ppu issues a write it goes through here and into the game board
 		public void ppubus_write(int addr, byte value)
 		{
@@ -236,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("spriteHeight", ref spriteHeight);
 			ser.Sync("install_2006", ref install_2006);
 			ser.Sync("race_2006", ref race_2006);
+			ser.Sync("race_2006_2", ref race_2006_2);
 			ser.Sync("install_2001", ref install_2001);
 			ser.Sync("show_bg_new", ref show_bg_new);
 			ser.Sync("show_obj_new", ref show_obj_new);
@@ -270,6 +269,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("do_pre_vbl", ref do_pre_vbl);
 
 			ser.Sync("nmi_destiny", ref nmi_destiny);
+			ser.Sync("evenOddDestiny", ref evenOddDestiny);
+			ser.Sync("NMI_offset", ref NMI_offset);
 			ser.Sync("yp_shift", ref yp_shift);
 			ser.Sync("sprite_eval_cycle", ref sprite_eval_cycle);
 			ser.Sync("xt", ref xt);
@@ -278,7 +279,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("rasterpos", ref rasterpos);
 			ser.Sync("renderspritenow", ref renderspritenow);
 			ser.Sync("renderbgnow", ref renderbgnow);
-			ser.Sync("hit_pending", ref hit_pending);
 			ser.Sync("s", ref s);
 			ser.Sync("ppu_aux_index", ref ppu_aux_index);
 			ser.Sync("junksprite", ref junksprite);
@@ -332,13 +332,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
 
-			race_2006 = false;
+			
 			if (install_2006>0)
 			{
 				install_2006--;
 				if (install_2006==0)
 				{
-					ppur.install_latches();
+					if (!race_2006) { ppur.install_latches(); }
+					else { race_2006_2 = true; }
 
 					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 					//normally the address isnt observed by the board till it gets clocked by a read or write.
@@ -347,10 +348,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//ONLY if the ppu is not rendering
 					if (ppur.status.sl >= 241 || !PPUON)
 						nes.Board.AddressPPU(ppur.get_2007access());
-
-					race_2006 = true;
 				}
 			}
+
+			race_2006 = false;
 
 			if (install_2001 > 0)
 			{

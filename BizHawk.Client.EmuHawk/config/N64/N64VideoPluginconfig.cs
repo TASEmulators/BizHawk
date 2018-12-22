@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			"1600 x 1200",
 			"1920 x 1440",
 			"2048 x 1536",
+			"2880 x 2160",
 			"Custom"
 		};
 

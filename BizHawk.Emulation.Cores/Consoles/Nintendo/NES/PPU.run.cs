@@ -1,8 +1,8 @@
 ﻿//TODO - correctly emulate PPU OFF state
 
+using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// installing vram address is delayed after second write to 2006, set this up here
 		public int install_2006;
-		public bool race_2006;
+		public bool race_2006, race_2006_2;
 		public int install_2001;
 		public bool show_bg_new; //Show background
 		public bool show_obj_new; //Show sprites
@@ -62,20 +62,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// attempt to emulate graphics pipeline behaviour
 		// experimental
 		int pixelcolor_latch_1;
-		int pixelcolor_latch_2;
+
 		void pipeline(int pixelcolor, int row_check)
 		{
-			if (row_check > 1)
+			if (row_check > 0)
 			{
 				if (reg_2001.color_disable)
-					pixelcolor_latch_2 &= 0x30;
+					pixelcolor_latch_1 &= 0x30;
 
 				//TODO - check flashing sirens in werewolf
 				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
-				xbuf[(target - 2)] = (short)(pixelcolor_latch_2 | reg_2001.intensity_lsl_6);
+				xbuf[(target - 1)] = (short)(pixelcolor_latch_1 | reg_2001.intensity_lsl_6);
 			}
-
-			pixelcolor_latch_2 = pixelcolor_latch_1;			
+		
 			pixelcolor_latch_1 = pixelcolor;
 		}
 
@@ -125,6 +124,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool do_pre_vbl;
 
 		bool nmi_destiny;
+		bool evenOddDestiny;
+		static int start_up_offset = 2;
+		int NMI_offset;
 		int yp_shift;
 		int sprite_eval_cycle;
 		int xt;
@@ -133,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int rasterpos;
 		bool renderspritenow;
 		bool renderbgnow;
-		bool hit_pending;
 		int s;
 		int ppu_aux_index;
 		bool junksprite;
@@ -148,22 +149,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.cycle = 0;
 
 			// These things happen at the start of every frame
-
-			Reg2002_vblank_active_pending = true;
+			//Reg2002_vblank_active = true;
+			//Reg2002_vblank_active_pending = true;
 			ppuphase = PPUPHASE.VBL;
 			bgdata = new BGDataRecord[34];
 		}
 
 		public void TickPPU_VBL()
 		{
-			if (ppur.status.cycle == 3 && ppur.status.sl == 241 + preNMIlines)
+			if (ppur.status.cycle == 0 && ppur.status.sl == 241 + preNMIlines)
 			{
 				nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
+				if (cpu_stepcounter == 2) { NMI_offset = 1; }
+				else if (cpu_stepcounter == 1) { NMI_offset = 2; }
+				else { NMI_offset = 0; }
 			}
-			else if (ppur.status.cycle == 6 && ppur.status.sl == 241 + preNMIlines)
+			else if (ppur.status.cycle <= 2 && nmi_destiny)
+			{
+				nmi_destiny &= reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
+			}
+			else if (ppur.status.cycle == (3 + NMI_offset) && ppur.status.sl == 241 + preNMIlines)
 			{
 				if (nmi_destiny) { nes.cpu.NMI = true; }
 				nes.Board.AtVsyncNMI();
+			}
+
+			if (ppur.status.cycle == 340)
+			{
+				if (ppur.status.sl == 241 + preNMIlines + postNMIlines - 1)
+				{
+					Reg2002_vblank_clear_pending = true;
+					idleSynch ^= true;
+					Reg2002_objhit = Reg2002_objoverflow = 0;
+				}
 			}
 
 			runppu(); // note cycle ticks inside runppu
@@ -174,10 +192,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur.status.sl++;
 				if (ppur.status.sl == 241 + preNMIlines + postNMIlines)
 				{
-					Reg2002_objhit = Reg2002_objoverflow = 0;
-					Reg2002_vblank_clear_pending = true;
-					idleSynch ^= true;
-
 					do_vbl = false;
 					ppur.status.sl = 0;
 				}
@@ -232,8 +246,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//check all the conditions that can cause things to render in these 8px
 				renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-				hit_pending = false;
-
 			}
 
 			if (ppur.status.cycle < 256)
@@ -332,8 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								if (yp >= read_value && yp < read_value + spriteHeight && PPUON)
 								{
-									hit_pending = true;
-									//Reg2002_objoverflow = true;
+									Reg2002_objoverflow = true;
 								}
 
 								if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
@@ -378,30 +389,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work 
 					// due to the cpu not running while the sprite renders below
 					if (PPUON) { Read_bgdata(xp, ref bgdata[xt + 2]); }
-
-					runppu();
-
-					if (PPUON && xp == 6)
-					{
-						ppu_was_on = true;
-					}
-
-					if (PPUON && xp == 7)
-					{
-						if (!race_2006)
-							ppur.increment_hsc();
-
-						if (ppur.status.cycle == 256 && !race_2006)
-							ppur.increment_vs();
-
-						ppu_was_on = false;
-					}
-
-					if (hit_pending)
-					{
-						hit_pending = false;
-						Reg2002_objoverflow = true;
-					}
 
 					renderbgnow = show_bg_new && (xt > 0 || reg_2001.show_bg_leftmost);
 					//bg pos is different from raster pos due to its offsetability.
@@ -467,14 +454,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					} //oamcount loop
 
+					runppu();
+
+					if (PPUON && xp == 6)
+					{
+						ppu_was_on = true;
+						if (ppur.status.cycle == 255) { race_2006 = true; }
+					}
+
+					if (PPUON && xp == 7)
+					{
+						ppur.increment_hsc();
+
+						if (ppur.status.cycle == 256)
+						{
+							ppur.increment_vs();
+						}
+
+						if (race_2006_2)
+						{
+							if (ppur.status.cycle == 256)
+							{
+								ppur.fv &= ppur._fv;
+								ppur.v &= ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt &= ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+							else
+							{
+								ppur.fv = ppur._fv;
+								ppur.v = ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt = ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+						}
+
+						ppu_was_on = false;
+					}
+
+					race_2006_2 = false;
 
 					pipeline(pixelcolor, xt * 8 + xp);
 					target++;
 
 					// clear out previous sprites from scanline buffer
-					//sl_sprites[xt * 8 + xp] = 0;
 					sl_sprites[256 + xt * 8 + xp] = 0;
-					//sl_sprites[512 + xt * 8 + xp] = 0;
 
 					// end of visible part of the scanline
 					sprite_eval_cycle++;
@@ -494,9 +520,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//check all the conditions that can cause things to render in these 8px
 						renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-						hit_pending = false;
-
-					}
+					}				
 				}
 				else
 				{
@@ -508,18 +532,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (PPUON && xp == 6)
 					{
 						ppu_was_on = true;
+						if (ppur.status.cycle == 255) { race_2006 = true; }
+						
 					}
 
 					if (PPUON && xp == 7)
 					{
-						if (!race_2006)
-							ppur.increment_hsc();
+						ppur.increment_hsc();
 
-						if (ppur.status.cycle == 256 && !race_2006)
+						if (ppur.status.cycle == 256)
+						{
 							ppur.increment_vs();
+						}
+
+						if(race_2006_2)
+						{
+							if (ppur.status.cycle == 256)
+							{
+								ppur.fv &= ppur._fv;
+								ppur.v &= ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt &= ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+							else
+							{
+								ppur.fv = ppur._fv;
+								ppur.v = ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt = ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+						}
 
 						ppu_was_on = false;
 					}
+
+					race_2006_2 = false;
 
 					xp++;
 
@@ -625,35 +674,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 256);
+								pipeline(0, 256);   //  last pipeline call option 1 of 2
 								target++;
 							}
 
 							//at 257: 3d world runner is ugly if we do this at 256
-							if (PPUON) ppur.install_h_latches();
+							if (PPUON/* && !race_2006_2*/) { ppur.install_h_latches(); }
+							race_2006_2 = false;
 							read_value = t_oam[s].oam_ind;
 							runppu();
 
+							/*
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 257);  //  last pipeline call option 1 of 2
+								//pipeline(0, 257);
 							}
+							*/
 						}
 						else
 						{
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 256);
+								pipeline(0, 256);  //  last pipeline call option 2 of 2
 								target++;
 							}
 
 							read_value = t_oam[s].oam_ind;
 							runppu();
 
+							/*
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 257);  //  last pipeline call option 2 of 2
+								//pipeline(0, 257);
 							}
+							*/
 						}
 						break;
 
@@ -910,12 +964,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else if (ppur.status.cycle < 340)
 				{
+					if (ppur.status.cycle == 339)
+					{
+						evenOddDestiny = PPUON;
+					}
+
 					runppu();
 				}
 				else
 				{
-					bool evenOddDestiny = PPUON;
-
 					// After memory access 170, the PPU simply rests for 4 cycles (or the
 					// equivelant of half a memory access cycle) before repeating the whole
 					// pixel/scanline rendering process. If the scanline being rendered is the very
@@ -941,6 +998,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void TickPPU_preVBL()
 		{
+			if (ppur.status.cycle == 340)
+			{
+				Reg2002_vblank_active_pending = true;
+			}
+
 			runppu();
 
 			if (ppur.status.cycle == 341)
@@ -961,9 +1023,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//to wait for vblank
 		public void NewDeadPPU()
 		{
+			if (ppur.status.cycle == 241 * 341 - start_up_offset - 1)
+			{
+				Reg2002_vblank_active_pending = true;
+			}
+
 			runppu();
 
-			if (ppur.status.cycle == 241 * 341 - 3)
+			if (ppur.status.cycle == 241 * 341 - start_up_offset)
 			{
 				ppudead--;
 			}

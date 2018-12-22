@@ -1,6 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
@@ -11,7 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public uint[] BG_palette = new uint[32];
 		public uint[] OBJ_palette = new uint[32];
-
 
 		public bool HDMA_active;
 
@@ -44,7 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool LCD_was_off;
 		public bool stat_line;
 		public bool stat_line_old;
-		public int hbl_countdown;
 		// OAM scan
 		public bool DMA_OAM_access;
 		public bool OAM_access_read;
@@ -151,7 +147,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		}
 
-
 		public virtual void Reset()
 		{
 
@@ -166,7 +161,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public virtual void SyncState(Serializer ser)
 		{
-
 			ser.Sync("BG_palette", ref BG_palette, false);
 			ser.Sync("OBJ_palette", ref OBJ_palette, false);
 			ser.Sync("HDMA_active", ref HDMA_active);
@@ -197,7 +191,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("OAM_INT", ref OAM_INT);
 			ser.Sync("stat_line", ref stat_line);
 			ser.Sync("stat_line_old", ref stat_line_old);
-			ser.Sync("hbl_countdown", ref hbl_countdown);
 			ser.Sync("LCD_was_off", ref LCD_was_off);		
 			ser.Sync("OAM_scan_index", ref OAM_scan_index);
 			ser.Sync("SL_sprites_index", ref SL_sprites_index);

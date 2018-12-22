@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF4F: // VBK
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ret = VRAM_Bank;
 					}
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ret = ppu.ReadReg(addr);
 					}
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// VBK
 				case 0xFF4F:
-					if (is_GBC && !ppu.HDMA_active)
+					if (GBC_compat && !ppu.HDMA_active)
 					{
 						VRAM_Bank = (byte)(value & 1);
 					}
@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ppu.WriteReg(addr, value);
 					}
