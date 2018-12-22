@@ -307,7 +307,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
 		/// <param name="bottom">Bottom padding</param>
-		public static void SetClientExtraPadding(int left, int top, int right, int bottom)
+		public static void SetExtraPadding(int left, int top, int right, int bottom)
 		{
 			FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
 			object displayManager = f.GetValue(null);
@@ -321,9 +321,9 @@ namespace BizHawk.Client.ApiHawk
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
 		/// </summary>
 		/// <param name="left">Left padding</param>
-		public static void SetClientExtraPadding(int left)
+		public static void SetExtraPadding(int left)
 		{
-			SetClientExtraPadding(left, 0, 0, 0);
+			SetExtraPadding(left, 0, 0, 0);
 		}
 
 		/// <summary>
@@ -331,9 +331,9 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="left">Left padding</param>
 		/// <param name="top">Top padding</param>
-		public static void SetClientExtraPadding(int left, int top)
+		public static void SetExtraPadding(int left, int top)
 		{
-			SetClientExtraPadding(left, top, 0, 0);
+			SetExtraPadding(left, top, 0, 0);
 		}
 
 		/// <summary>
@@ -342,11 +342,10 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="left">Left padding</param>
 		/// <param name="top">Top padding</param>
 		/// <param name="right">Right padding</param>
-		public static void SetClientExtraPadding(int left, int top, int right)
+		public static void SetExtraPadding(int left, int top, int right)
 		{
-			SetClientExtraPadding(left, top, right, 0);
+			SetExtraPadding(left, top, right, 0);
 		}
-
 
 		/// <summary>
 		/// Set inputs in specified <see cref="Joypad"/> to specified player
