@@ -2911,13 +2911,13 @@ namespace BizHawk.Client.EmuHawk
 						//EmuHawkPluginLibrary.SetGameExtraPadding(160, 112, 160, 112);
 						if (_dumpMap <= 1) EccoDrawBoxes();
 						// Uncomment the following block to enable mapdumping
-						/*if ((_api.MemLib.ReadU16(0xFFA7C8) > 1) && (_api.MemLib.ReadU16(0xFFA7C8) < 4))
+						if ((_api.MemLib.ReadU16(0xFFA7C8) > 1) && (_api.MemLib.ReadU16(0xFFA7C8) < 4))
 						{
 							_dumpMap = 1;
 							_rowStateGuid = string.Empty;
 							_top = _bottom = _left = _right = 0;
 							EmuHawkPluginLibrary.SetGameExtraPadding(0, 0, 0, 0);
-						}*/
+						}
 						if (_dumpMap == 3)
 						{
 							var levelID = _api.MemLib.ReadS8(0xFFA7D0);
