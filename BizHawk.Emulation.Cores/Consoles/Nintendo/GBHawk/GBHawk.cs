@@ -480,6 +480,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
 			}
+
+			if (mppr == "HuC3")
+			{
+				Use_MT = true;
+
+				int years = (int)Math.Floor(_syncSettings.RTCInitialTime / 31536000.0);
+
+				mapper.RTC_Get((byte)years, 24);
+
+				int remaining = _syncSettings.RTCInitialTime - (years * 31536000);
+
+				int days = (int)Math.Floor(remaining / 86400.0);
+				int days_upper = (days >> 8) & 0xF;
+
+				mapper.RTC_Get((byte)days_upper, 20);
+				mapper.RTC_Get((byte)(days & 0xFF), 12);
+
+				remaining = remaining - (days * 86400);
+
+				int minutes = (int)Math.Floor(remaining / 60.0);
+				int minutes_upper = (minutes >> 8) & 0xF;
+
+				mapper.RTC_Get((byte)(minutes_upper), 8);
+				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+			}
 		}
 	}
 }
