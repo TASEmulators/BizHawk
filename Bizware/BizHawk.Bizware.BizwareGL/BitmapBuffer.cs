@@ -287,7 +287,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void DiscardAlpha()
 		{
-			HasAlpha = false;
+			//HasAlpha = false;
 		}
 
 		void LoadInternal(Stream stream, sd.Bitmap bitmap, BitmapLoadOptions options)

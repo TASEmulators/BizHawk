@@ -860,7 +860,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			_rsBlendNormal = new CacheBlendState(
 				true,
 				BlendingFactorSrc.SrcAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.OneMinusSrcAlpha,
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
+				BlendingFactorSrc.One, BlendEquationMode.Max, BlendingFactorDest.One);
 		}
 
 		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;

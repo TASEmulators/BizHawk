@@ -368,7 +368,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			_rsBlendNormal = new CacheBlendState(
 				true,
 				gl.BlendingFactorSrc.SrcAlpha, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.OneMinusSrcAlpha,
-				gl.BlendingFactorSrc.One, gl.BlendEquationMode.FuncAdd, gl.BlendingFactorDest.Zero);
+				gl.BlendingFactorSrc.One, gl.BlendEquationMode.Max, gl.BlendingFactorDest.One);
 		}
 
 		CacheBlendState _rsBlendNoneVerbatim, _rsBlendNoneOpaque, _rsBlendNormal;
