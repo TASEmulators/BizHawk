@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -131,6 +132,21 @@
     <Compile Include="FrameworkFastZipWriter.cs" />
     <Compile Include="FrameworkZipWriter.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="plugins\IPlugin.cs" />
+    <Compile Include="plugins\IPluginAPI.cs" />
+    <Compile Include="plugins\PluginLibrary.Emu.cs" />
+    <Compile Include="plugins\PluginLibrary.Gameinfo.cs" />
+    <Compile Include="plugins\PluginLibrary.GUIDraw.cs" />
+    <Compile Include="plugins\PluginLibrary.Joypad.cs" />
+    <Compile Include="plugins\PluginLibrary.Memory.cs" />
+    <Compile Include="plugins\PluginLibrary.MemoryEvents.cs" />
+    <Compile Include="plugins\PluginLibrary.MemorySavestate.cs" />
+    <Compile Include="plugins\PluginLibrary.Movie.cs" />
+    <Compile Include="plugins\PluginLibrary.SQL.cs" />
+    <Compile Include="plugins\PluginLibrary.UserData.cs" />
+    <Compile Include="plugins\PluginLibraryBase.cs" />
+    <Compile Include="plugins\PluginMemoryBase.cs" />
+    <Compile Include="plugins\PluginBase.cs" />
     <Compile Include="inputAdapters\AutoPattern.cs" />
     <Compile Include="inputAdapters\BitwiseAdapters.cs" />
     <Compile Include="inputAdapters\ClickyVirtualPadController.cs" />
@@ -244,6 +260,7 @@
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
+    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickBmpFile.cs" />
