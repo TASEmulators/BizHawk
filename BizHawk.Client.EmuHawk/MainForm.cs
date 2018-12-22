@@ -252,8 +252,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 			InputManager.RewireInputChain();
 			GlobalWin.Tools = new ToolManager(this);
-			GlobalWin.Plugins = new PluginLibrary(Emulator.ServiceProvider);
-			GlobalWin.Plugins.Load(new Ecco2AssistantPlugin());
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -2937,7 +2935,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
-				GlobalWin.Plugins.CallFrameBeforeEvent();
 
 				if (IsTurboing)
 				{
@@ -3024,7 +3021,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
-				GlobalWin.Plugins.CallFrameAfterEvent();
 
 				if (IsTurboing)
 				{
@@ -3798,7 +3794,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GlobalWin.Tools.Restart();
-					GlobalWin.Plugins.Restart(Emulator.ServiceProvider);
+					ApiManager.Restart(Emulator.ServiceProvider);
 
 					if (Global.Config.LoadCheatFileByGame)
 					{
@@ -3846,7 +3842,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ClientApi.OnRomLoaded();
+					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
 				else
@@ -3857,10 +3853,11 @@ namespace BizHawk.Client.EmuHawk
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
 					if (!(Emulator is NullEmulator))
 					{
-						ClientApi.OnRomLoaded();
+						ClientApi.OnRomLoaded(Emulator);
 						return true;
 					}
 
+					ClientApi.UpdateEmulatorAndVP(Emulator);
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateStatusSlots();
@@ -3950,6 +3947,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			RewireSound();
@@ -3972,7 +3970,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
-				GlobalWin.Plugins.Restart(Emulator.ServiceProvider);
+				ApiManager.Restart(Emulator.ServiceProvider);
 				RewireSound();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : "");
 				HandlePlatformMenus();
@@ -4068,7 +4066,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
 				}
-				GlobalWin.Plugins.CallLoadStateEvent(userFriendlyStateName);
 
 				SetMainformMovieInfo();
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
@@ -4198,7 +4195,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
 			}
-			GlobalWin.Plugins.CallSaveStateEvent(quickSlotName);
 		}
 
 		private void SaveStateAs()

@@ -260,6 +260,7 @@
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
+    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickBmpFile.cs" />

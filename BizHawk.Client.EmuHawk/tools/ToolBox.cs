@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -66,6 +66,8 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
 					continue;
+//				if (!ApiInjector.IsAvailable(, t))
+//					continue;
 
 				var instance = Activator.CreateInstance(t);
 
