@@ -284,19 +284,20 @@ namespace BizHawk.Client.EmuHawk
 
 			BizHawk.Common.TempFileManager.Start();
 
-
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
+			ArgParser argParser = new ArgParser();
+			argParser.ParseArguments(args);
+			if (argParser.cmdConfigFile != null) PathManager.SetDefaultIniPath(argParser.cmdConfigFile);
 
 			try
 			{
-				Global.Config = ConfigService.Load<Config>(iniPath);
+				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			} catch (Exception e) {
 				new ExceptionBox(e).ShowDialog();
 				new ExceptionBox("Since your config file is corrupted, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
-				File.Delete(iniPath);
-				Global.Config = ConfigService.Load<Config>(iniPath);
+				File.Delete(PathManager.DefaultIniPath);
+				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			}
 
 			Global.Config.ResolveDefaults();
