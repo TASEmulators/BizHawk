@@ -13,6 +13,11 @@ namespace BizHawk.Client.Common
 {
 	public static class PathManager
 	{
+		static PathManager()
+		{
+			SetDefaultIniPath(MakeProgramRelativePath("config.ini"));
+		}
+
 		public static string GetExeDirectoryAbsolute()
 		{
 			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -40,7 +45,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
-		public static string DefaultIniPath => MakeProgramRelativePath("config.ini");
+		public static string DefaultIniPath { get; private set; }
+
+		public static void SetDefaultIniPath(string newDefaultIniPath)
+		{
+			DefaultIniPath = newDefaultIniPath;
+		}
 
 		/// <summary>
 		/// Gets absolute base as derived from EXE
