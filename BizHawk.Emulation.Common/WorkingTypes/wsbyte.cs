@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		public const SByte MinValue = SByte.MinValue;
 		public static implicit operator wsbyte(int value)
 		{
-			return value;
+			return new wsbyte(value);
 		}
 		public static implicit operator SByte(wsbyte value)
 		{

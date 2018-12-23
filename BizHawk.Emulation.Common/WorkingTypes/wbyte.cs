@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		public const Byte MinValue = Byte.MinValue;
 		public static implicit operator wbyte(uint value)
 		{
-			return value;
+			return new wbyte(value);
 		}
 		public static implicit operator byte(wbyte value)
 		{

@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		public const Int16 MinValue = Int16.MinValue;
 		public static implicit operator wshort(int value)
 		{
-			return value;
+			return new wshort(value);
 		}
 		public static implicit operator Int16(wshort value)
 		{
