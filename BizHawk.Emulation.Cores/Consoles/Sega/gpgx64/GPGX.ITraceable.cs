@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				var traceInfo = new TraceInfo
 				{
-					Disassembly = string.Format("{0:X6}:  {1}", pc, disasm).PadRight(40)
+					Disassembly = string.Format("{0:X6}:  {1}", pc, disasm).PadRight(46)
 				};
 
 				var sb = new StringBuilder();
