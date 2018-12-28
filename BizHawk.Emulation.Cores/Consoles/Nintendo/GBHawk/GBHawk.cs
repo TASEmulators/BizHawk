@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
 
+		// several undocumented GBC Registers
+		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
+
 		public byte[] _bios;
 		public readonly byte[] _rom;		
 		public readonly byte[] header = new byte[0x50];
