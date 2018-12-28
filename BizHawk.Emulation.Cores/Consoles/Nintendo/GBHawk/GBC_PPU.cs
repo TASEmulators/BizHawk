@@ -53,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int last_HBL;
 		public bool HBL_HDMA_go;
 		public bool HBL_test;
+		public byte LYC_t;
+		public int LYC_cd;
 
 		public override byte ReadReg(int addr)
 		{
@@ -143,20 +145,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LY = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC
-					LYC = value;
-					if (LCDC.Bit(7))
-					{
-						if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
-						else { STAT |= 0x4; LYC_INT = true; }
 
-						// special case: at cycle 454, some strange things are happening, and it appears as though LY becomes LY + 1
-						// two cycles ahead of where it's supposed to. this is probably related to strange behaviour around cycle 452
-						if ((LY_inc == 0) && cycle == 6)
-						{
-							//if (0 == LYC) { STAT |= 0x4; LYC_INT = true; }
-							//else { STAT &= 0xFB; LYC_INT = false; }
-						}
-					}
+					// tests indicate that latching writes to LYC should take place 4 cycles after the write
+					// otherwise tests around LY boundaries will fail
+					LYC_t = value;
+					LYC_cd = 4;
 					break;
 				case 0xFF46: // DMA 
 					DMA_addr = value;
@@ -578,12 +571,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (LY_inc == 0)
 				{
-					if (cycle == 10)
+					if (cycle == 12)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
 					}
-					else if (cycle == 12)
+					else if (cycle == 14)
 					{
 						// Special case of LY = LYC
 						if ((LY == LYC) && !STAT.Bit(2))
@@ -596,7 +589,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
-				if ((cycle == 2) && (LY != 0))
+				if ((cycle == 4) && (LY != 0))
 				{
 					if (LY_inc == 1)
 					{
@@ -604,7 +597,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						STAT &= 0xFB;
 					}
 				}
-				else if ((cycle == 4) && (LY != 0))
+				else if ((cycle == 6) && (LY != 0))
 				{
 					if ((LY == LYC) && !STAT.Bit(2))
 					{
@@ -645,6 +638,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// process latch delays
 			//latch_delay();
+
+			if (LYC_cd > 0)
+			{
+				LYC_cd--;
+				if (LYC_cd == 0)
+				{
+					LYC = LYC_t;
+
+					if (LCDC.Bit(7))
+					{
+						if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
+						else { STAT |= 0x4; LYC_INT = true; }
+					}
+				}
+			}
 		}
 
 		// might be needed, not sure yet
@@ -1534,6 +1542,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("OBJ_bytes_inc", ref OBJ_bytes_inc);
 			ser.Sync("BG_bytes_index", ref BG_bytes_index);
 			ser.Sync("OBJ_bytes_index", ref OBJ_bytes_index);
+
+			ser.Sync("LYC_t", ref LYC_t);
+			ser.Sync("LYC_cd", ref LYC_cd);
 
 			base.SyncState(ser);
 		}
