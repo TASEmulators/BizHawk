@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte HDMA_ctrl
 		{
-			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 16) - 1)); }
+			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1)); }
 		}
 
 
