@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private void HardReset()
 		{
 			GB_bios_register = 0; // bios enable
-			GBC_compat = true;
+			GBC_compat = is_GBC;
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
