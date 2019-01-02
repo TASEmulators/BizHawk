@@ -624,9 +624,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                 }
 
-                // update waitEdge with current position within the current block
-                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
-
+				// update waitEdge with current position within the current block
+				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count() > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
                 // flip the current state
                 FlipTapeState();
 
