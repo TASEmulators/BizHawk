@@ -242,6 +242,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         Dictionary<string, string> Data = new Dictionary<string, string>();
 
+		/// <summary>
+		/// Detailed info to be displayed within the settings UIs
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static ZXMachineMetaData GetMetaObject(MachineType type)
         {
             ZXMachineMetaData m = new ZXMachineMetaData();
@@ -345,6 +350,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return m;
         }
 
+		/// <summary>
+		/// Returns machine metadata as a formatted string (to be displayed in a textbox)
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
         public static string GetMetaString(MachineType type)
         {
             var m = GetMetaObject(type);
@@ -410,8 +420,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     sb.Append(builder[i]);
                     sb.Append("\r\n");
                 }
-
-                //sb.Append("\r\n");
             }
 
             return sb.ToString();

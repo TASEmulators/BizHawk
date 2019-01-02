@@ -8,9 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// Logical Beeper class
     /// Represents the piezoelectric buzzer used in the Spectrum to produce sound
     /// The beeper is controlled by rapidly toggling bit 4 of port &FE
-    /// 
     /// It is instantiated twice, once for speccy beeper output, and once tape buzzer emulation
-    /// 
     /// This implementation uses BlipBuffer and should *always* output at 44100 with 882 samples per frame
     /// (so that it can be mixed easily further down the line)
     /// </summary>

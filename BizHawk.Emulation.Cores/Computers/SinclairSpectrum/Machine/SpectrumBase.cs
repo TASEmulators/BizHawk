@@ -73,11 +73,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual IJoystick[] JoystickCollection { get; set; }
 
         /// <summary>
-        /// Signs whether the disk motor is on or off
-        /// </summary>
-        //protected bool DiskMotorState;
-
-        /// <summary>
         /// +3/2a printer port strobe
         /// </summary>
         protected bool PrinterPortStrobe;
@@ -153,8 +148,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             FrameCompleted = false;
 
-            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
-                TapeDevice.StartFrame();
+            //if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                //TapeDevice.StartFrame();
 
             if (_renderSound)
             {

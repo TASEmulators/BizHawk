@@ -199,6 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Monitors ROM access
         /// Used to auto start/stop the tape device when appropriate
+		/// * This isnt really used anymore for tape trap detection *
         /// </summary>
         /// <param name="addr"></param>
         public virtual void TestForTapeTraps(int addr)

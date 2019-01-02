@@ -183,7 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return (byte)index;
         }
 
-
         #region IPortIODevice
 
         /// <summary>

@@ -198,7 +198,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 if (!pressed_TapeStatus)
                 {
-                    //Spectrum.OSD_FireInputMessage(TapeStatus);
                     Spectrum.OSD_ShowTapeStatus();
                     pressed_TapeStatus = true;
                 }
@@ -269,7 +268,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 if (!pressed_DiskStatus)
                 {
-                    //Spectrum.OSD_FireInputMessage(TapeStatus);
                     Spectrum.OSD_ShowDiskStatus();
                     pressed_DiskStatus = true;
                 }

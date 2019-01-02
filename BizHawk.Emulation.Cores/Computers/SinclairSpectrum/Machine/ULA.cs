@@ -785,7 +785,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
-            //tstate += MemoryContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -801,7 +800,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
-            //tstate +=  PortContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
