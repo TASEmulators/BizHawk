@@ -107,9 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ser.Sync("cart_RAM", ref cart_RAM, false);
 			}
 
-
-
-		ser.EndSection();
+			ser.EndSection();
 		}
 	}
 }

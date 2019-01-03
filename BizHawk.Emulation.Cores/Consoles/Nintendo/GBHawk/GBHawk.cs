@@ -3,7 +3,6 @@
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.LR35902;
-using BizHawk.Common.NumberExtensions;
 
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using System.Runtime.InteropServices;
@@ -275,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private readonly GBHawkControllerDeck _controllerDeck;
 
-		private void HardReset()
+		public void HardReset()
 		{
 			GB_bios_register = 0; // bios enable
 			GBC_compat = is_GBC;
