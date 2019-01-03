@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		"GBHawkLink",
 		"",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
@@ -24,25 +24,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public GBHawk.GBHawk L;
 		public GBHawk.GBHawk R;
 
+		// if true, the link cable is currently connected
+		private bool _cableconnected = true;
+
+		// if true, the link cable toggle signal is currently asserted
+		private bool _cablediscosignal = false;
+
 		//[CoreConstructor("GB", "GBC")]
 		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
-			GBLinkSettings linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
-			GBLinkSyncSettings linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
+			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
+			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
 			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkControllerDeck.DefaultControllerName, GBHawkControllerDeck.DefaultControllerName);
 
 			CoreComm = comm;
 
+			var temp_set_L = new GBHawk.GBHawk.GBSettings();
+			var temp_set_R = new GBHawk.GBHawk.GBSettings();
+
+			var temp_sync_L = new GBHawk.GBHawk.GBSyncSettings();
+			var temp_sync_R = new GBHawk.GBHawk.GBSyncSettings();
+
+			temp_sync_L.ConsoleMode = linkSyncSettings.ConsoleMode_L;
+			temp_sync_R.ConsoleMode = linkSyncSettings.ConsoleMode_R;
+
+			temp_sync_L.DivInitialTime = linkSyncSettings.DivInitialTime_L;
+			temp_sync_R.DivInitialTime = linkSyncSettings.DivInitialTime_R;
+			temp_sync_L.RTCInitialTime = linkSyncSettings.RTCInitialTime_L;
+			temp_sync_R.RTCInitialTime = linkSyncSettings.RTCInitialTime_R;
+
 			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_L, rom_L, linkSettings.L, linkSyncSettings.L);
+				game_L, rom_L, temp_set_L, temp_sync_L);
 
 			R = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game_R, rom_R, linkSettings.R, linkSyncSettings.R);
+				game_R, rom_R, temp_set_R, temp_sync_R);
 
 			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(L.audio);
+			ser.Register<ISoundProvider>(this); 
 
 			_tracer = new TraceBuffer { Header = L.cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
@@ -52,16 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			SetupMemoryDomains();
 
 			HardReset();
-
-			L.color_palette[0] = color_palette_BW[0];
-			L.color_palette[1] = color_palette_BW[1];
-			L.color_palette[2] = color_palette_BW[2];
-			L.color_palette[3] = color_palette_BW[3];
-
-			R.color_palette[0] = color_palette_BW[0];
-			R.color_palette[1] = color_palette_BW[1];
-			R.color_palette[2] = color_palette_BW[2];
-			R.color_palette[3] = color_palette_BW[3];
 		}
 
 		public void HardReset()
@@ -78,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		private readonly ITraceable _tracer;
 
-		bool ILinkable.LinkConnected { get; }
+		public bool LinkConnected { get; private set; }
 
 		private void ExecFetch(ushort addr)
 		{

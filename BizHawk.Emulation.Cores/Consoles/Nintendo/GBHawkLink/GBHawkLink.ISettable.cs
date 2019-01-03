@@ -13,78 +13,133 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 	{
 		public GBLinkSettings GetSettings()
 		{
-			return new GBLinkSettings
-			(
-				L.GetSettings(),
-				R.GetSettings()
-			);
+			return linkSettings.Clone();
 		}
 
 		public GBLinkSyncSettings GetSyncSettings()
 		{
-			return new GBLinkSyncSettings
-			(
-				L.GetSyncSettings(),
-				R.GetSyncSettings()
-			);
+			return linkSyncSettings.Clone();
 		}
 
 		public bool PutSettings(GBLinkSettings o)
 		{
-			return L.PutSettings(o.L) || R.PutSettings(o.R);
+			linkSettings = o;
+			return false;
 		}
 
 		public bool PutSyncSettings(GBLinkSyncSettings o)
 		{
-			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
+			bool ret = GBLinkSyncSettings.NeedsReboot(linkSyncSettings, o);
+			linkSyncSettings = o;
+			return ret;
 		}
 
-		private GBLinkSettings _settings = new GBLinkSettings();
-		public GBLinkSyncSettings _syncSettings = new GBLinkSyncSettings();
+		private GBLinkSettings linkSettings = new GBLinkSettings();
+		public GBLinkSyncSettings linkSyncSettings = new GBLinkSyncSettings();
 
 		public class GBLinkSettings
 		{
-			public GBHawk.GBHawk.GBSettings L;
-			public GBHawk.GBHawk.GBSettings R;
+			[DisplayName("Color Mode")]
+			[Description("Pick Between Green scale and Grey scale colors")]
+			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
+			public GBHawk.GBHawk.GBSettings.PaletteType Palette_L { get; set; }
 
-			public GBLinkSettings()
+			[DisplayName("Color Mode")]
+			[Description("Pick Between Green scale and Grey scale colors")]
+			[DefaultValue(GBHawk.GBHawk.GBSettings.PaletteType.BW)]
+			public GBHawk.GBHawk.GBSettings.PaletteType Palette_R { get; set; }
+
+			public enum AudioSrc
 			{
-				L = new GBHawk.GBHawk.GBSettings();
-				R = new GBHawk.GBHawk.GBSettings();
+				Left,
+				Right,
+				Both
 			}
 
-			public GBLinkSettings(GBHawk.GBHawk.GBSettings L, GBHawk.GBHawk.GBSettings R)
-			{
-				this.L = L;
-				this.R = R;
-			}
+			[DisplayName("Audio Selection")]
+			[Description("Choose Audio Source. Both will produce Stereo sound.")]
+			[DefaultValue(AudioSrc.Left)]
+			public AudioSrc AudioSet { get; set; }
 
 			public GBLinkSettings Clone()
 			{
-				return new GBLinkSettings(L.Clone(), R.Clone());
+				return (GBLinkSettings)MemberwiseClone();
 			}
 		}
 
 		public class GBLinkSyncSettings
 		{
-			public GBHawk.GBHawk.GBSyncSettings L;
-			public GBHawk.GBHawk.GBSyncSettings R;
+			[DisplayName("Console Mode L")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(GBHawk.GBHawk.GBSyncSettings.ConsoleModeType.Auto)]
+			public GBHawk.GBHawk.GBSyncSettings.ConsoleModeType ConsoleMode_L { get; set; }
 
-			public GBLinkSyncSettings()
+			[DisplayName("Console Mode R")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(GBHawk.GBHawk.GBSyncSettings.ConsoleModeType.Auto)]
+			public GBHawk.GBHawk.GBSyncSettings.ConsoleModeType ConsoleMode_R { get; set; }
+
+			[DisplayName("CGB in GBA")]
+			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[DefaultValue(false)]
+			public bool GBACGB { get; set; }
+
+			[DisplayName("RTC Initial Time L")]
+			[Description("Set the initial RTC time in terms of elapsed seconds.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime_L
 			{
-				L = new GBHawk.GBHawk.GBSyncSettings();
-				R = new GBHawk.GBHawk.GBSyncSettings();
+				get { return _RTCInitialTime_L; }
+				set { _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
 
-			public GBLinkSyncSettings(GBHawk.GBHawk.GBSyncSettings L, GBHawk.GBHawk.GBSyncSettings R)
+			[DisplayName("RTC Initial Time R")]
+			[Description("Set the initial RTC time in terms of elapsed seconds.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime_R
 			{
-				this.L = L;
-				this.R = R;
+				get { return _RTCInitialTime_R; }
+				set { _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
+
+			[DisplayName("Timer Div Initial Time L")]
+			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
+			[DefaultValue(8)]
+			public int DivInitialTime_L
+			{
+				get { return _DivInitialTime_L; }
+				set { _DivInitialTime_L = Math.Min((ushort)65535, (ushort)value); }
+			}
+
+			[DisplayName("Timer Div Initial Time R")]
+			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
+			[DefaultValue(8)]
+			public int DivInitialTime_R
+			{
+				get { return _DivInitialTime_R; }
+				set { _DivInitialTime_R = Math.Min((ushort)65535, (ushort)value); }
+			}
+
+			[DisplayName("Use Existing SaveRAM")]
+			[Description("When true, existing SaveRAM will be loaded at boot up")]
+			[DefaultValue(false)]
+			public bool Use_SRAM { get; set; }
+
+			[JsonIgnore]
+			private int _RTCInitialTime_L;
+			private int _RTCInitialTime_R;
+			[JsonIgnore]
+			public ushort _DivInitialTime_L;
+			public ushort _DivInitialTime_R;
 
 			public GBLinkSyncSettings Clone()
 			{
-				return new GBLinkSyncSettings(L.Clone(), R.Clone());
+				return (GBLinkSyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(GBLinkSyncSettings x, GBLinkSyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 	}

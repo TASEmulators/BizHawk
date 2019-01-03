@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
+					.Concat(new[] { "Toggle Cable" } )
 					.ToList()
 			};
 		}

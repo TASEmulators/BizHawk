@@ -2350,6 +2350,11 @@ namespace BizHawk.Client.EmuHawk
 			DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
+		private void DgbHawkSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+		}
+
 		#endregion
 
 		#region GEN

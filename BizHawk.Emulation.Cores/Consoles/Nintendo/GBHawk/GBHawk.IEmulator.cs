@@ -168,6 +168,89 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			vblank_rise = false;			
 		}
 
+		public void do_single_step()
+		{
+			// These things do not change speed in GBC double spped mode
+			audio.tick();
+			ppu.tick();
+			if (Use_MT) { mapper.Mapper_Tick(); }
+
+			if (!HDMA_transfer)
+			{
+				// These things all tick twice as fast in GBC double speed mode
+				ppu.DMA_tick();
+				timer.tick_1();
+				serialport.serial_transfer_tick();
+				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+				timer.tick_2();
+
+				if (double_speed)
+				{
+					ppu.DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					timer.tick_2();
+				}
+			}
+			else
+			{
+				timer.tick_1();
+				timer.tick_2();
+				cpu.TotalExecutedCycles++;
+				if (double_speed)
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+				}
+			}
+
+			if (in_vblank && !in_vblank_old)
+			{
+				vblank_rise = true;
+			}
+
+			in_vblank_old = in_vblank;
+			REG_FF0F_OLD = REG_FF0F;
+		}
+
+		public void do_controller_check()
+		{
+			// check if new input changed the input register and triggered IRQ
+			byte contr_prev = input_register;
+
+			input_register &= 0xF0;
+			if ((input_register & 0x30) == 0x20)
+			{
+				input_register |= (byte)(controller_state & 0xF);
+			}
+			else if ((input_register & 0x30) == 0x10)
+			{
+				input_register |= (byte)((controller_state & 0xF0) >> 4);
+			}
+			else if ((input_register & 0x30) == 0x00)
+			{
+				// if both polls are set, then a bit is zero if either or both pins are zero
+				byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+				input_register |= temp;
+			}
+			else
+			{
+				input_register |= 0xF;
+			}
+
+			// check for interrupts			
+			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+			{
+				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+				REG_FF0F |= 0x10;
+			}
+		}
+
 		// Switch Speed (GBC only)
 		public int SpeedFunc(int temp)
 		{
