@@ -7,18 +7,22 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 {
 	//
 	// Summary:
-	//     Represents an 16-bit unsigned integer, that is capable of arithmetic without making you weep.
-	//	   Also provides all the base functionality of the standard C# UInt16 by calling its methods where relevant.
+	//		Represents an 16-bit unsigned integer, that is capable of arithmetic without making you weep.
+	//		Also provides all the base functionality of the standard C# UInt16 by calling its methods where relevant.
 	public unsafe class wushort : IComparable, IFormattable, IComparable<wushort>, IEquatable<wushort>
 	{
 		private UInt16 val;
 		public const UInt16 MaxValue = UInt16.MaxValue;
 		public const UInt16 MinValue = UInt16.MinValue;
-		public static implicit operator wushort(uint value)
+		public static implicit operator wushort(ulong value)
 		{
 			return new wushort(value);
 		}
-		public static implicit operator ushort(wushort value)
+		public static implicit operator wushort(wbyte value)
+		{
+			return new wushort(value);
+		}
+		public static implicit operator UInt16(wushort value)
 		{
 			return value.val;
 		}
@@ -26,17 +30,17 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		{
 
 		}
-		public wushort(uint value)
+		public wushort(ulong value)
 		{
 			val = (UInt16)(value & 0xFFFF);
 		}
-		public wushort(int value)
+		public wushort(long value)
 		{
 			val = (UInt16)(value & 0xFFFF);
 		}
 		public wushort(double value)
 		{
-			val = (UInt16)(((int)value) & 0xFFFF);
+			val = (UInt16)(((long)value) & 0xFFFF);
 		}
 		public static wushort Parse(string s, NumberStyles style, IFormatProvider provider)
 		{

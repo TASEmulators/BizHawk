@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 {
 	//
 	// Summary:
-	//     Represents an 8-bit unsigned integer, that is capable of arithmetic without making you weep.
-	//	   Also provides all the base functionality of the standard C# SByte by calling its methods where relevant.
+	//		Represents an 8-bit unsigned integer, that is capable of arithmetic without making you weep.
+	//		Also provides all the base functionality of the standard C# SByte by calling its methods where relevant.
 	public unsafe class wsbyte : IComparable, IFormattable, IComparable<wsbyte>, IEquatable<wsbyte>
 	{
 		private SByte val;
 		public const SByte MaxValue = SByte.MaxValue;
 		public const SByte MinValue = SByte.MinValue;
-		public static implicit operator wsbyte(int value)
+		public static implicit operator wsbyte(long value)
 		{
 			return new wsbyte(value);
 		}
@@ -25,33 +25,33 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		{
 
 		}
-		public wsbyte(int value)
+		public wsbyte(long value)
 		{
 			val = (SByte)(value & 0xFF);
 		}
-		public wsbyte(uint value)
+		public wsbyte(ulong value)
 		{
 			val = (SByte)(value & 0xFF);
 		}
 		public wsbyte(double value)
 		{
-			val = (SByte)(((uint)value) & 0xFF);
+			val = (SByte)(((ulong)value) & 0xFF);
 		}
 		public static wsbyte Parse(string s, NumberStyles style, IFormatProvider provider)
 		{
-			return (int)SByte.Parse(s, style, provider);
+			return (long)SByte.Parse(s, style, provider);
 		}
 		public static wsbyte Parse(string s, IFormatProvider provider)
 		{
-			return (int)SByte.Parse(s, provider);
+			return (long)SByte.Parse(s, provider);
 		}
 		public static wsbyte Parse(string s)
 		{
-			return (int)SByte.Parse(s);
+			return (long)SByte.Parse(s);
 		}
 		public static wsbyte Parse(string s, NumberStyles style)
 		{
-			return (int)SByte.Parse(s, style);
+			return (long)SByte.Parse(s, style);
 		}
 		public static bool TryParse(string s, out wsbyte result)
 		{

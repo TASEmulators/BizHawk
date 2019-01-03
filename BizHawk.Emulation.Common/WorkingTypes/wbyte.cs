@@ -7,14 +7,18 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 {
 	//
 	// Summary:
-	//     Represents an 8-bit unsigned integer, that is capable of arithmetic without making you weep.
-	//	   Also provides all the base functionality of the standard C# Byte by calling its methods where relevant.
+	//		Represents an 8-bit unsigned integer, that is capable of arithmetic without making you weep.
+	//		Also provides all the base functionality of the standard C# Byte by calling its methods where relevant.
 	public unsafe class wbyte : IComparable, IFormattable, IComparable<wbyte>, IEquatable<wbyte>
 	{
 		private Byte val;
 		public const Byte MaxValue = Byte.MaxValue;
 		public const Byte MinValue = Byte.MinValue;
-		public static implicit operator wbyte(uint value)
+		public static implicit operator wbyte(ulong value)
+		{
+			return new wbyte(value);
+		}
+		public static implicit operator wbyte(wushort value)
 		{
 			return new wbyte(value);
 		}
@@ -26,33 +30,33 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		{
 
 		}
-		public wbyte(uint value)
+		public wbyte(ulong value)
 		{
 			val = (Byte)(value & 0xFF);
 		}
-		public wbyte(int value)
+		public wbyte(long value)
 		{
 			val = (Byte)(value & 0xFF);
 		}
 		public wbyte(double value)
 		{
-			val = (Byte)(((int)value) & 0xFF);
+			val = (Byte)(((long)value) & 0xFF);
 		}
 		public static wbyte Parse(string s, NumberStyles style, IFormatProvider provider)
 		{
-			return (uint)Byte.Parse(s, style, provider);
+			return (ulong)Byte.Parse(s, style, provider);
 		}
 		public static wbyte Parse(string s, IFormatProvider provider)
 		{
-			return (uint)Byte.Parse(s, provider);
+			return (ulong)Byte.Parse(s, provider);
 		}
 		public static wbyte Parse(string s)
 		{
-			return (uint)Byte.Parse(s);
+			return (ulong)Byte.Parse(s);
 		}
 		public static wbyte Parse(string s, NumberStyles style)
 		{
-			return (uint)Byte.Parse(s, style);
+			return (ulong)Byte.Parse(s, style);
 		}
 		public static bool TryParse(string s, out wbyte result)
 		{

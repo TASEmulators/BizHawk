@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 {
 	//
 	// Summary:
-	//     Represents an 16-bit unsigned integer, that is capable of arithmetic without making you weep.
-	//	   Also provides all the base functionality of the standard C# Int16 by calling its methods where relevant.
+	//		Represents an 16-bit unsigned integer, that is capable of arithmetic without making you weep.
+	//		Also provides all the base functionality of the standard C# Int16 by calling its methods where relevant.
 	public unsafe class wshort : IComparable, IFormattable, IComparable<wshort>, IEquatable<wshort>
 	{
 		private Int16 val;
 		public const Int16 MaxValue = Int16.MaxValue;
 		public const Int16 MinValue = Int16.MinValue;
-		public static implicit operator wshort(int value)
+		public static implicit operator wshort(long value)
 		{
 			return new wshort(value);
 		}
@@ -25,33 +25,33 @@ namespace BizHawk.Emulation.Common.WorkingTypes
 		{
 
 		}
-		public wshort(int value)
+		public wshort(long value)
 		{
 			val = (Int16)(value & 0xFFFF);
 		}
-		public wshort(uint value)
+		public wshort(ulong value)
 		{
 			val = (Int16)(value & 0xFFFF);
 		}
 		public wshort(double value)
 		{
-			val = (Int16)(((uint)value) & 0xFFFF);
+			val = (Int16)(((ulong)value) & 0xFFFF);
 		}
 		public static wshort Parse(string s, NumberStyles style, IFormatProvider provider)
 		{
-			return (int)Int16.Parse(s, style, provider);
+			return (long)Int16.Parse(s, style, provider);
 		}
 		public static wshort Parse(string s, IFormatProvider provider)
 		{
-			return (int)Int16.Parse(s, provider);
+			return (long)Int16.Parse(s, provider);
 		}
 		public static wshort Parse(string s)
 		{
-			return (int)Int16.Parse(s);
+			return (long)Int16.Parse(s);
 		}
 		public static wshort Parse(string s, NumberStyles style)
 		{
-			return (int)Int16.Parse(s, style);
+			return (long)Int16.Parse(s, style);
 		}
 		public static bool TryParse(string s, out wshort result)
 		{
