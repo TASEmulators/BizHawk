@@ -664,7 +664,7 @@
     <Compile Include="Api\Libraries\GuiApi.cs" />
     <Compile Include="Api\Libraries\InputApi.cs" />
     <Compile Include="Api\Libraries\SaveStateAPI.cs" />
-    <Compile Include="Api\Libraries\PluginLibrary.cs" />
+    <Compile Include="Api\ApiManager.cs" />
     <Compile Include="Api\Libraries\CommApi.cs" />
     <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
     <Compile Include="Input\GamePad.cs" />

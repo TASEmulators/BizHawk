@@ -3793,8 +3793,8 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					GlobalWin.Tools.Restart();
 					ApiManager.Restart(Emulator.ServiceProvider);
+					GlobalWin.Tools.Restart();
 
 					if (Global.Config.LoadCheatFileByGame)
 					{
