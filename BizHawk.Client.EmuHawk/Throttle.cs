@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 //this throttle is nitsuja's fine-tuned techniques from desmume
 
@@ -159,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				return timeBeginPeriod(ms);
 			}
 		}
-		static PlatformSpecificSysTimer sysTimer = Global.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
+		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
 		static uint TimeBeginPeriod(uint ms)
 		{
 			return sysTimer.TimeBeginPeriod(ms);

@@ -39,7 +39,6 @@
 			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -149,7 +148,6 @@
 			// 
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
             this.FileSubMenu,
             this.EditSubMenu,
             this.OptionsSubMenu});
@@ -158,11 +156,6 @@
 			this.menuStrip1.Size = new System.Drawing.Size(644, 24);
 			this.menuStrip1.TabIndex = 2;
 			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// toolStripMenuItem1
-			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
 			// 
 			// FileSubMenu
 			// 
@@ -371,7 +364,6 @@
 
 		private System.Windows.Forms.GroupBox TracerBox;
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SaveLogMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

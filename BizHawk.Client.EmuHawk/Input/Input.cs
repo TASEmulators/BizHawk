@@ -2,11 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
-#if WINDOWS
+
 using SlimDX.DirectInput;
-#else
-using OpenTK.Input;
-#endif
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -116,19 +113,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
-#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
 				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			UpdateThread.Start();
-#endif
 		}
 
 		public static void Initialize()
 		{
-			if (Global.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				OTK_Keyboard.Initialize();
 //				OTK_Gamepad.Initialize();
@@ -145,10 +140,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Cleanup()
 		{
-#if WINDOWS
-			KeyInput.Cleanup();
-			GamePad.Cleanup();
-#endif
+			if (!PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				KeyInput.Cleanup();
+				GamePad.Cleanup();
+			}
 		}
 
 		public enum InputEventType
@@ -331,14 +327,22 @@ namespace BizHawk.Client.EmuHawk
 			return FloatValuesCopy;
 		}
 
-#if WINDOWS
 		void UpdateThreadProc()
 		{
-			for (; ; )
+			while (true)
 			{
-				var keyEvents = KeyInput.Update().Concat(IPCKeyInput.Update());
-				GamePad.UpdateAll();
-				GamePad360.UpdateAll();
+				var keyEvents = PlatformLinkedLibSingleton.RunningOnUnix
+					? OTK_Keyboard.Update()
+					: KeyInput.Update().Concat(IPCKeyInput.Update());
+				if (PlatformLinkedLibSingleton.RunningOnUnix)
+				{
+					//TODO
+				}
+				else
+				{
+					GamePad.UpdateAll();
+					GamePad360.UpdateAll();
+				}
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -441,7 +445,6 @@ namespace BizHawk.Client.EmuHawk
 				Thread.Sleep(10);
 			}
 		}
-#endif
 
 		public void StartListeningForFloatEvents()
 		{

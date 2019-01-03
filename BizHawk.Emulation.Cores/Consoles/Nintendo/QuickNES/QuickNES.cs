@@ -21,8 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		static QuickNES()
 		{
-			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
-			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
+			QN = BizInvoker.GetInvoker<LibQuickNES>(new DynamicLibraryImportResolver(LibQuickNES.dllname), CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
 		}
 
@@ -74,7 +73,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		static readonly LibQuickNES QN;
-		static readonly DynamicLibraryImportResolver Resolver;
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
