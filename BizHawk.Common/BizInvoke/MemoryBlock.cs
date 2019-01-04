@@ -9,8 +9,6 @@ namespace BizHawk.Common.BizInvoke
 {
 	public sealed class MemoryBlock : IDisposable
 	{
-		//TODO rewrite this class without using the external functions in Kernel32 - this may help: https://docs.microsoft.com/en-us/dotnet/standard/io/memory-mapped-files
-
 		/// <summary>
 		/// starting address of the memory block
 		/// </summary>
