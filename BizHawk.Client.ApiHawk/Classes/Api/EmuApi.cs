@@ -97,7 +97,8 @@ namespace BizHawk.Client.ApiHawk
 					domain = MemoryDomains[name];
 				}
 
-				var d = DisassemblableCore.Disassemble(domain, pc, out int l);
+				int l;
+				var d = DisassemblableCore.Disassemble(domain, pc, out l);
 				return new { disasm = d, length = l };
 			}
 			catch (NotImplementedException)
