@@ -34,22 +34,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="port"></param>
         /// <param name="value"></param>
         public abstract void WritePort(ushort port, byte value);
-
-        /// <summary>
-        /// Increments the CPU totalCycles counter by the tStates value specified
-        /// </summary>
-        /// <param name="tStates"></param>
-        //public virtual void PortContention(int tStates)
-        //{
-        //    CPU.TotalExecutedCycles += tStates;
-        //}
-
-        /// <summary>
-        /// Simulates IO port contention based on the supplied address
-        /// This method is for 48k and 128k/+2 machines only and should be overridden for other models
-        /// </summary>
-        /// <param name="addr"></param>
-        //public abstract void ContendPort(ushort addr);
-        
     }
 }

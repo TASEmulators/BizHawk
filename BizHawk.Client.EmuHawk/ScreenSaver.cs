@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -40,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				//TODO implement
 			}
 		}
-		private static PlatformSpecificScreenBlankInterface screenBlankInterface = Global.RunningOnUnix
+		private static PlatformSpecificScreenBlankInterface screenBlankInterface = PlatformLinkedLibSingleton.RunningOnUnix
 			? (PlatformSpecificScreenBlankInterface) new MiscUnixScreenBlankInterface()
 			: (PlatformSpecificScreenBlankInterface) new WinScreenBlankInterface();
 

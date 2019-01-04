@@ -4,6 +4,7 @@ using System.Threading;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -26,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
 				_outputDevice = new OpenALSoundOutput(this);
-			if (!Global.RunningOnUnix)
+			if (!PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
 					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);

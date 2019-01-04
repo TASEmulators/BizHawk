@@ -14,6 +14,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Saturn;
@@ -630,7 +631,20 @@ namespace BizHawk.Client.Common
 
 									var left = Database.GetGameInfo(leftBytes, "left.gb");
 									var right = Database.GetGameInfo(rightBytes, "right.gb");
-									nextEmulator = new GambatteLink(
+									if (Global.Config.GB_UseGBHawk)
+									{
+										nextEmulator = new GBHawkLink(
+										nextComm,
+										left,
+										leftBytes,
+										right,
+										rightBytes,
+										GetCoreSettings<GBHawkLink>(),
+										GetCoreSyncSettings<GBHawkLink>());
+									}
+									else
+									{
+										nextEmulator = new GambatteLink(
 										nextComm,
 										left,
 										leftBytes,
@@ -639,7 +653,8 @@ namespace BizHawk.Client.Common
 										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>(),
 										Deterministic);
-
+									}
+										
 									// other stuff todo
 									break;
 								case "AppleII":

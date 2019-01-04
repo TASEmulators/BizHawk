@@ -17,26 +17,25 @@ namespace BizHawk.Client.EmuHawk
 {
 	static class Program
 	{
-		static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
-
 		static Program()
 		{
 			//this needs to be done before the warnings/errors show up
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			PlatformSpecificLinkedLibs libLoader = RunningOnUnix ? (PlatformSpecificLinkedLibs) new UnixMono() : (PlatformSpecificLinkedLibs) new Win32();
+			var libLoader = PlatformLinkedLibSingleton.LinkedLibManager;
 
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 
 			//try loading libraries we know we'll need
 			//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
 			//but oddly it lets us proceed and we'll then catch it here
-			var d3dx9 = libLoader.LoadPlatformSpecific("d3dx9_43.dll");
-			var vc2015 = libLoader.LoadPlatformSpecific("vcruntime140.dll");
-			var vc2012 = libLoader.LoadPlatformSpecific("msvcr120.dll"); //TODO - check version?
-			var vc2010 = libLoader.LoadPlatformSpecific("msvcr100.dll"); //TODO - check version?
-			var vc2010p = libLoader.LoadPlatformSpecific("msvcp100.dll");
+			var libExt = PlatformLinkedLibSingleton.RunningOnUnix ? ".dll.so" : ".dll";
+			var d3dx9 = libLoader.LoadPlatformSpecific($"d3dx9_43{libExt}");
+			var vc2015 = libLoader.LoadPlatformSpecific($"vcruntime140{libExt}");
+			var vc2012 = libLoader.LoadPlatformSpecific($"msvcr120{libExt}"); //TODO - check version?
+			var vc2010 = libLoader.LoadPlatformSpecific($"msvcr100{libExt}"); //TODO - check version?
+			var vc2010p = libLoader.LoadPlatformSpecific($"msvcp100{libExt}");
 			bool fail = false, warn = false;
 			warn |= d3dx9 == IntPtr.Zero;
 			fail |= vc2015 == IntPtr.Zero;
@@ -66,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			libLoader.FreePlatformSpecific(vc2010);
 			libLoader.FreePlatformSpecific(vc2010p);
 
-			if (!RunningOnUnix)
+			if (!PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				// this will look in subdirectory "dll" to load pinvoked stuff
 				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
@@ -88,63 +87,6 @@ namespace BizHawk.Client.EmuHawk
 		static int Main(string[] args)
 		{
 			return SubMain(args);
-		}
-
-		private interface PlatformSpecificLinkedLibs
-		{
-			IntPtr LoadPlatformSpecific(string dllToLoad);
-			IntPtr GetProcAddr(IntPtr hModule, string procName);
-			void FreePlatformSpecific(IntPtr hModule);
-		}
-		private class Win32 : PlatformSpecificLinkedLibs
-		{
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-			[DllImport("kernel32.dll")]
-			private static extern void FreeLibrary(IntPtr hModule);
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				return LoadLibrary(dllToLoad);
-			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
-			{
-				return GetProcAddress(hModule, procName);
-			}
-			public void FreePlatformSpecific(IntPtr hModule)
-			{
-				FreeLibrary(hModule);
-			}
-		}
-		private class UnixMono : PlatformSpecificLinkedLibs
-		{
-			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
-			const int RTLD_NOW = 2;
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlopen(String fileName, int flags);
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlerror();
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlsym(IntPtr handle, String symbol);
-			[DllImport("libdl.so")]
-			private static extern int dlclose(IntPtr handle);
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				return dlopen(dllToLoad + ".so", RTLD_NOW);
-			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
-			{
-				dlerror();
-				var res = dlsym(hModule, procName);
-				var errPtr = dlerror();
-				if (errPtr != IntPtr.Zero) throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(errPtr));
-				return res;
-			}
-			public void FreePlatformSpecific(IntPtr hModule)
-			{
-				dlclose(hModule);
-			}
 		}
 
 		private interface PlatformSpecificMainLoopCrashHandler
@@ -258,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = RunningOnUnix
+		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = PlatformLinkedLibSingleton.RunningOnUnix
 			? (PlatformSpecificMainLoopCrashHandler) new UnixMonoMainLoopCrashHandler()
 			: (PlatformSpecificMainLoopCrashHandler) new Win32MainLoopCrashHandler();
 
@@ -323,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+			if (PlatformLinkedLibSingleton.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
@@ -371,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			if (!RunningOnUnix)
+			if (!PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".

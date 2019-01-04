@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Speed Control for GBC
 				case 0xFF4D:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ret = (byte)(((double_speed ? 1 : 0) << 7) + ((speed_switch ? 1 : 0)));
 					}
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Speed Control for GBC
 				case 0xFF70:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						ret = (byte)RAM_Bank;
 					}
@@ -157,6 +157,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						ret = 0xFF;
 					}
+					break;
+
+				case 0xFF6C:
+					if (GBC_compat) { ret = undoc_6C; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF72:
+					if (is_GBC) { ret = undoc_72; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF73:
+					if (is_GBC) { ret = undoc_73; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF74:
+					if (GBC_compat) { ret = undoc_74; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF75:
+					if (is_GBC) { ret = undoc_75; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF76:
+					if (is_GBC) { ret = undoc_76; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF77:
+					if (is_GBC) { ret = undoc_77; }
+					else { ret = 0xFF; }
 					break;
 
 				// interrupt control register
@@ -323,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Speed Control for GBC
 				case 0xFF4D:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						speed_switch = (value & 1) > 0;
 					}
@@ -365,11 +400,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// RAM Bank in GBC mode
 				case 0xFF70:
 					//Console.WriteLine(value);
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						RAM_Bank = value & 7;
 						if (RAM_Bank == 0) { RAM_Bank = 1; }
 					}
+					break;
+
+				case 0xFF6C:
+					if (GBC_compat) { undoc_6C |= (byte)(value & 1); }
+					break;
+
+				case 0xFF72:
+					if (is_GBC) { undoc_72 = value; }
+					break;
+
+				case 0xFF73:
+					if (is_GBC) { undoc_73 = value; }
+					break;
+
+				case 0xFF74:
+					if (GBC_compat) { undoc_74 = value; }
+					break;
+
+				case 0xFF75:
+					if (is_GBC) { undoc_75 |= (byte)(value & 0x70); }
+					break;
+
+				case 0xFF76:
+					// read only
+					break;
+
+				case 0xFF77:
+					// read only
 					break;
 
 				// interrupt control register
@@ -401,6 +464,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void Register_Reset()
 		{
 			input_register = 0xCF; // not reading any input
+
+			//undocumented registers
+			undoc_6C = 0xFE;
+			undoc_72 = 0;
+			undoc_73 = 0;
+			undoc_74 = 0;
+			undoc_75 = 0x8F;
+			undoc_76 = 0;
+			undoc_77 = 0;
 		}
 	}
 }

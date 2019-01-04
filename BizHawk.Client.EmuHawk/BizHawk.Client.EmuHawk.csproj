@@ -950,6 +950,8 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
+    <Compile Include="tools\Lua\Libraries\NotReallyLuaLibrary.cs" />
+    <Compile Include="tools\Lua\Libraries\PlatformEmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\LuaAutocompleteInstaller.cs" />
     <Compile Include="tools\Lua\LuaCanvas.cs">
       <SubType>Form</SubType>

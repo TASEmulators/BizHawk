@@ -9,6 +9,8 @@ namespace BizHawk.Common.BizInvoke
 {
 	public sealed class MemoryBlock : IDisposable
 	{
+		//TODO rewrite this class without using the external functions in Kernel32 - this may help: https://docs.microsoft.com/en-us/dotnet/standard/io/memory-mapped-files
+
 		/// <summary>
 		/// starting address of the memory block
 		/// </summary>
@@ -443,35 +445,8 @@ namespace BizHawk.Common.BizInvoke
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern UIntPtr VirtualAlloc(UIntPtr lpAddress, UIntPtr dwSize,
-			   AllocationType flAllocationType, MemoryProtection flProtect);
-
-			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern bool VirtualFree(UIntPtr lpAddress, UIntPtr dwSize,
-			   FreeType dwFreeType);
-
-			[DllImport("kernel32.dll", SetLastError = true)]
 			public static extern bool VirtualProtect(UIntPtr lpAddress, UIntPtr dwSize,
 			   MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
-
-			public enum FreeType : uint
-			{
-				DECOMMIT = 0x4000,
-				RELEASE = 0x8000
-			}
-
-			[Flags]
-			public enum AllocationType : uint
-			{
-				COMMIT = 0x1000,
-				RESERVE = 0x2000,
-				RESET = 0x80000,
-				RESET_UNDO = 0x1000000,
-				LARGE_PAGES = 0x20000000,
-				PHYSICAL = 0x400000,
-				TOP_DOWN = 0x100000,
-				WRITE_WATCH = 0x200000
-			}
 
 			[Flags]
 			public enum MemoryProtection : uint

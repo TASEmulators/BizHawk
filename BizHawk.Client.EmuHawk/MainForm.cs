@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -1118,11 +1119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenLuaConsole()
 		{
-#if WINDOWS
 			GlobalWin.Tools.Load<LuaConsole>();
-#else
-			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
 		}
 
 		public void NotifyLogWindowClosing()
@@ -1724,6 +1721,7 @@ namespace BizHawk.Client.EmuHawk
 			N64SubMenu.Visible = false;
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
+			DGBHawkSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
@@ -1806,7 +1804,14 @@ namespace BizHawk.Client.EmuHawk
 					SaturnSubMenu.Visible = true;
 					break;
 				case "DGB":
-					DGBSubMenu.Visible = true;
+					if (Emulator is GBHawkLink)
+					{
+						DGBHawkSubMenu.Visible = true;
+					}
+					else
+					{
+						DGBSubMenu.Visible = true;
+					}				
 					break;
 				case "WSWAN":
 					wonderSwanToolStripMenuItem.Visible = true;
