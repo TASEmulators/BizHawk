@@ -72,6 +72,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			SetupMemoryDomains();
 
 			HardReset();
+
+			LinkConnected = _cableconnected;
 		}
 
 		public void HardReset()

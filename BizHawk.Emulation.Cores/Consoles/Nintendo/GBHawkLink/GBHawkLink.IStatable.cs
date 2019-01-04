@@ -57,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
+			ser.Sync("_cableconnected", ref _cableconnected);
+			ser.Sync("_cablediscosignal", ref _cablediscosignal);
 			_controllerDeck.SyncState(ser);
 		}
 	}
