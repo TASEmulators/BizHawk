@@ -14,7 +14,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			Owner = owner;
 			FontInfo = Cyotek.Drawing.BitmapFont.BitmapFontLoader.LoadFontFromXmlFile(xml);
-			
+
 			//load textures
 			for(int i=0;i<FontInfo.Pages.Length;i++)
 			{
@@ -100,7 +100,7 @@ namespace BizHawk.Bizware.BizwareGL
 				Cyotek.Drawing.BitmapFont.Character bfc;
 				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
 					bfc = FontInfo.Characters[unchecked((char)-1)];
-				
+
 				//calculate texcoords (we shouldve already had this cached, but im speedcoding now)
 				Texture2d tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;

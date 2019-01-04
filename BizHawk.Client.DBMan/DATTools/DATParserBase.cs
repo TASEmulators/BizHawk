@@ -51,7 +51,7 @@ namespace BizHawk.Client.DBMan
 				sb.AppendLine(";");
 				return;
 			}
-				
+
 			foreach (var d in data)
 			{
 				// hash

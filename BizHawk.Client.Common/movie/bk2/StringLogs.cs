@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 			}
 
 			void System.Collections.IEnumerator.Reset() { _index = -1; }
-			
+
 			public void Dispose() { }
 		}
 

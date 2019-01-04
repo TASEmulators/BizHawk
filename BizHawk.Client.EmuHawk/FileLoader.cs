@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 					};
 				}
 
-				return new[] 
+				return new[]
 				{
 					".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC",
 					".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML",
@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				// fix movie extension to something palatable for these purposes. 
+				// fix movie extension to something palatable for these purposes.
 				// for instance, something which doesnt clobber movies you already may have had.
 				// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 				StartNewMovie(movie, false);
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 							 * and not streams (also no), so for the purposes of making drag/drop more robust,
 							 * I am not building this out just yet.
 							 * -- Adam Michaud (Invariel)
-							
+
 							int offset = 0;
 							bool executable = false;
 							var archiveHandler = new SevenZipSharpArchiveHandler();
@@ -272,15 +272,15 @@ namespace BizHawk.Client.EmuHawk
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
 			 *  then be used by this code, and loading individual files through the file dialogue.
-			 *  
+			 *
 			 *  Step 1:
 			 *	  Build a dictionary of relevant files from everything that was dragged and dropped.
 			 *	  This includes peeking into all relevant archives and using their files.
-			 *	  
+			 *
 			 *  Step 2:
 			 *	  Perhaps ask the user which of a particular file type they want to use.
 			 *		  Example:  rom1.nes, rom2.smc, rom3.cue are drag-dropped, ask the user which they want to use.
-			 *		  
+			 *
 			 *  Step 3:
 			 *	  Load all of the relevant files, in priority order:
 			 *	  1) The ROM
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 			 *	  6) LUA scripts
 			 *	  7) Cheat files
 			 *	  8) Movie Playback Files
-			 *	  
+			 *
 			 *  Bonus:
 			 *	  Make that order easy to change in the code, heavily suggesting ROM and playback as first and last respectively.
 			 */

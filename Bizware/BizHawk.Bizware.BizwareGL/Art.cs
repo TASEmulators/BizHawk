@@ -12,7 +12,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public ArtManager Owner { get; private set; }
 		public Texture2d BaseTexture { get; internal set; }
-		
+
 		public float Width, Height;
 		public float u0, v0, u1, v1;
 

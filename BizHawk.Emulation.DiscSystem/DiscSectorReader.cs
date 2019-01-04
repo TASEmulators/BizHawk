@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// Read it as mode 2 (form 1)
-			/// </summary> 
+			/// </summary>
 			AssumeMode2_Form1,
 		}
 
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public int ReadLBA_2448(int lba, byte[] buffer, int offset)
 		{
 			var sector = disc.SynthProvider.Get(lba);
-			
+
 			if (sector == null) return 0;
 
 			PrepareBuffer(buffer, offset, 2352);

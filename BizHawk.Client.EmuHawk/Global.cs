@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				switch(Global.Emulator.SystemId)
-				{ 
+				{
 					default:
 					case "NULL":
 						return SystemInfo.Null;

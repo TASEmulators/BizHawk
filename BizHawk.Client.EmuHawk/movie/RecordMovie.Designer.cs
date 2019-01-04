@@ -42,9 +42,9 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(391, 139);
@@ -54,9 +54,9 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.Location = new System.Drawing.Point(310, 139);
 			this.OK.Name = "OK";
@@ -65,9 +65,9 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// BrowseBtn
-			// 
+			//
 			this.BrowseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.BrowseBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.BrowseBtn.Location = new System.Drawing.Point(423, 13);
@@ -76,37 +76,37 @@
 			this.BrowseBtn.TabIndex = 1;
 			this.BrowseBtn.UseVisualStyleBackColor = true;
 			this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
-			// 
+			//
 			// RecordBox
-			// 
+			//
 			this.RecordBox.AllowDrop = true;
-			this.RecordBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.RecordBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.RecordBox.Location = new System.Drawing.Point(83, 13);
 			this.RecordBox.Name = "RecordBox";
 			this.RecordBox.Size = new System.Drawing.Size(334, 20);
 			this.RecordBox.TabIndex = 0;
 			this.RecordBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragDrop);
 			this.RecordBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragEnter);
-			// 
+			//
 			// StartFromCombo
-			// 
+			//
 			this.StartFromCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.StartFromCombo.FormattingEnabled = true;
 			this.StartFromCombo.Items.AddRange(new object[] {
-            "Power-On",
-            "Now",
-            "SaveRam"});
+			"Power-On",
+			"Now",
+			"SaveRam"});
 			this.StartFromCombo.Location = new System.Drawing.Point(83, 65);
 			this.StartFromCombo.MaxDropDownItems = 32;
 			this.StartFromCombo.Name = "StartFromCombo";
 			this.StartFromCombo.Size = new System.Drawing.Size(152, 21);
 			this.StartFromCombo.TabIndex = 3;
-			// 
+			//
 			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.DefaultAuthorCheckBox);
 			this.groupBox1.Controls.Add(this.AuthorBox);
 			this.groupBox1.Controls.Add(this.StartFromCombo);
@@ -120,9 +120,9 @@
 			this.groupBox1.Size = new System.Drawing.Size(454, 112);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			// 
+			//
 			// DefaultAuthorCheckBox
-			// 
+			//
 			this.DefaultAuthorCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
 			this.DefaultAuthorCheckBox.AutoSize = true;
 			this.DefaultAuthorCheckBox.Location = new System.Drawing.Point(327, 64);
@@ -131,46 +131,46 @@
 			this.DefaultAuthorCheckBox.TabIndex = 6;
 			this.DefaultAuthorCheckBox.Text = "Make default author";
 			this.DefaultAuthorCheckBox.UseVisualStyleBackColor = true;
-			// 
+			//
 			// AuthorBox
-			// 
+			//
 			this.AuthorBox.AllowDrop = true;
-			this.AuthorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.AuthorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.AuthorBox.Location = new System.Drawing.Point(83, 39);
 			this.AuthorBox.Name = "AuthorBox";
 			this.AuthorBox.Size = new System.Drawing.Size(365, 20);
 			this.AuthorBox.TabIndex = 2;
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(36, 41);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(41, 13);
 			this.label3.TabIndex = 2;
 			this.label3.Text = "Author:";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(6, 68);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(71, 13);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Record From:";
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(51, 16);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(26, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "File:";
-			// 
+			//
 			// RecordMovie
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

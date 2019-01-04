@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						wram_h_enabled_write = wram_l_enabled_write = false;
 					}
 					break;
-				
+
 				case 0x2001: //$A001
 					//a whole host of wram configurations
 					if (wram_enabled)

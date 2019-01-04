@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				base.WritePRG(addr, value);
 			}
-			else 
+			else
 				base.WritePRG(addr, value);
 		}
 

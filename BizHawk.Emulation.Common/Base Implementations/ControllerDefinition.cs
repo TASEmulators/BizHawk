@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// Defines the schema for all the currently available controls for an IEmulator instance
 	/// </summary>
-	/// <seealso cref="IEmulator" /> 
+	/// <seealso cref="IEmulator" />
 	public class ControllerDefinition
 	{
 		public ControllerDefinition()
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Common
 				if (allNames.Any(b => b.StartsWith("Up")))
 				{
 					return 1;
-				} 
+				}
 
 				return 0;
 			}

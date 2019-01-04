@@ -47,9 +47,9 @@
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// flowLayoutPanel1
-			// 
+			//
 			this.flowLayoutPanel1.AutoSize = true;
 			this.flowLayoutPanel1.Controls.Add(this.btnCancel);
 			this.flowLayoutPanel1.Controls.Add(this.btnOK);
@@ -59,9 +59,9 @@
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			this.flowLayoutPanel1.Size = new System.Drawing.Size(472, 29);
 			this.flowLayoutPanel1.TabIndex = 1;
-			// 
+			//
 			// btnCancel
-			// 
+			//
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Location = new System.Drawing.Point(394, 3);
 			this.btnCancel.Name = "btnCancel";
@@ -70,9 +70,9 @@
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-			// 
+			//
 			// btnOK
-			// 
+			//
 			this.btnOK.Location = new System.Drawing.Point(313, 3);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
@@ -80,9 +80,9 @@
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-			// 
+			//
 			// tableLayoutPanel1
-			// 
+			//
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.lvMembers, 0, 0);
@@ -95,12 +95,12 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(472, 317);
 			this.tableLayoutPanel1.TabIndex = 0;
-			// 
+			//
 			// lvMembers
-			// 
+			//
 			this.lvMembers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colName,
-            this.colSize});
+			this.colName,
+			this.colSize});
 			this.lvMembers.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvMembers.FullRowSelect = true;
 			this.lvMembers.GridLines = true;
@@ -112,20 +112,20 @@
 			this.lvMembers.UseCompatibleStateImageBehavior = false;
 			this.lvMembers.View = System.Windows.Forms.View.Details;
 			this.lvMembers.DoubleClick += new System.EventHandler(this.lvMembers_ItemActivate);
-			// 
+			//
 			// colName
-			// 
+			//
 			this.colName.DisplayIndex = 1;
 			this.colName.Text = "Name";
 			this.colName.Width = 409;
-			// 
+			//
 			// colSize
-			// 
+			//
 			this.colSize.DisplayIndex = 0;
 			this.colSize.Text = "Size";
-			// 
+			//
 			// panel1
-			// 
+			//
 			this.panel1.Controls.Add(this.cbInstantFilter);
 			this.panel1.Controls.Add(this.radRegEx);
 			this.panel1.Controls.Add(this.radSimple);
@@ -138,9 +138,9 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(466, 76);
 			this.panel1.TabIndex = 4;
-			// 
+			//
 			// cbInstantFilter
-			// 
+			//
 			this.cbInstantFilter.AutoSize = true;
 			this.cbInstantFilter.Checked = true;
 			this.cbInstantFilter.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -151,9 +151,9 @@
 			this.cbInstantFilter.Text = "Filter while typing";
 			this.cbInstantFilter.UseVisualStyleBackColor = true;
 			this.cbInstantFilter.CheckedChanged += new System.EventHandler(this.cbInstantFilter_CheckedChanged);
-			// 
+			//
 			// radRegEx
-			// 
+			//
 			this.radRegEx.AutoSize = true;
 			this.radRegEx.Location = new System.Drawing.Point(71, 58);
 			this.radRegEx.Name = "radRegEx";
@@ -162,9 +162,9 @@
 			this.radRegEx.Text = "Regular Expression";
 			this.radRegEx.UseVisualStyleBackColor = true;
 			this.radRegEx.CheckedChanged += new System.EventHandler(this.radRegEx_CheckedChanged);
-			// 
+			//
 			// radSimple
-			// 
+			//
 			this.radSimple.AutoSize = true;
 			this.radSimple.Checked = true;
 			this.radSimple.Location = new System.Drawing.Point(9, 57);
@@ -174,9 +174,9 @@
 			this.radSimple.TabStop = true;
 			this.radSimple.Text = "Simple";
 			this.radSimple.UseVisualStyleBackColor = true;
-			// 
+			//
 			// btnFilter
-			// 
+			//
 			this.btnFilter.Location = new System.Drawing.Point(182, 1);
 			this.btnFilter.Name = "btnFilter";
 			this.btnFilter.Size = new System.Drawing.Size(75, 23);
@@ -184,9 +184,9 @@
 			this.btnFilter.Text = "Filter";
 			this.btnFilter.UseVisualStyleBackColor = true;
 			this.btnFilter.Click += new System.EventHandler(this.btnFilter_Click);
-			// 
+			//
 			// btnSearch
-			// 
+			//
 			this.btnSearch.Location = new System.Drawing.Point(182, 27);
 			this.btnSearch.Name = "btnSearch";
 			this.btnSearch.Size = new System.Drawing.Size(75, 23);
@@ -194,24 +194,24 @@
 			this.btnSearch.Text = "Find";
 			this.btnSearch.UseVisualStyleBackColor = true;
 			this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
-			// 
+			//
 			// tbFilter
-			// 
+			//
 			this.tbFilter.Location = new System.Drawing.Point(9, 3);
 			this.tbFilter.Name = "tbFilter";
 			this.tbFilter.Size = new System.Drawing.Size(167, 20);
 			this.tbFilter.TabIndex = 1;
 			this.tbFilter.TextChanged += new System.EventHandler(this.tbFilter_TextChanged);
-			// 
+			//
 			// tbSearch
-			// 
+			//
 			this.tbSearch.Location = new System.Drawing.Point(9, 29);
 			this.tbSearch.Name = "tbSearch";
 			this.tbSearch.Size = new System.Drawing.Size(167, 20);
 			this.tbSearch.TabIndex = 4;
-			// 
+			//
 			// ArchiveChooser
-			// 
+			//
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -238,20 +238,20 @@
 
 		#endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.ListView lvMembers;
-        private System.Windows.Forms.ColumnHeader colName;
-        private System.Windows.Forms.ColumnHeader colSize;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RadioButton radRegEx;
-        private System.Windows.Forms.RadioButton radSimple;
-        private System.Windows.Forms.Button btnFilter;
-        private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.TextBox tbFilter;
-        private System.Windows.Forms.TextBox tbSearch;
-        private System.Windows.Forms.CheckBox cbInstantFilter;
+		private System.Windows.Forms.Button btnOK;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.ListView lvMembers;
+		private System.Windows.Forms.ColumnHeader colName;
+		private System.Windows.Forms.ColumnHeader colSize;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.RadioButton radRegEx;
+		private System.Windows.Forms.RadioButton radSimple;
+		private System.Windows.Forms.Button btnFilter;
+		private System.Windows.Forms.Button btnSearch;
+		private System.Windows.Forms.TextBox tbFilter;
+		private System.Windows.Forms.TextBox tbSearch;
+		private System.Windows.Forms.CheckBox cbInstantFilter;
 	}
 }

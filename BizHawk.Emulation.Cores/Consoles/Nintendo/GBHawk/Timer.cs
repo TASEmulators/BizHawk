@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool old_state;
 		public bool state;
 		public bool reload_block;
-		public bool TMA_coincidence;	
-		
+		public bool TMA_coincidence;
+
 		public byte ReadReg(int addr)
 		{
 			byte ret = 0;
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						//TODO: Check if timer still gets reloaded if TAC diabled causes overflow
 						if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
 						Core.REG_FF0F |= 0x04;
-					}				
+					}
 				}
 			}
 

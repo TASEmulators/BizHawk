@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 		public int Count => _mBookmarks.Count;
 
 		/// <summary>
-		/// Gets the underlying stream to 
+		/// Gets the underlying stream to
 		/// </summary>
 		public Stream Stream => _mStream;
 
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
-			// this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
+			// this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity;
 			// and then again to purge tail items impinged by this new item at the beginning
 			if (_mHead.Value.EndExclusive > _mCapacity)
 			{
@@ -281,7 +281,7 @@ namespace BizHawk.Client.Common
 			public int Timestamp { get; }
 			public long Index { get; }
 			public int Length { get; }
-			
+
 			public long EndExclusive => Index + Length;
 		}
 

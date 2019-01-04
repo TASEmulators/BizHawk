@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool AllowColumnReorder { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the entire row will always be selected 
+		/// Gets or sets a value indicating whether the entire row will always be selected
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(false)]
@@ -1425,7 +1425,7 @@ namespace BizHawk.Client.EmuHawk
 					//jump to above marker with selection courser
 					if (LetKeysModifySelection)
 					{
-						
+
 					}
 				}
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Ctrl + Page Down
@@ -2248,7 +2248,7 @@ namespace BizHawk.Client.EmuHawk
 
 						return row;
 					}
-					
+
 					return 1;
 				}
 

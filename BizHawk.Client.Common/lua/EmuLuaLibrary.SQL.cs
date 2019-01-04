@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			{
 				SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
 				connBuilder.DataSource = name;
-				connBuilder.Version = 3; //SQLite version 
+				connBuilder.Version = 3; //SQLite version
 				connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;  //Allows for reads and writes to happen at the same time
 				connBuilder.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;  //This only helps make the database lock left. May be pointless now
 				connBuilder.SyncMode = SynchronizationModes.Off; //This shortens the delay for do synchronous calls.

@@ -32,7 +32,7 @@ namespace BizHawk.Common
 	/// <summary>
 	/// HawkFile allows a variety of objects (actual files, archive members) to be treated as normal filesystem objects to be opened, closed, and read.
 	/// It can understand paths in 'canonical' format which includes /path/to/archive.zip|member.rom as well as /path/to/file.rom
-	/// When opening an archive, it won't always be clear automatically which member should actually be used. 
+	/// When opening an archive, it won't always be clear automatically which member should actually be used.
 	/// Therefore there is a concept of 'binding' where a HawkFile attaches itself to an archive member which is the file that it will actually be using.
 	/// </summary>
 	public sealed class HawkFile : IDisposable
@@ -204,7 +204,7 @@ namespace BizHawk.Common
 				path = parts[0];
 				_memberPath = parts[1];
 
-				// we're gonna assume, on parsing, that this is 
+				// we're gonna assume, on parsing, that this is
 				_isArchive = true;
 			}
 			_rootPath = path;
@@ -535,7 +535,7 @@ namespace BizHawk.Common
 		{
 			return Win32PInvokes.ResolveShortcut(path);
 		}
-	} 
+	}
 
 	/// <summary>
 	/// Members returned by IHawkFileArchiveHandler
@@ -563,4 +563,3 @@ namespace BizHawk.Common
 		public int ArchiveIndex { get; set; }
 	}
 }
- 

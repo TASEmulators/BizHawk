@@ -55,9 +55,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(91, 168);
@@ -67,9 +67,9 @@
 			this.CancelBtn.Text = "&Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// OkBtn
-			// 
+			//
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkBtn.Location = new System.Drawing.Point(25, 168);
 			this.OkBtn.Name = "OkBtn";
@@ -78,9 +78,9 @@
 			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
+			//
 			// GoodRadio
-			// 
+			//
 			this.GoodRadio.AutoSize = true;
 			this.GoodRadio.Checked = true;
 			this.GoodRadio.Location = new System.Drawing.Point(12, 12);
@@ -89,9 +89,9 @@
 			this.GoodRadio.TabIndex = 2;
 			this.GoodRadio.TabStop = true;
 			this.GoodRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// pictureBox1
-			// 
+			//
 			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
 			this.pictureBox1.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
 			this.pictureBox1.Location = new System.Drawing.Point(29, 10);
@@ -99,27 +99,27 @@
 			this.pictureBox1.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox1.TabIndex = 3;
 			this.pictureBox1.TabStop = false;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(48, 12);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(64, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Good Dump";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(48, 37);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(58, 13);
 			this.label2.TabIndex = 7;
 			this.label2.Text = "Homebrew";
-			// 
+			//
 			// pictureBox2
-			// 
+			//
 			this.pictureBox2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HomeBrew;
 			this.pictureBox2.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.HomeBrew;
 			this.pictureBox2.Location = new System.Drawing.Point(29, 35);
@@ -127,27 +127,27 @@
 			this.pictureBox2.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox2.TabIndex = 6;
 			this.pictureBox2.TabStop = false;
-			// 
+			//
 			// HomebrewRadio
-			// 
+			//
 			this.HomebrewRadio.AutoSize = true;
 			this.HomebrewRadio.Location = new System.Drawing.Point(12, 37);
 			this.HomebrewRadio.Name = "HomebrewRadio";
 			this.HomebrewRadio.Size = new System.Drawing.Size(14, 13);
 			this.HomebrewRadio.TabIndex = 5;
 			this.HomebrewRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(48, 62);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(33, 13);
 			this.label3.TabIndex = 10;
 			this.label3.Text = "Hack";
-			// 
+			//
 			// pictureBox3
-			// 
+			//
 			this.pictureBox3.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Hack;
 			this.pictureBox3.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.Hack;
 			this.pictureBox3.Location = new System.Drawing.Point(29, 60);
@@ -155,27 +155,27 @@
 			this.pictureBox3.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox3.TabIndex = 9;
 			this.pictureBox3.TabStop = false;
-			// 
+			//
 			// HackRadio
-			// 
+			//
 			this.HackRadio.AutoSize = true;
 			this.HackRadio.Location = new System.Drawing.Point(12, 62);
 			this.HackRadio.Name = "HackRadio";
 			this.HackRadio.Size = new System.Drawing.Size(14, 13);
 			this.HackRadio.TabIndex = 8;
 			this.HackRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(48, 87);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(85, 13);
 			this.label4.TabIndex = 13;
 			this.label4.Text = "Translated ROM";
-			// 
+			//
 			// pictureBox4
-			// 
+			//
 			this.pictureBox4.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Translation;
 			this.pictureBox4.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.Translation;
 			this.pictureBox4.Location = new System.Drawing.Point(29, 85);
@@ -183,27 +183,27 @@
 			this.pictureBox4.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox4.TabIndex = 12;
 			this.pictureBox4.TabStop = false;
-			// 
+			//
 			// TranslationRadio
-			// 
+			//
 			this.TranslationRadio.AutoSize = true;
 			this.TranslationRadio.Location = new System.Drawing.Point(12, 87);
 			this.TranslationRadio.Name = "TranslationRadio";
 			this.TranslationRadio.Size = new System.Drawing.Size(14, 13);
 			this.TranslationRadio.TabIndex = 11;
 			this.TranslationRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label5
-			// 
+			//
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(48, 112);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(57, 13);
 			this.label5.TabIndex = 16;
 			this.label5.Text = "Bad Dump";
-			// 
+			//
 			// pictureBox5
-			// 
+			//
 			this.pictureBox5.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox5.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox5.Location = new System.Drawing.Point(29, 110);
@@ -211,27 +211,27 @@
 			this.pictureBox5.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox5.TabIndex = 15;
 			this.pictureBox5.TabStop = false;
-			// 
+			//
 			// BadRadio
-			// 
+			//
 			this.BadRadio.AutoSize = true;
 			this.BadRadio.Location = new System.Drawing.Point(12, 112);
 			this.BadRadio.Name = "BadRadio";
 			this.BadRadio.Size = new System.Drawing.Size(14, 13);
 			this.BadRadio.TabIndex = 14;
 			this.BadRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label6
-			// 
+			//
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(48, 137);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(61, 13);
 			this.label6.TabIndex = 19;
 			this.label6.Text = "Over Dump";
-			// 
+			//
 			// pictureBox6
-			// 
+			//
 			this.pictureBox6.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox6.InitialImage = global::BizHawk.Client.EmuHawk.Properties.Resources.ExclamationRed;
 			this.pictureBox6.Location = new System.Drawing.Point(29, 135);
@@ -239,18 +239,18 @@
 			this.pictureBox6.Size = new System.Drawing.Size(16, 16);
 			this.pictureBox6.TabIndex = 18;
 			this.pictureBox6.TabStop = false;
-			// 
+			//
 			// OverdumpRadio
-			// 
+			//
 			this.OverdumpRadio.AutoSize = true;
 			this.OverdumpRadio.Location = new System.Drawing.Point(12, 137);
 			this.OverdumpRadio.Name = "OverdumpRadio";
 			this.OverdumpRadio.Size = new System.Drawing.Size(14, 13);
 			this.OverdumpRadio.TabIndex = 17;
 			this.OverdumpRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// RomStatusPicker
-			// 
+			//
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

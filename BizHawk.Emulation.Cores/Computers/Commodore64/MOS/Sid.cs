@@ -7,18 +7,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	public sealed partial class Sid
 	{
 		/*
-            Commodore SID 6581/8580 core.
+			Commodore SID 6581/8580 core.
 
-            Many thanks to:
-            - Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
-              http://mail.lipsia.de/~enigma/neu/6581.html
-            - Kevtris for figuring out ADSR tables
-              http://blog.kevtris.org/?p=13
-            - Mixer for a lot of useful SID info
-              http://www.sid.fi/sidwiki/doku.php?id=sid-knowledge
-            - Documentation collected by the libsidplayfp team
-              https://sourceforge.net/projects/sidplay-residfp/
-        */
+			Many thanks to:
+			- Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
+				http://mail.lipsia.de/~enigma/neu/6581.html
+			- Kevtris for figuring out ADSR tables
+				http://blog.kevtris.org/?p=13
+			- Mixer for a lot of useful SID info
+				http://www.sid.fi/sidwiki/doku.php?id=sid-knowledge
+			- Documentation collected by the libsidplayfp team
+				https://sourceforge.net/projects/sidplay-residfp/
+		*/
 
 		// ------------------------------------
 		public int _databus;
@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				int temp_filtered = 0;
 				int temp_not_filtered = 0;
 
-				//note that voice 3 disable is relevent only if it is not going to the filter 
+				//note that voice 3 disable is relevent only if it is not going to the filter
 				// see block diargam http://archive.6502.org/datasheets/mos_6581_sid.pdf
 				if (!_filterEnable[2] && _disableVoice3)
 					temp_v2 = 0;
@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			if (!(_filterEnable[0] | _filterEnable[1] | _filterEnable[2]))
 			{
 				filter_index = _outputBufferIndex;
-			}	
+			}
 		}
 
 
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					attenuation = 12 * attenuation;
 					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
 				}
-				
+
 				// Band pass filter
 				if (_filterSelectBandPass)
 				{
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					attenuation = 6 * attenuation;
 					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
-				
+
 			}
 
 			// now transform back into time space and reassemble the attenuated frequency components
@@ -322,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				// the FFT is only an approximate model and fails at low sample rates
 				// what we want to do is limit how much the output samples can deviate from previous output
 				// thus smoothing out the FT samples
-				
+
 				if (i<16)
 					_outputBuffer_filtered[(int)i + filter_index] = (int)((last_filtered_value * Math.Pow(15 - i,1) + _outputBuffer_filtered[(int)i + filter_index] * Math.Pow(i,1))/ Math.Pow(15,1));
 			}

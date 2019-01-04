@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public readonly int OUT2old;
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="oldvalue">the old latched $4016 byte</param>
 		/// <param name="newvalue">the new latched $4016 byte</param>
@@ -1040,7 +1040,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int x = (int)c.GetFloat("0Pen X");
 				int y = (int)c.GetFloat("0Pen Y");
 				// http://forums.nesdev.com/viewtopic.php?p=19454#19454
-				// it almost feels like the hardware guys got the request for 
+				// it almost feels like the hardware guys got the request for
 				// a tablet that returned x in [0, 255] and y in [0, 239] and then
 				// accidentally flipped the whole thing sideways
 				x = (x + 8) * 240 / 256;

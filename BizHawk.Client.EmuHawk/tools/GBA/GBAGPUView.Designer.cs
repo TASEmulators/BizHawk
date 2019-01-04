@@ -44,38 +44,38 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// listBoxWidgets
-			// 
+			//
 			this.listBoxWidgets.Location = new System.Drawing.Point(12, 40);
 			this.listBoxWidgets.Name = "listBoxWidgets";
 			this.listBoxWidgets.Size = new System.Drawing.Size(137, 160);
 			this.listBoxWidgets.TabIndex = 0;
 			this.listBoxWidgets.DoubleClick += new System.EventHandler(this.listBoxWidgets_DoubleClick);
-			// 
+			//
 			// panel1
-			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoScroll = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Location = new System.Drawing.Point(155, 0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(481, 474);
 			this.panel1.TabIndex = 1;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(92, 13);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Available widgets:";
-			// 
+			//
 			// buttonShowWidget
-			// 
+			//
 			this.buttonShowWidget.Location = new System.Drawing.Point(29, 206);
 			this.buttonShowWidget.Name = "buttonShowWidget";
 			this.buttonShowWidget.Size = new System.Drawing.Size(75, 23);
@@ -83,9 +83,9 @@
 			this.buttonShowWidget.Text = "Show >>";
 			this.buttonShowWidget.UseVisualStyleBackColor = true;
 			this.buttonShowWidget.Click += new System.EventHandler(this.buttonShowWidget_Click);
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.buttonRefresh);
 			this.groupBox1.Controls.Add(this.hScrollBar1);
 			this.groupBox1.Controls.Add(this.radioButtonManual);
@@ -96,9 +96,9 @@
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Refresh";
-			// 
+			//
 			// buttonRefresh
-			// 
+			//
 			this.buttonRefresh.Location = new System.Drawing.Point(6, 104);
 			this.buttonRefresh.Name = "buttonRefresh";
 			this.buttonRefresh.Size = new System.Drawing.Size(75, 23);
@@ -106,9 +106,9 @@
 			this.buttonRefresh.Text = "Refresh";
 			this.buttonRefresh.UseVisualStyleBackColor = true;
 			this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
-			// 
+			//
 			// hScrollBar1
-			// 
+			//
 			this.hScrollBar1.LargeChange = 20;
 			this.hScrollBar1.Location = new System.Drawing.Point(3, 62);
 			this.hScrollBar1.Maximum = 246;
@@ -116,9 +116,9 @@
 			this.hScrollBar1.Size = new System.Drawing.Size(128, 16);
 			this.hScrollBar1.TabIndex = 3;
 			this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
-			// 
+			//
 			// radioButtonManual
-			// 
+			//
 			this.radioButtonManual.AutoSize = true;
 			this.radioButtonManual.Location = new System.Drawing.Point(6, 81);
 			this.radioButtonManual.Name = "radioButtonManual";
@@ -128,9 +128,9 @@
 			this.radioButtonManual.Text = "Manual";
 			this.radioButtonManual.UseVisualStyleBackColor = true;
 			this.radioButtonManual.CheckedChanged += new System.EventHandler(this.radioButtonManual_CheckedChanged);
-			// 
+			//
 			// radioButtonScanline
-			// 
+			//
 			this.radioButtonScanline.AutoSize = true;
 			this.radioButtonScanline.Location = new System.Drawing.Point(6, 42);
 			this.radioButtonScanline.Name = "radioButtonScanline";
@@ -139,9 +139,9 @@
 			this.radioButtonScanline.Text = "Scanline";
 			this.radioButtonScanline.UseVisualStyleBackColor = true;
 			this.radioButtonScanline.CheckedChanged += new System.EventHandler(this.radioButtonScanline_CheckedChanged);
-			// 
+			//
 			// labelClipboard
-			// 
+			//
 			this.labelClipboard.AutoSize = true;
 			this.labelClipboard.Location = new System.Drawing.Point(9, 371);
 			this.labelClipboard.MaximumSize = new System.Drawing.Size(145, 0);
@@ -149,22 +149,22 @@
 			this.labelClipboard.Size = new System.Drawing.Size(117, 26);
 			this.labelClipboard.TabIndex = 5;
 			this.labelClipboard.Text = "CTRL + C: Copy under mouse to clipboard.";
-			// 
+			//
 			// timerMessage
-			// 
+			//
 			this.timerMessage.Interval = 5000;
 			this.timerMessage.Tick += new System.EventHandler(this.timerMessage_Tick);
-			// 
+			//
 			// menuStrip1
-			// 
+			//
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(636, 24);
 			this.menuStrip1.TabIndex = 6;
 			this.menuStrip1.Text = "menuStrip1";
-			// 
+			//
 			// GBAGPUView
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(636, 474);

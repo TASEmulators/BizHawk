@@ -47,12 +47,12 @@
 			this.PadBoxContextMenu.SuspendLayout();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// ControllerBox
-			// 
-			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerBox.ContextMenuStrip = this.PadBoxContextMenu;
 			this.ControllerBox.Controls.Add(this.ControllerPanel);
 			this.ControllerBox.Location = new System.Drawing.Point(12, 27);
@@ -61,110 +61,110 @@
 			this.ControllerBox.TabIndex = 11;
 			this.ControllerBox.TabStop = false;
 			this.ControllerBox.Text = "Controllers";
-			// 
+			//
 			// PadBoxContextMenu
-			// 
+			//
 			this.PadBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearAllToolStripMenuItem,
-            this.StickyContextMenuItem});
+			this.clearAllToolStripMenuItem,
+			this.StickyContextMenuItem});
 			this.PadBoxContextMenu.Name = "PadBoxContextMenu";
 			this.PadBoxContextMenu.Size = new System.Drawing.Size(143, 48);
 			this.PadBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.PadBoxContextMenu_Opening);
-			// 
+			//
 			// clearAllToolStripMenuItem
-			// 
+			//
 			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
 			this.clearAllToolStripMenuItem.ShortcutKeyDisplayString = "Del";
 			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
 			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
-			// 
+			//
 			// StickyContextMenuItem
-			// 
+			//
 			this.StickyContextMenuItem.Name = "StickyContextMenuItem";
 			this.StickyContextMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyContextMenuItem.Text = "Sticky";
 			this.StickyContextMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
-			// 
+			//
 			// ControllerPanel
-			// 
+			//
 			this.ControllerPanel.AutoScroll = true;
 			this.ControllerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ControllerPanel.Location = new System.Drawing.Point(3, 16);
 			this.ControllerPanel.Name = "ControllerPanel";
 			this.ControllerPanel.Size = new System.Drawing.Size(425, 258);
 			this.ControllerPanel.TabIndex = 0;
-			// 
+			//
 			// PadMenu
-			// 
+			//
 			this.PadMenu.ClickThrough = true;
 			this.PadMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.PadsSubMenu,
-            this.SettingsSubMenu});
+			this.PadsSubMenu,
+			this.SettingsSubMenu});
 			this.PadMenu.Location = new System.Drawing.Point(0, 0);
 			this.PadMenu.Name = "PadMenu";
 			this.PadMenu.Size = new System.Drawing.Size(452, 24);
 			this.PadMenu.TabIndex = 7;
 			this.PadMenu.Text = "menuStrip1";
-			// 
+			//
 			// PadsSubMenu
-			// 
+			//
 			this.PadsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearAllMenuItem,
-            this.StickyMenuItem,
-            this.toolStripSeparator4,
-            this.ExitMenuItem});
+			this.ClearAllMenuItem,
+			this.StickyMenuItem,
+			this.toolStripSeparator4,
+			this.ExitMenuItem});
 			this.PadsSubMenu.Name = "PadsSubMenu";
 			this.PadsSubMenu.Size = new System.Drawing.Size(44, 20);
 			this.PadsSubMenu.Text = "&Pads";
 			this.PadsSubMenu.DropDownOpened += new System.EventHandler(this.PadsSubMenu_DropDownOpened);
-			// 
+			//
 			// ClearAllMenuItem
-			// 
+			//
 			this.ClearAllMenuItem.Name = "ClearAllMenuItem";
 			this.ClearAllMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.ClearAllMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
-			// 
+			//
 			// StickyMenuItem
-			// 
+			//
 			this.StickyMenuItem.Name = "StickyMenuItem";
 			this.StickyMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
-			// 
+			//
 			// toolStripSeparator4
-			// 
+			//
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
 			this.toolStripSeparator4.Size = new System.Drawing.Size(139, 6);
-			// 
+			//
 			// ExitMenuItem
-			// 
+			//
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.ExitMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
+			//
 			// SettingsSubMenu
-			// 
+			//
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearClearsAnalogInputMenuItem});
+			this.ClearClearsAnalogInputMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
+			//
 			// ClearClearsAnalogInputMenuItem
-			// 
+			//
 			this.ClearClearsAnalogInputMenuItem.Name = "ClearClearsAnalogInputMenuItem";
 			this.ClearClearsAnalogInputMenuItem.Size = new System.Drawing.Size(230, 22);
 			this.ClearClearsAnalogInputMenuItem.Text = "&Clear also clears Analog Input";
 			this.ClearClearsAnalogInputMenuItem.Click += new System.EventHandler(this.ClearClearsAnalogInputMenuItem_Click);
-			// 
+			//
 			// VirtualpadTool
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(452, 312);

@@ -294,7 +294,7 @@ namespace BizHawk.Client.Common
 				// LIAR logic
 				return Global.CheatList.GetByteValue(_domain, Address) ?? 0;
 			}
-			
+
 			if (_domain.Size == 0)
 			{
 				return _domain.PeekByte(Address);

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	64K of ROM making it the biggest single production game made during the original run
 	of the 2600.
 
-	Bankswitching is very simple. There's 16 4K banks, and accessing 1FF0 causes the bank 
+	Bankswitching is very simple. There's 16 4K banks, and accessing 1FF0 causes the bank
 	number to increment.
 
 	This means that you must keep accessing 1FF0 until the bank you want is selected.  Each
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	1FF0 until the bank it is looking for comes up.
 	*/
 
-	internal class mF0 : MapperBase 
+	internal class mF0 : MapperBase
 	{
 		private int _bank;
 

@@ -2,35 +2,17 @@
 using System.Linq;
 
 using BizHawk.Common;
-/**
-  This is the cartridge class for Arcadia (aka Starpath) Supercharger 
-  games.  Christopher Salomon provided most of the technical details 
-  used in creating this class.  A good description of the Supercharger
-  is provided in the Cuttle Cart's manual.
-
-  The Supercharger has four 2K banks.  There are three banks of RAM 
-  and one bank of ROM.  All 6K of the RAM can be read and written.
- 
-  D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
-  
-  D4-D0: RAM/ROM configuration:
-        $F000-F7FF    $F800-FFFF Address range that banks map into
-   000wp     2            ROM
-   001wp     0            ROM
-   010wp     2            0      as used in Commie Mutants and many others
-   011wp     0            2      as used in Suicide Mission
-   100wp     2            ROM
-   101wp     1            ROM
-   110wp     2            1      as used in Killer Satellites
-   111wp     1            2      as we use for 2k/4k ROM cloning
-  
-   w = Write Enable (1 = enabled; accesses to $F000-$F0FF cause writes
-     to happen.  0 = disabled, and the cart acts like ROM.)
-   p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
-     wanting to access the ROM for multiloads.  Otherwise set to 1.
-*/
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
+	/// <summary>
+	/// This is the cartridge class for Arcadia (aka Starpath) Supercharger games.
+	/// Christopher Salomon provided most of the technical details used in creating this class.
+	/// A good description of the Supercharger is provided in the Cuttle Cart's manual.
+	///
+	/// The Supercharger has four 2K banks.
+	/// There are three banks of RAM and one bank of ROM.
+	/// All 6K of the RAM can be read and written.
+	/// <summary>
 	internal class mAR : MapperBase
 	{
 		public mAR(Atari2600 core)
@@ -179,12 +161,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_dataHoldRegister = 0;
 			_numberOfLoadImages = 0;
 			_loadedImages = null;
-			
+
 			_header = new ByteBuffer(256);
 			_powerIndicator = false;
 			_powerRomCycle = 0;
 			_size = 0;
-			
+
 			_elapsedCycles = 0;
 
 			InitializeSettings();
@@ -225,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void ClockCpu()
 		{
 			_elapsedCycles++;
-			
+
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
@@ -334,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_superChargerImage[(addr & 0x07FF) + _imageOffsets[0]] = _dataHoldRegister;
 				}
-				else if (_imageOffsets[1] != (3 << 11))    // Can't poke to ROM
+				else if (_imageOffsets[1] != (3 << 11)) // Can't poke to ROM
 				{
 					_superChargerImage[(addr & 0x07FF) + _imageOffsets[1]] = _dataHoldRegister;
 				}
@@ -357,14 +339,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			/* scrom.asm data borrowed from Stella:
 			// Note that the following offsets depend on the 'scrom.asm' file
-			// in src/emucore/misc.  If that file is ever recompiled (and its
+			// in src/emucore/misc. If that file is ever recompiled (and its
 			// contents placed in the ourDummyROMCode array), the offsets will
 			// almost definitely change
 			*/
 
 			// The scrom.asm code checks a value at offset 109 as follows:
-			//   0xFF -> do a complete jump over the SC BIOS progress bars code
-			//   0x00 -> show SC BIOS progress bars as normal
+			// 0xFF -> do a complete jump over the SC BIOS progress bars code
+			// 0x00 -> show SC BIOS progress bars as normal
 			_dummyRomCode[109] = (byte)(Core.SyncSettings.FastScBios ? 0xFF : 0x00);
 
 			// Stella does this, but randomness is bad for determinacy! Hopefully we don't really need it
@@ -389,27 +371,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_superChargerImage[(3 << 11) + 2047] = 0xF8;
 		}
 
+
+		/// </summary>
+		/// D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
+		///
+		/// D4-D0: RAM/ROM configuration:
+		///      	$F000-F7FF	$F800-FFFF	Address range that banks map into
+		/// 000wp	2         	ROM
+		/// 001wp	0         	ROM
+		/// 010wp	2         	0         	as used in Commie Mutants and many others
+		/// 011wp	0         	2         	as used in Suicide Mission
+		/// 100wp	2         	ROM
+		/// 101wp	1         	ROM
+		/// 110wp	2         	1         	as used in Killer Satellites
+		/// 111wp	1         	2         	as we use for 2k/4k ROM cloning
+		///
+		/// w = Write Enable (1 = enabled; accesses to $F000-$F0FF cause writesto happen. 0 = disabled, and the cart acts like ROM.)
+		/// p = ROM Power (0 = enabled, 1 = off.) Only power the ROM if you're wanting to access the ROM for multiloads. Otherwise set to 1.
+		/// </summary>
 		private void BankConfiguration(byte configuration)
 		{
-			// D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
-			//
-			// D4-D0: RAM/ROM configuration:
-			//       $F000-F7FF    $F800-FFFF Address range that banks map into
-			//  000wp     2            ROM
-			//  001wp     0            ROM
-			//  010wp     2            0      as used in Commie Mutants and many others
-			//  011wp     0            2      as used in Suicide Mission
-			//  100wp     2            ROM
-			//  101wp     1            ROM
-			//  110wp     2            1      as used in Killer Satellites
-			//  111wp     1            2      as we use for 2k/4k ROM cloning
-			// 
-			//  w = Write Enable (1 = enabled; accesses to $F000-$F0FF cause writes
-			//    to happen.  0 = disabled, and the cart acts like ROM.)
-			//  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
-			//    wanting to access the ROM for multiloads.  Otherwise set to 1.
-
-			//_bank2k = configuration & 0x1F;  // remember for the bank() method
+			//_bank2k = configuration & 0x1F; // remember for the bank() method
 			_powerIndicator = !((configuration & 0x01) > 0);
 			if (_powerIndicator)
 			{

@@ -478,7 +478,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//  Unsupported,Fetch1, Fetch1_Real, Fetch2, Fetch3,FetchDummy,
 			//  NOP,JSR,IncPC,
 			//  Abs_WRITE_STA, Abs_WRITE_STX, Abs_WRITE_STY,Abs_WRITE_SAX,Abs_READ_BIT, Abs_READ_LDA, Abs_READ_LDY, Abs_READ_ORA, Abs_READ_LDX, Abs_READ_CMP, Abs_READ_ADC, Abs_READ_CPX, Abs_READ_SBC, Abs_READ_AND, Abs_READ_EOR, Abs_READ_CPY, Abs_READ_NOP,
-			//  Abs_READ_LAX,Abs_RMW_Stage4, Abs_RMW_Stage6,Abs_RMW_Stage5_INC, Abs_RMW_Stage5_DEC, Abs_RMW_Stage5_LSR, Abs_RMW_Stage5_ROL, Abs_RMW_Stage5_ASL, Abs_RMW_Stage5_ROR,Abs_RMW_Stage5_SLO, Abs_RMW_Stage5_RLA, Abs_RMW_Stage5_SRE, Abs_RMW_Stage5_RRA, Abs_RMW_Stage5_DCP, Abs_RMW_Stage5_ISC, 
+			//  Abs_READ_LAX,Abs_RMW_Stage4, Abs_RMW_Stage6,Abs_RMW_Stage5_INC, Abs_RMW_Stage5_DEC, Abs_RMW_Stage5_LSR, Abs_RMW_Stage5_ROL, Abs_RMW_Stage5_ASL, Abs_RMW_Stage5_ROR,Abs_RMW_Stage5_SLO, Abs_RMW_Stage5_RLA, Abs_RMW_Stage5_SRE, Abs_RMW_Stage5_RRA, Abs_RMW_Stage5_DCP, Abs_RMW_Stage5_ISC,
 			//  JMP_abs,ZpIdx_Stage3_X, ZpIdx_Stage3_Y,ZpIdx_RMW_Stage4, ZpIdx_RMW_Stage6,ZP_WRITE_STA, ZP_WRITE_STX, ZP_WRITE_STY, ZP_WRITE_SAX,ZP_RMW_Stage3, ZP_RMW_Stage5,
 			//  ZP_RMW_DEC, ZP_RMW_INC, ZP_RMW_ASL, ZP_RMW_LSR, ZP_RMW_ROR, ZP_RMW_ROL,ZP_RMW_SLO, ZP_RMW_RLA, ZP_RMW_SRE, ZP_RMW_RRA, ZP_RMW_DCP, ZP_RMW_ISC,
 			//  ZP_READ_EOR, ZP_READ_BIT, ZP_READ_ORA, ZP_READ_LDA, ZP_READ_LDY, ZP_READ_LDX, ZP_READ_CPX, ZP_READ_SBC, ZP_READ_CPY, ZP_READ_NOP, ZP_READ_ADC, ZP_READ_AND, ZP_READ_CMP, ZP_READ_LAX,
@@ -948,7 +948,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				_link.ReadMemory((ushort)ea);
 				if (alu_temp.Bit(8))
 					ea = (ushort)(ea + 0x100);
-				
+
 			}
 
 		}
@@ -2120,7 +2120,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				_link.ReadMemory(PC);
 				PC++;
 			}
-		}	
+		}
 		void ZP_RMW_Stage3()
 		{
 			rdy_freeze = !RDY;

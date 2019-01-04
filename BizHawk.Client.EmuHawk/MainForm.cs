@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							// fix movie extension to something palatable for these purposes. 
+							// fix movie extension to something palatable for these purposes.
 							// for instance, something which doesnt clobber movies you already may have had.
 							// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 							StartNewMovie(imported, false);
@@ -406,7 +406,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseEmulator();
 			}
-		
+
 			// start dumping, if appropriate
 			if (argParser.cmdDumpType != null && argParser.cmdDumpName != null)
 			{
@@ -753,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 					// ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts. This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
@@ -1066,7 +1066,7 @@ namespace BizHawk.Client.EmuHawk
 #if WINDOWS
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				// AMD cards manifest a problem under these circumstances, flickering other monitors.
 				// It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
@@ -1074,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-					//It seems that some statusbar elements composite with the backcolor. 
+					//It seems that some statusbar elements composite with the backcolor.
 					//Maybe we could add another control under the statusbar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
@@ -1556,10 +1556,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				annotation = Emulator.CoreComm.RomStatusAnnotation;
 
-                if (annotation == "Multi-disk bundler")
-                {
-                    DumpStatusButton.Image = Properties.Resources.RetroQuestion;
-                }
+				if (annotation == "Multi-disk bundler")
+				{
+					DumpStatusButton.Image = Properties.Resources.RetroQuestion;
+				}
 			}
 
 			DumpStatusButton.ToolTipText = annotation;
@@ -1617,7 +1617,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
 				}
 			}
-		}		
+		}
 
 		public bool FlushSaveRAM(bool autosave = false)
 		{
@@ -1640,15 +1640,15 @@ namespace BizHawk.Client.EmuHawk
 				var backupFile = new FileInfo(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
-                    try
-                    {
-                        file.Directory.Create();
-                    }
-                    catch
-                    {
-                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);                        
-                        return false;
-                    }
+					try
+					{
+						file.Directory.Create();
+					}
+					catch
+					{
+						GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);
+						return false;
+					}
 				}
 
 				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
@@ -1680,7 +1680,7 @@ namespace BizHawk.Client.EmuHawk
 				newFile.MoveTo(path);
 			}
 
-            return true;
+			return true;
 		}
 
 		private void RewireSound()
@@ -1731,8 +1731,8 @@ namespace BizHawk.Client.EmuHawk
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			pCFXToolStripMenuItem.Visible = false;
-            zXSpectrumToolStripMenuItem.Visible = false;
-            amstradCPCToolStripMenuItem.Visible = false;
+			zXSpectrumToolStripMenuItem.Visible = false;
+			amstradCPCToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1811,7 +1811,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						DGBSubMenu.Visible = true;
-					}				
+					}
 					break;
 				case "WSWAN":
 					wonderSwanToolStripMenuItem.Visible = true;
@@ -1834,17 +1834,17 @@ namespace BizHawk.Client.EmuHawk
 				case "PCFX":
 					pCFXToolStripMenuItem.Visible = true;
 					break;
-                case "ZXSpectrum":
-                    zXSpectrumToolStripMenuItem.Visible = true;
+				case "ZXSpectrum":
+					zXSpectrumToolStripMenuItem.Visible = true;
 #if DEBUG
-                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
+					ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
 #else
-                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+					ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
 #endif
-                    break;
-                case "AmstradCPC":
-                    amstradCPCToolStripMenuItem.Visible = true;
-                    break;
+					break;
+				case "AmstradCPC":
+					amstradCPCToolStripMenuItem.Visible = true;
+					break;
 			}
 		}
 
@@ -2043,7 +2043,7 @@ namespace BizHawk.Client.EmuHawk
 			bool isZero = false;
 			if (currVideoSize.Width == 0 || currVideoSize.Height == 0 || currVirtualSize.Width == 0 || currVirtualSize.Height == 0)
 				isZero = true;
-			
+
 			//don't resize if the new size is 0 somehow; we'll wait until we have a sensible size
 			if(isZero)
 				resizeFramebuffer = false;
@@ -2778,22 +2778,22 @@ namespace BizHawk.Client.EmuHawk
 			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = Emulator.DisplayName();
-            CoreNameStatusBarButton.Image = Emulator.Icon();
-            CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+			CoreNameStatusBarButton.Image = Emulator.Icon();
+			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
 
 
-            if (Emulator.SystemId == "ZXSpectrum")
-            {
-                var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
-                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
-            }
+			if (Emulator.SystemId == "ZXSpectrum")
+			{
+				var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
+				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+			}
 
-            if (Emulator.SystemId == "AmstradCPC")
-            {
-                var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator as Emulation.Cores.Computers.AmstradCPC.AmstradCPC;
-                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
-            }
-        }
+			if (Emulator.SystemId == "AmstradCPC")
+			{
+				var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator as Emulation.Cores.Computers.AmstradCPC.AmstradCPC;
+				CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+			}
+		}
 
 		private void ToggleKeyPriority()
 		{
@@ -3589,29 +3589,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			try
-			{                
-                bool deterministic;
+			{
+				bool deterministic;
 
-                if (args.Deterministic == null)
-                {
-                    // force deterministic in this case
-                    // this is usually null for most cores
-                    // previously this was getting set to false if a movie was not queued for recording - surely that can't be good..
-                    deterministic = true;
-                }
-                else
-                {
-                    // a value was actually supplied somehow - use this
-                    deterministic = args.Deterministic.Value;
-                }
+				if (args.Deterministic == null)
+				{
+					// force deterministic in this case
+					// this is usually null for most cores
+					// previously this was getting set to false if a movie was not queued for recording - surely that can't be good..
+					deterministic = true;
+				}
+				else
+				{
+					// a value was actually supplied somehow - use this
+					deterministic = args.Deterministic.Value;
+				}
 
-                if (Global.MovieSession.QueuedMovie != null)
-                {
-                    // movies should require deterministic emulation in ALL cases
-                    // if the core is managing its own DE through SyncSettings a 'deterministic' bool should be passed into the core's constructor
-                    // it is then up to the core itself to override its own local DeterministicEmulation setting
-                    deterministic = true;
-                }
+				if (Global.MovieSession.QueuedMovie != null)
+				{
+					// movies should require deterministic emulation in ALL cases
+					// if the core is managing its own DE through SyncSettings a 'deterministic' bool should be passed into the core's constructor
+					// it is then up to the core itself to override its own local DeterministicEmulation setting
+					deterministic = true;
+				}
 
 				if (!GlobalWin.Tools.AskSave())
 				{
@@ -3919,15 +3919,15 @@ namespace BizHawk.Client.EmuHawk
 			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
 			{
 				if (!FlushSaveRAM())
-                {
-                    var msgRes = MessageBox.Show("Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
-                            "Directory IO Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				{
+					var msgRes = MessageBox.Show("Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
+							"Directory IO Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
-                    if (msgRes != DialogResult.Yes)
-                    {
-                        return;
-                    }
-                }
+					if (msgRes != DialogResult.Yes)
+					{
+						return;
+					}
+				}
 			}
 
 			StopAv();
@@ -4424,7 +4424,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
-        private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
+		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 

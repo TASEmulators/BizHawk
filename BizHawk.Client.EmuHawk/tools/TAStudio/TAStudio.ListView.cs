@@ -222,10 +222,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-			
+
 			if (columnName == CursorColumnName)
 				color = Color.FromArgb(0xFEFFFF);
-			
+
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
@@ -1005,7 +1005,7 @@ namespace BizHawk.Client.EmuHawk
 						// If going backwards, delete!
 						bool shouldInsert = true;
 						if (startVal < _rightClickFrame)
-						{ 
+						{
 							// Cloning to a previous frame makes no sense.
 							startVal = _rightClickFrame - 1;
 						}
@@ -1105,7 +1105,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					
+
 
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
@@ -1123,7 +1123,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column		
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 						JumpToGreenzone();
 					}
 

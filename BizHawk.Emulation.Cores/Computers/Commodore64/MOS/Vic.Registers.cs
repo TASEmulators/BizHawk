@@ -211,7 +211,7 @@
 						_intRaster = false;
 						_rasterInterruptTriggered = false;
 					}
-						
+
 					if ((val & 0x02) != 0)
 						_intSpriteDataCollision = false;
 					if ((val & 0x04) != 0)

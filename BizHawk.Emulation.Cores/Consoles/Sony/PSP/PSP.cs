@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		readonly short[] audiobuffer = new short[2048 * 2];
 		int nsampavail = 0;
 		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{			
+		{
 			samples = audiobuffer;
 			nsamp = nsampavail;
 			//nsamp = 735;

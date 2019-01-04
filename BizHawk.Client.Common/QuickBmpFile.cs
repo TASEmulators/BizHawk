@@ -274,7 +274,7 @@ namespace BizHawk.Client.Common
 			fixed (int* dstp = dst)
 			{
 				using (new SimpleTime("Blit"))
-				{ 
+				{
 					Blit(new BMP
 					{
 						Data = (int*)srcp,
@@ -320,7 +320,7 @@ namespace BizHawk.Client.Common
 			fixed (byte* dstp = dst)
 			{
 				using (new SimpleTime("Blit"))
-				{ 
+				{
 					Blit(new BMP
 					{
 						Data = srcp,

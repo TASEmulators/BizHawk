@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 				var tsi = new ToolStripMenuItem(spec.BindingName) { ToolTipText = spec.TooltipText };
 				_dropdownMenu.Items.Add(tsi);
 			}
-		
+
 			btnSpecial.ContextMenuStrip = _dropdownMenu;
 
 			widget.CompositeWidget = this;

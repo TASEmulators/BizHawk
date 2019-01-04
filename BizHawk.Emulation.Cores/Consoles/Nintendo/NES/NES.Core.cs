@@ -26,11 +26,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int sprdma_countdown;
 
 		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
-		
+
 		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
 
-		//user configuration 
+		//user configuration
 		int[] palette_compiled = new int[64 * 8];
 
 		//variable set when VS system games are running
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cart.DB_GameInfo!=null)
 			{
-				
+
 				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
 					|| cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
 					|| cart.DB_GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					ram[0x701] = 0xFF;
 				}
-				
+
 				if (cart.DB_GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
 				{
 					ram[0xEC] = 0;
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						Board.WRAM[i] = 0xFF;
 					}
-				}			
+				}
 			}
 		}
 
@@ -373,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				while (ppu.ppudead > 0)
 				{
 					ppu.NewDeadPPU();
-				}				
+				}
 			}
 			else
 			{
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ppu.TickPPU_preVBL();
 				}
 			}
-			
+
 			if (lagged)
 			{
 				_lagcount++;
@@ -550,7 +550,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cpu.RDY = true;
 				IRQ_delay = true;
 			}
-			
+
 			Board.ClockCPU();
 		}
 
@@ -752,7 +752,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
-			
+
 			ret &= 0x1f;
 			ret |= (byte)(0xe0 & DB);
 			return ret;
@@ -893,7 +893,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical			
+				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
 			}
 			else if (addr < 0x6000)
 			{

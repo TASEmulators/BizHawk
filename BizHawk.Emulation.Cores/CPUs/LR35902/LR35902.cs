@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 	public sealed partial class LR35902
 	{
 		// operations that can take place in an instruction
-		public const ushort IDLE = 0; 
+		public const ushort IDLE = 0;
 		public const ushort OP = 1;
 		public const ushort RD = 2;
 		public const ushort WR = 3;
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[] { IDLE, IDLE, HALT_CHK, OP };
 		}
 
-		// Memory Access 
+		// Memory Access
 
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 
-						// call interrupt processor 
+						// call interrupt processor
 						// lowest bit set is highest priority
 						INTERRUPT_();
 					}
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						
+
 						if (is_GBC)
 						{
 							// call the interrupt processor after 4 extra cycles
@@ -321,11 +321,11 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							}
 						}
 						else
-						{					
+						{
 							// call interrupt processor
 							INTERRUPT_();
 							Halt_bug_3 = false;
-						}					
+						}
 					}
 					else if (temp)
 					{
@@ -379,8 +379,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							else
 							{
 								FetchInstruction(ReadMemory(RegPC++));
-							}							
-						}					
+							}
+						}
 					}
 					else
 					{
@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 										HALT, 0 };
 							}
 						}
-						
+
 					}
 					I_use = false;
 					instr_pntr = 0;
@@ -425,7 +425,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						stop_time = SpeedFunc(0);
 						stop_check = true;
 					}
-					
+
 					if (stop_time > 0)
 					{
 						stop_time--;
@@ -527,7 +527,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
 					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
 					else { int_src = 5; }
-						
+
 					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
 					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];
@@ -541,7 +541,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						Console.WriteLine("Halt_bug_3");
 						Console.WriteLine(totalExecutedCycles);
 					}
-					
+
 					Halt_bug_2 = false;
 					break;
 			}
@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					FlagZ ? "Z" : "z",
 					FlagN ? "N" : "n",
 					FlagH ? "H" : "h",
-					FlagC ? "C" : "c",			
+					FlagC ? "C" : "c",
 					FlagI ? "I" : "i",
 					interrupts_enabled ? "E" : "e")
 			};

@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				SystemId, "DiskII", true, "The DiskII firmware is required");
 
 			_machine = new Machine(_appleIIRom, _diskIIRom);
-			
+
 			_machine.BizInitialize();
 
 			// make a writeable memory stream cloned from the rom.

@@ -59,9 +59,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeNumeric)).BeginInit();
 			this.grpOutputMethod.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(317, 244);
@@ -71,9 +71,9 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.Location = new System.Drawing.Point(236, 244);
 			this.OK.Name = "OK";
@@ -82,9 +82,9 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// cbEnableNormal
-			// 
+			//
 			this.cbEnableNormal.AutoSize = true;
 			this.cbEnableNormal.Location = new System.Drawing.Point(6, 20);
 			this.cbEnableNormal.Name = "cbEnableNormal";
@@ -93,9 +93,9 @@
 			this.cbEnableNormal.Text = "Ena.";
 			this.cbEnableNormal.UseVisualStyleBackColor = true;
 			this.cbEnableNormal.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
-			// 
+			//
 			// grpSoundVol
-			// 
+			//
 			this.grpSoundVol.Controls.Add(this.nudRWFF);
 			this.grpSoundVol.Controls.Add(this.cbEnableRWFF);
 			this.grpSoundVol.Controls.Add(this.tbRWFF);
@@ -110,21 +110,21 @@
 			this.grpSoundVol.TabIndex = 2;
 			this.grpSoundVol.TabStop = false;
 			this.grpSoundVol.Text = "Volume";
-			// 
+			//
 			// nudRWFF
-			// 
+			//
 			this.nudRWFF.Location = new System.Drawing.Point(58, 223);
 			this.nudRWFF.Name = "nudRWFF";
 			this.nudRWFF.Size = new System.Drawing.Size(45, 20);
 			this.nudRWFF.TabIndex = 15;
 			this.nudRWFF.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			// 
+			100,
+			0,
+			0,
+			0});
+			//
 			// cbEnableRWFF
-			// 
+			//
 			this.cbEnableRWFF.AutoSize = true;
 			this.cbEnableRWFF.Location = new System.Drawing.Point(58, 20);
 			this.cbEnableRWFF.Name = "cbEnableRWFF";
@@ -132,9 +132,9 @@
 			this.cbEnableRWFF.TabIndex = 14;
 			this.cbEnableRWFF.Text = "Ena.";
 			this.cbEnableRWFF.UseVisualStyleBackColor = true;
-			// 
+			//
 			// tbRWFF
-			// 
+			//
 			this.tbRWFF.LargeChange = 10;
 			this.tbRWFF.Location = new System.Drawing.Point(64, 53);
 			this.tbRWFF.Maximum = 100;
@@ -144,9 +144,9 @@
 			this.tbRWFF.TabIndex = 13;
 			this.tbRWFF.TickFrequency = 10;
 			this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(56, 42);
@@ -154,9 +154,9 @@
 			this.label2.Size = new System.Drawing.Size(50, 13);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "RW && FF";
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 42);
@@ -164,9 +164,9 @@
 			this.label1.Size = new System.Drawing.Size(40, 13);
 			this.label1.TabIndex = 11;
 			this.label1.Text = "Normal";
-			// 
+			//
 			// tbNormal
-			// 
+			//
 			this.tbNormal.LargeChange = 10;
 			this.tbNormal.Location = new System.Drawing.Point(8, 53);
 			this.tbNormal.Maximum = 100;
@@ -176,42 +176,42 @@
 			this.tbNormal.TabIndex = 0;
 			this.tbNormal.TickFrequency = 10;
 			this.tbNormal.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
-			// 
+			//
 			// nudNormal
-			// 
+			//
 			this.nudNormal.Location = new System.Drawing.Point(5, 223);
 			this.nudNormal.Name = "nudNormal";
 			this.nudNormal.Size = new System.Drawing.Size(45, 20);
 			this.nudNormal.TabIndex = 1;
 			this.nudNormal.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			100,
+			0,
+			0,
+			0});
 			this.nudNormal.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
-			// 
+			//
 			// listBoxSoundDevices
-			// 
-			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.listBoxSoundDevices.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxSoundDevices.FormattingEnabled = true;
 			this.listBoxSoundDevices.Location = new System.Drawing.Point(138, 110);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
 			this.listBoxSoundDevices.Size = new System.Drawing.Size(254, 95);
 			this.listBoxSoundDevices.TabIndex = 7;
-			// 
+			//
 			// SoundDeviceLabel
-			// 
+			//
 			this.SoundDeviceLabel.AutoSize = true;
 			this.SoundDeviceLabel.Location = new System.Drawing.Point(135, 89);
 			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
 			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
 			this.SoundDeviceLabel.TabIndex = 6;
 			this.SoundDeviceLabel.Text = "Sound Device:";
-			// 
+			//
 			// BufferSizeLabel
-			// 
+			//
 			this.BufferSizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BufferSizeLabel.AutoSize = true;
 			this.BufferSizeLabel.Location = new System.Drawing.Point(135, 210);
@@ -219,32 +219,32 @@
 			this.BufferSizeLabel.Size = new System.Drawing.Size(61, 13);
 			this.BufferSizeLabel.TabIndex = 8;
 			this.BufferSizeLabel.Text = "Buffer Size:";
-			// 
+			//
 			// BufferSizeNumeric
-			// 
+			//
 			this.BufferSizeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BufferSizeNumeric.Location = new System.Drawing.Point(202, 208);
 			this.BufferSizeNumeric.Maximum = new decimal(new int[] {
-            250,
-            0,
-            0,
-            0});
+			250,
+			0,
+			0,
+			0});
 			this.BufferSizeNumeric.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
+			30,
+			0,
+			0,
+			0});
 			this.BufferSizeNumeric.Name = "BufferSizeNumeric";
 			this.BufferSizeNumeric.Size = new System.Drawing.Size(59, 20);
 			this.BufferSizeNumeric.TabIndex = 9;
 			this.BufferSizeNumeric.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			// 
+			100,
+			0,
+			0,
+			0});
+			//
 			// BufferSizeUnitsLabel
-			// 
+			//
 			this.BufferSizeUnitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BufferSizeUnitsLabel.AutoSize = true;
 			this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(267, 210);
@@ -252,9 +252,9 @@
 			this.BufferSizeUnitsLabel.Size = new System.Drawing.Size(63, 13);
 			this.BufferSizeUnitsLabel.TabIndex = 10;
 			this.BufferSizeUnitsLabel.Text = "milliseconds";
-			// 
+			//
 			// grpOutputMethod
-			// 
+			//
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodOpenAL);
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodXAudio2);
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodDirectSound);
@@ -264,9 +264,9 @@
 			this.grpOutputMethod.TabIndex = 5;
 			this.grpOutputMethod.TabStop = false;
 			this.grpOutputMethod.Text = "Output Method";
-			// 
+			//
 			// rbOutputMethodOpenAL
-			// 
+			//
 			this.rbOutputMethodOpenAL.AutoSize = true;
 			this.rbOutputMethodOpenAL.Location = new System.Drawing.Point(6, 65);
 			this.rbOutputMethodOpenAL.Name = "rbOutputMethodOpenAL";
@@ -276,9 +276,9 @@
 			this.rbOutputMethodOpenAL.Text = "OpenAL";
 			this.rbOutputMethodOpenAL.UseVisualStyleBackColor = true;
 			this.rbOutputMethodOpenAL.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
-			// 
+			//
 			// rbOutputMethodXAudio2
-			// 
+			//
 			this.rbOutputMethodXAudio2.AutoSize = true;
 			this.rbOutputMethodXAudio2.Location = new System.Drawing.Point(6, 42);
 			this.rbOutputMethodXAudio2.Name = "rbOutputMethodXAudio2";
@@ -288,9 +288,9 @@
 			this.rbOutputMethodXAudio2.Text = "XAudio2";
 			this.rbOutputMethodXAudio2.UseVisualStyleBackColor = true;
 			this.rbOutputMethodXAudio2.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
-			// 
+			//
 			// rbOutputMethodDirectSound
-			// 
+			//
 			this.rbOutputMethodDirectSound.AutoSize = true;
 			this.rbOutputMethodDirectSound.Location = new System.Drawing.Point(6, 19);
 			this.rbOutputMethodDirectSound.Name = "rbOutputMethodDirectSound";
@@ -300,9 +300,9 @@
 			this.rbOutputMethodDirectSound.Text = "DirectSound";
 			this.rbOutputMethodDirectSound.UseVisualStyleBackColor = true;
 			this.rbOutputMethodDirectSound.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
-			// 
+			//
 			// cbMuteFrameAdvance
-			// 
+			//
 			this.cbMuteFrameAdvance.AutoSize = true;
 			this.cbMuteFrameAdvance.Location = new System.Drawing.Point(139, 68);
 			this.cbMuteFrameAdvance.Name = "cbMuteFrameAdvance";
@@ -310,9 +310,9 @@
 			this.cbMuteFrameAdvance.TabIndex = 17;
 			this.cbMuteFrameAdvance.Text = "Mute Frame Advance";
 			this.cbMuteFrameAdvance.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbEnableMaster
-			// 
+			//
 			this.cbEnableMaster.AutoSize = true;
 			this.cbEnableMaster.Location = new System.Drawing.Point(139, 16);
 			this.cbEnableMaster.Name = "cbEnableMaster";
@@ -321,18 +321,18 @@
 			this.cbEnableMaster.Text = "Sound Master Enable";
 			this.cbEnableMaster.UseVisualStyleBackColor = true;
 			this.cbEnableMaster.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.Location = new System.Drawing.Point(161, 35);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(126, 26);
 			this.label3.TabIndex = 19;
 			this.label3.Text = "Controls whether cores even generate audio.";
-			// 
+			//
 			// SoundConfig
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

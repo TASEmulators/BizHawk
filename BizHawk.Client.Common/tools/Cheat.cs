@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 							return (_watch as DWordWatch).FormatValue((uint)_compare.Value);
 					}
 				}
-				
+
 				return "";
 			}
 		}
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 			{
 				return val.ToString("X8");
 			}
-			
+
 			return val.ToString();
 		}
 
@@ -192,14 +192,14 @@ namespace BizHawk.Client.Common
 						default:
 						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
 						case CompareType.Equal:
-							if (_compare.Value == _watch.ValueNoFreeze) 
+							if (_compare.Value == _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
 						case CompareType.GreaterThan:
-							if (_compare.Value > _watch.ValueNoFreeze) 
+							if (_compare.Value > _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 
 							break;
 						case CompareType.LessThan:
-							if (_compare.Value < _watch.ValueNoFreeze) 
+							if (_compare.Value < _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
@@ -323,12 +323,12 @@ namespace BizHawk.Client.Common
 					else
 					{
 						if (addr == _watch.Address)
-						{							
+						{
 							return (byte)(_val & 0xFF);
 						}
 
 						if (addr == _watch.Address + 1)
-						{							
+						{
 							return (byte)((_val >> 8) & 0xFF);
 						}
 
@@ -381,7 +381,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public void SetType(DisplayType type)
-		{			
+		{
 			if (_watch.IsDiplayTypeAvailable(type))
 			{
 				_watch.Type = type;

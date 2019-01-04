@@ -47,12 +47,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						return Core._rom[Core._rom.Length - (0x10000 - addr)];
 					}
 					else
-					{ 
+					{
 						// return whichever extra 16k bank is swapped in
 						int temp_addr = addr - 0x4000;
 
 						return Core._rom[temp_addr + bank * 0x4000];
-					}			
+					}
 				}
 			}
 		}

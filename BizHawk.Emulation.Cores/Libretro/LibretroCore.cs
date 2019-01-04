@@ -1,5 +1,5 @@
 //TODO: it's a bit of a misnomer to call this a 'core'
-//that's libretro nomenclature for a particular core (nes, genesis, doom, etc.) 
+//that's libretro nomenclature for a particular core (nes, genesis, doom, etc.)
 //we should call this LibretroEmulator (yeah, it was originally called that)
 //Since it's an IEmulator.. but... I dont know. Yeah, that's probably best
 
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			{
 				//if we dont have saveram, it isnt modified. otherwise, assume it is
 				var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
-				
+
 				//bail if the size is 0
 				if (mem.Item2 == 0)
 					return false;
@@ -428,4 +428,3 @@ namespace BizHawk.Emulation.Cores.Libretro
 	} //class
 
 } //namespace
- 

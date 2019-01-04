@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				switch (Emulator.SystemId)
-				{ 
+				{
 					default:
 					case "NULL":
 						return SystemInfo.Null;
@@ -150,10 +150,10 @@ namespace BizHawk.Client.Common
 						return SystemInfo.VirtualBoy;
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
-                    case "ZXSpectrum":
-                        return SystemInfo.ZXSpectrum;
-                    case "AmstradCPC":
-                        return SystemInfo.AmstradCPC;
+					case "ZXSpectrum":
+						return SystemInfo.ZXSpectrum;
+					case "AmstradCPC":
+						return SystemInfo.AmstradCPC;
 				}
 			}
 		}

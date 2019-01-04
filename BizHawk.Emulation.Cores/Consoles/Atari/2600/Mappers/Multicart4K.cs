@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			IncrementGame();
 		}
-		 
+
 		private void IncrementGame()
 		{
 			_currentGame++;

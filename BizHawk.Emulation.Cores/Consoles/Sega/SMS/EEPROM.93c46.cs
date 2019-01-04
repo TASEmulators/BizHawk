@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		EEPROMWriteMode WriteMode = EEPROMWriteMode.Instruction;
 		EEPROMReadMode ReadMode = EEPROMReadMode.Hold;
 		EEPROMFlags Flags = 0;
-		
+
 		public byte Read(byte[] saveRAM)
 		{
 			switch (ReadMode)
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					// repeat old value
 
 					byte bit = (byte)((saveRAM[Address % saveRAM.Length] >> (7 - BitsRead)) & 1);
-										
+
 					return (byte)((byte)(Flags | EEPROMFlags.Clock) | bit);
 				default:
 					// ready/busy flag is always ready in this emulation

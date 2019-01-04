@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 			},
 			{
 				"Commodore 64 Keyboard", new Dictionary<string, string>
-				{	
+				{
 					{ "Key F1", "1" }, { "Key F3", "3" }, { "Key F5", "5" }, { "Key F7", "7" },
 					{ "Key Left Arrow", "l" }, { "Key 1", "1" }, { "Key 2", "2" }, { "Key 3", "3" }, { "Key 4", "4" }, { "Key 5", "5" }, { "Key 6", "6" }, { "Key 7", "7" }, { "Key 8", "8" }, { "Key 9", "9" }, { "Key 0", "0" }, { "Key Plus", "+" }, { "Key Minus", "-" }, { "Key Pound", "l" }, { "Key Clear/Home", "c" }, { "Key Insert/Delete", "i" },
 					{ "Key Control", "c" }, { "Key Q", "Q" }, { "Key W", "W" }, { "Key E", "E" }, { "Key R", "R" }, { "Key T", "T" }, { "Key Y", "Y" }, { "Key U", "U" }, { "Key I", "I" }, { "Key O", "O" }, { "Key P", "P" }, { "Key At", "@" }, { "Key Asterisk", "*" }, { "Key Up Arrow", "u" }, { "Key Restore", "r" },
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 				"ColecoVision Basic Controller", new Dictionary<string, string>
 				{
 					{ "Up", "U" }, { "Down", "D" }, { "Left", "L" }, { "Right", "R" }, { "L", "l" }, { "R", "r" },
-					{ "Key1", "1" }, { "Key2", "2" }, { "Key3", "3" }, { "Key4", "4" }, { "Key5", "5" }, { "Key6", "6" }, 
+					{ "Key1", "1" }, { "Key2", "2" }, { "Key3", "3" }, { "Key4", "4" }, { "Key5", "5" }, { "Key6", "6" },
 					{ "Key7", "7" }, { "Key8", "8" }, { "Key9", "9" }, { "Star", "*" }, { "Key0", "0" }, { "Pound", "#" }
 				}
 			},

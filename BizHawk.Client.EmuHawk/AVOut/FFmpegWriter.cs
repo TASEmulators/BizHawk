@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			_segment = 0;
 			OpenFileSegment();
 		}
-		
+
 		/// <summary>
 		/// starts an ffmpeg process and sets up associated sockets
 		/// </summary>
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
 		}
-	
+
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is FFmpegWriterForm.FormatPreset)

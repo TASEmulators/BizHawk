@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						IRQSignal=true;
 						IRQCount = IRQLatch;
-					}					
+					}
 				}
 			}
 		}
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return base.ReadPPU(addr);
 		}
-		
+
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x2000)

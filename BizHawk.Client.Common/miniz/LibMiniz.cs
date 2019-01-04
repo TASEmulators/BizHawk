@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common.Miniz
 		private const CallingConvention CC = CallingConvention.Cdecl;
 
 		public enum mz_zip_flags : uint
-		{ 
+		{
 			MZ_ZIP_FLAG_CASE_SENSITIVE = 0x0100,
 			MZ_ZIP_FLAG_IGNORE_PATH = 0x0200,
 			MZ_ZIP_FLAG_COMPRESSED_DATA = 0x0400,

@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 					{
 						//The JOYPAD is sometimes called RetroPad (and we'll call it that in user-facing stuff cos retroarch does)
 						//It is essentially a Super Nintendo controller, but with additional L2/R2/L3/R3 buttons, similar to a PS1 DualShock.
-					
+
 						string button = "";
 						switch ((LibretroApi.RETRO_DEVICE_ID_JOYPAD)id)
 						{

@@ -1,59 +1,59 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class InputPrompt
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class InputPrompt
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.PromptLabel = new System.Windows.Forms.Label();
 			this.PromptBox = new System.Windows.Forms.TextBox();
 			this.OK = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
-			// 
+			//
 			// PromptLabel
-			// 
+			//
 			this.PromptLabel.AutoSize = true;
 			this.PromptLabel.Location = new System.Drawing.Point(33, 9);
 			this.PromptLabel.Name = "PromptLabel";
 			this.PromptLabel.Size = new System.Drawing.Size(73, 13);
 			this.PromptLabel.TabIndex = 0;
 			this.PromptLabel.Text = "Enter a value:";
-			// 
+			//
 			// PromptBox
-			// 
+			//
 			this.PromptBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.PromptBox.Location = new System.Drawing.Point(36, 25);
 			this.PromptBox.Name = "PromptBox";
 			this.PromptBox.Size = new System.Drawing.Size(164, 20);
 			this.PromptBox.TabIndex = 1;
 			this.PromptBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PromptBox_KeyPress);
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.OK.Location = new System.Drawing.Point(36, 67);
 			this.OK.Name = "OK";
@@ -62,9 +62,9 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(125, 67);
@@ -74,9 +74,9 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// InputPrompt
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -100,13 +100,13 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.Label PromptLabel;
-        private System.Windows.Forms.TextBox PromptBox;
-        private System.Windows.Forms.Button OK;
-        private System.Windows.Forms.Button Cancel;
-    }
+		private System.Windows.Forms.Label PromptLabel;
+		private System.Windows.Forms.TextBox PromptBox;
+		private System.Windows.Forms.Button OK;
+		private System.Windows.Forms.Button Cancel;
+	}
 }

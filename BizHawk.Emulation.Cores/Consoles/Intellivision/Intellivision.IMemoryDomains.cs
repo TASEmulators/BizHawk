@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				long index = addr / 2;
 				return (byte)(array[index] >> 8);
-				
+
 			}
 			else
 			{

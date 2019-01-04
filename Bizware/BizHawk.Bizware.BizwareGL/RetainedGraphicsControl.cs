@@ -49,7 +49,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public override void Begin()
 		{
 			base.Begin();
-			
+
 			if (_retain)
 			{
 				//TODO - frugalize me
@@ -87,7 +87,7 @@ namespace BizHawk.Bizware.BizwareGL
 				base.SwapBuffers();
 				return;
 			}
-			
+
 			//if we're retaining, then we cant draw until we unbind! its semantically a bit odd, but we expect users to call SwapBuffers() before end, so we cant unbind in End() even thoug hit makes a bit more sense.
 			rt.Unbind();
 			Draw();

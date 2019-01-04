@@ -34,9 +34,9 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
-			// 
+			//
 			// btnClose
-			// 
+			//
 			this.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.btnClose.Location = new System.Drawing.Point(347, 239);
 			this.btnClose.Name = "btnClose";
@@ -44,9 +44,9 @@
 			this.btnClose.TabIndex = 0;
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
-			// 
+			//
 			// btnHash
-			// 
+			//
 			this.btnHash.Location = new System.Drawing.Point(27, 239);
 			this.btnHash.Name = "btnHash";
 			this.btnHash.Size = new System.Drawing.Size(75, 23);
@@ -54,9 +54,9 @@
 			this.btnHash.Text = "Hash";
 			this.btnHash.UseVisualStyleBackColor = true;
 			this.btnHash.Click += new System.EventHandler(this.BtnHash_Click);
-			// 
+			//
 			// txtHashes
-			// 
+			//
 			this.txtHashes.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtHashes.Location = new System.Drawing.Point(27, 51);
 			this.txtHashes.Multiline = true;
@@ -64,28 +64,28 @@
 			this.txtHashes.ReadOnly = true;
 			this.txtHashes.Size = new System.Drawing.Size(395, 146);
 			this.txtHashes.TabIndex = 2;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(24, 211);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(200, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Sorry, this is gonna freeze while it hashes";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(96, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(223, 26);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "This tool hashes your discs in a standard way.\r\nCheck against redump.org \"Total\" " +
-    "CRC-32";
-			// 
+	"CRC-32";
+			//
 			// PSXHashDiscs
-			// 
+			//
 			this.AcceptButton = this.btnClose;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

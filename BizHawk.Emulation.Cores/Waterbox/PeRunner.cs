@@ -131,10 +131,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					"start_main", "convert_thread", "unmapself", "log_output", "pthread_self"
 				}, _psxVtable);
 				/*unsafe
-                {
-                    var ptr = (IntPtr*)_psxVtable;
-                    Console.WriteLine("AWESOMES: " + ptr[0]);
-                }*/
+				{
+					var ptr = (IntPtr*)_psxVtable;
+					Console.WriteLine("AWESOMES: " + ptr[0]);
+				}*/
 			}
 
 			private IntPtr _syscallVtable;
@@ -631,10 +631,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			/*[BizExport(CallingConvention.Cdecl, EntryPoint = "convert_thread")]
-            public void ConvertThread()
-            {
+			public void ConvertThread()
+			{
 
-            }*/
+			}*/
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "n218")]
 			public long SetTidAddress(IntPtr address)
@@ -819,66 +819,66 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// pthread stuff:
 			// since we don't allow multiple threads (for now), this is all pretty simple
 			/*
-            // int pthread_key_create(pthread_key_t *key, void (*destructor)(void*));
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_create")]
-            public int PthreadKeyCreate(ref uint key, PthreadCallback destructor)
-            {
-                key = _nextSpecificKey++;
-                _specificKeys.Add(key, IntPtr.Zero);
-                return 0;
-            }
-            // int pthread_key_delete(pthread_key_t key);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_delete")]
-            public int PthreadKeyDelete(uint key)
-            {
-                _specificKeys.Remove(key);
-                return 0;
-            }
-            // int pthread_setspecific(pthread_key_t key, const void *value);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_setspecific")]
-            public int PthreadSetSpecific(uint key, IntPtr value)
-            {
-                _specificKeys[key] = value;
-                return 0;
-            }
-            // void *pthread_getspecific(pthread_key_t key);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_getspecific")]
-            public IntPtr PthreadGetSpecific(uint key)
-            {
-                IntPtr ret;
-                _specificKeys.TryGetValue(key, out ret);
-                return ret;
-            }
+			// int pthread_key_create(pthread_key_t *key, void (*destructor)(void*));
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_create")]
+			public int PthreadKeyCreate(ref uint key, PthreadCallback destructor)
+			{
+				key = _nextSpecificKey++;
+				_specificKeys.Add(key, IntPtr.Zero);
+				return 0;
+			}
+			// int pthread_key_delete(pthread_key_t key);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_delete")]
+			public int PthreadKeyDelete(uint key)
+			{
+				_specificKeys.Remove(key);
+				return 0;
+			}
+			// int pthread_setspecific(pthread_key_t key, const void *value);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_setspecific")]
+			public int PthreadSetSpecific(uint key, IntPtr value)
+			{
+				_specificKeys[key] = value;
+				return 0;
+			}
+			// void *pthread_getspecific(pthread_key_t key);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_getspecific")]
+			public IntPtr PthreadGetSpecific(uint key)
+			{
+				IntPtr ret;
+				_specificKeys.TryGetValue(key, out ret);
+				return ret;
+			}
 
-            // int pthread_once(pthread_once_t* once_control, void (*init_routine)(void));
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_once")]
-            public int PthreadOnce(IntPtr control, PthreadCallback init)
-            {
-                if (!_didOnce)
-                {
-                    System.Diagnostics.Debugger.Break();
-                    _didOnce = true;
-                    init();
-                }
-                return 0;
-            }
+			// int pthread_once(pthread_once_t* once_control, void (*init_routine)(void));
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_once")]
+			public int PthreadOnce(IntPtr control, PthreadCallback init)
+			{
+				if (!_didOnce)
+				{
+					System.Diagnostics.Debugger.Break();
+					_didOnce = true;
+					init();
+				}
+				return 0;
+			}
 
-            // int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t* attr);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_init")]
-            public int PthreadMutexInit(IntPtr mutex, IntPtr attr) { return 0; }
-            // int pthread_mutex_destroy(pthread_mutex_t* mutex);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_destroy")]
-            public int PthreadMutexDestroy(IntPtr mutex) { return 0; }
+			// int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t* attr);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_init")]
+			public int PthreadMutexInit(IntPtr mutex, IntPtr attr) { return 0; }
+			// int pthread_mutex_destroy(pthread_mutex_t* mutex);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_destroy")]
+			public int PthreadMutexDestroy(IntPtr mutex) { return 0; }
 
-            // int pthread_mutex_lock(pthread_mutex_t* mutex);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_lock")]
-            public int PthreadMutexLock(IntPtr mutex) { return 0; }
-            // int pthread_mutex_trylock(pthread_mutex_t* mutex);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_trylock")]
-            public int PthreadMutexTryLock(IntPtr mutex) { return 0; }
-            // int pthread_mutex_unlock(pthread_mutex_t* mutex);
-            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_unlock")]
-            public int PthreadMutexUnlock(IntPtr mutex) { return 0; }*/
+			// int pthread_mutex_lock(pthread_mutex_t* mutex);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_lock")]
+			public int PthreadMutexLock(IntPtr mutex) { return 0; }
+			// int pthread_mutex_trylock(pthread_mutex_t* mutex);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_trylock")]
+			public int PthreadMutexTryLock(IntPtr mutex) { return 0; }
+			// int pthread_mutex_unlock(pthread_mutex_t* mutex);
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_unlock")]
+			public int PthreadMutexUnlock(IntPtr mutex) { return 0; }*/
 		}
 
 		/// <summary>

@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_advanced_control = false;
 					break;
 				case "MAPPER209":
-					mapper_209 = true;	
+					mapper_209 = true;
 					break;
 				case "MAPPER211":
 					nt_advanced_control = true;
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetBank(prg_banks, 0, 4, ( bankmode | (prg_regs[3] & 0x3F) ));
 					ram_bank = bankmode | (((prg_regs[3] << 2) + 3) & 0x3F);
 					break;
-				case 5:					
+				case 5:
 					SetBank(prg_banks, 0, 2, ( bankmode | (prg_regs[1] & 0x1F) ));
 					SetBank(prg_banks, 2, 2, ( bankmode | (prg_regs[3] & 0x1F) ));
 					ram_bank = bankmode | (((prg_regs[3] << 1) + 1) & 0x3F);
@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			switch (addr & 0x7007)	
+			switch (addr & 0x7007)
 			{
 				case 0x0000:	//0x8000: PRG ROM select
 				case 0x0001:
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_regs[addr & 3] |= value;
 					SyncNametables();
 					break;
-					
+
 				case 0x3004:
 				case 0x3005:
 				case 0x3006:
@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_regs[addr & 3] &= 0x00ff;
 					nt_regs[addr & 3] |= (value << 8);
 					SyncNametables();
-					break; 
+					break;
 
 				case 0x4000:	//0xC000 IRQ operation
 					if (value.Bit(0))
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						goto case 0x4002;						
+						goto case 0x4002;
 					}
 				case 0x4001:	//IRQ control
 					irq_count_down = value.Bit(7);
@@ -477,7 +477,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							else
 							{
 								SetMirrorType(EMirrorType.OneScreenA);
-							}		
+							}
 							break;
 						case 3:
 							if (mapper_035)

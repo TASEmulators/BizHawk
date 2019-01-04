@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 					ScaledX * 2 - 3,
 					ScaledY * 2 - 3);
 			}
-			
+
 			base.OnPaint(e);
 		}
 

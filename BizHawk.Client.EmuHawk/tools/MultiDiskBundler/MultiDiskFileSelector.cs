@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskFileSelector : UserControl
 	{
-        public string SystemString = "";
+		public string SystemString = "";
 
 		public string GetName()
 		{
@@ -77,56 +77,56 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			})
 			{
-                string _path = "";
+				string _path = "";
 
 				var result = ofd.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
 					_path = ofd.FileName;
 				}
-                else
-                {
-                    return;
-                }
+				else
+				{
+					return;
+				}
 
-                try
-                {
-                    var file = new FileInfo(ofd.FileName);
-                    var path = BizHawk.Common.HawkFile.Util_ResolveLink(file.FullName);
+				try
+				{
+					var file = new FileInfo(ofd.FileName);
+					var path = BizHawk.Common.HawkFile.Util_ResolveLink(file.FullName);
 
-                    using (var hf = new BizHawk.Common.HawkFile(path))
-                    {
-                        if (hf.IsArchive)
-                        {
-                            // archive - run the archive chooser
-                            if (SystemString == "PSX" || SystemString == "PCFX" || SystemString == "SAT")
-                            {
-                                MessageBox.Show("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
-                                return;
-                            }
+					using (var hf = new BizHawk.Common.HawkFile(path))
+					{
+						if (hf.IsArchive)
+						{
+							// archive - run the archive chooser
+							if (SystemString == "PSX" || SystemString == "PCFX" || SystemString == "SAT")
+							{
+								MessageBox.Show("Using archives with PSX, PCFX or SATURN is not currently recommended/supported.");
+								return;
+							}
 
-                            var ac = new ArchiveChooser(new BizHawk.Common.HawkFile(_path));
-                            int memIdx = -1;
+							var ac = new ArchiveChooser(new BizHawk.Common.HawkFile(_path));
+							int memIdx = -1;
 
-                            if (ac.ShowDialog(this) == DialogResult.OK)
-                            {
-                                memIdx = ac.SelectedMemberIndex;
-                            }
+							if (ac.ShowDialog(this) == DialogResult.OK)
+							{
+								memIdx = ac.SelectedMemberIndex;
+							}
 
-                            var intName = hf.ArchiveItems[memIdx];
-                            PathBox.Text = _path + "|" + intName.Name;
-                        }
-                        else
-                        {
-                            // file is not an archive
-                            PathBox.Text = _path;
-                        }
-                    }                        
-                }
-                catch
-                {
-                    return;
-                }
+							var intName = hf.ArchiveItems[memIdx];
+							PathBox.Text = _path + "|" + intName.Name;
+						}
+						else
+						{
+							// file is not an archive
+							PathBox.Text = _path;
+						}
+					}
+				}
+				catch
+				{
+					return;
+				}
 			}
 		}
 

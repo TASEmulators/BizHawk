@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-PEEOROM":
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
 					break;
-				
+
 				case "HVC-FKROM": //fire emblem
 					mmc4 = true;
 					AssertPrg(256); AssertChr(128); AssertWram(8); AssertVram(0);
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			
+
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
 

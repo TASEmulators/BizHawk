@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			bigendian = BigEndian;
 			notes = Notes;
 		}
-		public int address { get; set; }   
+		public int address { get; set; }
 		public int value { get; set; }         //Current value
 		public atype type { get; set; }        //Address type (byte, word, dword, etc
 		public asigned signed { get; set; }    //Signed/Unsigned?

@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 						"P" + (i + 1) + " C Right",
 						"P" + (i + 1) + " C Left",
 						"P" + (i + 1) + " L",
-						"P" + (i + 1) + " R", 
+						"P" + (i + 1) + " R",
 					});
 
 					ControllerDefinition.FloatControls.AddRange(new[]

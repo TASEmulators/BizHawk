@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 					//in any case, make a menuitem to let you remove the item
 					var tsmiRemovePath = new ToolStripMenuItem { Text = "&Remove" };
-					tsmiRemovePath.Click += (o, ev) => { 
+					tsmiRemovePath.Click += (o, ev) => {
 						recent.Remove(path);
 					};
 					tsdd.Items.Add(tsmiRemovePath);

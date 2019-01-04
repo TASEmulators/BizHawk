@@ -10,13 +10,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Released = released;
 			SupportedSystems = supportedSystems;
-            UnsupportedCores = unsupportedCores;
+			UnsupportedCores = unsupportedCores;
 		}
 
 		public bool Released { get; private set; }
 
 		public IEnumerable<string> SupportedSystems { get; private set; }
 
-        public IEnumerable<string> UnsupportedCores { get; private set; }
+		public IEnumerable<string> UnsupportedCores { get; private set; }
 	}
 }

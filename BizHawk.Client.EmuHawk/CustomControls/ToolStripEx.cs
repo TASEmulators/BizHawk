@@ -9,7 +9,7 @@ using System.Windows.Forms;
 public class ToolStripEx : ToolStrip
 {
 	private bool clickThrough = true;
-	
+
 	/// <summary>
 	/// Gets or sets whether the ToolStripEx honors item clicks when its containing form does
 	/// not have input focus.

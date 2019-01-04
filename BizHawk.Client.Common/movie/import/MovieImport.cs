@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 			{
 				throw new Exception(errorMsg);
 			}
-			
+
 			return m;
 		}
 
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + playerOffset;
 				string prefix = "P" + player + " ";
-				
+
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
 				if (controllers.Definition.Name == "Gameboy Controller")
 				{
@@ -1776,7 +1776,7 @@ namespace BizHawk.Client.Common
 
 					if (player == 1)
 					{
-						controllers["Pause"] = 
+						controllers["Pause"] =
 							(((controllerState >> 6) & 0x1) != 0 && (!gamegear))
 							|| (((controllerState >> 7) & 0x1) != 0 && gamegear);
 					}
@@ -2338,7 +2338,7 @@ namespace BizHawk.Client.Common
 			Global.Config.SNES_InSnes9x = true; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 			return m;
 		}
-		
+
 		// VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 		private static BkmMovie ImportVbm(string path, out string errorMsg, out string warningMsg)
 		{
@@ -3182,7 +3182,7 @@ namespace BizHawk.Client.Common
 								{
 									for (int button = 0; button < buttons.Length; button++)
 									{
-										controllers["P" + player + " " + buttons[button]] = 
+										controllers["P" + player + " " + buttons[button]] =
 											((controllerState >> button) & 0x1) != 0;
 									}
 								}

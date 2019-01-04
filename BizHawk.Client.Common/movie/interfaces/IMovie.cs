@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 		/// This method is intended to be more performant than a full load
 		/// </summary>
 		bool PreLoadHeaderAndLength(HawkFile hawkFile);
-		
+
 		/// <summary>
 		/// Gets the header key value pairs stored in the movie file
 		/// </summary>
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 		/// <param name="errorMessage">Returns an error message, if any</param>
 		/// <returns>Returns whether or not the input log in reader is in the same timeline as the movie</returns>
 		bool CheckTimeLines(TextReader reader, out string errorMessage);
-		
+
 		/// <summary>
 		/// Takes reader and extracts the input log, then replaces the movies input log with it
 		/// </summary>
@@ -178,7 +178,7 @@ namespace BizHawk.Client.Common
 		/// Replaces the given frame's input with an empty frame
 		/// </summary>
 		void ClearFrame(int frame);
-		
+
 		/// <summary>
 		/// Adds the given input to the movie
 		/// Note: this edits the input log without the normal movie recording logic applied

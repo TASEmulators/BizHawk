@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void Sync()
 		{
 			SyncIRQ();
-	
+
 			if (prg_mode)
 			{
 				prg_banks_8k[0] = regs[0xF] & prg_bank_mask_8k;
@@ -235,9 +235,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						irq_countdown_2 = 9;
 					}
 				}
-				
+
 			}
-			
+
 			irq_counter--;
 			if (irq_counter==0)
 			{
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irq_countdown_2 = 9;
 				}
-				
+
 				irq_counter = irq_reload + 1;
 			}
 
@@ -271,10 +271,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				irq_counter--;
 				if (irq_enable)
 				{
-					
+
 					if (irq_counter==0)
 						irq_countdown_2 = 9;
-				}		
+				}
 			}
 			*/
 		}

@@ -152,7 +152,7 @@ namespace BizHawk.Common
 		public const uint STGM_READ = 0;
 		public const int MAX_PATH = 260;
 
-		// CLSID_ShellLink from ShlGuid.h 
+		// CLSID_ShellLink from ShlGuid.h
 		[
 				ComImport(),
 				Guid("00021401-0000-0000-C000-000000000046")
@@ -180,8 +180,8 @@ namespace BizHawk.Common
 
 			PInvokes.ShellLink link = new PInvokes.ShellLink();
 			((PInvokes.IPersistFile)link).Load(filename, PInvokes.STGM_READ);
-			// TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.  
-			// ((IShellLinkW)link).Resolve(hwnd, 0) 
+			// TODO: if I can get hold of the hwnd call resolve first. This handles moved and renamed files.
+			// ((IShellLinkW)link).Resolve(hwnd, 0)
 			StringBuilder sb = new StringBuilder(PInvokes.MAX_PATH);
 			PInvokes.WIN32_FIND_DATAW data = new PInvokes.WIN32_FIND_DATAW();
 			((PInvokes.IShellLinkW)link).GetPath(sb, sb.Capacity, out data, 0);
@@ -461,7 +461,7 @@ namespace BizHawk.Common
 
 		[DllImport("kernel32.dll")]
 		static extern bool IsDebuggerPresent();
-		
+
 		public static bool IsDebuggerReallyPresent()
 		{
 			return IsDebuggerPresent();

@@ -181,10 +181,10 @@ namespace BizHawk.Client.Common
 		public enum EDispManagerAR
 		{
 			None,
-			System, 
+			System,
 
 			// actually, custom SIZE (fixme on major release)
-			Custom, 
+			Custom,
 			CustomRatio
 		}
 
@@ -238,8 +238,8 @@ namespace BizHawk.Client.Common
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 		public const int DefaultSaveStateCompressionLevelNormal = 1;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
-		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isnt actually used yet 
-		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isnt actually used yet 
+		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isnt actually used yet
+		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isnt actually used yet
 		public int MovieCompressionLevel = 2;
 
 		/// <summary>
@@ -338,7 +338,7 @@ namespace BizHawk.Client.Common
 		public int AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
 		public int LastInputColor = DefaultMessageOptions.LastInputColor;
 		public int MovieInput = DefaultMessageOptions.MovieInput;
-		
+
 		public int DispPrescale = 1;
 
 		// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.

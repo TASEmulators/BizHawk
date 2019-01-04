@@ -33,34 +33,34 @@
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoMenu.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// AutoMenu
-			// 
+			//
 			this.AutoMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu});
+			this.FileSubMenu});
 			this.AutoMenu.Location = new System.Drawing.Point(0, 0);
 			this.AutoMenu.Name = "AutoMenu";
 			this.AutoMenu.Size = new System.Drawing.Size(508, 24);
 			this.AutoMenu.TabIndex = 2;
 			this.AutoMenu.Text = "menuStrip1";
-			// 
+			//
 			// FileSubMenu
-			// 
+			//
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitMenuItem});
+			this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
-			// 
+			//
 			// ExitMenuItem
-			// 
+			//
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
+			//
 			// AutoHawk
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(508, 444);

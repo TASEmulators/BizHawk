@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
 namespace BizHawk.Client.EmuHawk
 {
-	[VideoWriter("vfwavi", "AVI writer", 
+	[VideoWriter("vfwavi", "AVI writer",
 		"Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.")]
 	internal class AviWriter : IVideoWriter
 	{
@@ -468,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 					Marshal.Copy(Format, 0, opts.lpFormat, opts.cbFormat);
 				}
 			}
-		
+
 			private byte[] SerializeToByteArray()
 			{
 				var m = new MemoryStream();
@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 				currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
 				bool failed = Win32.FAILED(Win32.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref opts, IntPtr.Zero));
 				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
-				
+
 				if (failed)
 				{
 					CloseStreams();

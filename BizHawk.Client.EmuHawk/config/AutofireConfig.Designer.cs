@@ -41,9 +41,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// Ok
-			// 
+			//
 			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Ok.Location = new System.Drawing.Point(108, 140);
 			this.Ok.Name = "Ok";
@@ -52,9 +52,9 @@
 			this.Ok.Text = "&OK";
 			this.Ok.UseVisualStyleBackColor = true;
 			this.Ok.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(189, 140);
@@ -64,71 +64,71 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// OnNumeric
-			// 
+			//
 			this.OnNumeric.Location = new System.Drawing.Point(10, 32);
 			this.OnNumeric.Maximum = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
+			512,
+			0,
+			0,
+			0});
 			this.OnNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.OnNumeric.Name = "OnNumeric";
 			this.OnNumeric.Size = new System.Drawing.Size(74, 20);
 			this.OnNumeric.TabIndex = 2;
 			this.OnNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
+			1,
+			0,
+			0,
+			0});
+			//
 			// OffNumeric
-			// 
+			//
 			this.OffNumeric.Location = new System.Drawing.Point(101, 32);
 			this.OffNumeric.Maximum = new decimal(new int[] {
-            512,
-            0,
-            0,
-            0});
+			512,
+			0,
+			0,
+			0});
 			this.OffNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.OffNumeric.Name = "OffNumeric";
 			this.OffNumeric.Size = new System.Drawing.Size(74, 20);
 			this.OffNumeric.TabIndex = 3;
 			this.OffNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
+			1,
+			0,
+			0,
+			0});
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(10, 16);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(21, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "On";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(101, 16);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(21, 13);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Off";
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.OnNumeric);
@@ -139,9 +139,9 @@
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Autofire Pattern";
-			// 
+			//
 			// LagFrameCheck
-			// 
+			//
 			this.LagFrameCheck.AutoSize = true;
 			this.LagFrameCheck.Location = new System.Drawing.Point(13, 100);
 			this.LagFrameCheck.Name = "LagFrameCheck";
@@ -149,9 +149,9 @@
 			this.LagFrameCheck.TabIndex = 8;
 			this.LagFrameCheck.Text = "Take lag frames into account";
 			this.LagFrameCheck.UseVisualStyleBackColor = true;
-			// 
+			//
 			// AutofireConfig
-			// 
+			//
 			this.AcceptButton = this.Ok;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public bool ClearAlsoClearsAnalog { get; set; }
-		
+
 		private bool _readOnly;
 
 		private List<VirtualPad> Pads
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				.FirstOrDefault(t => t.GetCustomAttributes(false)
 					.OfType<SchemaAttribute>()
 					.First().SystemId == Emulator.SystemId);
-			
+
 			if (schemaType != null)
 			{
 				var padschemas = (Activator.CreateInstance(schemaType) as IVirtualPadSchema).GetPadSchemas(Emulator);

@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		}
 
 		// Exposed for memory domains, should not be used for actual emulation implementation
-		public override byte[] TapeDataDomain 
+		public override byte[] TapeDataDomain
 		{
 			get
 			{
@@ -60,6 +60,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 					return null;
 				}
 			}
-		}		
+		}
 	}
 }

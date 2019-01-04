@@ -34,7 +34,7 @@ namespace BizHawk.Client.MultiHawk
 #endif
 		}
 
-		
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>

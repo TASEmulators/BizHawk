@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(331, 18),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					
+
 					/************************** Row 2 **************************/
 					new PadSchema.ButtonSchema
 					{

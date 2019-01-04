@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				for (int i = 0; i < 228; i++)
 				{
 					PSG.generate_sound(1);
-					if (use_SGM) { SGM_sound.generate_sound(1); }			
+					if (use_SGM) { SGM_sound.generate_sound(1); }
 					_cpu.ExecuteOne();
 
 					// pick out sound samples from the sound devies twice per scanline
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						_latchedSample = v;
 					}
 
-					_sampleClock++;	
+					_sampleClock++;
 				}
 
 				// starting from scanline 20, changes to the wheel are added once per scanline (up to 144)

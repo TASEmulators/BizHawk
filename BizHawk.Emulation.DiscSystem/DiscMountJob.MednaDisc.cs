@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//mednafen is always synthesizing everything, no need to worry about flags.. mostly./
 				job.Params.MednaDisc.Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
-				
+
 				//we may still need to deinterleave it if subcode was requested and it needs deinterleaving
 				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave | ESectorSynthPart.SubcodeAny)) != 0)
 				{
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				var q = new SubchannelQ
 				{
-					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ)m_te.control), 
+					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ)m_te.control),
 					q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
 					q_index = BCD2.FromDecimal(i),
 					min = BCD2.FromDecimal(0), //unknown with mednadisc

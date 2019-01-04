@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	{
 		public int BlobIndex;
 		public int Number;
-			
+
 		/// <summary>
 		/// A track that's final in a file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
 		/// </summary>
@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			if (curr_track == null)
 				return;
-				
+
 			//normalize: if an index 0 is missing, add it here
 			if (curr_track.Indexes[0].Number != 0)
 			{
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 			//spill cdtext data into this track
 			curr_cdtext = curr_track.CDTextData;
-		
+
 			curr_track.BlobIndex = curr_blobIndex;
 			curr_track.Number = trackCommand.Number;
 			curr_track.TrackType = trackCommand.Type;
@@ -413,12 +413,12 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			OUT_CompiledCueFiles = new List<CompiledCueFile>();
 			OUT_CompiledCueTracks = new List<CompiledCueTrack>();
 
-			//add a track 0, for addressing convenience. 
+			//add a track 0, for addressing convenience.
 			//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
 			var track0 = new CompiledCueTrack() {
 				Number = 0,
 			};
-			OUT_CompiledCueTracks.Add(track0); 
+			OUT_CompiledCueTracks.Add(track0);
 
 			//global cd text will acquire the cdtext commands set before track commands
 			curr_cdtext  = OUT_GlobalCDText;
@@ -492,7 +492,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			FinalAnalysis();
 
 			FinishLog();
-			
+
 		} //Run()
 
 	} //class CompileCueJob

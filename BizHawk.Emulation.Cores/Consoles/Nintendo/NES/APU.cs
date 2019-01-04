@@ -1,6 +1,6 @@
 ﻿// TODO - so many integers in the square wave output keep us from exactly unbiasing the waveform. also other waves probably. consider improving the unbiasing.
-// ALSO - consider whether we should even be doing it: the nonlinear-mixing behaviour probably depends on those biases being there. 
-// if we have a better high-pass filter somewhere then we might could cope with the weird biases 
+// ALSO - consider whether we should even be doing it: the nonlinear-mixing behaviour probably depends on those biases being there.
+// if we have a better high-pass filter somewhere then we might could cope with the weird biases
 // (mix higher integer precision with the non-linear mixer and then highpass filter befoure outputting s16s)
 
 // http://wiki.nesdev.com/w/index.php/APU_Mixer_Emulation
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				sequencer_lut = sequencer_lut_ntsc;
 			}
-			
+
 			noise = new NoiseUnit(this, pal);
 			triangle = new TriangleUnit(this);
 			pulse[0] = new PulseUnit(this, 0);
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static byte[] TRIANGLE_TABLE =
 		{
 			15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
- 			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
+			0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 		};
 		static int[] NOISE_TABLE_NTSC =
 		{
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (len_cnt==0)
 							{
 								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F]+1;
-							}						
+							}
 						} else
 						{
 							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
-						duty_step = 0; 
+						duty_step = 0;
 						env_start_flag = 1;
 
 						// allow the lenctr_en to kill the len_cnt
@@ -635,7 +635,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void Run()
 			{
 				// when clocked by timer, seq steps forward
-				// except when linear counter or length counter is 0 
+				// except when linear counter or length counter is 0
 				bool en = len_cnt != 0 && linear_counter != 0;
 
 				bool do_clock = false;
@@ -760,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Clock();
 				}
 
-				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
+				// Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur:
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
 				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
 				{
@@ -785,10 +785,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							delay = 3;
 						}
-					}					
+					}
 				}
 
-				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
+				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the
 				// process to execute the DMA starts. The details are not currently known, but it seems to be a 2 cycle delay
 				if (delay != 0)
 				{
@@ -811,8 +811,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			void Clock()
 			{
-				// If the silence flag is clear, bit 0 of the shift register is applied to the counter as follows: 
-				// if bit 0 is clear and the delta-counter is greater than 1, the counter is decremented by 2; 
+				// If the silence flag is clear, bit 0 of the shift register is applied to the counter as follows:
+				// if bit 0 is clear and the delta-counter is greater than 1, the counter is decremented by 2;
 				// otherwise, if bit 0 is set and the delta-counter is less than 126, the counter is incremented by 2
 				if (!out_silence)
 				{
@@ -831,13 +831,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					apu.recalculate = true;
 				}
 
-				// The right shift register is clocked. 
+				// The right shift register is clocked.
 				out_shift >>= 1;
 
-				// The bits-remaining counter is decremented. If it becomes zero, a new cycle is started. 
+				// The bits-remaining counter is decremented. If it becomes zero, a new cycle is started.
 				if (out_bits_remaining == 0)
 				{
-					// The bits-remaining counter is loaded with 8. 
+					// The bits-remaining counter is loaded with 8.
 					out_bits_remaining = 7;
 					// If the sample buffer is empty then the silence flag is set
 					if (!sample_buffer_filled)
@@ -845,7 +845,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						out_silence = true;
 					}
 					else
-					// otherwise, the silence flag is cleared and the sample buffer is emptied into the shift register. 
+					// otherwise, the silence flag is cleared and the sample buffer is emptied into the shift register.
 					{
 						out_silence = false;
 						out_shift = sample_buffer;
@@ -859,7 +859,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (!en)
 				{
-					// If the DMC bit is clear, the DMC bytes remaining will be set to 0 
+					// If the DMC bit is clear, the DMC bytes remaining will be set to 0
 					// and the DMC will silence when it empties.
 					sample_length = 0;
 					}
@@ -871,7 +871,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						sample_address = user_address;
 						sample_length = user_length;
-						
+
 					}
 					if (!sample_buffer_filled)
 					{
@@ -1017,7 +1017,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (seq_tick==0)
 				{
 					sequencer_mode = (val >> 7) & 1;
-					
+
 					// Console.WriteLine("apu 4017 = {0:X2}", val);
 					// check if we will be doing the extra frame ticks or not
 					if (sequencer_mode==1)
@@ -1051,7 +1051,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sequencer_irq_assert = 2;
 					sequencer_irq_flag = true;
 				}
-					
+
 				HalfFrame();
 			}
 			if (sequencer_mode == 0 && sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_irq_inhibit == 0)
@@ -1204,7 +1204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							seq_tick = 4;
 						}
-						
+
 						seq_val = val;
 					}
 					break;
@@ -1218,7 +1218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4015:
 					{
 						//notice a missing bit here. should properly emulate with empty / Data bus
-						//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
+						//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared.
 						int dmc_nonzero = dmc.IsLenCntNonZero() ? 1 : 0;
 						int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
 						int tri_nonzero = triangle.IsLenCntNonZero() ? 1 : 0;
@@ -1285,11 +1285,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				EmitSample();
 
-				// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
+				// we need to predict if there will be a length clock here, because the sequencer ticks last, but the
 				// timer reload shouldn't happen if length clock and write happen simultaneously
 				// I'm not sure if we can avoid this by simply processing the sequencer first
 				// but at the moment that would break everything, so this is good enough for now
-				if (sequencer_counter == (sequencer_lut[0][1] - 1) || 
+				if (sequencer_counter == (sequencer_lut[0][1] - 1) ||
 					(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode==0) ||
 					(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
 				{
@@ -1299,7 +1299,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// handle writes
 				// notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
 				// in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
-				// the current code simply matches known behaviour			
+				// the current code simply matches known behaviour
 				if (pending_reg != -1)
 				{
 					if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg==0x4007)
@@ -1319,14 +1319,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sequencer_tick();
 				sequencer_write_tick(seq_val);
 				doing_tick_quarter = false;
-				
+
 				if (sequencer_irq_assert>0) {
 					sequencer_irq_assert--;
 					if (sequencer_irq_assert==0)
 					{
 						sequencer_irq = true;
-					}					
-				}				
+					}
+				}
 
 				SyncIRQ();
 				nes._irq_apu = irq_pending;
@@ -1409,7 +1409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else tnd_out = 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f /* * NOISEADJUST*/) + (s_dmc / 22638.0f)) + 100);
 				float output = pulse_out + tnd_out;
 				// output = output * 2 - 1;
-				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
+				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that.
 				int mix = (int)(20000 * output * (1 + m_vol/5));
 
 				dlist.Add(new Delta(sampleclock, mix - oldmix));

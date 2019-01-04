@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			Cpu.SyncState(ser);
 
-			ser.BeginSection("SMS");			
+			ser.BeginSection("SMS");
 			Vdp.SyncState(ser);
 			PSG.SyncState(ser);
 			ser.Sync("RAM", ref SystemRam, false);
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				YM2413.SyncState(ser);
 			}
-			
+
 			if (EEPROM != null)
 			{
 				EEPROM.SyncState(ser);

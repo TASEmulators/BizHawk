@@ -565,7 +565,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearDetails();
 		}
-		
+
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
 			HandleSpriteViewMouseMove(e.Location);

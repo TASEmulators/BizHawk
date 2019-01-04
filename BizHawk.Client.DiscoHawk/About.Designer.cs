@@ -33,9 +33,9 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.lblVersion = new System.Windows.Forms.Label();
 			this.SuspendLayout();
-			// 
+			//
 			// richTextBox1
-			// 
+			//
 			this.richTextBox1.Location = new System.Drawing.Point(12, 12);
 			this.richTextBox1.Name = "richTextBox1";
 			this.richTextBox1.ReadOnly = true;
@@ -43,9 +43,9 @@
 			this.richTextBox1.TabIndex = 1;
 			this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
 			this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
-			// 
+			//
 			// button1
-			// 
+			//
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.button1.Location = new System.Drawing.Point(436, 254);
 			this.button1.Name = "button1";
@@ -54,18 +54,18 @@
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
+			//
 			// lblVersion
-			// 
+			//
 			this.lblVersion.AutoSize = true;
 			this.lblVersion.Location = new System.Drawing.Point(12, 259);
 			this.lblVersion.Name = "lblVersion";
 			this.lblVersion.Size = new System.Drawing.Size(79, 13);
 			this.lblVersion.TabIndex = 3;
 			this.lblVersion.Text = "version number";
-			// 
+			//
 			// About
-			// 
+			//
 			this.AcceptButton = this.button1;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

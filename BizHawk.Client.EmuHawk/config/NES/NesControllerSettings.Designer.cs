@@ -39,9 +39,9 @@
 			this.comboBoxNESL = new System.Windows.Forms.ComboBox();
 			this.comboBoxFamicom = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(300, 219);
@@ -51,9 +51,9 @@
 			this.CancelBtn.Text = "&Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// OkBtn
-			// 
+			//
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkBtn.Location = new System.Drawing.Point(234, 219);
 			this.OkBtn.Name = "OkBtn";
@@ -62,9 +62,9 @@
 			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
+			//
 			// checkBoxFamicom
-			// 
+			//
 			this.checkBoxFamicom.AutoSize = true;
 			this.checkBoxFamicom.Location = new System.Drawing.Point(12, 21);
 			this.checkBoxFamicom.Name = "checkBoxFamicom";
@@ -73,54 +73,54 @@
 			this.checkBoxFamicom.Text = "Famicom";
 			this.checkBoxFamicom.UseVisualStyleBackColor = true;
 			this.checkBoxFamicom.CheckedChanged += new System.EventHandler(this.CheckBoxFamicom_CheckedChanged);
-			// 
+			//
 			// label5
-			// 
+			//
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(6, 138);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(82, 13);
 			this.label5.TabIndex = 12;
 			this.label5.Text = "NES Right Port:";
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(9, 98);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(75, 13);
 			this.label4.TabIndex = 11;
 			this.label4.Text = "NES Left Port:";
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(9, 58);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(104, 13);
 			this.label3.TabIndex = 10;
 			this.label3.Text = "Famicom Expansion:";
-			// 
+			//
 			// comboBoxNESR
-			// 
+			//
 			this.comboBoxNESR.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxNESR.FormattingEnabled = true;
 			this.comboBoxNESR.Location = new System.Drawing.Point(9, 154);
 			this.comboBoxNESR.Name = "comboBoxNESR";
 			this.comboBoxNESR.Size = new System.Drawing.Size(329, 21);
 			this.comboBoxNESR.TabIndex = 9;
-			// 
+			//
 			// comboBoxNESL
-			// 
+			//
 			this.comboBoxNESL.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxNESL.FormattingEnabled = true;
 			this.comboBoxNESL.Location = new System.Drawing.Point(9, 114);
 			this.comboBoxNESL.Name = "comboBoxNESL";
 			this.comboBoxNESL.Size = new System.Drawing.Size(329, 21);
 			this.comboBoxNESL.TabIndex = 8;
-			// 
+			//
 			// comboBoxFamicom
-			// 
+			//
 			this.comboBoxFamicom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxFamicom.Enabled = false;
 			this.comboBoxFamicom.FormattingEnabled = true;
@@ -128,9 +128,9 @@
 			this.comboBoxFamicom.Name = "comboBoxFamicom";
 			this.comboBoxFamicom.Size = new System.Drawing.Size(329, 21);
 			this.comboBoxFamicom.TabIndex = 7;
-			// 
+			//
 			// NesControllerSettings
-			// 
+			//
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

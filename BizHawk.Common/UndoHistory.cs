@@ -80,7 +80,7 @@ namespace BizHawk.Common
 				_curPos++;
 				return _history[_curPos - 1];
 			}
-			
+
 			return Enumerable.Empty<T>();
 		}
 	}

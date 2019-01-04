@@ -55,9 +55,9 @@
 			this.groupBox5.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.bmpViewTiles);
 			this.groupBox1.Location = new System.Drawing.Point(12, 568);
 			this.groupBox1.Name = "groupBox1";
@@ -65,17 +65,17 @@
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Tiles";
-			// 
+			//
 			// bmpViewTiles
-			// 
+			//
 			this.bmpViewTiles.Location = new System.Drawing.Point(6, 19);
 			this.bmpViewTiles.Name = "bmpViewTiles";
 			this.bmpViewTiles.Size = new System.Drawing.Size(512, 256);
 			this.bmpViewTiles.TabIndex = 0;
 			this.bmpViewTiles.Text = "bmpView1";
-			// 
+			//
 			// groupBox2
-			// 
+			//
 			this.groupBox2.Controls.Add(this.bmpViewPal);
 			this.groupBox2.Location = new System.Drawing.Point(12, 855);
 			this.groupBox2.Name = "groupBox2";
@@ -83,18 +83,18 @@
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Palettes";
-			// 
+			//
 			// bmpViewPal
-			// 
+			//
 			this.bmpViewPal.Location = new System.Drawing.Point(6, 19);
 			this.bmpViewPal.Name = "bmpViewPal";
 			this.bmpViewPal.Size = new System.Drawing.Size(256, 64);
 			this.bmpViewPal.TabIndex = 4;
 			this.bmpViewPal.Text = "bmpView1";
 			this.bmpViewPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewPal_MouseClick);
-			// 
+			//
 			// groupBox3
-			// 
+			//
 			this.groupBox3.Controls.Add(this.bmpViewNTW);
 			this.groupBox3.Location = new System.Drawing.Point(542, 568);
 			this.groupBox3.Name = "groupBox3";
@@ -102,17 +102,17 @@
 			this.groupBox3.TabIndex = 7;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Window";
-			// 
+			//
 			// bmpViewNTW
-			// 
+			//
 			this.bmpViewNTW.Location = new System.Drawing.Point(6, 19);
 			this.bmpViewNTW.Name = "bmpViewNTW";
 			this.bmpViewNTW.Size = new System.Drawing.Size(75, 23);
 			this.bmpViewNTW.TabIndex = 3;
 			this.bmpViewNTW.Text = "bmpView1";
-			// 
+			//
 			// groupBox4
-			// 
+			//
 			this.groupBox4.Controls.Add(this.bmpViewNTA);
 			this.groupBox4.Location = new System.Drawing.Point(12, 25);
 			this.groupBox4.Name = "groupBox4";
@@ -120,17 +120,17 @@
 			this.groupBox4.TabIndex = 8;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "BG A";
-			// 
+			//
 			// bmpViewNTA
-			// 
+			//
 			this.bmpViewNTA.Location = new System.Drawing.Point(6, 19);
 			this.bmpViewNTA.Name = "bmpViewNTA";
 			this.bmpViewNTA.Size = new System.Drawing.Size(75, 23);
 			this.bmpViewNTA.TabIndex = 1;
 			this.bmpViewNTA.Text = "bmpView1";
-			// 
+			//
 			// groupBox5
-			// 
+			//
 			this.groupBox5.Controls.Add(this.bmpViewNTB);
 			this.groupBox5.Location = new System.Drawing.Point(542, 25);
 			this.groupBox5.Name = "groupBox5";
@@ -138,99 +138,99 @@
 			this.groupBox5.TabIndex = 9;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "BG B";
-			// 
+			//
 			// bmpViewNTB
-			// 
+			//
 			this.bmpViewNTB.Location = new System.Drawing.Point(6, 19);
 			this.bmpViewNTB.Name = "bmpViewNTB";
 			this.bmpViewNTB.Size = new System.Drawing.Size(75, 23);
 			this.bmpViewNTB.TabIndex = 2;
 			this.bmpViewNTB.Text = "bmpView1";
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(743, 855);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(323, 13);
 			this.label1.TabIndex = 10;
 			this.label1.Text = "CTRL+C copies the pane under the mouse pointer to the clipboard.";
-			// 
+			//
 			// menuStrip1
-			// 
+			//
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+			this.fileToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(1078, 24);
 			this.menuStrip1.TabIndex = 11;
 			this.menuStrip1.Text = "menuStrip1";
-			// 
+			//
 			// fileToolStripMenuItem
-			// 
+			//
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveBGAScreenshotToolStripMenuItem,
-            this.saveBGBScreenshotToolStripMenuItem,
-            this.saveTilesScreenshotToolStripMenuItem,
-            this.saveWindowScreenshotToolStripMenuItem,
-            this.savePaletteScreenshotToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.closeToolStripMenuItem});
+			this.saveBGAScreenshotToolStripMenuItem,
+			this.saveBGBScreenshotToolStripMenuItem,
+			this.saveTilesScreenshotToolStripMenuItem,
+			this.saveWindowScreenshotToolStripMenuItem,
+			this.savePaletteScreenshotToolStripMenuItem,
+			this.toolStripSeparator1,
+			this.closeToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
-			// 
+			//
 			// saveBGAScreenshotToolStripMenuItem
-			// 
+			//
 			this.saveBGAScreenshotToolStripMenuItem.Name = "saveBGAScreenshotToolStripMenuItem";
 			this.saveBGAScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveBGAScreenshotToolStripMenuItem.Text = "Save BG A Screenshot...";
 			this.saveBGAScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGAScreenshotToolStripMenuItem_Click);
-			// 
+			//
 			// saveBGBScreenshotToolStripMenuItem
-			// 
+			//
 			this.saveBGBScreenshotToolStripMenuItem.Name = "saveBGBScreenshotToolStripMenuItem";
 			this.saveBGBScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveBGBScreenshotToolStripMenuItem.Text = "Save BG B Screenshot...";
 			this.saveBGBScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGBScreenshotToolStripMenuItem_Click);
-			// 
+			//
 			// saveTilesScreenshotToolStripMenuItem
-			// 
+			//
 			this.saveTilesScreenshotToolStripMenuItem.Name = "saveTilesScreenshotToolStripMenuItem";
 			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
 			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
-			// 
+			//
 			// saveWindowScreenshotToolStripMenuItem
-			// 
+			//
 			this.saveWindowScreenshotToolStripMenuItem.Name = "saveWindowScreenshotToolStripMenuItem";
 			this.saveWindowScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveWindowScreenshotToolStripMenuItem.Text = "Save Window Screenshot...";
 			this.saveWindowScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveWindowScreenshotToolStripMenuItem_Click);
-			// 
+			//
 			// savePaletteScreenshotToolStripMenuItem
-			// 
+			//
 			this.savePaletteScreenshotToolStripMenuItem.Name = "savePaletteScreenshotToolStripMenuItem";
 			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
 			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.savePaletteScreenshotToolStripMenuItem_Click);
-			// 
+			//
 			// toolStripSeparator1
-			// 
+			//
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
-			// 
+			//
 			// closeToolStripMenuItem
-			// 
+			//
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
 			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.closeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.closeToolStripMenuItem.Text = "&Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
-			// 
+			//
 			// GenVDPViewer
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;

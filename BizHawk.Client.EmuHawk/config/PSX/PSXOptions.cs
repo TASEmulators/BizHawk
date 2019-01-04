@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// backups of the labels for string replacing
 		private readonly string lblPixelPro_text, lblMednafen_text, lblTweakedMednafen_text;
-		
+
 		private PSXOptions(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
 		{
 			InitializeComponent();
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
-			var size = psx.CurrentVideoSize; 
+			var size = psx.CurrentVideoSize;
 			var dlg = new PSXOptions(s, ss, vid, size);
 
 			var result = dlg.ShowDialog(owner);

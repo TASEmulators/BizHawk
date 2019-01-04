@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				var changed = _size != value;
-				
+
 				_size = value;
 				if (changed)
 				{

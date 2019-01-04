@@ -85,7 +85,7 @@ namespace BizHawk.Client.MultiHawk
 				{
 					return null;
 				}
-				
+
 				var index = IsDuplicateOf(filename);
 				if (!index.HasValue)
 				{
@@ -96,7 +96,7 @@ namespace BizHawk.Client.MultiHawk
 						return null;
 					}
 					//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
-					
+
 					lock (_movieList)
 					{
 						_movieList.Add(movie);
@@ -203,7 +203,7 @@ namespace BizHawk.Client.MultiHawk
 				HighlightMovie(tas[0]);
 				return;
 			}
-			
+
 			if (tas.Count > 1)
 			{
 				indices = new List<int>(tas);
@@ -254,7 +254,7 @@ namespace BizHawk.Client.MultiHawk
 			while (dpTodo.Count > 0)
 			{
 				string dp = dpTodo.Dequeue();
-				
+
 				//enqueue subdirectories if appropriate
 				if (Global.Config.PlayMovie_IncludeSubdir)
 					foreach(var subdir in Directory.GetDirectories(dp))
@@ -502,7 +502,7 @@ namespace BizHawk.Client.MultiHawk
 					movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
 			return new PlatformFrameRates()[system, pal];
-			
+
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
@@ -666,7 +666,7 @@ namespace BizHawk.Client.MultiHawk
 			Run();
 			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
-			if (StopOnFrameCheckbox.Checked && 
+			if (StopOnFrameCheckbox.Checked &&
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
 				if (LastFrameCheckbox.Checked)

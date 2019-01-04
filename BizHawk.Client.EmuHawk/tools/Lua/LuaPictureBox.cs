@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Image = new Bitmap(Width, Height);
 		}
-		
+
 		public void LuaResize(int width, int height)
 		{
 			Width = width;
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillEllipse(brush, x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawEllipse(GetPen(line ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawPie(GetPen(line ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
 		}
 
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 				boxBackground.FillRectangle(GetBrush(bg.Value), x, y, width, height);
 				boxBackground = Graphics.FromImage(Image);
 			}
-			
+
 			boxBackground.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, width, height);
 		}
 
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 			var f = new StringFormat(StringFormat.GenericDefault);
 			var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 			var boxBackground = Graphics.FromImage(Image);
-			
+
 		Size sizeOfText = boxBackground.MeasureString(message, font, 0, f).ToSize();
 
 			if (horizalign != null)
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			boxBackground.DrawString(message, font, new SolidBrush(forecolor ?? Color.Black), x, y);
 		}
-		
+
 		public Point GetMouse()
 		{
 			var p = PointToClient(Control.MousePosition);

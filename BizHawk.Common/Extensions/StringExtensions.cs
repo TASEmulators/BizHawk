@@ -15,7 +15,7 @@ namespace BizHawk.Common.StringExtensions
 			{
 				return null;
 			}
-			
+
 			if (index == 0)
 			{
 				return "";

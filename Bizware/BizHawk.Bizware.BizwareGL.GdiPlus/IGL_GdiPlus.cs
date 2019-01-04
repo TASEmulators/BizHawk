@@ -54,7 +54,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 			_currentClearColor = color;
 		}
-		
+
 		public unsafe void BindArrayData(void* pData)
 		{
 		}
@@ -65,7 +65,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = tex.Opaque as TextureWrapper;
 			tw.Dispose();
 		}
-		
+
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
 			return null;
@@ -117,7 +117,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-		
+
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
@@ -146,7 +146,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
-	
+
 		}
 
 		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
@@ -206,7 +206,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			{
 				AllowWrap = false //must be an independent resource
 			};
-			var bb = new BitmapBuffer(tw.SDBitmap,blow); 
+			var bb = new BitmapBuffer(tw.SDBitmap,blow);
 			return bb;
 		}
 
@@ -246,7 +246,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			//  ret.M42 = dims.Height;
 			//  return ret;
 			//}
-			//else 
+			//else
 				return Matrix4.Identity;
 		}
 
@@ -265,10 +265,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void SetViewport(swf.Control control)
 		{
-			
+
 		}
 
-	
+
 		public void BeginControl(GLControlWrapper_GdiPlus control)
 		{
 			CurrentControl = control;
@@ -351,12 +351,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
 			var ret = new GLControlWrapper_GdiPlus(this);
-			
+
 			//create a render target for this control
 			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
 			rtw.Control = ret;
 			ret.RenderTargetWrapper = rtw;
-			
+
 			return ret;
 		}
 

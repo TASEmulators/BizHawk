@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
-			// add everything to the state 
+			// add everything to the state
 			ser.Sync("Bus_State", ref BusState);
 
 			ser.Sync("Ticks", ref _doTicks);

@@ -48,9 +48,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.OK.Location = new System.Drawing.Point(205, 279);
@@ -60,9 +60,9 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(286, 279);
@@ -71,9 +71,9 @@
 			this.Cancel.TabIndex = 5;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.DispBG2);
 			this.groupBox1.Controls.Add(this.DispOBJ2);
 			this.groupBox1.Controls.Add(this.DispBG1);
@@ -84,9 +84,9 @@
 			this.groupBox1.TabIndex = 2;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Background and Sprites";
-			// 
+			//
 			// DispBG2
-			// 
+			//
 			this.DispBG2.AutoSize = true;
 			this.DispBG2.Checked = true;
 			this.DispBG2.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -96,9 +96,9 @@
 			this.DispBG2.TabIndex = 3;
 			this.DispBG2.Text = "Display BG2";
 			this.DispBG2.UseVisualStyleBackColor = true;
-			// 
+			//
 			// DispOBJ2
-			// 
+			//
 			this.DispOBJ2.AutoSize = true;
 			this.DispOBJ2.Checked = true;
 			this.DispOBJ2.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -108,9 +108,9 @@
 			this.DispOBJ2.TabIndex = 2;
 			this.DispOBJ2.Text = "Display OBJ2";
 			this.DispOBJ2.UseVisualStyleBackColor = true;
-			// 
+			//
 			// DispBG1
-			// 
+			//
 			this.DispBG1.AutoSize = true;
 			this.DispBG1.Checked = true;
 			this.DispBG1.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -120,9 +120,9 @@
 			this.DispBG1.TabIndex = 1;
 			this.DispBG1.Text = "Display BG1";
 			this.DispBG1.UseVisualStyleBackColor = true;
-			// 
+			//
 			// DispOBJ1
-			// 
+			//
 			this.DispOBJ1.AutoSize = true;
 			this.DispOBJ1.Checked = true;
 			this.DispOBJ1.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -132,11 +132,11 @@
 			this.DispOBJ1.TabIndex = 0;
 			this.DispOBJ1.Text = "Display OBJ1";
 			this.DispOBJ1.UseVisualStyleBackColor = true;
-			// 
+			//
 			// groupBox2
-			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.btnAreaFull);
 			this.groupBox2.Controls.Add(this.btnAreaStandard);
@@ -150,18 +150,18 @@
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
-			// 
+			//
 			// label5
-			// 
+			//
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(62, 22);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(36, 13);
 			this.label5.TabIndex = 41;
 			this.label5.Text = "NTSC";
-			// 
+			//
 			// btnAreaFull
-			// 
+			//
 			this.btnAreaFull.Location = new System.Drawing.Point(6, 115);
 			this.btnAreaFull.Name = "btnAreaFull";
 			this.btnAreaFull.Size = new System.Drawing.Size(100, 23);
@@ -169,9 +169,9 @@
 			this.btnAreaFull.Text = "Full [0,262]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
 			this.btnAreaFull.Click += new System.EventHandler(this.BtnAreaFull_Click);
-			// 
+			//
 			// btnAreaStandard
-			// 
+			//
 			this.btnAreaStandard.Location = new System.Drawing.Point(6, 92);
 			this.btnAreaStandard.Name = "btnAreaStandard";
 			this.btnAreaStandard.Size = new System.Drawing.Size(100, 23);
@@ -179,61 +179,61 @@
 			this.btnAreaStandard.Text = "Standard [18,252]";
 			this.btnAreaStandard.UseVisualStyleBackColor = true;
 			this.btnAreaStandard.Click += new System.EventHandler(this.BtnAreaStandard_Click);
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(4, 69);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(49, 13);
 			this.label4.TabIndex = 24;
 			this.label4.Text = "Last line:";
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(5, 43);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(48, 13);
 			this.label3.TabIndex = 23;
 			this.label3.Text = "First line:";
-			// 
+			//
 			// NTSC_LastLineNumeric
-			// 
+			//
 			this.NTSC_LastLineNumeric.Location = new System.Drawing.Point(59, 67);
 			this.NTSC_LastLineNumeric.Maximum = new decimal(new int[] {
-            262,
-            0,
-            0,
-            0});
+			262,
+			0,
+			0,
+			0});
 			this.NTSC_LastLineNumeric.Minimum = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
+			128,
+			0,
+			0,
+			0});
 			this.NTSC_LastLineNumeric.Name = "NTSC_LastLineNumeric";
 			this.NTSC_LastLineNumeric.Size = new System.Drawing.Size(47, 20);
 			this.NTSC_LastLineNumeric.TabIndex = 28;
 			this.NTSC_LastLineNumeric.Value = new decimal(new int[] {
-            128,
-            0,
-            0,
-            0});
-			// 
+			128,
+			0,
+			0,
+			0});
+			//
 			// NTSC_FirstLineNumeric
-			// 
+			//
 			this.NTSC_FirstLineNumeric.Location = new System.Drawing.Point(59, 41);
 			this.NTSC_FirstLineNumeric.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
+			127,
+			0,
+			0,
+			0});
 			this.NTSC_FirstLineNumeric.Name = "NTSC_FirstLineNumeric";
 			this.NTSC_FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
 			this.NTSC_FirstLineNumeric.TabIndex = 21;
-			// 
+			//
 			// PCEGraphicsConfig
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

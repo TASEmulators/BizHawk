@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	// Adapted from 
+	// Adapted from
 	public sealed class CamericaGoldenFive : NES.NESBoardBase
 	{
 		private ByteBuffer regs = new ByteBuffer(2);

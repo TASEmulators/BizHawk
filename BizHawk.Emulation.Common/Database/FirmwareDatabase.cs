@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Common
 
 			// ZX Spectrum
 			/* These are now shipped with bizhawk
-            FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
-            FirmwareAndOption("16375D42EA109B47EDDED7A16028DE7FDB3013A1", 32768, "ZXSpectrum", "128ROM", "128.ROM", "Spectrum 128K ROM");
-            FirmwareAndOption("8CAFB292AF58617907B9E6B9093D3588A75849B8", 32768, "ZXSpectrum", "PLUS2ROM", "PLUS2.ROM", "Spectrum 128K +2 ROM");
-            FirmwareAndOption("929BF1A5E5687EBD8D7245F9B513A596C0EC21A4", 65536, "ZXSpectrum", "PLUS3ROM", "PLUS3.ROM", "Spectrum 128K +3 ROM");
-            */
+			FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
+			FirmwareAndOption("16375D42EA109B47EDDED7A16028DE7FDB3013A1", 32768, "ZXSpectrum", "128ROM", "128.ROM", "Spectrum 128K ROM");
+			FirmwareAndOption("8CAFB292AF58617907B9E6B9093D3588A75849B8", 32768, "ZXSpectrum", "PLUS2ROM", "PLUS2.ROM", "Spectrum 128K +2 ROM");
+			FirmwareAndOption("929BF1A5E5687EBD8D7245F9B513A596C0EC21A4", 65536, "ZXSpectrum", "PLUS3ROM", "PLUS3.ROM", "Spectrum 128K +3 ROM");
+			*/
 			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "pentagon.rom", "Russian Pentagon Clone ROM");
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "trdos.rom", "TRDOS ROM");
 
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Common
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
 			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
 			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g]
 			// http://redump.org/datfile/psx-bios/ also
 			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "ps-10j.bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Common
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]. May be known as SCPH18000.BIN.");
 			/*new*/ var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "DTLH2000.bin", "DTL-H2000 Devkit [t]");
 			/*new*/ var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "ps1_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
-			
+
 
 			ps_22j_bad.Bad = ps_22j_bad2.Bad = ps_30e_bad.Bad = true;
 

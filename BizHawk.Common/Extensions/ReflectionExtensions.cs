@@ -132,7 +132,7 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// Takes an object and invokes the method
 		/// The method must exist and be public
 		/// </summary>
-		/// <returns>The return value of the method, as an object.  
+		/// <returns>The return value of the method, as an object.
 		/// If the method returns void, the return value is null
 		/// If the method does not exist or is not public, it returns null
 		/// </returns>

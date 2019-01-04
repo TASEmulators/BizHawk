@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 				case 0xC:
 					WriteRegister(addr, val);
-					// TriggerInterrupt(8); 				
+					// TriggerInterrupt(8);
 					break;
 				case 0xD:
 					if ((val & 0x80) != 0)

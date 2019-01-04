@@ -35,7 +35,7 @@ namespace BizHawk.Client.MultiHawk.ToolExtensions
 					{
 						loadFileCallback(temp);
 					};
-					
+
 					//TODO - use standard methods to split filename (hawkfile acquire?)
 					var hf = new HawkFile();
 					hf.Parse(temp);
@@ -113,7 +113,7 @@ namespace BizHawk.Client.MultiHawk.ToolExtensions
 					//	tsdd.Items.Add(tsmiMissingFile);
 					//	tsdd.Items.Add(new ToolStripSeparator());
 					//}
-					
+
 					////in either case, make a menuitem to let you remove the path
 					//var tsmiRemovePath = new ToolStripMenuItem { Text = "&Remove" };
 					//tsmiRemovePath.Click += (o, ev) => { recent.Remove(temp); };

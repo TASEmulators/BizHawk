@@ -521,7 +521,7 @@ namespace BizHawk.Client.Common
 			{
 				_stateManager.Invalidate(branch.InputLog.Count);
 			}
-			
+
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers;

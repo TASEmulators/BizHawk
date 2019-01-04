@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 				{
 					return ROM[addr + prg0 * 0x2000];
-				}			
+				}
 			}
 			else if (addr < 0x4000)
 			{

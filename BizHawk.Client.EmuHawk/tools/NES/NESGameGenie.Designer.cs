@@ -1,33 +1,33 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class NESGameGenie
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class NESGameGenie
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESGameGenie));
 			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
@@ -66,9 +66,9 @@
 			this.ButtonPanel.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// GameGenieCode
-			// 
+			//
 			this.GameGenieCode.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.GameGenieCode.Location = new System.Drawing.Point(6, 19);
 			this.GameGenieCode.MaxLength = 8;
@@ -78,9 +78,9 @@
 			this.GameGenieCode.TextChanged += new System.EventHandler(this.GameGenieCode_TextChanged);
 			this.GameGenieCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameGenieCode_KeyDown);
 			this.GameGenieCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GameGenieCode_KeyPress);
-			// 
+			//
 			// GameGenieCodeBox
-			// 
+			//
 			this.GameGenieCodeBox.Controls.Add(this.GameGenieCode);
 			this.GameGenieCodeBox.Location = new System.Drawing.Point(31, 103);
 			this.GameGenieCodeBox.Name = "GameGenieCodeBox";
@@ -88,36 +88,36 @@
 			this.GameGenieCodeBox.TabIndex = 1;
 			this.GameGenieCodeBox.TabStop = false;
 			this.GameGenieCodeBox.Text = "Game Genie Code";
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(8, 68);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(34, 13);
 			this.label3.TabIndex = 5;
 			this.label3.Text = "Value";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(8, 42);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(49, 13);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Compare";
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(8, 16);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(45, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Address";
-			// 
+			//
 			// CompareBox
-			// 
+			//
 			this.CompareBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.CompareBox.Location = new System.Drawing.Point(88, 39);
@@ -128,9 +128,9 @@
 			this.CompareBox.Size = new System.Drawing.Size(20, 20);
 			this.CompareBox.TabIndex = 22;
 			this.CompareBox.TextChanged += new System.EventHandler(this.CompareBox_TextChanged);
-			// 
+			//
 			// ValueBox
-			// 
+			//
 			this.ValueBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(88, 65);
@@ -141,9 +141,9 @@
 			this.ValueBox.Size = new System.Drawing.Size(20, 20);
 			this.ValueBox.TabIndex = 23;
 			this.ValueBox.TextChanged += new System.EventHandler(this.ValueBox_TextChanged);
-			// 
+			//
 			// AddressBox
-			// 
+			//
 			this.AddressBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.AddressBox.Location = new System.Drawing.Point(76, 13);
@@ -154,9 +154,9 @@
 			this.AddressBox.Size = new System.Drawing.Size(32, 20);
 			this.AddressBox.TabIndex = 21;
 			this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
-			// 
+			//
 			// AddCheat
-			// 
+			//
 			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AddCheat.Location = new System.Drawing.Point(212, 230);
 			this.AddCheat.Name = "AddCheat";
@@ -165,9 +165,9 @@
 			this.AddCheat.Text = "&Add Cheat";
 			this.AddCheat.UseVisualStyleBackColor = true;
 			this.AddCheat.Click += new System.EventHandler(this.AddCheat_Click);
-			// 
+			//
 			// ButtonPanel
-			// 
+			//
 			this.ButtonPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ButtonPanel.Controls.Add(this.N);
 			this.ButtonPanel.Controls.Add(this.V);
@@ -189,9 +189,9 @@
 			this.ButtonPanel.Name = "ButtonPanel";
 			this.ButtonPanel.Size = new System.Drawing.Size(240, 67);
 			this.ButtonPanel.TabIndex = 4;
-			// 
+			//
 			// N
-			// 
+			//
 			this.N.Location = new System.Drawing.Point(206, 35);
 			this.N.Name = "N";
 			this.N.Size = new System.Drawing.Size(26, 23);
@@ -199,9 +199,9 @@
 			this.N.Text = "N";
 			this.N.UseVisualStyleBackColor = true;
 			this.N.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// V
-			// 
+			//
 			this.V.Location = new System.Drawing.Point(149, 35);
 			this.V.Name = "V";
 			this.V.Size = new System.Drawing.Size(26, 23);
@@ -209,9 +209,9 @@
 			this.V.Text = "V";
 			this.V.UseVisualStyleBackColor = true;
 			this.V.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// S
-			// 
+			//
 			this.S.Location = new System.Drawing.Point(91, 35);
 			this.S.Name = "S";
 			this.S.Size = new System.Drawing.Size(26, 23);
@@ -219,9 +219,9 @@
 			this.S.Text = "S";
 			this.S.UseVisualStyleBackColor = true;
 			this.S.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// K
-			// 
+			//
 			this.K.Location = new System.Drawing.Point(34, 35);
 			this.K.Name = "K";
 			this.K.Size = new System.Drawing.Size(26, 23);
@@ -229,9 +229,9 @@
 			this.K.Text = "K";
 			this.K.UseVisualStyleBackColor = true;
 			this.K.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// U
-			// 
+			//
 			this.U.Location = new System.Drawing.Point(206, 5);
 			this.U.Name = "U";
 			this.U.Size = new System.Drawing.Size(26, 23);
@@ -239,9 +239,9 @@
 			this.U.Text = "U";
 			this.U.UseVisualStyleBackColor = true;
 			this.U.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// X
-			// 
+			//
 			this.X.Location = new System.Drawing.Point(149, 6);
 			this.X.Name = "X";
 			this.X.Size = new System.Drawing.Size(26, 23);
@@ -249,9 +249,9 @@
 			this.X.Text = "X";
 			this.X.UseVisualStyleBackColor = true;
 			this.X.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// O
-			// 
+			//
 			this.O.Location = new System.Drawing.Point(91, 6);
 			this.O.Name = "O";
 			this.O.Size = new System.Drawing.Size(26, 23);
@@ -259,9 +259,9 @@
 			this.O.Text = "O";
 			this.O.UseVisualStyleBackColor = true;
 			this.O.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// Y
-			// 
+			//
 			this.Y.Location = new System.Drawing.Point(178, 35);
 			this.Y.Name = "Y";
 			this.Y.Size = new System.Drawing.Size(26, 23);
@@ -269,9 +269,9 @@
 			this.Y.Text = "Y";
 			this.Y.UseVisualStyleBackColor = true;
 			this.Y.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// L
-			// 
+			//
 			this.L.Location = new System.Drawing.Point(178, 5);
 			this.L.Name = "L";
 			this.L.Size = new System.Drawing.Size(26, 23);
@@ -279,9 +279,9 @@
 			this.L.Text = "L";
 			this.L.UseVisualStyleBackColor = true;
 			this.L.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// E
-			// 
+			//
 			this.E.Location = new System.Drawing.Point(34, 6);
 			this.E.Name = "E";
 			this.E.Size = new System.Drawing.Size(26, 23);
@@ -289,9 +289,9 @@
 			this.E.Text = "E";
 			this.E.UseVisualStyleBackColor = true;
 			this.E.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// T
-			// 
+			//
 			this.T.Location = new System.Drawing.Point(121, 35);
 			this.T.Name = "T";
 			this.T.Size = new System.Drawing.Size(26, 23);
@@ -299,9 +299,9 @@
 			this.T.Text = "T";
 			this.T.UseVisualStyleBackColor = true;
 			this.T.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// I
-			// 
+			//
 			this.I.Location = new System.Drawing.Point(63, 35);
 			this.I.Name = "I";
 			this.I.Size = new System.Drawing.Size(26, 23);
@@ -309,9 +309,9 @@
 			this.I.Text = "I";
 			this.I.UseVisualStyleBackColor = true;
 			this.I.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// G
-			// 
+			//
 			this.G.Location = new System.Drawing.Point(6, 35);
 			this.G.Name = "G";
 			this.G.Size = new System.Drawing.Size(26, 23);
@@ -319,9 +319,9 @@
 			this.G.Text = "G";
 			this.G.UseVisualStyleBackColor = true;
 			this.G.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// Z
-			// 
+			//
 			this.Z.Location = new System.Drawing.Point(121, 6);
 			this.Z.Name = "Z";
 			this.Z.Size = new System.Drawing.Size(26, 23);
@@ -329,9 +329,9 @@
 			this.Z.Text = "Z";
 			this.Z.UseVisualStyleBackColor = true;
 			this.Z.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// P
-			// 
+			//
 			this.P.Location = new System.Drawing.Point(63, 6);
 			this.P.Name = "P";
 			this.P.Size = new System.Drawing.Size(26, 23);
@@ -339,9 +339,9 @@
 			this.P.Text = "P";
 			this.P.UseVisualStyleBackColor = true;
 			this.P.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// A
-			// 
+			//
 			this.A.Location = new System.Drawing.Point(6, 5);
 			this.A.Name = "A";
 			this.A.Size = new System.Drawing.Size(26, 23);
@@ -349,9 +349,9 @@
 			this.A.Text = "A";
 			this.A.UseVisualStyleBackColor = true;
 			this.A.Click += new System.EventHandler(this.Keypad_Click);
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBox1.Controls.Add(this.label6);
 			this.groupBox1.Controls.Add(this.label5);
@@ -367,9 +367,9 @@
 			this.groupBox1.Size = new System.Drawing.Size(119, 93);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
-			// 
+			//
 			// label6
-			// 
+			//
 			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(70, 69);
@@ -377,9 +377,9 @@
 			this.label6.Size = new System.Drawing.Size(18, 13);
 			this.label6.TabIndex = 9;
 			this.label6.Text = "0x";
-			// 
+			//
 			// label5
-			// 
+			//
 			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label5.AutoSize = true;
 			this.label5.Location = new System.Drawing.Point(70, 42);
@@ -387,9 +387,9 @@
 			this.label5.Size = new System.Drawing.Size(18, 13);
 			this.label5.TabIndex = 8;
 			this.label5.Text = "0x";
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(58, 16);
@@ -397,9 +397,9 @@
 			this.label4.Size = new System.Drawing.Size(18, 13);
 			this.label4.TabIndex = 7;
 			this.label4.Text = "0x";
-			// 
+			//
 			// Encoding
-			// 
+			//
 			this.Encoding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Encoding.Appearance = System.Windows.Forms.Appearance.Button;
 			this.Encoding.AutoSize = true;
@@ -409,9 +409,9 @@
 			this.Encoding.TabIndex = 31;
 			this.Encoding.Text = "Encode";
 			this.Encoding.UseVisualStyleBackColor = true;
-			// 
+			//
 			// ClearButton
-			// 
+			//
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ClearButton.Location = new System.Drawing.Point(227, 148);
 			this.ClearButton.Name = "ClearButton";
@@ -420,18 +420,18 @@
 			this.ClearButton.Text = "&Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
 			this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-			// 
+			//
 			// MenuStrip
-			// 
+			//
 			this.MenuStrip.ClickThrough = true;
 			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.MenuStrip.Name = "MenuStrip";
 			this.MenuStrip.Size = new System.Drawing.Size(302, 24);
 			this.MenuStrip.TabIndex = 8;
 			this.MenuStrip.Text = "menuStrip1";
-			// 
+			//
 			// NESGameGenie
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(302, 260);
@@ -460,42 +460,42 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.TextBox GameGenieCode;
-        private System.Windows.Forms.GroupBox GameGenieCodeBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private HexTextBox CompareBox;
-        private HexTextBox ValueBox;
-        private HexTextBox AddressBox;
-        private System.Windows.Forms.Button AddCheat;
-        private System.Windows.Forms.Panel ButtonPanel;
-        private System.Windows.Forms.Button L;
-        private System.Windows.Forms.Button Z;
-        private System.Windows.Forms.Button P;
-        private System.Windows.Forms.Button A;
-        private System.Windows.Forms.Button Y;
-        private System.Windows.Forms.Button T;
-        private System.Windows.Forms.Button I;
-        private System.Windows.Forms.Button G;
-        private System.Windows.Forms.Button N;
-        private System.Windows.Forms.Button V;
-        private System.Windows.Forms.Button S;
-        private System.Windows.Forms.Button K;
-        private System.Windows.Forms.Button U;
-        private System.Windows.Forms.Button X;
-        private System.Windows.Forms.Button O;
-        private System.Windows.Forms.Button E;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox Encoding;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button ClearButton;
+		private System.Windows.Forms.TextBox GameGenieCode;
+		private System.Windows.Forms.GroupBox GameGenieCodeBox;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
+		private HexTextBox CompareBox;
+		private HexTextBox ValueBox;
+		private HexTextBox AddressBox;
+		private System.Windows.Forms.Button AddCheat;
+		private System.Windows.Forms.Panel ButtonPanel;
+		private System.Windows.Forms.Button L;
+		private System.Windows.Forms.Button Z;
+		private System.Windows.Forms.Button P;
+		private System.Windows.Forms.Button A;
+		private System.Windows.Forms.Button Y;
+		private System.Windows.Forms.Button T;
+		private System.Windows.Forms.Button I;
+		private System.Windows.Forms.Button G;
+		private System.Windows.Forms.Button N;
+		private System.Windows.Forms.Button V;
+		private System.Windows.Forms.Button S;
+		private System.Windows.Forms.Button K;
+		private System.Windows.Forms.Button U;
+		private System.Windows.Forms.Button X;
+		private System.Windows.Forms.Button O;
+		private System.Windows.Forms.Button E;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.CheckBox Encoding;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Button ClearButton;
 		private MenuStripEx MenuStrip;
-    }
+	}
 }

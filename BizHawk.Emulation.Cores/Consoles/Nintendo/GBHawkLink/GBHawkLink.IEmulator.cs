@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		{
 			L.do_controller_check();
 			R.do_controller_check();
-			
+
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
 			{
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					buff_R = R.GetVideoBuffer();
 					R.vblank_rise = false;
 				}
-			}			
+			}
 		}
 
 		public void GetControllerState(IController controller)
@@ -197,10 +197,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					_vidbuffer[i * 320 + j] = buff_L[i * 160 + j];
 					_vidbuffer[i * 320 + j + 160] = buff_R[i * 160 + j];
-				}				
+				}
 			}
 
-			return _vidbuffer;		
+			return _vidbuffer;
 		}
 
 		public int VirtualWidth => 160 * 2;

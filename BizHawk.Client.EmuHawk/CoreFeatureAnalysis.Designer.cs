@@ -42,22 +42,22 @@
 			this.tabPage2.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// CoreTree
-			// 
-			this.CoreTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.CoreTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CoreTree.Location = new System.Drawing.Point(6, 6);
 			this.CoreTree.Name = "CoreTree";
 			this.CoreTree.Size = new System.Drawing.Size(481, 498);
 			this.CoreTree.TabIndex = 0;
-			// 
+			//
 			// tabControl1
-			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Location = new System.Drawing.Point(15, 27);
@@ -65,9 +65,9 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(501, 536);
 			this.tabControl1.TabIndex = 6;
-			// 
+			//
 			// tabPage1
-			// 
+			//
 			this.tabPage1.Controls.Add(this.CurrentCoreTree);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -76,19 +76,19 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Current";
 			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
+			//
 			// CurrentCoreTree
-			// 
-			this.CurrentCoreTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.CurrentCoreTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CurrentCoreTree.Location = new System.Drawing.Point(6, 6);
 			this.CurrentCoreTree.Name = "CurrentCoreTree";
 			this.CurrentCoreTree.Size = new System.Drawing.Size(481, 498);
 			this.CurrentCoreTree.TabIndex = 1;
-			// 
+			//
 			// tabPage2
-			// 
+			//
 			this.tabPage2.Controls.Add(this.CoreTree);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
@@ -97,33 +97,33 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "All";
 			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
+			//
 			// menuStrip1
-			// 
+			//
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(528, 24);
 			this.menuStrip1.TabIndex = 7;
 			this.menuStrip1.Text = "menuStrip1";
-			// 
+			//
 			// statusStrip1
-			// 
+			//
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+			this.toolStripStatusLabel1});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 582);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(528, 22);
 			this.statusStrip1.TabIndex = 8;
 			this.statusStrip1.Text = "statusStrip1";
-			// 
+			//
 			// toolStripStatusLabel1
-			// 
+			//
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
 			this.toolStripStatusLabel1.Size = new System.Drawing.Size(109, 17);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-			// 
+			//
 			// CoreFeatureAnalysis
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(528, 604);

@@ -10,14 +10,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	public static class LibGambatte
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns>opaque state pointer</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr gambatte_create();
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -80,12 +80,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
 		/// or until a video frame has been drawn.
-		/// 
+		///
 		/// There are 35112 stereo sound samples in a video frame.
 		/// May run for up to 2064 stereo samples too long.
 		/// A stereo sample consists of two native endian 2s complement 16-bit PCM samples,
 		/// with the left sample preceding the right one.
-		/// 
+		///
 		/// Returns early when a new video frame has finished drawing in the video buffer,
 		/// such that the caller may update the video output before the frame is overwritten.
 		/// The return value indicates whether a new video frame has been drawn, and the
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		};
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="palnum">in [0, 2]: One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>
@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="callback">the callback</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setrtccallback(IntPtr core, RTCCallback callback);
-		
+
 		/// <summary>
 		/// type of the link data sent callback
 		/// </summary>

@@ -88,7 +88,7 @@ namespace BizHawk.Common
 				get { return this.Arr[index]; }
 				set { this.Arr[index] = value; }
 			#else
-				set { Write08(index, value); } 
+				set { Write08(index, value); }
 				get { return Read08(index);}
 			#endif
 		}

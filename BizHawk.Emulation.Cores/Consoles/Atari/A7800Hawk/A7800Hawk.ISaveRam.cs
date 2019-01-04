@@ -17,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public bool SaveRamModified
 		{
-			get 
+			get
 			{
 				return (_hsbios != null);
-			}	
+			}
 		}
 	}
 }

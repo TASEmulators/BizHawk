@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class Mapper201 : NES.NESBoardBase
 	{
 		/*
-			Here are Disch's original notes:  
+			Here are Disch's original notes:
 		========================
 		=  Mapper 201          =
 		========================
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		CHR Setup:
 		---------------------------
 
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00
 		+---------------------------------------------------------------+
 		|                             $8000                             |
 		+---------------------------------------------------------------+
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		PRG Setup:
 		---------------------------
 
-		$8000   $A000   $C000   $E000  
+		$8000   $A000   $C000   $E000
 		+-------------------------------+
 		|             $8000             |
 		+-------------------------------+

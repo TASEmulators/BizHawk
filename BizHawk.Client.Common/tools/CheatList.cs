@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 			{
 				return Load(file.FullName, false);
 			}
-			
+
 			return false;
 		}
 
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -201,7 +201,7 @@ namespace BizHawk.Client.Common
 				Changes = true;
 				return true;
 			}
-			
+
 			return false;
 		}
 
@@ -267,7 +267,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsActive(MemoryDomain domain, long address)
 		{
-			return _cheatList.Any(cheat => 
+			return _cheatList.Any(cheat =>
 					!cheat.IsSeparator &&
 					cheat.Enabled &&
 					cheat.Domain == domain
@@ -389,7 +389,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							// Set to hex for saving 
+							// Set to hex for saving
 							cheat.SetType(DisplayType.Hex);
 
 							sb
@@ -487,7 +487,7 @@ namespace BizHawk.Client.Common
 								type = Watch.DisplayTypeFromChar(vals[7][0]);
 								bigendian = vals[8] == "1";
 							}
-							
+
 							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 9)
 							{

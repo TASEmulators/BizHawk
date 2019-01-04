@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				return !DeepEquality.DeepEquals(x, y);
 			}
 
-			
+
 		}
 
 		public class GPGXSyncSettings

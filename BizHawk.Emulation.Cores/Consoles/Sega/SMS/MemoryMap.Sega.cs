@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
 
-			else if (address >= 0x8000) 
+			else if (address >= 0x8000)
 			{
 				if (SaveRAM != null)
 				{
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					else
 					{
 						RomBank2 = (byte)(value % RomBanks);
-					}					
+					}
 				}
 				return;
 			}

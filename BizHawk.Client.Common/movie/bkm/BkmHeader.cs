@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 				{
 					return bool.Parse(this[HeaderKeys.STARTSFROMSAVESTATE]);
 				}
-				
+
 				return false;
 			}
 
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 				{
 					return this[HeaderKeys.GAMENAME];
 				}
-				
+
 				return "";
 			}
 
@@ -114,7 +114,7 @@ namespace BizHawk.Client.Common
 				{
 					return this[HeaderKeys.PLATFORM];
 				}
-				
+
 				return "";
 			}
 

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			//draw text-label part of the control with something so that it isn't hallofmirrorsy
 			using(var brush = new SolidBrush(Parent.BackColor))
 				pevent.Graphics.FillRectangle(brush, ClientRectangle);
-			
+
 			var r = new Rectangle(ClientRectangle.Location, SystemInformation.MenuCheckSize);
 			var glyphLoc = ClientRectangle;
 			glyphLoc.Size = SystemInformation.MenuCheckSize;
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var brush = new SolidBrush(_CheckBackColor))
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
-			//draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl) 
+			//draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl)
 			bool c = CheckState == CheckState.Checked;
 			if (ForceChecked.HasValue)
 			{

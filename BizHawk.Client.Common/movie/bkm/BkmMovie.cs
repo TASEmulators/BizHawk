@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
 		public bool Loaded { get; private set; }
-		
+
 		public int InputLogLength => _log.Count;
 
 		public double FrameCount
@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 				{
 					return double.PositiveInfinity;
 				}
-				
+
 				if (Loaded)
 				{
 					return _log.Count;

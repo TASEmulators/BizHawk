@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return Global.MovieSession.Movie; }
 		}
 
-		// Still need to make sure the user can't load and use macros that 
+		// Still need to make sure the user can't load and use macros that
 		// have options only available for TasMovie
 
 		private bool _initializing = false;
@@ -341,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = SuggestedFolder(),
 				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"
 			};
-			
+
 			DialogResult result = dialog.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{

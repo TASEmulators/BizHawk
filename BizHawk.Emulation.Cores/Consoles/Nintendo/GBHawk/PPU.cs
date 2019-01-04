@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("OAM_INT", ref OAM_INT);
 			ser.Sync("stat_line", ref stat_line);
 			ser.Sync("stat_line_old", ref stat_line_old);
-			ser.Sync("LCD_was_off", ref LCD_was_off);		
+			ser.Sync("LCD_was_off", ref LCD_was_off);
 			ser.Sync("OAM_scan_index", ref OAM_scan_index);
 			ser.Sync("SL_sprites_index", ref SL_sprites_index);
 			ser.Sync("SL_sprites", ref SL_sprites, false);
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
 			ser.Sync("sprite_attr_list", ref sprite_attr_list, false);
 			ser.Sync("sprite_pixel_list", ref sprite_pixel_list, false);
-			ser.Sync("sprite_present_list", ref sprite_present_list, false);		
+			ser.Sync("sprite_present_list", ref sprite_present_list, false);
 			ser.Sync("temp_fetch", ref temp_fetch);
 			ser.Sync("tile_inc", ref tile_inc);
 			ser.Sync("pre_render", ref pre_render);

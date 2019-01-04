@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			CoreComm = comm;
 			_Settings = (Settings)settings ?? new Settings();
 			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
-			
+
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)

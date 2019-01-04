@@ -350,7 +350,7 @@ namespace BizHawk.Emulation.Cores
 		public enum retro_hw_context_type
 		{
 			 RETRO_HW_CONTEXT_NONE             = 0,
-			 RETRO_HW_CONTEXT_OPENGL           = 1, 
+			 RETRO_HW_CONTEXT_OPENGL           = 1,
 			 RETRO_HW_CONTEXT_OPENGLES2        = 2,
 			 RETRO_HW_CONTEXT_OPENGL_CORE      = 3,
 			 RETRO_HW_CONTEXT_OPENGLES3        = 4,

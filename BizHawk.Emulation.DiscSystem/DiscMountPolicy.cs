@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.DiscSystem
 	public class DiscMountPolicy
 	{
 		/// <summary>
-		/// "At the beginning of a Pause (i.e. Index = 00) the relative time is 
+		/// "At the beginning of a Pause (i.e. Index = 00) the relative time is
 		/// --A-- set to the duration of the Pause.
-		/// During the Pause this relative time decreases and 
+		/// During the Pause this relative time decreases and
 		/// --B-- equals zero in the last Section"
-		/// This is a contradiction. 
+		/// This is a contradiction.
 		/// By choosing true, mode A is selected, and the final sector of the pause is -1.
 		///  (I like this better. Defaulting until proven otherwise [write test case here])
-		/// By choosing false, mode B is selected, and the final sector of the pause is 0. 
+		/// By choosing false, mode B is selected, and the final sector of the pause is 0.
 		///  (Mednafen does it this way)
 		/// Discs (including PSX) exist using A, or B, or possibly (reference please) neither.
 		/// </summary>

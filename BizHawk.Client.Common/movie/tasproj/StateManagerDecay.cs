@@ -1,5 +1,5 @@
 ﻿/****************************************************************************************
-	
+
 	Algorithm by r57shell & feos, 2018
 
 	_zeros is the key to GREENZONE DECAY PATTERN.
@@ -10,7 +10,7 @@
 	depending on current frame and amount of states. States with biggest priority get erased
 	first. With a 4-bit battern and no initial gap between states, total frame coverage is
 	about 5 times state count.
-	
+
 	Initial state gap can screw up our patterns, so do all the calculations like the gap
 	isn't there, and take it back into account afterwards. The algo only works with integral
 	greenzone, so we make it think it is integral by reducing the frame numbers. Before any

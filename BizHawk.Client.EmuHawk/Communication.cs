@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			private ScreenShot screenShot = new ScreenShot();
 			public int timeout = 0;
 			public int default_timeout = 500;
-			
+
 			public void SetTimeout(int _timeout)
 			{
 				//timeout = _timeout.TotalMilliseconds;
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 					client.Timeout = new TimeSpan(0, 0, 0, _timeout / 1000, _timeout % 1000);
 					timeout = _timeout;
 				}
-				
+
 			}
 			public void SetPostUrl(string url)
 			{
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MessageBox.Show(e.ToString());
 					return e.ToString();
-					
+
 				}
 				if (!response.IsSuccessStatusCode)
 				{
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				FormUrlEncodedContent content = new FormUrlEncodedContent(values);
 
 				Task<string> postResponse = null;
-				while (postResponse == null && trials > 0) 
+				while (postResponse == null && trials > 0)
 				{
 					postResponse = Post(PostUrl, content);
 					trials -= 1;
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 				currentVideoProvider = _currentVideoProvider;
 				SetIp(ip, port);
 				initialized = true;
-				
+
 			}
 			public void Connect()
 			{
@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 				soc.Connect(remoteEP);
 				connected = true;
 				soc.ReceiveTimeout = 5;
-				
+
 			}
 			public void SetIp(string ip_)
 			{
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 				port = port_;
 				ipAdd = System.Net.IPAddress.Parse(ip);
 				remoteEP = new IPEndPoint(ipAdd, port);
-				
+
 			}
 			public void SetTimeout(int timeout)
 			{
@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			public int SendString(string SendString)
 			{
-				
+
 				int sentBytes = SendBytes(Encoding.ASCII.GetBytes(SendString));
 				success = sentBytes > 0;
 				return sentBytes;
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				return sentBytes;
 			}
-			
+
 			public string SendScreenshot()
 			{
 				return SendScreenshot(0);
@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 						receivedLength = 0;
 					}
 				}
-				
+
 				return resp;
 			}
 			public bool Successful()

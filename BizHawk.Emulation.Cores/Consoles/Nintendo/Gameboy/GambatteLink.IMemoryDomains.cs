@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class GambatteLink 
+	public partial class GambatteLink
 	{
 		private IMemoryDomains _memoryDomains;
 
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_memoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
-		
+
 		// todo: clean this up
 		private class WrappedMemoryDomain : MemoryDomain
 		{

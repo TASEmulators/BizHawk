@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public sealed class Mapper193 : NES.NESBoardBase 
+	public sealed class Mapper193 : NES.NESBoardBase
 	{
 		/*
 		* ========================
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		CHR Setup:
 		---------------------------
 
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00
 		+-------------------------------+---------------+---------------+
 		|           <<$6000>>           |    <$6001>    |    <$6002>    |
 		+-------------------------------+---------------+---------------+
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		PRG Setup:
 		---------------------------
 
-		$8000   $A000   $C000   $E000  
+		$8000   $A000   $C000   $E000
 		+-------+-------+-------+-------+
 		| $6003 | { -3} | { -2} | { -1} |
 		+-------+-------+-------+-------+
@@ -103,13 +103,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0:
 					chr_banks_2k[0] = (byte)((value & ~3) >> 1);
-					chr_banks_2k[1] = (byte)(((value & ~3) >> 1) + 1); 
+					chr_banks_2k[1] = (byte)(((value & ~3) >> 1) + 1);
 					break;
 				case 1:
 					chr_banks_2k[2] = (byte)((value & ~1) >> 1);
 					break;
 				case 2:
-					chr_banks_2k[3] = (byte)((value & ~1) >> 1); 
+					chr_banks_2k[3] = (byte)((value & ~1) >> 1);
 					break;
 				case 3:
 					prg_banks_8k[0] = value;

@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else
 			{
-				// Write VRAM and update pre-computed pattern buffer. 
+				// Write VRAM and update pre-computed pattern buffer.
 				UpdatePatternBuffer((ushort)(VdpAddress & 0x3FFF), value);
 				VRAM[VdpAddress & 0x3FFF] = value;
 			}
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					// ??? should I move from my property to precalculated?
 					TmsSpriteAttributeBase = (Registers[5] << 7) & 0x3F80;
 					break;
-				case 6: // Sprite Pattern Generator Base Adderss 
+				case 6: // Sprite Pattern Generator Base Adderss
 					SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
 					break;
 			}
@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Cpu.FlagI = true;
 			}
-				
+
 		}
 
 		void ProcessLineInterrupt()
@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					Cpu.ExecuteOne();
 				}
-				
+
 
 				if (ScanLine == scanlinesPerFrame - 1)
 				{
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		public int VirtualWidth
-		{ 
+		{
 			get
 			{
 				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)

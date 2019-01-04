@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			public int cchTextMax;
 			public Format fmt;
 			public IntPtr lParam;
-			// _WIN32_IE >= 0x0300 
+			// _WIN32_IE >= 0x0300
 			public int iImage;
 			public int iOrder;
 			// _WIN32_IE >= 0x0500

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Components
 	/// TODO: this is a shim for now, and needs to go away
 	/// turns an <seealso cref="IAsyncSoundProvider"/> into a full ISoundProvider
 	/// This is used in cores that have an async only sound implementation
-	/// better is implement a sync sound option in those cores without the need for 
+	/// better is implement a sync sound option in those cores without the need for
 	/// this class or an IAsyncSoundProvider interface
 	/// </summary>
 	internal class FakeSyncSound : ISoundProvider
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Components
 		private readonly int _spf;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FakeSyncSound"/> class. 
+		/// Initializes a new instance of the <see cref="FakeSyncSound"/> class.
 		/// </summary>
 		/// <param name="source">The async sound provider</param>
 		/// <param name="spf">number of sample pairs to request and provide on each GetSamples() call</param>

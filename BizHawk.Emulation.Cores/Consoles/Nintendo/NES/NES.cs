@@ -347,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				LoadWriteLine("Loading as NSF");
 				var nsf = new NSFFormat();
 				nsf.WrapByteArray(file);
-				
+
 				cart = new CartInfo();
 				var nsfboard = new NSFBoard();
 				nsfboard.Create(this);
@@ -522,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.wram_size == -1) choice.wram_size = 0;
 					}
 				}
-				
+
 				//if this is still null, we have to try it some other way. nescartdb perhaps?
 				if (choice == null)
 				{
@@ -536,7 +536,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
-				
+
 			}
 
 			//if choice is still null, try UNIF and iNES
@@ -793,4 +793,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 //http://wiki.nesdev.com/w/index.php/Cartridge_connector
 
 //a mappers list
-//http://tuxnes.sourceforge.net/nesmapper.txt 
+//http://tuxnes.sourceforge.net/nesmapper.txt

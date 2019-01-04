@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
 
 // The state of the cd player is quantized to the frame level.
-// This isn't ideal. But life's too short. 
+// This isn't ideal. But life's too short.
 // I decided not to let the perfect be the enemy of the good.
 // It can always be refactored. It's at least deterministic.
 
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Components
 				return;
 
 			StartLBA = Disc.Session1.Tracks[track].LBA;
-			
+
 			//play until the beginning of the next track (?)
 			EndLBA = Disc.Session1.Tracks[track + 1].LBA;
 

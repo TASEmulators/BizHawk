@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return false;
 			}
-			
+
 			return defaultVal;
 		}
 

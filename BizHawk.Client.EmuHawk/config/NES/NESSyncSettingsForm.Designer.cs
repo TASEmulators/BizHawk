@@ -43,9 +43,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.BoardPropertiesGroupBox.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// OkBtn
-			// 
+			//
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkBtn.Location = new System.Drawing.Point(221, 423);
 			this.OkBtn.Name = "OkBtn";
@@ -54,9 +54,9 @@
 			this.OkBtn.Text = "OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(294, 423);
@@ -66,30 +66,30 @@
 			this.CancelBtn.Text = "Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// dataGridView1
-			// 
-			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Location = new System.Drawing.Point(10, 19);
 			this.dataGridView1.MultiSelect = false;
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.Size = new System.Drawing.Size(333, 181);
 			this.dataGridView1.TabIndex = 9;
-			// 
+			//
 			// RegionComboBox
-			// 
+			//
 			this.RegionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.RegionComboBox.FormattingEnabled = true;
 			this.RegionComboBox.Location = new System.Drawing.Point(12, 26);
 			this.RegionComboBox.Name = "RegionComboBox";
 			this.RegionComboBox.Size = new System.Drawing.Size(124, 21);
 			this.RegionComboBox.TabIndex = 11;
-			// 
+			//
 			// HelpBtn
-			// 
+			//
 			this.HelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.HelpBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.HelpBtn.Location = new System.Drawing.Point(12, 177);
@@ -98,21 +98,21 @@
 			this.HelpBtn.TabIndex = 10;
 			this.HelpBtn.UseVisualStyleBackColor = true;
 			this.HelpBtn.Click += new System.EventHandler(this.HelpBtn_Click);
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(9, 10);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(87, 13);
 			this.label2.TabIndex = 12;
 			this.label2.Text = "Region Override:";
-			// 
+			//
 			// BoardPropertiesGroupBox
-			// 
-			this.BoardPropertiesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.BoardPropertiesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.BoardPropertiesGroupBox.Controls.Add(this.dataGridView1);
 			this.BoardPropertiesGroupBox.Location = new System.Drawing.Point(12, 204);
 			this.BoardPropertiesGroupBox.Name = "BoardPropertiesGroupBox";
@@ -120,18 +120,18 @@
 			this.BoardPropertiesGroupBox.TabIndex = 13;
 			this.BoardPropertiesGroupBox.TabStop = false;
 			this.BoardPropertiesGroupBox.Text = "Custom Board Properties";
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 53);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(362, 13);
 			this.label1.TabIndex = 14;
 			this.label1.Text = "Region Override will be ignored when playing Famicom Disk System games.";
-			// 
+			//
 			// InfoLabel
-			// 
+			//
 			this.InfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.InfoLabel.AutoSize = true;
 			this.InfoLabel.Location = new System.Drawing.Point(41, 182);
@@ -139,36 +139,36 @@
 			this.InfoLabel.Size = new System.Drawing.Size(213, 13);
 			this.InfoLabel.TabIndex = 15;
 			this.InfoLabel.Text = "The current board has no custom properties";
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 92);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(133, 13);
 			this.label3.TabIndex = 16;
 			this.label3.Text = "Initial Ram pattern override";
-			// 
+			//
 			// RamPatternOverrideBox
-			// 
+			//
 			this.RamPatternOverrideBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.RamPatternOverrideBox.Location = new System.Drawing.Point(12, 108);
 			this.RamPatternOverrideBox.Name = "RamPatternOverrideBox";
 			this.RamPatternOverrideBox.Nullable = true;
 			this.RamPatternOverrideBox.Size = new System.Drawing.Size(165, 20);
 			this.RamPatternOverrideBox.TabIndex = 17;
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(12, 131);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(269, 13);
 			this.label4.TabIndex = 18;
 			this.label4.Text = "Provides an override to the initial WRAM startup pattern";
-			// 
+			//
 			// NESSyncSettingsForm
-			// 
+			//
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

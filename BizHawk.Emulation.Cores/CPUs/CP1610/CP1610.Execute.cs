@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					Register[6],
 					Register[7])
 			};
-		}	
+		}
 
 		private void Calc_FlagC(int result)
 		{

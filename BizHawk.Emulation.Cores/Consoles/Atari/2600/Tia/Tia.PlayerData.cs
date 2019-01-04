@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 				}
 
-				// At counter position 0 we should initalize the scan counter. 
+				// At counter position 0 we should initalize the scan counter.
 				// Note that for double and quad sized players that the scan counter is not started immediately.
 				if (_startSignal == 160)
 				{
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Increment the counter
 				HPosCnt++;
 
-				// Counter loops at 160 
+				// Counter loops at 160
 				HPosCnt %= 160;
 
 				// our goal here is to send a start signal 4 clocks before drawing begins. This properly emulates

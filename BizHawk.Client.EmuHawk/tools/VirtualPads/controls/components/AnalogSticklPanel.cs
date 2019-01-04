@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			Y = yval;
 			Clamp();
 			HasValue = true;
-			
+
 			Refresh();
 		}
 

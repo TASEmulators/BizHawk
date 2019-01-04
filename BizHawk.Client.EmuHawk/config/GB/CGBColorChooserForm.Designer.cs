@@ -43,9 +43,9 @@
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.radioButton6);
 			this.groupBox1.Controls.Add(this.radioButton5);
 			this.groupBox1.Controls.Add(this.radioButton3);
@@ -58,9 +58,9 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Preset Select";
-			// 
+			//
 			// radioButton6
-			// 
+			//
 			this.radioButton6.AutoSize = true;
 			this.radioButton6.Location = new System.Drawing.Point(6, 134);
 			this.radioButton6.Name = "radioButton6";
@@ -70,9 +70,9 @@
 			this.radioButton6.Text = "GBA";
 			this.radioButton6.UseVisualStyleBackColor = true;
 			this.radioButton6.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// radioButton5
-			// 
+			//
 			this.radioButton5.AutoSize = true;
 			this.radioButton5.Location = new System.Drawing.Point(6, 111);
 			this.radioButton5.Name = "radioButton5";
@@ -82,9 +82,9 @@
 			this.radioButton5.Text = "VBA Accurate (Old)";
 			this.radioButton5.UseVisualStyleBackColor = true;
 			this.radioButton5.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// radioButton3
-			// 
+			//
 			this.radioButton3.AutoSize = true;
 			this.radioButton3.Location = new System.Drawing.Point(6, 65);
 			this.radioButton3.Name = "radioButton3";
@@ -94,9 +94,9 @@
 			this.radioButton3.Text = "VBA Vivid";
 			this.radioButton3.UseVisualStyleBackColor = true;
 			this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// radioButton4
-			// 
+			//
 			this.radioButton4.AutoSize = true;
 			this.radioButton4.Location = new System.Drawing.Point(6, 88);
 			this.radioButton4.Name = "radioButton4";
@@ -106,9 +106,9 @@
 			this.radioButton4.Text = "VBA Accurate";
 			this.radioButton4.UseVisualStyleBackColor = true;
 			this.radioButton4.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// radioButton2
-			// 
+			//
 			this.radioButton2.AutoSize = true;
 			this.radioButton2.Location = new System.Drawing.Point(6, 42);
 			this.radioButton2.Name = "radioButton2";
@@ -118,9 +118,9 @@
 			this.radioButton2.Text = "Vivid";
 			this.radioButton2.UseVisualStyleBackColor = true;
 			this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// radioButton1
-			// 
+			//
 			this.radioButton1.AutoSize = true;
 			this.radioButton1.Location = new System.Drawing.Point(6, 19);
 			this.radioButton1.Name = "radioButton1";
@@ -130,9 +130,9 @@
 			this.radioButton1.Text = "Gambatte";
 			this.radioButton1.UseVisualStyleBackColor = true;
 			this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton1_CheckedChanged);
-			// 
+			//
 			// groupBox2
-			// 
+			//
 			this.groupBox2.Controls.Add(this.bmpView1);
 			this.groupBox2.Location = new System.Drawing.Point(150, 12);
 			this.groupBox2.Name = "groupBox2";
@@ -140,17 +140,17 @@
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Preview";
-			// 
+			//
 			// bmpView1
-			// 
+			//
 			this.bmpView1.Location = new System.Drawing.Point(6, 19);
 			this.bmpView1.Name = "bmpView1";
 			this.bmpView1.Size = new System.Drawing.Size(256, 128);
 			this.bmpView1.TabIndex = 3;
 			this.bmpView1.Text = "bmpView1";
-			// 
+			//
 			// buttonOK
-			// 
+			//
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.Location = new System.Drawing.Point(263, 171);
@@ -159,9 +159,9 @@
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			// 
+			//
 			// buttonCancel
-			// 
+			//
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(344, 171);
@@ -170,9 +170,9 @@
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
+			//
 			// CGBColorChooserForm
-			// 
+			//
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

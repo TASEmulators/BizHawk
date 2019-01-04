@@ -121,7 +121,7 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			
+
 			return false;
 		}
 

@@ -3,69 +3,69 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// Represents a PSG device (in this case an AY-3-891x)
-    /// </summary>
-    public interface IPSG : ISoundProvider
-    {
-        /// <summary>
-        /// Initlization routine
-        /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="tStatesPerFrame"></param>
-        void Init(int sampleRate, int tStatesPerFrame);
+	/// <summary>
+	/// Represents a PSG device (in this case an AY-3-891x)
+	/// </summary>
+	public interface IPSG : ISoundProvider
+	{
+		/// <summary>
+		/// Initlization routine
+		/// </summary>
+		/// <param name="sampleRate"></param>
+		/// <param name="tStatesPerFrame"></param>
+		void Init(int sampleRate, int tStatesPerFrame);
 
-        void SetFunction(int data);
+		void SetFunction(int data);
 
-        //void ClockCycle();
+		//void ClockCycle();
 
-        /// <summary>
-        /// Activates a register
-        /// </summary>
-        int SelectedRegister { get; set; }
-        
-        /// <summary>
-        /// Writes to the PSG
-        /// </summary>
-        /// <param name="value"></param>
-        void PortWrite(int value);
+		/// <summary>
+		/// Activates a register
+		/// </summary>
+		int SelectedRegister { get; set; }
 
-        /// <summary>
-        /// Reads from the PSG
-        /// </summary>
-        int PortRead();
-       
+		/// <summary>
+		/// Writes to the PSG
+		/// </summary>
+		/// <param name="value"></param>
+		void PortWrite(int value);
 
-        /// <summary>
-        /// Resets the PSG
-        /// </summary>
-        void Reset();
+		/// <summary>
+		/// Reads from the PSG
+		/// </summary>
+		int PortRead();
 
-        /// <summary>
-        /// The volume of the AY chip
-        /// </summary>
-        int Volume { get; set; }
 
-        /// <summary>
-        /// Called at the start of a frame
-        /// </summary>
-        void StartFrame();
+		/// <summary>
+		/// Resets the PSG
+		/// </summary>
+		void Reset();
 
-        /// <summary>
-        /// called at the end of a frame
-        /// </summary>
-        void EndFrame();
+		/// <summary>
+		/// The volume of the AY chip
+		/// </summary>
+		int Volume { get; set; }
 
-        /// <summary>
-        /// Updates the sound based on number of frame cycles
-        /// </summary>
-        /// <param name="frameCycle"></param>
-        void UpdateSound(int frameCycle);
+		/// <summary>
+		/// Called at the start of a frame
+		/// </summary>
+		void StartFrame();
 
-        /// <summary>
-        /// IStatable serialization
-        /// </summary>
-        /// <param name="ser"></param>
-        void SyncState(Serializer ser);
-    }
+		/// <summary>
+		/// called at the end of a frame
+		/// </summary>
+		void EndFrame();
+
+		/// <summary>
+		/// Updates the sound based on number of frame cycles
+		/// </summary>
+		/// <param name="frameCycle"></param>
+		void UpdateSound(int frameCycle);
+
+		/// <summary>
+		/// IStatable serialization
+		/// </summary>
+		/// <param name="ser"></param>
+		void SyncState(Serializer ser);
+	}
 }

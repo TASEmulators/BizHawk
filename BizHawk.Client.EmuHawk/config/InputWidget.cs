@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
-	
+
 		private string _wasPressed = "";
 
 		public InputCompositeWidget CompositeWidget { get; set; }
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			new SpecialBindingInfo { BindingName = "WMouse L", TooltipText = "Binds the left mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse M", TooltipText = "Binds the middle mouse button" },
 			new SpecialBindingInfo { BindingName = "WMouse R", TooltipText = "Binds the right mouse button" },
-			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText = "Binds the mouse auxiliary button 1" }, 
+			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText = "Binds the mouse auxiliary button 1" },
 			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" }
 		};
 
@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			if (bindingStr != null)
 			{
 				// has special meaning for the binding UI system (clear it).
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 
 					_bindings.Add(bindingStr);
 				}
-				
+
 				_wasPressed = bindingStr;
 				UpdateLabel();
 				Increment();

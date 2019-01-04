@@ -50,11 +50,11 @@ namespace BizHawk.Client.DBMan
 		{
 			DB.LoadDbForSystem(systemBox.SelectedItem.ToString());
 			var names = DB.GetDeveloperPublisherNames().ToArray();
-			
+
 			romListView.Items.Clear();
 			foreach (var rom in DB.Roms)
 			{
-				var lvi = new ListViewItem(new string[] { rom.DisplayName, rom.Region, rom.VersionTags, rom.CombinedMetaData, rom.Game.Tags }); 
+				var lvi = new ListViewItem(new string[] { rom.DisplayName, rom.Region, rom.VersionTags, rom.CombinedMetaData, rom.Game.Tags });
 				lvi.Tag = rom;
 				lvi.BackColor = rom.New ? Color.LightGreen : Color.White;
 				romListView.Items.Add(lvi);
@@ -157,7 +157,7 @@ namespace BizHawk.Client.DBMan
 			// Check if any changes were made
 			if (SelectedRom.New == false && RomChangesMade() == false)
 				return;
-			
+
 			int saveMode = 0;
 			string origSystem = SelectedRom.System;
 			string origName = SelectedRom.Name;
@@ -209,9 +209,9 @@ namespace BizHawk.Client.DBMan
 
 		bool RomChangesMade()
 		{
-			if (SelectedRom == null) 
+			if (SelectedRom == null)
 				return false;
-			
+
 			if (!streq(SelectedRom.System, gameSystemBox.Text)) return true;
 			if (!streq(SelectedRom.Name, nameBox.Text)) return true;
 			if (!streq(SelectedRom.Region, regionBox.Text)) return true;
@@ -265,7 +265,7 @@ namespace BizHawk.Client.DBMan
 				loadRomsForSelectedSystem();
 				return true;
 			}
-			if (keyData == (Keys.S | Keys.Control) && SelectedRom != null) 
+			if (keyData == (Keys.S | Keys.Control) && SelectedRom != null)
 			{
 				saveButton_Click(null, null);
 				return true;
@@ -297,7 +297,7 @@ namespace BizHawk.Client.DBMan
 				if (rom.Game.Classification == "Homebrew") romCode = "D";
 				if (rom.RomStatus == "Overdump") romCode = "O";
 				if (rom.RomStatus == "Bad Dump") romCode = "V";
-				
+
 				string regionStr = "";
 				if (rom.Region != null)
 				{
@@ -315,7 +315,7 @@ namespace BizHawk.Client.DBMan
 				if (regionStr.Length > 0)
 					romName += " ("+regionStr+")";
 
-				if (rom.VersionTags != null) 
+				if (rom.VersionTags != null)
 				{
 					var versions = rom.VersionTags.Split(';');
 					foreach (var version in versions)

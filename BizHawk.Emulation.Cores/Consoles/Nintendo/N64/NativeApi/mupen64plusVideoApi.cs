@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		private delegate void ReadScreen2Res(IntPtr dummy, ref int width, ref int height, int buffer);
 		ReadScreen2Res GFXReadScreen2Res;
 
-		
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate Int32 GetScreenTextureID();
 		GetScreenTextureID GFXGetScreenTextureID;

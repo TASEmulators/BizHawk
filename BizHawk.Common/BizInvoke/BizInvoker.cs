@@ -323,8 +323,8 @@ namespace BizHawk.Common.BizInvoke
 
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
-			il.EmitCalli(OpCodes.Calli, 
-				nativeCall, 
+			il.EmitCalli(OpCodes.Calli,
+				nativeCall,
 				returnType == typeof(bool) ? typeof(byte) : returnType, // undo winapi style bool garbage
 				nativeParamTypes.ToArray());
 
@@ -555,7 +555,7 @@ namespace BizHawk.Common.BizInvoke
 		public bool Compatibility { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class. 
+		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class.
 		/// </summary>
 		/// <param name="c">unmanaged calling convention</param>
 		public BizImportAttribute(CallingConvention c)

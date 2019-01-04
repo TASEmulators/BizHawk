@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return ret;
 		}
 
-		public static Dimensions[,] ObjSizes = new Dimensions[,] 
+		public static Dimensions[,] ObjSizes = new Dimensions[,]
 		{
 			{ new Dimensions(8,8), new Dimensions(16,16) },
 			{ new Dimensions(8,8), new Dimensions(32,32) },
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public OAMInfo(SNESGraphicsDecoder dec, ScreenInfo si, int num)
 			{
 				Index = num;
-				
+
 				int lowaddr = num*4;
 				X = dec.oam[lowaddr++];
 				Y = dec.oam[lowaddr++];
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				Tile = Table*256 + Name;
 				Address = 32 * Tile;
-			
+
 				if (Tile < 256)
 					Address += si.OBJTable0Addr;
 				else
@@ -436,7 +436,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					si.BG[i].TiledataAddr = si.BG[i].TDADDR << 13;
 					si.BG[i].ScreenAddr = si.BG[i].SCADDR << 9;
 				}
-				
+
 				//fixup irregular things for mode 7
 				if (si.Mode.MODE == 7)
 				{
@@ -556,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		int[] colortable;
 		public byte* vram, oam;
 		public ushort* cgram, vram16;
-		
+
 		LibsnesApi api;
 
 		public SNESGraphicsDecoder(LibsnesApi api, SnesColors.ColorType pal)
@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//    for (int x = 0; x < tilesWide; x++)
 		//    {
 		//      int si = tilesWide * y + x;
-		//      int di = tilesHigh 
+		//      int di = tilesHigh
 		//      for (int tx = 0; tx < 2; tx++)
 		//      {
 		//        for (int ty = 0; ty < 2; ty++)
@@ -670,7 +670,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							int mapIndex = mty * dims.Width + mtx;
 							var te = map[mapIndex];
-							
+
 							//apply metatile flipping
 							int tnx = tx, tny = ty;
 							if (tilesize == 16)

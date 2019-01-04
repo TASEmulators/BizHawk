@@ -115,10 +115,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public class Track
 		{
-			//Notable omission: 
+			//Notable omission:
 				//a list of Indices. It's difficult to reliably construct it.
 				//Notably, mednafen can't readily produce it.
-				//Indices may need scanning sector by sector. 
+				//Indices may need scanning sector by sector.
 				//It's unlikely that any software would be needing indices anyway.
 				//We should add another index scanning service if that's ever needed.
 				//(note: a CCD should contain indices, but it's not clear whether it's required. logically it shouldnt be)
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//These omissions could be handled by ReadStructure() policies which permit the scanning of the entire disc.
 			//After that, they could be cached in here.
-			
+
 			/// <summary>
 			/// The number of the track (1-indexed)
 			/// </summary>

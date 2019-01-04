@@ -12,49 +12,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		 *  Example Games:
 		 --------------------------
 		 SD Keiji - Blader
-		
- 
- 
+
+
+
 		 Notes:
 		 ---------------------------
 		 Regs appear at $7EFx, I'm unsure whether or not PRG-RAM can exist at $6000-7FFF
- 
- 
+
+
 		 Registers:
 		 ---------------------------
- 
+
 		   $7EF0-7EF5:  CHR Regs
- 
+
 		   $7EF6:  [.... ..CM]  CHR Mode/Mirroring
 			 C = CHR Mode select
 			 M = Mirroring:
 				0 = Horz
 				1 = Vert
- 
+
 		   $7EFA:  [PPPP PP..]  PRG Reg 0 (8k @ $8000)
 		   $7EFB:  [PPPP PP..]  PRG Reg 1 (8k @ $A000)
 		   $7EFC:  [PPPP PP..]  PRG Reg 2 (8k @ $C000)
- 
- 
+
+
 		 CHR Setup:
 		 ---------------------------
- 
-						 $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+
+						 $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00
 					   +---------------+---------------+-------+-------+-------+-------+
 		 CHR Mode 0:   |    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
 					   +---------------+---------------+---------------+---------------+
 		 CHR Mode 1:   | $7EF2 | $7EF3 | $7EF4 | $7EF5 |    <$7EF0>    |    <$7EF1>    |
 					   +-------+-------+-------+-------+---------------+---------------+
- 
- 
+
+
 		 PRG Setup:
 		 ---------------------------
- 
-			   $8000   $A000   $C000   $E000  
+
+			   $8000   $A000   $C000   $E000
 			 +-------+-------+-------+-------+
 			 | $7EFA | $7EFB | $7EFC | { -1} |
 			 +-------+-------+-------+-------+
- 
+
 		 Note:  remember that the low 2 bits are not used (right-shift written values by 2)
 		*/
 

@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts			
+			// check for interrupts
 			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
 				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
 				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
 				REG_FF0F |= 0x10;
 			}
-			
+
 			while (!vblank_rise)
 			{
 				// These things do not change speed in GBC double spped mode
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// These things all tick twice as fast in GBC double speed mode
 					ppu.DMA_tick();
 					timer.tick_1();
-					serialport.serial_transfer_tick();					
+					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 					timer.tick_2();
 
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				REG_FF0F_OLD = REG_FF0F;
 			}
 
-			vblank_rise = false;			
+			vblank_rise = false;
 		}
 
 		public void do_single_step()
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts			
+			// check for interrupts
 			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
 				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
 				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB"; 
+		public string SystemId => "GB";
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				ppu.blank_frame = false;
 			}
-			return _vidbuffer;		
+			return _vidbuffer;
 		}
 
 		public int VirtualWidth => 160;

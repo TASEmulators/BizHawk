@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						input_register |= 0xF;
 					}
-					
+
 					// check for interrupts
 					if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
 						((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
 						REG_FF0F |= 0x10;
 					}
-					
+
 					break;
 
 				// Serial data port
@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (GB_bios_register != 1)
 					{
 						GB_bios_register = value;
-					}			
+					}
 					break;
 
 				// PPU Regs for GBC

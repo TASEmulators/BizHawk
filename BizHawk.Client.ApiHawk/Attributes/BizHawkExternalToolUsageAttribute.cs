@@ -36,7 +36,7 @@ namespace BizHawk.Client.ApiHawk
 				throw new InvalidOperationException("A game hash must be set");
 			}
 
-			_ToolUsage = usage;			
+			_ToolUsage = usage;
 			_System = system;
 			_GameHash = gameHash;
 		}
@@ -45,7 +45,7 @@ namespace BizHawk.Client.ApiHawk
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
-		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>		
+		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>
 		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, CoreSystem system)
 			:this(usage, system, "")
 		{}
@@ -93,7 +93,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				return _ToolUsage;
 			}
-		}				
+		}
 
 		#endregion
 	}

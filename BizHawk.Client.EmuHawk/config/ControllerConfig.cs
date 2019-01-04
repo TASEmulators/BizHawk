@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
-			
+
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -175,23 +175,23 @@ namespace BizHawk.Client.EmuHawk
 					tt.TabPages.Add(tabname);
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
 
-                    // zxhawk hack - it uses multiple categoryLabels
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
-                        pageidx++;
+					// zxhawk hack - it uses multiple categoryLabels
+					if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
+						pageidx++;
 
-                }
+				}
 
 				if (buckets[0].Count > 0)
 				{
-                    // ZXHawk needs to skip this bit
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
-                        return;
+					// ZXHawk needs to skip this bit
+					if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
+						return;
 
-                    string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
-                    tt.TabPages.Add(tabname);
-                    tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
-                }
-            }
+					string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
+					tt.TabPages.Add(tabname);
+					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
+				}
+			}
 		}
 
 		public ControllerConfig(ControllerDefinition def)
@@ -268,22 +268,22 @@ namespace BizHawk.Client.EmuHawk
 				pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 			}
 
-            if (controlName == "ZXSpectrum Controller")
-            {
-                pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-                pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
-            }
+			if (controlName == "ZXSpectrum Controller")
+			{
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
+			}
 
-            if (controlName == "AmstradCPC Controller")
-            {
-                /*
-                pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-                pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-                tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
-                */
-            }
-        }
+			if (controlName == "AmstradCPC Controller")
+			{
+				/*
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
+				*/
+			}
+		}
 
 		// lazy methods, but they're not called often and actually
 		// tracking all of the ControllerConfigPanels wouldn't be simpler

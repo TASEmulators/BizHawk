@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER219":
 					break;
 				default:
-					return false;			
+					return false;
 			}
 
 			BaseSetup();
@@ -104,8 +104,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						break;
 				}
-			}		
-			else 
+			}
+			else
 				base.WritePRG(addr, value);
 		}
 

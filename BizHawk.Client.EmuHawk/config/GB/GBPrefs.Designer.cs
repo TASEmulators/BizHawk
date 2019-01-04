@@ -33,9 +33,9 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.gbPrefControl1 = new GBPrefControl();
 			this.SuspendLayout();
-			// 
+			//
 			// buttonOK
-			// 
+			//
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.Location = new System.Drawing.Point(280, 363);
@@ -44,9 +44,9 @@
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			// 
+			//
 			// buttonCancel
-			// 
+			//
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(361, 363);
@@ -55,20 +55,20 @@
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
+			//
 			// gbPrefControl1
-			// 
-			this.gbPrefControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.gbPrefControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.gbPrefControl1.ColorGameBoy = false;
 			this.gbPrefControl1.Location = new System.Drawing.Point(12, 12);
 			this.gbPrefControl1.Name = "gbPrefControl1";
 			this.gbPrefControl1.Size = new System.Drawing.Size(424, 345);
 			this.gbPrefControl1.TabIndex = 0;
-			// 
+			//
 			// GBPrefs
-			// 
+			//
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

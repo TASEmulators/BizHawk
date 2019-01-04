@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else if (addr >= (0x10000-Core._bios.Length) && !Core.A7800_control_register.Bit(2))
 				{
-					return Core._bios[addr - (0x10000 - Core._bios.Length)];		
+					return Core._bios[addr - (0x10000 - Core._bios.Length)];
 				}
 				else
 				{
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				Core.pokey.WriteReg(addr & 0xF, value);
 			}
 			else
-			{ 
+			{
 				// cartridge and other OPSYS
 			}
 		}

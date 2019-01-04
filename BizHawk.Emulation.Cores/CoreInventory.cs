@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores
 					Type expectedtype;
 					if (!paramtypes.TryGetValue(pname, out expectedtype))
 						throw new InvalidOperationException(string.Format("Unexpected parameter name {0} in constructor for {1}", p.Name, Type));
-					
+
 					// disabling the typecheck here doesn't really hurt anything, because the Invoke call will still catch any forbidden casts
 					// it does allow us to write "MySettingsType settings" instead of "object settings"
 					// if (expectedtype != p.ParameterType)

@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.BeginSection("Disk6502");
 			_cpu.SyncState(ser);
 			ser.EndSection();
-			
+
 			ser.Sync("RAM", ref _ram, useNull: false);
 
 			ser.BeginSection("VIA0");

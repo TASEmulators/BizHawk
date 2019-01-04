@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	 * Regs 0,2,4,6: Frequency control (divider = value + 1)
 	 * Regs 1,3,5,7: Channel control (Bits 0-3 = volume) (bits 4 - 7 control clocking)
 	 * Reg 8: Control register
-	 * 
+	 *
 	 * Reg A: Random number generator
-	 * 
+	 *
 	 * The registers are write only, except for the RNG none of the things that would return reads are connected
 	 * for now return FF
 	 */
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			clock_ch[0] = clock_ch[1] = clock_ch[2] = clock_ch[3] = false;
-			
+
 			// now that we have the poly counters, check which channels to clock
 			if (Regs[8].Bit(6))
 			{
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				inc_ch[0]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[0] >= 114) { inc_ch[0] = 0; clock_ch[0] = true; }					
+					if (inc_ch[0] >= 114) { inc_ch[0] = 0; clock_ch[0] = true; }
 				}
 				else
 				{
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				inc_ch[2]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }					
+					if (inc_ch[2] >= 114) { inc_ch[2] = 0; clock_ch[2] = true; }
 				}
 				else
 				{
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				if (clock_ch[0])
 				{
-					clock_ch[1] = true;					
+					clock_ch[1] = true;
 				}
 			}
 			else
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (Regs[8].Bit(0))
 				{
 					if (inc_ch[1] >= 114) { inc_ch[1] = 0; clock_ch[1] = true; }
-									
+
 				}
 				else
 				{
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				inc_ch[3]++;
 				if (Regs[8].Bit(0))
 				{
-					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }								
+					if (inc_ch[3] >= 114) { inc_ch[3] = 0; clock_ch[3] = true; }
 				}
 				else
 				{
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							//if (ch_src[i])
 							//{
 								ch_out[i] = poly4.Bit(3);
-							//}					
+							//}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xE0)
 						{

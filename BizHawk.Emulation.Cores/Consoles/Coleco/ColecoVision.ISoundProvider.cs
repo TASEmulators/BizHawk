@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			for (int i = 0; i < nsamp * 2; i += 2)
 			{
 				samples[i + 1] = samples[i];
-			}				
+			}
 		}
 
 		public void GetSamples(short[] samples)

@@ -2,12 +2,12 @@
 {
 	partial class VirtualPadDiscManager
 	{
-		/// <summary> 
+		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
+		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
@@ -38,12 +38,12 @@
 			this.lblTimeZero = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.lvDiscs);
 			this.groupBox1.Location = new System.Drawing.Point(3, 32);
 			this.groupBox1.Name = "groupBox1";
@@ -52,12 +52,12 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Discs";
 			this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
-			// 
+			//
 			// lvDiscs
-			// 
+			//
 			this.lvDiscs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+			this.columnHeader1,
+			this.columnHeader2});
 			this.lvDiscs.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvDiscs.FullRowSelect = true;
 			this.lvDiscs.GridLines = true;
@@ -71,28 +71,28 @@
 			this.lvDiscs.UseCompatibleStateImageBehavior = false;
 			this.lvDiscs.View = System.Windows.Forms.View.Details;
 			this.lvDiscs.SelectedIndexChanged += new System.EventHandler(this.lvDiscs_SelectedIndexChanged);
-			// 
+			//
 			// columnHeader1
-			// 
+			//
 			this.columnHeader1.Text = "#";
 			this.columnHeader1.Width = 27;
-			// 
+			//
 			// columnHeader2
-			// 
+			//
 			this.columnHeader2.Text = "Name";
 			this.columnHeader2.Width = 228;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(6, 11);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(34, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Tray :";
-			// 
+			//
 			// btnClose
-			// 
+			//
 			this.btnClose.Appearance = System.Windows.Forms.Appearance.Button;
 			this.btnClose.AutoSize = true;
 			this.btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -105,9 +105,9 @@
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
 			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-			// 
+			//
 			// btnOpen
-			// 
+			//
 			this.btnOpen.Appearance = System.Windows.Forms.Appearance.Button;
 			this.btnOpen.AutoSize = true;
 			this.btnOpen.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -120,18 +120,18 @@
 			this.btnOpen.Text = "Open";
 			this.btnOpen.UseVisualStyleBackColor = true;
 			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
-			// 
+			//
 			// lblTimeZero
-			// 
+			//
 			this.lblTimeZero.AutoSize = true;
 			this.lblTimeZero.Location = new System.Drawing.Point(142, 11);
 			this.lblTimeZero.Name = "lblTimeZero";
 			this.lblTimeZero.Size = new System.Drawing.Size(135, 13);
 			this.lblTimeZero.TabIndex = 4;
 			this.lblTimeZero.Text = "(T=0: Freely set initial state)";
-			// 
+			//
 			// VirtualPadDiscManager
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;

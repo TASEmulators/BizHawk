@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="cd">If TRUE, load a CD and not a cart.</param>
 		/// <param name="_32xPreinit">If TRUE, preallocate 32X data structures.  When set to false,

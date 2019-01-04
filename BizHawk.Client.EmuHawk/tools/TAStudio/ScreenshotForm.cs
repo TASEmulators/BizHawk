@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class ScreenshotForm : Form
 	{
 		private const int WS_EX_TOPMOST = 0x00000008;
-		
+
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		public ScreenshotForm()
 		{
 			InitializeComponent();
-			
+
 			var fontSize = 10;
 			var fontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, fontSize, fontStyle);

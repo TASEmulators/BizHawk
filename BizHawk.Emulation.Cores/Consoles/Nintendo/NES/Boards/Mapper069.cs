@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	//Mapper 069 is FME7 
+	//Mapper 069 is FME7
 	//or, Sunsoft-5, which is FME7 with additional sound hardware
 
 	public sealed class Sunsoft_5 : Sunsoft_FME7
@@ -297,6 +297,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				WRAM[addr] = value;
 			}
 		}
-	
+
 	}
 }

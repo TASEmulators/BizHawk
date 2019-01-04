@@ -503,7 +503,7 @@ namespace BizHawk.Client.EmuHawk
 
 			PutSettings(_s);
 			PutSyncSettings(_ss);
-		} 
+		}
 
 		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
 		{
@@ -664,7 +664,7 @@ namespace BizHawk.Client.EmuHawk
 			Glide_offset_y.Text = _ss.GlidePlugin.offset_y.ToString();
 			Glide_scale_x.Text = _ss.GlidePlugin.scale_x.ToString();
 			Glide_scale_y.Text = _ss.GlidePlugin.scale_y.ToString();
-			
+
 
 			GlideUseDefaultHacks1.Checked = _ss.GlidePlugin.UseDefaultHacks;
 			GlideUseDefaultHacks2.Checked = _ss.GlidePlugin.UseDefaultHacks;
@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 				GLideN64_EnableCopyAuxiliaryToRDRAM.Checked = _ss.GLideN64Plugin.EnableCopyAuxiliaryToRDRAM;
 			}
 		}
-		
+
 		private void RiceAnisotropicFiltering_Tb_Scroll_1(object sender, EventArgs e)
 		{
 			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
@@ -966,7 +966,7 @@ namespace BizHawk.Client.EmuHawk
 				Glide_stipple_pattern.Text = Global.Game.GetInt("Glide_stipple_pattern", 1041204192).ToString();
 				Glide_swapmode.SelectedIndex = Global.Game.GetInt("Glide_swapmode", 1);
 				Glide_enable_hacks_for_game.SelectedIndex = Global.Game.GetInt("Glide_enable_hacks_for_game", 0);
-				
+
 				ToggleGlideHackCheckboxEnable(false);
 			}
 			else
@@ -1006,7 +1006,7 @@ namespace BizHawk.Client.EmuHawk
 				RiceRenderToTextureOption_Combo.SelectedIndex = GetIntFromDB("RiceRenderToTextureOption", 0);
 				RiceScreenUpdateSettingHack_Combo.SelectedIndex = GetIntFromDB("RiceScreenUpdateSettingHack", 0);
 				RiceEnableHacksForGame_Combo.SelectedIndex = GetIntFromDB("RiceEnableHacksForGame", 0);
-				
+
 				ToggleRiceHackCheckboxEnable(false);
 			}
 			else
@@ -1216,7 +1216,7 @@ namespace BizHawk.Client.EmuHawk
 				oldSizeY = int.Parse(VideoResolutionYTextBox.Text);
 			}
 
-			
+
 			// Change resolution list to the rest
 			VideoResolutionComboBox.Items.Clear();
 			VideoResolutionComboBox.Items.AddRange(ValidResolutions);

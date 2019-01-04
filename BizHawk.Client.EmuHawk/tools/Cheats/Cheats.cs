@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMessageLabel(bool saved = false)
 		{
-			MessageLabel.Text = saved 
+			MessageLabel.Text = saved
 				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
 				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : "");
 		}
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 							text = "";
 							break;
 					}
-					
+
 					break;
 			}
 		}
@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.CheatList.Add(Cheat.Separator);
 			}
-			
+
 			UpdateDialog();
 			UpdateMessageLabel();
 		}

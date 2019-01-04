@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//maybe only the multicarts do it, to keep the game from clobbering vram on accident
 			//vram_protected = o;
 
-			if (o == true && S == false)	
+			if (o == true && S == false)
 			{
 				prg_banks_16k[0] = (byte)(p);
 				prg_banks_16k[1] = (byte)(p);
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				if (vram_protected) 
+				if (vram_protected)
 					return;
 				else base.WritePPU(addr, value);
 			}

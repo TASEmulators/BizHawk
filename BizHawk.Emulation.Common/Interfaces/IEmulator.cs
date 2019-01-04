@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets the service provider.
 		/// This is the intended mechanism to get services from a core
-		/// Retrieves an IEmulatorService from the core, 
+		/// Retrieves an IEmulatorService from the core,
 		/// if the core does not have the type specified, it will return null
 		/// </summary>
 		IEmulatorServiceProvider ServiceProvider { get; }
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets the core communications module in use by this core.
 		/// </summary>
-		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
+		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" />
 		CoreComm CoreComm { get; }
 	}
 }

@@ -19,9 +19,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			CoreNameLabel.Text = attributes.CoreName;
-			
+
 			if (!string.IsNullOrEmpty(attributes.Author))
-			{ 
+			{
 				CoreAuthorLabel.Text = "authors: " + attributes.Author;
 			}
 			else

@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					// return the 16k extra ROM (located at beginning of file)
 					int temp_addr = addr - 0x4000;
 						return Core._rom[temp_addr];
-					}				
+					}
 				}
 			}
 		}
