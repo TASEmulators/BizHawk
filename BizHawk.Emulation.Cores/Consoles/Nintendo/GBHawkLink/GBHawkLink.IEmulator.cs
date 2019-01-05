@@ -14,11 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public byte controller_state;
-		public bool in_vblank_old;
-		public bool in_vblank;
-		public bool vblank_rise;
-
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
