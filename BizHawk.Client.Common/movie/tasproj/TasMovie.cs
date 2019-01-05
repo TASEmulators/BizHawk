@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = true;
+			BindMarkersToInput = false;
 			CurrentBranch = -1;
 		}
 
@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = true;
+			BindMarkersToInput = false;
 			CurrentBranch = -1;
 		}
 

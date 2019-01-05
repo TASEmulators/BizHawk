@@ -822,6 +822,7 @@ namespace BizHawk.Client.EmuHawk
 			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
 			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
+			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
