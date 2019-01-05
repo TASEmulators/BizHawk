@@ -63,7 +63,7 @@ namespace SevenZip
         /// 7z.dll (from the 7-zip distribution) supports every InArchiveFormat for encoding and decoding.
         /// </remarks>
         //private static string _libraryFileName = ConfigurationManager.AppSettings["7zLocation"] ?? Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
-				private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "7z.dll");
+				private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "dll\\7z.dll");
 
 #endif
 #if WINCE 		
