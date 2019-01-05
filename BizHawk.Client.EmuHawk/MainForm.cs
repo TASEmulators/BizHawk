@@ -3055,11 +3055,11 @@ namespace BizHawk.Client.EmuHawk
 				if (IsSeeking && Emulator.Frame == PauseOnFrame.Value)
 				{
 					PauseEmulator();
-					PauseOnFrame = null;
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 					{
 						GlobalWin.Tools.TAStudio.StopSeeking();
 					}
+					PauseOnFrame = null;
 				}
 			}
 
