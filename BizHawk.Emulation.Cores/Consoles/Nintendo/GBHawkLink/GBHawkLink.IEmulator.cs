@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				R.do_single_step();
 
 				// the signal to shift out a bit is when serial_clock = 1
-				if (L.serialport.serial_clock == 1)
+				if ((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2))
 				{
 					if (LinkConnected)
 					{
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
 						{
-							R.serialport.serial_clock = 1;
+							R.serialport.serial_clock = L.serialport.serial_clock;
 							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
 							R.serialport.coming_in = L.serialport.going_out;
 						}
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 						L.serialport.coming_in = R.serialport.going_out;
 					}
 				}
-				else if (R.serialport.serial_clock == 1)
+				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
 				{
 					if (LinkConnected)
 					{
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start)
 						{
-							L.serialport.serial_clock = 1;
+							L.serialport.serial_clock = R.serialport.serial_clock;
 							L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
 							L.serialport.coming_in = R.serialport.going_out;
 						}

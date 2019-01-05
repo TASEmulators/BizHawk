@@ -49,7 +49,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((value & 1) > 0)
 						{
 							clk_internal = true;
-							clk_rate = 512;
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 256;
+							}
+							else
+							{
+								clk_rate = 512;
+							}						
 							serial_clock = clk_rate;
 						}
 						else
@@ -64,7 +71,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((value & 1) > 0)
 						{
 							clk_internal = true;
-							clk_rate = 512;
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 256;
+							}
+							else
+							{
+								clk_rate = 512;
+							}
 							serial_clock = clk_rate;
 						}
 						else
@@ -75,7 +89,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					if (Core.GBC_compat)
+					{
+						serial_control = (byte)(0x7C | (value & 0x83)); // extra CGB bit
+					}
+					else
+					{
+						serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					}
+					
 					break;
 			}
 		}
