@@ -126,7 +126,37 @@ namespace BizHawk.Client.Common
 			public Dictionary<string, RealFirmwareFile> Dict { get; } = new Dictionary<string, RealFirmwareFile>();
 		}
 
-		public void DoScanAndResolve()
+        /// <summary>
+        /// Test to determine whether the supplied firmware file matches something in the firmware database
+        /// </summary>
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public bool CanFileBeImported(string f)
+        {
+            try
+            {
+                var fi = new FileInfo(f);
+                if (!fi.Exists)
+                    return false;
+
+                // weed out filesizes first to reduce the unnecessary overhead of a hashing operation
+                if (FirmwareDatabase.FirmwareFiles.Where(a => a.Size == fi.Length).FirstOrDefault() == null)
+                    return false;
+
+                // check the hash
+                using (var reader = new RealFirmwareReader())
+                {
+                    reader.Read(fi);
+                    if (FirmwareDatabase.FirmwareFiles.Where(a => a.Hash == reader.Dict.FirstOrDefault().Value.Hash).FirstOrDefault() != null)
+                        return true;
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
+        public void DoScanAndResolve()
 		{
 			// build a list of file sizes. Only those will be checked during scanning
 			HashSet<long> sizes = new HashSet<long>();

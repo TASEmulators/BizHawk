@@ -7,7 +7,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte[] CloneSaveRam()
 		{
-			return (byte[])cart_RAM.Clone();
+			if (cart_RAM != null)
+			{
+				return (byte[])cart_RAM.Clone();
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		public void StoreSaveRam(byte[] data)

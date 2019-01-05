@@ -96,6 +96,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // but it is only partially decoded so it actually responds to any port with bits 1 and 15 reset
             if (portBits[1] == false && portBits[15] == false)
             {
+                Last7ffd = value;
+
                 // if paging is disabled then all writes to this port are ignored until the next reboot
                 if (!PagingDisabled)
                 {
@@ -136,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Only even addresses address the ULA
             if (lowBitReset)
             {
+                LastFe = value;
+
                 // store the last OUT byte
                 LastULAOutByte = value;
 

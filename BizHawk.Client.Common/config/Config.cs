@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common
 		{
 			PathEntries.ResolveWithDefaults();
 			HotkeyBindings.ResolveWithDefaults();
+			PathManager.RefreshTempPath();
 		}
 
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
@@ -131,7 +132,7 @@ namespace BizHawk.Client.Common
 		public DateTime? Update_LastCheckTimeUTC = null;
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
-		public bool CDLAutoSave = true, CDLAutoStart = true;
+		public bool CDLAutoSave = true, CDLAutoStart = true, CDLAutoResume = true;
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)

@@ -54,6 +54,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DATTools\DATConverter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DATTools\DATConverter.Designer.cs">
+      <DependentUpon>DATConverter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DATTools\DATParserBase.cs" />
+    <Compile Include="DATTools\NOINTROParser.cs" />
+    <Compile Include="DATTools\TOSECParser.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="DBMan_MainForm.cs">
       <SubType>Form</SubType>
@@ -67,6 +76,9 @@
     <Compile Include="DiscHash.cs" />
     <Compile Include="PsxDBJob.cs" />
     <Compile Include="RomHasher.cs" />
+    <EmbeddedResource Include="DATTools\DATConverter.resx">
+      <DependentUpon>DATConverter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DBMan_MainForm.resx">
       <DependentUpon>DBMan_MainForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -185,6 +185,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0xAE: bytesToAdvance = 3; return string.Format("LDX ${0:X4}", peeker_word(++pc, peeker));
 				case 0xB0: bytesToAdvance = 2; return string.Format("BCS ${0:X4}", pc + 2 + (sbyte)peeker(++pc));
 				case 0xB1: bytesToAdvance = 2; return string.Format("LDA (${0:X2}),Y *", peeker(++pc));
+				case 0xB3: bytesToAdvance = 2; return string.Format("LAX (${0:X2}),Y *", peeker(++pc));
 				case 0xB4: bytesToAdvance = 2; return string.Format("LDY ${0:X2},X", peeker(++pc));
 				case 0xB5: bytesToAdvance = 2; return string.Format("LDA ${0:X2},X", peeker(++pc));
 				case 0xB6: bytesToAdvance = 2; return string.Format("LDX ${0:X2},Y", peeker(++pc));
@@ -203,6 +204,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case 0xC8: bytesToAdvance = 1; return "INY";
 				case 0xC9: bytesToAdvance = 2; return string.Format("CMP #${0:X2}", peeker(++pc));
 				case 0xCA: bytesToAdvance = 1; return "DEX";
+				case 0xCB: bytesToAdvance = 2; return string.Format("AXS ${0:X2}", peeker(++pc));
 				case 0xCC: bytesToAdvance = 3; return string.Format("CPY ${0:X4}", peeker_word(++pc, peeker));
 				case 0xCD: bytesToAdvance = 3; return string.Format("CMP ${0:X4}", peeker_word(++pc, peeker));
 				case 0xCE: bytesToAdvance = 3; return string.Format("DEC ${0:X4}", peeker_word(++pc, peeker));

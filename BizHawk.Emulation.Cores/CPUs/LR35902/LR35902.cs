@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort RLC = 14;
 		public const ushort RL = 15;
 		public const ushort RRC = 16;
-		public const ushort RR = 17;	
+		public const ushort RR = 17;
 		public const ushort CPL = 18;
 		public const ushort DA = 19;
 		public const ushort SCF = 20;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort SWAP = 29;
 		public const ushort BIT = 30;
 		public const ushort RES = 31;
-		public const ushort SET = 32;		
+		public const ushort SET = 32;
 		public const ushort EI = 33;
 		public const ushort DI = 34;
 		public const ushort HALT = 35;
@@ -108,6 +108,19 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			this.WriteMemory = WriteMemory;
 		}
 
+		//a little CDL related stuff
+		public delegate void DoCDLCallbackType(ushort addr, LR35902.eCDLogMemFlags flags);
+
+		public DoCDLCallbackType CDLCallback;
+
+		public enum eCDLogMemFlags
+		{
+			FetchFirst = 1,
+			FetchOperand = 2,
+			Data = 4,
+			Write = 8
+		};
+
 		// Execute instructions
 		public void ExecuteOne(ref byte interrupt_src, byte interrupt_enable)
 		{
@@ -117,7 +130,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction				
+					// Read the opcode of the next instruction
 					if (EI_pending > 0 && !CB_prefix)
 					{
 						EI_pending--;
@@ -148,6 +161,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
@@ -333,6 +347,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							{
 								if (OnExecFetch != null) OnExecFetch(RegPC);
 								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+								if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
@@ -348,10 +363,11 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 										OP };
 							}
 						}
-						else			
+						else
 						{
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 							if (Halt_bug_3)
 							{
@@ -380,11 +396,22 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 						else
 						{
-							cur_instr = new ushort[]
+							if (is_GBC)
+							{
+								cur_instr = new ushort[]
 										{IDLE,
+										IDLE,
 										HALT_CHK,
-										IDLE,										
 										HALT, 0 };
+							}
+							else
+							{
+								cur_instr = new ushort[]
+										{HALT_CHK,
+										IDLE,
+										IDLE,
+										HALT, 0 };
+							}
 						}
 						
 					}
@@ -416,6 +443,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							stopped = false;
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 							FetchInstruction(ReadMemory(RegPC++));
 							instr_pntr = 0;
 
@@ -445,6 +473,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						stopped = false;
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 						instr_pntr = 0;
 
@@ -472,6 +501,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case OP_G:
 					if (OnExecFetch != null) OnExecFetch(RegPC);
 					if (TraceCallback != null) TraceCallback(State());
+					if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
 

@@ -182,7 +182,10 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				Readonly = true;
-				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+				if (Global.MovieSession.CurrentInput != null)
+				{
+					Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+				}
 			}
 			else
 			{

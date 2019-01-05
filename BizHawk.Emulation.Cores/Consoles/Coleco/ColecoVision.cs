@@ -1,5 +1,4 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 
@@ -51,15 +50,19 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				skipbios = false;
 			}
 
+			use_SGM = _syncSettings.UseSGM;
+
+			if (use_SGM)
+			{
+				Console.WriteLine("Using the Super Game Module");
+			}
+			
 			LoadRom(rom, skipbios);
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
-
-			use_SGM = _syncSettings.UseSGM;
-			Console.WriteLine("Using the Super Game Module");
 		}
 
 		private readonly Z80A _cpu;
@@ -103,7 +106,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				is_MC = true;
 
 				_romData = rom;
-
 			}
 
 			// hack to skip colecovision title screen

@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC1 with bank switching and RAM
@@ -45,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return Core._rom[addr];
-				}				
+				}
 			}
 			else if (addr < 0x8000)
 			{
@@ -68,6 +70,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return 0xFF;
+				}
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x4000)
+			{
+				// lowest bank is fixed, but is still effected by mode
+				if (sel_mode)
+				{
+					SetCDLROM(flags, (ROM_bank & 0x60) * 0x4000 + addr);
+				}
+				else
+				{
+					SetCDLROM(flags, addr);
+				}
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else
+			{
+				if (Core.cart_RAM != null)
+				{
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+					}
+					else
+					{
+						return;
+					}
+
+				}
+				else
+				{
+					return;
 				}
 			}
 		}

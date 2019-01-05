@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
+			ser.Sync("REG_FF0F_OLD", ref REG_FF0F_OLD);
 
 			// memory domains
 			ser.Sync("RAM", ref RAM, false);
@@ -88,6 +89,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("double_speed", ref double_speed);
 			ser.Sync("speed_switch", ref speed_switch);
 			ser.Sync("HDMA_transfer", ref HDMA_transfer);
+
+			ser.Sync("undoc_6C", ref undoc_6C);
+			ser.Sync("undoc_72", ref undoc_72);
+			ser.Sync("undoc_73", ref undoc_73);
+			ser.Sync("undoc_74", ref undoc_74);
+			ser.Sync("undoc_75", ref undoc_75);
+			ser.Sync("undoc_76", ref undoc_76);
+			ser.Sync("undoc_77", ref undoc_77);
 
 			ser.Sync("Use_MT", ref Use_MT);
 			ser.Sync("addr_access", ref addr_access);

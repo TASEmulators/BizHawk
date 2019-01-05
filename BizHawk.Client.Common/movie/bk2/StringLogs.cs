@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 			_mDisk = disk;
 			if (disk)
 			{
-				var path = TempFileCleaner.GetTempFilename("movieOnDisk");
+				var path = TempFileManager.GetTempFilename("movieOnDisk");
 				stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			}
 			else

@@ -287,10 +287,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			for (int i = 0; i < nAttributes; i++)
 			{
 				int size, length;
-				var sbName = new System.Text.StringBuilder(1024);
+				string name = new System.Text.StringBuilder(1024).ToString();
 				ActiveAttribType type;
-				GL.GetActiveAttrib(pid, i, 1024, out length, out size, out type, sbName);
-				attributes.Add(new AttributeInfo() { Handle = new IntPtr(i), Name = sbName.ToString() });
+				GL.GetActiveAttrib(pid, i, 1024, out length, out size, out type, out name);
+				attributes.Add(new AttributeInfo() { Handle = new IntPtr(i), Name = name });
 			}
 
 			//get all the uniforms
@@ -303,10 +303,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			{
 				int size, length;
 				ActiveUniformType type;
-				var sbName = new System.Text.StringBuilder(1024);
-				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, sbName);
+				string name = new System.Text.StringBuilder(1024).ToString().ToString();
+				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, out name);
 				errcode = GL.GetError();
-				string name = sbName.ToString();
 				int loc = GL.GetUniformLocation(pid, name);
 
 				//translate name if appropriate

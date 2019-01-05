@@ -1369,7 +1369,7 @@ sha1:542d45c4b4873e58b4da63fa2fa9dfc389aa4bf6		Mega Force (1982) (20th Century F
 sha1:0ae118373c7bda97da2f8d9c113e1e09ea7e49e1		Mega Force (1982) (20th Century Fox)	A26		m=4K;NTSC=true
 sha1:864f5c82f055c3d21c3f10b6ee892493b36b835a		Mega Funpak - Pac-Man, Planet Patrol, Skeet Shoot, Battles of Gorf (HES) (PAL) [!]	A26		m=F6;PAL=true
 sha1:8bfbdc7f8a8f244cebd74a480388dd611a52f770		Mega Mania Raid (1999) (Thiago Paiva)	A26		m=4K;NTSC=true
-sha1:46977baf0e1ee6124b524258879c46f80d624fae		Megaboy (Brazil) (PAL) [!]	A26		m=F0;PAL=true
+sha1:46977baf0e1ee6124b524258879c46f80d624fae		Megaboy (Brazil) (PAL) [!]	A26		SP_FRAME=true;m=F0;PAL=true
 sha1:9d95f08acc02777283f30ebea8658e8ab7587b9b		Megademo (19xx) (PD)	A26		m=2K;NTSC=true
 sha1:756396b5d89831909d3d55cba143f5d1a101e366		Megamania (1982) (Activision) (PAL) [!]	A26		m=4K;PAL=true
 sha1:2b6a826064295220502e1cee1df8c32bf1cd7189		Megamania (1982) (Activision) (PAL) [p1][!]	A26		m=4K;PAL=true

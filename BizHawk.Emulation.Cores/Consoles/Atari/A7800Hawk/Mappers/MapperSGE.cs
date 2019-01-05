@@ -28,6 +28,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					return Core._hsbios[addr - 0x3000];
 				}
+				else if (Core.is_pokey)
+				{
+					return Core.pokey.ReadReg(addr & 0xF);
+				}
 				else
 				{
 					return Core.RAM[0x800 + addr & 0x7FF];
@@ -54,10 +58,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						int temp_addr = addr - 0x8000;
 						return Core._rom[temp_addr + (bank + 1) * 0x4000];
 					}
+					/*
+					else if (Core.is_pokey)
+					{
+						return Core.pokey.ReadReg(addr & 0xF);
+					}
+					*/
 					else
 					{
-						// return the 16k extra ROM (located at beginning of file)
-						int temp_addr = addr - 0x4000;
+					// return the 16k extra ROM (located at beginning of file)
+					int temp_addr = addr - 0x4000;
 						return Core._rom[temp_addr];
 					}				
 				}
@@ -85,6 +95,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (addr >= 0x3000 && Core._hsbios != null)
 				{
 				}
+				else if (Core.is_pokey)
+				{
+					Core.pokey.WriteReg(addr & 0xF, value);
+				}
 				else
 				{
 					Core.RAM[0x800 + addr & 0x7FF] = value;
@@ -96,6 +110,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (addr>=0x8000)
 				{
 					bank = (byte)(value & 0x7);
+				}
+				else if (Core.is_pokey)
+				{
+					Core.pokey.WriteReg(addr & 0xF, value);
 				}
 			}
 		}

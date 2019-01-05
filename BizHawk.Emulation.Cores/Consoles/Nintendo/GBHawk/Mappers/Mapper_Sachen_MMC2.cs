@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Sachen Bootleg Mapper
@@ -69,6 +71,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return 0xFF;
+			}
+		}
+
+	public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+	{
+			if (addr < 0x4000)
+			{
+				// header is scrambled
+				if ((addr >= 0x100) && (addr < 0x200))
+				{
+					int temp0 = (addr & 1);
+					int temp1 = (addr & 2);
+					int temp4 = (addr & 0x10);
+					int temp6 = (addr & 0x40);
+
+					temp0 = temp0 << 6;
+					temp1 = temp1 << 3;
+					temp4 = temp4 >> 3;
+					temp6 = temp6 >> 6;
+
+					addr &= 0x1AC;
+					addr |= (ushort)(temp0 | temp1 | temp4 | temp6);
+				}
+
+				if (locked_GBC) { addr |= 0x80; }
+
+				SetCDLROM(flags, addr + BASE_ROM_Bank * 0x4000);
+			}
+			else if (addr < 0x8000)
+			{
+				int temp_bank = (ROM_bank & ~ROM_bank_mask) | (ROM_bank_mask & BASE_ROM_Bank);
+				temp_bank &= ROM_mask;
+
+				SetCDLROM(flags, (addr - 0x4000) + temp_bank * 0x4000);
+			}
+			else
+			{
+				return;
 			}
 		}
 

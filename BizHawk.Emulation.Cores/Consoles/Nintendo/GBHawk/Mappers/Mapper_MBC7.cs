@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Mapper with built in EEPROM, also used with Kirby's tilt 'n tumble
@@ -78,6 +80,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return 0xFF;
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x4000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else if (addr < 0xA000)
+			{
+				return;
+			}
+			else if (addr < 0xB000)
+			{
+				if (RAM_enable_1 && RAM_enable_2)
+				{
+					return;
+				}
+				else
+				{
+					return;
+				}
+			}
+			else
+			{
+				return;
 			}
 		}
 

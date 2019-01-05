@@ -14,6 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		public string cmdRom = null;
 		public string cmdLoadSlot = null;
 		public string cmdLoadState = null;
+		public string cmdConfigPath = null;
+		public string cmdConfigFile = null;
 		public string cmdMovie = null;
 		public string cmdDumpType = null;
 		public string cmdDumpName = null;
@@ -54,6 +56,10 @@ namespace BizHawk.Client.EmuHawk
 				if (arg.StartsWith("--load-state="))
 				{
 					cmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				if (arg.StartsWith("--config="))
+				{
+					cmdConfigFile = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--movie="))
 				{

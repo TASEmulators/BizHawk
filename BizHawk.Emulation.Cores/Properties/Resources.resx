@@ -151,4 +151,19 @@
   <data name="ZX_plus2_rom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\plus2.rom.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="CPC_AMSDOS_0_5_ROM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CPC_AMSDOS_0.5.ROM.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CPC_BASIC_1_0_ROM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CPC_BASIC_1.0.ROM.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CPC_BASIC_1_1_ROM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CPC_BASIC_1.1.ROM.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CPC_OS_6128_ROM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CPC_OS_6128.ROM.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OS_464_ROM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OS_464.ROM.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

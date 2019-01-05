@@ -12,7 +12,7 @@ namespace BizHawk.Common
 		public InstanceDll(string dllPath)
 		{
 			// copy the dll to a temp directory
-			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
+			var path = TempFileManager.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
 			using (var sdll = File.OpenRead(dllPath))
 				sdll.CopyTo(stream);
@@ -32,7 +32,7 @@ namespace BizHawk.Common
 					var lastError = GetLastError();
 					throw new InvalidOperationException($"Failed to load plugin {path}, error code: 0x{lastError:X}");
 				}
-				var newfname = TempFileCleaner.RenameTempFilenameForDelete(path);
+				var newfname = TempFileManager.RenameTempFilenameForDelete(path);
 				File.Move(path, newfname);
 			}
 			finally

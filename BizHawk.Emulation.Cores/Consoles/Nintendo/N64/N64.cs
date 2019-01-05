@@ -256,7 +256,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				LagCount++;
 			}
 
-			Frame++;
+			if(!api.IsCrashed)
+				Frame++;
 		}
 
 		public string SystemId { get { return "N64"; } }

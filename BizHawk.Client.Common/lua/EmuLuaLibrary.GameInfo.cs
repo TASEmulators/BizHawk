@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		public override string Name => "gameinfo";
 
 		[LuaMethodExample("local stgamget = gameinfo.getromname( );")]
-		[LuaMethod("getromname", "returns the path of the currently loaded rom, if a rom is loaded")]
+		[LuaMethod("getromname", "returns the name of the currently loaded rom, if a rom is loaded")]
 		public string GetRomName()
 		{
 			if (Global.Game != null)

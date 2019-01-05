@@ -117,6 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
 			int byteCount = sampleCount * Sound.BlockAlign;
 			var buffer = _bufferPool.Obtain(byteCount);
+			if (byteCount > (samples.Length * 2)) { byteCount = samples.Length * 2; }
 			Buffer.BlockCopy(samples, 0, buffer.Bytes, 0, byteCount);
 			_sourceVoice.SubmitSourceBuffer(new AudioBuffer
 				{

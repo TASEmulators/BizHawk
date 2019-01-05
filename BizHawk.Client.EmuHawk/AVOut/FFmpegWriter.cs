@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
 #endif
 
-				string filename = $"{_baseName}_{_segment,4:D4}{_ext}";
+				string filename = _baseName + (_segment > 0 ? $"_{_segment}" : "") + _ext;
 				_ffmpeg.StartInfo.Arguments = string.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);
 				_ffmpeg.StartInfo.CreateNoWindow = true;
 
@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 		public string DesiredExtension()
 		{
 			// this needs to interface with the codec token
-			return _token.Defaultext;
+			return _token.Extension;
 		}
 
 		public void SetDefaultVideoCodecToken()

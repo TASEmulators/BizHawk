@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC5, common mapper for GBC games
@@ -22,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// some games have sizes that result in a degenerate ROM, account for it here
 			if (ROM_mask > 4) { ROM_mask |= 3; }
+			if (ROM_mask > 0x100) { ROM_mask |= 0xFF; }
 
 			RAM_mask = 0;
 			if (Core.cart_RAM != null)
@@ -58,6 +61,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return 0xFF;
+				}
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x4000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else
+			{
+				if (Core.cart_RAM != null)
+				{
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+					}
+					else
+					{
+						return;
+					}
+
+				}
+				else
+				{
+					return;
 				}
 			}
 		}

@@ -319,7 +319,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsSG1000)
 			{
 				movie.HeaderEntries.Add("IsSGMode", "1");
-			}
+            }
 
 			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsGameGear)
 			{

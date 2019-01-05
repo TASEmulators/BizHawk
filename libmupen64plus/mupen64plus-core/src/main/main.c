@@ -839,7 +839,7 @@ void main_stop(void)
 {
     /* note: this operation is asynchronous.  It may be called from a thread other than the
        main emulator thread, and may return before the emulator is completely stopped */
-    if (!g_EmulatorRunning)
+    if (!g_EmulatorRunning)	
         return;
 
     DebugMessage(M64MSG_STATUS, "Stopping emulation.");

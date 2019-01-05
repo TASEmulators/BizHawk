@@ -97,26 +97,44 @@ namespace BizHawk.Client.DBMan
 				new PsxDBJob().Run(args.Skip(1).ToArray());
 				return;
 			}
+			if (args.Length > 0 && args[0] == "--dbman")
+			{
+				try
+				{
+					InitDB();
+					Application.EnableVisualStyles();
+					Application.SetCompatibleTextRenderingDefault(false);
+					Application.Run(new DBMan_MainForm());
+				}
+				catch (Exception e)
+				{
+					MessageBox.Show(e.ToString());
+				}
+				finally
+				{
+					if (DB.Con != null) DB.Con.Dispose();
+				}
+
+				return;
+			}
 			//if (args.Length > 0 && args[0] == "--disccmp")
 			//{
 			//  new DiscCmp().Run(args.Skip(1).ToArray());
 			//  return;
 			//}
+
 			try
 			{
-				InitDB();
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
-				Application.Run(new DBMan_MainForm());
+				Application.Run(new DATConverter());
 			}
 			catch (Exception e)
 			{
 				MessageBox.Show(e.ToString());
 			}
-			finally 
-			{
-				if (DB.Con != null) DB.Con.Dispose();
-			}
+
+			return;
 		}
 
 		static void InitDB()

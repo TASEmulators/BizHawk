@@ -773,6 +773,7 @@ SYNCFUNC(LCD)
 	SSS(ppu);
 	NSS(bgpData);
 	NSS(objpData);
+	NSS(dmgColorsRgb32);
 	SSS(eventTimes_);
 	SSS(m0Irq_);
 	SSS(lycIrq);

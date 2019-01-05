@@ -196,12 +196,12 @@ namespace BizHawk.Emulation.Common
 				_reads.RemoveAt(i);
 			}
 
-			for (int i = _reads.Count - 1; i >= 0; i--)
+			for (int i = _writes.Count - 1; i >= 0; i--)
 			{
 				_writes.RemoveAt(i);
 			}
 
-			for (int i = _reads.Count - 1; i >= 0; i--)
+			for (int i = _execs.Count - 1; i >= 0; i--)
 			{
 				_execs.RemoveAt(i);
 			}

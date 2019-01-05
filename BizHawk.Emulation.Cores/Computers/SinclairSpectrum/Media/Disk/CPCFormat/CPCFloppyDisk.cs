@@ -1,20 +1,22 @@
 ﻿using System.Text;
 using BizHawk.Common;
+using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
     /// Logical object representing a standard +3 disk image
     /// </summary>
-    public class CPCExtendedFloppyDisk : FloppyDisk
+    public class CPCFloppyDisk : FloppyDisk
     {
         /// <summary>
         /// The format type
         /// </summary>
-        public override DiskType DiskFormatType => DiskType.CPCExtended;
+        public override DiskType DiskFormatType => DiskType.CPC;
 
         /// <summary>
-        /// Attempts to parse incoming disk data
+        /// Attempts to parse incoming disk data 
         /// </summary>
         /// <param name="diskData"></param>
         /// <returns>
@@ -26,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // look for standard magic string
             string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-            if (!ident.ToUpper().Contains("EXTENDED CPC DSK"))
+            if (!ident.ToUpper().Contains("MV - CPC"))
             {
                 // incorrect format
                 return false;
@@ -40,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             DiskHeader.TrackSizes = new int[DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides];
             DiskTracks = new Track[DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides];
             DiskData = data;
-            int pos = 0x34;
+            int pos = 0x32;
 
             if (DiskHeader.NumberOfSides > 1)
             {
@@ -53,9 +55,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 throw new System.NotImplementedException(sbm.ToString());
             }
 
+            if (DiskHeader.NumberOfTracks > 42)
+            {
+                StringBuilder sbm = new StringBuilder();
+                sbm.AppendLine();
+                sbm.AppendLine();
+                sbm.AppendLine("The detected disk is an " + DiskHeader.NumberOfTracks + " track disk image.");
+                sbm.AppendLine("This is currently incompatible with the emulated +3 disk drive (42 tracks).");
+                sbm.AppendLine("Likely the disk image is an 80 track betadisk or opus image, the drives and controllers for which are not currently emulated in ZXHawk");
+                throw new System.NotImplementedException(sbm.ToString());
+            }
+
+            // standard CPC format all track sizes are the same in the image
             for (int i = 0; i < DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides; i++)
             {
-                DiskHeader.TrackSizes[i] = data[pos++] * 256;                
+                DiskHeader.TrackSizes[i] = MediaConverter.GetWordValue(data, pos);
             }
 
             // move to first track information block
@@ -80,8 +94,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 p += 16;
                 DiskTracks[i].TrackNumber = data[p++];
                 DiskTracks[i].SideNumber = data[p++];
-                DiskTracks[i].DataRate = data[p++];
-                DiskTracks[i].RecordingMode = data[p++];
+                p += 2;
                 DiskTracks[i].SectorSize = data[p++];
                 DiskTracks[i].NumberOfSectors = data[p++];
                 DiskTracks[i].GAP3Length = data[p++];
@@ -90,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 int dpos = pos + 0x100;
 
                 // sector info list
-                DiskTracks[i].Sectors = new Sector[DiskTracks[i].NumberOfSectors];                
+                DiskTracks[i].Sectors = new Sector[DiskTracks[i].NumberOfSectors];
                 for (int s = 0; s < DiskTracks[i].NumberOfSectors; s++)
                 {
                     DiskTracks[i].Sectors[s] = new Sector();
@@ -104,6 +117,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     DiskTracks[i].Sectors[s].ActualDataByteLength = MediaConverter.GetWordValue(data, p);
                     p += 2;
 
+                    // actualdatabytelength value is calculated now
+                    if (DiskTracks[i].Sectors[s].SectorSize == 0)
+                    {
+                        // no sectorsize specified - DTL will be used at runtime
+                        DiskTracks[i].Sectors[s].ActualDataByteLength = DiskHeader.TrackSizes[i];
+                    }
+                    else if (DiskTracks[i].Sectors[s].SectorSize > 6)
+                    {
+                        // invalid - wrap around to 0
+                        DiskTracks[i].Sectors[s].ActualDataByteLength = DiskHeader.TrackSizes[i];
+                    }
+                    else if (DiskTracks[i].Sectors[s].SectorSize == 6)
+                    {
+                        // only 0x1800 bytes are stored
+                        DiskTracks[i].Sectors[s].ActualDataByteLength = 0x1800;
+                    }
+                    else
+                    {
+                        // valid sector size for this format
+                        DiskTracks[i].Sectors[s].ActualDataByteLength = 0x80 << DiskTracks[i].Sectors[s].SectorSize;
+                    }
+
                     // sector data - begins at 0x100 offset from the start of the track info block (in this case dpos)
                     DiskTracks[i].Sectors[s].SectorData = new byte[DiskTracks[i].Sectors[s].ActualDataByteLength];
 
@@ -111,24 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     for (int b = 0; b < DiskTracks[i].Sectors[s].ActualDataByteLength; b++)
                     {
                         DiskTracks[i].Sectors[s].SectorData[b] = data[dpos + b];
-                    }
-
-                    // check for multiple weak/random sectors stored
-                    if (DiskTracks[i].Sectors[s].SectorSize <= 7)
-                    {
-                        // sectorsize n=8 is equivilent to n=0 - FDC will use DTL for length
-                        int specifiedSize = 0x80 << DiskTracks[i].Sectors[s].SectorSize;
-
-                        if (specifiedSize < DiskTracks[i].Sectors[s].ActualDataByteLength)
-                        {
-                            // more data stored than sectorsize defines
-                            // check for multiple weak/random copies
-                            if (DiskTracks[i].Sectors[s].ActualDataByteLength % specifiedSize != 0)
-                            {
-                                DiskTracks[i].Sectors[s].ContainsMultipleWeakSectors = true;
-                            }
-                        }                        
-                    }
+                    }                    
 
                     // move dpos to the next sector data postion
                     dpos += DiskTracks[i].Sectors[s].ActualDataByteLength;
@@ -140,6 +158,77 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // run protection scheme detector
             ParseProtection();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Takes a double-sided disk byte array and converts into 2 single-sided arrays
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public static bool SplitDoubleSided(byte[] data, List<byte[]> results)
+        {
+            // look for standard magic string
+            string ident = Encoding.ASCII.GetString(data, 0, 16);
+            if (!ident.ToUpper().Contains("MV - CPC"))
+            {
+                // incorrect format
+                return false;
+            }
+
+            byte[] S0 = new byte[data.Length];
+            byte[] S1 = new byte[data.Length];
+
+            // disk info block
+            Array.Copy(data, 0, S0, 0, 0x100);
+            Array.Copy(data, 0, S1, 0, 0x100);
+            // change side number
+            S0[0x31] = 1;
+            S1[0x31] = 1;
+
+            var trkSize = MediaConverter.GetWordValue(data, 0x32);
+
+            // start at track info blocks
+            int mPos = 0x100;
+            int s0Pos = 0x100;
+            int s1Pos = 0x100;
+
+            var numTrks = data[0x30];
+            var numSides = data[0x31];
+
+            while (mPos < trkSize * data[0x30] * data[0x31])
+            {
+                // which side is this?
+                var side = data[mPos + 0x11];
+                if (side == 0)
+                {
+                    // side 1
+                    Array.Copy(data, mPos, S0, s0Pos, trkSize);
+                    s0Pos += trkSize;
+                }
+                else if (side == 1)
+                {
+                    // side 2
+                    Array.Copy(data, mPos, S1, s1Pos, trkSize);
+                    s1Pos += trkSize;
+                }
+                else
+                {
+
+                }
+
+                mPos += trkSize;
+            }
+
+            byte[] s0final = new byte[s0Pos];
+            byte[] s1final = new byte[s1Pos];
+            Array.Copy(S0, 0, s0final, 0, s0Pos);
+            Array.Copy(S1, 0, s1final, 0, s1Pos);
+
+            results.Add(s0final);
+            results.Add(s1final);
 
             return true;
         }
@@ -163,10 +252,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
 
             }
-
-            // sync deterministic track and sector counters
-            ser.Sync(" _randomCounter", ref _randomCounter);
-            RandomCounter = _randomCounter;
 
             ser.EndSection();
         }

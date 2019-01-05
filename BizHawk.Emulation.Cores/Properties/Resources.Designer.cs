@@ -63,6 +63,56 @@ namespace BizHawk.Emulation.Cores.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] CPC_AMSDOS_0_5_ROM {
+            get {
+                object obj = ResourceManager.GetObject("CPC_AMSDOS_0_5_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] CPC_BASIC_1_0_ROM {
+            get {
+                object obj = ResourceManager.GetObject("CPC_BASIC_1_0_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] CPC_BASIC_1_1_ROM {
+            get {
+                object obj = ResourceManager.GetObject("CPC_BASIC_1_1_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] CPC_OS_6128_ROM {
+            get {
+                object obj = ResourceManager.GetObject("CPC_OS_6128_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] OS_464_ROM {
+            get {
+                object obj = ResourceManager.GetObject("OS_464_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] SameboyCgbBoot {
             get {
                 object obj = ResourceManager.GetObject("SameboyCgbBoot", resourceCulture);

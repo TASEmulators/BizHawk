@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
@@ -38,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte HDMA_ctrl
 		{
-			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 16) - 1)); }
+			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 4) - 1)); }
 		}
 
 
@@ -54,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int last_HBL;
 		public bool HBL_HDMA_go;
 		public bool HBL_test;
+		public byte LYC_t;
+		public int LYC_cd;
 
 		public override byte ReadReg(int addr)
 		{
@@ -111,34 +112,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
-					// writing to STAT during mode 0 or 2 causes a STAT IRQ
+					// note that their is no stat interrupt bug in GBC
+					// writing to STAT during mode 0 or 1 causes a STAT IRQ
 					if (LCDC.Bit(7))
 					{
-						if (((STAT & 3) == 0) || ((STAT & 3) == 1))
+						if (!Core.GBC_compat)
 						{
-							LYC_INT = true;
+							if (((STAT & 3) == 0) || ((STAT & 3) == 1))
+							{
+								LYC_INT = true;
+							}
+						}
+
+						if (value.Bit(6))
+						{
+							if (LY == LYC) { LYC_INT = true; }
+							else { LYC_INT = false; }
 						}
 					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
+
+					if (!STAT.Bit(6)) { LYC_INT = false; }
+					if (!STAT.Bit(4)) { VBL_INT = false; }
 					break; 
 				case 0xFF42: // SCY
 					scroll_y = value;
 					break; 
 				case 0xFF43: // SCX
 					scroll_x = value;
-					// calculate the column number of the tile to start with
-					x_tile = (int)Math.Floor((float)(scroll_x) / 8);
 					break; 
 				case 0xFF44: // LY
 					LY = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC
-					LYC = value;
-					if (LCDC.Bit(7))
-					{
-						if (LY != LYC) { STAT &= 0xFB; }
-						else { STAT |= 0x4; }
-					}
+
+					// tests indicate that latching writes to LYC should take place 4 cycles after the write
+					// otherwise tests around LY boundaries will fail
+					LYC_t = value;
+					LYC_cd = 4;
 					break;
 				case 0xFF46: // DMA 
 					DMA_addr = value;
@@ -360,20 +371,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 
-						/*
-						VBL_INT = false;
-						if (STAT.Bit(3)) { HBL_INT = true; }
+						//STAT &= 0xFC;
 
-						STAT &= 0xFC;
-						*/
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
 						// so we don't reset it in the scanline loop
 						window_y_tile = 0;
 						window_y_tile_inc = 0;
 						window_started = false;
-						if (!LCDC.Bit(5)) { window_is_reset = true; }
-						
+						if (!LCDC.Bit(5)) { window_is_reset = true; }						
 					}
 
 					// Automatically restore access to VRAM at this time (force end drawing)
@@ -399,14 +405,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					STAT &= 0xFC;
 
 					// also the LCD doesn't turn on right away
-
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
 					cycle = 8;
 				}
 
 				// the VBL stat is continuously asserted
-				if ((LY >= 144))
+				if (LY >= 144)
 				{
 					if (STAT.Bit(4))
 					{
@@ -420,8 +425,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((cycle == 4) && (LY == 144)) {
+					if ((cycle == 2) && (LY == 144))
+					{
+						// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
+						if (STAT.Bit(5)) { VBL_INT = true; }
+					}
 
+					if ((cycle == 4) && (LY == 144))
+					{
 						HBL_INT = false;
 
 						// set STAT mode to 1 (VBlank) and interrupt flag if it is enabled
@@ -432,13 +443,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Core.REG_FF0F |= 0x01;
 					}
 
-					if ((LY >= 144) && (cycle == 4))
+					if ((cycle == 4) && (LY == 144))
 					{
-						// a special case of OAM mode 2 IRQ assertion, even though PPU Mode still is 1
-						//if (STAT.Bit(5)) { OAM_INT = true; }
+						if (STAT.Bit(5)) { VBL_INT = false; }
 					}
 
-					if ((LY == 153) && (cycle == 6))
+					if ((cycle == 8) && (LY == 153))
 					{
 						LY = 0;
 						LY_inc = 0;
@@ -501,23 +511,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							if (cycle == 2)
 							{
-								if (LY != 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
+								if (LY != 0)
+								{
+									HBL_INT = false;
+									
+									if (STAT.Bit(5)) { OAM_INT = true; }
+								}
 							}
 							else if (cycle == 4)
 							{
 								// apparently, writes can make it to OAM one cycle longer then reads
 								OAM_access_write = false;
-
+								
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
 
-								if (LY == 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
-
-								HBL_INT = false;
-								// DMG exits VBlank into mode 0, but not GBC, so this line is needed
-								// (This is important for Wacky Racers and Altered Space)
-								VBL_INT = false;
+								if (LY == 0)
+								{
+									VBL_INT = false;
+									if (STAT.Bit(5)) { OAM_INT = true; }
+								}
 							}
 
 							// here OAM scanning is performed
@@ -525,29 +539,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else if ((cycle >= 80) && (LY < 144))
 						{
-
-							if (cycle == 84)
+							if (cycle >= 83)
 							{
-								STAT &= 0xFC;
-								STAT |= 0x03;
-								OAM_INT = false;
-								OAM_access_write = false;
-								VRAM_access_write = false;
-							}
+								if (cycle == 84)
+								{
+									STAT &= 0xFC;
+									STAT |= 0x03;
+									OAM_INT = false;
+									OAM_access_write = false;
+									VRAM_access_write = false;
 
-							// render the screen and handle hblank
-							render(cycle - 80);
+									// x-scroll is expected to be latched one cycle later 
+									// this is fine since nothing has started in the rendering until the second cycle
+									// calculate the column number of the tile to start with
+									x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+									render_offset = scroll_x % 8;
+								}
+
+								// render the screen and handle hblank
+								render(cycle - 83);
+							}
+							else if (cycle == 80)
+							{
+								OAM_access_read = false;
+								OAM_access_write = true;
+								VRAM_access_read = false;
+							}
 						}
 					}
 				}
 
-				if ((LY_inc == 0))
+				if (LY_inc == 0)
 				{
 					if (cycle == 12)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
-
+					}
+					else if (cycle == 14)
+					{
 						// Special case of LY = LYC
 						if ((LY == LYC) && !STAT.Bit(2))
 						{
@@ -555,25 +585,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							STAT |= 0x04;
 							if (STAT.Bit(6)) { LYC_INT = true; }
 						}
-
-						// also a special case of OAM mode 2 IRQ assertion, even though PPU Mode still is 1
-						//if (STAT.Bit(5)) { OAM_INT = true; }
 					}
-
-					//if (cycle == 92) { OAM_INT = false; }
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
-				if ((cycle == 2) && (LY != 0))
+				if ((cycle == 4) && (LY != 0))
 				{
 					if (LY_inc == 1)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
 					}
-
 				}
-				else if ((cycle == 4) && (LY != 0))
+				else if ((cycle == 6) && (LY != 0))
 				{
 					if ((LY == LYC) && !STAT.Bit(2))
 					{
@@ -614,6 +638,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// process latch delays
 			//latch_delay();
+
+			if (LYC_cd > 0)
+			{
+				LYC_cd--;
+				if (LYC_cd == 0)
+				{
+					LYC = LYC_t;
+
+					if (LCDC.Bit(7))
+					{
+						if (LY != LYC) { STAT &= 0xFB; LYC_INT = false; }
+						else { STAT |= 0x4; LYC_INT = true; }
+					}
+				}
+			}
 		}
 
 		// might be needed, not sure yet
@@ -623,17 +662,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public override void render(int render_cycle)
-		{
-		
+		{	
 			// we are now in STAT mode 3
 			// NOTE: presumably the first necessary sprite is fetched at sprite evaulation
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
+				/*
 				OAM_access_read = false;
 				OAM_access_write = true;
 				VRAM_access_read = false;
-
+				*/
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
@@ -641,14 +680,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				read_case = 0;
 				internal_cycle = 0;
 				pre_render = true;
+				pre_render_2 = true;
 				tile_inc = 0;
 				pixel_counter = -8;
 				sl_use_index = 0;
 				fetch_sprite = false;
-				fetch_sprite_01 = false;
-				fetch_sprite_4 = false;
 				going_to_fetch = false;
 				first_fetch = true;
+				consecutive_sprite = -render_offset + 8;
 				no_sprites = false;
 				evaled_sprites = 0;
 				window_pre_render = false;
@@ -670,7 +709,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (SL_sprites_index == 0) { no_sprites = true; }
 				// it is much easier to process sprites if we order them according to the rules of sprite priority first
 				if (!no_sprites) { reorder_and_assemble_sprites(); }
-
 			}
 
 			// before anything else, we have to check if windowing is in effect
@@ -778,7 +816,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								// There is another priority bit in GBC, that can still override sprite priority
-								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && Core.GBC_compat)
+								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && (ref_pixel != 0) && Core.GBC_compat)
 								{
 									use_sprite = false;
 								}
@@ -834,7 +872,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 5;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -846,7 +883,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			if (!fetch_sprite)
 			{
-				if (!pre_render)
+				if (!pre_render_2)
 				{
 					// before we go on to read case 3, we need to know if we stall there or not
 					// Gekkio's tests show that if sprites are at position 0 or 1 (mod 8) 
@@ -862,15 +899,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								going_to_fetch = true;
 								fetch_sprite = true;
-
-								if ((SL_sprites[i * 4 + 1] % 8) < 2)
-								{
-									fetch_sprite_01 = true;
-								}
-								if ((SL_sprites[i * 4 + 1] % 8) > 3)
-								{
-									fetch_sprite_4 = true;
-								}
 							}
 						}
 					}
@@ -879,20 +907,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				switch (read_case)
 				{
 					case 0: // read a background tile
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{						
 							// calculate the row number of the tiles to be fetched
 							y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
-							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];						
+							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
-							
+
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
-						}
-						else
-						{
+
 							read_case = 1;
 							if (!pre_render)
 							{
@@ -902,7 +928,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 1: // read from tile graphics (0)
-						if ((internal_cycle % 2) == 0)
+						if ((internal_cycle % 2) == 1)
 						{
 							y_scroll_offset = (scroll_y + LY) % 8;
 
@@ -924,15 +950,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
-						}
-						else
-						{
+
 							read_case = 2;
 						}
 						break;
 
 					case 2: // read from tile graphics (1)
 						if ((internal_cycle % 2) == 0)
+						{
+							pre_render_2 = false;
+						}
+						else
 						{
 							y_scroll_offset = (scroll_y + LY) % 8;
 
@@ -959,14 +987,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
-						}
-						else
-						{
+
 							if (pre_render)
 							{
 								// here we set up rendering
 								pre_render = false;
-								render_offset = scroll_x % 8;
+								
 								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;
@@ -979,11 +1005,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 3: // read from sprite data
-						if ((internal_cycle % 2) == 0)
-						{
-							// nothing to do if not fetching
-						}
-						else
+						if ((internal_cycle % 2) == 1)
 						{
 							read_case = 0;
 							latch_new_data = true;
@@ -991,16 +1013,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 4: // read from window data
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{						
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
-							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;						
-						}
-						else
-						{
+							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
+
 							window_tile_inc++;
 							read_case = 5;
 						}
@@ -1008,7 +1028,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 5: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
 
@@ -1018,8 +1038,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							if (LCDC.Bit(4))
-							{								
-								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];								
+							{
+								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
 							}
 							else
 							{
@@ -1027,19 +1047,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte.Bit(7))
 								{
 									tile_byte -= 256;
-								}								
-								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];								
+								}
+								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
-						}
-						else
-						{
+
 							read_case = 6;
 						}
 						window_counter++;
 						break;
 
 					case 6: // read from tile graphics (for the window)
-						if ((window_counter % 2) == 0)
+						if ((window_counter % 2) == 1)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
 
@@ -1054,8 +1072,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte < 0)
 								{
 									tile_byte += 256;
-								}							
-								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];								
+								}
+								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 							else
 							{
@@ -1063,13 +1081,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte.Bit(7) && tile_byte > 0)
 								{
 									tile_byte -= 256;
-								}								
-								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];							
+								}
+								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 
-						}
-						else
-						{
 							if (window_pre_render)
 							{
 								// here we set up rendering
@@ -1092,11 +1107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 7: // read from sprite data
-						if ((window_counter % 2) == 0)
-						{
-							// nothing to do if not fetching
-						}
-						else
+						if ((window_counter % 2) == 1)
 						{
 							read_case = 4;
 							latch_new_data = true;
@@ -1105,26 +1116,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 8: // done reading, we are now in phase 0
-
 						pre_render = true;
 
-						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
-						if (hbl_countdown > 0)
-						{
-							hbl_countdown--;
-							if (hbl_countdown == 0)
-							{
-								STAT &= 0xFC;
-								STAT |= 0x00;
+						STAT &= 0xFC;
+						STAT |= 0x00;
 
-								if (STAT.Bit(3)) { HBL_INT = true; }
+						if (STAT.Bit(3)) { HBL_INT = true; }
 
-								OAM_access_read = true;
-								OAM_access_write = true;
-								VRAM_access_read = true;
-								VRAM_access_write = true;
-							}
-						}					
+						OAM_access_read = true;
+						OAM_access_write = true;
+						VRAM_access_read = true;
+						VRAM_access_write = true;
 						break;
 
 					case 9:
@@ -1154,22 +1156,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (going_to_fetch)
 				{
 					going_to_fetch = false;
-					sprite_fetch_counter = first_fetch ? 2 : 0;
-					first_fetch = false;
 
-					if (fetch_sprite_01)
-					{
-						sprite_fetch_counter += 2;
-						fetch_sprite_01 = false;
-					}
-
-					if (fetch_sprite_4)
-					{
-						sprite_fetch_counter -= 2;
-						fetch_sprite_4 = false;
-					}
-
-					int last_eval = 0;
+					last_eval = 0;
 
 					// at this time it is unknown what each cycle does, but we only need to accurately keep track of cycles
 					for (int i = 0; i < SL_sprites_index; i++)
@@ -1184,16 +1172,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					// if we didn't evaluate all the sprites immediately, 2 more cycles are added to restart it
-					if (evaled_sprites != (Math.Pow(2,SL_sprites_index) - 1))
+					// x scroll offsets the penalty table
+					// there is no penalty if the next sprites to be fetched are within the currentfetch block (8 pixels)
+					if (first_fetch || (last_eval >= consecutive_sprite))
 					{
-						if ((last_eval % 8) == 0) { sprite_fetch_counter += 3; }
-						else if ((last_eval % 8) == 1) { sprite_fetch_counter += 2; }
-						else if ((last_eval % 8) == 2) { sprite_fetch_counter += 3; }
-						else if ((last_eval % 8) == 3) { sprite_fetch_counter += 2; }
-						else if ((last_eval % 8) == 4) { sprite_fetch_counter += 3; }
-						else { sprite_fetch_counter += 2; }
+						if (((last_eval + render_offset) % 8) == 0) { sprite_fetch_counter += 5; }
+						else if (((last_eval + render_offset) % 8) == 1) { sprite_fetch_counter += 4; }
+						else if (((last_eval + render_offset) % 8) == 2) { sprite_fetch_counter += 3; }
+						else if (((last_eval + render_offset) % 8) == 3) { sprite_fetch_counter += 2; }
+						else if (((last_eval + render_offset) % 8) == 4) { sprite_fetch_counter += 1; }
+						else if (((last_eval + render_offset) % 8) == 5) { sprite_fetch_counter += 0; }
+						else if (((last_eval + render_offset) % 8) == 6) { sprite_fetch_counter += 0; }
+						else if (((last_eval + render_offset) % 8) == 7) { sprite_fetch_counter += 0; }
+
+						consecutive_sprite = (int)Math.Floor((double)(last_eval + render_offset) / 8) * 8 + 8 - render_offset;
+
+						// special case exists here for sprites at zero with non-zero x-scroll. Not sure exactly the reason for it.
+						if (last_eval == 0 && render_offset != 0)
+						{
+							sprite_fetch_counter += render_offset;
+						}
 					}
+
+					total_counter += sprite_fetch_counter;
+
+					first_fetch = false;
 				}
 				else
 				{
@@ -1539,6 +1542,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("OBJ_bytes_inc", ref OBJ_bytes_inc);
 			ser.Sync("BG_bytes_index", ref BG_bytes_index);
 			ser.Sync("OBJ_bytes_index", ref OBJ_bytes_index);
+
+			ser.Sync("LYC_t", ref LYC_t);
+			ser.Sync("LYC_cd", ref LYC_cd);
 
 			base.SyncState(ser);
 		}

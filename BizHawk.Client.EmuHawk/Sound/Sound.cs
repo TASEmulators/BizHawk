@@ -24,17 +24,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-#if WINDOWS
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
-				_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
-
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
-				_outputDevice = new XAudio2SoundOutput(this);
-#endif
-
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
 				_outputDevice = new OpenALSoundOutput(this);
-
+			if (!Global.RunningOnUnix)
+			{
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
+					_outputDevice = new XAudio2SoundOutput(this);
+			}
 			if (_outputDevice == null)
 				_outputDevice = new DummySoundOutput(this);
 		}

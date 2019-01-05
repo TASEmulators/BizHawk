@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort WIO4 = 108;
 
 
-		public bool FlagI, FlagI1, FlagI2, FlagI3, FlagI4, FlagI5;
+		public bool FlagI;
 
 		public bool FlagW; // wait flag, when set to true reads / writes will be delayed
 

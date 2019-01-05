@@ -227,9 +227,16 @@ static void NOTCOMPILED(void)
 #endif
 
    if (mem != NULL)
+	 {
       recompile_block((int *)mem, blocks[PC->addr >> 12], PC->addr);
+			PC->ops();
+			if (r4300emu == CORE_DYNAREC)
+				dyna_jump();
+	 }
    else
-      DebugMessage(M64MSG_ERROR, "not compiled exception");
+	 {
+		 DebugMessage(M64MSG_ERROR, "not compiled exception");
+	 }
 
 /*#ifdef DBG
             if (g_DebuggerActive) update_debugger(PC->addr);
@@ -237,9 +244,7 @@ static void NOTCOMPILED(void)
 The preceeding update_debugger SHOULD be unnecessary since it should have been
 called before NOTCOMPILED would have been executed
 */
-   PC->ops();
-   if (r4300emu == CORE_DYNAREC)
-     dyna_jump();
+
 }
 
 static void NOTCOMPILED2(void)

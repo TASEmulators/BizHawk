@@ -40,21 +40,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
 			cpu.SyncState(ser);
 			tia.SyncState(ser);
 			maria.SyncState(ser);
 			m6532.SyncState(ser);
 			mapper.SyncState(ser);
+			pokey.SyncState(ser);
 
 			ser.BeginSection("Atari7800");
-			ser.Sync("core", ref core, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
@@ -62,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			ser.Sync("A7800_control_register", ref A7800_control_register);
 			ser.Sync("_isPAL", ref _isPAL);
-			ser.Sync("_spf", ref _spf);
 
 			ser.Sync("Maria_regs", ref Maria_regs, false);
 			ser.Sync("RAM", ref RAM, false);
@@ -87,7 +79,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("left_was_pressed", ref left_was_pressed);
 			ser.Sync("right_was_pressed", ref right_was_pressed);
 
-		ser.EndSection();
+			ser.Sync("temp_s_tia", ref temp_s_tia);
+			ser.Sync("temp_s_pokey", ref temp_s_pokey);
+			ser.Sync("samp_l", ref samp_l);
+			ser.Sync("samp_c", ref samp_c);
+			ser.Sync("master_audio_clock", ref master_audio_clock);
+			ser.Sync("temp", ref temp);
+
+			ser.EndSection();
 		}
 	}
 }

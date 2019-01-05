@@ -49,13 +49,13 @@ DECLARE_INSTRUCTION(NI)
 {
    DebugMessage(M64MSG_ERROR, "NI() @ 0x%x", PCADDR);
    DebugMessage(M64MSG_ERROR, "opcode not implemented: %x:%x", PCADDR, *fast_mem_access(PCADDR));
-   stop=1;
+   //stop=1;
 }
 
 DECLARE_INSTRUCTION(RESERVED)
 {
    DebugMessage(M64MSG_ERROR, "reserved opcode: %x:%x", PCADDR, *fast_mem_access(PCADDR));
-   stop=1;
+   //stop=1;
 }
 
 // R4300

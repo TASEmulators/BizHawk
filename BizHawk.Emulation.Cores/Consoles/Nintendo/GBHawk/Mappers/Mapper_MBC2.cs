@@ -2,9 +2,11 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	// MBC1 with bank switching and RAM
+	// MBC2 with bank switching and RAM
 	public class MapperMBC2 : MapperBase
 	{
 		public int ROM_bank;
@@ -44,6 +46,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x4000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else if ((addr >= 0xA000) && (addr < 0xA200))
+			{
+				if (RAM_enable)
+				{
+					SetCDLRAM(flags, addr - 0xA000);
+				}
+				return;
+			}
+			else
+			{
+				return;
+			}
+		}
+
 		public override byte PeekMemory(ushort addr)
 		{
 			return ReadMemory(addr);
@@ -62,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if ((addr & 0x100) > 0)
 				{
-					ROM_bank = value & 0xF;
+					ROM_bank = value & 0xF & ROM_mask;
 					if (ROM_bank==0) { ROM_bank = 1; }
 				}
 			}

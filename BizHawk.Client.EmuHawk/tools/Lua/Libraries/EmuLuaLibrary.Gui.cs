@@ -448,9 +448,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("gui.drawPolygon( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x007F00FF, 0x7F7F7FFF );")]
-		[LuaMethod("drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
+		[LuaMethodExample("gui.drawPolygon( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethod("drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
+		public void DrawPolygon(LuaTable points, int? offsetX = null, int? offsetY = null, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 					var i = 0;
 					foreach (LuaTable point in points.Values)
 					{
-						pointsArr[i] = new Point(LuaInt(point[1]), LuaInt(point[2]));
+						pointsArr[i] = new Point(LuaInt(point[1]) + (offsetX ?? 0), LuaInt(point[2]) + (offsetY ?? 0));
 						i++;
 					}
 
@@ -570,6 +570,7 @@ namespace BizHawk.Client.EmuHawk
 							case "left":
 								break;
 							case "center":
+							case "middle":
 								x -= sizeOfText.Width / 2;
 								break;
 							case "right":
@@ -583,12 +584,13 @@ namespace BizHawk.Client.EmuHawk
 						switch (vertalign.ToLower())
 						{
 							default:
-							case "bottom":
+							case "top":
 								break;
+							case "center":
 							case "middle":
 								y -= sizeOfText.Height / 2;
 								break;
-							case "top":
+							case "bottom":
 								y -= sizeOfText.Height;
 								break;
 						}

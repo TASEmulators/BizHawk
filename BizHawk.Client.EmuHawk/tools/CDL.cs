@@ -30,11 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_recent_fld = value;
-				if (_recent_fld.AutoLoad)
-				{
-					LoadFile(_recent.MostRecent);
-					SetCurrentFilename(_recent.MostRecent);
-				}
 			}
 		}
 
@@ -191,21 +186,40 @@ namespace BizHawk.Client.EmuHawk
 			//try auto-saving if appropriate
 			if (Global.Config.CDLAutoSave)
 			{
-				//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-				var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (result == DialogResult.No)
-					return true;
-
-				if (string.IsNullOrWhiteSpace(_currentFilename))
+				if (_currentFilename != null)
 				{
-					if (!RunSaveAs())
-						return false;
+					RunSave();
+					ShutdownCDL();
+					return true;
+				}
+			}
+
+			//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
+			var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.No)
+			{
+				ShutdownCDL();
+				return true;
+			}
+
+			if (string.IsNullOrWhiteSpace(_currentFilename))
+			{
+				if (RunSaveAs())
+				{
+					ShutdownCDL();
+					return true;
 				}
 				else
 				{
-					RunSave();
-					return true;
+					ShutdownCDL();
+					return false;
 				}
+			}
+			else
+			{
+				RunSave();
+				ShutdownCDL();
+				return true;
 			}
 
 			return true;
@@ -216,6 +230,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return false; }
 		}
 
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+		}
+
+		bool autoloading = false;
 		public void LoadFile(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -228,7 +248,8 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.NewCDL(testCDL);
 				if (!newCDL.Check(testCDL))
 				{
-					MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+					if(!autoloading)
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
 					return;
 				}
 
@@ -236,7 +257,10 @@ namespace BizHawk.Client.EmuHawk
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
 				if (tsbLoggingActive.Checked || Global.Config.CDLAutoStart)
+				{
+					tsbLoggingActive.Checked = true;
 					CodeDataLogger.SetCDL(_cdl);
+				}
 
 				SetCurrentFilename(path);
 			}
@@ -255,6 +279,7 @@ namespace BizHawk.Client.EmuHawk
 
 			miAutoSave.Checked = Global.Config.CDLAutoSave;
 			miAutoStart.Checked = Global.Config.CDLAutoStart;
+			miAutoResume.Checked = Global.Config.CDLAutoResume;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -432,7 +457,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
+			ShutdownCDL();
 			Close();
+		}
+
+		void ShutdownCDL()
+		{
+			_cdl = null;
+			CodeDataLogger.SetCDL(null);
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -445,7 +477,10 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnShown(EventArgs e)
 		{
 			if (Global.Config.CDLAutoStart)
-				NewFileLogic();
+			{
+				if (_cdl == null)
+					NewFileLogic();
+			}
 			base.OnShown(e);
 		}
 
@@ -456,16 +491,49 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void PCECDL_Load(object sender, EventArgs e)
+		private void CDL_Load(object sender, EventArgs e)
 		{
+			if (Global.Config.CDLAutoResume)
+			{
+				try
+				{
+					autoloading = true;
+					var autoresume_file = PathManager.FilesystemSafeName(Global.Game) + ".cdl";
+					var autoresume_dir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+					var autoresume_path = Path.Combine(autoresume_dir, autoresume_file);
+					if (File.Exists(autoresume_path))
+						LoadFile(autoresume_path);
+				}
+				finally
+				{
+					autoloading = false;
+				}
+			}
+
+			if (_recent_fld.AutoLoad && !_recent_fld.Empty)
+			{
+				if (File.Exists(_recent.MostRecent))
+				{
+					try
+					{
+						autoloading = true;
+						LoadFile(_recent.MostRecent);
+					}
+					finally
+					{
+						autoloading = false;
+					}
+					SetCurrentFilename(_recent.MostRecent);
+				}
+			}
 		}
 
-		private void PCECDL_DragEnter(object sender, DragEventArgs e)
+		private void CDL_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void PCECDL_DragDrop(object sender, DragEventArgs e)
+		private void CDL_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".cdl")
@@ -522,6 +590,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.CDLAutoStart ^= true;
 		}
 
-
+		private void miAutoResume_Click(object sender, EventArgs e)
+		{
+			Global.Config.CDLAutoResume ^= true;
+		}
 	}
 }

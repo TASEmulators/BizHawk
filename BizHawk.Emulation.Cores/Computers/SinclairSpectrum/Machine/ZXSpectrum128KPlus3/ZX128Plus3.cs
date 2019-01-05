@@ -18,8 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public ZX128Plus3(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;
-            CPU = cpu;
-            
+            CPU = cpu;            
 
             CPUMon = new CPUMonitor(this);
             CPUMon.machineType = MachineType.ZXSpectrum128Plus3;

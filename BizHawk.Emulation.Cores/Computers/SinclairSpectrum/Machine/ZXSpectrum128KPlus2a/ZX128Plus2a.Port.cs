@@ -75,8 +75,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             AYDevice.WritePort(port, value);
 
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
-            if (port == 0x7ffd)
+            if (!portBits[1] && !portBits[15] && portBits[14])
             {
+                Last7ffd = value;
+
                 if (!PagingDisabled)
                 {
                     // bits 0, 1, 2 select the RAM page
@@ -95,8 +97,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            if (port == 0x1ffd)
+            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
             {
+                Last1ffd = value;
+
                 if (!PagingDisabled)
                 {
                     if (!bits[0])
@@ -134,6 +138,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Only even addresses address the ULA
             if (lowBitReset)
             {
+                LastFe = value;
+
                 // store the last OUT byte
                 LastULAOutByte = value;
 

@@ -154,8 +154,7 @@ void flashram_command(unsigned int command)
         case STATUS_MODE:
             break;
         default:
-            DebugMessage(M64MSG_WARNING, "unknown flashram command with mode:%x", (int)flashram_info.mode);
-            stop=1;
+            DebugMessage(M64MSG_ERROR, "unknown flashram command with mode:%x", (int)flashram_info.mode);
             break;
         }
         flashram_info.mode = NOPES_MODE;
@@ -193,7 +192,6 @@ void dma_read_flashram(void)
         break;
     default:
         DebugMessage(M64MSG_WARNING, "unknown dma_read_flashram: %x", flashram_info.mode);
-        stop=1;
         break;
     }
 }
@@ -207,7 +205,6 @@ void dma_write_flashram(void)
         break;
     default:
         DebugMessage(M64MSG_ERROR, "unknown dma_write_flashram: %x", flashram_info.mode);
-        stop=1;
         break;
     }
 }

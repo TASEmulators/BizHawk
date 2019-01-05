@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	public class MapperBase
 	{
 		public A7800Hawk Core { get; set; }
+		public int mask;
 
 		public virtual byte ReadMemory(ushort addr)
 		{

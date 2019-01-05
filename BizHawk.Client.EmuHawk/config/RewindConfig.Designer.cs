@@ -608,7 +608,7 @@
             // 
             this.BufferSizeUpDown.Location = new System.Drawing.Point(93, 135);
             this.BufferSizeUpDown.Maximum = new decimal(new int[] {
-            32768,
+            2097512,
             0,
             0,
             0});

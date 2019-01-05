@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -34,7 +35,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _machine.WriteBus(addr, value);
         }
 
-
+		/// <summary>
+		/// Called by MainForm so that the core label can display a more detailed tooltip about the emulated spectrum model
+		/// </summary>
+		/// <returns></returns>
         public string GetMachineType()
         {
             string m = "";
@@ -58,9 +62,34 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case MachineType.ZXSpectrum128Plus3:
                     m = "(Amstrad) ZX Spectrum 128K +3";
                     break;
+				case MachineType.Pentagon128:
+					m = "(Clone) Pentagon 128K";
+					break;
             }
 
             return m;
+        }
+
+		/// <summary>
+		/// Called by MainForm - dumps a close approximation of the Spectaculator SZX snapshot format
+		/// DEV use only - this is nowhere near accurate
+		/// </summary>
+		/// <returns></returns>
+        public byte[] GetSZXSnapshot()
+        {
+            return SZX.ExportSZX(_machine);
+        }
+
+		/// <summary>
+		/// Utility method to get MemberName from an object
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="TValue"></typeparam>
+		/// <param name="memberAccess"></param>
+		/// <returns></returns>
+        public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
+        {
+            return ((MemberExpression)memberAccess.Body).Member.Name;
         }
     }
 }

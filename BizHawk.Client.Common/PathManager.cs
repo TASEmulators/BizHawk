@@ -13,6 +13,11 @@ namespace BizHawk.Client.Common
 {
 	public static class PathManager
 	{
+		static PathManager()
+		{
+			SetDefaultIniPath(MakeProgramRelativePath("config.ini"));
+		}
+
 		public static string GetExeDirectoryAbsolute()
 		{
 			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -40,7 +45,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
-		public static string DefaultIniPath => MakeProgramRelativePath("config.ini");
+		public static string DefaultIniPath { get; private set; }
+
+		public static void SetDefaultIniPath(string newDefaultIniPath)
+		{
+			DefaultIniPath = newDefaultIniPath;
+		}
 
 		/// <summary>
 		/// Gets absolute base as derived from EXE
@@ -100,17 +110,10 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			if (path.Length >= 5 && path.Substring(0, 5) == "%exe%")
-			{
-				if (path.Length == 5)
-				{
-					return GetExeDirectoryAbsolute();
-				}
-
-				var tmp = path.Remove(0, 5);
-				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-				return tmp;
-			}
+			if (path.StartsWith("%exe%"))
+				return GetExeDirectoryAbsolute() + path.Substring(5);
+			if (path.StartsWith("%rom%"))
+				return Global.Config.LastRomPath + path.Substring(5);
 
 			if (path[0] == '.')
 			{
@@ -140,7 +143,7 @@ namespace BizHawk.Client.Common
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
-			// all pad paths default to EXE
+			// all bad paths default to EXE
 			return GetExeDirectoryAbsolute();
 		}
 
@@ -461,5 +464,19 @@ namespace BizHawk.Client.Common
 
 			return entry;
 		}
+
+		/// <summary>
+		/// Puts the currently configured temp path into the environment for use as actual temp directory
+		/// </summary>
+		public static void RefreshTempPath()
+		{
+			if (Global.Config.PathEntries.TempFilesFragment != "")
+			{
+				//TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
+				string target = Global.Config.PathEntries.TempFilesFragment;
+				BizHawk.Common.TempFileManager.HelperSetTempPath(target);
+			}
+		}
 	}
+
 }

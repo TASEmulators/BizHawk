@@ -14,6 +14,8 @@ Release binaries can be found on [on github](http://github.com/TASVideos/BizHawk
 
 [Developer build](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts) of the most recent commit
 
+Never mix different versions of BizHawk. Keep each version in its own folder.
+
 ## Supported Systems
 
  * Nintendo Entertainment System / Famicom / Famicom Disk System (NES/FDS)
@@ -33,6 +35,8 @@ Release binaries can be found on [on github](http://github.com/TASVideos/BizHawk
  * TI-83 Calculator
  * Wonderswan and Wonderswan Color 
  * Apple II
+ * Commodore 64
+ * Sinclair ZX Spectrum
 
 ## Resources
 

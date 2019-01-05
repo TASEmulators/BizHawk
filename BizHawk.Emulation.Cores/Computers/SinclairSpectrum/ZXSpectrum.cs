@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         isReleased: true)]
     public partial class ZXSpectrum : IRegionable, IDriveLight
     {
-        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
+        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings, bool? deterministic)
         {
             var ser = new BasicServiceProvider(this);
             ServiceProvider = ser;
@@ -34,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu = new Z80A();
 
             _tracer = new TraceBuffer { Header = _cpu.TraceHeader };
-
-            //_file = file;
+            
             _files = files?.ToList() ?? new List<byte[]>();
 
             if (settings == null)
@@ -53,7 +52,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).DeterministicEmulation;
 
-            switch (SyncSettings.MachineType)
+            if (deterministic != null && deterministic == true)
+            {
+                if (deterministicEmulation == false)
+                {
+                    CoreComm.Notify("Forcing Deterministic Emulation");
+                }
+                
+                deterministicEmulation = deterministic.Value;
+            }
+
+            MachineType = SyncSettings.MachineType;
+
+            switch (MachineType)
             {
                 case MachineType.ZXSpectrum16:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
@@ -79,6 +90,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
+				case MachineType.Pentagon128:
+					ControllerDefinition = ZXSpectrumControllerDefinition;
+					Init(MachineType.Pentagon128, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
+					break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
             }
@@ -123,9 +138,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
             }
 
-            ser.Register<ISoundProvider>(SoundMixer);
-            //ser.Register < ISoundProvider>(((ISoundProvider)_machine.BuzzerDevice));
-
+            DCFilter dc = new DCFilter(SoundMixer, 512);            
+            ser.Register<ISoundProvider>(dc);
 
             HardReset();
             SetupMemoryDomains();
@@ -138,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly TraceBuffer _tracer;
         public IController _controller;
         public SpectrumBase _machine;
+        public MachineType MachineType;
 
         public List<GameInfo> _gameInfo;
 
@@ -253,6 +268,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     _machine.InitROM(romDataP3);
                     //System.Windows.Forms.MessageBox.Show("+3 is not working at all yet :/");
                     break;
+				case MachineType.Pentagon128:
+					_machine = new Pentagon128(this, _cpu, borderType, files, joys);
+					var _systemRomPen128 = GetFirmware(0x8000, "PentagonROM");
+					var _systemRomTrdos = GetFirmware(0x4000, "TRDOSROM");
+					var conc = _systemRomPen128.Concat(_systemRomTrdos).ToArray();
+					var romDataPen128 = RomData.InitROM(machineType, conc);					
+					_machine.InitROM(romDataPen128);
+					break;
             }
         }
 

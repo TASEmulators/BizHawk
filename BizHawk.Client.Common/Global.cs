@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -151,10 +152,14 @@ namespace BizHawk.Client.Common
 						return SystemInfo.NeoGeoPocket;
                     case "ZXSpectrum":
                         return SystemInfo.ZXSpectrum;
+                    case "AmstradCPC":
+                        return SystemInfo.AmstradCPC;
 				}
 			}
 		}
 
 		public static Dictionary<string, object> UserBag = new Dictionary<string, object>();
+
+		public static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
 	}
 }

@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     {
                         // time to raise the interrupt
                         InterruptRaised = true;
-                        _machine.CPU.FlagI = true;
+						_machine.CPU.FlagI = true;
                         FrameEnd = true;
                         ULACycleCounter = InterruptStartTime;
                         CalcFlashCounter();
@@ -785,7 +785,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
-            //tstate += MemoryContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -801,7 +800,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
-            //tstate +=  PortContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -827,7 +825,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public int BackgroundColor
         {
-            get { return ULAPalette[7]; } //ULAPalette[borderColour]; }
+            get
+            {
+                var settings = _machine.Spectrum.GetSettings();
+                var color = settings.BackgroundColor;
+                if (!settings.UseCoreBorderForBackground)
+                    return color;
+                else
+                    return ULAPalette[fetchBorder];
+            }
         }
 
         public int VirtualWidth

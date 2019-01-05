@@ -211,7 +211,15 @@ EXPORT m64p_error CALL CoreDoCommand(m64p_command Command, int ParamInt, void *P
             /* print out plugin-related warning messages */
             plugin_check();
             /* the main_run() function will not return until the player has quit the game */
+						__try
+						{
             rval = main_run((void (*)(void))ParamPtr);
+						}
+						__except(EXCEPTION_EXECUTE_HANDLER)
+						{
+							printf("exception swallowed because mupen is crashy when being fuzzed\n");
+							rval = M64ERR_INTERNAL;
+						}
             return rval;
         case M64CMD_STOP:
             if (!g_EmulatorRunning)
