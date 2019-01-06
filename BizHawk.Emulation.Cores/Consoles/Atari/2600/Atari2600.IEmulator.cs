@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 
@@ -75,6 +75,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_tia.LineCount = 0;
+
+			return true;
 		}
 
 		public int Frame => _frame;

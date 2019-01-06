@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// These things happen at the start of every frame
 			//Reg2002_vblank_active = true;
 			//Reg2002_vblank_active_pending = true;
-			ppuphase = PPUPHASE.VBL;
+			ppuphase = PPU_PHASE_VBL;
 			bgdata = new BGDataRecord[34];
 		}
 
@@ -194,6 +194,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					do_vbl = false;
 					ppur.status.sl = 0;
+					do_active_sl = true;
 				}
 			}
 		}
@@ -216,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sprite_zero_in_range = false;
 
 				yp = ppur.status.sl - 1;
-				ppuphase = PPUPHASE.BG;
+				ppuphase = PPU_PHASE_BG;
 
 				// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
 				// the current location of PPUADDR"			
@@ -615,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (soam_index_prev > 8 && !nes.Settings.AllowMoreThanEightSprites)
 						soam_index_prev = 8;
 
-					ppuphase = PPUPHASE.OBJ;
+					ppuphase = PPU_PHASE_OBJ;
 
 					spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
@@ -926,7 +927,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (ppur.status.cycle == 320)
 				{
-					ppuphase = PPUPHASE.BG;
+					ppuphase = PPU_PHASE_BG;
 					xt = 0;
 					xp = 0;
 				}
@@ -992,6 +993,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (ppur.status.sl == 241)
 				{
 					do_active_sl = false;
+					do_pre_vbl = true;
 				}
 			}
 		}
@@ -1012,6 +1014,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (ppur.status.sl == 241 + preNMIlines)
 				{
 					do_pre_vbl = false;
+					do_vbl = true;
+
+					ppu_init_frame();
+					nes.frame_is_done = true;
 				}				
 			}
 		}
@@ -1033,6 +1039,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ppur.status.cycle == 241 * 341 - start_up_offset)
 			{
 				ppudead--;
+
+				ppu_init_frame();
+
+				do_vbl = true;
+
+				nes.frame_is_done = true;
 			}
 		}
 	}

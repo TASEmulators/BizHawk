@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 			_lagged = true;
@@ -86,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				_isLag = false;
 			}
+
+			return true;
 		}
 
 	    public int Frame => _frame;

@@ -33,23 +33,23 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			if (render == false)
 			{
-				return;
+				return true;
 			}
 
 			if (!_settings.SnowyDisplay)
 			{
 				if (_frameBufferClear)
 				{
-					return;
+					return true;
 				}
 
 				_frameBufferClear = true;
 				Array.Clear(_frameBuffer, 0, 256 * 192);
-				return;
+				return true;
 			}
 
 			_frameBufferClear = false;
@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Common
 			}
 
 			Frame++;
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

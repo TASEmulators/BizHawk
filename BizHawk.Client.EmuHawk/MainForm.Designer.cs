@@ -199,6 +199,7 @@
             this.GBGambatteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SubNESHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
             this.allowGameDBCoreOverridesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -1845,6 +1846,7 @@
             this.SGBCoreSubmenu,
             this.GBCoreSubmenu,
             this.GBInSGBMenuItem,
+			this.SubNESHawkMenuItem,
             this.toolStripMenuItem16,
             this.allowGameDBCoreOverridesToolStripMenuItem,
             this.toolStripSeparator8,
@@ -1982,6 +1984,13 @@
             this.GBInSGBMenuItem.Text = "GB in SGB";
             this.GBInSGBMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
             // 
+			// SubNESHawkMenuItem
+			//
+			this.SubNESHawkMenuItem.Name = "SubNESHawkMenuItem";
+			this.SubNESHawkMenuItem.Size = new System.Drawing.Size(239, 22);
+			this.SubNESHawkMenuItem.Text = "SubNESHawk";
+			this.SubNESHawkMenuItem.Click += new System.EventHandler(this.SubNESHawkMenuItem_Click);
+			//
             // toolStripMenuItem16
             // 
             this.toolStripMenuItem16.Name = "toolStripMenuItem16";
@@ -4532,6 +4541,7 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SubNESHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem batchRunnerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;

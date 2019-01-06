@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//does this take 4x longer? nestopia indicates so perhaps...
 
 			int addr = ppur.get_2007access();
-			if (ppuphase == PPUPHASE.BG)
+			if (ppuphase == PPU_PHASE_BG)
 			{
 				if (show_bg_new)
 				{
