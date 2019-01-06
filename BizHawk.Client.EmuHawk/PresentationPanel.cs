@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		public Size NativeSize { get { return GraphicsControl.ClientSize; } }
 	}
 
-	
+
 
 	public interface IBlitterFont { }
 

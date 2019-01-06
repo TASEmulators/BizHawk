@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irqenable = false;
 					IRQSignal = true;
-				}				
+				}
 			}
 		}
 

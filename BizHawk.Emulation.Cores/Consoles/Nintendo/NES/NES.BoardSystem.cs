@@ -18,11 +18,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//base class pre-configuration
 			void Create(NES nes);
-			//one-time inherited classes configuration 
+			//one-time inherited classes configuration
 			bool Configure(NES.EDetectionOrigin origin);
 			//one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)
 			void PostConfigure();
-			
+
 			//gets called once per PPU clock, for boards with complex behaviour which must be monitoring clock (i.e. mmc3 irq counter)
 			void ClockPPU();
 			//gets called once per CPU clock; typically for boards with M2 counters
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					map[i] &= bmask;
 			}
 
-			//make sure you have bank-masked the map 
+			//make sure you have bank-masked the map
 			protected int ApplyMemoryMap(int blockSizeBits, ByteBuffer map, int addr)
 			{
 				int bank = addr >> blockSizeBits;
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			public virtual void WriteEXP(int addr, byte value) { }
-			public virtual byte ReadEXP(int addr) { 
+			public virtual byte ReadEXP(int addr) {
 				return NES.DB;
 			}
 
@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										currCart.chips.Add(xmlreader.GetAttribute("type"));
 										break;
 								}
-							} else 
+							} else
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "board")
 							{
 								state = 4;

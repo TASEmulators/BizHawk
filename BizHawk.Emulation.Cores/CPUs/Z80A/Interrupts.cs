@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public Action IRQCallback = delegate () { };
 		public Action NMICallback = delegate () { };
 
-        // this will be a few cycles off for now
-        // it should suffice for now until Alyosha returns from hiatus
-        public Action IRQACKCallback = delegate () { };
+		// this will be a few cycles off for now
+		// it should suffice for now until Alyosha returns from hiatus
+		public Action IRQACKCallback = delegate () { };
 
 		private void NMI_()
 		{
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Otherwise operation just continues as normal
 		// For now assume a NOP is on the data bus, in which case no stack operations occur
 
-		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly 
+		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly
 		private void INTERRUPT_0(ushort src)
 		{
 			PopulateCURINSTR
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, PCh, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, PCh, 0, 0);
 			IRQS = 7;
-        }
+		}
 
 		// Just jump to $0038
 		private void INTERRUPT_1()
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
 			IRQS = 13;
-        }
+		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
 		private void INTERRUPT_2()
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
 			IRQS = 19;
-        }
+		}
 
 		private void ResetInterrupts()
 		{

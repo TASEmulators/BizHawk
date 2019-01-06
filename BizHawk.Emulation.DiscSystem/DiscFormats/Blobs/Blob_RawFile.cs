@@ -38,10 +38,10 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
 				//this enhances performance considerably
-				
+
 				//NOTE: wouldnt very large buffering create stuttering? this would depend on how it's implemented.
 				//really, we need a smarter asynchronous read-ahead buffer. that requires substantially more engineering, some kind of 'DiscUniverse' of carefully managed threads and such.
-				
+
 				const int buffersize = 2352 * 75 * 2;
 				if (fs == null)
 					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);

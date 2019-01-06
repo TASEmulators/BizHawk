@@ -114,11 +114,11 @@ namespace BizHawk.Client.EmuHawk
 				AddressBox.SetHexProperties(MemoryDomains.SystemBus.Size);
 			}
 
-			ValueBox.ByteSize = 
+			ValueBox.ByteSize =
 				CompareBox.ByteSize =
 				WatchSize.Byte;
 
-			ValueBox.Type = 
+			ValueBox.Type =
 				CompareBox.Type =
 				DisplayType.Hex;
 
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PopulateTypeDropdown();
 
-				ValueBox.ByteSize = 
+				ValueBox.ByteSize =
 					CompareBox.ByteSize =
 					GetCurrentSize();
 			}
@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			
+
 			// Don't need to do anything in this case
 			if (!empty && CompareTypeDropDown.Items.Count == 6)
 			{
@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 					""
 				});
 			}
-			else 
+			else
 			{
 				CompareTypeDropDown.Items.AddRange(new object[]
 				{

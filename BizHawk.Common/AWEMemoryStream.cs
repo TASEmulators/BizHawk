@@ -425,7 +425,7 @@ namespace BizHawk.Common
 				if (pageList == null)
 					return false;
 
-				// map the desired physical pages 
+				// map the desired physical pages
 				fixed (byte* pPageList = &pageList[0])
 				{
 					bool bResult = MapUserPhysicalPages(targetWindow, NumPages, new IntPtr(pPageList));

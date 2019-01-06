@@ -37,9 +37,9 @@
 			this.ForeGroundPanel = new System.Windows.Forms.Panel();
 			this.DefaultsBtn = new System.Windows.Forms.Button();
 			this.SuspendLayout();
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(165, 112);
@@ -49,9 +49,9 @@
 			this.CancelBtn.Text = "&Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// OkBtn
-			// 
+			//
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkBtn.Location = new System.Drawing.Point(99, 112);
 			this.OkBtn.Name = "OkBtn";
@@ -60,45 +60,45 @@
 			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
+			//
 			// BackgroundPanel
-			// 
+			//
 			this.BackgroundPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.BackgroundPanel.Location = new System.Drawing.Point(12, 12);
 			this.BackgroundPanel.Name = "BackgroundPanel";
 			this.BackgroundPanel.Size = new System.Drawing.Size(40, 32);
 			this.BackgroundPanel.TabIndex = 2;
 			this.BackgroundPanel.Click += new System.EventHandler(this.BackgroundPanel_Click);
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(58, 22);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(65, 13);
 			this.label1.TabIndex = 13;
 			this.label1.Text = "Background";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(58, 60);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(61, 13);
 			this.label2.TabIndex = 15;
 			this.label2.Text = "Foreground";
-			// 
+			//
 			// ForeGroundPanel
-			// 
+			//
 			this.ForeGroundPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ForeGroundPanel.Location = new System.Drawing.Point(12, 50);
 			this.ForeGroundPanel.Name = "ForeGroundPanel";
 			this.ForeGroundPanel.Size = new System.Drawing.Size(40, 32);
 			this.ForeGroundPanel.TabIndex = 14;
 			this.ForeGroundPanel.Click += new System.EventHandler(this.ForeGroundPanel_Click);
-			// 
+			//
 			// DefaultsBtn
-			// 
+			//
 			this.DefaultsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.DefaultsBtn.Location = new System.Drawing.Point(165, 12);
 			this.DefaultsBtn.Name = "DefaultsBtn";
@@ -107,9 +107,9 @@
 			this.DefaultsBtn.Text = "&Defaults";
 			this.DefaultsBtn.UseVisualStyleBackColor = true;
 			this.DefaultsBtn.Click += new System.EventHandler(this.DefaultsBtn_Click);
-			// 
+			//
 			// TI83PaletteConfig
-			// 
+			//
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

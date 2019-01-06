@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ushort SpeedPAL;
 
 		public bool IsNTSC;
-		
+
 		public bool IsPAL;
 
 		[Flags]
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var ms = new MemoryStream(data);
 			var br = new BinaryReader(ms);
 			br.BaseStream.Position += 5;
-			
+
 			Version = br.ReadByte();
 			TotalSongs = br.ReadByte();
 			StartingSong = br.ReadByte();

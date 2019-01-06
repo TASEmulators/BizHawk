@@ -40,18 +40,18 @@
 			this.buttonDump = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownFrames)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(83, 13);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Drag Files Here:";
-			// 
+			//
 			// listBox1
-			// 
+			//
 			this.listBox1.AllowDrop = true;
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.Location = new System.Drawing.Point(12, 25);
@@ -60,18 +60,18 @@
 			this.listBox1.TabIndex = 2;
 			this.listBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listBox1_DragDrop);
 			this.listBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox1_DragEnter);
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 175);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(92, 13);
 			this.label2.TabIndex = 3;
 			this.label2.Text = "Number of Files: 0";
-			// 
+			//
 			// buttonClear
-			// 
+			//
 			this.buttonClear.Location = new System.Drawing.Point(12, 191);
 			this.buttonClear.Name = "buttonClear";
 			this.buttonClear.Size = new System.Drawing.Size(75, 23);
@@ -79,9 +79,9 @@
 			this.buttonClear.Text = "Clear!";
 			this.buttonClear.UseVisualStyleBackColor = true;
 			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
-			// 
+			//
 			// buttonGo
-			// 
+			//
 			this.buttonGo.Location = new System.Drawing.Point(12, 220);
 			this.buttonGo.Name = "buttonGo";
 			this.buttonGo.Size = new System.Drawing.Size(75, 23);
@@ -89,46 +89,46 @@
 			this.buttonGo.Text = "Go!";
 			this.buttonGo.UseVisualStyleBackColor = true;
 			this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(12, 246);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(40, 13);
 			this.label3.TabIndex = 6;
 			this.label3.Text = "Status:";
-			// 
+			//
 			// numericUpDownFrames
-			// 
+			//
 			this.numericUpDownFrames.Location = new System.Drawing.Point(160, 194);
 			this.numericUpDownFrames.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
+			1000,
+			0,
+			0,
+			0});
 			this.numericUpDownFrames.Name = "numericUpDownFrames";
 			this.numericUpDownFrames.Size = new System.Drawing.Size(120, 20);
 			this.numericUpDownFrames.TabIndex = 7;
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(157, 175);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(74, 13);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "Frames to run:";
-			// 
+			//
 			// progressBar1
-			// 
+			//
 			this.progressBar1.Location = new System.Drawing.Point(12, 262);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(268, 23);
 			this.progressBar1.TabIndex = 9;
-			// 
+			//
 			// buttonDump
-			// 
+			//
 			this.buttonDump.Location = new System.Drawing.Point(93, 220);
 			this.buttonDump.Name = "buttonDump";
 			this.buttonDump.Size = new System.Drawing.Size(75, 23);
@@ -136,9 +136,9 @@
 			this.buttonDump.Text = "Dump...";
 			this.buttonDump.UseVisualStyleBackColor = true;
 			this.buttonDump.Click += new System.EventHandler(this.buttonDump_Click);
-			// 
+			//
 			// BatchRun
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(292, 327);

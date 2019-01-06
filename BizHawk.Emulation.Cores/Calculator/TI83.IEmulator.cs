@@ -42,13 +42,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 				if (TIM_count >= TIM_hit)
 				{
 					TIM_count = 0;
-				
+
 					if (TIM_1_int_EN)
 					{
 						TIM_1_int = true;
 						_cpu.FlagI = true;
 					}
-				}				
+				}
 			}
 
 			Frame++;

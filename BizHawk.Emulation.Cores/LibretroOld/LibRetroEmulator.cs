@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores
 		public bool PutSyncSettings(SyncSettings o)
 		{
 			bool reboot = false;
-			
+
 			//we could do it this way roughly if we need to
 			//if(JsonConvert.SerializeObject(o.FIOConfig) != JsonConvert.SerializeObject(_SyncSettings.FIOConfig)
 
@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_SAVE_DIRECTORY:
 					//supposedly optional like everything else here, but without it ?? crashes (please write which case)
-					//this will suffice for now. if we find evidence later it's needed we can stash a string with 
+					//this will suffice for now. if we find evidence later it's needed we can stash a string with
 					//unmanagedResources and CoreFileProvider
 					//mednafen NGP neopop, desmume, and others, request this, and falls back on the system directory if it isn't provided
 					//desmume crashes if the directory doesn't exist
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Cores
 			ServiceProvider = new BasicServiceProvider(this);
 
 			_SyncSettings = new SyncSettings();
-		
+
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
 			retro_video_refresh_cb = new LibRetro.retro_video_refresh_t(retro_video_refresh);
 			retro_audio_sample_cb = new LibRetro.retro_audio_sample_t(retro_audio_sample);
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores
 				SaveDirectory = Path.GetDirectoryName(modulename);
 				SaveDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SaveDirectory);
 				retro.retro_set_environment(retro_environment_cb);
-				
+
 				retro.retro_set_video_refresh(retro_video_refresh_cb);
 				retro.retro_set_audio_sample(retro_audio_sample_cb);
 				retro.retro_set_audio_sample_batch(retro_audio_sample_batch_cb);
@@ -587,7 +587,7 @@ namespace BizHawk.Emulation.Cores
 			IntPtr src = retro.retro_get_memory_data(LibRetro.RETRO_MEMORY.SAVE_RAM);
 			if (src == IntPtr.Zero)
 				return null;
-			
+
 			Marshal.Copy(src, saverambuff, 0, size);
 			return (byte[])saverambuff.Clone();
 		}
@@ -869,7 +869,7 @@ namespace BizHawk.Emulation.Cores
 			int[] target = vidbuff;
 			if (environmentInfo.Rotation_CCW != 0)
 				target = rawvidbuff;
-			
+
 
 			fixed (int* dst = &target[0])
 			{

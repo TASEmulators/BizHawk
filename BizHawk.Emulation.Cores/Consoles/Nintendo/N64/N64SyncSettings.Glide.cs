@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public int tex_filter { get; set; }
 
 			[DefaultValue(false)]
-			[DisplayName("Framebuffer Render")] 
+			[DisplayName("Framebuffer Render")]
 			public bool fb_render { get; set; }
 
 			[DefaultValue(false)]

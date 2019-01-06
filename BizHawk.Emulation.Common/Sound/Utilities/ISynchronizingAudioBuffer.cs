@@ -537,7 +537,7 @@ namespace BizHawk.Emulation.Common
 		// Like BufferedAsync, it tries to make most frames 100% correct and just suck it up
 		// periodically and have a big bad-sounding mistake frame if it has to.
 
-		// It is significantly less ambitious and elaborate than the other methods. 
+		// It is significantly less ambitious and elaborate than the other methods.
 		// We'll see if it works better or not!
 
 		// It has a min and maximum amount of excess buffer to deal with minor overflows.

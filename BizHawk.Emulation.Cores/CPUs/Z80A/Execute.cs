@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public long TotalExecutedCycles;
 
 		private int EI_pending;
-        // ZXHawk needs to be able to read this for zx-state snapshot export
-        public int EIPending { get { return EI_pending; } }
+		// ZXHawk needs to be able to read this for zx-state snapshot export
+		public int EIPending { get { return EI_pending; } }
 
 		public const ushort CBpre = 0;
 		public const ushort EXTDpre = 1;
@@ -591,7 +591,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x53: LD_16_IND_nn(E, D);						break; // LD (nn), DE
 					case 0x54: INT_OP(NEG, A);							break; // NEG
 					case 0x55: RETN_();									break; // RETN
-					case 0x56: INT_MODE_(1); 							break; // IM $1
+					case 0x56: INT_MODE_(1);							break; // IM $1
 					case 0x57: REG_OP_IR(TR, A, I);						break; // LD A, I
 					case 0x58: IN_REG_(E, C);							break; // IN E, (C)
 					case 0x59: OUT_REG_(C, E);							break; // OUT (C), E
@@ -1358,7 +1358,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xA1: I_BIT_OP(RES, 4, C);						break; // RES 4, (I* + n) -> C
 					case 0xA2: I_BIT_OP(RES, 4, D);						break; // RES 4, (I* + n) -> D
 					case 0xA3: I_BIT_OP(RES, 4, E);						break; // RES 4, (I* + n) -> E
-					case 0xA4: I_BIT_OP(RES, 4, H);						break; // RES 4, (I* + n) -> H 
+					case 0xA4: I_BIT_OP(RES, 4, H);						break; // RES 4, (I* + n) -> H
 					case 0xA5: I_BIT_OP(RES, 4, L);						break; // RES 4, (I* + n) -> L
 					case 0xA6: I_BIT_OP(RES, 4, ALU);					break; // RES 4, (I* + n)
 					case 0xA7: I_BIT_OP(RES, 4, A);						break; // RES 4, (I* + n) -> A

@@ -56,7 +56,7 @@ namespace BizHawk.Client.MultiHawk
 
 		//public Sound Sound; // TODO
 		public DisplayManager DisplayManager;
-		
+
 
 		public void Init()
 		{

@@ -45,7 +45,7 @@ namespace BizHawk.Client.DBMan
 
 			// Parse the filename to guess things about the rom
 			var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-			if (name.StartsWith("[BIOS] ")) 
+			if (name.StartsWith("[BIOS] "))
 				name = name.Replace("[BIOS] ","") + " [BIOS]";
 
 			string modifiers = "";
@@ -74,7 +74,7 @@ namespace BizHawk.Client.DBMan
 			{
 				if (info.VersionTags.Length != 0)
 					info.VersionTags += ";";
-				
+
 				switch (mi.ToLower())
 				{
 					case "j":
@@ -149,7 +149,7 @@ namespace BizHawk.Client.DBMan
 				case "v64":
 					throw new NotImplementedException("n64 demutate not done");
 			}
-			
+
 			// guess system
 			switch (ext)
 			{
@@ -251,7 +251,7 @@ namespace BizHawk.Client.DBMan
 			}
 			return output;
 		}
-		
+
 		static bool isDiscImage(string file)
 		{
 			var ext = new FileInfo(file).Extension.ToLowerInvariant();

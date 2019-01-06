@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	MC (Megacart)
 	-----
 
-	This is the mapper for the "Chris Wilkson's Megacart".  
+	This is the mapper for the "Chris Wilkson's Megacart".
 
 	Only four addresses are used to bankswitch on this one.
 
@@ -54,12 +54,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	The only way I can see it working is to disregard any access to addresses 3C-3F.
 
-	Emulators have it easier: they can simply watch the program counter, vs. the 
+	Emulators have it easier: they can simply watch the program counter, vs. the
 	address bus.  An actual system doesn't have that luxury, unfortunately, so it must
 	disregard accesses to 3C-3F instead.
 	*/
 
-	internal class mMC : MapperBase 
+	internal class mMC : MapperBase
 	{
 		public mMC()
 		{

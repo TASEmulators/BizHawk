@@ -379,16 +379,16 @@ namespace BizHawk.Client.EmuHawk
 			IntPtr templateFile);
 
 		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
-		public static extern bool CloseHandle(IntPtr handle); 
+		public static extern bool CloseHandle(IntPtr handle);
 
 		[DllImport("user32.dll", SetLastError = false)]
 		public static extern IntPtr GetDesktopWindow();
 
-		// Retrieve the save options for a file and returns them in a buffer 
+		// Retrieve the save options for a file and returns them in a buffer
 		[DllImport("avifil32.dll")]
 		public static extern int AVISaveOptions(IntPtr hwnd, int flags, int streams, void* ppAvi, void* plpOptions);
 
-		// Free the resources allocated by the AVISaveOptions function 
+		// Free the resources allocated by the AVISaveOptions function
 		[DllImport("avifil32.dll")]
 		public static extern int AVISaveOptionsFree(
 			int streams,

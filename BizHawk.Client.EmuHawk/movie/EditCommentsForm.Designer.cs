@@ -36,9 +36,9 @@
 			this.SaveBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.CommentGrid)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(399, 267);
@@ -48,9 +48,9 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.Location = new System.Drawing.Point(333, 267);
 			this.OK.Name = "OK";
@@ -59,33 +59,33 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// CommentGrid
-			// 
-			this.CommentGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.CommentGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.CommentGrid.BackgroundColor = System.Drawing.SystemColors.ControlLight;
 			this.CommentGrid.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
 			this.CommentGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.CommentGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Comment});
+			this.Comment});
 			this.CommentGrid.Location = new System.Drawing.Point(12, 12);
 			this.CommentGrid.Name = "CommentGrid";
 			this.CommentGrid.Size = new System.Drawing.Size(447, 249);
 			this.CommentGrid.TabIndex = 2;
 			this.CommentGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.OnColumnHeaderMouseClick);
-			// 
+			//
 			// Comment
-			// 
+			//
 			this.Comment.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.Comment.HeaderText = "Comment";
 			this.Comment.MaxInputLength = 512;
 			this.Comment.MinimumWidth = 100;
 			this.Comment.Name = "Comment";
-			// 
+			//
 			// SaveBtn
-			// 
+			//
 			this.SaveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.SaveBtn.Location = new System.Drawing.Point(12, 267);
 			this.SaveBtn.Name = "SaveBtn";
@@ -94,9 +94,9 @@
 			this.SaveBtn.Text = "&Save";
 			this.SaveBtn.UseVisualStyleBackColor = true;
 			this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
-			// 
+			//
 			// EditCommentsForm
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -122,7 +122,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.DataGridView CommentGrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Comment;
+		private System.Windows.Forms.DataGridViewTextBoxColumn Comment;
 		private System.Windows.Forms.Button SaveBtn;
 	}
 }

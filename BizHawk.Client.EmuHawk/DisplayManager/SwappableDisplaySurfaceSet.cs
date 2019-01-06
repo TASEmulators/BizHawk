@@ -10,7 +10,7 @@ using BizHawk.Client.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
+	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching
 	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
 	/// </summary>
 	class SwappableDisplaySurfaceSet

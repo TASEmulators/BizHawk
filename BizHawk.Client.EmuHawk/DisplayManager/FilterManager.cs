@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		{
 			return RenderTargetProvider.Get(new Size(width, height));
 		}
-				
+
 		public void AddFilter(BaseFilter filter, string name = "")
 		{
 			Filters.Add(filter);
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		public void Compile(string channel, Size insize, Size outsize, bool finalTarget)
 		{
 		RETRY:
-			
+
 			Program.Clear();
 
 			//prep filters for initialization

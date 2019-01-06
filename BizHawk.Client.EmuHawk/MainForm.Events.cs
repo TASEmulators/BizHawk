@@ -1215,7 +1215,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			
+
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
@@ -1432,7 +1432,7 @@ namespace BizHawk.Client.EmuHawk
 
 				externalToolToolStripMenuItem.DropDownItems.Add(item);
 			}
-			
+
 			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
@@ -1813,7 +1813,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SMSDisplayOverscanMenuItem.Visible =
 				Global.Game.System == "SMS" || Global.Game.System == "SG";
-			
+
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMSdisplayToolStripMenuItem.Visible =
@@ -1984,7 +1984,7 @@ namespace BizHawk.Client.EmuHawk
 			s.ControllerType = "Sports Pad";
 			PutCoreSyncSettings(s);
 		}
-		
+
 		private void SMSControllerKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var s = ((SMS)Emulator).GetSyncSettings();
@@ -2485,260 +2485,260 @@ namespace BizHawk.Client.EmuHawk
 			new IntvControllerSettings().ShowDialog();
 		}
 
-        #endregion
+		#endregion
 
-        #region ZXSpectrum
+		#region ZXSpectrum
 
-        private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
+		private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
 
-        }
+		}
 
-        
-        private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
-        {
-            GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
-        }
-        
 
-        private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumJoystickSettings().ShowDialog();
-        }
+		private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
+		}
 
-        private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumCoreEmulationSettings().ShowDialog();
-        }
 
-        private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumNonSyncSettings().ShowDialog();
-        }
+		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+		{
+			new ZXSpectrumJoystickSettings().ShowDialog();
+		}
 
-        private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumAudioSettings().ShowDialog();
-        }
+		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new ZXSpectrumCoreEmulationSettings().ShowDialog();
+		}
 
-        private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumPokeMemory().ShowDialog();
-        }
+		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new ZXSpectrumNonSyncSettings().ShowDialog();
+		}
 
-        private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            if (Emulator is ZXSpectrum)
-            {
-                ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
-                ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
-            }
-        }
+		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new ZXSpectrumAudioSettings().ShowDialog();
+		}
 
-        private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            ZXSpectrumTapesSubMenu.DropDownItems.Clear();
+		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
+		{
+			new ZXSpectrumPokeMemory().ShowDialog();
+		}
 
-            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Emulator is ZXSpectrum)
+			{
+				ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
+				ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
+			}
+		}
 
-            if (Emulator is ZXSpectrum)
-            {
-                var speccy = (ZXSpectrum)Emulator;
-                var currSel = speccy._machine.TapeMediaIndex;
+		private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
-                for (int i = 0; i < speccy._tapeInfo.Count; i++)
-                {
-                    string name = speccy._tapeInfo[i].Name;
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = i + "_" + name,
-                        Text = i + ": " + name,
-                        Checked = currSel == i
-                    };
+			if (Emulator is ZXSpectrum)
+			{
+				var speccy = (ZXSpectrum)Emulator;
+				var currSel = speccy._machine.TapeMediaIndex;
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        speccy._machine.TapeMediaIndex = dummy;
-                    };
+				for (int i = 0; i < speccy._tapeInfo.Count; i++)
+				{
+					string name = speccy._tapeInfo[i].Name;
 
-                    items.Add(menuItem);
-                }
-            }
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = i + "_" + name,
+						Text = i + ": " + name,
+						Checked = currSel == i
+					};
 
-            ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
-        }
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						speccy._machine.TapeMediaIndex = dummy;
+					};
 
-        private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            ZXSpectrumDisksSubMenu.DropDownItems.Clear();
+					items.Add(menuItem);
+				}
+			}
 
-            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+			ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
 
-            if (Emulator is ZXSpectrum)
-            {
-                var speccy = (ZXSpectrum)Emulator;
-                var currSel = speccy._machine.DiskMediaIndex;
+		private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
 
-                for (int i = 0; i < speccy._diskInfo.Count; i++)
-                {
-                    string name = speccy._diskInfo[i].Name;
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = i + "_" + name,
-                        Text = i + ": " + name,
-                        Checked = currSel == i
-                    };
+			if (Emulator is ZXSpectrum)
+			{
+				var speccy = (ZXSpectrum)Emulator;
+				var currSel = speccy._machine.DiskMediaIndex;
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        speccy._machine.DiskMediaIndex = dummy;
-                    };
+				for (int i = 0; i < speccy._diskInfo.Count; i++)
+				{
+					string name = speccy._diskInfo[i].Name;
 
-                    items.Add(menuItem);
-                }
-            }
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = i + "_" + name,
+						Text = i + ": " + name,
+						Checked = currSel == i
+					};
 
-            ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
-        }
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						speccy._machine.DiskMediaIndex = dummy;
+					};
 
-        private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog zxSnapExpDialog = new SaveFileDialog();
-            zxSnapExpDialog.RestoreDirectory = true;
-            zxSnapExpDialog.Title = "EXPERIMENTAL - Export 3rd party snapshot formats";
-            zxSnapExpDialog.DefaultExt = "szx";
-            zxSnapExpDialog.Filter = "ZX-State files (*.szx)|*.szx";
-            zxSnapExpDialog.SupportMultiDottedExtensions = true;
+					items.Add(menuItem);
+				}
+			}
 
-            try
-            {
-                var res = zxSnapExpDialog.ShowDialog();
-                if (res == DialogResult.OK)
-                {
-                    var speccy = (ZXSpectrum)Emulator;
-                    var snap = speccy.GetSZXSnapshot();
-                    File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
-                    //File.WriteAllText(zxSnapExpDialog.FileName, snap);
-                }
-            }
-            catch (Exception ex)
-            {
-                var ee = ex;
-            }
-        }
+			ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
 
-        #endregion
+		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog zxSnapExpDialog = new SaveFileDialog();
+			zxSnapExpDialog.RestoreDirectory = true;
+			zxSnapExpDialog.Title = "EXPERIMENTAL - Export 3rd party snapshot formats";
+			zxSnapExpDialog.DefaultExt = "szx";
+			zxSnapExpDialog.Filter = "ZX-State files (*.szx)|*.szx";
+			zxSnapExpDialog.SupportMultiDottedExtensions = true;
 
-        #region AmstradCPC
+			try
+			{
+				var res = zxSnapExpDialog.ShowDialog();
+				if (res == DialogResult.OK)
+				{
+					var speccy = (ZXSpectrum)Emulator;
+					var snap = speccy.GetSZXSnapshot();
+					File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
+					//File.WriteAllText(zxSnapExpDialog.FileName, snap);
+				}
+			}
+			catch (Exception ex)
+			{
+				var ee = ex;
+			}
+		}
 
-        private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCCoreEmulationSettings().ShowDialog();
-        }
+		#endregion
 
-        private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCAudioSettings().ShowDialog();
-        }
+		#region AmstradCPC
 
-        private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCPokeMemory().ShowDialog();
-        }
+		private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AmstradCPCCoreEmulationSettings().ShowDialog();
+		}
 
-        private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            if (Emulator is AmstradCPC)
-            {
-                AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
-                AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
-            }
-        }
+		private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AmstradCPCAudioSettings().ShowDialog();
+		}
 
-        private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            AmstradCPCTapesSubMenu.DropDownItems.Clear();
+		private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AmstradCPCPokeMemory().ShowDialog();
+		}
+
+		private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Emulator is AmstradCPC)
+			{
+				AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
+				AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
+			}
+		}
+
+		private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AmstradCPCTapesSubMenu.DropDownItems.Clear();
 
 			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
 			if (Emulator is AmstradCPC)
-            {
-                var ams = (AmstradCPC)Emulator;
-                var currSel = ams._machine.TapeMediaIndex;
+			{
+				var ams = (AmstradCPC)Emulator;
+				var currSel = ams._machine.TapeMediaIndex;
 
-                for (int i = 0; i < ams._tapeInfo.Count; i++)
-                {
-                    string name = ams._tapeInfo[i].Name;
+				for (int i = 0; i < ams._tapeInfo.Count; i++)
+				{
+					string name = ams._tapeInfo[i].Name;
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = i + "_" + name,
-                        Text = i + ": " + name,
-                        Checked = currSel == i
-                    };
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = i + "_" + name,
+						Text = i + ": " + name,
+						Checked = currSel == i
+					};
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        ams._machine.TapeMediaIndex = dummy;
-                    };
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						ams._machine.TapeMediaIndex = dummy;
+					};
 
 					items.Add(menuItem);
 				}
-            }
+			}
 
 			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-        private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
+		private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 
 			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
 			if (Emulator is AmstradCPC)
-            {
-                var ams = (AmstradCPC)Emulator;
-                var currSel = ams._machine.DiskMediaIndex;
+			{
+				var ams = (AmstradCPC)Emulator;
+				var currSel = ams._machine.DiskMediaIndex;
 
-                for (int i = 0; i < ams._diskInfo.Count; i++)
-                {
-                    string name = ams._diskInfo[i].Name;
+				for (int i = 0; i < ams._diskInfo.Count; i++)
+				{
+					string name = ams._diskInfo[i].Name;
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = i + "_" + name,
-                        Text = i + ": " + name,
-                        Checked = currSel == i
-                    };
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = i + "_" + name,
+						Text = i + ": " + name,
+						Checked = currSel == i
+					};
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        ams._machine.DiskMediaIndex = dummy;
-                    };
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						ams._machine.DiskMediaIndex = dummy;
+					};
 
 					items.Add(menuItem);
 				}
-            }
+			}
 
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-        private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCNonSyncSettings().ShowDialog();
-        }
+		private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AmstradCPCNonSyncSettings().ShowDialog();
+		}
 
-        #endregion
+		#endregion
 
-        #region Help
+		#region Help
 
-        private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -3328,7 +3328,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					// fix movie extension to something palatable for these purposes. 
+					// fix movie extension to something palatable for these purposes.
 					// for instance, something which doesnt clobber movies you already may have had.
 					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 					StartNewMovie(movie, false);
@@ -3342,7 +3342,7 @@ namespace BizHawk.Client.EmuHawk
 				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
 				LoadRom(filePaths[0], args);
 			}
- */
+*/
 		}
 
 		#endregion

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 	// There are 64 banks total, DE00 is bank select.
 	// Selecing a bank will select both Lo and Hi ROM.
-	// DE02 will switch exrom/game bits: bit 0=game, 
+	// DE02 will switch exrom/game bits: bit 0=game,
 	// bit 1=exrom, bit 2=for our cases, always set true.
 	// These two registers are write only.
 

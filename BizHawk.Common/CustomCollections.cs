@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace BizHawk.Common
 {
 	/// <summary>
-	/// A dictionary that creates new values on the fly as necessary so that any key you need will be defined. 
+	/// A dictionary that creates new values on the fly as necessary so that any key you need will be defined.
 	/// </summary>
 	/// <typeparam name="K">dictionary keys</typeparam>
 	/// <typeparam name="V">dictionary values</typeparam>

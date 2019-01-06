@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class Mapper62 : NES.NESBoardBase
 	{
 		/*
-			Here are Disch's original notes:  
+			Here are Disch's original notes:
 		========================
 		=  Mapper 062          =
 		========================
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		---------------------------
 
 
-					  $8000   $A000   $C000   $E000  
+					  $8000   $A000   $C000   $E000
 					+-------------------------------+
 		PRG Mode 0: |            <$8000>            |
 					+-------------------------------+
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		*/
 		bool prg_mode = false;
 		int chr_reg;
-		int prg_reg; 
+		int prg_reg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			
+
 			SetMirrorType(EMirrorType.Vertical);
 
 			return true;
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_reg = (addr & 0x40) | ((addr >> 8) & 0x3F);
-			chr_reg = ((addr & 0x1F) << 2) | (value & 0x03); 
+			chr_reg = ((addr & 0x1F) << 2) | (value & 0x03);
 		}
 
 		public override byte ReadPRG(int addr)

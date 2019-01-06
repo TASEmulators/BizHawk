@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			switch (borderType)
 			{
-                
+
 				case C64.BorderType.Full:
 					newHblankStart = -1;
 					newHblankEnd = -1;
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankStart = -1;
 					newVblankEnd = -1;
 					_vblank = false;
-					break;                    
+					break;
 				case C64.BorderType.Normal:
 					newHblankStart = hblankStart;
 					newHblankEnd = hblankEnd;
@@ -130,27 +130,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankStart = 0xFA + hBorderSize;
 					newVblankEnd = 0x32 - hBorderSize;
 					break;
-                case C64.BorderType.None:
-                    newHblankStart = 0x158 + PixBufferSize;
-                    newHblankEnd = 0x018 + PixBufferSize;
-                    newVblankStart = 0xFA;
-                    newVblankEnd = 0x32;
-                    _vblank = true;
-                    _hblank = true;
-                    break;
+				case C64.BorderType.None:
+					newHblankStart = 0x158 + PixBufferSize;
+					newHblankEnd = 0x018 + PixBufferSize;
+					newVblankStart = 0xFA;
+					newVblankEnd = 0x32;
+					_vblank = true;
+					_hblank = true;
+					break;
 			}
 
 			// wrap values
-            if (_hblank)
-            {
-                newHblankStart = WrapValue(0, maxWidth, newHblankStart);
-                newHblankEnd = WrapValue(0, maxWidth, newHblankEnd);
-            }
+			if (_hblank)
+			{
+				newHblankStart = WrapValue(0, maxWidth, newHblankStart);
+				newHblankEnd = WrapValue(0, maxWidth, newHblankEnd);
+			}
 			if (_vblank)
-            {
-                newVblankStart = WrapValue(0, lines, newVblankStart);
-                newVblankEnd = WrapValue(0, lines, newVblankEnd);
-            }
+			{
+				newVblankStart = WrapValue(0, lines, newVblankStart);
+				newVblankEnd = WrapValue(0, lines, newVblankEnd);
+			}
 
 			// calculate output dimensions
 			_hblankStartCheckXRaster = newHblankStart & 0xFFC;
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (_rasterLine == _rasterInterruptLine)
 				{
 					_rasterInterruptTriggered = true;
-					
+
 					// interrupt needs to be enabled to be set to true
 					if (_enableIntRaster)
 					{

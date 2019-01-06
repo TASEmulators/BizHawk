@@ -14,8 +14,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 	}
 
 	//All audio files (WAVE, AIFF, and MP3) must be in 44.1KHz 16-bit stereo format.
-	//BUT NOTE: MP3 can be VBR and the length can't be known without decoding the whole thing. 
-	//But, some ideas: 
+	//BUT NOTE: MP3 can be VBR and the length can't be known without decoding the whole thing.
+	//But, some ideas:
 	//1. we could operate ffmpeg differently to retrieve the length, which maybe it can do without having to decode the entire thing
 	//2. we could retrieve it from an ID3 if present.
 	//3. as a last resort, since MP3 is the annoying case usually, we could include my c# mp3 parser and sum the length (test the performance, this might be reasonably fast on par with ECM parsing)

@@ -13,7 +13,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public static void Initialize(IntPtr parent)
 		{
-			if (dinput == null) 
+			if (dinput == null)
 				dinput = new DirectInput();
 
 			if (keyboard == null || keyboard.Disposed)
@@ -59,12 +59,12 @@ namespace BizHawk.Client.MultiHawk
 			public bool Pressed;
 		}
 
-		
+
 		public static bool IsPressed(Key key)
 		{
 			if (state.IsPressed(key))
 				return true;
-			
+
 			if (key == Key.LeftShift && state.IsPressed(Key.RightShift))
 				return true;
 			if (key == Key.LeftControl && state.IsPressed(Key.RightControl))

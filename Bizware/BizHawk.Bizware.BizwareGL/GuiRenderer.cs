@@ -14,7 +14,7 @@ using OpenTK.Graphics.OpenGL;
 namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
-	/// A simple renderer useful for rendering GUI stuff. 
+	/// A simple renderer useful for rendering GUI stuff.
 	/// When doing GUI rendering, run everything through here (if you need a GL feature not done through here, run it through here first)
 	/// Call Begin, then draw, then End, and dont use other Renderers or GL calls in the meantime, unless you know what youre doing.
 	/// This can perform batching (well.. maybe not yet), which is occasionally necessary for drawing large quantities of things.

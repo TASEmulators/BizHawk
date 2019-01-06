@@ -41,9 +41,9 @@
 			this.LibraryParameters = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.LibraryDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.Location = new System.Drawing.Point(647, 309);
 			this.OK.Name = "OK";
@@ -52,18 +52,18 @@
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// FilterBox
-			// 
+			//
 			this.FilterBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.FilterBox.Location = new System.Drawing.Point(12, 311);
 			this.FilterBox.Name = "FilterBox";
 			this.FilterBox.Size = new System.Drawing.Size(159, 20);
 			this.FilterBox.TabIndex = 1;
 			this.FilterBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FilterBox_KeyUp);
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(173, 314);
@@ -71,9 +71,9 @@
 			this.label1.Size = new System.Drawing.Size(29, 13);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Filter";
-			// 
+			//
 			// ToWikiMarkupButton
-			// 
+			//
 			this.ToWikiMarkupButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToWikiMarkupButton.Location = new System.Drawing.Point(493, 309);
 			this.ToWikiMarkupButton.Name = "ToWikiMarkupButton";
@@ -90,19 +90,19 @@
 					new System.Windows.Forms.MenuItem("Copy")
 				});
 			this.CopyMenu.MenuItems[0].Click += new System.EventHandler(this.FunctionView_Copy);
-			// 
+			//
 			// FunctionView
-			// 
-			this.FunctionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.FunctionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.FunctionView.BlazingFast = false;
 			this.FunctionView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.LibraryReturn,
-            this.LibraryHead,
-            this.LibraryName,
-            this.LibraryParameters,
-            this.LibraryDescription});
+			this.LibraryReturn,
+			this.LibraryHead,
+			this.LibraryName,
+			this.LibraryParameters,
+			this.LibraryDescription});
 			this.FunctionView.FullRowSelect = true;
 			this.FunctionView.GridLines = true;
 			this.FunctionView.ItemCount = 0;
@@ -118,34 +118,34 @@
 			this.FunctionView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.FunctionView_ColumnClick);
 			this.FunctionView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FunctionView_KeyDown);
 			this.FunctionView.ContextMenu = this.CopyMenu;
-			// 
+			//
 			// LibraryReturn
-			// 
+			//
 			this.LibraryReturn.Text = "Return";
-			// 
+			//
 			// LibraryHead
-			// 
+			//
 			this.LibraryHead.Text = "Library";
 			this.LibraryHead.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.LibraryHead.Width = 68;
-			// 
+			//
 			// LibraryName
-			// 
+			//
 			this.LibraryName.Text = "Name";
 			this.LibraryName.Width = 131;
-			// 
+			//
 			// LibraryParameters
-			// 
+			//
 			this.LibraryParameters.Text = "Parameters";
 			this.LibraryParameters.Width = 170;
-			// 
+			//
 			// LibraryDescription
-			// 
+			//
 			this.LibraryDescription.Text = "Description";
 			this.LibraryDescription.Width = 296;
-			// 
+			//
 			// LuaFunctionsForm
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

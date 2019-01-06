@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			foreach (var m in _memoryBlocks)
 				m.Activate();
 		}
-		
+
 		public void PrintDebuggingInfo()
 		{
 			using (this.EnterExit())

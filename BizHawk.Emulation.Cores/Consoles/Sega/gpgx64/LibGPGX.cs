@@ -84,18 +84,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public enum INPUT_SYSTEM : byte
 		{
-			SYSTEM_NONE = 0,        // unconnected port	
-			SYSTEM_MD_GAMEPAD = 1,  // single 3-buttons or 6-buttons Control Pad 	
-			SYSTEM_MOUSE = 2,       // Sega Mouse 	
+			SYSTEM_NONE = 0,        // unconnected port
+			SYSTEM_MD_GAMEPAD = 1,  // single 3-buttons or 6-buttons Control Pad
+			SYSTEM_MOUSE = 2,       // Sega Mouse
 			SYSTEM_MENACER = 3,     // Sega Menacer -- port B only
 			SYSTEM_JUSTIFIER = 4,   // Konami Justifiers -- port B only
 			SYSTEM_XE_A1P = 5,      // XE-A1P analog controller -- port A only
-			SYSTEM_ACTIVATOR = 6,   // Sega Activator 	
+			SYSTEM_ACTIVATOR = 6,   // Sega Activator
 			SYSTEM_MS_GAMEPAD = 7,  // single 2-buttons Control Pad -- Master System
 			SYSTEM_LIGHTPHASER = 8, // Sega Light Phaser -- Master System
 			SYSTEM_PADDLE = 9,      // Sega Paddle Control -- Master System
 			SYSTEM_SPORTSPAD = 10,  // Sega Sports Pad -- Master System
-			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer 	
+			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer
 			SYSTEM_WAYPLAY = 12,    // Multi Tap -- EA 4-Way Play -- use both ports
 		};
 

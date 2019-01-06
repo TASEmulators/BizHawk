@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.DiscSystem
 					if (temp > int.MaxValue)
 						throw new InvalidOperationException();
 					todo = (int)temp;
-					
+
 					//zero-fill the unused part (just for safety's sake)
 					Array.Clear(buffer, offset + todo, count - todo);
 				}
@@ -42,6 +42,6 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 			}
 		}
-		
+
 	}
 }

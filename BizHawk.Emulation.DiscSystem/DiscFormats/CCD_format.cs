@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				EntryNum = entryNum;
 			}
-			
+
 			/// <summary>
 			/// these should be 0-indexed
 			/// </summary>
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.DiscSystem
 					int entryNum = int.Parse(section.Name.Split(' ')[1]);
 					CCDTocEntry entry = new CCDTocEntry(entryNum);
 					ccdf.TOCEntries.Add(entry);
-					
+
 					entry.Session = section.FetchOrFail("SESSION");
 					entry.Point = section.FetchOrFail("POINT");
 					entry.ADR = section.FetchOrFail("ADR");
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new CCDParseException("Warning: inconsistency in CCD PLBA vs computed P MSF");
 
 					if(entry.Session != 1)
-						throw new CCDParseException("Malformed CCD format: not yet supporting multi-session files"); 
+						throw new CCDParseException("Malformed CCD format: not yet supporting multi-session files");
 				}
 				else if (section.Name.StartsWith("TRACK"))
 				{
@@ -437,7 +437,7 @@ namespace BizHawk.Emulation.DiscSystem
 						subFile.Write(buf2448, 2352, 96);
 					}
 				}
-			
+
 		}
 
 		class SS_CCD : ISectorSynthJob2448
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.DiscSystem
 				var imgBlob = job.Disc.DisposableResources[0] as IBlob;
 				var subBlob = job.Disc.DisposableResources[1] as IBlob;
 				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
-				
+
 				//read the IMG data if needed
 				if ((job.Parts & ESectorSynthPart.UserAny) != 0)
 				{
@@ -537,11 +537,11 @@ namespace BizHawk.Emulation.DiscSystem
 				BCD2 tno, ino;
 
 				//this should actually be zero. im not sure if this is stored as BCD2 or not
-				tno = BCD2.FromDecimal(entry.TrackNo); 
-				
+				tno = BCD2.FromDecimal(entry.TrackNo);
+
 				//these are special values.. I think, taken from this:
 				//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
-				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD. 
+				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD.
 				//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
 				ino = BCD2.FromDecimal(entry.Point);
 				if (entry.Point == 0xA0) ino.BCDValue = 0xA0;
@@ -569,7 +569,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//analyze the RAWTocEntries to figure out what type of track track 1 is
 			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = disc.RawTOCEntries };
 			tocSynth.Run();
-			
+
 			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
 			//We reuse some CUE code for this.
 			//If we load other formats later we might should abstract this even further (to a synthesizer job)

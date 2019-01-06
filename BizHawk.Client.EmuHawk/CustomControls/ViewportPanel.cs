@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		public RetainedViewportPanel(bool doubleBuffer = false)
 		{
 			CreateHandle();
-			
+
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, doubleBuffer);
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void InitializeComponent() 
+		public void InitializeComponent()
 		{
 			table = new TableLayoutPanel();
 			view = new ViewportPanel();

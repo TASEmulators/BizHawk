@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			
+
 			//panel1.Size = new System.Drawing.Size(1000, 1000);
 			//pictureBox5.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.InvokeMethod).Invoke(pictureBox5, new object[] { ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint, true });
 			pictureBox5.BackColor = Color.Transparent;
@@ -235,5 +235,5 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 	}
-	
+
 }

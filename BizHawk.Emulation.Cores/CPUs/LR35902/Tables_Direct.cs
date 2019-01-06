@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private void NOP_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,					
+						{IDLE,
 						IDLE,
 						HALT_CHK,
 						OP };
@@ -104,18 +104,18 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			{
 				cur_instr = new ushort[]
 						{
-						IDLE,						
+						IDLE,
 						HALT_CHK,
 						IDLE,
 						HALT, 0 };
 
 				if (!is_GBC) { skip_once = true; }
 				// If the interrupt flag is not currently set, but it does get set in the first check
-				// then a bug is triggered 
-				// With interrupts enabled, this runs the halt command twice 
+				// then a bug is triggered
+				// With interrupts enabled, this runs the halt command twice
 				// when they are disabled, it reads the next byte twice
 				if (!FlagI ||(FlagI && !interrupts_enabled)) { Halt_bug_2 = true; }
-				
+
 			}
 		}
 
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							IDLE,
 							RD, W, PCl, PCh,
 							INC16, PCl, PCh,
-							IDLE,							
+							IDLE,
 							IDLE,
 							RD, Z, PCl, PCh,
 							INC16, PCl, PCh,
@@ -295,10 +295,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							IDLE,
 							IDLE,
 							WR, SPl, SPh, PCh,
-							IDLE,							
+							IDLE,
 							IDLE,
 							DEC16, SPl, SPh,
-							WR, SPl, SPh, PCl,				
+							WR, SPl, SPh, PCl,
 							TR, PCl, W,
 							TR, PCh, Z,
 							HALT_CHK,
@@ -397,7 +397,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							INC16, SPl, SPh,
 							HALT_CHK,
 							OP };
-			} 
+			}
 		}
 
 		private void RST_(ushort n)
@@ -407,12 +407,12 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						DEC16, SPl, SPh,
-						IDLE,						
-						IDLE,					
+						IDLE,
+						IDLE,
 						IDLE,
 						WR, SPl, SPh, PCh,
 						DEC16, SPl, SPh,
-						IDLE,				
+						IDLE,
 						IDLE,
 						WR, SPl, SPh, PCl,
 						ASGN, PCh, 0,

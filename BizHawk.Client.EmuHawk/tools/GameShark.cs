@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 	[Tool(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" },
-        unsupportedCores: new[] { "Snes9x" })]
+		unsupportedCores: new[] { "Snes9x" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "
@@ -115,12 +115,12 @@ namespace BizHawk.Client.EmuHawk
 			{ '5', 7 },  // 0111
 			{ '6', 8 },  // 1000
 			{ 'B', 9 },  // 1001
-			{ 'C', 10 }, // 1010 
-			{ '8', 11 }, // 1011 
-			{ 'A', 12 }, // 1100 
-			{ '2', 13 }, // 1101 
-			{ '3', 14 }, // 1110 
-			{ 'E', 15 }  // 1111 
+			{ 'C', 10 }, // 1010
+			{ '8', 11 }, // 1011
+			{ 'A', 12 }, // 1100
+			{ '2', 13 }, // 1101
+			{ '3', 14 }, // 1110
+			{ 'E', 15 }  // 1111
 		};
 		#endregion
 
@@ -1129,8 +1129,8 @@ namespace BizHawk.Client.EmuHawk
 			// 7)
 			// [If Byte at address XXXXXXXX is lower than ZZ] (signed) Code
 			// Signed means : For bytes : values go from -128 to +127. For Halfword : values go from -32768/+32767. For Words : values go from -2147483648 to 2147483647. For exemple, for the Byte comparison, 7F (127) will be > to FF (-1).
-			// 
-			// 
+			//
+			//
 			else if (RAMAddress.StartsWith("182") == true)
 			{
 				// 182 Should be Changed to 020
@@ -1227,7 +1227,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// 9A2 Should be Changed to 020
 				// If ZZZZ > Halfword at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
-				// XXXXXXXX 0000ZZZZ 
+				// XXXXXXXX 0000ZZZZ
 				if (RAMAddress.StartsWith("9A2") == true)
 				{
 					RAMAddress = RAMAddress.Replace("9A2", "020");
@@ -1486,8 +1486,8 @@ namespace BizHawk.Client.EmuHawk
 			// 9)
 			// [If Value at adress XXXXXXXX is lower than...] (unsigned) Code
 			// Unsigned means : For bytes : values go from 0 to +255. For Halfword : values go from 0 to +65535. For Words : values go from 0 to 4294967295. For exemple, for the Byte comparison, 7F (127) will be < to FF (255).
-			// 
-			// 
+			//
+			//
 			else if (RAMAddress.StartsWith("282") == true)
 			{
 				// 282 Should be Changed to 020
@@ -1704,7 +1704,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (RAMAddress.StartsWith("322") == true)
 			{
 				// 322 Should be Changed to 020
-				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.  
+				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.
 				// XXXXXXXX ZZZZZZZZ
 				if (RAMAddress.StartsWith("322") == true)
 				{
@@ -1761,7 +1761,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (RAMAddress.StartsWith("342") == true)
 			{
 				// 342 Should be Changed to 020
-				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.  
+				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.
 				// XXXXXXXX ZZZZZZZZ
 				if (RAMAddress.StartsWith("342") == true)
 				{
@@ -1967,8 +1967,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			// 12) "Always..." Codes
 			// For the "Always..." codes: -XXXXXXXX can be any authorised address BUT 00000000 (use 02000000 if you don't know what to choose). -ZZZZZZZZ can be anything. -The "y" in the code data must be in the [1-7] range (which means not 0).
-			// 
-			// 
+			//
+			//
 			else if (RAMAddress.StartsWith("0E2") == true)
 			{
 				// 0E2 Should be Changed to 020
@@ -2273,7 +2273,7 @@ namespace BizHawk.Client.EmuHawk
 			// Master Code settings.
 			// XXXXXXXX
 			// 0000YYYY
-			// 
+			//
 			else if (RAMValue.StartsWith("001DC0DE") == true)
 			{
 				// -ID Code-
@@ -2325,7 +2325,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("1000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("2000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("3000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("4000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("0020") == true)
 			{
-				//Master Code #2	 
+				//Master Code #2
 				//1aaaaaaa xxxy
 				//'y' is the CBA Code Handler Store Address(0 - 7)[address = ((d << 0x16) + 0x08000100)]
 
@@ -2363,7 +2363,7 @@ namespace BizHawk.Client.EmuHawk
 				//16 - Bit Logical AND
 				//6aaaaaaa yyyy
 				//Performs the AND function on the address provided with the value provided. I'm not going to explain what AND does, so if you'd like to know I suggest you see the instruction manual for a graphing calculator.
-				//This is another advanced code type you'll probably never need to use.  
+				//This is another advanced code type you'll probably never need to use.
 
 				//Ocean Prince's note:
 				//AND means "If ALL conditions are True then Do"

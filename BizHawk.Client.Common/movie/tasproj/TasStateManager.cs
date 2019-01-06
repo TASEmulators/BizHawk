@@ -12,7 +12,7 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Captures savestates and manages the logic of adding, retrieving, 
+	/// Captures savestates and manages the logic of adding, retrieving,
 	/// invalidating/clearing of states.  Also does memory management and limiting of states
 	/// </summary>
 	public class TasStateManager : IDisposable
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 
 			NdbDatabase = new NDBDatabase(StatePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
-		
+
 		public TasStateManagerSettings Settings { get; set; }
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Requests that the current emulator state be captured 
+		/// Requests that the current emulator state be captured
 		/// Unless force is true, the state may or may not be captured depending on the logic employed by "greenzone" management
 		/// </summary>
 		public void Capture(bool force = false)
@@ -409,7 +409,7 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-				
+
 				bw.Write(_states.Keys[i]);
 				bw.Write(_states.Values[i].Length);
 				bw.Write(_states.Values[i].State);

@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common
 				{
 #if true
 					int cnt = _r.Read(buffer, offset, count);
-					_total += cnt; 
+					_total += cnt;
 					return cnt;
 #else
 					int ret = 0;

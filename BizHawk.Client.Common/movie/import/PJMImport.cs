@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 			// 024: UInt32 cheatListOffset
 
 			// 028: UInt32 cdRomIdOffset
-			// Source format is just the first up-to-8 alphanumeric characters of the CD label, 
+			// Source format is just the first up-to-8 alphanumeric characters of the CD label,
 			// so not so useful.
 			br.ReadBytes(20);
 
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
 			SimpleController controllers = new SimpleController();
 			settings.FIOConfig.Devices8 = new[]
-			{ 
+			{
 				info.Player1Type,
 				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
 				info.Player2Type,

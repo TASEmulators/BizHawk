@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The data sector header is required. There's no header for audio tracks/sectors.
 		/// </summary>
 		Header16 = 1,
-		
+
 		/// <summary>
 		/// The main 2048 user data bytes are required
 		/// </summary>
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.DiscSystem
 		 //else if(toc.disc_type == DISC_TYPE_CD_I)
 		 // control |= 0x4;
 			control |= (EControlQ)(((int)ses.LastInformationTrack.Control) & 4);
-			
+
 			SubchannelQ sq = new SubchannelQ();
 			sq.SetStatus(ADR, control);
 			sq.q_tno.BCDValue = 0xAA;

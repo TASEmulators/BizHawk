@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return StartFromSlotBox.SelectedItem != null 
+				return StartFromSlotBox.SelectedItem != null
 					? StartFromSlotBox.SelectedItem.ToString()
 					: "";
 			}

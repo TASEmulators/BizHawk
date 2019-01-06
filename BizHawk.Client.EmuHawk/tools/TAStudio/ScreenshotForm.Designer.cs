@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
 			this.SuspendLayout();
-			// 
+			//
 			// ScreenshotForm
-			// 
+			//
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(314, 234);
 			this.ControlBox = false;

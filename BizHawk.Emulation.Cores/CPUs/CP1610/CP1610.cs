@@ -156,6 +156,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			Log.Flush();
 		}
 
-		
+
 	}
 }

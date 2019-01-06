@@ -2,12 +2,12 @@
 {
 	partial class PlaybackBox
 	{
-		/// <summary> 
+		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
+		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
@@ -42,12 +42,12 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.PlaybackGroupBox.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// PlaybackGroupBox
-			// 
-			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.PlaybackGroupBox.Controls.Add(this.RecordingModeCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
@@ -63,9 +63,9 @@
 			this.PlaybackGroupBox.TabIndex = 0;
 			this.PlaybackGroupBox.TabStop = false;
 			this.PlaybackGroupBox.Text = "Playback";
-			// 
+			//
 			// RecordingModeCheckbox
-			// 
+			//
 			this.RecordingModeCheckbox.AutoSize = true;
 			this.RecordingModeCheckbox.Location = new System.Drawing.Point(10, 85);
 			this.RecordingModeCheckbox.Name = "RecordingModeCheckbox";
@@ -74,9 +74,9 @@
 			this.RecordingModeCheckbox.Text = "Recording mode";
 			this.RecordingModeCheckbox.UseVisualStyleBackColor = true;
 			this.RecordingModeCheckbox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.RecordingModeCheckbox_MouseClick);
-			// 
+			//
 			// AutoRestoreCheckbox
-			// 
+			//
 			this.AutoRestoreCheckbox.AutoSize = true;
 			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 64);
 			this.AutoRestoreCheckbox.Name = "AutoRestoreCheckbox";
@@ -85,9 +85,9 @@
 			this.AutoRestoreCheckbox.Text = "Auto-restore last position";
 			this.AutoRestoreCheckbox.UseVisualStyleBackColor = true;
 			this.AutoRestoreCheckbox.CheckedChanged += new System.EventHandler(this.AutoRestoreCheckbox_CheckedChanged);
-			// 
+			//
 			// TurboSeekCheckbox
-			// 
+			//
 			this.TurboSeekCheckbox.AutoSize = true;
 			this.TurboSeekCheckbox.Location = new System.Drawing.Point(117, 43);
 			this.TurboSeekCheckbox.Name = "TurboSeekCheckbox";
@@ -96,9 +96,9 @@
 			this.TurboSeekCheckbox.Text = "Turbo seek";
 			this.TurboSeekCheckbox.UseVisualStyleBackColor = true;
 			this.TurboSeekCheckbox.CheckedChanged += new System.EventHandler(this.TurboSeekCheckbox_CheckedChanged);
-			// 
+			//
 			// FollowCursorCheckbox
-			// 
+			//
 			this.FollowCursorCheckbox.AutoSize = true;
 			this.FollowCursorCheckbox.Location = new System.Drawing.Point(10, 43);
 			this.FollowCursorCheckbox.Name = "FollowCursorCheckbox";
@@ -107,9 +107,9 @@
 			this.FollowCursorCheckbox.Text = "Follow Cursor";
 			this.FollowCursorCheckbox.UseVisualStyleBackColor = true;
 			this.FollowCursorCheckbox.CheckedChanged += new System.EventHandler(this.FollowCursorCheckbox_CheckedChanged);
-			// 
+			//
 			// NextMarkerButton
-			// 
+			//
 			this.NextMarkerButton.Location = new System.Drawing.Point(154, 17);
 			this.NextMarkerButton.Name = "NextMarkerButton";
 			this.NextMarkerButton.Size = new System.Drawing.Size(38, 23);
@@ -117,9 +117,9 @@
 			this.NextMarkerButton.Text = ">>";
 			this.NextMarkerButton.UseVisualStyleBackColor = true;
 			this.NextMarkerButton.Click += new System.EventHandler(this.NextMarkerButton_Click);
-			// 
+			//
 			// FrameAdvanceButton
-			// 
+			//
 			this.FrameAdvanceButton.InitialDelay = 500;
 			this.FrameAdvanceButton.Location = new System.Drawing.Point(117, 17);
 			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
@@ -132,9 +132,9 @@
 			this.FrameAdvanceButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseDown);
 			this.FrameAdvanceButton.MouseLeave += new System.EventHandler(this.FrameAdvanceButton_MouseLeave);
 			this.FrameAdvanceButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseUp);
-			// 
+			//
 			// PauseButton
-			// 
+			//
 			this.PauseButton.Location = new System.Drawing.Point(80, 17);
 			this.PauseButton.Name = "PauseButton";
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
@@ -143,9 +143,9 @@
 			this.toolTip1.SetToolTip(this.PauseButton, "Middle Mouse Button");
 			this.PauseButton.UseVisualStyleBackColor = true;
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
-			// 
+			//
 			// RewindButton
-			// 
+			//
 			this.RewindButton.InitialDelay = 1000;
 			this.RewindButton.Location = new System.Drawing.Point(43, 17);
 			this.RewindButton.Name = "RewindButton";
@@ -158,9 +158,9 @@
 			this.RewindButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseDown);
 			this.RewindButton.MouseLeave += new System.EventHandler(this.RewindButton_MouseLeave);
 			this.RewindButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseUp);
-			// 
+			//
 			// PreviousMarkerButton
-			// 
+			//
 			this.PreviousMarkerButton.Location = new System.Drawing.Point(6, 17);
 			this.PreviousMarkerButton.Name = "PreviousMarkerButton";
 			this.PreviousMarkerButton.Size = new System.Drawing.Size(38, 23);
@@ -168,9 +168,9 @@
 			this.PreviousMarkerButton.Text = "<<";
 			this.PreviousMarkerButton.UseVisualStyleBackColor = true;
 			this.PreviousMarkerButton.Click += new System.EventHandler(this.PreviousMarkerButton_Click);
-			// 
+			//
 			// PlaybackBox
-			// 
+			//
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.PlaybackGroupBox);
 			this.Name = "PlaybackBox";

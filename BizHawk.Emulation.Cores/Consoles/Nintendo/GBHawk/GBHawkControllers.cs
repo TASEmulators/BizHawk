@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int PortNum { get; }
 
-		public float theta, phi, theta_prev, phi_prev; 
+		public float theta, phi, theta_prev, phi_prev;
 
 		public ControllerDefinition Definition { get; }
 
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		// acc x is the result of rotating around body y AFTER rotating around body x
-		// therefore this control scheme gives decreasing sensitivity in X as Y rotation inscreases 
+		// therefore this control scheme gives decreasing sensitivity in X as Y rotation inscreases
 		public ushort ReadAccX(IController c)
 		{
 			theta_prev = theta;
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			float temp = (float)(Math.Cos(theta) * Math.Sin(phi));
 
-			// here we add in rates of change parameters. 
+			// here we add in rates of change parameters.
 			// a typical rate of change for a fast rotation is guessed at 0.5 rad / frame
 			// since rotations about X have less of a moment arm compared to by, we take 1/5 of the effect as a baseline
 			float temp2 = (float)((phi - phi_prev) / 0.5 * 25);
@@ -190,17 +190,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		// acc y is just the sine of the angle
-		// we assume that ReadAccX is called first, which updates the the states 
+		// we assume that ReadAccX is called first, which updates the the states
 		public ushort ReadAccY(IController c)
 		{
 			float temp = (float)Math.Sin(theta);
 
-			// here we add in rates of change parameters. 
+			// here we add in rates of change parameters.
 			// a typical rate of change for a fast rotation is guessed at 0.5 rad / frame
 			// further it will be assumed that the resulting acceleration is roughly eqvuivalent to gravity
 			float temp2 = (float)((theta - theta_prev)/0.5 * 125);
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125) + temp2);			
+			return (ushort)(0x81D0 - Math.Floor(temp * 125) + temp2);
 		}
 
 		private static readonly string[] BaseDefinition =

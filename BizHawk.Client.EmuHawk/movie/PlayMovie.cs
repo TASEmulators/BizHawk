@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				
+
 				var movie = PreLoadMovieFile(file, force);
 				if (movie == null)
 				{
@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 				HighlightMovie(tas[0]);
 				return;
 			}
-			
+
 			if (tas.Count > 1)
 			{
 				indices = new List<int>(tas);
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 			while (dpTodo.Count > 0)
 			{
 				string dp = dpTodo.Dequeue();
-				
+
 				// enqueue subdirectories if appropriate
 				if (Global.Config.PlayMovie_IncludeSubdir)
 				{
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 					movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
 			return new PlatformFrameRates()[system, pal];
-			
+
 		}
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
@@ -678,7 +678,7 @@ namespace BizHawk.Client.EmuHawk
 			Run();
 			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
-			if (StopOnFrameCheckbox.Checked && 
+			if (StopOnFrameCheckbox.Checked &&
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
 				if (LastFrameCheckbox.Checked)

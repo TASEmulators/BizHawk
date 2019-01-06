@@ -38,9 +38,9 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// btnClose
-			// 
+			//
 			this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnClose.Location = new System.Drawing.Point(597, 3);
 			this.btnClose.Name = "btnClose";
@@ -49,9 +49,9 @@
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
 			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-			// 
+			//
 			// btnClear
-			// 
+			//
 			this.btnClear.Location = new System.Drawing.Point(3, 3);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(75, 24);
@@ -59,9 +59,9 @@
 			this.btnClear.Text = "&Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
 			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-			// 
+			//
 			// tableLayoutPanel1
-			// 
+			//
 			this.tableLayoutPanel1.AutoSize = true;
 			this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel1.ColumnCount = 5;
@@ -82,9 +82,9 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(675, 30);
 			this.tableLayoutPanel1.TabIndex = 5;
-			// 
+			//
 			// buttonCopy
-			// 
+			//
 			this.buttonCopy.Location = new System.Drawing.Point(84, 3);
 			this.buttonCopy.Name = "buttonCopy";
 			this.buttonCopy.Size = new System.Drawing.Size(75, 24);
@@ -92,9 +92,9 @@
 			this.buttonCopy.Text = "Copy Sel.";
 			this.buttonCopy.UseVisualStyleBackColor = true;
 			this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
-			// 
+			//
 			// buttonCopyAll
-			// 
+			//
 			this.buttonCopyAll.Location = new System.Drawing.Point(165, 3);
 			this.buttonCopyAll.Name = "buttonCopyAll";
 			this.buttonCopyAll.Size = new System.Drawing.Size(75, 24);
@@ -102,9 +102,9 @@
 			this.buttonCopyAll.Text = "Copy All";
 			this.buttonCopyAll.UseVisualStyleBackColor = true;
 			this.buttonCopyAll.Click += new System.EventHandler(this.buttonCopyAll_Click);
-			// 
+			//
 			// AddToGameDbBtn
-			// 
+			//
 			this.AddToGameDbBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RetroQuestion;
 			this.AddToGameDbBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.AddToGameDbBtn.Location = new System.Drawing.Point(246, 3);
@@ -115,12 +115,12 @@
 			this.AddToGameDbBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.AddToGameDbBtn.UseVisualStyleBackColor = true;
 			this.AddToGameDbBtn.Click += new System.EventHandler(this.AddToGameDbBtn_Click);
-			// 
+			//
 			// virtualListView1
-			// 
+			//
 			this.virtualListView1.BlazingFast = false;
 			this.virtualListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+			this.columnHeader1});
 			this.virtualListView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.virtualListView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.virtualListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -137,9 +137,9 @@
 			this.virtualListView1.QueryItemText += new BizHawk.Client.EmuHawk.QueryItemTextHandler(this.virtualListView1_QueryItemText);
 			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.virtualListView1_ClientSizeChanged);
 			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.virtualListView1_KeyDown);
-			// 
+			//
 			// LogWindow
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnClose;

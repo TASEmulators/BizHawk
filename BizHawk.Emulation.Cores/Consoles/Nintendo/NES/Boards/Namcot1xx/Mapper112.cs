@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "MAPPER112":	
+				case "MAPPER112":
 					break;
 				default:
 					return false;
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			
+
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000

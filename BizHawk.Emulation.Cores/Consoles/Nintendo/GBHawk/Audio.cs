@@ -165,10 +165,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (WAVE_enable)
 					{
 						if (WAVE_can_get || Core.is_GBC) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
-						else { ret = 0xFF; }						
+						else { ret = 0xFF; }
 					}
 					else { ret = Wave_RAM[addr & 0x0F]; }
-					
+
 					break;
 			}
 
@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						SQ1_len_en = (value & 0x40) > 0;
 						break;
-					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
+					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)
 						Audio_Regs[NR21] = value;
 						SQ2_duty = (byte)((value & 0xC0) >> 6);
 						SQ2_length = (ushort)(64 - (value & 0x3F));
@@ -292,11 +292,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_per = (byte)(value & 7);
 
 						// several glitchy effects happen when writing to NRx2 during audio playing
-						if (((Audio_Regs[NR22] & 7) == 0) && !SQ2_vol_done) { SQ2_vol_state++; }						
+						if (((Audio_Regs[NR22] & 7) == 0) && !SQ2_vol_done) { SQ2_vol_state++; }
 						else if ((Audio_Regs[NR22] & 8) == 0) { SQ2_vol_state += 2; }
-							
+
 						if (((Audio_Regs[NR22] ^ value) & 8) > 0) { SQ2_vol_state = (byte)(0x10 - SQ2_vol_state); }
-							
+
 						SQ2_vol_state &= 0xF;
 						if ((value & 0xF8) == 0) { SQ2_enable = false; SQ2_output = 0; }
 						Audio_Regs[NR22] = value;
@@ -484,7 +484,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						AUD_CTRL_sq2_R_en = (value & 2) > 0;
 						AUD_CTRL_sq1_R_en = (value & 1) > 0;
 						break;
-					case 0xFF26:                                        // NR52 (ctrl)						
+					case 0xFF26:                                        // NR52 (ctrl)
 						// NOTE: Make sure to do the power off first since it will call the write_reg function again
 						if ((value & 0x80) == 0) { power_off(); }
 						AUD_CTRL_power = (value & 0x80) > 0;
@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							SQ1_len_cntr = SQ1_length;
 						}
 						break;
-					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
+					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)
 						if (!Core.is_GBC)
 						{
 							SQ2_length = (ushort)(64 - (value & 0x3F));
@@ -673,7 +673,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				WAVE_output_decay = (float)(WAVE_output_decay * 0.999958);
 				WAVE_output = (int)Math.Round(WAVE_output_decay);
 			}
-			
+
 
 			// calculate noise output
 			if (NOISE_enable)
@@ -911,7 +911,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// on GBC, lengths are also reset
 			if (Core.is_GBC)
-			{ 
+			{
 				SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
 				SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
 			}
@@ -933,7 +933,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
 									0x60, 0x59, 0x59, 0xB0, 0x34, 0xB8, 0x2E, 0xDA };
 			}
-			
+
 			Audio_Regs = new byte[21];
 
 			master_audio_clock = 0;
@@ -952,7 +952,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			ser.Sync("Audio_Regs", ref Audio_Regs, false);
 			ser.Sync("Wave_Ram", ref Wave_RAM, false);
-	
+
 			ser.Sync("SQ1_vol_done", ref SQ1_vol_done);
 			ser.Sync("SQ1_calc_done", ref SQ1_calc_done);
 			ser.Sync("SQ1_swp_enable", ref SQ1_swp_enable);
@@ -1087,7 +1087,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			_blip_L.EndFrame(master_audio_clock);
 			_blip_R.EndFrame(master_audio_clock);
-			
+
 			nsamp = _blip_L.SamplesAvailable();
 
 			samples = new short[nsamp * 2];

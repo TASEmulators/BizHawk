@@ -117,15 +117,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			return size;
 		}
 
-		/// <summary>      
+		/// <summary>
 		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
 		/// using the given font <paramref  name="font"/>
 		/// Restrict the width of the string and get the number of characters able to fit in the restriction and
 		/// the width those characters take
 		/// </summary>
 		/// <param name="maxWidth">the max width to render the string  in</param>
-		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>      
-		/// <param name="charFitWidth"></param>      
+		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>
+		/// <param name="charFitWidth"></param>
 		public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
 		{
 			SetFont(font);
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			_bitW = 0;
 			_bitH = 0;
-			
+
 			DeleteObject(_bitMap);
 			DeleteObject(_bitHDC);
 
@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		#region Helpers
 
 		/// <summary>
-		/// Set a resource (e.g. a font) for the  specified device context.      
+		/// Set a resource (e.g. a font) for the  specified device context.
 		/// </summary>
 		private void SetFont(Font font)
 		{
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			public byte lfPitchAndFamily = 0;
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
 			public string lfFaceName = null;
-		} 
+		}
 
 		/// <summary>
 		///   The graphics mode that can be set by SetGraphicsMode.
@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				return new XFORM(elems[0], elems[1], elems[2], elems[3], elems[4], elems[5]);
 			}
 		}
-		
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct BLENDFUNCTION
 		{

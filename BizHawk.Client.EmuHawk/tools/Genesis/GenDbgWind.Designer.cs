@@ -34,25 +34,25 @@
 			this.button2 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
-			// 
+			//
 			// listBox1
-			// 
+			//
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.Location = new System.Drawing.Point(12, 12);
 			this.listBox1.Name = "listBox1";
 			this.listBox1.Size = new System.Drawing.Size(114, 264);
 			this.listBox1.TabIndex = 0;
-			// 
+			//
 			// listBox2
-			// 
+			//
 			this.listBox2.FormattingEnabled = true;
 			this.listBox2.Location = new System.Drawing.Point(132, 12);
 			this.listBox2.Name = "listBox2";
 			this.listBox2.Size = new System.Drawing.Size(120, 264);
 			this.listBox2.TabIndex = 1;
-			// 
+			//
 			// button1
-			// 
+			//
 			this.button1.Location = new System.Drawing.Point(12, 282);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
@@ -60,9 +60,9 @@
 			this.button1.Text = "Save";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
+			//
 			// button2
-			// 
+			//
 			this.button2.Location = new System.Drawing.Point(132, 282);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
@@ -70,9 +70,9 @@
 			this.button2.Text = "Save";
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
+			//
 			// button3
-			// 
+			//
 			this.button3.Location = new System.Drawing.Point(70, 311);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(75, 23);
@@ -80,9 +80,9 @@
 			this.button3.Text = "Compare";
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
-			// 
+			//
 			// GenDbgWind
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(404, 365);

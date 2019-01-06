@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class Mapper230 : NES.NESBoardBase
 	{
 		/*
-			* Here are Disch's original notes:  
+			* Here are Disch's original notes:
 		========================
 		=  Mapper 230          =
 		========================
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		PRG Setup:
 		---------------------------
 
-						$8000   $A000   $C000   $E000  
+						$8000   $A000   $C000   $E000
 						+---------------+---------------+
 		Contra Mode:    |     $8000     |     { 7 }     |  <---  use chip 0
 						+-------------------------------+
@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						+-------------------------------+
 		Multi Mode 1:   |      Reg      |      Reg      |  <---  use chip 1
 						+---------------+---------------+
- 
- 
+
+
 		chip 0 = 128k PRG  (offset 0x00010-0x2000F)
 		chip 1 = 512k PRG  (offset 0x20010-0xA000F)
 		*/

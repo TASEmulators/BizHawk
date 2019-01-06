@@ -117,16 +117,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bank = (block_high << 1) | block_low;
 			}
-			
+
 			byte value = ROM[((bank & prg_bank_mask_32k) * 0x8000) + (addr & 0x7FFF)];
 
 			if (addr >= 0x7F80)
 			{
 				WritePRG(addr, value);
 			}
-			
+
 			return value;
-			
+
 		}
 
 		public override byte ReadPPU(int addr)

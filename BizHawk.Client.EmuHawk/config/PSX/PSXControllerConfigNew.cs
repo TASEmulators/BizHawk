@@ -135,9 +135,9 @@ namespace BizHawk.Client.EmuHawk
 
 			psxSettings.FIOConfig = UserConfigFromGui();
 			GlobalWin.MainForm.PutCoreSyncSettings(psxSettings);
-			
+
 			DialogResult = DialogResult.OK;
-			
+
 			Close();
 		}
 	}

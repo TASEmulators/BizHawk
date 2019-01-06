@@ -68,7 +68,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public IGL Owner { get; private set; }
 		public object Opaque { get; private set; }
-		
+
 		//note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
 		public float Width { get; private set; }
 		public float Height { get; private set; }

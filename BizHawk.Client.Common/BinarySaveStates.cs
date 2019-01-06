@@ -219,7 +219,7 @@ namespace BizHawk.Client.Common
 					return null;
 				}
 			}
-			
+
 			try
 			{
 				ret._zip = new ZipFile(filename);
@@ -257,12 +257,12 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			
+
 			if (abort)
 			{
 				throw new Exception("Essential zip section not found: " + lump.ReadName);
 			}
-			
+
 			return false;
 		}
 

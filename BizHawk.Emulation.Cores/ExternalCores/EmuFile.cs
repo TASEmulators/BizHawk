@@ -94,7 +94,7 @@ namespace BizHawk
 			: base(accessor)
 		{
 			UnmanagedOpaque = QueryCoreCall<Func<IntPtr, IntPtr>>("EmuFile.Construct")(ManagedOpaque);
-			
+
 			SetFp("fgetc", new fgetcDelegate(fgetc));
 			SetFp("fread", new freadDelegate(fread));
 			SetFp("fwrite", new fwriteDelegate(fwrite));

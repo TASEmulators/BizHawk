@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 		public void LatchFromPhysical(IController controller)
 		{
 			_buttons.Clear();
-			
+
 			foreach (var kvp in _bindings)
 			{
 				_buttons[kvp.Key] = false;
@@ -303,7 +303,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			
+
 			_buttons.Clear();
 			foreach (var kvp in _bindings)
 			{

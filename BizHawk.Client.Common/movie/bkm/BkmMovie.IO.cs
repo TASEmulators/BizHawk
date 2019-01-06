@@ -204,7 +204,7 @@ namespace BizHawk.Client.Common
 						{
 							break;
 						}
-						
+
 						sbLine.Append((char)c);
 					}
 

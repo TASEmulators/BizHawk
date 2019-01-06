@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 			}
 
-			if (addr>=0x4000) 
+			if (addr>=0x4000)
 				base.WritePRG(addr, value);
 		}
 

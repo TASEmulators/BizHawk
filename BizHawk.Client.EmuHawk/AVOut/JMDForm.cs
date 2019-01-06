@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return true;
 			}
-			
+
 			return false;
 		}
 

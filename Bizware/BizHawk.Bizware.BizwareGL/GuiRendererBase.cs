@@ -159,7 +159,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			if(CurrPipeline == null)
 				throw new InvalidOperationException("Pipeline hasn't been set!");
-			
+
 			IsActive = true;
 			Owner.BindPipeline(CurrPipeline);
 
@@ -275,7 +275,7 @@ namespace BizHawk.Bizware.BizwareGL
 			};
 
 			Texture2d tex = art.BaseTexture;
-			
+
 			PrepDrawSubrectInternal(tex);
 
 			fixed (float* pData = &data[0])
@@ -362,7 +362,7 @@ namespace BizHawk.Bizware.BizwareGL
 			PrepDrawSubrectInternal(tex);
 			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
 		}
-		
+
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; private set; }
 

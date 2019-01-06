@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets or sets a value indicating whether the movie is in recording mode
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
-		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
+		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of
 		/// </summary>
 		public bool IsRecording { get; set; } = true;
 

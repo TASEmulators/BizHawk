@@ -547,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++)
 				{
 					f += _lagFrames[i];
-					
+
 					Color rowColor = Color.White;
 					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
-					
+
 					Color rowColor = Color.White;
 					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 

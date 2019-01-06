@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				bank_1k = a_banks_1k[bank_1k];
 			}
-		
+
 			MAPPED:
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 2);
 					nt_fill_attrib |= (byte)(nt_fill_attrib << 4);
 					break;
-				
+
 
 				case 0x1113: //$5113:  [.... .PPP]        (simplified, but technically inaccurate -- see below)
 					wram_bank = value & 7;
@@ -560,7 +560,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				//$5120 - $5127 'A' Regs:
-				case 0x1120: case 0x1121: case 0x1122: case 0x1123: 
+				case 0x1120: case 0x1121: case 0x1122: case 0x1123:
 				case 0x1124: case 0x1125: case 0x1126: case 0x1127:
 					ab_mode = 0;
 					regs_a[addr - 0x1120] = value | (chr_reg_high<<8);
@@ -627,7 +627,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 				case 0x1205: //$5205:  low 8 bits of product
-					ret = product_low; 
+					ret = product_low;
 					break;
 				case 0x1206: //$5206:  high 8 bits of product
 					ret = product_high;

@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Parse the children based on the data in this directory.
 		/// </summary>
 		/// <param name="s">The stream to parse from.</param>
-		/// <param name="visited">The set of already handled 
+		/// <param name="visited">The set of already handled
 		/// files/directories.</param>
 		public void Parse(Stream s, Dictionary<long, ISONode> visited)
 		{
@@ -48,24 +48,24 @@ namespace BizHawk.Emulation.DiscSystem
 			s.Seek(this.Offset * ISOFile.SECTOR_SIZE, SeekOrigin.Begin);
 
 			List<ISONodeRecord> records = new List<ISONodeRecord>();
-            
-            // Read the directory entries
-            while (s.Position < ((this.Offset * ISOFile.SECTOR_SIZE) + this.Length))
+
+			// Read the directory entries
+			while (s.Position < ((this.Offset * ISOFile.SECTOR_SIZE) + this.Length))
 			{
 				ISONode node;
 				ISONodeRecord record;
-                
+
 				// Read the record
 				record = new ISONodeRecord();
-                if (ISOFile.Format == ISOFile.ISOFormat.CDInteractive)
+				if (ISOFile.Format == ISOFile.ISOFormat.CDInteractive)
 				    record.ParseCDInteractive(s);
-                if (ISOFile.Format == ISOFile.ISOFormat.ISO9660)
-                    record.ParseISO9660(s);
+				if (ISOFile.Format == ISOFile.ISOFormat.ISO9660)
+					record.ParseISO9660(s);
 
 
-                //zero 24-jun-2013 - improved validity checks
-                //theres nothing here!
-                if (record.Length == 0)
+				//zero 24-jun-2013 - improved validity checks
+				//theres nothing here!
+				if (record.Length == 0)
 				{
 					break;
 				}
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					// Add the node as a child
-                    if (!this.Children.ContainsKey(record.Name))
+					if (!this.Children.ContainsKey(record.Name))
 					    this.Children.Add(record.Name, node);
 				}
 			}

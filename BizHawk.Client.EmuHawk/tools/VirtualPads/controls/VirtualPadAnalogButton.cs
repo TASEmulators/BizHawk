@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						!value;
 
 					_readonly = value;
-				
+
 					Refresh();
 				}
 			}
@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisplayNameLabel.Text = DisplayName;
 			ValueLabel.Text = AnalogTrackBar.Value.ToString();
-			
+
 		}
 
 		public string DisplayName

@@ -94,13 +94,13 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
-        private IEnumerable<Watch> SelectedSeparators
-        {
-            get
-            {
-                return SelectedItems.Where(x => x.IsSeparator);
-            }
-        }
+		private IEnumerable<Watch> SelectedSeparators
+		{
+			get
+			{
+				return SelectedItems.Where(x => x.IsSeparator);
+			}
+		}
 
 		public IEnumerable<Watch> Watches
 		{
@@ -435,32 +435,32 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateValues();
 			}
-            else if (SelectedSeparators.Any() && !duplicate)
-            {
-                var inputPrompt = new InputPrompt
-                {
-                    Text = "Edit Separator",
-                    StartLocation = this.ChildPointToScreen(WatchListView),
-                    Message = "Separator Text:",
-                    TextInputType = InputPrompt.InputType.Text
-                };
+			else if (SelectedSeparators.Any() && !duplicate)
+			{
+				var inputPrompt = new InputPrompt
+				{
+					Text = "Edit Separator",
+					StartLocation = this.ChildPointToScreen(WatchListView),
+					Message = "Separator Text:",
+					TextInputType = InputPrompt.InputType.Text
+				};
 
-                var result = inputPrompt.ShowHawkDialog();
+				var result = inputPrompt.ShowHawkDialog();
 
-                if (result == DialogResult.OK)
-                {
-                    Changes();
+				if (result == DialogResult.OK)
+				{
+					Changes();
 
-                    for (int i = 0; i < SelectedSeparators.Count(); i++)
-                    {
-                        var sep = SelectedSeparators.ToList()[i];
-                        sep.Notes = inputPrompt.PromptText;
-                        _watches[indexes[i]] = sep;
-                    }
-                }
+					for (int i = 0; i < SelectedSeparators.Count(); i++)
+					{
+						var sep = SelectedSeparators.ToList()[i];
+						sep.Notes = inputPrompt.PromptText;
+						_watches[indexes[i]] = sep;
+					}
+				}
 
-                UpdateValues();
-            }
+				UpdateValues();
+			}
 		}
 
 		private string ComputeDisplayType(Watch w)
@@ -666,15 +666,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-            if (_watches[index].IsSeparator)
-            {
-                if (WatchListView.Columns[column].Name == WatchList.ADDRESS)
-                {
-                    text = _watches[index].Notes;
-                }
+			if (_watches[index].IsSeparator)
+			{
+				if (WatchListView.Columns[column].Name == WatchList.ADDRESS)
+				{
+					text = _watches[index].Notes;
+				}
 
-                return;
-            }
+				return;
+			}
 
 			var columnName = WatchListView.Columns[column].Name;
 
@@ -777,8 +777,8 @@ namespace BizHawk.Client.EmuHawk
 				RemoveWatchMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-                MoveTopMenuItem.Enabled = 
-                MoveBottomMenuItem.Enabled =
+				MoveTopMenuItem.Enabled =
+				MoveBottomMenuItem.Enabled =
 				SelectedIndices.Any();
 
 			PokeAddressMenuItem.Enabled =
@@ -959,67 +959,67 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.ItemCount = _watches.Count;
 		}
 
-        private void MoveTopMenuItem_Click(object sender, EventArgs e)
-        {
-            var indexes = SelectedIndices.ToList();
-            if (!indexes.Any())
-            {
-                return;
-            }
+		private void MoveTopMenuItem_Click(object sender, EventArgs e)
+		{
+			var indexes = SelectedIndices.ToList();
+			if (!indexes.Any())
+			{
+				return;
+			}
 
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                var watch = _watches[indexes[i]];
-                _watches.RemoveAt(indexes[i]);
-                _watches.Insert(i, watch);
-                indexes[i] = i;
-            }
+			for (int i = 0; i < indexes.Count; i++)
+			{
+				var watch = _watches[indexes[i]];
+				_watches.RemoveAt(indexes[i]);
+				_watches.Insert(i, watch);
+				indexes[i] = i;
+			}
 
-            Changes();
+			Changes();
 
-            WatchListView.SelectedIndices.Clear();
-            foreach (var t in indexes)
-            {
-                WatchListView.SelectItem(t, true);
-            }
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in indexes)
+			{
+				WatchListView.SelectItem(t, true);
+			}
 
-            WatchListView.ItemCount = _watches.Count;
-        }
+			WatchListView.ItemCount = _watches.Count;
+		}
 
-        private void MoveBottomMenuItem_Click(object sender, EventArgs e)
-        {
-            var indices = SelectedIndices.ToList();
-            if (indices.Count == 0) // || indices.Last() == _watches.Count - 1)
-            {
-                return;
-            }
+		private void MoveBottomMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0) // || indices.Last() == _watches.Count - 1)
+			{
+				return;
+			}
 
-            for (var i = 0; i < indices.Count; i++)
-            {
-                var watch = _watches[indices[i] - i];
-                _watches.RemoveAt(indices[i] - i);
-                _watches.Insert(_watches.Count, watch);
-                //_watches.Add(watch);
-                //indices[i] = (_watches.Count - 1 - indices.Count) + i;
-            }
+			for (var i = 0; i < indices.Count; i++)
+			{
+				var watch = _watches[indices[i] - i];
+				_watches.RemoveAt(indices[i] - i);
+				_watches.Insert(_watches.Count, watch);
+				//_watches.Add(watch);
+				//indices[i] = (_watches.Count - 1 - indices.Count) + i;
+			}
 
-            var newInd = new List<int>();
-            for (int i = 0, x = _watches.Count - indices.Count; i < indices.Count; i++, x++)
-            {
-                newInd.Add(x);
-            }
+			var newInd = new List<int>();
+			for (int i = 0, x = _watches.Count - indices.Count; i < indices.Count; i++, x++)
+			{
+				newInd.Add(x);
+			}
 
-            WatchListView.SelectedIndices.Clear();
-            foreach (var t in newInd)
-            {
-                WatchListView.SelectItem(t, true);
-            }
-            
-            Changes();
-            WatchListView.ItemCount = _watches.Count;
-        }
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in newInd)
+			{
+				WatchListView.SelectItem(t, true);
+			}
 
-        private void SelectAllMenuItem_Click(object sender, EventArgs e)
+			Changes();
+			WatchListView.ItemCount = _watches.Count;
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			WatchListView.SelectAll();
 		}
@@ -1172,8 +1172,8 @@ namespace BizHawk.Client.EmuHawk
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
-                MoveTopContextMenuItem.Visible = 
-                MoveBottomContextMenuItem.Visible =
+				MoveTopContextMenuItem.Visible =
+				MoveBottomContextMenuItem.Visible =
 				indexes.Count > 0;
 
 			ReadBreakpointContextMenuItem.Visible =
@@ -1339,5 +1339,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.GenericDragEnter(sender, e);
 		}
-    }
+	}
 }

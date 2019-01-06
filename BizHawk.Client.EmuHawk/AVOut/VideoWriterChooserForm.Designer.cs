@@ -51,9 +51,9 @@
 			this.panelSizeSelect.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// checkBoxResize
-			// 
+			//
 			this.checkBoxResize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBoxResize.AutoSize = true;
 			this.checkBoxResize.Location = new System.Drawing.Point(347, 35);
@@ -63,9 +63,9 @@
 			this.checkBoxResize.Text = "Resize Video";
 			this.checkBoxResize.UseVisualStyleBackColor = true;
 			this.checkBoxResize.CheckedChanged += new System.EventHandler(this.checkBoxResize_CheckedChanged);
-			// 
+			//
 			// listBox1
-			// 
+			//
 			this.listBox1.FormattingEnabled = true;
 			this.listBox1.IntegralHeight = false;
 			this.listBox1.Location = new System.Drawing.Point(12, 12);
@@ -74,9 +74,9 @@
 			this.listBox1.Size = new System.Drawing.Size(329, 202);
 			this.listBox1.TabIndex = 0;
 			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-			// 
+			//
 			// buttonOK
-			// 
+			//
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.Location = new System.Drawing.Point(373, 405);
@@ -86,9 +86,9 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			// 
+			//
 			// buttonCancel
-			// 
+			//
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.Location = new System.Drawing.Point(444, 405);
@@ -97,9 +97,9 @@
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			// 
+			//
 			// tableLayoutPanel4
-			// 
+			//
 			this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.tableLayoutPanel4.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
 			this.tableLayoutPanel4.ColumnCount = 1;
@@ -113,9 +113,9 @@
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel4.Size = new System.Drawing.Size(329, 208);
 			this.tableLayoutPanel4.TabIndex = 8;
-			// 
+			//
 			// labelDescription
-			// 
+			//
 			this.labelDescription.AutoSize = true;
 			this.labelDescription.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelDescription.Location = new System.Drawing.Point(5, 2);
@@ -124,9 +124,9 @@
 			this.labelDescription.Size = new System.Drawing.Size(319, 19);
 			this.labelDescription.TabIndex = 3;
 			this.labelDescription.Text = "Description:";
-			// 
+			//
 			// labelDescriptionBody
-			// 
+			//
 			this.labelDescriptionBody.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelDescriptionBody.Location = new System.Drawing.Point(5, 23);
 			this.labelDescriptionBody.Name = "labelDescriptionBody";
@@ -134,27 +134,27 @@
 			this.labelDescriptionBody.Size = new System.Drawing.Size(319, 183);
 			this.labelDescriptionBody.TabIndex = 6;
 			this.labelDescriptionBody.Text = resources.GetString("labelDescriptionBody.Text");
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(74, 23);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(14, 13);
 			this.label3.TabIndex = 12;
 			this.label3.Text = "X";
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(3, 0);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(42, 13);
 			this.label4.TabIndex = 13;
 			this.label4.Text = "Resize:";
-			// 
+			//
 			// buttonAuto
-			// 
+			//
 			this.buttonAuto.Location = new System.Drawing.Point(89, 42);
 			this.buttonAuto.Name = "buttonAuto";
 			this.buttonAuto.Size = new System.Drawing.Size(70, 34);
@@ -162,9 +162,9 @@
 			this.buttonAuto.Text = "/\\ Set As Resize";
 			this.buttonAuto.UseVisualStyleBackColor = true;
 			this.buttonAuto.Click += new System.EventHandler(this.buttonAuto_Click);
-			// 
+			//
 			// panelSizeSelect
-			// 
+			//
 			this.panelSizeSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelSizeSelect.Controls.Add(this.lblSize);
 			this.panelSizeSelect.Controls.Add(this.label4);
@@ -176,9 +176,9 @@
 			this.panelSizeSelect.Name = "panelSizeSelect";
 			this.panelSizeSelect.Size = new System.Drawing.Size(162, 84);
 			this.panelSizeSelect.TabIndex = 15;
-			// 
+			//
 			// checkBoxPad
-			// 
+			//
 			this.checkBoxPad.AutoSize = true;
 			this.checkBoxPad.Location = new System.Drawing.Point(444, 35);
 			this.checkBoxPad.Name = "checkBoxPad";
@@ -186,9 +186,9 @@
 			this.checkBoxPad.TabIndex = 15;
 			this.checkBoxPad.Text = "Pad";
 			this.checkBoxPad.UseVisualStyleBackColor = true;
-			// 
+			//
 			// checkBoxASync
-			// 
+			//
 			this.checkBoxASync.AutoSize = true;
 			this.checkBoxASync.Location = new System.Drawing.Point(347, 12);
 			this.checkBoxASync.Name = "checkBoxASync";
@@ -196,18 +196,18 @@
 			this.checkBoxASync.TabIndex = 16;
 			this.checkBoxASync.Text = "Alternate Sync";
 			this.checkBoxASync.UseVisualStyleBackColor = true;
-			// 
+			//
 			// lblSize
-			// 
+			//
 			this.lblSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblSize.Location = new System.Drawing.Point(3, 42);
 			this.lblSize.Name = "lblSize";
 			this.lblSize.Size = new System.Drawing.Size(80, 34);
 			this.lblSize.TabIndex = 16;
 			this.lblSize.Text = "Size:\r\nTestxTest";
-			// 
+			//
 			// numericTextBoxW
-			// 
+			//
 			this.numericTextBoxW.AllowDecimal = false;
 			this.numericTextBoxW.AllowNegative = false;
 			this.numericTextBoxW.AllowSpace = false;
@@ -215,9 +215,9 @@
 			this.numericTextBoxW.Name = "numericTextBoxW";
 			this.numericTextBoxW.Size = new System.Drawing.Size(70, 20);
 			this.numericTextBoxW.TabIndex = 10;
-			// 
+			//
 			// numericTextBoxH
-			// 
+			//
 			this.numericTextBoxH.AllowDecimal = false;
 			this.numericTextBoxH.AllowNegative = false;
 			this.numericTextBoxH.AllowSpace = false;
@@ -225,28 +225,28 @@
 			this.numericTextBoxH.Name = "numericTextBoxH";
 			this.numericTextBoxH.Size = new System.Drawing.Size(70, 20);
 			this.numericTextBoxH.TabIndex = 11;
-			// 
+			//
 			// panel1
-			// 
+			//
 			this.panel1.Controls.Add(this.lblResolutionWarning);
 			this.panel1.Location = new System.Drawing.Point(347, 148);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(162, 93);
 			this.panel1.TabIndex = 17;
-			// 
+			//
 			// lblResolutionWarning
-			// 
+			//
 			this.lblResolutionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblResolutionWarning.Location = new System.Drawing.Point(4, 4);
 			this.lblResolutionWarning.Name = "lblResolutionWarning";
 			this.lblResolutionWarning.Size = new System.Drawing.Size(155, 98);
 			this.lblResolutionWarning.TabIndex = 0;
 			this.lblResolutionWarning.Text = "Resolution is not a multiple of 4! Odd or non-x4 resolutions breaks many codecs. " +
-    "Check your output carefully and adjust the window size or codec settings if need" +
-    "ed.";
-			// 
+	"Check your output carefully and adjust the window size or codec settings if need" +
+	"ed.";
+			//
 			// VideoWriterChooserForm
-			// 
+			//
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

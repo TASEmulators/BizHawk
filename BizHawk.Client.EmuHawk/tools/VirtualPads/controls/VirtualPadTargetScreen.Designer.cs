@@ -2,12 +2,12 @@
 {
 	partial class VirtualPadTargetScreen
 	{
-		/// <summary> 
+		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
+		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
@@ -36,9 +36,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// TargetPanel
-			// 
+			//
 			this.TargetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TargetPanel.Location = new System.Drawing.Point(0, 0);
 			this.TargetPanel.Name = "TargetPanel";
@@ -48,9 +48,9 @@
 			this.TargetPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseDown);
 			this.TargetPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseMove);
 			this.TargetPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseUp);
-			// 
+			//
 			// XNumeric
-			// 
+			//
 			this.XNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.XNumeric.Location = new System.Drawing.Point(23, 229);
 			this.XNumeric.Name = "XNumeric";
@@ -58,9 +58,9 @@
 			this.XNumeric.TabIndex = 1;
 			this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
 			this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
-			// 
+			//
 			// XLabel
-			// 
+			//
 			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.XLabel.AutoSize = true;
 			this.XLabel.Location = new System.Drawing.Point(3, 233);
@@ -68,9 +68,9 @@
 			this.XLabel.Size = new System.Drawing.Size(14, 13);
 			this.XLabel.TabIndex = 2;
 			this.XLabel.Text = "X";
-			// 
+			//
 			// YLabel
-			// 
+			//
 			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.YLabel.AutoSize = true;
 			this.YLabel.Location = new System.Drawing.Point(91, 233);
@@ -78,9 +78,9 @@
 			this.YLabel.Size = new System.Drawing.Size(14, 13);
 			this.YLabel.TabIndex = 4;
 			this.YLabel.Text = "Y";
-			// 
+			//
 			// YNumeric
-			// 
+			//
 			this.YNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.YNumeric.Location = new System.Drawing.Point(111, 229);
 			this.YNumeric.Name = "YNumeric";
@@ -88,9 +88,9 @@
 			this.YNumeric.TabIndex = 3;
 			this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
 			this.YNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.YNumeric_KeyUp);
-			// 
+			//
 			// VirtualPadTargetScreen
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.YLabel);

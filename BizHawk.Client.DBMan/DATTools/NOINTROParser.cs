@@ -42,7 +42,7 @@ namespace BizHawk.Client.DBMan
 					var res = MessageBox.Show("Could not parse document as valid XML:\n\n" + s + "\n\nDo you wish to continue any other processing?", "Parsing Error", MessageBoxButtons.YesNo);
 					if (res != DialogResult.Yes)
 						return "";
-				}				
+				}
 			}
 
 			int startIndex = 0;
@@ -209,14 +209,14 @@ namespace BizHawk.Client.DBMan
 						//	everything else
 						// all tosec cr, h, t etc.. will fall under RomStatus.Hack
 
-						if (e.Where(str => 
+						if (e.Where(str =>
 						// bad dump
 						str == "b" || str.StartsWith("b ")).ToList().Count > 0)
 						{
 							// RomStatus.BadDump
 							g.Status = "B";
-						}							
-						else if (e.Where(str => 
+						}
+						else if (e.Where(str =>
 						// BIOS
 						str == "BIOS" || str.StartsWith("BIOS ")).ToList().Count > 0)
 						{

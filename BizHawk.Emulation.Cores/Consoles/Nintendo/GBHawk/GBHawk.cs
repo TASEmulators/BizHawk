@@ -28,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
 		// Updating reg FF0F seemsto be delayed by one cycle
-		// tests 
+		// tests
 		public byte REG_FF0F_OLD = 0xE0;
 
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
 		public byte[] ZP_RAM = new byte[0x80];
-		/* 
-		 * VRAM is arranged as: 
+		/*
+		 * VRAM is arranged as:
 		 * 0x1800 Tiles
 		 * 0x400 BG Map 1
 		 * 0x400 BG Map 2
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
 
 		public byte[] _bios;
-		public readonly byte[] _rom;		
+		public readonly byte[] _rom;
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				OnExecFetch = ExecFetch,
 				SpeedFunc = SpeedFunc,
 			};
-			
+
 			timer = new Timer();
 			audio = new Audio();
 			serialport = new SerialPort();
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu = new GBC_PPU();
 					is_GBC = true;
 				}
-				
+
 			}
 			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
 			{
@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 				ppu = new GBC_PPU();
 				is_GBC = true;
-			}			
+			}
 
 			if (Bios == null)
 			{
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
 			}
-		} 
+		}
 
 		public GPUMemoryAreas GetGPU() => _gpuMemory;
 
@@ -360,13 +360,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// special case for multi cart mappers
 			if ((_rom.HashMD5(0, _rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
 				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
-				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")				
+				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")
 				)
 			{
 				Console.WriteLine("Using Multi-Cart Mapper");
 				mapper = new MapperMBC1Multi();
 			}
-			
+
 			// Wisdom Tree does not identify their mapper, so use hash instead
 			if ((_rom.HashMD5(0, _rom.Length) == "2C07CAEE51A1F0C91C72C7C6F380B0F6") || // Joshua
 				(_rom.HashMD5(0, _rom.Length) == "37E017C8D1A45BAB609FB5B43FB64337") || // Spiritual Warfare
@@ -454,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					cart_RAM[i] = 0xFF;
 				}
 			}
-			
+
 			// Extra RTC initialization for mbc3
 			if (mppr == "MBC3")
 			{

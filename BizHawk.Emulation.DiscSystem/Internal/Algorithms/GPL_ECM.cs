@@ -2,7 +2,7 @@
 ////WARNING GPL CODE
 ////-------------------
 ////
-////this is stolen somewhat from neill corlett's code. almost certainly some kind of GPL. originally it came from mednafen, and then I think mednafen may have changed to use another. sorry for the confusion! 
+////this is stolen somewhat from neill corlett's code. almost certainly some kind of GPL. originally it came from mednafen, and then I think mednafen may have changed to use another. sorry for the confusion!
 ////
 ////it's kept in this project so that we can readily a/b test it against new algorithms
 

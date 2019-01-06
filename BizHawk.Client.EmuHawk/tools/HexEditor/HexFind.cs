@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool InitialText { get; set; }
 
 		public Point InitialLocation { get; set; }
-		
+
 
 		public string InitialValue
 		{
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return "";
 			}
-			
+
 			if (HexRadio.Checked)
 			{
 				return FindBox.Text;

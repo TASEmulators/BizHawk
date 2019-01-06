@@ -41,9 +41,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.ValueNum)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.CountNum)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// ButtonBox
-			// 
+			//
 			this.ButtonBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ButtonBox.FormattingEnabled = true;
 			this.ButtonBox.Location = new System.Drawing.Point(12, 12);
@@ -51,24 +51,24 @@
 			this.ButtonBox.Size = new System.Drawing.Size(169, 21);
 			this.ButtonBox.TabIndex = 0;
 			this.ButtonBox.SelectedIndexChanged += new System.EventHandler(this.ButtonBox_SelectedIndexChanged);
-			// 
+			//
 			// PatternList
-			// 
-			this.PatternList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			//
+			this.PatternList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this.PatternList.FormattingEnabled = true;
 			this.PatternList.Items.AddRange(new object[] {
-            "0: On\t(x1)",
-            "1: Off\t(x1)",
-            "Loop to 0"});
+			"0: On\t(x1)",
+			"1: Off\t(x1)",
+			"Loop to 0"});
 			this.PatternList.Location = new System.Drawing.Point(12, 39);
 			this.PatternList.Name = "PatternList";
 			this.PatternList.Size = new System.Drawing.Size(169, 134);
 			this.PatternList.TabIndex = 1;
 			this.PatternList.SelectedIndexChanged += new System.EventHandler(this.PatternList_SelectedIndexChanged);
-			// 
+			//
 			// InsertButton
-			// 
+			//
 			this.InsertButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.InsertButton.Location = new System.Drawing.Point(12, 207);
 			this.InsertButton.Name = "InsertButton";
@@ -77,9 +77,9 @@
 			this.InsertButton.Text = "Insert";
 			this.InsertButton.UseVisualStyleBackColor = true;
 			this.InsertButton.Click += new System.EventHandler(this.InsertButton_Click);
-			// 
+			//
 			// DeleteButton
-			// 
+			//
 			this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.DeleteButton.Location = new System.Drawing.Point(124, 207);
 			this.DeleteButton.Name = "DeleteButton";
@@ -88,9 +88,9 @@
 			this.DeleteButton.Text = "Delete";
 			this.DeleteButton.UseVisualStyleBackColor = true;
 			this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
-			// 
+			//
 			// LagBox
-			// 
+			//
 			this.LagBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LagBox.AutoSize = true;
 			this.LagBox.Checked = true;
@@ -102,49 +102,49 @@
 			this.LagBox.Text = "Account for lag frames";
 			this.LagBox.UseVisualStyleBackColor = true;
 			this.LagBox.CheckedChanged += new System.EventHandler(this.LagBox_CheckedChanged);
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(9, 181);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(37, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Value:";
-			// 
+			//
 			// ValueNum
-			// 
+			//
 			this.ValueNum.Location = new System.Drawing.Point(48, 179);
 			this.ValueNum.Name = "ValueNum";
 			this.ValueNum.Size = new System.Drawing.Size(51, 20);
 			this.ValueNum.TabIndex = 5;
 			this.ValueNum.Visible = false;
 			this.ValueNum.ValueChanged += new System.EventHandler(this.ValueNum_ValueChanged);
-			// 
+			//
 			// CountNum
-			// 
+			//
 			this.CountNum.Location = new System.Drawing.Point(143, 179);
 			this.CountNum.Name = "CountNum";
 			this.CountNum.Size = new System.Drawing.Size(38, 20);
 			this.CountNum.TabIndex = 5;
 			this.CountNum.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.CountNum.ValueChanged += new System.EventHandler(this.CountNum_ValueChanged);
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(103, 181);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(38, 13);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Count:";
-			// 
+			//
 			// OnOffBox
-			// 
+			//
 			this.OnOffBox.AutoSize = true;
 			this.OnOffBox.Location = new System.Drawing.Point(48, 180);
 			this.OnOffBox.Name = "OnOffBox";
@@ -152,9 +152,9 @@
 			this.OnOffBox.TabIndex = 6;
 			this.OnOffBox.UseVisualStyleBackColor = true;
 			this.OnOffBox.CheckedChanged += new System.EventHandler(this.OnOffBox_CheckedChanged);
-			// 
+			//
 			// PatternsForm
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(193, 258);

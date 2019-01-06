@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool NeedReset;
 
 		string PathSelection;
-		
+
 		public DisplayConfigLite()
 		{
 			InitializeComponent();
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			Global.Config.DispAutoPrescale = cbAutoPrescale.Checked;
-			
+
 			Global.Config.DispAlternateVsync = cbAlternateVsync.Checked;
 
 			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				rbUser.Checked = true;
 				var choice = Path.GetFullPath(ofd.FileName);
-				
+
 				//test the preset
 				using (var stream = File.OpenRead(choice))
 				{
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 					//try compiling it
 					bool ok = false;
 					string errors = "";
-					try 
+					try
 					{
 						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;

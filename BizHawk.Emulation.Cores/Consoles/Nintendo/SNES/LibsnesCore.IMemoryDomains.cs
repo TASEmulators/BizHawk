@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			if (IsSGB)
 			{
-				// NOTE: CGB has 32K of wram, and DMG has 8KB of wram. Not sure how to control this right now.. bsnes might not have any ready way of doign that? I couldnt spot it. 
+				// NOTE: CGB has 32K of wram, and DMG has 8KB of wram. Not sure how to control this right now.. bsnes might not have any ready way of doign that? I couldnt spot it.
 				// You wouldnt expect a DMG game to access excess wram, but what if it tried to? maybe an oversight in bsnes?
 				MakeMemoryDomain("SGB WRAM", LibsnesApi.SNES_MEMORY.SGB_WRAM, MemoryDomain.Endian.Little);
 
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = Api.QUERY_get_memory_data(id);
 
-			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size, 
+			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size,
 				id != LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, // hack: for just this one memory area, it will be readonly
 				byteSize, Api);
 

@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		private void N64ControllersSetup_Load(object sender, EventArgs e)
 		{
 			var n64Settings = ((N64)Global.Emulator).GetSyncSettings();
-			
+
 			ControllerSettingControls
 				.ForEach(c =>
 				{
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var n64 = (N64)Global.Emulator;
 			var n64Settings = n64.GetSyncSettings();
-			
+
 			ControllerSettingControls
 				.ForEach(c =>
 				{

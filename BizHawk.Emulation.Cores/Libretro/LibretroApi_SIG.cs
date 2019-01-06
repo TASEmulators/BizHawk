@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 				default:
 					return false;
-			
+
 			} //switch(msg)
 
 			Message(eMessage.Resume);

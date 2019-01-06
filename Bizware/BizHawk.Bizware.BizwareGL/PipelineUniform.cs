@@ -39,7 +39,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public Pipeline Owner { get; private set; }
-		
+
 		public void Set(Matrix4 mat, bool transpose = false)
 		{
 			if (Owner == null) return; //uniform was optimized out

@@ -27,7 +27,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
 
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
-			
+
 			// TODO?
 			//Global.AutofireStickyXORAdapter.Source = Global.StickyXORAdapter;
 

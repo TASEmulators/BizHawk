@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace BizHawk
 {
 
-	
+
 	/// <summary>
 	/// universal interface to a shared library
 	/// </summary>
@@ -135,7 +135,7 @@ namespace BizHawk
 		public virtual void Dispose()
 		{
 			mAccessor.RegisterCore(this, false);
-			
+
 			//universal delete mechanism?
 			//probably not.
 		}

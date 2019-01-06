@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		//WARNING - RETURNS A STATIC BUFFER
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate IntPtr biz_r4300_decode_op(uint instr, uint counter);
-		public biz_r4300_decode_op m64p_decode_op; 
+		public biz_r4300_decode_op m64p_decode_op;
 
 		/// <summary>
 		/// Reads from the "system bus"
@@ -734,7 +734,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			//the way we should be able to do it:
 			//m64pFrameComplete.WaitOne();
-			
+
 			//however. since this is probably an STAThread, this call results in message pumps running.
 			//those message pumps are only supposed to respond to critical COM stuff, but in fact they interfere with other things.
 			//so here are two workaround methods.

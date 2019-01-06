@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (temp == 4) // WSYNC
 						cpu.RDY = false;
 					/*
-					for (int i = 0; i < 0x20; i++) 
+					for (int i = 0; i < 0x20; i++)
 					{
 						Console.Write(Maria_regs[i]);
 						Console.Write(" ");

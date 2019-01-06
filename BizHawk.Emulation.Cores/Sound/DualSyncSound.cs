@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Sound
 			_right.GetSamplesSync(out sampr, out nsampr);
 
 			int n = Math.Min(nsampl + _leftOverflowCount, nsampr + _rightOverflowCount);
-			
+
 			if (_samp.Length < n * 2)
 				_samp = new short[n * 2];
 

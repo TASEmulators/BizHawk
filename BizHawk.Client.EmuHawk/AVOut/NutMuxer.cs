@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			private readonly int _capacity;
 
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			/// <param name="capacity">total number of buffers to keep around</param>
 			public ReusableBufferPool(int capacity)
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 
 				data = null;
 			}
-			
+
 			public override long Length
 			{
 				get { throw new NotImplementedException(); }
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new NotImplementedException();
 			}
-			
+
 			public override void Write(byte[] buffer, int offset, int count)
 			{
 				data.Write(buffer, offset, count);

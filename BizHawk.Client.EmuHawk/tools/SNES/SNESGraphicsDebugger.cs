@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			
+
 		}
 
 		public SNESGraphicsDebugger()
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 			displayTypeItems.Add(new DisplayTypeItem("Sprites", eDisplayType.Sprites));
 			displayTypeItems.Add(new DisplayTypeItem("OBJ", eDisplayType.OBJ));
-			
+
 			displayTypeItems.Add(new DisplayTypeItem("BG1 Screen", eDisplayType.BG1));
 			displayTypeItems.Add(new DisplayTypeItem("BG2 Screen", eDisplayType.BG2));
 			displayTypeItems.Add(new DisplayTypeItem("BG3 Screen", eDisplayType.BG3));
@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 		enum eDisplayType
 		{
 			BG1 = 1, BG2 = 2, BG3 = 3, BG4 = 4, OBJTiles0, OBJTiles1, Tiles2bpp, Tiles4bpp, Tiles8bpp, TilesMode7, TilesMode7Ext, TilesMode7DC, Sprites, OBJ,
-			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104, 
+			BG1Screen = 101, BG2Screen = 102, BG3Screen = 103, BG4Screen = 104,
 		}
 		static bool IsDisplayTypeBG(eDisplayType type) { return type == eDisplayType.BG1 || type == eDisplayType.BG2 || type == eDisplayType.BG3 || type == eDisplayType.BG4; }
 		static bool IsDisplayTypeOBJ(eDisplayType type) { return type == eDisplayType.OBJTiles0 || type == eDisplayType.OBJTiles1; }
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 				default: throw new InvalidOperationException();
 			}
 		}
-		
+
 		class DisplayTypeItem
 		{
 			public eDisplayType Type { get; private set; }
@@ -656,7 +656,7 @@ namespace BizHawk.Client.EmuHawk
 				ret.start = 0;
 				return ret;
 			}
-			
+
 			ret.size = 1 << bpp;
 			ret.start = colorSelection & (~(ret.size - 1));
 			return ret;
@@ -915,7 +915,7 @@ namespace BizHawk.Client.EmuHawk
 			if (tp == tpPalette) groupFreeze.Text = "Freeze - Color";
 			if (tp == tpTile) groupFreeze.Text = "Freeze - Tile";
 			if (tp == tpOBJ) groupFreeze.Text = "Freeze - OBJ";
-			
+
 			groupFreeze.ResumeLayout();
 
 			Win32.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
@@ -984,7 +984,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (currMapEntryState != null)
 			{
-				//view a BG tile 
+				//view a BG tile
 				int paletteStart = 0;
 				var bgs = currMapEntryState;
 				var oneTileEntry = new SNESGraphicsDecoder.TileEntry[] { bgs.entry };
@@ -1024,7 +1024,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (currTileDataState.Type == eDisplayType.TilesMode7DC)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currTileDataState.Tile, 1);
 				else if (currTileDataState.Type == eDisplayType.OBJTiles0 || currTileDataState.Type == eDisplayType.OBJTiles1)
-				{ 
+				{
 					//render an obj tile
 					int tile = currTileDataState.Address / 32;
 					gd.RenderTilesToScreen((int*)bmpdata.Scan0, 1, 1, bmpdata.Stride / 4, bpp, currPaletteSelection.start, tile, 1);
@@ -1099,7 +1099,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int ox = px / si.ObjSizeBounds.Width;
 			int oy = py / si.ObjSizeBounds.Height;
-			
+
 			if (ox < 0 || oy < 0 || ox >= 8 || oy >= 16)
 				return;
 
@@ -1107,7 +1107,7 @@ namespace BizHawk.Client.EmuHawk
 
 			currObjDataState = new ObjDataState();
 			currObjDataState.Number = objNum;
-			
+
 			//RenderView(); //remember, we were going to highlight the selected sprite somehow as we hover over it
 			SetTab(tpOBJ);
 		}
@@ -1436,7 +1436,7 @@ namespace BizHawk.Client.EmuHawk
 			checkEN3_OBJ.Checked ^= true;
 		}
 
-	} //class SNESGraphicsDebugger 
+	} //class SNESGraphicsDebugger
 
 	static class ControlExtensions
 	{

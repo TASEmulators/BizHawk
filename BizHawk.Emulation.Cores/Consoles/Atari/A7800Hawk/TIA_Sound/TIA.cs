@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				else
 				{
 					return 0;
-				}			
+				}
 			}
 
 			if (maskedAddr == 0x09) // INPT1
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else
 					{
 						return Core.lg_1_trigger_hit;
-					}			
+					}
 				}
 				else if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
 				{
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			// some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
 			// happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
-			// assigned in some other bus access, so let's go with that. 
+			// assigned in some other bus access, so let's go with that.
 			/*
 			coll += (byte)(mask & BusState);
 

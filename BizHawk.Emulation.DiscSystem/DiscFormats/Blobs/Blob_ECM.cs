@@ -1,16 +1,16 @@
 ﻿//Copyright (c) 2012 BizHawk team
 
-//Permission is hereby granted, free of charge, to any person obtaining a copy of 
+//Permission is hereby granted, free of charge, to any person obtaining a copy of
 //this software and associated documentation files (the "Software"), to deal in
 //the Software without restriction, including without limitation the rights to
 //use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 //of the Software, and to permit persons to whom the Software is furnished to do
 //so, subject to the following conditions:
 
-//The above copyright notice and this permission notice shall be included in all 
+//The above copyright notice and this permission notice shall be included in all
 //copies or substantial portions of the Software.
 
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 //AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.DiscSystem
 		internal class Blob_ECM : IBlob
 		{
 			FileStream stream;
-			
+
 			public void Dispose()
 			{
 				if(stream != null)
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.DiscSystem
 				public long ECMOffset;
 				public long LogicalOffset;
 			}
-			
+
 			/// <summary>
 			/// an index of blocks within the ECM file, for random-access.
 			/// itll be sorted by logical ordering, so you can binary search for the address you want
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public void Load(string path)
 			{
 				stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-				
+
 				//skip header
 				stream.Seek(4, SeekOrigin.Current);
 
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.DiscSystem
 						LogicalOffset = logOffset,
 						Type = T
 					};
-					
+
 					Index.Add(ie);
 
 					if (T == 0)
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.DiscSystem
 					else MisformedException();
 				}
 
-				//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license) 
+				//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license)
 				//extension methods on binary reader wont suffice, we need something that lets you control the endianness used for reading. a complete replacement.
 				var br = new BinaryReader(stream);
 				EDC = br.ReadInt32();
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.DiscSystem
 						for (int i = 0x814; i <= 0x81B; i++)
 							secbuf[i] = 0x00;
 						break;
-					
+
 					case 2:
 					case 3:
 						//mode 2

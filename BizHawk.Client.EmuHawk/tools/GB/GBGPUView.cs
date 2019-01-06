@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		private IntPtr tilespal; // current palette to use on tiles
 
 		private Color _spriteback;
-		
+
 		[ConfigPersist]
 		public Color Spriteback
 		{
@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				DrawOam(bmpViewOAM.BMP, _oam, _vram, _sppal, lcdc.Bit(2), _cgb);
 				bmpViewOAM.Refresh();
-			}		
+			}
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
 			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);

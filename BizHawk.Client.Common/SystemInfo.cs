@@ -188,24 +188,24 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static SystemInfo NeoGeoPocket { get; } = new SystemInfo("Neo-Geo Pocket", CoreSystem.NeoGeoPocket, 1);
 
-        /// <summary>
-        /// Gets the <see cref="SystemInfo"/> instance for ZXSpectrum
-        /// </summary>
-        public static SystemInfo ZXSpectrum { get; } = new SystemInfo("ZX Spectrum", CoreSystem.ZXSpectrum, 2);
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for ZXSpectrum
+		/// </summary>
+		public static SystemInfo ZXSpectrum { get; } = new SystemInfo("ZX Spectrum", CoreSystem.ZXSpectrum, 2);
 
-        /// <summary>
-        /// Gets the <see cref="SystemInfo"/> instance for AmstradCPC
-        /// </summary>
-        public static SystemInfo AmstradCPC { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for AmstradCPC
+		/// </summary>
+		public static SystemInfo AmstradCPC { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
 
-        #endregion Get SystemInfo
+		#endregion Get SystemInfo
 
-        /// <summary>
-        /// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
-        /// </summary>
-        /// <param name="system"><see cref="CoreSystem"/> you're looking for</param>
-        /// <returns><see cref="SystemInfo"/></returns>
-        public static SystemInfo FindByCoreSystem(CoreSystem system)
+		/// <summary>
+		/// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
+		/// </summary>
+		/// <param name="system"><see cref="CoreSystem"/> you're looking for</param>
+		/// <returns><see cref="SystemInfo"/></returns>
+		public static SystemInfo FindByCoreSystem(CoreSystem system)
 		{
 			return _allSystemInfos.Find(s => s.System == system);
 		}

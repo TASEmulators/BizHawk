@@ -7,14 +7,12 @@ using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using BizHawk.Common.BufferExtensions;
 
-/*****************************************************
-  TODO: 
-  + HCounter (Manually set for light phaser emulation... should be only case it's polled)
-  + Try to clean up the organization of the source code. 
-  + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
- 
-**********************************************************/
-
+/// <summary>
+/// TODO:
+/// + HCounter (Manually set for light phaser emulation... should be only case it's polled)
+/// + Try to clean up the organization of the source code.
+/// + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
+/// </summary>
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	[Core(
@@ -170,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if (BiosRom == null)
 				{
 					throw new MissingFirmwareException("No BIOS found");
-				}				
+				}
 				else if (!game["RequireBios"] && !SyncSettings.UseBIOS)
 				{
 					// we are skipping the BIOS
@@ -186,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				SaveRAM = new byte[int.Parse(game.OptionValue("SRAM"))];
 				Console.WriteLine(SaveRAM.Length);
-			}			
+			}
 			else if (game.NotInDatabase)
 				SaveRAM = new byte[0x8000];
 
@@ -328,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			port &= 0xFF;
 			if (port < 0x40) // General IO ports
 			{
-				
+
 				switch (port)
 				{
 					case 0x00: return ReadPort0();
@@ -342,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					default: return 0xFF;
 				}
 			}
-			if (port < 0x80)  // VDP Vcounter/HCounter
+			if (port < 0x80) // VDP Vcounter/HCounter
 			{
 				if ((port & 1) == 0)
 					return Vdp.ReadVLineCounter();
@@ -356,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else
 					return Vdp.ReadVdpStatus();
 			}
-			switch (port) 
+			switch (port)
 			{
 				case 0xC0:
 				case 0xDC: return ReadControls1();
@@ -412,7 +410,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				_region = value;
 			}
 		}
-		
-		private readonly string[] validRegions = { "Export", "Japan", "Korea" , "Auto"  };
+
+		private readonly string[] validRegions = { "Export", "Japan", "Korea" , "Auto" };
 	}
 }

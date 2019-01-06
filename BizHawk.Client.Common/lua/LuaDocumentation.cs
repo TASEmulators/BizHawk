@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		public string ToTASVideosWikiMarkup()
 		{
 			var sb = new StringBuilder();
-			
+
 			sb
 				.AppendLine("[module:ListParents]")
 				.AppendLine()

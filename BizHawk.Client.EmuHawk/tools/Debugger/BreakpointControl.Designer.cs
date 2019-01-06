@@ -2,12 +2,12 @@
 {
 	partial class BreakpointControl
 	{
-		/// <summary> 
+		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
+		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
@@ -42,9 +42,9 @@
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
-			// 
+			//
 			// AddBreakpointButton
-			// 
+			//
 			this.AddBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddBreakpointButton.Location = new System.Drawing.Point(0, 387);
@@ -54,18 +54,18 @@
 			this.toolTip1.SetToolTip(this.AddBreakpointButton, "Add a new breakpoint");
 			this.AddBreakpointButton.UseVisualStyleBackColor = true;
 			this.AddBreakpointButton.Click += new System.EventHandler(this.AddBreakpointButton_Click);
-			// 
+			//
 			// BreakpointStatsLabel
-			// 
+			//
 			this.BreakpointStatsLabel.AutoSize = true;
 			this.BreakpointStatsLabel.Location = new System.Drawing.Point(3, 3);
 			this.BreakpointStatsLabel.Name = "BreakpointStatsLabel";
 			this.BreakpointStatsLabel.Size = new System.Drawing.Size(35, 13);
 			this.BreakpointStatsLabel.TabIndex = 8;
 			this.BreakpointStatsLabel.Text = "label1";
-			// 
+			//
 			// ToggleButton
-			// 
+			//
 			this.ToggleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToggleButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh;
 			this.ToggleButton.Location = new System.Drawing.Point(311, 387);
@@ -75,9 +75,9 @@
 			this.toolTip1.SetToolTip(this.ToggleButton, "Toggle the selected breakpoints");
 			this.ToggleButton.UseVisualStyleBackColor = true;
 			this.ToggleButton.Click += new System.EventHandler(this.ToggleButton_Click);
-			// 
+			//
 			// RemoveBreakpointButton
-			// 
+			//
 			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.RemoveBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveBreakpointButton.Location = new System.Drawing.Point(340, 387);
@@ -87,9 +87,9 @@
 			this.toolTip1.SetToolTip(this.RemoveBreakpointButton, "Remove selected breakpoints");
 			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
 			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
-			// 
+			//
 			// DuplicateBreakpointButton
-			// 
+			//
 			this.DuplicateBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.DuplicateBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.DuplicateBreakpointButton.Location = new System.Drawing.Point(282, 387);
@@ -99,9 +99,9 @@
 			this.toolTip1.SetToolTip(this.DuplicateBreakpointButton, "Duplicate the selected breakpoint");
 			this.DuplicateBreakpointButton.UseVisualStyleBackColor = true;
 			this.DuplicateBreakpointButton.Click += new System.EventHandler(this.DuplicateBreakpointButton_Click);
-			// 
+			//
 			// EditBreakpointButton
-			// 
+			//
 			this.EditBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.EditBreakpointButton.BackgroundImage = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditBreakpointButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -112,11 +112,11 @@
 			this.toolTip1.SetToolTip(this.EditBreakpointButton, "Edit the selected breakpoint");
 			this.EditBreakpointButton.UseVisualStyleBackColor = true;
 			this.EditBreakpointButton.Click += new System.EventHandler(this.EditBreakpointButton_Click);
-			// 
+			//
 			// BreakpointView
-			// 
-			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
+			//
+			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.BreakpointView.BlazingFast = false;
 			this.BreakpointView.CheckBoxes = true;
@@ -143,29 +143,29 @@
 			this.BreakpointView.ItemActivate += new System.EventHandler(this.BreakpointView_ItemActivate);
 			this.BreakpointView.SelectedIndexChanged += new System.EventHandler(this.BreakpointView_SelectedIndexChanged);
 			this.BreakpointView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BreakpointView_KeyDown);
-			// 
+			//
 			// columnHeader1
-			// 
+			//
 			this.columnHeader1.Text = "Address";
 			this.columnHeader1.Width = 85;
-			// 
+			//
 			// columnHeader2
-			// 
+			//
 			this.columnHeader2.Text = "Type";
 			this.columnHeader2.Width = 103;
-			// 
+			//
 			// columnHeader3
-			// 
+			//
 			this.columnHeader3.Text = "Name";
 			this.columnHeader3.Width = 80;
-			// 
+			//
 			// columnHeader4
-			// 
+			//
 			this.columnHeader4.Text = "Mask";
 			this.columnHeader4.Width = 91;
-			// 
+			//
 			// BreakpointControl
-			// 
+			//
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.EditBreakpointButton);
 			this.Controls.Add(this.DuplicateBreakpointButton);

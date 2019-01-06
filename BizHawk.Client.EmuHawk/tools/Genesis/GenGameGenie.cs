@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var chr = (int)(encoded & 0x1F);
 				code += letters[chr];
-				encoded >>= 5; 
+				encoded >>= 5;
 			}
 
 			// reverse string, as its build backward

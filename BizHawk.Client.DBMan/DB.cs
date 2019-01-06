@@ -35,7 +35,7 @@ namespace BizHawk.Client.DBMan
 				return Game.GameMetadata + ";" + RomMetadata;
 			}
 		}
-		
+
 		public string SizeFriendly { get { return string.Format("{0} bytes ({1}k)", Size, Size / 1024); } }
 		public bool New { get { return (Created > Modified); } }
 
@@ -126,7 +126,7 @@ namespace BizHawk.Client.DBMan
 		static void LoadGames(string system)
 		{
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = 
+			cmd.CommandText =
 				"SELECT game_id, system, name, developer, publisher, classification, release_date, players, game_metadata, tags, alternate_names, notes "+
 				"FROM game "+
 				"WHERE system = @System";
@@ -191,7 +191,7 @@ namespace BizHawk.Client.DBMan
 		public static void SaveRom(Rom rom)
 		{
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = 
+			cmd.CommandText =
 				"UPDATE rom SET "+
 				"region=@Region, "+
 				"version_tags=@VersionTags, "+
@@ -210,13 +210,13 @@ namespace BizHawk.Client.DBMan
 			cmd.Dispose();
 
 			cmd = Con.CreateCommand();
-			cmd.CommandText = 
+			cmd.CommandText =
 				"UPDATE game SET "+
 				"developer=@Developer, "+
 				"publisher=@Publisher, "+
 				"classification=@Classification, "+
 				"release_date=@ReleaseDate, "+
-				"players=@Players, "+				
+				"players=@Players, "+
 				"game_metadata=@GameMetadata, "+
 				"tags=@Tags, "+
 				"alternate_names=@AltNames, "+
@@ -227,7 +227,7 @@ namespace BizHawk.Client.DBMan
 			cmd.Parameters.Add(new SqliteParameter("@Publisher", rom.Game.Publisher));
 			cmd.Parameters.Add(new SqliteParameter("@Classification", rom.Game.Classification));
 			cmd.Parameters.Add(new SqliteParameter("@ReleaseDate", rom.Game.ReleaseDate));
-			cmd.Parameters.Add(new SqliteParameter("@Players", rom.Game.Players));			
+			cmd.Parameters.Add(new SqliteParameter("@Players", rom.Game.Players));
 			cmd.Parameters.Add(new SqliteParameter("@GameMetadata", rom.Game.GameMetadata));
 			cmd.Parameters.Add(new SqliteParameter("@Tags", rom.Game.Tags));
 			cmd.Parameters.Add(new SqliteParameter("@AltNames", rom.Game.AltNames));
@@ -246,7 +246,7 @@ namespace BizHawk.Client.DBMan
 				DeleteGame(origSystem, origName);
 				rom.Game = game;
 			}
-			
+
 			var cmd = Con.CreateCommand();
 			cmd.CommandText =
 				"UPDATE rom SET " +
@@ -351,9 +351,9 @@ namespace BizHawk.Client.DBMan
 		public static void Cleanup()
 		{
 			var orphanedGameList = new List<Tuple<string, string>>();
-			
+
 			var cmd = Con.CreateCommand();
-			cmd.CommandText = 
+			cmd.CommandText =
 				"SELECT system, name FROM game "+
 				"EXCEPT "+
 				"SELECT system, name FROM rom";

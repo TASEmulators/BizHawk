@@ -42,9 +42,9 @@
 			this.AddressMaskBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.BreakpointTypeGroupbox.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// AddBtn
-			// 
+			//
 			this.AddBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AddBtn.Location = new System.Drawing.Point(152, 115);
 			this.AddBtn.Name = "AddBtn";
@@ -53,9 +53,9 @@
 			this.AddBtn.Text = "&Add";
 			this.AddBtn.UseVisualStyleBackColor = true;
 			this.AddBtn.Click += new System.EventHandler(this.AddButton_Click);
-			// 
+			//
 			// BreakpointTypeGroupbox
-			// 
+			//
 			this.BreakpointTypeGroupbox.Controls.Add(this.ExecuteRadio);
 			this.BreakpointTypeGroupbox.Controls.Add(this.WriteRadio);
 			this.BreakpointTypeGroupbox.Controls.Add(this.ReadRadio);
@@ -64,9 +64,9 @@
 			this.BreakpointTypeGroupbox.Size = new System.Drawing.Size(196, 52);
 			this.BreakpointTypeGroupbox.TabIndex = 3;
 			this.BreakpointTypeGroupbox.TabStop = false;
-			// 
+			//
 			// ExecuteRadio
-			// 
+			//
 			this.ExecuteRadio.AutoSize = true;
 			this.ExecuteRadio.Location = new System.Drawing.Point(119, 19);
 			this.ExecuteRadio.Name = "ExecuteRadio";
@@ -74,9 +74,9 @@
 			this.ExecuteRadio.TabIndex = 12;
 			this.ExecuteRadio.Text = "Execute";
 			this.ExecuteRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// WriteRadio
-			// 
+			//
 			this.WriteRadio.AutoSize = true;
 			this.WriteRadio.Location = new System.Drawing.Point(63, 19);
 			this.WriteRadio.Name = "WriteRadio";
@@ -84,9 +84,9 @@
 			this.WriteRadio.TabIndex = 11;
 			this.WriteRadio.Text = "Write";
 			this.WriteRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// ReadRadio
-			// 
+			//
 			this.ReadRadio.AutoSize = true;
 			this.ReadRadio.Checked = true;
 			this.ReadRadio.Location = new System.Drawing.Point(6, 19);
@@ -96,18 +96,18 @@
 			this.ReadRadio.TabStop = true;
 			this.ReadRadio.Text = "Read";
 			this.ReadRadio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(59, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Address 0x";
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(83, 115);
@@ -117,9 +117,9 @@
 			this.CancelBtn.Text = "&Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// AddressBox
-			// 
+			//
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.AddressBox.Location = new System.Drawing.Point(77, 5);
 			this.AddressBox.Name = "AddressBox";
@@ -127,18 +127,18 @@
 			this.AddressBox.Size = new System.Drawing.Size(135, 20);
 			this.AddressBox.TabIndex = 1;
 			this.AddressBox.Text = "0";
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(13, 32);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(47, 13);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Mask 0x";
-			// 
+			//
 			// AddressMaskBox
-			// 
+			//
 			this.AddressMaskBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.AddressMaskBox.Location = new System.Drawing.Point(77, 31);
 			this.AddressMaskBox.Name = "AddressMaskBox";
@@ -146,9 +146,9 @@
 			this.AddressMaskBox.Size = new System.Drawing.Size(135, 20);
 			this.AddressMaskBox.TabIndex = 2;
 			this.AddressMaskBox.Text = "FFFFFFFF";
-			// 
+			//
 			// AddBreakpointDialog
-			// 
+			//
 			this.AcceptButton = this.AddBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		Frogger II - Threedeep! (1983) (Parker Bros)
 	*/
 
-	internal class mE0 : MapperBase 
+	internal class mE0 : MapperBase
 	{
 		private int _toggle1;
 		private int _toggle2;

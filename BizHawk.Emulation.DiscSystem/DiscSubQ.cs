@@ -5,12 +5,12 @@
 //a decent little subcode reference
 //http://www.jbum.com/cdg_revealed.html
 
-//NOTES: the 'subchannel Q' stuff here has a lot to do with the q-Mode 1. q-Mode 2 is different, 
+//NOTES: the 'subchannel Q' stuff here has a lot to do with the q-Mode 1. q-Mode 2 is different,
 //and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the datastructures can be reused
 
 //Q subchannel basic structure: (quick ref: https://en.wikipedia.org/wiki/Compact_Disc_subcode)
 //Byte 1: (aka `status`)
-// q-Control: 4 bits (i.e. flags) 
+// q-Control: 4 bits (i.e. flags)
 // q-Mode: 4 bits (aka ADR; WHY is this called ADR?)
 //q-Data: other stuff depending on q-Mode and type of track
 //q-CRC: CRC of preceding
@@ -46,14 +46,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// normal track: BCD indication of the current track number
-		/// leadin track: should be 0 
+		/// leadin track: should be 0
 		/// </summary>
 		public BCD2 q_tno;
 
 		/// <summary>
 		/// normal track: BCD indication of the current index
 		/// leadin track: 'POINT' field used to ID the TOC entry #
-		/// </summary>				
+		/// </summary>
 		public BCD2 q_index;
 
 		/// <summary>
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp.
 		/// TODO - rename everything AP here, it's nonsense. (the P is)
 		/// </summary>
-		public int AP_Timestamp { 
+		public int AP_Timestamp {
 			get { return MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }
 			set {
 				var ts = new Timestamp(value);
@@ -137,5 +137,5 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public EControlQ CONTROL { get { return (EControlQ)((q_status >> 4) & 0xF); } }
 	}
-	
+
 }

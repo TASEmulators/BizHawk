@@ -2,12 +2,12 @@
 {
 	partial class AnalogBindControl
 	{
-		/// <summary> 
+		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
+		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
 		#region Component Designer generated code
 
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
+		/// <summary>
+		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
@@ -42,26 +42,26 @@
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSensitivity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarDeadzone)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// textBox1
-			// 
+			//
 			this.textBox1.Location = new System.Drawing.Point(3, 3);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
 			this.textBox1.Size = new System.Drawing.Size(100, 20);
 			this.textBox1.TabIndex = 0;
-			// 
+			//
 			// labelButtonName
-			// 
+			//
 			this.labelButtonName.AutoSize = true;
 			this.labelButtonName.Location = new System.Drawing.Point(109, 6);
 			this.labelButtonName.Name = "labelButtonName";
 			this.labelButtonName.Size = new System.Drawing.Size(54, 13);
 			this.labelButtonName.TabIndex = 1;
 			this.labelButtonName.Text = "Bindname";
-			// 
+			//
 			// trackBarSensitivity
-			// 
+			//
 			this.trackBarSensitivity.LargeChange = 20;
 			this.trackBarSensitivity.Location = new System.Drawing.Point(267, 21);
 			this.trackBarSensitivity.Maximum = 20;
@@ -72,22 +72,22 @@
 			this.trackBarSensitivity.TabIndex = 2;
 			this.trackBarSensitivity.TickFrequency = 10;
 			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.TrackBarSensitivity_ValueChanged);
-			// 
+			//
 			// labelSensitivity
-			// 
+			//
 			this.labelSensitivity.AutoSize = true;
 			this.labelSensitivity.Location = new System.Drawing.Point(166, 25);
 			this.labelSensitivity.Name = "labelSensitivity";
 			this.labelSensitivity.Size = new System.Drawing.Size(95, 13);
 			this.labelSensitivity.TabIndex = 3;
 			this.labelSensitivity.Text = "Sensitivity: 5 billion";
-			// 
+			//
 			// timer1
-			// 
+			//
 			this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
-			// 
+			//
 			// buttonBind
-			// 
+			//
 			this.buttonBind.Location = new System.Drawing.Point(3, 29);
 			this.buttonBind.Name = "buttonBind";
 			this.buttonBind.Size = new System.Drawing.Size(75, 23);
@@ -95,27 +95,27 @@
 			this.buttonBind.Text = "Bind!";
 			this.buttonBind.UseVisualStyleBackColor = true;
 			this.buttonBind.Click += new System.EventHandler(this.ButtonBind_Click);
-			// 
+			//
 			// trackBarDeadzone
-			// 
+			//
 			this.trackBarDeadzone.Location = new System.Drawing.Point(267, 51);
 			this.trackBarDeadzone.Name = "trackBarDeadzone";
 			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 45);
 			this.trackBarDeadzone.TabIndex = 5;
 			this.trackBarDeadzone.TickFrequency = 2;
 			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.TrackBarDeadzone_ValueChanged);
-			// 
+			//
 			// labelDeadzone
-			// 
+			//
 			this.labelDeadzone.AutoSize = true;
 			this.labelDeadzone.Location = new System.Drawing.Point(166, 60);
 			this.labelDeadzone.Name = "labelDeadzone";
 			this.labelDeadzone.Size = new System.Drawing.Size(97, 13);
 			this.labelDeadzone.TabIndex = 6;
 			this.labelDeadzone.Text = "Deadzone: 5 billion";
-			// 
+			//
 			// buttonFlip
-			// 
+			//
 			this.buttonFlip.Location = new System.Drawing.Point(88, 29);
 			this.buttonFlip.Name = "buttonFlip";
 			this.buttonFlip.Size = new System.Drawing.Size(75, 23);
@@ -123,9 +123,9 @@
 			this.buttonFlip.Text = "Flip Axis";
 			this.buttonFlip.UseVisualStyleBackColor = true;
 			this.buttonFlip.Click += new System.EventHandler(this.ButtonFlip_Click);
-			// 
+			//
 			// buttonUnbind
-			// 
+			//
 			this.buttonUnbind.Location = new System.Drawing.Point(3, 58);
 			this.buttonUnbind.Name = "buttonUnbind";
 			this.buttonUnbind.Size = new System.Drawing.Size(75, 23);
@@ -133,9 +133,9 @@
 			this.buttonUnbind.Text = "Unbind!";
 			this.buttonUnbind.UseVisualStyleBackColor = true;
 			this.buttonUnbind.Click += new System.EventHandler(this.Unbind_Click);
-			// 
+			//
 			// AnalogBindControl
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.buttonUnbind);

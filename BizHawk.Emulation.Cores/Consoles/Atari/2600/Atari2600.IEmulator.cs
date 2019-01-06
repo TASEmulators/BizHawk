@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else
 					{
 						throw new Exception("ERROR: Unable to resolve Frame. Please Report.");
-					}					
+					}
 				}
 			}
 

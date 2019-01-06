@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 				var ai = new HawkFileArchiveItem
 					{
-						Name = HawkFile.Util_FixArchiveFilename(afd.FileName), 
+						Name = HawkFile.Util_FixArchiveFilename(afd.FileName),
 						Size = (long)afd.Size, ArchiveIndex = i, Index = ret.Count
 					};
 

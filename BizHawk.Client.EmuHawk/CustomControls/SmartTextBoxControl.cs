@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
-			
+
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)

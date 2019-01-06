@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
 				}
-				
+
 			}
 
 			if (Settings.BranchMarkerSplitDistance > 0)
@@ -619,7 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
-			
+
 			// clear all selections
 			TasView.DeselectAll();
 			BookMarkControl.Restart();
@@ -635,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
-				
+
 				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
@@ -899,12 +899,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 			{
-				bool wasPaused = Mainform.EmulatorPaused; 
-				
+				bool wasPaused = Mainform.EmulatorPaused;
+
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
 				// PauseOnFrame = frame;
-				
+
 				// can't re-enter lua while doing this
 				Mainform.SuppressLua = true;
 				while (Emulator.Frame != frame)

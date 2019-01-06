@@ -17,7 +17,7 @@ namespace BizHawk.Client.MultiHawk
 		public void Receive(Input.InputEvent ie)
 		{
 			bool state = ie.EventType == Input.InputEventType.Press;
-			
+
 			string button = ie.LogicalButton.ToString();
 			Buttons[button] = state;
 
@@ -117,7 +117,7 @@ namespace BizHawk.Client.MultiHawk
 #if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc)
 			{
-				IsBackground = true, 
+				IsBackground = true,
 				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			UpdateThread.Start();
@@ -204,7 +204,7 @@ namespace BizHawk.Client.MultiHawk
 			if (LastState[button] && newState) return;
 			if (!LastState[button] && !newState) return;
 
-			//apply 
+			//apply
 			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
 			if (button == "LeftShift")
 			{

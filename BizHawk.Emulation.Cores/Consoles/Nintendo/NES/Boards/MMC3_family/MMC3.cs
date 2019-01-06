@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					IRQ_EQ_Pass();
 			}
-			
+
 			irq_reload_flag = false;
 		}
 
@@ -313,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				a12_old = a12;
 			}
-			
+
 		}
 	}
 

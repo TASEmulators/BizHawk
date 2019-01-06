@@ -267,8 +267,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x0000: is_2k_bank = true; bank = value; mode |= 0x40; break;
-				case 0x3000:  
-				case 0x30FF: 
+				case 0x3000:
+				case 0x30FF:
 				case 0x31FF:
 					bank = value;
 					mode |= 0x40;
@@ -293,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0317: chr_regs[7] = value; break;
 
 				case 0x0200:
-					IRQCount &= 0xFF00; IRQCount |= value; 
+					IRQCount &= 0xFF00; IRQCount |= value;
 					IRQSignal = false;
 					break;
 				case 0x0201:
@@ -329,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank |= ((bank & 0x30) << 4);
 					return VROM[(bank << 10) + (addr & 0x3FF)];
 				}
-				
+
 			}
 
 			return base.ReadPPU(addr);
@@ -358,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 
 			}
-			
+
 		}
 
 		public override void ClockCPU()
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	
+
 
 	public class ConyC : NES.NESBoardBase
 	{

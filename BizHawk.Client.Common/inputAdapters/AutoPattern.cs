@@ -8,7 +8,7 @@
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoPatternBool"/> class. 
+		/// Initializes a new instance of the <see cref="AutoPatternBool"/> class.
 		/// A simple on/off pattern.
 		/// </summary>
 		public AutoPatternBool(int on, int off, bool skipLag = true, int offset = 0, int loop = 0)
@@ -72,7 +72,7 @@
 	public class AutoPatternFloat
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
+		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class.
 		/// Defaults to 0.
 		/// </summary>
 		public AutoPatternFloat()
@@ -81,7 +81,7 @@
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
+		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class.
 		/// Simple on/off pattern, using the given values as on/off.
 		/// </summary>
 		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skipLag = true, int offset = 0, int loop = 0)

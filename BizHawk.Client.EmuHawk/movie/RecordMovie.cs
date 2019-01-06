@@ -155,9 +155,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
-		{			
+		{
 			string movieFolderPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			
+
 			// Create movie folder if it doesn't already exist
 			try
 			{
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else throw;
 			}
-			
+
 			var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,

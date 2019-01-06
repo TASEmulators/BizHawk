@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0008 : CartridgeDevice
 	{
-		private readonly int[,] _banks = new int[4, 0x4000]; 
+		private readonly int[,] _banks = new int[4, 0x4000];
 
 		private int _bankMask;
 		private int _bankNumber;

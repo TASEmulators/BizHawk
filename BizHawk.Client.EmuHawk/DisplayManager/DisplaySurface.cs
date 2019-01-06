@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		private DisplaySurface() 
+		private DisplaySurface()
 		{
 		}
 
@@ -110,8 +110,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//can't create a bitmap with zero dimensions, so for now, just bump it up to one
 			if (width == 0) width = 1;
-			if (height == 0) height = 1; 
-			
+			if (height == 0) height = 1;
+
 			Width = width;
 			Height = height;
 
@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// returns a new surface 
+		/// returns a new surface
 		/// </summary>
 		/// <param name="xpad"></param>
 		/// <param name="ypad"></param>

@@ -51,7 +51,7 @@ namespace BizHawk.Client.DBMan
 
 		public static void MergeRomInfosWithDatabase(IList<InitialRomInfo> roms)
 		{
-			
+
 			foreach (var rom in roms)
 			{
 				if (RomInDatabase(rom.MD5) == false)
@@ -91,7 +91,7 @@ namespace BizHawk.Client.DBMan
 		{
 			using (var cmd = DB.Con.CreateCommand())
 			{
-				cmd.CommandText = 
+				cmd.CommandText =
 					"INSERT INTO rom (crc32, md5, sha1, size, system, name, region, version_tags, created_date) "+
 					"VALUES (@crc32, @md5, @sha1, @size, @System, @Name, @Region, @VersionTags, datetime('now','localtime'))";
 				cmd.Parameters.Add(new SqliteParameter("@crc32", rom.CRC32));

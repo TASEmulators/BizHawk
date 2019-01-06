@@ -301,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 				CloneFramesMenuItem.Enabled =
 				TruncateMenuItem.Enabled =
 				InsertFrameMenuItem.Enabled =
-				InsertNumFramesMenuItem.Enabled = 
+				InsertNumFramesMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 
 			ReselectClipboardMenuItem.Enabled =
@@ -1141,17 +1141,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.HideWasLagFrames ^= true;
 		}
-		
+
 		private void AlwaysScrollMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
 		}
-		
+
 		private void ScrollToViewMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "near";
 		}
-		
+
 		private void ScrollToTopMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "top";

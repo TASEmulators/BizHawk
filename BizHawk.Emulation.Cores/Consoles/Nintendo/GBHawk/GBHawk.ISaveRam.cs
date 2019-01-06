@@ -25,10 +25,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public bool SaveRamModified
 		{
-			get 
+			get
 			{
 				return has_bat & _syncSettings.Use_SRAM;
-			}	
+			}
 		}
 	}
 }

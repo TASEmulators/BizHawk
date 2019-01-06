@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _messageColor = Global.Config.MessagesColor;
 		private int _alertColor = Global.Config.AlertMessageColor;
 		private int _movieInput = Global.Config.MovieInput;
-		
+
 		private int _dispFpSanchor = Global.Config.DispFPSanchor;
 		private int _dispFrameanchor = Global.Config.DispFrameanchor;
 		private int _dispLaganchor = Global.Config.DispLaganchor;

@@ -32,16 +32,16 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.lblMessage = new System.Windows.Forms.Label();
 			this.SuspendLayout();
-			// 
+			//
 			// progressBar1
-			// 
+			//
 			this.progressBar1.Location = new System.Drawing.Point(12, 18);
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(353, 23);
 			this.progressBar1.TabIndex = 0;
-			// 
+			//
 			// btnCancel
-			// 
+			//
 			this.btnCancel.Location = new System.Drawing.Point(290, 63);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
@@ -49,18 +49,18 @@
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-			// 
+			//
 			// lblMessage
-			// 
+			//
 			this.lblMessage.AutoSize = true;
 			this.lblMessage.Location = new System.Drawing.Point(12, 63);
 			this.lblMessage.Name = "lblMessage";
 			this.lblMessage.Size = new System.Drawing.Size(31, 13);
 			this.lblMessage.TabIndex = 2;
 			this.lblMessage.Text = "Task";
-			// 
+			//
 			// ProgressDialog
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(377, 98);

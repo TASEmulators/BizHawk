@@ -150,8 +150,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int Read_Pot(IController c, int pot)
 		{
-			int x = (int)c.GetFloat(Definition.FloatControls[pot]);			
-			
+			int x = (int)c.GetFloat(Definition.FloatControls[pot]);
+
 			x = -x;
 			x += 127;
 

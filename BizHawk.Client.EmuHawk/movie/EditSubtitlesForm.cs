@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
 					var s = new Subtitle();
-					
+
 					var c = SubGrid.Rows[i].Cells[0];
 					try { s.Frame = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 0); return; }
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 		private Subtitle GetRow(int index)
 		{
 			if (index >= SubGrid.Rows.Count) return new Subtitle();
-			
+
 			var s = new Subtitle();
 			var c = SubGrid.Rows[index].Cells[0];
 

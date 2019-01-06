@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool AskSaveChanges() { return true; }
 
 		public bool UpdateBefore { get { return false; } }
-		
+
 		public void Restart()
 		{
 			if ((Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
-		
+
 		public void UpdateValues()
 		{
 			if ((Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GGCodeMaskBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			// Find a better way to remove all NON HEX char, while still allowing copy/paste
-			// Right now its all done through removing em GGCodeMaskBox_TextChanged 
+			// Right now its all done through removing em GGCodeMaskBox_TextChanged
 		}
 
 		private void GGCodeMaskBox_TextChanged(object sender, EventArgs e)

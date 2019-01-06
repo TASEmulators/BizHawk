@@ -6,7 +6,7 @@ using BizHawk.Bizware.BizwareGL;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// encapsulates thread-safe concept of pending/current BitmapBuffer, reusing buffers where matching 
+	/// encapsulates thread-safe concept of pending/current BitmapBuffer, reusing buffers where matching
 	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
 	/// This isnt in the csproj right now, but I'm keeping it, in case its handy.
 	/// </summary>

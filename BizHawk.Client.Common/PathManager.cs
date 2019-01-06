@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 		public static string RemoveParents(string path, string workingpath)
 		{
 			// determines number of parents, then removes directories from working path, return absolute path result
-			// Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\" 
+			// Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\"
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
-		
+
 		public static string AutoSaveRamPath(GameInfo game)
 		{
 			var path = SaveRamPath(game);
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
+		/// Takes an absolute path and attempts to convert it to a relative, based on the system,
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
 		/// </summary>
 		public static string TryMakeRelative(string absolutePath, string system = null)

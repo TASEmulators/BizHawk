@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					return chip_read;
 				}
-				
+
 				if (RAM_enable)
 				{
 					if (Core.cart_RAM != null)
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 				}
-				
+
 				if (control == 0xB)
 				{
 					switch (value & 0xF0)
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!timer_read)
 							{
 								// write to timer
-								if (time_val_shift == 0) { time = 0; }							
+								if (time_val_shift == 0) { time = 0; }
 								if (time_val_shift < 28)
 								{
 									time |= (uint)((value & 0x0F) << time_val_shift);

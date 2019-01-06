@@ -15,7 +15,7 @@ Battery is not available
 Uses vertical mirroring
 No CIC present
 Other chips used: Sunsoft-1
-	 * 
+	 *
 	 * Games:
 	 * Mississippi Satsujin Jiken (J)
 	 * Bio Senshi Dan - Increaser Tono Tatakai [allegedly; but it does not work]

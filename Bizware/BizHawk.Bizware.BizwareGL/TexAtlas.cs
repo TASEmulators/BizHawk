@@ -172,7 +172,7 @@ namespace BizHawk.Bizware.BizwareGL
 		class RectangleBinPack
 		{
 			/** A node of a binary tree. Each node represents a rectangular area of the texture
-				we surface. Internal nodes store rectangles of used data, whereas leaf nodes track 
+				we surface. Internal nodes store rectangles of used data, whereas leaf nodes track
 				rectangles of free space. All the rectangles stored in the tree are disjoint. */
 			public class Node
 			{
@@ -207,7 +207,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			/// Inserts a new rectangle of the given size into the bin.
 			/** Running time is linear to the number of rectangles that have been already packed.
-				@return A pointer to the node that stores the newly added rectangle, or 0 
+				@return A pointer to the node that stores the newly added rectangle, or 0
 					if it didn't fit. */
 			public Node Insert(int width, int height)
 			{

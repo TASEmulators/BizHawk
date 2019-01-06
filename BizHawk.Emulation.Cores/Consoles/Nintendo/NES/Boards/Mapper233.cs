@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class Mapper233 : NES.NESBoardBase
 	{
 		/*
-		Here are Disch's original notes:  
+		Here are Disch's original notes:
 		========================
 		=  Mapper 233          =
 		========================
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		PRG Setup:
 		---------------------------
 
-					  $8000   $A000   $C000   $E000  
+					  $8000   $A000   $C000   $E000
 					+-------------------------------+
 		PRG Mode 0: |            <$8000>            |
 					+-------------------------------+

@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				FloatRanges = { new[] { 1.0f, 160, 320.0f }, new[] { 1.0f, 121, 242.0f } }
 			};
 		}
-		
+
 		public int PortNum { get; }
 
 		public byte Read(IController c)

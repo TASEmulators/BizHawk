@@ -12,7 +12,7 @@ CHR-ROM: 16KB
 CHR-RAM: None
 Battery is not available
 mirroring - both
-	 * 
+	 *
 	 * Games:
 	 * Wai Xing Zhan Shi (Ch)
 	 */
@@ -31,7 +31,7 @@ mirroring - both
 				default:
 					return false;
 			}
-			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); 
+			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
 			return true;
 		}
 

@@ -29,10 +29,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Hard Reset":
 					HardReset();
 					break;
-				case "Quick Load": 
-					LoadQuickSave("QuickSave" + Global.Config.SaveSlot); 
+				case "Quick Load":
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 					break;
-				case "Quick Save": 
+				case "Quick Save":
 					SaveQuickSave("QuickSave" + Global.Config.SaveSlot);
 					break;
 				case "Clear Autohold":
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					MainMenuStrip.Visible ^= true;
 					break;
 				case "Volume Up":
-					VolumeUp(); 
+					VolumeUp();
 					break;
 				case "Volume Down":
 					VolumeDown();
@@ -133,17 +133,17 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Save States
-				case "Save State 0": 
+				case "Save State 0":
 					SaveQuickSave("QuickSave0");
 					Global.Config.SaveSlot = 0;
 					UpdateStatusSlots();
 					break;
-				case "Save State 1": 
+				case "Save State 1":
 					SaveQuickSave("QuickSave1");
 					Global.Config.SaveSlot = 1;
 					UpdateStatusSlots();
 					break;
-				case "Save State 2": 
+				case "Save State 2":
 					SaveQuickSave("QuickSave2");
 					Global.Config.SaveSlot = 2;
 					UpdateStatusSlots();
@@ -285,16 +285,16 @@ namespace BizHawk.Client.EmuHawk
 					PlayMovieMenuItem_Click(null, null);
 					break;
 				case "Record Movie":
-					RecordMovieMenuItem_Click(null, null); 
+					RecordMovieMenuItem_Click(null, null);
 					break;
 				case "Stop Movie":
 					StopMovie();
 					break;
 				case "Play from beginning":
-					RestartMovie(); 
+					RestartMovie();
 					break;
 				case "Save Movie":
-					SaveMovie(); 
+					SaveMovie();
 					break;
 				case "Toggle MultiTrack":
 					Global.MovieSession.ToggleMultitrack();
@@ -311,8 +311,8 @@ namespace BizHawk.Client.EmuHawk
 				case "MT Decrement Player":
 					Global.MovieSession.MultiTrack.Decrement();
 					break;
-				case "Movie Poke": 
-					ToggleModePokeMode(); 
+				case "Movie Poke":
+					ToggleModePokeMode();
 					break;
 
 				// Tools

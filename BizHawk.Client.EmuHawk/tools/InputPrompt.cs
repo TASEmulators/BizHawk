@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					
+
 					if (!e.KeyChar.IsHex())
 					{
 						e.Handled = true;
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					
+
 					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;

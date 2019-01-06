@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					SaveColumnInfo(LuaListView, Settings.Columns);
-					
+
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 					LuaImp.GuiLibrary.DrawFinish();
 					CloseLua();
@@ -1214,8 +1214,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.GetRegisteredFunctions().Any();
 			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
-			ClearConsoleContextItem.Enabled = 
-				SelectAllContextItem.Enabled = 
+			ClearConsoleContextItem.Enabled =
+				SelectAllContextItem.Enabled =
 				OutputBox.Text.Any();
 		}
 

@@ -10,14 +10,14 @@ namespace BizHawk.Client.EmuHawk
 	#region win32interop
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct LvDispInfo 
+	internal struct LvDispInfo
 	{
 		public NmHdr Hdr;
 		public LvItem Item;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NmHdr 
+	internal struct NmHdr
 	{
 		public IntPtr HwndFrom;
 		public IntPtr IdFrom;
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NmItemActivate 
+	internal struct NmItemActivate
 	{
 		public NmHdr Hdr;
 		public int Item;
@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NmCustomDrawInfo 
+	internal struct NmCustomDrawInfo
 	{
 		public NmHdr Hdr;
 		public uint dwDrawStage;
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NmLvCustomDraw 
+	internal struct NmLvCustomDraw
 	{
 		public NmCustomDrawInfo Nmcd;
 		public int ClearText;
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	internal struct LvItem 
+	internal struct LvItem
 	{
 		public uint Mask;
 		public int Item;
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[FlagsAttribute]
-	internal enum CustomDrawReturnFlags 
+	internal enum CustomDrawReturnFlags
 	{
 		CDRF_DODEFAULT = 0x00000000,
 		CDRF_NEWFONT = 0x00000002,
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[FlagsAttribute]
-	internal enum CustomDrawDrawStageFlags 
+	internal enum CustomDrawDrawStageFlags
 	{
 		CDDS_PREPAINT = 0x00000001,
 		CDDS_POSTPAINT = 0x00000002,
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[FlagsAttribute]
-	internal enum LvHitTestFlags 
+	internal enum LvHitTestFlags
 	{
 		LVHT_NOWHERE = 0x0001,
 		LVHT_ONITEMICON = 0x0002,
@@ -135,14 +135,14 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct POINT 
+	internal struct POINT
 	{
 		public int X;
 		public int Y;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal class LvHitTestInfo 
+	internal class LvHitTestInfo
 	{
 		public POINT Point;
 		public uint Flags;
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NMLISTVIEW 
+	internal struct NMLISTVIEW
 	{
 		public NmHdr hdr;
 		public int iItem;
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 
-	internal enum ListViewItemMask : short 
+	internal enum ListViewItemMask : short
 	{
 		LVIF_TEXT = 0x0001,
 		LVIF_IMAGE = 0x0002,
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 		LVIF_COLUMNS = 0x0200
 	}
 
-	internal enum LvNi 
+	internal enum LvNi
 	{
 		ALL = 0x0000,
 		FOCUSED = 0x0001,
@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 		TORIGHT = 0x0800
 	}
 
-	internal enum ListViewMessages 
+	internal enum ListViewMessages
 	{
 		LVM_FIRST = 0x1000,
 		LVM_GETITEMCOUNT = (LVM_FIRST + 4),
@@ -205,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
 		LVM_GETSUBITEMRECT = (LVM_FIRST + 56)
 	}
 
-	internal enum ListViewStyles : short 
+	internal enum ListViewStyles : short
 	{
 		LVS_OWNERDATA = 0x1000,
 		LVS_SORTASCENDING = 0x0010,
@@ -215,13 +215,13 @@ namespace BizHawk.Client.EmuHawk
 		LVS_AUTOARRANGE = 0x0100
 	}
 
-	internal enum ListViewStylesICF : uint 
+	internal enum ListViewStylesICF : uint
 	{
 		LVSICF_NOINVALIDATEALL = 0x00000001,
 		LVSICF_NOSCROLL = 0x00000002
 	}
 
-	internal enum WindowsMessage : uint 
+	internal enum WindowsMessage : uint
 	{
 		WM_ERASEBKGND = 0x0014,
 		WM_SCROLL = 0x115,
@@ -260,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 	}
 
 	[Flags]
-	internal enum ListViewCallBackMask : uint 
+	internal enum ListViewCallBackMask : uint
 	{
 		LVIS_FOCUSED = 0x0001,
 		LVIS_SELECTED = 0x0002,
@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 	/// to be displayed.  The virtual Listview contains very little actual information -
 	/// mainly item selection and focus information.
 	/// </summary>
-	public class VirtualListView : ListView 
+	public class VirtualListView : ListView
 	{
 		// store the item count to prevent the call to SendMessage(LVM_GETITEMCOUNT)
 		private int _itemCount;
@@ -335,19 +335,19 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Data")]
 		public event QueryItemTextHandler QueryItemText;
-		
+
 		/// <summary>
 		/// Fire the QueryItemImage event which requests the ImageIndex for the passed Listview item.
 		/// </summary>
 		[Category("Data")]
 		public event QueryItemImageHandler QueryItemImage;
-		
+
 		/// <summary>
 		/// Fire the QueryItemIndent event which requests the indent for the passed Listview item.
 		/// </summary>
 		[Category("Data")]
 		public event QueryItemIndentHandler QueryItemIndent;
-		
+
 		[Category("Data")]
 		public event QueryItemHandler QueryItem;
 
@@ -359,14 +359,14 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets the sets the virtual number of items to be displayed.
 		/// </summary>
 		[Category("Behavior")]
-		public int ItemCount 
+		public int ItemCount
 		{
-			get 
+			get
 			{
 				return _itemCount;
 			}
 
-			set 
+			set
 			{
 				_itemCount = value;
 
@@ -386,17 +386,17 @@ namespace BizHawk.Client.EmuHawk
 		/// Hide the ListView.View property.
 		/// Virtual Listviews only allow Details or List.
 		/// </summary>
-		public new View View 
+		public new View View
 		{
-			get 
+			get
 			{
 				return base.View;
 			}
 
-			set 
+			set
 			{
 				if (value == View.LargeIcon ||
-					value == View.SmallIcon) 
+					value == View.SmallIcon)
 				{
 					throw new ArgumentException("Icon views are invalid for virtual ListViews", "View");
 				}
@@ -409,12 +409,12 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets the required creation parameters when the control handle is created.
 		/// Use LVS_OWNERDATA to set this as a virtual Listview.
 		/// </summary>
-		protected override CreateParams CreateParams 
+		protected override CreateParams CreateParams
 		{
-			get 
+			get
 			{
 				var cp = base.CreateParams;
-				
+
 				// LVS_OWNERDATA style must be set when the control is created
 				cp.Style |= (int)ListViewStyles.LVS_OWNERDATA;
 				return cp;
@@ -440,10 +440,10 @@ namespace BizHawk.Client.EmuHawk
 		#region Constructors
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="VirtualListView"/> class. 
+		/// Initializes a new instance of the <see cref="VirtualListView"/> class.
 		/// Create a new instance of this control.
 		/// </summary>
-		public VirtualListView() 
+		public VirtualListView()
 		{
 			// virtual listviews must be Details or List view with no sorting
 			View = View.Details;
@@ -460,7 +460,7 @@ namespace BizHawk.Client.EmuHawk
 			LineHeight = this.Font.Height + 5;
 		}
 
-		~VirtualListView() 
+		~VirtualListView()
 		{
 			Marshal.FreeHGlobal(ptrlvhti);
 		}
@@ -473,11 +473,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="index">Listview item's index.</param>
 		/// <param name="selected">Select the passed item?</param>
-		public void SelectItem(int index, bool selected) 
+		public void SelectItem(int index, bool selected)
 		{
 			var ptrItem = IntPtr.Zero;
 
-			try 
+			try
 			{
 				// Determine whether selecting or unselecting.
 				uint select = selected ? (uint)ListViewCallBackMask.LVIS_SELECTED : 0;
@@ -502,25 +502,25 @@ namespace BizHawk.Client.EmuHawk
 					(int)ListViewMessages.LVM_SETITEMSTATE,
 					(IntPtr)index,
 					ptrItem);
-			} 
-			catch (Exception ex) 
+			}
+			catch (Exception ex)
 			{
 				System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
-				
+
 				// TODO: should this eat any exceptions?
 				throw;
-			} 
-			finally 
+			}
+			finally
 			{
 				// Always release the unmanaged memory.
-				if (ptrItem != IntPtr.Zero) 
+				if (ptrItem != IntPtr.Zero)
 				{
 					Marshal.FreeHGlobal(ptrItem);
 				}
 			}
 		}
 
-		private void SetVirtualItemCount() 
+		private void SetVirtualItemCount()
 		{
 			Win32.SendMessage(
 				this.Handle,
@@ -584,10 +584,10 @@ namespace BizHawk.Client.EmuHawk
 			m.Result = new IntPtr(0);
 		}
 
-		protected void OnCustomDrawNotice(ref Message m) 
+		protected void OnCustomDrawNotice(ref Message m)
 		{
 			var cd = (NmLvCustomDraw)m.GetLParam(typeof(NmLvCustomDraw));
-			switch (cd.Nmcd.dwDrawStage) 
+			switch (cd.Nmcd.dwDrawStage)
 			{
 				case (int)CustomDrawDrawStageFlags.CDDS_ITEMPREPAINT:
 				case (int)CustomDrawDrawStageFlags.CDDS_PREPAINT:
@@ -606,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 		}
-		
+
 		/// <summary>
 		/// Event to be fired whenever the control scrolls
 		/// </summary>
@@ -630,8 +630,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get { return GetScrollPos(this.Handle, Orientation.Vertical); }
 		}
-		
-		protected override void WndProc(ref Message m) 
+
+		protected override void WndProc(ref Message m)
 		{
 			var messageProcessed = false;
 			switch (m.Msg)
@@ -678,10 +678,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 			}
-			
-			if (!messageProcessed) 
+
+			if (!messageProcessed)
 			{
-				try 
+				try
 				{
 					base.WndProc(ref m);
 				}
@@ -695,15 +695,15 @@ namespace BizHawk.Client.EmuHawk
 		public bool BlazingFast { get; set; }
 		public bool UseCustomBackground { get; set; }
 
-		protected ListViewItem GetItem(int idx) 
+		protected ListViewItem GetItem(int idx)
 		{
 			ListViewItem item = null;
-			if (QueryItem != null) 
+			if (QueryItem != null)
 			{
 				QueryItem(idx, out item);
 			}
 
-			if (item == null) 
+			if (item == null)
 			{
 				throw new ArgumentException("cannot find item " + idx + " via QueryItem event");
 			}
@@ -711,11 +711,11 @@ namespace BizHawk.Client.EmuHawk
 			return item;
 		}
 
-		protected void OnBeginItemDrag(MouseButtons mouseButton, ref Message m) 
+		protected void OnBeginItemDrag(MouseButtons mouseButton, ref Message m)
 		{
 			var info = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 			ListViewItem item = null;
-			if (QueryItem != null) 
+			if (QueryItem != null)
 			{
 				QueryItem(info.iItem, out item);
 			}
@@ -723,16 +723,16 @@ namespace BizHawk.Client.EmuHawk
 			OnItemDrag(new ItemDragEventArgs(mouseButton, item));
 		}
 
-		protected override void OnHandleCreated(EventArgs e) 
+		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
 
-			// ensure the value for ItemCount is sent to the control properly if the user set it 
+			// ensure the value for ItemCount is sent to the control properly if the user set it
 			// before the handle was created
 			SetVirtualItemCount();
 		}
 
-		protected override void OnHandleDestroyed(EventArgs e) 
+		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			// the ListView OnHandleDestroyed accesses the Items list for all selected items
 			ItemCount = 0;
@@ -745,7 +745,7 @@ namespace BizHawk.Client.EmuHawk
 		IntPtr ptrlvhti;
 		int selection = -1;
 
-		public int hitTest(int x, int y) 
+		public int hitTest(int x, int y)
 		{
 			lvhti.Point.X = x;
 			lvhti.Point.Y = y;
@@ -755,17 +755,17 @@ namespace BizHawk.Client.EmuHawk
 			return z;
 		}
 
-		public void ensureVisible(int index) 
+		public void ensureVisible(int index)
 		{
 			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, (IntPtr)index, (IntPtr)1);
 		}
 
-		public void ensureVisible() 
+		public void ensureVisible()
 		{
 			ensureVisible(selectedItem);
 		}
 
-		public void setSelection(int index) 
+		public void setSelection(int index)
 		{
 			clearSelection();
 			selection = index;
@@ -784,15 +784,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return SelectedIndices[0];
 				}
-			} 
-			
+			}
+
 			set
 			{
 				setSelection(value);
 			}
 		}
 
-		public void clearSelection() 
+		public void clearSelection()
 		{
 			if (selection != -1)
 			{

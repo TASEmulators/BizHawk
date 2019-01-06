@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		---------------------------
 		Cheetah Men II is infamous for how freaking terrible it is.  Action 52 is none better.  These games are SO
 		bad, it's hilarious.
- 
+
 		Action 52's PRG size is weird (not a power of 2 value).  This is because there are 3 seperate 512k PRG chips.
 		PRG Setup section will cover details.
 
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		CHR Setup:
 		---------------------------
 
-		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+		$0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00
 		+---------------------------------------------------------------+
 		|                             $8000                             |
 		+---------------------------------------------------------------+
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		'P' selects the PRG page on the currently selected chip.
 
-		$8000   $A000   $C000   $E000  
+		$8000   $A000   $C000   $E000
 					+-------------------------------+
 		PRG Mode 0: |            <$8000>            |
 					+-------------------------------+

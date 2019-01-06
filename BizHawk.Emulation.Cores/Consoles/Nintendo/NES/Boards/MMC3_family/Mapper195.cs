@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			vram_bank_mask_1k = Cart.vram_size / 1 - 1;
-			
+
 			BaseSetup();
 			return true;
 		}
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				WRAM[addr - 0x1000] = value;
 			}
-			
+
 			base.WriteEXP(addr, value);
 		}
 
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// nothing to write to VROM
 				}
 			}
-			else 
+			else
 				base.WritePPU(addr, value);
 		}
 	}

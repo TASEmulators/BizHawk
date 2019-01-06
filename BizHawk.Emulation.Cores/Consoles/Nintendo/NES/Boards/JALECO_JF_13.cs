@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	//Mapper 86
-	
+
 	//Example Games:
 	//--------------------------
 	//Moero!! Pro Yakyuu (Black)

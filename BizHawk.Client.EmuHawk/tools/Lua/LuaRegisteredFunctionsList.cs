@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateListView()
 		{
 			FunctionView.Items.Clear();
-			
+
 			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
 			foreach (var nlf in nlfs)
 			{

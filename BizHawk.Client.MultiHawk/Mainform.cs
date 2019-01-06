@@ -144,7 +144,7 @@ namespace BizHawk.Client.MultiHawk
 			if (Global.Config.SaveWindowPosition && Global.Config.MainWidth > 0 && Global.Config.MainHeight > 0)
 			{
 				this.Size = new Size(Global.Config.MainWidth, Global.Config.MainHeight);
-				
+
 			}
 		}
 
@@ -360,7 +360,7 @@ namespace BizHawk.Client.MultiHawk
 
 					ew.Location = new Point(x, y);
 				}
-				
+
 
 				EmulatorWindows.Add(ew);
 
@@ -623,7 +623,7 @@ namespace BizHawk.Client.MultiHawk
 		}
 
 		public void ProgramRunLoop()
-		{			
+		{
 			CheckMessages();
 
 			for (; ; )

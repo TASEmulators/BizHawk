@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private enum CDLog_AddrType
 		{
 			None,
-			ROM, 
-			MainRAM, 
+			ROM,
+			MainRAM,
 			SaveRAM,
 		}
 

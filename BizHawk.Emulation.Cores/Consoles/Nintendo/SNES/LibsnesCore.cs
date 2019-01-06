@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 
 // http://wiki.superfamicom.org/snes/show/Backgrounds
 
-// TODO 
+// TODO
 // libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 // edit - this is a lot of work
 // wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			_controllerDeck = new LibsnesControllerDeck(_syncSettings);
 			_controllerDeck.NativeInit(Api);
-			
+
 			Api.CMD_init();
 
 			Api.QUERY_set_path_request(snes_path_request);

@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public long Size;
 			/// <summary>
-			/// 
+			///
 			/// </summary>
 			public MemoryDomainFlags Flags;
 		}

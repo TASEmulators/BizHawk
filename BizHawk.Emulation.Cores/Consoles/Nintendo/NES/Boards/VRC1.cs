@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 			}
-				
+
 			for (int i = 0; i < 2; i++) ser.Sync("chr_regs_4k_" + i, ref chr_regs_4k[i]);
 
 			if (ser.IsReader)
@@ -115,16 +115,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						return CIRAM_VS[addr - 0x800];
 					}
-				}			
+				}
 				else
 					return base.ReadPPU(addr);
 			}
-			
+
 		}
 
 		public override void WritePPU(int addr, byte value)
 		{
-			// The game VS Goonies apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+			// The game VS Goonies apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values
 			addr &= 0x2FFF;
 
 			if (NES._isVS)

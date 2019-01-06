@@ -46,9 +46,9 @@
 			this.RightClickMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// ClearButton
-			// 
+			//
 			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ClearButton.Location = new System.Drawing.Point(326, 228);
 			this.ClearButton.Name = "ClearButton";
@@ -57,9 +57,9 @@
 			this.ClearButton.Text = "Clear";
 			this.ClearButton.UseVisualStyleBackColor = true;
 			this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
-			// 
+			//
 			// UndoButton
-			// 
+			//
 			this.UndoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.UndoButton.Location = new System.Drawing.Point(10, 228);
 			this.UndoButton.Name = "UndoButton";
@@ -68,9 +68,9 @@
 			this.UndoButton.Text = "Undo";
 			this.UndoButton.UseVisualStyleBackColor = true;
 			this.UndoButton.Click += new System.EventHandler(this.UndoButton_Click);
-			// 
+			//
 			// RedoButton
-			// 
+			//
 			this.RedoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RedoButton.Location = new System.Drawing.Point(71, 228);
 			this.RedoButton.Name = "RedoButton";
@@ -79,45 +79,45 @@
 			this.RedoButton.Text = "Redo";
 			this.RedoButton.UseVisualStyleBackColor = true;
 			this.RedoButton.Click += new System.EventHandler(this.RedoButton_Click);
-			// 
+			//
 			// RightClickMenu
-			// 
+			//
 			this.RightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.undoHereToolStripMenuItem,
-            this.redoHereToolStripMenuItem,
-            this.sepToolStripMenuItem,
-            this.clearHistoryToHereToolStripMenuItem});
+			this.undoHereToolStripMenuItem,
+			this.redoHereToolStripMenuItem,
+			this.sepToolStripMenuItem,
+			this.clearHistoryToHereToolStripMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
 			this.RightClickMenu.Size = new System.Drawing.Size(209, 76);
-			// 
+			//
 			// undoHereToolStripMenuItem
-			// 
+			//
 			this.undoHereToolStripMenuItem.Name = "undoHereToolStripMenuItem";
 			this.undoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.undoHereToolStripMenuItem.Text = "Undo To Selection";
 			this.undoHereToolStripMenuItem.Click += new System.EventHandler(this.UndoHereMenuItem_Click);
-			// 
+			//
 			// redoHereToolStripMenuItem
-			// 
+			//
 			this.redoHereToolStripMenuItem.Name = "redoHereToolStripMenuItem";
 			this.redoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.redoHereToolStripMenuItem.Text = "Redo To Selection";
 			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.RedoHereMenuItem_Click);
-			// 
+			//
 			// sepToolStripMenuItem
-			// 
+			//
 			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
 			this.sepToolStripMenuItem.Size = new System.Drawing.Size(205, 6);
-			// 
+			//
 			// clearHistoryToHereToolStripMenuItem
-			// 
+			//
 			this.clearHistoryToHereToolStripMenuItem.Name = "clearHistoryToHereToolStripMenuItem";
 			this.clearHistoryToHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.clearHistoryToHereToolStripMenuItem.Text = "Clear History To Selection";
 			this.clearHistoryToHereToolStripMenuItem.Click += new System.EventHandler(this.ClearHistoryToHereMenuItem_Click);
-			// 
+			//
 			// AutoScrollCheck
-			// 
+			//
 			this.AutoScrollCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AutoScrollCheck.AutoSize = true;
 			this.AutoScrollCheck.Checked = true;
@@ -128,33 +128,33 @@
 			this.AutoScrollCheck.TabIndex = 5;
 			this.AutoScrollCheck.Text = "Auto Scroll";
 			this.AutoScrollCheck.UseVisualStyleBackColor = true;
-			// 
+			//
 			// MaxStepsNum
-			// 
+			//
 			this.MaxStepsNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.MaxStepsNum.Location = new System.Drawing.Point(268, 230);
 			this.MaxStepsNum.Maximum = new decimal(new int[] {
-            -1486618625,
-            232830643,
-            0,
-            0});
+			-1486618625,
+			232830643,
+			0,
+			0});
 			this.MaxStepsNum.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.MaxStepsNum.Name = "MaxStepsNum";
 			this.MaxStepsNum.Size = new System.Drawing.Size(52, 20);
 			this.MaxStepsNum.TabIndex = 6;
 			this.MaxStepsNum.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			100,
+			0,
+			0,
+			0});
 			this.MaxStepsNum.ValueChanged += new System.EventHandler(this.MaxStepsNum_ValueChanged);
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(236, 234);
@@ -162,16 +162,16 @@
 			this.label1.Size = new System.Drawing.Size(30, 13);
 			this.label1.TabIndex = 7;
 			this.label1.Text = "Max:";
-			// 
+			//
 			// HistoryView
-			// 
-			this.HistoryView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.HistoryView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.HistoryView.BlazingFast = false;
 			this.HistoryView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+			this.columnHeader1,
+			this.columnHeader2});
 			this.HistoryView.HideSelection = false;
 			this.HistoryView.ItemCount = 0;
 			this.HistoryView.Location = new System.Drawing.Point(10, 10);
@@ -187,19 +187,19 @@
 			this.HistoryView.DoubleClick += new System.EventHandler(this.HistoryView_DoubleClick);
 			this.HistoryView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseDown);
 			this.HistoryView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseUp);
-			// 
+			//
 			// columnHeader1
-			// 
+			//
 			this.columnHeader1.Text = "ID";
 			this.columnHeader1.Width = 40;
-			// 
+			//
 			// columnHeader2
-			// 
+			//
 			this.columnHeader2.Text = "Undo Step";
 			this.columnHeader2.Width = 322;
-			// 
+			//
 			// UndoHistoryForm
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(391, 258);

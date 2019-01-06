@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (RAM_enable)
 				{
 					Core.cart_RAM[addr - 0xA000] = (byte)(value & 0xF);
-				}				
+				}
 			}
 		}
 

@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						Console.WriteLine("chr disabled");
 					}
 				}
-				
+
 			}
 		}
 

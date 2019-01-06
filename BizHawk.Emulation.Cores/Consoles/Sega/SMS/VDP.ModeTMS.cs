@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class VDP
 	{
-		int[] PaletteTMS9918 = new int[] 
+		int[] PaletteTMS9918 = new int[]
 		{
 			unchecked((int)0xFF000000),
 			unchecked((int)0xFF000000),
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x01) > 0) ? fgColor : bgColor) : 0;
 			}
 		}
-		
+
 		void RenderTmsSprites(bool show)
 		{
 			if (ScanLine >= FrameHeight || DisplayOn == false)

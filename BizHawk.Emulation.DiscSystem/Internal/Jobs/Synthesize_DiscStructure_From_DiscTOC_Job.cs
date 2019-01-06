@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.DiscSystem
 				LBA = TOCRaw.LeadoutLBA
 			});
 
-			//link track list 
+			//link track list
 			for (int i = 0; i < session.Tracks.Count - 1; i++)
 			{
 				session.Tracks[i].NextTrack = session.Tracks[i + 1];

@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public delegate void AddressCallback(uint addr);
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="addr">if bit 0 is set, thumb mode</param>
 		/// <param name="opcode"></param>

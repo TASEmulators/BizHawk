@@ -12,10 +12,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// This implementation aims to emulate all the various CRTC chips that appear within
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
 	/// If different implementations share the same type number it indicates that they are functionally identical:
-	/// 
+	///
 	///		Part No.	Manufacturer	Type No.	Info.
 	///		------------------------------------------------------------------------------------------------------
-	///		HD6845S		Hitachi			0	
+	///		HD6845S		Hitachi			0
 	///		Datasheet:	http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
 	///		------------------------------------------------------------------------------------------------------
 	///		UM6845		UMC				0
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	///		AMS40041	Amstrad			4			'Pre-ASIC' IC. The CRTC is integrated into a aingle ASIC IC with functionality being almost identical to the AMS40489
 	///		(or 40226)								Used in the 'Cost-Down' range of CPC464 and CPC6128 systems
 	///		Datasheet:	{none}
-	/// 
+	///
 	/// </summary>
 	public class CRTC6845
 	{
@@ -59,21 +59,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		#region Input Lines
 
 		/// <summary>
-		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface. 
+		/// The ClK isaTTUMOS-compatible input used to synchronize all CRT' functions except for the processor interface.
 		/// An external dot counter is used to derive this signal which is usually the character rate in an alphanumeric CRT.
 		/// The active transition is high-to-low
 		/// </summary>
 		public bool CLK { get { return _CLK; } }
 		private bool _CLK;
 		/// <summary>
-		/// The RES input is used to Reset the CRTC. An input low level on RES forces CRTC into following status: 
-		///     (A) All the counters in CRTC are cleared and the device stops the display operation.  
-		///     (C) Control registers in CRTC are not affected and remain unchanged. 
-		/// This signal is different from other M6800 family in the following functions: 
-		///     (A) RES signal has capability of reset function only. when LPSTB is at low level. 
-		///     (B) After RES has gone down to low level, output s ignals of MAO -MA13 and RAO - RA4, synchronizing with CLK low level, goes down to low level. 
-		///         (At least 1 cycle CLK signal is necessary for reset.) 
-		///     (C) The CRTC starts the Display operation immediately after the release of RES signal.
+		/// The RES input is used to Reset the CRTC. An input low level on RES forces CRTC into following status:
+		/// 	(A) All the counters in CRTC are cleared and the device stops the display operation.
+		/// 	(C) Control registers in CRTC are not affected and remain unchanged.
+		/// This signal is different from other M6800 family in the following functions:
+		/// 	(A) RES signal has capability of reset function only. when LPSTB is at low level.
+		/// 	(B) After RES has gone down to low level, output s ignals of MAO -MA13 and RAO - RA4, synchronizing with CLK low level, goes down to low level.
+		/// 		(At least 1 cycle CLK signal is necessary for reset.)
+		/// 	(C) The CRTC starts the Display operation immediately after the release of RES signal.
 		/// </summary>
 		public bool RESET { get { return _RESET; } }
 		private bool _RESET;
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		#region Output Lines
 
-		// State output lines      
+		// State output lines
 		/// <summary>
 		/// This TTL compatible output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
 		/// This signal determines the vertical position of the displayed text.
@@ -96,28 +96,28 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool VSYNC { get { return _VSYNC; } }
 		private bool _VSYNC;
 		/// <summary>
-		/// This TTL compatible  output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
-		/// This signal determines the horizontal position of the displayed text. 
+		/// This TTL compatible output is an active high signal which drives the monitor directly or is fed to Video Processing Logic for composite generation.
+		/// This signal determines the horizontal position of the displayed text.
 		/// </summary>
 		public bool HSYNC { get { return _HSYNC; } }
 		private bool _HSYNC;
 		/// <summary>
 		/// This TTL compatible output is an active high signal which indicates the CRTC is providing addressing in the active Display Area.
-		/// </summary>      
+		/// </summary>
 		public bool DISPTMG { get { return _DISPTMG; } }
 		private bool _DISPTMG;
 		/// <summary>
-		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal. 
-		/// </summary>       
+		/// This TTL compatible output indicates Cursor Display to external Video Processing Logic.Active high signal.
+		/// </summary>
 		public bool CUDISP { get { return _CUDISP; } }
 		private bool _CUDISP;
 
 		// Refresh memory addresses
 		/*
-            Refresh Memory Addresses (MAO-MA13) - These 14 outputs are used to refresh the CRT screen with pages of
-            data located within a 16K block of refresh memory. These outputs drive a TTL load and 30pF. A high level on
-            MAO-MA 13 is a logical "1." 
-         */
+			Refresh Memory Addresses (MAO-MA13) - These 14 outputs are used to refresh the CRT screen with pages of
+			data located within a 16K block of refresh memory. These outputs drive a TTL load and 30pF. A high level on
+			MAO-MA 13 is a logical "1."
+		*/
 		public bool MA0 { get { return LinearAddress.Bit(0); } }
 		public bool MA1 { get { return LinearAddress.Bit(1); } }
 		public bool MA2 { get { return LinearAddress.Bit(2); } }
@@ -128,44 +128,44 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public bool MA7 { get { return LinearAddress.Bit(7); } }
 		public bool MA8 { get { return LinearAddress.Bit(8); } }
 		public bool MA9 { get { return LinearAddress.Bit(9); } }
-		public bool MA10 { get { return LinearAddress.Bit(10); } }   // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool MA11 { get { return LinearAddress.Bit(11); } }   // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool MA12 { get { return LinearAddress.Bit(12); } }   // cpcwiki would suggest that this is connected in the CPC range but not used
-		public bool MA13 { get { return LinearAddress.Bit(13); } }   // cpcwiki would suggest that this is connected in the CPC range but not used
+		public bool MA10 { get { return LinearAddress.Bit(10); } } // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool MA11 { get { return LinearAddress.Bit(11); } } // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool MA12 { get { return LinearAddress.Bit(12); } } // cpcwiki would suggest that this is connected in the CPC range but not used
+		public bool MA13 { get { return LinearAddress.Bit(13); } } // cpcwiki would suggest that this is connected in the CPC range but not used
 
 		// Row addresses for character generators
 		/*
-            Raster Addresses (RAO-RA4) - These 5 outputs from the internal Raster Counter address the Character ROM
-            for the row of a character. These outputs drive a TTL load and 30pF. A high level (on RAO-RA4) is a logical "1." 
-         */
+			Raster Addresses (RAO-RA4) - These 5 outputs from the internal Raster Counter address the Character ROM
+			for the row of a character. These outputs drive a TTL load and 30pF. A high level (on RAO-RA4) is a logical "1."
+		*/
 		public bool RA0 { get { return RowSelects.Bit(0); } }
 		public bool RA1 { get { return RowSelects.Bit(1); } }
 		public bool RA2 { get { return RowSelects.Bit(2); } }
-		public bool RA3 { get { return RowSelects.Bit(3); } }    // cpcwiki would suggest that this isnt connected in the CPC range
-		public bool RA4 { get { return RowSelects.Bit(4); } }    // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool RA3 { get { return RowSelects.Bit(3); } } // cpcwiki would suggest that this isnt connected in the CPC range
+		public bool RA4 { get { return RowSelects.Bit(4); } } // cpcwiki would suggest that this isnt connected in the CPC range
 
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is connected up to the CRTC
 		/// Built from R12, R13 and CLK
 		/*
-            Memory Address Signal	Signal source	Signal name
-            A15	                    6845	        MA13
-            A14	                    6845	        MA12
-            A13	                    6845	        RA2
-            A12	                    6845	        RA1
-            A11	                    6845	        RA0
-            A10	                    6845	        MA9
-            A9	                    6845	        MA8
-            A8	                    6845	        MA7
-            A7	                    6845	        MA6
-            A6	                    6845	        MA5
-            A5	                    6845	        MA4
-            A4	                    6845	        MA3
-            A3	                    6845	        MA2
-            A2	                    6845	        MA1
-            A1	                    6845	        MA0
-            A0	                    Gate-Array	    CLK
-         */
+			Memory Address Signal	Signal source	Signal name
+			A15                  	6845         	MA13
+			A14                  	6845         	MA12
+			A13                  	6845         	RA2
+			A12                  	6845         	RA1
+			A11                  	6845         	RA0
+			A10                  	6845         	MA9
+			A9                   	6845         	MA8
+			A8                   	6845         	MA7
+			A7                   	6845         	MA6
+			A6                   	6845         	MA5
+			A5                   	6845         	MA4
+			A4                   	6845         	MA3
+			A3                   	6845         	MA2
+			A2                   	6845         	MA1
+			A1                   	6845         	MA0
+			A0                   	Gate-Array   	CLK
+		*/
 		/// </summary>
 		public ushort AddressLineCPC
 		{
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// The CRTC latches the Display Start H & L address at different times
 		/// (depending on the chip type)
 		/// </summary>
-		private int StartAddressLatch;		
+		private int StartAddressLatch;
 
 		#endregion
 
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The internal register
 		/// The Address Register is a 5 bit write-only register used as an "indirect" or "pointer" register.
-		/// Its contents are the address of one of the other 18 registers in the file.When RS and CS are low, 
+		/// Its contents are the address of one of the other 18 registers in the file.When RS and CS are low,
 		/// the Address Register itself is addressed.When RS is high, the Register File is accessed.
 		/// </summary>
 		private byte[] Register = new byte[18];
@@ -324,41 +324,40 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		#region Databus Interface
 
 		/*
-                RegIdx	Register Name	            Type
-                                                    0	        1	        2	        3	                4
-                0	    Horizontal Total	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                1	    Horizontal Displayed	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                2	    Horizontal Sync Position	Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                3	    H and V Sync Widths	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                4	    Vertical Total	            Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                5	    Vertical Total Adjust	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                6	    Vertical Displayed	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                7	    Vertical Sync position	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                8	    Interlace and Skew	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                9	    Maximum Raster Address	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                10	    Cursor Start Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                11	    Cursor End Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                12	    Disp. Start Address (High)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                13	    Disp. Start Address (Low)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                14	    Cursor Address (High)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                15	    Cursor Address (Low)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                16	    Light Pen Address (High)	Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
-                17	    Light Pen Address (Low)	    Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
+			RegIdx	Register Name             	Type 0    	Type 1    	Type 2    	Type 3             	Type 4
+			0     	Horizontal Total          	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			1     	Horizontal Displayed      	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			2     	Horizontal Sync Position  	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			3     	H and V Sync Widths       	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			4     	Vertical Total            	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			5     	Vertical Total Adjust     	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			6     	Vertical Displayed        	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			7     	Vertical Sync position    	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			8     	Interlace and Skew        	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			9     	Maximum Raster Address    	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			10    	Cursor Start Raster       	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			11    	Cursor End Raster         	Write Only	Write Only	Write Only	(note 2)           	(note 3)
+			12    	Disp. Start Address (High)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
+			13    	Disp. Start Address (Low) 	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
+			14    	Cursor Address (High)     	Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
+			15    	Cursor Address (Low)      	Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
+			16    	Light Pen Address (High)  	Read Only 	Read Only 	Read Only 	Read Only (note 2) 	(note 3)
+			17    	Light Pen Address (Low)   	Read Only 	Read Only 	Read Only 	Read Only (note 2) 	(note 3)
 
-                1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
-                2. See the document "Extra CPC Plus Hardware Information" for more details.
-                3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
-        */
+			1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
+			2. See the document "Extra CPC Plus Hardware Information" for more details.
+			3. CRTC type 4 is the same as CRTC type 3. The registers also repeat as they do on the type 3.
+		*/
 
 		/* CPC:
-        #BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index	                        -	    Write
-        #BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out	                    -	    Write
-        #BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported)	Read	-
-        #BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
+			#BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index                        	-   	Write
+			#BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out                     	-   	Write
+			#BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported) 	Read	-
+			#BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
 
 			The Read/Write functions below are geared toward Amstrad CPC only
 			They could be overridden for a different implementation if needs be
-     */
+		*/
 
 		/// <summary>
 		/// CPU (or other device) reads from the 8-bit databus
@@ -553,7 +552,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 1: return ReadStatus_Type1(ref data);
 				case 3:
 				case 4: return ReadStatus_Type3_4(ref data);
-				default: return false;					
+				default: return false;
 			}
 		}
 
@@ -573,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// Bits 5 and 4 determine the skew
 						res = (val & 0x30) >> 4;
 						if (res > 2)
-							return -1;						
+							return -1;
 						break;
 
 					// UMR6845R
@@ -612,7 +611,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						if (res > 2)
 							return -1;
 						break;
-					
+
 					// UMR6845R
 					case 1:
 						return 0;
@@ -687,7 +686,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		#endregion
 
-		#region Type-Specific Internal Methods		
+		#region Type-Specific Internal Methods
 
 		#region Sync Widths
 
@@ -698,7 +697,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				// Bits 3..0 define Horizontal Sync Width. 
+				// Bits 3..0 define Horizontal Sync Width.
 				// If 0 is programmed no HSYNC is generated.
 				return (Register[SYNC_WIDTHS] >> 0) & 0x0F;
 			}
@@ -711,7 +710,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				// Bits 3..0 define Horizontal Sync Width. 
+				// Bits 3..0 define Horizontal Sync Width.
 				// If 0 is programmed this gives a HSYNC width of 16
 				var width = (Register[SYNC_WIDTHS] >> 0) & 0x0F;
 				if (width == 0)
@@ -743,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		{
 			get
 			{
-				// Bits 7..4 are ignored. 
+				// Bits 7..4 are ignored.
 				// Vertical Sync is fixed at 16 lines.
 				return 16;
 			}
@@ -778,14 +777,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 11:
 					data = 0;
 					break;
-				case 12:    // Start Address H (6-bit)
-				case 14:    // Cursor H (6-bit)
-				case 16:    // Light Pen H (6-bit)
+				case 12: // Start Address H (6-bit)
+				case 14: // Cursor H (6-bit)
+				case 16: // Light Pen H (6-bit)
 					data = Register[AddressRegister] & 0x3F;
 					break;
-				case 13:    // Start Address L (8-bit)
-				case 15:    // Cursor L (8-bit)
-				case 17:    // Light Pen L (8-bit)
+				case 13: // Start Address L (8-bit)
+				case 15: // Cursor L (8-bit)
+				case 17: // Light Pen L (8-bit)
 					data = Register[AddressRegister];
 					break;
 				default:
@@ -829,23 +828,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 13:
 					data = 0;
 					break;
-				case 14:    // Cursor H (6-bit)
+				case 14: // Cursor H (6-bit)
 					data = Register[AddressRegister] & 0x3F;
 					break;
-				case 16:    // Light Pen H (6-bit)
+				case 16: // Light Pen H (6-bit)
 					data = Register[AddressRegister] & 0x3F;
 					// reading from R16 resets bit6 of the status register
 					StatusRegister &= byte.MaxValue ^ (1 << 6);
 					break;
-				case 15:    // Cursor L (8-bit)
+				case 15: // Cursor L (8-bit)
 					data = Register[AddressRegister];
 					break;
-				case 17:    // Light Pen L (8-bit)
+				case 17: // Light Pen L (8-bit)
 					data = Register[AddressRegister];
 					// reading from R17 resets bit6 of the status register
 					StatusRegister &= byte.MaxValue ^ (1 << 6);
 					break;
-				case 31:    // Dummy Register. Datasheet describes this as N/A but CPCWIKI suggests that reading from it return 0x0FF;
+				case 31: // Dummy Register. Datasheet describes this as N/A but CPCWIKI suggests that reading from it return 0x0FF;
 					data = 0xff;
 					break;
 				default:
@@ -887,16 +886,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 12:
 				case 13:
 					return false;
-				case 14:    // Cursor H (6-bit)
+				case 14: // Cursor H (6-bit)
 					data = Register[AddressRegister] & 0x3F;
 					break;
-				case 16:    // Light Pen H (6-bit)
+				case 16: // Light Pen H (6-bit)
 					data = Register[AddressRegister] & 0x3F;
 					break;
-				case 15:    // Cursor L (8-bit)
+				case 15: // Cursor L (8-bit)
 					data = Register[AddressRegister];
 					break;
-				case 17:    // Light Pen L (8-bit)
+				case 17: // Light Pen L (8-bit)
 					data = Register[AddressRegister];
 					break;
 				default:
@@ -990,7 +989,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			byte v = (byte)data;
 			switch (AddressRegister)
 			{
-				case 0:     // 8-bit registers
+				case 0: // 8-bit registers
 				case 1:
 				case 2:
 				case 3:
@@ -998,22 +997,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 15:
 					Register[AddressRegister] = v;
 					break;
-				case 4:     // 7-bit registers
+				case 4: // 7-bit registers
 				case 6:
 				case 7:
 				case 10:
 					Register[AddressRegister] = (byte)(v & 0x7F);
 					break;
-				case 12:    // 6-bit registers
+				case 12: // 6-bit registers
 				case 14:
 					Register[AddressRegister] = (byte)(v & 0x3F);
 					break;
-				case 5:     // 5-bit registers
+				case 5: // 5-bit registers
 				case 9:
 				case 11:
 					Register[AddressRegister] = (byte)(v & 0x1F);
 					break;
-				case 8:     // Interlace & skew masks bits 2 & 3
+				case 8: // Interlace & skew masks bits 2 & 3
 					Register[AddressRegister] = (byte)(v & 0xF3);
 					break;
 			}
@@ -1028,32 +1027,32 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			byte v = (byte)data;
 			switch (AddressRegister)
 			{
-				case 0:     // 8-bit registers
+				case 0: // 8-bit registers
 				case 1:
 				case 2:
 				case 13:
 				case 15:
 					Register[AddressRegister] = v;
 					break;
-				case 4:     // 7-bit registers
+				case 4: // 7-bit registers
 				case 6:
 				case 7:
 				case 10:
 					Register[AddressRegister] = (byte)(v & 0x7F);
 					break;
-				case 12:    // 6-bit registers
+				case 12: // 6-bit registers
 				case 14:
 					Register[AddressRegister] = (byte)(v & 0x3F);
 					break;
-				case 5:     // 5-bit registers
+				case 5: // 5-bit registers
 				case 9:
 				case 11:
 					Register[AddressRegister] = (byte)(v & 0x1F);
 					break;
-				case 3:     // 4-bit register
+				case 3: // 4-bit register
 					Register[AddressRegister] = (byte)(v & 0x0F);
 					break;
-				case 8:     // Interlace & skew - 2bit
+				case 8: // Interlace & skew - 2bit
 					Register[AddressRegister] = (byte)(v & 0x03);
 					break;
 			}
@@ -1068,32 +1067,32 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			byte v = (byte)data;
 			switch (AddressRegister)
 			{
-				case 0:     // 8-bit registers
+				case 0: // 8-bit registers
 				case 1:
 				case 2:
 				case 13:
 				case 15:
 					Register[AddressRegister] = v;
 					break;
-				case 4:     // 7-bit registers
+				case 4: // 7-bit registers
 				case 6:
 				case 7:
 				case 10:
 					Register[AddressRegister] = (byte)(v & 0x7F);
 					break;
-				case 12:    // 6-bit registers
+				case 12: // 6-bit registers
 				case 14:
 					Register[AddressRegister] = (byte)(v & 0x3F);
 					break;
-				case 5:     // 5-bit registers
+				case 5: // 5-bit registers
 				case 9:
 				case 11:
 					Register[AddressRegister] = (byte)(v & 0x1F);
 					break;
-				case 3:     // 4-bit register
+				case 3: // 4-bit register
 					Register[AddressRegister] = (byte)(v & 0x0F);
 					break;
-				case 8:     // Interlace & skew - 2bit
+				case 8: // Interlace & skew - 2bit
 					Register[AddressRegister] = (byte)(v & 0x03);
 					break;
 			}
@@ -1171,7 +1170,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		#region Clock Cycles
 
-		/* persistent switch signals */		
+		/* persistent switch signals */
 		bool s_VS;
 		bool s_HDISP;
 		bool s_VDISP;
@@ -1202,7 +1201,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void ClockCycle_Generic()
 		{
-			
+
 		}
 
 		/// <summary>
@@ -1320,7 +1319,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			/* VTOTAL Control */
-			// todo - interlace logic		
+			// todo - interlace logic
 			if (c_VTOTAL)
 			{
 				// vertical total has been reached
@@ -1710,7 +1709,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			/* VTOTAL Control */
-			// todo - interlace logic		
+			// todo - interlace logic
 			if (c_VTOTAL)
 			{
 				// vertical total has been reached
@@ -1818,7 +1817,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			else
 			{
 				_DISPTMG = false;
-			}			
+			}
 
 			/* Cursor Control */
 			if (s_HDISP && s_VDISP)
@@ -1893,7 +1892,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf
 		/// The implementation looks a little simpler than the type 0
 		/// It has NO status register and NO skew program bit support
-		/// HOWEVER, there are some glaring ommissions in the block diagram, 
+		/// HOWEVER, there are some glaring ommissions in the block diagram,
 		/// so I am using a modified type 0/1 implementation for now
 		/// </summary>
 		private void ClockCycle_Type2()
@@ -2005,7 +2004,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			}
 
 			/* VTOTAL Control */
-			// todo - interlace logic		
+			// todo - interlace logic
 			if (c_VTOTAL)
 			{
 				// vertical total has been reached
@@ -2189,7 +2188,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/* Horizontal Timing Register Constants */
 		/// <summary>
-		/// This 8 bit write-only register determines the horizontal frequency of HS. 
+		/// This 8 bit write-only register determines the horizontal frequency of HS.
 		/// It is the total of displayed plus non-displayed character time units minus one.
 		/// </summary>
 		private const int H_TOTAL = 0;
@@ -2202,8 +2201,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int H_SYNC_POS = 2;
 		/// <summary>
-		/// This 4 bit  write-only register determines the width of the HS pulse. It may not be apparent why this width needs to be programmed.However, 
-		/// consider that all timing widths must be programmed as multiples of the character clock period which varies.If HS width were fixed as an integral 
+		/// This 4 bit write-only register determines the width of the HS pulse. It may not be apparent why this width needs to be programmed.However,
+		/// consider that all timing widths must be programmed as multiples of the character clock period which varies.If HS width were fixed as an integral
 		/// number of character times, it would vary with character rate and be out of tolerance for certain monitors.
 		/// The rate programmable feature allows compensating HS width.
 		/// NOTE: Dependent on chiptype this also may include VSYNC width - check the UpdateWidths() method
@@ -2212,8 +2211,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/* Vertical Timing Register Constants */
 		/// <summary>
-		/// The vertical frequency of VS is determined by both R4 and R5.The calculated number of character I ine times is usual I y an integer plus a fraction to 
-		/// get exactly a 50 or 60Hz vertical refresh rate. The integer number of character line times minus one is programmed in the 7 bit write-only Vertical Total Register; 
+		/// The vertical frequency of VS is determined by both R4 and R5.The calculated number of character I ine times is usual I y an integer plus a fraction to
+		/// get exactly a 50 or 60Hz vertical refresh rate. The integer number of character line times minus one is programmed in the 7 bit write-only Vertical Total Register;
 		/// the fraction is programmed in the 5 bit write-only Vertical Scan Adjust Register as a number of scan line times.
 		/// </summary>
 		private const int V_TOTAL = 4;
@@ -2227,8 +2226,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private const int V_SYNC_POS = 7;
 		/// <summary>
-		/// This 2 bit write-only  register controls the raster scan mode(see Figure 11 ). When bit 0 and bit 1 are reset, or bit 0 is reset and bit 1 set, 
-		/// the non· interlace raster scan mode is selected.Two interlace modes are available.Both are interlaced 2 fields per frame.When bit 0 is set and bit 1 is reset, 
+		/// This 2 bit write-only register controls the raster scan mode(see Figure 11 ). When bit 0 and bit 1 are reset, or bit 0 is reset and bit 1 set,
+		/// the non· interlace raster scan mode is selected.Two interlace modes are available.Both are interlaced 2 fields per frame.When bit 0 is set and bit 1 is reset,
 		/// the interlace sync raster scan mode is selected.Also when bit 0 and bit 1 are set, the interlace sync and video raster scan mode is selected.
 		/// </summary>
 		private const int INTERLACE_MODE = 8;
@@ -2240,9 +2239,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		/* Other Main Register Constants */
 		/// <summary>
-		/// This 7 bit write-only register controls the cursor format(see Figure 10). Bit 5 is the blink timing control.When bit 5 is low, the blink frequency is 1/16 of the 
+		/// This 7 bit write-only register controls the cursor format(see Figure 10). Bit 5 is the blink timing control.When bit 5 is low, the blink frequency is 1/16 of the
 		/// vertical field rate, and when bit 5 is high, the blink frequency is 1/32 of the vertical field rate.Bit 6 is used to enable a blink.
-		/// The cursor start scan line is set by the lower 5 bits. 
+		/// The cursor start scan line is set by the lower 5 bits.
 		/// </summary>
 		private const int CURSOR_START = 10;
 		/// <summary>
@@ -2359,11 +2358,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			ser.Sync("CUR_Field_Counter", ref CUR_Field_Counter);
 			//ser.Sync("VS", ref VS);
 			ser.EndSection();
-
-			/*
-			 * int ;
-		int ;
-             * */
 		}
 
 		#endregion

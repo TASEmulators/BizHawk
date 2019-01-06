@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run4();
 							on = Run1();
 							break;
-							
+
 						case 0x06:
 						case 0x0a:
 							Run5();
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						case 0x09:
 							on = Run5();
 							break;
-							
+
 						case 0x08:
 							on = Run9();
 							break;

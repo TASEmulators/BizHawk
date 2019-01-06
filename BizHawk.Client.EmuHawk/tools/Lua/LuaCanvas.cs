@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"setLocation",
 			"Sets the location of the canvas window")]
-		public void SetLocation(int x, int y) 
+		public void SetLocation(int x, int y)
 		{
 			StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			Left = (int)x;

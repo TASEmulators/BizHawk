@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_hmove.SyncState(ser);
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
-			// add everything to the state 
+			// add everything to the state
 			ser.Sync("Bus_State", ref BusState);
 
 			ser.Sync("PF0_up", ref _pf0Update);

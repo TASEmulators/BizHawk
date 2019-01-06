@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadWRAM(int addr)
 		{
-			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];		
+			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];
 		}
 
 		public override byte ReadPRG(int addr)
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x4000) { return ROM[(reg[2] << 13) + (addr & 0x1FFF)]; }
 			if (addr < 0x6000) { return ROM[(reg[3] << 13) + (addr & 0x1FFF)]; }
 
-			return ROM[(lastBank << 13) + (addr & 0x1FFF)];		
+			return ROM[(lastBank << 13) + (addr & 0x1FFF)];
 		}
 
 		public override void WriteEXP(int addr, byte value)

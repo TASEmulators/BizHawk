@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 					return GifWriter.GifToken.LoadFromConfig();
 				}
-				
+
 				return null;
 			}
 		}

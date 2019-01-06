@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				var clp = new CueLineParser(line);
 
 				string key = clp.ReadToken().ToUpperInvariant();
-				
+
 				//remove nonsense at beginning
 				if (!IN_Strict)
 				{

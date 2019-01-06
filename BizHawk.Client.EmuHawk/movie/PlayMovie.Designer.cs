@@ -59,9 +59,9 @@
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// Cancel
-			// 
+			//
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(687, 363);
@@ -71,9 +71,9 @@
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
+			//
 			// OK
-			// 
+			//
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.Location = new System.Drawing.Point(606, 363);
 			this.OK.Name = "OK";
@@ -83,9 +83,9 @@
 			this.toolTip1.SetToolTip(this.OK, "Load selected movie");
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
+			//
 			// BrowseMovies
-			// 
+			//
 			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.BrowseMovies.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.BrowseMovies.Location = new System.Drawing.Point(12, 364);
@@ -95,15 +95,15 @@
 			this.toolTip1.SetToolTip(this.BrowseMovies, "Browse for additional movie files");
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
-			// 
+			//
 			// DetailsView
-			// 
-			this.DetailsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.DetailsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.DetailsView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader5,
-            this.columnHeader6});
+			this.columnHeader5,
+			this.columnHeader6});
 			this.DetailsView.FullRowSelect = true;
 			this.DetailsView.GridLines = true;
 			this.DetailsView.HideSelection = false;
@@ -115,21 +115,21 @@
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
 			this.DetailsView.View = System.Windows.Forms.View.Details;
 			this.DetailsView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.DetailsView_ColumnClick);
-			// 
+			//
 			// columnHeader5
-			// 
+			//
 			this.columnHeader5.Text = "Header";
 			this.columnHeader5.Width = 102;
-			// 
+			//
 			// columnHeader6
-			// 
+			//
 			this.columnHeader6.Text = "Value";
 			this.columnHeader6.Width = 121;
-			// 
+			//
 			// groupBox1
-			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.SubtitlesBtn);
 			this.groupBox1.Controls.Add(this.CommentsBtn);
 			this.groupBox1.Controls.Add(this.DetailsView);
@@ -139,9 +139,9 @@
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Details";
-			// 
+			//
 			// SubtitlesBtn
-			// 
+			//
 			this.SubtitlesBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.SubtitlesBtn.Enabled = false;
 			this.SubtitlesBtn.Location = new System.Drawing.Point(125, 286);
@@ -151,9 +151,9 @@
 			this.SubtitlesBtn.Text = "Subtitles";
 			this.SubtitlesBtn.UseVisualStyleBackColor = true;
 			this.SubtitlesBtn.Click += new System.EventHandler(this.SubtitlesBtn_Click);
-			// 
+			//
 			// CommentsBtn
-			// 
+			//
 			this.CommentsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.CommentsBtn.Enabled = false;
 			this.CommentsBtn.Location = new System.Drawing.Point(15, 286);
@@ -163,18 +163,18 @@
 			this.CommentsBtn.Text = "Comments";
 			this.CommentsBtn.UseVisualStyleBackColor = true;
 			this.CommentsBtn.Click += new System.EventHandler(this.CommentsBtn_Click);
-			// 
+			//
 			// MovieCount
-			// 
+			//
 			this.MovieCount.AutoSize = true;
 			this.MovieCount.Location = new System.Drawing.Point(12, 9);
 			this.MovieCount.Name = "MovieCount";
 			this.MovieCount.Size = new System.Drawing.Size(31, 13);
 			this.MovieCount.TabIndex = 7;
 			this.MovieCount.Text = "        ";
-			// 
+			//
 			// ReadOnlyCheckBox
-			// 
+			//
 			this.ReadOnlyCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.Checked = true;
@@ -185,9 +185,9 @@
 			this.ReadOnlyCheckBox.TabIndex = 45;
 			this.ReadOnlyCheckBox.Text = "Read only";
 			this.ReadOnlyCheckBox.UseVisualStyleBackColor = true;
-			// 
+			//
 			// IncludeSubDirectories
-			// 
+			//
 			this.IncludeSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.IncludeSubDirectories.AutoSize = true;
 			this.IncludeSubDirectories.Location = new System.Drawing.Point(94, 375);
@@ -197,9 +197,9 @@
 			this.IncludeSubDirectories.Text = "Include Subdirectories";
 			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
-			// 
+			//
 			// Scan
-			// 
+			//
 			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.Scan.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Scan;
 			this.Scan.Location = new System.Drawing.Point(49, 364);
@@ -209,9 +209,9 @@
 			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
 			this.Scan.UseVisualStyleBackColor = true;
 			this.Scan.Click += new System.EventHandler(this.Scan_Click);
-			// 
+			//
 			// MatchHashCheckBox
-			// 
+			//
 			this.MatchHashCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MatchHashCheckBox.AutoSize = true;
 			this.MatchHashCheckBox.Location = new System.Drawing.Point(94, 357);
@@ -221,24 +221,24 @@
 			this.MatchHashCheckBox.Text = "Match current game hash";
 			this.MatchHashCheckBox.UseVisualStyleBackColor = true;
 			this.MatchHashCheckBox.CheckedChanged += new System.EventHandler(this.MatchHashCheckBox_CheckedChanged);
-			// 
+			//
 			// contextMenuStrip1
-			// 
+			//
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem});
+			this.editToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.Size = new System.Drawing.Size(93, 26);
-			// 
+			//
 			// editToolStripMenuItem
-			// 
+			//
 			this.editToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
 			this.editToolStripMenuItem.Text = "&Edit";
 			this.editToolStripMenuItem.Click += new System.EventHandler(this.EditMenuItem_Click);
-			// 
+			//
 			// StopOnFrameCheckbox
-			// 
+			//
 			this.StopOnFrameCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StopOnFrameCheckbox.AutoSize = true;
 			this.StopOnFrameCheckbox.Location = new System.Drawing.Point(244, 357);
@@ -248,9 +248,9 @@
 			this.StopOnFrameCheckbox.Text = "Stop on frame:";
 			this.StopOnFrameCheckbox.UseVisualStyleBackColor = true;
 			this.StopOnFrameCheckbox.CheckedChanged += new System.EventHandler(this.StopOnFrameCheckbox_CheckedChanged);
-			// 
+			//
 			// StopOnFrameTextBox
-			// 
+			//
 			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.WatchSize.DWord;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
@@ -262,19 +262,19 @@
 			this.StopOnFrameTextBox.TabIndex = 58;
 			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
 			this.StopOnFrameTextBox.TextChanged += new System.EventHandler(this.StopOnFrameTextBox_TextChanged_1);
-			// 
+			//
 			// MovieView
-			// 
+			//
 			this.MovieView.AllowDrop = true;
-			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.MovieView.BlazingFast = false;
 			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
+			this.columnHeader1,
+			this.columnHeader2,
+			this.columnHeader3,
+			this.columnHeader4});
 			this.MovieView.ContextMenuStrip = this.contextMenuStrip1;
 			this.MovieView.FullRowSelect = true;
 			this.MovieView.GridLines = true;
@@ -296,29 +296,29 @@
 			this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
 			this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
 			this.MovieView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MovieView_KeyDown);
-			// 
+			//
 			// columnHeader1
-			// 
+			//
 			this.columnHeader1.Text = "File";
 			this.columnHeader1.Width = 221;
-			// 
+			//
 			// columnHeader2
-			// 
+			//
 			this.columnHeader2.Text = "SysID";
 			this.columnHeader2.Width = 43;
-			// 
+			//
 			// columnHeader3
-			// 
+			//
 			this.columnHeader3.Text = "Game";
 			this.columnHeader3.Width = 129;
-			// 
+			//
 			// columnHeader4
-			// 
+			//
 			this.columnHeader4.Text = "Length (est.)";
 			this.columnHeader4.Width = 82;
-			// 
+			//
 			// LastFrameCheckbox
-			// 
+			//
 			this.LastFrameCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LastFrameCheckbox.AutoSize = true;
 			this.LastFrameCheckbox.Location = new System.Drawing.Point(244, 376);
@@ -328,9 +328,9 @@
 			this.LastFrameCheckbox.Text = "Last frame";
 			this.LastFrameCheckbox.UseVisualStyleBackColor = true;
 			this.LastFrameCheckbox.CheckedChanged += new System.EventHandler(this.LastFrameCheckbox_CheckedChanged);
-			// 
+			//
 			// TurboCheckbox
-			// 
+			//
 			this.TurboCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.TurboCheckbox.AutoSize = true;
 			this.TurboCheckbox.Location = new System.Drawing.Point(340, 376);
@@ -339,9 +339,9 @@
 			this.TurboCheckbox.TabIndex = 60;
 			this.TurboCheckbox.Text = "Turbo";
 			this.TurboCheckbox.UseVisualStyleBackColor = true;
-			// 
+			//
 			// PlayMovie
-			// 
+			//
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

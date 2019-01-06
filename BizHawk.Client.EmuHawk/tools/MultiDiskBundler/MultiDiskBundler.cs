@@ -114,8 +114,8 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.OK;
 				Close();
 
-                var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-                GlobalWin.MainForm.LoadRom(fileInfo.FullName, lra);
+				var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+				GlobalWin.MainForm.LoadRom(fileInfo.FullName, lra);
 			}
 		}
 
@@ -131,18 +131,18 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-            var mdf = new MultiDiskFileSelector
-            {
-                Location = UIHelper.Scale(new Point(7, 12)),
-                Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
-                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top                
+			var mdf = new MultiDiskFileSelector
+			{
+				Location = UIHelper.Scale(new Point(7, 12)),
+				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
-            mdf.SystemString = SystemDropDown.SelectedText;
+			mdf.SystemString = SystemDropDown.SelectedText;
 
 
-            groupBox.Controls.Add(mdf);
+			groupBox.Controls.Add(mdf);
 
 			FileSelectorPanel.Controls.Add(groupBox);
 		}
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 							"Asset",
 							new XAttribute("FileName", GetRelativePath(basePath, n))
 						))
-					) 
+					)
 				);
 
 				SaveRunButton.Enabled = true;

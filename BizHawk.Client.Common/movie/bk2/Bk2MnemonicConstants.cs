@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 						key = key.Substring(3);
 					}
 				}
-				
+
 
 				if (_systemOverrides.ContainsKey(Global.Emulator.SystemId) && _systemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 			["X2"] = '2',
 			["X3"] = '3',
 			["X4"] = '4',
-				
+
 			["Y1"] = '1',
 			["Y2"] = '2',
 			["Y3"] = '3',
@@ -280,7 +280,7 @@ namespace BizHawk.Client.Common
 				["Cursor Left/Right"] = 'l',
 				["Space"] = '_'
 			},
-            ["ZXSpectrum"] = new Dictionary<string, char>
+			["ZXSpectrum"] = new Dictionary<string, char>
 			{
 				["Caps Shift"] = '^',
 				["Caps Lock"] = 'L',
@@ -309,13 +309,13 @@ namespace BizHawk.Client.Common
 				["Insert Previous Disk"] = '{',
 				["Get Disk Status"] = 's',
 				["Return"] = 'e',
-                ["Space"] = '-',
-                ["Up Cursor"] = 'u',
-                ["Down Cursor"] = 'd',
-                ["Left Cursor"] = 'l',
-                ["Right Cursor"] = 'r'
-            },
-            ["N64"] = new Dictionary<string, char>
+				["Space"] = '-',
+				["Up Cursor"] = 'u',
+				["Down Cursor"] = 'd',
+				["Left Cursor"] = 'l',
+				["Right Cursor"] = 'r'
+			},
+			["N64"] = new Dictionary<string, char>
 			{
 				["C Up"] = 'u',
 				["C Down"] = 'd',

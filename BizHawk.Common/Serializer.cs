@@ -46,7 +46,7 @@ namespace BizHawk.Common
 
 		public TextWriter TextWriter
 		{
-			get { return _tw; } 
+			get { return _tw; }
 		}
 
 		public Serializer(BinaryWriter bw)
@@ -721,7 +721,7 @@ namespace BizHawk.Common
 					}
 
 					curs = ss.Pop();
-					
+
 					// consume no data past the end of the last proper section
 					if (curs == _readerSection)
 					{

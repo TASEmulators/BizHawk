@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0x6000)
 				{
-					RAM_enable_2 = (value & 0xF0) == 0x40;		
+					RAM_enable_2 = (value & 0xF0) == 0x40;
 				}
 			}
 			else
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							instr_case = 7;
 							countdown = 8;
-						}				
+						}
 						break;
 
 					case 6:
@@ -440,7 +440,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 7:
-						// completed operations take time, so countdown a bit here. 
+						// completed operations take time, so countdown a bit here.
 						// not cycle accurate for operations like writing to all of the EEPROM, but good enough
 
 						break;

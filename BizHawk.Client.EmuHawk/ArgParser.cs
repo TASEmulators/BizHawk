@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.socketServer.initialized = true;
 				GlobalWin.socketServer.SetIp(socket_ip);
 			}
-			
+
 			//initialize mapped memory files
 			if (mmf_filename != null)
 			{

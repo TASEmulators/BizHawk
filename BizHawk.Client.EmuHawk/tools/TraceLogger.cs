@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private int FileSizeCap { get; set; }
 
 		[ConfigPersist]
-		private int DisasmColumnWidth { 
+		private int DisasmColumnWidth {
 			get { return this.Disasm.Width; }
 			set { this.Disasm.Width = value; }
 		}

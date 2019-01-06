@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString());
 		}
-		
+
 		private void UpdateList()
 		{
 			GenerateFilteredList();

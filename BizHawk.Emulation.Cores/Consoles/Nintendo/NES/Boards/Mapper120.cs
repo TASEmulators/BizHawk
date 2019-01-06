@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public sealed class Mapper120 : NES.NESBoardBase
 	{
 		//Used by Tobidase Daisakusen (FDS Conversion).  Undocumented by Disch docs, this implementation is based on FCEUX
-		
+
 		byte prg_reg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)

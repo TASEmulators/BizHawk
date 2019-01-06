@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					return DisplayType.NTSC;
 				}
-				
+
 				return DisplayType.PAL;
 			}
 		}

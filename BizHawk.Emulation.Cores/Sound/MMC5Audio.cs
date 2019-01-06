@@ -164,9 +164,9 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		private readonly Pulse[] pulse = new Pulse[2];
-		
+
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="addr">0x5000..0x5015</param>
 		/// <param name="val"></param>

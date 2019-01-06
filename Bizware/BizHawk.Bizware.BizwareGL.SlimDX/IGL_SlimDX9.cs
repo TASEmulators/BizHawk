@@ -125,7 +125,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				flags = CreateFlags.HardwareVertexProcessing;
 			}
-			
+
 			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
 		}
@@ -330,7 +330,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
-			
+
 			var mybs = rsBlend as CacheBlendState;
 			if (mybs.Enabled)
 			{
@@ -413,13 +413,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				byte usageIndex = 0;
 				switch(item.Usage)
 				{
-					case AttributeUsage.Position: 
-						usage = DeclarationUsage.Position; 
+					case AttributeUsage.Position:
+						usage = DeclarationUsage.Position;
 						break;
-					case AttributeUsage.Texcoord0: 
+					case AttributeUsage.Texcoord0:
 						usage = DeclarationUsage.TextureCoordinate;
 						break;
-					case AttributeUsage.Texcoord1: 
+					case AttributeUsage.Texcoord1:
 						usage = DeclarationUsage.TextureCoordinate;
 						usageIndex = 1;
 						break;
@@ -494,7 +494,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 						if (fs.MapCodeToNative != null && ct == fsct) if (fs.MapCodeToNative.ContainsKey(key)) name = fs.MapCodeToNative[key];
 						if (vs.MapCodeToNative != null && ct == vsct) if (vs.MapCodeToNative.ContainsKey(key)) name = vs.MapCodeToNative[key];
 					}
-					
+
 					ui.Name = name;
 					uw.Description = descr;
 					uw.EffectHandle = handle;
@@ -573,7 +573,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			dev.PixelShader = pw.FragmentShader.ps;
 			dev.VertexShader = pw.VertexShader.vs;
 			dev.VertexDeclaration = pw.VertexDeclaration;
-			
+
 			//not helpful...
 			//pw.vsct.SetDefaults(dev);
 			//pw.fsct.SetDefaults(dev);
@@ -954,7 +954,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public unsafe void DrawArrays(gl.PrimitiveType mode, int first, int count)
 		{
 			PrimitiveType pt = PrimitiveType.TriangleStrip;
-			
+
 			if(mode != gl.PrimitiveType.TriangleStrip)
 				throw new NotSupportedException();
 
@@ -968,7 +968,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			dev.DrawUserPrimitives(pt, primCount, (void*)ptr, (uint)stride);
 		}
 
-		
+
 		public unsafe void BindArrayData(void* pData)
 		{
 			_pVertexData = new IntPtr(pData);
@@ -989,7 +989,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		}
 
 
-	
+
 	} //class IGL_SlimDX
 
 }

@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 			//3. When NLua assembly attempts to load, it can't find it
 			//I. if LuaInterface is selected by the user, we switch to requesting that.
 			//     (those DLLs are built into the output/DLL directory)
-			//II. if NLua is selected by the user, we skip over this part; 
+			//II. if NLua is selected by the user, we skip over this part;
 			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
 			if (new AssemblyName(requested).Name == "NLua")
 			{
@@ -397,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 						if (usenlua_key.Contains("false"))
 							UseNLua = false;
 				}
-				
+
 				if (UseNLua) { }
 				else requested = "LuaInterface";
 			}

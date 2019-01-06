@@ -718,7 +718,7 @@ namespace BizHawk.Client.EmuHawk
 					types = DWordWatch.ValidTypes;
 					break;
 			}
-			
+
 			foreach (var type in types)
 			{
 				var typeStr = Watch.DisplayTypeToString(type);

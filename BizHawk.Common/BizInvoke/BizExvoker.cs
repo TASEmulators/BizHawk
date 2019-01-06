@@ -86,7 +86,7 @@ namespace BizHawk.Common.BizInvoke
 			private readonly Dictionary<string, IntPtr> EntryPoints = new Dictionary<string, IntPtr>();
 
 			private readonly List<Delegate> Delegates = new List<Delegate>();
-			
+
 			public ExvokerImpl(object o, DelegateStorage d, ICallingConventionAdapter a)
 			{
 				foreach (var sdt in d.DelegateTypes)
@@ -139,7 +139,7 @@ namespace BizHawk.Common.BizInvoke
 		public string EntryPoint { get; set; }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class. 
+		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class.
 		/// </summary>
 		/// <param name="c">unmanaged calling convention</param>
 		public BizExportAttribute(CallingConvention c)

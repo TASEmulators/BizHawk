@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 					//since user hasnt ever needed to set the disc, make sure it's set here
 					//UPDATE: do it below
-					//Global.StickyXORAdapter.SetFloat(_discSelectName, psx.CurrentDiscIndexMounted);	
+					//Global.StickyXORAdapter.SetFloat(_discSelectName, psx.CurrentDiscIndexMounted);
 				}
 				else
 				{
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//emergency measure: if no selection, set no disc
 			if (lvDiscs.SelectedIndices.Count == 0)
-			  Global.StickyXORAdapter.SetFloat(_discSelectName, 0);	
+			  Global.StickyXORAdapter.SetFloat(_discSelectName, 0);
 			else Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
 		}
 
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-	
+
 
 
 

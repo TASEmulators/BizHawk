@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 						message += subparts[i] + ' ';
 					}
 
-					Add(new Subtitle 
+					Add(new Subtitle
 					{
 						Frame = int.Parse(subparts[1]),
 						X = int.Parse(subparts[2]),
@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 			}
-			
+
 			return false;
 		}
 

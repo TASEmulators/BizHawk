@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			mSynclessConfigFile = ofd.FileName;
-			
+
 			//---- this is pretty crappy:
 			var lines = File.ReadAllLines(mSynclessConfigFile);
 
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			mFramesDirectory = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(mSynclessConfigFile)), framesdir);
-			
+
 			// scan frames directory
 			int frame = 1; // hacky! skip frame 0, because we have a problem with dumping that frame somehow
 			for (;;)
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 					pngPath = png,
 					wavPath = wav
 				});
-				
+
 				frame++;
 			}
 

@@ -34,12 +34,12 @@ namespace BizHawk.Client.EmuHawk
 			{ '5', 7 },  // 0111
 			{ '6', 8 },  // 1000
 			{ 'B', 9 },  // 1001
-			{ 'C', 10 }, // 1010 
-			{ '8', 11 }, // 1011 
-			{ 'A', 12 }, // 1100 
-			{ '2', 13 }, // 1101 
-			{ '3', 14 }, // 1110 
-			{ 'E', 15 }  // 1111 
+			{ 'C', 10 }, // 1010
+			{ '8', 11 }, // 1011
+			{ 'A', 12 }, // 1100
+			{ '2', 13 }, // 1101
+			{ '3', 14 }, // 1110
+			{ 'E', 15 }  // 1111
 		};
 
 		private bool _processing;
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
 			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
 			int x;
-  
+
 			// Getting Value
 			if (code.Length > 0)
 			{
@@ -107,20 +107,20 @@ namespace BizHawk.Client.EmuHawk
 				_gameGenieTable.TryGetValue(code[2], out x);
 				add = x << 12;
 			}
-			
+
 			if (code.Length > 3)
 			{
 				_gameGenieTable.TryGetValue(code[3], out x);
 				add |= x << 4;
 			}
-			
+
 			if (code.Length > 4)
 			{
 				_gameGenieTable.TryGetValue(code[4], out x);
 				add |= (x & 0xC) << 6;
 				add |= (x & 0x3) << 22;
 			}
-			
+
 			if (code.Length > 5)
 			{
 				_gameGenieTable.TryGetValue(code[5], out x);
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 				add |= (x & 0x3) << 10;
 			}
 		}
-		
+
 		private static string SnesGGEncode(int val, int add)
 		{
 			// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			num[5] = ((add & 0x300000) >> 18) | ((add & 0x00000C) >> 2); // cduv
 			num[6] = ((add & 0x000003) << 2) | ((add & 0x0C0000) >> 18); // wxef
 			num[7] = ((add & 0x030000) >> 14) | ((add & 0x000C00) >> 10); // ghmn
-			
+
 			for (int i = 0; i < 8; i++)
 			{
 				code += letters[num[i]];
@@ -361,4 +361,4 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 	}
-} 
+}

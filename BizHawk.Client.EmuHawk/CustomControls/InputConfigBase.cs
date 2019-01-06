@@ -20,6 +20,6 @@ namespace BizHawk.Client.EmuHawk
 				dups[stbc.Text] = true;
 			}
 		}
-		
+
 	}
 }

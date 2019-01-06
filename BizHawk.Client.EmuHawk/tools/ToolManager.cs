@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				throw new ArgumentException($"Type {toolType.Name} does not implement IToolForm.");
 			}
-			
+
 			// The type[] in parameter is used to avoid an ambigous name exception
 			MethodInfo method = GetType().GetMethod("Load", new Type[] { typeof(bool) }).MakeGenericMethod(toolType);
 			return (IToolForm)method.Invoke(this, new object[] { focus });
@@ -490,7 +490,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
 				{
 					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
-					
+
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
 						tool.Restart();
@@ -748,28 +748,28 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<ToolAttribute>()
 				.FirstOrDefault();
 
-            // start with the assumption that if no supported systems are mentioned and no unsupported cores are mentioned
-            // then this is available for all
-            bool supported = true;
-            
-            if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
-			{
-                // supported systems are available
-                supported = attr.SupportedSystems.Contains(Global.Emulator.SystemId);
+			// start with the assumption that if no supported systems are mentioned and no unsupported cores are mentioned
+			// then this is available for all
+			bool supported = true;
 
-                if (supported)
-                {
-                    // check for a core not supported override
-                    if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
-                        supported = false; 
-                }
+			if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
+			{
+				// supported systems are available
+				supported = attr.SupportedSystems.Contains(Global.Emulator.SystemId);
+
+				if (supported)
+				{
+					// check for a core not supported override
+					if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+						supported = false;
+				}
 			}
-            else if (attr?.UnsupportedCores != null && attr.UnsupportedCores.Any())
-            {
-                // no supported system specified, but unsupported cores are
-                if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
-                    supported = false;
-            }
+			else if (attr?.UnsupportedCores != null && attr.UnsupportedCores.Any())
+			{
+				// no supported system specified, but unsupported cores are
+				if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+					supported = false;
+			}
 
 			return supported;
 		}

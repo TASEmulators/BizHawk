@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else
 				{
 					if (address < 0x8000) return RomData[address & 0x7FFF];
-					else return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];					
+					else return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];
 				}
 			}
 			else

@@ -20,5 +20,5 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	
+
 }

@@ -48,12 +48,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void SetPipeline(Pipeline pipeline)
 		{
-		
+
 		}
 
 		public void SetDefaultPipeline()
 		{
-	
+
 		}
 
 		public void SetModulateColorWhite()
@@ -76,7 +76,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			float b = color.B / 255.0f;
 			float a = color.A / 255.0f;
 
-			float[][] colorMatrixElements = { 
+			float[][] colorMatrixElements = {
 			 new float[] {r,  0,  0,  0,  0},
 			 new float[] {0,  g,  0,  0,  0},
 			 new float[] {0,  0,  b,  0,  0},
@@ -261,10 +261,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-		
+
 		}
 
-		
+
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; private set; }
 		public IGL_GdiPlus Gdi;

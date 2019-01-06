@@ -6,7 +6,7 @@
 	Quinty (J)
 	Namcot Mahjong 3
 	Dragon Spirit - Aratanaru Densetsu
-	
+
 	This is the same as Mapper206, with the following exception:
 	CHR support is increased to 128KB by connecting PPU's A12 line to the CHR ROM's A16 line.
 	For example, mask the CHR ROM 1K bank output from the mapper by $3F, and then OR it with $40 if the PPU address was >= $1000.

@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 				DisassemblerView.BlazingFast = false;
 			}
 		}
-		
+
 		private void Disassemble()
 		{
 			int lineCount = DisassemblerView.NumberOfVisibleRows;

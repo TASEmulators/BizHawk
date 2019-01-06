@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		protected override int Get_PRGBank_8K(int addr)
 		{
-			if (mode) 
+			if (mode)
 			  return (mmc3.Get_PRGBank_8K(addr)&0xF) + block * (128 / 8);
 			int block_offset = addr >> 13;
 			return prg * 4 + block_offset;

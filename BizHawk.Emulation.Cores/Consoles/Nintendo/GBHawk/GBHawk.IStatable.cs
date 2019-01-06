@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("Acc_X_state", ref Acc_X_state);
 			ser.Sync("Acc_Y_state", ref Acc_Y_state);
 			ser.Sync("in_vblank", ref in_vblank);
-			ser.Sync("in_vblank_old", ref in_vblank_old);	
+			ser.Sync("in_vblank_old", ref in_vblank_old);
 			ser.Sync("vblank_rise", ref vblank_rise);
 			ser.Sync("GB_bios_register", ref GB_bios_register);
 			ser.Sync("input_register", ref input_register);

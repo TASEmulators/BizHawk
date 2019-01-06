@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			MemoryCallbacks.CallReads(addr, "System Bus");
 			addr_access = addr;
-			
+
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
-					return RAM[addr - 0xE000]; 
+					return RAM[addr - 0xE000];
 				}
 				else if ((addr >= 0xF000) && (addr < 0xFE00))
 				{
@@ -66,10 +66,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					return ZP_RAM[addr - 0xFF80];
 				}
-				
+
 				return 0xFF;
 			}
-			
+
 			if (addr < 0x900)
 			{
 				if (addr < 0x100)
@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
-					OAM[addr - 0xFE00] = value; 
+					OAM[addr - 0xFE00] = value;
 				}
 				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
 				{

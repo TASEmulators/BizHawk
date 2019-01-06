@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	[Core("Saturnus", "Mednafen Team", true, true, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class Saturnus : WaterboxCore,
-		IDriveLight, IRegionable, 
+		IDriveLight, IRegionable,
 		ISettable<Saturnus.Settings, Saturnus.SyncSettings>
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
@@ -500,7 +500,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			// any managed pointers that we sent to the core need to be resent now!
 			SetCdCallbacks();
 
-			//todo natt: evaluate the philosophy of this. 
+			//todo natt: evaluate the philosophy of this.
 			//i think it's sound: loadstate will replace the last values set by frontend; so this should re-assert them.
 			//or we could make sure values from the frontend are stored in a segment designed with the appropriate waterboxing rules, but that seems tricky...
 			//anyway, in this case, I did it before frameadvance instead, so that's just as good (probably?)
@@ -671,7 +671,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			//with IncorrectAR, only 352 and 341 will show up
 			//that is, 330 is forced to 352 so mednafen's presentation can display it pristine no matter what mode it is
 			//(it's mednafen's equivalent of a more debuggish mode, I guess)
-			if (BufferWidth == 352) { } //a large basic framebuffer size 
+			if (BufferWidth == 352) { } //a large basic framebuffer size
 			else if (BufferWidth == 341) { } //a large basic framebuffer size with overscan cropped
 			else if (BufferWidth == 330) { } //a small basic framebuffer
 			else if (BufferWidth == 320) { } //a small basic framebuffer with overscan cropped
@@ -703,7 +703,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					//note: these are never high resolution (use a 2x window size if you want to see high resolution content)
 					if (_isPal)
 					{
-						_virtualWidth = (_settings.HOverscan ? 365 : 354); 
+						_virtualWidth = (_settings.HOverscan ? 365 : 354);
 						_virtualHeight = slHeight;
 					}
 					else
@@ -726,7 +726,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					{
 						//ideally we want a height of 254, but we may have changed the overscan settings
 						_virtualWidth = (_settings.HOverscan ? 330 : 320);
-						_virtualHeight = BufferHeight * 254 / 240; 
+						_virtualHeight = BufferHeight * 254 / 240;
 					}
 					break;
 

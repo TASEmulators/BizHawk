@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 					Console.WriteLine("NeedsRomAsPath: {0}", descr.NeedsRomAsPath);
 					Console.WriteLine("AcceptsArchives: {0}", descr.NeedsArchives);
 					Console.WriteLine("SupportsNoGame: {0}", descr.SupportsNoGame);
-					
+
 					foreach (var v in descr.Variables.Values)
 						Console.WriteLine(v);
 				}

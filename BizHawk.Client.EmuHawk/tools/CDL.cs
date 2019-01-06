@@ -8,8 +8,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
-//TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
-  //perhaps missing domains shouldnt fail a check
+//TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it?
+//perhaps missing domains shouldnt fail a check
 //OR - just add a contextmenu option to the listview item that selects it for export.
 //TODO - add a contextmenu option which warps to the hexeditor with the provided domain selected for visualizing on the hex editor.
 //TODO - consider setting colors for columns in CDL
@@ -376,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file == null)
 				return false;
-				
+
 			SetCurrentFilename(file.FullName);
 			RunSave();
 			return true;
@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-	
+
 
 		private void tsbViewStyle_SelectedIndexChanged(object sender, EventArgs e)
 		{

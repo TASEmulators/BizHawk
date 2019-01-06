@@ -5,7 +5,7 @@ using System.Text;
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
-	/// Abstract class to represent a file/directory node 
+	/// Abstract class to represent a file/directory node
 	/// </summary>
 	public class ISONode
 	{

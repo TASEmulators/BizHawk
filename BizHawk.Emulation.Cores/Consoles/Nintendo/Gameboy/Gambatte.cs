@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					{
 						throw new InvalidOperationException("gambatte_loadgbcbios() returned non-zero (bios error)");
 					}
-				}				
+				}
 
 				// set real default colors (before anyone mucks with them at all)
 				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public IntPtr _oam = IntPtr.Zero;
 
 		public GPUMemoryAreas GetGPU()
-		{		
+		{
 			int unused = 0;
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)

@@ -9,7 +9,7 @@ using System.Linq;
 //  public string DisplayName;
 //  public string Bindings;
 // }
-// ...also. We should consider using something other than DisplayName for keying, maybe make a KEYNAME distinct from displayname. 
+// ...also. We should consider using something other than DisplayName for keying, maybe make a KEYNAME distinct from displayname.
 // displayname is OK for now though.
 namespace BizHawk.Client.Common
 {

@@ -31,12 +31,12 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
 			this.ToolBoxStrip = new ToolStripEx();
 			this.SuspendLayout();
-			// 
+			//
 			// ToolBoxStrip
-			// 
-			this.ToolBoxStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.ToolBoxStrip.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.ToolBoxStrip.AutoSize = false;
 			this.ToolBoxStrip.BackColor = System.Drawing.SystemColors.Control;
 			this.ToolBoxStrip.ClickThrough = true;
@@ -50,9 +50,9 @@
 			this.ToolBoxStrip.Stretch = true;
 			this.ToolBoxStrip.TabIndex = 0;
 			this.ToolBoxStrip.TabStop = true;
-			// 
+			//
 			// ToolBox
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(140, 183);

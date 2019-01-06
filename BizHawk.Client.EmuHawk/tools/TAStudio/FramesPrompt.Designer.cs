@@ -33,9 +33,9 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumFramesBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.SuspendLayout();
-			// 
+			//
 			// OkBtn
-			// 
+			//
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OkBtn.Location = new System.Drawing.Point(67, 47);
 			this.OkBtn.Name = "OkBtn";
@@ -44,9 +44,9 @@
 			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
+			//
 			// CancelBtn
-			// 
+			//
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CancelBtn.Location = new System.Drawing.Point(134, 47);
@@ -56,18 +56,18 @@
 			this.CancelBtn.Text = "&Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 20);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(120, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Insert number of frames:";
-			// 
+			//
 			// NumFramesBox
-			// 
+			//
 			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Word;
 			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
@@ -78,9 +78,9 @@
 			this.NumFramesBox.TabIndex = 3;
 			this.NumFramesBox.Text = "1";
 			this.NumFramesBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
-			// 
+			//
 			// FramesPrompt
-			// 
+			//
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

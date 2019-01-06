@@ -34,48 +34,48 @@
 			this.HexViewControl = new BizHawk.Client.EmuHawk.HexView();
 			this.HexMenu.SuspendLayout();
 			this.SuspendLayout();
-			// 
+			//
 			// HexMenu
-			// 
+			//
 			this.HexMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu});
+			this.FileSubMenu});
 			this.HexMenu.Location = new System.Drawing.Point(0, 0);
 			this.HexMenu.Name = "HexMenu";
 			this.HexMenu.Size = new System.Drawing.Size(448, 24);
 			this.HexMenu.TabIndex = 0;
 			this.HexMenu.Text = "menuStrip1";
-			// 
+			//
 			// FileSubMenu
-			// 
+			//
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitMenuItem});
+			this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
-			// 
+			//
 			// ExitMenuItem
-			// 
+			//
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
+			//
 			// HexViewControl
-			// 
-			this.HexViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.HexViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.HexViewControl.ArrayLength = 0;
 			this.HexViewControl.Location = new System.Drawing.Point(12, 27);
 			this.HexViewControl.Name = "HexViewControl";
 			this.HexViewControl.Size = new System.Drawing.Size(424, 231);
 			this.HexViewControl.TabIndex = 1;
 			this.HexViewControl.Text = "hexView1";
-			// 
+			//
 			// NewHexEditor
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(448, 270);

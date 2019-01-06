@@ -79,13 +79,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_page |= ((value & 0x1) << 6);
 			}
 		}
-		
+
 		public override byte ReadPRG(int addr)
 		{
 			int baseAddr = resetSwitchMode && resetFlag ? 0x80000 : 0;
 
 			if (prg_mode == false)
-			{				
+			{
 				return ROM[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
 			}
 			else

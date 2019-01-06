@@ -12,7 +12,7 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class RetroShader : IDisposable
 	{
-		//NOTE: we may need to overhaul uniform-setting infrastructure later. 
+		//NOTE: we may need to overhaul uniform-setting infrastructure later.
 		//maybe samplers will need to be set by index and not by name (I think the specs dont dictate what the sampler must be named)
 
 		public RetroShader(IGL owner, string source, bool debug = false)
@@ -103,8 +103,8 @@ namespace BizHawk.Bizware.BizwareGL
 			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 
-            float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
-            Pipeline["Time"].Set(time);
+			float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
+			Pipeline["Time"].Set(time);
 
 			int w = OutputSize.Width;
 			int h = OutputSize.Height;

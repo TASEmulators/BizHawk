@@ -117,9 +117,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
 			this.SuspendLayout();
-			// 
+			//
 			// btnCancel
-			// 
+			//
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Location = new System.Drawing.Point(473, 339);
@@ -128,9 +128,9 @@
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			// 
+			//
 			// btnOk
-			// 
+			//
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOk.Location = new System.Drawing.Point(392, 339);
 			this.btnOk.Name = "btnOk";
@@ -139,9 +139,9 @@
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
 			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-			// 
+			//
 			// groupBox1
-			// 
+			//
 			this.groupBox1.Controls.Add(this.lblScanlines);
 			this.groupBox1.Controls.Add(this.lblUserFilterName);
 			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
@@ -156,9 +156,9 @@
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
-			// 
+			//
 			// lblScanlines
-			// 
+			//
 			this.lblScanlines.AutoSize = true;
 			this.lblScanlines.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblScanlines.Location = new System.Drawing.Point(104, 39);
@@ -166,17 +166,17 @@
 			this.lblScanlines.Size = new System.Drawing.Size(15, 13);
 			this.lblScanlines.TabIndex = 11;
 			this.lblScanlines.Text = "%";
-			// 
+			//
 			// lblUserFilterName
-			// 
+			//
 			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
 			this.lblUserFilterName.Name = "lblUserFilterName";
 			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
 			this.lblUserFilterName.TabIndex = 10;
 			this.lblUserFilterName.Text = "Will contain user filter name";
-			// 
+			//
 			// btnSelectUserFilter
-			// 
+			//
 			this.btnSelectUserFilter.Location = new System.Drawing.Point(83, 88);
 			this.btnSelectUserFilter.Name = "btnSelectUserFilter";
 			this.btnSelectUserFilter.Size = new System.Drawing.Size(75, 23);
@@ -184,9 +184,9 @@
 			this.btnSelectUserFilter.Text = "Select";
 			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
 			this.btnSelectUserFilter.Click += new System.EventHandler(this.btnSelectUserFilter_Click);
-			// 
+			//
 			// rbUser
-			// 
+			//
 			this.rbUser.AutoSize = true;
 			this.rbUser.Location = new System.Drawing.Point(6, 88);
 			this.rbUser.Name = "rbUser";
@@ -195,9 +195,9 @@
 			this.rbUser.TabStop = true;
 			this.rbUser.Text = "User";
 			this.rbUser.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbNone
-			// 
+			//
 			this.rbNone.AutoSize = true;
 			this.rbNone.Location = new System.Drawing.Point(6, 19);
 			this.rbNone.Name = "rbNone";
@@ -206,9 +206,9 @@
 			this.rbNone.TabStop = true;
 			this.rbNone.Text = "None";
 			this.rbNone.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbScanlines
-			// 
+			//
 			this.rbScanlines.AutoSize = true;
 			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
 			this.rbScanlines.Name = "rbScanlines";
@@ -217,9 +217,9 @@
 			this.rbScanlines.TabStop = true;
 			this.rbScanlines.Text = "Scanlines";
 			this.rbScanlines.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbHq2x
-			// 
+			//
 			this.rbHq2x.AutoSize = true;
 			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
 			this.rbHq2x.Name = "rbHq2x";
@@ -228,9 +228,9 @@
 			this.rbHq2x.TabStop = true;
 			this.rbHq2x.Text = "Hq2x";
 			this.rbHq2x.UseVisualStyleBackColor = true;
-			// 
+			//
 			// checkLetterbox
-			// 
+			//
 			this.checkLetterbox.AutoSize = true;
 			this.checkLetterbox.Location = new System.Drawing.Point(209, 12);
 			this.checkLetterbox.Name = "checkLetterbox";
@@ -239,9 +239,9 @@
 			this.checkLetterbox.Text = "Maintain aspect ratio (letterbox)";
 			this.checkLetterbox.UseVisualStyleBackColor = true;
 			this.checkLetterbox.CheckedChanged += new System.EventHandler(this.checkLetterbox_CheckedChanged);
-			// 
+			//
 			// checkPadInteger
-			// 
+			//
 			this.checkPadInteger.AutoSize = true;
 			this.checkPadInteger.Location = new System.Drawing.Point(218, 171);
 			this.checkPadInteger.Name = "checkPadInteger";
@@ -250,9 +250,9 @@
 			this.checkPadInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
 			this.checkPadInteger.UseVisualStyleBackColor = true;
 			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.checkPadInteger_CheckedChanged);
-			// 
+			//
 			// grpFinalFilter
-			// 
+			//
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
@@ -262,9 +262,9 @@
 			this.grpFinalFilter.TabIndex = 8;
 			this.grpFinalFilter.TabStop = false;
 			this.grpFinalFilter.Text = "Final Filter";
-			// 
+			//
 			// rbFinalFilterBicubic
-			// 
+			//
 			this.rbFinalFilterBicubic.AutoSize = true;
 			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(6, 64);
 			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
@@ -273,9 +273,9 @@
 			this.rbFinalFilterBicubic.TabStop = true;
 			this.rbFinalFilterBicubic.Text = "Bicubic (shader. buggy?)";
 			this.rbFinalFilterBicubic.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbFinalFilterNone
-			// 
+			//
 			this.rbFinalFilterNone.AutoSize = true;
 			this.rbFinalFilterNone.Location = new System.Drawing.Point(6, 18);
 			this.rbFinalFilterNone.Name = "rbFinalFilterNone";
@@ -284,9 +284,9 @@
 			this.rbFinalFilterNone.TabStop = true;
 			this.rbFinalFilterNone.Text = "None";
 			this.rbFinalFilterNone.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbFinalFilterBilinear
-			// 
+			//
 			this.rbFinalFilterBilinear.AutoSize = true;
 			this.rbFinalFilterBilinear.Location = new System.Drawing.Point(6, 41);
 			this.rbFinalFilterBilinear.Name = "rbFinalFilterBilinear";
@@ -295,9 +295,9 @@
 			this.rbFinalFilterBilinear.TabStop = true;
 			this.rbFinalFilterBilinear.Text = "Bilinear";
 			this.rbFinalFilterBilinear.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbUseRaw
-			// 
+			//
 			this.rbUseRaw.AutoSize = true;
 			this.rbUseRaw.Location = new System.Drawing.Point(6, 19);
 			this.rbUseRaw.Name = "rbUseRaw";
@@ -307,9 +307,9 @@
 			this.rbUseRaw.Text = "Use 1:1 pixel size (for crispness or debugging)";
 			this.rbUseRaw.UseVisualStyleBackColor = true;
 			this.rbUseRaw.CheckedChanged += new System.EventHandler(this.rbUseRaw_CheckedChanged);
-			// 
+			//
 			// rbUseSystem
-			// 
+			//
 			this.rbUseSystem.AutoSize = true;
 			this.rbUseSystem.Location = new System.Drawing.Point(16, 58);
 			this.rbUseSystem.Name = "rbUseSystem";
@@ -319,9 +319,9 @@
 			this.rbUseSystem.Text = "Use system\'s recommendation";
 			this.rbUseSystem.UseVisualStyleBackColor = true;
 			this.rbUseSystem.CheckedChanged += new System.EventHandler(this.rbUseSystem_CheckedChanged);
-			// 
+			//
 			// grpARSelection
-			// 
+			//
 			this.grpARSelection.Controls.Add(this.txtCustomARY);
 			this.grpARSelection.Controls.Add(this.label12);
 			this.grpARSelection.Controls.Add(this.txtCustomARX);
@@ -339,32 +339,32 @@
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
-			// 
+			//
 			// txtCustomARY
-			// 
+			//
 			this.txtCustomARY.Location = new System.Drawing.Point(220, 102);
 			this.txtCustomARY.Name = "txtCustomARY";
 			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARY.TabIndex = 19;
-			// 
+			//
 			// label12
-			// 
+			//
 			this.label12.AutoSize = true;
 			this.label12.Location = new System.Drawing.Point(202, 107);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(10, 13);
 			this.label12.TabIndex = 17;
 			this.label12.Text = ":";
-			// 
+			//
 			// txtCustomARX
-			// 
+			//
 			this.txtCustomARX.Location = new System.Drawing.Point(124, 102);
 			this.txtCustomARX.Name = "txtCustomARX";
 			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARX.TabIndex = 18;
-			// 
+			//
 			// rbUseCustomRatio
-			// 
+			//
 			this.rbUseCustomRatio.AutoSize = true;
 			this.rbUseCustomRatio.Location = new System.Drawing.Point(16, 103);
 			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
@@ -373,41 +373,41 @@
 			this.rbUseCustomRatio.TabStop = true;
 			this.rbUseCustomRatio.Text = "Use custom AR:";
 			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label4
-			// 
+			//
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(13, 41);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(257, 13);
 			this.label4.TabIndex = 12;
 			this.label4.Text = "Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):";
-			// 
+			//
 			// txtCustomARHeight
-			// 
+			//
 			this.txtCustomARHeight.Location = new System.Drawing.Point(220, 79);
 			this.txtCustomARHeight.Name = "txtCustomARHeight";
 			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARHeight.TabIndex = 15;
-			// 
+			//
 			// label3
-			// 
+			//
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(202, 84);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(12, 13);
 			this.label3.TabIndex = 12;
 			this.label3.Text = "x";
-			// 
+			//
 			// txtCustomARWidth
-			// 
+			//
 			this.txtCustomARWidth.Location = new System.Drawing.Point(124, 79);
 			this.txtCustomARWidth.Name = "txtCustomARWidth";
 			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARWidth.TabIndex = 14;
-			// 
+			//
 			// rbUseCustom
-			// 
+			//
 			this.rbUseCustom.AutoSize = true;
 			this.rbUseCustom.Location = new System.Drawing.Point(16, 80);
 			this.rbUseCustom.Name = "rbUseCustom";
@@ -416,18 +416,18 @@
 			this.rbUseCustom.TabStop = true;
 			this.rbUseCustom.Text = "Use custom size:";
 			this.rbUseCustom.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label2
-			// 
+			//
 			this.label2.Location = new System.Drawing.Point(6, 128);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(398, 27);
 			this.label2.TabIndex = 17;
 			this.label2.Text = "Some people think the white noise is a great idea, and some people don\'t. Disabli" +
-    "ng this displays black instead.";
-			// 
+	"ng this displays black instead.";
+			//
 			// checkSnowyNullEmulator
-			// 
+			//
 			this.checkSnowyNullEmulator.AutoSize = true;
 			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 108);
 			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
@@ -435,9 +435,9 @@
 			this.checkSnowyNullEmulator.TabIndex = 16;
 			this.checkSnowyNullEmulator.Text = "Enable Snowy Null Emulator";
 			this.checkSnowyNullEmulator.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbOpenGL
-			// 
+			//
 			this.rbOpenGL.AutoSize = true;
 			this.rbOpenGL.Checked = true;
 			this.rbOpenGL.Location = new System.Drawing.Point(6, 103);
@@ -447,21 +447,21 @@
 			this.rbOpenGL.TabStop = true;
 			this.rbOpenGL.Text = "OpenGL";
 			this.rbOpenGL.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label5
-			// 
+			//
 			this.label5.Location = new System.Drawing.Point(21, 123);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(359, 47);
 			this.label5.TabIndex = 16;
 			this.label5.Text = " • May malfunction on some systems.\r\n • May have increased performance for OpenGL" +
-    "-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
-			// 
+	"-based emulation cores.\r\n • May have reduced performance on some systems.\r\n";
+			//
 			// tabControl1
-			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			//
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tpAR);
 			this.tabControl1.Controls.Add(this.tpDispMethod);
 			this.tabControl1.Controls.Add(this.tpMisc);
@@ -471,9 +471,9 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(536, 317);
 			this.tabControl1.TabIndex = 17;
-			// 
+			//
 			// tpAR
-			// 
+			//
 			this.tpAR.Controls.Add(this.btnDefaults);
 			this.tpAR.Controls.Add(this.cbAutoPrescale);
 			this.tpAR.Controls.Add(this.label11);
@@ -491,9 +491,9 @@
 			this.tpAR.TabIndex = 0;
 			this.tpAR.Text = "Scaling & Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbAutoPrescale
-			// 
+			//
 			this.cbAutoPrescale.AutoSize = true;
 			this.cbAutoPrescale.Location = new System.Drawing.Point(6, 171);
 			this.cbAutoPrescale.Name = "cbAutoPrescale";
@@ -501,49 +501,49 @@
 			this.cbAutoPrescale.TabIndex = 17;
 			this.cbAutoPrescale.Text = "Auto Prescale";
 			this.cbAutoPrescale.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label11
-			// 
+			//
 			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(140, 11);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(14, 13);
 			this.label11.TabIndex = 16;
 			this.label11.Text = "X";
-			// 
+			//
 			// label10
-			// 
+			//
 			this.label10.AutoSize = true;
 			this.label10.Location = new System.Drawing.Point(7, 11);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(76, 13);
 			this.label10.TabIndex = 15;
 			this.label10.Text = "User Prescale:";
-			// 
+			//
 			// nudPrescale
-			// 
+			//
 			this.nudPrescale.Location = new System.Drawing.Point(93, 7);
 			this.nudPrescale.Maximum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
+			16,
+			0,
+			0,
+			0});
 			this.nudPrescale.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.nudPrescale.Name = "nudPrescale";
 			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
 			this.nudPrescale.TabIndex = 14;
 			this.nudPrescale.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
+			1,
+			0,
+			0,
+			0});
+			//
 			// tpDispMethod
-			// 
+			//
 			this.tpDispMethod.Controls.Add(this.label6);
 			this.tpDispMethod.Controls.Add(this.groupBox3);
 			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
@@ -552,17 +552,17 @@
 			this.tpDispMethod.TabIndex = 2;
 			this.tpDispMethod.Text = "Display Method";
 			this.tpDispMethod.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label6
-			// 
+			//
 			this.label6.Location = new System.Drawing.Point(3, 258);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(359, 23);
 			this.label6.TabIndex = 18;
 			this.label6.Text = "Changes require restart of program to take effect.\r\n";
-			// 
+			//
 			// groupBox3
-			// 
+			//
 			this.groupBox3.Controls.Add(this.label13);
 			this.groupBox3.Controls.Add(this.cbAlternateVsync);
 			this.groupBox3.Controls.Add(this.label8);
@@ -576,9 +576,9 @@
 			this.groupBox3.Size = new System.Drawing.Size(415, 241);
 			this.groupBox3.TabIndex = 16;
 			this.groupBox3.TabStop = false;
-			// 
+			//
 			// label13
-			// 
+			//
 			this.label13.Location = new System.Drawing.Point(45, 60);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(359, 43);
@@ -586,27 +586,27 @@
 			this.label13.Text = resources.GetString("label13.Text");
 			this.label13.Click += new System.EventHandler(this.label13_Click);
 			this.label13.DoubleClick += new System.EventHandler(this.label13_Click);
-			// 
+			//
 			// cbAlternateVsync
-			// 
+			//
 			this.cbAlternateVsync.AutoSize = true;
 			this.cbAlternateVsync.Location = new System.Drawing.Point(28, 60);
 			this.cbAlternateVsync.Name = "cbAlternateVsync";
 			this.cbAlternateVsync.Size = new System.Drawing.Size(15, 14);
 			this.cbAlternateVsync.TabIndex = 21;
 			this.cbAlternateVsync.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label8
-			// 
+			//
 			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(359, 27);
 			this.label8.TabIndex = 20;
 			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n" +
-    "";
-			// 
+	"";
+			//
 			// rbD3D9
-			// 
+			//
 			this.rbD3D9.AutoSize = true;
 			this.rbD3D9.Checked = true;
 			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
@@ -616,18 +616,18 @@
 			this.rbD3D9.TabStop = true;
 			this.rbD3D9.Text = "Direct3D9";
 			this.rbD3D9.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label7
-			// 
+			//
 			this.label7.Location = new System.Drawing.Point(21, 191);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(359, 47);
 			this.label7.TabIndex = 18;
 			this.label7.Text = " • Slow; Mainly for compatibility purposes\r\n • Missing many features\r\n • Works be" +
-    "tter over Remote Desktop, etc.\r\n";
-			// 
+	"tter over Remote Desktop, etc.\r\n";
+			//
 			// rbGDIPlus
-			// 
+			//
 			this.rbGDIPlus.AutoSize = true;
 			this.rbGDIPlus.Checked = true;
 			this.rbGDIPlus.Location = new System.Drawing.Point(6, 171);
@@ -637,9 +637,9 @@
 			this.rbGDIPlus.TabStop = true;
 			this.rbGDIPlus.Text = "GDI+";
 			this.rbGDIPlus.UseVisualStyleBackColor = true;
-			// 
+			//
 			// tpMisc
-			// 
+			//
 			this.tpMisc.Controls.Add(this.groupBox5);
 			this.tpMisc.Controls.Add(this.label2);
 			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
@@ -649,9 +649,9 @@
 			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
-			// 
+			//
 			// groupBox5
-			// 
+			//
 			this.groupBox5.Controls.Add(this.rbDisplayAbsoluteZero);
 			this.groupBox5.Controls.Add(this.rbDisplayMinimal);
 			this.groupBox5.Controls.Add(this.rbDisplayFull);
@@ -661,9 +661,9 @@
 			this.groupBox5.TabIndex = 20;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Display Features (for speeding up replays)";
-			// 
+			//
 			// rbDisplayAbsoluteZero
-			// 
+			//
 			this.rbDisplayAbsoluteZero.AutoSize = true;
 			this.rbDisplayAbsoluteZero.Location = new System.Drawing.Point(7, 66);
 			this.rbDisplayAbsoluteZero.Name = "rbDisplayAbsoluteZero";
@@ -672,9 +672,9 @@
 			this.rbDisplayAbsoluteZero.TabStop = true;
 			this.rbDisplayAbsoluteZero.Text = "Absolute Zero - Display Nothing";
 			this.rbDisplayAbsoluteZero.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbDisplayMinimal
-			// 
+			//
 			this.rbDisplayMinimal.AutoSize = true;
 			this.rbDisplayMinimal.Enabled = false;
 			this.rbDisplayMinimal.Location = new System.Drawing.Point(7, 43);
@@ -684,9 +684,9 @@
 			this.rbDisplayMinimal.TabStop = true;
 			this.rbDisplayMinimal.Text = "Minimal - Display HUD Only (TBD)";
 			this.rbDisplayMinimal.UseVisualStyleBackColor = true;
-			// 
+			//
 			// rbDisplayFull
-			// 
+			//
 			this.rbDisplayFull.AutoSize = true;
 			this.rbDisplayFull.Location = new System.Drawing.Point(7, 20);
 			this.rbDisplayFull.Name = "rbDisplayFull";
@@ -695,9 +695,9 @@
 			this.rbDisplayFull.TabStop = true;
 			this.rbDisplayFull.Text = "Full - Display Everything";
 			this.rbDisplayFull.UseVisualStyleBackColor = true;
-			// 
+			//
 			// tabPage1
-			// 
+			//
 			this.tabPage1.Controls.Add(this.cbAllowDoubleclickFullscreen);
 			this.tabPage1.Controls.Add(this.groupBox4);
 			this.tabPage1.Controls.Add(this.groupBox2);
@@ -708,20 +708,20 @@
 			this.tabPage1.TabIndex = 4;
 			this.tabPage1.Text = "Window";
 			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbAllowDoubleclickFullscreen
-			// 
+			//
 			this.cbAllowDoubleclickFullscreen.AutoSize = true;
 			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 223);
 			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
 			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(471, 17);
 			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
 			this.cbAllowDoubleclickFullscreen.Text = "Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case u" +
-    "sing zapper, etc.)";
+	"sing zapper, etc.)";
 			this.cbAllowDoubleclickFullscreen.UseVisualStyleBackColor = true;
-			// 
+			//
 			// groupBox4
-			// 
+			//
 			this.groupBox4.Controls.Add(this.cbFSAutohideMouse);
 			this.groupBox4.Controls.Add(this.label1);
 			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
@@ -733,9 +733,9 @@
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
-			// 
+			//
 			// cbFSAutohideMouse
-			// 
+			//
 			this.cbFSAutohideMouse.AutoSize = true;
 			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
 			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
@@ -743,17 +743,17 @@
 			this.cbFSAutohideMouse.TabIndex = 28;
 			this.cbFSAutohideMouse.Text = "Auto-Hide Mouse Cursor";
 			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label1
-			// 
+			//
 			this.label1.Location = new System.Drawing.Point(7, 88);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(240, 115);
 			this.label1.TabIndex = 27;
 			this.label1.Text = resources.GetString("label1.Text");
-			// 
+			//
 			// cbFullscreenHacks
-			// 
+			//
 			this.cbFullscreenHacks.AutoSize = true;
 			this.cbFullscreenHacks.Location = new System.Drawing.Point(6, 65);
 			this.cbFullscreenHacks.Name = "cbFullscreenHacks";
@@ -761,9 +761,9 @@
 			this.cbFullscreenHacks.TabIndex = 26;
 			this.cbFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
 			this.cbFullscreenHacks.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbStatusBarFullscreen
-			// 
+			//
 			this.cbStatusBarFullscreen.AutoSize = true;
 			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
 			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
@@ -771,9 +771,9 @@
 			this.cbStatusBarFullscreen.TabIndex = 23;
 			this.cbStatusBarFullscreen.Text = "Status Bar";
 			this.cbStatusBarFullscreen.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbMenuFullscreen
-			// 
+			//
 			this.cbMenuFullscreen.AutoSize = true;
 			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
 			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
@@ -781,9 +781,9 @@
 			this.cbMenuFullscreen.TabIndex = 25;
 			this.cbMenuFullscreen.Text = "Menu";
 			this.cbMenuFullscreen.UseVisualStyleBackColor = true;
-			// 
+			//
 			// groupBox2
-			// 
+			//
 			this.groupBox2.Controls.Add(this.lblFrameTypeWindowed);
 			this.groupBox2.Controls.Add(this.cbStatusBarWindowed);
 			this.groupBox2.Controls.Add(this.label9);
@@ -796,18 +796,18 @@
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
-			// 
+			//
 			// lblFrameTypeWindowed
-			// 
+			//
 			this.lblFrameTypeWindowed.AutoSize = true;
 			this.lblFrameTypeWindowed.Location = new System.Drawing.Point(51, 17);
 			this.lblFrameTypeWindowed.Name = "lblFrameTypeWindowed";
 			this.lblFrameTypeWindowed.Size = new System.Drawing.Size(62, 13);
 			this.lblFrameTypeWindowed.TabIndex = 26;
 			this.lblFrameTypeWindowed.Text = "(frame type)";
-			// 
+			//
 			// cbStatusBarWindowed
-			// 
+			//
 			this.cbStatusBarWindowed.AutoSize = true;
 			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
 			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
@@ -815,18 +815,18 @@
 			this.cbStatusBarWindowed.TabIndex = 23;
 			this.cbStatusBarWindowed.Text = "Status Bar";
 			this.cbStatusBarWindowed.UseVisualStyleBackColor = true;
-			// 
+			//
 			// label9
-			// 
+			//
 			this.label9.AutoSize = true;
 			this.label9.Location = new System.Drawing.Point(6, 17);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(39, 13);
 			this.label9.TabIndex = 22;
 			this.label9.Text = "Frame:";
-			// 
+			//
 			// cbMenuWindowed
-			// 
+			//
 			this.cbMenuWindowed.AutoSize = true;
 			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
 			this.cbMenuWindowed.Name = "cbMenuWindowed";
@@ -834,9 +834,9 @@
 			this.cbMenuWindowed.TabIndex = 25;
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
-			// 
+			//
 			// cbCaptionWindowed
-			// 
+			//
 			this.cbCaptionWindowed.AutoSize = true;
 			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
 			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
@@ -844,9 +844,9 @@
 			this.cbCaptionWindowed.TabIndex = 24;
 			this.cbCaptionWindowed.Text = "Caption";
 			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
-			// 
+			//
 			// linkLabel1
-			// 
+			//
 			this.linkLabel1.AutoSize = true;
 			this.linkLabel1.Location = new System.Drawing.Point(12, 404);
 			this.linkLabel1.Name = "linkLabel1";
@@ -855,9 +855,9 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-			// 
+			//
 			// tbScanlineIntensity
-			// 
+			//
 			this.tbScanlineIntensity.LargeChange = 32;
 			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 256;
@@ -868,9 +868,9 @@
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
 			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			// 
+			//
 			// trackbarFrameSizeWindowed
-			// 
+			//
 			this.trackbarFrameSizeWindowed.LargeChange = 1;
 			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
 			this.trackbarFrameSizeWindowed.Maximum = 2;
@@ -879,9 +879,9 @@
 			this.trackbarFrameSizeWindowed.TabIndex = 21;
 			this.trackbarFrameSizeWindowed.Value = 1;
 			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
-			// 
+			//
 			// btnDefaults
-			// 
+			//
 			this.btnDefaults.Location = new System.Drawing.Point(447, 262);
 			this.btnDefaults.Name = "btnDefaults";
 			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
@@ -890,9 +890,9 @@
 			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
 			this.btnDefaults.UseVisualStyleBackColor = true;
 			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
-			// 
+			//
 			// DisplayConfigLite
-			// 
+			//
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -118,12 +118,12 @@ namespace BizHawk.Client.EmuHawk
 
 				return sb.ToString();
 			}
-			
+
 			if (Global.MovieSession.Movie.IsRecording)
 			{
 				return Global.Emulator.Frame.ToString();
 			}
-			
+
 			return Global.Emulator.Frame.ToString();
 		}
 
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = (Global.MovieSession.Movie.IsActive && 
+			var m = (Global.MovieSession.Movie.IsActive &&
 				!Global.MovieSession.Movie.IsFinished &&
 				Global.Emulator.Frame > 0) ?
 				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return Global.MovieSession.Movie.Rerecords.ToString();
 			}
-			
+
 			return "";
 		}
 

@@ -207,7 +207,7 @@ namespace BizHawk.Client.DiscoHawk
 			var loadDiscInterface = DiscInterface.BizHawk;
 			var compareDiscInterfaces = new List<DiscInterface> ();
 			bool hawk = false;
-			
+
 			int idx = 0;
 			while (idx < args.Length)
 			{
@@ -492,7 +492,7 @@ namespace BizHawk.Client.DiscoHawk
 				if (dst_disc != null)
 					dst_disc.Dispose();
 			}
-		
+
 		} //CompareFile
 
 	} //class DiscoHawk

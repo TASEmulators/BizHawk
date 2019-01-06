@@ -28,7 +28,7 @@ using otkg = OpenTK.Graphics;
 namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 {
 	/// <summary>
-	/// OpenTK implementation of the BizwareGL.IGL interface. 
+	/// OpenTK implementation of the BizwareGL.IGL interface.
 	/// TODO - can we have more than one of these? could be dangerous. such dangerous things to be possibly reconsidered are marked with HAMNUTS
 	/// TODO - if we have any way of making contexts, we also need a way of freeing it, and then we can cleanup our dictionaries
 	/// </summary>
@@ -77,7 +77,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
-			this.GraphicsContext.LoadAll(); 
+			this.GraphicsContext.LoadAll();
 
 			//misc initialization
 			CreateRenderStates();
@@ -231,14 +231,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//    ////proxy for came-from-cgc
 			//    //switch (kvp.Value.Usage)
 			//    //{
-			//    //  case AttributeUsage.Position: 
+			//    //  case AttributeUsage.Position:
 			//    //}
 			//  }
-				
+
 			//  //GL.BindAttribLocation(pid, kvp.Key, name);
 			//}
 
-			
+
 			GL.LinkProgram(pid);
 			errcode = GL.GetError();
 
@@ -248,7 +248,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				if (required)
 					throw new InvalidOperationException("Error creating pipeline (error returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
 				else success = false;
-			
+
 			int linkStatus;
 			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
 			if (linkStatus == 0)
@@ -420,7 +420,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
 		{
-			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0); 
+			GL.Uniform1((int)uniform.Sole.Opaque, value ? 1 : 0);
 		}
 
 		public unsafe void SetPipelineUniformMatrix(PipelineUniform uniform, Matrix4 mat, bool transpose)
@@ -728,7 +728,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 				else success = false;
 
 			GL.ShaderSource(sid, source);
-			
+
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
 				if (required)
@@ -762,7 +762,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			return success;
 		}
-	
+
 		void UnbindVertexAttributes()
 		{
 			//HAMNUTS:
@@ -848,13 +848,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		void CreateRenderStates()
 		{
 			_rsBlendNoneVerbatim = new CacheBlendState(
-				false, 
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				false,
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
 				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 
 			_rsBlendNoneOpaque = new CacheBlendState(
-				false, 
-				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero, 
+				false,
+				BlendingFactorSrc.One, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero,
 				BlendingFactorSrc.ConstantAlpha, BlendEquationMode.FuncAdd, BlendingFactorDest.Zero);
 
 			_rsBlendNormal = new CacheBlendState(
@@ -877,7 +877,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			sVertexAttribEnables.Clear();
 			sActiveTexture = -1;
 		}
-	
+
 	} //class IGL_TK
 
 }

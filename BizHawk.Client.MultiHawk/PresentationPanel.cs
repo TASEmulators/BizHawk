@@ -32,7 +32,7 @@ namespace BizHawk.Client.MultiHawk
 
 			//pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
-			
+
 			// TODO
 			//GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 		}
@@ -57,7 +57,7 @@ namespace BizHawk.Client.MultiHawk
 		public Size NativeSize { get { return GraphicsControl.ClientSize; } }
 	}
 
-	
+
 
 	public interface IBlitterFont { }
 

@@ -30,9 +30,9 @@
 		{
 			this.btnExport = new System.Windows.Forms.Button();
 			this.SuspendLayout();
-			// 
+			//
 			// btnExport
-			// 
+			//
 			this.btnExport.Location = new System.Drawing.Point(57, 29);
 			this.btnExport.Name = "btnExport";
 			this.btnExport.Size = new System.Drawing.Size(75, 23);
@@ -40,9 +40,9 @@
 			this.btnExport.Text = "Export";
 			this.btnExport.UseVisualStyleBackColor = true;
 			this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-			// 
+			//
 			// SynclessRecordingTools
-			// 
+			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(274, 128);
