@@ -891,8 +891,19 @@ namespace BizHawk.Client.EmuHawk
 
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
-			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
+
+			// feos: if there is a state BETWEEN the current frame and the last valid (laglog) frame,
+			// prefer the latter and use state prior to that. otherwise greenzone will never be appended
+			// TODO: allow gaps in greenzone to overcome this
+			// we don't want to wait for seeking to end if there are states in the middle of invalid greenzone
+			// if there are such states, then we can navigate there, hence it's supposed to be a greenzone
+			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager
+				.GetStateClosestToFrame(Math.Min(frame, CurrentTasMovie.LastValidFrame));
+
+			if (closestState.Value != null 
+				&& (frame < Emulator.Frame
+				|| closestState.Key > Emulator.Frame
+				|| CurrentTasMovie.LastValidFrame < Emulator.Frame))
 			{
 				LoadState(closestState);
 			}

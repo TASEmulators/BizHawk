@@ -202,7 +202,6 @@ namespace BizHawk.Client.EmuHawk
 			Movie.LoadBranch(branch);
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
-			Movie.TasStateManager.Capture(true);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
 
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
