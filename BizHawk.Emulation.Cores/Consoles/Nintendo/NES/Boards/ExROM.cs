@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
 
-			if (exram_mode == 1 && NES.ppu.ppuphase == PPU.PPUPHASE.BG)
+			if (exram_mode == 1 && NES.ppu.ppuphase == PPU.PPU_PHASE_BG)
 			{
 				int exram_addr = last_nt_read;
 				int bank_4k = EXRAM[exram_addr] & 0x3F;
@@ -261,9 +261,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES.ppu.reg_2000.obj_size_16)
 			{
 				bool isPattern = NES.ppu.PPUON;
-				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ && isPattern)
+				if (NES.ppu.ppuphase == PPU.PPU_PHASE_OBJ && isPattern)
 					bank_1k = a_banks_1k[bank_1k];
-				else if (NES.ppu.ppuphase == PPU.PPUPHASE.BG && isPattern)
+				else if (NES.ppu.ppuphase == PPU.PPU_PHASE_BG && isPattern)
 					bank_1k = b_banks_1k[bank_1k];
 				else
 				{

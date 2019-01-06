@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 			if (controller.IsPressed("Power"))
@@ -135,6 +135,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			{
 				LagCount++;
 			}
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

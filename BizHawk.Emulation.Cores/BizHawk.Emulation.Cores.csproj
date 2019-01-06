@@ -1201,6 +1201,30 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
+	    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.cs" />
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IDebuggable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IEmulator.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IInputPollable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IMemoryDomains.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.ISaveRam.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.ISettable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IStatable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawkControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawkControllers.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />

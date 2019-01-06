@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		}
 
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 			UpdateInput(controller);
@@ -147,6 +147,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			//nsampavail = PPSSPPDll.mixsound(audiobuffer, audiobuffer.Length / 2);
 			LogFlush();
 			//Console.WriteLine("Audio Service: {0}", nsampavail);
+
+			return true;
 		}
 
 		public int Frame

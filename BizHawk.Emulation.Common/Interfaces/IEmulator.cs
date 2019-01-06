@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="render">Whether or not to render video, cores will pass false here in cases such as frame skipping</param>
 		/// <param name="rendersound">Whether or not to render audio, cores will pass here false here in cases such as fast forwarding where bypassing sound may improve speed</param>
 		/// </summary>
-		void FrameAdvance(IController controller, bool render, bool rendersound = true);
+		bool FrameAdvance(IController controller, bool render, bool rendersound = true);
 
 		/// <summary>
 		/// Gets the current frame count

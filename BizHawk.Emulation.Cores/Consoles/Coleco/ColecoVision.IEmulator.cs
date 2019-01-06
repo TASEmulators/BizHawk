@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool renderSound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 
@@ -163,6 +163,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				_lagCount++;
 			}
+
+			return true;
 		}
 
 		public bool use_SGM = false;

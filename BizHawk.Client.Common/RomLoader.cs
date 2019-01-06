@@ -973,7 +973,14 @@ namespace BizHawk.Client.Common
 
 									if (preference == "neshawk")
 									{
-										core = CoreInventory.Instance["NES", "NesHawk"];
+										if (Global.Config.UseSubNESHawk)
+										{
+											core = CoreInventory.Instance["NES", "SubNESHawk"];
+										}
+										else
+										{
+											core = CoreInventory.Instance["NES", "NesHawk"];
+										}										
 									}
 									else
 									{

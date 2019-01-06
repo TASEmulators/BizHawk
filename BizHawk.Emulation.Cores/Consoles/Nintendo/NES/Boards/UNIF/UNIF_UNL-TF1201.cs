@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0xF003:
 						IRQa = value.Bit(1);
 						IRQSignal = false;
-						if (NES.ppu.ppuphase !=PPU.PPUPHASE.VBL)
+						if (NES.ppu.ppuphase !=PPU.PPU_PHASE_VBL)
 							IRQCount -= 8;
 						break;
 			}
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockPPU()
 		{
-			if ((NES.ppu.ppuphase != PPU.PPUPHASE.VBL))// && IRQa)
+			if ((NES.ppu.ppuphase != PPU.PPU_PHASE_VBL))// && IRQa)
 			{
 				IRQpre--;
 				if (IRQpre==0)

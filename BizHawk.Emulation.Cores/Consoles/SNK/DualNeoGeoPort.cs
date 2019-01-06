@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			_serviceProvider.Register<IVideoProvider>(_videoProvider);
 		}
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			var t1 = Task.Run(() =>
 			{
@@ -67,6 +67,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			Frame++;
 			_soundProvider.Fetch();
 			_videoProvider.Fetch();
+
+			return true;
 		}
 
 		#region link cable
