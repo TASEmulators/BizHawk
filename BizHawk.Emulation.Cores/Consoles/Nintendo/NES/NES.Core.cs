@@ -807,29 +807,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (addr == 0x4016)
 				{
-					if (shift_1 >= 0)
-					{
-						ret = (byte)((ctrl_1 >> shift_1) & 1);
-					}
-					else
-					{
-						ret = 1;
-					}
+					if (shift_1 >= 0) { ret = (byte)((ctrl_1 >> shift_1) & 1); }
+					else { ret = 1; }
 
-					shift_1 -= 1;
+					if (!current_strobe) { shift_1 -= 1; }				
 				}
 				else
 				{
-					if (shift_2 >= 0)
-					{
-						ret = (byte)((ctrl_2 >> shift_2) & 1);
-					}
-					else
-					{
-						ret = 1;
-					}
+					if (shift_2 >= 0) { ret = (byte)((ctrl_2 >> shift_2) & 1); }
+					else { ret = 1; }
 
-					shift_2 -= 1;
+					if (!current_strobe) { shift_2 -= 1; }
 				}
 			}
 			else
