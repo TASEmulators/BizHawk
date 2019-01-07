@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if ((addr & 0x100) == 0)
 				{
-					RAM_enable = ((value & 0xA) == 0xA) ? true : false;
+					RAM_enable = ((value & 0xA) == 0xA);
 				}
 			}
 			else if (addr < 0x4000)

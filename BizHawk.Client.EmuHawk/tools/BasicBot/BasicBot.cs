@@ -350,8 +350,8 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var item = StartFromSlotBox.Items.
-					OfType<object>()
+				var item = StartFromSlotBox.Items
+					.OfType<object>()
 					.FirstOrDefault(o => o.ToString() == value);
 
 				if (item != null)
