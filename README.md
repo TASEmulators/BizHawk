@@ -14,7 +14,7 @@ Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full 
 
 Before you start (by running `EmuHawk.exe`), make sure you have the Windows-only prerequisites installed: .NET Framework 4.6.1; Visual C++ 2010 SP1, 2012, and 2015; and Direct3D 9. If you have a few Steam games, chances are these are already installed, otherwise you can get them all at once with [this program](http://github.com/TASVideos/BizHawk-Prereqs/releases).
 
-BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive, as long as the prerequisites are installed when you go to run it.
+BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive, as long as you keep all the files together and the prerequisites are installed when you go to run it.
 
 Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported from 1709 "Redstone 3", following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet).
 
@@ -39,11 +39,13 @@ Install BizHawk with your distro's package manager. The package name is given on
 [![SteamOS (Launchpad) | bizhawk](https://img.shields.io/badge/SteamOS-bizhawk-%231B2838.svg?logo=steam&logoColor=1B2838&style=popout)](https://example.com/bizhawk)
 [![Ubuntu (Launchpad) | bizhawk](https://img.shields.io/badge/Ubuntu_(Launchpad)-bizhawk-%23E95420.svg?colorA=772953&logo=ubuntu&style=popout)](https://example.com/bizhawk)
 
-Is your distro not there? Released binaries can be found right here on GitHub:
+If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`).
+
+Is your distro not there? Released binaries can be found right here on GitHub (same download as for Windows):
 
 [![Misc. Linux | binaries](https://img.shields.io/badge/Misc._Linux-binaries-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](http://github.com/TASVideos/BizHawk/releases)
 
-If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. Run `EmuHawkMono.sh` to give Mono the library and executable paths - you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
+If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
 Linux distros are supported if the distributor is still supporting your version, you're using Linux 4.4/4.9/4.14/4.19 LTS or 4.20, and there are no updates available in your package manager. *Please* update and reboot.
 
@@ -51,13 +53,28 @@ macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to 
 
 ## Building
 
-If you want to test the latest changes without building BizHawk yourself, grab the developer build from [AppVeyor](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history). Pick the topmost one that doesn't say "Pull request", then click "Artifacts" and download the single listed file (it's compressed as .zip).
+If you want to test the latest changes without building BizHawk yourself, grab the developer build from [AppVeyor](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history). Pick the topmost one that doesn't say "Pull request", then click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
-If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the same repo as `bizhawk`. This will build and install from the `master` branch here on GitHub.
+If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the same repo as the main package. If it's available, installing it will automate the build process.
 
 ### GNU+Linux and macOS
 
-TODO
+*Compiling* requires MSBuild and *running* requires Mono and WINE, but **BizHawk does not run under WINE** — only the bundled libraries are required.
+
+Building is as easy as:
+```sh
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+msbuild BizHawk.sln
+```
+
+Running is even easier, just execute `EmuHawkMono.sh` in the repo's `output` folder (this folder is what gets distributed in a Release build, you can move/rename it).
+
+If your distro isn't listed under *Installing* above, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
+
+Again, if your distro isn't listed above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
+
+Otherwise, see the *Installing* section above.
 
 ### Windows 7/8.1/10
 
