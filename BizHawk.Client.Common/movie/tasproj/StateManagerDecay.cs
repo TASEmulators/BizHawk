@@ -59,124 +59,108 @@ namespace BizHawk.Client.Common
 			_align = false;
 		}
 
-		// todo: go through all states once, remove as many as we need. refactor to not need goto
+		// todo: go through all states once, remove as many as we need. ~~~refactor to not need goto~~~ yw -Yoshi
 		public void Trigger(int decayStates)
 		{
-			for (; decayStates > 0 && _tsm.StateCount > 1;)
+			while (decayStates > 0 && _tsm.StateCount > 1) Trigger_Sub(decayStates);
+		}
+
+		private void Trigger_Sub(int decayStates)
+		{
+			int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
+			int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce right away
+			int forwardPriority = -1000000;
+			int backwardPriority = -1000000;
+			int forwardFrame = -1;
+			int backwardFrame = -1;
+
+			for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
 			{
-				int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
-				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce right away
-				int forwardPriority = -1000000;
-				int backwardPriority = -1000000;
-				int forwardFrame = -1;
-				int backwardFrame = -1;
+				int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
+				if (_tsm.StateIsMarker(currentFrame))
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+					continue;
+				}
+				else if (currentFrame + 1 == _tsm.LastEditedFrame)
+				{
+					continue;
+				}
+				else if (currentFrame % _step > 0)
+				{
+					// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
+					if (_tsm.RemoveState(currentFrame))
+					{
+						// decrementing this if no state was removed is BAD
+						decayStates--;
 
-					if (_tsm.StateIsMarker(currentFrame))
-					{
-						continue;
-					}
-					else if (currentFrame + 1 == _tsm.LastEditedFrame)
-					{
-						continue;
-					}
-					else if (currentFrame % _step > 0)
-					{
-						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.RemoveState(currentFrame))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-
-							// this is the kind of highly complex loops that might justify goto
-							goto next_state;
-						}
-					}
-					else
-					{
-						// reduce to imaginary integral greenzone for all the decay logic
-						currentFrame /= _step;
-					}
-
-					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = ((baseStateFrame - currentFrame) >> zeroCount);
-
-					if (_align)
-					{
-						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
-					}
-
-					if (priority > forwardPriority)
-					{
-						forwardPriority = priority;
-						forwardFrame = currentFrame;
+						return; // continue loop in Trigger
 					}
 				}
-
-				for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
+				else
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
-
-					if (_tsm.StateIsMarker(currentFrame))
-					{
-						continue;
-					}
-					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
-					{
-						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.RemoveState(currentFrame))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-
-							// this is the kind of highly complex loops that might justify goto
-							goto next_state;
-						}
-					}
-					else
-					{
-						// reduce to imaginary integral greenzone for all the decay logic
-						currentFrame /= _step;
-					}
-
-					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = ((currentFrame - baseStateFrame) >> zeroCount);
-
-					if (_align)
-					{
-						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
-					}
-
-					if (priority > backwardPriority)
-					{
-						backwardPriority = priority;
-						backwardFrame = currentFrame;
-					}
+					// reduce to imaginary integral greenzone for all the decay logic
+					currentFrame /= _step;
 				}
 
-				if (forwardFrame > -1 && backwardFrame > -1)
+				int zeroCount = _zeros[currentFrame & _mask];
+				int priority = ((baseStateFrame - currentFrame) >> zeroCount);
+
+				if (_align)
 				{
-					if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
+					priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
+				}
+
+				if (priority > forwardPriority)
+				{
+					forwardPriority = priority;
+					forwardFrame = currentFrame;
+				}
+			}
+
+			for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
+			{
+				int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+
+				if (_tsm.StateIsMarker(currentFrame))
+				{
+					continue;
+				}
+				else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
+				{
+					// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
+					if (_tsm.RemoveState(currentFrame))
 					{
-						if (_tsm.RemoveState(forwardFrame * _step))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-						}
-					}
-					else
-					{
-						if (_tsm.RemoveState(backwardFrame * _step))
-						{
-							// decrementing this if no state was removed is BAD
-							decayStates--;
-						}
+						// decrementing this if no state was removed is BAD
+						decayStates--;
+
+						return; // continue loop in Trigger
 					}
 				}
-				else if (forwardFrame > -1)
+				else
+				{
+					// reduce to imaginary integral greenzone for all the decay logic
+					currentFrame /= _step;
+				}
+
+				int zeroCount = _zeros[currentFrame & _mask];
+				int priority = ((currentFrame - baseStateFrame) >> zeroCount);
+
+				if (_align)
+				{
+					priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
+				}
+
+				if (priority > backwardPriority)
+				{
+					backwardPriority = priority;
+					backwardFrame = currentFrame;
+				}
+			}
+
+			if (forwardFrame > -1 && backwardFrame > -1)
+			{
+				if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
 				{
 					if (_tsm.RemoveState(forwardFrame * _step))
 					{
@@ -184,7 +168,7 @@ namespace BizHawk.Client.Common
 						decayStates--;
 					}
 				}
-				else if (backwardFrame > -1)
+				else
 				{
 					if (_tsm.RemoveState(backwardFrame * _step))
 					{
@@ -192,19 +176,32 @@ namespace BizHawk.Client.Common
 						decayStates--;
 					}
 				}
-				else
+			}
+			else if (forwardFrame > -1)
+			{
+				if (_tsm.RemoveState(forwardFrame * _step))
 				{
-				// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
-				// this shouldn't happen, but if we don't do it here, nothing good will happen either
-					if (_tsm.RemoveState(_tsm.GetStateFrameByIndex(1)))
-					{
-						// decrementing this if no state was removed is BAD
-						decayStates--;
-					}
+					// decrementing this if no state was removed is BAD
+					decayStates--;
 				}
-
-				// this is the kind of highly complex loops that might justify goto
-				next_state:;
+			}
+			else if (backwardFrame > -1)
+			{
+				if (_tsm.RemoveState(backwardFrame * _step))
+				{
+					// decrementing this if no state was removed is BAD
+					decayStates--;
+				}
+			}
+			else
+			{
+			// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
+			// this shouldn't happen, but if we don't do it here, nothing good will happen either
+				if (_tsm.RemoveState(_tsm.GetStateFrameByIndex(1)))
+				{
+					// decrementing this if no state was removed is BAD
+					decayStates--;
+				}
 			}
 		}
 
