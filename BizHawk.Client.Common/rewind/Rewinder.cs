@@ -204,6 +204,16 @@ namespace BizHawk.Client.Common
 
 		private unsafe void CaptureStateDelta(byte[] currentState)
 		{
+			if (CaptureStateDelta_Sub(currentState))
+			{
+				// Capture full state
+				CaptureStateNonDelta(_lastState);
+				UpdateLastState(currentState);
+			}
+		}
+
+		private unsafe bool CaptureStateDelta_Sub(byte[] currentState)
+		{
 			// Keep in mind that everything captured here is intended to be played back in
 			// reverse. The goal is, given the current state, how to get back to the previous
 			// state. That's why the data portion of the delta comes from the previous state,
@@ -212,17 +222,13 @@ namespace BizHawk.Client.Common
 			if (currentState.Length != _lastState.Length)
 			{
 				// If the state sizes mismatch, capture a full state rather than trying to do anything clever
-				CaptureStateNonDelta(_lastState);
-				UpdateLastState(currentState);
-				return;
+				return true;
 			}
 
 			if (currentState.Length == 0)
 			{
 				// handle empty states as a "full" (empty) state
-				CaptureStateNonDelta(_lastState);
-				UpdateLastState(currentState);
-				return;
+				return true;
 			}
 
 			int index = 0;
@@ -263,9 +269,7 @@ namespace BizHawk.Client.Common
 					if (index + length + MaxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
-						CaptureStateNonDelta(_lastState);
-						UpdateLastState(currentState);
-						return;
+						return true;
 					}
 
 					// Offset Delta
@@ -286,6 +290,8 @@ namespace BizHawk.Client.Common
 			_rewindBuffer.Push(new ArraySegment<byte>(_deltaBuffer, 0, index));
 
 			UpdateLastState(currentState);
+
+			return false; // Don't capture full state
 		}
 
 		public bool Rewind(int frames)
