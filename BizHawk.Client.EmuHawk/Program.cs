@@ -266,51 +266,57 @@ namespace BizHawk.Client.EmuHawk
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-		REDO_DISPMETHOD:
-			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
-				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
-			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+
+			var dispMethodInitialised = false;
+			while (!dispMethodInitialised)
 			{
+				if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+				{
+					GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+				}
+				else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+				{
+					try
+					{
+						GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+					}
+					catch(Exception ex)
+					{
+						var e2 = new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex);
+						new ExceptionBox(e2).ShowDialog();
+
+						// fallback
+						Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+						continue;
+					}
+				}
+				else
+				{
+					GlobalWin.GL = GlobalWin.IGL_GL;
+
+					// check the opengl version and dont even try to boot this crap up if its too old
+					int version = GlobalWin.IGL_GL.Version;
+					if (version < 200)
+					{
+						// fallback
+						Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+						continue;
+					}
+				}
+
+				// try creating a GUI Renderer. If that doesn't succeed. we fallback
 				try
 				{
-					GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+					using (GlobalWin.GL.CreateRenderer()) { }
+					dispMethodInitialised = true; // The only way to leave the while loop is for CreateRenderer to succeed
 				}
 				catch(Exception ex)
 				{
-					var e2 = new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex);
+					var e2 = new Exception("Initialization of Display Method failed; falling back to GDI+", ex);
 					new ExceptionBox(e2).ShowDialog();
-
-					// fallback
+					//fallback
 					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-					goto REDO_DISPMETHOD;
 				}
-			}
-			else
-			{
-				GlobalWin.GL = GlobalWin.IGL_GL;
-
-				// check the opengl version and dont even try to boot this crap up if its too old
-				int version = GlobalWin.IGL_GL.Version;
-				if (version < 200)
-				{
-					// fallback
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-					goto REDO_DISPMETHOD;
-				}
-			}
-
-			// try creating a GUI Renderer. If that doesn't succeed. we fallback
-			try
-			{
-				using (GlobalWin.GL.CreateRenderer()) { }
-			}
-			catch(Exception ex)
-			{
-				var e2 = new Exception("Initialization of Display Method failed; falling back to GDI+", ex);
-				new ExceptionBox(e2).ShowDialog();
-				//fallback
-				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-				goto REDO_DISPMETHOD;
 			}
 
 			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
