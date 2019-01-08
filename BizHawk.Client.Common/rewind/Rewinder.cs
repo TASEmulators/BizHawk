@@ -212,13 +212,17 @@ namespace BizHawk.Client.Common
 			if (currentState.Length != _lastState.Length)
 			{
 				// If the state sizes mismatch, capture a full state rather than trying to do anything clever
-				goto CaptureFullState;
+				CaptureStateNonDelta(_lastState);
+				UpdateLastState(currentState);
+				return;
 			}
 
 			if (currentState.Length == 0)
 			{
 				// handle empty states as a "full" (empty) state
-				goto CaptureFullState;
+				CaptureStateNonDelta(_lastState);
+				UpdateLastState(currentState);
+				return;
 			}
 
 			int index = 0;
@@ -259,7 +263,9 @@ namespace BizHawk.Client.Common
 					if (index + length + MaxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
-						goto CaptureFullState;
+						CaptureStateNonDelta(_lastState);
+						UpdateLastState(currentState);
+						return;
 					}
 
 					// Offset Delta
@@ -279,11 +285,6 @@ namespace BizHawk.Client.Common
 
 			_rewindBuffer.Push(new ArraySegment<byte>(_deltaBuffer, 0, index));
 
-			UpdateLastState(currentState);
-			return;
-
-		CaptureFullState:
-			CaptureStateNonDelta(_lastState);
 			UpdateLastState(currentState);
 		}
 
