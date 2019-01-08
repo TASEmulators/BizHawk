@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 				}
 
 				resolved = null;
-				_resolutionDictionary.TryGetValue(record, out resolved)
+				_resolutionDictionary.TryGetValue(record, out resolved);
 			}
 
 			return resolved;
