@@ -146,7 +146,11 @@ namespace BizHawk.Emulation.DiscSystem
 				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
-				if (!okParse) return RunBizHawk_Done();
+				if (!okParse)
+				{
+					RunBizHawk_Done();
+					return;
+				}
 
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
@@ -158,14 +162,19 @@ namespace BizHawk.Emulation.DiscSystem
 				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
-				if (!okCompile || compileJob.OUT_ErrorLevel) return RunBizHawk_Done();
+				if (!okCompile || compileJob.OUT_ErrorLevel)
+				{
+					RunBizHawk_Done();
+					return;
+				}
 
 				//check slow loading threshold
 				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;
-					return RunBizHawk_Done();
+					RunBizHawk_Done();
+					return;
 				}
 
 				//actually load it all up
