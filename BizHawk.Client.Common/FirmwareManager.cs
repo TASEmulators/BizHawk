@@ -54,23 +54,21 @@ namespace BizHawk.Client.Common
 		public ResolutionInfo Resolve(FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
 			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we dont want to repeatedly DoScanAndResolve in that case, its already been done.
-			bool first = true;
 
-		RETRY:
 			ResolutionInfo resolved;
 			_resolutionDictionary.TryGetValue(record, out resolved);
 
 			// couldnt find it! do a scan and resolve to try harder
 			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
-			if (resolved == null && first)
+			if (resolved == null)
 			{
 				if (!forbidScan)
 				{
 					DoScanAndResolve();
 				}
 
-				first = false;
-				goto RETRY;
+				resolved = null;
+				_resolutionDictionary.TryGetValue(record, out resolved)
 			}
 
 			return resolved;
