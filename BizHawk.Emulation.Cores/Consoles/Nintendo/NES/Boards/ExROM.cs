@@ -255,30 +255,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// top 2 bits of address come from chr_reg_high
 				bank_1k += chr_reg_high << 8;
 				ofs = addr & (4 * 1024 - 1);
-				goto MAPPED;
-			}
-
-			if (NES.ppu.reg_2000.obj_size_16)
-			{
-				bool isPattern = NES.ppu.PPUON;
-				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ && isPattern)
-					bank_1k = a_banks_1k[bank_1k];
-				else if (NES.ppu.ppuphase == PPU.PPUPHASE.BG && isPattern)
-					bank_1k = b_banks_1k[bank_1k];
-				else
-				{
-					if (ab_mode == 0)
-						bank_1k = a_banks_1k[bank_1k];
-					else
-						bank_1k = b_banks_1k[bank_1k];
-				}
 			}
 			else
 			{
-				bank_1k = a_banks_1k[bank_1k];
+				if (NES.ppu.reg_2000.obj_size_16)
+				{
+					bool isPattern = NES.ppu.PPUON;
+					if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ && isPattern)
+						bank_1k = a_banks_1k[bank_1k];
+					else if (NES.ppu.ppuphase == PPU.PPUPHASE.BG && isPattern)
+						bank_1k = b_banks_1k[bank_1k];
+					else
+					{
+						if (ab_mode == 0)
+							bank_1k = a_banks_1k[bank_1k];
+						else
+							bank_1k = b_banks_1k[bank_1k];
+					}
+				}
+				else
+				{
+					bank_1k = a_banks_1k[bank_1k];
+				}
 			}
-		
-			MAPPED:
+
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
 			return addr;
