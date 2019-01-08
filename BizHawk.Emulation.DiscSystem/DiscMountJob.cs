@@ -108,8 +108,6 @@ namespace BizHawk.Emulation.DiscSystem
 			string cue_content = null;
 
 			var cfr = new CueFileResolver();
-
-		RERUN:
 			var ext = Path.GetExtension(infile).ToLowerInvariant();
 
 			if (ext == ".iso")
@@ -122,8 +120,9 @@ namespace BizHawk.Emulation.DiscSystem
 								INDEX 01 00:00:00",
 					filebase);
 				infile = Path.ChangeExtension(infile, ".cue");
-				goto RERUN;
+				ext = ".cue";
 			}
+
 			if (ext == ".cue")
 			{
 				//TODO - major renovation of error handling needed
@@ -147,8 +146,7 @@ namespace BizHawk.Emulation.DiscSystem
 				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
-				if (!okParse)
-					goto DONE;
+				if (!okParse) return RunBizHawk_Done();
 
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
@@ -160,15 +158,14 @@ namespace BizHawk.Emulation.DiscSystem
 				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
-				if (!okCompile || compileJob.OUT_ErrorLevel)
-					goto DONE;
+				if (!okCompile || compileJob.OUT_ErrorLevel) return RunBizHawk_Done();
 
 				//check slow loading threshold
 				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;
-					goto DONE;
+					return RunBizHawk_Done();
 				}
 
 				//actually load it all up
@@ -192,10 +189,11 @@ namespace BizHawk.Emulation.DiscSystem
                 MDS_Format mdsLoader = new MDS_Format();
                 OUT_Disc = mdsLoader.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
             }
+            RunBizHawk_Done();
+		}
 
-
-		DONE:
-
+		void RunBizHawk_Done()
+		{
 			//setup the lowest level synth provider
 			if (OUT_Disc != null)
 			{
@@ -208,5 +206,4 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 	}
-	
 }
