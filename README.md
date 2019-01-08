@@ -2,7 +2,7 @@
 
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/releases/latest) ![Unique systems emulated | 22](https://img.shields.io/badge/Unique_systems_emulated-22-darkgreen.svg?style=flat)
 
-BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
+A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
 ## Core feature matrix
 
