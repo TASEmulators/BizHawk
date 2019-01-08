@@ -480,13 +480,9 @@ namespace BizHawk.Client.MultiHawk
 				{
 					var ie = DequeueEvent();
 
-					//as a special perk, we'll accept escape immediately
-					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button == "Escape")
-						goto ACCEPT;
+					//as a special perk, we'll accept escape immediately, otherwise Press events are ignored
+					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button != "Escape") continue;
 
-					if (ie.EventType == InputEventType.Press) continue;
-
-				ACCEPT:
 					Console.WriteLine("Bind Event: {0} ", ie);
 
 					foreach (var kvp in LastState)
