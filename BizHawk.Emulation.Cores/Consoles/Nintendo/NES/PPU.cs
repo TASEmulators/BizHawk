@@ -103,21 +103,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			const int radius = 10; // look at pixel values up to this far away, roughly
 
-			int sum = 0;
 			int ymin = Math.Max(Math.Max(y - radius, ppur.status.sl - 20), 0);
 			int ymax = Math.Min(y + radius, 239);
 			int xmin = Math.Max(x - radius, 0);
 			int xmax = Math.Min(x + radius, 255);
-
 			int ystop = ppur.status.sl - 2;
 			int xstop = ppur.status.cycle - 20;
 
+			int sum = 0;
+			LightGunCallback_Sub(sum, xmin, xmax, xstop, ymin, ymax, ystop);
+			return sum >= 2000;
+		}
+
+		private void LightGunCallback_Sub(int sum, int xmin, int xmax, int xstop, int ymin, int ymax, int ystop)
+		{
 			for (int j = ymin; j <= ymax; j++)
 			{
 				for (int i = xmin; i <= xmax; i++)
 				{
-					if (j >= ystop && i >= xstop || j > ystop)
-						goto loopout;
+					if (j >= ystop && i >= xstop || j > ystop) return; // Break both loops and return in LightGunCallback
 
 					short s = xbuf[j * 256 + i];
 
@@ -126,8 +130,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sum += _currentLuma[palcolor];
 				}
 			}
-			loopout:
-			return sum >= 2000;
 		}
 
 		//when the ppu issues a write it goes through here and into the game board
