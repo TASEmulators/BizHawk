@@ -1,6 +1,6 @@
 # BizHawk
 
-![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=flat)
+[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/releases/latest) ![Unique systems emulated | 22](https://img.shields.io/badge/Unique_systems_emulated-22-darkgreen.svg?style=flat)
 
 BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
 
@@ -43,11 +43,11 @@ Most of the frontend can be controlled with Lua scripts (only on Windows for now
 
 Released binaries can be found right here on GitHub:
 
-[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](http://github.com/TASVideos/BizHawk/releases)
+[![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
 
-Before you start (by running `EmuHawk.exe`), make sure you have the Windows-only prerequisites installed: .NET Framework 4.6.1; Visual C++ 2010 SP1, 2012, and 2015; and Direct3D 9. If you have a few Steam games, chances are these are already installed, otherwise you can get them all at once with [this program](http://github.com/TASVideos/BizHawk-Prereqs/releases).
+Before you start (by running `EmuHawk.exe`), make sure you have the Windows-only prerequisites installed: .NET Framework 4.6.1; Visual C++ 2010 SP1, 2012, and 2015; and Direct3D 9. If you have a few Steam games, chances are these are already installed, otherwise you can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
 
 BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive, as long as you keep all the files together and the prerequisites are installed when you go to run it.
 
@@ -78,7 +78,7 @@ If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` do
 
 Is your distro not there? Released binaries can be found right here on GitHub (same download as for Windows):
 
-[![Misc. Linux | binaries](https://img.shields.io/badge/Misc._Linux-binaries-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](http://github.com/TASVideos/BizHawk/releases)
+[![Misc. Linux | binaries](https://img.shields.io/badge/Misc._Linux-binaries-%23FCC624.svg?logo=linux&logoColor=black&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
 If you download BizHawk this way, **don't mix different versions**, keep each version in its own folder. Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
