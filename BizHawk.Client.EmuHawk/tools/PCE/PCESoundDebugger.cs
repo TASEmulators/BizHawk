@@ -58,92 +58,94 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 6; i++)
 			{
-				var ch = _pce.PSG.Channels[i];
-
-				//these conditions mean a sample isnt playing
-				if (!ch.Enabled)
-				{
-					lvChannels.Items[i].SubItems[1].Text = "-";
-					lvChannels.Items[i].SubItems[2].Text = "-";
-					lvChannels.Items[i].SubItems[3].Text = "(disabled)";
-					goto DEAD;
-				}
-				if (ch.DDA)
-				{
-					lvChannels.Items[i].SubItems[1].Text = "-";
-					lvChannels.Items[i].SubItems[2].Text = "-";
-					lvChannels.Items[i].SubItems[3].Text = "(DDA)";
-					goto DEAD;
-				}
-				lvChannels.Items[i].SubItems[1].Text = ch.Volume.ToString();
-				lvChannels.Items[i].SubItems[2].Text = ch.Frequency.ToString();
-				if (ch.NoiseChannel)
-				{
-					lvChannels.Items[i].SubItems[3].Text = "(noise)";
-					goto DEAD;
-				}
-
-				if (ch.Volume == 0) goto DEAD;
-
-				lvChannels.Items[i].SubItems[3].Text = "-";
-
-				//ok, a sample is playing. copy out the waveform
-				short[] waveform = (short[])ch.Wave.Clone();
-				//hash it
-				var ms = new MemoryStream(waveformTemp);
-				var bw = new BinaryWriter(ms);
-				foreach (var s in waveform)
-					bw.Write(s);
-				bw.Flush();
-				string md5 = waveformTemp.HashMD5();
-
-				if (!PSGEntryTable.ContainsKey(md5))
-				{
-					var entry = new PSGEntry()
-					{
-						hash = md5,
-						name = md5,
-						waveform = waveform,
-						active = true,
-						hitcount = 1,
-						index = PSGEntries.Count
-					};
-					PSGEntries.Add(entry);
-					PSGEntryTable[md5] = entry;
-					sync = true;
-					LastSamples[i] = entry;
-				}
-				else
-				{
-					PSGEntry entry = PSGEntryTable[md5];
-					entry.active = true;
-
-					//are we playing the same sample as before?
-					if (LastSamples[i] == entry) { }
-					else
-					//if (!entry.wasactive)
-					{
-						LastSamples[i] = entry;
-						entry.hitcount++;
-						if (entry.index < lvPsgWaveforms.Items.Count)
-							lvPsgWaveforms.Items[entry.index].SubItems[1].Text = entry.hitcount.ToString();
-						else
-							sync = true;
-					}
-				}
-
-				lvChannels.Items[i].SubItems[3].Text = PSGEntryTable[md5].name;
-
-				continue;
-
-			DEAD:
-				LastSamples[i] = null;
+				if (UpdateValues_Sub(sync, i)) LastSamples[i] = null; // DEAD
 			}
 
 			if (sync)
 				SyncLists();
 			lvPsgWaveforms.EndUpdate();
 			lvChannels.EndUpdate();
+		}
+
+		private bool UpdateValues_Sub(bool sync, int i)
+		{
+			var ch = _pce.PSG.Channels[i];
+
+			//these conditions mean a sample isnt playing
+			if (!ch.Enabled)
+			{
+				lvChannels.Items[i].SubItems[1].Text = "-";
+				lvChannels.Items[i].SubItems[2].Text = "-";
+				lvChannels.Items[i].SubItems[3].Text = "(disabled)";
+				return true; // DEAD
+			}
+			if (ch.DDA)
+			{
+				lvChannels.Items[i].SubItems[1].Text = "-";
+				lvChannels.Items[i].SubItems[2].Text = "-";
+				lvChannels.Items[i].SubItems[3].Text = "(DDA)";
+				return true; // DEAD
+			}
+			lvChannels.Items[i].SubItems[1].Text = ch.Volume.ToString();
+			lvChannels.Items[i].SubItems[2].Text = ch.Frequency.ToString();
+			if (ch.NoiseChannel)
+			{
+				lvChannels.Items[i].SubItems[3].Text = "(noise)";
+				return true; // DEAD
+			}
+
+			if (ch.Volume == 0) return true; // DEAD
+
+			lvChannels.Items[i].SubItems[3].Text = "-";
+
+			//ok, a sample is playing. copy out the waveform
+			short[] waveform = (short[])ch.Wave.Clone();
+			//hash it
+			var ms = new MemoryStream(waveformTemp);
+			var bw = new BinaryWriter(ms);
+			foreach (var s in waveform)
+				bw.Write(s);
+			bw.Flush();
+			string md5 = waveformTemp.HashMD5();
+
+			if (!PSGEntryTable.ContainsKey(md5))
+			{
+				var entry = new PSGEntry()
+				{
+					hash = md5,
+					name = md5,
+					waveform = waveform,
+					active = true,
+					hitcount = 1,
+					index = PSGEntries.Count
+				};
+				PSGEntries.Add(entry);
+				PSGEntryTable[md5] = entry;
+				sync = true;
+				LastSamples[i] = entry;
+			}
+			else
+			{
+				PSGEntry entry = PSGEntryTable[md5];
+				entry.active = true;
+
+				//are we playing the same sample as before?
+				if (LastSamples[i] == entry) { }
+				else
+				//if (!entry.wasactive)
+				{
+					LastSamples[i] = entry;
+					entry.hitcount++;
+					if (entry.index < lvPsgWaveforms.Items.Count)
+						lvPsgWaveforms.Items[entry.index].SubItems[1].Text = entry.hitcount.ToString();
+					else
+						sync = true;
+				}
+			}
+
+			lvChannels.Items[i].SubItems[3].Text = PSGEntryTable[md5].name;
+
+			return false; // not DEAD
 		}
 
 		public void FastUpdate()
