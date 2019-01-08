@@ -109,9 +109,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public Timestamp(string str)
 		{
-			Valid = str.Length == 8 && str[0] >= '0' && str[0] <= '9' && str[1] >= '0' && str[1] <= '9' &&
-				str[2] == ':' && str[3] >= '0' && str[3] <= '9' && str[4] >= '0' && str[4] <= '9' &&
-				str[5] == ':' && str[6] >= '0' && str[6] <= '9' && str[7] >= '0' && str[7] <= '9';
+			Valid = str.Length == 8 &&
+				str[0] >= '0' && str[0] <= '9' && str[1] >= '0' && str[1] <= '9' &&
+				str[2] == ':' &&
+				str[3] >= '0' && str[3] <= '9' && str[4] >= '0' && str[4] <= '9' &&
+				str[5] == ':' &&
+				str[6] >= '0' && str[6] <= '9' && str[7] >= '0' && str[7] <= '9';
 			if (Valid)
 			{
 				MIN = (byte) (10 * (str[0] - '0') + (str[1] - '0'));
