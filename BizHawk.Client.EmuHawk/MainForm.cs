@@ -3589,23 +3589,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			try
-			{                
-                bool deterministic;
-
-                if (args.Deterministic == null)
-                {
-					// movies should require deterministic emulation in ALL cases
-					// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
-					// it is then up to the core itself to override its own local DeterministicEmulation setting
-					// if a movie is *not* queued then make this false (this is needed for mGBA logic and is how things were working before I changed them -Asni)
-					deterministic = Global.MovieSession.QueuedMovie != null;
-				}
-                else
-                {
-                    // a value was actually supplied somehow - use this
-                    deterministic = args.Deterministic.Value;
-                }
-
+			{
+				// movies should require deterministic emulation in ALL cases
+				// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
+				// it is then up to the core itself to override its own local DeterministicEmulation setting
+				bool deterministic = args.Deterministic ?? Global.MovieSession.QueuedMovie != null;
+				
 				if (!GlobalWin.Tools.AskSave())
 				{
 					return false;
