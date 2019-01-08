@@ -64,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
                 if (CDL != null && CDL.Active) CDLOpcode();
 
-                var skipClearTFlag = false;
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
@@ -439,8 +438,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                     case 0x28: // PLP
                         P = ReadMemory((ushort)(++S + 0x2100));
                         PendingCycles -= 4;
-                        skipClearTFlag = true;
-                        break;
+                        goto AfterClearTFlag;
                     case 0x29: // AND #nn
                         value8 = ReadMemory(PC++);
                         if (FlagT == false) { 
@@ -646,8 +644,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                         PC = ReadMemory((ushort)(++S + 0x2100));
                         PC |= (ushort)(ReadMemory((ushort)(++S + 0x2100)) << 8);
                         PendingCycles -= 7;
-                        skipClearTFlag = true;
-                        break;
+                        goto AfterClearTFlag;
                     case 0x41: // EOR (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
                         if (FlagT == false) { 
@@ -2184,8 +2181,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                             Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
                         FlagT = true;
                         PendingCycles -= 2;
-                        skipClearTFlag = true;
-                        break;
+                        goto AfterClearTFlag;
                     case 0xF5: // SBC zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
                         temp = A - value8 - (FlagC ? 0 : 1);
@@ -2296,7 +2292,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                         break;
                 }
 
-                if (!skipClearTFlag) P &= 0xDF; // Clear T flag - skipped for 0x28, 0x40, and 0xF4
+                P &= 0xDF; // Clear T flag
+            AfterClearTFlag: // SET command jumps here
                 int delta = lastCycles - PendingCycles;
                 if (LowSpeed)
                 {
