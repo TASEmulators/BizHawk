@@ -3373,83 +3373,78 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					// is this the best time to handle this? or deeper inside?
-					if (argParser._currAviWriterFrameList != null)
+					if (argParser._currAviWriterFrameList == null || argParser._currAviWriterFrameList.Contains(Emulator.Frame))
 					{
-						if (!argParser._currAviWriterFrameList.Contains(Emulator.Frame))
+						IVideoProvider output;
+						IDisposable disposableOutput = null;
+						if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 						{
-							goto HANDLE_AUTODUMP;
-						}
-					}
-
-					IVideoProvider output;
-					IDisposable disposableOutput = null;
-					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
-					{
-						BitmapBuffer bbin = null;
-						Bitmap bmpin = null;
-						try
-						{
-							bbin = Global.Config.AVI_CaptureOSD
-								? CaptureOSD()
-								: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
-
-							bbin.DiscardAlpha();
-
-							var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
-							bmpin = bbin.ToSysdrawingBitmap();
-							using (var g = Graphics.FromImage(bmpout))
+							BitmapBuffer bbin = null;
+							Bitmap bmpin = null;
+							try
 							{
-								if (_avwriterpad)
-								{
-									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
-									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
-								}
-								else
-								{
-									g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-									g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-									g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
-								}
-							}
+								bbin = Global.Config.AVI_CaptureOSD
+									? CaptureOSD()
+									: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
 
-							output = new BmpVideoProvider(bmpout, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
-							disposableOutput = (IDisposable)output;
-						}
-						finally
-						{
-							bbin?.Dispose();
-							bmpin?.Dispose();
-						}
-					}
-					else
-					{
-						if (Global.Config.AVI_CaptureOSD)
-						{
-							output = new BitmapBufferVideoProvider(CaptureOSD());
-							disposableOutput = (IDisposable)output;
+								bbin.DiscardAlpha();
+
+								var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
+								bmpin = bbin.ToSysdrawingBitmap();
+								using (var g = Graphics.FromImage(bmpout))
+								{
+									if (_avwriterpad)
+									{
+										g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
+										g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+									}
+									else
+									{
+										g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+										g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+										g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+									}
+								}
+
+								output = new BmpVideoProvider(bmpout, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
+								disposableOutput = (IDisposable)output;
+							}
+							finally
+							{
+								bbin?.Dispose();
+								bmpin?.Dispose();
+							}
 						}
 						else
 						{
-							output = _currentVideoProvider;
+							if (Global.Config.AVI_CaptureOSD)
+							{
+								output = new BitmapBufferVideoProvider(CaptureOSD());
+								disposableOutput = (IDisposable)output;
+							}
+							else
+							{
+								output = _currentVideoProvider;
+							}
 						}
+
+						_currAviWriter.SetFrame(Emulator.Frame);
+
+						short[] samp;
+						int nsamp;
+						if (_dumpaudiosync)
+						{
+							((VideoStretcher)_currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
+						}
+						else
+						{
+							((AudioStretcher)_currAviWriter).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
+						}
+
+						disposableOutput?.Dispose();
+
+						_dumpProxy.PutSamples(samp, nsamp);
 					}
-
-					_currAviWriter.SetFrame(Emulator.Frame);
-
-					short[] samp;
-					int nsamp;
-					if (_dumpaudiosync)
-					{
-						((VideoStretcher)_currAviWriter).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
-					}
-					else
-					{
-						((AudioStretcher)_currAviWriter).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
-					}
-
-					disposableOutput?.Dispose();
-
-					_dumpProxy.PutSamples(samp, nsamp);
 				}
 				catch (Exception e)
 				{
@@ -3457,7 +3452,6 @@ namespace BizHawk.Client.EmuHawk
 					AbortAv();
 				}
 
-				HANDLE_AUTODUMP:
 				if (argParser._autoDumpLength > 0)
 				{
 					argParser._autoDumpLength--;
