@@ -149,8 +149,14 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 		public void Compile(string channel, Size insize, Size outsize, bool finalTarget)
 		{
-		RETRY:
-			
+			while (true)
+			{
+				if (Compile_Sub(channel, insize, outsize, finalTarget)) break;
+			}
+		}
+
+		private bool Compile_Sub(string channel, Size insize, Size outsize, bool finalTarget)
+		{
 			Program.Clear();
 
 			//prep filters for initialization
@@ -200,7 +206,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					{
 						var renderer = new Render();
 						Filters.Insert(i, renderer);
-						goto RETRY;
+						return false; // Continue retry loop in Compile
 					}
 					//check if the desired disposition needs to change from a render target to a texture
 					//(if so, the current render target gets resolved, and made no longer current
@@ -208,7 +214,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					{
 						var resolver = new Resolve();
 						Filters.Insert(i, resolver);
-						goto RETRY;
+						return false; // Continue retry loop in Compile
 					}
 				}
 
@@ -261,7 +267,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			{
 				var renderer = new Render();
 				Filters.Insert(Filters.Count, renderer);
-				goto RETRY;
+				return false; // Continue retry loop in Compile
 			}
 
 			//patch the program so that the final rendertarget set operation is the framebuffer instead
@@ -280,6 +286,8 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					}
 				}
 			}
+
+			return true; // Break out of loop in Compile
 		}
 	}
 }
