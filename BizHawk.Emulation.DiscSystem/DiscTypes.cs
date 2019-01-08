@@ -105,29 +105,26 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// creates a timestamp from a string in the form mm:ss:ff
+		/// TODO use a datetime library
 		/// </summary>
 		public Timestamp(string str)
 		{
-			if (str.Length != 8) goto BOGUS;
-			if (str[0] < '0' || str[0] > '9') goto BOGUS;
-			if (str[1] < '0' || str[1] > '9') goto BOGUS;
-			if (str[2] != ':') goto BOGUS;
-			if (str[3] < '0' || str[3] > '9') goto BOGUS;
-			if (str[4] < '0' || str[4] > '9') goto BOGUS;
-			if (str[5] != ':') goto BOGUS;
-			if (str[6] < '0' || str[6] > '9') goto BOGUS;
-			if (str[7] < '0' || str[7] > '9') goto BOGUS;
-			MIN = (byte)((str[0] - '0') * 10 + (str[1] - '0'));
-			SEC = (byte)((str[3] - '0') * 10 + (str[4] - '0'));
-			FRAC = (byte)((str[6] - '0') * 10 + (str[7] - '0'));
-			Valid = true;
+			Valid = str.Length == 8 && str[0] >= '0' && str[0] <= '9' && str[1] >= '0' && str[1] <= '9' &&
+				str[2] == ':' && str[3] >= '0' && str[3] <= '9' && str[4] >= '0' && str[4] <= '9' &&
+				str[5] == ':' && str[6] >= '0' && str[6] <= '9' && str[7] >= '0' && str[7] <= '9';
+			if (Valid)
+			{
+				MIN = (byte) (10 * (str[0] - '0') + (str[1] - '0'));
+				SEC = (byte) (10 * (str[3] - '0') + (str[4] - '0'));
+				FRAC = (byte) (10 * (str[6] - '0') + (str[7] - '0'));
+			}
+			else
+			{
+				MIN = 0;
+				SEC = 0;
+				FRAC = 0;
+			}
 			Negative = false;
-			return;
-		BOGUS:
-			MIN = SEC = FRAC = 0;
-			Valid = false;
-			Negative = false;
-			return;
 		}
 
 		/// <summary>
