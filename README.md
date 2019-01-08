@@ -4,6 +4,41 @@
 
 BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
 
+## Core feature matrix
+
+Most games for every system in the table will run perfectly, and every system supports fast-forward, frame advance, and rewind.
+
+System | Play+FF/ADV/RW | Debugging | (Input) Recording
+--:|:-:|:-:|:-:
+Apple II | ✓ | ? | ?
+Atari 2600 | ✓ | ? | ?
+Atari 7800 | ✓ | ? | ?
+Atari Lynx | ✓ | ? | ?
+ColecoVision | ✓ | ? | ?
+Commodore 64 | ✓ | ? | ?
+Game Boy / GBC | ✓ | ? | ?
+GBA | ✓ | ? | ?
+Genesis | ✓ | ? | ?
+IntelliVision | ✓ | ? | ?
+Master System | ✓ | ? | ?
+N64 | ✓ | ? | ?
+Neo Geo Pocket | ✓ | ? | ?
+NES | ✓ | ? | ?
+PSX | ✓ | ? | ?
+Saturn | ✓ | ? | ?
+SNES | ✓ | ? | ?
+TI-83 | ✓ | ? | ?
+TurboGrafx-16 | ✓ | ? | ?
+Virtual Boy | ✓ | ? | ?
+WonderSwan | ✓ | ? | ?
+ZX Spectrum | ✓ | ? | ?
+
+EmuHawk's frontend also has a comprehensive input mapper, with keyboard and controller support (even simultaneously), hotkeys, and turbo/rapid fire.
+
+In addition to input recording (with TAStudio), you can also record the emulated system's audio and video, either of your own gameplay or of a prerecorded movie (TAS). See the *Usage (advanced)* section below for more info about the many debugging and recording features.
+
+Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more.
+
 ## Installing — Windows 7/8.1/10
 
 Released binaries can be found right here on GitHub:
@@ -74,57 +109,54 @@ If your distro isn't listed under *Installing* above, you might get an "Unknown 
 
 Again, if your distro isn't listed above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
 
-Otherwise, see the *Installing* section above.
+Once built, see the *Installing* section above.
 
 ### Windows 7/8.1/10
 
 TODO
 
-## Usage and troubleshooting (casual)
+[Compiling](http://tasvideos.org/Bizhawk/Compiling.html)
+
+## Usage (casual)
 
 TODO
 
-## Usage (TASing or romhacking)
+## Usage (advanced)
 
 TODO
+
+[Commandline](http://tasvideos.org/Bizhawk/CommandLine.html)
+
+[CompactDiscInfoDump](http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html)
+
+[Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html)
+
+[TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html)
+
+## Troubleshooting and support
+
+TODO
+
+[BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64)
+
+[BizHawk wiki](http://tasvideos.org/Bizhawk.html)
+
+[FAQ](http://tasvideos.org/Bizhawk/FAQ.html)
+
+## Contributing
+
+BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the MIT license, this is *optional*, just be careful with reusing cores as some have copyleft licenses.
+
+If you've already made changes, the best way to contribute is with a Pull Request here on GitHub. If you're looking for something to do, check the issue tracker here on GitHub:
+
+[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/issues)
+
+It's a good idea to check if anyone else is working on an issue by asking on IRC:
+
+[![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-black.svg?style=flat)](ircs://chat.freenode.net:6697/bizhawk)
+[![Matrix (via bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(via_bridge)-%23freenode__%23bizhawk:matrix.org-black.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
+[![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-black.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
 
 ## License
 
 TODO
-
-## junk
-
-[Here](http://tasvideos.org/Bizhawk/Features.html) is a list of features offered by bizhawk.
-
- * Nintendo Entertainment System / Famicom / Famicom Disk System (NES/FDS)
- * Super Nintendo (SNES)
- * Nintendo 64
- * Game Boy, Game Boy Color, and Super Game Boy
- * Game Boy Advance
- * Sony PlayStation
- * Sega Master System, Game Gear, and SG-1000
- * Sega Genesis / Sega-CD
- * Sega Saturn
- * PC-Engine (TurboGrafx-16) / CD-ROM & SuperGrafx 
- * Atari 2600
- * Atari 7800
- * Atari Lynx
- * ColecoVision
- * TI-83 Calculator
- * Wonderswan and Wonderswan Color 
- * Apple II
- * Commodore 64
- * Sinclair ZX Spectrum
-
-[BizHawk homepage](http://tasvideos.org/Bizhawk.html) 
-
-[FAQ](http://tasvideos.org/Bizhawk/FAQ.html) - Frequently Asked Questions / Troubleshooting
-
-[Compiling](http://tasvideos.org/Bizhawk/Compiling.html) - What is needed to compile BizHawk src
-
-[CompactDiscInfoDump](http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html) - A concise explanation of compact disc CDs, gathered for the first time EVER in one location, and mostly inaccurate
-
-[Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html) - (Work in progress) - Documentation of the rerecording implementation of  BizHawk
- * [TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html) - Mnemonic patterns for each platform for .tas (input) files.
-
-[Commandline](http://tasvideos.org/Bizhawk/CommandLine.html) - Documentation of the command line options in BizHawk 
