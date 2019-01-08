@@ -223,11 +223,9 @@ namespace BizHawk.Client.Common
 									Size = fo.Size
 								};
 							_resolutionDictionary[fr] = ri;
-							goto DONE_FIRMWARE;
+							break;
 						}
 					}
-
-				DONE_FIRMWARE: ;
 				}
 
 				// apply user overrides
