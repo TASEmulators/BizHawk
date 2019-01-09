@@ -90,8 +90,12 @@ Building is as easy as:
 ```sh
 git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
-msbuild BizHawk.sln
+msbuild --release BizHawk.sln
 ```
+
+Remove the `--release` flag from MSBuild if you want debugging symbols.
+
+TODO it's not --release
 
 Running is even easier, just execute `EmuHawkMono.sh` in the repo's `output` folder (this folder is what gets distributed in a Release build, you can move/rename it).
 
