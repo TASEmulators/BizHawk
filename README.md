@@ -133,7 +133,7 @@ TODO
 
 [TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html)
 
-## Troubleshooting and support
+## Support and troubleshooting
 
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at tasvideos.org, or ask on IRC:
 
