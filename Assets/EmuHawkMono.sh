@@ -9,6 +9,7 @@ if [ "$(command -v lsb_release)" ]; then
 	case "$(lsb_release -i | cut -c17- | tr -d "\n")" in
 		"Arch"|"ManjaroLinux") libpath="/usr/lib/wine";;
 		"Ubuntu"|"LinuxMint") libpath="/usr/lib/x86_64-linux-gnu/wine";;
+		"Debian"|"DebianLinux") libpath="/usr/lib/x86_64-linux-gnu/wine";;
 	esac
 fi
 if [ -z "$libpath" ]; then
