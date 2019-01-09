@@ -4,6 +4,8 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
+tl;dr: click the "latest" button above to grab it. The changelog is [here on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
+
 ## Core feature matrix
 
 Most games for every system in the table will run perfectly, and every system supports fast-forward, frame advance, and rewind.
