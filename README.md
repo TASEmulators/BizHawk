@@ -164,4 +164,4 @@ And of course, open a "feature request" issue before adding features. No point m
 From the [full text](https://github.com/TASVideos/BizHawk/blob/master/LICENSE):
 > This repository contains original work chiefly in c# by the BizHawk team (which is all provided under the MIT License), embedded submodules from other authors with their own licenses clearly provided, other embedded submodules from other authors WITHOUT their own licenses clearly provided, customizations by the BizHawk team to many of those submodules (which is provided under the MIT license), and compiled binary executable modules from other authors without their licenses OR their origins clearly indicated.
 
-In short, the frontend is MIT, and past that you're on your own.
+In short, the frontend is MIT (Expat), beyond that you're on your own.
