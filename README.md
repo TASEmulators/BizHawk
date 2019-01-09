@@ -90,16 +90,16 @@ Building is as easy as:
 ```sh
 git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
-msbuild --release BizHawk.sln
+msbuild /p:Configuration=Release BizHawk.sln
 ```
 
-Remove the `--release` flag from MSBuild if you want debugging symbols.
+Remove the `/p:...` flag from MSBuild if you want debugging symbols.
 
-TODO it's not --release
+If your distro isn't listed under *Installing* above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
 
-If your distro isn't listed above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
+Once built, see the *Installing* section, substituting the repo's `output` folder for the download.
 
-Once built, see the *Installing* section above, substituting the repo's `output` folder for the download. If your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
+Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
 ### Windows 7/8.1/10
 
