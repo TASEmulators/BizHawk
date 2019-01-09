@@ -53,7 +53,7 @@ ZX Spectrum | ✓ | 95%? | ?
 
 † *approximately* what portion of games run perfectly, not counting romhacks/homebrew (if you want to count, go right ahead)
 
-EmuHawk's frontend also has a firmware manager, nice overlays, and a comprehensive input mapper. We're talking keyboard and controller mapped to one emulated controller with analog support, keyboard hotkeys, controller hotkeys, and rapid fire for emulated controllers. Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more. But most importantly: BizHawk is Hawk Biz.
+EmuHawk's frontend also has a firmware manager, nice overlays, and a comprehensive input mapper. We're talking keyboard and controller mapped to one emulated controller, analog from analog or from digital, keyboard hotkeys, controller hotkeys, and rapid fire for emulated controllers. Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more. But most importantly: BizHawk is Hawk Biz.
 
 See the *Usage* sections below for details about specific tools and config menus.
 
