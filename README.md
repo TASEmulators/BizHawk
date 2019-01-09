@@ -78,7 +78,7 @@ Linux distros are supported if the distributor is still supporting your version,
 
 macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to care about lifecycles, so we'll go with 6 months from the last security update.
 
-## Building
+## Building/Testing
 
 If you want to test the latest changes without building BizHawk yourself, grab the developer build from [AppVeyor](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history). Pick the topmost one that doesn't say "Pull request", then click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
