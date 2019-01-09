@@ -1,6 +1,6 @@
 # BizHawk
 
-[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/releases/latest) ![Unique systems emulated | 22](https://img.shields.io/badge/Unique_systems_emulated-22-darkgreen.svg?style=flat)
+[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/releases/latest) [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?style=flat)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history) ![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?style=flat)
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
@@ -84,6 +84,12 @@ If you want to test the latest changes without building BizHawk yourself, grab t
 
 If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the same repo as the main package. If it's available, installing it will automate the build process.
 
+### Windows 7/8.1/10
+
+TODO
+
+[Compiling](http://tasvideos.org/Bizhawk/Compiling.html)
+
 ### GNU+Linux and macOS
 
 *Compiling* requires MSBuild and *running* requires Mono and WINE, but **BizHawk does not run under WINE** — only the bundled libraries are required.
@@ -102,12 +108,6 @@ If your distro isn't listed under *Installing* above, `libblip_buf` probably isn
 Once built, see the *Installing* section, substituting the repo's `output` folder for the download.
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
-
-### Windows 7/8.1/10
-
-TODO
-
-[Compiling](http://tasvideos.org/Bizhawk/Compiling.html)
 
 ## Usage (casual)
 
