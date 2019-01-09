@@ -154,9 +154,14 @@ If you've already made changes, the best way to contribute is with a Pull Reques
 It's a good idea to check if anyone else is working on an issue by asking on IRC:
 
 [![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-black.svg?style=flat)](ircs://chat.freenode.net:6697/bizhawk)
-[![Matrix (via bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(via_bridge)-%23freenode__%23bizhawk:matrix.org-black.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
+[![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-black.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
 [![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-black.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
+
+And of course, open a "feature request" issue before adding features. No point making something that no-one's going to use.
 
 ## License
 
-TODO
+From the [full text](https://github.com/TASVideos/BizHawk/blob/master/LICENSE):
+> This repository contains original work chiefly in c# by the BizHawk team (which is all provided under the MIT License), embedded submodules from other authors with their own licenses clearly provided, other embedded submodules from other authors WITHOUT their own licenses clearly provided, customizations by the BizHawk team to many of those submodules (which is provided under the MIT license), and compiled binary executable modules from other authors without their licenses OR their origins clearly indicated.
+
+In short, the frontend is MIT, and past that you're on your own.
