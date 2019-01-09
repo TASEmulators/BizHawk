@@ -49,9 +49,15 @@ Released binaries can be found right here on GitHub:
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
 
-Before you start (by running `EmuHawk.exe`), make sure you have the Windows-only prerequisites installed: .NET Framework 4.6.1; Visual C++ 2010 SP1, 2012, and 2015; and Direct3D 9. If you have a few Steam games, chances are these are already installed, otherwise you can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
+Before you start (by running `EmuHawk.exe`), you'll need the following Windows-only prerequisites installed. You can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
+* .NET Framework 4.6.1
+* Visual C++ Redists
+	* 2010 SP1
+	* 2012
+	* 2015
+* Direct3D 9
 
-BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive, as long as you keep all the files together and the prerequisites are installed when you go to run it.
+BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
 Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported from 1709 "Redstone 3", following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet).
 
