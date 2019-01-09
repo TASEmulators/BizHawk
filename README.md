@@ -133,6 +133,8 @@ A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk
 [![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-mediumpurple.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
 [![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-lightcoral.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
 
+If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
+
 ## Contributing
 
 BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the MIT license, this is *optional*, just be careful with reusing cores as some have copyleft licenses.
