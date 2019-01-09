@@ -6,6 +6,16 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 
 tl;dr: click the "latest" button above to grab it. The changelog is [here on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix versions**, copy `config.ini` to keep settings.
 
+Jump to:
+* [Installing — Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--windows-78110)
+* [Installing — GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--gnulinux-and-macos)
+* [Building/Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#buildingtesting)
+* [Usage (emulation)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-emulation)
+* [Usage (TASing)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-tasing)
+* [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
+* [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
+* [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
+
 ## Core feature matrix
 
 Most games for every system in the table will run perfectly, and every system supports fast-forward, frame advance, and rewind.
@@ -115,11 +125,11 @@ Once built, see the *Installing* section, substituting the repo's `output` folde
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
-## Usage (casual)
+## Usage (emulation)
 
 TODO
 
-## Usage (advanced)
+## Usage (TASing)
 
 TODO
 
