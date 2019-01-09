@@ -58,21 +58,11 @@ Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported f
 Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 
 [![Arch Linux (AUR) | bizhawk](https://img.shields.io/badge/Arch_Linux_(AUR)-bizhawk-%231793D1.svg?logo=arch-linux&style=popout)](https://aur.archlinux.org/packages/bizhawk)
-[![CentOS | bizhawk](https://img.shields.io/badge/CentOS-bizhawk-%23941D7A.svg?logo=centos&style=popout)](https://example.com/bizhawk)
-[![Debian (Launchpad) | bizhawk](https://img.shields.io/badge/Debian_(Launchpad)-bizhawk-%23A81D33.svg?logo=debian&style=popout)](https://example.com/bizhawk)
-[![elementaryOS (Launchpad) | bizhawk](https://img.shields.io/badge/elementaryOS-bizhawk-%2364BAFF.svg?logo=elementary&style=popout)](https://example.com/bizhawk)
-[![Fedora | bizhawk](https://img.shields.io/badge/Fedora-bizhawk-%23294172.svg?logo=fedora&style=popout)](https://example.com/bizhawk)
-[![Gentoo | bizhawk](https://img.shields.io/badge/Gentoo-bizhawk-%234E4371.svg?logo=gentoo&style=popout)](https://example.com/bizhawk)
-[![Hyperbola | bizhawk](https://img.shields.io/badge/Hyperbola-bizhawk-black.svg?logo=hyperbola&style=popout)](https://example.com/bizhawk)
-[![Linux Mint (Launchpad) | bizhawk](https://img.shields.io/badge/Linux_Mint_(Launchpad)-bizhawk-%2387CF3E.svg?logo=linux-mint&style=popout)](https://example.com/bizhawk)
 [![macOS (Homebrew) | bizhawk](https://img.shields.io/badge/macOS_(Homebrew)-bizhawk-%23999999.svg?logo=apple&style=popout)](https://example.com/bizhawk)
-[![Manjaro (AUR) | bizhawk](https://img.shields.io/badge/Manjaro_(AUR)-bizhawk-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk)
-[![MX Linux | bizhawk](https://img.shields.io/badge/MX_Linux-bizhawk-%23506E88.svg?logo=mx-linux&style=popout)](https://example.com/bizhawk)
-[![NixOS | bizhawk](https://img.shields.io/badge/NixOS-bizhawk-%234F73BC.svg?colorA=7EB5E0&logo=nixos&style=popout)](https://example.com/bizhawk)
-[![openSUSE | bizhawk](https://img.shields.io/badge/openSUSE-bizhawk-%236DA741.svg?logo=opensuse&style=popout)](https://example.com/bizhawk)
-[![Solus | bizhawk](https://img.shields.io/badge/Solus-bizhawk-%235294E2.svg?colorA=4C5164&logo=solus&style=popout)](https://example.com/bizhawk)
-[![SteamOS (Launchpad) | bizhawk](https://img.shields.io/badge/SteamOS-bizhawk-%231B2838.svg?logo=steam&logoColor=1B2838&style=popout)](https://example.com/bizhawk)
 [![Ubuntu (Launchpad) | bizhawk](https://img.shields.io/badge/Ubuntu_(Launchpad)-bizhawk-%23E95420.svg?colorA=772953&logo=ubuntu&style=popout)](https://example.com/bizhawk)
+
+[![Linux Mint (Launchpad) | bizhawk](https://img.shields.io/badge/Linux_Mint_(Launchpad)-bizhawk-%2387CF3E.svg?logo=linux-mint&style=popout)](https://example.com/bizhawk)
+[![Manjaro (AUR) | bizhawk](https://img.shields.io/badge/Manjaro_(AUR)-bizhawk-%2335BF5C.svg?logo=manjaro&style=popout)](https://aur.archlinux.org/packages/bizhawk)
 
 If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`).
 
