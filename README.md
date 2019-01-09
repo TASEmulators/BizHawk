@@ -137,9 +137,9 @@ TODO
 
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at tasvideos.org, or ask on IRC:
 
-[![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-black.svg?style=flat)](ircs://chat.freenode.net:6697/bizhawk)
-[![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-black.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
-[![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-black.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
+[![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-steelblue.svg?style=flat)](ircs://chat.freenode.net:6697/bizhawk)
+[![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-mediumpurple.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
+[![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-lightcoral.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
 
 ## Contributing
 
