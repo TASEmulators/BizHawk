@@ -16,40 +16,46 @@ Jump to:
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
-## Core feature matrix
+## Features
 
-Most games for every system in the table will run perfectly, and every system supports fast-forward, frame advance, and rewind.
+The "core" features, common to every system core, are:
+* rom format and region detection and a corruption check
+* speed control, including frame stepping and rewinding
+* input recording (making TAS movies)
+* memory view/search/edit in all parts of the emulated HW
+* 10 savestate slots and save/load to file
+* more things I can't remember
 
-System | Play+FF/ADV/RW | Debugging | (Input) Recording
+System | "Core" Features | Game Coverage† | Peripherals
 --:|:-:|:-:|:-:
-Apple II | ✓ | ? | ?
-Atari 2600 | ✓ | ? | ?
-Atari 7800 | ✓ | ? | ?
-Atari Lynx | ✓ | ? | ?
-ColecoVision | ✓ | ? | ?
-Commodore 64 | ✓ | ? | ?
-Game Boy / GBC | ✓ | ? | ?
-GBA | ✓ | ? | ?
-Genesis | ✓ | ? | ?
-IntelliVision | ✓ | ? | ?
-Master System | ✓ | ? | ?
-N64 | ✓ | ? | ?
-Neo Geo Pocket | ✓ | ? | ?
-NES | ✓ | ? | ?
-PSX | ✓ | ? | ?
-Saturn | ✓ | ? | ?
-SNES | ✓ | ? | ?
-TI-83 | ✓ | ? | ?
-TurboGrafx-16 | ✓ | ? | ?
-Virtual Boy | ✓ | ? | ?
-WonderSwan | ✓ | ? | ?
-ZX Spectrum | ✓ | ? | ?
+Apple II | ✓ | 95%? | ?
+Atari 2600 | ✓ | 95%? | ?
+Atari 7800 | ✓ | 95%? | ?
+Atari Lynx | ✓ | 95%? | ?
+ColecoVision | ✓ | 95%? | ?
+Commodore 64 | ✓ | 95%? | ?
+Game Boy / GBC | ✓ | 95%? | ?
+GBA | ✓ | 95%? | ?
+Genesis | ✓ | 95%? | ?
+IntelliVision | ✓ | 95%? | ?
+Master System | ✓ | 95%? | ?
+N64 | ✓ | 95%? | ?
+Neo Geo Pocket | ✓ | 95%? | ?
+NES | ✓ | 95%? | ?
+PSX | ✓ | 95%? | ?
+Saturn | ✓ | 95%? | ?
+SNES | ✓ | 95%? | ?
+TI-83 | ✓ | 95%? | ?
+TurboGrafx-16 | ✓ | 95%? | ?
+Virtual Boy | ✓ | 95%? | ?
+WonderSwan | ✓ | 95%? | ?
+ZX Spectrum | ✓ | 95%? | ?
 
-EmuHawk's frontend also has a comprehensive input mapper, with keyboard and controller support (even simultaneously), hotkeys, and turbo/rapid fire.
+† *approximately* what portion of games run perfectly, not counting romhacks/homebrew (if you want to count, go right ahead)
 
-In addition to input recording (with TAStudio), you can also record the emulated system's audio and video, either of your own gameplay or of a prerecorded movie (TAS). See the *Usage (advanced)* section below for more info about the many debugging and recording features.
+EmuHawk's frontend also has a firmware manager, nice overlays, and a comprehensive input mapper. We're talking keyboard and controller mapped to one emulated controller with analog support, keyboard hotkeys, controller hotkeys, and rapid fire for emulated controllers. Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more. But most importantly: BizHawk is Hawk Biz.
 
-Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more.
+See the *Usage* sections below for details about specific tools and config menus.
 
 ## Installing — Windows 7/8.1/10
 
