@@ -137,11 +137,13 @@ A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk
 
 BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the MIT license, this is *optional*, just be careful with reusing cores as some have copyleft licenses.
 
-If you've already made changes, the best way to contribute is with a Pull Request here on GitHub. If you're looking for something to do, check the issue tracker here on GitHub:
+If you'd like to fix bugs, check the issue tracker here on GitHub:
 
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&style=flat)](https://github.com/TASVideos/BizHawk/issues)
 
-It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above). And of course, open a "feature request" issue before adding features. No point making something that no-one's going to use.
+It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above).
+
+If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
 
 ## License
 
