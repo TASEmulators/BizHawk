@@ -89,11 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			return SubMain(args);
 		}
 
-		private interface PlatformSpecificMainLoopCrashHandler
-		{
-			void TryCatchFinally(string[] args);
-		}
-		private class Win32MainLoopCrashHandler : PlatformSpecificMainLoopCrashHandler
+		private class MainLoopCrashHandler
 		{
 			public void TryCatchFinally(string[] args)
 			{
@@ -153,56 +149,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		private class UnixMonoMainLoopCrashHandler : PlatformSpecificMainLoopCrashHandler
-		{
-			// Identical to the implementation in Win32MainLoopCrashHandler sans the single-instance check.
-			public void TryCatchFinally(string[] args)
-			{
-				try
-				{
-					using (var mf = new MainForm(args))
-					{
-						var title = mf.Text;
-						mf.Show();
-						mf.Text = title;
-						try
-						{
-							GlobalWin.ExitCode = mf.ProgramRunLoop();
-						}
-						catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
-						{
-							var result = MessageBox.Show(
-								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-								"Fatal error: " + e.GetType().Name,
-								MessageBoxButtons.YesNo,
-								MessageBoxIcon.Exclamation
-								);
-							if (result == DialogResult.Yes)
-							{
-								Global.MovieSession.Movie.Save();
-							}
-						}
-					}
-				}
-				catch (Exception e) when (!Debugger.IsAttached)
-				{
-					new ExceptionBox(e).ShowDialog();
-				}
-				finally
-				{
-					if (GlobalWin.Sound != null)
-					{
-						GlobalWin.Sound.Dispose();
-						GlobalWin.Sound = null;
-					}
-					GlobalWin.GL.Dispose();
-					Input.Cleanup();
-				}
-			}
-		}
-		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix
-			? (PlatformSpecificMainLoopCrashHandler) new UnixMonoMainLoopCrashHandler()
-			: (PlatformSpecificMainLoopCrashHandler) new Win32MainLoopCrashHandler();
+
+		private static MainLoopCrashHandler mainLoopCrashHandler = new MainLoopCrashHandler();
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -422,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-#if WINDOWS
+//#if WINDOWS
 		public class SingleInstanceController : WindowsFormsApplicationBase
 		{
 			readonly string[] cmdArgs;
@@ -450,6 +398,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-#endif
+//#endif
 	}
 }
