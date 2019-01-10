@@ -6,7 +6,7 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-tl;dr: click the "latest" button above to grab it. The changelog is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix versions**, copy `config.ini` to keep settings.
+Click the "release" button above to grab the latest stable version. The changelog is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Never mix different versions** of BizHawk — Keep each version in its own folder.
 
 Jump to:
 * [Installing — Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--windows-78110)
