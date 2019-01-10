@@ -6,7 +6,7 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-tl;dr: click the "latest" button above to grab it. The changelog is [here on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix versions**, copy `config.ini` to keep settings.
+tl;dr: click the "latest" button above to grab it. The changelog is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix versions**, copy `config.ini` to keep settings.
 
 Jump to:
 * [Installing — Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--windows-78110)
@@ -66,7 +66,7 @@ Released binaries can be found right here on GitHub:
 
 [![Windows | binaries](https://img.shields.io/badge/Windows-binaries-%230078D6.svg?logo=windows&logoColor=0078D6&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 
-Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [on tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
+Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
 
 Before you start (by running `EmuHawk.exe`), you'll need the following Windows-only prerequisites installed. You can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
 * .NET Framework 4.6.1
@@ -82,7 +82,7 @@ Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported f
 
 ## Installing — GNU+Linux and macOS
 
-Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see tasvideos.org](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
+Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see TASVideos here](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 
 [![Arch Linux (AUR) | bizhawk](https://img.shields.io/badge/Arch_Linux_(AUR)-bizhawk-%231793D1.svg?logo=arch-linux&style=popout)](https://aur.archlinux.org/packages/bizhawk)
 [![Debian (Launchpad) | bizhawk](https://img.shields.io/badge/Debian_(Launchpad)-bizhawk-%23A81D33.svg?logo=debian&style=popout)](https://example.com/bizhawk)
@@ -140,6 +140,8 @@ TODO
 
 ## Usage (TASing)
 
+This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).
+
 TODO
 
 [Commandline](http://tasvideos.org/Bizhawk/CommandLine.html)
@@ -152,7 +154,7 @@ TODO
 
 ## Support and troubleshooting
 
-A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at tasvideos.org, or ask on IRC:
+A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
 
 [![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-steelblue.svg?style=flat)](ircs://chat.freenode.net:6697/bizhawk)
 [![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-mediumpurple.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
