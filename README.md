@@ -2,7 +2,7 @@
 
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)]()
+[![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](javascript:;)
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
