@@ -37,14 +37,14 @@ The BizHawk common features (across all cores) are:
 * speed control, including frame stepping and rewinding
 * memory view/search/edit in all emulated hardware components
 * input recording (making TAS movies)
-* screenshotting and recording video
+* screenshotting and recording audio + video to file
 * firmware management
 * input, framerate, and more in a HUD over the game
 * emulated controllers via a comprehensive input mapper
 * Lua control over core and frontend (Windows only)
 * hotkey bindings to control the UI
 
-Supported consoles and PCs:
+Supported consoles and computers:
 
 * N64 and [all](http://tasvideos.org/Bizhawk/N64.html) peripherals; Playstation (PSX); Saturn; Virtual Boy
 * Game Boy Advance; Game Boy Color; Neo Geo Pocket (Color); WonderSwan (Color)
