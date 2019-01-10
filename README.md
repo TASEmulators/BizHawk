@@ -10,14 +10,15 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 Click the "release" button above to grab the latest stable version ([changelog at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html)). New users on Windows should click the "prereqs" button too, see *Installing* for info. **Never mix different versions** of BizHawk — Keep each version in its own folder.
 
 Jump to:
-* [Installing — Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--windows-78110)
-* [Installing — GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--gnulinux-and-macos)
+* Installing
+	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
+	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos)
 * [Building](https://github.com/TASVideos/BizHawk/blob/master/README.md#building)
-* [Usage (emulation)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-emulation)
-* [Usage (TASing)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-tasing)
+* [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
+	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
-* [Testing]()
+	* [Testing]()
 * [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
@@ -48,7 +49,9 @@ Supported consoles and PCs:
 
 See the *Usage* sections below for details about specific tools and config menus.
 
-## Installing — Windows 7/8.1/10
+## Installing
+
+### Windows 7/8.1/10
 
 Released binaries can be found right here on GitHub:
 
@@ -68,7 +71,7 @@ BizHawk functions like a "portable" program, you may move or rename the folder c
 
 Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported from 1709 "Redstone 3", following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet).
 
-## Installing — GNU+Linux and macOS
+### GNU+Linux and macOS
 
 Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see TASVideos here](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
 
@@ -126,11 +129,11 @@ Once built, see the *Installing* section, substituting the repo's `output` folde
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
-## Usage (emulation)
+## Usage
 
 TODO
 
-## Usage (TASing)
+### TASing
 
 This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).
 
