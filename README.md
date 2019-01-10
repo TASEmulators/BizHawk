@@ -113,6 +113,10 @@ If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the s
 
 TODO
 
+powershell to come
+
+something something IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community)
+
 [Compiling](http://tasvideos.org/Bizhawk/Compiling.html)
 
 ### GNU+Linux and macOS
