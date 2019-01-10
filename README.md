@@ -1,6 +1,6 @@
 # BizHawk
 
-[![unique systems emulated | 24](https://img.shields.io/badge/unique_systems_emulated-24-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#features)
+[![unique systems emulated | 24](https://img.shields.io/badge/unique_systems_emulated-24-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
 [![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
@@ -20,6 +20,7 @@ Jump to:
 * [Building](https://github.com/TASVideos/BizHawk/blob/master/README.md#building)
 * [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
 	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
+	* [Cores](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
 	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
@@ -150,6 +151,12 @@ TODO
 [Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html)
 
 [TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html)
+
+### Cores
+
+A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there's currently a bit of overlap in the cores BizHawk uses as noted below.
+
+TABLE GOES HERE
 
 ## Support and troubleshooting
 
