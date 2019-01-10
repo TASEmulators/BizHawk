@@ -22,12 +22,12 @@ Jump to:
 ## Features
 
 The BizHawk common features (across all cores) are:
-* rom format and region detection and a corruption check
+* detection of game format and region, and corruption checking
 * 10 savestate slots and save/load to file
 * speed control, including frame stepping and rewinding
 * memory view/search/edit in all parts of the emulated HW
 * input recording (making TAS movies)
-* take screenshots and record video
+* screenshotting and recording video
 
 System | BH Common | Accuracy† | Debugging | Peripherals
 --:|:-:|:-:|:-:|:-:
