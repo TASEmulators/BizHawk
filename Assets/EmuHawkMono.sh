@@ -15,4 +15,4 @@ if [ -z "$libpath" ]; then
 	printf "%s\n" "Unknown distro, assuming WINE library location is /usr/lib/wine..."
 	libpath="/usr/lib/wine"
 fi
-LD_LIBRARY_PATH="$libpath" mono ./EmuHawk.exe
+LD_LIBRARY_PATH="$libpath" MONO_WINFORMS_XIM_STYLE=disabled mono ./EmuHawk.exe
