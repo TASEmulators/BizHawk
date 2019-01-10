@@ -1,11 +1,13 @@
 # BizHawk
 
+A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
+
+***
+
 [![unique systems emulated | 24](https://img.shields.io/badge/unique_systems_emulated-24-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
 [![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
-
-A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
 Click the "release" button above to grab the latest stable version ([changelog at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html)). 
 
@@ -30,17 +32,17 @@ Jump to:
 ## Features and systems
 
 The BizHawk common features (across all cores) are:
-* format and region detection for game images
-* image corruption warning checked against database
+* format, region, and integrity detection for game images
 * 10 save slots with hotkeys and ∞ named savestates
 * speed control, including frame stepping and rewinding
-* memory view/search/edit in all parts of the emulated HW
+* memory view/search/edit in all emulated hardware components
 * input recording (making TAS movies)
 * screenshotting and recording video
-* organised firmware
-* input, framerate, and other overlays
+* firmware management
+* input, framerate, and more in a HUD over the game
 * emulated controllers via a comprehensive input mapper
 * Lua control over core and frontend (Windows only)
+* hotkey bindings to control the UI
 
 Supported consoles and PCs:
 
