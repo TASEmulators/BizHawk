@@ -46,12 +46,11 @@ The BizHawk common features (across all cores) are:
 
 Supported consoles and computers:
 
-* N64; Playstation (PSX); Sega Saturn; Virtual Boy
-* Game Boy Advance; Game Boy Color; Neo Geo Pocket / Color; WonderSwan / Color
-* Sega Genesis; SNES; TurboGrafx / SuperGrafx
-* Atari Lynx; Game Boy; Sega Game Gear; TI-83
-* Atari 7800; Commodore 64; Sega Master System; NES; ZX Spectrum
-* Apple II; Atari 2600; ColecoVision; IntelliVision
+* N64; Playstation (PSX); Sega Saturn
+* Game Boy; Game Boy Advance; Game Boy Color; Sega Game Gear
+* Atari 2600; Atari 7800; Atari Lynx; NES; Sega Genesis; Sega Master System; SNES; Virtual Boy
+* Apple II; Commodore 64; ColecoVision; IntelliVision; TurboGrafx / SuperGrafx; ZX Spectrum
+* Neo Geo Pocket / Color; TI-83; WonderSwan / Color
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
 See the *Usage* sections below for details about specific tools and config menus.
