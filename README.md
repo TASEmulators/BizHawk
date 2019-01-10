@@ -27,30 +27,30 @@ The "core" features, common to every system core, are:
 * 10 savestate slots and save/load to file
 * more things I can't remember
 
-System | "Core" Features | Game Coverage† | Peripherals
---:|:-:|:-:|:-:
-Apple II | ✓ | 95%? | ?
-Atari 2600 | ✓ | 95%? | ?
-Atari 7800 | ✓ | 95%? | ?
-Atari Lynx | ✓ | 95%? | ?
-ColecoVision | ✓ | 95%? | ?
-Commodore 64 | ✓ | 95%? | [some](http://tasvideos.org/Bizhawk/C64.html)
-GB/GBC | ✓ | 95%? | ?
-GBA | ✓ | 95%? | ?
-Genesis | ✓ | 95%? | [all?](https://bitbucket.org/eke/genesis-plus-gx/src/b573cd25853f9f8b5b941fc36506835e228144c6/wiki/Features.md?at=master&fileviewer=file-view-default)
-IntelliVision | ✓ | 95%? | ?
-Master System | ✓ | 95%? | ?
-N64 | ✓ | 95%? | [all?](http://tasvideos.org/Bizhawk/N64.html)
-NGP/NGPC | ✓ | 95%? | N/A
-NES | ✓ | 95%? | ?
-PSX | ✓ | 95%? | ?
-Saturn | ✓ | 95%? | ?
-SNES | ✓ | 95%? | ?
-TI-83 | ✓ | 95%? | N/A
-PC Engine / SG | ✓ | 95%? | ?
-Virtual Boy | ✓ | 95%? | N/A
-WonderSwan | ✓ | 95%? | N/A
-ZX Spectrum | ✓ | 95%? | [common](http://tasvideos.org/Bizhawk/ZXSpectrum.html)
+System | "Core" Features | Game Coverage† | Peripherals | Debugging
+--:|:-:|:-:|:-:|:-:
+Apple II | ✓ | 95%? | ? | full/partial/limited
+Atari 2600 | ✓ | 95%? | ? | partial/limited
+Atari 7800 | ✓ | 95%? | ? | full/partial/limited
+Atari Lynx | ✓ | 95%? | ? | full/partial/limited
+ColecoVision | ✓ | 95%? | ? | full/partial/limited
+Commodore 64 | ✓ | 95%? | [some](http://tasvideos.org/Bizhawk/C64.html) | full/partial/limited
+GB/GBC | ✓ | 95%? | ? | full/partial/limited
+GBA | ✓ | 95%? | ? | full/partial/limited
+Genesis | ✓ | 95%? | [all?](https://bitbucket.org/eke/genesis-plus-gx/src/b573cd25853f9f8b5b941fc36506835e228144c6/wiki/Features.md?at=master&fileviewer=file-view-default) | full/partial/limited
+IntelliVision | ✓ | 95%? | ? | full/partial/limited
+Master System | ✓ | 95%? | ? | full/partial/limited
+N64 | ✓ | 95%? | [all?](http://tasvideos.org/Bizhawk/N64.html) | full/partial/limited
+NGP/NGPC | ✓ | 95%? | N/A | full/partial/limited
+NES | ✓ | 95%? | ? | full/partial/limited
+PSX | ✓ | 95%? | ? | full/partial/limited
+Saturn | ✓ | 95%? | ? | full/partial/limited
+SNES | ✓ | 95%? | ? | full/partial/limited
+TI-83 | ✓ | 95%? | N/A | full/partial/limited
+PC Engine / SG | ✓ | 95%? | ? | full/partial/limited
+Virtual Boy | ✓ | 95%? | N/A | full/partial/limited
+WonderSwan | ✓ | 95%? | N/A | full/partial/limited
+ZX Spectrum | ✓ | 95%? | [common](http://tasvideos.org/Bizhawk/ZXSpectrum.html) | full/partial/limited
 
 † *approximately* what portion of games run perfectly, not counting romhacks/homebrew (if you want to count, go right ahead)
 
