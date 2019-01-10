@@ -23,7 +23,8 @@ Jump to:
 ## Features
 
 The BizHawk common features (across all cores) are:
-* detection of game format and region, and corruption checking
+* format and region detection for game images
+* image corruption warning checked against database
 * 10 savestate slots and save/load to file
 * speed control, including frame stepping and rewinding
 * memory view/search/edit in all parts of the emulated HW
