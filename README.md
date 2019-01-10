@@ -82,7 +82,7 @@ Install BizHawk with your distro's package manager. The package name is given on
 [![Manjaro (AUR) | bizhawk](https://img.shields.io/badge/Manjaro_(AUR)-bizhawk-%2335BF5C.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABRUlEQVR4nO3bQUrDQBTG8Qdu3dS91r2CAzYE3Cm9QBURmjq7Yk9QIsELJYJ2XYqh7UJbL9NcYFyoGAQZiFMygf8Hb/vNm192IREhhJBS+ou4Fa3vM71Kitv3B1P3lHer2qFXSTFYJ2l/EbesANev46y7HJkw1yZ4GdQ+5d2qdoS5Nt3lyNy8xakV4Hw+LOq+tGuA77mY322sAL48+W0AhLk2f93b2SE+A/zuAwAAAAAAAAAAAAAAAAAAcH3IqcNpJMBWAkATAVy+E2wkgE9dAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAZzrTaOPT0i67OtPI/suMyq6efVraZdfJ4+WTFWD3bP9Ypb1JMIsq/zzlHcAsKlTam+wFB0dWABHZEZFDEVHi4NO2f3S47FIi0v66GyHkJx/0rGTAdYdsEwAAAABJRU5ErkJggg==&style=popout)](https://aur.archlinux.org/packages/bizhawk)
 [![Ubuntu (Launchpad) | bizhawk](https://img.shields.io/badge/Ubuntu_(Launchpad)-bizhawk-%23E95420.svg?colorA=772953&logo=ubuntu&style=popout)](https://example.com/bizhawk)
 
-If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`).
+If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`). The systems that currently work are: Game Boy + GBC (GBHawk), NES (NesHawk), Master System, Atari 7800, Commodore 64, ColecoVision, IntelliVision, TurboGrafx, and ZX Spectrum. See #1430 for progress.
 
 Is your distro not there? Released binaries can be found right here on GitHub (same download as for Windows):
 
@@ -94,7 +94,7 @@ Linux distros are supported if the distributor is still supporting your version,
 
 macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to care about lifecycles, so we'll go with 6 months from the last security update.
 
-## Building/Testing
+## Building
 
 If you want to test the latest changes without building BizHawk yourself, grab the developer build from [AppVeyor](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history). Pick the topmost one that doesn't say "Pull request", then click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
