@@ -20,7 +20,7 @@ Jump to:
 * [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
-## Features
+## Features and systems
 
 The BizHawk common features (across all cores) are:
 * format and region detection for game images
