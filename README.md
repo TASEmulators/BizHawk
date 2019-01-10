@@ -23,11 +23,11 @@ Jump to:
 
 The "core" features, common to every system core, are:
 * rom format and region detection and a corruption check
-* speed control, including frame stepping and rewinding
-* input recording (making TAS movies)
-* memory view/search/edit in all parts of the emulated HW
 * 10 savestate slots and save/load to file
-* more things I can't remember
+* speed control, including frame stepping and rewinding
+* memory view/search/edit in all parts of the emulated HW
+* input recording (making TAS movies)
+* take screenshots and record video
 
 System | "Core" Features | Game Coverage† | Peripherals | Debugging
 --:|:-:|:-:|:-:|:-:
