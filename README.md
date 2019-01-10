@@ -33,23 +33,23 @@ Atari 2600 | ✓ | 95%? | ?
 Atari 7800 | ✓ | 95%? | ?
 Atari Lynx | ✓ | 95%? | ?
 ColecoVision | ✓ | 95%? | ?
-Commodore 64 | ✓ | 95%? | ?
-Game Boy / GBC | ✓ | 95%? | ?
+Commodore 64 | ✓ | 95%? | [some](http://tasvideos.org/Bizhawk/C64.html)
+GB/GBC | ✓ | 95%? | ?
 GBA | ✓ | 95%? | ?
-Genesis | ✓ | 95%? | ?
+Genesis | ✓ | 95%? | [all?](https://bitbucket.org/eke/genesis-plus-gx/src/b573cd25853f9f8b5b941fc36506835e228144c6/wiki/Features.md?at=master&fileviewer=file-view-default)
 IntelliVision | ✓ | 95%? | ?
 Master System | ✓ | 95%? | ?
-N64 | ✓ | 95%? | ?
-Neo Geo Pocket | ✓ | 95%? | ?
+N64 | ✓ | 95%? | [all?](http://tasvideos.org/Bizhawk/N64.html)
+NGP/NGPC | ✓ | 95%? | N/A
 NES | ✓ | 95%? | ?
 PSX | ✓ | 95%? | ?
 Saturn | ✓ | 95%? | ?
 SNES | ✓ | 95%? | ?
-TI-83 | ✓ | 95%? | ?
-TurboGrafx-16 | ✓ | 95%? | ?
-Virtual Boy | ✓ | 95%? | ?
-WonderSwan | ✓ | 95%? | ?
-ZX Spectrum | ✓ | 95%? | ?
+TI-83 | ✓ | 95%? | N/A
+PC Engine / SG | ✓ | 95%? | ?
+Virtual Boy | ✓ | 95%? | N/A
+WonderSwan | ✓ | 95%? | N/A
+ZX Spectrum | ✓ | 95%? | [common](http://tasvideos.org/Bizhawk/ZXSpectrum.html)
 
 † *approximately* what portion of games run perfectly, not counting romhacks/homebrew (if you want to count, go right ahead)
 
