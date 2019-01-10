@@ -1,6 +1,6 @@
 # BizHawk
 
-[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest) [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history) ![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?logo=buffer&logoColor=white&style=popout)
+[![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest) [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history) ![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
@@ -164,7 +164,7 @@ BizHawk is Open Source Software, so you're free to modify it however you please,
 
 If you'd like to fix bugs, check the issue tracker here on GitHub:
 
-[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&style=popout)](https://github.com/TASVideos/BizHawk/issues)
+[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
 It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above).
 
