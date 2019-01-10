@@ -12,11 +12,12 @@ Click the "release" button above to grab the latest stable version ([changelog a
 Jump to:
 * [Installing — Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--windows-78110)
 * [Installing — GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing--gnulinux-and-macos)
-* [Building/Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#buildingtesting)
+* [Building](https://github.com/TASVideos/BizHawk/blob/master/README.md#building)
 * [Usage (emulation)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-emulation)
 * [Usage (TASing)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-tasing)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
+* [Testing]()
 * [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
@@ -164,6 +165,10 @@ If you'd like to fix bugs, check the issue tracker here on GitHub:
 It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above).
 
 If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
+
+### Testing
+
+Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
 
 ## Related projects
 
