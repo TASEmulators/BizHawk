@@ -113,7 +113,7 @@ If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the s
 
 TODO
 
-powershell to come
+powershell *should* be `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`, but getting errors w/ master
 
 something something IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community)
 
