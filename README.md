@@ -2,7 +2,7 @@
 
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
-[![unique systems emulated | 22](https://img.shields.io/badge/unique_systems_emulated-22-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#features)
+[![unique systems emulated | 24](https://img.shields.io/badge/unique_systems_emulated-24-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#features)
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
@@ -28,35 +28,20 @@ The BizHawk common features (across all cores) are:
 * memory view/search/edit in all parts of the emulated HW
 * input recording (making TAS movies)
 * screenshotting and recording video
+* organised firmware
+* input, framerate, and other overlays
+* emulated controllers via a comprehensive input mapper
+* Lua control over core and frontend (Windows only)
 
-System | BH Common | Accuracy† | Debugging | Peripherals
---:|:-:|:-:|:-:|:-:
-Apple II | ✓ | 95%? | ? | ?
-Atari 2600 | ✓ | 95%? | ◕ | ?
-Atari 7800 | ✓ | 95%? | ◕ | ?
-Atari Lynx | ✓ | 95%? | ◔ | ?
-ColecoVision | ✓ | 95%? | ◕ | ?
-Commodore 64 | ✓ | 95%? | ◕ | [some](http://tasvideos.org/Bizhawk/C64.html)
-GB/GBC | ✓ | 95%? | ✓ | ?
-GBA | ✓ | 95%? | ◕ | ?
-Genesis | ✓ | 95%? | ✓ | [all?](https://bitbucket.org/eke/genesis-plus-gx/src/b573cd25853f9f8b5b941fc36506835e228144c6/wiki/Features.md?at=master&fileviewer=file-view-default)
-IntelliVision | ✓ | 95%? | ◕ | ?
-Master System | ✓ | 95%? | ✓ | ?
-N64 | ✓ | 95%? | ◕ | [all?](http://tasvideos.org/Bizhawk/N64.html)
-NGP/NGPC | ✓ | 95%? | ◔ | N/A
-NES | ✓ | 95%? | ✓ | ?
-PSX | ✓ | 95%? | ? | ?
-Saturn | ✓ | 95%? | ◔ | ?
-SNES | ✓ | 95%? | ✓ | ?
-TI-83 | ✓ | 95%? | ? | N/A
-PC Engine / SG | ✓ | 95%? | ✓ | ?
-Virtual Boy | ✓ | 95%? | ? | N/A
-WonderSwan | ✓ | 95%? | ◕ | N/A
-ZX Spectrum | ✓ | 95%? | ✓ | [common](http://tasvideos.org/Bizhawk/ZXSpectrum.html)
+Supported consoles and PCs:
 
-† *approximately* what portion of games run perfectly, not counting romhacks/homebrew (if you want to count, go right ahead)
-
-EmuHawk's frontend also has a firmware manager, nice overlays, and a comprehensive input mapper. We're talking keyboard and controller mapped to one emulated controller, analog from digital and digital from analog, keyboard hotkeys, controller hotkeys, and rapid fire for emulated controllers. Most of the frontend can be controlled with Lua scripts (only on Windows for now). These scripts can draw overlays for casual play or for RTA speedruns, change the running game to add complex cheats, assist TASers and romhackers in debugging a game, and more. But most importantly: BizHawk is Hawk Biz.
+* N64 and [all peripherals](http://tasvideos.org/Bizhawk/N64.html); Playstation (PSX); Saturn; Virtual Boy
+* Game Boy Advance; Game Boy Color; Neo Geo Pocket (Color); WonderSwan (Color)
+* Genesis and [all peripherals](https://bitbucket.org/eke/genesis-plus-gx/src/b573cd25853f9f8b5b941fc36506835e228144c6/wiki/Features.md?at=master&fileviewer=file-view-default); SNES; TurboGrafx / SuperGrafx
+* Atari Lynx; Game Boy; Game Gear; TI-83
+* Atari 7800; Commodore 64 and [some peripherals](http://tasvideos.org/Bizhawk/C64.html); Master System; NES; ZX Spectrum and [some peripherals](http://tasvideos.org/Bizhawk/ZXSpectrum.html)
+* Apple II; Atari 2600; ColecoVision; IntelliVision
+* [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
 See the *Usage* sections below for details about specific tools and config menus.
 
@@ -183,8 +168,7 @@ If you'd like to add a feature, first search the issue tracker for it. If it's a
 * [DeSmuME](https://desmume.org) for DS/Lite — cross-platform
 * [Dolphin](https://dolphin-emu.org) for GameCube and (original) Wii — cross-platform
 * [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — TASing is Windows-only, but it should run on Unix
-* [Hourglass](https://github.com/TASVideos/hourglass-win32) for Windows Win32 — Windows-only, see also [rewrite project](https://github.com/Hourglass-Resurrection/Hourglass-Resurrection)
-* [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only
+* [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only, also emulates other emulators
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
 ## License
