@@ -32,7 +32,7 @@ Jump to:
 The BizHawk common features (across all cores) are:
 * format and region detection for game images
 * image corruption warning checked against database
-* 10 savestate slots and save/load to file
+* 10 save slots with hotkeys and ∞ named savestates
 * speed control, including frame stepping and rewinding
 * memory view/search/edit in all parts of the emulated HW
 * input recording (making TAS movies)
