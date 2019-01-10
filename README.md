@@ -179,6 +179,7 @@ Dev builds are automated with AppVeyor, every green checkmark in the [commit his
 * [Dolphin](https://dolphin-emu.org) for GameCube and (original) Wii — cross-platform
 * [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — TASing is Windows-only, but it should run on Unix
 * [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only, also emulates other emulators
+* [lsnes](http://tasvideos.org/Lsnes.html) for SNES — Windows-only
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
 ## License
