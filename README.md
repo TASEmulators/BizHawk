@@ -14,6 +14,7 @@ Jump to:
 * [Usage (TASing)](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage-tasing)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
+* [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
 ## Features
@@ -168,6 +169,15 @@ If you'd like to fix bugs, check the issue tracker here on GitHub:
 It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above).
 
 If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
+
+## Related projects
+
+* [DeSmuME](https://desmume.org) for DS/Lite — cross-platform
+* [Dolphin](https://dolphin-emu.org) for GameCube and (original) Wii — cross-platform
+* [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — TASing is Windows-only, but it should run on Unix
+* [Hourglass](https://github.com/TASVideos/hourglass-win32) for Windows Win32 — Windows-only, see also [rewrite project](https://github.com/Hourglass-Resurrection/Hourglass-Resurrection)
+* [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only
+* [openMSX](https://openmsx.org) for MSX — cross-platform
 
 ## License
 
