@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-#if WINDOWS
 using Microsoft.VisualBasic.ApplicationServices;
-#endif
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -370,7 +368,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-//#if WINDOWS
 		public class SingleInstanceController : WindowsFormsApplicationBase
 		{
 			readonly string[] cmdArgs;
@@ -396,8 +393,5 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.ExitCode = (MainForm as MainForm).ProgramRunLoop();
 			}
 		}
-
-
-//#endif
 	}
 }
