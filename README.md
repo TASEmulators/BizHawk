@@ -181,7 +181,35 @@ TODO
 
 A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there's currently a bit of overlap in the cores BizHawk uses as noted below.
 
-TABLE GOES HERE
+System | Core | Alt. Core | SGB
+--:|:--|:--|:--
+Amstrad CPC | CPCHawk† ||
+Apple II | Virtu ||
+Atari 2600 | Atari2600Hawk ||
+Atari 7800 | A7800Hawk ||
+Atari Lynx | Handy ||
+Commodore 64 | C64Hawk ||
+ColecoVision | ColecoHawk ||
+Game Boy | GBHawk | Gambatte | SameBoy (on SNES with SGB)
+Game Boy Advance | mGBA/VBA-Next | mGBA/VBA-Next |
+Game Boy Color | GBHawk | Gambatte | SameBoy (on SNES with SGB)
+IntelliVision | IntelliHawk ||
+N64 | Mupen64Plus ||
+Neo Geo Pocket / Color | NeoPop ||
+NES | NesHawk | QuickNes ||
+Playstation (PSX) | Octoshock ||
+Sega Game Gear | SMSHawk ||
+Sega Genesis | Genplus-gx ||
+Sega Master System | SMSHawk ||
+Sega Saturn | Saturnus ||
+SNES | BSNES/Snes9x | BSNES/Snes9x |
+TI-83 | TI83Hawk ||
+TurboGrafx / SuperGrafx | PCEHawk ||
+Virtual Boy | Virtual Boyee ||
+WonderSwan / Color | Cygne ||
+ZX Spectrum | ZXHawk ||
+
+† core is in development and unreleased
 
 ## Support and troubleshooting
 
