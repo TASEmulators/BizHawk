@@ -66,6 +66,7 @@ Supported consoles and computers:
 * Sega Game Gear
 * Sega Genesis
 * Sega Master System
+* Sega Pico
 * Sega Saturn
 * SNES
 * TI-83
@@ -206,6 +207,7 @@ Sega Game Gear | SMSHawk ||
 Sega Genesis | Genplus-gx ||
 Sega Master System | SMSHawk ||
 Sega Saturn | Saturnus ||
+Sega Pico | PicoDrive ||
 SNES | BSNES/Snes9x | BSNES/Snes9x |
 TI-83 | TI83Hawk ||
 TurboGrafx / SuperGrafx | PCEHawk ||
