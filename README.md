@@ -125,10 +125,6 @@ macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to 
 
 ## Building
 
-If you want to test the latest changes without building BizHawk yourself, grab the developer build from [AppVeyor](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history). Pick the topmost one that doesn't say "Pull request", then click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-
-If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the same repo as the main package. If it's available, installing it will automate the build process.
-
 ### Windows 7/8.1/10
 
 If you have WSL, Git BASH, or similar, clone the repo with:
@@ -145,6 +141,8 @@ The best free C# IDE is [VS Community 2017](https://visualstudio.microsoft.com/v
 ### GNU+Linux and macOS
 
 *Compiling* requires MSBuild and *running* requires Mono and WINE, but **BizHawk does not run under WINE** — only the bundled libraries are required.
+
+If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the same repo as the main package. If it's available, installing it will automate the build process.
 
 Building is as easy as:
 ```sh
@@ -243,6 +241,8 @@ If you'd like to add a feature, first search the issue tracker for it. If it's a
 ### Testing
 
 Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
+
+Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
 ## Related projects
 
