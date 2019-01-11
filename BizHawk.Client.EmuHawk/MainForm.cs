@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							// fix movie extension to something palatable for these purposes. 
+							// fix movie extension to something palatable for these purposes.
 							// for instance, something which doesnt clobber movies you already may have had.
 							// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
 							StartNewMovie(imported, false);
@@ -406,7 +406,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseEmulator();
 			}
-		
+
 			// start dumping, if appropriate
 			if (argParser.cmdDumpType != null && argParser.cmdDumpName != null)
 			{
@@ -753,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 					// ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
 				}
 
-				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
+				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done.
 				// maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts. This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
@@ -1074,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 #if WINDOWS
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				// AMD cards manifest a problem under these circumstances, flickering other monitors.
 				// It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
@@ -1082,7 +1082,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-					//It seems that some statusbar elements composite with the backcolor. 
+					//It seems that some statusbar elements composite with the backcolor.
 					//Maybe we could add another control under the statusbar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
@@ -1625,7 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
 				}
 			}
-		}		
+		}
 
 		public bool FlushSaveRAM(bool autosave = false)
 		{
@@ -1654,7 +1654,7 @@ namespace BizHawk.Client.EmuHawk
                     }
                     catch
                     {
-                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);                        
+                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);
                         return false;
                     }
 				}
@@ -1819,7 +1819,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						DGBSubMenu.Visible = true;
-					}				
+					}
 					break;
 				case "WSWAN":
 					wonderSwanToolStripMenuItem.Visible = true;
@@ -2051,7 +2051,7 @@ namespace BizHawk.Client.EmuHawk
 			bool isZero = false;
 			if (currVideoSize.Width == 0 || currVideoSize.Height == 0 || currVirtualSize.Width == 0 || currVirtualSize.Height == 0)
 				isZero = true;
-			
+
 			//don't resize if the new size is 0 somehow; we'll wait until we have a sensible size
 			if(isZero)
 				resizeFramebuffer = false;
@@ -2084,7 +2084,8 @@ namespace BizHawk.Client.EmuHawk
 		// sends an alt+mnemonic combination
 		private void SendAltKeyChar(char c)
 		{
-			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
+			if (PlatformLinkedLibSingleton.RunningOnUnix) {} // no mnemonics for you
+			else typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
 		}
 
 		public static string FormatFilter(params string[] args)
@@ -3605,7 +3606,7 @@ namespace BizHawk.Client.EmuHawk
 				// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
 				// it is then up to the core itself to override its own local DeterministicEmulation setting
 				bool deterministic = args.Deterministic ?? Global.MovieSession.QueuedMovie != null;
-				
+
 				if (!GlobalWin.Tools.AskSave())
 				{
 					return false;
