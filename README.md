@@ -124,6 +124,8 @@ Linux distros are supported if the distributor is still supporting your version,
 
 macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to care about lifecycles, so we'll go with 6 months from the last security update.
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ## Building
 
 ### Windows 7/8.1/10
@@ -159,6 +161,8 @@ If your distro isn't listed under *Installing* above, `libblip_buf` probably isn
 Once built, see the *Installing* section, substituting the repo's `output` folder for the download.
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ## Usage
 
@@ -216,6 +220,8 @@ ZX Spectrum | ZXHawk ||
 
 † core is in development and unreleased
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ## Support and troubleshooting
 
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
@@ -245,6 +251,8 @@ Past contrbutors to the frontend and custom-built cores are listed [here](https:
 Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
 
 Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ## Related projects
 
