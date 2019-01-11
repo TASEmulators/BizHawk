@@ -61,6 +61,7 @@ Supported consoles and computers:
 * N64
 * Neo Geo Pocket / Color
 * NES
+* PC-FX
 * Playstation (PSX)
 * Sega Game Gear
 * Sega Genesis
@@ -181,7 +182,7 @@ TODO
 
 A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there's currently a bit of overlap in the cores BizHawk uses as noted below.
 
-System | Core | Alt. Core | SGB
+System | Core | Alt. Core | Special Core
 --:|:--|:--|:--
 Amstrad CPC | CPCHawk† ||
 Apple II | Virtu ||
@@ -194,10 +195,13 @@ Game Boy | GBHawk | Gambatte | SameBoy (on SNES with SGB)
 Game Boy Advance | mGBA/VBA-Next | mGBA/VBA-Next |
 Game Boy Color | GBHawk | Gambatte | SameBoy (on SNES with SGB)
 IntelliVision | IntelliHawk ||
+Magnavox Odyssey² | O2Em† ||
 N64 | Mupen64Plus ||
-Neo Geo Pocket / Color | NeoPop ||
+Neo Geo Pocket / Color | NeoPop || Dual NeoPop (dual instance)
 NES | NesHawk | QuickNes ||
+PC-FX | T.S.T. ||
 Playstation (PSX) | Octoshock ||
+PSP | PPSSPP† ||
 Sega Game Gear | SMSHawk ||
 Sega Genesis | Genplus-gx ||
 Sega Master System | SMSHawk ||
@@ -205,6 +209,7 @@ Sega Saturn | Saturnus ||
 SNES | BSNES/Snes9x | BSNES/Snes9x |
 TI-83 | TI83Hawk ||
 TurboGrafx / SuperGrafx | PCEHawk ||
+Uzebox | Uzem† ||
 Virtual Boy | Virtual Boyee ||
 WonderSwan / Color | Cygne ||
 ZX Spectrum | ZXHawk ||
