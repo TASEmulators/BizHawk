@@ -11,7 +11,7 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 
 Click the "release" button above to grab the latest stable version ([changelog at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html)). 
 
-New users on Windows should click the "prereqs" button too, see *Installing* for info.
+New users on Windows need an extra download, click the "prereqs" button to get that and see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110) for info.
 
 **Never mix different versions** of BizHawk — Keep each version in its own folder.
 
@@ -76,7 +76,7 @@ Supported consoles and computers:
 * ZX Spectrum
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
-See the *Usage* sections below for details about specific tools and config menus.
+See [*Usage*](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage) below for details about specific tools and config menus.
 
 ## Installing
 
@@ -163,7 +163,7 @@ Remove the `/p:...` flag from MSBuild if you want debugging symbols.
 
 If your distro isn't listed under *Installing* above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
 
-Once built, see the *Installing* section, substituting the repo's `output` folder for the download.
+Once built, see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos) above, substituting the repo's `output` folder for the download.
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
@@ -224,7 +224,7 @@ Virtual Boy | Virtual Boyee ||
 WonderSwan / Color | Cygne ||
 ZX Spectrum | ZXHawk ||
 
-Amstrad CPC, Magnavox Odyssey², and PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see *Support* below).
+Amstrad CPC, Magnavox Odyssey², and PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
@@ -248,7 +248,7 @@ If you'd like to fix bugs, check the issue tracker here on GitHub:
 
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
-It's a good idea to check if anyone is already working on an issue by asking on IRC (see *Support* above).
+It's a good idea to check if anyone is already working on an issue by asking on IRC (see [*Support*](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting) above).
 
 If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
 
