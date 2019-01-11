@@ -62,7 +62,7 @@ Supported consoles and computers:
 	* PC-FX
 * Neo Geo Pocket + Color
 * Nintendo
-	* Famicom / Nintendo Entertainment System
+	* Famicom / Nintendo Entertainment System + FDS
 	* Game Boy + Color
 	* Game Boy Advance
 	* Nintendo 64
