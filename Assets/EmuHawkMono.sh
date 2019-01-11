@@ -11,6 +11,8 @@ if [ "$(command -v lsb_release)" ]; then
 		"Debian"|"LinuxMint") libpath="/usr/lib/x86_64-linux-gnu/wine";;
 		"Ubuntu") libpath="/usr/lib/x86_64-linux-gnu/wine"; MONO_WINFORMS_XIM_STYLE=disabled;; # see https://bugzilla.xamarin.com/show_bug.cgi?id=28047#c9
 	esac
+else
+	printf "Distro does not provide LSB release info API! (You've met with a terrible fate, haven't you?)\n"
 fi
 if [ -z "$libpath" ]; then
 	printf "%s\n" "Unknown distro, assuming WINE library location is /usr/lib/wine..."
