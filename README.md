@@ -100,6 +100,8 @@ BizHawk functions like a "portable" program, you may move or rename the folder c
 
 Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported from 1709 "Redstone 3", following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet).
 
+A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for Windows XP and 32-bit users. Being in the 1.x series, many bugs remain and features are missing.
+
 ### GNU+Linux and macOS
 
 Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see TASVideos here](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
