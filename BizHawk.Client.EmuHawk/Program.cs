@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return SubMain(args);
 		}
-
+		/*
 		private class MainLoopCrashHandler
 		{
 			public void TryCatchFinally(string[] args)
@@ -148,7 +148,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
 		private static MainLoopCrashHandler mainLoopCrashHandler = new MainLoopCrashHandler();
+		*/
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -270,8 +272,60 @@ namespace BizHawk.Client.EmuHawk
 				SetDllDirectory(dllDir);
 			}
 
-			// Using a simple conditional to skip the single-instancing step caused crashes on GNU+Linux, even though the single-instancing step wasn't being executed. Something about the way instantiation works in C# means this workaround is possible.
-			mainLoopCrashHandler.TryCatchFinally(args);
+			try
+			{
+				if (Global.Config.SingleInstanceMode)
+				{
+					try
+					{
+						new SingleInstanceController(args).Run(args);
+					}
+					catch (ObjectDisposedException)
+					{
+						// Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error
+					}
+				}
+				else
+				{
+					using (var mf = new MainForm(args))
+					{
+						var title = mf.Text;
+						mf.Show();
+						mf.Text = title;
+						try
+						{
+							GlobalWin.ExitCode = mf.ProgramRunLoop();
+						}
+						catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+						{
+							var result = MessageBox.Show(
+								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+								"Fatal error: " + e.GetType().Name,
+								MessageBoxButtons.YesNo,
+								MessageBoxIcon.Exclamation
+								);
+							if (result == DialogResult.Yes)
+							{
+								Global.MovieSession.Movie.Save();
+							}
+						}
+					}
+				}
+			}
+			catch (Exception e) when (!Debugger.IsAttached)
+			{
+				new ExceptionBox(e).ShowDialog();
+			}
+			finally
+			{
+				if (GlobalWin.Sound != null)
+				{
+					GlobalWin.Sound.Dispose();
+					GlobalWin.Sound = null;
+				}
+				GlobalWin.GL.Dispose();
+				Input.Cleanup();
+			}
 
 			//cleanup:
 			//cleanup IGL stuff so we can get better refcounts when exiting process, for debugging
