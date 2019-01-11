@@ -192,7 +192,7 @@ TODO
 
 ### Cores
 
-A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there's currently a bit of overlap in the cores BizHawk uses as noted below.
+A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there are a few alternative cores which are *faster and less accurate*.
 
 System | Core | Alt. Core | Special Core
 --:|:--|:--|:--
