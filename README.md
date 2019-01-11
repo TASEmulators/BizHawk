@@ -254,7 +254,7 @@ It's a good idea to check if anyone is already working on an issue by asking on 
 
 If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
 
-For the time being, style is not enforced in PRs, only build success. Please use CRLF and tabs in new files.
+For the time being, style is not enforced in PRs, only build success. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
 
 Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See a core's docs for its authors.
 
