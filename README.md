@@ -46,11 +46,30 @@ The BizHawk common features (across all cores) are:
 
 Supported consoles and computers:
 
-* N64; Playstation (PSX); Sega Saturn
-* Game Boy; Game Boy Advance; Game Boy Color; Sega Game Gear
-* Atari 2600; Atari 7800; Atari Lynx; NES; Sega Genesis; Sega Master System; SNES; Virtual Boy
-* Apple II; Commodore 64; ColecoVision; IntelliVision; TurboGrafx / SuperGrafx; ZX Spectrum
-* Neo Geo Pocket / Color; TI-83; WonderSwan / Color
+* Apple II
+* Atari 2600
+* Atari 7800
+* Atari Lynx
+* Commodore 64
+* ColecoVision
+* Game Boy
+* Game Boy Advance
+* Game Boy Color
+* IntelliVision
+* N64
+* Neo Geo Pocket / Color
+* NES
+* Playstation (PSX)
+* Sega Game Gear
+* Sega Genesis
+* Sega Master System
+* Sega Saturn
+* SNES
+* TI-83
+* TurboGrafx / SuperGrafx
+* Virtual Boy
+* WonderSwan / Color
+* ZX Spectrum
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
 See the *Usage* sections below for details about specific tools and config menus.
@@ -191,7 +210,7 @@ Dev builds are automated with AppVeyor, every green checkmark in the [commit his
 * [Dolphin](https://dolphin-emu.org) for GameCube and (original) Wii — cross-platform
 * [FCEUX](http://www.fceux.com/web/home.html) for NES/Famicom — TASing is Windows-only, but it should run on Unix
 * [libTAS](https://github.com/clementgallet/libTAS) for Linux ELF — GNU+Linux-only, also emulates other emulators
-* [lsnes](http://tasvideos.org/Lsnes.html) for SNES — Windows-only
+* [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
 ## License
