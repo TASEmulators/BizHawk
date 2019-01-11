@@ -101,6 +101,8 @@ Win7 is supported from SP1, Win8 is supported from 8.1, and Win10 is supported f
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for Windows XP and 32-bit users. Being in the 1.x series, many bugs remain and features are missing.
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ### GNU+Linux and macOS
 
 Install BizHawk with your distro's package manager. The package name is given on each button below, and some buttons are links. For the changelog, [see TASVideos here](http://tasvideos.org/Bizhawk/ReleaseHistory.html).
@@ -141,6 +143,8 @@ On Windows 10, open a PowerShell window in BizHawk_master (Shift+Mouse2 in File 
 
 The best free C# IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community), which you'll need to work on the project efficiently. Open `BizHawk.sln` with VS to start.
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ### GNU+Linux and macOS
 
 *Compiling* requires MSBuild and *running* requires Mono and WINE, but **BizHawk does not run under WINE** — only the bundled libraries are required.
@@ -168,6 +172,8 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 TODO
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ### TASing
 
 This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).
@@ -181,6 +187,8 @@ TODO
 [Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html)
 
 [TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html)
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ### Cores
 
@@ -231,6 +239,8 @@ A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk
 [![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-lightcoral.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
 
 If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ## Contributing
 
