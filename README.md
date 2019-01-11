@@ -11,7 +11,7 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 
 Click the "release" button above to grab the latest stable version ([changelog at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html)). 
 
-New users on Windows need an extra download, click the "prereqs" button to get that and see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110) for info.
+New user on Windows? Install the prerequisites first, click the "prereqs" button to get that and see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110) for info.
 
 **Never mix different versions** of BizHawk — Keep each version in its own folder.
 
