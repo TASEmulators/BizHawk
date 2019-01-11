@@ -127,13 +127,16 @@ If you use GNU+Linux, there might be a `bizhawk-git` package or similar in the s
 
 ### Windows 7/8.1/10
 
-TODO
+If you have WSL, Git BASH, or similar, clone the repo with:
+```
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
+```
+...or use a [Git GUI](https://desktop.github.com). Otherwise, you'll have to download an archive from GitHub.
 
-powershell *should* be `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`, but getting errors w/ master
+On Windows 10, open a PowerShell window in BizHawk_master (Shift+Mouse2 in File Explorer) and run `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`. TODO: didn't work for me. On older versions, a similar Command Prompt script should work.
 
-something something IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community)
-
-[Compiling](http://tasvideos.org/Bizhawk/Compiling.html)
+The best free C# IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community), which you'll need to work on the project efficiently. Open `BizHawk.sln` with VS to start.
 
 ### GNU+Linux and macOS
 
