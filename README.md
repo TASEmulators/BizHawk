@@ -49,31 +49,35 @@ The BizHawk common features (across all cores) are:
 Supported consoles and computers:
 
 * Apple II
-* Atari 2600
-* Atari 7800
-* Atari Lynx
-* Commodore 64
-* ColecoVision
-* Game Boy / Color
-* Game Boy Advance
-* IntelliVision
-* N64
-* Neo Geo Pocket / Color
-* NES
-* PC-FX
-* Playstation (PSX)
-* Sega Game Gear
-* Sega Genesis
-* Sega Master System
-* Sega Pico
-* Sega Saturn
-* SNES
-* TI-83
-* TurboGrafx / SuperGrafx
+* Atari
+	* 2600
+	* 7800
+	* Lynx
+* Bandai WonderSwan + Color
+* CBM Commodore 64
+* Coleco Industries ColecoVision
+* Mattel IntelliVision
+* NEC
+	* PC Engine / TurboGrafx-16 + SuperGrafx + CD
+	* PC-FX
+* Neo Geo Pocket + Color
+* Nintendo
+	* Famicom / Nintendo Entertainment System
+	* Game Boy + Color
+	* Game Boy Advance
+	* Nintendo 64
+	* Super Famicom / Super Nintendo Entertainment System
+	* Virtual Boy
+* Sega
+	* Game Gear
+	* Genesis + 32X + CD
+	* Master System + SG-1000
+	* Pico
+	* Saturn
+* Sinclair ZX Spectrum
+* Sony Playstation / PSX
+* Texas Instruments TI-83
 * Uzebox
-* Virtual Boy
-* WonderSwan / Color
-* ZX Spectrum
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
 See [*Usage*](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage) below for details about specific tools and config menus.
