@@ -196,7 +196,6 @@ A *core* is what we call the smaller bits of software that emulate just one syst
 
 System | Core | Alt. Core | Special Core
 --:|:--|:--|:--
-Amstrad CPC | CPCHawk† ||
 Apple II | Virtu ||
 Atari 2600 | Atari2600Hawk ||
 Atari 7800 | A7800Hawk ||
@@ -204,29 +203,26 @@ Atari Lynx | Handy ||
 Commodore 64 | C64Hawk ||
 ColecoVision | ColecoHawk ||
 Game Boy / Color | GBHawk | Gambatte | SameBoy (on SNES with SGB)
-Game Boy Advance | mGBA/VBA-Next | mGBA/VBA-Next |
+Game Boy Advance | mGBA | VBA-Next |
 IntelliVision | IntelliHawk ||
-Magnavox Odyssey² | O2Em† ||
 N64 | Mupen64Plus ||
 Neo Geo Pocket / Color | NeoPop || Dual NeoPop (dual instance)
 NES | NesHawk | QuickNes ||
 PC-FX | T.S.T. ||
 Playstation (PSX) | Octoshock ||
-PSP | PPSSPP† ||
 Sega Game Gear | SMSHawk ||
 Sega Genesis | Genplus-gx ||
 Sega Master System | SMSHawk ||
 Sega Saturn | Saturnus ||
 Sega Pico | PicoDrive ||
-SNES | BSNES/Snes9x | BSNES/Snes9x |
+SNES | BSNES | Snes9x |
 TI-83 | TI83Hawk ||
 TurboGrafx / SuperGrafx | PCEHawk ||
-Uzebox | Uzem† ||
 Virtual Boy | Virtual Boyee ||
 WonderSwan / Color | Cygne ||
 ZX Spectrum | ZXHawk ||
 
-† core is in development and unreleased
+Amstrad CPC, Magnavox Odyssey², PSP, and Uzebox emulation is a work-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see *Support* below).
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
