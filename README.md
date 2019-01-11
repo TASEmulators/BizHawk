@@ -16,10 +16,10 @@ New users on Windows should click the "prereqs" button too, see *Installing* for
 **Never mix different versions** of BizHawk — Keep each version in its own folder.
 
 Jump to:
-* [Installing](https://github.com/TASVideos/BizHawk/blob/master/README.md#installing)
+* Installing
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos)
-* [Building](https://github.com/TASVideos/BizHawk/blob/master/README.md#building)
+* Building
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110-1)
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1)
 * [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
