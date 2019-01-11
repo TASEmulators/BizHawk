@@ -50,7 +50,7 @@ Supported consoles and computers:
 
 * Apple II
 * Atari
-	* 2600
+	* Video Computer System / 2600
 	* 7800
 	* Lynx
 * Bandai WonderSwan + Color
