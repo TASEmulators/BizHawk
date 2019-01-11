@@ -822,10 +822,7 @@ namespace BizHawk.Client.EmuHawk
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 			{
 				// mitigate MonoDevelop debug exceptions
-				if (GlobalWin.DisplayManager == null)
-				{
-					return o;
-				}
+				if (GlobalWin.DisplayManager == null) return o;
 
 				// hackish
 				if (o.Item1 == "WMouse X")
@@ -911,8 +908,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TakeScreenshotClientToClipboard()
 		{
 			// Mitigate MonoDevelop exceptions
-			if (GlobalWin.DisplayManager == null)
-				return;
+			if (GlobalWin.DisplayManager == null) return;
 
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, Global.Config.Screenshot_CaptureOSD))
 			{
@@ -984,6 +980,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FrameBufferResized()
 		{
+			if (GlobalWin.DisplayManager == null) return;
+
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
@@ -2066,8 +2064,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Mitigate MonoDevelop exception
-			if (GlobalWin.DisplayManager == null)
-				return;
+			if (GlobalWin.DisplayManager == null) return;
 
 			//rendering flakes out egregiously if we have a zero size
 			//can we fix it later not to?
