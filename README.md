@@ -20,6 +20,8 @@ Jump to:
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos)
 * [Building](https://github.com/TASVideos/BizHawk/blob/master/README.md#building)
+	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110-1)
+	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1)
 * [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
 	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
 	* [Cores](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
