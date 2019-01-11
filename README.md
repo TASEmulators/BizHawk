@@ -4,7 +4,7 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 
 ***
 
-[![unique systems emulated | 26](https://img.shields.io/badge/unique_systems_emulated-24-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
+[![unique systems emulated | 25](https://img.shields.io/badge/unique_systems_emulated-25-darkgreen.svg?logo=buffer&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
 [![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
@@ -54,9 +54,8 @@ Supported consoles and computers:
 * Atari Lynx
 * Commodore 64
 * ColecoVision
-* Game Boy
+* Game Boy / Color
 * Game Boy Advance
-* Game Boy Color
 * IntelliVision
 * N64
 * Neo Geo Pocket / Color
@@ -192,9 +191,8 @@ Atari 7800 | A7800Hawk ||
 Atari Lynx | Handy ||
 Commodore 64 | C64Hawk ||
 ColecoVision | ColecoHawk ||
-Game Boy | GBHawk | Gambatte | SameBoy (on SNES with SGB)
+Game Boy / Color | GBHawk | Gambatte | SameBoy (on SNES with SGB)
 Game Boy Advance | mGBA/VBA-Next | mGBA/VBA-Next |
-Game Boy Color | GBHawk | Gambatte | SameBoy (on SNES with SGB)
 IntelliVision | IntelliHawk ||
 Magnavox Odyssey² | O2Em† ||
 N64 | Mupen64Plus ||
