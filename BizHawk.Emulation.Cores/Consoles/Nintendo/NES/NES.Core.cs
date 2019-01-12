@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int cpuclockrate { get; private set; }
 
 		//user configuration 
-		int[] palette_compiled = new int[64 * 8];
+		public int[] palette_compiled = new int[64 * 8];
 
 		//variable set when VS system games are running
 		internal bool _isVS = false;

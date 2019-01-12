@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0));
 		}
 
-		internal bool FrameAdvancePost()
+		internal void FrameAdvancePost()
 		{
 			if (IsLagFrame)
 			{
@@ -352,8 +352,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			endofframecallback?.Invoke(LibGambatte.gambatte_cpuread(GambatteState, 0xff40));
-
-			return true;
 		}
 
 
