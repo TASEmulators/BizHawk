@@ -35,7 +35,7 @@ Jump to:
 
 The BizHawk common features (across all cores) are:
 * format, region, and integrity detection for game images
-* 10 save slots with hotkeys and ∞ named savestates
+* 10 save slots with hotkeys and infinite named savestates
 * speed control, including frame stepping and rewinding
 * memory view/search/edit in all emulated hardware components
 * input recording (making TAS movies)
@@ -248,7 +248,7 @@ If there's no easy solution, what you've got is a bug. Or maybe a feature reques
 
 ## Contributing
 
-BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the MIT license, this is *optional*, just be careful with reusing cores as some have copyleft licenses.
+BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT license*, this is optional, just be careful with reusing cores as some have copyleft licenses.
 
 If you'd like to fix bugs, check the issue tracker here on GitHub:
 
