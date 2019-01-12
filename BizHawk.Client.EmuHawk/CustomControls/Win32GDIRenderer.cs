@@ -1,16 +1,11 @@
-﻿using System;
-using System.Text;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace BizHawk.Client.EmuHawk.CustomControls
 {
-	/// <summary>
-	/// Wrapper for GDI rendering functions
-	/// This class is not thread-safe as GDI functions should be called from the UI thread
-	/// </summary>
-	public sealed class GDIRenderer : IDisposable
+	public sealed class Win32GDIRenderer : GDI.GDIRenderer
 	{
 		/// <summary>
 		/// used for <see cref="MeasureString(string, System.Drawing.Font, float, out int, out int)"/> calculation.
@@ -43,10 +38,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Construct and Destroy
 
-		public GDIRenderer()
+		public Win32GDIRenderer()
 		{
 			//zero 04-16-2016 : this can't be legal, theres no HDC yet
-			//SetBkMode(_hdc, BkModes.OPAQUE);
+			//SetBkMode(_hdc, GDI.BkModes.OPAQUE);
 		}
 
 		public void Dispose()
@@ -64,8 +59,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 			EndOffScreenBitmap();
 
-			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a GDIRenderer while it held an HDC");
-			System.Diagnostics.Debug.Assert(_g == null, "Disposed a GDIRenderer while it held a Graphics");
+			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a Win32GDIRenderer while it held an HDC");
+			System.Diagnostics.Debug.Assert(_g == null, "Disposed a Win32GDIRenderer while it held a Graphics");
 		}
 
 		#endregion
@@ -96,12 +91,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Required to use before calling drawing methods
 		/// </summary>
-		public GdiGraphicsLock LockGraphics(Graphics g)
+		public GDI.GDIGraphicsLock<GDI.GDIRenderer> LockGraphics(Graphics g)
 		{
 			_g = g;
 			_hdc = g.GetHdc();
-			SetBkMode(_hdc, BkModes.TRANSPARENT);
-			return new GdiGraphicsLock(this);
+			SetBkMode(_hdc, GDI.BkModes.TRANSPARENT);
+//			return (GDI.GDIGraphicsLock<GDI.GDIRenderer>) new GDI.GDIGraphicsLock<Win32GDIRenderer>(this);
+			// going to need this explained to me, the below works as expected but the above does not --Yoshi
+			return new GDI.GDIGraphicsLock<GDI.GDIRenderer>((GDI.GDIRenderer) this);
 		}
 
 		/// <summary>
@@ -117,15 +114,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			return size;
 		}
 
-		/// <summary>      
+		/// <summary>
 		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
 		/// using the given font <paramref  name="font"/>
 		/// Restrict the width of the string and get the number of characters able to fit in the restriction and
 		/// the width those characters take
 		/// </summary>
 		/// <param name="maxWidth">the max width to render the string  in</param>
-		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>      
-		/// <param name="charFitWidth"></param>      
+		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>
+		/// <param name="charFitWidth"></param>
 		public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
 		{
 			SetFont(font);
@@ -192,7 +189,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// Draw the given string using the given  font and foreground color at given location
 		/// See [http://msdn.microsoft.com/en-us/library/windows/desktop/dd162498(v=vs.85).aspx][15]
 		/// </summary>
-		public void DrawString(string str, Font font, Color color, Rectangle rect, TextFormatFlags flags)
+		public void DrawString(string str, Font font, Color color, Rectangle rect, GDI.TextFormatFlags flags)
 		{
 			SetFont(font);
 			SetTextColor(color);
@@ -251,7 +248,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetSolidPen(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SelectObject(CurrentHDC, GetStockObject((int)PaintObjects.DC_PEN));
+			SelectObject(CurrentHDC, GetStockObject((int)GDI.PaintObjects.DC_PEN));
 			SetDCPenColor(CurrentHDC, rgb);
 		}
 
@@ -279,14 +276,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitHDC = CreateCompatibleDC(_hdc);
 			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
 			SelectObject(_bitHDC, _bitMap);
-			SetBkMode(_bitHDC, BkModes.TRANSPARENT);
+			SetBkMode(_bitHDC, GDI.BkModes.TRANSPARENT);
 		}
 
 		public void EndOffScreenBitmap()
 		{
 			_bitW = 0;
 			_bitH = 0;
-			
+
 			DeleteObject(_bitMap);
 			DeleteObject(_bitHDC);
 
@@ -299,12 +296,19 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			BitBlt(_hdc, 0, 0, _bitW, _bitH, _bitHDC, 0, 0, 0x00CC0020);
 		}
 
+		public void HackDisposeGraphics()
+		{
+			_g.ReleaseHdc(_hdc);
+			_hdc = IntPtr.Zero;
+			_g = null;
+		}
+
 		#endregion
 
 		#region Helpers
 
 		/// <summary>
-		/// Set a resource (e.g. a font) for the  specified device context.      
+		/// Set a resource (e.g. a font) for the  specified device context.
 		/// </summary>
 		private void SetFont(Font font)
 		{
@@ -354,7 +358,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private static extern int FillRect(IntPtr hdc, [In] ref GDIRect lprc, IntPtr hbr);
 
 		[DllImport("gdi32.dll")]
-		private static extern int SetBkMode(IntPtr hdc, BkModes mode);
+		private static extern int SetBkMode(IntPtr hdc, GDI.BkModes mode);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiObj);
@@ -532,7 +536,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			public byte lfPitchAndFamily = 0;
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
 			public string lfFaceName = null;
-		} 
+		}
 
 		/// <summary>
 		///   The graphics mode that can be set by SetGraphicsMode.
@@ -597,7 +601,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				return new XFORM(elems[0], elems[1], elems[2], elems[3], elems[4], elems[5]);
 			}
 		}
-		
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct BLENDFUNCTION
 		{
@@ -624,23 +628,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		#endregion
 
 		#region Classes, Structs, and Enums
-
-		public class GdiGraphicsLock : IDisposable
-		{
-			private readonly GDIRenderer Gdi;
-
-			public GdiGraphicsLock(GDIRenderer gdi)
-			{
-				this.Gdi = gdi;
-			}
-
-			public void Dispose()
-			{
-				Gdi._g.ReleaseHdc(Gdi._hdc);
-				Gdi._hdc = IntPtr.Zero;
-				Gdi._g = null;
-			}
-		}
 
 		private struct Rect
 		{
@@ -672,97 +659,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				bottom = r.Bottom;
 				right = r.Right;
 			}
-		}
-
-		private struct GDIPoint
-		{
-			private int x;
-			private int y;
-
-			private GDIPoint(int x, int y)
-			{
-				this.x = x;
-				this.y = y;
-			}
-		}
-
-		[Flags]
-		public enum ETOOptions : uint
-		{
-			CLIPPED = 0x4,
-			GLYPH_INDEX = 0x10,
-			IGNORELANGUAGE = 0x1000,
-			NUMERICSLATIN = 0x800,
-			NUMERICSLOCAL = 0x400,
-			OPAQUE = 0x2,
-			PDY = 0x2000,
-			RTLREADING = 0x800,
-		}
-
-		/// <summary>
-		/// See [http://msdn.microsoft.com/en-us/library/windows/desktop/dd162498(v=vs.85).aspx][15]
-		///  </summary>
-		[Flags]
-		public enum TextFormatFlags : uint
-		{
-			Default = 0x00000000,
-			Center = 0x00000001,
-			Right = 0x00000002,
-			VCenter = 0x00000004,
-			Bottom = 0x00000008,
-			WordBreak = 0x00000010,
-			SingleLine = 0x00000020,
-			ExpandTabs = 0x00000040,
-			TabStop = 0x00000080,
-			NoClip = 0x00000100,
-			ExternalLeading = 0x00000200,
-			CalcRect = 0x00000400,
-			NoPrefix = 0x00000800,
-			Internal = 0x00001000,
-			EditControl = 0x00002000,
-			PathEllipsis = 0x00004000,
-			EndEllipsis = 0x00008000,
-			ModifyString = 0x00010000,
-			RtlReading = 0x00020000,
-			WordEllipsis = 0x00040000,
-			NoFullWidthCharBreak = 0x00080000,
-			HidePrefix = 0x00100000,
-			ProfixOnly = 0x00200000,
-		}
-
-		[Flags]
-		public enum PenStyles
-		{
-			PS_SOLID = 0x00000000
-			// TODO
-		}
-
-		public enum PaintObjects
-		{
-			WHITE_BRUSH = 0,
-			LTGRAY_BRUSH = 1,
-			GRAY_BRUSH = 2,
-			DKGRAY_BRUSH = 3,
-			BLACK_BRUSH = 4,
-			NULL_BRUSH = 5,
-			WHITE_PEN = 6,
-			BLACK_PEN = 7,
-			NULL_PEN = 8,
-			OEM_FIXED_FONT = 10,
-			ANSI_FIXED_FONT = 11,
-			ANSI_VAR_FONT = 12,
-			SYSTEM_FONT = 13,
-			DEVICE_DEFAULT_FONT = 14,
-			DEFAULT_PALETTE = 15,
-			SYSTEM_FIXED_FONT = 16,
-			DC_BRUSH = 18,
-			DC_PEN = 19,
-		}
-
-		public enum BkModes : int
-		{
-			TRANSPARENT = 1,
-			OPAQUE = 2
 		}
 
 		#endregion

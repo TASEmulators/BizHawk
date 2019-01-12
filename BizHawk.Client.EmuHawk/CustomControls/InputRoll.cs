@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	// Row width is specified for horizontal orientation
 	public partial class InputRoll : Control
 	{
-		private readonly GDIRenderer _gdi;
+		private readonly GDI.GDIRenderer _gdi;
 		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
 
 		private readonly VScrollBar _vBar;
@@ -60,18 +60,18 @@ namespace BizHawk.Client.EmuHawk
 			ScrollMethod = "near";
 
 			var commonFont = new Font("Arial", 8, FontStyle.Bold);
-			_normalFont = GDIRenderer.CreateNormalHFont(commonFont, 6);
+			_normalFont = Win32GDIRenderer.CreateNormalHFont(commonFont, 6);
 
 			// PrepDrawString doesn't actually set the font, so this is rather useless.
 			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			_rotatedFont = GDIRenderer.CreateRotatedHFont(commonFont, true);
+			_rotatedFont = Win32GDIRenderer.CreateRotatedHFont(commonFont, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			_gdi = new GDIRenderer();
+			_gdi = new Win32GDIRenderer();
 
 			using (var g = CreateGraphics())
 			using (_gdi.LockGraphics(g))
@@ -128,8 +128,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_gdi.Dispose();
 
-			GDIRenderer.DestroyHFont(_normalFont);
-			GDIRenderer.DestroyHFont(_rotatedFont);
+			Win32GDIRenderer.DestroyHFont(_normalFont);
+			Win32GDIRenderer.DestroyHFont(_rotatedFont);
 
 			base.Dispose(disposing);
 		}
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool AllowColumnReorder { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the entire row will always be selected 
+		/// Gets or sets a value indicating whether the entire row will always be selected
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(false)]

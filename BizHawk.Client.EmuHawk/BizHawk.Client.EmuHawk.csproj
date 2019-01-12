@@ -572,7 +572,7 @@
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\GDIRenderer.cs" />
+    <Compile Include="CustomControls\GDI.cs" />
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -639,6 +639,7 @@
     </Compile>
     <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
+    <Compile Include="CustomControls\Win32GDIRenderer.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
     <Compile Include="DisplayManager\FilterManager.cs" />
