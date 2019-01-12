@@ -279,7 +279,7 @@ Once you're on the build page, click "Artifacts" and download `BizHawk_Developer
 * [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
-The [TASVideos org](https://github.com/TASVideos) has some forks of other emulators and plugins.
+Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos org](https://github.com/TASVideos) also houses other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
 ## License
 
