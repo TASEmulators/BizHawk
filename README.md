@@ -248,7 +248,7 @@ If there's no easy solution, what you've got is a bug. Or maybe a feature reques
 
 ## Contributing
 
-BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT license*, this is optional, just be careful with reusing cores as some have copyleft licenses.
+BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT License*, this is optional, just be careful with reusing cores as some have copyleft licenses.
 
 If you'd like to fix bugs, check the issue tracker here on GitHub:
 
