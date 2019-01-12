@@ -24,10 +24,10 @@ Jump to:
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1)
 * [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
 	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
+	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
 	* [Cores](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
-	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
 * [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
@@ -196,6 +196,16 @@ TODO
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
+### Testing
+
+Testing bugfixes or new features can be just as helpful as making them! If code's more your thing, see [*Contributing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing) below.
+
+Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
+
+Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ### Cores
 
 A *core* is what we call the smaller bits of software that emulate just one system or family of systems, e.g. NES/Famicom. For the most part, there's a "best" core for each system, based on accuracy, but there are a few alternative cores which are *faster and less accurate*.
@@ -250,6 +260,8 @@ If there's no easy solution, what you've got is a bug. Or maybe a feature reques
 
 BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT License*, this is optional, just be careful with reusing cores as some have copyleft licenses.
 
+Not a programmer? Something as simple as reproducing bugs with different software versions is still very helpful! See [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) above to learn about dev builds if you'd rather help us get the next release out.
+
 If you'd like to fix bugs, check the issue tracker here on GitHub:
 
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
@@ -261,14 +273,6 @@ If you'd like to add a feature, first search the issue tracker for it. If it's a
 For the time being, style is not enforced in PRs, only build success is. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
 
 Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See a core's docs for its authors.
-
-### Testing
-
-Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
-
-Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
-
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ## Related projects
 
