@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				R.do_single_step();
 
 				// the signal to shift out a bit is when serial_clock = 1
-				if ((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2))
+				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
 				{
 					if (LinkConnected)
 					{
@@ -118,6 +118,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				}
 				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
 				{
+					do_r_next = false;
+
 					if (LinkConnected)
 					{
 						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
@@ -131,6 +133,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 						R.serialport.coming_in = L.serialport.going_out;
 					}
+
+					if (R.serialport.serial_clock == 2) { do_r_next = true; }
+				}
+				else
+				{
+					do_r_next = false;
 				}
 
 				// if we hit a frame boundary, update video
