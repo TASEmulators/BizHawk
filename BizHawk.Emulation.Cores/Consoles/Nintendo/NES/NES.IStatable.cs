@@ -85,11 +85,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// single cycle execution related
 			ser.Sync("current_strobe", ref current_strobe);
 			ser.Sync("new_strobe", ref new_strobe);
-			ser.Sync("ctrl_1", ref ctrl_1);
-			ser.Sync("ctrl_2", ref ctrl_2);
-			ser.Sync("shift_1", ref shift_1);
-			ser.Sync("shift_2", ref shift_2);
-			ser.Sync("use_sub_input", ref use_sub_input);
 
 			ser.BeginSection("Board");
 			Board.SyncState(ser);

@@ -419,17 +419,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool current_strobe;
 		public bool new_strobe;
 		public bool alt_lag;
-		public byte ctrl_1 = 0;
-		public byte ctrl_2 = 0;
-		public byte ctrl_1_new = 0;
-		public byte ctrl_2_new = 0;
-		public int shift_1;
-		public int shift_2;
-		public bool use_sub_input = false;
 		// this function will run one step of the ppu 
 		// it will return whether the controller is read or not.
-		public void do_single_step(out bool cont_read, out bool frame_done)
+		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)
 		{
+			_controller = controller;
+
 			controller_was_latched = false;
 			frame_is_done = false;
 
@@ -779,21 +774,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				controller_was_latched = true;
 				alt_lag = false;
-
-				if (use_sub_input)
-				{
-					shift_1 = 7;
-					shift_2 = 7;
-
-					ctrl_1 = ctrl_1_new;
-					ctrl_2 = ctrl_2_new;
-				}
-			}
-
-			if (use_sub_input && new_strobe)
-			{
-				shift_1 = 7;
-				shift_2 = 7;
 			}
 		}
 
@@ -803,36 +783,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			lagged = false;
 			byte ret = 0;
 
-			if (use_sub_input)
+			if (_isVS)
 			{
-				if (addr == 0x4016)
-				{
-					if (shift_1 >= 0) { ret = (byte)((ctrl_1 >> shift_1) & 1); }
-					else { ret = 1; }
-
-					if (!current_strobe) { shift_1 -= 1; }				
-				}
-				else
-				{
-					if (shift_2 >= 0) { ret = (byte)((ctrl_2 >> shift_2) & 1); }
-					else { ret = 1; }
-
-					if (!current_strobe) { shift_2 -= 1; }
-				}
+				// for whatever reason, in VS left and right controller have swapped regs
+				ret = addr == 0x4017 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
 			else
 			{
-				if (_isVS)
-				{
-					// for whatever reason, in VS left and right controller have swapped regs
-					ret = addr == 0x4017 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
-				}
-				else
-				{
-					ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
-				}
+				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
-			
+
 			ret &= 0x1f;
 			ret |= (byte)(0xe0 & DB);
 			return ret;

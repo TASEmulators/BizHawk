@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -1634,6 +1635,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				new NESGraphicsConfig().ShowDialog(this);
 			}
+			else if (Emulator is SubNESHawk)
+			{
+				new NESGraphicsConfig().ShowDialog(this);
+			}
 			else if (Emulator is QuickNES)
 			{
 				new QuickNesConfig().ShowDialog(this);
@@ -1701,6 +1706,10 @@ namespace BizHawk.Client.EmuHawk
 		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is NES)
+			{
+				new NesControllerSettings().ShowDialog();
+			}
+			else if (Emulator is SubNESHawk)
 			{
 				new NesControllerSettings().ShowDialog();
 			}

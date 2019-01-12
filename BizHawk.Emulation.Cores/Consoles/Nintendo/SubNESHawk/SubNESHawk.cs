@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class SubNESHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-	ISettable<SubNESHawk.SubNESHawkSettings, SubNESHawk.SubNESHawkSyncSettings>, INESPPUViewable
+	ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, INESPPUViewable
 	{
 		public NES.NES subnes;
 
@@ -22,18 +22,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		{
 			var ser = new BasicServiceProvider(this);
 
-			subnesSettings = (SubNESHawkSettings)settings ?? new SubNESHawkSettings();
-			subnesSyncSettings = (SubNESHawkSyncSettings)syncSettings ?? new SubNESHawkSyncSettings();
-			_controllerDeck = new SubNESHawkControllerDeck(SubNESHawkControllerDeck.DefaultControllerName, SubNESHawkControllerDeck.DefaultControllerName);
+			subnesSettings = (NES.NES.NESSettings)settings ?? new NES.NES.NESSettings();
+			subnesSyncSettings = (NES.NES.NESSyncSettings)syncSettings ?? new NES.NES.NESSyncSettings();
 
 			CoreComm = comm;
 
-			var temp_set = new NES.NES.NESSettings();
-
-			var temp_sync = new NES.NES.NESSyncSettings();
-
 			subnes = new NES.NES(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
-				game, rom, temp_set, temp_sync);
+				game, rom, subnesSettings, subnesSyncSettings);
 
 			ser.Register<IVideoProvider>(subnes.videoProvider);
 			ser.Register<ISoundProvider>(subnes.magicSoundProvider); 
@@ -46,9 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			SetupMemoryDomains();
 
 			HardReset();
-
-			// input override for subframe input
-			subnes.use_sub_input = true;
 		}
 
 		public void HardReset()
@@ -68,14 +60,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int _frame = 0;
 
-		private readonly SubNESHawkControllerDeck _controllerDeck;
-
 		private readonly ITraceable _tracer;
 
 		private void ExecFetch(ushort addr)
 		{
 			MemoryCallbacks.CallExecutes(addr, "System Bus");
 		}
+
+		#region ISettable
+		private NES.NES.NESSettings subnesSettings = new NES.NES.NESSettings();
+		public NES.NES.NESSyncSettings subnesSyncSettings = new NES.NES.NESSyncSettings();
+
+		public NES.NES.NESSettings GetSettings()
+		{
+			return subnesSettings.Clone();
+		}
+
+		public NES.NES.NESSyncSettings GetSyncSettings()
+		{
+			return subnesSyncSettings.Clone();
+		}
+
+		public bool PutSettings(NES.NES.NESSettings o)
+		{
+			subnesSettings = o;
+			if (subnesSettings.ClipLeftAndRight)
+			{
+				subnes.videoProvider.left = 8;
+				subnes.videoProvider.right = 247;
+			}
+			else
+			{
+				subnes.videoProvider.left = 0;
+				subnes.videoProvider.right = 255;
+			}
+
+			CoreComm.ScreenLogicalOffsetX = subnes.videoProvider.left;
+			CoreComm.ScreenLogicalOffsetY = Region == DisplayType.NTSC ? subnesSettings.NTSC_TopLine : subnesSettings.PAL_TopLine;
+
+			subnes.SetPalette(subnesSettings.Palette);
+
+			subnes.apu.m_vol = subnesSettings.APU_vol;
+
+			return false;
+		}
+
+		public bool PutSyncSettings(NES.NES.NESSyncSettings o)
+		{
+			bool ret = NES.NES.NESSyncSettings.NeedsReboot(subnesSyncSettings, o);
+			subnesSyncSettings = o;
+			return ret;
+		}
+		#endregion
 
 		#region PPU Viewable
 

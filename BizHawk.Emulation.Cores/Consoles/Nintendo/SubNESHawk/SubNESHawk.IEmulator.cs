@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
+		public ControllerDefinition ControllerDefinition => subnes.ControllerDefinition;
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -38,9 +38,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			_islag = true;
 			subnes.alt_lag = true;
 
-			GetControllerState(controller);
+			InputCallbacks.Call();
 
-			do_frame();
+			do_frame(controller);
 
 			bool ret = pass_a_frame;
 
@@ -62,29 +62,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		public bool stop_cur_frame;
 		public bool pass_new_input;
 		public bool pass_a_frame;
-		public byte ctrl_byte_1;
-		public byte ctrl_byte_2;
 
-		public void do_frame()
+		public void do_frame(IController controller)
 		{
 			stop_cur_frame = false;
 			while (!stop_cur_frame)
 			{
-				subnes.do_single_step(out pass_new_input, out pass_a_frame);
+				subnes.do_single_step(controller, out pass_new_input, out pass_a_frame);
 				stop_cur_frame |= pass_a_frame;
 				stop_cur_frame |= pass_new_input;
 			}
-		}
-
-		public void GetControllerState(IController controller)
-		{
-			InputCallbacks.Call();
-
-			ctrl_byte_1 = _controllerDeck.ReadPort1(controller);
-			ctrl_byte_2 = _controllerDeck.ReadPort2(controller);
-
-			subnes.ctrl_1_new = ctrl_byte_1;
-			subnes.ctrl_2_new = ctrl_byte_2;
 		}
 
 		public int Frame => _frame;
