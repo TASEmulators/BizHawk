@@ -2950,10 +2950,6 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_framesSinceLastFpsUpdate++;
-
-				UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
-
 				CaptureRewind(isRewinding);
 
 				// Set volume, if enabled
@@ -3039,6 +3035,13 @@ namespace BizHawk.Client.EmuHawk
 				if (!PauseAvi && new_frame)
 				{
 					AvFrameAdvance();
+				}
+
+				if (new_frame)
+				{
+					_framesSinceLastFpsUpdate++;
+
+					UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
