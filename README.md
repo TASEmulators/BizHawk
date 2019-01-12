@@ -283,7 +283,7 @@ Past contrbutors to the frontend and custom-built cores are listed [here](https:
 * [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
-Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos org](https://github.com/TASVideos) also houses other emulators and plugins where development happens sometimes, their upstreams may be of use.
+Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos GitHub page](https://github.com/TASVideos) also houses other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
 ## License
 
