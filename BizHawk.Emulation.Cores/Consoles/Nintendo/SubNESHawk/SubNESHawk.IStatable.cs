@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Sync("IsLag", ref _islag);
 			ser.Sync("pass_a_frame", ref pass_a_frame);
 			ser.Sync("pass_new_input", ref pass_new_input);
+			ser.Sync("VBL_CNT", ref VBL_CNT);
 		}
 	}
 }

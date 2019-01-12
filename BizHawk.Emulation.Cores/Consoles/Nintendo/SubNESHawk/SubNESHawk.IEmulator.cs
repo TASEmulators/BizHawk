@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			if (_islag)
 			{
 				_lagcount++;
+				VBL_CNT++;
 			}
 
 			return ret;

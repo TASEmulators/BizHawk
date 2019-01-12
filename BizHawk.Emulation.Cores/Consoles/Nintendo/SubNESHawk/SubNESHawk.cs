@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 	{
 		public NES.NES subnes;
 
+		// needed for movies to accurately calculate timing
+		public int VBL_CNT;
+
 		[CoreConstructor("NES")]
 		public SubNESHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
@@ -41,6 +44,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			SetupMemoryDomains();
 
 			HardReset();
+
+			VBL_CNT = 0;
 		}
 
 		public void HardReset()
