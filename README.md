@@ -19,7 +19,6 @@ Jump to:
 * Installing
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos)
-* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
 * Building
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110-1)
 	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1)
@@ -28,6 +27,7 @@ Jump to:
 	* [Cores](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
 * [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
 * [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
+	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
 * [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
 * [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
 
@@ -131,14 +131,6 @@ If you download BizHawk this way, **don't mix different versions**, keep each ve
 Linux distros are supported if the distributor is still supporting your version, you're using Linux 4.4/4.9/4.14/4.19 LTS or 4.20 for x86_64/amd64, and there are no updates available in your package manager. *Please* update and reboot.
 
 macOS is supported from 10.11 "El Capitan" (Darwin 15.6). Apple doesn't seem to care about lifecycles, so we'll go with 6 months from the last security update.
-
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
-
-## Testing
-
-Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
-
-Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
@@ -269,6 +261,14 @@ If you'd like to add a feature, first search the issue tracker for it. If it's a
 For the time being, style is not enforced in PRs, only build success is. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
 
 Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See a core's docs for its authors.
+
+### Testing
+
+Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build and clicking the check takes you straight there. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
+
+Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
+
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ## Related projects
 
