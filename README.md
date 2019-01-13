@@ -205,7 +205,7 @@ Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded scrip
 
 Running scripts have a "▶️" beside their name, and stopped scripts (manually or due to an error) have a "⏹️" beside them. Using "Pause or Resume", you can temporarily pause scripts, those have a "⏸️".
 
-"Toggle script" does just that (paused scripts are stopped). "Remove script" stops it and removes it from the list. "Reload script" stops it and loads changes to the file, running scripts are then started again.
+"Toggle script" does just that (paused scripts are stopped). "Reload script" stops it and loads changes to the file, running scripts are then started again. "Remove script" stops it and removes it from the list.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
