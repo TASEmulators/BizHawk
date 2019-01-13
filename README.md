@@ -145,7 +145,7 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 ```
 ...or use a [Git GUI](https://desktop.github.com). Otherwise, you'll have to download an archive from GitHub.
 
-~~On Windows 10, open a PowerShell window in BizHawk_master (Shift+Mouse2 in File Explorer) and run `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`. On older versions, a similar Command Prompt script should work.~~ (Not sure what the right command is. Do let us know.)
+Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. BizHawk will be build into the repo's `output` folder.
 
 For anything more complicated than building, you'll need an IDE like [VS Community 2017](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE. Open `BizHawk.sln` with VS to start and use the toolbar to choose EmuHawk and build. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) (somewhat outdated) for more detailed instructions.
 
