@@ -195,7 +195,7 @@ TODO
 
 #### Changing cores
 
-To change which core is used for NES, SNES, GB, or GBA, go to `Config` > `Cores`. There, you'll also find the `GB in SGB` item, which is a checkbox that makes GB games run with the *Super Game Boy*, and `N64 Video Plugin Settings`, which you shouldn't touch unless you know what you're doing.
+To change which core is used for NES, SNES, GB, or GBA, go to `Config` > `Cores`. There, you'll also find the `GB in SGB` item, which is a checkbox that makes GB games run with the *Super Game Boy* on an SNES.
 
 #### Running Lua scripts
 
