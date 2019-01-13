@@ -180,11 +180,14 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 You may have seen a dialog saying "You are missing the needed firmware files [...]" when trying to open a rom. Pressing "Yes" opens the Firmware Manager, or you can go to `Config` > `Firmwares...`.
 
-To load firmware, TODO
+To load firmwares, the easiest way is to click "Import" in the menubar, navigate to the dumped firmware(s), select them all, and click "Open". It's a good idea to have them copied into the `Firmware` folder, which is nicely organised, when prompted. If you were trying to open a rom, click "Close and reload ROM" to do that. Keep in mind some firmware is optional and some have multiple versions, only one of which needs to be set.
 
 #### Identifying a good rom
 
-TODO
+With a core and game loaded, look in the very left of the status bar (`View` > `Display Status Bar`):
+* a green checkmark means you've loaded a "known good" rom;
+* a "???" (don't remember) means you've loaded a "known bad" rom, created by incorrect dumping methods; and
+* a ?-block means you've loaded something unknown, possibly a romhack or homebrew title.
 
 #### Rebinding keys and controllers
 
@@ -192,11 +195,17 @@ TODO
 
 #### Changing cores
 
-TODO
+To change which core is used for NES, SNES, GB, or GBA, go to `Config` > `Cores`. There, you'll also find the `GB in SGB` item, which is a checkbox that makes GB games run with the *Super Game Boy*, and `N64 Video Plugin Settings`, which you shouldn't touch.
 
 #### Running Lua scripts
 
-TODO
+(Again, this feature is Windows-only for now.)
+
+Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded script list and the console output. The buttons below the menubar are shortcuts for items in the menus, hover over them to see what they do. Any script you load is added to the list, and will start running immediately.
+
+Running scripts have a "⏵" beside their name, and stopped scripts (manually or due to an error) have a "⏹" beside them. Using "Pause or Resume", you can temporarily pause scripts, those have a "⏸".
+
+"Toggle script" does just that (paused scripts are stopped). "Remove script" stops it and removes it from the list. "Reload script" stops it and loads changes to the file, running scripts are then started again.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
