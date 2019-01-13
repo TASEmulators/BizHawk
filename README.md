@@ -145,9 +145,9 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 ```
 ...or use a [Git GUI](https://desktop.github.com). Otherwise, you'll have to download an archive from GitHub.
 
-On Windows 10, open a PowerShell window in BizHawk_master (Shift+Mouse2 in File Explorer) and run `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`. TODO: didn't work for me. On older versions, a similar Command Prompt script should work.
+~~On Windows 10, open a PowerShell window in BizHawk_master (Shift+Mouse2 in File Explorer) and run `C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe /p:Configuration=Release BizHawk.sln`. On older versions, a similar Command Prompt script should work.~~ (Not sure what the right command is. Do let us know.)
 
-The best free C# IDE is [VS Community 2017](https://visualstudio.microsoft.com/vs/community), which you'll need to work on the project efficiently. Open `BizHawk.sln` with VS to start.
+For anything more complicated than building, you'll need an IDE like [VS Community 2017](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE. Open `BizHawk.sln` with VS to start and use the toolbar to choose EmuHawk and build. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) (somewhat outdated) for more detailed instructions.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
@@ -176,23 +176,35 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 ## Usage
 
+#### Loading firmware
+
+You may have seen a dialog saying "You are missing the needed firmware files [...]" when trying to open a rom. Pressing "Yes" opens the Firmware Manager, or you can go to `Config` > `Firmwares...`.
+
+To load firmware, TODO
+
+#### Identifying a good rom
+
+TODO
+
+#### Rebinding keys and controllers
+
+TODO
+
+#### Changing cores
+
+TODO
+
+#### Running Lua scripts
+
 TODO
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
 ### TASing
 
-This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).
+~~This section refers to BizHawk specifically. For resources on TASing in general, see [Welcome to TASVideos](http://tasvideos.org/WelcomeToTASVideos.html).~~ This section hasn't been written yet.
 
-TODO
-
-[Commandline](http://tasvideos.org/Bizhawk/CommandLine.html)
-
-[CompactDiscInfoDump](http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html)
-
-[Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html)
-
-[TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html)
+For now, the best way to learn how to TAS is to browse pages like [BasicTools](http://tasvideos.org/TasingGuide/BasicTools.html) on TASVideos and watch tutorials like [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
@@ -283,7 +295,7 @@ Past contrbutors to the frontend and custom-built cores are listed [here](https:
 * [lsnes](http://tasvideos.org/Lsnes.html) for GB and SNES — cross-platform
 * [openMSX](https://openmsx.org) for MSX — cross-platform
 
-Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos GitHub page](https://github.com/TASVideos) also houses other emulators and plugins where development happens sometimes, their upstreams may be of use.
+Emulators for other systems can be found on the [EmulatorResources page](http://tasvideos.org/EmulatorResources.html) at TASVideos. The [TASVideos GitHub page](https://github.com/TASVideos) also holds copies of other emulators and plugins where development happens sometimes, their upstreams may be of use.
 
 ## License
 
