@@ -22,10 +22,17 @@ namespace BizHawk.Common.BizInvoke
 		/// </summary>
 		public ulong End { get; private set; }
 
+		#if true
 		/// <summary>
 		/// handle returned by CreateFileMapping
 		/// </summary>
 		private IntPtr _handle;
+		#else
+		/// <summary>
+		/// handle returned by memfd_create
+		/// </summary>
+		private int _fd;		
+		#endif
 
 		/// <summary>
 		/// true if this is currently swapped in
@@ -85,11 +92,16 @@ namespace BizHawk.Common.BizInvoke
 				throw new ArgumentOutOfRangeException();
 			size = WaterboxUtils.AlignUp(size);
 
+			#if true
 			_handle = Kernel32.CreateFileMapping(Kernel32.INVALID_HANDLE_VALUE, IntPtr.Zero,
 				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
-
 			if (_handle == IntPtr.Zero)
 				throw new InvalidOperationException("CreateFileMapping() returned NULL");
+			#else
+			_fd = Kernel.memfd_create("MemoryBlock", 0);
+			if (_fd == -1)
+				throw new InvalidOperationException("memfd_create() returned -1");
+			#endif
 			Start = start;
 			End = start + size;
 			Size = size;
@@ -103,11 +115,18 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (Active)
 				throw new InvalidOperationException("Already active");
+			#if true
 			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
 				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
 			{
 				throw new InvalidOperationException("MapViewOfFileEx() returned NULL");
 			}
+			#else
+			if (Kernel.mmap(Z.US(Start), Z.UU(Size), Kernel.Protection.Read | Kernel.Protection.Write | Kernel.Protection.Execute, 16, _fd, IntPtr.Zero) != Z.US(Start))
+			{
+				throw new InvalidOperationException("mmap() returned NULL");
+			}
+			#endif
 			ProtectAll();
 			Active = true;
 		}
@@ -119,8 +138,13 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (!Active)
 				throw new InvalidOperationException("Not active");
+			#if true
 			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
 				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
+			#else
+			if (Kernel.munmap(Z.US(Start), Z.UU(Size)) != 0)
+				throw new InvalidOperationException("munmap() returned -1");
+			#endif
 			Active = false;
 		}
 
@@ -173,9 +197,14 @@ namespace BizHawk.Common.BizInvoke
 
 			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want
 			// that to complicate things
+			#if true
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
 				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+			#else
+			if (Kernel.mprotect(Z.US(Start), Z.UU(Size), Kernel.Protection.Read) != 0)
+				throw new InvalidOperationException("mprotect() returned -1!");
+			#endif
 
 			_snapshot = new byte[Size];
 			var ds = new MemoryStream(_snapshot, true);
@@ -195,14 +224,20 @@ namespace BizHawk.Common.BizInvoke
 			if (!Active)
 				throw new InvalidOperationException("Not active");
 			// temporarily switch the entire block to `R`
+			#if true
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
 				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+			#else
+			if (Kernel.mprotect(Z.US(Start), Z.UU(Size), Kernel.Protection.Read) != 0)
+				throw new InvalidOperationException("mprotect() returned -1!");
+			#endif
 			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
 			ProtectAll();
 			return ret;
 		}
 
+		#if true
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
 		{
 			Kernel32.MemoryProtection p;
@@ -216,6 +251,21 @@ namespace BizHawk.Common.BizInvoke
 			}
 			return p;
 		}
+		#else
+		private static Kernel.Protection GetKernelMemoryProtectionValue(Protection prot)
+		{
+			Kernel.Protection p;
+			switch (prot)
+			{
+				case Protection.None: p = 0; break;
+				case Protection.R: p = Kernel.Protection.Read; break;
+				case Protection.RW: p = Kernel.Protection.Read | Kernel.Protection.Write; break;
+				case Protection.RX: p = Kernel.Protection.Read | Kernel.Protection.Execute; break;
+				default: throw new ArgumentOutOfRangeException(nameof(prot));
+			}
+			return p;
+		}
+		#endif
 
 		/// <summary>
 		/// restore all recorded protections
@@ -230,9 +280,14 @@ namespace BizHawk.Common.BizInvoke
 					var p = GetKernelMemoryProtectionValue(_pageData[i]);
 					ulong zstart = GetStartAddr(ps);
 					ulong zend = GetStartAddr(i + 1);
+					#if true
 					Kernel32.MemoryProtection old;
 					if (!Kernel32.VirtualProtect(Z.UU(zstart), Z.UU(zend - zstart), p, out old))
 						throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+					#else
+					if (Kernel.mprotect(Z.US(zstart), Z.UU(zend - zstart), p) != 0)
+						throw new InvalidOperationException("mprotect() returned -1!");
+					#endif
 					ps = i + 1;
 				}
 			}
@@ -258,10 +313,15 @@ namespace BizHawk.Common.BizInvoke
 				var computedEnd = WaterboxUtils.AlignUp(start + length);
 				var computedLength = computedEnd - computedStart;
 
+				#if true
 				Kernel32.MemoryProtection old;
 				if (!Kernel32.VirtualProtect(Z.UU(computedStart),
 					Z.UU(computedLength), p, out old))
 					throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				#else
+				if (Kernel.mprotect(Z.US(computedStart), Z.UU(computedLength), p) != 0)
+					throw new InvalidOperationException("mprotect() returned -1!");
+				#endif
 			}
 		}
 
@@ -277,8 +337,13 @@ namespace BizHawk.Common.BizInvoke
 			{
 				if (Active)
 					Deactivate();
+				#if true
 				Kernel32.CloseHandle(_handle);
 				_handle = IntPtr.Zero;
+				#else
+				Kernel.Close(_fd);
+				_fd = -1;
+				#endif
 			}
 		}
 
@@ -440,6 +505,7 @@ namespace BizHawk.Common.BizInvoke
 			}
 		}
 
+		#if true
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
@@ -508,5 +574,22 @@ namespace BizHawk.Common.BizInvoke
 
 			public static readonly IntPtr INVALID_HANDLE_VALUE = Z.US(0xffffffffffffffff);
 		}
+		#else
+		private static class Kernel
+		{
+			public static extern int memfd_create(string name, uint flags);
+			public static extern int close(int fd);
+			public static extern IntPtr mmap(IntPtr addr, UIntPtr length, int prot, int flags, int fd, IntPtr offset);
+			public static extern int munmap(IntPtr addr, UIntPtr length);
+			public static extern int mprotect(IntPtr addr, UIntPtr len, int prot);
+			[Flags]
+			public enum Protection : int
+			{
+				Read = 1,
+				Write = 2,
+				Execute = 4
+			}
+		}
+		#endif
 	}
 }
