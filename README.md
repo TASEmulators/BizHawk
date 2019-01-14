@@ -186,8 +186,8 @@ To load firmwares, the easiest way is to click "Import" in the menubar, navigate
 
 With a core and game loaded, look in the very left of the status bar (`View` > `Display Status Bar`):
 * a green checkmark means you've loaded a "known good" rom;
-* a "???" (don't remember) means you've loaded a "known bad" rom, created by incorrect dumping methods; and
-* a ?-block means you've loaded something unknown, possibly a romhack or homebrew title.
+* a "!" in a red circle means you've loaded a "known bad" rom, created by incorrect dumping methods; and
+* something else, usually a ?-block, means you've loaded something unknown, a romhack, or a homebrew title.
 
 #### Rebinding keys and controllers
 
