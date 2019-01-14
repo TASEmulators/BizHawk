@@ -27,14 +27,25 @@ namespace BizHawk.Client.Common
 			offset = 0;
 			isExecutable = false;
 
+			SharpCompress.Archives.IArchive arcTest = null; 
+
 			try
 			{
-				var arcTest = SharpCompress.Archives.ArchiveFactory.Open(fileName);
+				arcTest = SharpCompress.Archives.ArchiveFactory.Open(fileName);
 				var aType = arcTest.Type;
-				arcTest.Dispose();
-				return true;
+
+				switch(arcTest.Type)
+				{
+					case SharpCompress.Common.ArchiveType.Zip:
+					case SharpCompress.Common.ArchiveType.SevenZip:
+						return true;
+				}
 			}
 			catch { }
+			finally
+			{
+				arcTest.Dispose();
+			}
 
 			return false;
 		}

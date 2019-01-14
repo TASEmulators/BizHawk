@@ -649,6 +649,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SharpCompress\Compressors\Rar\UnpackV2017\notes.txt" />
+    <Content Include="SharpCompress\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
