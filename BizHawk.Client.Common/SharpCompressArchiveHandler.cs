@@ -44,7 +44,8 @@ namespace BizHawk.Client.Common
 			catch { }
 			finally
 			{
-				arcTest.Dispose();
+				if (arcTest != null)
+					arcTest.Dispose();
 			}
 
 			return false;
