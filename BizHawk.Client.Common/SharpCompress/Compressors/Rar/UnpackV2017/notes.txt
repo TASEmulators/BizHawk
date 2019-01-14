@@ -1,0 +1,50 @@
+﻿#if !Rar2017_64bit
+using nint = System.Int32;
+using nuint = System.UInt32;
+using size_t = System.UInt32;
+#else
+using nint = System.Int64;
+using nuint = System.UInt64;
+using size_t = System.UInt64;
+#endif
+using int64 = System.Int64;
+
+
+notes on C->C# primitive mappings:
+
+nint := native integer
+nuint := native unsigned integer
+
+type 			32b	64b	    mapping	CAREFUL!
+char			 8 bit	 8 bit	    short
+unsigned char		8 bit	 8 bit	    ushort
+short int		16 bit	16 bit	    short
+
+short int		16 bit	16 bit	    short
+unsigned short int	16 bit	16 bit	    ushort
+int			32 bit	32 bit	    int
+unsigned int		32 bit	32 bit	    uint
+long int		32 bit	64 bit	    nint	***
+unsigned long int	32 bit	64 bit	    nuint	***
+long long int		64 bit	64 bit	    long
+unsigned long long int	64 bit	64 bit	    ulong
+size_t			32 bit	64 bit	    nuint
+
+The size_t type is the unsigned integer type that is the result of the sizeof operator (and the offsetof operator), 
+so it is guaranteed to be big enough to contain the size of the biggest object your system can handle (e.g., a static array of 8Gb).
+[size_t] -> ulong (x64)
+[size_t] -> uint (x86)
+
+size_t is an unsigned data type defined by several C/C++ standards, e.g. the C99 ISO/IEC 9899 standard, that is defined 
+in stddef.h.1 It can be further imported by inclusion of stdlib.h as this file internally sub includes stddef.h.
+This type is used to represent the size of an object. Library functions that take or return sizes expect them to be of type or
+have the return type of size_t. Further, the most frequently used compiler-based operator sizeof should evaluate to a constant
+value that is compatible with size_t.
+
+
+20171218
+urggh, this allows things like new int[int.MaxValue] but NOT new byte[uint.MaxValue]
+currently arrays are limited to being indexed by an int hence int.MaxValue entries.  weak.
+To get arrays > 2GB on x64 we need to configure
+<gcAllowVeryLargeObjects enabled="true"/>  
+https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/runtime/gcallowverylargeobjects-element

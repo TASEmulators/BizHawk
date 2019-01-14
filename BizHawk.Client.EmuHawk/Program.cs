@@ -110,9 +110,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileManager.Start();
+			BizHawk.Common.TempFileManager.Start();			
+			
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+				HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+			else
+				HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			// testing
+			//HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
 
 			ArgParser argParser = new ArgParser();
 			argParser.ParseArguments(args);
