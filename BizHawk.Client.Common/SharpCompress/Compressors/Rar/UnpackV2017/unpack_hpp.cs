@@ -186,13 +186,13 @@ struct UnpackThreadData
 //struct UnpackFilter30
     internal class UnpackFilter30
 {
-  public uint BlockStart;
-  public uint BlockLength;
-  public bool NextWindow;
+  //public uint BlockStart;
+  //public uint BlockLength;
+  //public bool NextWindow;
 
   // Position of parent filter in Filters array used as prototype for filter
   // in PrgStack array. Not defined for filters in Filters array.
-  public uint ParentFilter;
+  //public uint ParentFilter;
 
 /*#if !RarV2017_RAR5ONLY
   public VM_PreparedProgram Prg;

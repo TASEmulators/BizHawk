@@ -11,7 +11,7 @@ namespace SharpCompress.Compressors.Rar.VM
 // TODO: rename var
         public int InAddr { get { return inAddr; } set { inAddr = value; }  }
         public int InBit { get { return inBit; } set { inBit = value; }  }
-        public bool ExternalBuffer;
+		public bool ExternalBuffer = false;
 
 
         /// <summary>  </summary>

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SharpCompress.Compressors.Xz
 {
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public sealed class XZStream : XZReadOnlyStream
     {
         public static bool IsXZStream(Stream stream)

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SharpCompress.Compressors.Xz
 {
-    [CLSCompliant(false)]
+    //[CLSCompliant(false)]
     public class XZIndexRecord
     {
         public ulong UnpaddedSize { get; private set; }
