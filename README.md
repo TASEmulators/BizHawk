@@ -119,7 +119,7 @@ You'll need to either build BizHawk yourself (see [*Building*](https://github.co
 
 Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
-If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`). The systems that currently work are: Game Boy + GBC (GBHawk), NES (NesHawk), Sega Master System, Atari 7800, Commodore 64, ColecoVision, IntelliVision, TurboGrafx, and ZX Spectrum. See #1430 for progress.
+If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`). The systems that currently work are: Game Boy + GBC (GBHawk), NES (NesHawk), Sega Master System, Atari 7800, Commodore 64, ColecoVision, IntelliVision, TurboGrafx, and ZX Spectrum. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
