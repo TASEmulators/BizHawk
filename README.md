@@ -18,10 +18,10 @@ New user on Windows? Install the prerequisites first, click the "prereqs" button
 Jump to:
 * Installing
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
-	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos)
+	* [GNU+Linux](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux)
 * Building
 	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110-1)
-	* [GNU+Linux and macOS](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1)
+	* [GNU+Linux](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1)
 * [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
 	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
 	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
@@ -111,11 +111,11 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
-### GNU+Linux and macOS
+### GNU+Linux
 
 **IMPORTANT**: The Mono "port" is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
 
-You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
+You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
 
 Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
@@ -140,7 +140,7 @@ For anything more complicated than building, you'll need an IDE like [VS Communi
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
-### GNU+Linux and macOS
+### GNU+Linux
 
 *Compiling* requires MSBuild and *running* requires Mono and WINE, but **BizHawk does not run under WINE** — only the bundled libraries are required.
 
@@ -157,7 +157,7 @@ Remove the `/p:...` flag from MSBuild if you want debugging symbols.
 
 If your distro isn't listed under *Installing* above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
 
-Once built, see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos) above, substituting the repo's `output` folder for the download.
+Once built, see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux) above, substituting the repo's `output` folder for the download.
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
