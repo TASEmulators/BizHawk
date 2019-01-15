@@ -12,6 +12,7 @@ svnrev.cs
 **/ipch/**
 
 *.ilk
+*.il
 *.tlog
 *.obj
 *.o
