@@ -117,6 +117,8 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
 
+The runtime dependencies are Mono (complete) + Mono VB.NET, WINE (just `libwine` if available), `libdl.so` (glibc), NVIDIA's `cgc` utility. LSB release info is optional for automatically setting the library location.
+
 Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
 If you run `EmuHawkMono.sh` from a terminal, note that `File > Exit (Alt+F4)` doesn't terminate the process correctly, you'll need to send SIGINT (`^C`). The systems that currently work are: Game Boy + GBC (GBHawk), NES (NesHawk), Sega Master System, Atari 7800, Commodore 64, ColecoVision, IntelliVision, TurboGrafx, and ZX Spectrum. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
