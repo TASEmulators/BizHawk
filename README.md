@@ -288,6 +288,8 @@ For the time being, style is not enforced in PRs, only build success is. Please 
 
 Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See a core's docs for its authors.
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ## Related projects
 
 * [DeSmuME](https://desmume.org) for DS/Lite — cross-platform
