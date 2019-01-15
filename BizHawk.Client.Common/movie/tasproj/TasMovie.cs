@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = true;
+			BindMarkersToInput = false;
 			CurrentBranch = -1;
 		}
 
@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = true;
+			BindMarkersToInput = false;
 			CurrentBranch = -1;
 		}
 
@@ -509,17 +509,13 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			_lagLog.FromLagLog(branch.LagLog);
-
-			// if there are branch states, they will be loaded anyway
-			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
 			if (divergentPoint.HasValue)
 			{
-				_stateManager.Invalidate(divergentPoint.Value);
+				InvalidateAfter(divergentPoint.Value);
 			}
 			else
 			{
-				_stateManager.Invalidate(branch.InputLog.Count);
+				InvalidateAfter(branch.InputLog.Count);
 			}
 			
 			if (BindMarkersToInput) // pretty critical not to erase them

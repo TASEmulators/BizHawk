@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			ser.Sync("_cableconnected", ref _cableconnected);
 			ser.Sync("_cablediscosignal", ref _cablediscosignal);
 			_controllerDeck.SyncState(ser);
+
+			LinkConnected = _cableconnected;
 		}
 	}
 }

@@ -1,9 +1,16 @@
 using System;
 using System.Runtime.InteropServices;
 
+//put in a different namespace for EXE so we can have an instance of this type (by linking to this file rather than copying it) built-in to the exe
+//so the exe doesnt implicitly depend on the dll
+#if EXE_PROJECT
+namespace EXE_PROJECT
+#else
 namespace BizHawk.Common
+#endif
 {
-	public sealed class PlatformLinkedLibSingleton
+
+public sealed class PlatformLinkedLibSingleton
 	{
 		public static readonly bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
 

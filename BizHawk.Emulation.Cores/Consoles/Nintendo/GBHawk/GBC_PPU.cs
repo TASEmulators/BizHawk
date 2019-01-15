@@ -82,12 +82,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF54: ret = HDMA_dest_lo;					break; // HDMA4
 				case 0xFF55: ret = HDMA_ctrl;						break; // HDMA5
 				case 0xFF68: ret = BG_pal_ret;						break; // BGPI
-				case 0xFF69: ret = BG_bytes[BG_bytes_index];		break; // BGPD
+				case 0xFF69: ret = BG_PAL_read();					break; // BGPD
 				case 0xFF6A: ret = OBJ_pal_ret;						break; // OBPI
 				case 0xFF6B: ret = OBJ_bytes[OBJ_bytes_index];		break; // OBPD
 			}
 
 			return ret;
+		}
+
+		public byte BG_PAL_read()
+		{
+			if (VRAM_access_read)
+			{
+				return BG_bytes[BG_bytes_index];
+			}
+			else
+			{
+				return 0xFF;
+			}
 		}
 
 		public override void WriteReg(int addr, byte value)
@@ -240,8 +252,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					BG_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF69: // BGPD
-					BG_transfer_byte = value;
-					BG_bytes[BG_bytes_index] = value;
+					if (VRAM_access_write)
+					{
+						BG_transfer_byte = value;
+						BG_bytes[BG_bytes_index] = value;
+					}
 
 					// change the appropriate palette color
 					color_compute_BG();
