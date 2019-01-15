@@ -83,6 +83,8 @@ Supported consoles and computers:
 
 See [*Usage*](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage) below for details about specific tools and config menus.
 
+[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+
 ## Installing
 
 ### Windows 7/8.1/10
