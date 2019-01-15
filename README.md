@@ -173,6 +173,8 @@ You may have seen a dialog saying "You are missing the needed firmware files [..
 
 To load firmwares, the easiest way is to click "Import" in the menubar, navigate to the dumped firmware(s), select them all, and click "Open". It's a good idea to have them copied into the `Firmware` folder, which is nicely organised, when prompted. If you were trying to open a rom, click "Close and reload ROM" to do that. Keep in mind some firmware is optional and some have multiple versions, only one of which needs to be set.
 
+Windows users can keep the `Firmware` folder made by the firmware manager when updating, go to `Config` > `Paths...` and change "Firmware" under "Global" to point at it.
+
 #### Identifying a good rom
 
 With a core and game loaded, look in the very left of the status bar (`View` > `Display Status Bar`):
