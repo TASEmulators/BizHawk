@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-			// testing
+			// Uncomment for system-agnostic glory!
 			//HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
 
 			ArgParser argParser = new ArgParser();
@@ -153,7 +153,24 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				try
+				{
+					// no SlimDX in mono - so don't even bother trying
+					Global.Config.DispMethod = Config.EDispMethod.OpenGL;
+				}
+				catch (Exception ex)
+				{
+					new ExceptionBox(new Exception("Initialization of OpenGL Display Method failed (do you have nvidia-cg-toolkit installed?); falling back to GDI+", ex))
+						.ShowDialog();
+
+					// fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
+
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();

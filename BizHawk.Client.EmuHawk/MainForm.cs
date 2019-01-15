@@ -159,8 +159,10 @@ namespace BizHawk.Client.EmuHawk
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
-			// TODO GL - a lot of disorganized wiring-up here
-			CGC.CGCBinPath = Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
+			CGC.CGCBinPath = !PlatformLinkedLibSingleton.RunningOnUnix 
+				? Path.Combine(PathManager.GetDllDirectory(), "cgc.exe")
+				: "cgc";	// mono requires 'nvidia-cg-toolkit' dep (https://developer.nvidia.com/cg-toolkit-download)
+
 			PresentationPanel = new PresentationPanel();
 			PresentationPanel.GraphicsControl.MainWindow = true;
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);

@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -86,6 +87,16 @@ namespace BizHawk.Client.EmuHawk
 				txtCustomARY.Text = Global.Config.DispCustomUserARY.ToString();
 
 			RefreshAspectRatioOptions();
+
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				// no slimdx
+				rbD3D9.Enabled = false;
+				rbD3D9.AutoCheck = false;
+				cbAlternateVsync.Enabled = false;
+				label13.Enabled = false;
+				label8.Enabled = false;
+			}
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
