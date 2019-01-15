@@ -286,7 +286,7 @@ If you'd like to add a feature, first search the issue tracker for it. If it's a
 
 For the time being, style is not enforced in PRs, only build success is. Please use CRLF, tabs, and [Allman braces](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) in new files.
 
-Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See a core's docs for its authors.
+Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See the wiki for core authors.
 
 [to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
 
