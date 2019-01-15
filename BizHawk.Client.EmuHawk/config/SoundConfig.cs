@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -24,10 +25,13 @@ namespace BizHawk.Client.EmuHawk
 			cbEnableNormal.Checked = Global.Config.SoundEnabledNormal;
 			cbEnableRWFF.Checked = Global.Config.SoundEnabledRWFF;
 			cbMuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
-#if !WINDOWS
-			rbOutputMethodDirectSound.Enabled = false;
-			rbOutputMethodXAudio2.Enabled = false;
-#endif
+
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				rbOutputMethodDirectSound.Enabled = false;
+				rbOutputMethodXAudio2.Enabled = false;
+			}
+
 			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
 			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
 			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
@@ -83,10 +87,13 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateDeviceList()
 		{
 			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
-#if WINDOWS
-			if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
-			if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
-#endif
+
+			if (!PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
+				if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+			}
+
 			if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
 			listBoxSoundDevices.Items.Clear();
 			listBoxSoundDevices.Items.Add("<default>");
