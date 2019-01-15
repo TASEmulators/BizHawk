@@ -111,7 +111,7 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 ### GNU+Linux and macOS
 
-**IMPORTANT**: The Mono "port" is a work-in-progress! It is *not* complete, does *not* look very nice and is *not* ready for anything that needs accuracy.
+**IMPORTANT**: The Mono "port" is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
 
 You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-and-macos-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
 
