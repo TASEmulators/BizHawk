@@ -117,7 +117,7 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
 
-The runtime dependencies are Mono (complete) + Mono VB.NET, WINE (just `libwine` if available), `libdl.so` (glibc), NVIDIA's `cgc` utility. LSB release info is optional for automatically setting the library location.
+The runtime dependencies are Mono (complete) + Mono VB.NET, WINE (just `libwine` if available), `libdl.so` (glibc), NVIDIA's `cgc` utility, and `libblip_buf.so` from the repo's `Assets` folder (copy it to `/usr/lib/libblip_buf.so.1.1.0` or equivalent). LSB release info is optional for automatically setting the library location.
 
 Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, you may need to edit it (if you use a terminal, it will say so in the output).
 
