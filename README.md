@@ -199,7 +199,7 @@ To change which core is used for NES, SNES, GB, or GBA, go to `Config` > `Cores`
 
 #### Running Lua scripts
 
-(Again, this feature is Windows-only for now.)
+(Reminder that this feature is Windows-only for now.)
 
 Go to `Tools` > `Lua Console`. The opened window has two parts, the loaded script list and the console output. The buttons below the menubar are shortcuts for items in the menus, hover over them to see what they do. Any script you load is added to the list, and will start running immediately. Instead of using "Open script", you can drag-and-drop .lua files onto the console or game windows.
 
