@@ -76,7 +76,7 @@ Supported consoles and computers:
 	* Saturn
 	* SG-1000
 * Sinclair ZX Spectrum
-* Sony Playstation / PSX
+* Sony Playstation (PSX)
 * Texas Instruments TI-83
 * Uzebox
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
