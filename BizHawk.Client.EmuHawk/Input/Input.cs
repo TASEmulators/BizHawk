@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			if (PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				OTK_Keyboard.Initialize();
-//				OTK_Gamepad.Initialize();
+				OTK_GamePad.Initialize();
 			}
 			else
 			{
@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 					: KeyInput.Update().Concat(IPCKeyInput.Update());
 				if (PlatformLinkedLibSingleton.RunningOnUnix)
 				{
-					//TODO
+					OTK_GamePad.UpdateAll();
 				}
 				else
 				{
@@ -356,6 +356,22 @@ namespace BizHawk.Client.EmuHawk
 					lock (FloatValues)
 					{
 						//FloatValues.Clear();
+
+						//analyze OTK xinput (libinput?)
+						foreach (var pad in OTK_GamePad.EnumerateDevices())
+						{
+							string xname = pad.ID + " ";
+							for (int b = 0; b < pad.NumButtons; b++)
+								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+							foreach (var sv in pad.GetFloats())
+							{
+								string n = xname + sv.Item1;
+								float f = sv.Item2;
+								if (trackdeltas)
+									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+								FloatValues[n] = f;
+							}
+						}
 
 						//analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())

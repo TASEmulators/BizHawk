@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		//We're going to use Joystick directly, because it gives us full access to all possible buttons.
 		//And it looks like GamePad itself isn't supported on OpenTK OS X.
 
+		private static readonly object _syncObj = new object();
 		public static List<OTK_GamePad> Devices;
 		private const int MAX_JOYSTICKS = 4; //They don't have a way to query this for some reason. 4 is the minimum promised.
 
@@ -30,6 +31,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+		}
+
+		public static IEnumerable<OTK_GamePad> EnumerateDevices()
+		{
+			lock (_syncObj)
+			{
+				foreach (var device in Devices)
+				{
+					yield return device;
+				}
+			}
 		}
 
 		public static void UpdateAll()
@@ -78,6 +90,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string Name { get { return "Joystick " + _stickIdx; } }
+		public string ID { get { return $"OTX{_stickIdx}"; } }
 		public Guid Guid { get { return _guid; } }
 
 
