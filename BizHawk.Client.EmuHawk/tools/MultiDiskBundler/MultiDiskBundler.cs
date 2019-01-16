@@ -280,21 +280,56 @@ namespace BizHawk.Client.EmuHawk
 		// http://stackoverflow.com/questions/275689/how-to-get-relative-path-from-absolute-path
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
-			Win32.FileAttributes toAttr = GetPathAttribute(toPath);
-
-			var path = new StringBuilder(260); // MAX_PATH
-			if (Win32.PathRelativePathTo(
-				path,
-				fromPath,
-				fromAttr,
-				toPath,
-				toAttr) == false)
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				throw new ArgumentException("Paths must have a common prefix");
-			}
+				Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
+				Win32.FileAttributes toAttr = GetPathAttribute(toPath);
 
-			return path.ToString();
+				var path = new StringBuilder(260); // MAX_PATH
+				if (Win32.PathRelativePathTo(
+					path,
+					fromPath,
+					fromAttr,
+					toPath,
+					toAttr) == false)
+				{
+					throw new ArgumentException("Paths must have a common prefix");
+				}
+
+				return path.ToString();
+			}
+			else
+			{
+				// mono doesnt know about shlwapi.dll that the code above tries to call
+				// it is available in WINE, but since this is the only call to that function,
+				// it's probably easier to get the relative path a different way
+				// this may actually work on windows as well - so maybe can replace the above when we move to .netcore
+				var dirSepChar = Path.DirectorySeparatorChar;
+				string from = !fromPath.EndsWith(dirSepChar.ToString())
+					? fromPath + dirSepChar
+					: fromPath;
+				string to = !toPath.EndsWith(dirSepChar.ToString())
+					? toPath + dirSepChar
+					: toPath;
+
+				Uri fromUri = new Uri(from);
+				Uri toUri = new Uri(to);
+
+				if (fromUri.Scheme != toUri.Scheme)
+				{
+					return toPath;
+				}
+
+				Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+				string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+				if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
+				{
+					relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+				}
+
+				return relativePath.TrimEnd(dirSepChar);
+			}
 		}
 
 		private static Win32.FileAttributes GetPathAttribute(string path)
