@@ -71,10 +71,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg = value & prg_bank_mask_32k;
 					break;
 				case 0x1ffe:
-					chr[0] = Convert.ToByte(value & chr_bank_mask_4k);
+					chr[0] = (byte)value & chr_bank_mask_4k;
 					break;
 				case 0x1fff:
-					chr[1] = Convert.ToByte(value & chr_bank_mask_4k);
+					chr[1] = (byte)value & chr_bank_mask_4k;
 					break;
 				default:
 					// on NINA, the regs sit on top of WRAM
