@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		// if true, the link cable toggle signal is currently asserted
 		private bool _cablediscosignal = false;
 
+		private bool do_r_next = false;
+
 		//[CoreConstructor("GB", "GBC")]
 		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
