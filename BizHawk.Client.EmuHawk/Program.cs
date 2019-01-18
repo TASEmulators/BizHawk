@@ -88,7 +88,6 @@ namespace BizHawk.Client.EmuHawk
 		static int Main(string[] args)
 		{
 			int sm = SubMain(args);
-
 			// We have a problem on mono where the application (most of the time) does not terminate correctly
 			// and we have to CTRL-C to kill the mono process
 			// This forces mono to go away immediately
@@ -98,8 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				Console.WriteLine("Attempting to kill mono...");
 				Process.GetCurrentProcess().Kill();
 			}
-
-			return SubMain(args);
+			return sm;
 		}
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
