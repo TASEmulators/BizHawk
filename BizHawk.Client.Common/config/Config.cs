@@ -363,6 +363,12 @@ namespace BizHawk.Client.Common
 		public float DispCustomUserARX = -1;
 		public float DispCustomUserARY = -1;
 
+		//these default to 0 because by default we crop nothing
+		public int DispCropLeft = 0;
+		public int DispCropTop = 0;
+		public int DispCropRight = 0;
+		public int DispCropBottom = 0;
+
 		// Sound options
 #if WINDOWS
 		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.DirectSound;
