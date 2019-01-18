@@ -5,6 +5,16 @@ namespace BizHawk.Bizware.BizwareGL
 	/// </summary>
 	public class Art
 	{
+		//bleh, didnt mean to have this here, but I need it now
+		public Art(Texture2d tex)
+		{
+			BaseTexture = tex;
+			u1 = 1;
+			v1 = 1;
+			Width = tex.Width;
+			Height = tex.Height;
+		}
+
 		internal Art(ArtManager owner)
 		{
 			Owner = owner;
