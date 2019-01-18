@@ -87,6 +87,18 @@ namespace BizHawk.Client.EmuHawk
 		[STAThread]
 		static int Main(string[] args)
 		{
+			int sm = SubMain(args);
+
+			// We have a problem on mono where the application (most of the time) does not terminate correctly
+			// and we have to CTRL-C to kill the mono process
+			// This forces mono to go away immediately
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				Console.WriteLine("BizHawk has completed it's shutdown routines");
+				Console.WriteLine("Attempting to kill mono...");
+				Process.GetCurrentProcess().Kill();
+			}
+
 			return SubMain(args);
 		}
 
