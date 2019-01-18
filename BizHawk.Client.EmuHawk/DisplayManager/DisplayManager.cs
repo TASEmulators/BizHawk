@@ -222,30 +222,6 @@ namespace BizHawk.Client.EmuHawk
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
 
-			Size currSize = chain_insize;
-
-			//apply user's choice of cropping
-			//NOTE 1. this is going to break the positioning of elements in lua
-			//we COULD change how this works to apply it at a different point; but let's wait for someone to ask for it
-			//we can offer "fix the lua script" as a response, as well, to rebuff them
-			//NOTE 2. this is an inefficient way of doing it. this could be done if we use 'art' everywhere instead of textures.
-			//then, we could adjust the uv coords and carry on, rather than doing this extra resolving step.
-			//Well.... not today
-			int cropX = Global.Config.DispCropLeft + Global.Config.DispCropRight;
-			int cropY = Global.Config.DispCropTop + Global.Config.DispCropBottom;
-			if (cropX != 0 || cropY != 0)
-			{
-				currSize.Width -= cropX;
-				currSize.Height -= cropY;
-
-				Filters.FinalPresentation fCrop = new Filters.FinalPresentation(currSize);
-				fCrop.Config_Crop = true;
-				fCrop.Crop = new Rectangle(Global.Config.DispCropLeft, Global.Config.DispCropTop, cropX, cropY);
-				fCrop.GuiRenderer = Renderer;
-				fCrop.GL = GL;
-				chain.AddFilter(fCrop, "crop");
-			}
-
 			//if a non-zero padding is required, add a filter to allow for that
 			//note, we have two sources of padding right now.. one can come from the videoprovider and one from the user.
 			//we're combining these now and just using black, for sake of being lean, despite the discussion below:
@@ -255,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 			if (padding.Vertical != 0 || padding.Horizontal != 0)
 			{
 				//TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe theres enough similarities to justify it.
-				Size size = currSize;
+				Size size = chain_insize;
 				size.Width += padding.Horizontal;
 				size.Height += padding.Vertical;
 				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
@@ -652,18 +628,10 @@ namespace BizHawk.Client.EmuHawk
 			bool simulate = job.simulate;
 			Size chain_outsize = job.chain_outsize;
 
-			int vpWidth = videoProvider.BufferWidth;
-			int vpHeight = videoProvider.BufferHeight;
-
-			//the easiest way to implement crop now is to do it early by adapting the videoprovider
-			//it might be more performant to integrate it into the filter chain somehow, but that's hard
-			int cropX = Global.Config.DispCropLeft + Global.Config.DispCropRight;
-			int cropY = Global.Config.DispCropTop + Global.Config.DispCropBottom;
-
 			//simulate = true;
 
-			int vw = vpWidth;
-			int vh = vpHeight;
+			int vw = videoProvider.BufferWidth;
+			int vh = videoProvider.BufferHeight;
 
 			if (Global.Config.DispFixAspectRatio)
 			{
@@ -679,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
 				{
-					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, vpWidth, vpHeight, out vw, out vh);
+					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 
@@ -689,8 +657,8 @@ namespace BizHawk.Client.EmuHawk
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 
-			int bufferWidth = vpWidth;
-			int bufferHeight = vpHeight;
+			int bufferWidth = videoProvider.BufferWidth;
+			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
 			BitmapBuffer bb = null;
@@ -701,7 +669,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
 					//is it workable for saturn?
-					//TODO - this won't respect the user's selected crop. please don't crop this platform or else I'll have to implement this through the 
 					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
 				}
 				else
@@ -717,17 +684,6 @@ namespace BizHawk.Client.EmuHawk
 					//GL.SetTextureWrapMode(videoTexture, true);
 				}
 			}
-
-			////apply user's choice of cropping
-			//int cropX = Global.Config.DispCropLeft + Global.Config.DispCropRight;
-			//int cropY = Global.Config.DispCropTop + Global.Config.DispCropBottom;
-			//bufferWidth -= cropX;
-			//bufferHeight -= cropY;
-
-			//Art videoTextureArt = new Art(videoTexture);
-			//videoTextureArt.Width -= cropX;
-			//videoTextureArt.Height -= cropY;
-			//videoTextureArt.u
 
 			//record the size of what we received, since lua and stuff is gonna want to draw onto it
 			currEmuWidth = bufferWidth;

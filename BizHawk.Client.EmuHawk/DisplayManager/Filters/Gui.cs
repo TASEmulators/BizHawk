@@ -181,9 +181,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public eFilterOption FilterOption = eFilterOption.None;
 		public RetroShaderChain BicubicFilter;
 
-		public FinalPresentation(Size outputSize)
+		public FinalPresentation(Size size)
 		{
-			this.OutputSize = outputSize;
+			this.OutputSize = size;
 		}
 
 		Size OutputSize, InputSize;
@@ -194,13 +194,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public bool Flip;
 		public IGL GL;
 		bool nop;
-		public Rectangle Crop;
 		LetterboxingLogic LL;
 		Size ContentSize;
 
 		public bool Config_FixAspectRatio, Config_FixScaleInteger, Config_PadOnly;
-
-		public bool Config_Crop;
 
 		/// <summary>
 		/// only use with Config_PadOnly
@@ -226,15 +223,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override Size PresizeInput(string channel, Size size)
 		{
-			if (Config_Crop)
-			{
-				LL = new LetterboxingLogic();
-				LL.vx += -Crop.Left;
-				LL.vy += -Crop.Top;
-				LL.vw = size.Width - Crop.Width;
-				LL.vh = size.Height - Crop.Height;
-			}
-
 			if (FilterOption != eFilterOption.Bicubic)
 				return size;
 
@@ -277,11 +265,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			FindInput().SurfaceDisposition = SurfaceDisposition.Texture;
 			DeclareOutput(new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget));
 			InputSize = state.SurfaceFormat.Size;
-			if (Config_Crop)
-			{
-				int zzz = 9;
-			}
-			else if (Config_PadOnly)
+			if (Config_PadOnly)
 			{
 				//TODO - redundant fix
 				LL = new LetterboxingLogic();
@@ -302,7 +286,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 				LL.vx += Padding.Left;
 				LL.vy += Padding.Top;
 			}
-
 			ContentSize = new Size(LL.vw,LL.vh);
 
 			if (InputSize == OutputSize) //any reason we need to check vx and vy?
@@ -360,9 +343,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				GuiRenderer.Modelview.Scale(1, -1);
 				GuiRenderer.Modelview.Translate(0, -LL.vh);
 			}
-			if (Config_Crop)
-				GuiRenderer.Draw(InputTexture, 0, 0, InputSize.Width, InputSize.Height);
-			else GuiRenderer.Draw(InputTexture, 0, 0, LL.vw, LL.vh);
+			GuiRenderer.Draw(InputTexture,0,0,LL.vw,LL.vh);
 
 			GuiRenderer.End();
 		}
