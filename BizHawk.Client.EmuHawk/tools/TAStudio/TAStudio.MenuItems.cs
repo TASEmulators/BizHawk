@@ -169,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
+			Mainform.SetWindowText();
 			GlobalWin.Sound.StartSound();
 		}
 

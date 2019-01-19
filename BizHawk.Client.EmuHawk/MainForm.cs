@@ -1428,7 +1428,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetWindowText()
+		public void SetWindowText()
 		{
 			string str = "";
 
