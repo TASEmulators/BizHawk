@@ -197,6 +197,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			// Add in the reset timing float control for subneshawk
+			if (using_reset_timing && (ControllerDefinition.FloatControls.Count() == 0))
+			{
+				ControllerDefinition.FloatControls.Add("Reset Cycle");
+				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
+			}
+
 			// don't replace the magicSoundProvider on reset, as it's not needed
 			// if (magicSoundProvider != null) magicSoundProvider.Dispose();
 
@@ -419,6 +426,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool current_strobe;
 		public bool new_strobe;
 		public bool alt_lag;
+		// variable used with subneshawk to trigger reset at specific cycle after reset
+		public bool using_reset_timing = false;
 		// this function will run one step of the ppu 
 		// it will return whether the controller is read or not.
 		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)

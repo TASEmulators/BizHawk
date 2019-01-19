@@ -43,8 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 			SetupMemoryDomains();
 
+			subnes.using_reset_timing = true;
 			HardReset();
-
+			current_cycle = 0;
 			VBL_CNT = 0;
 		}
 
@@ -59,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			subnes.cpu.NESSoftReset();
 			subnes.apu.NESSoftReset();
 			subnes.ppu.NESSoftReset();
+			current_cycle = 0;
 		}
 
 		public DisplayType Region => DisplayType.NTSC;

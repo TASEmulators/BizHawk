@@ -30,10 +30,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				HardReset();
 			}
 
+			reset_frame = false;
 			if (controller.IsPressed("Reset"))
 			{
-				SoftReset();
+				reset_frame = true;
 			}
+
+			reset_cycle = controller.GetFloat("Reset Cycle");
+			reset_cycle_int = (int)Math.Floor(reset_cycle);
 
 			_islag = true;
 			subnes.alt_lag = true;
@@ -47,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			if (pass_a_frame)
 			{
 				subnes.videoProvider.FillFrameBuffer();
+				current_cycle = 0;
 			}
 			
 			_islag = subnes.alt_lag;
@@ -57,19 +62,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				VBL_CNT++;
 			}
 
+			reset_frame = false;
 			return ret;
 		}
 
 		public bool stop_cur_frame;
 		public bool pass_new_input;
 		public bool pass_a_frame;
+		public bool reset_frame;
+		public int current_cycle;
+		public float reset_cycle;
+		public int reset_cycle_int;
 
 		public void do_frame(IController controller)
 		{
 			stop_cur_frame = false;
 			while (!stop_cur_frame)
 			{
+				if (reset_frame && (current_cycle == reset_cycle_int))
+				{
+					SoftReset();
+					reset_frame = false;
+				}
 				subnes.do_single_step(controller, out pass_new_input, out pass_a_frame);
+				current_cycle++;
 				stop_cur_frame |= pass_a_frame;
 				stop_cur_frame |= pass_new_input;
 			}
