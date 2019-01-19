@@ -3783,6 +3783,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					ApiManager.Restart(Emulator.ServiceProvider);
 					GlobalWin.Tools.Restart();
 
 					if (Global.Config.LoadCheatFileByGame)
@@ -3831,7 +3832,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ClientApi.OnRomLoaded();
+					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
 				else
@@ -3842,10 +3843,11 @@ namespace BizHawk.Client.EmuHawk
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
 					if (!(Emulator is NullEmulator))
 					{
-						ClientApi.OnRomLoaded();
+						ClientApi.OnRomLoaded(Emulator);
 						return true;
 					}
 
+					ClientApi.UpdateEmulatorAndVP(Emulator);
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateStatusSlots();
@@ -3935,6 +3937,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			RewireSound();
@@ -3957,6 +3960,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
+				ApiManager.Restart(Emulator.ServiceProvider);
 				RewireSound();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : "");
 				HandlePlatformMenus();

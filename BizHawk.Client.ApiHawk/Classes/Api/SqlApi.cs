@@ -2,26 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
-using NLua;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.ApiHawk
 {
-	[Description("A library for performing SQLite operations.")]
-	public sealed class SQLLuaLibrary : LuaLibraryBase
+	public sealed class SqlApi : ISql
 	{
-		public SQLLuaLibrary(Lua lua)
-			: base(lua) { }
-
-		public SQLLuaLibrary(Lua lua, Action<string> logOutputCallback)
-			: base(lua, logOutputCallback) { }
-
-		public override string Name => "SQL";
+		public SqlApi() : base()
+		{ }
 
 		SQLiteConnection m_dbConnection;
 		string connectionString;
 
-		[LuaMethodExample("local stSQLcre = SQL.createdatabase( \"eg_db\" );")]
-		[LuaMethod("createdatabase", "Creates a SQLite Database. Name should end with .db")]
 		public string CreateDatabase(string name)
 		{
 			try
@@ -36,9 +27,6 @@ namespace BizHawk.Client.Common
 
 		}
 
-
-		[LuaMethodExample("local stSQLope = SQL.opendatabase( \"eg_db\" );")]
-		[LuaMethod("opendatabase", "Opens a SQLite database. Name should end with .db")]
 		public string OpenDatabase(string name)
 		{
 			try
@@ -61,9 +49,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("local stSQLwri = SQL.writecommand( \"CREATE TABLE eg_tab ( eg_tab_id integer PRIMARY KEY, eg_tab_row_name text NOT NULL ); INSERT INTO eg_tab ( eg_tab_id, eg_tab_row_name ) VALUES ( 1, 'Example table row' );\" );")]
-		[LuaMethod("writecommand", "Runs a SQLite write command which includes CREATE,INSERT, UPDATE. " +
-			"Ex: create TABLE rewards (ID integer  PRIMARY KEY, action VARCHAR(20)) ")]
 		public string WriteCommand(string query = "")
 		{
 			if (query == "")
@@ -92,9 +77,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("local obSQLrea = SQL.readcommand( \"SELECT * FROM eg_tab WHERE eg_tab_id = 1;\" );")]
-		[LuaMethod("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
-			"Ex: select * from rewards")]
 		public dynamic ReadCommand(string query = "")
 		{
 			if (query == "")
@@ -103,7 +85,7 @@ namespace BizHawk.Client.Common
 			}
 			try
 			{
-				var table = Lua.NewTable();
+				var table = new Dictionary<string, object>();
 				m_dbConnection.Open();
 				string sql = "PRAGMA read_uncommitted =1;" + query;
 				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
@@ -143,6 +125,5 @@ namespace BizHawk.Client.Common
 				return sqlEX.Message;
 			}
 		}
-
 	}
 }
