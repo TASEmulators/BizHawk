@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			{
 				subnes.videoProvider.FillFrameBuffer();
 				current_cycle = 0;
+				subnes.cpu.ext_ppu_cycle = current_cycle;
 			}
 			
 			_islag = subnes.alt_lag;
@@ -86,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				}
 				subnes.do_single_step(controller, out pass_new_input, out pass_a_frame);
 				current_cycle++;
+				subnes.cpu.ext_ppu_cycle = current_cycle;
 				stop_cur_frame |= pass_a_frame;
 				stop_cur_frame |= pass_new_input;
 			}

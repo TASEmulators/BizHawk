@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			ser.Register<IVideoProvider>(subnes.videoProvider);
 			ser.Register<ISoundProvider>(subnes.magicSoundProvider); 
 
-			_tracer = new TraceBuffer { Header = subnes.cpu.TraceHeader };
+			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
 			ser.Register<ITraceable>(_tracer);
 
 			ServiceProvider = ser;
@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			subnes.using_reset_timing = true;
 			HardReset();
 			current_cycle = 0;
+			subnes.cpu.ext_ppu_cycle = current_cycle;
 			VBL_CNT = 0;
 		}
 
@@ -61,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			subnes.apu.NESSoftReset();
 			subnes.ppu.NESSoftReset();
 			current_cycle = 0;
+			subnes.cpu.ext_ppu_cycle = current_cycle;
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
