@@ -267,17 +267,41 @@ namespace BizHawk.Client.EmuHawk
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2(true);
+			var bk2 = CurrentTasMovie.ToBk2(true, true);
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
-			bk2.Save();
+			string d_exp = " not exported.";
+			var file = new FileInfo(bk2.Filename);
+			if (file.Exists)
+			{
+				GlobalWin.Sound.StopSound();
+				var result = MessageBox.Show(
+					"Overwrite Existing File?",
+					"Tastudio",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button3);
+
+				GlobalWin.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					bk2.Save();
+					d_exp = " exported.";
+				}
+			}
+			else
+			{
+				bk2.Save();
+				d_exp = " exported.";
+			}
+
 			if (Settings.AutosaveInterval > 0)
 			{
 				_autosaveTimer.Start();
 			}
 
-			MessageStatusLabel.Text = bk2.Name + " exported.";
+			MessageStatusLabel.Text = bk2.Name + d_exp;
 			Cursor = Cursors.Default;
 		}
 
