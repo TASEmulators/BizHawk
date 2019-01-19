@@ -166,6 +166,12 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool backup = false)
 		{
+			if (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
+			{
+				var _subnes = (BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
+				Header["VBlankCount"] = _subnes.VBL_CNT.ToString();
+			}
+
 			var file = new FileInfo(fn);
 			if (!file.Directory.Exists)
 			{

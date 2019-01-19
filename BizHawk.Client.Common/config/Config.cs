@@ -560,6 +560,7 @@ namespace BizHawk.Client.Common
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
+		public bool UseSubNESHawk = false;
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = true;
 		public bool GBA_UsemGBA = true;

@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					"{0:X4}: {1,-9}  {2} ",
 					PC, rawbytes, disasm).PadRight(32),
 				RegisterInfo = string.Format(
-					"A:{0:X2} X:{1:X2} Y:{2:X2} SP:{4:X2} P:{3:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
+					"A:{0:X2}  X:{1:X2}  Y:{2:X2}  SP:{4:X2}  P:{3:X2}  {6}{7}{8}{9}{10}{11}{12}{13}  Cy:{5}  PPU-Cy:{15}",
 					A, X, Y, P, S, TotalExecutedCycles,
 					FlagN ? "N" : "n",
 					FlagV ? "V" : "v",
@@ -84,7 +84,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					FlagI ? "I" : "i",
 					FlagZ ? "Z" : "z",
 					FlagC ? "C" : "c",
-					!RDY ? "R" : "r")
+					!RDY ? "R" : "r",
+					ext_ppu_cycle)
 			};
 		}
 
@@ -120,6 +121,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
+		// ppu cycle (used with SubNESHawk)
+		public int ext_ppu_cycle = 0;
+
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("MOS6502X");
@@ -143,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ser.Sync("interrupt_pending", ref interrupt_pending);
 			ser.Sync("branch_irq_hack", ref branch_irq_hack);
 			ser.Sync("rdy_freeze", ref rdy_freeze);
+			ser.Sync("ext_ppu_cycle", ref ext_ppu_cycle);
 			ser.EndSection();
 		}
 

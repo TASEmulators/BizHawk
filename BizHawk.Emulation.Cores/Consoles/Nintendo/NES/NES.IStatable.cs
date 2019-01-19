@@ -82,7 +82,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("VS_Coin", ref VS_coin_inserted);
 			ser.Sync("VS_ROM_Control", ref VS_ROM_control);
 
-		ser.BeginSection("Board");
+			// single cycle execution related
+			ser.Sync("current_strobe", ref current_strobe);
+			ser.Sync("new_strobe", ref new_strobe);
+
+			ser.BeginSection("Board");
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");

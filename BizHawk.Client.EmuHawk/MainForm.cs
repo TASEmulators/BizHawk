@@ -2950,10 +2950,6 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_framesSinceLastFpsUpdate++;
-
-				UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
-
 				CaptureRewind(isRewinding);
 
 				// Set volume, if enabled
@@ -2997,7 +2993,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
-				Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
+				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -3036,9 +3032,16 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi)
+				if (!PauseAvi && new_frame)
 				{
 					AvFrameAdvance();
+				}
+
+				if (new_frame)
+				{
+					_framesSinceLastFpsUpdate++;
+
+					UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&

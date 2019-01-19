@@ -158,11 +158,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return nes.Board.PeekPPU(addr);
 		}
 
-		public enum PPUPHASE
-		{
-			VBL, BG, OBJ
-		};
-		public PPUPHASE ppuphase;
+		public static int PPU_PHASE_VBL = 0;
+		public static int PPU_PHASE_BG = 1;
+		public static int PPU_PHASE_OBJ = 2;
+
+		public int ppuphase;
 
 		private readonly NES nes;
 		public PPU(NES nes)
@@ -247,6 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("OAM", ref OAM, false);
 			ser.Sync("soam", ref soam, false);
 			ser.Sync("PALRAM", ref PALRAM, false);
+			ser.Sync("ppuphase", ref ppuphase);
 
 			ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
 			ser.Sync("Reg2002_objhit", ref Reg2002_objhit);

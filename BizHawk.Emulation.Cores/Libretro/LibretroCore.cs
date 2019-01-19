@@ -154,11 +154,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private IController _controller;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 			api.CMD_Run();
 			timeFrameCounter++;
+
+			return true;
 		}
 
 		GCHandle vidBufferHandle;

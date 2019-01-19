@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -334,6 +335,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator is PicoDrive && Global.Game["32X"])
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
+			}
+
+			if (Global.Emulator is SubNESHawk)
+			{
+				movie.HeaderEntries.Add("VBlankCount", "0");
 			}
 
 			movie.Core = ((CoreAttribute)Attribute
