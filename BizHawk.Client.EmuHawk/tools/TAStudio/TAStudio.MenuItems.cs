@@ -1453,14 +1453,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				int index = TasView.SelectedRows.First();
-				GoToFrame(index);
-
-				TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-					SaveRamEmulator.CloneSaveRam());
-
-				Mainform.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+				if (SaveRamEmulator.CloneSaveRam() != null)
+				{
+					int index = 0;
+					if (TasView.SelectedRows.Count() > 0) { index = TasView.SelectedRows.First(); }
+					GoToFrame(index);
+					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+						SaveRamEmulator.CloneSaveRam());
+					Mainform.PauseEmulator();
+					LoadFile(new FileInfo(newProject.Filename), true);
+				}
+				else
+				{
+					throw new Exception("No SaveRam");
+				}
 			}
 		}
 

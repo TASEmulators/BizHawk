@@ -126,7 +126,17 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static TasMovie ConvertToSavestateAnchoredMovie(this TasMovie old, int frame, byte[] savestate)
 		{
-			string newFilename = old.Filename + "." + TasMovie.Extension;
+			string newFilename = old.Filename;
+
+			if (old.Filename.Contains("tasproj"))
+			{
+				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
+				newFilename = newFilename + "nfn." + TasMovie.Extension;
+			}
+			else
+			{
+				newFilename = old.Filename + "." + TasMovie.Extension;
+			}
 
 			if (File.Exists(newFilename))
 			{
@@ -201,7 +211,17 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 		public static TasMovie ConvertToSaveRamAnchoredMovie(this TasMovie old, byte[] saveRam)
 		{
-			string newFilename = old.Filename + "." + TasMovie.Extension;
+			string newFilename = old.Filename;
+
+			if (old.Filename.Contains("tasproj"))
+			{
+				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
+				newFilename = newFilename + "nfsr." + TasMovie.Extension;
+			}
+			else
+			{
+				newFilename = old.Filename + "." + TasMovie.Extension;
+			}
 
 			if (File.Exists(newFilename))
 			{

@@ -384,7 +384,17 @@ namespace BizHawk.Client.Common
 		{
 			if (_states.Any())
 			{
-				StateManagerState power = _states.Values.First(s => s.Frame == 0);
+				var temp_state = _states.Values;
+				StateManagerState power = null;
+				if (temp_state[0].Frame==0)
+				{
+					power = _states.Values.First(s => s.Frame == 0);
+				}
+				else
+				{
+					power = _states.Values[0];
+				}
+				
 				_states.Clear();
 				SetState(0, power.State);
 				Used = (ulong)power.State.Length;
