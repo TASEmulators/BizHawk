@@ -2658,6 +2658,10 @@ namespace BizHawk.Client.EmuHawk
 					LinkConnectStatusBarButton.Image = Emulator.AsLinkable().LinkConnected
 						? _linkCableOn
 						: _linkCableOff;
+
+					LinkConnectStatusBarButton.ToolTipText = Emulator.AsLinkable().LinkConnected
+						? "Link connection is currently enabled"
+						: "Link connection is currently disabled";
 				}
 				else
 				{
