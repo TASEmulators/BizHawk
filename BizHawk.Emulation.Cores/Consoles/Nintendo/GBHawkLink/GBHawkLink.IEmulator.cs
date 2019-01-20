@@ -148,11 +148,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					buff_L = L.GetVideoBuffer();
 					L.vblank_rise = false;
+					FillVideoBuffer();
 				}
 				if (R.vblank_rise)
 				{
 					buff_R = R.GetVideoBuffer();
 					R.vblank_rise = false;
+					FillVideoBuffer();
 				}
 			}			
 		}
@@ -195,6 +197,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public int[] GetVideoBuffer()
 		{
+			return _vidbuffer;		
+		}
+
+		public void FillVideoBuffer()
+		{
 			// combine the 2 video buffers from the instances
 			for (int i = 0; i < 144; i++)
 			{
@@ -202,10 +209,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					_vidbuffer[i * 320 + j] = buff_L[i * 160 + j];
 					_vidbuffer[i * 320 + j + 160] = buff_R[i * 160 + j];
-				}				
+				}
 			}
-
-			return _vidbuffer;		
 		}
 
 		public int VirtualWidth => 160 * 2;
