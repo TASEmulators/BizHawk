@@ -704,6 +704,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 0;
+				user_address = 0x8000; // even though this can't be accessed by writing, it is indeed the power up address
+				user_length = 1;
 			}
 
 			bool irq_enabled;
