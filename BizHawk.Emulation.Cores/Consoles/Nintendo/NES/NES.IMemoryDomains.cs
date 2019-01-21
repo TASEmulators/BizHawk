@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public partial class NES
 	{
-		private MemoryDomainList _memoryDomains;
+		public MemoryDomainList _memoryDomains;
 		private bool _memoryDomainsSetup = false;
 
 		private void SetupMemoryDomains()

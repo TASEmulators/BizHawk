@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 			ServiceProvider = ser;
 
-			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(subnes._memoryDomains);
 
 			subnes.using_reset_timing = true;
 			HardReset();
