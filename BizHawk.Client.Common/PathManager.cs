@@ -407,9 +407,24 @@ namespace BizHawk.Client.Common
 				GetGlobalBasePathAbsolute() :
 				MakeAbsolutePath(GetPlatformBase(system), system);
 
-			if (IsSubfolder(parentPath, absolutePath))
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				return absolutePath.Replace(parentPath, ".");
+				if (IsSubfolder(parentPath, absolutePath))
+				{
+					return absolutePath.Replace(parentPath, ".");
+				}
+			}
+			else
+			{
+				// weird kludges for linux systems
+				if (IsSubfolder(parentPath, absolutePath))
+				{
+					return absolutePath.Replace(parentPath.TrimEnd('.'), "./");
+				}
+				else if (parentPath.TrimEnd('.') == absolutePath + "/")
+				{
+					return ".";
+				}
 			}
 
 			return absolutePath;
@@ -448,23 +463,30 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
+				// more weird linux stuff
 				var parentUri = new Uri(parentPath.TrimEnd('.'));
-
 				var childUri = new DirectoryInfo(childPath).Parent;
 
-				while (childUri != null)
+				try
 				{
-					var ch = new Uri(childUri.FullName).AbsolutePath.TrimEnd('/');
-					var pr = parentUri.AbsolutePath.TrimEnd('/');
-					if (ch == pr)
+					while (childUri != null)
 					{
-						return true;
+						var ch = new Uri(childUri.FullName).AbsolutePath.TrimEnd('/');
+						var pr = parentUri.AbsolutePath.TrimEnd('/');
+						if (ch == pr)
+						{
+							return true;
+						}
+
+						childUri = childUri.Parent;
 					}
 
-					childUri = childUri.Parent;
+					return false;
 				}
-
-				return false;
+				catch
+				{
+					return false;
+				}
 			}
 		}
 
