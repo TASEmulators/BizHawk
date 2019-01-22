@@ -171,11 +171,9 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 #### Loading firmware
 
-You may have seen a dialog saying "You are missing the needed firmware files [...]" when trying to open a rom. Pressing "Yes" opens the Firmware Manager, or you can go to `Config` > `Firmwares...`.
+The easiest way to get BizHawk to use your firmwares is to go to `Config` > `Paths...`, and change "Firmware" in the "Global" tab to be the location of them (choose the folder where they're saved).
 
-To load firmwares, the easiest way is to click "Import" in the menubar, navigate to the dumped firmware(s), select them all, and click "Open". It's a good idea to have them copied into the `Firmware` folder, which is nicely organised, when prompted. If you were trying to open a rom, click "Close and reload ROM" to do that. Keep in mind some firmware is optional and some have multiple versions, only one of which needs to be set.
-
-Windows users can keep the `Firmware` folder made by the firmware manager when updating, go to `Config` > `Paths...` and change "Firmware" under "Global" to point at it.
+If your firmware is scattered, you can load them individually with the Firmware Manager. Open it by choosing "Yes" in the "You are missing the needed firmware files [...]" dialog (when trying to open a rom), or by going to `Config` > `Firmwares...`. Right-click the line of the firmware you want to load, click "", and open the file to load it. Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
 
 #### Identifying a good rom
 
