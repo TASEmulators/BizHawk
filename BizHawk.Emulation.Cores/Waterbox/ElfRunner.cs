@@ -77,14 +77,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			long orig_end = loadsegs.Max(s => s.Address + s.Size);
 			if (HasRelocations())
 			{
-				_base = new MemoryBlock((ulong)(orig_end - orig_start));
+				_base = MemoryBlock.PlatformConstructor((ulong) (orig_end - orig_start));
 				_loadoffset = (long)_base.Start - orig_start;
 				Initialize(0);
 			}
 			else
 			{
 				Initialize((ulong)orig_start);
-				_base = new MemoryBlock((ulong)orig_start, (ulong)(orig_end - orig_start));
+				_base = MemoryBlock.PlatformConstructor((ulong) orig_start, (ulong) (orig_end - orig_start));
 				_loadoffset = 0;
 				Enter();
 			}

@@ -64,6 +64,8 @@
     <Compile Include="BizInvoke\CallingConventionAdapter.cs" />
     <Compile Include="BizInvoke\DynamicLibraryImportResolver.cs" />
     <Compile Include="BizInvoke\MemoryBlock.cs" />
+    <Compile Include="BizInvoke\MemoryBlockUnix.cs" />
+    <Compile Include="BizInvoke\MemoryBlockWin32.cs" />
     <Compile Include="BizInvoke\WaterboxUtils.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="Colors.cs" />
