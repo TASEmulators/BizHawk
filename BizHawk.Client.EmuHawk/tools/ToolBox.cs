@@ -67,6 +67,10 @@ namespace BizHawk.Client.EmuHawk
 				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
 					continue;
 
+				// Skip this tool on linux. It isnt finished and it causes exceptions
+				if (t == typeof(HexView) && BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+					continue;
+
 				var instance = Activator.CreateInstance(t);
 
 				var tsb = new ToolStripButton
