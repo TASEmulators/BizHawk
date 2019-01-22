@@ -428,21 +428,44 @@ namespace BizHawk.Client.Common
 		// http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
 		private static bool IsSubfolder(string parentPath, string childPath)
 		{
-			var parentUri = new Uri(parentPath);
-
-			var childUri = new DirectoryInfo(childPath).Parent;
-
-			while (childUri != null)
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				if (new Uri(childUri.FullName) == parentUri)
+				var parentUri = new Uri(parentPath);
+
+				var childUri = new DirectoryInfo(childPath).Parent;
+
+				while (childUri != null)
 				{
-					return true;
+					if (new Uri(childUri.FullName) == parentUri)
+					{
+						return true;
+					}
+
+					childUri = childUri.Parent;
 				}
 
-				childUri = childUri.Parent;
+				return false;
 			}
+			else
+			{
+				var parentUri = new Uri(parentPath.TrimEnd('.'));
 
-			return false;
+				var childUri = new DirectoryInfo(childPath).Parent;
+
+				while (childUri != null)
+				{
+					var ch = new Uri(childUri.FullName).AbsolutePath.TrimEnd('/');
+					var pr = parentUri.AbsolutePath.TrimEnd('/');
+					if (ch == pr)
+					{
+						return true;
+					}
+
+					childUri = childUri.Parent;
+				}
+
+				return false;
+			}
 		}
 
 		/// <summary>

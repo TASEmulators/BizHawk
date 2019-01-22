@@ -58,8 +58,8 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					SaveColumnInfo(LuaListView, Settings.Columns);
-					
-					GlobalWin.DisplayManager.ClearLuaSurfaces();
+					if (GlobalWin.DisplayManager != null)
+						GlobalWin.DisplayManager.ClearLuaSurfaces();
 					LuaImp.GuiLibrary.DrawFinish();
 					CloseLua();
 				}
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
 			LuaImp = PlatformLinkedLibSingleton.RunningOnUnix
-				? (PlatformEmuLuaLibrary) new NotReallyLuaLibrary()
+				? (PlatformEmuLuaLibrary) new EmuLuaLibrary(Emulator.ServiceProvider)//NotReallyLuaLibrary()
 				: (PlatformEmuLuaLibrary) new EmuLuaLibrary(Emulator.ServiceProvider);
 			if (currentScripts != null)
 			{

@@ -44,20 +44,23 @@ namespace BizHawk.Client.Common
 
 			// WARNING: setting the current directory is SLOW!!! security checks for some reason.
 			// so we're bypassing it with windows hacks
-			#if WINDOWS
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
 				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes(target + "\0")[0])
 					return SetCurrentDirectoryW(pstr);
-			#else
-				if (System.IO.Directory.Exists(CurrentDirectory)) // race condition for great justice
+			}
+			else
+			{
+				if (System.IO.Directory.Exists(_currentDirectory)) // race condition for great justice
 				{
-					Environment.CurrentDirectory = CurrentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
+					Environment.CurrentDirectory = _currentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
 					return true;
 				}
 				else
 				{
 					return false;
 				}
-			#endif
+			}
 		}
 
 		private string CoolGetCurrentDirectory()
@@ -66,16 +69,19 @@ namespace BizHawk.Client.Common
 			// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
 			// AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
 			// SCREW YOU
-			#if WINDOWS
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
 				var buf = new byte[32768];
-				fixed(byte* pBuf = &buf[0])
+				fixed (byte* pBuf = &buf[0])
 				{
 					uint ret = GetCurrentDirectoryW(32767, pBuf);
-					return System.Text.Encoding.Unicode.GetString(buf, 0, (int)ret*2);
+					return System.Text.Encoding.Unicode.GetString(buf, 0, (int)ret * 2);
 				}
-			#else
+			}
+			else
+			{
 				return Environment.CurrentDirectory;
-			#endif
+			}
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)
