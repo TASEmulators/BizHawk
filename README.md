@@ -171,9 +171,11 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 #### Loading firmware
 
-The easiest way to get BizHawk to use your firmwares is to go to `Config` > `Paths...`, and change "Firmware" in the "Global" tab to be the location of them (choose the folder where they're saved).
+The easiest way to get BizHawk to use your firmwares is to go to `Config` > `Paths...`, and change "Firmware" in the "Global" tab to be their location (choose the *folder* where they're saved).
 
-If your firmware is scattered, you can load them individually with the Firmware Manager. Open it by choosing "Yes" in the "You are missing the needed firmware files [...]" dialog (when trying to open a rom), or by going to `Config` > `Firmwares...`. Right-click the line of the firmware you want to load, click "", and open the file to load it. Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
+If your firmware is scattered, you can load them individually with the Firmware Manager. Open it by choosing "Yes" in the "You are missing the needed firmware files [...]" dialog (when trying to open a rom), or by going to `Config` > `Firmwares...`. Right-click the line of the firmware you want to load, click "Set Customization", and choose the file in the dialog to load it.
+
+Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
 
 #### Identifying a good rom
 
