@@ -171,11 +171,13 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 #### Loading firmware
 
-The easiest way to get BizHawk to use your firmwares is to go to `Config` > `Paths...`, and change "Firmware" in the "Global" tab to be their location (choose the *folder* where they're saved).
+Put all your firmware to BizHawk's `Firmware` folder. All the needed firmware images will be automatically detected and loaded when you launch EmuHawk. File names and directory tree don't matter, because it's scanning the hashsums and picks the needed files according to its firmware database.
 
-If your firmware is scattered, you can load them individually with the Firmware Manager. Open it by choosing "Yes" in the "You are missing the needed firmware files [...]" dialog (when trying to open a rom), or by going to `Config` > `Firmwares...`. Right-click the line of the firmware you want to load, click "Set Customization", and choose the file in the dialog to load it.
+If you want to customize firmware (for example, when you need to select a specific firmware version) go to `Config` > `Firmwares...`, right-click the line of the firmware you want to change, click "Set Customization", and choose the file in the dialog to load it. Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
 
-Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
+You can change the folder to scan for firmware (for example, if you want several BizHawk releases to share the same firmware folder) by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location.
+
+If the firmware needed for a system can't be found, you will see the "You are missing the needed firmware files [...]" dialog when trying to open a game.
 
 #### Identifying a good rom
 
