@@ -171,13 +171,13 @@ Again, if your distro isn't listed there, you might get an "Unknown distro" warn
 
 #### Loading firmware
 
-Put all your firmware to BizHawk's `Firmware` folder. All the needed firmware images will be automatically detected and loaded when you launch EmuHawk. File names and directory tree don't matter, because it's scanning the hashsums and picks the needed files according to its firmware database.
+Put all your dumped firmware files in the `Firmware` folder and everything will be automatically detected and loaded when you try to load a game (filenames and subfolders aren't enforced, you can just throw them in there). If you're missing required or optional firmware, you will see a "You are missing the needed firmware files [...]" dialog.
 
-If you want to customize firmware (for example, when you need to select a specific firmware version) go to `Config` > `Firmwares...`, right-click the line of the firmware you want to change, click "Set Customization", and choose the file in the dialog to load it. Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
+Keep in mind some firmware is optional, and some have multiple versions, only one of which needs to be set.
 
-You can change the folder to scan for firmware (for example, if you want several BizHawk releases to share the same firmware folder) by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location.
+If you want to customise firmware (when there are alternative firmwares, for example) go to `Config` > `Firmwares...`, right-click the line of the firmware you want to change, click "Set Customization", and open the file.
 
-If the firmware needed for a system can't be found, you will see the "You are missing the needed firmware files [...]" dialog when trying to open a game.
+You can change where BizHawk looks for firmware by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location. This allows multiple versions to use the same folder.
 
 #### Identifying a good rom
 
