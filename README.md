@@ -177,7 +177,7 @@ Keep in mind some firmware is optional, and some have multiple versions, only on
 
 If you want to customise firmware (when there are alternative firmwares, for example) go to `Config` > `Firmwares...`, right-click the line of the firmware you want to change, click "Set Customization", and open the file.
 
-You can change where BizHawk looks for firmware by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location. This allows multiple versions to use the same folder.
+You can change where BizHawk looks for firmware by going to `Config` > `Paths...` and changing "Firmware" in the "Global" tab to the new location. This allows multiple BizHawk releases to use the same folder.
 
 #### Identifying a good rom
 
