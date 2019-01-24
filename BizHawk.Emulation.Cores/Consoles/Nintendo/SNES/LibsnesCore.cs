@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ReadHook(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			MemoryCallbacks.CallReads(addr, 0, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ExecHook(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void WriteHook(uint addr, byte val)
 		{
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			MemoryCallbacks.CallWrites(addr, val, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -388,17 +388,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ReadHook_SMP(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr, "SMP");
+			MemoryCallbacks.CallReads(addr, 0, "SMP");
 		}
 
 		private void ExecHook_SMP(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "SMP");
+			MemoryCallbacks.CallExecutes(addr, 0, "SMP");
 		}
 
 		private void WriteHook_SMP(uint addr, byte val)
 		{
-			MemoryCallbacks.CallWrites(addr, "SMP");
+			MemoryCallbacks.CallWrites(addr, val, "SMP");
 		}
 
 		private enum LoadParamType

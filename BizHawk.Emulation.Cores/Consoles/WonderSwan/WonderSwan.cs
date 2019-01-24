@@ -142,15 +142,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void ReadCallback(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			MemoryCallbacks.CallReads(addr, 0, "System Bus");
 		}
 		void WriteCallback(uint addr)
 		{
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			MemoryCallbacks.CallWrites(addr, 0, "System Bus");
 		}
 		void ExecCallback(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
 		}
 		void ButtonCallback()
 		{

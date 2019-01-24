@@ -13,28 +13,28 @@ namespace BizHawk.Client.ApiHawk
 		public MemEventsApi () : base()
 		{ }
 
-		public void AddReadCallback(Action cb, uint address, string domain)
+		public void AddReadCallback(Action<uint, uint> cb, uint? address, string domain)
 		{
 			if (DebuggableCore.MemoryCallbacksAvailable())
 			{
 				DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(domain, MemoryCallbackType.Read, "Plugin Hook", cb, address, null));
 			}
 		}
-		public void AddWriteCallback(Action cb, uint address, string domain)
+		public void AddWriteCallback(Action<uint, uint> cb, uint? address, string domain)
 		{
 			if (DebuggableCore.MemoryCallbacksAvailable())
 			{
 				DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(domain, MemoryCallbackType.Write, "Plugin Hook", cb, address, null));
 			}
 		}
-		public void AddExecCallback(Action cb, uint address, string domain)
+		public void AddExecCallback(Action<uint, uint> cb, uint? address, string domain)
 		{
 			if (DebuggableCore.MemoryCallbacksAvailable() && DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 			{
 				DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(domain, MemoryCallbackType.Execute, "Plugin Hook", cb, address, null));
 			}
 		}
-		public void RemoveMemoryCallback(Action cb)
+		public void RemoveMemoryCallback(Action<uint, uint> cb)
 		{
 			if (DebuggableCore.MemoryCallbacksAvailable())
 			{

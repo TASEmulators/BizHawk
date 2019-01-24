@@ -755,13 +755,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					switch (_breakparams._type)
 					{
 						case BreakType.Read:
-							_breakparams._mcs.CallReads(_breakparams._addr, "System Bus");
+							_breakparams._mcs.CallReads(_breakparams._addr, 0, "System Bus");
 							break;
 						case BreakType.Write:
-							_breakparams._mcs.CallWrites(_breakparams._addr, "System Bus");
+							_breakparams._mcs.CallWrites(_breakparams._addr, 0, "System Bus");
 							break;
 						case BreakType.Execute:
-							_breakparams._mcs.CallExecutes(_breakparams._addr, "System Bus");
+							_breakparams._mcs.CallExecutes(_breakparams._addr, 0, "System Bus");
 							break;
 					}
 

@@ -883,13 +883,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			switch (type)
 			{
 				case OctoshockDll.eShockMemCb.Read: 
-					MemoryCallbacks.CallReads(address, "System Bus");
+					MemoryCallbacks.CallReads(address, value, "System Bus");
 					break;
 				case OctoshockDll.eShockMemCb.Write:
-					MemoryCallbacks.CallWrites(address, "System Bus");
+					MemoryCallbacks.CallWrites(address, value, "System Bus");
 					break;
 				case OctoshockDll.eShockMemCb.Execute:
-					MemoryCallbacks.CallExecutes(address, "System Bus");
+					MemoryCallbacks.CallExecutes(address, value, "System Bus");
 					break;
 			}
 		}

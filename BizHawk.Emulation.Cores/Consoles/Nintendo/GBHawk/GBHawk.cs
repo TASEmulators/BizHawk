@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
 		}
 
 		private void Setup_Mapper()

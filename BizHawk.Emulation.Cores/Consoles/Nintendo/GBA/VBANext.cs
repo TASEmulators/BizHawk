@@ -168,9 +168,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		void InitCallbacks()
 		{
 			padcb = new LibVBANext.StandardCallback(() => InputCallbacks.Call());
-			fetchcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallExecutes(addr, "System Bus"));
-			readcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallReads(addr, "System Bus"));
-			writecb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallWrites(addr, "System Bus"));
+			fetchcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallExecutes(addr, 0, "System Bus"));
+			readcb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallReads(addr, 0, "System Bus"));
+			writecb = new LibVBANext.AddressCallback((addr) => MemoryCallbacks.CallWrites(addr, 0, "System Bus"));
 			tracecb = new LibVBANext.TraceCallback((addr, opcode) => Tracer.Put(Trace(addr, opcode)));
 			_inputCallbacks.ActiveChanged += SyncPadCallback;
 			_memorycallbacks.ActiveChanged += SyncMemoryCallbacks;

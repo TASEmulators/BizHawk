@@ -30,6 +30,11 @@ namespace BizHawk.Client.Common
 						ex.Message);
 				}
 			};
+
+			MemCallback = delegate
+			{
+				Callback();
+			};
 		}
 
 		public Guid Guid { get; private set; }
@@ -41,6 +46,8 @@ namespace BizHawk.Client.Common
 		public string Event { get; }
 
 		public Action Callback { get; }
+
+		public Action<uint, uint> MemCallback { get; }
 
 		public void Call(string name = null)
 		{

@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
-		protected abstract void TraceFromCallback();
+		protected abstract void TraceFromCallback(uint addr, uint value);
 
 		private ITraceSink _sink;
 
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Common
 
 		public class TracingMemoryCallback : IMemoryCallback
 		{
-			public TracingMemoryCallback(Action callback)
+			public TracingMemoryCallback(Action<uint, uint> callback)
 			{
 				Callback = callback;
 			}
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Common
 
 			public string Name => "Trace Logging";
 
-			public Action Callback { get; }
+			public Action<uint, uint> Callback { get; }
 
 			public uint? Address => null;
 

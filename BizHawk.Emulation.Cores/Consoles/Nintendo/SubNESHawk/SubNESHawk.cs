@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
 		}
 
 		#region ISettable

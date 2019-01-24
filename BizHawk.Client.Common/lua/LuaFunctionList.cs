@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
-				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.Callback);
+				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.MemCallback);
 			}
 
 			return base.Remove(function);
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
 				var memoryCallbacks = Global.Emulator.AsDebuggable().MemoryCallbacks;
-				memoryCallbacks.RemoveAll(this.Select(w => w.Callback));
+				memoryCallbacks.RemoveAll(this.Select(w => w.MemCallback));
 			}
 
 			Clear();

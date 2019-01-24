@@ -59,19 +59,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private void ReadCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			MemoryCallbacks.CallReads(address, "System Bus");
+			MemoryCallbacks.CallReads(address, 0, "System Bus");
 		}
 
 		private void WriteCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			MemoryCallbacks.CallWrites(address, "System Bus");
+			MemoryCallbacks.CallWrites(address, 0, "System Bus");
 		}
 
 		private void ExecCallback(uint address, ulong cycleOffset)
 		{
 			callbackCycleCount = _cycleCount + cycleOffset;
-			MemoryCallbacks.CallExecutes(address, "System Bus");
+			MemoryCallbacks.CallExecutes(address, 0, "System Bus");
 		}
 
 		/// <summary>

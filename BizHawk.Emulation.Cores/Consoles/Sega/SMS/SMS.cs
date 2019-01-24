@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			MemoryCallbacks.CallReads(addr, 0, "System Bus");
 
 			return ReadMemoryMapper(addr);
 		}
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			WriteMemoryMapper(addr, value);
 
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			MemoryCallbacks.CallWrites(addr, value, "System Bus");
 		}
 
 		private byte FetchMemory(ushort addr)
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private void OnExecMemory(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
 		}
 
 		/// <summary>

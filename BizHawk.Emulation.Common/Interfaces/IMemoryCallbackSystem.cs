@@ -65,31 +65,31 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
-		void CallReads(uint addr, string scope);
+		void CallReads(uint addr, uint value, string scope);
 
 		/// <summary>
 		/// Executes all Write callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
-		void CallWrites(uint addr, string scope);
+		void CallWrites(uint addr, uint value, string scope);
 
 		/// <summary>
 		/// Executes all Execute callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
 		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
-		void CallExecutes(uint addr, string scope);
+		void CallExecutes(uint addr, uint value, string scope);
 
 		/// <summary>
 		/// Removes the given callback from the list
 		/// </summary>
-		void Remove(Action action);
+		void Remove(Action<uint, uint> action);
 
 		/// <summary>
 		/// Removes the given callbacks from the list
 		/// </summary>
-		void RemoveAll(IEnumerable<Action> actions);
+		void RemoveAll(IEnumerable<Action<uint, uint>> actions);
 
 		/// <summary>
 		/// Removes all read,write, and execute callbacks
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Common
 	{
 		MemoryCallbackType Type { get; }
 		string Name { get; }
-		Action Callback { get; }
+		Action<uint, uint> Callback { get; }
 		uint? Address { get; }
 		uint? AddressMask { get; }
 		string Scope { get; }
