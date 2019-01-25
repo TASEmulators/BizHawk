@@ -10,8 +10,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AmstradCPCPokeMemory : Form
 	{
-		private AmstradCPC.AmstradCPCSettings _settings;
-
 		public AmstradCPCPokeMemory()
 		{
 			InitializeComponent();

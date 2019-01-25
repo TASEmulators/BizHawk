@@ -141,9 +141,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         s1Pos += blockSize;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-
+					
                 }
                 
 

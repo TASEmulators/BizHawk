@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public class CursorJoystick : IJoystick
     {
-        private int _joyLine;
+        //private int _joyLine;
         private SpectrumBase _machine;
 
         #region Construction
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public CursorJoystick(SpectrumBase machine, int playerNumber)
         {
             _machine = machine;
-            _joyLine = 0;
+            //_joyLine = 0;
             _playerNumber = playerNumber;
 
             ButtonCollection = new List<string>

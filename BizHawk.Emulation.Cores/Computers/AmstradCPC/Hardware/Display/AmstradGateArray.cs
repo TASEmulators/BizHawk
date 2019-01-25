@@ -1103,7 +1103,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ScreenLines.Clear();
 
             return ScreenBuffer;
-
+			/*
             switch (borderType)
             {
                 // crop to 768x272 (544)
@@ -1139,18 +1139,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     }
                     return croppedBuffer;
                     */
+			/*
+			var slWidth = BufferWidth;
+			return ScreenBuffer;
 
-                    var slWidth = BufferWidth;
-                    return ScreenBuffer;
+			break;
 
-                    break;
-                    
-            }
 
-            return ScreenBuffer;
-        }
+	}
+	*/
+			//return ScreenBuffer;
+		}
 
-        public void SetupScreenSize()
+		public void SetupScreenSize()
         {
             SysBufferWidth = 800;
             SysBufferHeight = 600;

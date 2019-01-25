@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private short[] _audioBuffer;
         private int _audioBufferIndex;
         private int _lastStateRendered;
-        private int _clockCyclesPerFrame;
-        private int _cyclesPerSample;
+        //private int _clockCyclesPerFrame;
+        //private int _cyclesPerSample;
 
         #endregion
 
