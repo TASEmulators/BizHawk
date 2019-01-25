@@ -262,7 +262,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Magnavox Odyssey², and PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
+Amstrad CPC, Magnavox Odyssey², and Sony PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
 
 [to top](#bizhawk)
 
