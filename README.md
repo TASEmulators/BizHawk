@@ -268,9 +268,8 @@ Amstrad CPC, Magnavox Odyssey², and Sony PSP emulation are works-in-progress an
 
 ## Support and troubleshooting
 
-A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
+A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC. Paste `ircs://chat.freenode.net:6697/bizhawk` into your address bar, connect to freenode manually with your IRC client and join `#bizhawk`, or try these:
 
-<a href="ircs://chat.freenode.net:6697/bizhawk">![IRC | chat.freenode.net #bizhawk](https://img.shields.io/badge/IRC-chat.freenode.net_%23bizhawk-steelblue.svg?style=flat)</a>
 [![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-mediumpurple.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
 [![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-lightcoral.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
 
