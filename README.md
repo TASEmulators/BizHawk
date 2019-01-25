@@ -81,7 +81,7 @@ Supported consoles and computers:
 * Uzebox
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
-See [*Usage*](#usage) below for an introduction to basic config menus.
+See [*Usage*](#usage) below for info on basic config needed to play games.
 
 [to top](#bizhawk)
 
@@ -107,7 +107,7 @@ BizHawk functions like a "portable" program, you may move or rename the folder c
 
 Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1709 "Redstone 3", Win8 is supported from 8.1, and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
 
-A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for Windows XP and 32-bit users. Being in the 1.x series, many bugs remain and features are missing.
+A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP and/or 32-bit Windows. Being in the 1.x series, many bugs remain and features are missing.
 
 [to top](#bizhawk)
 
