@@ -31,13 +31,13 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Disasm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Registers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TraceView = new BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView();
 			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.CopyContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.Disasm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Registers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,6 +49,8 @@
 			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MaxLinesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SegmentSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoScrollMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.OpenLogFile = new System.Windows.Forms.Button();
 			this.BrowseBox = new System.Windows.Forms.Button();
@@ -56,7 +58,6 @@
 			this.ToFileRadio = new System.Windows.Forms.RadioButton();
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
-			this.SegmentSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.TraceContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -78,39 +79,44 @@
 			// 
 			// TraceView
 			// 
+			this.TraceView.AllowColumnReorder = false;
+			this.TraceView.AllowColumnResize = false;
+			this.TraceView.AllowRightClickSelecton = false;
 			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TraceView.BlazingFast = false;
-			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Disasm,
-            this.Registers});
+			this.TraceView.BorderColor = System.Drawing.Color.DarkGray;
+			this.TraceView.BorderSize = 1;
+			this.TraceView.CellBackgroundColor = System.Drawing.Color.White;
+			this.TraceView.CellBackgroundHighlightColor = System.Drawing.Color.Blue;
+			this.TraceView.CellFont = new System.Drawing.Font("Arial", 8F);
+			this.TraceView.CellFontColor = System.Drawing.Color.Black;
+			this.TraceView.CellHeightPadding = 0;
+			this.TraceView.ColumnHeaderBackgroundColor = System.Drawing.Color.LightGray;
+			this.TraceView.ColumnHeaderBackgroundHighlightColor = System.Drawing.SystemColors.HighlightText;
+			this.TraceView.ColumnHeaderFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
+			this.TraceView.ColumnHeaderFontColor = System.Drawing.Color.Black;
+			this.TraceView.ColumnHeaderOutlineColor = System.Drawing.Color.Black;
 			this.TraceView.ContextMenuStrip = this.TraceContextMenu;
 			this.TraceView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.TraceView.FullRowSelect = true;
-			this.TraceView.GridLines = true;
+			this.TraceView.GridLineColor = System.Drawing.SystemColors.ControlLight;
 			this.TraceView.HideSelection = false;
-			this.TraceView.ItemCount = 0;
+			this.TraceView.LetKeysModifySelection = false;
 			this.TraceView.Location = new System.Drawing.Point(8, 18);
+			this.TraceView.MultiSelect = false;
 			this.TraceView.Name = "TraceView";
-			this.TraceView.SelectAllInProgress = false;
-			this.TraceView.selectedItem = -1;
+			this.TraceView.ScrollSpeed = 1;
+			this.TraceView.SeekingCutoffInterval = 0;
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
+			this.TraceView.SuspendHotkeys = false;
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;
 			this.TraceView.UseCompatibleStateImageBehavior = false;
-			this.TraceView.UseCustomBackground = true;
 			this.TraceView.View = System.Windows.Forms.View.Details;
-			// 
-			// Disasm
-			// 
-			this.Disasm.Text = "Disasm";
-			this.Disasm.Width = 239;
-			// 
-			// Registers
-			// 
-			this.Registers.Text = "Registers";
-			this.Registers.Width = 357;
+			this.TraceView.VirtualListSize = 0;
+			this.TraceView.VirtualMode = false;
 			// 
 			// TraceContextMenu
 			// 
@@ -144,6 +150,16 @@
 			this.ClearContextMenu.Text = "Clear";
 			this.ClearContextMenu.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
+			// Disasm
+			// 
+			this.Disasm.Text = "Disasm";
+			this.Disasm.Width = 239;
+			// 
+			// Registers
+			// 
+			this.Registers.Text = "Registers";
+			this.Registers.Width = 357;
+			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.ClickThrough = true;
@@ -164,27 +180,27 @@
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SaveLogMenuItem
 			// 
 			this.SaveLogMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveLogMenuItem.Name = "SaveLogMenuItem";
-			this.SaveLogMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.SaveLogMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(140, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(143, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -195,7 +211,7 @@
             this.SelectAllMenuItem,
             this.ClearMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
-			this.EditSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
 			this.EditSubMenu.Text = "Edit";
 			// 
 			// CopyMenuItem
@@ -203,7 +219,7 @@
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeyDisplayString = "";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -212,14 +228,14 @@
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
 			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Name = "ClearMenuItem";
-			this.ClearMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.ClearMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.ClearMenuItem.Text = "Clear";
 			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
@@ -227,9 +243,10 @@
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MaxLinesMenuItem,
-            this.SegmentSizeMenuItem});
+            this.SegmentSizeMenuItem,
+            this.AutoScrollMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(58, 20);
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Settings";
 			// 
 			// MaxLinesMenuItem
@@ -238,6 +255,21 @@
 			this.MaxLinesMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.MaxLinesMenuItem.Text = "&Set Max Lines...";
 			this.MaxLinesMenuItem.Click += new System.EventHandler(this.MaxLinesMenuItem_Click);
+			// 
+			// SegmentSizeMenuItem
+			// 
+			this.SegmentSizeMenuItem.Name = "SegmentSizeMenuItem";
+			this.SegmentSizeMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.SegmentSizeMenuItem.Text = "Set Segment Size...";
+			this.SegmentSizeMenuItem.Click += new System.EventHandler(this.SegmentSizeMenuItem_Click);
+			// 
+			// AutoScrollMenuItem
+			// 
+			this.AutoScrollMenuItem.CheckOnClick = true;
+			this.AutoScrollMenuItem.Name = "AutoScrollMenuItem";
+			this.AutoScrollMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.AutoScrollMenuItem.Text = "Auto Scroll";
+			this.AutoScrollMenuItem.Click += new System.EventHandler(this.AutoScrollMenuItem_Click);
 			// 
 			// groupBox2
 			// 
@@ -326,13 +358,6 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
-			// SegmentSizeMenuItem
-			// 
-			this.SegmentSizeMenuItem.Name = "SegmentSizeMenuItem";
-			this.SegmentSizeMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.SegmentSizeMenuItem.Text = "Set Segment Size...";
-			this.SegmentSizeMenuItem.Click += new System.EventHandler(this.SegmentSizeMenuItem_Click);
-			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -371,7 +396,7 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox LoggingEnabled;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private VirtualListView TraceView;
+		private BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Disasm;
 		private System.Windows.Forms.ToolStripMenuItem MaxLinesMenuItem;
 		private System.Windows.Forms.RadioButton ToFileRadio;
@@ -389,5 +414,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ClearContextMenu;
 		private System.Windows.Forms.Button OpenLogFile;
 		private System.Windows.Forms.ToolStripMenuItem SegmentSizeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoScrollMenuItem;
 	}
 }
