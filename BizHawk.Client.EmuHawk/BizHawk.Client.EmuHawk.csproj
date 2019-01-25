@@ -589,6 +589,14 @@
       <DependentUpon>InputRoll.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\InputRoll.Drawing.GDI.cs">
+      <DependentUpon>InputRoll.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputRoll.Drawing.GDIP.cs">
+      <DependentUpon>InputRoll.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
     </Compile>

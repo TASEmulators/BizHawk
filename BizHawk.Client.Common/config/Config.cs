@@ -499,6 +499,7 @@ namespace BizHawk.Client.Common
 
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
+		public int TasStudioRenderer = 0; // defaults to 0 (GDI) - on linux this is forced to GDI+ later on
 
 		// Macro Tool
 		public RecentFiles RecentMacros = new RecentFiles(8);
