@@ -271,8 +271,8 @@ Amstrad CPC, Magnavox Odyssey², and Sony PSP emulation are works-in-progress an
 A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk wiki](http://tasvideos.org/Bizhawk.html). If your problem is one of the many not answered there, and you can't find it in the [issue tracker search](https://github.com/TASVideos/BizHawk/issues?q=is%3Aissue+ISSUE_KEYWORDS), check the [BizHawk forum](http://tasvideos.org/forum/viewforum.php?f=64) at TASVideos, or ask on IRC:
 * `ircs://chat.freenode.net:6697/bizhawk`
 * connect to freenode manually with your IRC client and join `#bizhawk`
-* [![Matrix (IRC bridge) | #freenode_#bizhawk:matrix.org](https://img.shields.io/badge/Matrix_(IRC_bridge)-%23freenode__%23bizhawk:matrix.org-mediumpurple.svg?logo=matrix&style=flat)](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
-* [![freenode webchat | #bizhawk](https://img.shields.io/badge/freenode_webchat-%23bizhawk-lightcoral.svg?style=flat)](http://webchat.freenode.net/?channels=bizhawk)
+* connect with a Matrix client (via matrix.org's IRC bridge): [#freenode_#bizhawk:matrix.org](https://matrix.to/#/#freenode_#bizhawk:matrix.org)
+* use freenode's [*webchat*](http://webchat.freenode.net/?channels=bizhawk), an IRC client in a webpage
 
 If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
 
