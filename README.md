@@ -81,7 +81,7 @@ Supported consoles and computers:
 * Uzebox
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
-See [*Usage*](#usage) below for details about specific tools and config menus.
+See [*Usage*](#usage) below for an introduction to basic config menus.
 
 [to top](#bizhawk)
 
