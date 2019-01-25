@@ -2,7 +2,7 @@
 
 A multi-system emulator written in C#. As well as quality-of-life features for casual players, it also has recording/playback and debugging tools, making it the first choice for TASers (Tool-Assisted Speedrunners).
 
-[![unique systems emulated | 27](https://img.shields.io/badge/unique_systems_emulated-27-darkgreen.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFqklEQVR4nO2aa6hVRRTH973XMkvEnmRc6VansvY9+8z6/Svs+UGCMqEHiKRWFPShd0bZA3tQGZplhRVRgb2MIkgyikIp0IroEtGDCOlhaGkvS8tKTa99uPvU8Tj73H2e2wvnD/Npz16zfjOzZ6+ZNUHQVltttdXW0JSkIyTNAR51zp2VtT8tUy6XGwXcK+lvSTtKys1Z+9ZsdQIXS1pbBr5D0g5gM5DL2smmyDl3MtDnAy/rhCVZ+9pQ9fb2jpX0PNA/GHyxmNnpWftdtyTtLek2YFNa8JLymaQ9smaoVR3AFGBVDeCls+DqrEGqliSAFfWAl5T148aN2z9rplSKouggSU9K2tYg+OKC+EjWbBWVy+WGS7pe0oYaITcAi4EXge89z/+RlM+a0ytJkyStrGN0l+Xz+X2L9sIw3BN4wlN3aRAEHRmi7izgGOCNOqf2r8650R7zwyR95FkQz245aLny+fy+wEOStjbg234xqR0zu9VT/8tcLje8lbyl6pJ0OfBTAxe4p5Mak3SD7x0zu6mFzAMCJgCf1DjK/cBzwJnAeEm3lCyW3wRB0OVrU9LrCTY3hmF4cEvA8/n84cDL1YSvng6YWW4XEPBH/PyBIAg6y+AvHcTmwqaCh2E4ErhH0l91TvE1QRAM87UhaUEJ0HvxlL8WWDJYhwPbzey4ZrB3mtlFwHeN+MaBN5IaMrOpg3w2K4D7JL3kGwjgvaCRv0UzOxF4vxHgJU72JbUHzEx4b6uZTS6tG0XRYZK+9tSdVjd4FEXdwLPA9kbCF0fSN1V7enr2kvRFwjv3JnTYeE/91VEU7VMTeHd39whgVnExalYBvov39R1BEATOuR5gWYX645N8TgiT76qWvcPMJkv6ppngnrI2HvWKG6UaOuBPMzs0FbmZFSS93WJwX/kKmO6c63HOHV8W+3tHFFCFTltUETzepj6mgV1V1vBrwjDczwN4R3FEgQmlzyQdAHxcoQM2JbEPA64DftsNwIvOzvA5GobhnpLWx3W2x/HAbODxwfwHfvRN94lKWGkz7oAzk0YrDohqsTmrdLqMU3IcnXkBLk7g75L0Q5X2Nki6NgiCjkDSHsA8YHPWkIN0QJ9vS2tm51dhZxvwRBRFB5WO/P01OvW7pAXAIjX4LK9CWeqcOzIIBo7TzOyytPEIsFwSvu/n1ypHoh9YaGaHlNh4sIUzoR/4A9iSsv4qYEqQFP9Xs9IDPznnTiq3EScrf4zrbJY0HzgPeK5VHePxdZOk27u7u0ckrB3/dcCjVRiem2RHA3vx14tTNNYwDWRpWgneDyzq7e0dWxG8KDM7MO1nACyuYMo7xYAzWgjf55w7ORV4mZMzUjaw3fcJDCY1//e6Nv5Ndg7mi1dxNJU2+Pmg2obM7OwmjfhmSXNzudyomsDLnJyYstG3JB1QjW1gdoPB+yW90vDLEJJeq9Dot5LODao4TooPTRbVczjqKZ82Lf8fRdHRCRHhutI0VBoBVzb40OQX4Kog4bC0YZI03zP6y2uwM61B4FuBh31b4abIOTdau24utpnZsVWa6pD0bp3wS6Mo6m0KaCXJk2AA3kyonvhHAE6tEXylc+6cJuGlUpc8WVZJk4oVcrnccOA6Se8ECZ2ggROZahbAjcCNWSYy/5OZneZxfg1wAXCJds7tX1H+fhiGIyU9kwY8PslZKGlMFqyJ0kB2Jc3I/az/Y4NOM7tQCZcZPeXdZqWr6pZzrkcp83zA55LmSPogJfhqM5sa7E63N3ySdHedK3l5+dPM7qw5M9Nqxd/ymnrB423qC6mTEbuTgOl1wn8o6ZSsOepRZ41Hz+skXRok3OYYUioUCiekzQQDW4B5CTe5hq6Ap1LAv1ooFI7K2temSNIYSRuTfoPAGVn72HTFUWBpHmC9pGs0hK+nV61CoWBmditw1ZC5kd1WW2211dau+hdChUiZwhqSBAAAAABJRU5ErkJggg==&style=popout)](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
+[![unique systems emulated | 27](https://img.shields.io/badge/unique_systems_emulated-27-darkgreen.svg?logo=data:image/png;base64,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&style=popout)](#cores)
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
 [![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
@@ -17,19 +17,19 @@ New user on Windows? Install the prerequisites first, click the "prereqs" button
 
 Jump to:
 * Installing
-	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110)
-	* [GNU+Linux](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux)
+	* [Windows 7/8.1/10](#windows-78110)
+	* [GNU+Linux](#gnulinux)
 * Building
-	* [Windows 7/8.1/10](https://github.com/TASVideos/BizHawk/blob/master/README.md#windows-78110-1)
-	* [GNU+Linux](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1)
-* [Usage](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage)
-	* [TASing](https://github.com/TASVideos/BizHawk/blob/master/README.md#tasing)
-	* [Testing](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing)
-	* [Cores](https://github.com/TASVideos/BizHawk/blob/master/README.md#cores)
-* [Support and troubleshooting](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting)
-* [Contributing](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing)
-* [Related projects](https://github.com/TASVideos/BizHawk/blob/master/README.md#related-projects)
-* [License](https://github.com/TASVideos/BizHawk/blob/master/README.md#license)
+	* [Windows 7/8.1/10](#windows-78110-1)
+	* [GNU+Linux](#gnulinux-1)
+* [Usage](#usage)
+	* [TASing](#tasing)
+	* [Testing](#testing)
+	* [Cores](#cores)
+* [Support and troubleshooting](#support-and-troubleshooting)
+* [Contributing](#contributing)
+* [Related projects](#related-projects)
+* [License](#license)
 
 ## Features and systems
 
@@ -81,9 +81,9 @@ Supported consoles and computers:
 * Uzebox
 * [More](http://tasvideos.org/Bizhawk/CoreRoadMap.html) coming soon..?
 
-See [*Usage*](https://github.com/TASVideos/BizHawk/blob/master/README.md#usage) below for details about specific tools and config menus.
+See [*Usage*](#usage) below for details about specific tools and config menus.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Installing
 
@@ -109,7 +109,7 @@ Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/he
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for Windows XP and 32-bit users. Being in the 1.x series, many bugs remain and features are missing.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ### GNU+Linux
 
@@ -117,7 +117,7 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 **IMPORTANT**: Linux support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
 
-You'll need to either build BizHawk yourself (see [*Building*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux-1) below), or download a dev build (see [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) below).
+You'll need to either build BizHawk yourself (see [*Building*](#gnulinux-1) below), or download a dev build (see [*Testing*](#testing) below).
 
 The runtime dependencies are Mono (complete) + Mono VB.NET, WINE (just `libwine` if available), `libdl.so` (glibc), NVIDIA's `cgc` utility, and `libblip_buf.so` from the repo's `Assets` folder (copy it to `/usr/lib/libblip_buf.so.1.1.0` or equivalent). LSB release info is optional for automatically setting the library location.
 
@@ -125,7 +125,7 @@ Run `EmuHawkMono.sh` to give Mono the library and executable paths — you can r
 
 The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Building
 
@@ -142,7 +142,7 @@ Once it's downloaded and extracted, go into the repo's `Dist` folder and run `Bu
 
 For anything more complicated than building, you'll need an IDE like [VS Community 2017](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE. Open `BizHawk.sln` with VS to start and use the toolbar to choose EmuHawk and build. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) (somewhat outdated) for more detailed instructions.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ### GNU+Linux
 
@@ -161,11 +161,11 @@ Remove the `/p:...` flag from MSBuild if you want debugging symbols.
 
 If your distro isn't listed under *Installing* above, `libblip_buf` probably isn't in your package repos. You can easily [build it yourself](https://gitlab.com/TASVideos/libblip_buf/blob/unified/README.md).
 
-Once built, see [*Installing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#gnulinux) above, substituting the repo's `output` folder for the download.
+Once built, see [*Installing*](#gnulinux) above, substituting the repo's `output` folder for the download.
 
 Again, if your distro isn't listed there, you might get an "Unknown distro" warning in the terminal, and BizHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Usage
 
@@ -208,7 +208,7 @@ Running scripts have a "▶️" beside their name, and stopped scripts (manually
 
 "Toggle script" does just that (paused scripts are stopped). "Reload script" stops it and loads changes to the file, running scripts are then started again. "Remove script" stops it and removes it from the list.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ### TASing
 
@@ -216,17 +216,17 @@ Running scripts have a "▶️" beside their name, and stopped scripts (manually
 
 For now, the best way to learn how to TAS is to browse pages like [BasicTools](http://tasvideos.org/TasingGuide/BasicTools.html) on TASVideos and watch tutorials like [Sand_Knight and dwangoAC's](https://youtu.be/6tJniMaR2Ps).
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ### Testing
 
-Testing bugfixes or new features can be just as helpful as making them! If code's more your thing, see [*Contributing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#contributing) below.
+Testing bugfixes or new features can be just as helpful as making them! If code's more your thing, see [*Contributing*](#contributing) below.
 
 Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build. Clicking a checkmark and then "Details" in the box that appears takes you straight to the build page. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.
 
 Once you're on the build page, click "Artifacts" and download `BizHawk_Developer-<datetime>-#<long hexadecimal>.zip`.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ### Cores
 
@@ -264,7 +264,7 @@ ZX Spectrum | ZXHawk |
 
 Amstrad CPC, Magnavox Odyssey², and PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Support and troubleshooting
 
@@ -276,19 +276,19 @@ A short [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) is provided on the [BizHawk
 
 If there's no easy solution, what you've got is a bug. Or maybe a feature request. Either way, [open a new issue](https://github.com/TASVideos/BizHawk/issues/new) (you'll need a GitHub account, signup is very fast).
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Contributing
 
 BizHawk is Open Source Software, so you're free to modify it however you please, and if you do, we invite you to share! Under the permissive *MIT License*, this is optional, just be careful with reusing cores as some have copyleft licenses.
 
-Not a programmer? Something as simple as reproducing bugs with different software versions is still very helpful! See [*Testing*](https://github.com/TASVideos/BizHawk/blob/master/README.md#testing) above to learn about dev builds if you'd rather help us get the next release out.
+Not a programmer? Something as simple as reproducing bugs with different software versions is still very helpful! See [*Testing*](#testing) above to learn about dev builds if you'd rather help us get the next release out.
 
 If you'd like to fix bugs, check the issue tracker here on GitHub:
 
 [![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
-It's a good idea to check if anyone is already working on an issue by asking on IRC (see [*Support*](https://github.com/TASVideos/BizHawk/blob/master/README.md#support-and-troubleshooting) above).
+It's a good idea to check if anyone is already working on an issue by asking on IRC (see [*Support*](#support-and-troubleshooting) above).
 
 If you'd like to add a feature, first search the issue tracker for it. If it's a new idea, make your own feature request issue before you start coding.
 
@@ -296,7 +296,7 @@ For the time being, style is not enforced in PRs, only build success is. Please 
 
 Past contrbutors to the frontend and custom-built cores are listed [here](https://github.com/TASVideos/BizHawk/graphs/contributors). See the wiki for core authors.
 
-[to top](https://github.com/TASVideos/BizHawk/blob/master/README.md#bizhawk)
+[to top](#bizhawk)
 
 ## Related projects
 
