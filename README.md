@@ -6,6 +6,7 @@ A multi-system emulator written in C#. As well as quality-of-life features for c
 [![GitHub latest release](https://img.shields.io/github/release/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/releases/latest)
 [![dev builds | AppVeyor](https://img.shields.io/badge/dev_builds-AppVeyor-orange.svg?logo=appveyor&logoColor=333333&style=popout)](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history)
 [![Windows prereqs | GitHub](https://img.shields.io/badge/Windows_prereqs-GitHub-darkred.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest)
+[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
 
 ***
 
@@ -285,9 +286,7 @@ BizHawk is Open Source Software, so you're free to modify it however you please,
 
 Not a programmer? Something as simple as reproducing bugs with different software versions is still very helpful! See [*Testing*](#testing) above to learn about dev builds if you'd rather help us get the next release out.
 
-If you'd like to fix bugs, check the issue tracker here on GitHub:
-
-[![GitHub open issues counter](https://img.shields.io/github/issues-raw/TASVideos/BizHawk.svg?logo=github&logoColor=333333&style=popout)](https://github.com/TASVideos/BizHawk/issues)
+If you'd like to fix bugs, check the [issue tracker](https://github.com/TASVideos/BizHawk/issues) here on GitHub.
 
 It's a good idea to check if anyone is already working on an issue by asking on IRC (see [*Support*](#support-and-troubleshooting) above).
 
