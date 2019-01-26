@@ -15,7 +15,13 @@ void operator delete(void *p)
 	std::free(p);
 }
 
+#ifdef _MSC_VER
 #define EXPORT extern "C" __declspec(dllexport)
+#elif __MINGW32__
+#define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
+#else
+#define EXPORT extern "C" __attribute__((force_align_arg_pointer))
+#endif
 
 EXPORT CSystem *Create(const uint8 *game, uint32 gamesize, const uint8 *bios, uint32 biossize, int pagesize0, int pagesize1, int lowpass)
 {
