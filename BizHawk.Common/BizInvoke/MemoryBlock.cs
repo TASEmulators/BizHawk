@@ -101,7 +101,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// take a hash of the current full contents of the block, including unreadable areas
 		/// </summary>
-		/// <returns></returns>
 		public abstract byte[] FullHash();
 
 		/// <summary>
