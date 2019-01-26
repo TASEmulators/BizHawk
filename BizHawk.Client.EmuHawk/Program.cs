@@ -167,6 +167,22 @@ namespace BizHawk.Client.EmuHawk
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			else if (Global.Config.DispMethod == Config.EDispMethod.Vulkan)
+			{
+				try
+				{
+					GlobalWin.GL = new Bizware.BizwareGL.Drivers.Vulkan.IGL_Vulkan();
+				}
+				catch (Exception ex)
+				{
+					new ExceptionBox(new Exception("Something in Vulkan init failed, using GDI+ as fallback", ex))
+						.ShowDialog();
+
+					// fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9 && !EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				try
