@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -Wall -O3 -fpermissive -Wno-unused-but-set-variable \
 	-Wno-strict-aliasing -Wzero-as-null-pointer-constant -Wno-unused-variable \
-	-Wno-parentheses -Wno-sign-compare -std=gnu++11 -fomit-frame-pointer -fno-exceptions
+	-Wno-parentheses -Wno-sign-compare -std=gnu++11 -fomit-frame-pointer -fno-exceptions -fPIC
 
 MACHINE = $(shell $(CXX) -dumpmachine)
 ifneq (,$(findstring i686,$(MACHINE)))
