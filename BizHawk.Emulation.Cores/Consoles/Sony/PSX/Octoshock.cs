@@ -743,7 +743,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private IController _controller;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 			FrameAdvance_PrepDiscState();
@@ -801,7 +801,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) return;
+			if (render == false) return true;
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
 
@@ -843,6 +843,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException("shock_GetSamples returned too many samples: " + sbuffcontains);
 				OctoshockDll.shock_GetSamples(psx, samples);
 			}
+
+			return true;
 		}
 
 		public ControllerDefinition ControllerDefinition { get; private set; }

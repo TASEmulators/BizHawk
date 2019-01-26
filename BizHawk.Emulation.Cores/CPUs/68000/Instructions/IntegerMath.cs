@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
-			int reg = (op >> 0) & 3;
+			int reg = (op >> 0) & 7;
 
 			switch (size)
 			{
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
-			int reg = (op >> 0) & 3;
+			int reg = (op >> 0) & 7;
 
 			switch (size)
 			{

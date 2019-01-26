@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.DiscSystem
                             currBlobIndex++;
                         mdfBlob = disc.DisposableResources[currBlobIndex] as Disc.Blob_RawFile;
 
-                        int userSector = 2048;
+                        //int userSector = 2048;
                         switch (track.SectorSize)
                         {
                             case 2448:
@@ -848,7 +848,7 @@ namespace BizHawk.Emulation.DiscSystem
                                 {
                                     Policy = IN_DiscMountPolicy                                 
                                 };
-                                userSector = 2352;                          
+                                //userSector = 2352;                          
                                 break;
                             case 2048:
                             default:
@@ -856,7 +856,7 @@ namespace BizHawk.Emulation.DiscSystem
                                 {
                                     Policy = IN_DiscMountPolicy
                                 };
-                                userSector = 2048;
+                                //userSector = 2048;
                                 break;
                             
                                 //throw new Exception("Not supported: Sector Size " + track.SectorSize);

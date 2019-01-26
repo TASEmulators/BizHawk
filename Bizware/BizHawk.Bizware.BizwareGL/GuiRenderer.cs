@@ -224,7 +224,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			Art art = new Art(null);
+			Art art = new Art((ArtManager)null);
 			art.Width = w;
 			art.Height = h;
 			art.u0 = art.v0 = 0;

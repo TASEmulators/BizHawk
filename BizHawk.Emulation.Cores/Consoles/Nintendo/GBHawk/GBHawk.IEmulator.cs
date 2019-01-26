@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool in_vblank;
 		public bool vblank_rise;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 
@@ -74,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				_lagcount++;
 			}
+
+			return true;
 		}
 
 		public void do_frame()

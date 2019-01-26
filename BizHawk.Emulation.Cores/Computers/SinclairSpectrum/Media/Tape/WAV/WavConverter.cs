@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Position counter
         /// </summary>
-        private int _position = 0;
+        //private int _position = 0;
 
         #region Construction
 
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     "This is not a valid WAV format file");
             }
 
-            _position = 0;
+            //_position = 0;
 
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);

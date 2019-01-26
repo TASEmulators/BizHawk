@@ -162,6 +162,9 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A77376C-2741-489C-90E1-03E415910B65}
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1A77376C-2741-489C-90E1-03E415910B65}
+	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj
 	EndGlobalSection

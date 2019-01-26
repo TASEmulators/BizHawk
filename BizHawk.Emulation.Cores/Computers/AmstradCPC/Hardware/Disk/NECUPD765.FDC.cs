@@ -394,6 +394,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                             sectorSize = 0x80 << ActiveCommandParams.SectorSize;
                         }
 
+						var mtc = maxTransferCap;
+
                         // get the current track
                         var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
 
@@ -655,6 +657,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         int buffPos = 0;
                         int sectorSize = 0;
                         int maxTransferCap = 0;
+						if (maxTransferCap > 0) { }
 
                         // calculate requested size of data required
                         if (ActiveCommandParams.SectorSize == 0)
@@ -967,6 +970,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         int buffPos = 0;
                         int sectorSize = 0;
                         int maxTransferCap = 0;
+						if (maxTransferCap > 0) { }
 
                         // calculate requested size of data required
                         if (ActiveCommandParams.SectorSize == 0)
@@ -1031,7 +1035,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                             break;
                         }
 
-                        FloppyDisk.Sector sector = null;
+                        //FloppyDisk.Sector sector = null;
                         ActiveDrive.SectorIndex = 0;
 
                         int secCount = 0;
@@ -1371,7 +1375,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                             // get the first sector
                             var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                            int secIndex = 0;
+                            //int secIndex = 0;
                             for (int s = 0; s < track.Sectors.Length; s++)
                             {
                                 if (track.Sectors[s].SectorID == endSecID)
@@ -1422,7 +1426,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         byte endSecID = ActiveCommandParams.EOT;
                         bool lastSec = false;
                         var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                        int secIndex = 0;
+                        //int secIndex = 0;
 
                         for (int s = 0; s < track.Sectors.Length; s++)
                         {
@@ -1664,7 +1668,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                             // get the first sector
                             var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                            int secIndex = 0;
+                            //int secIndex = 0;
                             for (int s = 0; s < track.Sectors.Length; s++)
                             {
                                 if (track.Sectors[s].SectorID == endSecID)
@@ -1715,7 +1719,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         byte endSecID = ActiveCommandParams.EOT;
                         bool lastSec = false;
                         var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                        int secIndex = 0;
+                        //int secIndex = 0;
 
                         for (int s = 0; s < track.Sectors.Length; s++)
                         {
@@ -2397,18 +2401,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     break;
             }
 
-            //if (!CheckTiming())
-            //{
-            //    UnSetBit(MSR_EXM, ref StatusMain);
-            //}
-
             return StatusMain;            
         }
-        private int testCount = 0;
+
         /// <summary>
         /// Handles CPU reading from the data register
         /// </summary>
-        /// <returns></returns>
         private byte ReadDataRegister()
         {
             // default return value

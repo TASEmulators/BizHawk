@@ -1438,7 +1438,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetWindowText()
+		public void SetWindowText()
 		{
 			string str = "";
 
@@ -2672,6 +2672,10 @@ namespace BizHawk.Client.EmuHawk
 					LinkConnectStatusBarButton.Image = Emulator.AsLinkable().LinkConnected
 						? _linkCableOn
 						: _linkCableOff;
+
+					LinkConnectStatusBarButton.ToolTipText = Emulator.AsLinkable().LinkConnected
+						? "Link connection is currently enabled"
+						: "Link connection is currently disabled";
 				}
 				else
 				{
@@ -2964,10 +2968,6 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_framesSinceLastFpsUpdate++;
-
-				UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
-
 				CaptureRewind(isRewinding);
 
 				// Set volume, if enabled
@@ -3011,7 +3011,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
-				Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
+				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -3050,9 +3050,16 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi)
+				if (!PauseAvi && new_frame)
 				{
 					AvFrameAdvance();
+				}
+
+				if (new_frame)
+				{
+					_framesSinceLastFpsUpdate++;
+
+					UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
@@ -3794,6 +3801,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					ApiManager.Restart(Emulator.ServiceProvider);
 					GlobalWin.Tools.Restart();
 
 					if (Global.Config.LoadCheatFileByGame)
@@ -3842,7 +3850,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ClientApi.OnRomLoaded();
+					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
 				else
@@ -3853,10 +3861,11 @@ namespace BizHawk.Client.EmuHawk
 					// The ROM has been loaded by a recursive invocation of the LoadROM method.
 					if (!(Emulator is NullEmulator))
 					{
-						ClientApi.OnRomLoaded();
+						ClientApi.OnRomLoaded(Emulator);
 						return true;
 					}
 
+					ClientApi.UpdateEmulatorAndVP(Emulator);
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateStatusSlots();
@@ -3946,6 +3955,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			RewireSound();
@@ -3968,6 +3978,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
+				ApiManager.Restart(Emulator.ServiceProvider);
 				RewireSound();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : "");
 				HandlePlatformMenus();

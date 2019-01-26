@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
                 catch (Exception ex)
                 {
-
+					var e = ex.ToString();
                 }
             }
 

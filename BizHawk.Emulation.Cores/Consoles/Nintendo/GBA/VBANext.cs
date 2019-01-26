@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 
@@ -108,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (IsLagFrame)
 				LagCount++;
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

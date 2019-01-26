@@ -87,6 +87,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DispCustomUserARY != -1)
 				txtCustomARY.Text = Global.Config.DispCustomUserARY.ToString();
 
+			txtCropLeft.Text = Global.Config.DispCropLeft.ToString();
+			txtCropTop.Text = Global.Config.DispCropTop.ToString();
+			txtCropRight.Text = Global.Config.DispCropRight.ToString();
+			txtCropBottom.Text = Global.Config.DispCropBottom.ToString();
+
 			RefreshAspectRatioOptions();
 
 			if (PlatformLinkedLibSingleton.RunningOnUnix)
@@ -192,6 +197,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
 			if (rbVulkan.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.Vulkan;
+
+			int.TryParse(txtCropLeft.Text, out Global.Config.DispCropLeft);
+			int.TryParse(txtCropTop.Text, out Global.Config.DispCropTop);
+			int.TryParse(txtCropRight.Text, out Global.Config.DispCropRight);
+			int.TryParse(txtCropBottom.Text, out Global.Config.DispCropBottom);
 
 			if (oldDisplayMethod != Global.Config.DispMethod)
 				NeedReset = true;

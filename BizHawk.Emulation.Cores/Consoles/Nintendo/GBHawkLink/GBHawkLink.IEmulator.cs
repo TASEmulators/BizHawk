@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			//Update the color palette if a setting changed
@@ -86,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				_lagcount++;
 			}
+
+			return true;
 		}
 
 		public void do_frame()
@@ -100,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				R.do_single_step();
 
 				// the signal to shift out a bit is when serial_clock = 1
-				if ((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2))
+				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
 				{
 					if (LinkConnected)
 					{
@@ -118,6 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				}
 				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
 				{
+					do_r_next = false;
+
 					if (LinkConnected)
 					{
 						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
@@ -131,6 +135,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 						R.serialport.coming_in = L.serialport.going_out;
 					}
+
+					if (R.serialport.serial_clock == 2) { do_r_next = true; }
+				}
+				else
+				{
+					do_r_next = false;
 				}
 
 				// if we hit a frame boundary, update video
@@ -138,11 +148,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					buff_L = L.GetVideoBuffer();
 					L.vblank_rise = false;
+					FillVideoBuffer();
 				}
 				if (R.vblank_rise)
 				{
 					buff_R = R.GetVideoBuffer();
 					R.vblank_rise = false;
+					FillVideoBuffer();
 				}
 			}			
 		}
@@ -185,6 +197,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public int[] GetVideoBuffer()
 		{
+			return _vidbuffer;		
+		}
+
+		public void FillVideoBuffer()
+		{
 			// combine the 2 video buffers from the instances
 			for (int i = 0; i < 144; i++)
 			{
@@ -192,10 +209,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					_vidbuffer[i * 320 + j] = buff_L[i * 160 + j];
 					_vidbuffer[i * 320 + j + 160] = buff_R[i * 160 + j];
-				}				
+				}
 			}
-
-			return _vidbuffer;		
 		}
 
 		public int VirtualWidth => 160 * 2;

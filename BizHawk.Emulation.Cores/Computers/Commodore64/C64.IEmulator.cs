@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public ControllerDefinition ControllerDefinition => C64ControllerDefinition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_board.Controller = controller;
 
@@ -47,6 +47,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				DoCycle();
 			}
 			while (_frameCycles != 0);
+
+			return true;
 		}
 
 		public int Frame => _frame;

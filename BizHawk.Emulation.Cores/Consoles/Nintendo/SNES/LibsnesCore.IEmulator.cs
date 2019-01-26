@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 
@@ -80,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				LagCount++;
 			}
+
+			return true;
 		}
 
 		public int Frame

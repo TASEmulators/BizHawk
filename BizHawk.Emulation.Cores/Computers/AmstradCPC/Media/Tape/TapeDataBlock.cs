@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             set { _blockData = value; }
         }
 
+		/*
         /// <summary>
         /// An array of bytearray encoded strings (stored in this format for easy Bizhawk serialization)
         /// Its basically tape information
@@ -74,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 return data;
             }
         }
+		*/
 
 
         #region Block Meta Data

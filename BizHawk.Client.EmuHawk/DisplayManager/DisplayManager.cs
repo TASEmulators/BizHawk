@@ -181,6 +181,13 @@ namespace BizHawk.Client.EmuHawk
 					padding.Bottom += core_padding.Height - core_padding.Height / 2;
 				}
 
+			//apply user's crop selections as a negative padding (believe it or not, this largely works)
+			//is there an issue with the aspect ratio? I dont know--but if there is, there would be with the padding too
+			padding.Left -= Global.Config.DispCropLeft;
+			padding.Right -= Global.Config.DispCropRight;
+			padding.Top -= Global.Config.DispCropTop;
+			padding.Bottom -= Global.Config.DispCropBottom;
+
 			return padding;
 		}
 

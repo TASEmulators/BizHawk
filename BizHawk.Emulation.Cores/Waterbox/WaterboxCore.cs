@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected virtual void FrameAdvancePost()
 		{ }
 
-		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public unsafe bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			using (_exe.EnterExit())
 			{
@@ -218,6 +218,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					FrameAdvancePost();
 				}
 			}
+
+			return true;
 		}
 
 		private bool _disposed = false;

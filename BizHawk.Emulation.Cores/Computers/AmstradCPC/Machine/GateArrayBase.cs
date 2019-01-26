@@ -216,14 +216,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private int CurrentPen;
         private int ScreenMode;
         private int INTScanlineCnt;
-        private int VSYNCDelyCnt;
+        //private int VSYNCDelyCnt;
 
         private int[][] Lookup = new int[4][];
 
-        private bool DoModeUpdate;
+        //private bool DoModeUpdate;
 
-        private int LatchedMode;
-        private int buffPos;
+        //private int LatchedMode;
+        //private int buffPos;
 
         public bool FrameEnd;
 
@@ -387,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             for (int i = 0; i < 17; i++)
                 PenColours[i] = 0;
             INTScanlineCnt = 0;
-            VSYNCDelyCnt = 0;
+            //VSYNCDelyCnt = 0;
         }
 
         #endregion

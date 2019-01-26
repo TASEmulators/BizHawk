@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -124,6 +124,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				SoftReset();
 			}
+
+			return true;
 		}
 
 		public int Frame => _frame;

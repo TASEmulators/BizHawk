@@ -691,6 +691,13 @@
     </Compile>
     <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
+    <Compile Include="Api\ApiContainer.cs" />
+    <Compile Include="Api\Libraries\ToolApi.cs" />
+    <Compile Include="Api\Libraries\GuiApi.cs" />
+    <Compile Include="Api\Libraries\InputApi.cs" />
+    <Compile Include="Api\Libraries\SaveStateAPI.cs" />
+    <Compile Include="Api\ApiManager.cs" />
+    <Compile Include="Api\Libraries\CommApi.cs" />
     <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
@@ -764,7 +771,6 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="OpenAdvancedChooser.cs">
       <SubType>Form</SubType>
     </Compile>

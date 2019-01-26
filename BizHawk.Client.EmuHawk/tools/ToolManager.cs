@@ -7,6 +7,7 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.CoreExtensions;
@@ -121,6 +122,11 @@ namespace BizHawk.Client.EmuHawk
 			if (newTool is Form)
 			{
 				(newTool as Form).Owner = GlobalWin.MainForm;
+			}
+
+			if (isExternal)
+			{
+				ApiInjector.UpdateApis(GlobalWin.ApiProvider, newTool);
 			}
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
@@ -493,6 +499,8 @@ namespace BizHawk.Client.EmuHawk
 					
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
+						if (tool is IExternalToolForm)
+							ApiInjector.UpdateApis(GlobalWin.ApiProvider, tool);
 						tool.Restart();
 					}
 				}

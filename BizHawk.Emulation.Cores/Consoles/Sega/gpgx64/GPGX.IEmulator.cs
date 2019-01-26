@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		// TODO: use render and rendersound
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			if (controller.IsPressed("Reset"))
 				Core.gpgx_reset(false);
@@ -66,6 +66,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			if (_cds != null)
 				DriveLightOn = _drivelight;
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

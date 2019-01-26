@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 //this file contains some cumbersome self-"serialization" in order to gain a modicum of control over what the serialized output looks like
 //I don't want them to look like crufty json
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	public interface IOpenAdvanced
 	{
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
-	class OpenAdvanced_Libretro : IOpenAdvanced, IOpenAdvancedLibretro
+	public class OpenAdvanced_Libretro : IOpenAdvanced, IOpenAdvancedLibretro
 	{
 		public OpenAdvanced_Libretro()
 		{
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		public string CorePath { get { return token.CorePath; } set { token.CorePath = value; } }
 	}
 
-	class OpenAdvanced_LibretroNoGame : IOpenAdvanced, IOpenAdvancedLibretro
+	public class OpenAdvanced_LibretroNoGame : IOpenAdvanced, IOpenAdvancedLibretro
 	{
 		//you might think ideally we'd fetch the libretro core name from the core info inside it
 		//but that would involve spinning up excess libretro core instances, which probably isnt good for stability, no matter how much we wish otherwise, not to mention slow.
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 		public string CorePath { get { return _corePath; } set { _corePath = value; } }
 	}
 
-	class OpenAdvanced_OpenRom : IOpenAdvanced
+	public class OpenAdvanced_OpenRom : IOpenAdvanced
 	{
 		public OpenAdvanced_OpenRom()
 		{}
