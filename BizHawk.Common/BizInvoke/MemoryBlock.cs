@@ -139,10 +139,12 @@ namespace BizHawk.Common.BizInvoke
 		/// </summary>
 		public static MemoryBlock PlatformConstructor(ulong start, ulong size)
 		{
-			return PlatformLinkedLibSingleton.RunningOnUnix
+//			return PlatformLinkedLibSingleton.RunningOnUnix
 //				? (MemoryBlock) new MemoryBlockUnix(start, size)
-				? throw new InvalidOperationException("ctor of nonfunctional MemoryBlockUnix class")
-				: (MemoryBlock) new MemoryBlockWin32(start, size);
+//				: (MemoryBlock) new MemoryBlockWin32(start, size);
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+				throw new InvalidOperationException("ctor of nonfunctional MemoryBlockUnix class")
+			return new MemoryBlockWin32(start, size);
 		}
 
 		private class MemoryViewStream : Stream
