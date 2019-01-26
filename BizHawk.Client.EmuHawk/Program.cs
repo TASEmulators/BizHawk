@@ -21,47 +21,46 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			var libLoader = EXE_PROJECT.PlatformLinkedLibSingleton.LinkedLibManager;
-
-			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
-
-			//try loading libraries we know we'll need
-			//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
-			//but oddly it lets us proceed and we'll then catch it here
-			var libExt = EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix ? ".dll.so" : ".dll";
-			var d3dx9 = libLoader.LoadPlatformSpecific($"d3dx9_43{libExt}");
-			var vc2015 = libLoader.LoadPlatformSpecific($"vcruntime140{libExt}");
-			var vc2012 = libLoader.LoadPlatformSpecific($"msvcr120{libExt}"); //TODO - check version?
-			var vc2010 = libLoader.LoadPlatformSpecific($"msvcr100{libExt}"); //TODO - check version?
-			var vc2010p = libLoader.LoadPlatformSpecific($"msvcp100{libExt}");
-			bool fail = false, warn = false;
-			warn |= d3dx9 == IntPtr.Zero;
-			fail |= vc2015 == IntPtr.Zero;
-			fail |= vc2010 == IntPtr.Zero;
-			fail |= vc2012 == IntPtr.Zero;
-			fail |= vc2010p == IntPtr.Zero;
-			if (fail || warn)
-			{
-				var sw = new System.IO.StringWriter();
-				sw.WriteLine("[ OK ] .Net 4.6.1 (You couldn't even get here without it)");
-				sw.WriteLine("[{0}] Direct3d 9", d3dx9 == IntPtr.Zero ? "FAIL" : " OK ");
-				sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
-				sw.WriteLine("[{0}] Visual C++ 2012 Runtime", (vc2012 == IntPtr.Zero) ? "FAIL" : " OK ");
-				sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
-				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail);
-				box.textBox1.Text = sw.ToString();
-				box.ShowDialog();
-				if (fail) System.Diagnostics.Process.GetCurrentProcess().Kill();
-			}
-
-			libLoader.FreePlatformSpecific(d3dx9);
-			libLoader.FreePlatformSpecific(vc2015);
-			libLoader.FreePlatformSpecific(vc2012);
-			libLoader.FreePlatformSpecific(vc2010);
-			libLoader.FreePlatformSpecific(vc2010p);
-
 			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
+				var libLoader = EXE_PROJECT.PlatformLinkedLibSingleton.LinkedLibManager;
+
+				//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+
+				//try loading libraries we know we'll need
+				//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
+				//but oddly it lets us proceed and we'll then catch it here
+				var d3dx9 = libLoader.LoadPlatformSpecific("d3dx9_43.dll");
+				var vc2015 = libLoader.LoadPlatformSpecific("vcruntime140.dll");
+				var vc2012 = libLoader.LoadPlatformSpecific("msvcr120.dll"); //TODO - check version?
+				var vc2010 = libLoader.LoadPlatformSpecific("msvcr100.dll"); //TODO - check version?
+				var vc2010p = libLoader.LoadPlatformSpecific("msvcp100.dll");
+				bool fail = false, warn = false;
+				warn |= d3dx9 == IntPtr.Zero;
+				fail |= vc2015 == IntPtr.Zero;
+				fail |= vc2010 == IntPtr.Zero;
+				fail |= vc2012 == IntPtr.Zero;
+				fail |= vc2010p == IntPtr.Zero;
+				if (fail || warn)
+				{
+					var sw = new System.IO.StringWriter();
+					sw.WriteLine("[ OK ] .Net 4.6.1 (You couldn't even get here without it)");
+					sw.WriteLine("[{0}] Direct3d 9", d3dx9 == IntPtr.Zero ? "FAIL" : " OK ");
+					sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
+					sw.WriteLine("[{0}] Visual C++ 2012 Runtime", (vc2012 == IntPtr.Zero) ? "FAIL" : " OK ");
+					sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
+					var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail);
+					box.textBox1.Text = sw.ToString();
+					box.ShowDialog();
+					if (fail) System.Diagnostics.Process.GetCurrentProcess().Kill();
+				}
+
+				libLoader.FreePlatformSpecific(d3dx9);
+				libLoader.FreePlatformSpecific(vc2015);
+				libLoader.FreePlatformSpecific(vc2012);
+				libLoader.FreePlatformSpecific(vc2010);
+				libLoader.FreePlatformSpecific(vc2010p);
+
 				// this will look in subdirectory "dll" to load pinvoked stuff
 				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				SetDllDirectory(dllDir);
