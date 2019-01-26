@@ -20,7 +20,8 @@ namespace BizHawk.Common.BizInvoke
 		private string[] SearchPaths = new string[]
 		{
 			"/",
-			"/dll/"
+			"/dll/",
+			"/usr/lib/"
 		};
 
 		private void ResolveFilePath(ref string dllName)
