@@ -21,7 +21,8 @@ namespace BizHawk.Common.BizInvoke
 		{
 			"/",
 			"/dll/",
-			"/usr/lib/"
+			"/usr/lib/",
+			"/usr/lib/bizhawk/"
 		};
 
 		private void ResolveFilePath(ref string dllName)
