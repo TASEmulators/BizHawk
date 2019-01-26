@@ -11,7 +11,7 @@ else
 	$(error Unknown arch)
 endif
 
-CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto
+CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto -fPIC
 TARGET = bizswan.dll
 
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
@@ -32,7 +32,7 @@ SRCS = \
 	../system.cpp \
 	../tcache.cpp \
 	../v30mz.cpp \
-	../Blip/Blip_Buffer.cpp
+	../blip/Blip_Buffer.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
