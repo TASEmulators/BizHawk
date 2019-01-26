@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.EmuHawk
 {
 	partial class DisplayConfigLite
 	{
@@ -37,6 +37,7 @@
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
+			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -64,12 +65,22 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpAR = new System.Windows.Forms.TabPage();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.label16 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
+			this.txtCropBottom = new System.Windows.Forms.TextBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.txtCropRight = new System.Windows.Forms.TextBox();
+			this.txtCropTop = new System.Windows.Forms.TextBox();
+			this.label14 = new System.Windows.Forms.Label();
+			this.txtCropLeft = new System.Windows.Forms.TextBox();
+			this.btnDefaults = new System.Windows.Forms.Button();
 			this.cbAutoPrescale = new System.Windows.Forms.CheckBox();
 			this.label11 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
 			this.tpDispMethod = new System.Windows.Forms.TabPage();
-			this.label14 = new System.Windows.Forms.Label();
+			this.label18 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.rbVulkan = new System.Windows.Forms.RadioButton();
@@ -97,17 +108,17 @@
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
+			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.btnDefaults = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tpAR.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).BeginInit();
 			this.tpDispMethod.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -116,7 +127,6 @@
 			this.tabPage1.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -197,6 +207,19 @@
 			this.rbUser.TabStop = true;
 			this.rbUser.Text = "User";
 			this.rbUser.UseVisualStyleBackColor = true;
+			// 
+			// tbScanlineIntensity
+			// 
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 256;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
 			// 
 			// rbNone
 			// 
@@ -476,6 +499,7 @@
 			// 
 			// tpAR
 			// 
+			this.tpAR.Controls.Add(this.groupBox6);
 			this.tpAR.Controls.Add(this.btnDefaults);
 			this.tpAR.Controls.Add(this.cbAutoPrescale);
 			this.tpAR.Controls.Add(this.label11);
@@ -493,6 +517,102 @@
 			this.tpAR.TabIndex = 0;
 			this.tpAR.Text = "Scaling & Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.label16);
+			this.groupBox6.Controls.Add(this.label15);
+			this.groupBox6.Controls.Add(this.txtCropBottom);
+			this.groupBox6.Controls.Add(this.label17);
+			this.groupBox6.Controls.Add(this.txtCropRight);
+			this.groupBox6.Controls.Add(this.txtCropTop);
+			this.groupBox6.Controls.Add(this.label14);
+			this.groupBox6.Controls.Add(this.txtCropLeft);
+			this.groupBox6.Location = new System.Drawing.Point(218, 195);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(302, 61);
+			this.groupBox6.TabIndex = 9;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Cropping";
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(217, 25);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(43, 13);
+			this.label16.TabIndex = 30;
+			this.label16.Text = "Bottom:";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(74, 25);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(29, 13);
+			this.label15.TabIndex = 29;
+			this.label15.Text = "Top:";
+			// 
+			// txtCropBottom
+			// 
+			this.txtCropBottom.Location = new System.Drawing.Point(261, 22);
+			this.txtCropBottom.Name = "txtCropBottom";
+			this.txtCropBottom.Size = new System.Drawing.Size(34, 20);
+			this.txtCropBottom.TabIndex = 28;
+			this.txtCropBottom.Text = "8000";
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(144, 25);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(35, 13);
+			this.label17.TabIndex = 26;
+			this.label17.Text = "Right:";
+			// 
+			// txtCropRight
+			// 
+			this.txtCropRight.Location = new System.Drawing.Point(180, 22);
+			this.txtCropRight.Name = "txtCropRight";
+			this.txtCropRight.Size = new System.Drawing.Size(34, 20);
+			this.txtCropRight.TabIndex = 25;
+			this.txtCropRight.Text = "8000";
+			// 
+			// txtCropTop
+			// 
+			this.txtCropTop.Location = new System.Drawing.Point(104, 22);
+			this.txtCropTop.Name = "txtCropTop";
+			this.txtCropTop.Size = new System.Drawing.Size(34, 20);
+			this.txtCropTop.TabIndex = 24;
+			this.txtCropTop.Text = "8000";
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(6, 25);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(28, 13);
+			this.label14.TabIndex = 16;
+			this.label14.Text = "Left:";
+			// 
+			// txtCropLeft
+			// 
+			this.txtCropLeft.Location = new System.Drawing.Point(34, 22);
+			this.txtCropLeft.Name = "txtCropLeft";
+			this.txtCropLeft.Size = new System.Drawing.Size(34, 20);
+			this.txtCropLeft.TabIndex = 15;
+			this.txtCropLeft.Text = "8000";
+			// 
+			// btnDefaults
+			// 
+			this.btnDefaults.Location = new System.Drawing.Point(447, 262);
+			this.btnDefaults.Name = "btnDefaults";
+			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
+			this.btnDefaults.TabIndex = 18;
+			this.btnDefaults.Text = "Defaults";
+			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
+			this.btnDefaults.UseVisualStyleBackColor = true;
+			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
 			// 
 			// cbAutoPrescale
 			// 
@@ -546,7 +666,7 @@
 			// 
 			// tpDispMethod
 			// 
-			this.tpDispMethod.Controls.Add(this.label14);
+			this.tpDispMethod.Controls.Add(this.label18);
 			this.tpDispMethod.Controls.Add(this.label6);
 			this.tpDispMethod.Controls.Add(this.groupBox3);
 			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
@@ -556,13 +676,13 @@
 			this.tpDispMethod.Text = "Display Method";
 			this.tpDispMethod.UseVisualStyleBackColor = true;
 			// 
-			// label14
+			// label18
 			// 
-			this.label14.Location = new System.Drawing.Point(31, 260);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(359, 18);
-			this.label14.TabIndex = 24;
-			this.label14.Text = " • Experimental, high-performance, and open.\r\n";
+			this.label18.Location = new System.Drawing.Point(31, 260);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(359, 18);
+			this.label18.TabIndex = 24;
+			this.label18.Text = " • Experimental, high-performance, and open.\r\n";
 			// 
 			// label6
 			// 
@@ -588,7 +708,7 @@
 			this.groupBox3.Size = new System.Drawing.Size(415, 276);
 			this.groupBox3.TabIndex = 16;
 			this.groupBox3.TabStop = false;
-			// 
+			//
 			// rbVulkan
 			// 
 			this.rbVulkan.AutoSize = true;
@@ -858,6 +978,17 @@
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
 			// 
+			// trackbarFrameSizeWindowed
+			// 
+			this.trackbarFrameSizeWindowed.LargeChange = 1;
+			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
+			this.trackbarFrameSizeWindowed.Maximum = 2;
+			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.TabIndex = 21;
+			this.trackbarFrameSizeWindowed.Value = 1;
+			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			// 
 			// cbCaptionWindowed
 			// 
 			this.cbCaptionWindowed.AutoSize = true;
@@ -878,41 +1009,6 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-			// 
-			// tbScanlineIntensity
-			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 256;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			// 
-			// trackbarFrameSizeWindowed
-			// 
-			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
-			this.trackbarFrameSizeWindowed.Maximum = 2;
-			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
-			this.trackbarFrameSizeWindowed.TabIndex = 21;
-			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
-			// 
-			// btnDefaults
-			// 
-			this.btnDefaults.Location = new System.Drawing.Point(447, 262);
-			this.btnDefaults.Name = "btnDefaults";
-			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
-			this.btnDefaults.TabIndex = 18;
-			this.btnDefaults.Text = "Defaults";
-			this.toolTip1.SetToolTip(this.btnDefaults, "Unless I forgot to update the button\'s code when I changed a default");
-			this.btnDefaults.UseVisualStyleBackColor = true;
-			this.btnDefaults.Click += new System.EventHandler(this.btnDefaults_Click);
 			// 
 			// DisplayConfigLite
 			// 
@@ -939,6 +1035,8 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tpAR.ResumeLayout(false);
 			this.tpAR.PerformLayout();
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
 			this.tpDispMethod.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
@@ -1032,7 +1130,16 @@
 		private System.Windows.Forms.CheckBox cbFullscreenHacks;
 		private System.Windows.Forms.Button btnDefaults;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Label label16;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.TextBox txtCropBottom;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.TextBox txtCropRight;
+		private System.Windows.Forms.TextBox txtCropTop;
 		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.TextBox txtCropLeft;
+		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.RadioButton rbVulkan;
 	}
 }

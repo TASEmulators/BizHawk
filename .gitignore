@@ -74,5 +74,6 @@ ExternalCoreProjects/Virtu/bin/*.*
 libsnes/vs2015/libsnes.VC.db
 waterbox/**/*.wbx
 waterbox/**/*.wbx.in
+/BizHawkTool_template.zip
 
 mono_crash*
