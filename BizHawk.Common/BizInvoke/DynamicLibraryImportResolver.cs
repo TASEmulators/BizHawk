@@ -38,9 +38,9 @@ namespace BizHawk.Common.BizInvoke
 				string currDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:", "");
 				string dll = dllName;
 
-				foreach (var p in RelativeSearchPaths)
+				foreach (var p in AbsoluteSearchPaths)
 				{
-					dll = currDir + p + dllName;
+					dll = p + dllName;
 					if (System.IO.File.Exists(dll))
 					{
 						dllName = dll;
@@ -48,9 +48,9 @@ namespace BizHawk.Common.BizInvoke
 					}
 				}
 
-				foreach (var p in AbsoluteSearchPaths)
+				foreach (var p in RelativeSearchPaths)
 				{
-					dll = p + dllName;
+					dll = currDir + p + dllName;
 					if (System.IO.File.Exists(dll))
 					{
 						dllName = dll;
