@@ -69,8 +69,10 @@
 			this.label10 = new System.Windows.Forms.Label();
 			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
 			this.tpDispMethod = new System.Windows.Forms.TabPage();
+			this.label14 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.rbVulkan = new System.Windows.Forms.RadioButton();
 			this.label13 = new System.Windows.Forms.Label();
 			this.cbAlternateVsync = new System.Windows.Forms.CheckBox();
 			this.label8 = new System.Windows.Forms.Label();
@@ -122,7 +124,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(473, 339);
+			this.btnCancel.Location = new System.Drawing.Point(473, 365);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -132,7 +134,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(392, 339);
+			this.btnOk.Location = new System.Drawing.Point(392, 365);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -469,7 +471,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(536, 317);
+			this.tabControl1.Size = new System.Drawing.Size(536, 343);
 			this.tabControl1.TabIndex = 17;
 			// 
 			// tpAR
@@ -487,7 +489,7 @@
 			this.tpAR.Location = new System.Drawing.Point(4, 22);
 			this.tpAR.Name = "tpAR";
 			this.tpAR.Padding = new System.Windows.Forms.Padding(3);
-			this.tpAR.Size = new System.Drawing.Size(528, 291);
+			this.tpAR.Size = new System.Drawing.Size(528, 317);
 			this.tpAR.TabIndex = 0;
 			this.tpAR.Text = "Scaling & Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
@@ -544,18 +546,27 @@
 			// 
 			// tpDispMethod
 			// 
+			this.tpDispMethod.Controls.Add(this.label14);
 			this.tpDispMethod.Controls.Add(this.label6);
 			this.tpDispMethod.Controls.Add(this.groupBox3);
 			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
 			this.tpDispMethod.Name = "tpDispMethod";
-			this.tpDispMethod.Size = new System.Drawing.Size(528, 291);
+			this.tpDispMethod.Size = new System.Drawing.Size(528, 317);
 			this.tpDispMethod.TabIndex = 2;
 			this.tpDispMethod.Text = "Display Method";
 			this.tpDispMethod.UseVisualStyleBackColor = true;
 			// 
+			// label14
+			// 
+			this.label14.Location = new System.Drawing.Point(31, 260);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(359, 18);
+			this.label14.TabIndex = 24;
+			this.label14.Text = " • Experimental, high-performance, and open.\r\n";
+			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(3, 258);
+			this.label6.Location = new System.Drawing.Point(3, 293);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(359, 23);
 			this.label6.TabIndex = 18;
@@ -563,6 +574,7 @@
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.rbVulkan);
 			this.groupBox3.Controls.Add(this.label13);
 			this.groupBox3.Controls.Add(this.cbAlternateVsync);
 			this.groupBox3.Controls.Add(this.label8);
@@ -573,9 +585,21 @@
 			this.groupBox3.Controls.Add(this.rbOpenGL);
 			this.groupBox3.Location = new System.Drawing.Point(6, 5);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(415, 241);
+			this.groupBox3.Size = new System.Drawing.Size(415, 276);
 			this.groupBox3.TabIndex = 16;
 			this.groupBox3.TabStop = false;
+			// 
+			// rbVulkan
+			// 
+			this.rbVulkan.AutoSize = true;
+			this.rbVulkan.Checked = true;
+			this.rbVulkan.Location = new System.Drawing.Point(6, 235);
+			this.rbVulkan.Name = "rbVulkan";
+			this.rbVulkan.Size = new System.Drawing.Size(65, 17);
+			this.rbVulkan.TabIndex = 23;
+			this.rbVulkan.TabStop = true;
+			this.rbVulkan.Text = "Vulkan";
+			this.rbVulkan.UseVisualStyleBackColor = true;
 			// 
 			// label13
 			// 
@@ -602,8 +626,7 @@
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(359, 27);
 			this.label8.TabIndex = 20;
-			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n" +
-    "";
+			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n";
 			// 
 			// rbD3D9
 			// 
@@ -645,7 +668,7 @@
 			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
 			this.tpMisc.Location = new System.Drawing.Point(4, 22);
 			this.tpMisc.Name = "tpMisc";
-			this.tpMisc.Size = new System.Drawing.Size(528, 291);
+			this.tpMisc.Size = new System.Drawing.Size(528, 317);
 			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
@@ -704,7 +727,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(528, 291);
+			this.tabPage1.Size = new System.Drawing.Size(528, 317);
 			this.tabPage1.TabIndex = 4;
 			this.tabPage1.Text = "Window";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -897,7 +920,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(564, 374);
+			this.ClientSize = new System.Drawing.Size(564, 400);
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.btnCancel);
@@ -908,6 +931,7 @@
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			this.grpFinalFilter.ResumeLayout(false);
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
@@ -929,7 +953,6 @@
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -1009,5 +1032,7 @@
 		private System.Windows.Forms.CheckBox cbFullscreenHacks;
 		private System.Windows.Forms.Button btnDefaults;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.RadioButton rbVulkan;
 	}
 }

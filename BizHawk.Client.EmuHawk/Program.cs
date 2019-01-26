@@ -48,13 +48,10 @@ namespace BizHawk.Client.EmuHawk
 				sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
 				sw.WriteLine("[{0}] Visual C++ 2012 Runtime", (vc2012 == IntPtr.Zero) ? "FAIL" : " OK ");
 				sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
-				var str = sw.ToString();
 				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail);
-				box.textBox1.Text = str;
+				box.textBox1.Text = sw.ToString();
 				box.ShowDialog();
-				if (!fail) { }
-				else
-					System.Diagnostics.Process.GetCurrentProcess().Kill();
+				if (fail) System.Diagnostics.Process.GetCurrentProcess().Kill();
 			}
 
 			libLoader.FreePlatformSpecific(d3dx9);
@@ -90,7 +87,17 @@ namespace BizHawk.Client.EmuHawk
 		[STAThread]
 		static int Main(string[] args)
 		{
-			return SubMain(args);
+			int sm = SubMain(args);
+			// We have a problem on mono where the application (most of the time) does not terminate correctly
+			// and we have to CTRL-C to kill the mono process
+			// This forces mono to go away immediately
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				Console.WriteLine("BizHawk has completed it's shutdown routines");
+				Console.WriteLine("Attempting to kill mono...");
+				Process.GetCurrentProcess().Kill();
+			}
+			return sm;
 		}
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
@@ -113,9 +120,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileManager.Start();
+			BizHawk.Common.TempFileManager.Start();			
+			
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+				HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+			else
+				HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			// Uncomment for system-agnostic glory!
+			//HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
 
 			ArgParser argParser = new ArgParser();
 			argParser.ParseArguments(args);
@@ -137,13 +150,9 @@ namespace BizHawk.Client.EmuHawk
 			BizHawk.Client.Common.StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
 
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
-			for (int i = 0; i < args.Length; i++)
+			if (Array.Exists(args, arg => arg.ToLower().StartsWith("--gdi")))
 			{
-				var arg = args[i].ToLower();
-				if (arg.StartsWith("--gdi"))
-				{
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-				}
+				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 			}
 
 			// create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
@@ -154,11 +163,27 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
-			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+			else if (Global.Config.DispMethod == Config.EDispMethod.Vulkan)
+			{
+				try
+				{
+					GlobalWin.GL = new Bizware.BizwareGL.Drivers.Vulkan.IGL_Vulkan();
+				}
+				catch (Exception ex)
+				{
+					new ExceptionBox(new Exception("Something in Vulkan init failed, using GDI+ as fallback", ex))
+						.ShowDialog();
+
+					// fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
+			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9 && !EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				try
 				{
@@ -166,8 +191,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch(Exception ex)
 				{
-					var e2 = new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex);
-					new ExceptionBox(e2).ShowDialog();
+					new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex))
+						.ShowDialog();
 
 					// fallback
 					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
@@ -179,8 +204,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.GL = GlobalWin.IGL_GL;
 
 				// check the opengl version and dont even try to boot this crap up if its too old
-				int version = GlobalWin.IGL_GL.Version;
-				if (version < 200)
+				if (GlobalWin.IGL_GL.Version < 200)
 				{
 					// fallback
 					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
@@ -195,8 +219,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch(Exception ex)
 			{
-				var e2 = new Exception("Initialization of Display Method failed; falling back to GDI+", ex);
-				new ExceptionBox(e2).ShowDialog();
+				new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex))
+					.ShowDialog();
 				//fallback
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 				goto REDO_DISPMETHOD;
@@ -209,8 +233,7 @@ namespace BizHawk.Client.EmuHawk
 				//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
 				//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
 				//pasting should be safe (not affecting the jit order of things)
-				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				SetDllDirectory(dllDir);
+				SetDllDirectory(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll"));
 			}
 
 			try
@@ -219,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						new SingleInstanceController(args).Run(args);
+						new SingleInstanceController(args).RunWithArgs();
 					}
 					catch (ObjectDisposedException)
 					{
@@ -321,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			//3. When NLua assembly attempts to load, it can't find it
 			//I. if LuaInterface is selected by the user, we switch to requesting that.
 			//     (those DLLs are built into the output/DLL directory)
-			//II. if NLua is selected by the user, we skip over this part; 
+			//II. if NLua is selected by the user, we skip over this part;
 			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
 			if (new AssemblyName(requested).Name == "NLua")
 			{
@@ -330,30 +353,26 @@ namespace BizHawk.Client.EmuHawk
 				//avert your eyes.
 				bool UseNLua = true;
 				string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (File.Exists(configPath))
+				if (File.Exists(configPath) && (
+					File.ReadAllLines(configPath)
+						.FirstOrDefault(line => line.Contains("  \"UseNLua\": "))
+						?.Contains("false")
+						?? false))
 				{
-					var cfg = File.ReadAllLines(configPath);
-					var usenlua_key = cfg.FirstOrDefault(line=>line.Contains("  \"UseNLua\": "));
-					if (usenlua_key != null)
-						if (usenlua_key.Contains("false"))
-							UseNLua = false;
+					UseNLua = false;
 				}
-				
-				if (UseNLua) { }
-				else if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+
+				if (!UseNLua && !EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
 				{
-					// currently LuaInterface is not working/implemented on Mono
-					// so we always force NLua
+					// currently LuaInterface is not working/implemented on Mono so we always force NLua, otherwise:
+					requested = "LuaInterface";
 				}
-				else requested = "LuaInterface";
 			}
 
 			lock (AppDomain.CurrentDomain)
 			{
-				var asms = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (var asm in asms)
-					if (asm.FullName == requested)
-						return asm;
+				var firstAsm = Array.Find(AppDomain.CurrentDomain.GetAssemblies(), asm => asm.FullName == requested);
+				if (firstAsm != null) return firstAsm;
 
 				//load missing assemblies by trying to find them in the dll directory
 				string dllname = new AssemblyName(requested).Name + ".dll";
@@ -376,6 +395,11 @@ namespace BizHawk.Client.EmuHawk
 				cmdArgs = args;
 				IsSingleInstance = true;
 				StartupNextInstance += this_StartupNextInstance;
+			}
+
+			public void RunWithArgs()
+			{
+				Run(cmdArgs);
 			}
 
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)

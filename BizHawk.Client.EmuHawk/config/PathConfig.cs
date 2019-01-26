@@ -218,15 +218,36 @@ namespace BizHawk.Client.EmuHawk
 				system = null;
 			}
 
-			var f = new FolderBrowserEx
+			DialogResult result = new DialogResult();
+			string selectedPath = "";
+
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				Description = "Set the directory for " + name,
-				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
-			};
-			var result = f.ShowDialog();
+				var f = new FolderBrowserEx
+				{
+					Description = "Set the directory for " + name,
+					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			else
+			{
+				// mono does not like FolderBrowserEx because of its managed calls
+				// do standard winforms on *nix
+				var f = new FolderBrowserDialog
+				{
+					Description = "Set the directory for " + name,
+					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+
+
 			if (result == DialogResult.OK)
 			{
-				box.Text = PathManager.TryMakeRelative(f.SelectedPath, system);
+				box.Text = PathManager.TryMakeRelative(selectedPath, system);
 			}
 		}
 

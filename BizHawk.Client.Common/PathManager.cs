@@ -407,9 +407,24 @@ namespace BizHawk.Client.Common
 				GetGlobalBasePathAbsolute() :
 				MakeAbsolutePath(GetPlatformBase(system), system);
 
-			if (IsSubfolder(parentPath, absolutePath))
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				return absolutePath.Replace(parentPath, ".");
+				if (IsSubfolder(parentPath, absolutePath))
+				{
+					return absolutePath.Replace(parentPath, ".");
+				}
+			}
+			else
+			{
+				// weird kludges for linux systems
+				if (IsSubfolder(parentPath, absolutePath))
+				{
+					return absolutePath.Replace(parentPath.TrimEnd('.'), "./");
+				}
+				else if (parentPath.TrimEnd('.') == absolutePath + "/")
+				{
+					return ".";
+				}
 			}
 
 			return absolutePath;
@@ -428,21 +443,51 @@ namespace BizHawk.Client.Common
 		// http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
 		private static bool IsSubfolder(string parentPath, string childPath)
 		{
-			var parentUri = new Uri(parentPath);
-
-			var childUri = new DirectoryInfo(childPath).Parent;
-
-			while (childUri != null)
+			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
 			{
-				if (new Uri(childUri.FullName) == parentUri)
+				var parentUri = new Uri(parentPath);
+
+				var childUri = new DirectoryInfo(childPath).Parent;
+
+				while (childUri != null)
 				{
-					return true;
+					if (new Uri(childUri.FullName) == parentUri)
+					{
+						return true;
+					}
+
+					childUri = childUri.Parent;
 				}
 
-				childUri = childUri.Parent;
+				return false;
 			}
+			else
+			{
+				// more weird linux stuff
+				var parentUri = new Uri(parentPath.TrimEnd('.'));
+				var childUri = new DirectoryInfo(childPath).Parent;
 
-			return false;
+				try
+				{
+					while (childUri != null)
+					{
+						var ch = new Uri(childUri.FullName).AbsolutePath.TrimEnd('/');
+						var pr = parentUri.AbsolutePath.TrimEnd('/');
+						if (ch == pr)
+						{
+							return true;
+						}
+
+						childUri = childUri.Parent;
+					}
+
+					return false;
+				}
+				catch
+				{
+					return false;
+				}
+			}
 		}
 
 		/// <summary>

@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public MapHeap(ulong start, ulong size, string name)
 		{
 			size = WaterboxUtils.AlignUp(size);
-			Memory = new MemoryBlock(start, size);
+			Memory = MemoryBlock.PlatformConstructor(start, size);
 			Name = name;
 			_pagesAsBytes = new byte[size >> WaterboxUtils.PageShift];
 			_pages = (MemoryBlock.Protection[])(object)_pagesAsBytes;

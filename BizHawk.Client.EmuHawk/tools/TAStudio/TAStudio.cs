@@ -25,6 +25,13 @@ namespace BizHawk.Client.EmuHawk
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
 		private MainForm Mainform => GlobalWin.MainForm;
 
+		/// <summary>
+		/// Static settings so that InputRoll.cs can determine its renderer ahead of instantiation
+		/// 0:	GDI
+		/// 1:	GDI+
+		/// </summary>
+		public static int InputRollRenderer = BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix ? 1 : 0;
+
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
 
@@ -113,6 +120,10 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			Settings = new TAStudioSettings();
+
+			// input roll renderer must be set before InputRoll initialisation
+			InputRollRenderer = BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix ? 1 : Global.Config.TasStudioRenderer;
+			
 			InitializeComponent();
 			InitializeSeekWorker();
 

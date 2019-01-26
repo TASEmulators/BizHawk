@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.MultiHawk", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.ApiHawk", "BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj", "{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.Vulkan", "Bizware\BizHawk.Bizware.BizwareGL.Vulkan\BizHawk.Bizware.BizwareGL.Vulkan.csproj", "{538947C1-B7F6-8A0D-C976-41EE5160CFB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -245,6 +247,18 @@ Global
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x64.Build.0 = Release|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.ActiveCfg = Release|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.Build.0 = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|x64.Build.0 = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Debug|x86.Build.0 = Debug|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|x64.ActiveCfg = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|x64.Build.0 = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|x86.ActiveCfg = Release|Any CPU
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -263,6 +277,10 @@ Global
 		{E6B436B1-A3CD-4C9A-8F76-5D7154726884} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 		{B95649F5-A0AE-41EB-B62B-578A2AFF5E18} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
+		{538947C1-B7F6-8A0D-C976-41EE5160CFB1} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6BC2A276-7A5D-41C2-A756-36EB1FF7FBEF}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj

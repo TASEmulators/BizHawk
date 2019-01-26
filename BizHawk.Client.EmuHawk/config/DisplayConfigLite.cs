@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
 			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
 			rbD3D9.Checked = Global.Config.DispMethod == Config.EDispMethod.SlimDX9;
+			rbVulkan.Checked = Global.Config.DispMethod == Config.EDispMethod.Vulkan;
 
 			cbStatusBarWindowed.Checked = Global.Config.DispChrome_StatusBarWindowed;
 			cbCaptionWindowed.Checked = Global.Config.DispChrome_CaptionWindowed;
@@ -86,6 +88,22 @@ namespace BizHawk.Client.EmuHawk
 				txtCustomARY.Text = Global.Config.DispCustomUserARY.ToString();
 
 			RefreshAspectRatioOptions();
+
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				// no slimdx
+				rbD3D9.Enabled = false;
+				rbD3D9.AutoCheck = false;
+				cbAlternateVsync.Enabled = false;
+				label13.Enabled = false;
+				label8.Enabled = false;
+			}
+			else
+			{
+				// Disallow Vulkan selection on Windows
+				rbVulkan.Enabled = false;
+				label14.Enabled = false;
+			}
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -172,6 +190,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
+			if (rbVulkan.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.Vulkan;
 
 			if (oldDisplayMethod != Global.Config.DispMethod)
 				NeedReset = true;

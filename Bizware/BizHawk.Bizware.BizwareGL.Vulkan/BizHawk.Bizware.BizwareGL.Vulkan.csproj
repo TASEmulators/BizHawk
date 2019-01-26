@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E6B436B1-A3CD-4C9A-8F76-5D7154726884}</ProjectGuid>
+    <ProjectGuid>{538947C1-B7F6-8A0D-C976-41EE5160CFB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Bizware.BizwareGL.SlimDX</RootNamespace>
-    <AssemblyName>BizHawk.Bizware.BizwareGL.SlimDX</AssemblyName>
+    <RootNamespace>BizHawk.Bizware.BizwareGL.Vulkan</RootNamespace>
+    <AssemblyName>BizHawk.Bizware.BizwareGL.Vulkan</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -24,6 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
     <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\..\output\dll\</OutputPath>
@@ -35,14 +37,17 @@
     <ErrorReport>prompt</ErrorReport>
     <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
     <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="SlimDX">
-      <HintPath>..\..\References\x64\SlimDX.dll</HintPath>
+    <Reference Include="OpenTK.GLControl, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,16 +65,15 @@
       <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
-      <Project>{9f84a0b2-861e-4ef4-b89b-5e2a3f38a465}</Project>
+      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="GLControlWrapper_SlimDX9.cs">
-      <SubType>Component</SubType>
+    <Compile Include="GraphicsControl_Vulkan.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="IGL_SlimDX9.cs" />
+    <Compile Include="IGL_Vulkan.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
