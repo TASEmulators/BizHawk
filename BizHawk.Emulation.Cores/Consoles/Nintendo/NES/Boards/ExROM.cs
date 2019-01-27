@@ -255,7 +255,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// top 2 bits of address come from chr_reg_high
 				bank_1k += chr_reg_high << 8;
 				ofs = addr & (4 * 1024 - 1);
-				goto MAPPED;
+
+				bank_1k &= chr_bank_mask_1k;
+				addr = (bank_1k << 10) | ofs;
+				return addr;
 			}
 
 			if (NES.ppu.reg_2000.obj_size_16)
@@ -278,7 +281,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = a_banks_1k[bank_1k];
 			}
 		
-			MAPPED:
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
 			return addr;

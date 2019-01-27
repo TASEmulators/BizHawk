@@ -105,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int sum = 0;
 			int ymin = Math.Max(Math.Max(y - radius, ppur.status.sl - 20), 0);
+			if (ymin > 239) { ymin = 239; }
 			int ymax = Math.Min(y + radius, 239);
 			int xmin = Math.Max(x - radius, 0);
 			int xmax = Math.Min(x + radius, 255);
@@ -112,21 +113,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int ystop = ppur.status.sl - 2;
 			int xstop = ppur.status.cycle - 20;
 
-			for (int j = ymin; j <= ymax; j++)
+			bool all_stop = false;
+
+			int j = ymin;
+			int i = xmin;
+			short s = 0;
+			short palcolor = 0;
+			short intensity = 0;
+
+			if (j >= ystop && i >= xstop || j > ystop) { all_stop = true; }
+
+			while (!all_stop)
 			{
-				for (int i = xmin; i <= xmax; i++)
+				s = xbuf[j * 256 + i];
+				palcolor = (short)(s & 0x3F);
+				intensity = (short)((s >> 6) & 0x7);
+
+				sum += _currentLuma[palcolor];
+
+				i++;
+				if (i > xmax)
 				{
-					if (j >= ystop && i >= xstop || j > ystop)
-						goto loopout;
+					i = xmin;
+					j++;
 
-					short s = xbuf[j * 256 + i];
-
-					short palcolor = (short)(s & 0x3F);
-					short intensity = (short)((s >> 6) & 0x7);
-					sum += _currentLuma[palcolor];
+					if (j > ymax)
+					{
+						all_stop = true;
+					}
 				}
+
+				if (j >= ystop && i >= xstop || j > ystop) { all_stop = true; }
 			}
-			loopout:
+
 			return sum >= 2000;
 		}
 
