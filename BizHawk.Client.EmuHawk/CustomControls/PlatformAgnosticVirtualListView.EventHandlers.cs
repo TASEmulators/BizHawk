@@ -36,6 +36,12 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Virtual")]
 		public event QueryItemBkColorHandler QueryItemBkColor;
 
+		/// <summary>
+		/// Fire the <see cref="QueryItemBkColorAdvanced"/> event which requests the background color for the passed cell
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryItemBkColorHandlerAdvanced QueryItemBkColorAdvanced;
+
 		[Category("Virtual")]
 		public event QueryRowBkColorHandler QueryRowBkColor;
 
@@ -110,7 +116,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the background color for a cell
 		/// </summary>
-		public delegate void QueryItemBkColorHandler(int index, ListColumn column, ref Color color);
+		public delegate void QueryItemBkColorHandlerAdvanced(int index, ListColumn column, ref Color color);
+		public delegate void QueryItemBkColorHandler(int index, int column, ref Color color);
+
 		public delegate void QueryRowBkColorHandler(int index, ref Color color);
 
 		/// <summary>
@@ -690,6 +698,8 @@ namespace BizHawk.Client.EmuHawk
 				ColumnWidth = _columns.VisibleColumns.Max(c => c.Width.Value) + CellWidthPadding * 4;
 			}
 		}
+
+		
 
 		#endregion
 	}

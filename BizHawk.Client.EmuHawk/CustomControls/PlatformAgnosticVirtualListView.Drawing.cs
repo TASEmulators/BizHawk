@@ -99,7 +99,8 @@ namespace BizHawk.Client.EmuHawk
 				QueryItemTextAdvanced?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, out text, ref offsetX, ref offsetY);
 
 				Color bgColor = ColumnHeaderBackgroundColor;
-				QueryItemBkColor?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, ref bgColor);
+				QueryItemBkColor?.Invoke(_draggingCell.RowIndex.Value, _columns.IndexOf(_draggingCell.Column), ref bgColor);
+				QueryItemBkColorAdvanced?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, ref bgColor);
 
 				int x1 = _currentX.Value - (_draggingCell.Column.Width.Value / 2);
 				int y1 = _currentY.Value - (CellHeight / 2);
@@ -124,7 +125,8 @@ namespace BizHawk.Client.EmuHawk
 				QueryItemTextAdvanced?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, out text, ref offsetX, ref offsetY);
 
 				Color bgColor = CellBackgroundColor;
-				QueryItemBkColor?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, ref bgColor);
+				QueryItemBkColor?.Invoke(_draggingCell.RowIndex.Value, _columns.IndexOf(_draggingCell.Column), ref bgColor);
+				QueryItemBkColorAdvanced?.Invoke(_draggingCell.RowIndex.Value, _draggingCell.Column, ref bgColor);
 
 				int x1 = _currentX.Value - (_draggingCell.Column.Width.Value / 2);
 				int y1 = _currentY.Value - (CellHeight / 2);
@@ -144,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in visibleColumns)
 			{
-				var point = new Point(column.Left.Value + 2 * CellWidthPadding - _hBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+				var point = new Point(column.Left.Value + CellWidthPadding - _hBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 
 				string t = column.Text;
 				ResizeTextToFit(ref t, column.Width.Value, ColumnHeaderFont);
@@ -214,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (!string.IsNullOrWhiteSpace(text))
 						{
-							ResizeTextToFit(ref text, col.Width.Value, CellFont);		
+							ResizeTextToFit(ref text, col.Width.Value, CellFont);
 							e.Graphics.DrawString(text, CellFont, sBrush, (PointF)(new Point(point.X + strOffsetX, point.Y + strOffsetY)));
 						}
 
@@ -448,7 +450,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Color cellColor = rowColor;
-				QueryItemBkColor?.Invoke(cell.RowIndex.Value, cell.Column, ref cellColor);
+				QueryItemBkColor?.Invoke(cell.RowIndex.Value, _columns.IndexOf(cell.Column), ref cellColor);
+				QueryItemBkColorAdvanced?.Invoke(cell.RowIndex.Value, cell.Column, ref cellColor);
 
 				// Alpha layering for cell before selection
 				float alpha = (float)cellColor.A / 255;
@@ -494,7 +497,9 @@ namespace BizHawk.Client.EmuHawk
 				for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 				{
 					Color itemColor = CellBackgroundColor;
-					QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);
+					QueryItemBkColor?.Invoke(f + startIndex, _columns.IndexOf(visibleColumns[j]), ref itemColor);
+					QueryItemBkColorAdvanced?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
+
 					if (itemColor == CellBackgroundColor)
 					{
 						itemColor = rowColor;

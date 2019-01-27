@@ -52,15 +52,41 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
-			WatchListView.QueryItemText += ListView_QueryItemText;
-			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
-			WatchListView.VirtualMode = true;
+
+			SetupListViewSettings();
+			
 			Closing += (o, e) => SaveConfigSettings();
 
 			_sortedColumn = "";
 			_sortReverse = false;
 
 			Settings = new RamSearchSettings();
+		}
+
+		private void SetupListViewSettings()
+		{
+			WatchListView.BorderColor = System.Drawing.Color.Black;
+			WatchListView.BorderSize = 1;
+			WatchListView.MultiSelect = true;
+			WatchListView.CellWidthPadding = 2;
+			WatchListView.CellHeightPadding = 1;
+			WatchListView.ScrollSpeed = 3;
+			WatchListView.AllowColumnResize = true;
+			WatchListView.AllowColumnReorder = true;
+			WatchListView.ColumnHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 7.7F);
+			WatchListView.ColumnHeaderFontColor = System.Drawing.Color.Black;
+			WatchListView.ColumnHeaderBackgroundColor = System.Drawing.Color.White;
+			WatchListView.ColumnHeaderBackgroundHighlightColor = System.Drawing.Color.LightSteelBlue;
+			WatchListView.ColumnHeaderOutlineColor = System.Drawing.Color.LightGray;
+			WatchListView.CellFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+			WatchListView.CellFontColor = System.Drawing.Color.Black;
+			WatchListView.CellBackgroundColor = System.Drawing.Color.White;
+
+			WatchListView.QueryItemText += ListView_QueryItemText;
+			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
+			WatchListView.ColumnClick += WatchListView_ColumnClick;
+			WatchListView.KeyDown += WatchListView_KeyDown;
+			WatchListView.VirtualMode = true;
 		}
 
 		[RequiredService]
@@ -164,35 +190,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (column == 0)
+			if (_searches.Count > 0)
 			{
-				if (_searches.Count > 0 && column == 0)
+				var nextColor = Color.White;
+
+				var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address);
+				var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address);
+
+				if (_searches[index].Address >= _searches[index].Domain.Size)
 				{
-					var nextColor = Color.White;
-
-					var isCheat = Global.CheatList.IsActive(_settings.Domain, _searches[index].Address);
-					var isWeeded = Settings.PreviewMode && !_forcePreviewClear && _searches.Preview(_searches[index].Address);
-
-					if (_searches[index].Address >= _searches[index].Domain.Size)
-					{
-						nextColor = Color.PeachPuff;
-					}
-					else if (isCheat)
-					{
-						nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
-					}
-					else
-					{
-						if (isWeeded)
-						{
-							nextColor = Color.Pink;
-						}
-					}
-
-					color = nextColor;
+					nextColor = Color.PeachPuff;
 				}
+				else if (isCheat)
+				{
+					nextColor = isWeeded ? Color.Lavender : Color.LightCyan;
+				}
+				else
+				{
+					if (isWeeded)
+					{
+						nextColor = Color.Pink;
+					}
+				}
+
+				color = nextColor;
 			}
-		}
+		}		
 
 		private void ListView_QueryItemText(int index, int column, out string text)
 		{
@@ -203,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = WatchListView.Columns[column].Name;
+			var columnName = WatchListView.AllColumns[column].Name;
 			switch (columnName)
 			{
 				case WatchList.ADDRESS:
@@ -552,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 			_forcePreviewClear = true;
 		}
 
-		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
+		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
 
 		private IEnumerable<Watch> SelectedItems
 		{
@@ -772,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 			DifferenceRadio.Enabled = true;
 			DifferentByBox.Enabled = true;
 			ClearChangeCountsToolBarItem.Enabled = true;
-			WatchListView.Columns[WatchList.CHANGES].Width = Settings.Columns[WatchList.CHANGES].Width;
+			WatchListView.AllColumns[WatchList.CHANGES].Width = Settings.Columns[WatchList.CHANGES].Width;
 			SetReboot(true);
 		}
 
@@ -795,8 +818,8 @@ namespace BizHawk.Client.EmuHawk
 				PreviousValueRadio.Checked = true;
 			}
 
-			Settings.Columns[WatchList.CHANGES].Width = WatchListView.Columns[WatchList.CHANGES].Width;
-			WatchListView.Columns[WatchList.CHANGES].Width = 0;
+			Settings.Columns[WatchList.CHANGES].Width = WatchListView.AllColumns[WatchList.CHANGES].Width.Value;
+			WatchListView.AllColumns[WatchList.CHANGES].Width = 0;
 			SetReboot(true);
 		}
 
@@ -809,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 				_searches.RemoveRange(indices);
 
 				UpdateList();
-				WatchListView.SelectedIndices.Clear();
+				WatchListView.ClearSelectedRows();
 				ToggleSearchDependentToolBarItems();
 			}
 		}
@@ -919,7 +942,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToSpecifiedAddress()
 		{
-			WatchListView.SelectedIndices.Clear();
+			WatchListView.ClearSelectedRows();
 			var prompt = new InputPrompt
 			{
 				Text = "Go to Address",
@@ -1720,8 +1743,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Escape && !e.Control && !e.Alt && !e.Shift)
 			{
-				WatchListView.SelectedIndices.Clear();
+				WatchListView.ClearSelectedRows();
 			}
+
+			base.OnKeyDown(e);
 		}
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -1751,9 +1776,9 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void WatchListView_ColumnClick(object sender, PlatformAgnosticVirtualListView.ColumnClickEventArgs e)
 		{
-			var column = WatchListView.Columns[e.Column];
+			var column = WatchListView.AllColumns[WatchListView.AllColumns.IndexOf(e.Column)];
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
