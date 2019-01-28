@@ -170,15 +170,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					GlobalWin.GL = new Bizware.BizwareGL.Drivers.Vulkan.IGL_Vulkan();
+					var iglVK = new Bizware.BizwareGL.Drivers.Vulkan.IGL_Vulkan();
+					GlobalWin.GL = iglVK;
+					Console.WriteLine($"Host supports Vulkan API v{iglVK.Version}");
 				}
 				catch (Exception ex)
 				{
-					new ExceptionBox(new Exception("Something in Vulkan init failed, using GDI+ as fallback", ex))
+					new ExceptionBox(new Exception("Something in Vulkan init failed, using OpenGL as fallback", ex))
 						.ShowDialog();
 
 					// fallback
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					Global.Config.DispMethod = Config.EDispMethod.OpenGL;
 					goto REDO_DISPMETHOD;
 				}
 			}

@@ -115,5 +115,15 @@ namespace BizHawk.Common.CollectionExtensions
 
 			return bools;
 		}
+
+		/// <summary>
+		/// Returns the value corresponding to the given key if it exists, otherwise returns default(V)
+		/// TODO when moving to C#7, change to => dictionary.TryGetValue(key, out var v) ? v : default;
+		/// </summary>
+		public static V GetOrDefault<K, V>(this IDictionary<K, V> dictionary, K key) where V : class
+		{
+			V v;
+			return dictionary.TryGetValue(key, out v) ? v : default(V);
+		}
 	}
 }
