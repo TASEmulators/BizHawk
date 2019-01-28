@@ -153,11 +153,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private class UnixMonoSysTimer : PlatformSpecificSysTimer
 		{
-			[DllImport("winmm.dll.so", EntryPoint = "timeBeginPeriod")]
-			private static extern uint timeBeginPeriod(uint uMilliseconds);
 			public uint TimeBeginPeriod(uint ms)
 			{
-				return timeBeginPeriod(ms);
+				// we are not going to bother trying to set a minimum resolution for periodic timers
+				// (on linux I don't think you can set this in user code)
+				return ms;
 			}
 		}
 		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
