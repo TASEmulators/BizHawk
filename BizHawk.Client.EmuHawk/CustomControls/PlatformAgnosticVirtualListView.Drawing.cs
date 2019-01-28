@@ -76,13 +76,17 @@ namespace BizHawk.Client.EmuHawk
 			if (BorderSize > 0)
 			{
 				// paint parent border
-				using (var gParent = this.Parent.CreateGraphics())
+				if (this.Parent != null)
 				{
-					Pen borderPen = new Pen(BorderColor);
-					for (int b = 1, c = 1; b <= BorderSize; b++, c += 2)
+					// apparently mono can sometimes call OnPaint before attached to the parent??
+					using (var gParent = this.Parent.CreateGraphics())
 					{
-						gParent.DrawRectangle(borderPen, this.Left - b, this.Top - b, this.Width + c, this.Height + c);
-					}									
+						Pen borderPen = new Pen(BorderColor);
+						for (int b = 1, c = 1; b <= BorderSize; b++, c += 2)
+						{
+							gParent.DrawRectangle(borderPen, this.Left - b, this.Top - b, this.Width + c, this.Height + c);
+						}
+					}
 				}
 			}
 		}
