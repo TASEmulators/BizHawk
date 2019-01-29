@@ -159,6 +159,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
+			if (BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			{
+				if (newTool.GetType() == typeof(RamSearch))
+				{
+					// we dont show the form here because the mono winforms implementation is buggy
+					// instead return the newTool and .Show() it within MainForm
+					return (T)newTool;
+				}
+			}
 			newTool.Show();
 			return (T)newTool;
 		}

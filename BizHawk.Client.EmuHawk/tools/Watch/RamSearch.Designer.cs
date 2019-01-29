@@ -1419,7 +1419,7 @@
 		#endregion
 
 		private System.Windows.Forms.Label TotalSearchLabel;
-		PlatformAgnosticVirtualListView WatchListView;
+		BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView WatchListView;
 		private System.Windows.Forms.ColumnHeader AddressColumn;
 		private System.Windows.Forms.ColumnHeader ValueColumn;
 		private System.Windows.Forms.ColumnHeader PreviousColumn;
