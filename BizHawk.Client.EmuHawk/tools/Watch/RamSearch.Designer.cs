@@ -32,7 +32,7 @@
 			System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
-			this.WatchListView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.WatchListView = new BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView();
 			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PreviousColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -211,13 +211,10 @@
 			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.VirtualMode = true;
-			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
-			this.WatchListView.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.WatchListView_VirtualItemsSelectionRangeChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
 			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
 			this.WatchListView.Enter += new System.EventHandler(this.WatchListView_Enter);
-			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
 			// AddressColumn
@@ -1422,7 +1419,7 @@
 		#endregion
 
 		private System.Windows.Forms.Label TotalSearchLabel;
-		VirtualListView WatchListView;
+		BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView WatchListView;
 		private System.Windows.Forms.ColumnHeader AddressColumn;
 		private System.Windows.Forms.ColumnHeader ValueColumn;
 		private System.Windows.Forms.ColumnHeader PreviousColumn;
