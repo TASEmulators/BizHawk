@@ -51,6 +51,8 @@ svnrev.cs
 
 /References/*.xml
 
+packages
+
 *.opensdf
 *.user
 *.suo
