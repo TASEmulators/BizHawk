@@ -103,6 +103,10 @@ namespace BizHawk.Client.EmuHawk
 		[Description("Occurs when a cell is dragged and then dropped into a new cell, old cell is the cell that was being dragged, new cell is its new destination")]
 		public event CellDroppedEvent CellDropped;
 
+		[Category("Action")]
+		[Description("Occurs when a ListView is in virtual mode and the selection state of a range of items has changed.")]
+		public event ListViewVirtualItemsSelectionRangeChangedEventHandler VirtualItemsSelectionRangeChanged;
+
 		#endregion
 
 		#region Delegates
@@ -141,6 +145,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void ColumnScrollEvent(object sender, EventArgs e);
 
 		public delegate void CellDroppedEvent(object sender, CellEventArgs e);
+
+		public delegate void ListViewVirtualItemsSelectionRangeChangedEventHandler(object sender, EventArgs e);
 
 		#endregion
 
@@ -375,6 +381,7 @@ namespace BizHawk.Client.EmuHawk
 					Refresh();
 
 					SelectedIndexChanged?.Invoke(this, new EventArgs());
+					VirtualItemsSelectionRangeChanged?.Invoke(this, new EventArgs());
 				}
 			}
 

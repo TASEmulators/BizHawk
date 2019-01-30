@@ -37,6 +37,20 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Not implemented (yet)
+		/// </summary>
+		[Category("Behavior")]
+		public bool AutoArrange
+		{
+			get
+			{
+				return false;
+			}
+
+			set { }
+		}
+
+		/// <summary>
 		/// ListView compatibility property
 		/// THIS DOES NOT WORK PROPERLY - AVOID!
 		/// </summary>

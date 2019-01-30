@@ -57,6 +57,32 @@ namespace BizHawk.Client.EmuHawk
 
 			_sortedColumn = "";
 			_sortReverse = false;
+
+			WatchListView.ColumnClick += WatchListView_ColumnClick;
+
+			SetupListViewSettings();
+		}
+
+		private void SetupListViewSettings()
+		{
+			WatchListView.BorderColor = System.Drawing.Color.Black;
+			WatchListView.BorderSize = 1;
+			WatchListView.MultiSelect = true;
+			WatchListView.CellWidthPadding = 2;
+			WatchListView.CellHeightPadding = 1;
+			WatchListView.ScrollSpeed = 3;
+			WatchListView.AllowColumnResize = true;
+			WatchListView.AllowColumnReorder = true;
+			WatchListView.ColumnHeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 7.7F);
+			WatchListView.ColumnHeaderFontColor = System.Drawing.Color.Black;
+			WatchListView.ColumnHeaderBackgroundColor = System.Drawing.Color.White;
+			WatchListView.ColumnHeaderBackgroundHighlightColor = System.Drawing.Color.LightSteelBlue;
+			WatchListView.ColumnHeaderOutlineColor = System.Drawing.Color.LightGray;
+			WatchListView.CellFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+			WatchListView.CellFontColor = System.Drawing.Color.Black;
+			WatchListView.CellBackgroundColor = System.Drawing.Color.White;
+			WatchListView.KeyDown += WatchListView_KeyDown;
+			WatchListView.VirtualMode = true;
 		}
 
 		[ConfigPersist]
@@ -82,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			public ColumnList Columns { get; set; }
 		}
 
-		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
+		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
 
 		private IEnumerable<Watch> SelectedItems
 		{
@@ -1300,9 +1326,9 @@ namespace BizHawk.Client.EmuHawk
 			EditWatch();
 		}
 
-		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void WatchListView_ColumnClick(object sender, PlatformAgnosticVirtualListView.ColumnClickEventArgs e)
 		{
-			OrderColumn(e.Column);
+			OrderColumn(WatchListView.AllColumns.IndexOf(e.Column));
 		}
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
@@ -1326,7 +1352,7 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 
-		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, EventArgs e)
 		{
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
