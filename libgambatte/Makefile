@@ -11,7 +11,7 @@ else
 	$(error Unknown arch)
 endif
 
-CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fno-exceptions -flto
+CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fno-exceptions -flto -fPIC
 TARGET = libgambatte.dll
 LDFLAGS_32 = -static -static-libgcc -static-libstdc++
 LDFLAGS_64 =
@@ -19,7 +19,7 @@ LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
 
 DEST_32 = ../output/dll
 DEST_64 = ../output/dll
-
+ 
 SRCS = \
 	src/cinterface.cpp \
 	src/cpu.cpp \
