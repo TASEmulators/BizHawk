@@ -139,16 +139,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Type == ScrollEventType.SmallIncrement)
 			{
-				IncrementCurrentAddress();
-				Disassemble();
-				DisassemblerView.Refresh();
+				SmallIncrement();
 			}
 
 			if (e.Type == ScrollEventType.SmallDecrement)
 			{
-				DecrementCurrentAddress();
-				Disassemble();
-				DisassemblerView.Refresh();
+				SmallDecrement();
 			}
 		}
 
@@ -166,11 +162,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SmallIncrement()
+		{
+			IncrementCurrentAddress();
+			Disassemble();
+			DisassemblerView.Refresh();
+		}
+
+		private void SmallDecrement()
+		{
+			DecrementCurrentAddress();
+			Disassemble();
+			DisassemblerView.Refresh();
+		}
+
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.C) // Ctrl + C
 			{
 				CopySelectedDisassembler();
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown)
+			{
+				SmallIncrement();
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageUp)
+			{
+				SmallDecrement();
 			}
 		}
 
