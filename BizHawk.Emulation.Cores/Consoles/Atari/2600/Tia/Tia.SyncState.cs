@@ -44,6 +44,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("hmp0_val", ref _hmp0Val);
 			ser.Sync("hmp1_delay", ref _hmp1Delay);
 			ser.Sync("hmp1_val", ref _hmp1Val);
+			ser.Sync("hmm0_delay", ref _hmm0Delay);
+			ser.Sync("hmm0_val", ref _hmm0Val);
+			ser.Sync("hmm1_delay", ref _hmm1Delay);
+			ser.Sync("hmm1_val", ref _hmm1Val);
+			ser.Sync("hmb_delay", ref _hmbDelay);
+			ser.Sync("hmb_val", ref _hmbVal);
 
 			ser.Sync("PRG0_delay", ref _prg0Delay);
 			ser.Sync("PRG1_delay", ref _prg1Delay);
@@ -51,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("PRG1_val", ref _prg1Val);
 
 			ser.Sync("Ticks", ref _doTicks);
+			ser.Sync("hmove_cnt_up", ref hmove_cnt_up);
 
 			ser.Sync("VBlankDelay", ref _vblankDelay);
 			ser.Sync("VBlankValue", ref _vblankValue);
