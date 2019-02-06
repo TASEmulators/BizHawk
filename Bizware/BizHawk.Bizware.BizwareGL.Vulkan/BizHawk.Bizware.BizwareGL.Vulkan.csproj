@@ -137,6 +137,11 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="IGL_Vulkan.cs" />
+    <Compile Include="SampleVkConsumer.cs" />
+    <Compile Include="UnixXlib\InstanceExtensions.cs" />
+    <Compile Include="UnixXlib\NativeMethods.cs" />
+    <Compile Include="UnixXlib\VulkanControl.cs" />
+    <Compile Include="UnixXlib\XlibSurfaceCreateInfoKhr.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

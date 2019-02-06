@@ -35,8 +35,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.Vulkan
 
 		public string API => "Vulkan";
 
-		public string Version => global::Vulkan.Version.ToString(_glc.Instance.EnumeratePhysicalDevices().First().GetProperties().ApiVersion);
-
 		private GLControlWrapper_Vulkan _glc;
 
 		public IGL_Vulkan()
@@ -196,8 +194,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.Vulkan
 				GL.GetError();
 				var loc = GL.GetUniformLocation(pid, name);
 				var ui = new UniformInfo {
-					Name = fsw.MapCodeToNative.GetOrDefault(name)
-						?? vsw.MapCodeToNative.GetOrDefault(name)
+					Name = fsw.MapCodeToNative?.GetOrDefault(name)
+						?? vsw.MapCodeToNative?.GetOrDefault(name)
 						?? name,
 					Opaque = loc
 				};

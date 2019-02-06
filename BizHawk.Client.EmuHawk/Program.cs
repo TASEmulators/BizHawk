@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
+using BizHawk.Bizware.BizwareGL.Drivers.Vulkan;
+
 using Microsoft.VisualBasic.ApplicationServices;
 
 using BizHawk.Common;
@@ -170,9 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var iglVK = new Bizware.BizwareGL.Drivers.Vulkan.IGL_Vulkan();
-					GlobalWin.GL = iglVK;
-					Console.WriteLine($"Host supports Vulkan API v{iglVK.Version}");
+					GlobalWin.GL = new IGL_Vulkan();
 				}
 				catch (Exception ex)
 				{
