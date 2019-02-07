@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		"SubNESHawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class SubNESHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 	ISettable<NES.NES.NESSettings, NES.NES.NESSyncSettings>, INESPPUViewable
