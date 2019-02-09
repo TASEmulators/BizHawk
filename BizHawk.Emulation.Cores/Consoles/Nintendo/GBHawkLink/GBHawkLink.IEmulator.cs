@@ -1,9 +1,6 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink

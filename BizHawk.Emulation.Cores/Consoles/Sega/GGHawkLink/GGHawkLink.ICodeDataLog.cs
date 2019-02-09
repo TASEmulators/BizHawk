@@ -1,9 +1,8 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
@@ -68,28 +67,20 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			Data = 0x04
 		};
 
-		private struct CDLog_MapResults
-		{
-			public CDLog_AddrType Type;
-			public int Address;
-		}
-
-		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
-		private MapMemoryDelegate MapMemory;
 		private ICodeDataLog CDL;
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{
-			if (MapMemory != null)
+			if (L.MapMemory != null)
 			{
-				CDLog_MapResults results = MapMemory(address, false);
+				SMS.CDLog_MapResults results = L.MapMemory(address, false);
 				switch (results.Type)
 				{
-					case CDLog_AddrType.None: break;
-					case CDLog_AddrType.ROM: CDL["ROM"][results.Address] |= (byte)flags; break;
-					case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
-					case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
-					case CDLog_AddrType.CartRAM: CDL["Cart (Volatile) RAM"][results.Address] |= (byte)flags; break;
+					case SMS.CDLog_AddrType.None: break;
+					case SMS.CDLog_AddrType.ROM: CDL["ROM"][results.Address] |= (byte)flags; break;
+					case SMS.CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
+					case SMS.CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
+					case SMS.CDLog_AddrType.CartRAM: CDL["Cart (Volatile) RAM"][results.Address] |= (byte)flags; break;
 				}
 			}
 		}

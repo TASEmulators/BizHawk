@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using BizHawk.Common.BufferExtensions;
 
 /*****************************************************
   TODO: 

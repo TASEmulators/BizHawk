@@ -1,10 +1,6 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System;
 
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 {
