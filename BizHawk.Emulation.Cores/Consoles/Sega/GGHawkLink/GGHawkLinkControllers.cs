@@ -47,35 +47,27 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			if (c.IsPressed(Definition.BoolButtons[0]))
 			{
-				result -= 4;
+				result &= 0xFE;
 			}
 			if (c.IsPressed(Definition.BoolButtons[1]))
 			{
-				result -= 8;
+				result &= 0xFD;
 			}
 			if (c.IsPressed(Definition.BoolButtons[2]))
 			{
-				result -= 2;
+				result &= 0xFB;
 			}
 			if (c.IsPressed(Definition.BoolButtons[3]))
 			{
-				result -= 1;
+				result &= 0xF7;
 			}
 			if (c.IsPressed(Definition.BoolButtons[4]))
 			{
-				result -= 128;
+				result &= 0xEF;
 			}
 			if (c.IsPressed(Definition.BoolButtons[5]))
 			{
-				result -= 64;
-			}
-			if (c.IsPressed(Definition.BoolButtons[6]))
-			{
-				result -= 32;
-			}
-			if (c.IsPressed(Definition.BoolButtons[7]))
-			{
-				result -= 16;
+				result &= 0xDF;
 			}
 
 			return result;

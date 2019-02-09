@@ -70,6 +70,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("Controller1SelectHigh", ref Controller1SelectHigh);
 			ser.Sync("ControllerSelect2High", ref Controller2SelectHigh);
 			ser.Sync("LatchLightPhaser", ref LatchLightPhaser);
+			ser.Sync("start_pressed", ref start_pressed);
+			ser.Sync("cntr_rd_0", ref cntr_rd_0);
+			ser.Sync("cntr_rd_1", ref cntr_rd_1);
+			ser.Sync("cntr_rd_2", ref cntr_rd_2);
+			ser.Sync("stand_alone", ref stand_alone);
 
 			if (SaveRAM != null)
 			{

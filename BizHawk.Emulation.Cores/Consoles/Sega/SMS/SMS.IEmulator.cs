@@ -90,7 +90,44 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return true;
 		}
 
-	    public int Frame => _frame;
+		// Used for GG linked play
+		public void FrameAdvancePrep()
+		{
+			_lagged = true;
+			_frame++;
+			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+
+			if (Tracer.Enabled)
+			{
+				Cpu.TraceCallback = s => Tracer.Put(s);
+			}
+			else
+			{
+				Cpu.TraceCallback = null;
+			}
+
+			if (!IsGameGear && IsGameGear_C)
+			{
+				Cpu.NonMaskableInterrupt = start_pressed;
+			}
+		}
+
+		// Used for GG linked play
+		public void FrameAdvancePost()
+		{
+			PSG.EndFrame(Cpu.TotalExecutedCycles);
+			if (_lagged)
+			{
+				_lagCount++;
+				_isLag = true;
+			}
+			else
+			{
+				_isLag = false;
+			}
+		}
+
+		public int Frame => _frame;
 
 		public string SystemId => "SMS";
 

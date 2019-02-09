@@ -61,88 +61,72 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public void do_frame(IController controller, bool render, bool rendersound)
 		{
-			/*
-			L.do_controller_check();
-			R.do_controller_check();
-			
-			// advance one full frame
-			for (int i = 0; i < 70224; i++)
+			L.start_pressed = controller.IsPressed("P1 Start");
+			R.start_pressed = controller.IsPressed("P2 Start");
+
+			L.FrameAdvancePrep();
+			R.FrameAdvancePrep();
+
+			int scanlinesPerFrame = 262;
+
+			L.Vdp.ScanLine = 0;
+			R.Vdp.ScanLine = 0;
+
+			for (int S = 0; S < scanlinesPerFrame; S++)
 			{
-				L.do_single_step();
-				R.do_single_step();
+				L.Vdp.RenderCurrentScanline(render);
+				R.Vdp.RenderCurrentScanline(render);
 
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
+				L.Vdp.ProcessFrameInterrupt();
+				R.Vdp.ProcessFrameInterrupt();
+
+				L.Vdp.ProcessLineInterrupt();
+				R.Vdp.ProcessLineInterrupt();
+
+				// 512 cycles per line
+				for (int j = 0; j < 512; j++)
 				{
-					if (LinkConnected)
-					{
-						L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
+					L.Cpu.ExecuteOne();
+					R.Cpu.ExecuteOne();
 
-						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
-						{
-							R.serialport.serial_clock = L.serialport.serial_clock;
-							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
-							R.serialport.coming_in = L.serialport.going_out;
-						}
-
-						L.serialport.coming_in = R.serialport.going_out;
-					}
-				}
-				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
-				{
-					do_r_next = false;
-
-					if (LinkConnected)
-					{
-						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
-
-						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start)
-						{
-							L.serialport.serial_clock = R.serialport.serial_clock;
-							L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
-							L.serialport.coming_in = R.serialport.going_out;
-						}
-
-						R.serialport.coming_in = L.serialport.going_out;
-					}
-
-					if (R.serialport.serial_clock == 2) { do_r_next = true; }
-				}
-				else
-				{
-					do_r_next = false;
+					/*
+					 * 
+					 *  Linking code goes here
+					 * 
+					 */
 				}
 
-				// if we hit a frame boundary, update video
-				if (L.vblank_rise)
+				if (S == scanlinesPerFrame - 1)
 				{
-					buff_L = L.GetVideoBuffer();
-					L.vblank_rise = false;
-					FillVideoBuffer();
+					L.Vdp.ProcessGGScreen();
+					R.Vdp.ProcessGGScreen();
+
+					L.Vdp.ProcessOverscan();
+					R.Vdp.ProcessOverscan();
 				}
-				if (R.vblank_rise)
-				{
-					buff_R = R.GetVideoBuffer();
-					R.vblank_rise = false;
-					FillVideoBuffer();
-				}
-			}	
-			*/
-			L.FrameAdvance(controller, render, rendersound);
-			R.FrameAdvance(controller, render, rendersound);
+
+				L.Vdp.ScanLine++;
+				R.Vdp.ScanLine++;
+			}
+
+			L.FrameAdvancePost();
+			R.FrameAdvancePost();
 
 			buff_L = L.Vdp.GetVideoBuffer();
 			buff_R = R.Vdp.GetVideoBuffer();
 
 			FillVideoBuffer();
-
 		}
 
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
-			//L.controller_state = _controllerDeck.ReadPort1(controller);
-			//R.controller_state = _controllerDeck.ReadPort2(controller);
+			L.cntr_rd_0 = (byte)(controller.IsPressed("P1 Start") ? 0x7F : 0xFF);
+			L.cntr_rd_1 = _controllerDeck.ReadPort1(controller);
+			L.cntr_rd_2 = 0xFF;
+			R.cntr_rd_0 = (byte)(controller.IsPressed("P2 Start") ? 0x7F : 0xFF);
+			R.cntr_rd_1 = _controllerDeck.ReadPort2(controller);
+			R.cntr_rd_2 = 0xFF;
 		}
 
 		public int Frame => _frame;

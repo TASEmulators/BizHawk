@@ -93,7 +93,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				OnExecFetch = OnExecMemory
 			};
 
-
 			if (game["GG_in_SMS"])
 			{
 				// skip setting the BIOS because this is a game gear game that puts the system
@@ -254,8 +253,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private byte ForceStereoByte = 0xAD;
 		private bool IsGame3D = false;
 
-		public DisplayType Region { get; set; }
+		// Linked Play Only
+		public bool start_pressed;
+		public byte cntr_rd_0;
+		public byte cntr_rd_1;
+		public byte cntr_rd_2;
+		public bool stand_alone = true;
 
+		public DisplayType Region { get; set; }
 
 		private ITraceable Tracer { get; set; }
 
@@ -336,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				
 				switch (port)
 				{
-					case 0x00: return ReadPort0();
+					case 0x00: if (stand_alone) { return ReadPort0(); } else { _lagged = false; return cntr_rd_0; }
 					case 0x01: return Port01;
 					case 0x02: return Port02;
 					case 0x03: return 0x00;
@@ -364,9 +369,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			switch (port) 
 			{
 				case 0xC0:
-				case 0xDC: return ReadControls1();
+				case 0xDC: if (stand_alone) { return ReadControls1(); } else { _lagged = false; return cntr_rd_1; }
 				case 0xC1:
-				case 0xDD: return ReadControls2();
+				case 0xDD: if (stand_alone) { return ReadControls2(); } else { _lagged = false; return cntr_rd_2; }
 				case 0xDE: return PortDEEnabled ? PortDE : (byte)0xFF;
 				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
 				default: return 0xFF;
@@ -403,8 +408,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
 
-		private string _region;
-		private string RegionStr
+		public string _region;
+		public string RegionStr
 		{
 			get { return _region; }
 			set

@@ -65,6 +65,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			HardReset();
 
 			LinkConnected = _cableconnected;
+
+			L.stand_alone = false;
+			R.stand_alone = false;
 		}
 
 		public void HardReset()

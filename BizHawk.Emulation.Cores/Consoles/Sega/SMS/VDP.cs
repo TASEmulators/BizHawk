@@ -337,7 +337,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void ProcessFrameInterrupt()
+		public void ProcessFrameInterrupt()
 		{
 			if (ScanLine == FrameHeight + 1)
 			{
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				
 		}
 
-		void ProcessLineInterrupt()
+		public void ProcessLineInterrupt()
 		{
 			if (ScanLine <= FrameHeight)
 			{
@@ -383,15 +383,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				ProcessLineInterrupt();
 				Sms.ProcessLineControls();
 
-				//Console.Write(Cpu.cur_instr.Length);
-				//Console.Write(" ");
-				//Console.WriteLine(Cpu.instr_pntr);
 				for (int j = 0; j < IPeriod; j++)
 				{
 					Cpu.ExecuteOne();
 				}
 				
-
 				if (ScanLine == scanlinesPerFrame - 1)
 				{
 					ProcessGGScreen();
