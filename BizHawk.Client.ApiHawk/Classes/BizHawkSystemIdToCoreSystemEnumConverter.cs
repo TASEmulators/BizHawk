@@ -102,6 +102,9 @@ namespace BizHawk.Client.ApiHawk
                 case "AmstradCPC":
                     return CoreSystem.AmstradCPC;
 
+				case "GGL":
+					return CoreSystem.GGL;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":

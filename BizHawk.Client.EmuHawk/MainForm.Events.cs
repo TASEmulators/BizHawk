@@ -2377,6 +2377,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region GGL
+
+		private void GGLSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
+		}
+
+		#endregion
+
 		#region GEN
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)

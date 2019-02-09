@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public int Frame => _frame;
 
-		public string SystemId => "DGB";
+		public string SystemId => "GGL";
 
 		public bool DeterministicEmulation { get; set; }
 

@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
+using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -1722,6 +1723,7 @@ namespace BizHawk.Client.EmuHawk
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			DGBHawkSubMenu.Visible = false;
+			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
@@ -1845,6 +1847,9 @@ namespace BizHawk.Client.EmuHawk
                 case "AmstradCPC":
                     amstradCPCToolStripMenuItem.Visible = true;
                     break;
+				case "GGL":
+					GGLSubMenu.Visible = true;
+					break;
 			}
 		}
 
