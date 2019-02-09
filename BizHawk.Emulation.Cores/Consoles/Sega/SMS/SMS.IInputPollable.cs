@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : IInputPollable
+	public partial class SMS : IInputPollable
 	{
 		public int LagCount
 		{

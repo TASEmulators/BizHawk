@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	public enum VdpMode { SMS, GameGear }
 
 	// Emulates the Texas Instruments TMS9918 VDP.
-	public sealed partial class VDP : IVideoProvider
+	public partial class VDP : IVideoProvider
 	{
 		// VDP State
 		public byte[] VRAM = new byte[0x4000]; //16kb video RAM

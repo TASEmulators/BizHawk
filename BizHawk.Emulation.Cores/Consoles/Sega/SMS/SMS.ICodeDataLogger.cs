@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : ICodeDataLogger
+	public partial class SMS : ICodeDataLogger
 	{
 		public void SetCDL(ICodeDataLog cdl)
 		{

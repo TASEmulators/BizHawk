@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : ISaveRam
+	public partial class SMS : ISaveRam
 	{
 		public byte[] CloneSaveRam()
 		{

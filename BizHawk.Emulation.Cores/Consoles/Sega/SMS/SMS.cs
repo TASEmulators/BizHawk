@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
+	public partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("SMS", "SG", "GG")]
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public DisplayType Region { get; set; }
 
-		private ITraceable Tracer { get; set; }
+		private readonly ITraceable Tracer;
 
 		string DetermineRegion(string gameRegion)
 		{

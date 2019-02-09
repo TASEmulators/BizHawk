@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : IStatable
+	public partial class SMS : IStatable
 	{
 		public bool BinarySaveStatesPreferred
 		{

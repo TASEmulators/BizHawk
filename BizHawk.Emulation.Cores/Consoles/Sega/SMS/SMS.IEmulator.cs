@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : IEmulator
+	public partial class SMS : IEmulator
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -96,15 +96,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = true;
 			_frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-
-			if (Tracer.Enabled)
-			{
-				Cpu.TraceCallback = s => Tracer.Put(s);
-			}
-			else
-			{
-				Cpu.TraceCallback = null;
-			}
 
 			if (!IsGameGear && IsGameGear_C)
 			{
