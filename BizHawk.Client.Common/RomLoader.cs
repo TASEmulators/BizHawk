@@ -17,6 +17,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -804,6 +805,22 @@ namespace BizHawk.Client.Common
 										return false;
 									}
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+									break;
+								case "Game Gear":
+									var leftBytesGG = xmlGame.Assets.First().Value;
+									var rightBytesGG = xmlGame.Assets.Skip(1).First().Value;
+
+									var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
+									var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");
+
+									nextEmulator = new GGHawkLink(
+									nextComm,
+									leftGG,
+									leftBytesGG,
+									rightGG,
+									rightBytesGG,
+									GetCoreSettings<GGHawkLink>(),
+									GetCoreSyncSettings<GGHawkLink>());
 									break;
 								default:
 									return false;

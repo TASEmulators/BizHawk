@@ -1336,6 +1336,31 @@
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IDebuggable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IEmulator.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IInputPollable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IMemoryDomains.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ISaveRam.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ISettable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IStatable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLinkControllerDeck.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLinkControllers.cs" />
     <Compile Include="Consoles\Sega\gpgx64\GPGX.ISoundProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>

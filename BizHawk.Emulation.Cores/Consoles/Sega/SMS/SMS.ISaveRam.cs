@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public bool SaveRamModified { get; private set; }
 
-		private byte[] SaveRAM;
+		public byte[] SaveRAM;
 		private byte SaveRamBank;
 	}
 }

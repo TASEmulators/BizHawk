@@ -213,21 +213,26 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.Regs[Cpu.SPh] = 0xDF;
 		}
 
+		public void HardReset()
+		{
+
+		}
+
 		// Constants
 		private const int BankSize = 16384;
 
 		// ROM
-		private byte[] RomData;
+		public byte[] RomData;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
 		private byte Bios_bank;
 		private byte RomBanks;
 		private byte[] BiosRom;
 
 		// Machine resources
-		private Z80A Cpu;
-		private byte[] SystemRam;
+		public Z80A Cpu;
+		public byte[] SystemRam;
 		public VDP Vdp;
-		private SN76489 PSG;
+		public SN76489 PSG;
 		private YM2413 YM2413;
 		public bool IsGameGear { get; set; }
 		public bool IsGameGear_C { get; set; }
@@ -281,21 +286,21 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
-		private byte ReadMemory(ushort addr)
+		public byte ReadMemory(ushort addr)
 		{
 			MemoryCallbacks.CallReads(addr, "System Bus");
 
 			return ReadMemoryMapper(addr);
 		}
 
-		private void WriteMemory(ushort addr, byte value)
+		public void WriteMemory(ushort addr, byte value)
 		{
 			WriteMemoryMapper(addr, value);
 
 			MemoryCallbacks.CallWrites(addr, "System Bus");
 		}
 
-		private byte FetchMemory(ushort addr)
+		public byte FetchMemory(ushort addr)
 		{
 			return ReadMemoryMapper(addr);
 		}

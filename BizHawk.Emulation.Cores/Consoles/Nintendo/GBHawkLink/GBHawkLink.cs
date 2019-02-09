@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
 			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
-			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkControllerDeck.DefaultControllerName, GBHawkControllerDeck.DefaultControllerName);
+			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkLinkControllerDeck.DefaultControllerName, GBHawkLinkControllerDeck.DefaultControllerName);
 
 			CoreComm = comm;
 
