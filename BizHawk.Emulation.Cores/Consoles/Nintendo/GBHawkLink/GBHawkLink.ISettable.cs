@@ -129,8 +129,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			private int _RTCInitialTime_L;
 			private int _RTCInitialTime_R;
 			[JsonIgnore]
-			public ushort _DivInitialTime_L;
-			public ushort _DivInitialTime_R;
+			public ushort _DivInitialTime_L = 8;
+			public ushort _DivInitialTime_R = 8;
 
 			public GBLinkSyncSettings Clone()
 			{
