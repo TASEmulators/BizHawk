@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			{
 				_cableconnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
-				LinkConnected = _cableconnected;
 			}
 
 			_cablediscosignal = cablediscosignalNew;

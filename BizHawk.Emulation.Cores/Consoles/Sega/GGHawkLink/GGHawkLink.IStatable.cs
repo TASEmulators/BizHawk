@@ -60,8 +60,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ser.Sync("_cablediscosignal", ref _cablediscosignal);
 			ser.Sync("do_r_next", ref do_r_next);
 			_controllerDeck.SyncState(ser);
-
-			LinkConnected = _cableconnected;
 		}
 	}
 }

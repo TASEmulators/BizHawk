@@ -3865,10 +3865,11 @@
             this.LinkConnectStatusBarButton.Size = new System.Drawing.Size(16, 17);
             this.LinkConnectStatusBarButton.Text = "Link connection is currently enabled";
             this.LinkConnectStatusBarButton.ToolTipText = "Link connection is currently enabled";
-            // 
-            // UpdateNotification
-            // 
-            this.UpdateNotification.IsLink = true;
+			this.LinkConnectStatusBarButton.Click += new System.EventHandler(this.LinkConnectStatusBarButton_Click);
+			// 
+			// UpdateNotification
+			// 
+			this.UpdateNotification.IsLink = true;
             this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
             this.UpdateNotification.Name = "UpdateNotification";
             this.UpdateNotification.Size = new System.Drawing.Size(46, 17);

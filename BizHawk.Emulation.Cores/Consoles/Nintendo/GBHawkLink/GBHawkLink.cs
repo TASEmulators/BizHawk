@@ -70,8 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			SetupMemoryDomains();
 
 			HardReset();
-
-			LinkConnected = _cableconnected;
 		}
 
 		public void HardReset()
@@ -88,7 +86,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		private readonly ITraceable _tracer;
 
-		public bool LinkConnected { get; private set; }
+		public bool LinkConnected
+		{
+			get { return _cableconnected; }
+			set { _cableconnected = value; }
+		}
 
 		private void ExecFetch(ushort addr)
 		{

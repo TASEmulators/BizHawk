@@ -64,8 +64,6 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			HardReset();
 
-			LinkConnected = _cableconnected;
-
 			L.stand_alone = false;
 			R.stand_alone = false;
 		}
@@ -84,7 +82,11 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private readonly ITraceable _tracer;
 
-		public bool LinkConnected { get; private set; }
+		public bool LinkConnected
+		{
+			get { return _cableconnected; }
+			set { _cableconnected = value; }
+		}
 
 		private void ExecFetch(ushort addr)
 		{

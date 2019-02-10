@@ -3124,6 +3124,16 @@ namespace BizHawk.Client.EmuHawk
 			ProfileFirstBootLabel.Visible = false;
 		}
 
+		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
+		{
+			// toggle Link status (only outside of a movie session)
+			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			{
+				Emulator.AsLinkable().LinkConnected ^= true;
+				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);
+			}
+		}
+
 		private void UpdateNotification_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Sound.StopSound();

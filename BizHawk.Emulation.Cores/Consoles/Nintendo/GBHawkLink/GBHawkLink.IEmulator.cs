@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				_cableconnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
-				LinkConnected = _cableconnected;
 			}
 
 			_cablediscosignal = cablediscosignalNew;
@@ -101,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				// the signal to shift out a bit is when serial_clock = 1
 				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
 				{
-					if (LinkConnected)
+					if (_cableconnected)
 					{
 						L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
 
@@ -119,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				{
 					do_r_next = false;
 
-					if (LinkConnected)
+					if (_cableconnected)
 					{
 						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
 
