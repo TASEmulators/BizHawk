@@ -298,7 +298,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("xstart", ref xstart);
 			ser.Sync("rasterpos", ref rasterpos);
 			ser.Sync("renderspritenow", ref renderspritenow);
-			ser.Sync("renderbgnow", ref renderbgnow);
 			ser.Sync("s", ref s);
 			ser.Sync("ppu_aux_index", ref ppu_aux_index);
 			ser.Sync("junksprite", ref junksprite);
@@ -350,10 +349,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void runppu()
 		{
-			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
-
-			
-			if (install_2006>0)
+			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity			
+			if (install_2006 > 0)
 			{
 				install_2006--;
 				if (install_2006==0)
@@ -386,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.cycle++;
 			is_even_cycle = !is_even_cycle;
 
-			if (PPUON && ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && ppur.status.sl <= 240)
+			if (ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && ppur.status.sl <= 240 && PPUON)
 			{
 				reg_2003 = 0;
 			}
@@ -415,18 +412,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						nes.cpu.NMI = true;
 					}
 				}
-			}
-
-			if (Reg2002_vblank_active_pending)
-			{
-				Reg2002_vblank_active = 1;
-				Reg2002_vblank_active_pending = false;
-			}
-
-			if (Reg2002_vblank_clear_pending)
-			{
-				Reg2002_vblank_active = 0;
-				Reg2002_vblank_clear_pending = false;
 			}
 
 			if (HasClockPPU)

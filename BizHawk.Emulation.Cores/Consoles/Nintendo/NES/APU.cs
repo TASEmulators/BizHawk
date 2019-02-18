@@ -74,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
 		};
 
-
 		public sealed class PulseUnit
 		{
 			public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
@@ -968,6 +967,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
 			ser.Sync("len_clock_active", ref len_clock_active);
 
+			ser.Sync("oldmix", ref oldmix);
+			ser.Sync("cart_sound", ref cart_sound);
+			ser.Sync("old_cart_sound", ref old_cart_sound);
+
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);
 			triangle.SyncState(ser);
@@ -1259,127 +1262,118 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int pending_length_change;
 
-		public void RunOne(bool read)
+		public void RunOneFirst()
 		{
-			if (read)
-			{
-				pulse[0].Run();
-				pulse[1].Run();
-				triangle.Run();
-				noise.Run();
-				dmc.Run();
 
-				pulse[0].len_halt = false;
-				pulse[1].len_halt = false;
-				noise.len_halt = false;
+			pulse[0].Run();
+			pulse[1].Run();
+			triangle.Run();
+			noise.Run();
+			dmc.Run();
 
-			}
-			else
-			{
-				if (pending_length_change>0)
-				{
-					pending_length_change--;
-					if (pending_length_change==0)
-					{
-						dmc.sample_length--;
-					}
-				}
-
-				EmitSample();
-
-				// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
-				// timer reload shouldn't happen if length clock and write happen simultaneously
-				// I'm not sure if we can avoid this by simply processing the sequencer first
-				// but at the moment that would break everything, so this is good enough for now
-				if (sequencer_counter == (sequencer_lut[0][1] - 1) || 
-					(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode==0) ||
-					(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
-				{
-					len_clock_active = true;
-				}
-
-				// handle writes
-				// notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
-				// in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
-				// the current code simply matches known behaviour			
-				if (pending_reg != -1)
-				{
-					if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg==0x4007)
-					{
-						_WriteReg(pending_reg, pending_val);
-						pending_reg = -1;
-					}
-					else if (dmc.timer%2==0)
-					{
-						_WriteReg(pending_reg, pending_val);
-						pending_reg = -1;
-					}
-				}
-
-				len_clock_active = false;
-
-				sequencer_tick();
-				sequencer_write_tick(seq_val);
-				doing_tick_quarter = false;
-				
-				if (sequencer_irq_assert>0) {
-					sequencer_irq_assert--;
-					if (sequencer_irq_assert==0)
-					{
-						sequencer_irq = true;
-					}					
-				}				
-
-				SyncIRQ();
-				nes._irq_apu = irq_pending;
-
-				// since the units run concurrently, the APU frame sequencer is ran last because
-				// it can change the ouput values of the pulse/triangle channels
-				// we want the changes to affect it on the *next* cycle.
-
-				if (sequencer_irq_flag == false)
-					sequencer_irq = false;
-
-				if (DebugCallbackDivider != 0)
-				{
-					if (DebugCallbackTimer == 0)
-					{
-						if (DebugCallback != null)
-							DebugCallback();
-						DebugCallbackTimer = DebugCallbackDivider;
-					}
-					else DebugCallbackTimer--;
-
-				}
-			}
+			pulse[0].len_halt = false;
+			pulse[1].len_halt = false;
+			noise.len_halt = false;
 		}
 
-		public struct Delta
+		public void RunOneLast()
 		{
-			public uint time;
-			public int value;
-			public Delta(uint time, int value)
+			if (pending_length_change > 0)
 			{
-				this.time = time;
-				this.value = value;
+				pending_length_change--;
+				if (pending_length_change == 0)
+				{
+					dmc.sample_length--;
+				}
+			}
+
+			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
+			// timer reload shouldn't happen if length clock and write happen simultaneously
+			// I'm not sure if we can avoid this by simply processing the sequencer first
+			// but at the moment that would break everything, so this is good enough for now
+			if (sequencer_counter == (sequencer_lut[0][1] - 1) ||
+				(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode == 0) ||
+				(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
+			{
+				len_clock_active = true;
+			}
+
+			// handle writes
+			// notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
+			// in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
+			// the current code simply matches known behaviour			
+			if (pending_reg != -1)
+			{
+				if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
+				{
+					_WriteReg(pending_reg, pending_val);
+					pending_reg = -1;
+				}
+				else if (dmc.timer % 2 == 0)
+				{
+					_WriteReg(pending_reg, pending_val);
+					pending_reg = -1;
+				}
+			}
+
+			len_clock_active = false;
+
+			sequencer_tick();
+			sequencer_write_tick(seq_val);
+			doing_tick_quarter = false;
+
+			if (sequencer_irq_assert > 0)
+			{
+				sequencer_irq_assert--;
+				if (sequencer_irq_assert == 0)
+				{
+					sequencer_irq = true;
+				}
+			}
+
+			SyncIRQ();
+			nes._irq_apu = irq_pending;
+
+			// since the units run concurrently, the APU frame sequencer is ran last because
+			// it can change the ouput values of the pulse/triangle channels
+			// we want the changes to affect it on the *next* cycle.
+
+			if (sequencer_irq_flag == false)
+				sequencer_irq = false;
+
+			if (DebugCallbackDivider != 0)
+			{
+				if (DebugCallbackTimer == 0)
+				{
+					if (DebugCallback != null)
+						DebugCallback();
+					DebugCallbackTimer = DebugCallbackDivider;
+				}
+				else DebugCallbackTimer--;
+
 			}
 		}
-
-		public List<Delta> dlist = new List<Delta>();
 
 		/// <summary>only call in board.ClockCPU()</summary>
 		/// <param name="value"></param>
 		public void ExternalQueue(int value)
 		{
-			// sampleclock is incremented right before board.ClockCPU()
-			dlist.Add(new Delta(sampleclock - 1, value));
+			cart_sound = value + old_cart_sound;
+
+			if (cart_sound != old_cart_sound)
+			{
+				recalculate = true;
+				old_cart_sound = cart_sound;
+			}
 		}
 
 		public uint sampleclock = 0;
 
 		int oldmix = 0;
+		int cart_sound = 0;
+		int old_cart_sound = 0;
 
-		void EmitSample()
+		public int EmitSample()
 		{
 			if (recalculate)
 			{
@@ -1390,16 +1384,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int s_tri = triangle.sample;
 				int s_noise = noise.sample;
 				int s_dmc = dmc.sample;
-
-				// int s_ext = 0; //gamepak
-
-				/*
-				if (!EnableSquare1) s_pulse0 = 0;
-				if (!EnableSquare2) s_pulse1 = 0;
-				if (!EnableTriangle) s_tri = 0;
-				if (!EnableNoise) s_noise = 0;
-				if (!EnableDMC) s_dmc = 0;
-				*/
 
 				// more properly correct
 				float pulse_out, tnd_out;
@@ -1412,13 +1396,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				float output = pulse_out + tnd_out;
 				// output = output * 2 - 1;
 				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-				int mix = (int)(20000 * output * (1 + m_vol/5));
+				int mix = (int)(20000 * output * (1 + m_vol/5)) + cart_sound;
 
-				dlist.Add(new Delta(sampleclock, mix - oldmix));
 				oldmix = mix;
+
+				return mix;
 			}
 
-			sampleclock++;
+			return oldmix;			
 		}
 	}
 }
