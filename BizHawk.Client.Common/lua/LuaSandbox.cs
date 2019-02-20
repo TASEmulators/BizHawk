@@ -18,12 +18,10 @@ namespace BizHawk.Client.Common
 
 		private string _currentDirectory;
 
-		#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool SetCurrentDirectoryW(byte* lpPathName);
 		[DllImport("kernel32.dll", SetLastError=true)]
 		static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-		#endif
 
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{

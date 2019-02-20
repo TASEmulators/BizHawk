@@ -362,18 +362,21 @@ namespace BizHawk.Client.EmuHawk
 				int sleepTime = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
 				if (sleepTime >= 2 || paused)
 				{
-#if WINDOWS
-					// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
-					// on Windows XP is generally within a half millisecond either way of the requested
-					// time. The actual sleep time on Windows 8 is generally between the requested time
-					// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
-					// sleeping longer than desired.
-					sleepTime -= 1;
-#else
-					// The actual sleep time on OS X with Mono is generally between the request time
-					// and up to 25% over. So we'll scale the sleep time back to account for that.
-					sleepTime = sleepTime * 4 / 5;
-#endif
+					if (PlatformLinkedLibSingleton.RunningOnUnix)
+					{
+						// The actual sleep time on OS X with Mono is generally between the request time
+						// and up to 25% over. So we'll scale the sleep time back to account for that.
+						sleepTime = sleepTime * 4 / 5;
+					}
+					else
+					{
+						// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
+						// on Windows XP is generally within a half millisecond either way of the requested
+						// time. The actual sleep time on Windows 8 is generally between the requested time
+						// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
+						// sleeping longer than desired.
+						sleepTime -= 1;
+					}
 
 					Thread.Sleep(Math.Max(sleepTime, 1));
 				}

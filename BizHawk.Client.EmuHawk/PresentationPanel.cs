@@ -6,9 +6,6 @@ using sysdrawing2d=System.Drawing.Drawing2D;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-#if WINDOWS
-using SlimDX;
-#endif
 
 using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;

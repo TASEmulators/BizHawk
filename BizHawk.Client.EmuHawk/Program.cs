@@ -304,7 +304,6 @@ namespace BizHawk.Client.EmuHawk
 		} //SubMain
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
-#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern uint SetDllDirectory(string lpPathName);
 
@@ -330,8 +329,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 		}
-#endif
-
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{

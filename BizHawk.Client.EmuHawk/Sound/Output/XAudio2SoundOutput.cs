@@ -1,5 +1,4 @@
-﻿#if WINDOWS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -185,4 +184,3 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 }
-#endif

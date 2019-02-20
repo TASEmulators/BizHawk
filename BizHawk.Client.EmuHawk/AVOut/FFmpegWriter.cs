@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -85,11 +86,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = new Process();
-#if WINDOWS
-				_ffmpeg.StartInfo.FileName = Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
-#else
-				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
-#endif
+				_ffmpeg.StartInfo.FileName = PlatformLinkedLibSingleton.RunningOnUnix
+					? "ffmpeg"
+					: Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
 
 				string filename = _baseName + (_segment > 0 ? $"_{_segment}" : "") + _ext;
 				_ffmpeg.StartInfo.Arguments = string.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);
