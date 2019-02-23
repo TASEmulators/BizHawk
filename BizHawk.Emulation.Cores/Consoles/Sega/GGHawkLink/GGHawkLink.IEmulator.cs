@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				R.Vdp.ProcessLineInterrupt();
 
 				// 512 cycles per line
-				for (int j = 0; j < 512; j++)
+				for (int j = 0; j < 228; j++)
 				{
 					L.Cpu.ExecuteOne();
 					R.Cpu.ExecuteOne();
@@ -89,6 +89,43 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 					 *  Linking code goes here
 					 * 
 					 */
+
+					L.PSG.generate_sound(1);
+					R.PSG.generate_sound(1);
+
+					int s_L = L.PSG.current_sample_L;
+					int s_R = L.PSG.current_sample_R;
+
+					if (s_L != L.old_s_L)
+					{
+						L.blip_L.AddDelta(L.sampleclock, s_L - L.old_s_L);
+						L.old_s_L = s_L;
+					}
+
+					if (s_R != L.old_s_R)
+					{
+						L.blip_R.AddDelta(L.sampleclock, s_R - L.old_s_R);
+						L.old_s_R = s_R;
+					}
+
+					L.sampleclock++;
+
+					s_L = R.PSG.current_sample_L;
+					s_R = R.PSG.current_sample_R;
+
+					if (s_L != R.old_s_L)
+					{
+						R.blip_L.AddDelta(R.sampleclock, s_L - R.old_s_L);
+						R.old_s_L = s_L;
+					}
+
+					if (s_R != R.old_s_R)
+					{
+						R.blip_R.AddDelta(R.sampleclock, s_R - R.old_s_R);
+						R.old_s_R = s_R;
+					}
+
+					R.sampleclock++;
 				}
 
 				if (S == scanlinesPerFrame - 1)
@@ -208,8 +245,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			int nsamp_L = 735;
 			int nsamp_R = 735;
 
-			L.PSG.GetSamples(temp_samp_L);
-			R.PSG.GetSamples(temp_samp_R);
+			L.GetSamplesSync(out temp_samp_L, out nsamp_L);
+			R.GetSamplesSync(out temp_samp_R, out nsamp_L);
 
 			if (linkSettings.AudioSet == GGLinkSettings.AudioSrc.Left)
 			{
@@ -235,8 +272,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public void DiscardSamples()
 		{
-			L.PSG.DiscardSamples();
-			R.PSG.DiscardSamples();
+			L.DiscardSamples();
+			R.DiscardSamples();
 		}
 
 		private void GetSamples(short[] samples)

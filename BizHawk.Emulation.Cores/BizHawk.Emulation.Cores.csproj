@@ -1437,9 +1437,6 @@
     <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\SMS\SMS.ISoundProvider.cs">
-      <DependentUpon>SMS.cs</DependentUpon>
-    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
@@ -1545,6 +1542,7 @@
     </Compile>
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Sound\SN76489sms.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
@@ -1576,7 +1574,6 @@
     <Compile Include="Sound\HuC6280PSG.cs" />
     <Compile Include="Sound\IAsyncSoundProvider.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
-    <Compile Include="Sound\SN76489.cs" />
     <Compile Include="Sound\SoundMixer.cs" />
     <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\VRC6Alt.cs" />

@@ -75,6 +75,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("cntr_rd_1", ref cntr_rd_1);
 			ser.Sync("cntr_rd_2", ref cntr_rd_2);
 			ser.Sync("stand_alone", ref stand_alone);
+			ser.Sync("disablePSG", ref disablePSG);
+			ser.Sync("sampleclock", ref sampleclock);
+			ser.Sync("old_s_L", ref old_s_L);
+			ser.Sync("old_s_R", ref old_s_R);
 
 			if (SaveRAM != null)
 			{

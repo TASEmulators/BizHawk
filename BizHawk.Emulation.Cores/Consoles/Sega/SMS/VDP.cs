@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		SMS Sms;
 		VdpMode mode;
-		DisplayType DisplayType = DisplayType.NTSC;
+		public DisplayType DisplayType = DisplayType.NTSC;
 		Z80A Cpu;
 
 		public bool SpriteLimit;
@@ -366,31 +366,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			// else we're outside the active display period
 			lineIntLinesRemaining = Registers[0x0A];
-		}
-
-		public void ExecFrame(bool render)
-		{
-			int scanlinesPerFrame = DisplayType == DisplayType.NTSC ? 262 : 313;
-			SpriteLimit = Sms.Settings.SpriteLimit;
-			for (ScanLine = 0; ScanLine < scanlinesPerFrame; ScanLine++)
-			{
-				RenderCurrentScanline(render);
-
-				ProcessFrameInterrupt();
-				ProcessLineInterrupt();
-				Sms.ProcessLineControls();
-
-				for (int j = 0; j < IPeriod; j++)
-				{
-					Cpu.ExecuteOne();
-				}
-				
-				if (ScanLine == scanlinesPerFrame - 1)
-				{
-					ProcessGGScreen();
-					ProcessOverscan();
-				}
-			}
 		}
 
 		internal void RenderCurrentScanline(bool render)
