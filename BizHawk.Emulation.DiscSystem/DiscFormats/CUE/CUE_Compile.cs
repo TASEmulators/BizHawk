@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 			else
 			{
-				Error("Unknown cue file type. Since it's likely an unsupported compression, this is an error: ", Path.GetFileName(choice));
+				Error($"Unknown cue file type. Since it's likely an unsupported compression, this is an error: {Path.GetFileName(choice)}");
 				cfi.Type = CompiledCueFileType.Unknown;
 			}
 
