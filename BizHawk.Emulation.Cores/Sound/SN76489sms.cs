@@ -171,103 +171,87 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void generate_sound(int cycles_to_do)
+		public void generate_sound()
 		{
 			// there are 16 cpu cycles for every psg cycle
-			for (int i = 0; i < cycles_to_do; i++)
+			psg_clock++;
+
+			if (psg_clock == 16)
 			{
-				psg_clock++;
+				psg_clock = 0;
 
-				if (psg_clock == 16)
+				clock_A--;
+				clock_B--;
+				clock_C--;
+				noise_clock--;
+
+				// clock noise
+				if (noise_clock == 0)
 				{
-					psg_clock = 0;
-
-					clock_A--;
-					clock_B--;
-					clock_C--;
-					noise_clock--;
-
-					// clock noise
-					if (noise_clock == 0)
+					noise_bit = noise.Bit(0);
+					if (noise_type)
 					{
-						noise_bit = noise.Bit(0);
-						if (noise_type)
-						{
-							int bit = (noise & 1) ^ ((noise >> 1) & 1);
-							noise = noise >> 1;
-							noise |= bit << 14;
-							
-						}
-						else
-						{
-							int bit = noise & 1;
-							noise = noise >> 1;
-							noise |= bit << 14;
-						}
-
-						if (noise_rate == 0)
-						{
-							noise_clock = 0x10;
-						}
-						else if (noise_rate == 1)
-						{
-							noise_clock = 0x20;
-						}
-						else if (noise_rate == 2)
-						{
-							noise_clock = 0x40;
-						}
-						else
-						{
-							noise_clock = Chan_tone[2] + 1;
-						}
-
-						noise_clock *= 2;					
+						noise = (((noise & 1) ^ ((noise >> 1) & 1)) << 14) | (noise >> 1);						
 					}
-					
-					if (clock_A == 0)
+					else
 					{
-						A_up = !A_up;
-						clock_A = Chan_tone[0] + 1;
+						noise = ((noise & 1) << 14) | (noise >> 1);
 					}
 
-					if (clock_B == 0)
+					if (noise_rate == 0)
 					{
-						B_up = !B_up;
-						clock_B = Chan_tone[1] + 1;
+						noise_clock = 0x10;
+					}
+					else if (noise_rate == 1)
+					{
+						noise_clock = 0x20;
+					}
+					else if (noise_rate == 2)
+					{
+						noise_clock = 0x40;
+					}
+					else
+					{
+						noise_clock = Chan_tone[2] + 1;
 					}
 
-					if (clock_C == 0)
-					{
-						C_up = !C_up;
-						clock_C = Chan_tone[2] + 1;
-					}
-
-					// now calculate the volume of each channel and add them together
-					// the magic number 42 is to make the volume comparable to the MSG volume
-					int v_L;
-					int v_R; 
-	
-					v_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
-					 
-					v_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
-
-					v_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
-
-					v_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
-
-					v_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
-
-					v_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
-
-					v_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
-
-					v_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
-
-					current_sample_L = v_L;
-
-					current_sample_R = v_R;
+					noise_clock *= 2;					
 				}
+					
+				if (clock_A == 0)
+				{
+					A_up = !A_up;
+					clock_A = Chan_tone[0] + 1;
+				}
+
+				if (clock_B == 0)
+				{
+					B_up = !B_up;
+					clock_B = Chan_tone[1] + 1;
+				}
+
+				if (clock_C == 0)
+				{
+					C_up = !C_up;
+					clock_C = Chan_tone[2] + 1;
+				}
+
+				// now calculate the volume of each channel and add them together
+				current_sample_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+
+				current_sample_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+
+				current_sample_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+
+				current_sample_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+
+				current_sample_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+
+				current_sample_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+
+				current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+
+				current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
 			}
 		}
 	}

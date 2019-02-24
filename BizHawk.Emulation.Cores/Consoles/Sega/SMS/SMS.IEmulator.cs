@@ -38,6 +38,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
+		// not savestated variables
+		int s_L, s_R;
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
@@ -87,10 +90,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				for (int j = 0; j < Vdp.IPeriod; j++)
 				{
 					Cpu.ExecuteOne();
-					PSG.generate_sound(1);
 
-					int s_L = PSG.current_sample_L;
-					int s_R = PSG.current_sample_R;
+					PSG.generate_sound();
+
+					s_L = PSG.current_sample_L;
+					s_R = PSG.current_sample_R;
 
 					if (s_L != old_s_L)
 					{

@@ -90,8 +90,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 					 * 
 					 */
 
-					L.PSG.generate_sound(1);
-					R.PSG.generate_sound(1);
+					L.PSG.generate_sound();
+					R.PSG.generate_sound();
 
 					int s_L = L.PSG.current_sample_L;
 					int s_R = L.PSG.current_sample_R;
