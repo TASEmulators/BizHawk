@@ -89,11 +89,11 @@ namespace BizHawk.Client.EmuHawk
 					//print descriptive information
 					var descr = retro.Description;
 					CurrentDescription = descr;
-					Console.WriteLine("core name: {0} version {1}", descr.LibraryName, descr.LibraryVersion);
-					Console.WriteLine("extensions: ", descr.ValidExtensions);
-					Console.WriteLine("NeedsRomAsPath: {0}", descr.NeedsRomAsPath);
-					Console.WriteLine("AcceptsArchives: {0}", descr.NeedsArchives);
-					Console.WriteLine("SupportsNoGame: {0}", descr.SupportsNoGame);
+					Console.WriteLine($"core name: {descr.LibraryName} version {descr.LibraryVersion}");
+					Console.WriteLine($"extensions: {descr.ValidExtensions}");
+					Console.WriteLine($"NeedsRomAsPath: {descr.NeedsRomAsPath}");
+					Console.WriteLine($"AcceptsArchives: {descr.NeedsArchives}");
+					Console.WriteLine($"SupportsNoGame: {descr.SupportsNoGame}");
 					
 					foreach (var v in descr.Variables.Values)
 						Console.WriteLine(v);
