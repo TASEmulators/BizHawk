@@ -527,44 +527,33 @@ namespace BizHawk.Emulation.DiscSystem
                 aFile.ParsedSession.Add(session);
             }
 
-            // now build the TOC object
-            foreach (var se in aFile.ParsedSession)
-            {
-                // get the first and last tracks
-                int sTrack = se.StartTrack;
-                int eTrack = se.EndTrack;
-
-                // get list of all tracks from aTracks for this session
-                var tracks = (from a in aTracks.Values
-                              where a.TrackNo >= sTrack || a.TrackNo <= eTrack
-                              orderby a.TrackNo
-                              select a).ToList();
-
-                // create the TOC entries
-                foreach (var t in tracks)
-                {
-                    ATOCEntry toc = new ATOCEntry(t.Point);
-                    toc.ADR_Control = t.ADR_Control;
-                    toc.AFrame = t.AFrame;
-                    toc.AMin = t.AMin;
-                    toc.ASec = t.ASec;
-                    toc.EntryNum = t.TrackNo;
-                    toc.PFrame = t.PFrame;
-                    toc.PLBA = Convert.ToInt32(t.PLBA);
-                    toc.PMin = t.PMin;
-                    toc.Point = t.Point;
-                    toc.PSec = t.PSec;
-                    toc.SectorSize = t.SectorSize;
-                    toc.Zero = t.Zero;
-                    toc.TrackOffset = Convert.ToInt64(t.StartOffset);
-                    toc.Session = se.SessionSequence;
-                    toc.ImageFileNamePaths = t.ImageFileNamePaths;
-                    toc.ExtraBlock = t.ExtraBlock;
-                    toc.BlobIndex = t.BlobIndex;
-                    aFile.TOCEntries.Add(toc);
-                }
-                
-            }
+			// now build the TOC object
+			foreach (var se in aFile.ParsedSession)
+				foreach (var t in aTracks.Values
+					.Where(a => se.StartTrack <= a.TrackNo && a.TrackNo <= se.EndTrack)
+					.OrderBy(a => a.TrackNo))
+				{
+					aFile.TOCEntries.Add(new ATOCEntry(t.Point)
+					{
+						ADR_Control = t.ADR_Control,
+						AFrame = t.AFrame,
+						AMin = t.AMin,
+						ASec = t.ASec,
+						BlobIndex = t.BlobIndex,
+						EntryNum = t.TrackNo,
+						ExtraBlock = t.ExtraBlock,
+						ImageFileNamePaths = t.ImageFileNamePaths,
+						PFrame = t.PFrame,
+						PLBA = Convert.ToInt32(t.PLBA),
+						PMin = t.PMin,
+						Point = t.Point,
+						PSec = t.PSec,
+						SectorSize = t.SectorSize,
+						Session = se.SessionSequence,
+						TrackOffset = Convert.ToInt64(t.StartOffset),
+						Zero = t.Zero
+					});
+				}
 
             return aFile;
         }
