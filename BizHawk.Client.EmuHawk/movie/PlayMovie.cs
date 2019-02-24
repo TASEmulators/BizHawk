@@ -331,9 +331,8 @@ namespace BizHawk.Client.EmuHawk
 							.Append(_movieList[index].GameName).Append('\t')
 							.Append(PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
-
-						Clipboard.SetDataObject(copyStr.ToString());
 					}
+					Clipboard.SetDataObject(copyStr.ToString());
 				}
 			}
 		}
