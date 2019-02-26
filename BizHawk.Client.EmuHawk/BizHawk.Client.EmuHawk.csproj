@@ -1216,7 +1216,7 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\controls\components\AnalogSticklPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\components\AnalogStickPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
