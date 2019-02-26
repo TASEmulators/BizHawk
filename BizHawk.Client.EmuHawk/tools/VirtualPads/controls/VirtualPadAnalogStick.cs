@@ -264,10 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAnalogMaxFromNumerics()
 		{
 			if (!_programmaticallyUpdatingNumerics)
-			{
-				//blehh,... this damn feature
-				AnalogStick.SetUserRange((float)MaxXNumeric.Value, (float)MaxYNumeric.Value);
-			}
+				AnalogStick.SetUserRange((sbyte)MaxXNumeric.Value, (sbyte)MaxYNumeric.Value);
 		}
 	}
 }

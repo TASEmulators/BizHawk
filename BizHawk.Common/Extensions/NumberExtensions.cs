@@ -130,5 +130,7 @@ namespace BizHawk.Common.NumberExtensions
 
 			return val;
 		}
+		
+		public static int RoundToInt(this float f) => (int) Math.Round(f);
 	}
 }
