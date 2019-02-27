@@ -645,7 +645,7 @@ namespace BizHawk.Emulation.DiscSystem
                     {
                         // wrap in zeropadadapter
                         disc.DisposableResources.Add(mdfBlob);
-                        BlobIndex[count] = mdfBlob;
+                        BlobIndex[count++] = mdfBlob;
                     }
                 }
             }
