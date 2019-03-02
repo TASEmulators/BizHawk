@@ -155,8 +155,15 @@ namespace BizHawk.Client.EmuHawk
 						.ReadAllBytes();
 				}
 			};
-
-			argParser.ParseArguments(args);
+			try
+			{
+				argParser.ParseArguments(args);
+			}
+			catch (ArgParserException e)
+			{
+				MessageBox.Show(e.Message);
+			}
+			
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -1400,6 +1407,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastOpenRomFilter;
 
 		private ArgParser argParser = new ArgParser();
+
 		// Resources
 		private Bitmap _statusBarDiskLightOnImage;
 		private Bitmap _statusBarDiskLightOffImage;

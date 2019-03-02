@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SocketServerSend(string SendString)
 		{
-			return "Sent : " + GlobalWin.socketServer.SendString(SendString).ToString() + " bytes";
+			return $"Sent : {GlobalWin.socketServer.SendString(SendString).ToString()} bytes";
 		}
 		public string SocketServerResponse()
 		{
@@ -48,11 +48,38 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.socketServer.SetTimeout(timeout);
 		}
+
+		public void SocketServerSetIp(string ip)
+		{
+			GlobalWin.socketServer.SetIp(ip);
+		}
+
+		public void SetSocketServerPort(int port)
+		{
+			GlobalWin.socketServer.SetPort(port);
+		}
+
+		public string SocketServerGetIp()
+		{
+			return GlobalWin.socketServer.ip;
+		}
+
+		public int SocketServerGetPort()
+		{
+			return GlobalWin.socketServer.port;
+		}
+
+		public string SocketServerGetInfo()
+		{
+			return GlobalWin.socketServer.GetInfo();
+		}
+
 		// All MemoryMappedFile related methods
 		public void MmfSetFilename(string filename)
 		{
 			GlobalWin.memoryMappedFiles.SetFilename(filename);
 		}
+
 		public string MmfSetFilename()
 		{
 			return GlobalWin.memoryMappedFiles.GetFilename();
@@ -67,10 +94,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return GlobalWin.memoryMappedFiles.WriteToFile(mmf_filename, Encoding.ASCII.GetBytes(outputString));
 		}
+
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
 			return GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize).ToString();
 		}
+
+
 		// All HTTP related methods
 		public string HttpTest()
 		{
