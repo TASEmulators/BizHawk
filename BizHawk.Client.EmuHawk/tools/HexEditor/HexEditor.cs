@@ -394,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 					return '.';
 				}
 
-				if (val >= 0x80)
+				if (val >= 0x7F)
 				{
 					return '.';
 				}
@@ -2332,7 +2332,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
+				//e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
 			}
 		}
 
