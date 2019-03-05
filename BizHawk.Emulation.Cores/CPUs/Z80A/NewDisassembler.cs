@@ -17,7 +17,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			if (format.IndexOf("n") != -1) format = format.Replace("n", $"{read(addr++):X2}h");
 
 			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d") != -1) format = format.Replace("d", $"{(sbyte)read(addr++):+X2;-X2}h");
+			if (format.IndexOf("d") != -1)
+			{
+				var b = unchecked ((sbyte) read(addr++));
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
+			}
 
 			return format;
 		}
