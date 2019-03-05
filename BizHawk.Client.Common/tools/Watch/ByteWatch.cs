@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of difference
 		/// between current value and the previous one
 		/// </summary>
-		public override string Diff => $"{(byte)Math.Abs(_value - _previous):+G;-G;G}";
+		public override string Diff => $"{_value - (short)_previous:+#;-#;0}";
 
 		/// <summary>
 		/// Get the maximum possible value
