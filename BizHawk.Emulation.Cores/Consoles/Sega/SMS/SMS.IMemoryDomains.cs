@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (ExtRam != null)
 			{
-				SyncByteArrayDomain("Cart (Volatile) RAM", Vdp.VRAM);
+				SyncByteArrayDomain("Cart (Volatile) RAM", ExtRam);
 			}
 		}
 
