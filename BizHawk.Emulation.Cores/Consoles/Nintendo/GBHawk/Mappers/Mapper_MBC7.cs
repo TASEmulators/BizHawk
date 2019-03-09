@@ -419,11 +419,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 5:
 						if ((instr_clocks >= 0) && (instr_clocks <= 7))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1 ? true : false;
+							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1;
 						}
 						else if ((instr_clocks >= 8) && (instr_clocks <= 15))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1 ? true : false;
+							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1;
 						}
 
 						if (instr_clocks == 15)

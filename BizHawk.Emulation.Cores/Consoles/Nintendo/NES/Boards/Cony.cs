@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			else if (addr == 0x200)
 			{
-				IRQCount &= 0xFF00; IRQCount |= value; ;
+				IRQCount &= 0xFF00; IRQCount |= value;
 				IRQSignal = false;
 			}
 

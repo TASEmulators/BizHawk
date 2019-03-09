@@ -326,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				string str = "oamdata" + i.ToString() + "y";
 				oam_byte = t_oam[i].oam_y; ser.Sync(str, ref oam_byte); t_oam[i].oam_y = oam_byte;
 				str = "oamdata" + i.ToString() + "ind";
-				oam_byte = t_oam[i].oam_ind; ; ser.Sync(str, ref oam_byte); t_oam[i].oam_ind = oam_byte;
+				oam_byte = t_oam[i].oam_ind; ser.Sync(str, ref oam_byte); t_oam[i].oam_ind = oam_byte;
 				str = "oamdata" + i.ToString() + "attr";
 				oam_byte = t_oam[i].oam_attr; ser.Sync(str, ref oam_byte); t_oam[i].oam_attr = oam_byte;
 				str = "oamdata" + i.ToString() + "x";
