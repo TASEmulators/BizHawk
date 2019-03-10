@@ -405,6 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.bilinearMode = GLideN64_bilinearMode.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>();
+			_ss.GLideN64Plugin.enableHalosRemoval = GLideN64_enableHalosRemoval.Checked;
 			_ss.GLideN64Plugin.MaxAnisotropy = GLideN64_MaxAnisotropy.Checked;
 			_ss.GLideN64Plugin.CacheSize = GLideN64_CacheSize.Text.IsSigned()
 				? int.Parse(GLideN64_CacheSize.Text)
@@ -776,6 +777,7 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_UseNativeResolutionFactor.Text = _ss.GLideN64Plugin.UseNativeResolutionFactor.ToString();
 			GLideN64_bilinearMode
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(_ss.GLideN64Plugin.bilinearMode);
+			GLideN64_enableHalosRemoval.Checked = _ss.GLideN64Plugin.enableHalosRemoval;
 			GLideN64_MaxAnisotropy.Checked = _ss.GLideN64Plugin.MaxAnisotropy;
 			GLideN64_CacheSize.Text = _ss.GLideN64Plugin.CacheSize.ToString();
 			GLideN64_ShowInternalResolution.Checked = _ss.GLideN64Plugin.ShowInternalResolution;
