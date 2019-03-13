@@ -406,9 +406,9 @@ namespace BizHawk.Client.Common
 		public bool DisplayRamWatch = false;
 
 		// Hex Editor Colors
-		public Color HexBackgrndColor = Color.FromName("Control");
-		public Color HexForegrndColor = Color.FromName("ControlText");
-		public Color HexMenubarColor = Color.FromName("Control");
+		public Color HexBackgrndColor = SystemColors.Control;
+		public Color HexForegrndColor = SystemColors.ControlText;
+		public Color HexMenubarColor = SystemColors.Control;
 		public Color HexFreezeColor = Color.LightBlue;
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
