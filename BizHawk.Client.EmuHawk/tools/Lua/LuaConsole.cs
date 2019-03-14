@@ -60,6 +60,19 @@ namespace BizHawk.Client.EmuHawk
 					SaveColumnInfo(LuaListView, Settings.Columns);
 					
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
+
+					if (GlobalWin.DisplayManager.ClientExtraPadding != Padding.Empty)
+					{
+						GlobalWin.DisplayManager.ClientExtraPadding = new Padding(0);
+						GlobalWin.MainForm.FrameBufferResized();
+					}
+
+					if (GlobalWin.DisplayManager.GameExtraPadding != Padding.Empty)
+					{
+						GlobalWin.DisplayManager.GameExtraPadding = new Padding(0);
+						GlobalWin.MainForm.FrameBufferResized();
+					}
+
 					LuaImp.GuiLibrary.DrawFinish();
 					CloseLua();
 				}
