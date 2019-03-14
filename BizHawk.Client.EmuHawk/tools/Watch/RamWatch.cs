@@ -354,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				var sb = new StringBuilder();
 				foreach (var watch in SelectedItems)
 				{
-					sb.AppendLine(ToString());
+					sb.AppendLine(watch.ToString());
 				}
 
 				if (sb.Length > 0)
