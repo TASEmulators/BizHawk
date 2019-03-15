@@ -43,7 +43,7 @@ namespace BizHawk.Common
 			}
 
 			if (FreeWatermark == BlockCount)
-				throw new OutOfMemoryException("NDBDatabase out of reserved space");
+				throw new OutOfMemoryException($"{nameof(NDBDatabase)} out of reserved space");
 
 			var b = new Block() { Number = FreeWatermark };
 			FreeWatermark++;

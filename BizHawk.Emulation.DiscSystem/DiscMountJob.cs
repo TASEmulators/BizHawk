@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.DiscSystem
 			switch (IN_DiscInterface)
 			{
 				case DiscInterface.LibMirage:
-					throw new NotSupportedException("LibMirage not supported yet");
+					throw new NotSupportedException($"{nameof(DiscInterface.LibMirage)} not supported yet");
 				case DiscInterface.BizHawk:
 					RunBizHawk();
 					break;

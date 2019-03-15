@@ -89,7 +89,7 @@ namespace BizHawk.Common.BizInvoke
 				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
 
 			if (_handle == IntPtr.Zero)
-				throw new InvalidOperationException("CreateFileMapping() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.CreateFileMapping)}() returned NULL");
 			Start = start;
 			End = start + size;
 			Size = size;
@@ -106,7 +106,7 @@ namespace BizHawk.Common.BizInvoke
 			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
 				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
 			{
-				throw new InvalidOperationException("MapViewOfFileEx() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
 			}
 			ProtectAll();
 			Active = true;
@@ -120,7 +120,7 @@ namespace BizHawk.Common.BizInvoke
 			if (!Active)
 				throw new InvalidOperationException("Not active");
 			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
-				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
 			Active = false;
 		}
 
@@ -175,7 +175,7 @@ namespace BizHawk.Common.BizInvoke
 			// that to complicate things
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
-				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 
 			_snapshot = new byte[Size];
 			var ds = new MemoryStream(_snapshot, true);
@@ -197,7 +197,7 @@ namespace BizHawk.Common.BizInvoke
 			// temporarily switch the entire block to `R`
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
-				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
 			ProtectAll();
 			return ret;
@@ -232,7 +232,7 @@ namespace BizHawk.Common.BizInvoke
 					ulong zend = GetStartAddr(i + 1);
 					Kernel32.MemoryProtection old;
 					if (!Kernel32.VirtualProtect(Z.UU(zstart), Z.UU(zend - zstart), p, out old))
-						throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+						throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 					ps = i + 1;
 				}
 			}
@@ -261,7 +261,7 @@ namespace BizHawk.Common.BizInvoke
 				Kernel32.MemoryProtection old;
 				if (!Kernel32.VirtualProtect(Z.UU(computedStart),
 					Z.UU(computedLength), p, out old))
-					throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+					throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 			}
 		}
 
@@ -302,7 +302,7 @@ namespace BizHawk.Common.BizInvoke
 			private void EnsureNotDisposed()
 			{
 				if (_owner.Start == 0)
-					throw new ObjectDisposedException("MemoryBlock");
+					throw new ObjectDisposedException(nameof(MemoryBlock));
 			}
 
 			private MemoryBlock _owner;

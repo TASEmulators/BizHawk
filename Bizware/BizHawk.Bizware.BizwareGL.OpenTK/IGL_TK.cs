@@ -548,7 +548,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.DrawBuffers(1, buffers);
 
 			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
-				throw new InvalidOperationException("Error creating framebuffer (at CheckFramebufferStatus)");
+				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.Ext.CheckFramebufferStatus)})");
 
 			//since we're done configuring unbind this framebuffer, to return to the default
 			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -732,7 +732,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (ShaderSource) " + errcode);
+					throw new InvalidOperationException($"Error compiling shader ({nameof(GL.ShaderSource)}) {errcode}");
 				else success = false;
 
 			GL.CompileShader(sid);
@@ -742,7 +742,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (errcode != ErrorCode.NoError)
 			{
-				string message = "Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog;
+				string message = $"Error compiling shader ({nameof(GL.CompileShader)}) {errcode}\r\n\r\n{resultLog}";
 				if (required)
 					throw new InvalidOperationException(message);
 				else
@@ -757,7 +757,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (n == 0)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (CompileShader )" + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException($"Error compiling shader ({nameof(GL.GetShader)})\r\n\r\n{resultLog}");
 				else success = false;
 
 			return success;

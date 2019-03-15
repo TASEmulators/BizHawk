@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException("GifWriter only takes its own tokens!");
+				throw new ArgumentException($"{nameof(GifWriter)} only takes its own tokens!");
 			}
 		}
 

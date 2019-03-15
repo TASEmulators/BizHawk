@@ -658,7 +658,7 @@ namespace BizHawk.Common
 			{
 				if (name.Length > length)
 				{
-					throw new InvalidOperationException("SyncFixedString too long");
+					throw new InvalidOperationException($"{nameof(SyncFixedString)} too long");
 				}
 
 				var buf = val.ToCharArray();

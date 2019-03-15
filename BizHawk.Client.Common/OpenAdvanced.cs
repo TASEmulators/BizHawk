@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			else if (type == OpenAdvancedTypes.LibretroNoGame) ioa = new OpenAdvanced_LibretroNoGame();
 			else ioa = null;
 			if (ioa == null)
-				throw new InvalidOperationException("IOpenAdvanced deserialization error");
+				throw new InvalidOperationException($"{nameof(IOpenAdvanced)} deserialization error");
 			ioa.Deserialize(token);
 			return ioa;
 		}

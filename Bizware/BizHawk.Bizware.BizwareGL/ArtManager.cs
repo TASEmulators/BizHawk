@@ -27,7 +27,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void Open()
 		{
 			AssertIsOpen(false);
-			if (IsClosedForever) throw new InvalidOperationException("ArtManager instance has been closed forever!");
+			if (IsClosedForever) throw new InvalidOperationException($"{nameof(ArtManager)} instance has been closed forever!");
 			IsOpened = true;
 		}
 
@@ -140,7 +140,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Throws an exception if the instance is not open
 		/// </summary>
-		private void AssertIsOpen(bool state) { if (IsOpened != state) throw new InvalidOperationException("ArtManager instance is not open!"); }
+		private void AssertIsOpen(bool state) { if (IsOpened != state) throw new InvalidOperationException($"{nameof(ArtManager)} instance is not open!"); }
 
 		public IGL Owner { get; private set; }
 

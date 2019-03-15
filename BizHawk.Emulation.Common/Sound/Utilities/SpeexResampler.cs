@@ -280,13 +280,13 @@ namespace BizHawk.Emulation.Common
 				case LibSpeexDSP.RESAMPLER_ERR.SUCCESS:
 					return;
 				case LibSpeexDSP.RESAMPLER_ERR.ALLOC_FAILED:
-					throw new InsufficientMemoryException("LibSpeexDSP: Alloc failed");
+					throw new InsufficientMemoryException($"{nameof(LibSpeexDSP)}: Alloc failed");
 				case LibSpeexDSP.RESAMPLER_ERR.BAD_STATE:
-					throw new Exception("LibSpeexDSP: Bad state");
+					throw new Exception($"{nameof(LibSpeexDSP)}: Bad state");
 				case LibSpeexDSP.RESAMPLER_ERR.INVALID_ARG:
-					throw new ArgumentException("LibSpeexDSP: Bad Argument");
+					throw new ArgumentException($"{nameof(LibSpeexDSP)}: Bad Argument");
 				case LibSpeexDSP.RESAMPLER_ERR.PTR_OVERLAP:
-					throw new Exception("LibSpeexDSP: Buffers cannot overlap");
+					throw new Exception($"{nameof(LibSpeexDSP)}: Buffers cannot overlap");
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (drainer != null && input != null)
 			{
-				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
+				throw new ArgumentException($"Can't autofetch without being an {nameof(ISoundProvider)}?");
 			}
 
 			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Common
 
 			if (_st == IntPtr.Zero)
 			{
-				throw new Exception("LibSpeexDSP returned null!");
+				throw new Exception($"{nameof(LibSpeexDSP)} returned null!");
 			}
 
 			CheckError(err);

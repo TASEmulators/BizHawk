@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				conOut = Win32.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
 
 				if (!Win32.SetStdHandle(-11, conOut))
-				  throw new Exception("SetStdHandle() failed");
+				  throw new Exception($"{nameof(Win32.SetStdHandle)}() failed");
 			}
 
 			//DotNetRewireConout();

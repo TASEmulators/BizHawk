@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.DiscSystem
 			ccdf.DataTracksScrambled = discSection.FetchOrDefault(0, "DATATRACKSSCRAMBLED");
 			ccdf.CDTextLength = discSection.FetchOrDefault(0, "CDTEXTLENGTH");
 
-			if (ccdf.DataTracksScrambled==1) throw new CCDParseException("Malformed CCD format: DataTracksScrambled=1 not supported. Please report this, so we can understand what it means.");
+			if (ccdf.DataTracksScrambled==1) throw new CCDParseException($"Malformed CCD format: {nameof(ccdf.DataTracksScrambled)}=1 not supported. Please report this, so we can understand what it means.");
 
 			for (int i = 2; i < sections.Count; i++)
 			{

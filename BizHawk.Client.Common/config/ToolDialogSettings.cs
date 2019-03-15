@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 					return new Point(_wndx.Value, _wndy.Value);
 				}
 
-				throw new InvalidOperationException("TopLeft can not be used when one of the coordinates is null");
+				throw new InvalidOperationException($"{nameof(TopLeft)} can not be used when one of the coordinates is null");
 			}
 		}
 

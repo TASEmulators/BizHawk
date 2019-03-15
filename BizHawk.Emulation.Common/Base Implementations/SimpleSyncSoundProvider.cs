@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 		{
 			if (_nsamp != 0)
 			{
-				Console.WriteLine("Warning: Samples disappeared from SimpleSyncSoundProvider");
+				Console.WriteLine($"Warning: Samples disappeared from {nameof(SimpleSyncSoundProvider)}");
 			}
 
 			if (_buffer.Length < nsamp * 2)

@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void CreateInstance(Bizware.BizwareGL.Drivers.OpenTK.IGL_TK mainContext)
 		{
-			if (Instance != null) throw new InvalidOperationException("Attempt to create more than one GLManager");
+			if (Instance != null) throw new InvalidOperationException($"Attempted to create more than one {nameof(GLManager)}");
 			Instance = new GLManager();
 			Instance.MainContext = mainContext;
 		}

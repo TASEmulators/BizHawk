@@ -91,9 +91,9 @@ namespace BizHawk.Client.EmuHawk
 					CurrentDescription = descr;
 					Console.WriteLine($"core name: {descr.LibraryName} version {descr.LibraryVersion}");
 					Console.WriteLine($"extensions: {descr.ValidExtensions}");
-					Console.WriteLine($"NeedsRomAsPath: {descr.NeedsRomAsPath}");
-					Console.WriteLine($"AcceptsArchives: {descr.NeedsArchives}");
-					Console.WriteLine($"SupportsNoGame: {descr.SupportsNoGame}");
+					Console.WriteLine($"{nameof(descr.NeedsRomAsPath)}: {descr.NeedsRomAsPath}");
+					Console.WriteLine($"{nameof(descr.NeedsArchives)}: {descr.NeedsArchives}");
+					Console.WriteLine($"{nameof(descr.SupportsNoGame)}: {descr.SupportsNoGame}");
 					
 					foreach (var v in descr.Variables.Values)
 						Console.WriteLine(v);
