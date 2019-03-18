@@ -187,7 +187,7 @@ namespace BizHawk.Client.ApiHawk
 					}
 					else
 					{
-						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {{nameof(WriteByteRange)}}()");
+						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {nameof(WriteByteRange)}()");
 					}
 				}
 			}
