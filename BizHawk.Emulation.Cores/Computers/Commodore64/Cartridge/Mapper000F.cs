@@ -133,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("_bankMask", ref _bankMask);
-			ser.Sync("_bankNumber", ref _bankNumber);
+			ser.Sync(nameof(_bankMask), ref _bankMask);
+			ser.Sync(nameof(_bankNumber), ref _bankNumber);
 			base.SyncState(ser);
 			if (ser.IsReader)
 			{

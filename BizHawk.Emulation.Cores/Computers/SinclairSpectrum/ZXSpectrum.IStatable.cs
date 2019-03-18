@@ -56,10 +56,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (ser.IsWriter)
             {
-                ser.SyncEnum("_machineType", ref _machineType);
+                ser.SyncEnum(nameof(_machineType), ref _machineType);
 
                 _cpu.SyncState(ser);
-                ser.BeginSection("ZXSpectrum");                
+                ser.BeginSection(nameof(ZXSpectrum));                
                 _machine.SyncState(ser);
                 ser.Sync("Frame", ref _machine.FrameCount);
                 ser.Sync("LagCount", ref _lagCount);
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (ser.IsReader)
             {
                 var tmpM = _machineType;
-                ser.SyncEnum("_machineType", ref _machineType);
+                ser.SyncEnum(nameof(_machineType), ref _machineType);
                 if (tmpM != _machineType && _machineType.ToString() != "72")
                 {
                     string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                 {
                     _cpu.SyncState(ser);
-                    ser.BeginSection("ZXSpectrum");
+                    ser.BeginSection(nameof(ZXSpectrum));
                     _machine.SyncState(ser);
                     ser.Sync("Frame", ref _machine.FrameCount);
                     ser.Sync("LagCount", ref _lagCount);

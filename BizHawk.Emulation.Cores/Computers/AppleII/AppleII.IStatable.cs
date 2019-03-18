@@ -41,13 +41,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			// this is much faster than other possibilities for serialization
 			w.WriteStartObject();
-			w.WritePropertyName("Frame");
+			w.WritePropertyName(nameof(Frame));
 			w.WriteValue(Frame);
-			w.WritePropertyName("LagCount");
+			w.WritePropertyName(nameof(LagCount));
 			w.WriteValue(LagCount);
-			w.WritePropertyName("IsLagFrame");
+			w.WritePropertyName(nameof(IsLagFrame));
 			w.WriteValue(IsLagFrame);
-			w.WritePropertyName("CurrentDisk");
+			w.WritePropertyName(nameof(CurrentDisk));
 			w.WriteValue(CurrentDisk);
 			w.WritePropertyName("PreviousDiskPressed");
 			w.WriteValue(_prevPressed);

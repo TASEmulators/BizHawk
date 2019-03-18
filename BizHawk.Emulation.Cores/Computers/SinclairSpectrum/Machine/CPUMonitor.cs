@@ -398,9 +398,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("CPUMonitor");
-            ser.Sync("lastPortAddr", ref lastPortAddr);
-            ser.Sync("NextMemReadContended", ref NextMemReadContended);
+            ser.BeginSection(nameof(CPUMonitor));
+            ser.Sync(nameof(lastPortAddr), ref lastPortAddr);
+            ser.Sync(nameof(NextMemReadContended), ref NextMemReadContended);
             ser.EndSection();
         }
 

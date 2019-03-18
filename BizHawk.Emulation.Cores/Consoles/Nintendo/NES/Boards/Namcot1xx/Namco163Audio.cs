@@ -101,10 +101,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("ram", ref ram, false);
-			ser.Sync("addr", ref addr);
-			ser.Sync("autoincrement", ref autoincrement);
-			ser.Sync("ch", ref ch);
+			ser.Sync(nameof(ram), ref ram, false);
+			ser.Sync(nameof(addr), ref addr);
+			ser.Sync(nameof(autoincrement), ref autoincrement);
+			ser.Sync(nameof(ch), ref ch);
 		}
 
 		Action<int> enqueuer;

@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			if (!LibGambatte.gambatte_newstatesave(GambatteState, _savebuff, _savebuff.Length))
 			{
-				throw new Exception("gambatte_newstatesave() returned false");
+				throw new Exception($"{nameof(LibGambatte.gambatte_newstatesave)}() returned false");
 			}
 
 			writer.Write(_savebuff.Length);
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (!LibGambatte.gambatte_newstateload(GambatteState, _savebuff, _savebuff.Length))
 			{
-				throw new Exception("gambatte_newstateload() returned false");
+				throw new Exception($"{nameof(LibGambatte.gambatte_newstateload)}() returned false");
 			}
 
 			// other variables

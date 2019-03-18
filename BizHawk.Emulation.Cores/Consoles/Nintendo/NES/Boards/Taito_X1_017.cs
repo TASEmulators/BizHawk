@@ -76,9 +76,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_regs_8k", ref prg_regs_8k);
-			ser.Sync("chr_regs_1k", ref chr_regs_1k);
-			ser.Sync("ChrMode", ref ChrMode);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(ChrMode), ref ChrMode);
 			for (int i = 0; i < wramenable.Length; i++)
 				ser.Sync("wramenable_" + i, ref wramenable[i]);
 		}

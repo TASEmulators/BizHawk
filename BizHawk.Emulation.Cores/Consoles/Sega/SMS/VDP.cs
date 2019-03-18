@@ -397,20 +397,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VDP");
-			ser.Sync("StatusByte", ref StatusByte);
+			ser.BeginSection(nameof(VDP));
+			ser.Sync(nameof(StatusByte), ref StatusByte);
 			ser.Sync("WaitingForLatchByte", ref VdpWaitingForLatchByte);
 			ser.Sync("Latch", ref VdpLatch);
 			ser.Sync("ReadBuffer", ref VdpBuffer);
-			ser.Sync("VdpAddress", ref VdpAddress);
+			ser.Sync(nameof(VdpAddress), ref VdpAddress);
 			ser.Sync("Command", ref VdpCommand);
-			ser.Sync("HIntPending", ref HIntPending);
-			ser.Sync("VIntPending", ref VIntPending);
+			ser.Sync(nameof(HIntPending), ref HIntPending);
+			ser.Sync(nameof(VIntPending), ref VIntPending);
 			ser.Sync("LineIntLinesRemaining", ref lineIntLinesRemaining);
-			ser.Sync("Registers", ref Registers, false);
-			ser.Sync("CRAM", ref CRAM, false);
-			ser.Sync("VRAM", ref VRAM, false);
-			ser.Sync("HCounter", ref HCounter);
+			ser.Sync(nameof(Registers), ref Registers, false);
+			ser.Sync(nameof(CRAM), ref CRAM, false);
+			ser.Sync(nameof(VRAM), ref VRAM, false);
+			ser.Sync(nameof(HCounter), ref HCounter);
 			ser.EndSection();
 
 			if (ser.IsReader)

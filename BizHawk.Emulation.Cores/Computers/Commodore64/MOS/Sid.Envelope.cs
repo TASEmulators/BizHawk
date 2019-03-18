@@ -235,19 +235,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("_attack", ref _attack);
-				ser.Sync("_decay", ref _decay);
-				ser.Sync("_delay", ref _delay);
-				ser.Sync("_envCounter", ref _envCounter);
-				ser.Sync("_expCounter", ref _expCounter);
-				ser.Sync("_expPeriod", ref _expPeriod);
-				ser.Sync("_freeze", ref _freeze);
-				ser.Sync("_lfsr", ref _lfsr);
-				ser.Sync("_gate", ref _gate);
-				ser.Sync("_rate", ref _rate);
-				ser.Sync("_release", ref _release);
-				ser.Sync("_state", ref _state);
-				ser.Sync("_sustain", ref _sustain);
+				ser.Sync(nameof(_attack), ref _attack);
+				ser.Sync(nameof(_decay), ref _decay);
+				ser.Sync(nameof(_delay), ref _delay);
+				ser.Sync(nameof(_envCounter), ref _envCounter);
+				ser.Sync(nameof(_expCounter), ref _expCounter);
+				ser.Sync(nameof(_expPeriod), ref _expPeriod);
+				ser.Sync(nameof(_freeze), ref _freeze);
+				ser.Sync(nameof(_lfsr), ref _lfsr);
+				ser.Sync(nameof(_gate), ref _gate);
+				ser.Sync(nameof(_rate), ref _rate);
+				ser.Sync(nameof(_release), ref _release);
+				ser.Sync(nameof(_state), ref _state);
+				ser.Sync(nameof(_sustain), ref _sustain);
 			}
 
 			// ------------------------------------

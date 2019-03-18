@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!LibVBANext.BinStateSave(Core, _savebuff, _savebuff.Length))
-				throw new InvalidOperationException("Core's BinStateSave() returned false!");
+				throw new InvalidOperationException($"Core's {nameof(LibVBANext.BinStateSave)}() returned false!");
 			writer.Write(_savebuff.Length);
 			writer.Write(_savebuff);
 
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw new InvalidOperationException("Save buffer size mismatch!");
 			reader.Read(_savebuff, 0, length);
 			if (!LibVBANext.BinStateLoad(Core, _savebuff, _savebuff.Length))
-				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
+				throw new InvalidOperationException($"Core's {nameof(LibVBANext.BinStateLoad)}() returned false!");
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();

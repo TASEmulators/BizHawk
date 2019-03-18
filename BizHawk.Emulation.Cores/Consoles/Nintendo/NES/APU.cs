@@ -96,35 +96,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Pulse" + unit);
-				ser.Sync("duty_cnt", ref duty_cnt);
-				ser.Sync("env_loop", ref env_loop);
-				ser.Sync("env_constant", ref env_constant);
-				ser.Sync("env_cnt_value", ref env_cnt_value);
-				ser.Sync("len_halt", ref len_halt);
+				ser.Sync(nameof(duty_cnt), ref duty_cnt);
+				ser.Sync(nameof(env_loop), ref env_loop);
+				ser.Sync(nameof(env_constant), ref env_constant);
+				ser.Sync(nameof(env_cnt_value), ref env_cnt_value);
+				ser.Sync(nameof(len_halt), ref len_halt);
 
-				ser.Sync("sweep_en", ref sweep_en);
-				ser.Sync("sweep_divider_cnt", ref sweep_divider_cnt);
-				ser.Sync("sweep_negate", ref sweep_negate);
-				ser.Sync("sweep_shiftcount", ref sweep_shiftcount);
-				ser.Sync("sweep_reload", ref sweep_reload);
+				ser.Sync(nameof(sweep_en), ref sweep_en);
+				ser.Sync(nameof(sweep_divider_cnt), ref sweep_divider_cnt);
+				ser.Sync(nameof(sweep_negate), ref sweep_negate);
+				ser.Sync(nameof(sweep_shiftcount), ref sweep_shiftcount);
+				ser.Sync(nameof(sweep_reload), ref sweep_reload);
 
-				ser.Sync("len_cnt", ref len_cnt);
-				ser.Sync("timer_raw_reload_value", ref timer_raw_reload_value);
-				ser.Sync("timer_reload_value", ref timer_reload_value);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
+				ser.Sync(nameof(timer_raw_reload_value), ref timer_raw_reload_value);
+				ser.Sync(nameof(timer_reload_value), ref timer_reload_value);
 
-				ser.Sync("lenctr_en", ref lenctr_en);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
 
-				ser.Sync("swp_divider_counter", ref swp_divider_counter);
-				ser.Sync("swp_silence", ref swp_silence);
-				ser.Sync("duty_step", ref duty_step);
-				ser.Sync("timer_counter", ref timer_counter);
-				ser.Sync("sample", ref sample);
-				ser.Sync("duty_value", ref duty_value);
+				ser.Sync(nameof(swp_divider_counter), ref swp_divider_counter);
+				ser.Sync(nameof(swp_silence), ref swp_silence);
+				ser.Sync(nameof(duty_step), ref duty_step);
+				ser.Sync(nameof(timer_counter), ref timer_counter);
+				ser.Sync(nameof(sample), ref sample);
+				ser.Sync(nameof(duty_value), ref duty_value);
 
-				ser.Sync("env_start_flag", ref env_start_flag);
-				ser.Sync("env_divider", ref env_divider);
-				ser.Sync("env_counter", ref env_counter);
-				ser.Sync("env_output", ref env_output);
+				ser.Sync(nameof(env_start_flag), ref env_start_flag);
+				ser.Sync(nameof(env_divider), ref env_divider);
+				ser.Sync(nameof(env_counter), ref env_counter);
+				ser.Sync(nameof(env_output), ref env_output);
 				ser.EndSection();
 			}
 
@@ -394,25 +394,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Noise");
-				ser.Sync("env_cnt_value", ref env_cnt_value);
-				ser.Sync("env_loop", ref env_loop);
-				ser.Sync("env_constant", ref env_constant);
-				ser.Sync("mode_cnt", ref mode_cnt);
-				ser.Sync("period_cnt", ref period_cnt);
+				ser.Sync(nameof(env_cnt_value), ref env_cnt_value);
+				ser.Sync(nameof(env_loop), ref env_loop);
+				ser.Sync(nameof(env_constant), ref env_constant);
+				ser.Sync(nameof(mode_cnt), ref mode_cnt);
+				ser.Sync(nameof(period_cnt), ref period_cnt);
 
-				ser.Sync("len_halt", ref len_halt);
-				ser.Sync("len_cnt", ref len_cnt);
-				ser.Sync("lenctr_en", ref lenctr_en);
+				ser.Sync(nameof(len_halt), ref len_halt);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
 
-				ser.Sync("shift_register", ref shift_register);
-				ser.Sync("timer_counter", ref timer_counter);
-				ser.Sync("sample", ref sample);
+				ser.Sync(nameof(shift_register), ref shift_register);
+				ser.Sync(nameof(timer_counter), ref timer_counter);
+				ser.Sync(nameof(sample), ref sample);
 
-				ser.Sync("env_output", ref env_output);
-				ser.Sync("env_start_flag", ref env_start_flag);
-				ser.Sync("env_divider", ref env_divider);
-				ser.Sync("env_counter", ref env_counter);
-				ser.Sync("noise_bit", ref noise_bit);
+				ser.Sync(nameof(env_output), ref env_output);
+				ser.Sync(nameof(env_start_flag), ref env_start_flag);
+				ser.Sync(nameof(env_divider), ref env_divider);
+				ser.Sync(nameof(env_counter), ref env_counter);
+				ser.Sync(nameof(noise_bit), ref noise_bit);
 				ser.EndSection();
 			}
 
@@ -552,18 +552,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Triangle");
-				ser.Sync("linear_counter_reload", ref linear_counter_reload);
-				ser.Sync("control_flag", ref control_flag);
-				ser.Sync("timer_cnt", ref timer_cnt);
-				ser.Sync("reload_flag", ref reload_flag);
-				ser.Sync("len_cnt", ref len_cnt);
+				ser.Sync(nameof(linear_counter_reload), ref linear_counter_reload);
+				ser.Sync(nameof(control_flag), ref control_flag);
+				ser.Sync(nameof(timer_cnt), ref timer_cnt);
+				ser.Sync(nameof(reload_flag), ref reload_flag);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
 
-				ser.Sync("lenctr_en", ref lenctr_en);
-				ser.Sync("linear_counter", ref linear_counter);
-				ser.Sync("timer", ref timer);
-				ser.Sync("timer_cnt_reload", ref timer_cnt_reload);
-				ser.Sync("seq", ref seq);
-				ser.Sync("sample", ref sample);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
+				ser.Sync(nameof(linear_counter), ref linear_counter);
+				ser.Sync(nameof(timer), ref timer);
+				ser.Sync(nameof(timer_cnt_reload), ref timer_cnt_reload);
+				ser.Sync(nameof(seq), ref seq);
+				ser.Sync(nameof(sample), ref sample);
 				ser.EndSection();
 			}
 
@@ -729,23 +729,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("DMC");
-				ser.Sync("irq_enabled", ref irq_enabled);
-				ser.Sync("loop_flag", ref loop_flag);
-				ser.Sync("timer_reload", ref timer_reload);
+				ser.Sync(nameof(irq_enabled), ref irq_enabled);
+				ser.Sync(nameof(loop_flag), ref loop_flag);
+				ser.Sync(nameof(timer_reload), ref timer_reload);
 
-				ser.Sync("timer", ref timer);
-				ser.Sync("user_address", ref user_address);
-				ser.Sync("user_length", ref user_length);
+				ser.Sync(nameof(timer), ref timer);
+				ser.Sync(nameof(user_address), ref user_address);
+				ser.Sync(nameof(user_length), ref user_length);
 
-				ser.Sync("sample_address", ref sample_address);
-				ser.Sync("sample_length", ref sample_length);
-				ser.Sync("sample_buffer", ref sample_buffer);
-				ser.Sync("sample_buffer_filled", ref sample_buffer_filled);
+				ser.Sync(nameof(sample_address), ref sample_address);
+				ser.Sync(nameof(sample_length), ref sample_length);
+				ser.Sync(nameof(sample_buffer), ref sample_buffer);
+				ser.Sync(nameof(sample_buffer_filled), ref sample_buffer_filled);
 
-				ser.Sync("out_shift", ref out_shift);
-				ser.Sync("out_bits_remaining", ref out_bits_remaining);
-				ser.Sync("out_deltacounter", ref out_deltacounter);
-				ser.Sync("out_silence", ref out_silence);
+				ser.Sync(nameof(out_shift), ref out_shift);
+				ser.Sync(nameof(out_bits_remaining), ref out_bits_remaining);
+				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
+				ser.Sync(nameof(out_silence), ref out_silence);
 
 				ser.Sync("dmc_call_delay", ref delay);
 
@@ -945,31 +945,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("dmc_irq", ref dmc_irq);
-			ser.Sync("pending_reg", ref pending_reg);
-			ser.Sync("pending_val", ref pending_val);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(dmc_irq), ref dmc_irq);
+			ser.Sync(nameof(pending_reg), ref pending_reg);
+			ser.Sync(nameof(pending_val), ref pending_val);
 
-			ser.Sync("sequencer_counter", ref sequencer_counter);
-			ser.Sync("sequencer_step", ref sequencer_step);
-			ser.Sync("sequencer_mode", ref sequencer_mode);
-			ser.Sync("sequencer_irq_inhibit;", ref sequencer_irq_inhibit);
-			ser.Sync("sequencer_irq", ref sequencer_irq);
-			ser.Sync("sequence_reset_pending", ref sequence_reset_pending);
-			ser.Sync("sequencer_irq_clear_pending", ref sequencer_irq_clear_pending);
-			ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
+			ser.Sync(nameof(sequencer_counter), ref sequencer_counter);
+			ser.Sync(nameof(sequencer_step), ref sequencer_step);
+			ser.Sync(nameof(sequencer_mode), ref sequencer_mode);
+			ser.Sync(nameof(sequencer_irq_inhibit), ref sequencer_irq_inhibit);
+			ser.Sync(nameof(sequencer_irq), ref sequencer_irq);
+			ser.Sync(nameof(sequence_reset_pending), ref sequence_reset_pending);
+			ser.Sync(nameof(sequencer_irq_clear_pending), ref sequencer_irq_clear_pending);
+			ser.Sync(nameof(sequencer_irq_assert), ref sequencer_irq_assert);
 
-			ser.Sync("dmc_dma_countdown", ref dmc_dma_countdown);
+			ser.Sync(nameof(dmc_dma_countdown), ref dmc_dma_countdown);
 			ser.Sync("sample_length_delay", ref pending_length_change);
 			ser.Sync("dmc_called_from_write", ref call_from_write);
 			ser.Sync("sequencer_tick_delay", ref seq_tick);
 			ser.Sync("seq_val_to_apply", ref seq_val);
-			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
-			ser.Sync("len_clock_active", ref len_clock_active);
+			ser.Sync(nameof(sequencer_irq_flag), ref sequencer_irq_flag);
+			ser.Sync(nameof(len_clock_active), ref len_clock_active);
 
-			ser.Sync("oldmix", ref oldmix);
-			ser.Sync("cart_sound", ref cart_sound);
-			ser.Sync("old_cart_sound", ref old_cart_sound);
+			ser.Sync(nameof(oldmix), ref oldmix);
+			ser.Sync(nameof(cart_sound), ref cart_sound);
+			ser.Sync(nameof(old_cart_sound), ref old_cart_sound);
 
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);

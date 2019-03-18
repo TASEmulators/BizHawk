@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Magnavox
 
 
 			if (!_core.Init(rom, rom.Length, bios, bios.Length))
-				throw new InvalidOperationException("Init() failed");
+				throw new InvalidOperationException($"{nameof(_core.Init)}() failed");
 
 			PostInit();
 		}

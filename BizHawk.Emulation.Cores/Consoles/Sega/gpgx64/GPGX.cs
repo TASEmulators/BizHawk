@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _syncSettings.GetNativeSettings()))
-					throw new Exception("gpgx_init() failed");
+					throw new Exception($"{nameof(Core.gpgx_init)}() failed");
 
 				{
 					int fpsnum = 60;
@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
 			if (!Core.gpgx_get_control(input, inputsize))
-				throw new Exception("gpgx_get_control() failed");
+				throw new Exception($"{nameof(Core.gpgx_get_control)}() failed");
 
 			ControlConverter = new GPGXControlConverter(input, false); // _cds != null);
 			ControllerDefinition = ControlConverter.ControllerDef;

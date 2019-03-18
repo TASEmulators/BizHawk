@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("latch0", ref latch0);
-			ser.Sync("latch1", ref latch1);
+			ser.Sync(nameof(latch0), ref latch0);
+			ser.Sync(nameof(latch1), ref latch1);
 		}
 
 		// same as ReadPPU, but doesn't process latches

@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
 			if (_core == IntPtr.Zero)
 			{
-				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS? and/or ROM?");
+				throw new InvalidOperationException($"{nameof(LibmGBA.BizCreate)}() returned NULL!  Bad BIOS? and/or ROM?");
 			}
 
 			try

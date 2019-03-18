@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VPC");
-			ser.Sync("Registers", ref Registers, false);
+			ser.BeginSection(nameof(VPC));
+			ser.Sync(nameof(Registers), ref Registers, false);
 			ser.EndSection();
 
 			if (ser.IsReader)

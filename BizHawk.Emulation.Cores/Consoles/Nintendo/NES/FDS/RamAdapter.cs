@@ -130,34 +130,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("originaldisk", ref originaldisk, true);
-			ser.Sync("disk", ref disk, true);
-			ser.Sync("diskpos", ref diskpos);
-			ser.Sync("disksize", ref disksize);
-			ser.Sync("writeprotect", ref writeprotect);
+			ser.Sync(nameof(originaldisk), ref originaldisk, true);
+			ser.Sync(nameof(disk), ref disk, true);
+			ser.Sync(nameof(diskpos), ref diskpos);
+			ser.Sync(nameof(disksize), ref disksize);
+			ser.Sync(nameof(writeprotect), ref writeprotect);
 
-			ser.Sync("cycleswaiting", ref cycleswaiting);
+			ser.Sync(nameof(cycleswaiting), ref cycleswaiting);
 			{
 				int tmp = (int)state;
-				ser.Sync("state", ref tmp);
+				ser.Sync(nameof(state), ref tmp);
 				state = (RamAdapterState)tmp;
 			}
-			ser.Sync("cached4025", ref cached4025);
-			ser.Sync("irq", ref irq);
-			ser.Sync("transferreset", ref transferreset);
+			ser.Sync(nameof(cached4025), ref cached4025);
+			ser.Sync(nameof(irq), ref irq);
+			ser.Sync(nameof(transferreset), ref transferreset);
 
-			ser.Sync("crc", ref crc);
-			ser.Sync("writecomputecrc", ref writecomputecrc);
+			ser.Sync(nameof(crc), ref crc);
+			ser.Sync(nameof(writecomputecrc), ref writecomputecrc);
 
-			ser.Sync("readreg", ref readreg);
-			ser.Sync("writereg", ref writereg);
-			ser.Sync("readregpos", ref readregpos);
-			ser.Sync("writeregpos", ref writeregpos);
-			ser.Sync("readreglatch", ref readreglatch);
-			ser.Sync("writereglatch", ref writereglatch);
+			ser.Sync(nameof(readreg), ref readreg);
+			ser.Sync(nameof(writereg), ref writereg);
+			ser.Sync(nameof(readregpos), ref readregpos);
+			ser.Sync(nameof(writeregpos), ref writeregpos);
+			ser.Sync(nameof(readreglatch), ref readreglatch);
+			ser.Sync(nameof(writereglatch), ref writereglatch);
 
-			ser.Sync("bytetransferflag", ref bytetransferflag);
-			ser.Sync("lookingforendofgap", ref lookingforendofgap);
+			ser.Sync(nameof(bytetransferflag), ref bytetransferflag);
+			ser.Sync(nameof(lookingforendofgap), ref lookingforendofgap);
 		}
 
 		#region state

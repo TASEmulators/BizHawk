@@ -72,10 +72,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VCE");
-			ser.Sync("VceAddress", ref VceAddress);
-			ser.Sync("CR", ref CR);
-			ser.Sync("VceData", ref VceData, false);
+			ser.BeginSection(nameof(VCE));
+			ser.Sync(nameof(VceAddress), ref VceAddress);
+			ser.Sync(nameof(CR), ref CR);
+			ser.Sync(nameof(VceData), ref VceData, false);
 			ser.EndSection();
 
 			if (ser.IsReader)

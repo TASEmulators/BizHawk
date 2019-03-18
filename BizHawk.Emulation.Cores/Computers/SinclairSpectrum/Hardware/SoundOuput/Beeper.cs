@@ -204,10 +204,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("Buzzer");
-            ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
-            ser.Sync("_sampleRate", ref _sampleRate);
-            ser.Sync("LastPulse", ref LastPulse);
-            ser.Sync("LastPulseTState", ref LastPulseTState);
+            ser.Sync(nameof(_tStatesPerFrame), ref _tStatesPerFrame);
+            ser.Sync(nameof(_sampleRate), ref _sampleRate);
+            ser.Sync(nameof(LastPulse), ref LastPulse);
+            ser.Sync(nameof(LastPulseTState), ref LastPulseTState);
             ser.EndSection();
         }
 

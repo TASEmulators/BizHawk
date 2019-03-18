@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores
 					{
 						var coreattr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
 						if (coreattr.Length != 1)
-							throw new InvalidOperationException(string.Format("IEmulator {0} without CoreAttributes!", typ));
+							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
 						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
 							.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0).ToList();
 						foreach(var con in cons)

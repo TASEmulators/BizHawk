@@ -132,54 +132,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync("prg_regs", ref prg_regs);
-			ser.Sync("chr_regs", ref chr_regs);
-			ser.Sync("chr_latches", ref chr_latches);
-			ser.Sync("nt_regs", ref nt_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(chr_latches), ref chr_latches);
+			ser.Sync(nameof(nt_regs), ref nt_regs);
 
-			ser.Sync("prg_banks", ref prg_banks);
-			ser.Sync("chr_banks", ref chr_banks);
-			ser.Sync("ram_bytes", ref ram_bytes);
+			ser.Sync(nameof(prg_banks), ref prg_banks);
+			ser.Sync(nameof(chr_banks), ref chr_banks);
+			ser.Sync(nameof(ram_bytes), ref ram_bytes);
 
-			ser.Sync("dipswitch_0", ref dipswitch_0);
-			ser.Sync("dipswitch_1", ref dipswitch_1);
+			ser.Sync(nameof(dipswitch_0), ref dipswitch_0);
+			ser.Sync(nameof(dipswitch_1), ref dipswitch_1);
 
-			ser.Sync("prg_bank_mask_8k", ref prg_bank_mask_8k);
-			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
+			ser.Sync(nameof(prg_bank_mask_8k), ref prg_bank_mask_8k);
+			ser.Sync(nameof(chr_bank_mask_1k), ref chr_bank_mask_1k);
 
-			ser.Sync("prg_mode_select", ref prg_mode_select);
-			ser.Sync("chr_mode_select", ref chr_mode_select);
-			ser.Sync("sram_prg", ref sram_prg);
-			ser.Sync("ram_bank", ref ram_bank);
+			ser.Sync(nameof(prg_mode_select), ref prg_mode_select);
+			ser.Sync(nameof(chr_mode_select), ref chr_mode_select);
+			ser.Sync(nameof(sram_prg), ref sram_prg);
+			ser.Sync(nameof(ram_bank), ref ram_bank);
 
-			ser.Sync("mapper_035", ref mapper_035);
-			ser.Sync("mapper_090", ref mapper_090);
-			ser.Sync("mapper_209", ref mapper_209);
-			ser.Sync("mapper_211", ref mapper_211);
+			ser.Sync(nameof(mapper_035), ref mapper_035);
+			ser.Sync(nameof(mapper_090), ref mapper_090);
+			ser.Sync(nameof(mapper_209), ref mapper_209);
+			ser.Sync(nameof(mapper_211), ref mapper_211);
 
-			ser.Sync("nt_advanced_control", ref nt_advanced_control);
-			ser.Sync("nt_ram_disable", ref nt_ram_disable);
-			ser.Sync("nt_ram_select", ref nt_ram_select);
+			ser.Sync(nameof(nt_advanced_control), ref nt_advanced_control);
+			ser.Sync(nameof(nt_ram_disable), ref nt_ram_disable);
+			ser.Sync(nameof(nt_ram_select), ref nt_ram_select);
 
-			ser.Sync("mirror_chr", ref mirror_chr);
-			ser.Sync("chr_block_mode", ref chr_block_mode);
-			ser.Sync("chr_block", ref chr_block);
-			ser.Sync("prg_block", ref prg_block);
+			ser.Sync(nameof(mirror_chr), ref mirror_chr);
+			ser.Sync(nameof(chr_block_mode), ref chr_block_mode);
+			ser.Sync(nameof(chr_block), ref chr_block);
+			ser.Sync(nameof(prg_block), ref prg_block);
 
-			ser.Sync("multiplicator", ref multiplicator);
-			ser.Sync("multiplicand", ref multiplicand);
-			ser.Sync("multiplication_result", ref multiplication_result);
+			ser.Sync(nameof(multiplicator), ref multiplicator);
+			ser.Sync(nameof(multiplicand), ref multiplicand);
+			ser.Sync(nameof(multiplication_result), ref multiplication_result);
 
-			ser.Sync("irq_enable", ref irq_enable);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_count_down", ref irq_count_down);
-			ser.Sync("irq_count_up", ref irq_count_up);
-			ser.Sync("irq_prescaler_size", ref irq_prescaler_size);
-			ser.Sync("irq_source", ref irq_source);
-			ser.Sync("prescaler", ref prescaler);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("xor_reg", ref xor_reg);
-			ser.Sync("a12_old", ref a12_old);
+			ser.Sync(nameof(irq_enable), ref irq_enable);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_count_down), ref irq_count_down);
+			ser.Sync(nameof(irq_count_up), ref irq_count_up);
+			ser.Sync(nameof(irq_prescaler_size), ref irq_prescaler_size);
+			ser.Sync(nameof(irq_source), ref irq_source);
+			ser.Sync(nameof(prescaler), ref prescaler);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(xor_reg), ref xor_reg);
+			ser.Sync(nameof(a12_old), ref a12_old);
 
 			Sync();
 		}

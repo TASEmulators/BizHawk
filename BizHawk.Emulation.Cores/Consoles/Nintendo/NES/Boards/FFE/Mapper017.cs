@@ -109,12 +109,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync("prg_regs_8k", ref prg_regs_8k);
-			ser.Sync("chr_regs_1k", ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
 
-			ser.Sync("irq_enable", ref irq_enable);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_count", ref irq_count);
+			ser.Sync(nameof(irq_enable), ref irq_enable);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_count), ref irq_count);
 		}
 
 		public override byte ReadPRG(int addr)
