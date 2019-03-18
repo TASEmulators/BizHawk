@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			_maxSize = domainSize - 1;
 
 			MaxLength = _maxSize.Value.NumHexDigits();
-			_addressFormatStr = "{0:X" + MaxLength + "}";
+			_addressFormatStr = $"{{0:X{MaxLength}}}";
 
 			//try to preserve the old value, as best we can
 			if(!wasMaxSizeSet)

@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			string why;
 			if (!DatachBarcode.ValidString(textBox1.Text, out why))
 			{
-				label3.Text = "Invalid: " + why;
+				label3.Text = $"Invalid: {why}";
 				label3.Visible = true;
 				button1.Enabled = false;
 			}

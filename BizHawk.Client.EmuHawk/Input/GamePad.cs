@@ -220,19 +220,19 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < state.GetButtons().Length; i++)
 			{
 				int j = i;
-				AddItem(string.Format("B{0}", i + 1), () => state.IsPressed(j));
+				AddItem($"B{i + 1}", () => state.IsPressed(j));
 			}
 
 			for (int i = 0; i < state.GetPointOfViewControllers().Length; i++)
 			{
 				int j = i;
-				AddItem(string.Format("POV{0}U", i + 1),
+				AddItem($"POV{i + 1}U",
 					() => { int t = state.GetPointOfViewControllers()[j]; return (t >= 0 && t <= 4500) || (t >= 31500 && t < 36000); });
-				AddItem(string.Format("POV{0}D", i + 1),
+				AddItem($"POV{i + 1}D",
 					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 13500 && t <= 22500; });
-				AddItem(string.Format("POV{0}L", i + 1),
+				AddItem($"POV{i + 1}L",
 					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 22500 && t <= 31500; });
-				AddItem(string.Format("POV{0}R", i + 1),
+				AddItem($"POV{i + 1}R",
 					() => { int t = state.GetPointOfViewControllers()[j]; return t >= 4500 && t <= 13500; });
 			}
 		}

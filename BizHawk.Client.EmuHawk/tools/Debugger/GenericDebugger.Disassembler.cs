@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (column == 0)
 				{
-					text = string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address);
+					text = string.Format($"{{0:X{_pcRegisterSize}}}", _disassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 						blob.AppendLine();
 					}
 
-					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address))
+					blob.Append(string.Format($"{{0:X{_pcRegisterSize}}}", _disassemblyLines[index].Address))
 						.Append(" ")
 						.Append(_disassemblyLines[index].Mnemonic);
 				}

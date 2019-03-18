@@ -61,21 +61,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
-			if (_watchList.Count < 10) // Hack in case an asburd amount of addresses is picked, this can get slow and create a too long string
-			{
-				AddressBox.Text = _watchList
-					.Select(a => a.AddressString)
-					.Distinct()
-					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
-			}
-			else
-			{
-				AddressBox.Text = _watchList
-					.Take(10)
-					.Select(a => a.AddressString)
-					.Distinct()
-					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
-			}
+			AddressBox.Text = (_watchList.Count > 10 ? _watchList.Take(10) : _watchList) // Hack in case an absurd amount of addresses are picked, this can be slow and create too long of a string
+				.Select(a => a.AddressString)
+				.Distinct()
+				.Aggregate((addrStr, nextStr) => $"{addrStr},{nextStr}");
 
 			ValueBox.ByteSize = _watchList[0].Size;
 			ValueBox.Type = _watchList[0].Type;
@@ -91,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTitle()
 		{
-			Text = "RAM Poke - " + _watchList[0].Domain.Name;
+			Text = $"RAM Poke - {_watchList[0].Domain.Name}";
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

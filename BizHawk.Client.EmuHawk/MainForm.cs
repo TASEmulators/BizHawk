@@ -279,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRom(argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
 				if (Global.Game == null)
 				{
-					MessageBox.Show("Failed to load " + argParser.cmdRom + " specified on commandline");
+					MessageBox.Show($"Failed to load {argParser.cmdRom} specified on commandline");
 				}
 			}
 			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
@@ -370,11 +370,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (argParser.cmdLoadSlot != null)
 				{
-					LoadQuickSave("QuickSave" + argParser.cmdLoadSlot);
+					LoadQuickSave($"QuickSave{argParser.cmdLoadSlot}");
 				}
 				else if (Global.Config.AutoLoadLastSaveSlot)
 				{
-					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+					LoadQuickSave($"QuickSave{Global.Config.SaveSlot}");
 				}
 			}
 
@@ -918,34 +918,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshot()
 		{
-			string fmt = "{0}.{1:yyyy-MM-dd HH.mm.ss}{2}.png";
-			string prefix = PathManager.ScreenshotPrefix(Global.Game);
-			var ts = DateTime.Now;
+			var basename = $"{PathManager.ScreenshotPrefix(Global.Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
 
-			string fnameBare = string.Format(fmt, prefix, ts, "");
-			string fname = string.Format(fmt, prefix, ts, " (0)");
+			var fnameBare = $"{basename}.png";
+			var fname = $"{basename} (0).png";
 
 			// if the (0) filename exists, do nothing. we'll bump up the number later
 			// if the bare filename exists, move it to (0)
 			// otherwise, no related filename exists, and we can proceed with the bare filename
-			if (File.Exists(fname))
+			if (!File.Exists(fname))
 			{
-			}
-			else if (File.Exists(fnameBare))
-			{
-				File.Move(fnameBare, fname);
-			}
-			else
-			{
-				fname = fnameBare;
+				if (File.Exists(fnameBare)) File.Move(fnameBare, fname);
+				else fname = fnameBare;
 			}
 
-			int seq = 0;
-			while (File.Exists(fname))
-			{
-				var sequence = $" ({seq++})";
-				fname = string.Format(fmt, prefix, ts, sequence);
-			}
+			for (var seq = 0; File.Exists(fname); seq++)
+				fname = $"{basename} ({seq}).png";
 
 			TakeScreenshot(fname);
 		}
@@ -967,10 +955,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			/*
-			using (var fs = new FileStream(path + "_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
+			using (var fs = new FileStream($"{path}_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
 				QuickBmpFile.Save(Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
 			*/
-			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
+			GlobalWin.OSD.AddMessage($"{fi.Name} saved.");
 		}
 
 		public void FrameBufferResized()
@@ -996,7 +984,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				Console.WriteLine("Selecting display size " + lastComputedSize);
+				Console.WriteLine($"Selecting display size {lastComputedSize}");
 
 				// Change size
 				Size = new Size(lastComputedSize.Width + borderWidth, lastComputedSize.Height + borderHeight);
@@ -1176,7 +1164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FrameSkipMessage()
 		{
-			GlobalWin.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip);
+			GlobalWin.OSD.AddMessage($"Frameskipping set to {Global.Config.FrameSkip}");
 		}
 
 		public void UpdateCheatStatus()
@@ -1253,7 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 				((Snes9x)Emulator).PutSettings(s);
 			}
 
-			GlobalWin.OSD.AddMessage($"BG {layer} Layer " + (result ? "On" : "Off"));
+			GlobalWin.OSD.AddMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
 		}
 
 		private void SNES_ToggleObj(int layer)
@@ -1289,7 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				((LibsnesCore)Emulator).PutSettings(s);
-				GlobalWin.OSD.AddMessage($"Obj {layer} Layer " + (result ? "On" : "Off"));
+				GlobalWin.OSD.AddMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x)
 			{
@@ -1311,7 +1299,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				((Snes9x)Emulator).PutSettings(s);
-				GlobalWin.OSD.AddMessage($"Sprite {layer} Layer " + (result ? "On" : "Off"));
+				GlobalWin.OSD.AddMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
 			}
 		}
 
@@ -1448,7 +1436,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
 			{
-				str += VersionInfo.CustomBuildString + " ";
+				str += $"{VersionInfo.CustomBuildString} ";
 			}
 
 			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
@@ -1460,11 +1448,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Emulator.IsNull())
 			{
-				str += " - " + Global.Game.Name;
+				str += $" - {Global.Game.Name}";
 
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					str += " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
+					str += $" - {Path.GetFileName(Global.MovieSession.Movie.Filename)}";
 				}
 			}
 
@@ -1635,9 +1623,9 @@ namespace BizHawk.Client.EmuHawk
 					path = PathManager.SaveRamPath(Global.Game);
 				}
 				var file = new FileInfo(path);
-				var newPath = path + ".new";
+				var newPath = $"{path}.new";
 				var newFile = new FileInfo(newPath);
-				var backupPath = path + ".bak";
+				var backupPath = $"{path}.bak";
 				var backupFile = new FileInfo(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
@@ -1647,7 +1635,7 @@ namespace BizHawk.Client.EmuHawk
                     }
                     catch
                     {
-                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);                        
+                        GlobalWin.OSD.AddMessage($"Unable to flush SaveRAM to: {newFile.Directory}");
                         return false;
                     }
 				}
@@ -1909,13 +1897,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Lightning;
 				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator is turbo seeking to frame " + PauseOnFrame.Value + " click to stop seek";
+				PauseStatusButton.ToolTipText = $"Emulator is turbo seeking to frame {PauseOnFrame.Value} click to stop seek";
 			}
 			else if (PauseOnFrame.HasValue)
 			{
 				PauseStatusButton.Image = Properties.Resources.YellowRight;
 				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator is playing to frame " + PauseOnFrame.Value + " click to stop seek";
+				PauseStatusButton.ToolTipText = $"Emulator is playing to frame {PauseOnFrame.Value} click to stop seek";
 			}
 			else if (EmulatorPaused)
 			{
@@ -1967,14 +1955,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SpeedPercentAlternate = value;
 			SyncThrottle();
-			GlobalWin.OSD.AddMessage("Alternate Speed: " + value + "%");
+			GlobalWin.OSD.AddMessage($"Alternate Speed: {value}%");
 		}
 
 		private void SetSpeedPercent(int value)
 		{
 			Global.Config.SpeedPercent = value;
 			SyncThrottle();
-			GlobalWin.OSD.AddMessage("Speed: " + value + "%");
+			GlobalWin.OSD.AddMessage($"Speed: {value}%");
 		}
 
 		private void Shutdown()
@@ -2328,7 +2316,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 100;
 			}
 
-			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
+			GlobalWin.OSD.AddMessage($"Volume {Global.Config.SoundVolume}");
 		}
 
 		private static void VolumeDown()
@@ -2339,7 +2327,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 0;
 			}
 
-			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
+			GlobalWin.OSD.AddMessage($"Volume {Global.Config.SoundVolume}");
 		}
 
 		private void SoftReset()
@@ -2438,7 +2426,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Emulator.SystemId] + "x");
+			GlobalWin.OSD.AddMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
 
@@ -2465,7 +2453,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Emulator.SystemId] + "x");
+			GlobalWin.OSD.AddMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
 
@@ -2624,7 +2612,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.Save();
-				GlobalWin.OSD.AddMessage(Global.MovieSession.Movie.Filename + " saved.");
+				GlobalWin.OSD.AddMessage($"{Global.MovieSession.Movie.Filename} saved.");
 			}
 		}
 
@@ -2664,9 +2652,7 @@ namespace BizHawk.Client.EmuHawk
 						? _linkCableOn
 						: _linkCableOff;
 
-					LinkConnectStatusBarButton.ToolTipText = Emulator.AsLinkable().LinkConnected
-						? "Link connection is currently enabled"
-						: "Link connection is currently disabled";
+					LinkConnectStatusBarButton.ToolTipText = $"Link connection is currently {(Emulator.AsLinkable().LinkConnected ? "enabled" : "disabled")}";
 				}
 				else
 				{
@@ -2701,21 +2687,18 @@ namespace BizHawk.Client.EmuHawk
 		private static void ToggleModePokeMode()
 		{
 			Global.Config.MoviePlaybackPokeMode ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.MoviePlaybackPokeMode ? "Movie Poke mode enabled" : "Movie Poke mode disabled");
+			GlobalWin.OSD.AddMessage($"Movie Poke mode {(Global.Config.MoviePlaybackPokeMode ? "enabled" : "disabled")}");
 		}
 
 		private static void ToggleBackgroundInput()
 		{
 			Global.Config.AcceptBackgroundInput ^= true;
-			GlobalWin.OSD.AddMessage(Global.Config.AcceptBackgroundInput
-										 ? "Background Input enabled"
-										 : "Background Input disabled");
+			GlobalWin.OSD.AddMessage($"Background Input {(Global.Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
 		}
 
 		private static void VsyncMessage()
 		{
-			GlobalWin.OSD.AddMessage(
-				"Display Vsync set to " + (Global.Config.VSync ? "on" : "off"));
+			GlobalWin.OSD.AddMessage($"Display Vsync set to {(Global.Config.VSync ? "on" : "off")}");
 		}
 
 		private static bool StateErrorAskUser(string title, string message)
@@ -3276,7 +3259,7 @@ namespace BizHawk.Client.EmuHawk
 						var sfd = new SaveFileDialog();
 						if (Global.Game != null)
 						{
-							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; // dont use Path.ChangeExtension, it might wreck game names with dots in them
+							sfd.FileName = $"{PathManager.FilesystemSafeName(Global.Game)}.{ext}"; // dont use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null);
 						}
 						else
@@ -3465,7 +3448,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception e)
 				{
-					MessageBox.Show("Video dumping died:\n\n" + e);
+					MessageBox.Show($"Video dumping died:\n\n{e}");
 					AbortAv();
 				}
 
@@ -3531,7 +3514,7 @@ namespace BizHawk.Client.EmuHawk
 				string title = "load error";
 				if (e.AttemptedCoreLoad != null)
 				{
-					title = e.AttemptedCoreLoad + " load error";
+					title = $"{e.AttemptedCoreLoad} load error";
 				}
 
 				MessageBox.Show(this, e.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -3682,7 +3665,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 
-					string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
+					string loaderName = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -3714,8 +3697,8 @@ namespace BizHawk.Client.EmuHawk
 								else
 								{
 									xSw.WriteLine(xmlGame.Assets[xg].Key);
-									xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
-									xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
+									xSw.WriteLine($"SHA1:{xmlGame.Assets[xg].Value.HashSHA1()}");
+									xSw.WriteLine($"MD5:{xmlGame.Assets[xg].Value.HashMD5()}");
 									xSw.WriteLine();
 								}
 							}
@@ -3829,7 +3812,7 @@ namespace BizHawk.Client.EmuHawk
 					ToolFormBase.UpdateCheatRelatedTools(null, null);
 					if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
 					{
-						LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+						LoadQuickSave($"QuickSave{Global.Config.SaveSlot}");
 					}
 
 					if (Global.FirmwareManager.RecentlyServed.Count > 0)
@@ -3971,7 +3954,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Restart();
 				ApiManager.Restart(Emulator.ServiceProvider);
 				RewireSound();
-				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : "");
+				Text = $"BizHawk{(VersionInfo.DeveloperBuild ? " (interim) " : "")}";
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();
@@ -3999,7 +3982,7 @@ namespace BizHawk.Client.EmuHawk
 		public void EnableRewind(bool enabled)
 		{
 			Global.Rewinder.SuspendRewind = !enabled;
-			GlobalWin.OSD.AddMessage("Rewind " + (enabled ? "enabled" : "suspended"));
+			GlobalWin.OSD.AddMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 
 		public void ClearRewindData()
@@ -4079,7 +4062,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!supressOSD)
 				{
-					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+					GlobalWin.OSD.AddMessage($"Loaded state: {userFriendlyStateName}");
 				}
 			}
 			else
@@ -4110,10 +4093,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+			var path = $"{PathManager.SaveStatePrefix(Global.Game)}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
-				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
+				GlobalWin.OSD.AddMessage($"Unable to load {quickSlotName}.State");
 
 				return;
 			}
@@ -4140,11 +4123,11 @@ namespace BizHawk.Client.EmuHawk
 
 				ClientApi.OnStateSaved(this, userFriendlyStateName);
 
-				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
+				GlobalWin.OSD.AddMessage($"Saved state: {userFriendlyStateName}");
 			}
 			catch (IOException)
 			{
-				GlobalWin.OSD.AddMessage("Unable to save state " + path);
+				GlobalWin.OSD.AddMessage($"Unable to save state {path}");
 			}
 
 			if (!fromLua)
@@ -4174,7 +4157,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+			var path = $"{PathManager.SaveStatePrefix(Global.Game)}.{quickSlotName}.State";
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4185,7 +4168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Make backup first
 			if (Global.Config.BackupSavestates)
 			{
-				Util.TryMoveBackupFile(path, path + ".bak");
+				Util.TryMoveBackupFile(path, $"{path}.bak");
 			}
 
 			SaveState(path, quickSlotName, false);
@@ -4230,7 +4213,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = "State",
 				Filter = "Save States (*.State)|*.State|All Files|*.*",
 				InitialDirectory = path,
-				FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State"
+				FileName = $"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave0.State"
 			};
 
 			var result = sfd.ShowHawkDialog();

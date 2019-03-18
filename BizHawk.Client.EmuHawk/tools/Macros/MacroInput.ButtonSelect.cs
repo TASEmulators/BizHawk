@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < _buttonBoxes.Length; i++)
 			{
 				if (!_buttonBoxes[i].Checked)
-					key = key.Replace(_buttonBoxes[i].Text + "|", "");
+					key = key.Replace($"{_buttonBoxes[i].Text}|", "");
 			}
 			key = key.Substring(0, key.Length - 1);
 

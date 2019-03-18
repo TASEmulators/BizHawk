@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string SocketServerSend(string SendString)
 		{
-			return "Sent : " + GlobalWin.socketServer.SendString(SendString).ToString() + " bytes";
+			return $"Sent : {GlobalWin.socketServer.SendString(SendString)} bytes";
 		}
 		public string SocketServerResponse()
 		{

@@ -138,11 +138,11 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 			public override string ToString()
 			{
 				if (Type == ProgramStepType.Run)
-					return string.Format("Run {0} ({1})", (int)Args, Comment);
+					return $"Run {(int)Args} ({Comment})";
 				if (Type == ProgramStepType.NewTarget)
-					return string.Format("NewTarget {0}", (Size)Args);
+					return $"NewTarget {(Size)Args}";
 				if (Type == ProgramStepType.FinalTarget)
-					return string.Format("FinalTarget");
+					return "FinalTarget";
 				return null;
 			}
 		}

@@ -294,8 +294,8 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdatePaletteSelection()
 		{
 			_forceChange = true;
-			Table0PaletteLabel.Text = "Palette: " + PatternView.Pal0;
-			Table1PaletteLabel.Text = "Palette: " + PatternView.Pal1;
+			Table0PaletteLabel.Text = $"Palette: {PatternView.Pal0}";
+			Table1PaletteLabel.Text = $"Palette: {PatternView.Pal1}";
 		}
 
 		private static Bitmap Section(Image srcBitmap, Rectangle section, bool is8x16)
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					toolStripStatusLabel1.Text = found.Text + " copied to clipboard.";
+					toolStripStatusLabel1.Text = $"{found.Text} copied to clipboard.";
 
 					Messagetimer.Stop();
 					Messagetimer.Start();
@@ -619,11 +619,11 @@ namespace BizHawk.Client.EmuHawk
 				tile &= ~1;
 			}
 
-			AddressLabel.Text = "Number: " + string.Format("{0:X2}", spriteNumber);
-			ValueLabel.Text = "X: " + string.Format("{0:X2}", x);
-			Value2Label.Text = "Y: " + string.Format("{0:X2}", y);
-			Value3Label.Text = "Tile: " + string.Format("{0:X2}", tile);
-			Value4Label.Text = "Color: " + color;
+			AddressLabel.Text = $"Number: {spriteNumber:X2}";
+			ValueLabel.Text = $"X: {x:X2}";
+			Value2Label.Text = $"Y: {y:X2}";
+			Value3Label.Text = $"Tile: {tile:X2}";
+			Value4Label.Text = $"Color: {color}";
 			Value5Label.Text = flags;
 
 			if (is8x16)
@@ -668,7 +668,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int column = e.X / 16;
 			int addr = column + baseAddr;
-			AddressLabel.Text = "Address: 0x" + string.Format("{0:X4}", addr);
+			AddressLabel.Text = $"Address: 0x{addr:X4}";
 			int val;
 
 			var bmp = new Bitmap(64, 64);
@@ -679,20 +679,20 @@ namespace BizHawk.Client.EmuHawk
 			if (baseAddr == 0x3F00)
 			{
 				val = PALRAM[PaletteView.BgPalettes[column].Address];
-				ValueLabel.Text = "ID: BG" + (column / 4);
+				ValueLabel.Text = $"ID: BG{column / 4}";
 				g.FillRectangle(new SolidBrush(PaletteView.BgPalettes[column].Color), 0, 0, 64, 64);
 			}
 			else
 			{
 				val = PALRAM[PaletteView.SpritePalettes[column].Address];
-				ValueLabel.Text = "ID: SPR" + (column / 4);
+				ValueLabel.Text = $"ID: SPR{column / 4}";
 				g.FillRectangle(new SolidBrush(PaletteView.SpritePalettes[column].Color), 0, 0, 64, 64);
 			}
 
 			g.Dispose();
 
-			Value3Label.Text = "Color: 0x" + string.Format("{0:X2}", val);
-			Value4Label.Text = "Offset: " + (addr & 0x03);
+			Value3Label.Text = $"Color: 0x{val:X2}";
+			Value4Label.Text = $"Offset: {addr & 0x03}";
 			ZoomBox.Image = bmp;
 		}
 
@@ -772,9 +772,9 @@ namespace BizHawk.Client.EmuHawk
 				usage += " (SPR16)";
 			}
 
-			AddressLabel.Text = "Address: " + string.Format("{0:X4}", address);
-			ValueLabel.Text = "Table " + table;
-			Value3Label.Text = "Tile " + string.Format("{0:X2}", tile);
+			AddressLabel.Text = $"Address: {address:X4}";
+			ValueLabel.Text = $"Table {table}";
+			Value3Label.Text = $"Tile {tile:X2}";
 			Value4Label.Text = usage;
 
 			ZoomBox.Image = Section(PatternView.pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);

@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
 				_filteredList = FunctionList
-					.Where(f => (f.Library + "." + f.Name).ToLowerInvariant().Contains(FilterBox.Text.ToLowerInvariant()))
+					.Where(f => $"{f.Library}.{f.Name}".ToLowerInvariant().Contains(FilterBox.Text.ToLowerInvariant()))
 					.ToList();
 			}
 			else

@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (outputs == null)
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("(no return)" + terminator);
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow($"(no return){terminator}");
 				return;
 			}
 

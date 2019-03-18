@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetCount()
 		{
-			label2.Text = string.Format("Number of files: {0}", listBox1.Items.Count);
+			label2.Text = $"Number of files: {listBox1.Items.Count}";
 		}
 
 		private void listBox1_DragDrop(object sender, DragEventArgs e)

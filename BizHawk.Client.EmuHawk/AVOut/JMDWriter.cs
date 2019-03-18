@@ -671,7 +671,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e);
+				System.Windows.Forms.MessageBox.Show($"JMD Worker Thread died:\n\n{e}");
 				return;
 			}
 		}
