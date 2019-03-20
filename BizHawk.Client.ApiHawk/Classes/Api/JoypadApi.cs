@@ -20,9 +20,9 @@ namespace BizHawk.Client.ApiHawk
 				{
 					buttons[button] = adaptor.IsPressed(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.IsPressed("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.IsPressed($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -32,9 +32,9 @@ namespace BizHawk.Client.ApiHawk
 				{
 					buttons[button] = adaptor.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.GetFloat("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.GetFloat($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (Exception)
 			{
-				Console.WriteLine("invalid mnemonic string: " + inputLogEntry);
+				Console.WriteLine($"invalid mnemonic string: {inputLogEntry}");
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace BizHawk.Client.ApiHawk
 					var toPress = button.ToString();
 					if (controller.HasValue)
 					{
-						toPress = "P" + controller + " " + button;
+						toPress = $"P{controller} {button}";
 					}
 
 					if (!invert)
@@ -154,7 +154,7 @@ namespace BizHawk.Client.ApiHawk
 				var toPress = button;
 				if (controller.HasValue)
 				{
-					toPress = "P" + controller + " " + button;
+					toPress = $"P{controller} {button}";
 				}
 				if (state.HasValue)
 					Global.LuaAndAdaptor.SetButton(toPress, state.Value);
@@ -191,7 +191,7 @@ namespace BizHawk.Client.ApiHawk
 					}
 					else
 					{
-						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+						Global.StickyXORAdapter.SetFloat($"P{controller} {name}", theValue);
 					}
 				}
 			}
@@ -210,7 +210,7 @@ namespace BizHawk.Client.ApiHawk
 				}
 				else
 				{
-					Global.StickyXORAdapter.SetFloat("P" + controller + " " + control, value);
+					Global.StickyXORAdapter.SetFloat($"P{controller} {control}", value);
 				}
 			}
 			catch

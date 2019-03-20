@@ -29,7 +29,7 @@ namespace BizHawk.Client.ApiHawk
 		{
 			if (player < 1 || player > system.MaxControllers)
 			{
-				throw new InvalidOperationException(string.Format("{0} is invalid for {1}", player, system.DisplayName));
+				throw new InvalidOperationException($"{player} is invalid for {system.DisplayName}");
 			}
 
 			_System = system;
