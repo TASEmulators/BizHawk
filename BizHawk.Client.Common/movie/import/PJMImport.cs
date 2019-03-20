@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 			string magic = new string(br.ReadChars(4));
 			if (magic != expectedMagic)
 			{
-				Result.Errors.Add("Not a " + expectedMagic + "file: invalid magic number in file header.");
+				Result.Errors.Add($"Not a {expectedMagic}file: invalid magic number in file header.");
 				return info;
 			}
 
@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 
 					for (int button = 3; button < buttons.Length; button++)
 					{
-						controllers["P1 " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+						controllers[$"P1 {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 						if (((controllerState >> button) & 0x1) != 0 && button > 15)
 						{
 							continue;
@@ -246,7 +246,7 @@ namespace BizHawk.Client.Common
 					ushort controllerState = br.ReadUInt16();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						controllers["P2 " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+						controllers[$"P2 {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 						if (((controllerState >> button) & 0x1) != 0 && button > 15)
 						{
 							continue;
@@ -291,7 +291,7 @@ namespace BizHawk.Client.Common
 
 				if ((controlState & 0xFC) != 0)
 				{
-					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame);
+					Result.Warnings.Add($"Ignored toggle hack flag on frame {frame}");
 				}
 
 				movie.AppendFrame(controllers);
@@ -336,7 +336,7 @@ namespace BizHawk.Client.Common
 
 					for (int button = 3; button < buttons.Length; button++)
 					{
-						controllers["P1 " + buttons[button]] = br.ReadChar() != '.';
+						controllers[$"P1 {buttons[button]}"] = br.ReadChar() != '.';
 					}
 
 					if (info.Player1Type == OctoshockDll.ePeripheralType.DualShock)
@@ -373,7 +373,7 @@ namespace BizHawk.Client.Common
 
 					for (int button = 3; button < buttons.Length; button++)
 					{
-						controllers["P2 " + buttons[button]] = br.ReadChar() != '.';
+						controllers[$"P2 {buttons[button]}"] = br.ReadChar() != '.';
 					}
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
@@ -423,7 +423,7 @@ namespace BizHawk.Client.Common
 
 				if ((controlState & 0xFC) != 0)
 				{
-					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame);
+					Result.Warnings.Add($"Ignored toggle hack flag on frame {frame}");
 				}
 
 				// Each controller is terminated with a pipeline.

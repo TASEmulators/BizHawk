@@ -573,7 +573,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "X" + (_domain.Size - 1).NumHexDigits();
+					return $"X{(_domain.Size - 1).NumHexDigits()}";
 				}
 
 				return "";

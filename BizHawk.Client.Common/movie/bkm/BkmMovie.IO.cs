@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common
 					// TODO: clean this up
 					if (_loopOffset.HasValue)
 					{
-						sw.WriteLine("LoopOffset " + _loopOffset);
+						sw.WriteLine($"LoopOffset {_loopOffset}");
 					}
 
 					foreach (var input in _log)

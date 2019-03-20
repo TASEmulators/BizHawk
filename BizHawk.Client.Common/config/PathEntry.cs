@@ -73,8 +73,8 @@ namespace BizHawk.Client.Common
 			}
 
 			// we don't have anything for the system in question.  add a set of stock paths
-			var systempath = PathManager.RemoveInvalidFileSystemChars(system) + "_INTERIM";
-			var systemdisp = system + " (INTERIM)";
+			var systempath = $"{PathManager.RemoveInvalidFileSystemChars(system)}_INTERIM";
+			var systemdisp = $"{system} (INTERIM)";
 
 			Paths.AddRange(new[]
 			{

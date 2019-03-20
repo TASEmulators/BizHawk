@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string MakeProgramRelativePath(string path)
 		{
-			return MakeAbsolutePath("%exe%/" + path, null);
+			return MakeAbsolutePath($"%exe%/{path}", null);
 		}
 
 		public static string GetDllDirectory()
@@ -262,13 +262,13 @@ namespace BizHawk.Client.Common
 			var name = FilesystemSafeName(game);
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
+			return $"{Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name)}.SaveRAM";
 		}
 		
 		public static string AutoSaveRamPath(GameInfo game)
@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name = Path.Combine(name, "movie-" + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename));
+				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}");
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
@@ -337,34 +337,34 @@ namespace BizHawk.Client.Common
 			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Global.Emulator.SystemId == "NES")
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
 			if (Global.Emulator.SystemId == "GB")
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			if (Global.Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			// Bsnes profiles have incompatible savestates so save the profile name
 			if (Global.Emulator is LibsnesCore)
 			{
-				name += "." + (Global.Emulator as LibsnesCore).CurrentProfile;
+				name += $".{((LibsnesCore)Global.Emulator).CurrentProfile}";
 			}
 
 			if (Global.Emulator.SystemId == "GBA")
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??

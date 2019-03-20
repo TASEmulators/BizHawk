@@ -253,7 +253,7 @@ namespace BizHawk.Client.Common
 				string prefix = "";
 				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
-					prefix = "P" + player + " ";
+					prefix = $"P{player} ";
 				}
 
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
@@ -352,7 +352,7 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 		}
@@ -393,7 +393,7 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.Buttons["GPGX 3-Button Controller"].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 		}
@@ -429,7 +429,7 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (var button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 		}
@@ -497,12 +497,12 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 
 				foreach (string name in BkmMnemonicConstants.Analogs[ControlType].Keys)
 				{
-					Force("P" + player + " " + name, int.Parse(mnemonic.Substring(srcindex + start, 4)));
+					Force($"P{player} {name}", int.Parse(mnemonic.Substring(srcindex + start, 4)));
 					start += 5;
 				}
 			}
@@ -539,7 +539,7 @@ namespace BizHawk.Client.Common
 				int start = 3;
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 		}
@@ -585,7 +585,7 @@ namespace BizHawk.Client.Common
 
 				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 		}
@@ -635,7 +635,7 @@ namespace BizHawk.Client.Common
 				int start = 1;
 				foreach (var button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
-					Force("P" + player + " " + button, c[srcindex + start++]);
+					Force($"P{player} {button}", c[srcindex + start++]);
 				}
 			}
 
