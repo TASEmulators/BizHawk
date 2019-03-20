@@ -7,32 +7,32 @@ namespace BizHawk.Common.NumberExtensions
 	{
 		public static string ToHexString(this int n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static string ToHexString(this uint n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static string ToHexString(this byte n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static string ToHexString(this ushort n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static string ToHexString(this long n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static string ToHexString(this ulong n, int numdigits)
 		{
-			return string.Format("{0:X" + numdigits + "}", n);
+			return string.Format($"{{0:X{numdigits}}}", n);
 		}
 
 		public static bool Bit(this byte b, int index)

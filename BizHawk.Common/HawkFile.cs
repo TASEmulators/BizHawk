@@ -334,7 +334,7 @@ namespace BizHawk.Common
 			_extractor.ExtractFile(archiveIndex, _boundStream);
 			_boundStream.Position = 0;
 			_memberPath = _archiveItems[index].Name; // TODO - maybe go through our own list of names? maybe not, its indexes dont match..
-			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
+			Console.WriteLine($"HawkFile bound {CanonicalFullPath}");
 			_boundIndex = archiveIndex;
 			return this;
 		}
@@ -360,7 +360,7 @@ namespace BizHawk.Common
 		private void BindRoot()
 		{
 			_boundStream = _rootStream;
-			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
+			Console.WriteLine($"HawkFile bound {CanonicalFullPath}");
 		}
 
 		/// <summary>

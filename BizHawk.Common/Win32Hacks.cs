@@ -456,7 +456,7 @@ namespace BizHawk.Common
 		//I only put this for use here by external cores
 		public static void RemoveMOTW(string path)
 		{
-			DeleteFileW(path + ":Zone.Identifier");
+			DeleteFileW($"{path}:Zone.Identifier");
 		}
 
 		[DllImport("kernel32.dll")]

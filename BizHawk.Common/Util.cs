@@ -389,7 +389,7 @@ namespace BizHawk.Common
 			}
 
 			const string precision = "2";
-			return string.Format("{0:N" + precision + "}{1}", size, suffix);
+			return string.Format($"{{0:N{precision}}}{{1}}", size, suffix);
 		}
 
 		// http://stackoverflow.com/questions/3928822/comparing-2-dictionarystring-string-instances
@@ -510,7 +510,7 @@ namespace BizHawk.Common
 
 		static SuperGloballyUniqueID()
 		{
-			StaticPart = "bizhawk-" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid();
+			StaticPart = $"bizhawk-{System.Diagnostics.Process.GetCurrentProcess().Id}-{Guid.NewGuid()}";
 		}
 
 		public static string Next()
@@ -521,7 +521,7 @@ namespace BizHawk.Common
 				myctr = ctr++;
 			}
 
-			return StaticPart + "-" + myctr;
+			return $"{StaticPart}-{myctr}";
 		}
 	}
 
