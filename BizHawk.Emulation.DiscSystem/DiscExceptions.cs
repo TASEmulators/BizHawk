@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.DiscSystem
 	public class DiscReferenceException : Exception
 	{
 		public DiscReferenceException(string fname, Exception inner)
-			: base(string.Format("A disc attempted to reference a file which could not be accessed or loaded: {0}", fname), inner)
+			: base($"A disc attempted to reference a file which could not be accessed or loaded: {fname}", inner)
 		{
 		}
 		public DiscReferenceException(string fname, string extrainfo)
-			: base(string.Format("A disc attempted to reference a file which could not be accessed or loaded:\n\n{0}\n\n{1}", fname, extrainfo))
+			: base($"A disc attempted to reference a file which could not be accessed or loaded:\n\n{fname}\n\n{extrainfo}")
 		{
 		}
 	}

@@ -116,11 +116,10 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//make a fake cue file to represent this iso file and rerun it as a cue
 				string filebase = Path.GetFileName(infile);
-				cue_content = string.Format(@"
-						FILE ""{0}"" BINARY
-							TRACK 01 MODE1/2048
-								INDEX 01 00:00:00",
-					filebase);
+				cue_content = $@"
+					FILE ""{filebase}"" BINARY
+						TRACK 01 MODE1/2048
+							INDEX 01 00:00:00";
 				infile = Path.ChangeExtension(infile, ".cue");
 				goto RERUN;
 			}

@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			handle = mednadisc_LoadCD(pathToDisc);
 			if (handle == IntPtr.Zero)
-				throw new InvalidOperationException("Failed to load MednaDisc: " + pathToDisc);
+				throw new InvalidOperationException($"Failed to load MednaDisc: {pathToDisc}");
 
 			//read the mednafen toc
 			TOCTracks = new MednadiscTOCTrack[101];

@@ -12,20 +12,20 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public static class Command
 		{
 			//TODO - record line number origin of command? Kind of nice but inessential
-			public class CATALOG { public string Value; public override string ToString() { return string.Format("CATALOG: {0}", Value); } }
-			public class CDTEXTFILE { public string Path; public override string ToString() { return string.Format("CDTEXTFILE: {0}", Path); } }
-			public class FILE { public string Path; public CueFileType Type; public override string ToString() { return string.Format("FILE ({0}): {1}", Type, Path); } }
-			public class FLAGS { public CueTrackFlags Flags; public override string ToString() { return string.Format("FLAGS {0}", Flags); } }
-			public class INDEX { public int Number; public Timestamp Timestamp; public override string ToString() { return string.Format("INDEX {0,2} {1}", Number, Timestamp); } }
-			public class ISRC { public string Value; public override string ToString() { return string.Format("ISRC: {0}", Value); } }
-			public class PERFORMER { public string Value; public override string ToString() { return string.Format("PERFORMER: {0}", Value); } }
-			public class POSTGAP { public Timestamp Length; public override string ToString() { return string.Format("POSTGAP: {0}", Length); } }
-			public class PREGAP { public Timestamp Length; public override string ToString() { return string.Format("PREGAP: {0}", Length); } }
-			public class REM { public string Value; public override string ToString() { return string.Format("REM: {0}", Value); } }
-			public class COMMENT { public string Value; public override string ToString() { return string.Format("COMMENT: {0}", Value); } }
-			public class SONGWRITER { public string Value; public override string ToString() { return string.Format("SONGWRITER: {0}", Value); } }
-			public class TITLE { public string Value; public override string ToString() { return string.Format("TITLE: {0}", Value); } }
-			public class TRACK { public int Number; public CueTrackType Type; public override string ToString() { return string.Format("TRACK {0,2} ({1})", Number, Type); } }
+			public class CATALOG { public string Value; public override string ToString() { return $"CATALOG: {Value}"; } }
+			public class CDTEXTFILE { public string Path; public override string ToString() { return $"CDTEXTFILE: {Path}"; } }
+			public class FILE { public string Path; public CueFileType Type; public override string ToString() { return $"FILE ({Type}): {Path}"; } }
+			public class FLAGS { public CueTrackFlags Flags; public override string ToString() { return $"FLAGS {Flags}"; } }
+			public class INDEX { public int Number; public Timestamp Timestamp; public override string ToString() { return $"INDEX {Number,2} {Timestamp}"; } }
+			public class ISRC { public string Value; public override string ToString() { return $"ISRC: {Value}"; } }
+			public class PERFORMER { public string Value; public override string ToString() { return $"PERFORMER: {Value}"; } }
+			public class POSTGAP { public Timestamp Length; public override string ToString() { return $"POSTGAP: {Length}"; } }
+			public class PREGAP { public Timestamp Length; public override string ToString() { return $"PREGAP: {Length}"; } }
+			public class REM { public string Value; public override string ToString() { return $"REM: {Value}"; } }
+			public class COMMENT { public string Value; public override string ToString() { return $"COMMENT: {Value}"; } }
+			public class SONGWRITER { public string Value; public override string ToString() { return $"SONGWRITER: {Value}"; } }
+			public class TITLE { public string Value; public override string ToString() { return $"TITLE: {Value}"; } }
+			public class TRACK { public int Number; public CueTrackType Type; public override string ToString() { return $"TRACK {Number,2} ({Type})"; } }
 		}
 
 
