@@ -37,7 +37,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public override string ToString()
 		{
-			return string.Format("GL Tex: {0}x{1}", Width, Height);
+			return $"GL Tex: {Width}x{Height}";
 		}
 
 		public void LoadFrom(BitmapBuffer buffer)
