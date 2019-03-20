@@ -31,7 +31,7 @@ namespace BizHawk.Client.DiscoHawk
 				for (int sector = 0; sector < trackLength; sector++)
 					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 
-				string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.Number);
+				string mp3Path = $"{Path.Combine(path, filebase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
 					if (!confirmed)
