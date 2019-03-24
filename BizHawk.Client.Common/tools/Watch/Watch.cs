@@ -484,10 +484,7 @@ namespace BizHawk.Client.Common
 		/// used for the current <see cref="Watch"/>
 		/// </summary>
 		/// <param name="type"><see cref="DisplayType"/> you want to check</param>
-		public bool IsDiplayTypeAvailable(DisplayType type)
-		{
-			return AvailableTypes().Any(d => d == type);
-		}
+		public bool IsDiplayTypeAvailable(DisplayType type) => AvailableTypes().Contains(type);
 
 		/// <summary>
 		/// Transforms the current instance into a string

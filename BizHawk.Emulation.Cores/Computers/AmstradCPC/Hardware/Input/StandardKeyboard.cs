@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             
             foreach (var key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
             {
-                if (!KeyboardMatrix.Any(s => s == key))
+                if (!KeyboardMatrix.Contains(key))
                     nonMatrix.Add(key);
             }
            

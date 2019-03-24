@@ -65,10 +65,7 @@ namespace BizHawk.Client.Common
 				.ToList();
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
-		public bool HasBinding(string button)
-		{
-			return _bindings.SelectMany(kvp => kvp.Value).Any(boundButton => boundButton == button);
-		}
+		public bool HasBinding(string button) => _bindings.SelectMany(kvp => kvp.Value).Contains(button);
 
 		public void NormalizeFloats(IController controller)
 		{

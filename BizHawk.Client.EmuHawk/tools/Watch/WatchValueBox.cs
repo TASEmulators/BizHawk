@@ -41,15 +41,15 @@ namespace BizHawk.Client.EmuHawk
 					switch (value)
 					{
 						case WatchSize.Byte:
-							isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _type);
+							isTypeCompatible = ByteWatch.ValidTypes.Contains(_type);
 							break;
 
 						case WatchSize.Word:
-							isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _type);
+							isTypeCompatible = WordWatch.ValidTypes.Contains(_type);
 							break;
 
 						case WatchSize.DWord:
-							isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _type);
+							isTypeCompatible = DWordWatch.ValidTypes.Contains(_type);
 							break;
 					}
 

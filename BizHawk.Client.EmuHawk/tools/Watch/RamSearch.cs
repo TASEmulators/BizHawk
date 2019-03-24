@@ -667,17 +667,17 @@ namespace BizHawk.Client.EmuHawk
 			switch (size)
 			{
 				case WatchSize.Byte:
-					isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _settings.Type);
+					isTypeCompatible = ByteWatch.ValidTypes.Contains(_settings.Type);
 					SizeDropdown.SelectedIndex = 0;
 					break;
 
 				case WatchSize.Word:
-					isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _settings.Type);
+					isTypeCompatible = WordWatch.ValidTypes.Contains(_settings.Type);
 					SizeDropdown.SelectedIndex = 1;
 					break;
 
 				case WatchSize.DWord:
-					isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _settings.Type);
+					isTypeCompatible = DWordWatch.ValidTypes.Contains(_settings.Type);
 					SizeDropdown.SelectedIndex = 2;
 					break;
 			}

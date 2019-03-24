@@ -50,10 +50,7 @@ namespace BizHawk.Common.NumberExtensions
 			return (b & (1 << index)) != 0;
 		}
 
-		public static bool In(this int i, params int[] options)
-		{
-			return options.Any(j => i == j);
-		}
+		public static bool In(this int i, params int[] options) => options.Contains(i);
 
 		public static byte BinToBCD(this byte v)
 		{

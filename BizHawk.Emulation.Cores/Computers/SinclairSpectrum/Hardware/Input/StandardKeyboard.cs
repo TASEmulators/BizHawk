@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             foreach (var key in _machine.Spectrum.ZXSpectrumControllerDefinition.BoolButtons)
             {
-                if (!KeyboardMatrix.Any(s => s == key))
+                if (!KeyboardMatrix.Contains(key))
                     nonMatrix.Add(key);
             }
            

@@ -108,20 +108,11 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasExecutes => _hasExecutes;
 
-		public bool HasReadsForScope(string scope)
-		{
-			return _reads.Where(e => e.Scope == scope).Any();
-		}
+		public bool HasReadsForScope(string scope) => _reads.Any(e => e.Scope == scope);
 
-		public bool HasWritesForScope(string scope)
-		{
-			return _writes.Where(e => e.Scope == scope).Any();
-		}
+		public bool HasWritesForScope(string scope) => _writes.Any(e => e.Scope == scope);
 
-		public bool HasExecutesForScope(string scope)
-		{
-			return _execs.Where(e => e.Scope == scope).Any();
-		}
+		public bool HasExecutesForScope(string scope) => _execs.Any(e => e.Scope == scope);
 
 		private bool UpdateHasVariables()
 		{
