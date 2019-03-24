@@ -52,11 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		public void GetMovie(IMovie m)
 		{
 			_selectedMovie = m;
-			if (!m.Comments.Any())
-			{
-				return;
-			}
-
 			for (int i = 0; i < m.Comments.Count; i++)
 			{
 				CommentGrid.Rows.Add();

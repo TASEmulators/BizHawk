@@ -1452,12 +1452,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (_extraFloatRows.Any())
+				foreach (var row in _extraFloatRows)
 				{
-					foreach (int row in _extraFloatRows)
-					{
-						CurrentTasMovie.SetFloatState(row, _floatEditColumn, value);
-					}
+					CurrentTasMovie.SetFloatState(row, _floatEditColumn, value);
 				}
 
 				if (value != prev) // Auto-restore

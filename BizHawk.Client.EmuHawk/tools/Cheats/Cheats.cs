@@ -443,17 +443,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
 		{
-			var items = SelectedItems.ToList();
-			if (items.Any())
-			{
-				foreach (var item in items)
-				{
-					Global.CheatList.Remove(item);
-				}
-
-				CheatListView.SelectedIndices.Clear();
-				UpdateDialog();
-			}
+			Global.CheatList.RemoveRange(SelectedItems);
+			CheatListView.SelectedIndices.Clear();
+			UpdateDialog();
 		}
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)

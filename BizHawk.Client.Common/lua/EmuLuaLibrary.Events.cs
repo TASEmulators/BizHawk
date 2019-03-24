@@ -51,88 +51,76 @@ namespace BizHawk.Client.Common
 		public void CallSaveStateEvent(string name)
 		{
 			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateSave").ToList();
-			if (lfs.Any())
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call(name);
-					}
+					lf.Call(name);
 				}
-				catch (Exception e)
-				{
-					Log(
-						"error running function attached by lua function event.onsavestate" +
-						"\nError message: " +
-						e.Message);
-				}
+			}
+			catch (Exception e)
+			{
+				Log(
+					"error running function attached by lua function event.onsavestate" +
+					"\nError message: " +
+					e.Message);
 			}
 		}
 
 		public void CallLoadStateEvent(string name)
 		{
 			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateLoad").ToList();
-			if (lfs.Any())
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call(name);
-					}
+					lf.Call(name);
 				}
-				catch (Exception e)
-				{
-					Log(
-						"error running function attached by lua function event.onloadstate" +
-						"\nError message: " +
-						e.Message);
-				}
+			}
+			catch (Exception e)
+			{
+				Log(
+					"error running function attached by lua function event.onloadstate" +
+					"\nError message: " +
+					e.Message);
 			}
 		}
 
 		public void CallFrameBeforeEvent()
 		{
 			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameStart").ToList();
-			if (lfs.Any())
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call();
-					}
+					lf.Call();
 				}
-				catch (Exception e)
-				{
-					Log(
-						"error running function attached by lua function event.onframestart" +
-						"\nError message: " +
-						e.Message);
-				}
+			}
+			catch (Exception e)
+			{
+				Log(
+					"error running function attached by lua function event.onframestart" +
+					"\nError message: " +
+					e.Message);
 			}
 		}
 
 		public void CallFrameAfterEvent()
 		{
 			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameEnd").ToList();
-			if (lfs.Any())
+			try
 			{
-				try
+				foreach (var lf in lfs)
 				{
-					foreach (var lf in lfs)
-					{
-						lf.Call();
-					}
+					lf.Call();
 				}
-				catch (Exception e)
-				{
-					Log(
-						"error running function attached by lua function event.onframeend" +
-						"\nError message: " +
-						e.Message);
-				}
+			}
+			catch (Exception e)
+			{
+				Log(
+					"error running function attached by lua function event.onframeend" +
+					"\nError message: " +
+					e.Message);
 			}
 		}
 

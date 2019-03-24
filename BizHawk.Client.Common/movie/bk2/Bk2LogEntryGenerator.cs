@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();
-			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
+			foreach (var group in _source.Definition.ControlsOrdered)
 			{
 				foreach (var button in group)
 				{

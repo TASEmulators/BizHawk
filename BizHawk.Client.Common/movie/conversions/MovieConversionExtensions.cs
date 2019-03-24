@@ -319,16 +319,13 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.FirmwareManager.RecentlyServed.Any())
+			foreach (var firmware in Global.FirmwareManager.RecentlyServed)
 			{
-				foreach (var firmware in Global.FirmwareManager.RecentlyServed)
-				{
-					var key = firmware.SystemId + "_Firmware_" + firmware.FirmwareId;
+				var key = firmware.SystemId + "_Firmware_" + firmware.FirmwareId;
 
-					if (!movie.HeaderEntries.ContainsKey(key))
-					{
-						movie.HeaderEntries.Add(key, firmware.Hash);
-					}
+				if (!movie.HeaderEntries.ContainsKey(key))
+				{
+					movie.HeaderEntries.Add(key, firmware.Hash);
 				}
 			}
 

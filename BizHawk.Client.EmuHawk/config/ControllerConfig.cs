@@ -471,13 +471,7 @@ namespace BizHawk.Client.EmuHawk
 				(c as AnalogBindControl).Unbind_Click(null, null);
 			}
 
-			if (c.Controls().Any())
-			{
-				foreach (Control child in c.Controls())
-				{
-					ClearWidgetAndChildren(child);
-				}
-			}
+			foreach (var child in c.Controls()) ClearWidgetAndChildren(child);
 		}
 
 		private void ClearBtn_Click(object sender, EventArgs e)
