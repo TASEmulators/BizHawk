@@ -133,11 +133,8 @@ namespace BizHawk.Client.Common
 			else
 			{
 				cheat.Changed += CheatChanged;
-				if (Contains(cheat))
-				{
-					_cheatList.Remove(Global.CheatList.FirstOrDefault(c => c.Domain == cheat.Domain && c.Address == cheat.Address));
-				}
-
+				var foundIndex = _cheatList.FindIndex(c => c == cheat);
+				if (foundIndex != -1) _cheatList.RemoveAt(foundIndex);
 				_cheatList.Add(cheat);
 			}
 
@@ -194,15 +191,10 @@ namespace BizHawk.Client.Common
 
 		public bool Remove(Watch watch)
 		{
-			var cheat = _cheatList.FirstOrDefault(c => c == watch);
-			if (cheat != (Cheat)null)
-			{
-				_cheatList.Remove(cheat);
-				Changes = true;
-				return true;
-			}
-			
-			return false;
+			var foundIndex = _cheatList.FindIndex(c => c == watch);
+			if (foundIndex == -1) return false;
+			_cheatList.RemoveAt(foundIndex);
+			return Changes = true;
 		}
 
 		public bool Contains(Cheat cheat)

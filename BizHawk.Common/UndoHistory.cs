@@ -40,23 +40,8 @@ namespace BizHawk.Common
 		{
 			if (Enabled)
 			{
-				if (_curPos < _history.Count)
-				{
-					for (var i = _curPos + 1; i <= _history.Count; i++)
-					{
-						_history.Remove(_history[i - 1]);
-					}
-				}
-
-				// TODO: don't assume we are one over, since MaxUndoLevels is public, it could be set to a small number after a large list has occured
-				if (_history.Count > MaxUndoLevels)
-				{
-					foreach (var item in _history.Take(_history.Count - MaxUndoLevels))
-					{
-						_history.Remove(item);
-					}
-				}
-
+				for (int i = _curPos, end = _history.Count - 2; i < end; i++) _history.RemoveAt(i);
+				while (_history.Count > MaxUndoLevels) _history.RemoveAt(0); // using a while rather than an if because MaxUndoLevels is public and could be lowered between calls
 				_history.Add(newState.ToList());
 				_curPos = _history.Count;
 			}

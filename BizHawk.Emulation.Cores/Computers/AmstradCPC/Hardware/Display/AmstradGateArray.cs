@@ -1059,11 +1059,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     var excessR = excessL + (padPos % 2);
                     for (int i = 0; i < excessL; i++)
                     {
-                        lCop.Remove(lCop[0]);
+                        lCop.RemoveAt(0);
                     }
                     for (int i = 0; i < excessL; i++)
                     {
-                        lCop.Remove(lCop[lCop.Count - 1]);
+                        lCop.RemoveAt(lCop.Count - 1);
                     }
                 }
 

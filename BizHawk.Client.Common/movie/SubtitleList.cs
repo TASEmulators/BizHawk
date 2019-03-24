@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 					if (i > 0 && lastframe == subs[i].Frame)
 					{
 						subs[i].Message = subs[i - 1].Message + " " + subs[i].Message;
-						subs.Remove(subs[i - 1]);
+						subs.RemoveAt(i - 1);
 						i--;
 					}
 
