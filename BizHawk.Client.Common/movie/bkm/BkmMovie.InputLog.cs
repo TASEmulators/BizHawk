@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
+				if (Global.Config.EnableBackupMovies && _makeBackup && _log.Count > 0)
 				{
 					SaveBackup();
 					_makeBackup = false;

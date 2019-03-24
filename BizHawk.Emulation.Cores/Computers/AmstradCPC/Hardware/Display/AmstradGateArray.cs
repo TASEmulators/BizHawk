@@ -1327,7 +1327,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             public int PhaseCount
             {
-                get { return Phases.Count(); }
+                get { return Phases.Count; }
             }
 
             public void Clear(int screenMode)

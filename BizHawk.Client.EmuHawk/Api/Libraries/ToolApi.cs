@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var possibleTypes = ReflectionUtil.GetTypeByName(name);
 
-				if (possibleTypes.Any())
+				if (possibleTypes.Length > 0)
 				{
 					return Activator.CreateInstance(possibleTypes.First());
 				}
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var possibleTypes = ReflectionUtil.GetTypeByName(name);
 
-			if (possibleTypes.Any())
+			if (possibleTypes.Length > 0)
 			{
 				return Activator.CreateInstance(possibleTypes.First());
 			}

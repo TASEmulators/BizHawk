@@ -240,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TracerBox.Text = "Trace log - logging to file...";
 				}
-				else if (_instructions.Any())
+				else if (_instructions.Count > 0)
 				{
 					TracerBox.Text = "Trace log - logging - " + _instructions.Count + " instructions";
 				}
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_instructions.Any())
+				if (_instructions.Count > 0)
 				{
 					TracerBox.Text = "Trace log - " + _instructions.Count + " instructions";
 				}

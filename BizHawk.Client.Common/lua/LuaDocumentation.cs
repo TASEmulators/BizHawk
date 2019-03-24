@@ -107,7 +107,7 @@ __Types and notation__
 
 				var sb = new StringBuilder();
 
-				if (f.ParameterList.Any())
+				if (f.ParameterList.Length > 0)
 				{
 					sb
 						.Append($"{f.Library}.{f.Name}(");

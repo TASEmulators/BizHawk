@@ -87,7 +87,7 @@ namespace BizHawk.Client.ApiHawk
 				BizHawk.Common.Win32Hacks.RemoveMOTW(fileName);
 				externalToolFile = Assembly.LoadFrom(fileName);
 				object[] attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolAttribute), false);
-				if (attributes != null && attributes.Count() == 1)
+				if (attributes != null && attributes.Length == 1)
 				{
 					BizHawkExternalToolAttribute attribute = (BizHawkExternalToolAttribute)attributes[0];
 					item = new ToolStripMenuItem(attribute.Name);
@@ -110,7 +110,7 @@ namespace BizHawk.Client.ApiHawk
 					item.Tag = fileName;
 
 					attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolUsageAttribute), false);
-					if (attributes != null && attributes.Count() == 1)
+					if (attributes != null && attributes.Length == 1)
 					{
 						BizHawkExternalToolUsageAttribute attribute2 = (BizHawkExternalToolUsageAttribute)attributes[0];
 						if(Global.Emulator.SystemId == "NULL" && attribute2.ToolUsage != BizHawkExternalToolUsage.Global)

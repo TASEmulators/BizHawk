@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			DataSize = (int)size;
 			SetDataSize(DataSize);
 			var addrList = addresses.ToList();
-			if (addrList.Any())
+			if (addrList.Count > 0)
 			{
 				SetDomain(domain);
 				SetHighlighted(addrList[0]);
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public byte[] ConvertTextToBytes(string str)
 		{
-			if (_textTable.Any())
+			if (_textTable.Count > 0)
 			{
 				var byteArr = new List<byte>();
 				foreach (var chr in str)
@@ -378,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private char Remap(byte val)
 		{
-			if (_textTable.Any())
+			if (_textTable.Count > 0)
 			{
 				if (_textTable.ContainsKey(val))
 				{
@@ -681,7 +681,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (HighlightedAddress >= _domain.Size
-				|| (_secondaryHighlightedAddresses.Any() && _secondaryHighlightedAddresses.Max() >= _domain.Size))
+				|| (_secondaryHighlightedAddresses.Count > 0 && _secondaryHighlightedAddresses.Max() >= _domain.Size))
 			{
 				_addressHighlighted = -1;
 				_secondaryHighlightedAddresses.Clear();
@@ -767,9 +767,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_addressHighlighted >= 0)
 			{
 				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
-				if (_secondaryHighlightedAddresses.Any())
+				if (_secondaryHighlightedAddresses.Count > 0)
 				{
-					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count() +
+					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count +
 						(_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1));
 				}
 			}
@@ -1323,7 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 				SaveAsBinaryMenuItem.Text = "Save as binary...";
 			}
 
-			CloseTableFileMenuItem.Enabled = _textTable.Any();
+			CloseTableFileMenuItem.Enabled = _textTable.Count > 0;
 		}
 		
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -1469,7 +1469,7 @@ namespace BizHawk.Client.EmuHawk
 			var data = Clipboard.GetDataObject();
 			PasteMenuItem.Enabled =
 				_domain.CanPoke() &&
-				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Count > 0) &&
 				data != null &&
 				data.GetDataPresent(DataFormats.Text);
 
@@ -1698,7 +1698,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
+			if (HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Count > 0)
 			{
 				GlobalWin.Tools.LoadRamWatch(true);
 			}
@@ -1755,12 +1755,12 @@ namespace BizHawk.Client.EmuHawk
 				addresses.Add(HighlightedAddress.Value);
 			}
 
-			if (_secondaryHighlightedAddresses.Any())
+			if (_secondaryHighlightedAddresses.Count > 0)
 			{
 				addresses.AddRange(_secondaryHighlightedAddresses);
 			}
 
-			if (addresses.Any())
+			if (addresses.Count > 0)
 			{
 				var poke = new RamPoke
 				{
@@ -2152,14 +2152,14 @@ namespace BizHawk.Client.EmuHawk
 
 			CopyContextItem.Visible =
 				AddToRamWatchContextItem.Visible =
-				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Count > 0;
 
 			FreezeContextItem.Visible =
 				PokeContextItem.Visible =
 				IncrementContextItem.Visible =
 				DecrementContextItem.Visible =
 				ContextSeparator2.Visible =
-				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Count > 0) &&
 				_domain.CanPoke();
 
 			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
@@ -2167,7 +2167,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ContextSeparator1.Visible =
 				HighlightedAddress.HasValue ||
-				_secondaryHighlightedAddresses.Any() ||
+				_secondaryHighlightedAddresses.Count > 0 ||
 				(data != null && data.GetDataPresent(DataFormats.Text));
 
 			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))

@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// Add in the reset timing float control for subneshawk
-			if (using_reset_timing && (ControllerDefinition.FloatControls.Count() == 0))
+			if (using_reset_timing && ControllerDefinition.FloatControls.Count == 0)
 			{
 				ControllerDefinition.FloatControls.Add("Reset Cycle");
 				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
 
-			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Count > 0)
 			{
 				for (int i = 0; i < 0x800; i++)
 				{

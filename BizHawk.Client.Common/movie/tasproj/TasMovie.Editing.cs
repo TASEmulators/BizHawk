@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 		// TODO: consider making this IEnumerable<int> instead of forcing the collection to be an array
 		public void RemoveFrames(int[] frames)
 		{
-			if (frames.Any())
+			if (frames.Length > 0)
 			{
 				var invalidateAfter = frames.Min();
 
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, "Copy Over Input: " + frame);
+			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, "Copy Over Input: " + frame);
 
 			for (int i = 0; i < states.Count; i++)
 			{

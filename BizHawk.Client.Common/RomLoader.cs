@@ -779,31 +779,20 @@ namespace BizHawk.Client.Common
 									break;
 								case "SAT":
 									var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
-									if (!saturnDiscs.Any())
-									{
-										return false;
-									}
-
+									if (saturnDiscs.Count == 0) return false;
 									nextEmulator = new Saturnus(nextComm, saturnDiscs, Deterministic,
 									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 									break;
 								case "PCFX":
 									var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
-									if (!pcfxDiscs.Any())
-									{
-										return false;
-									}
-
+									if (pcfxDiscs.Count == 0) return false;
 									nextEmulator = new Tst(nextComm, pcfxDiscs,
 										(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 									break;
 								case "GEN":
 									// We are assuming discs only, for now
 									var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
-									if (!genDiscs.Any())
-									{
-										return false;
-									}
+									if (genDiscs.Count == 0) return false;
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 									break;
 								case "Game Gear":

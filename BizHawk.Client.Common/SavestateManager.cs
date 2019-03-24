@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 						});
 				}
 
-				if (Global.UserBag.Any())
+				if (Global.UserBag.Count > 0)
 				{
 					bs.PutLump(BinaryStateLump.UserData,
 						delegate(TextWriter tw)

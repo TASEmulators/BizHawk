@@ -990,7 +990,7 @@ namespace BizHawk.Client.EmuHawk
 				"Selected: " + TasView.SelectedRows.Count() + " frame" +
 				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
 				", States: " + CurrentTasMovie.TasStateManager.StateCount.ToString() +
-				(_tasClipboard.Any() 
+				(_tasClipboard.Count > 0
 					? ", Clipboard: " + _tasClipboard.Count + " frame" + (_tasClipboard.Count == 1 ? "" : "s") 
 					: "");
 		}

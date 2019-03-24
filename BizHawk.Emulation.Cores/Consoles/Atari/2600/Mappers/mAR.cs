@@ -511,7 +511,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			byte sum = 0;
 
-			for (int i = 0; i < s.Count(); i++)
+			for (int i = 0; i < s.Length; i++)
 			{
 				sum += s[i];
 			}

@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.Load<Cheats>();
 					break;
 				case "Toggle All Cheats":
-					if (Global.CheatList.Any())
+					if (Global.CheatList.Count > 0)
 					{
 						string type = " (mixed)";
 						if (Global.CheatList.All(c => c.Enabled))

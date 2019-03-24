@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				if (_filteredList.Any() && index < _filteredList.Count)
+				if (_filteredList.Count > 0 && index < _filteredList.Count)
 				{
 					switch (column)
 					{

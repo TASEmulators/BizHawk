@@ -2555,7 +2555,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (cmd == null)
             {
                 // no command found - use invalid
-                CMDIndex = CommandList.Count() - 1;
+                CMDIndex = CommandList.Count - 1;
             }
             else
             {
@@ -2579,7 +2579,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (invalid)
                 {
                     // command byte included spurious bit 5,6 or 7 flags
-                    CMDIndex = CommandList.Count() - 1;
+                    CMDIndex = CommandList.Count - 1;
                 }
 
                 /*

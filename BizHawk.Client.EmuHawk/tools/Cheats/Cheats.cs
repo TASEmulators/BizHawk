@@ -691,7 +691,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ViewInHexEditorContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedCheats.ToList();
-			if (selected.Any())
+			if (selected.Count > 0)
 			{
 				GlobalWin.Tools.Load<HexEditor>();
 

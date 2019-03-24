@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void SyncPadCallback()
 		{
-			LibVBANext.SetPadCallback(Core, InputCallbacks.Any() ? padcb : null);
+			LibVBANext.SetPadCallback(Core, InputCallbacks.Count > 0 ? padcb : null);
 		}
 
 		void SyncMemoryCallbacks()

@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		public virtual void StartNewRecording()
 		{
 			Mode = Moviemode.Record;
-			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Any())
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count > 0)
 			{
 				SaveBackup();
 				MakeBackup = false;

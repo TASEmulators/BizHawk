@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     if (Disk == null)
                         return (byte)id;
 
-                    if (Disk.DiskTracks.Count() == 0)
+                    if (Disk.DiskTracks.Length == 0)
                         return (byte)id;
 
                     if (TrackIndex >= Disk.GetTrackCount())

@@ -800,9 +800,9 @@ namespace BizHawk.Client.EmuHawk
 				MoveDownMenuItem.Enabled =
 				LuaListView.SelectedIndices().Any();
 
-			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
+			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Count > 0;
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = LuaImp.GetRegisteredFunctions().Any();
+			RegisteredFunctionsMenuItem.Enabled = LuaImp.GetRegisteredFunctions().Count > 0;
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -992,7 +992,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = LuaListView.SelectedIndices().ToList();
-			if (indices.Any() && indices.Last() < LuaImp.ScriptList.Count)
+			if (indices.Count > 0 && indices[indices.Count - 1] < LuaImp.ScriptList.Count)
 			{
 				LuaImp.ScriptList.Insert(indices.Last(), LuaFile.SeparatorInstance);
 			}
@@ -1068,7 +1068,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaImp.GetRegisteredFunctions().Any())
+			if (LuaImp.GetRegisteredFunctions().Count > 0)
 			{
 				var alreadyOpen = false;
 				foreach (Form form in Application.OpenForms)
@@ -1225,7 +1225,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			RegisteredFunctionsContextItem.Enabled = LuaImp.GetRegisteredFunctions().Any();
+			RegisteredFunctionsContextItem.Enabled = LuaImp.GetRegisteredFunctions().Count > 0;
 			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
 			ClearConsoleContextItem.Enabled = 
 				SelectAllContextItem.Enabled = 

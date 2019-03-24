@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var visibleColumns = _columns.VisibleColumns.ToList();
 
-				if (visibleColumns.Any())
+				if (visibleColumns.Count > 0)
 				{
 					DrawColumnBg(e, visibleColumns);
 					DrawColumnText(e, visibleColumns);
@@ -283,7 +283,7 @@ namespace BizHawk.Client.EmuHawk
 					start += CellHeight;
 				}
 
-				if (visibleColumns.Any())
+				if (visibleColumns.Count > 0)
 				{
 					_gdi.Line(1, start, ColumnWidth, start);
 				}
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Draw right most line
-				if (visibleColumns.Any())
+				if (visibleColumns.Count > 0)
 				{
 					int right = TotalColWidth.Value - _hBar.Value;
 					_gdi.Line(right, 0, right, bottomEdge);
@@ -422,7 +422,7 @@ namespace BizHawk.Client.EmuHawk
 						_gdi.Line(x, y, x, Height - 1);
 					}
 
-					if (visibleColumns.Any())
+					if (visibleColumns.Count > 0)
 					{
 						_gdi.Line(totalColWidth.Value - _hBar.Value, y, totalColWidth.Value - _hBar.Value, Height - 1);
 					}
@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_selectedItems.Any())
+			if (_selectedItems.Count > 0)
 			{
 				DoSelectionBG(e, visibleColumns);
 			}

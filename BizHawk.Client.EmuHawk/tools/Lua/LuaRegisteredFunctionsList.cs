@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Any())
+			if (GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Count > 0)
 			{
 				PopulateListView();
 			}
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Any();
+			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Count > 0;
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

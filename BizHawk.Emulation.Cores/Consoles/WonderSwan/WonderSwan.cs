@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void SetInputCallback()
 		{
-			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Any() ? ButtonCallbackD : null);
+			BizSwan.bizswan_setbuttoncallback(Core, InputCallbacks.Count > 0 ? ButtonCallbackD : null);
 		}
 
 		void SetMemoryCallbacks()

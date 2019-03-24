@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Any()
 		{
-			return BoolButtons.Any() || FloatControls.Any();
+			return BoolButtons.Count > 0 || FloatControls.Count > 0;
 		}
 	}
 }

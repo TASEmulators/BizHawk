@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				bool addLibrary = true;
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
-				if (attributes.Any())
+				if (attributes.Length > 0)
 				{
 					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
 				}
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var methods = luaCanvas
 				.GetMethods()
-				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttribute), false).Any());
+				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttribute), false).Length > 0);
 
 			foreach (var method in methods)
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void StartLuaDrawing()
 		{
-			if (ScriptList.Any() && GuiLibrary.SurfaceIsNull)
+			if (ScriptList.Count > 0 && GuiLibrary.SurfaceIsNull)
 			{
 				GuiLibrary.DrawNew("emu");
 			}
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void EndLuaDrawing()
 		{
-			if (ScriptList.Any())
+			if (ScriptList.Count > 0)
 			{
 				GuiLibrary.DrawFinish();
 			}

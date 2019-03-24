@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{                   //Of course, we gotta emulate the behaviour.
 						for (int i = 0; i < (Cart.prg_size / 4); i++)
 							increment_flash_write_count(i, true);
-						for (int i = 0; i < flash_rom.Count(); i++)
+						for (int i = 0; i < flash_rom.Length; i++)
 							flash_rom[Cart.prg_size + i] = 0xFF;
 					}
 					else if (value == 0x30)

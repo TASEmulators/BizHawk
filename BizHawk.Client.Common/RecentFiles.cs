@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		public bool Frozen { get; set; }
 
 		[JsonIgnore]
-		public bool Empty => !recentlist.Any();
+		public bool Empty => Count == 0;
 
 		[JsonIgnore]
 		public int Count => recentlist.Count;

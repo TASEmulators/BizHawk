@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 			{
 				get
 				{
-					if (ControlsFromLog.Any())
+					if (ControlsFromLog.Count > 0)
 					{
 						return ControlsFromLog;
 					}

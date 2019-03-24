@@ -345,7 +345,7 @@ namespace BizHawk.Client.MultiHawk
 				ew.CoreComm = nextComm;
 				ew.Init();
 
-				if (EmulatorWindows.Any())
+				if (EmulatorWindows.Count > 0)
 				{
 					// Attempt to open the window is a smart location
 					var last = EmulatorWindows.Last();
@@ -656,7 +656,7 @@ namespace BizHawk.Client.MultiHawk
 				// autohold/autofire must not be affected by the following inputs
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
-				if (EmulatorWindows.Any())
+				if (EmulatorWindows.Count > 0)
 				{
 					StepRunLoop_Core();
 					StepRunLoop_Throttle();
@@ -1075,7 +1075,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void UpdateAfterFrameChanged()
 		{
-			if (EmulatorWindows.Any())
+			if (EmulatorWindows.Count > 0)
 			{
 				string frame = EmulatorWindows.Master.Emulator.Frame.ToString();
 
@@ -1098,7 +1098,7 @@ namespace BizHawk.Client.MultiHawk
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SaveSessionMenuItem.Enabled = !string.IsNullOrWhiteSpace(EmulatorWindows.SessionName);
-			SaveSessionAsMenuItem.Enabled = EmulatorWindows.Any();
+			SaveSessionAsMenuItem.Enabled = EmulatorWindows.Count > 0;
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -1113,7 +1113,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			PlayMovieMenuItem.Enabled =
 				RecordMovieMenuItem.Enabled =
-				EmulatorWindows.Any();
+				EmulatorWindows.Count > 0;
 
 			StopMovieMenuItem.Enabled =
 				RestartMovieMenuItem.Enabled =
@@ -1283,7 +1283,7 @@ namespace BizHawk.Client.MultiHawk
 
 			if (ew.Emulator == Emulator)
 			{
-				if (EmulatorWindows.Any())
+				if (EmulatorWindows.Count > 0)
 				{
 					Emulator = EmulatorWindows.Master.Emulator;
 				}
@@ -1327,7 +1327,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void SaveSessionAsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (EmulatorWindows.Any())
+			if (EmulatorWindows.Count > 0)
 			{
 				var file = GetSaveFileFromUser();
 				if (file != null)

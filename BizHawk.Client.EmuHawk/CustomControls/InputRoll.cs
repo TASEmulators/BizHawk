@@ -1108,7 +1108,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys == Keys.Shift && (CurrentCell.Column.Name == "FrameColumn" || CurrentCell.Column.Type == RollColumn.InputType.Text))
 					{
-						if (_selectedItems.Any())
+						if (_selectedItems.Count > 0)
 						{
 							if (FullRowSelect)
 							{
@@ -1181,7 +1181,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys != Keys.Shift)
 					{
-						var hadIndex = _selectedItems.Any();
+						var hadIndex = _selectedItems.Count > 0;
 						_selectedItems.Clear();
 						SelectCell(CurrentCell);
 					}
@@ -1619,7 +1619,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = ((columns.Count() * CellHeight) - DrawHeight) + _vBar.LargeChange;
+					_vBar.Maximum = ((columns.Count * CellHeight) - DrawHeight) + _vBar.LargeChange;
 				}
 				else
 				{
@@ -1758,7 +1758,7 @@ namespace BizHawk.Client.EmuHawk
 			var columns = _columns.VisibleColumns.ToList();
 
 			// If pointing to a column header
-			if (columns.Any())
+			if (columns.Count > 0)
 			{
 				if (HorizontalOrientation)
 				{

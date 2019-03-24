@@ -247,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_watches.Any())
+			if (_watches.Count > 0)
 			{
 				_watches.UpdateValues();
 
@@ -316,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_watches.Any())
+			if (_watches.Count > 0)
 			{
 				_watches.UpdateValues();
 
@@ -832,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveWatchMenuItem_Click(object sender, EventArgs e)
 		{
 			var items = SelectedItems.ToList();
-			if (items.Any())
+			if (items.Count > 0)
 			{
 				foreach (var item in items)
 				{
@@ -884,7 +884,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (indexes.Any())
+			if (indexes.Count > 0)
 			{
 				_watches.Insert(indexes[0], SeparatorWatch.Instance);
 			}
@@ -907,11 +907,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
 			var indexes = SelectedIndices.ToList();
-			if (!indexes.Any() || indexes[0] == 0)
-			{
-				return;
-			}
-
+			if (indexes.Count == 0 || indexes[0] == 0) return;
 			foreach (var index in indexes)
 			{
 				var watch = _watches[index];
@@ -962,10 +958,7 @@ namespace BizHawk.Client.EmuHawk
         private void MoveTopMenuItem_Click(object sender, EventArgs e)
         {
             var indexes = SelectedIndices.ToList();
-            if (!indexes.Any())
-            {
-                return;
-            }
+            if (indexes.Count == 0) return;
 
             for (int i = 0; i < indexes.Count; i++)
             {
@@ -1236,7 +1229,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count > 0)
 			{
 				var debugger = GlobalWin.Tools.Load<GenericDebugger>();
 
@@ -1251,7 +1244,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var selected = SelectedWatches.ToList();
 
-			if (selected.Any())
+			if (selected.Count > 0)
 			{
 				var debugger = GlobalWin.Tools.Load<GenericDebugger>();
 

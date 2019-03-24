@@ -44,13 +44,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 int tmp = value;
                 int result = value;			              
 
-                if (tapeImages == null || tapeImages.Count() == 0)
+                if (tapeImages == null || tapeImages.Count == 0)
                 {
                     // no tape images found
                     return;
                 } 
 
-				if (value >= tapeImages.Count())
+				if (value >= tapeImages.Count)
                 {
                     // media at this index does not exist - loop back to 0
                     result = 0;
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				else if (value < 0)
                 {
                     // negative index not allowed - move to last item in the collection
-                    result = tapeImages.Count() - 1;
+                    result = tapeImages.Count - 1;
                 }
 				
                 // load the media into the tape device
@@ -84,13 +84,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 int tmp = value;
                 int result = value;
 
-                if (diskImages == null || diskImages.Count() == 0)
+                if (diskImages == null || diskImages.Count == 0)
                 {
                     // no tape images found
                     return;
                 }
 
-                if (value >= diskImages.Count())
+                if (value >= diskImages.Count)
                 {
                     // media at this index does not exist - loop back to 0
                     result = 0;
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else if (value < 0)
                 {
                     // negative index not allowed - move to last item in the collection
-                    result = diskImages.Count() - 1;
+                    result = diskImages.Count - 1;
                 }
 				                
                 // load the media into the disk device

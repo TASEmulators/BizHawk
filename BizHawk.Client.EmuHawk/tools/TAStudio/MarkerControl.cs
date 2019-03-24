@@ -165,10 +165,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView.AnyRowsSelected)
 			{
-				while (MarkerView.SelectedRows.Last() > Markers.Count() - 1)
+				while (MarkerView.SelectedRows.Last() > Markers.Count - 1)
 				{
-					MarkerView.SelectRow(Markers.Count(), false);
-					MarkerView.SelectRow(Markers.Count() - 1, true);
+					MarkerView.SelectRow(Markers.Count, false);
+					MarkerView.SelectRow(Markers.Count - 1, true);
 				}
 			}
 
@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateValues();
 			}
 
-			MarkerView.ScrollToIndex(Markers.Count() - 1);
+			MarkerView.ScrollToIndex(Markers.Count - 1);
 			Tastudio.RefreshDialog();
 		}
 

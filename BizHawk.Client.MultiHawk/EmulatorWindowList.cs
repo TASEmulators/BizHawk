@@ -15,7 +15,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			get
 			{
-				if (this.Any())
+				if (this.Count > 0)
 				{
 					return this.First();
 				}

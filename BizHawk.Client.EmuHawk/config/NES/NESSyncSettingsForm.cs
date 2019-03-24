@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
 			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), _syncSettings.RegionOverride);
 
-			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Any())
+			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Count > 0)
 			{
 				var sb = new StringBuilder();
 				foreach (var b in _syncSettings.InitialWRamStatePattern)

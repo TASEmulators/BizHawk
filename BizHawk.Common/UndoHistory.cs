@@ -28,7 +28,7 @@ namespace BizHawk.Common
 
 		public bool CanRedo => Enabled && _curPos < _history.Count;
 
-		public bool HasHistory => Enabled && _history.Any();
+		public bool HasHistory => Enabled && _history.Count > 0;
 
 		public void Clear()
 		{

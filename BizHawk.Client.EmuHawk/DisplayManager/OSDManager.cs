@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (messages.Any())
+				if (messages.Count > 0)
 				{
 					int i = messages.Count - 1;
 
