@@ -72,12 +72,6 @@ namespace BizHawk.Client.ApiHawk
 			return _Apis.ContainsKey(t);
 		}
 
-		public IEnumerable<Type> AvailableApis
-		{
-			get
-			{
-				return _Apis.Select(d => d.Key);
-			}
-		}
+		public IEnumerable<Type> AvailableApis => _Apis.Keys;
 	}
 }

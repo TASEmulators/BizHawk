@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings = ((A7800Hawk)Global.Emulator).GetSyncSettings().Clone();
 
-			var possibleFilters = A7800Hawk.ValidFilterTypes.Select(t => t.Key);
+			var possibleFilters = A7800Hawk.ValidFilterTypes.Keys;
 
 			foreach (var val in possibleFilters)
 			{

@@ -238,12 +238,12 @@ namespace BizHawk.Client.Common
 					frame = 1;
 				}
 
-				List<KeyValuePair<int, StateManagerState>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
+				var statesToRemove = _states.Keys.Where(k => k >= frame).ToList();
 				anyInvalidated = statesToRemove.Any();
 
 				foreach (var state in statesToRemove)
 				{
-					RemoveState(state.Key);
+					RemoveState(state);
 				}
 
 				CallInvalidateCallback(frame);

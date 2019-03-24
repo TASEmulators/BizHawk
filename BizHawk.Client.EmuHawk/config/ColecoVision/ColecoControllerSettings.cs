@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings = ((ColecoVision)Global.Emulator).GetSyncSettings().Clone();
 
-			var possibleControllers = ColecoVisionControllerDeck.ValidControllerTypes.Select(t => t.Key);
+			var possibleControllers = ColecoVisionControllerDeck.ValidControllerTypes.Keys;
 
 			foreach (var val in possibleControllers)
 			{

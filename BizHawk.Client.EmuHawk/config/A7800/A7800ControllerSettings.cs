@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings = ((A7800Hawk)Global.Emulator).GetSyncSettings().Clone();
 
-			var possibleControllers = A7800HawkControllerDeck.ValidControllerTypes.Select(t => t.Key);
+			var possibleControllers = A7800HawkControllerDeck.ValidControllerTypes.Keys;
 
 			foreach (var val in possibleControllers)
 			{

@@ -86,12 +86,6 @@ namespace BizHawk.Emulation.Common
 			return _services.ContainsKey(t);
 		}
 
-		public IEnumerable<Type> AvailableServices
-		{
-			get
-			{
-				return _services.Select(d => d.Key);
-			}
-		}
+		public IEnumerable<Type> AvailableServices => _services.Keys;
 	}
 }
