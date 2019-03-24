@@ -728,7 +728,7 @@ namespace BizHawk.Emulation.DiscSystem
                 {
                     int relMSF = -1;
 
-                    var track = mdsf.TOCEntries.Where(t => t.Point == i).FirstOrDefault();
+                    var track = mdsf.TOCEntries.FirstOrDefault(t => t.Point == i);
                     if (track == null)
                         break;
 
@@ -743,9 +743,7 @@ namespace BizHawk.Emulation.DiscSystem
                     // get the blob(s) for this track
                     // its probably a safe assumption that there will be only one blob per track, 
                     // but i'm still not 100% sure on this 
-                    var tr = (from a in mdsf.TOCEntries
-                                  where a.Point == i
-                                  select a).FirstOrDefault();
+                    var tr = mdsf.TOCEntries.FirstOrDefault(a => a.Point == i);
 
                     if (tr == null)
                         throw new MDSParseException("BLOB Error!");

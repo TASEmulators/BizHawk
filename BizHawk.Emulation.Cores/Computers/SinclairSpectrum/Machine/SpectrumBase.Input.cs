@@ -327,10 +327,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        protected IJoystick LocateUniqueJoystick(JoystickType type)
-        {
-            return JoystickCollection.Where(a => a.JoyType == type).FirstOrDefault();
-        }
+        protected IJoystick LocateUniqueJoystick(JoystickType type) => JoystickCollection.FirstOrDefault(a => a.JoyType == type);
 
         /// <summary>
         /// Signs whether input read has been requested

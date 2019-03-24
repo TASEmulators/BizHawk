@@ -387,15 +387,7 @@ namespace BizHawk.Emulation.Common
 			public string ConfigKey => $"{SystemId}+{FirmwareId}";
 		}
 
-		public static FirmwareRecord LookupFirmwareRecord(string sysId, string firmwareId)
-		{
-			var found =
-				from fr in FirmwareRecords
-				where fr.FirmwareId == firmwareId
-				&& fr.SystemId == sysId
-				select fr;
-
-			return found.FirstOrDefault();
-		}
+		public static FirmwareRecord LookupFirmwareRecord(string sysId, string firmwareId) =>
+			FirmwareRecords.FirstOrDefault(fr => fr.FirmwareId == firmwareId && fr.SystemId == sysId);
 	} // static class FirmwareDatabase
 }

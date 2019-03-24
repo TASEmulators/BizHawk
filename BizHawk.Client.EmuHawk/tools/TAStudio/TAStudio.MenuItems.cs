@@ -1287,9 +1287,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (column.Name.StartsWith("Key "))
 				{
-					keysMenus
-						.Where(m => m.DropDownItems.Count < maxRows)
-						.FirstOrDefault()
+					keysMenus.FirstOrDefault(m => m.DropDownItems.Count < maxRows)
 						.DropDownItems
 						.Add(menuItem);
 				}
