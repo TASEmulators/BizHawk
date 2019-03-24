@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -191,9 +192,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var sb = new StringBuilder();
 
-					foreach (int index in indexes)
+					foreach (var libraryFunction in indexes.Cast<int>().SelectAsIndexOf(GlobalWin.Tools.LuaConsole.LuaImp.Docs))
 					{
-						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs[index];
 						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
 					}
 

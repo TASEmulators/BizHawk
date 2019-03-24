@@ -115,5 +115,7 @@ namespace BizHawk.Common.CollectionExtensions
 
 			return bools;
 		}
+
+		public static IEnumerable<T> SelectAsIndexOf<T>(this IEnumerable<int> indices, IList<T> list) => indices.Select(i => list[i]);
 	}
 }

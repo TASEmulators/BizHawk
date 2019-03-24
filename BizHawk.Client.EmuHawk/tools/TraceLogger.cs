@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -332,11 +333,11 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0)
 			{
 				var blob = new StringBuilder();
-				foreach (int index in indices)
+				foreach (var traceInfo in indices.Cast<int>().SelectAsIndexOf(_instructions))
 				{
 					blob.Append(string.Format("{0} {1}\n",
-						_instructions[index].Disassembly,
-						_instructions[index].RegisterInfo));
+						traceInfo.Disassembly,
+						traceInfo.RegisterInfo));
 				}
 				Clipboard.SetDataObject(blob.ToString());
 			}

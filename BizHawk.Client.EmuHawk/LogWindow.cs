@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -9,6 +10,7 @@ using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Common.CollectionExtensions;
 
 //todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -112,8 +114,8 @@ namespace BizHawk.Client.EmuHawk
 		private void buttonCopy_Click(object sender, EventArgs e)
 		{
 			var sb = new StringBuilder();
-			foreach (int i in virtualListView1.SelectedIndices)
-				sb.AppendLine(Lines[i]);
+			foreach (var line in virtualListView1.SelectedIndices.Cast<int>().SelectAsIndexOf(Lines))
+				sb.AppendLine(line);
 			if (sb.Length > 0)
 				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}

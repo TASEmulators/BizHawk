@@ -13,6 +13,7 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -84,10 +85,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
 
-		private IEnumerable<Watch> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _watches[index]); }
-		}
+		private IEnumerable<Watch> SelectedItems => SelectedIndices.SelectAsIndexOf(_watches);
 
 		private IEnumerable<Watch> SelectedWatches
 		{

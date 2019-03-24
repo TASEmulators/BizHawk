@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -323,13 +324,13 @@ namespace BizHawk.Client.EmuHawk
 				if (indexes.Count > 0)
 				{
 					var copyStr = new StringBuilder();
-					foreach (int index in indexes)
+					foreach (var movie in indexes.Cast<int>().SelectAsIndexOf(_movieList))
 					{
 						copyStr
-							.Append(_movieList[index].Filename).Append('\t')
-							.Append(_movieList[index].SystemID).Append('\t')
-							.Append(_movieList[index].GameName).Append('\t')
-							.Append(PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
+							.Append(movie.Filename).Append('\t')
+							.Append(movie.SystemID).Append('\t')
+							.Append(movie.GameName).Append('\t')
+							.Append(PlatformFrameRates.MovieTime(movie).ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
 					}
 					Clipboard.SetDataObject(copyStr.ToString());
@@ -471,7 +472,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MovieView.SelectedIndices
 				.Cast<int>()
-				.Select(index => _movieList[index])
+				.SelectAsIndexOf(_movieList)
 				.ToList()
 				.ForEach(movie => System.Diagnostics.Process.Start(movie.Filename));
 		}

@@ -11,6 +11,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -96,10 +97,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => true;
 
-		private IEnumerable<LuaFile> SelectedItems
-		{
-			get { return LuaListView.SelectedIndices().Select(index => LuaImp.ScriptList[index]); }
-		}
+		private IEnumerable<LuaFile> SelectedItems => LuaListView.SelectedIndices().SelectAsIndexOf(LuaImp.ScriptList);
 
 		private IEnumerable<LuaFile> SelectedFiles
 		{

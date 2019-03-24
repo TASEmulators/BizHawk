@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -269,16 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				MarkerInputRoll.AnyRowsSelected;
 		}
 
-		private List<TasMovieMarker> SelectedMarkers
-		{
-			get
-			{
-				return MarkerView
-					.SelectedRows
-					.Select(index => Markers[index])
-					.ToList();
-			}
-		}
+		private List<TasMovieMarker> SelectedMarkers => MarkerView.SelectedRows.SelectAsIndexOf(Markers).ToList();
 
 		private void MarkerView_ItemActivate(object sender, EventArgs e)
 		{

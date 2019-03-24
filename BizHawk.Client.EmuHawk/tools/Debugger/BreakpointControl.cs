@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -186,10 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => BreakpointView.SelectedIndices.Cast<int>();
 
-	    private IEnumerable<Breakpoint> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _breakpoints[index]); }
-		}
+	    private IEnumerable<Breakpoint> SelectedItems => SelectedIndices.SelectAsIndexOf(_breakpoints);
 
 		private IEnumerable<Breakpoint> EditableItems
 		{

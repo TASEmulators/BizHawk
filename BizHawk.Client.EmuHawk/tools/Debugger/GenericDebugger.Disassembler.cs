@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common.CollectionExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger
@@ -199,16 +201,16 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0)
 			{
 				var blob = new StringBuilder();
-				foreach (int index in indices)
+				foreach (var disasmOp in indices.Cast<int>().SelectAsIndexOf(_disassemblyLines))
 				{
 					if (blob.Length != 0)
 					{
 						blob.AppendLine();
 					}
 
-					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address))
+					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", disasmOp.Address))
 						.Append(" ")
-						.Append(_disassemblyLines[index].Mnemonic);
+						.Append(disasmOp.Mnemonic);
 				}
 
 				Clipboard.SetDataObject(blob.ToString());
