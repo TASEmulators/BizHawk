@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 				{
 					br.ReadInt32();
 					_lagLog.Add(br.ReadBoolean());
-					_wasLag.Add(_lagLog.Last());
+					_wasLag.Add(_lagLog[_lagLog.Count - 1]);
 				}
 			}
 			else if (formatVersion == 1)

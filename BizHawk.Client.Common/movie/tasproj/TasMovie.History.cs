@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_recordingBatch = false;
-			List<IMovieAction> last = _history.Last();
+			List<IMovieAction> last = _history[_history.Count - 1];
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
 				_history.RemoveAt(_history.Count - 1);
@@ -312,8 +312,8 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieAction(first, last, _movie));
-				_lastGeneral = _history.Last().Count - 1;
+				_history[_history.Count - 1].Add(new MovieAction(first, last, _movie));
+				_lastGeneral = _history[_history.Count - 1].Count - 1;
 			}
 		}
 
@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
-				(_history.Last()[_lastGeneral] as MovieAction).SetRedoLog(_movie);
+				(_history[_history.Count - 1][_lastGeneral] as MovieAction).SetRedoLog(_movie);
 			}
 		}
 
@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
+				_history[_history.Count - 1].Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
@@ -339,7 +339,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
+				_history[_history.Count - 1].Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
@@ -357,7 +357,7 @@ namespace BizHawk.Client.Common
 				}
 
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
+				_history[_history.Count - 1].Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
 			}
 		}
 
@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
+				_history[_history.Count - 1].Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
 

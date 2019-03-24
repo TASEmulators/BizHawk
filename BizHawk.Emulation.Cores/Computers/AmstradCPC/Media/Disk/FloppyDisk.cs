@@ -677,7 +677,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                             for (int i = 0; i < size - ActualDataByteLength; i++)
                             {
                                 //l.Add(SectorData[i]);
-                                l.Add(SectorData.Last());
+                                l.Add(SectorData[SectorData.Length - 1]);
                             }
 
                             return l.ToArray();

@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(t => new
 				{
 					Type = t,
-					CoreAttributes = (CoreAttribute)t.GetCustomAttributes(typeof(CoreAttribute), false).First()
+					CoreAttributes = (CoreAttribute)t.GetCustomAttributes(typeof(CoreAttribute), false)[0]
 				})
 				.OrderByDescending(t => t.CoreAttributes.Released)
 				.ThenBy(t => t.CoreAttributes.CoreName)

@@ -53,7 +53,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public void SyncControls()
 		{
-			var def = _mainForm.EmulatorWindows.First().Emulator.ControllerDefinition;
+			var def = _mainForm.EmulatorWindows[0].Emulator.ControllerDefinition;
 
 			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
 			// TODO?

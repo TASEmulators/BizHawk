@@ -156,7 +156,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(GlobalWin.MainForm.EmulatorWindows.First().Game);
+			RecordBox.Text = PathManager.FilesystemSafeName(GlobalWin.MainForm.EmulatorWindows[0].Game);
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)

@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -676,7 +676,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _datacorder.DataBlocks.Add(t);
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -747,7 +747,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _datacorder.DataBlocks.Add(t);
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -900,7 +900,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _position += 2;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 
         }
         #endregion

@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.DiscSystem
                 var absTxt = iso.Root.Children.Where(a => a.Key.Contains("ABS.TXT")).ToList();
                 if (absTxt.Count > 0)
                 {
-                    if (SectorContains("abstracted by snk", Convert.ToInt32(absTxt.First().Value.Offset)))
+                    if (SectorContains("abstracted by snk", Convert.ToInt32(absTxt[0].Value.Offset)))
                         return DiscType.NeoGeoCD;
                 }
                     

@@ -627,8 +627,8 @@ namespace BizHawk.Client.Common
 								case "GB":
 								case "DGB":
 									// adelikat: remove need for tags to be hardcoded to left and right, we should clean this up, also maybe the DGB core should just take the xml file and handle it itself
-									var leftBytes = xmlGame.Assets.First().Value;
-									var rightBytes = xmlGame.Assets.Skip(1).First().Value;
+									var leftBytes = xmlGame.Assets[0].Value;
+									var rightBytes = xmlGame.Assets[1].Value;
 
 									var left = Database.GetGameInfo(leftBytes, "left.gb");
 									var right = Database.GetGameInfo(rightBytes, "right.gb");
@@ -796,8 +796,8 @@ namespace BizHawk.Client.Common
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 									break;
 								case "Game Gear":
-									var leftBytesGG = xmlGame.Assets.First().Value;
-									var rightBytesGG = xmlGame.Assets.Skip(1).First().Value;
+									var leftBytesGG = xmlGame.Assets[0].Value;
+									var rightBytesGG = xmlGame.Assets[1].Value;
 
 									var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
 									var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");

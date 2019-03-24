@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var method in methods)
 			{
-				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false).First();
+				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false)[0];
 				var luaName = Name + "." + luaMethodAttr.Name;
 				Lua.RegisterFunction(luaName, this, method);
 

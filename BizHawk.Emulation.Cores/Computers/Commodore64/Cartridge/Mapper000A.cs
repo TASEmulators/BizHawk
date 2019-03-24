@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public Mapper000A(IList<int[]> newData)
 		{
 			_rom = new int[0x2000];
-			Array.Copy(newData.First(), _rom, 0x2000);
+			Array.Copy(newData[0], _rom, 0x2000);
 			pinGame = true;
 		}
 

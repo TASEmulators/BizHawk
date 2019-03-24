@@ -278,7 +278,7 @@ namespace BizHawk.Client.MultiHawk
 
 				_inputManager.SyncControls();
 
-				if (EmulatorWindows.First() == ew)
+				if (EmulatorWindows[0] == ew)
 				{
 					Emulator = ew.Emulator;
 				}
@@ -348,14 +348,14 @@ namespace BizHawk.Client.MultiHawk
 				if (EmulatorWindows.Count > 0)
 				{
 					// Attempt to open the window is a smart location
-					var last = EmulatorWindows.Last();
+					var last = EmulatorWindows[EmulatorWindows.Count - 1];
 
 					int x = last.Location.X + last.Width + 5;
 					int y = last.Location.Y;
 					if (x + (last.Width / 2) > Width) // If it will go too far off screen
 					{
 						y += last.Height + 5;
-						x = EmulatorWindows.First().Location.X;
+						x = EmulatorWindows[0].Location.X;
 					}
 
 					ew.Location = new Point(x, y);
@@ -1445,7 +1445,7 @@ namespace BizHawk.Client.MultiHawk
 			foreach (var entry in entries)
 			{
 				LoadRom(entry.RomName);
-				EmulatorWindows.Last().Location = new Point(entry.Wndx, entry.Wndy);
+				EmulatorWindows[EmulatorWindows.Count - 1].Location = new Point(entry.Wndx, entry.Wndy);
 				UpdateMainText();
 			}
 		}

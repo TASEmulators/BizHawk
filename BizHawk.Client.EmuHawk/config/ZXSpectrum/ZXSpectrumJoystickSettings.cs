@@ -50,46 +50,46 @@ namespace BizHawk.Client.EmuHawk
                 bool selectionValid = true;
 
                 var j1 = Port1ComboBox.SelectedItem.ToString();
-                if (j1 != possibleControllers.First())
+                if (j1 != possibleControllers[0])
                 {
                     if (j1 == Port2ComboBox.SelectedItem.ToString())
                     {
-                        Port2ComboBox.SelectedItem = possibleControllers.First();
+                        Port2ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                     if (j1 == Port3ComboBox.SelectedItem.ToString())
                     {
-                        Port3ComboBox.SelectedItem = possibleControllers.First();
+                        Port3ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                 }
 
                 var j2 = Port2ComboBox.SelectedItem.ToString();
-                if (j2 != possibleControllers.First())
+                if (j2 != possibleControllers[0])
                 {
                     if (j2 == Port1ComboBox.SelectedItem.ToString())
                     {
-                        Port1ComboBox.SelectedItem = possibleControllers.First();
+                        Port1ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                     if (j2 == Port3ComboBox.SelectedItem.ToString())
                     {
-                        Port3ComboBox.SelectedItem = possibleControllers.First();
+                        Port3ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                 }   
 
                 var j3 = Port3ComboBox.SelectedItem.ToString();
-                if (j3 != possibleControllers.First())
+                if (j3 != possibleControllers[0])
                 {
                     if (j3 == Port1ComboBox.SelectedItem.ToString())
                     {
-                        Port1ComboBox.SelectedItem = possibleControllers.First();
+                        Port1ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                     if (j3 == Port2ComboBox.SelectedItem.ToString())
                     {
-                        Port2ComboBox.SelectedItem = possibleControllers.First();
+                        Port2ComboBox.SelectedItem = possibleControllers[0];
                         selectionValid = false;
                     }
                 }

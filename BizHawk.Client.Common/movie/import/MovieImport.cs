@@ -98,12 +98,12 @@ namespace BizHawk.Client.Common
 				var result = importer.Import(path);
 				if (result.Errors.Count > 0)
 				{
-					errorMsg = result.Errors.First();
+					errorMsg = result.Errors[0];
 				}
 
 				if (result.Warnings.Count > 0)
 				{
-					warningMsg = result.Warnings.First();
+					warningMsg = result.Warnings[0];
 				}
 
 				movie = result.Movie;

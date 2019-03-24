@@ -11,18 +11,7 @@ namespace BizHawk.Client.MultiHawk
 	{
 		public string SessionName { get; set; }
 
-		public EmulatorWindow Master
-		{
-			get
-			{
-				if (this.Count > 0)
-				{
-					return this.First();
-				}
-
-				return null;
-			}
-		}
+		public EmulatorWindow Master => this.Count == 0 ? null : this[0];
 
 		public IEnumerable<RomSessionEntry> Session
 		{

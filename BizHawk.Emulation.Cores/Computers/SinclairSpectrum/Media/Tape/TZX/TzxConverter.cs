@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -510,7 +510,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _position += blockLen;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -616,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _datacorder.DataBlocks.Add(t);
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -687,7 +687,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _datacorder.DataBlocks.Add(t);
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
         }
         #endregion
 
@@ -840,7 +840,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _position += 2;
 
             // generate PAUSE block
-            CreatePauseBlock(_datacorder.DataBlocks.Last());
+            CreatePauseBlock(_datacorder.DataBlocks[_datacorder.DataBlocks.Count - 1]);
 
         }
         #endregion

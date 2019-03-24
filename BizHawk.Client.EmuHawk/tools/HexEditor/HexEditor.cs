@@ -1300,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 					var parts = line.Split('=');
 					_textTable.Add(
 						int.Parse(parts[0],
-						NumberStyles.HexNumber), parts[1].First());
+						NumberStyles.HexNumber), parts[1][0]);
 				}
 			}
 

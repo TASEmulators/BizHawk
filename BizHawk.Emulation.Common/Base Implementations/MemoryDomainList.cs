@@ -36,12 +36,7 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				if (_mainMemory != null)
-				{
-					return _mainMemory;
-				}
-
-				return this.First();
+				return _mainMemory ?? this[0];
 			}
 
 			set

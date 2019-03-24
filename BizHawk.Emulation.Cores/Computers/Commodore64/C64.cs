@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_board.CartPort.IsConnected)
 			{
 				// There are no multi-cart cart games, so just hardcode .First()
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{_roms[0].HashSHA1()}\r\nMD5:{_roms[0].HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			var rom = _roms.First();
+			var rom = _roms[0];
 
 			switch (C64FormatFinder.GetFormat(rom))
 			{

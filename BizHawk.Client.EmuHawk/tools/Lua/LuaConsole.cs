@@ -992,7 +992,7 @@ namespace BizHawk.Client.EmuHawk
 			var indices = LuaListView.SelectedIndices().ToList();
 			if (indices.Count > 0 && indices[indices.Count - 1] < LuaImp.ScriptList.Count)
 			{
-				LuaImp.ScriptList.Insert(indices.Last(), LuaFile.SeparatorInstance);
+				LuaImp.ScriptList.Insert(indices[indices.Count - 1], LuaFile.SeparatorInstance);
 			}
 			else
 			{
@@ -1031,7 +1031,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = LuaListView.SelectedIndices().ToList();
-			if (indices.Count == 0 || indices.Last() == LuaImp.ScriptList.Count - 1)
+			if (indices.Count == 0 || indices[indices.Count - 1] == LuaImp.ScriptList.Count - 1)
 			{
 				return;
 			}

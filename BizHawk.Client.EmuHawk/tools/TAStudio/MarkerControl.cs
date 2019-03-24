@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_ItemActivate(object sender, EventArgs e)
 		{
-			Tastudio.GoToMarker(SelectedMarkers.First());
+			Tastudio.GoToMarker(SelectedMarkers[0]);
 		}
 
 		// SuuperW: Marker renaming can be done with a right-click.

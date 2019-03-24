@@ -300,13 +300,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 		}
 
-		public bool IAmMaster
-		{
-			get
-			{
-				return MainForm.EmulatorWindows.First() == this;
-			}
-		}
+		public bool IAmMaster => MainForm.EmulatorWindows[0] == this;
 
 		public void FrameBufferResized()
 		{

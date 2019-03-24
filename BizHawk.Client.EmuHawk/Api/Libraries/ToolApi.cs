@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (possibleTypes.Length > 0)
 				{
-					return Activator.CreateInstance(possibleTypes.First());
+					return Activator.CreateInstance(possibleTypes[0]);
 				}
 
 				return null;
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (possibleTypes.Length > 0)
 			{
-				return Activator.CreateInstance(possibleTypes.First());
+				return Activator.CreateInstance(possibleTypes[0]);
 			}
 
 			return null;

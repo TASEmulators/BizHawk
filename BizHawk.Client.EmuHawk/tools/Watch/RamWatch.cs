@@ -929,7 +929,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0 || indices.Last() == _watches.Count - 1)
+			if (indices.Count == 0 || indices[indices.Count - 1] == _watches.Count - 1)
 			{
 				return;
 			}
@@ -1214,11 +1214,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address }, selected.First().Size);
+					ViewInHexEditor(selected[0].Domain, new List<long> { selected[0].Address }, selected[0].Size);
 				}
 				else
 				{
-					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address), selected.First().Size);
+					ViewInHexEditor(selected[0].Domain, selected.Select(x => x.Address), selected[0].Size);
 				}
 			}
 		}

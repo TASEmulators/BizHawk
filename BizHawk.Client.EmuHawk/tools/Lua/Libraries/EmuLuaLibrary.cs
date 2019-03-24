@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Length > 0)
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
+					addLibrary = VersionInfo.DeveloperBuild || (attributes[0] as LuaLibraryAttribute).Released;
 				}
 
 				if (addLibrary)

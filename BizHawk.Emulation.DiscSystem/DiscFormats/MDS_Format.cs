@@ -764,7 +764,7 @@ namespace BizHawk.Emulation.DiscSystem
                         throw new MDSParseException("BLOB Error!");
 
                     // is the currBlob valid for this track, or do we need to increment?   
-                    string bString = tBlobs.First();
+                    string bString = tBlobs[0];
 
                     IBlob mdfBlob = null;
                     
