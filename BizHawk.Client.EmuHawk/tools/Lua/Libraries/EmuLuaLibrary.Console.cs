@@ -111,8 +111,8 @@ namespace BizHawk.Client.EmuHawk
 						var sb = new StringBuilder();
 						var lti = output as LuaTable;
 
-						var keys = (from object key in lti.Keys select key.ToString()).ToList();
-						var values = (from object value in lti.Values select value.ToString()).ToList();
+						var keys = lti.Keys.Cast<object>().Select(key => key.ToString()).ToList();
+						var values = lti.Values.Cast<object>().Select(value => value.ToString()).ToList();
 
 						var kvps = new List<KeyValuePair<string, string>>();
 						for (var i = 0; i < keys.Count; i++)

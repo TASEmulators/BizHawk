@@ -58,10 +58,11 @@ namespace BizHawk.Client.Common
 		}
 
 		// Looks for bindings which are activated by the supplied physical button.
-		public List<string> SearchBindings(string button)
-		{
-			return (from kvp in _bindings from boundButton in kvp.Value where boundButton == button select kvp.Key).ToList();
-		}
+		public List<string> SearchBindings(string button) =>
+			_bindings.SelectMany(kvp => kvp.Value, (kvp, boundButton) => new { kvp.Key, boundButton })
+				.Where(pair => pair.boundButton == button)
+				.Select(pair => pair.Key)
+				.ToList();
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
 		public bool HasBinding(string button)
@@ -227,12 +228,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns a list of all keys mapped and the name of the button they are mapped to
 		/// </summary>
-		public List<KeyValuePair<string, string>> MappingList()
-		{
-			return (from key in _bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
-		}
+		public List<KeyValuePair<string, string>> MappingList() => _bindings.SelectMany(
+				key => key.Value,
+				(key, binding) => new KeyValuePair<string, string>(binding, key.Key))
+			.ToList();
 
-		public List<string> PressedButtons => (from button in _buttons where button.Value select button.Key).ToList();
+		public List<string> PressedButtons => _buttons.Where(button => button.Value)
+			.Select(button => button.Key)
+			.ToList();
 	}
 
 	public class AutofireController : IController
@@ -282,10 +285,11 @@ namespace BizHawk.Client.Common
 		}
 
 		// look for bindings which are activated by the supplied physical button.
-		public List<string> SearchBindings(string button)
-		{
-			return (from kvp in _bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
-		}
+		public List<string> SearchBindings(string button) =>
+			_bindings.SelectMany(kvp => kvp.Value, (kvp, bound_button) => new { kvp, bound_button })
+				.Where(o => o.bound_button == button)
+				.Select(o => o.kvp.Key)
+				.ToList();
 
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
@@ -355,6 +359,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> PressedButtons => (from button in _buttons where button.Value select button.Key).ToList();
+		public List<string> PressedButtons => _buttons.Where(button => button.Value)
+			.Select(button => button.Key)
+			.ToList();
 	}
 }

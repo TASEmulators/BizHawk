@@ -755,8 +755,7 @@ namespace BizHawk.Emulation.DiscSystem
                             blobstrings.Add(t);
                     }
 
-                    var tBlobs = (from a in tr.ImageFileNamePaths
-                                     select a).ToList();
+                    var tBlobs = tr.ImageFileNamePaths.ToList();
 
                     if (tBlobs.Count < 1)
                         throw new MDSParseException("BLOB Error!");

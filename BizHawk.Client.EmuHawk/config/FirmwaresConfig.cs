@@ -483,10 +483,7 @@ namespace BizHawk.Client.EmuHawk
 			var fr = (FirmwareDatabase.FirmwareRecord)lvi.Tag;
 
 			// get all options for this firmware (in order)
-			var options =
-				from fo in FirmwareDatabase.FirmwareOptions
-				where fo.SystemId == fr.SystemId && fo.FirmwareId == fr.FirmwareId
-				select fo;
+			var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.SystemId == fr.SystemId && fo.FirmwareId == fr.FirmwareId);
 
 			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo
 			{

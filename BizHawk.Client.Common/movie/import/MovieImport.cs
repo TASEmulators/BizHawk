@@ -119,11 +119,7 @@ namespace BizHawk.Client.Common
 		private static IEnumerable<Type> ImportersForExtension(string ext)
 		{
 			var info = typeof(MovieImport).Module;
-			var importers = from t in info.GetTypes()
-			                where typeof(IMovieImport).IsAssignableFrom(t)
-			                   && TypeImportsExtension(t, ext)
-			                select t;
-
+			var importers = info.GetTypes().Where(t => typeof(IMovieImport).IsAssignableFrom(t) && TypeImportsExtension(t, ext));
 			return importers;
 		}
 

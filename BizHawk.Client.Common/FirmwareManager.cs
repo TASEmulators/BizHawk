@@ -203,10 +203,7 @@ namespace BizHawk.Client.Common
 
 					// get all options for this firmware (in order)
 					var fr1 = fr;
-					var options =
-						from fo in FirmwareDatabase.FirmwareOptions
-						where fo.SystemId == fr1.SystemId && fo.FirmwareId == fr1.FirmwareId && fo.IsAcceptableOrIdeal
-						select fo;
+					var options = FirmwareDatabase.FirmwareOptions.Where(fo => fo.SystemId == fr1.SystemId && fo.FirmwareId == fr1.FirmwareId && fo.IsAcceptableOrIdeal);
 
 					// try each option
 					foreach (var fo in options)
@@ -273,12 +270,7 @@ namespace BizHawk.Client.Common
 							ri.KnownFirmwareFile = ff;
 
 							// if the known firmware file is for a different firmware, flag it so we can show a warning
-							var option =
-								(from fo in FirmwareDatabase.FirmwareOptions
-								 where fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
-								 select fr).FirstOrDefault();
-
-							if (option != null)
+							if (FirmwareDatabase.FirmwareOptions.Any(fo => fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey))
 							{
 								ri.KnownMismatching = true;
 							}
