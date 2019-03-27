@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common
 
 			_recordingBatch = false;
 
-			if (batch.OfType<MovieActionMarker>().Count() != batch.Count)
+			if (batch.All(a => a is MovieActionMarker))
 			{
 				return _movie.InputLogLength;
 			}
@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 
 			_recordingBatch = false;
 
-			if (batch.OfType<MovieActionMarker>().Count() != batch.Count)
+			if (batch.All(a => a is MovieActionMarker))
 			{
 				return _movie.InputLogLength;
 			}
