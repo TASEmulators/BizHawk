@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Client.Common
@@ -25,20 +26,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			foreach (var kvp in this)
-			{
-				sb
-					.Append(kvp.Key)
-					.Append(' ')
-					.Append(kvp.Value)
-					.AppendLine();
-			}
-
-			return sb.ToString();
-		}
+		public override string ToString() => string.Concat(this.Select((k, v) => $"{k} {v}\n"));
 	}
 }

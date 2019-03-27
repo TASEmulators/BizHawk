@@ -46,21 +46,10 @@ namespace BizHawk.Client.Common
 
 		public string GenerateLogKey()
 		{
-			var sb = new StringBuilder();
-			sb.Append("LogKey:");
-
-			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
-			{
-				sb.Append("#");
-				foreach (var button in group)
-				{
-					sb
-						.Append(button)
-						.Append('|');
-				}
-			}
-
-			return sb.ToString();
+			var s = string.Join("#", _source.Definition.ControlsOrdered
+				.Select(group => string.Concat(group.Select(button => $"{button}|")))
+				.Where(groupStr => !string.IsNullOrEmpty(groupStr)));
+			return $"LogKey:{(s.Length > 0 ? $"#{s}" : string.Empty)}";
 		}
 
 		public Dictionary<string, string> Map()
@@ -86,64 +75,25 @@ namespace BizHawk.Client.Common
 
 		private string CreateLogEntry(bool createEmpty = false, bool forInputDisplay = false)
 		{
-			var sb = new StringBuilder();
-
-			if (!forInputDisplay)
-			{
-				sb.Append('|');
-			}
-
-			foreach (var group in _source.Definition.ControlsOrdered)
-			{
-				if (group.Any())
-				{
-					foreach (var button in group)
+			var list = _source.Definition.ControlsOrdered.Select(group => string.Concat(group.Select(
+				button => {
+					if (_source.Definition.FloatControls.Contains(button))
 					{
-						if (_source.Definition.FloatControls.Contains(button))
-						{
-							int val;
-							int i = _source.Definition.FloatControls.IndexOf(button);
-							int mid = (int)_source.Definition.FloatRanges[i].Mid;
-
-							if (createEmpty)
-							{
-								val = mid;
-							}
-							else
-							{
-								val = (int)_source.GetFloat(button);
-							}
-
-							if (forInputDisplay && val == mid)
-							{
-								sb.Append("      ");
-							}
-							else
-							{
-								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
-							}
-						}
-						else if (_source.Definition.BoolButtons.Contains(button))
-						{
-							if (createEmpty)
-							{
-								sb.Append('.');
-							}
-							else
-							{
-								sb.Append(_source.IsPressed(button) ? _mnemonics[button] : forInputDisplay ? ' ' : '.');
-							}
-						}
+						var mid = (int)_source.Definition.FloatRanges[_source.Definition.FloatControls.IndexOf(button)].Mid;
+						var val = createEmpty ? mid : (int)_source.GetFloat(button);
+						return forInputDisplay && val == mid ? "      " : $"{val,5},";
 					}
-
-					if (!forInputDisplay)
-					{
-						sb.Append('|');
-					}
-				}
-			}
-
-			return sb.ToString();
+					else if (_source.Definition.BoolButtons.Contains(button))
+						return (createEmpty
+							? '.'
+							: _source.IsPressed(button)
+								? _mnemonics[button]
+								: forInputDisplay
+									? ' '
+									: '.').ToString();
+					else return string.Empty;
+				})));
+			return forInputDisplay ? string.Concat(list) : $"|{string.Join("|", list)}|";
 		}
 	}
 }

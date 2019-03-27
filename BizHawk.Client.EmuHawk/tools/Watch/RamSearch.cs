@@ -1519,19 +1519,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyWatchesToClipBoard()
 		{
-			if (SelectedItems.Any())
-			{
-				var sb = new StringBuilder();
-				foreach (var watch in SelectedItems)
-				{
-					sb.AppendLine(watch.ToString());
-				}
-
-				if (sb.Length > 0)
-				{
-					Clipboard.SetDataObject(sb.ToString());
-				}
-			}
+			var s = string.Join("\n", SelectedItems);
+			if (s.Length > 0) Clipboard.SetDataObject($"{s}\n");
 		}
 
 		#endregion

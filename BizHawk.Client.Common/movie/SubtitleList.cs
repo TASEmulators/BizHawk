@@ -23,10 +23,8 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder();
 			Sort();
-			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
-			return sb.ToString();
+			return string.Join("\n", this) + "\n";
 		}
 
 		public bool AddFromString(string subtitleStr)
@@ -37,13 +35,6 @@ namespace BizHawk.Client.Common
 				{
 					var subparts = subtitleStr.Split(' ');
 
-					// Unfortunately I made the file format space delminated so this hack is necessary to get the message
-					var message = "";
-					for (var i = 6; i < subparts.Length; i++)
-					{
-						message += subparts[i] + ' ';
-					}
-
 					Add(new Subtitle 
 					{
 						Frame = int.Parse(subparts[1]),
@@ -51,7 +42,7 @@ namespace BizHawk.Client.Common
 						Y = int.Parse(subparts[3]),
 						Duration = int.Parse(subparts[4]),
 						Color = uint.Parse(subparts[5], NumberStyles.HexNumber),
-						Message = message.Trim()
+						Message = string.Join(" ", subparts.Skip(6)) // Unfortunately this is necessary to get the value of Message because the format is space-delimited
 					});
 
 					return true;
@@ -76,8 +67,6 @@ namespace BizHawk.Client.Common
 
 		public string ToSubRip(double fps)
 		{
-			int index = 1;
-			var sb = new StringBuilder();
 			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 			{
@@ -117,12 +106,8 @@ namespace BizHawk.Client.Common
 				subs = subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y).ToList();
 			}
 
-			foreach (var subtitle in subs)
-			{
-				sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
-			}
-
-			return sb.ToString();
+			var index = 1;
+			return string.Concat(subs.Select(subtitle => subtitle.ToSubRip(index++, fps, AddColorTag)));
 		}
 	}
 }

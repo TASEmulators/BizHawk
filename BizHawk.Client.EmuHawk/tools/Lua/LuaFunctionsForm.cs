@@ -155,26 +155,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
+			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift // Copy
+				&& FunctionView.SelectedIndices.Count > 0)
 			{
-				var indexes = FunctionView.SelectedIndices;
-
-				//TODO - duplicated code with FunctionView_Copy
-				//also -- this list is more compact (the examples would fill space)
-				//it isn't clear whether we should copy the examples here. So maybe this should stay distinct (and more compact?)
-
-				if (indexes.Count > 0)
-				{
-					var sb = new StringBuilder();
-
-					foreach (var libraryFunction in indexes.Cast<int>().SelectAsIndexOf(GlobalWin.Tools.LuaConsole.LuaImp.Docs))
-					{
-						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
-					}
-
-					if (sb.Length > 0)
-						Clipboard.SetDataObject(sb.ToString());
-				}
+				var s = string.Concat(FunctionView.SelectedIndices.Cast<int>()
+					.SelectAsIndexOf(GlobalWin.Tools.LuaConsole.LuaImp.Docs)
+					.Select(lf => $"{lf.Library}.{lf.Name}()\n"));
+				if (s.Length > 0) Clipboard.SetDataObject(s);
 			}
 		}
 

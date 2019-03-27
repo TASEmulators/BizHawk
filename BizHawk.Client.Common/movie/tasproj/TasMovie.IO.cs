@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 
 				if (VerificationLog.Count > 0)
 				{
-					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
+					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(string.Join("\n", VerificationLog) + "\n")); // double newline present with StringBuilder
 				}
 
 				if (Branches.Count > 0)
@@ -275,17 +275,6 @@ namespace BizHawk.Client.Common
 			_stateManager.ClearStateHistory();
 			Markers.Clear();
 			ChangeLog.ClearLog();
-		}
-
-		private static string InputLogToString(IStringLog log)
-		{
-			var sb = new StringBuilder();
-			foreach (var record in log)
-			{
-				sb.AppendLine(record);
-			}
-
-			return sb.ToString();
 		}
 	}
 }

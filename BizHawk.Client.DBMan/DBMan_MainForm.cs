@@ -317,13 +317,9 @@ namespace BizHawk.Client.DBMan
 
 				if (rom.VersionTags != null) 
 				{
-					var versions = rom.VersionTags.Split(';');
-					foreach (var version in versions)
-					{
-						if (version.Trim().Length == 0)
-							continue;
-						romName += " (" + version + ")";
-					}
+					romName += string.Concat(rom.VersionTags.Split(';')
+						.Where(version => !string.IsNullOrWhiteSpace(version))
+						.Select(version => $" ({version.Trim()})"));
 				}
 
 				tw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", rom.MD5, romCode, romName, rom.System, rom.Game.Tags, rom.CombinedMetaData, rom.Region);

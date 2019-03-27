@@ -457,18 +457,7 @@ namespace BizHawk.Client.Common
 			}
 
 			using (var sw = new StreamWriter(CurrentFileName))
-			{
-				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemid);
-
-				foreach (var watch in _watchList)
-				{
-					sb.AppendLine(watch.ToString());
-				}
-
-				sw.WriteLine(sb.ToString());
-			}
-
+				sw.WriteLine($"SystemID {_systemid}\n{string.Join("\n", _watchList)}\n"); // double newline present with StringBuilder
 			Changes = false;
 			return true;
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -172,16 +173,7 @@ namespace BizHawk.Common.BufferExtensions
 		/// <summary>
 		/// Converts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
 		/// </summary>
-		public static string BytesToHexString(this byte[] bytes)
-		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
-			{
-				sb.AppendFormat("{0:X2}", b);
-			}
-
-			return sb.ToString();
-		}
+		public static string BytesToHexString(this byte[] bytes) => string.Concat(bytes.Select(b => $"{b:X2}"));
 
 		public static bool FindBytes(this byte[] array, byte[] pattern)
 		{

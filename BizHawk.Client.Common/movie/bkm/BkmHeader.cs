@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Client.Common
@@ -151,24 +152,9 @@ namespace BizHawk.Client.Common
 			base.Clear();
 		}
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			foreach (var kvp in this)
-			{
-				sb
-					.Append(kvp.Key)
-					.Append(' ')
-					.Append(kvp.Value)
-					.AppendLine();
-			}
-
-			sb.Append(Subtitles);
-			Comments.ForEach(comment => sb.AppendLine(comment));
-
-			return sb.ToString();
-		}
+		public override string ToString() => string.Concat(this.Select((k, v) => $"{k} {v}\n"))
+			+ Subtitles
+			+ string.Join("\n", Comments) + "\n";
 
 		public bool ParseLineFromFile(string line)
 		{

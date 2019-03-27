@@ -1012,13 +1012,7 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak1Box.Text = _bestBotAttempt.TieBreak1.ToString();
 				BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
 				BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
-
-				var sb = new StringBuilder();
-				foreach (var logEntry in _bestBotAttempt.Log)
-				{
-					sb.AppendLine(logEntry);
-				}
-				BestAttemptLogLabel.Text = sb.ToString();
+				BestAttemptLogLabel.Text = string.Join("\n", _bestBotAttempt.Log) + "\n";
 				PlayBestButton.Enabled = true;
 			}
 			else

@@ -40,13 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_syncSettings.InitialWRamStatePattern != null && _syncSettings.InitialWRamStatePattern.Count > 0)
 			{
-				var sb = new StringBuilder();
-				foreach (var b in _syncSettings.InitialWRamStatePattern)
-				{
-					sb.Append(b.ToHexString(2));
-				}
-
-				RamPatternOverrideBox.Text = sb.ToString();
+				RamPatternOverrideBox.Text = string.Concat(_syncSettings.InitialWRamStatePattern.Select(b => b.ToHexString(2)));
 			}
 		}
 

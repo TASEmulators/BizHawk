@@ -328,18 +328,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = TraceView.SelectedIndices;
-
-			if (indices.Count > 0)
+			if (TraceView.SelectedIndices.Count > 0)
 			{
-				var blob = new StringBuilder();
-				foreach (var traceInfo in indices.Cast<int>().SelectAsIndexOf(_instructions))
-				{
-					blob.Append(string.Format("{0} {1}\n",
-						traceInfo.Disassembly,
-						traceInfo.RegisterInfo));
-				}
-				Clipboard.SetDataObject(blob.ToString());
+				Clipboard.SetDataObject(string.Concat(TraceView.SelectedIndices.Cast<int>()
+					.SelectAsIndexOf(_instructions)
+					.Select(instr => $"{instr.Disassembly} {instr.RegisterInfo}\n")));
 			}
 		}
 

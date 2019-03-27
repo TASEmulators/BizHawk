@@ -370,38 +370,23 @@ namespace BizHawk.Client.Common
 					file.Directory.Create();
 				}
 
-				using (var sw = new StreamWriter(path))
-				{
-					var sb = new StringBuilder();
-
-					foreach (var cheat in _cheatList)
-					{
-						if (cheat.IsSeparator)
-						{
-							sb.AppendLine("----");
-						}
-						else
-						{
-							// Set to hex for saving 
-							cheat.SetType(DisplayType.Hex);
-
-							sb
-								.Append(cheat.AddressStr).Append('\t')
-								.Append(cheat.ValueStr).Append('\t')
-								.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
-								.Append(cheat.Enabled ? '1' : '0').Append('\t')
-								.Append(cheat.Name).Append('\t')
-								.Append(cheat.SizeAsChar).Append('\t')
-								.Append(cheat.TypeAsChar).Append('\t')
-								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
-								.Append(cheat.ComparisonType).Append('\t')
-								.AppendLine();
-						}
-					}
-
-					sw.WriteLine(sb.ToString());
-				}
+				using (var sw = new StreamWriter(path)) sw.WriteLine(
+					string.Join("\n", _cheatList.Select(cheat => {
+							if (cheat.IsSeparator) return "----";
+							cheat.SetType(DisplayType.Hex); // ignore chosen format for saving
+							return string.Join("\t",
+								cheat.AddressStr,
+								cheat.ValueStr,
+								cheat.Compare?.ToString() ?? "N",
+								cheat.Domain != null ? cheat.Domain.Name : "",
+								cheat.Enabled ? '1' : '0',
+								cheat.Name,
+								cheat.SizeAsChar,
+								cheat.TypeAsChar,
+								cheat.BigEndian ?? false ? '1' : '0',
+								cheat.ComparisonType);
+						}))
+					+ "\n"); // double newline present with StringBuilder
 
 				_currentFileName = path;
 				Global.Config.RecentCheats.Add(_currentFileName);

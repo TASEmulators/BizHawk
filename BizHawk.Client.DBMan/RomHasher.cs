@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
@@ -213,14 +214,7 @@ namespace BizHawk.Client.DBMan
 			}
 		}
 
-		static string BytesToHexString(byte[] bytes)
-		{
-			var sb = new StringBuilder();
-			foreach (var b in bytes)
-				sb.AppendFormat("{0:X2}", b);
-
-			return sb.ToString();
-		}
+		static string BytesToHexString(byte[] bytes) => string.Concat(bytes.Select(b => $"{b:X2}"));
 
 		static byte[] MaybeStripHeader512(byte[] fileBytes)
 		{

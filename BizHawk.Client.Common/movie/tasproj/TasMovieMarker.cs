@@ -99,16 +99,7 @@ namespace BizHawk.Client.Common
 			CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-			foreach (var marker in this)
-			{
-				sb.AppendLine(marker.ToString());
-			}
-
-			return sb.ToString();
-		}
+		public override string ToString() => string.Join("\n", this) + "\n";
 
 		// the inherited one
 		public new void Add(TasMovieMarker item)

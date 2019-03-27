@@ -6,6 +6,7 @@ using BizHawk.Client.Common;
 using System.Text;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Reflection;
 using System.Windows.Forms;
 
 
@@ -28,18 +29,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "comm";
 
-		//TO DO: not fully working yet!
+		//TODO: not fully working yet!
 		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
-		public static string GetLuaFunctionsList()
-		{
-			var list = new StringBuilder();
-			foreach (var function in typeof(CommunicationLuaLibrary).GetMethods())
-			{
-				list.AppendLine(function.ToString());
-			}
-
-			return list.ToString();
-		}
+		public static string GetLuaFunctionsList() =>
+			string.Join("\n", (IEnumerable<MethodInfo>) typeof(CommunicationLuaLibrary).GetMethods()) + "\n";
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
 		public string SocketServerScreenShot()

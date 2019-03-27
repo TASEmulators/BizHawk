@@ -310,21 +310,14 @@ namespace BizHawk.Client.MultiHawk
 		{
 			if (e.Control && e.KeyCode == Keys.C)
 			{
-				var indexes = MovieView.SelectedIndices;
-				if (indexes.Count > 0)
-				{
-					var copyStr = new StringBuilder();
-					foreach (var movie in indexes.Cast<int>().SelectAsIndexOf(_movieList))
-					{
-						copyStr
-							.Append(movie.Filename).Append('\t')
-							.Append(movie.SystemID).Append('\t')
-							.Append(movie.GameName).Append('\t')
-							.Append(PlatformFrameRates.MovieTime(movie).ToString(@"hh\:mm\:ss\.fff"))
-							.AppendLine();
-					}
-					Clipboard.SetDataObject(copyStr.ToString());
-				}
+				var s = string.Join("\n", MovieView.SelectedIndices.Cast<int>()
+					.SelectAsIndexOf(_movieList)
+					.Select(movie => string.Join("\t",
+						movie.Filename,
+						movie.SystemID,
+						movie.GameName,
+						PlatformFrameRates.MovieTime(movie).ToString(@"hh\:mm\:ss\.fff"))));
+				if (s.Length > 0) Clipboard.SetDataObject($"{s}\n");
 			}
 		}
 

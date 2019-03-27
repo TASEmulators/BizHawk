@@ -113,20 +113,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonCopy_Click(object sender, EventArgs e)
 		{
-			var sb = new StringBuilder();
-			foreach (var line in virtualListView1.SelectedIndices.Cast<int>().SelectAsIndexOf(Lines))
-				sb.AppendLine(line);
-			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+			var s = string.Join("\n", virtualListView1.SelectedIndices.Cast<int>().SelectAsIndexOf(Lines));
+			if (s.Length > 0) Clipboard.SetText($"{s}\n", TextDataFormat.Text);
 		}
 
 		private void buttonCopyAll_Click(object sender, EventArgs e)
 		{
-			var sb = new StringBuilder();
-			foreach (var s in Lines)
-				sb.AppendLine(s);
-			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+			var s = string.Join("\n", Lines);
+			if (s.Length > 0) Clipboard.SetText($"{s}\n", TextDataFormat.Text);
 		}
 
 		private void virtualListView1_KeyDown(object sender, KeyEventArgs e)

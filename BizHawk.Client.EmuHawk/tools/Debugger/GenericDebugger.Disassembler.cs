@@ -196,25 +196,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopySelectedDisassembler()
 		{
-			var indices = DisassemblerView.SelectedIndices;
-
-			if (indices.Count > 0)
-			{
-				var blob = new StringBuilder();
-				foreach (var disasmOp in indices.Cast<int>().SelectAsIndexOf(_disassemblyLines))
-				{
-					if (blob.Length != 0)
-					{
-						blob.AppendLine();
-					}
-
-					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", disasmOp.Address))
-						.Append(" ")
-						.Append(disasmOp.Mnemonic);
-				}
-
-				Clipboard.SetDataObject(blob.ToString());
-			}
+			var s = string.Join("\n", DisassemblerView.SelectedIndices.Cast<int>()
+				.SelectAsIndexOf(_disassemblyLines)
+				.Select(d => $"{string.Format($"{{0:X{_pcRegisterSize}}}", d.Address)} {d.Mnemonic}"));
+			if (s.Length > 0) Clipboard.SetDataObject(s);
 		}
 
 		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)

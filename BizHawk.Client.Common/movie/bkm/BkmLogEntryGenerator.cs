@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -345,45 +346,21 @@ namespace BizHawk.Client.Common
 			return input.ToString();
 		}
 
-		private string GetDualGameBoyControllerAsMnemonic()
-		{
-			// |.|........|.|........|
-			var input = new StringBuilder();
+		/// <remarks>|.|........|.|........|</remarks>
+		private string GetDualGameBoyControllerAsMnemonic() => string.Concat(BkmMnemonicConstants.DgbMnemonic.Select(t =>
+			t.Item1 == null // true if separator
+				? t.Item2
+				: IsBasePressed(t.Item1)
+					? t.Item2
+					: '.'));
 
-			foreach (var t in BkmMnemonicConstants.DgbMnemonic)
-			{
-				if (t.Item1 != null)
-				{
-					input.Append(IsBasePressed(t.Item1) ? t.Item2 : '.');
-				}
-				else
-				{
-					input.Append(t.Item2); // Separator
-				}
-			}
-
-			return input.ToString();
-		}
-
-		private string GetWonderSwanControllerAsMnemonic()
-		{
-			// |....|....|...|
-			var input = new StringBuilder();
-
-			foreach (var t in BkmMnemonicConstants.WsMnemonic)
-			{
-				if (t.Item1 != null)
-				{
-					input.Append(IsBasePressed(t.Item1) ? t.Item2 : '.');
-				}
-				else
-				{
-					input.Append(t.Item2); // Separator
-				}
-			}
-
-			return input.ToString();
-		}
+		/// <remarks>|....|....|...|</remarks>
+		private string GetWonderSwanControllerAsMnemonic() => string.Concat(BkmMnemonicConstants.WsMnemonic.Select(t =>
+			t.Item1 == null // true if separator
+				? t.Item2
+				: IsBasePressed(t.Item1)
+					? t.Item2
+					: '.'));
 
 		private string GetA78ControllersAsMnemonic()
 		{

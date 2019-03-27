@@ -74,17 +74,8 @@ namespace BizHawk.Client.DBMan
 		/// <param name="e"></param>
 		private void buttonRemove_Click(object sender, EventArgs e)
 		{
-			List<string> files = new List<string>();
-			foreach (var s in listBoxFiles.SelectedItems)
-			{
-				files.Add(s.ToString());
-			}
-
-			if (files.Count > 0)
-			{
-				foreach (var s in files)
-					listBoxFiles.Items.Remove(s);
-			}
+			foreach (var s in listBoxFiles.SelectedItems.Cast<object>().Select(o => o.ToString()))
+				listBoxFiles.Items.Remove(s);
 		}
 
 		/// <summary>
