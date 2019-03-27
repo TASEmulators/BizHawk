@@ -104,10 +104,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScrollToPadSchema(string padSchemaName)
 		{
-			foreach (var control in ControllerPanel.Controls)
+			foreach (var vp in ControllerPanel.Controls.OfType<VirtualPad>())
 			{
-				VirtualPad vp = control as VirtualPad;
-				if (vp == null) continue;
 				if (vp.PadSchemaDisplayName == padSchemaName)
 					ControllerPanel.ScrollControlIntoView(vp);
 			}

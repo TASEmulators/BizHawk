@@ -471,12 +471,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).Clear(color);
-						}
+						control.Clear(color);
 					}
 				}
 			}
@@ -503,12 +500,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).Refresh();
-						}
+						control.Refresh();
 					}
 				}
 			}
@@ -535,12 +529,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).SetDefaultForegroundColor(color);
-						}
+						control.SetDefaultForegroundColor(color);
 					}
 				}
 			}
@@ -567,12 +558,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).SetDefaultBackgroundColor(color);
-						}
+						control.SetDefaultBackgroundColor(color);
 					}
 				}
 			}
@@ -599,12 +587,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).SetDefaultTextBackground(color);
-						}
+						control.SetDefaultTextBackground(color);
 					}
 				}
 			}
@@ -631,12 +616,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawBezier(points, color);
-						}
+						control.DrawBezier(points, color);
 					}
 				}
 			}
@@ -663,12 +645,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawBox(x, y, x2, y2, line, background);
-						}
+						control.DrawBox(x, y, x2, y2, line, background);
 					}
 				}
 			}
@@ -695,12 +674,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawEllipse(x, y, width, height, line, background);
-						}
+						control.DrawEllipse(x, y, width, height, line, background);
 					}
 				}
 			}
@@ -727,12 +703,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawIcon(path, x, y, width, height);
-						}
+						control.DrawIcon(path, x, y, width, height);
 					}
 				}
 			}
@@ -764,12 +737,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawImage(path, x, y, width, height, cache);
-						}
+						control.DrawImage(path, x, y, width, height, cache);
 					}
 				}
 			}
@@ -796,12 +766,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).ClearImageCache();
-						}
+						control.ClearImageCache();
 					}
 				}
 			}
@@ -833,12 +800,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
-						}
+						control.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 					}
 				}
 			}
@@ -865,12 +829,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawLine(x1, y1, x2, y2, color);
-						}
+						control.DrawLine(x1, y1, x2, y2, color);
 					}
 				}
 			}
@@ -897,12 +858,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawAxis(x, y, size, color);
-						}
+						control.DrawAxis(x, y, size, color);
 					}
 				}
 			}
@@ -930,12 +888,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawArc(x, y, width, height, startangle, sweepangle, line);
-						}
+						control.DrawArc(x, y, width, height, startangle, sweepangle, line);
 					}
 				}
 			}
@@ -971,12 +926,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawPie(x, y, width, height, startangle, sweepangle, line, background);
-						}
+						control.DrawPie(x, y, width, height, startangle, sweepangle, line, background);
 					}
 				}
 			}
@@ -1003,12 +955,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawPixel(x, y, color);
-						}
+						control.DrawPixel(x, y, color);
 					}
 				}
 			}
@@ -1035,12 +984,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawPolygon(points, x, y, line, background);
-						}
+						control.DrawPolygon(points, x, y, line, background);
 					}
 				}
 			}
@@ -1068,12 +1014,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawRectangle(x, y, width, height, line, background);
-						}
+						control.DrawRectangle(x, y, width, height, line, background);
 					}
 				}
 			}
@@ -1111,12 +1054,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
-						}
+						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1154,12 +1094,9 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							(control as LuaPictureBox).DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
-						}
+						control.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 					}
 				}
 			}
@@ -1187,13 +1124,10 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							var position = (control as LuaPictureBox).GetMouse();
-							return position.X;
-						}
+						var position = control.GetMouse();
+						return position.X;
 					}
 				}
 			}
@@ -1222,13 +1156,10 @@ namespace BizHawk.Client.EmuHawk
 						return 0;
 					}
 
-					foreach (Control control in form.Controls)
+					foreach (var control in form.Controls.OfType<LuaPictureBox>())
 					{
-						if (control is LuaPictureBox)
-						{
-							var position = (control as LuaPictureBox).GetMouse();
-							return position.Y;
-						}
+						var position = control.GetMouse();
+						return position.Y;
 					}
 				}
 			}

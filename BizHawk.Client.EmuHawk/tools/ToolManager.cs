@@ -208,30 +208,26 @@ namespace BizHawk.Client.EmuHawk
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
 			var oldsize = form.Size; // this should be the right time to grab this size
-			foreach (Control c in form.Controls)
+			foreach (var ms in form.Controls.OfType<MenuStrip>())
 			{
-				if (c is MenuStrip)
+				foreach (ToolStripMenuItem submenu in ms.Items)
 				{
-					var ms = c as MenuStrip;
-					foreach (ToolStripMenuItem submenu in ms.Items)
+					if (submenu.Text.Contains("Settings"))
 					{
-						if (submenu.Text.Contains("Settings"))
-						{
-							dest = submenu.DropDownItems;
-							dest.Add(new ToolStripSeparator());
-							break;
-						}
-					}
-
-					if (dest == null)
-					{
-						var submenu = new ToolStripMenuItem("&Settings");
-						ms.Items.Add(submenu);
 						dest = submenu.DropDownItems;
+						dest.Add(new ToolStripSeparator());
+						break;
 					}
-
-					break;
 				}
+
+				if (dest == null)
+				{
+					var submenu = new ToolStripMenuItem("&Settings");
+					ms.Items.Add(submenu);
+					dest = submenu.DropDownItems;
+				}
+
+				break;
 			}
 
 			if (dest == null)
