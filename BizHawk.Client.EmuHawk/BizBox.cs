@@ -44,8 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var core in Assembly.Load("BizHawk.Emulation.Cores").GetTypes()
 				.Where(t => typeof(IEmulator).IsAssignableFrom(t))
 				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
-				.Where(a => a != null)
-				.Where(a => a.Released)
+				.Where(a => a != null && a.Released)
 				.OrderByDescending(a => a.CoreName.ToLower()))
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core)

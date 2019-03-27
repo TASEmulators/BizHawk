@@ -20,18 +20,18 @@ namespace BizHawk.Client.EmuHawk
 			var apis = Assembly
 				.Load("BizHawk.Client.ApiHawk")
 				.GetTypes()
-				.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
+				.Where(t => typeof(IExternalApi).IsAssignableFrom(t)
+					&& t.IsSealed
+					&& ServiceInjector.IsAvailable(serviceProvider, t))
 				.ToList();
 
 			apis.AddRange(
 				Assembly
 				.GetAssembly(typeof(ApiContainer))
 				.GetTypes()
-				.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
+				.Where(t => typeof(IExternalApi).IsAssignableFrom(t)
+					&& t.IsSealed
+					&& ServiceInjector.IsAvailable(serviceProvider, t)));
 
 			foreach (var api in apis)
 			{
