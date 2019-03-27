@@ -1241,7 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
 			int rowHeight = ColumnsSubMenu.Height + 4;
 			int maxRows = workingHeight / rowHeight;
-			int keyCount = columns.Where(c => c.Name.StartsWith("Key ")).Count();
+			int keyCount = columns.Count(c => c.Name.StartsWith("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
 
 			ToolStripMenuItem[] keysMenus = new ToolStripMenuItem[keysMenusCount];
