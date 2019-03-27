@@ -475,20 +475,12 @@ namespace BizHawk.Client.Common
 			return Branches.IndexOf(branch);
 		}
 
-		public int BranchIndexByFrame(int frame)
-		{
-			TasBranch branch = Branches
-				.Where(b => b.Frame == frame)
-				.OrderByDescending(b => b.TimeStamp)
-				.FirstOrDefault();
-
-			if (branch == null)
-			{
-				return -1;
-			}
-
-			return Branches.IndexOf(branch);
-		}
+		public int BranchIndexByFrame(int frame) => Branches.Where(b => b.Frame == frame)
+			.Select((b, i) => new { Branch = b, Index = i }) // for sorting by element while remembering the index for returning
+			.OrderBy(o => o.Branch.TimeStamp) //TODO is this ordering necessary? method could be Branches.FindIndex(b => b.Frame == frame)
+			.LastOrDefault()
+			?.Index
+			?? -1;
 
 		public void AddBranch(TasBranch branch)
 		{

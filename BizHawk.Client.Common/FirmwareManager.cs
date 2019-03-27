@@ -140,14 +140,15 @@ namespace BizHawk.Client.Common
                     return false;
 
                 // weed out filesizes first to reduce the unnecessary overhead of a hashing operation
-                if (FirmwareDatabase.FirmwareFiles.Where(a => a.Size == fi.Length).FirstOrDefault() == null)
+                if (FirmwareDatabase.FirmwareFiles.All(a => a.Size != fi.Length))
                     return false;
 
                 // check the hash
                 using (var reader = new RealFirmwareReader())
                 {
                     reader.Read(fi);
-                    if (FirmwareDatabase.FirmwareFiles.Where(a => a.Hash == reader.Dict.FirstOrDefault().Value.Hash).FirstOrDefault() != null)
+                    var hash = reader.Dict.FirstOrDefault().Value.Hash;
+                    if (FirmwareDatabase.FirmwareFiles.Any(a => a.Hash == hash))
                         return true;
                 }
             }
