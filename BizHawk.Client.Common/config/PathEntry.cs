@@ -104,19 +104,7 @@ namespace BizHawk.Client.Common
 			List<PathEntry> entriesToRemove = new List<PathEntry>();
 
 			// Remove entries that no longer exist in defaults
-			foreach (PathEntry pathEntry in Paths)
-			{
-				var path = DefaultValues.FirstOrDefault(p => p.System == pathEntry.System && p.Type == pathEntry.Type);
-				if (path == null)
-				{
-					entriesToRemove.Add(pathEntry);
-				}
-			}
-
-			foreach (PathEntry entry in entriesToRemove)
-			{
-				Paths.Remove(entry);
-			}
+			Paths.RemoveAll(path => DefaultValues.All(p => p.System != path.System || p.Type != path.Type));
 
 			// Add missing displaynames
 			foreach (var path in Paths.Where(p => p.SystemDisplayName == null))

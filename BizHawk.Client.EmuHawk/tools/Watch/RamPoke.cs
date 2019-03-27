@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			_watchList = _watchList.Where(x => !x.IsSeparator).ToList(); // Weed out separators just in case
+			_watchList.RemoveAll(x => x.IsSeparator); // just in case
 
 			if (_watchList.Count == 0)
 			{

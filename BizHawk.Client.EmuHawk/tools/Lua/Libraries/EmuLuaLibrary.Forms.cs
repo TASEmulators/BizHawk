@@ -149,10 +149,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.Handle == ptr)
 					{
-						foreach (var luaEvent in form.ControlEvents.Where(x => x.Control == ptr))
-						{
-							form.ControlEvents.Remove(luaEvent);
-						}
+						form.ControlEvents.RemoveAll(x => x.Control == ptr);
 					}
 				}
 			}
