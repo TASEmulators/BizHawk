@@ -1333,14 +1333,10 @@ namespace BizHawk.Client.EmuHawk
 			switch (columnToSort)
 			{
 				case "Script":
-					luaListTemp = _sortReverse
-						? luaListTemp.OrderByDescending(lf => lf.Name).ThenBy(lf => lf.Path).ToList()
-						: luaListTemp.OrderBy(lf => lf.Name).ThenBy(lf => lf.Path).ToList();
+					luaListTemp = luaListTemp.OrderByInDir(_sortReverse, lf => lf.Name).ThenBy(lf => lf.Path).ToList();
 					break;
 				case "Path":
-					luaListTemp = _sortReverse
-						? luaListTemp.OrderByDescending(lf => lf.Path).ThenBy(lf => lf.Name).ToList()
-						: luaListTemp.OrderBy(lf => lf.Path).ThenBy(lf => lf.Name).ToList();
+					luaListTemp = luaListTemp.OrderByInDir(_sortReverse, lf => lf.Path).ThenBy(lf => lf.Name).ToList();
 					break;
 			}
 

@@ -497,34 +497,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Header, Value
 				case "Header":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.Keys)
-							.ThenBy(x => x.Values).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-						   .OrderBy(x => x.Keys)
-						   .ThenBy(x => x.Values).ToList();
-					}
-
+					detailsList = detailsList.OrderByInDir(_sortDetailsReverse, x => x.Keys)
+						.ThenBy(x => x.Values)
+						.ToList();
 					break;
 				case "Value":
-					if (_sortDetailsReverse)
-					{
-						detailsList = detailsList
-							.OrderByDescending(x => x.Values)
-							.ThenBy(x => x.Keys).ToList();
-					}
-					else
-					{
-						detailsList = detailsList
-							.OrderBy(x => x.Values)
-							.ThenBy(x => x.Keys).ToList();
-					}
-
+					detailsList = detailsList.OrderByInDir(_sortDetailsReverse, x => x.Values)
+						.ThenBy(x => x.Keys)
+						.ToList();
 					break;
 			}
 

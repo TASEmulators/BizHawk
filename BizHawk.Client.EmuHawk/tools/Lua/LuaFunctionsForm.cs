@@ -93,49 +93,24 @@ namespace BizHawk.Client.EmuHawk
 		private void OrderColumn(int column)
 		{
 			_columnSort.Column = column;
-			if (_columnSort.Descending)
+			switch (column)
 			{
-				switch (column)
-				{
-					case 0: // Return
-						FunctionList = FunctionList.OrderByDescending(x => x.ReturnType).ToList();
-						break;
-					case 1: // Library
-						FunctionList = FunctionList.OrderByDescending(x => x.Library).ToList();
-						break;
-					case 2: // Name
-						FunctionList = FunctionList.OrderByDescending(x => x.Name).ToList();
-						break;
-					case 3: // Parameters
-						FunctionList = FunctionList.OrderByDescending(x => x.ParameterList).ToList();
-						break;
-					case 4: // Description
-						FunctionList = FunctionList.OrderByDescending(x => x.Description).ToList();
-						break;
-				}
+				case 0: // Return
+					FunctionList = FunctionList.OrderByInDir(_columnSort.Descending, x => x.ReturnType).ToList();
+					break;
+				case 1: // Library
+					FunctionList = FunctionList.OrderByInDir(_columnSort.Descending, x => x.Library).ToList();
+					break;
+				case 2: // Name
+					FunctionList = FunctionList.OrderByInDir(_columnSort.Descending, x => x.Name).ToList();
+					break;
+				case 3: // Parameters
+					FunctionList = FunctionList.OrderByInDir(_columnSort.Descending, x => x.ParameterList).ToList();
+					break;
+				case 4: // Description
+					FunctionList = FunctionList.OrderByInDir(_columnSort.Descending, x => x.Description).ToList();
+					break;
 			}
-			else
-			{
-				switch (column)
-				{
-					case 0: // Return
-						FunctionList = FunctionList.OrderBy(x => x.ReturnType).ToList();
-						break;
-					case 1: // Library
-						FunctionList = FunctionList.OrderBy(x => x.Library).ToList();
-						break;
-					case 2: // Name
-						FunctionList = FunctionList.OrderBy(x => x.Name).ToList();
-						break;
-					case 3: // Parameters
-						FunctionList = FunctionList.OrderBy(x => x.ParameterList).ToList();
-						break;
-					case 4: // Description
-						FunctionList = FunctionList.OrderBy(x => x.Description).ToList();
-						break;
-				}
-			}
-
 			UpdateList();
 		}
 

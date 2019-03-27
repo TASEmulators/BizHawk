@@ -426,54 +426,21 @@ namespace BizHawk.Client.Common
 			switch (column)
 			{
 				case WatchList.ADDRESS:
-					if (reverse)
-					{
-						_watchList = _watchList.OrderByDescending(w => w.Address).ToList();
-					}
-					else
-					{
-						_watchList = _watchList.OrderBy(w => w.Address).ToList();
-						_isSorted = true;
-					}
-
+					_watchList = _watchList.OrderByInDir(reverse, w => w.Address).ToList();
+					if (!reverse) _isSorted = true;
 					break;
 				case WatchList.VALUE:
-					_watchList = reverse
-						? _watchList.OrderByDescending(w => GetValue(w.Address)).ToList()
-						: _watchList.OrderBy(w => GetValue(w.Address)).ToList();
-
+					_watchList = _watchList.OrderByInDir(reverse, w => GetValue(w.Address)).ToList();
 					break;
 				case WatchList.PREV:
-					_watchList = reverse
-						? _watchList.OrderByDescending(w => w.Previous).ToList()
-						: _watchList.OrderBy(w => w.Previous).ToList();
-
+					_watchList = _watchList.OrderByInDir(reverse, w => w.Previous).ToList();
 					break;
 				case WatchList.CHANGES:
 					if (_settings.Mode == Settings.SearchMode.Detailed)
-					{
-						if (reverse)
-						{
-							_watchList = _watchList
-								.Cast<IMiniWatchDetails>()
-								.OrderByDescending(w => w.ChangeCount)
-								.Cast<IMiniWatch>().ToList();
-						}
-						else
-						{
-							_watchList = _watchList
-								.Cast<IMiniWatchDetails>()
-								.OrderBy(w => w.ChangeCount)
-								.Cast<IMiniWatch>().ToList();
-						}
-					}
-
+						_watchList = _watchList.OrderByInDir(reverse, w => ((IMiniWatchDetails) w).ChangeCount).ToList();
 					break;
 				case WatchList.DIFF:
-					_watchList = reverse
-						? _watchList.OrderByDescending(w => (GetValue(w.Address) - w.Previous)).ToList()
-						: _watchList.OrderBy(w => GetValue(w.Address) - w.Previous).ToList();
-
+					_watchList = _watchList.OrderByInDir(reverse, w => GetValue(w.Address) - w.Previous).ToList();
 					break;
 			}
 		}

@@ -117,5 +117,8 @@ namespace BizHawk.Common.CollectionExtensions
 		}
 
 		public static IEnumerable<T> SelectAsIndexOf<T>(this IEnumerable<int> indices, IList<T> list) => indices.Select(i => list[i]);
+
+		public static IOrderedEnumerable<T> OrderByInDir<T, S>(this IEnumerable<T> list, bool desc, Func<T, S> keySelector) =>
+			desc ? list.OrderByDescending(keySelector) : list.OrderBy(keySelector);
 	}
 }

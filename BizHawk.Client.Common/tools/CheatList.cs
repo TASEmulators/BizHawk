@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -511,197 +512,55 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public void Sort(string column, bool reverse)
+		private IOrderedEnumerable<Cheat> GetSorted(string column, bool reverse)
 		{
 			switch (column)
 			{
 				case NameColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case AddressColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Address ?? 0)
-							.ThenBy(c => c.Name)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Address ?? 0)
-							.ThenBy(c => c.Name)
-							.ToList();
-					}
-
-					break;
+				default:
+					return _cheatList.OrderByInDir(reverse, c => c.Address ?? 0)
+						.ThenBy(c => c.Name);
 				case ValueColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Value ?? 0)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Value ?? 0)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Value ?? 0)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case CompareColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Compare ?? 0)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Compare ?? 0)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Compare ?? 0)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case OnColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Enabled)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Enabled)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Enabled)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case DomainColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Domain)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Domain)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Domain)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case SizeColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => ((int)c.Size))
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => ((int)c.Size))
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => (int) c.Size)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case EndianColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.BigEndian)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.BigEndian)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.BigEndian)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case TypeColumn:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.Type)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.Type)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.Type)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 				case ComparisonType:
-					if (reverse)
-					{
-						_cheatList = _cheatList
-							.OrderByDescending(c => c.ComparisonType)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-					else
-					{
-						_cheatList = _cheatList
-							.OrderBy(c => c.ComparisonType)
-							.ThenBy(c => c.Name)
-							.ThenBy(c => c.Address ?? 0)
-							.ToList();
-					}
-
-					break;
+					return _cheatList.OrderByInDir(reverse, c => c.ComparisonType)
+						.ThenBy(c => c.Name)
+						.ThenBy(c => c.Address ?? 0);
 			}
+		}
+
+		public void Sort(string column, bool reverse)
+		{
+			_cheatList = GetSorted(column, reverse).ToList();
 		}
 
 		public void SetDefaultFileName(string defaultFileName)
