@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				SetDomain(domain);
 				SetHighlighted(addrList[0]);
 				_secondaryHighlightedAddresses.Clear();
-				_secondaryHighlightedAddresses.AddRange(addrList.Where(addr => addr != addrList[0]));
+				_secondaryHighlightedAddresses.AddRange(addrList.Except(new List<long> { addrList[0] }));
 				ClearNibbles();
 				UpdateValues();
 				MemoryViewerBox.Refresh();

@@ -194,13 +194,7 @@ namespace BizHawk.Client.Common
 		/// <param name="watches"><see cref="IEnumerable{Watch}"/> of watch to merge</param>
 		public void AddRange(IEnumerable<Watch> watches)
 		{
-			Parallel.ForEach(watches, watch =>
-			{
-				if (!_watchList.Contains(watch))
-				{
-					_watchList.Add(watch);
-				}
-			});
+			_watchList.AddRange(watches.Except(_watchList));
 			Changes = true;
 		}
 
