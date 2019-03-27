@@ -178,10 +178,7 @@ namespace BizHawk.Client.DiscoHawk
 				if (dpTodo.Count == 0)
 					break;
 				dpCurr = dpTodo.Dequeue();
-				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
-				{
-					ret.Add(fi.FullName);
-				}
+				ret.AddRange(new DirectoryInfo(dpCurr).GetFiles("*.cue").Select(fi => fi.FullName));
 				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), (di) =>
 				{
 					lock(dpTodo)

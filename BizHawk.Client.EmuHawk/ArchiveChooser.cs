@@ -50,16 +50,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitializeFileView()
 		{
-			archiveItems.OrderBy(x => x.Name);
-
+			var sorted = archiveItems.OrderBy(x => x.Name).ToArray();
+			archiveItems = sorted;
 			lvMembers.BeginUpdate();
 			try
 			{
 				lvMembers.Items.Clear();
-				foreach (ListViewItem i in archiveItems)
-				{
-					lvMembers.Items.Add(i);
-				}
+				lvMembers.Items.AddRange(sorted);
 			}
 			finally
 			{

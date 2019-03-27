@@ -92,16 +92,7 @@ namespace BizHawk.Client.Common
 		public void ResolveWithDefaults()
 		{
 			// Add missing entries
-			foreach (PathEntry defaultpath in DefaultValues)
-			{
-				var path = Paths.FirstOrDefault(p => p.System == defaultpath.System && p.Type == defaultpath.Type);
-				if (path == null)
-				{
-					Paths.Add(defaultpath);
-				}
-			}
-
-			List<PathEntry> entriesToRemove = new List<PathEntry>();
+			Paths.AddRange(DefaultValues.Where(defaultPath => Paths.All(p => p.System != defaultPath.System || p.Type != defaultPath.Type)));
 
 			// Remove entries that no longer exist in defaults
 			Paths.RemoveAll(path => DefaultValues.All(p => p.System != path.System || p.Type != path.Type));

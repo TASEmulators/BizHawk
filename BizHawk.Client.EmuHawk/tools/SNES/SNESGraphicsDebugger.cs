@@ -26,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -905,8 +906,7 @@ namespace BizHawk.Client.EmuHawk
 			//clone the currently selected tab page into the destination
 			var oldControls = new ArrayList(pnGroupFreeze.Controls);
 			pnGroupFreeze.Controls.Clear();
-			foreach (var control in tp.Controls)
-				pnGroupFreeze.Controls.Add((control as Control).Clone());
+			pnGroupFreeze.Controls.AddRange(tp.Controls.Cast<Control>().Select(c => c.Clone()).ToArray());
 			foreach (var control in oldControls)
 				(control as Control).Dispose();
 
