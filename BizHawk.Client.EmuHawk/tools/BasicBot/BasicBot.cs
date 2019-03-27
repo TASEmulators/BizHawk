@@ -438,10 +438,8 @@ namespace BizHawk.Client.EmuHawk
 			CurrentFileName = "";
 			_bestBotAttempt = null;
 
-			ControlProbabilityPanel.Controls
-				.OfType<BotControlsRow>()
-				.ToList()
-				.ForEach(cp => cp.Probability = 0);
+			foreach (var cp in ControlProbabilityPanel.Controls.OfType<BotControlsRow>())
+				cp.Probability = 0;
 
 			FrameLength = 0;
 			MaximizeAddress = 0;

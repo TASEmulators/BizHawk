@@ -185,9 +185,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var fileSelectors = FileSelectors.ToList();
-
-				var names = fileSelectors.Select(f => f.GetName());
+				var names = FileSelectors.Select(f => f.GetName());
 
 				var name = NameBox.Text;
 

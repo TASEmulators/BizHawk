@@ -478,13 +478,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Insert(index - 1, cheat);
 			}
 
-			var newindices = indices.Select(t => t - 1).ToList();
-
 			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
-			{
-				CheatListView.SelectItem(newi, true);
-			}
+			foreach (var index in indices) CheatListView.SelectItem(index - 1, true);
 
 			UpdateMessageLabel();
 			UpdateDialog();
@@ -507,13 +502,8 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateMessageLabel();
 
-			var newindices = indices.Select(t => t + 1).ToList();
-
 			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
-			{
-				CheatListView.SelectItem(newi, true);
-			}
+			foreach (var index in indices) CheatListView.SelectItem(index + 1, true);
 
 			UpdateDialog();
 		}
@@ -525,7 +515,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedCheats.ToList().ForEach(x => x.Toggle());
+			foreach (var x in SelectedCheats) x.Toggle();
 			CheatListView.Refresh();
 		}
 

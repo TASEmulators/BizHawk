@@ -119,8 +119,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// Add missing displaynames
-			var missingDisplayPaths = Paths.Where(p => p.SystemDisplayName == null).ToList();
-			foreach (PathEntry path in missingDisplayPaths)
+			foreach (var path in Paths.Where(p => p.SystemDisplayName == null))
 			{
 				path.SystemDisplayName = DefaultValues.First(p => p.System == path.System).SystemDisplayName;
 			}

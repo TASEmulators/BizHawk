@@ -111,14 +111,11 @@ namespace BizHawk.Client.EmuHawk
 					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
 					AutoScroll = true
 				};
-				var paths = pathCollection
-					.Where(p => p.System == systemId)
-					.OrderBy(p => p.Ordinal)
-					.ThenBy(p => p.Type)
-					.ToList();
 
 				var y = UIHelper.ScaleY(14);
-				foreach (var path in paths)
+				foreach (var path in pathCollection.Where(p => p.System == systemId)
+					.OrderBy(p => p.Ordinal)
+					.ThenBy(p => p.Type))
 				{
 					var box = new TextBox
 					{
@@ -243,10 +240,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoRomToggle()
 		{
-			AllPathControls
-				.Where(c => c.Name == "ROM")
-				.ToList()
-				.ForEach(control => control.Enabled = !RecentForROMs.Checked);
+			foreach (var control in AllPathControls.Where(c => c.Name == "ROM"))
+				control.Enabled = !RecentForROMs.Checked;
 		}
 
 		private IEnumerable<TextBox> AllPathBoxes

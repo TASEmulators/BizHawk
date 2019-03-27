@@ -915,10 +915,8 @@ namespace BizHawk.Client.EmuHawk
 
 			Changes();
 
-			var indices = indexes.Select(t => t - 1).ToList();
-
 			WatchListView.SelectedIndices.Clear();
-			foreach (var t in indices)
+			foreach (var t in indexes.Select(t => t - 1))
 			{
 				WatchListView.SelectItem(t, true);
 			}
@@ -941,10 +939,8 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Insert(indices[i] + 1, watch);
 			}
 
-			var newindices = indices.Select(t => t + 1).ToList();
-
 			WatchListView.SelectedIndices.Clear();
-			foreach (var t in newindices)
+			foreach (var t in indices.Select(t => t + 1))
 			{
 				WatchListView.SelectItem(t, true);
 			}
@@ -1298,11 +1294,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
-			var items = _watches
-				.Where(watch => watch.Address >= watch.Domain.Size)
-				.ToList();
-
-			foreach (var item in items)
+			foreach (var item in _watches.Where(watch => watch.Address >= watch.Domain.Size))
 			{
 				_watches.Remove(item);
 			}

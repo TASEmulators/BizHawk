@@ -347,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 							type = " (on)";
 						}
 
-						Global.CheatList.ToList().ForEach(x => x.Toggle());
+						foreach (var x in Global.CheatList) x.Toggle();
 						GlobalWin.OSD.AddMessage("Cheats toggled" + type);
 					}
 

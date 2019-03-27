@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (XAudio2 device = new XAudio2())
 			{
-				return Enumerable.Range(0, device.DeviceCount).Select(n => device.GetDeviceDetails(n).DisplayName).ToList();
+				return Enumerable.Range(0, device.DeviceCount).Select(n => device.GetDeviceDetails(n).DisplayName);
 			}
 		}
 

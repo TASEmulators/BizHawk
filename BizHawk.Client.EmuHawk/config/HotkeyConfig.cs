@@ -101,21 +101,20 @@ namespace BizHawk.Client.EmuHawk
 			HotkeyTabControl.TabPages.Clear();
 
 			// Buckets
-			var tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct().ToList();
 
-			foreach (var tab in tabs)
+			foreach (var tab in Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct())
 			{
 				var _y = UIHelper.ScaleY(14);
 				var _x = UIHelper.ScaleX(6);
 
 				var tb = new TabPage {Name = tab, Text = tab};
 
-				var bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
-
 				int iwOffsetX = UIHelper.ScaleX(110);
 				int iwOffsetY = UIHelper.ScaleY(-4);
 				int iwWidth = UIHelper.ScaleX(120);
-				foreach (var b in bindings)
+				foreach (var b in Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab)
+					.OrderBy(x => x.Ordinal)
+					.ThenBy(x => x.DisplayName))
 				{
 					var l = new Label
 					{

@@ -58,19 +58,15 @@ namespace BizHawk.Common.BizInvoke
 
 			public DelegateStorage(Type type)
 			{
-				var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Select(m => new
-				{
-					Info = m,
-					Attr = m.GetCustomAttributes(true).OfType<BizExportAttribute>().FirstOrDefault()
-				})
-				.Where(a => a.Attr != null)
-				.ToList();
-
 				var typeBuilder = ImplModuleBuilder.DefineType(
 					"Bizhawk.BizExvokeHolder" + type.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
-
-				foreach (var a in methods)
+				foreach (var a in type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+					.Select(m => new
+						{
+							Info = m,
+							Attr = m.GetCustomAttributes(true).OfType<BizExportAttribute>().FirstOrDefault()
+						})
+					.Where(a => a.Attr != null))
 				{
 					MethodBuilder unused;
 					var delegateType = BizInvokeUtilities.CreateDelegateType(a.Info, a.Attr.CallingConvention, typeBuilder, out unused).CreateType();

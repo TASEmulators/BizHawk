@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 			if (!Frozen)
 			{
 				var removed = false;
-				foreach (var recent in recentlist.ToList())
+				foreach (var recent in recentlist)
 				{
 					if (string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0)
 					{

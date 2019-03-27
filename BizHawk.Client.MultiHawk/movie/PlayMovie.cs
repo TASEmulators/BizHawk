@@ -300,13 +300,9 @@ namespace BizHawk.Client.MultiHawk
 
 		private void MovieView_DragDrop(object sender, DragEventArgs e)
 		{
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-			filePaths
-				.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path).Replace(".", "")))
-				.ToList()
-				.ForEach(path => AddMovieToList(path, force: true));
-
+			foreach (var path in ((string[])e.Data.GetData(DataFormats.FileDrop))
+				.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path)?.Replace(".", ""))))
+					AddMovieToList(path, force: true);
 			RefreshMovieList();
 		}
 
@@ -459,11 +455,8 @@ namespace BizHawk.Client.MultiHawk
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
 		{
-			MovieView.SelectedIndices
-				.Cast<int>()
-				.SelectAsIndexOf(_movieList)
-				.ToList()
-				.ForEach(movie => System.Diagnostics.Process.Start(movie.Filename));
+			foreach (var movie in MovieView.SelectedIndices.Cast<int>().SelectAsIndexOf(_movieList))
+				System.Diagnostics.Process.Start(movie.Filename);
 		}
 
 		#endregion

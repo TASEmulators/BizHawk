@@ -41,17 +41,12 @@ namespace BizHawk.Client.EmuHawk
 			VersionLabel.Text = "Version " + mainversion;
 			DateLabel.Text = VersionInfo.RELEASEDATE;
 
-			var cores = Assembly
-				.Load("BizHawk.Emulation.Cores")
-				.GetTypes()
+			foreach (var core in Assembly.Load("BizHawk.Emulation.Cores").GetTypes()
 				.Where(t => typeof(IEmulator).IsAssignableFrom(t))
 				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
 				.Where(a => a != null)
 				.Where(a => a.Released)
-				.OrderByDescending(a => a.CoreName.ToLower())
-				.ToList();
-
-			foreach (var core in cores)
+				.OrderByDescending(a => a.CoreName.ToLower()))
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core)
 				{

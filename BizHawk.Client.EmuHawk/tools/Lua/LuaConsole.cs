@@ -701,7 +701,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void UpdateRegisteredFunctionsDialog()
 		{
-			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
+			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
 			{
 				form.UpdateValues();
 			}
@@ -919,7 +919,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(x => x.TogglePause());
+			foreach (var x in SelectedFiles) x.TogglePause();
 			UpdateDialog();
 		}
 
@@ -932,11 +932,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(file =>
+			foreach (var file in SelectedFiles)
 			{
 				string pathToLoad = ProcessPath(file.Path);
 				System.Diagnostics.Process.Start(pathToLoad);
-			});
+			}
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
