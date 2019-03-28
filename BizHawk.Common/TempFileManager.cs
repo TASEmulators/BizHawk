@@ -37,7 +37,7 @@ namespace BizHawk.Common
 				throw new InvalidOperationException();
 			}
 
-			filename = "bizdelete-" + filename.Remove(0, 4);
+			filename = $"bizdelete-{filename.Remove(0, 4)}";
 			return Path.Combine(dir, filename);
 		}
 

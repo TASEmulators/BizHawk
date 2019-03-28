@@ -740,7 +740,7 @@ namespace BizHawk.Common
 					}
 					else
 					{
-						throw new Exception(string.Format("Duplicate key \"{0}\" in serializer savestate!", name));
+						throw new Exception($"Duplicate key \"{name}\" in serializer savestate!");
 					}
 
 					curs = news;
@@ -763,7 +763,7 @@ namespace BizHawk.Common
 					}
 					else
 					{
-						throw new Exception(string.Format("Duplicate key \"{0}\" in serializer savestate!", key));
+						throw new Exception($"Duplicate key \"{key}\" in serializer savestate!");
 					}
 				}
 			}

@@ -27,7 +27,7 @@ namespace BizHawk.Common.BizInvoke
 
 			// create the delegate type
 			var delegateType = enclosingType.DefineNestedType(
-				"DelegateType" + method.Name,
+				$"DelegateType{method.Name}",
 				TypeAttributes.Class | TypeAttributes.NestedPrivate | TypeAttributes.Sealed,
 				typeof(MulticastDelegate));
 
@@ -85,7 +85,7 @@ namespace BizHawk.Common.BizInvoke
 				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes), new object[0]);
 			}
 
-			throw new InvalidOperationException("Unknown parameter attribute " + t.Name);
+			throw new InvalidOperationException($"Unknown parameter attribute {t.Name}");
 		}
 	}
 }
