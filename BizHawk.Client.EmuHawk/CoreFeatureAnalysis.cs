@@ -229,10 +229,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(t => t.CoreAttributes.CoreName)
 				.ToList();
 
-			toolStripStatusLabel1.Text = string.Format("Total: {0} Released: {1} Profiled: {2}",
-				possiblecoretypes.Count,
-				KnownCores.Values.Count(c => c.Released),
-				KnownCores.Count);
+			toolStripStatusLabel1.Text = $"Total: {possiblecoretypes.Count} Released: {KnownCores.Values.Count(c => c.Released)} Profiled: {KnownCores.Count}";
 
 			CoreTree.Nodes.Clear();
 			CoreTree.BeginUpdate();

@@ -91,8 +91,7 @@ namespace BizHawk.Client.EmuHawk
 				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
 #endif
 
-				string filename = _baseName + (_segment > 0 ? $"_{_segment}" : "") + _ext;
-				_ffmpeg.StartInfo.Arguments = string.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);
+				_ffmpeg.StartInfo.Arguments = $"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"";
 				_ffmpeg.StartInfo.CreateNoWindow = true;
 
 				// ffmpeg sends informative display to stderr, and nothing to stdout
@@ -100,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 				_ffmpeg.StartInfo.RedirectStandardInput = true;
 				_ffmpeg.StartInfo.UseShellExecute = false;
 
-				_commandline = "ffmpeg " + _ffmpeg.StartInfo.Arguments;
+				_commandline = $"ffmpeg {_ffmpeg.StartInfo.Arguments}";
 
 				_ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
 
@@ -132,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 					_stderr.Dequeue();
 				}
 
-				_stderr.Enqueue(line.Data + "\n");
+				_stderr.Enqueue($"{line.Data}\n");
 			}
 		}
 
@@ -193,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_ffmpeg.HasExited)
 			{
-				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+				throw new Exception($"unexpected ffmpeg death:\n{ffmpeg_geterror()}");
 			}
 
 			var video = source.GetVideoBuffer();
@@ -203,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				MessageBox.Show($"Exception! ffmpeg history:\n{ffmpeg_geterror()}");
 				throw;
 			}
 
@@ -274,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_ffmpeg.HasExited)
 			{
-				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+				throw new Exception($"unexpected ffmpeg death:\n{ffmpeg_geterror()}");
 			}
 
 			if (samples.Length == 0)
@@ -289,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch
 			{
-				MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				MessageBox.Show($"Exception! ffmpeg history:\n{ffmpeg_geterror()}");
 				throw;
 			}
 		}

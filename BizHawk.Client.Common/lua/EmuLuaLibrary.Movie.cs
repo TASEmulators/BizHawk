@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 
 			if (!string.IsNullOrEmpty(filename))
 			{
-				filename += "." + Global.MovieSession.Movie.PreferredExtension;
+				filename += $".{Global.MovieSession.Movie.PreferredExtension}";
 				var test = new FileInfo(filename);
 				if (test.Exists)
 				{

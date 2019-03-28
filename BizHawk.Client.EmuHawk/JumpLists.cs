@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				dynamic ji = Activator.CreateInstance(JumpTask);
 
 				ji.ApplicationPath = exepath;
-				ji.Arguments = '"' + fullpath + '"';
+				ji.Arguments = $"\"{fullpath}\"";
 				ji.Title = title;
 				// for some reason, this doesn't work
 				ji.WorkingDirectory = Path.GetDirectoryName(exepath);

@@ -25,9 +25,9 @@ namespace BizHawk.Client.Common
 				{
 					buttons[button] = adaptor.IsPressed(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.IsPressed("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.IsPressed($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -37,9 +37,9 @@ namespace BizHawk.Client.Common
 				{
 					buttons[button] = adaptor.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.GetFloat("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.GetFloat($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception)
 			{
-				Log("invalid mnemonic string: " + inputLogEntry);
+				Log($"invalid mnemonic string: {inputLogEntry}");
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 					var toPress = button.ToString();
 					if (controller.HasValue)
 					{
-						toPress = "P" + controller + " " + button;
+						toPress = $"P{controller} {button}";
 					}
 
 					if (!invert)
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+						Global.StickyXORAdapter.SetFloat($"P{controller} {name}", theValue);
 					}
 				}
 			}

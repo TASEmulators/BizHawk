@@ -102,7 +102,7 @@ namespace BizHawk.Client.DiscoHawk
 						return asm;
 
 				//load missing assemblies by trying to find them in the dll directory
-				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				string dllname = $"{new AssemblyName(args.Name).Name}.dll";
 				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
 				string fname = Path.Combine(directory, dllname);
 				if (!File.Exists(fname)) return null;
@@ -120,7 +120,7 @@ namespace BizHawk.Client.DiscoHawk
 		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
 		static void RemoveMOTW(string path)
 		{
-			DeleteFileW(path + ":Zone.Identifier");
+			DeleteFileW($"{path}:Zone.Identifier");
 		}
 
 		static void WhackAllMOTW(string dllDir)
@@ -416,8 +416,8 @@ namespace BizHawk.Client.DiscoHawk
 					sw.Write("                          ");
 					sw.Write(new string('-', count * 4));
 					sw.WriteLine();
-					sw_dump_chunk_one(string.Format("SRC #{0,6} ({1})", lba, new Timestamp(lba)), lba, src_databuf, addr, count);
-					sw_dump_chunk_one(string.Format("DST #{0,6} ({1})", lba, new Timestamp(lba)), lba, dst_databuf, addr, count);
+					sw_dump_chunk_one($"SRC #{lba,6} ({new Timestamp(lba)})", lba, src_databuf, addr, count);
+					sw_dump_chunk_one($"DST #{lba,6} ({new Timestamp(lba)})", lba, dst_databuf, addr, count);
 				};
 
 				//verify each sector contents

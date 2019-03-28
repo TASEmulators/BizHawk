@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				int ret;
 				if(!TryGetValue(key, out ret))
-					throw new CCDParseException("Malformed or unexpected CCD format: missing required [Entry] key: " + key);
+					throw new CCDParseException($"Malformed or unexpected CCD format: missing required [Entry] key: {key}");
 				return ret;
 			}
 		}

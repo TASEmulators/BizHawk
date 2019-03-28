@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			} 
 			catch (Exception ex) 
 			{
-				System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
+				System.Diagnostics.Trace.WriteLine($"VirtualListView.SetItemState error={ex.Message}");
 				
 				// TODO: should this eat any exceptions?
 				throw;
@@ -687,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
+					Trace.WriteLine($"Message {m} caused an exception: {ex.Message}");
 				}
 			}
 		}

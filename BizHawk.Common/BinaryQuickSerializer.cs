@@ -117,8 +117,8 @@ namespace BizHawk.Common
 				.OrderBy(fi => (int)Marshal.OffsetOf(t, fi.Name))
 				.ToList();
 
-			var rmeth = new DynamicMethod(t.Name + "_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
-			var wmeth = new DynamicMethod(t.Name + "_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
+			var rmeth = new DynamicMethod($"{t.Name}_r", null, new[] { typeof(object), typeof(BinaryReader) }, true);
+			var wmeth = new DynamicMethod($"{t.Name}_w", null, new[] { typeof(object), typeof(BinaryWriter) }, true);
 
 			{
 				var il = rmeth.GetILGenerator();
@@ -134,7 +134,7 @@ namespace BizHawk.Common
 					MethodInfo m;
 					if (!Readhandlers.TryGetValue(field.FieldType, out m))
 					{
-						throw new InvalidOperationException("(R) Can't handle nested type " + field.FieldType);
+						throw new InvalidOperationException($"(R) Can't handle nested type {field.FieldType}");
 					}
 
 					il.Emit(OpCodes.Callvirt, m);
@@ -159,7 +159,7 @@ namespace BizHawk.Common
 					MethodInfo m;
 					if (!Writehandlers.TryGetValue(field.FieldType, out m))
 					{
-						throw new InvalidOperationException("(W) Can't handle nested type " + field.FieldType);
+						throw new InvalidOperationException($"(W) Can't handle nested type {field.FieldType}");
 					}
 
 					il.Emit(OpCodes.Callvirt, m);

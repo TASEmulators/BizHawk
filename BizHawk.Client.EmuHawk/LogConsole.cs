@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			string remainder = cmdLine.Substring(childCmdLine);
 			string path = cmdLine.Substring(lastSlash, lastGood - lastSlash);
-			return path + " " + remainder;
+			return $"{path} {remainder}";
 		}
 
 		static IntPtr oldOut, conOut;
@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 					hasConsole = true;
 				}
 				else
-					System.Windows.Forms.MessageBox.Show(string.Format("Couldn't allocate win32 console: {0}", Marshal.GetLastWin32Error()));
+					System.Windows.Forms.MessageBox.Show($"Couldn't allocate win32 console: {Marshal.GetLastWin32Error()}");
 			}
 
 			if(hasConsole)

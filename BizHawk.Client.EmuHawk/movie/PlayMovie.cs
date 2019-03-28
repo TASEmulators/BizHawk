@@ -154,8 +154,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateList()
 		{
 			MovieView.Refresh();
-			MovieCount.Text = _movieList.Count + " movie"
-				+ (_movieList.Count != 1 ? "s" : "");
+			MovieCount.Text = $"{_movieList.Count} {(_movieList.Count == 1 ? "movie" : "movies")}";
 		}
 
 		private void PreHighlightMovie()
@@ -193,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var ext in MovieService.MovieExtensions)
 				{
-					if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == "." + ext)
+					if (Path.GetExtension(_movieList[indices[i]].Filename).ToUpper() == $".{ext}")
 					{
 						tas.Add(i);
 					}
@@ -266,8 +265,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// add movies
-				fpTodo.AddRange(Directory.GetFiles(dp, "*." + MovieService.DefaultExtension));
-				fpTodo.AddRange(Directory.GetFiles(dp, "*." + TasMovie.Extension));
+				fpTodo.AddRange(Directory.GetFiles(dp, $"*.{MovieService.DefaultExtension}"));
+				fpTodo.AddRange(Directory.GetFiles(dp, $"*.{TasMovie.Extension}"));
 			}
 
 			// in parallel, scan each movie
@@ -419,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 						if (kvp.Value != Global.Game.Hash)
 						{
 							item.BackColor = Color.Pink;
-							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
+							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {Global.Game.Hash}");
 						}
 						break;
 					case HeaderKeys.EMULATIONVERSION:
@@ -447,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var FpsItem = new ListViewItem("Fps");
-			FpsItem.SubItems.Add(string.Format("{0:0.#######}", Fps(_movieList[firstIndex])));
+			FpsItem.SubItems.Add($"{Fps(_movieList[firstIndex]):0.#######}");
 			DetailsView.Items.Add(FpsItem);
 
 			var FramesItem = new ListViewItem("Frames");
@@ -576,9 +575,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				Filter = "Movie Files (*." + MovieService.DefaultExtension + ")|*." + MovieService.DefaultExtension +
-					"|TAS project Files (*." + TasMovie.Extension + ")|*." + TasMovie.Extension +
-					"|All Files|*.*",
+				Filter = $"Movie Files (*.{MovieService.DefaultExtension})|*.{MovieService.DefaultExtension}|TAS project Files (*.{TasMovie.Extension})|*.{TasMovie.Extension}|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
 			};
 

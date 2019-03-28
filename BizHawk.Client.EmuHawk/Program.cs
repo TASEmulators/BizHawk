@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								var result = MessageBox.Show(
 									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-									"Fatal error: " + e.GetType().Name,
+									$"Fatal error: {e.GetType().Name}",
 									MessageBoxButtons.YesNo,
 									MessageBoxIcon.Exclamation
 									);
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var result = MessageBox.Show(
 								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-								"Fatal error: " + e.GetType().Name,
+								$"Fatal error: {e.GetType().Name}",
 								MessageBoxButtons.YesNo,
 								MessageBoxIcon.Exclamation
 								);
@@ -350,7 +350,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void RemoveMOTW(string path)
 		{
-			DeleteFileW(path + ":Zone.Identifier");
+			DeleteFileW($"{path}:Zone.Identifier");
 		}
 
 		static void WhackAllMOTW(string dllDir)
@@ -410,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 						return asm;
 
 				//load missing assemblies by trying to find them in the dll directory
-				string dllname = new AssemblyName(requested).Name + ".dll";
+				string dllname = $"{new AssemblyName(requested).Name}.dll";
 				string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 				string simpleName = new AssemblyName(requested).Name;
 				if (simpleName == "NLua" || simpleName == "KopiLua") directory = Path.Combine(directory, "nlua");

@@ -303,7 +303,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (!File.Exists(path))
 					{
-						AddMessage("File not found: " + path);
+						AddMessage($"File not found: {path}");
 						return;
 					}
 
@@ -331,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Console.WriteLine("File not found: " + path);
+				Console.WriteLine($"File not found: {path}");
 				return;
 			}
 
@@ -371,7 +371,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Console.WriteLine("File not found: " + path);
+				Console.WriteLine($"File not found: {path}");
 				return;
 			}
 

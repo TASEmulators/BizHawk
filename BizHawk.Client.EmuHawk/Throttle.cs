@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			//notably, if we're frame-advancing, we should be paused.
 			if (signal_paused && !signal_continuousFrameAdvancing)
 			{
-				//Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousFrameAdvancing);
+				//Console.WriteLine($"THE THING: {signal_paused} {signal_continuousFrameAdvancing}");
 				skipNextFrame = false;
 				framesSkipped = 0;
 				framesToSkip = 0;
@@ -198,12 +198,12 @@ namespace BizHawk.Client.EmuHawk
 		int pct = -1;
 		public void SetSpeedPercent(int percent)
 		{
-			//Console.WriteLine("throttle set percent " + percent);
+			//Console.WriteLine($"throttle set percent {percent}");
 			if (pct == percent) return;
 			pct = percent;
 			float fraction = percent / 100.0f;
 			desiredfps = (ulong)(core_desiredfps * fraction);
-			//Console.WriteLine("throttle set desiredfps " + desiredfps);
+			//Console.WriteLine($"throttle set desiredfps {desiredfps}");
 			desiredspf = 65536.0f / desiredfps;
 			AutoFrameSkip_IgnorePreviousDelay();
 		}

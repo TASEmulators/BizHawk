@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt,
+					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
 				InitialDirectory = path,
 				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
 				RestoreDirectory = true
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt,
+					: $"{PathManager.FilesystemSafeName(Global.Game)}.{fileExt}",
 				InitialDirectory = path,
 				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
 				RestoreDirectory = true,

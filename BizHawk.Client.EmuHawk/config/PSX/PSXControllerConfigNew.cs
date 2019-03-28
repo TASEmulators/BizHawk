@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					lbl.Text = "P" + lc.PlayerAssignments[i];
+					lbl.Text = $"P{lc.PlayerAssignments[i]}";
 					lbl.Visible = true;
 				}
 			}

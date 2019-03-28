@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		{
 			if (frame != 0)
 			{
-				ChangeLog.AddGeneralUndo(frame - 1, frame - 1, "Record Frame: " + frame);
+				ChangeLog.AddGeneralUndo(frame - 1, frame - 1, $"Record Frame: {frame}");
 			}
 
 			base.RecordFrame(frame, source);
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 
 		public override void Truncate(int frame)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Truncate Movie: " + frame, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Truncate Movie: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
 
 			if (frame < Log.Count - 1)
@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 
 		public override void PokeFrame(int frame, IController source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame, "Set Frame At: " + frame);
+			ChangeLog.AddGeneralUndo(frame, frame, $"Set Frame At: {frame}");
 
 			base.PokeFrame(frame, source);
 			InvalidateAfter(frame);
@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 
 		public void SetFrame(int frame, string source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame, "Set Frame At: " + frame);
+			ChangeLog.AddGeneralUndo(frame, frame, $"Set Frame At: {frame}");
 
 			SetFrameAt(frame, source);
 			InvalidateAfter(frame);
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 
 		public override void ClearFrame(int frame)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame, "Clear Frame: " + frame);
+			ChangeLog.AddGeneralUndo(frame, frame, $"Clear Frame: {frame}");
 
 			base.ClearFrame(frame);
 			InvalidateAfter(frame);
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrame(int frame)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Remove Frame: " + frame, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Remove Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
 
 			Log.RemoveAt(frame);
@@ -181,7 +181,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Remove Frames: " + removeStart + "-" + removeUpTo, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Remove Frames: {removeStart}-{removeUpTo}", true);
 			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
 
 			for (int i = removeUpTo - 1; i >= removeStart; i--)
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Insert Frame: " + frame, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength);
 
 			Log.Insert(frame, inputState);
@@ -258,7 +258,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Insert Frame: " + frame, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Insert Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
 
 			Log.InsertRange(frame, inputLog);
@@ -307,7 +307,7 @@ namespace BizHawk.Client.Common
 
 		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
-			ChangeLog.BeginNewBatch("Copy Over Input: " + frame);
+			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
 			var lg = LogGeneratorInstance();
 			var states = inputStates.ToList();
 
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, "Copy Over Input: " + frame);
+			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, $"Copy Over Input: {frame}");
 
 			for (int i = 0; i < states.Count; i++)
 			{
@@ -338,7 +338,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch("Insert Empty Frame: " + frame, true);
+			bool endBatch = ChangeLog.BeginNewBatch($"Insert Empty Frame: {frame}", true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
 			var lg = LogGeneratorInstance();
@@ -422,7 +422,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), "Toggle " + buttonName + ": " + frame);
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), $"Toggle {buttonName}: {frame}");
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
@@ -444,7 +444,7 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddBoolToggle(frame, buttonName, old, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame);
+				ChangeLog.AddBoolToggle(frame, buttonName, old, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}");
 			}
 		}
 
@@ -455,7 +455,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame + "-" + (frame + count - 1));
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({(val ? "On" : "Off")}): {frame}-{(frame + count - 1)}");
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
@@ -502,7 +502,7 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddFloatChange(frame, buttonName, old, val, "Set " + buttonName + "(" + val + "): " + frame);
+				ChangeLog.AddFloatChange(frame, buttonName, old, val, $"Set {buttonName}({val}): {frame}");
 			}
 		}
 
@@ -513,7 +513,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - Log.Count + 1);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1, "Set " + buttonName + "(" + val + "): " + frame + "-" + (frame + count - 1));
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, $"Set {buttonName}({val}): {frame}-{(frame + count - 1)}");
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)

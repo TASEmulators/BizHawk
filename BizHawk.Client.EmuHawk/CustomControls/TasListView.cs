@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 			// Convenience hack
 			public override string ToString()
 			{
-				return string.IsNullOrEmpty(Column) ? "?" : Column + " - " + (RowIndex.HasValue ? RowIndex.ToString() : "?");
+				return string.IsNullOrEmpty(Column) ? "?" : $"{Column} - {(RowIndex.HasValue ? RowIndex.ToString() : "?")}";
 			}
 		}
 

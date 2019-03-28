@@ -102,7 +102,7 @@ __Types and notation__
 			{
 				var completion = new SublimeCompletions.Completion
 				{
-					Trigger = f.Library + "." + f.Name
+					Trigger = $"{f.Library}.{f.Name}"
 				};
 
 				var sb = new StringBuilder();

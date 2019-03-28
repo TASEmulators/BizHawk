@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				text = "";
-				MessageBox.Show("oops\n" + ex);
+				MessageBox.Show($"oops\n{ex}");
 			}
 		}
 
@@ -643,7 +643,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Bool {buttonName} from frame {frame}");
 
 							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
@@ -683,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (e.Clicks != 2 && !Settings.SingleClickFloatEdit)
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float " + buttonName + " from frame " + frame);
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Float {buttonName} from frame {frame}");
 							_startFloatDrawColumn = buttonName;
 						}
 						else // Double-click enters float editing mode
@@ -694,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								CurrentTasMovie.ChangeLog.BeginNewBatch("Float Edit: " + frame);
+								CurrentTasMovie.ChangeLog.BeginNewBatch($"Float Edit: {frame}");
 								_floatEditColumn = buttonName;
 								floatEditRow = frame;
 								_floatTypedValue = "";
@@ -1350,7 +1350,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_floatTypedValue = "-" + _floatTypedValue;
+					_floatTypedValue = $"-{_floatTypedValue}";
 				}
 			}
 			else if (e.KeyCode == Keys.Back)

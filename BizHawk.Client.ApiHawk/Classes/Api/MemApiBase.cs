@@ -165,7 +165,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				if (addr < d.Size)
 					list.Add(d.PeekByte(addr));
-				else { 
+				else {
 					Console.WriteLine($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in {nameof(ReadByteRange)}()");
 					list.Add(0);
 				}

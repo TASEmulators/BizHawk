@@ -411,15 +411,15 @@ namespace BizHawk.Client.EmuHawk
 				_dispAutoholdy = _py;
 			}
 
-			FpsPosLabel.Text = _dispFpSx + ", " + _dispFpSy;
-			FCLabel.Text = _dispFrameCx + ", " + _dispFrameCy;
-			LagLabel.Text = _dispLagx + ", " + _dispLagy;
-			InpLabel.Text = _dispInpx + ", " + _dispInpy;
-			WatchesLabel.Text = _dispWatchesx + ", " + _dispWatchesy;
-			RerecLabel.Text = _dispRecx + ", " + _dispRecy;
-			MultitrackLabel.Text = _dispMultix + ", " + _dispMultiy;
-			MessLabel.Text = _dispMessagex + ", " + _dispMessagey;
-			AutoholdLabel.Text = _dispAutoholdx + ", " + _dispAutoholdy;
+			FpsPosLabel.Text = $"{_dispFpSx}, {_dispFpSy}";
+			FCLabel.Text = $"{_dispFrameCx}, {_dispFrameCy}";
+			LagLabel.Text = $"{_dispLagx}, {_dispLagy}";
+			InpLabel.Text = $"{_dispInpx}, {_dispInpy}";
+			WatchesLabel.Text = $"{_dispWatchesx}, {_dispWatchesy}";
+			RerecLabel.Text = $"{_dispRecx}, {_dispRecy}";
+			MultitrackLabel.Text = $"{_dispMultix}, {_dispMultiy}";
+			MessLabel.Text = $"{_dispMessagex}, {_dispMessagey}";
+			AutoholdLabel.Text = $"{_dispAutoholdx}, {_dispAutoholdy}";
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
