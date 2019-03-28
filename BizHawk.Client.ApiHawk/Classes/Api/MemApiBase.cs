@@ -64,7 +64,7 @@ namespace BizHawk.Client.ApiHawk
 				return d.PeekByte(addr);
 			}
 
-			Console.WriteLine("Warning: attempted read of " + addr + " outside the memory size of " + d.Size);
+			Console.WriteLine($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
 			return 0;
 		}
 
@@ -79,7 +79,7 @@ namespace BizHawk.Client.ApiHawk
 				}
 				else
 				{
-					Console.WriteLine("Warning: attempted write to " + addr + " outside the memory size of " + d.Size);
+					Console.WriteLine($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
 				}
 			}
 			else
@@ -166,7 +166,7 @@ namespace BizHawk.Client.ApiHawk
 				if (addr < d.Size)
 					list.Add(d.PeekByte(addr));
 				else { 
-					Console.WriteLine("Warning: Attempted read " + addr + " outside memory domain size of " + d.Size + " in readbyterange()");
+					Console.WriteLine($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in readbyterange()");
 					list.Add(0);
 				}
 			}
@@ -187,7 +187,7 @@ namespace BizHawk.Client.ApiHawk
 					}
 					else
 					{
-						Console.WriteLine("Warning: Attempted write " + addr + " outside memory domain size of " + d.Size + " in writebyterange()");
+						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in writebyterange()");
 					}
 				}
 			}
@@ -207,7 +207,7 @@ namespace BizHawk.Client.ApiHawk
 				return BitConverter.ToSingle(bytes, 0);
 			}
 
-			Console.WriteLine("Warning: Attempted read " + addr + " outside memory size of " + d.Size);
+			Console.WriteLine($"Warning: Attempted read {addr} outside memory size of {d.Size}");
 
 			return 0;
 		}
@@ -226,7 +226,7 @@ namespace BizHawk.Client.ApiHawk
 				}
 				else
 				{
-					Console.WriteLine("Warning: Attempted write " + addr + " outside memory size of " + d.Size);
+					Console.WriteLine($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				}
 			}
 			else
