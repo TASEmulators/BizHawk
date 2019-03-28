@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.DiscSystem
 
             if (aFile.Header.Version[0] > 1)
             {
-                throw new MDSParseException("MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: " + aFile.Header.Version[0] + "." + aFile.Header.Version[1]);
+                throw new MDSParseException($"MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: {aFile.Header.Version[0]}.{aFile.Header.Version[1]}");
             }
 
             // parse sessions
@@ -477,11 +477,11 @@ namespace BizHawk.Emulation.DiscSystem
                         if (f.FilenameOffset == 0 ||
                             string.Compare(fileName, "*.mdf", StringComparison.InvariantCultureIgnoreCase) == 0)
                         {
-                            fileName = dir + @"\" + Path.GetFileNameWithoutExtension(aFile.MDSPath) + ".mdf";
+                            fileName = $@"{dir}\{Path.GetFileNameWithoutExtension(aFile.MDSPath)}.mdf";
                         }
                         else
                         {
-                            fileName = dir + @"\" + fileName;
+                            fileName = $@"{dir}\{fileName}";
                         }
 
                         track.ImageFileNamePaths.Add(fileName);
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.DiscSystem
                 foreach (var file in track.ImageFileNamePaths.Distinct())
                 {
                     if (!File.Exists(file))
-                        throw new MDSParseException("Malformed MDS format: nonexistent image file: " + file);
+                        throw new MDSParseException($"Malformed MDS format: nonexistent image file: {file}");
 
                     IBlob mdfBlob = null;
                     long mdfLen = -1;
@@ -848,7 +848,7 @@ namespace BizHawk.Emulation.DiscSystem
                                 //userSector = 2048;
                                 break;
                             
-                                //throw new Exception("Not supported: Sector Size " + track.SectorSize);
+                                //throw new Exception($"Not supported: Sector Size {track.SectorSize}");
                         }
 
                         // configure blob
