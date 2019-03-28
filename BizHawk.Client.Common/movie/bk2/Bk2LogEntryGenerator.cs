@@ -73,26 +73,33 @@ namespace BizHawk.Client.Common
 			return dict;
 		}
 
+		private string CreateLogEntryHelper(string button, bool createEmpty, bool forInputDisplay)
+		{
+			if (_source.Definition.FloatControls.Contains(button))
+			{
+				var mid = (int)_source.Definition.FloatRanges[_source.Definition.FloatControls.IndexOf(button)].Mid;
+				var val = createEmpty ? mid : (int)_source.GetFloat(button);
+				return forInputDisplay && val == mid ? "      " : $"{val,5},";
+			}
+
+			if (_source.Definition.BoolButtons.Contains(button))
+			{
+				return (createEmpty
+					? '.'
+					: _source.IsPressed(button)
+						? _mnemonics[button]
+						: forInputDisplay
+							? ' '
+							: '.').ToString();
+			}
+
+			return string.Empty;
+		}
+
 		private string CreateLogEntry(bool createEmpty = false, bool forInputDisplay = false)
 		{
-			var list = _source.Definition.ControlsOrdered.Select(group => string.Concat(group.Select(
-				button => {
-					if (_source.Definition.FloatControls.Contains(button))
-					{
-						var mid = (int)_source.Definition.FloatRanges[_source.Definition.FloatControls.IndexOf(button)].Mid;
-						var val = createEmpty ? mid : (int)_source.GetFloat(button);
-						return forInputDisplay && val == mid ? "      " : $"{val,5},";
-					}
-					else if (_source.Definition.BoolButtons.Contains(button))
-						return (createEmpty
-							? '.'
-							: _source.IsPressed(button)
-								? _mnemonics[button]
-								: forInputDisplay
-									? ' '
-									: '.').ToString();
-					else return string.Empty;
-				})));
+			var list = _source.Definition.ControlsOrdered.Select(group =>
+				string.Concat(group.Select(button => CreateLogEntryHelper(button, createEmpty, forInputDisplay))));
 			return forInputDisplay ? string.Concat(list) : $"|{string.Join("|", list)}|";
 		}
 	}
