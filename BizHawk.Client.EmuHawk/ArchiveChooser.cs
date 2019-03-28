@@ -145,8 +145,8 @@ namespace BizHawk.Client.EmuHawk
 				errMsg = errMsg.Substring(errMsg.IndexOf('-') + 2);
 
 				// Balloon is bugged on first invocation
-				errorBalloon.Show("Error parsing RegEx: " + errMsg, tb);
-				errorBalloon.Show("Error parsing RegEx: " + errMsg, tb);
+				errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
+				errorBalloon.Show($"Error parsing RegEx: {errMsg}", tb);
 			}
 		}
 

@@ -318,8 +318,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int val = 0, add = 0;
 					SnesGGDecode(GGCodeMaskBox.Text, ref val, ref add);
-					AddressBox.Text = string.Format("{0:X6}", add);
-					ValueBox.Text = string.Format("{0:X2}", val);
+					AddressBox.Text = $"{add:X6}";
+					ValueBox.Text = $"{val:X2}";
 					addcheatbt.Enabled = true;
 				}
 				else

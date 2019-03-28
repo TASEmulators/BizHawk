@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			int counter = 1;
 			while (true)
 			{
-				yield return new FileStream(Path.Combine(dir, baseName) + "_" + counter + ext, FileMode.Create);
+				yield return new FileStream($"{Path.Combine(dir, baseName)}_{counter}{ext}", FileMode.Create);
 				counter++;
 			}
 		}

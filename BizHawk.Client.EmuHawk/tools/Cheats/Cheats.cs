@@ -81,9 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateDialog()
 		{
 			CheatListView.ItemCount = Global.CheatList.Count;
-			TotalLabel.Text = Global.CheatList.CheatCount
-				+ (Global.CheatList.CheatCount == 1 ? " cheat " : " cheats ")
-				+ Global.CheatList.ActiveCount + " active";
+			TotalLabel.Text = $"{Global.CheatList.CheatCount} {(Global.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {Global.CheatList.ActiveCount} active";
 		}
 
 		private void LoadFileFromRecent(string path)
@@ -107,9 +105,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateMessageLabel(bool saved = false)
 		{
-			MessageLabel.Text = saved 
-				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
-				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : "");
+			MessageLabel.Text = saved
+				? $"{Path.GetFileName(Global.CheatList.CurrentFileName)} saved."
+				: Global.CheatList.Changes
+					? $"{Path.GetFileName(Global.CheatList.CurrentFileName)} *"
+					: Path.GetFileName(Global.CheatList.CurrentFileName);
 		}
 
 		public bool AskSaveChanges()
@@ -331,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var cheat = SelectedCheats.First();
 					CheatEditor.SetCheat(cheat);
-					CheatGroupBox.Text = "Editing Cheat " + cheat.Name + " - " + cheat.AddressStr;
+					CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
 				}
 				else
 				{

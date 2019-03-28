@@ -312,11 +312,11 @@ namespace BizHawk.Client.EmuHawk
 				TileY = e.Y / 16;
 			}
 
-			XYLabel.Text = TileX + " : " + TileY;
+			XYLabel.Text = $"{TileX} : {TileY}";
 			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
-			PPUAddressLabel.Text = string.Format("{0:X4}", PPUAddress);
+			PPUAddressLabel.Text = $"{PPUAddress:X4}";
 			int TileID = _ppu.PeekPPU(PPUAddress);
-			TileIDLabel.Text = string.Format("{0:X2}", TileID);
+			TileIDLabel.Text = $"{TileID:X2}";
 			TableLabel.Text = NameTable.ToString();
 
 			int ytable = 0, yline = 0;

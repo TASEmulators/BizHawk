@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
-			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " MB";
+			SavestateSizeLabel.Text = $"{Math.Round(_stateSizeMb, 2)} MB";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
 		}

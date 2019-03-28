@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!bootstrap)
 				{
-					MessageBox.Show("Couldn't load the selected Libretro core for analysis. It won't be available.\n\nError:\n\n" + ex.ToString());
+					MessageBox.Show($"Couldn't load the selected Libretro core for analysis. It won't be available.\n\nError:\n\n{ex}");
 				}
 			}
 		}

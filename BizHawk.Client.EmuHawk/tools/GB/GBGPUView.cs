@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_spriteback = Color.FromArgb(255, value); // force fully opaque
 				panelSpriteBackColor.BackColor = _spriteback;
-				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
+				labelSpriteBackColor.Text = $"({_spriteback.R},{_spriteback.G},{_spriteback.B})";
 			}
 		}
 
@@ -634,9 +634,9 @@ namespace BizHawk.Client.EmuHawk
 				int* pal = (int*)(sprite ? _sppal : _bgpal) + x * 4;
 				int color = pal[y];
 
-				sb.AppendLine(string.Format("Palette {0}", x));
-				sb.AppendLine(string.Format("Color {0}", y));
-				sb.AppendLine(string.Format("(R,G,B) = ({0},{1},{2})", color >> 16 & 255, color >> 8 & 255, color & 255));
+				sb.AppendLine($"Palette {x}");
+				sb.AppendLine($"Color {y}");
+				sb.AppendLine($"(R,G,B) = ({color >> 16 & 255},{color >> 8 & 255},{color & 255})");
 
 				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				int* dest = (int*)lockdata.Scan0;
@@ -679,9 +679,9 @@ namespace BizHawk.Client.EmuHawk
 				int tileindex = y * 16 + x;
 				int tileoffs = tileindex * 16;
 				if (_cgb)
-					sb.AppendLine(string.Format("Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, secondbank ? 1 : 0));
+					sb.AppendLine($"Tile #{tileindex} @{(secondbank ? 1 : 0)}:{tileoffs + 0x8000:x4}");
 				else
-					sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+					sb.AppendLine($"Tile #{tileindex} @{tileoffs + 0x8000:x4}");
 
 				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				DrawTile((byte*)_vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)tilespal);
@@ -718,18 +718,18 @@ namespace BizHawk.Client.EmuHawk
 				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				if (!_cgb)
 				{
-					sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
-					sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+					sb.AppendLine($"{(win ? "Win" : "BG")} Map ({x},{y}) @{mapoffs + 0x8000:x4}");
+					sb.AppendLine($"  Tile #{tileindex} @{tileoffs + 0x8000:x4}");
 					DrawTile((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal);
 				}
 				else
 				{
 					int tileext = mapbase[8192];
 
-					sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
-					sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, tileext.Bit(3) ? 1 : 0));
-					sb.AppendLine(string.Format("  Palette {0}", tileext & 7));
-					sb.AppendLine(string.Format("  Flags {0}{1}{2}", tileext.Bit(5) ? 'H' : ' ', tileext.Bit(6) ? 'V' : ' ', tileext.Bit(7) ? 'P' : ' '));
+					sb.AppendLine($"{(win ? "Win" : "BG")} Map ({x},{y}) @{mapoffs + 0x8000:x4}");
+					sb.AppendLine($"  Tile #{tileindex} @{(tileext.Bit(3) ? 1 : 0)}:{tileoffs + 0x8000:x4}");
+					sb.AppendLine($"  Palette {tileext & 7}");
+					sb.AppendLine($"  Flags {(tileext.Bit(5) ? 'H' : ' ')}{(tileext.Bit(6) ? 'V' : ' ')}{(tileext.Bit(7) ? 'P' : ' ')}");
 					DrawTileHv((byte*)_vram + tileoffs + (tileext.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal + 4 * (tileext & 7), tileext.Bit(5), tileext.Bit(6));
 				}
 				bmpViewDetails.BMP.UnlockBits(lockdata);
@@ -765,26 +765,26 @@ namespace BizHawk.Client.EmuHawk
 				if (tall)
 					tilenum = vflip ? tilenum | 1 : tilenum & ~1;
 				int tileoffs = tilenum * 16;
-				sb.AppendLine(string.Format("Sprite #{0} @{1:x4}", x, 4 * x + 0xfe00));
-				sb.AppendLine(string.Format("  (x,y) = ({0},{1})", sx, sy));
+				sb.AppendLine($"Sprite #{x} @{4 * x + 0xfe00:x4}");
+				sb.AppendLine($"  (x,y) = ({sx},{sy})");
 				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, tall ? 16 : 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				if (_cgb)
 				{
-					sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000, flags.Bit(3) ? 1 : 0));
-					sb.AppendLine(string.Format("  Palette {0}", flags & 7));
+					sb.AppendLine($"  Tile #{(y == 1 ? tilenum ^ 1 : tilenum)} @{(flags.Bit(3) ? 1 : 0)}:{tileoffs + 0x8000:x4}");
+					sb.AppendLine($"  Palette {flags & 7}");
 					DrawTileHv((byte*)_vram + tileoffs + (flags.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
 					if (tall)
 						DrawTileHv((byte*)_vram + (tileoffs ^ 16) + (flags.Bit(3) ? 8192 : 0), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
 				}
 				else
 				{
-					sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000));
-					sb.AppendLine(string.Format("  Palette {0}", flags.Bit(4) ? 1 : 0));
+					sb.AppendLine($"  Tile #{(y == 1 ? tilenum ^ 1 : tilenum)} @{tileoffs + 0x8000:x4}");
+					sb.AppendLine($"  Palette {(flags.Bit(4) ? 1 : 0)}");
 					DrawTileHv((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + (flags.Bit(4) ? 4 : 0), hflip, vflip);
 					if (tall)
 						DrawTileHv((byte*)_vram + (tileoffs ^ 16), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags.Bit(4) ? 4 : 0), hflip, vflip);
 				}
-				sb.AppendLine(string.Format("  Flags {0}{1}{2}", hflip ? 'H' : ' ', vflip ? 'V' : ' ', flags.Bit(7) ? 'P' : ' '));
+				sb.AppendLine($"  Flags {(hflip ? 'H' : ' ')}{(vflip ? 'V' : ' ')}{(flags.Bit(7) ? 'P' : ' ')}");
 				bmpViewDetails.BMP.UnlockBits(lockdata);
 				labelDetails.Text = sb.ToString();
 				bmpViewDetails.Refresh();
@@ -946,7 +946,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var bv = found as BmpView;
 					Clipboard.SetImage(bv.BMP);
-					labelClipboard.Text = found.Text + " copied to clipboard.";
+					labelClipboard.Text = $"{found.Text} copied to clipboard.";
 					_messagetimer.Stop();
 					_messagetimer.Start();
 				}

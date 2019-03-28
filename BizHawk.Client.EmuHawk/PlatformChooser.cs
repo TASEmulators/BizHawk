@@ -37,11 +37,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (RomGame.RomData.Length > 10 * 1024 * 1024) // If 10mb, show in megabytes
 			{
-				RomSizeLabel.Text = string.Format("{0:n0}", (RomGame.RomData.Length / 1024 / 1024)) + "mb";
+				RomSizeLabel.Text = $"{RomGame.RomData.Length / 1024 / 1024:n0}mb";
 			}
 			else
 			{
-				RomSizeLabel.Text = string.Format("{0:n0}", (RomGame.RomData.Length / 1024)) + "kb";
+				RomSizeLabel.Text = $"{RomGame.RomData.Length / 1024:n0}kb";
 			}
 
 			ExtensionLabel.Text = RomGame.Extension.ToLower();

@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				int i;
 				for (i = MaxPlayers; i > 0; i--)
 				{
-					if (button.StartsWith("P" + i))
+					if (button.StartsWith($"P{i}"))
 					{
 						break;
 					}
@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (buckets[i].Count > 0)
 					{
-						string tabname = Global.Emulator.SystemId == "WSWAN" ? i == 1 ? "Normal" : "Rotated" : "Player " + i; // hack
+						string tabname = Global.Emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
 						tt.TabPages.Add(tabname);
 						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
 						pageidx++;
@@ -362,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewControllerConfig_Load(object sender, EventArgs e)
 		{
-			Text = _theDefinition.Name + " Configuration";
+			Text = $"{_theDefinition.Name} Configuration";
 		}
 
 		private static TabControl GetTabControl(IEnumerable controls)

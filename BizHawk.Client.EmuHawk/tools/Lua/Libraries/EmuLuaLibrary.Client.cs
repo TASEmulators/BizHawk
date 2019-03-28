@@ -320,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
-				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
+				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
 			{

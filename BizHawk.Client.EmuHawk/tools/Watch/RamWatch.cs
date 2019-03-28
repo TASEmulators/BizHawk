@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (saved)
 				{
-					message = Path.GetFileName(_watches.CurrentFileName) + " saved.";
+					message = $"{Path.GetFileName(_watches.CurrentFileName)} saved.";
 				}
 				else
 				{

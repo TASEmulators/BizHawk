@@ -708,18 +708,18 @@ namespace BizHawk.Client.EmuHawk
 						Text = val.Value.ToHexString(MaxLength);
 						break;
 					case DisplayType.FixedPoint_12_4:
-						Text = string.Format("{0:F5}", val.Value / 16.0);
+						Text = $"{val.Value / 16.0:F5}";
 						break;
 					case DisplayType.FixedPoint_20_12:
-						Text = string.Format("{0:F5}", val.Value / 4096.0);
+						Text = $"{val.Value / 4096.0:F5}";
 						break;
 					case DisplayType.FixedPoint_16_16:
-						Text = string.Format("{0:F5}", val.Value / 65536.0);
+						Text = $"{val.Value / 65536.0:F5}";
 						break;
 					case DisplayType.Float:
 						var bytes = BitConverter.GetBytes(val.Value);
 						float _float = BitConverter.ToSingle(bytes, 0);
-						Text = string.Format("{0:F6}", _float);
+						Text = $"{_float:F6}";
 						break;
 				}
 			}

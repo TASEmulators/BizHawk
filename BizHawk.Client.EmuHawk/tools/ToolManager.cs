@@ -1023,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+			return Path.Combine(path, $"{PathManager.FilesystemSafeName(Global.Game)}.cht");
 		}
 	}
 }

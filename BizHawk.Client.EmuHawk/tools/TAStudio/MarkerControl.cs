@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var i = new InputPrompt
 				{
-					Text = "Marker for frame " + markerFrame,
+					Text = $"Marker for frame {markerFrame}",
 					TextInputType = InputPrompt.InputType.Text,
 					Message = "Enter a message",
 					InitialValue =
@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			var point = default(Point);
 			var i = new InputPrompt
 			{
-				Text = "Marker for frame " + markerFrame,
+				Text = $"Marker for frame {markerFrame}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
 				InitialValue =
