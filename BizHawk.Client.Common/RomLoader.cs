@@ -219,7 +219,7 @@ namespace BizHawk.Client.Common
 
 				else if (discMountJob.OUT_ErrorLevel)
 				{
-					throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 				}
 
 				else if (disc == null)
@@ -428,7 +428,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_ErrorLevel)
 							{
-								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+								throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 							}
 
 							if (disc == null)
@@ -496,7 +496,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_ErrorLevel)
 						{
-							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 						}
 
 						var disc = discMountJob.OUT_Disc;                        
@@ -729,7 +729,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_ErrorLevel)
 										{
-											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+											throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 										}
 
 										if (disc == null)
@@ -1171,12 +1171,12 @@ namespace BizHawk.Client.Common
                     // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
                     else if (ex is NoAvailableCoreException)
                     {
-                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                        DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
                     }
 
                     else
 					{
-						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
+						DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
 					}
 
 					return false;

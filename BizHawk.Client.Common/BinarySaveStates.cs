@@ -260,7 +260,7 @@ namespace BizHawk.Client.Common
 			
 			if (abort)
 			{
-				throw new Exception("Essential zip section not found: " + lump.ReadName);
+				throw new Exception($"Essential zip section not found: {lump.ReadName}");
 			}
 			
 			return false;

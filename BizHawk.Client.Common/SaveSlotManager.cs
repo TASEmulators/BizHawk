@@ -29,8 +29,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < 10; i++)
 			{
-				var file = new FileInfo(
-					PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + i + ".State");
+				var file = new FileInfo($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{i}.State");
 				if (file.Directory != null && file.Directory.Exists == false)
 				{
 					file.Directory.Create();
@@ -108,8 +107,8 @@ namespace BizHawk.Client.Common
 		{
 			// Takes the .state and .bak files and swaps them
 			var state = new FileInfo(path);
-			var backup = new FileInfo(path + ".bak");
-			var temp = new FileInfo(path + ".bak.tmp");
+			var backup = new FileInfo($"{path}.bak");
+			var temp = new FileInfo($"{path}.bak.tmp");
 
 			if (!state.Exists || !backup.Exists)
 			{
@@ -121,9 +120,9 @@ namespace BizHawk.Client.Common
 				temp.Delete();
 			}
 
-			backup.CopyTo(path + ".bak.tmp");
+			backup.CopyTo($"{path}.bak.tmp");
 			backup.Delete();
-			state.CopyTo(path + ".bak");
+			state.CopyTo($"{path}.bak");
 			state.Delete();
 			temp.CopyTo(path);
 			temp.Delete();

@@ -273,7 +273,7 @@ namespace BizHawk.Client.Common
 
 			if (name == "")
 			{
-				name = "Undo step " + _totalSteps;
+				name = $"Undo step {_totalSteps}";
 			}
 
 			bool ret = false;
@@ -349,11 +349,11 @@ namespace BizHawk.Client.Common
 			{
 				if (oldPosition == -1)
 				{
-					name = "Set Marker at frame " + newMarker.Frame;
+					name = $"Set Marker at frame {newMarker.Frame}";
 				}
 				else
 				{
-					name = "Remove Marker at frame " + oldPosition;
+					name = $"Remove Marker at frame {oldPosition}";
 				}
 
 				AddMovieAction(name);
