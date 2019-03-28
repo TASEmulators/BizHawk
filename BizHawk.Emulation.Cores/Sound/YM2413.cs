@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Common.Components
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("YM2413");
-			ser.Sync("RegisterLatch", ref RegisterLatch);
+			ser.BeginSection(nameof(YM2413));
+			ser.Sync(nameof(RegisterLatch), ref RegisterLatch);
 			ser.Sync("Registers", ref opll.reg, false);
 			ser.EndSection();
 

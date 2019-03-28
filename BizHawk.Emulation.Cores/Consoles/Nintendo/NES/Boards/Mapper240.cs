@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_bank_32k", ref prg_bank_32k);
-			ser.Sync("chr_bank_8k", ref chr_bank_8k);
+			ser.Sync(nameof(prg_bank_32k), ref prg_bank_32k);
+			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
 		}
 
 		public override byte ReadPPU(int addr)

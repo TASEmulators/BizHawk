@@ -172,11 +172,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             ser.BeginSection("DataBlock" + blockPosition);
 
-            ser.Sync("_blockID", ref _blockID);
-            //ser.SyncFixedString("_blockDescription", ref _blockDescription, 200);
-            ser.SyncEnum("_blockType", ref _blockType);
-            ser.Sync("_blockData", ref _blockData, true);
-            ser.SyncEnum("_command", ref _command);
+            ser.Sync(nameof(_blockID), ref _blockID);
+            //ser.SyncFixedString(nameof(_blockDescription), ref _blockDescription, 200);
+            ser.SyncEnum(nameof(_blockType), ref _blockType);
+            ser.Sync(nameof(_blockData), ref _blockData, true);
+            ser.SyncEnum(nameof(_command), ref _command);
 
             int[] tempArray = null;
 

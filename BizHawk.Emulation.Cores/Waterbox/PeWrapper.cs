@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public void SealImportsAndTakeXorSnapshot()
 		{
 			if (_everythingSealed)
-				throw new InvalidOperationException("PeWrapper already sealed!");
+				throw new InvalidOperationException($"{nameof(PeWrapper)} already sealed!");
 
 			// save import values, then zero them all (for hash purposes), then take our snapshot, then load them again,
 			// then set the .idata area to read only

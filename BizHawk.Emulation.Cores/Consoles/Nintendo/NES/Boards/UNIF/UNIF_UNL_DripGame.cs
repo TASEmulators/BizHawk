@@ -56,25 +56,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 
-			ser.Sync("DripGameDipSwitch", ref DripGameDipSwitch);
+			ser.Sync(nameof(DripGameDipSwitch), ref DripGameDipSwitch);
 
-			ser.Sync("warmupclock", ref warmupclock);
-			ser.Sync("prg", ref prg, false);
-			ser.Sync("chr", ref chr, false);
+			ser.Sync(nameof(warmupclock), ref warmupclock);
+			ser.Sync(nameof(prg), ref prg, false);
+			ser.Sync(nameof(chr), ref chr, false);
 
-			ser.Sync("exram", ref exram, false);
-			ser.Sync("nt", ref nt, false);
-			ser.Sync("exattr", ref exattr);
-			ser.Sync("sramwrite", ref sramwrite);
-			ser.Sync("irqbuffer", ref irqbuffer);
-			ser.Sync("irqvalue", ref irqvalue);
+			ser.Sync(nameof(exram), ref exram, false);
+			ser.Sync(nameof(nt), ref nt, false);
+			ser.Sync(nameof(exattr), ref exattr);
+			ser.Sync(nameof(sramwrite), ref sramwrite);
+			ser.Sync(nameof(irqbuffer), ref irqbuffer);
+			ser.Sync(nameof(irqvalue), ref irqvalue);
 
-			ser.Sync("lastntread", ref lastntread); // technically not needed if states are always at frame boundary
+			ser.Sync(nameof(lastntread), ref lastntread); // technically not needed if states are always at frame boundary
 
-			ser.BeginSection("sound0");
+			ser.BeginSection(nameof(sound0));
 			sound0.SyncState(ser);
 			ser.EndSection();
-			ser.BeginSection("sound1");
+			ser.BeginSection(nameof(sound1));
 			sound1.SyncState(ser);
 			ser.EndSection();
 		}
@@ -270,18 +270,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("fifo", ref fifo, false);
-				ser.Sync("active", ref active);
-				ser.Sync("writecursor", ref writecursor);
-				ser.Sync("readcursor", ref readcursor);
+				ser.Sync(nameof(fifo), ref fifo, false);
+				ser.Sync(nameof(active), ref active);
+				ser.Sync(nameof(writecursor), ref writecursor);
+				ser.Sync(nameof(readcursor), ref readcursor);
 
-				ser.Sync("timer", ref timer);
-				ser.Sync("period", ref period);
-				ser.Sync("volume", ref volume);
-				ser.Sync("sample", ref sample);
-				ser.Sync("latched", ref latched); // not needed
+				ser.Sync(nameof(timer), ref timer);
+				ser.Sync(nameof(period), ref period);
+				ser.Sync(nameof(volume), ref volume);
+				ser.Sync(nameof(sample), ref sample);
+				ser.Sync(nameof(latched), ref latched); // not needed
 
-				ser.Sync("volumeChangePending", ref volumeChangePending); // very not needed
+				ser.Sync(nameof(volumeChangePending), ref volumeChangePending); // very not needed
 			}
 
 			// sound data fifo

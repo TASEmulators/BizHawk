@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (GambatteState == IntPtr.Zero)
 			{
-				throw new InvalidOperationException("gambatte_create() returned null???");
+				throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_create)}() returned null???");
 			}
 
 			Console.WriteLine(game.System);
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags, DivInternal) != 0)
 				{
-					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
+					throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_load)}() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
 				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 					if (LibGambatte.gambatte_loaddmgbios(GambatteState, Bios) != 0)
 					{
-						throw new InvalidOperationException("gambatte_loaddmgbios() returned non-zero (bios error)");
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loaddmgbios)}() returned non-zero (bios error)");
 					}
 				}
 				else
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 					if (LibGambatte.gambatte_loadgbcbios(GambatteState, Bios) != 0)
 					{
-						throw new InvalidOperationException("gambatte_loadgbcbios() returned non-zero (bios error)");
+						throw new InvalidOperationException($"{nameof(LibGambatte.gambatte_loadgbcbios)}() returned non-zero (bios error)");
 					}
 				}				
 

@@ -455,7 +455,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PPI");
-            ser.Sync("Regs", ref Regs, false);
+            ser.Sync(nameof(Regs), ref Regs, false);
             ser.EndSection();
         }
 

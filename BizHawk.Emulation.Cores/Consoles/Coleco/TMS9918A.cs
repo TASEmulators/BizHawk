@@ -511,13 +511,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("VDP");
-			ser.Sync("StatusByte", ref StatusByte);
+			ser.Sync(nameof(StatusByte), ref StatusByte);
 			ser.Sync("WaitingForLatchByte", ref VdpWaitingForLatchByte);
 			ser.Sync("Latch", ref VdpLatch);
 			ser.Sync("ReadBuffer", ref VdpBuffer);
-			ser.Sync("VdpAddress", ref VdpAddress);
-			ser.Sync("Registers", ref Registers, false);
-			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync(nameof(VdpAddress), ref VdpAddress);
+			ser.Sync(nameof(Registers), ref Registers, false);
+			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.EndSection();
 
 			if (ser.IsReader)

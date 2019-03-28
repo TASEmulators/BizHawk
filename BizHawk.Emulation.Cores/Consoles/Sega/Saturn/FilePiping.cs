@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			if (e != null)
 				throw new InvalidOperationException("Previous attempt failed!", e);
 			if (!s.CanWrite)
-				throw new ArgumentException("Stream must be readable!");
+				throw new ArgumentException($"{nameof(Stream)} must be readable!");
 
 			using (var evt = new ManualResetEventSlim())
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			if (e != null)
 				throw new InvalidOperationException("Previous attempt failed!", e);
 			if (!s.CanRead)
-				throw new ArgumentException("Stream must be readable!");
+				throw new ArgumentException($"{nameof(Stream)} must be readable!");
 
 			using (var evt = new ManualResetEventSlim())
 			{

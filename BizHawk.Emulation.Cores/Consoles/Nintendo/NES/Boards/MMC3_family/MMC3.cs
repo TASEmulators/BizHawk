@@ -147,21 +147,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual void SyncState(Serializer ser)
 		{
-			ser.Sync("reg_addr", ref reg_addr);
-			ser.Sync("chr_mode", ref chr_mode);
-			ser.Sync("prg_mode", ref prg_mode);
-			ser.Sync("regs", ref regs);
-			ser.Sync("mirror", ref mirror);
-			ser.Sync("a12_old", ref a12_old);
-			ser.Sync("irq_reload", ref irq_reload);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_enable", ref irq_enable);
-			ser.Sync("separator_counter", ref separator_counter);
-			ser.Sync("irq_countdown", ref irq_countdown);
-			ser.Sync("irq_reload_flag", ref irq_reload_flag);
-			ser.Sync("wram_enable", ref wram_enable);
-			ser.Sync("wram_write_protect", ref wram_write_protect);
+			ser.Sync(nameof(reg_addr), ref reg_addr);
+			ser.Sync(nameof(chr_mode), ref chr_mode);
+			ser.Sync(nameof(prg_mode), ref prg_mode);
+			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(mirror), ref mirror);
+			ser.Sync(nameof(a12_old), ref a12_old);
+			ser.Sync(nameof(irq_reload), ref irq_reload);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_enable), ref irq_enable);
+			ser.Sync(nameof(separator_counter), ref separator_counter);
+			ser.Sync(nameof(irq_countdown), ref irq_countdown);
+			ser.Sync(nameof(irq_reload_flag), ref irq_reload_flag);
+			ser.Sync(nameof(wram_enable), ref wram_enable);
+			ser.Sync(nameof(wram_write_protect), ref wram_write_protect);
 			Sync();
 		}
 
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			mmc3.SyncState(ser);
-			ser.Sync("extra_vrom", ref extra_vrom);
+			ser.Sync(nameof(extra_vrom), ref extra_vrom);
 		}
 
 		protected virtual int Get_CHRBank_1K(int addr)

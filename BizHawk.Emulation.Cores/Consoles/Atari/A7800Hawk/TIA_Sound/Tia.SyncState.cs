@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("TIA");
+			ser.BeginSection(nameof(TIA));
 
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// states were always taken at frame boundaries
 			ser.Sync("capChargeStart", ref _capChargeStart);
 			ser.Sync("capCharging", ref _capCharging);
-			ser.Sync("AudioClocks", ref AudioClocks);
+			ser.Sync(nameof(AudioClocks), ref AudioClocks);
 			ser.Sync("FrameStartCycles", ref _frameStartCycles);
 			ser.Sync("FrameEndCycles", ref _frameEndCycles);
 

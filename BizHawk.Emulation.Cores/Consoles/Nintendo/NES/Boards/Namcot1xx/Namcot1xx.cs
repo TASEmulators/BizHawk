@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual void SyncState(Serializer ser)
 		{
-			ser.Sync("reg_addr", ref reg_addr);
-			ser.Sync("regs", ref regs);
+			ser.Sync(nameof(reg_addr), ref reg_addr);
+			ser.Sync(nameof(regs), ref regs);
 			Sync();
 		}
 
@@ -123,9 +123,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			if (NES._isVS)
-				ser.Sync("CIRAM_VS", ref CIRAM_VS, false);
+				ser.Sync(nameof(CIRAM_VS), ref CIRAM_VS, false);
 
-			ser.Sync("tko_security", ref tko_security);
+			ser.Sync(nameof(tko_security), ref tko_security);
 			mapper.SyncState(ser);
 		}
 

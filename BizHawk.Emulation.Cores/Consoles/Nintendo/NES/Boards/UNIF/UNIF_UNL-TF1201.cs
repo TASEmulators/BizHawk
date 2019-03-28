@@ -40,13 +40,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg0", ref prg0);
-			ser.Sync("prg1", ref prg1);
-			ser.Sync("swap", ref swap);
-			ser.Sync("chr", ref chr);
-			ser.Sync("IRQa", ref IRQa);
-			ser.Sync("IRQCount", ref IRQCount);
-			ser.Sync("IRQpre", ref IRQpre);
+			ser.Sync(nameof(prg0), ref prg0);
+			ser.Sync(nameof(prg1), ref prg1);
+			ser.Sync(nameof(swap), ref swap);
+			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(IRQa), ref IRQa);
+			ser.Sync(nameof(IRQCount), ref IRQCount);
+			ser.Sync(nameof(IRQpre), ref IRQpre);
 		}
 
 		public override void WritePRG(int addr, byte value)

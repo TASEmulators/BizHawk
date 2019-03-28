@@ -63,11 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("DatachBarcode");
-			ser.Sync("cycles", ref cycles);
-			ser.Sync("output", ref output);
-			ser.Sync("stream_idx", ref stream_idx);
-			ser.Sync("data", ref data, false);
+			ser.BeginSection(nameof(DatachBarcode));
+			ser.Sync(nameof(cycles), ref cycles);
+			ser.Sync(nameof(output), ref output);
+			ser.Sync(nameof(stream_idx), ref stream_idx);
+			ser.Sync(nameof(data), ref data, false);
 			ser.EndSection();
 		}
 

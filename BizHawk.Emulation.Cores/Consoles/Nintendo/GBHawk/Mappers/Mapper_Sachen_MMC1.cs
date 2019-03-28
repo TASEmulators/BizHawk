@@ -174,14 +174,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("locked", ref locked);
-			ser.Sync("ROM_bank_mask", ref ROM_bank_mask);
-			ser.Sync("BASE_ROM_Bank", ref BASE_ROM_Bank);
-			ser.Sync("reg_access", ref reg_access);
-			ser.Sync("addr_last", ref addr_last);
-			ser.Sync("counter", ref counter);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(locked), ref locked);
+			ser.Sync(nameof(ROM_bank_mask), ref ROM_bank_mask);
+			ser.Sync(nameof(BASE_ROM_Bank), ref BASE_ROM_Bank);
+			ser.Sync(nameof(reg_access), ref reg_access);
+			ser.Sync(nameof(addr_last), ref addr_last);
+			ser.Sync(nameof(counter), ref counter);
 		}
 	}
 }

@@ -74,39 +74,39 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			ser.BeginSection("SN76489");
 
-			ser.Sync("Chan_vol", ref Chan_vol, false);
-			ser.Sync("Chan_tone", ref Chan_tone, false);
+			ser.Sync(nameof(Chan_vol), ref Chan_vol, false);
+			ser.Sync(nameof(Chan_tone), ref Chan_tone, false);
 
-			ser.Sync("Chan_sel", ref chan_sel);
-			ser.Sync("vol_tone", ref vol_tone);
-			ser.Sync("noise_type", ref noise_type);
-			ser.Sync("noise_rate", ref noise_rate);
+			ser.Sync(nameof(chan_sel), ref chan_sel);
+			ser.Sync(nameof(vol_tone), ref vol_tone);
+			ser.Sync(nameof(noise_type), ref noise_type);
+			ser.Sync(nameof(noise_rate), ref noise_rate);
 
-			ser.Sync("Clock_A", ref clock_A);
-			ser.Sync("Clock_B", ref clock_B);
-			ser.Sync("Clock_C", ref clock_C);
-			ser.Sync("noise_clock", ref noise_clock);
-			ser.Sync("noise_bit", ref noise_bit);
+			ser.Sync(nameof(clock_A), ref clock_A);
+			ser.Sync(nameof(clock_B), ref clock_B);
+			ser.Sync(nameof(clock_C), ref clock_C);
+			ser.Sync(nameof(noise_clock), ref noise_clock);
+			ser.Sync(nameof(noise_bit), ref noise_bit);
 
-			ser.Sync("psg_clock", ref psg_clock);
+			ser.Sync(nameof(psg_clock), ref psg_clock);
 
-			ser.Sync("A_up", ref A_up);
-			ser.Sync("B_up", ref B_up);
-			ser.Sync("C_up", ref C_up);
-			ser.Sync("noise", ref noise);
+			ser.Sync(nameof(A_up), ref A_up);
+			ser.Sync(nameof(B_up), ref B_up);
+			ser.Sync(nameof(C_up), ref C_up);
+			ser.Sync(nameof(noise), ref noise);
 
-			ser.Sync("A_L", ref A_L);
-			ser.Sync("B_L", ref B_L);
-			ser.Sync("C_L", ref C_L);
-			ser.Sync("noise_L", ref noise_L);
-			ser.Sync("A_L", ref A_R);
-			ser.Sync("B_L", ref B_R);
-			ser.Sync("C_L", ref C_R);
-			ser.Sync("noise_L", ref noise_R);
+			ser.Sync(nameof(A_L), ref A_L);
+			ser.Sync(nameof(B_L), ref B_L);
+			ser.Sync(nameof(C_L), ref C_L);
+			ser.Sync(nameof(noise_L), ref noise_L);
+			ser.Sync(nameof(A_L), ref A_R);
+			ser.Sync(nameof(B_L), ref B_R);
+			ser.Sync(nameof(C_L), ref C_R);
+			ser.Sync(nameof(noise_L), ref noise_R);
 
-			ser.Sync("current_sample_L", ref current_sample_L);
-			ser.Sync("current_sample_R", ref current_sample_R);
-			ser.Sync("stereo_panning", ref stereo_panning);
+			ser.Sync(nameof(current_sample_L), ref current_sample_L);
+			ser.Sync(nameof(current_sample_R), ref current_sample_R);
+			ser.Sync(nameof(stereo_panning), ref stereo_panning);
 
 			ser.EndSection();
 		}

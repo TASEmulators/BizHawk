@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 				{
-					throw new InvalidOperationException("qn_new() returned NULL");
+					throw new InvalidOperationException($"{nameof(QN.qn_new)}() returned NULL");
 				}
 
 				try
