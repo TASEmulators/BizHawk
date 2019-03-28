@@ -152,9 +152,12 @@ namespace BizHawk.Client.Common
 			base.Clear();
 		}
 
-		public override string ToString() => string.Concat(this.Select((k, v) => $"{k} {v}\n"))
-			+ Subtitles
-			+ string.Join("\n", Comments) + "\n";
+		public override string ToString()
+		{
+			var body = string.Concat(this.Select((k, v) => $"{k} {v}\n"));
+			var comments = string.Join("\n", Comments);
+			return string.Concat(body, Subtitles, comments, "\n");
+		}
 
 		public bool ParseLineFromFile(string line)
 		{

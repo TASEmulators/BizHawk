@@ -46,10 +46,10 @@ namespace BizHawk.Client.Common
 
 		public string GenerateLogKey()
 		{
-			var s = string.Join("#", _source.Definition.ControlsOrdered
-				.Select(group => string.Concat(group.Select(button => $"{button}|")))
-				.Where(groupStr => !string.IsNullOrEmpty(groupStr)));
-			return $"LogKey:{(s.Length > 0 ? $"#{s}" : string.Empty)}";
+			var groupStrings = _source.Definition.ControlsOrdered.Select(group =>
+				string.Concat(group.Select(button => $"{button}|")));
+			var s = $"#{string.Join("#", groupStrings.Where(groupStr => !string.IsNullOrEmpty(groupStr)))}";
+			return s.Length > 1 ? $"LogKey:{s}" : "LogKey:";
 		}
 
 		public Dictionary<string, string> Map()
