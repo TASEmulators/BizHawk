@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!f.CanWrite)
 				{
-					throw new ArgumentException("Stream must be writable!");
+					throw new ArgumentException($"{nameof(Stream)} must be writable!");
 				}
 
 				this.f = f;

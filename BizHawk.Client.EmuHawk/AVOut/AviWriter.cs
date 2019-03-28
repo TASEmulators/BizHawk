@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException("AviWriter only takes its own Codec Tokens!");
+				throw new ArgumentException($"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!");
 			}
 		}
 
@@ -321,11 +321,10 @@ namespace BizHawk.Client.EmuHawk
 				int bytes = 0;
 				if (a_bits == 16) bytes = 2;
 				else if (a_bits == 8) bytes = 1;
-				else throw new InvalidOperationException($"only 8/16 bits audio are supported by AviWriter and you chose: {a_bits}");
+				else throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}");
 				if (a_channels == 1) { }
 				else if (a_channels == 2) { }
-				else throw new InvalidOperationException($"only 1/2 channels audio are supported by AviWriter and you chose: {a_channels}");
-
+				else throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
 				wfex.Init();
 				wfex.nBlockAlign = (ushort)(bytes * a_channels);
 				wfex.nChannels = (ushort)a_channels;
@@ -954,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);
 			if (ct == null)
 			{
-				throw new Exception("No default AVICodecToken in config!");
+				throw new Exception($"No default {nameof(Global.Config.AVICodecToken)} in config!");
 			}
 
 			_currVideoCodecToken = ct;

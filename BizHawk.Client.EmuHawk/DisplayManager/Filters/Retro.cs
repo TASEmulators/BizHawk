@@ -249,10 +249,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		int RSI;
 		Size OutputSize;
 
-		public override string ToString()
-		{
-			return $"RetroShaderPass[#{RSI}]";
-		}
+		public override string ToString() => $"{nameof(RetroShaderPass)}[#{RSI}]";
 
 		public RetroShaderPass(RetroShaderChain RSC, int index)
 		{

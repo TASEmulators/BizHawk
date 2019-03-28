@@ -165,8 +165,8 @@ namespace BizHawk.Client.ApiHawk
 			{
 				if (addr < d.Size)
 					list.Add(d.PeekByte(addr));
-				else { 
-					Console.WriteLine($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in readbyterange()");
+				else {
+					Console.WriteLine($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in {nameof(ReadByteRange)}()");
 					list.Add(0);
 				}
 			}
@@ -187,7 +187,7 @@ namespace BizHawk.Client.ApiHawk
 					}
 					else
 					{
-						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in writebyterange()");
+						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {nameof(WriteByteRange)}()");
 					}
 				}
 			}

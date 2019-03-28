@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
-				Console.WriteLine("Removing Unpress {0} with newState {1}", button, newState);
+				Console.WriteLine($"Removing Unpress {button} with {nameof(newState)} {newState}");
 				UnpressState.Remove(button);
 				LastState[button] = false;
 				return;

@@ -81,12 +81,12 @@ namespace BizHawk.Client.EmuHawk
 		void OnLoadError(object sender, RomLoader.RomErrorArgs e)
 		{
 			current.Status = Result.EStatus.ErrorOnLoad;
-			current.Messages.Add($"OnLoadError: {e.AttemptedCoreLoad}, {e.Message}, {e.Type.ToString()}");
+			current.Messages.Add($"{nameof(OnLoadError)}: {e.AttemptedCoreLoad}, {e.Message}, {e.Type}");
 		}
 
 		void CommMessage(string msg)
 		{
-			current.Messages.Add($"CommMessage: {msg}");
+			current.Messages.Add($"{nameof(CommMessage)}: {msg}");
 		}
 
 		int? ChooseArchive(HawkFile hf)
