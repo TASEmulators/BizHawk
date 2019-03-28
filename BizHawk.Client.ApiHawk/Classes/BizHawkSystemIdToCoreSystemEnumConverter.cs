@@ -102,6 +102,9 @@ namespace BizHawk.Client.ApiHawk
                 case "AmstradCPC":
                     return CoreSystem.AmstradCPC;
 
+				case "GGL":
+					return CoreSystem.GGL;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":
@@ -112,7 +115,7 @@ namespace BizHawk.Client.ApiHawk
 					return 0; // like I give a shit
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
+					throw new IndexOutOfRangeException($"{value} is missing in convert list");
 			}
 		}
 
@@ -218,7 +221,7 @@ namespace BizHawk.Client.ApiHawk
                     return "AmstradCPC";
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value.ToString()));
+					throw new IndexOutOfRangeException($"{value.ToString()} is missing in convert list");
 			}
 		}
 

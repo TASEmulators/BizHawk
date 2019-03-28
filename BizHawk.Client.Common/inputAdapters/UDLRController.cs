@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 				}
 
 				prefix = button.GetPrecedingString("Down");
-				string other = prefix + "Up";
+				string other = $"{prefix}Up";
 				if (Source.IsPressed(other))
 				{
 					if (_unpresses.Contains(button))
@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 				}
 
 				prefix = button.GetPrecedingString("Up");
-				string other = prefix + "Down";
+				string other = $"{prefix}Down";
 				if (Source.IsPressed(other))
 				{
 					if (_unpresses.Contains(button))
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 				}
 
 				prefix = button.GetPrecedingString("Right");
-				string other = prefix + "Left";
+				string other = $"{prefix}Left";
 				if (Source.IsPressed(other))
 				{
 					if (_unpresses.Contains(button))
@@ -119,7 +119,7 @@ namespace BizHawk.Client.Common
 				}
 
 				prefix = button.GetPrecedingString("Left");
-				string other = prefix + "Right";
+				string other = $"{prefix}Right";
 				if (Source.IsPressed(other))
 				{
 					if (_unpresses.Contains(button))

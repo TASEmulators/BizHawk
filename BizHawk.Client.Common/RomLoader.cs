@@ -14,8 +14,10 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -217,7 +219,7 @@ namespace BizHawk.Client.Common
 
 				else if (discMountJob.OUT_ErrorLevel)
 				{
-					throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 				}
 
 				else if (disc == null)
@@ -426,7 +428,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_ErrorLevel)
 							{
-								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+								throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 							}
 
 							if (disc == null)
@@ -494,7 +496,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_ErrorLevel)
 						{
-							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 						}
 
 						var disc = discMountJob.OUT_Disc;                        
@@ -630,7 +632,20 @@ namespace BizHawk.Client.Common
 
 									var left = Database.GetGameInfo(leftBytes, "left.gb");
 									var right = Database.GetGameInfo(rightBytes, "right.gb");
-									nextEmulator = new GambatteLink(
+									if (Global.Config.GB_UseGBHawk)
+									{
+										nextEmulator = new GBHawkLink(
+										nextComm,
+										left,
+										leftBytes,
+										right,
+										rightBytes,
+										GetCoreSettings<GBHawkLink>(),
+										GetCoreSyncSettings<GBHawkLink>());
+									}
+									else
+									{
+										nextEmulator = new GambatteLink(
 										nextComm,
 										left,
 										leftBytes,
@@ -639,7 +654,8 @@ namespace BizHawk.Client.Common
 										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>(),
 										Deterministic);
-
+									}
+										
 									// other stuff todo
 									break;
 								case "AppleII":
@@ -713,7 +729,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_ErrorLevel)
 										{
-											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+											throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 										}
 
 										if (disc == null)
@@ -789,6 +805,22 @@ namespace BizHawk.Client.Common
 										return false;
 									}
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+									break;
+								case "Game Gear":
+									var leftBytesGG = xmlGame.Assets.First().Value;
+									var rightBytesGG = xmlGame.Assets.Skip(1).First().Value;
+
+									var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
+									var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");
+
+									nextEmulator = new GGHawkLink(
+									nextComm,
+									leftGG,
+									leftBytesGG,
+									rightGG,
+									rightBytesGG,
+									GetCoreSettings<GGHawkLink>(),
+									GetCoreSyncSettings<GGHawkLink>());
 									break;
 								default:
 									return false;
@@ -958,7 +990,14 @@ namespace BizHawk.Client.Common
 
 									if (preference == "neshawk")
 									{
-										core = CoreInventory.Instance["NES", "NesHawk"];
+										if (Global.Config.UseSubNESHawk)
+										{
+											core = CoreInventory.Instance["NES", "SubNESHawk"];
+										}
+										else
+										{
+											core = CoreInventory.Instance["NES", "NesHawk"];
+										}										
 									}
 									else
 									{
@@ -1132,12 +1171,12 @@ namespace BizHawk.Client.Common
                     // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
                     else if (ex is NoAvailableCoreException)
                     {
-                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                        DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
                     }
 
                     else
 					{
-						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
+						DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
 					}
 
 					return false;

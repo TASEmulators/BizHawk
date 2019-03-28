@@ -146,7 +146,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public void End()
 		{
 			if (!IsActive)
-				throw new InvalidOperationException("GuiRenderer is not active!");
+				throw new InvalidOperationException($"{nameof(GuiRenderer)} is not active!");
 			IsActive = false;
 			if (CurrentImageAttributes != null)
 			{
@@ -202,7 +202,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
-				throw new InvalidOperationException("tw.MagFilter != tw.MinFilter");
+				throw new InvalidOperationException($"{nameof(tw)}.{nameof(tw.MagFilter)} != {nameof(tw)}.{nameof(tw.MinFilter)}");
 			if (tw.MagFilter == TextureMagFilter.Linear)
 				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
 			if (tw.MagFilter == TextureMagFilter.Nearest)
@@ -240,7 +240,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
 		}
 
+		unsafe void DrawInternal(Art art, float x, float y, float w, float h)
+		{
+			DrawInternal(art.BaseTexture, x, y, w, h, art.u0, art.v0, art.u1, art.v1);
+		}
+
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
+		{
+			DrawInternal(tex, x, y, w, h, 0, 0, 1, 1);
+		}
+
+		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
 			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tex);
@@ -253,9 +263,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				new sd.PointF(x,y+h),
 			};
 
+			float sx = tex.Width * u0;
+			float sy = tex.Height * v0;
+			float sx2 = tex.Width * u1;
+			float sy2 = tex.Height * v1;
+			float sw = sx2 - sx;
+			float sh = sy2 - sy;
+
 			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
-			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
+			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(sx, sy, sw, sh), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
 		}
 

@@ -199,6 +199,7 @@
             this.GBGambatteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SubNESHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
             this.allowGameDBCoreOverridesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -351,7 +352,11 @@
             this.SaturnPreferencesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DGBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.DGBHawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
@@ -503,7 +508,9 @@
             this.N64SubMenu,
             this.SaturnSubMenu,
             this.DGBSubMenu,
-            this.GenesisSubMenu,
+			this.DGBHawkSubMenu,
+			this.GGLSubMenu,
+			this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
             this.AppleSubMenu,
             this.C64SubMenu,
@@ -1842,6 +1849,7 @@
             this.SGBCoreSubmenu,
             this.GBCoreSubmenu,
             this.GBInSGBMenuItem,
+			this.SubNESHawkMenuItem,
             this.toolStripMenuItem16,
             this.allowGameDBCoreOverridesToolStripMenuItem,
             this.toolStripSeparator8,
@@ -1979,6 +1987,13 @@
             this.GBInSGBMenuItem.Text = "GB in SGB";
             this.GBInSGBMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
             // 
+			// SubNESHawkMenuItem
+			//
+			this.SubNESHawkMenuItem.Name = "SubNESHawkMenuItem";
+			this.SubNESHawkMenuItem.Size = new System.Drawing.Size(239, 22);
+			this.SubNESHawkMenuItem.Text = "SubNESHawk";
+			this.SubNESHawkMenuItem.Click += new System.EventHandler(this.SubNESHawkMenuItem_Click);
+			//
             // toolStripMenuItem16
             // 
             this.toolStripMenuItem16.Name = "toolStripMenuItem16";
@@ -3177,10 +3192,40 @@
             this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.DGBsettingsToolStripMenuItem.Text = "Settings...";
             this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
-            // 
-            // GenesisSubMenu
-            // 
-            this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			// 
+			// DGBHawkSubMenu
+			// 
+			this.DGBHawkSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.DGBHawksettingsToolStripMenuItem});
+			this.DGBHawkSubMenu.Name = "DGBHawkSubMenu";
+			this.DGBHawkSubMenu.Size = new System.Drawing.Size(59, 19);
+			this.DGBHawkSubMenu.Text = "&GB Link";
+			// 
+			// DGBHawksettingsToolStripMenuItem
+			// 
+			this.DGBHawksettingsToolStripMenuItem.Name = "DGBHawksettingsToolStripMenuItem";
+			this.DGBHawksettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.DGBHawksettingsToolStripMenuItem.Text = "Settings...";
+			this.DGBHawksettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbHawkSettingsMenuItem_Click);
+			// 
+			// GGLSubMenu
+			// 
+			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GGLsettingsToolStripMenuItem});
+			this.GGLSubMenu.Name = "GGLSubMenu";
+			this.GGLSubMenu.Size = new System.Drawing.Size(59, 19);
+			this.GGLSubMenu.Text = "&GG Link";
+			// 
+			// GGLsettingsToolStripMenuItem
+			// 
+			this.GGLsettingsToolStripMenuItem.Name = "GGLsettingsToolStripMenuItem";
+			this.GGLsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
+			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GGLSettingsMenuItem_Click);
+			// 
+			// GenesisSubMenu
+			// 
+			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.vDPViewerToolStripMenuItem,
             this.GenesisGameGenieECDC,
             this.toolStripSeparator26,
@@ -3820,10 +3865,11 @@
             this.LinkConnectStatusBarButton.Size = new System.Drawing.Size(16, 17);
             this.LinkConnectStatusBarButton.Text = "Link connection is currently enabled";
             this.LinkConnectStatusBarButton.ToolTipText = "Link connection is currently enabled";
-            // 
-            // UpdateNotification
-            // 
-            this.UpdateNotification.IsLink = true;
+			this.LinkConnectStatusBarButton.Click += new System.EventHandler(this.LinkConnectStatusBarButton_Click);
+			// 
+			// UpdateNotification
+			// 
+			this.UpdateNotification.IsLink = true;
             this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
             this.UpdateNotification.Name = "UpdateNotification";
             this.UpdateNotification.Size = new System.Drawing.Size(46, 17);
@@ -4504,6 +4550,10 @@
 		private System.Windows.Forms.ToolStripMenuItem FdsEjectDiskMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem DGBHawkSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
@@ -4512,6 +4562,7 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SubNESHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem batchRunnerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayConfigMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;

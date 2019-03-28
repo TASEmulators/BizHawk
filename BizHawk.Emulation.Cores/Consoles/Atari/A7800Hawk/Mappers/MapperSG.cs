@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("Bank", ref bank);
-			ser.Sync("RAM", ref RAM, false);
+			ser.Sync(nameof(RAM), ref RAM, false);
 		}
 	}
 }

@@ -48,7 +48,7 @@ namespace BizHawk.Common
 						return;
 					}
 
-					throw new InvalidOperationException("Cannot set position to non-zero in a SwitcherStream with DenySeekHack=true");
+					throw new InvalidOperationException($"Cannot set position to non-zero in a {nameof(SwitcherStream)} with {DenySeekHack}=true");
 				}
 
 				_currStream.Position = value;
@@ -79,7 +79,7 @@ namespace BizHawk.Common
 					return 0;
 				}
 
-				throw new InvalidOperationException("Cannot call Seek with non-zero offset or non-Begin origin in a SwitcherStream with DenySeekHack=true");
+				throw new InvalidOperationException($"Cannot call {nameof(Seek)} with non-zero offset or non-{nameof(SeekOrigin.Begin)} origin in a {nameof(SwitcherStream)} with {nameof(DenySeekHack)}=true");
 			}
 
 			return _currStream.Seek(offset, origin);

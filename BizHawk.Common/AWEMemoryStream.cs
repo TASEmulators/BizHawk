@@ -95,7 +95,7 @@ namespace BizHawk.Common
 			set
 			{
 				if (!Ensure(value + 1))
-					throw new OutOfMemoryException("Couldn't set AWEMemoryStream to specified Position");
+					throw new OutOfMemoryException($"Couldn't set {nameof(AWEMemoryStream)} to specified Position");
 				mPosition = value;
 			}
 		}
@@ -128,7 +128,7 @@ namespace BizHawk.Common
 		public override void SetLength(long value)
 		{
 			if (!Ensure(value))
-				throw new OutOfMemoryException("Couldn't set AWEMemoryStream to specified Length");
+				throw new OutOfMemoryException($"Couldn't set {nameof(AWEMemoryStream)} to specified Length");
 			mLength = value;
 		}
 
@@ -151,7 +151,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception("Couldn't map required memory for AWEMemoryStream.Write");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
 				}
 				Marshal.Copy(IntPtr.Add(mWindow, blockOfs), buffer, offset, todo);
 				count -= todo;
@@ -165,7 +165,7 @@ namespace BizHawk.Common
 		{
 			long end = mPosition + count;
 			if (!Ensure(end))
-				throw new OutOfMemoryException("Couldn't reserve required resources for AWEMemoryStream.Write");
+				throw new OutOfMemoryException($"Couldn't reserve required resources for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
 			SetLength(end);
 			while (count > 0)
 			{
@@ -181,7 +181,7 @@ namespace BizHawk.Common
 				{
 					mCurrBlock = block;
 					if (!mBlocks[block].Map(mWindow))
-						throw new Exception("Couldn't map required memory for AWEMemoryStream.Write");
+						throw new Exception($"Couldn't map required memory for {nameof(AWEMemoryStream)}.{nameof(AWEMemoryStream.Write)}");
 				}
 				Marshal.Copy(buffer, offset, IntPtr.Add(mWindow, blockOfs), todo);
 				count -= todo;

@@ -31,6 +31,7 @@
 		VirtualBoy,
 		NeoGeoPocket,
         ZXSpectrum,
-        AmstradCPC
+        AmstradCPC,
+		GGL
 	}
 }

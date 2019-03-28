@@ -38,13 +38,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshTooltip()
 		{
-			string widgetText = "Current Binding: " + widget.Text;
+			string widgetText = $"Current Binding: {widget.Text}";
 			if (_bindingTooltipText != null)
 			{
-				widgetText = widgetText + "\r\n---\r\n" + _bindingTooltipText;
+				widgetText = $"{widgetText}\r\n---\r\n{_bindingTooltipText}";
 			}
 
-			widgetText = widgetText + "\r\n---\r\n" + WidgetTooltipText;
+			widgetText = $"{widgetText}\r\n---\r\n{WidgetTooltipText}";
 			_tooltip.SetToolTip(widget, widgetText);
 		}
 

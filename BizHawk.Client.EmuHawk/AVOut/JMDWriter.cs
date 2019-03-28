@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!f.CanWrite)
 				{
-					throw new ArgumentException("Stream must be writable!");
+					throw new ArgumentException($"{nameof(Stream)} must be writable!");
 				}
 
 				this.f = f;
@@ -671,7 +671,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e);
+				System.Windows.Forms.MessageBox.Show($"JMD Worker Thread died:\n\n{e}");
 				return;
 			}
 		}

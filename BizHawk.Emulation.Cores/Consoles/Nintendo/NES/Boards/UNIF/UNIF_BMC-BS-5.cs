@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("reg_prg", ref reg_prg);
-			ser.Sync("reg_chr", ref reg_chr);
-			ser.Sync("BMC_BS_5_DipSwitch", ref BMC_BS_5_DipSwitch);
+			ser.Sync(nameof(reg_prg), ref reg_prg);
+			ser.Sync(nameof(reg_chr), ref reg_chr);
+			ser.Sync(nameof(BMC_BS_5_DipSwitch), ref BMC_BS_5_DipSwitch);
 		}
 
 		public override void WritePRG(int addr, byte value)

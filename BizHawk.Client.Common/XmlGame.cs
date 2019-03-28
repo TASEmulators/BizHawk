@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								throw new Exception("Couldn't load XMLGame Asset \"" + filename + "\"");
+								throw new Exception($"Couldn't load XMLGame Asset \"{filename}\"");
 							}
 						}
 						else
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 							}
 							catch
 							{
-								throw new Exception("Couldn't load XMLGame LoadAsset \"" + filename + "\"");
+								throw new Exception($"Couldn't load XMLGame LoadAsset \"{filename}\"");
 							}
 						}
 

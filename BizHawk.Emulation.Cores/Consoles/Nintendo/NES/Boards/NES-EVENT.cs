@@ -201,17 +201,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 
 			scnt.SyncState(ser);
-			ser.Sync("c000_swappable", ref c000_swappable);
+			ser.Sync(nameof(c000_swappable), ref c000_swappable);
 			ser.Sync("prg_16k_mode", ref prg_32k_mode);
-			ser.Sync("irq_enable", ref irq_enable);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_count", ref irq_count);
-			ser.Sync("prg_a", ref prg_a);
-			ser.Sync("prg_b", ref prg_b);
-			ser.Sync("init_sequence", ref init_sequence);
-			ser.Sync("chip_select", ref chip_select);
-			ser.Sync("wram_disable", ref wram_disable);
-			ser.Sync("prg_banks_16k", ref prg_banks_16k);
+			ser.Sync(nameof(irq_enable), ref irq_enable);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_count), ref irq_count);
+			ser.Sync(nameof(prg_a), ref prg_a);
+			ser.Sync(nameof(prg_b), ref prg_b);
+			ser.Sync(nameof(init_sequence), ref init_sequence);
+			ser.Sync(nameof(chip_select), ref chip_select);
+			ser.Sync(nameof(wram_disable), ref wram_disable);
+			ser.Sync(nameof(prg_banks_16k), ref prg_banks_16k);
 			if (ser.IsReader) Sync();
 		}
 

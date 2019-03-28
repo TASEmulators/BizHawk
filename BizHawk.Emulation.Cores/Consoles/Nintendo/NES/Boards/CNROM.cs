@@ -154,9 +154,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr", ref chr);
-			ser.Sync("seicross", ref seicross);
-			ser.Sync("chr_enabled", ref chr_enabled);
+			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(seicross), ref seicross);
+			ser.Sync(nameof(chr_enabled), ref chr_enabled);
 		}
 
 		public override byte ReadPRG(int addr)

@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			int index = 0;
 			for (int i = 0; i < _counts.Count; i++)
 			{
-				string str = index + ": ";
+				string str = $"{index}: ";
 				if (IsBool)
 				{
 					str += _values[i][0] == 'T' ? "On" : "Off";
@@ -167,11 +167,11 @@ namespace BizHawk.Client.EmuHawk
 					str += _values[i];
 				}
 
-				PatternList.Items.Add(str + ("\t(x" + _counts[i] + ")"));
+				PatternList.Items.Add($"{str}\t(x{_counts[i]})");
 				index += _counts[i];
 			}
 
-			PatternList.Items.Add("Loop to: " + _loopAt);
+			PatternList.Items.Add($"Loop to: {_loopAt}");
 
 			if (oldIndex >= PatternList.Items.Count)
 			{

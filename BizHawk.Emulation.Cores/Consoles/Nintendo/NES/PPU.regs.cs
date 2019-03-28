@@ -9,7 +9,6 @@
 using System;
 using BizHawk.Common;
 
-
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	sealed partial class PPU
@@ -78,19 +77,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("fv", ref fv);
-				ser.Sync("v", ref v);
-				ser.Sync("h", ref h);
-				ser.Sync("vt", ref vt);
-				ser.Sync("ht", ref ht);
-				ser.Sync("_fv", ref _fv);
-				ser.Sync("_v", ref _v);
-				ser.Sync("_h", ref _h);
-				ser.Sync("_vt", ref _vt);
-				ser.Sync("_ht", ref _ht);
-				ser.Sync("fh", ref fh);
-				ser.Sync("status.cycle", ref status.cycle);
-				ser.Sync("status.sl", ref status.sl);
+				ser.Sync(nameof(fv), ref fv);
+				ser.Sync(nameof(v), ref v);
+				ser.Sync(nameof(h), ref h);
+				ser.Sync(nameof(vt), ref vt);
+				ser.Sync(nameof(ht), ref ht);
+				ser.Sync(nameof(_fv), ref _fv);
+				ser.Sync(nameof(_v), ref _v);
+				ser.Sync(nameof(_h), ref _h);
+				ser.Sync(nameof(_vt), ref _vt);
+				ser.Sync(nameof(_ht), ref _ht);
+				ser.Sync(nameof(fh), ref fh);
+				ser.Sync($"{nameof(status)}.{nameof(status.cycle)}", ref status.cycle);
+				ser.Sync($"{nameof(status)}.{nameof(status.sl)}", ref status.sl);
 			}
 
 			//normal clocked regs. as the game can interfere with these at any time, they need to be savestated
@@ -307,6 +306,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
 		byte reg_2003;
+		public byte reg_2006_2;
 
 		void regs_reset()
 		{
@@ -450,12 +450,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				OAM[reg_2003] = value;
 				reg_2003++;
-			}
-			
+			}	
 		}
+
 		byte read_2004()
 		{
 			byte ret;
+			// Console.WriteLine("read 2004");
 			// behaviour depends on whether things are being rendered or not
 			if (PPUON)
 			{
@@ -526,6 +527,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._v = (value >> 3) & 1;
 				ppur._fv = (value >> 4) & 3;
 				//nes.LogLine("addr wrote fv = {0}", ppur._fv);
+				reg_2006_2 = value;
 			}
 			else
 			{
@@ -534,13 +536,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._ht = value & 31;
 
 				// testing indicates that this operation is delayed by 3 pixels
-				// ppur.install_latches();
-
+				//ppur.install_latches();				
 				install_2006 = 3;
 			}
 
 			vtoggle ^= true;
-
 		}
 		byte read_2006() { return ppu_open_bus; }
 		byte peek_2006() { return ppu_open_bus; }
@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//does this take 4x longer? nestopia indicates so perhaps...
 
 			int addr = ppur.get_2007access();
-			if (ppuphase == PPUPHASE.BG)
+			if (ppuphase == PPU_PHASE_BG)
 			{
 				if (show_bg_new)
 				{

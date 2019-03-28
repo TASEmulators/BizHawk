@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static void IPCThread()
 		{
-			string pipeName = string.Format("bizhawk-pid-{0}-IPCKeyInput", System.Diagnostics.Process.GetCurrentProcess().Id);
+			string pipeName = $"bizhawk-pid-{System.Diagnostics.Process.GetCurrentProcess().Id}-IPCKeyInput";
 
 
 			for (; ; )

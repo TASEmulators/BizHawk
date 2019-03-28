@@ -159,7 +159,5 @@ namespace BizHawk.Client.Common
 		}
 
 		public static Dictionary<string, object> UserBag = new Dictionary<string, object>();
-
-		public static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
 	}
 }

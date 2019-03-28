@@ -61,8 +61,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("left_piece", ref left_piece);
-			ser.Sync("right_piece", ref right_piece);
+			ser.Sync(nameof(left_piece), ref left_piece);
+			ser.Sync(nameof(right_piece), ref right_piece);
 		}
 	}
 }

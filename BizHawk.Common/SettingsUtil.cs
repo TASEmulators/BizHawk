@@ -50,7 +50,7 @@ namespace BizHawk.Common
 
 		private static DefaultValueSetter CreateSetter(Type t)
 		{
-			var dyn = new DynamicMethod("SetDefaultValues_" + t.Name, null, new[] { typeof(object), typeof(object[]) }, false);
+			var dyn = new DynamicMethod($"SetDefaultValues_{t.Name}", null, new[] { typeof(object), typeof(object[]) }, false);
 			var il = dyn.GetILGenerator();
 			List<object> DefaultValues = new List<object>();
 
@@ -90,7 +90,7 @@ namespace BizHawk.Common
 						}
 						else
 						{
-							throw new InvalidOperationException(string.Format("Default value assignment will fail for {0}.{1}", t.Name, prop.Name));
+							throw new InvalidOperationException($"Default value assignment will fail for {t.Name}.{prop.Name}");
 						}
 						il.Emit(OpCodes.Callvirt, method);
 					}

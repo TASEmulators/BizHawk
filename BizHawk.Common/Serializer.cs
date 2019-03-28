@@ -658,7 +658,7 @@ namespace BizHawk.Common
 			{
 				if (name.Length > length)
 				{
-					throw new InvalidOperationException("SyncFixedString too long");
+					throw new InvalidOperationException($"{nameof(SyncFixedString)} too long");
 				}
 
 				var buf = val.ToCharArray();
@@ -740,7 +740,7 @@ namespace BizHawk.Common
 					}
 					else
 					{
-						throw new Exception(string.Format("Duplicate key \"{0}\" in serializer savestate!", name));
+						throw new Exception($"Duplicate key \"{name}\" in serializer savestate!");
 					}
 
 					curs = news;
@@ -763,7 +763,7 @@ namespace BizHawk.Common
 					}
 					else
 					{
-						throw new Exception(string.Format("Duplicate key \"{0}\" in serializer savestate!", key));
+						throw new Exception($"Duplicate key \"{key}\" in serializer savestate!");
 					}
 				}
 			}

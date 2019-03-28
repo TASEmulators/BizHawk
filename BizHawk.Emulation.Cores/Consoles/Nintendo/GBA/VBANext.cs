@@ -57,11 +57,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			Core = LibVBANext.Create();
 			if (Core == IntPtr.Zero)
-				throw new InvalidOperationException("Create() returned nullptr!");
+				throw new InvalidOperationException($"{nameof(LibVBANext.Create)}() returned nullptr!");
 			try
 			{
 				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
-					throw new InvalidOperationException("LoadRom() returned false!");
+					throw new InvalidOperationException($"{nameof(LibVBANext.LoadRom)}() returned false!");
 
 				Tracer = new TraceBuffer()
 				{
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 
@@ -108,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			if (IsLagFrame)
 				LagCount++;
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

@@ -373,7 +373,6 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawString(message, font, new SolidBrush(forecolor ?? Color.Black), x, y);
 		}
 		

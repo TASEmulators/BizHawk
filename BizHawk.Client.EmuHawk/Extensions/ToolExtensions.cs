@@ -105,8 +105,8 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 							//make a menuitem to let you explore to it
 							var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
-							string explorePath = "\"" + hf.FullPathWithoutMember + "\"";
-							tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + explorePath); };
+							string explorePath = $"\"{hf.FullPathWithoutMember}\"";
+							tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", $"/select, {explorePath}"); };
 							tsdd.Items.Add(tsmiExplore);
 
 							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
@@ -217,12 +217,12 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			GlobalWin.Sound.StopSound();
 			if (recent.Frozen)
 			{
-				var result = MessageBox.Show("Could not open " + path, "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				var result = MessageBox.Show($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			else
 			{
 				// ensure topmost, not to have to minimize everything to see and use our modal window, if it somehow got covered
-				var result = MessageBox.Show(new Form(){TopMost = true},"Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				var result = MessageBox.Show(new Form(){TopMost = true}, $"Could not open {path}\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 				{
 					if (encodedPath != null)

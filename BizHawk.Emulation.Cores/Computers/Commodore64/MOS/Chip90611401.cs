@@ -307,20 +307,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("_p24", ref _p24);
-			ser.Sync("_p25", ref _p25);
-			ser.Sync("_p26", ref _p26);
-			ser.Sync("_p27", ref _p27);
-			ser.Sync("_p28", ref _p28);
-			ser.Sync("_loram", ref _loram);
-			ser.Sync("_hiram", ref _hiram);
-			ser.Sync("_game", ref _game);
-			ser.Sync("_exrom", ref _exrom);
-			ser.Sync("_charen", ref _charen);
-			ser.Sync("_a15", ref _a15);
-			ser.Sync("_a14", ref _a14);
-			ser.Sync("_a13", ref _a13);
-			ser.Sync("_a12", ref _a12);
+			ser.Sync(nameof(_p24), ref _p24);
+			ser.Sync(nameof(_p25), ref _p25);
+			ser.Sync(nameof(_p26), ref _p26);
+			ser.Sync(nameof(_p27), ref _p27);
+			ser.Sync(nameof(_p28), ref _p28);
+			ser.Sync(nameof(_loram), ref _loram);
+			ser.Sync(nameof(_hiram), ref _hiram);
+			ser.Sync(nameof(_game), ref _game);
+			ser.Sync(nameof(_exrom), ref _exrom);
+			ser.Sync(nameof(_charen), ref _charen);
+			ser.Sync(nameof(_a15), ref _a15);
+			ser.Sync(nameof(_a14), ref _a14);
+			ser.Sync(nameof(_a13), ref _a13);
+			ser.Sync(nameof(_a12), ref _a12);
 		}
 
 		public int VicRead(int addr)

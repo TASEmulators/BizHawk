@@ -68,13 +68,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Port1");
+			ser.BeginSection(nameof(Port1));
 			Port1.SyncState(ser);
-			ser.Sync("temp_wheel1", ref temp_wheel1);
+			ser.Sync(nameof(temp_wheel1), ref temp_wheel1);
 			ser.EndSection();
 
-			ser.BeginSection("Port2");
-			ser.Sync("temp_wheel2", ref temp_wheel2);
+			ser.BeginSection(nameof(Port2));
+			ser.Sync(nameof(temp_wheel2), ref temp_wheel2);
 			Port2.SyncState(ser);
 			ser.EndSection();
 		}

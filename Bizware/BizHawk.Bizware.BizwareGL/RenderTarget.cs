@@ -15,7 +15,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public override string ToString()
 		{
-			return string.Format("GL RT: {0}x{1}", Texture2d.Width, Texture2d.Height);
+			return $"GL RT: {Texture2d.Width}x{Texture2d.Height}";
 		}
 
 		public object Opaque { get; private set; }

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (slotNum >= 0 && slotNum <= 9)
 			{
-				GlobalWin.MainForm.LoadQuickSave("QuickSave" + slotNum, true);
+				GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true);
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (slotNum >= 0 && slotNum <= 9)
 			{
-				GlobalWin.MainForm.SaveQuickSave("QuickSave" + slotNum);
+				GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}");
 			}
 		}
 	}

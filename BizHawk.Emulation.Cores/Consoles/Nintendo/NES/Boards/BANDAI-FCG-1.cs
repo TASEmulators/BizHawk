@@ -56,11 +56,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_reg_16k", ref prg_reg_16k);
-			ser.Sync("regs", ref regs);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_latch", ref irq_latch);
+			ser.Sync(nameof(prg_reg_16k), ref prg_reg_16k);
+			ser.Sync(nameof(regs), ref regs);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_latch), ref irq_latch);
 			if (eprom != null)
 				eprom.SyncState(ser);
 			if (reader != null)

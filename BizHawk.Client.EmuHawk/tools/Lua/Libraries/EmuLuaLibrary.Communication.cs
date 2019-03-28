@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
 		public string SocketServerSend(string SendString)
 		{
-			return "Sent : " + GlobalWin.socketServer.SendString(SendString).ToString() + " bytes";
+			return $"Sent : {GlobalWin.socketServer.SendString(SendString)} bytes";
 		}
 		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
 		public string SocketServerResponse()

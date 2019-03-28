@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public ControllerDefinition ControllerDefinition { get; set; }
 
-        public void FrameAdvance(IController controller, bool render, bool renderSound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
         {            
             _controller = controller;
 
@@ -42,6 +42,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 _lagCount++;
             }
+
+			return true;
         }
 
         public int Frame

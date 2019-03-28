@@ -21,7 +21,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		private static string[] Escape(IEnumerable<string> args)
 		{
-			return args.Select(s => s.Contains(" ") ? string.Format("\"{0}\"", s) : s).ToArray();
+			return args.Select(s => s.Contains(" ") ? $"\"{s}\"" : s).ToArray();
 		}
 
 		public class Results
@@ -105,7 +105,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 				if (hlslHacks)
 				{
-					ret.Code = rxHlslSamplerCrashWorkaround.Replace(ret.Code, m => string.Format("({0}uniform sampler2D{1})", m.Groups[1].Value, m.Groups[3].Value));
+					ret.Code = rxHlslSamplerCrashWorkaround.Replace(ret.Code, m => $"({m.Groups[1].Value}uniform sampler2D{m.Groups[3].Value})");
 				}
 
 				//make variable name map

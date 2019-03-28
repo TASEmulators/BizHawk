@@ -131,13 +131,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Should be fired at the end of every frame
-        /// Primary purpose is to detect tape traps and manage auto play (if/when this is ever implemented)
+        /// Primary purpose is to detect tape traps and manage auto play
         /// </summary>
         public void EndFrame()
         {
             MonitorFrame();
         }
 
+		/// <summary>
+		/// No longer in use
+		/// </summary>
         public void StartFrame()
         {
             //_buzzer.ProcessPulseValue(currentState);
@@ -296,14 +299,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             sbd.Append("(");
             sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count());
             sbd.Append(") : ");
-            //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
             sbd.Append(bl.BlockDescription);
             if (bl.MetaData.Count > 0)
             {
                 sbd.Append(" - ");
                 sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-                //sbd.Append("\n");
-                //sbd.Append(bl.MetaData.Skip(1).First().Key + ": " + bl.MetaData.Skip(1).First().Value);
             }
 
             if (skipForward)
@@ -522,7 +522,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     sbd.Append("(");
                     sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
                     sbd.Append(") : ");
-                    //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
                     sbd.Append(bl.BlockDescription);
                     if (bl.MetaData.Count > 0)
                     {
@@ -532,14 +531,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     _machine.Spectrum.OSD_TapePlayingBlockInfo(sbd.ToString());
                 }
 
-
                 // increment the current period position
                 _position++;
                 
                 if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
                 {
                     // we have reached the end of the current block
-
                     if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count() == 0)
                     {
                         // notify about the current block (we are skipping it because its empty)
@@ -548,13 +545,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         sbd.Append("(");
                         sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
                         sbd.Append(") : ");
-                        //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
                         sbd.Append(bl.BlockDescription);
                         if (bl.MetaData.Count > 0)
-                    {
-                        sbd.Append(" - ");
-                        sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
-                    }
+						{
+							sbd.Append(" - ");
+							sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
+						}
                         _machine.Spectrum.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
 
                     }
@@ -583,7 +579,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 }
 
                                 _monitorTimeOut = 2000;
-
                                 break;
                             case TapeCommand.STOP_THE_TAPE_48K:
                                 if (is48k)
@@ -624,19 +619,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                 }
 
-                // update waitEdge with current position within the current block
-                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+				// update waitEdge with current position within the current block
+				_waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods.Count() > 0 ? _dataBlocks[_currentDataBlockIndex].DataPeriods[_position] : 0;
 
                 // flip the current state
                 FlipTapeState();
-
             }
 
             // update lastCycle and return currentstate
             _lastCycle = cpuCycle - (long)cycles;
-
-            // play the buzzer
-            //_buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
         }
@@ -649,6 +640,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Flash loading implementation
         /// (Deterministic Emulation must be FALSE)
+		/// CURRENTLY NOT ENABLED/WORKING
         /// </summary>
         private bool FlashLoad()
         {
@@ -962,47 +954,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
                 MonitorRead();
 
-            /*
-
-            if (TapeIsPlaying)
-            {
-                if (GetEarBit(_cpu.TotalExecutedCycles))
-                {
-                    result &= ~(TAPE_BIT);      // reset is EAR ON
-                }
-                else
-                {
-                    result |= (TAPE_BIT);       // set is EAR Off
-                }
-            }
-            else
-            {
-                if (_machine.KeyboardDevice.IsIssue2Keyboard)
-                {
-                    if ((_machine.LASTULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
-                    {
-                        result &= ~(TAPE_BIT);
-                    }
-                    else
-                    {
-                        result |= (TAPE_BIT);
-                    }
-                }
-                else
-                {
-                    if ((_machine.LASTULAOutByte & EAR_BIT) == 0)
-                    {
-                        result &= ~(TAPE_BIT);
-                    }
-                    else
-                    {
-                        result |= TAPE_BIT;
-                    }
-                }
-            }
-
-    */
-
             return true;
         }
 
@@ -1032,19 +983,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("DatacorderDevice");
-            ser.Sync("counter", ref counter);
-            ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
-            ser.Sync("_position", ref _position);
-            ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);
-            ser.Sync("_lastCycle", ref _lastCycle);
-            ser.Sync("_waitEdge", ref _waitEdge);
-            ser.Sync("currentState", ref currentState);
-            ser.Sync("_lastINCycle", ref _lastINCycle);
-            ser.Sync("_monitorCount", ref _monitorCount);
-            ser.Sync("_monitorTimeOut", ref _monitorTimeOut);
-            ser.Sync("_monitorLastPC", ref _monitorLastPC);
-            ser.Sync("_monitorLastRegs", ref _monitorLastRegs, false);
+            ser.BeginSection(nameof(DatacorderDevice));
+            ser.Sync(nameof(counter), ref counter);
+            ser.Sync(nameof(_currentDataBlockIndex), ref _currentDataBlockIndex);
+            ser.Sync(nameof(_position), ref _position);
+            ser.Sync(nameof(_tapeIsPlaying), ref _tapeIsPlaying);
+            ser.Sync(nameof(_lastCycle), ref _lastCycle);
+            ser.Sync(nameof(_waitEdge), ref _waitEdge);
+            ser.Sync(nameof(currentState), ref currentState);
+            ser.Sync(nameof(_lastINCycle), ref _lastINCycle);
+            ser.Sync(nameof(_monitorCount), ref _monitorCount);
+            ser.Sync(nameof(_monitorTimeOut), ref _monitorTimeOut);
+            ser.Sync(nameof(_monitorLastPC), ref _monitorLastPC);
+            ser.Sync(nameof(_monitorLastRegs), ref _monitorLastRegs, false);
             ser.EndSection();
         }
 

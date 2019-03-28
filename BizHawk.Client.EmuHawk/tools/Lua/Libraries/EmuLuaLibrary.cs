@@ -13,7 +13,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class EmuLuaLibrary
+	public class EmuLuaLibrary : PlatformEmuLuaLibrary
 	{
 		public EmuLuaLibrary()
 		{
@@ -82,16 +82,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool IsRebootingCore { get; set; } // pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
-
-		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-		public LuaFileList ScriptList { get; } = new LuaFileList();
-
-		public IEnumerable<LuaFile> RunningScripts
-		{
-			get { return ScriptList.Where(lf => lf.Enabled); }
-		}
-
 		private Lua _lua = new Lua();
 		private Lua _currThread;
 
@@ -101,9 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private EmulatorLuaLibrary EmulatorLuaLibrary => (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)];
 
-		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)];
-
-		public void Restart(IEmulatorServiceProvider newServiceProvider)
+		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			foreach (var lib in Libraries)
 			{
@@ -111,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void StartLuaDrawing()
+		public override void StartLuaDrawing()
 		{
 			if (ScriptList.Any() && GuiLibrary.SurfaceIsNull)
 			{
@@ -119,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void EndLuaDrawing()
+		public override void EndLuaDrawing()
 		{
 			if (ScriptList.Any())
 			{
@@ -127,34 +115,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public LuaDocumentation Docs { get; }
 		public bool IsRunning { get; set; }
-		public EventWaitHandle LuaWait { get; private set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
+		public override LuaFunctionList GetRegisteredFunctions()
+		{
+			return EventsLibrary.RegisteredFunctions;
+		}
 
-		public void WindowClosed(IntPtr handle)
+		public override void WindowClosed(IntPtr handle)
 		{
 			FormsLibrary.WindowClosed(handle);
 		}
 
-		public void CallSaveStateEvent(string name)
+		public override void CallSaveStateEvent(string name)
 		{
 			EventsLibrary.CallSaveStateEvent(name);
 		}
 
-		public void CallLoadStateEvent(string name)
+		public override void CallLoadStateEvent(string name)
 		{
 			EventsLibrary.CallLoadStateEvent(name);
 		}
 
-		public void CallFrameBeforeEvent()
+		public override void CallFrameBeforeEvent()
 		{
 			EventsLibrary.CallFrameBeforeEvent();
 		}
 
-		public void CallFrameAfterEvent()
+		public override void CallFrameAfterEvent()
 		{
 			EventsLibrary.CallFrameAfterEvent();
 		}
@@ -164,7 +153,12 @@ namespace BizHawk.Client.EmuHawk
 			EventsLibrary.CallExitEvent(thread);
 		}
 
-		public void Close()
+		public override void CallExitEvent(LuaFile lf)
+		{
+			CallExitEvent(lf.Thread);
+		}
+
+		public override void Close()
 		{
 			FormsLibrary.DestroyAll();
 			_lua.Close();
@@ -187,7 +181,12 @@ namespace BizHawk.Client.EmuHawk
 			return lua;
 		}
 
-		public void ExecuteString(string command)
+		public override void SpawnAndSetFileThread(string pathToLoad, LuaFile lf)
+		{
+			lf.Thread = SpawnCoroutine(pathToLoad);
+		}
+
+		public override void ExecuteString(string command)
 		{
 			_currThread = _lua.NewThread();
 			_currThread.DoString(command);
@@ -230,6 +229,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.ClearCurrentThread();
 			}
+		}
+
+		public override ResumeResult ResumeScriptFromThreadOf(LuaFile lf)
+		{
+			return ResumeScript(lf.Thread);
 		}
 
 		public static void Print(params object[] outputs)

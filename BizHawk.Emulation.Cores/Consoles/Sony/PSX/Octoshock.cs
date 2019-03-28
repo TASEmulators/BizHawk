@@ -743,7 +743,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private IController _controller;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 			FrameAdvance_PrepDiscState();
@@ -801,7 +801,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				LagCount++;
 
 			//what happens to sound in this case?
-			if (render == false) return;
+			if (render == false) return true;
 
 			OctoshockDll.ShockFramebufferInfo fb = new OctoshockDll.ShockFramebufferInfo();
 
@@ -840,9 +840,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			fixed (short* samples = sbuff)
 			{
 				sbuffcontains = OctoshockDll.shock_GetSamples(psx, null);
-				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException("shock_GetSamples returned too many samples: " + sbuffcontains);
+				if (sbuffcontains * 2 > sbuff.Length) throw new InvalidOperationException($"{nameof(OctoshockDll.shock_GetSamples)} returned too many samples: {sbuffcontains}");
 				OctoshockDll.shock_GetSamples(psx, samples);
 			}
+
+			return true;
 		}
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
@@ -1074,7 +1076,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			};
 			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException("eShockStateTransaction.TextSave returned error!");
+				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextSave)} returned error!");
 
 			s.ExtraData.IsLagFrame = IsLagFrame;
 			s.ExtraData.LagCount = LagCount;
@@ -1097,7 +1099,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			if (result != OctoshockDll.SHOCK_OK)
-				throw new InvalidOperationException("eShockStateTransaction.TextLoad returned error!");
+				throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.TextLoad)} returned error!");
 
 			IsLagFrame = s.ExtraData.IsLagFrame;
 			LagCount = s.ExtraData.LagCount;
@@ -1132,7 +1134,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				int result = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 				if (result != OctoshockDll.SHOCK_OK)
-					throw new InvalidOperationException("eShockStateTransaction.BinarySave returned error!");
+					throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.BinarySave)} returned error!");
 				writer.Write(savebuff.Length);
 				writer.Write(savebuff);
 
@@ -1162,7 +1164,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				reader.Read(savebuff, 0, length);
 				int ret = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 				if (ret != OctoshockDll.SHOCK_OK)
-					throw new InvalidOperationException("eShockStateTransaction.BinaryLoad returned error!");
+					throw new InvalidOperationException($"{nameof(OctoshockDll.eShockStateTransaction)}.{nameof(OctoshockDll.eShockStateTransaction.BinaryLoad)} returned error!");
 
 				// other variables
 				IsLagFrame = reader.ReadBoolean();

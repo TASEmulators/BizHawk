@@ -91,7 +91,7 @@ namespace BizHawk.Client.ApiHawk
 					return JoypadButton.R;
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
+					throw new IndexOutOfRangeException($"{value} is missing in convert list");
 			}
 		}
 
@@ -210,7 +210,7 @@ namespace BizHawk.Client.ApiHawk
 					return "R";
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
+					throw new IndexOutOfRangeException($"{value} is missing in convert list");
 			}
 		}
 

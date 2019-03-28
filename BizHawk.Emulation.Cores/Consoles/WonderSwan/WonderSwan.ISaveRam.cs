@@ -20,14 +20,14 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public byte[] CloneSaveRam()
 		{
 			if (!BizSwan.bizswan_saveramsave(Core, saverambuff, saverambuff.Length))
-				throw new InvalidOperationException("bizswan_saveramsave() returned false!");
+				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_saveramsave)}() returned false!");
 			return (byte[])saverambuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
 			if (!BizSwan.bizswan_saveramload(Core, data, data.Length))
-				throw new InvalidOperationException("bizswan_saveramload() returned false!");
+				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_saveramload)}() returned false!");
 		}
 
 		public bool SaveRamModified

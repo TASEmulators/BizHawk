@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
-			ser.Register<ISoundProvider>(magicSoundProvider);
+			ser.Register<ISoundProvider>(this);
 
 			if (Board is BANDAI_FCG_1)
 			{
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public DisplayType Region { get { return _display_type; } }
 
-		class MyVideoProvider : IVideoProvider
+		public class MyVideoProvider : IVideoProvider
 		{
 			//public int ntsc_top = 8;
 			//public int ntsc_bottom = 231;
@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int VsyncDenominator => emu.VsyncDen;
 		}
 
-		MyVideoProvider videoProvider;
+		public MyVideoProvider videoProvider;
 
 		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =

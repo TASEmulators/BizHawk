@@ -8,48 +8,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("waveram", ref waveram, false);
-			ser.Sync("waverampos", ref waverampos);
+			ser.Sync(nameof(waveram), ref waveram, false);
+			ser.Sync(nameof(waverampos), ref waverampos);
 
-			ser.Sync("volumespd", ref volumespd);
-			ser.Sync("r4080_6", ref r4080_6);
-			ser.Sync("r4080_7", ref r4080_7);
+			ser.Sync(nameof(volumespd), ref volumespd);
+			ser.Sync(nameof(r4080_6), ref r4080_6);
+			ser.Sync(nameof(r4080_7), ref r4080_7);
 
-			ser.Sync("frequency", ref frequency);
-			ser.Sync("r4083_6", ref r4083_6);
-			ser.Sync("r4083_7", ref r4083_7);
+			ser.Sync(nameof(frequency), ref frequency);
+			ser.Sync(nameof(r4083_6), ref r4083_6);
+			ser.Sync(nameof(r4083_7), ref r4083_7);
 
-			ser.Sync("sweepspd", ref sweepspd);
-			ser.Sync("r4084_6", ref r4084_6);
-			ser.Sync("r4084_7", ref r4084_7);
+			ser.Sync(nameof(sweepspd), ref sweepspd);
+			ser.Sync(nameof(r4084_6), ref r4084_6);
+			ser.Sync(nameof(r4084_7), ref r4084_7);
 
-			ser.Sync("sweepbias", ref sweepbias);
+			ser.Sync(nameof(sweepbias), ref sweepbias);
 
-			ser.Sync("modfreq", ref modfreq);
-			ser.Sync("r4087_7", ref r4087_7);
+			ser.Sync(nameof(modfreq), ref modfreq);
+			ser.Sync(nameof(r4087_7), ref r4087_7);
 
-			ser.Sync("modtable", ref modtable, false);
-			ser.Sync("modtablepos", ref modtablepos);
+			ser.Sync(nameof(modtable), ref modtable, false);
+			ser.Sync(nameof(modtablepos), ref modtablepos);
 
-			ser.Sync("mastervol_num", ref mastervol_num);
-			ser.Sync("mastervol_den", ref mastervol_den);
-			ser.Sync("waveram_writeenable", ref waveram_writeenable);
+			ser.Sync(nameof(mastervol_num), ref mastervol_num);
+			ser.Sync(nameof(mastervol_den), ref mastervol_den);
+			ser.Sync(nameof(waveram_writeenable), ref waveram_writeenable);
 
-			ser.Sync("envspeed", ref envspeed);
+			ser.Sync(nameof(envspeed), ref envspeed);
 
-			ser.Sync("volumeclock", ref volumeclock);
-			ser.Sync("sweepclock", ref sweepclock);
-			ser.Sync("modclock", ref modclock);
-			ser.Sync("mainclock", ref mainclock);
+			ser.Sync(nameof(volumeclock), ref volumeclock);
+			ser.Sync(nameof(sweepclock), ref sweepclock);
+			ser.Sync(nameof(modclock), ref modclock);
+			ser.Sync(nameof(mainclock), ref mainclock);
 
-			ser.Sync("modoutput", ref modoutput);
+			ser.Sync(nameof(modoutput), ref modoutput);
 
-			ser.Sync("volumegain", ref volumegain);
-			ser.Sync("sweepgain", ref sweepgain);
+			ser.Sync(nameof(volumegain), ref volumegain);
+			ser.Sync(nameof(sweepgain), ref sweepgain);
 
-			ser.Sync("waveramoutput", ref waveramoutput);
+			ser.Sync(nameof(waveramoutput), ref waveramoutput);
 
-			ser.Sync("latchedoutput", ref latchedoutput);
+			ser.Sync(nameof(latchedoutput), ref latchedoutput);
 		}
 
 		//4040:407f

@@ -196,16 +196,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("AUDC", ref AUDC);
-				ser.Sync("AUDF", ref AUDF);
-				ser.Sync("AUDV", ref AUDV);
-				ser.Sync("sr1", ref sr1);
-				ser.Sync("sr3", ref sr3);
-				ser.Sync("sr4", ref sr4);
-				ser.Sync("sr5", ref sr5);
-				ser.Sync("sr9", ref sr9);
-				ser.Sync("freqcnt", ref freqcnt);
-				ser.Sync("on", ref on);
+				ser.Sync(nameof(AUDC), ref AUDC);
+				ser.Sync(nameof(AUDF), ref AUDF);
+				ser.Sync(nameof(AUDV), ref AUDV);
+				ser.Sync(nameof(sr1), ref sr1);
+				ser.Sync(nameof(sr3), ref sr3);
+				ser.Sync(nameof(sr4), ref sr4);
+				ser.Sync(nameof(sr5), ref sr5);
+				ser.Sync(nameof(sr9), ref sr9);
+				ser.Sync(nameof(freqcnt), ref freqcnt);
+				ser.Sync(nameof(on), ref on);
 			}
 		}
 	}

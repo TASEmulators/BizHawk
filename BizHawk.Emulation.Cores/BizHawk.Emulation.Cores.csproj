@@ -317,27 +317,33 @@
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IFDDHost.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Beeper.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\CPUMonitor.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Screen.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ULA.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\FloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPSG.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\CHRN.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Definitions.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDC.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDD.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.IPortIODevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Timing.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPS765.Static.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Definitions.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDC.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDD.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.IPortIODevice.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Timing.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPS765.Static.cs">
+      <DependentUpon>NECUPD765.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\CursorJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick2.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick1.cs" />
@@ -346,10 +352,6 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IBeeperDevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFormat\CPCExtendedFloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFormat\CPCFloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskType.cs" />
@@ -372,30 +374,94 @@
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2\ZX128Plus2.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs">
+      <DependentUpon>SpectrumBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs">
+      <DependentUpon>SpectrumBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs">
+      <DependentUpon>SpectrumBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs">
+      <DependentUpon>SpectrumBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\CPUMonitor.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs">
+      <DependentUpon>ZX48.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs">
+      <DependentUpon>ZX48.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs">
+      <DependentUpon>ZX128.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs">
+      <DependentUpon>ZX128.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2\ZX128Plus2.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs">
+      <DependentUpon>ZX128Plus2a.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Port.cs">
+      <DependentUpon>ZX128Plus2a.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Memory.cs">
+      <DependentUpon>ZX128Plus3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Port.cs">
+      <DependentUpon>ZX128Plus3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Memory.cs">
+      <DependentUpon>Pentagon128.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Port.cs">
+      <DependentUpon>Pentagon128.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Screen.cs" />
+    <None Include="Computers\SinclairSpectrum\readme.md" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Rom\RomData.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ICodeDataLog.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Messaging.cs" />
-    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ICodeDataLog.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Messaging.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs">
+      <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -723,6 +789,31 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IDebuggable.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IEmulator.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IInputPollable.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IMemoryDomains.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.ISaveRam.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.ISettable.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IStatable.cs">
+      <DependentUpon>GBHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLinkControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLinkControllers.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ICodeDataLog.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_WisdomTree.cs" />
@@ -1110,6 +1201,25 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Nintendo\NES\Unif.cs" />
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.cs" />
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IDebuggable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IEmulator.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IInputPollable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IMemoryDomains.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.ISaveRam.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SubNESHawk\SubNESHawk.IStatable.cs">
+      <DependentUpon>SubNESHawk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\LibQuickNES.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\Nes_NTSC_Colors.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.cs" />
@@ -1226,6 +1336,31 @@
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IDebuggable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IEmulator.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IInputPollable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IMemoryDomains.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ISaveRam.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.ISettable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLink.IStatable.cs">
+      <DependentUpon>GGHawkLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLinkControllerDeck.cs" />
+    <Compile Include="Consoles\Sega\GGHawkLink\GGHawkLinkControllers.cs" />
     <Compile Include="Consoles\Sega\gpgx64\GPGX.ISoundProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
@@ -1300,9 +1435,6 @@
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
-      <DependentUpon>SMS.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\SMS\SMS.ISoundProvider.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
@@ -1410,6 +1542,7 @@
     </Compile>
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Sound\SN76489sms.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
@@ -1441,7 +1574,6 @@
     <Compile Include="Sound\HuC6280PSG.cs" />
     <Compile Include="Sound\IAsyncSoundProvider.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
-    <Compile Include="Sound\SN76489.cs" />
     <Compile Include="Sound\SoundMixer.cs" />
     <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\VRC6Alt.cs" />
@@ -1500,13 +1632,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Screen.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Screen.cs" />
     <None Include="Computers\AmstradCPC\readme.md" />
-    <None Include="Computers\SinclairSpectrum\readme.md" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />

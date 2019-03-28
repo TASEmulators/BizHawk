@@ -600,6 +600,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					return;
 				}
 			}
+
 			Fetch1_Real();
 		}
 
@@ -2971,8 +2972,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			TotalExecutedCycles++;
 			if (!rdy_freeze)
 			{
-				
-
 				interrupt_pending |= Interrupted;
 			}
 			rdy_freeze = false;

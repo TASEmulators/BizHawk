@@ -138,20 +138,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			VRC6Sound.SyncState(ser);
-			ser.Sync("prg_bank_16k", ref prg_bank_16k);
-			ser.Sync("prg_bank_8k", ref prg_bank_8k);
-			ser.Sync("chr_banks_1k", ref chr_banks_1k);
-			ser.Sync("irq_mode", ref irq_mode);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_autoen", ref irq_autoen);
-			ser.Sync("irq_reload", ref irq_reload);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_prescaler", ref irq_prescaler);
+			ser.Sync(nameof(prg_bank_16k), ref prg_bank_16k);
+			ser.Sync(nameof(prg_bank_8k), ref prg_bank_8k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(irq_mode), ref irq_mode);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_autoen), ref irq_autoen);
+			ser.Sync(nameof(irq_reload), ref irq_reload);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_prescaler), ref irq_prescaler);
 
-			ser.Sync("chrA10replace", ref chrA10replace);
-			ser.Sync("NTROM", ref NTROM);
-			ser.Sync("PPUBankingMode", ref PPUBankingMode);
+			ser.Sync(nameof(chrA10replace), ref chrA10replace);
+			ser.Sync(nameof(NTROM), ref NTROM);
+			ser.Sync(nameof(PPUBankingMode), ref PPUBankingMode);
 
 			SyncPRG();
 			SyncIRQ();

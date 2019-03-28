@@ -592,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				dest.Write(data, 0, actual_length);
 				_pool.ReleaseBuffer(data);
-				//dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
+				//dbg.WriteLine($"{pts},{ptsnum},{ptsden}");
 			}
 		}
 

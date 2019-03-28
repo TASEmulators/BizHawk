@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!string.IsNullOrWhiteSpace(_currentFileName))
 				{
-					Text = DialogTitle + " - " + Path.GetFileNameWithoutExtension(_currentFileName);
+					Text = $"{DialogTitle} - {Path.GetFileNameWithoutExtension(_currentFileName)}";
 				}
 				else
 				{
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 					.ToString()
 					.Last();
 
-				return "QuickSave" + num;
+				return $"QuickSave{num}";
 			}
 		}
 
@@ -350,8 +350,8 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var item = StartFromSlotBox.Items.
-					OfType<object>()
+				var item = StartFromSlotBox.Items
+					.OfType<object>()
 					.FirstOrDefault(o => o.ToString() == value);
 
 				if (item != null)
@@ -772,7 +772,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CurrentFileName = path;
 			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileNameWithoutExtension(path) + " loaded";
+			MessageLabel.Text = $"{Path.GetFileNameWithoutExtension(path)} loaded";
 
 			AssessRunButtonStatus();
 			return true;
@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllText(path, json);
 			CurrentFileName = path;
 			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+			MessageLabel.Text = $"{Path.GetFileName(CurrentFileName)} saved";
 		}
 
 		#endregion

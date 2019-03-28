@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// do not need to serialize mirroring, as that's handled for us
 			for (int i = 0; i < chr.Length; i++)
 				ser.Sync("chr" + i, ref chr[i]);
-			ser.Sync("prg", ref prg);
+			ser.Sync(nameof(prg), ref prg);
 		}
 	}
 }

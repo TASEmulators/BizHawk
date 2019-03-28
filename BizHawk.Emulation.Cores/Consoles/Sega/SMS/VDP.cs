@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public enum VdpMode { SMS, GameGear }
 
 	// Emulates the Texas Instruments TMS9918 VDP.
-	public sealed partial class VDP : IVideoProvider
+	public partial class VDP : IVideoProvider
 	{
 		// VDP State
 		public byte[] VRAM = new byte[0x4000]; //16kb video RAM
@@ -38,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		SMS Sms;
 		VdpMode mode;
-		DisplayType DisplayType = DisplayType.NTSC;
+		public DisplayType DisplayType = DisplayType.NTSC;
 		Z80A Cpu;
 
 		public bool SpriteLimit;
@@ -337,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		void ProcessFrameInterrupt()
+		public void ProcessFrameInterrupt()
 		{
 			if (ScanLine == FrameHeight + 1)
 			{
@@ -352,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				
 		}
 
-		void ProcessLineInterrupt()
+		public void ProcessLineInterrupt()
 		{
 			if (ScanLine <= FrameHeight)
 			{
@@ -369,35 +366,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			// else we're outside the active display period
 			lineIntLinesRemaining = Registers[0x0A];
-		}
-
-		public void ExecFrame(bool render)
-		{
-			int scanlinesPerFrame = DisplayType == DisplayType.NTSC ? 262 : 313;
-			SpriteLimit = Sms.Settings.SpriteLimit;
-			for (ScanLine = 0; ScanLine < scanlinesPerFrame; ScanLine++)
-			{
-				RenderCurrentScanline(render);
-
-				ProcessFrameInterrupt();
-				ProcessLineInterrupt();
-				Sms.ProcessLineControls();
-
-				//Console.Write(Cpu.cur_instr.Length);
-				//Console.Write(" ");
-				//Console.WriteLine(Cpu.instr_pntr);
-				for (int j = 0; j < IPeriod; j++)
-				{
-					Cpu.ExecuteOne();
-				}
-				
-
-				if (ScanLine == scanlinesPerFrame - 1)
-				{
-					ProcessGGScreen();
-					ProcessOverscan();
-				}
-			}
 		}
 
 		internal void RenderCurrentScanline(bool render)
@@ -429,20 +397,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VDP");
-			ser.Sync("StatusByte", ref StatusByte);
+			ser.BeginSection(nameof(VDP));
+			ser.Sync(nameof(StatusByte), ref StatusByte);
 			ser.Sync("WaitingForLatchByte", ref VdpWaitingForLatchByte);
 			ser.Sync("Latch", ref VdpLatch);
 			ser.Sync("ReadBuffer", ref VdpBuffer);
-			ser.Sync("VdpAddress", ref VdpAddress);
+			ser.Sync(nameof(VdpAddress), ref VdpAddress);
 			ser.Sync("Command", ref VdpCommand);
-			ser.Sync("HIntPending", ref HIntPending);
-			ser.Sync("VIntPending", ref VIntPending);
+			ser.Sync(nameof(HIntPending), ref HIntPending);
+			ser.Sync(nameof(VIntPending), ref VIntPending);
 			ser.Sync("LineIntLinesRemaining", ref lineIntLinesRemaining);
-			ser.Sync("Registers", ref Registers, false);
-			ser.Sync("CRAM", ref CRAM, false);
-			ser.Sync("VRAM", ref VRAM, false);
-			ser.Sync("HCounter", ref HCounter);
+			ser.Sync(nameof(Registers), ref Registers, false);
+			ser.Sync(nameof(CRAM), ref CRAM, false);
+			ser.Sync(nameof(VRAM), ref VRAM, false);
+			ser.Sync(nameof(HCounter), ref HCounter);
 			ser.EndSection();
 
 			if (ser.IsReader)

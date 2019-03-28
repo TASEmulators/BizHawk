@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mHead == null)
 			{
-				throw new InvalidOperationException("Attempted to pop from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Pop)} from an empty data structure");
 			}
 
 			var ret = _mHead.Value;
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mHead == null)
 			{
-				throw new InvalidOperationException("Attempted to peek from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Peek)} from an empty data structure");
 			}
 
 			return _mHead.Value;
@@ -223,7 +223,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mTail == null)
 			{
-				throw new InvalidOperationException("Attempted to dequeue from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Dequeue)} from an empty data structure");
 			}
 
 			var ret = _mTail.Value;

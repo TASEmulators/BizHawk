@@ -1312,9 +1312,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // get text length
                 int strLen = data[_position++];
 
-                string title = "Info: ";
+				string title = String.Empty;
+				title = "Info: ";
 
-                switch (type)
+				switch (type)
                 {
                     case 0x00:
                         title = "Full Title: ";

@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		{
 			if (!LibLynx.BinStateSave(Core, _savebuff, _savebuff.Length))
 			{
-				throw new InvalidOperationException("Core's BinStateSave() returned false!");
+				throw new InvalidOperationException($"Core's {nameof(LibLynx.BinStateSave)}() returned false!");
 			}
 
 			writer.Write(_savebuff.Length);
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			reader.Read(_savebuff, 0, length);
 			if (!LibLynx.BinStateLoad(Core, _savebuff, _savebuff.Length))
 			{
-				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
+				throw new InvalidOperationException($"Core's {nameof(LibLynx.BinStateLoad)}() returned false!");
 			}
 
 			// other variables

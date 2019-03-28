@@ -65,21 +65,21 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			ser.BeginSection("PSG");
 
-			ser.Sync("Register", ref Register, false);
+			ser.Sync(nameof(Register), ref Register, false);
 
-			ser.Sync("psg_clock", ref psg_clock);
-			ser.Sync("clock_A", ref clock_A);
-			ser.Sync("clock_B", ref clock_B);
-			ser.Sync("clock_C", ref clock_C);
-			ser.Sync("noise_clock", ref noise_clock);
-			ser.Sync("env_clock", ref env_clock);
-			ser.Sync("A_up", ref A_up);
-			ser.Sync("B_up", ref B_up);
-			ser.Sync("C_up", ref C_up);
-			ser.Sync("noise", ref noise);
-			ser.Sync("env_E", ref env_E);
-			ser.Sync("E_up_down", ref E_up_down);
-			ser.Sync("port_sel", ref port_sel);
+			ser.Sync(nameof(psg_clock), ref psg_clock);
+			ser.Sync(nameof(clock_A), ref clock_A);
+			ser.Sync(nameof(clock_B), ref clock_B);
+			ser.Sync(nameof(clock_C), ref clock_C);
+			ser.Sync(nameof(noise_clock), ref noise_clock);
+			ser.Sync(nameof(env_clock), ref env_clock);
+			ser.Sync(nameof(A_up), ref A_up);
+			ser.Sync(nameof(B_up), ref B_up);
+			ser.Sync(nameof(C_up), ref C_up);
+			ser.Sync(nameof(noise), ref noise);
+			ser.Sync(nameof(env_E), ref env_E);
+			ser.Sync(nameof(E_up_down), ref E_up_down);
+			ser.Sync(nameof(port_sel), ref port_sel);
 
 			sync_psg_state();
 

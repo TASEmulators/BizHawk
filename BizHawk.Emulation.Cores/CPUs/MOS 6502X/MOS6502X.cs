@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					"{0:X4}: {1,-9}  {2} ",
 					PC, rawbytes, disasm).PadRight(32),
 				RegisterInfo = string.Format(
-					"A:{0:X2} X:{1:X2} Y:{2:X2} SP:{4:X2} P:{3:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
+					"A:{0:X2}  X:{1:X2}  Y:{2:X2}  SP:{4:X2}  P:{3:X2}  {6}{7}{8}{9}{10}{11}{12}{13}  Cy:{5}  PPU-Cy:{15}",
 					A, X, Y, P, S, TotalExecutedCycles,
 					FlagN ? "N" : "n",
 					FlagV ? "V" : "v",
@@ -84,7 +84,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					FlagI ? "I" : "i",
 					FlagZ ? "Z" : "z",
 					FlagC ? "C" : "c",
-					!RDY ? "R" : "r")
+					!RDY ? "R" : "r",
+					ext_ppu_cycle)
 			};
 		}
 
@@ -120,29 +121,33 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
+		// ppu cycle (used with SubNESHawk)
+		public int ext_ppu_cycle = 0;
+
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("MOS6502X");
-			ser.Sync("A", ref A);
-			ser.Sync("X", ref X);
-			ser.Sync("Y", ref Y);
-			ser.Sync("P", ref P);
-			ser.Sync("PC", ref PC);
-			ser.Sync("S", ref S);
-			ser.Sync("NMI", ref NMI);
-			ser.Sync("IRQ", ref IRQ);
-			ser.Sync("RDY", ref RDY);
-			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync("opcode", ref opcode);
-			ser.Sync("opcode2", ref opcode2);
-			ser.Sync("opcode3", ref opcode3);
-			ser.Sync("ea", ref ea);
-			ser.Sync("alu_temp", ref alu_temp);
-			ser.Sync("mi", ref mi);
-			ser.Sync("iflag_pending", ref iflag_pending);
-			ser.Sync("interrupt_pending", ref interrupt_pending);
-			ser.Sync("branch_irq_hack", ref branch_irq_hack);
-			ser.Sync("rdy_freeze", ref rdy_freeze);
+			ser.BeginSection(nameof(MOS6502X));
+			ser.Sync(nameof(A), ref A);
+			ser.Sync(nameof(X), ref X);
+			ser.Sync(nameof(Y), ref Y);
+			ser.Sync(nameof(P), ref P);
+			ser.Sync(nameof(PC), ref PC);
+			ser.Sync(nameof(S), ref S);
+			ser.Sync(nameof(NMI), ref NMI);
+			ser.Sync(nameof(IRQ), ref IRQ);
+			ser.Sync(nameof(RDY), ref RDY);
+			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
+			ser.Sync(nameof(opcode), ref opcode);
+			ser.Sync(nameof(opcode2), ref opcode2);
+			ser.Sync(nameof(opcode3), ref opcode3);
+			ser.Sync(nameof(ea), ref ea);
+			ser.Sync(nameof(alu_temp), ref alu_temp);
+			ser.Sync(nameof(mi), ref mi);
+			ser.Sync(nameof(iflag_pending), ref iflag_pending);
+			ser.Sync(nameof(interrupt_pending), ref interrupt_pending);
+			ser.Sync(nameof(branch_irq_hack), ref branch_irq_hack);
+			ser.Sync(nameof(rdy_freeze), ref rdy_freeze);
+			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
 			ser.EndSection();
 		}
 

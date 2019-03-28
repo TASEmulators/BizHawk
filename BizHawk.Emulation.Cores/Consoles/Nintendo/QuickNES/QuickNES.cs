@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 				{
-					throw new InvalidOperationException("qn_new() returned NULL");
+					throw new InvalidOperationException($"{nameof(QN.qn_new)}() returned NULL");
 				}
 
 				try
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#endregion
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			CheckDisposed();
 			using (FP.Save())
@@ -211,6 +211,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (CB1 != null) CB1();
 				if (CB2 != null) CB2();
 			}
+
+			return true;
 		}
 
 		IntPtr Context;

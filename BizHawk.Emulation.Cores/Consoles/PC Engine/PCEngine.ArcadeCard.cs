@@ -139,10 +139,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void ArcadeCardSyncState(Serializer ser)
 		{
-			ser.BeginSection("ArcadeCard");
-			ser.Sync("ShiftRegister", ref ShiftRegister);
-			ser.Sync("ShiftAmount", ref ShiftAmount);
-			ser.Sync("RotateAmount", ref RotateAmount);
+			ser.BeginSection(nameof(ArcadeCard));
+			ser.Sync(nameof(ShiftRegister), ref ShiftRegister);
+			ser.Sync(nameof(ShiftAmount), ref ShiftAmount);
+			ser.Sync(nameof(RotateAmount), ref RotateAmount);
 
 			if (ArcadeCardRewindHack == false || ser.IsText)
 			{
@@ -153,10 +153,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				ser.BeginSection("Page" + i);
 
-				ser.Sync("Control", ref ArcadePage[i].Control);
-				ser.Sync("Base", ref ArcadePage[i].Base);
-				ser.Sync("Offset", ref ArcadePage[i].Offset);
-				ser.Sync("IncrementValue", ref ArcadePage[i].IncrementValue);
+				ser.Sync(nameof(ArcadeCardPage.Control), ref ArcadePage[i].Control);
+				ser.Sync(nameof(ArcadeCardPage.Base), ref ArcadePage[i].Base);
+				ser.Sync(nameof(ArcadeCardPage.Offset), ref ArcadePage[i].Offset);
+				ser.Sync(nameof(ArcadeCardPage.IncrementValue), ref ArcadePage[i].IncrementValue);
 				ser.EndSection();
 			}
 

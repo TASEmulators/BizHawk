@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
 		private NES _nes;
+		private SubNESHawk _subneshawk;
 		private NES.NESSettings _settings;
 		private Bitmap _bmp;
 
@@ -25,8 +27,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			_nes = (NES)Global.Emulator;
-			_settings = _nes.GetSettings();
+			if (Global.Emulator is NES)
+			{
+				_nes = (NES)Global.Emulator;
+				_settings = _nes.GetSettings();
+			}
+			else
+			{
+				_subneshawk = (SubNESHawk)Global.Emulator;
+				_settings = _subneshawk.GetSettings();
+			}
+
 			LoadStuff();
 		}
 
@@ -102,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
 						if (showmsg)
 						{
-							GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+							GlobalWin.OSD.AddMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;
@@ -146,7 +157,15 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor &= 0x00FFFFFF;
 			}
 
-			_nes.PutSettings(_settings);
+			if (Global.Emulator is NES)
+			{
+				_nes.PutSettings(_settings);
+			}
+			else
+			{
+				_subneshawk.PutSettings(_settings);
+			}
+
 			Close();
 		}
 

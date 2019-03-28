@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sfd = new SaveFileDialog
 				{
-					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Nametables",
+					FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Nametables",
 					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
 					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
 					RestoreDirectory = true

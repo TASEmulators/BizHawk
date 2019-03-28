@@ -46,8 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ShowError(int row, int column)
 		{
 			var c = SubGrid.Rows[row].Cells[column];
-			var error = "Unable to parse value: " + c.Value;
-			var caption = "Parse Error Row " + row + " Column " + column;
+			var error = $"Unable to parse value: {c.Value}";
+			var caption = $"Parse Error Row {row} Column {column}";
 			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				c = SubGrid.Rows[x].Cells[3];
 				c.Value = s.Duration;
 				c = SubGrid.Rows[x].Cells[4];
-				c.Value = string.Format("{0:X8}", s.Color);
+				c.Value = $"{s.Color:X8}";
 				c.Style.BackColor = Color.FromArgb((int)s.Color);
 				c = SubGrid.Rows[x].Cells[5];
 				c.Value = s.Message;
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			c = SubGrid.Rows[index].Cells[3];
 			c.Value = s.Duration;
 			c = SubGrid.Rows[index].Cells[4];
-			c.Value = string.Format("{0:X8}", s.Color);
+			c.Value = $"{s.Color:X8}";
 			c.Style.BackColor = Color.FromArgb((int)s.Color);
 			c = SubGrid.Rows[index].Cells[5];
 			c.Value = s.Message;
@@ -229,9 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllText(fileName, str);
 
 			// Display success
-			MessageBox.Show(
-				string.Format("Subtitles succesfully exported to {0}.", fileName),
-				"Success");
+			MessageBox.Show($"Subtitles succesfully exported to {fileName}.", "Success");
 		}
 
 		private void SubGrid_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)

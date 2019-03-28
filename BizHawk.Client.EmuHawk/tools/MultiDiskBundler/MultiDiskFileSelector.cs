@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
                             }
 
                             var intName = hf.ArchiveItems[memIdx];
-                            PathBox.Text = _path + "|" + intName.Name;
+                            PathBox.Text = $"{_path}|{intName.Name}";
                         }
                         else
                         {

@@ -22,8 +22,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             CPU = cpu;
 
             CPUMon = new CPUMonitor(this);
-
-            //ULADevice = new ULA48(this);
             ULADevice = new Screen48(this);
 
             BuzzerDevice = new Beeper(this);

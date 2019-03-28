@@ -193,15 +193,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			writer.WriteLine();
 
 			writer.WriteLine("PC {0:X6}", PC);
-			writer.WriteLine("InterruptMaskLevel {0}", InterruptMaskLevel);
+			writer.WriteLine($"{nameof(InterruptMaskLevel)} {InterruptMaskLevel}");
 			writer.WriteLine("USP {0:X8}", usp);
 			writer.WriteLine("SSP {0:X8}", ssp);
 			writer.WriteLine("S {0}", s);
 			writer.WriteLine("M {0}", m);
 			writer.WriteLine();
 
-			writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles);
-			writer.WriteLine("PendingCycles {0}", PendingCycles);
+			writer.WriteLine($"{nameof(TotalExecutedCycles)} {TotalExecutedCycles}");
+			writer.WriteLine($"{nameof(PendingCycles)} {PendingCycles}");
 
 			writer.WriteLine("[/{0}]", id);
 		}
@@ -232,14 +232,14 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				else if (args[0] == "A7") A[7].s32 = int.Parse(args[1], NumberStyles.HexNumber);
 
 				else if (args[0] == "PC") PC = int.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "InterruptMaskLevel") InterruptMaskLevel = int.Parse(args[1]);
+				else if (args[0] == nameof(InterruptMaskLevel)) InterruptMaskLevel = int.Parse(args[1]);
 				else if (args[0] == "USP") usp = int.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "SSP") ssp = int.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "S") s = bool.Parse(args[1]);
 				else if (args[0] == "M") m = bool.Parse(args[1]);
 
-				else if (args[0] == "TotalExecutedCycles") TotalExecutedCycles = int.Parse(args[1]);
-				else if (args[0] == "PendingCycles") PendingCycles = int.Parse(args[1]);
+				else if (args[0] == nameof(TotalExecutedCycles)) TotalExecutedCycles = int.Parse(args[1]);
+				else if (args[0] == nameof(PendingCycles)) PendingCycles = int.Parse(args[1]);
 
 				else
 					Console.WriteLine("Skipping unrecognized identifier " + args[0]);

@@ -59,17 +59,17 @@ namespace BizHawk.Client.EmuHawk
 					new FormatPreset("Matroska", "AVC video and Vorbis audio in a Matroska container.",
 						"-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),
 					new FormatPreset("MP4", "AVC video and AAC audio in an MP4 container.",
-						"-c:a libvo_aacenc -c:v libx264 -f mp4", false, "mp4"),
+						"-c:a aac -c:v libx264 -f mp4", false, "mp4"),
 					new FormatPreset("WebM", "VP8 video and Vorbis audio in a WebM container.",
-						"-c:a libvorbis -c:v libvpx -f webm", false, "webm"),
+						"-c:a libvorbis -c:v libvpx -auto-alt-ref 0 -f webm", false, "webm"),
 					new FormatPreset("Ogg", "Theora video and Vorbis audio in an Ogg contrainer.",
 						"-c:a libvorbis -c:v libtheora -f ogg", false, "ogg"),
 					new FormatPreset("Xvid", "Xvid video and MP3 audio in an AVI container.",
 						"-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),
 					new FormatPreset("QuickTime", "AVC video and AAC audio in a QuickTime container.",
-						"-c:a libvo_aacenc -c:v libx264 -f mov", false, "mov"),
+						"-c:a aac -c:v libx264 -f mov", false, "mov"),
 					new FormatPreset("FLV", "AVC video and AAC audio in a Flash Video container.",
-						"-c:a libvo_aacenc -c:v libx264 -f flv", false, "flv"),
+						"-c:a aac -c:v libx264 -f flv", false, "flv"),
 					new FormatPreset("[Custom]", "Write your own ffmpeg command. For advanced users only.",
 						"-c:a foo -c:v bar -f baz", true, "foobar"),
 				};
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			if (listBox1.SelectedIndex != -1)
 			{
 				var f = (FormatPreset)listBox1.SelectedItem;
-				label5.Text = "Extension: " + f.Extension;
+				label5.Text = $"Extension: {f.Extension}";
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
 			}

@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 				JoystickState jss = Joystick.GetState(i);
 				if (jss.IsConnected)
 				{
-					Console.WriteLine(string.Format("joydevice index: {0}", i)); //OpenTK doesn't expose the GUID, even though it stores it internally...
+					Console.WriteLine($"joydevice index: {i}"); //OpenTK doesn't expose the GUID, even though it stores it internally...
 
 					OTK_GamePad ogp = new OTK_GamePad(i);
 					Devices.Add(ogp);
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			return state;
 		}
 
-		public string Name { get { return "Joystick " + _stickIdx; } }
+		public string Name { get { return $"Joystick {_stickIdx}"; } }
 		public Guid Guid { get { return _guid; } }
 
 
@@ -122,17 +122,17 @@ namespace BizHawk.Client.EmuHawk
 			int jb = 1;
 			for (int i = 0; i < 64; i++)
 			{
-				AddItem(string.Format("B{0}", jb), () => state.GetButton(i)==ButtonState.Pressed);
+				AddItem($"B{jb}", () => state.GetButton(i)==ButtonState.Pressed);
 				jb++;
 			}
 
 			jb = 1;
 			foreach (JoystickHat enval in Enum.GetValues(typeof(JoystickHat)))
 			{
-				AddItem(string.Format("POV{0}U", jb), () => state.GetHat(enval).IsUp);
-				AddItem(string.Format("POV{0}D", jb), () => state.GetHat(enval).IsDown);
-				AddItem(string.Format("POV{0}L", jb), () => state.GetHat(enval).IsLeft);
-				AddItem(string.Format("POV{0}R", jb), () => state.GetHat(enval).IsRight);
+				AddItem($"POV{jb}U", () => state.GetHat(enval).IsUp);
+				AddItem($"POV{jb}D", () => state.GetHat(enval).IsDown);
+				AddItem($"POV{jb}L", () => state.GetHat(enval).IsLeft);
+				AddItem($"POV{jb}R", () => state.GetHat(enval).IsRight);
 				jb++;
 			}
 		}

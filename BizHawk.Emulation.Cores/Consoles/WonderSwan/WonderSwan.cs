@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
 			if (Core == IntPtr.Zero)
-				throw new InvalidOperationException("bizswan_new() returned NULL!");
+				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_new)}() returned NULL!");
 			try
 			{
 				var ss = _SyncSettings.GetNativeSettings();
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				bool rotate = false;
 
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
-					throw new InvalidOperationException("bizswan_load() returned FALSE!");
+					throw new InvalidOperationException($"{nameof(BizSwan.bizswan_load)}() returned FALSE!");
 
 				InitISaveRam();
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 			IsLagFrame = true;
@@ -79,6 +79,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 			if (IsLagFrame)
 				LagCount++;
+
+			return true;
 		}
 
 		public CoreComm CoreComm { get; private set; }

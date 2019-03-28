@@ -1,8 +1,8 @@
 ﻿//TODO - correctly emulate PPU OFF state
 
+using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// installing vram address is delayed after second write to 2006, set this up here
 		public int install_2006;
-		public bool race_2006;
+		public bool race_2006, race_2006_2;
 		public int install_2001;
 		public bool show_bg_new; //Show background
 		public bool show_obj_new; //Show sprites
@@ -62,30 +62,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// attempt to emulate graphics pipeline behaviour
 		// experimental
 		int pixelcolor_latch_1;
-		int pixelcolor_latch_2;
+
 		void pipeline(int pixelcolor, int row_check)
 		{
-			if (row_check > 1)
+			if (row_check > 0)
 			{
 				if (reg_2001.color_disable)
-					pixelcolor_latch_2 &= 0x30;
+					pixelcolor_latch_1 &= 0x30;
 
 				//TODO - check flashing sirens in werewolf
 				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
-				xbuf[(target - 2)] = (short)(pixelcolor_latch_2 | reg_2001.intensity_lsl_6);
+				xbuf[(target - 1)] = (short)(pixelcolor_latch_1 | reg_2001.intensity_lsl_6);
 			}
-
-			pixelcolor_latch_2 = pixelcolor_latch_1;			
+		
 			pixelcolor_latch_1 = pixelcolor;
 		}
 
-		void Read_bgdata(int cycle, ref BGDataRecord bgdata)
+		void Read_bgdata(int cycle, int i)
 		{
 			switch (cycle)
 			{
 				case 0:
 					ppu_addr_temp = ppur.get_ntread();
-					bgdata.nt = ppubus_read(ppu_addr_temp, true, true);
+					bgdata[i].nt = ppubus_read(ppu_addr_temp, true, true);
 					break;
 				case 1:
 					break;
@@ -99,20 +98,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((ppur.ht & 2) != 0) at >>= 2;
 						at &= 0x03;
 						at <<= 2;
-						bgdata.at = at;
+						bgdata[i].at = at;
 						break;
 					}
 				case 3:
 					break;
 				case 4:
-					ppu_addr_temp = ppur.get_ptread(bgdata.nt);
-					bgdata.pt_0 = ppubus_read(ppu_addr_temp, true, true);
+					ppu_addr_temp = ppur.get_ptread(bgdata[i].nt);
+					bgdata[i].pt_0 = ppubus_read(ppu_addr_temp, true, true);
 					break;
 				case 5:
 					break;
 				case 6:
 					ppu_addr_temp |= 8;
-					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
+					bgdata[i].pt_1 = ppubus_read(ppu_addr_temp, true, true);
 					break;
 				case 7:
 					break;
@@ -125,6 +124,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool do_pre_vbl;
 
 		bool nmi_destiny;
+		bool evenOddDestiny;
+		static int start_up_offset = 2;
+		int NMI_offset;
 		int yp_shift;
 		int sprite_eval_cycle;
 		int xt;
@@ -132,8 +134,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int xstart;
 		int rasterpos;
 		bool renderspritenow;
-		bool renderbgnow;
-		bool hit_pending;
 		int s;
 		int ppu_aux_index;
 		bool junksprite;
@@ -148,139 +148,152 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.cycle = 0;
 
 			// These things happen at the start of every frame
-
-			Reg2002_vblank_active_pending = true;
-			ppuphase = PPUPHASE.VBL;
+			ppuphase = PPU_PHASE_VBL;
 			bgdata = new BGDataRecord[34];
 		}
 
 		public void TickPPU_VBL()
 		{
-			if (ppur.status.cycle == 3 && ppur.status.sl == 241 + preNMIlines)
+			if (ppur.status.cycle == 0 && ppur.status.sl == 241 + preNMIlines)
 			{
 				nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
+				if (cpu_stepcounter == 2) { NMI_offset = 1; }
+				else if (cpu_stepcounter == 1) { NMI_offset = 2; }
+				else { NMI_offset = 0; }
 			}
-			else if (ppur.status.cycle == 6 && ppur.status.sl == 241 + preNMIlines)
+			else if (ppur.status.cycle <= 2 && nmi_destiny)
+			{
+				nmi_destiny &= reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
+			}
+			else if (ppur.status.cycle == (3 + NMI_offset) && ppur.status.sl == 241 + preNMIlines)
 			{
 				if (nmi_destiny) { nes.cpu.NMI = true; }
 				nes.Board.AtVsyncNMI();
+			}
+
+			if (ppur.status.cycle == 340)
+			{
+				if (ppur.status.sl == 241 + preNMIlines + postNMIlines - 1)
+				{
+					Reg2002_vblank_clear_pending = true;
+					idleSynch ^= true;
+					Reg2002_objhit = Reg2002_objoverflow = 0;
+				}
 			}
 
 			runppu(); // note cycle ticks inside runppu
 
 			if (ppur.status.cycle == 341)
 			{
+				if (Reg2002_vblank_clear_pending)
+				{
+					Reg2002_vblank_active = 0;
+					Reg2002_vblank_clear_pending = false;
+				}
+
 				ppur.status.cycle = 0;
 				ppur.status.sl++;
 				if (ppur.status.sl == 241 + preNMIlines + postNMIlines)
 				{
-					Reg2002_objhit = Reg2002_objoverflow = 0;
-					Reg2002_vblank_clear_pending = true;
-					idleSynch ^= true;
-
 					do_vbl = false;
 					ppur.status.sl = 0;
+					do_active_sl = true;
 				}
 			}
 		}
 
 		public void TickPPU_active()
 		{
-			if (ppur.status.cycle == 0)
-			{
-				ppur.status.cycle = 0;
-
-				spr_true_count = 0;
-				soam_index = 0;
-				soam_m_index = 0;
-				oam_index_aux = 0;
-				oam_index = 0;
-				is_even_cycle = true;
-				sprite_eval_write = true;
-				sprite_zero_go = sprite_zero_in_range;
-
-				sprite_zero_in_range = false;
-
-				yp = ppur.status.sl - 1;
-				ppuphase = PPUPHASE.BG;
-
-				// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
-				// the current location of PPUADDR"			
-				if (ppur.status.sl == 0 && PPUON && reg_2003 >= 8 && region == Region.NTSC)
-				{
-					for (int i = 0; i < 8; i++)
-					{
-						OAM[i] = OAM[(reg_2003 & 0xF8) + i];
-					}
-				}
-
-				if (NTViewCallback != null && yp == NTViewCallback.Scanline) NTViewCallback.Callback();
-				if (PPUViewCallback != null && yp == PPUViewCallback.Scanline) PPUViewCallback.Callback();
-
-				// set up intial values to use later
-				yp_shift = yp << 8;
-				xt = 0;
-				xp = 0;
-
-				sprite_eval_cycle = 0;
-
-				xstart = xt << 3;
-				target = yp_shift + xstart;
-				rasterpos = xstart;
-
-				spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
-
-				//check all the conditions that can cause things to render in these 8px
-				renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-				hit_pending = false;
-
-			}
-
 			if (ppur.status.cycle < 256)
 			{
+				if (ppur.status.cycle == 0)
+				{
+					ppur.status.cycle = 0;
+
+					spr_true_count = 0;
+					soam_index = 0;
+					soam_m_index = 0;
+					oam_index_aux = 0;
+					oam_index = 0;
+					is_even_cycle = true;
+					sprite_eval_write = true;
+					sprite_zero_go = sprite_zero_in_range;
+
+					sprite_zero_in_range = false;
+
+					yp = ppur.status.sl - 1;
+					ppuphase = PPU_PHASE_BG;
+
+					// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
+					// the current location of PPUADDR"			
+					if (ppur.status.sl == 0 && PPUON && reg_2003 >= 8 && region == Region.NTSC)
+					{
+						for (int i = 0; i < 8; i++)
+						{
+							OAM[i] = OAM[(reg_2003 & 0xF8) + i];
+						}
+					}
+
+					if (NTViewCallback != null && yp == NTViewCallback.Scanline) NTViewCallback.Callback();
+					if (PPUViewCallback != null && yp == PPUViewCallback.Scanline) PPUViewCallback.Callback();
+
+					// set up intial values to use later
+					yp_shift = yp << 8;
+					xt = 0;
+					xp = 0;
+
+					sprite_eval_cycle = 0;
+
+					xstart = xt << 3;
+					target = yp_shift + xstart;
+					rasterpos = xstart;
+
+					spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
+
+					//check all the conditions that can cause things to render in these 8px
+					renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
+				}
+
 				if (ppur.status.sl != 0)
 				{
 					/////////////////////////////////////////////
 					// Sprite Evaluation Start
 					/////////////////////////////////////////////
-
-					if (sprite_eval_cycle <= 63 && !is_even_cycle)
+					
+					if (sprite_eval_cycle < 64)
 					{
 						// the first 64 cycles of each scanline are used to initialize sceondary OAM 
 						// the actual effect setting a flag that always returns 0xFF from a OAM read
 						// this is a bit of a shortcut to save some instructions
 						// data is read from OAM as normal but never used
-						soam[soam_index] = 0xFF;
-						soam_index++;
+						if (!is_even_cycle)
+						{
+							soam[soam_index] = 0xFF;
+							soam_index++;
+						}
 					}
-					if (sprite_eval_cycle == 64)
-					{
-						soam_index = 0;
-						oam_index = reg_2003;
-					}
-
 					// otherwise, scan through OAM and test if sprites are in range
 					// if they are, they get copied to the secondary OAM 
-					if (sprite_eval_cycle >= 64)
+					else
 					{
+						if (sprite_eval_cycle == 64)
+						{
+							soam_index = 0;
+							oam_index = reg_2003;
+						}
+
 						if (oam_index >= 256)
 						{
 							oam_index = 0;
 							sprite_eval_write = false;
 						}
 
-						if (is_even_cycle && oam_index < 256)
+						if (is_even_cycle)
 						{
 							if ((oam_index + soam_m_index) < 256)
 								read_value = OAM[oam_index + soam_m_index];
 							else
 								read_value = OAM[oam_index + soam_m_index - 256];
-						}
-						else if (!sprite_eval_write)
-						{
-							// if we don't write sprites anymore, just scan through the oam
-							read_value = soam[0];
-							oam_index += 4;
 						}
 						else if (sprite_eval_write)
 						{
@@ -328,12 +341,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									oam_index += 4;
 								}
 							}
-							else if (soam_index >= 8)
+							else
 							{
 								if (yp >= read_value && yp < read_value + spriteHeight && PPUON)
 								{
-									hit_pending = true;
-									//Reg2002_objoverflow = true;
+									Reg2002_objoverflow = true;
 								}
 
 								if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
@@ -368,54 +380,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								read_value = soam[0]; //writes change to reads 
 							}
 						}
+						else
+						{
+							// if we don't write sprites anymore, just scan through the oam
+							read_value = soam[0];
+							oam_index += 4;
+						}
 					}
-
+					
 					/////////////////////////////////////////////
 					// Sprite Evaluation End
 					/////////////////////////////////////////////
 
+					int pixel = 0, pixelcolor = PALRAM[pixel];
+
 					//process the current clock's worth of bg data fetching
 					//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work 
 					// due to the cpu not running while the sprite renders below
-					if (PPUON) { Read_bgdata(xp, ref bgdata[xt + 2]); }
-
-					runppu();
-
-					if (PPUON && xp == 6)
-					{
-						ppu_was_on = true;
-					}
-
-					if (PPUON && xp == 7)
-					{
-						if (!race_2006)
-							ppur.increment_hsc();
-
-						if (ppur.status.cycle == 256 && !race_2006)
-							ppur.increment_vs();
-
-						ppu_was_on = false;
-					}
-
-					if (hit_pending)
-					{
-						hit_pending = false;
-						Reg2002_objoverflow = true;
-					}
-
-					renderbgnow = show_bg_new && (xt > 0 || reg_2001.show_bg_leftmost);
-					//bg pos is different from raster pos due to its offsetability.
-					//so adjust for that here
-					int bgpos = rasterpos + ppur.fh;
-					int bgpx = bgpos & 7;
-					int bgtile = bgpos >> 3;
-
-					int pixel = 0, pixelcolor = PALRAM[pixel];
-
+					if (PPUON) { Read_bgdata(xp, xt + 2); }
 					//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
 					//at one point I commented this out to fix bottom-left garbage in DW4. but it's needed for full_nes_palette. 
 					//solution is to only run when PPU is actually OFF (left-suppression doesnt count)
-					if (!PPUON)
+					else
 					{
 						// if there's anything wrong with how we're doing this, someone please chime in
 						int addr = ppur.get_2007access();
@@ -424,15 +410,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							pixel = addr & 0x1F;
 						}
 						pixelcolor = PALRAM[pixel];
-						pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
+						pixelcolor |= 0x8000;
 					}
 
 					//generate the BG data
-					if (renderbgnow)
+					if (show_bg_new && (xt > 0 || reg_2001.show_bg_leftmost))
 					{
+						int bgtile = (rasterpos + ppur.fh) >> 3;
 						byte pt_0 = bgdata[bgtile].pt_0;
 						byte pt_1 = bgdata[bgtile].pt_1;
-						int sel = 7 - bgpx;
+						int sel = 7 - (rasterpos + ppur.fh) & 7;
 						pixel = ((pt_0 >> sel) & 1) | (((pt_1 >> sel) & 1) << 1);
 						if (pixel != 0)
 							pixel |= bgdata[bgtile].at;
@@ -440,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 
 					if (!nes.Settings.DispBackground)
-						pixelcolor = 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
+						pixelcolor = 0x8000;
 
 					//check if the pixel has a sprite in it
 					if (sl_sprites[256 + xt * 8 + xp] != 0 && renderspritenow)
@@ -467,14 +454,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 					} //oamcount loop
 
+					runppu();
+
+					if (xp == 6 && PPUON)
+					{
+						ppu_was_on = true;
+						if (ppur.status.cycle == 255) { race_2006 = true; }
+					}
+
+					if (xp == 7 && PPUON)
+					{
+						ppur.increment_hsc();
+
+						if (ppur.status.cycle == 256)
+						{
+							ppur.increment_vs();
+						}
+
+						if (race_2006_2)
+						{
+							if (ppur.status.cycle == 256)
+							{
+								ppur.fv &= ppur._fv;
+								ppur.v &= ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt &= ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+							else
+							{
+								ppur.fv = ppur._fv;
+								ppur.v = ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt = ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+						}
+
+						ppu_was_on = false;
+					}
+
+					race_2006_2 = false;
 
 					pipeline(pixelcolor, xt * 8 + xp);
 					target++;
 
 					// clear out previous sprites from scanline buffer
-					//sl_sprites[xt * 8 + xp] = 0;
 					sl_sprites[256 + xt * 8 + xp] = 0;
-					//sl_sprites[512 + xt * 8 + xp] = 0;
 
 					// end of visible part of the scanline
 					sprite_eval_cycle++;
@@ -494,32 +520,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//check all the conditions that can cause things to render in these 8px
 						renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
-						hit_pending = false;
-
-					}
+					}				
 				}
 				else
 				{
 					// if scanline is the pre-render line, we just read BG data
-					Read_bgdata(xp, ref bgdata[xt + 2]);
+					Read_bgdata(xp, xt + 2);
 
 					runppu();
 
-					if (PPUON && xp == 6)
+					if (xp == 6 && PPUON)
 					{
 						ppu_was_on = true;
+						if (ppur.status.cycle == 255) { race_2006 = true; }
+						
 					}
 
-					if (PPUON && xp == 7)
+					if (xp == 7 && PPUON)
 					{
-						if (!race_2006)
-							ppur.increment_hsc();
+						ppur.increment_hsc();
 
-						if (ppur.status.cycle == 256 && !race_2006)
+						if (ppur.status.cycle == 256)
+						{
 							ppur.increment_vs();
+						}
+
+						if(race_2006_2)
+						{
+							if (ppur.status.cycle == 256)
+							{
+								ppur.fv &= ppur._fv;
+								ppur.v &= ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt &= ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+							else
+							{
+								ppur.fv = ppur._fv;
+								ppur.v = ppur._v;
+								ppur.h &= ppur._h;
+								ppur.vt = ppur._vt;
+								ppur.ht &= ppur._ht;
+							}
+						}
 
 						ppu_was_on = false;
 					}
+
+					race_2006_2 = false;
 
 					xp++;
 
@@ -566,14 +615,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (soam_index_prev > 8 && !nes.Settings.AllowMoreThanEightSprites)
 						soam_index_prev = 8;
 
-					ppuphase = PPUPHASE.OBJ;
+					ppuphase = PPU_PHASE_OBJ;
 
 					spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
 					s = 0;
 					ppu_aux_index = 0;
 
-					junksprite = (!PPUON);
+					junksprite = !PPUON;
 
 					t_oam[s].oam_y = soam[s * 4];
 					t_oam[s].oam_ind = soam[s * 4 + 1];
@@ -612,7 +661,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						runppu();
 						break;
 					case 1:
-						if (PPUON && ppur.status.sl == 0 && ppur.status.cycle == 305)
+						if (ppur.status.sl == 0 && ppur.status.cycle == 305 && PPUON)
 						{
 							ppur.install_latches();
 
@@ -620,40 +669,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							runppu();
 
 						}
-						else if (PPUON && (ppur.status.sl != 0) && ppur.status.cycle == 257)
+						else if ((ppur.status.sl != 0) && ppur.status.cycle == 257 && PPUON)
 						{
 
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 256);
+								pipeline(0, 256);   //  last pipeline call option 1 of 2
 								target++;
 							}
 
 							//at 257: 3d world runner is ugly if we do this at 256
-							if (PPUON) ppur.install_h_latches();
+							if (PPUON/* && !race_2006_2*/) { ppur.install_h_latches(); }
+							race_2006_2 = false;
 							read_value = t_oam[s].oam_ind;
 							runppu();
 
+							/*
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 257);  //  last pipeline call option 1 of 2
+								//pipeline(0, 257);
 							}
+							*/
 						}
 						else
 						{
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 256);
+								pipeline(0, 256);  //  last pipeline call option 2 of 2
 								target++;
 							}
 
 							read_value = t_oam[s].oam_ind;
 							runppu();
 
+							/*
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, 257);  //  last pipeline call option 2 of 2
+								//pipeline(0, 257);
 							}
+							*/
 						}
 						break;
 
@@ -684,15 +738,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						break;
 					case 5:
-						// if the PPU is off, we don't put anything on the bus
-						if (junksprite)
-						{
-							runppu();
-						}
-						else
-						{
-							runppu();
-						}
+						runppu();
 						break;
 					case 6:
 						// if the PPU is off, we don't put anything on the bus
@@ -770,7 +816,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					if (s < 8)
 					{
-						junksprite = (!PPUON);
+						junksprite = !PPUON;
 
 						t_oam[s].oam_y = soam[s * 4];
 						t_oam[s].oam_ind = soam[s * 4 + 1];
@@ -870,26 +916,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				if (ppur.status.cycle == 320)
-				{
-					ppuphase = PPUPHASE.BG;
-					xt = 0;
-					xp = 0;
-				}
-
 				if (ppur.status.cycle < 336)
 				{
+					if (ppur.status.cycle == 320)
+					{
+						ppuphase = PPU_PHASE_BG;
+						xt = 0;
+						xp = 0;
+					}
+
 					// if scanline is the pre-render line, we just read BG data
-					Read_bgdata(xp, ref bgdata[xt]);
+					Read_bgdata(xp, xt);
 
 					runppu();
 
-					if (PPUON && xp == 6)
+					if (xp == 6 && PPUON)
 					{
 						ppu_was_on = true;
 					}
 
-					if (PPUON && xp == 7)
+					if (xp == 7 && PPUON)
 					{
 						if (!race_2006)
 							ppur.increment_hsc();
@@ -910,12 +956,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else if (ppur.status.cycle < 340)
 				{
+					if (ppur.status.cycle == 339)
+					{
+						evenOddDestiny = PPUON;
+					}
+
 					runppu();
 				}
 				else
 				{
-					bool evenOddDestiny = PPUON;
-
 					// After memory access 170, the PPU simply rests for 4 cycles (or the
 					// equivelant of half a memory access cycle) before repeating the whole
 					// pixel/scanline rendering process. If the scanline being rendered is the very
@@ -935,21 +984,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (ppur.status.sl == 241)
 				{
 					do_active_sl = false;
+					do_pre_vbl = true;
 				}
 			}
 		}
 
 		public void TickPPU_preVBL()
 		{
+			if (ppur.status.cycle == 340)
+			{
+				Reg2002_vblank_active_pending = true;
+			}
+
 			runppu();
 
 			if (ppur.status.cycle == 341)
 			{
+				if (Reg2002_vblank_active_pending)
+				{
+					Reg2002_vblank_active = 1;
+					Reg2002_vblank_active_pending = false;
+				}
+
 				ppur.status.cycle = 0;
 				ppur.status.sl++;
 				if (ppur.status.sl == 241 + preNMIlines)
 				{
 					do_pre_vbl = false;
+					do_vbl = true;
+
+					ppu_init_frame();
+					nes.frame_is_done = true;
 				}				
 			}
 		}
@@ -961,11 +1026,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//to wait for vblank
 		public void NewDeadPPU()
 		{
+			if (ppur.status.cycle == 241 * 341 - start_up_offset - 1)
+			{
+				Reg2002_vblank_active_pending = true;
+			}
+
 			runppu();
 
-			if (ppur.status.cycle == 241 * 341 - 3)
+			if (ppur.status.cycle == 241 * 341 - start_up_offset)
 			{
+				if (Reg2002_vblank_active_pending)
+				{
+					Reg2002_vblank_active = 1;
+					Reg2002_vblank_active_pending = false;
+				}
+
 				ppudead--;
+
+				ppu_init_frame();
+
+				do_vbl = true;
+
+				nes.frame_is_done = true;
 			}
 		}
 	}

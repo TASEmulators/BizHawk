@@ -1103,7 +1103,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ScreenLines.Clear();
 
             return ScreenBuffer;
-
+			/*
             switch (borderType)
             {
                 // crop to 768x272 (544)
@@ -1139,18 +1139,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     }
                     return croppedBuffer;
                     */
+			/*
+			var slWidth = BufferWidth;
+			return ScreenBuffer;
 
-                    var slWidth = BufferWidth;
-                    return ScreenBuffer;
+			break;
 
-                    break;
-                    
-            }
 
-            return ScreenBuffer;
-        }
+	}
+	*/
+			//return ScreenBuffer;
+		}
 
-        public void SetupScreenSize()
+		public void SetupScreenSize()
         {
             SysBufferWidth = 800;
             SysBufferHeight = 600;
@@ -1261,34 +1262,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("GateArray");
-            ser.SyncEnum("ChipType", ref ChipType);
-            ser.Sync("_PENR", ref _PENR);
-            ser.Sync("_INKR", ref _INKR);
-            ser.Sync("_RMR", ref _RMR);
-            ser.Sync("_RAMR", ref _RAMR);
-            ser.Sync("ColourRegisters", ref ColourRegisters, false);
-            ser.Sync("CurrentPen", ref CurrentPen);
-            ser.Sync("ClockCounter", ref ClockCounter);
-            ser.Sync("FrameClock", ref FrameClock);
-            ser.Sync("FrameEnd", ref FrameEnd);
-            ser.Sync("WaitLine", ref WaitLine);
-            ser.Sync("_interruptCounter", ref _interruptCounter);
-            ser.Sync("VSYNCDelay", ref VSYNCDelay);
-            ser.Sync("ScreenMode", ref ScreenMode);
-            ser.Sync("HSYNC", ref HSYNC);
-            //ser.Sync("HSYNC_falling", ref HSYNC_falling);
-            ser.Sync("HSYNC_counter", ref HSYNC_counter);
-            ser.Sync("VSYNC", ref VSYNC);
-            ser.Sync("InterruptRaised", ref InterruptRaised);
-            ser.Sync("InterruptHoldCounter", ref InterruptHoldCounter);
-            ser.Sync("_MA", ref _MA);
-            ser.Sync("IsNewFrame", ref IsNewFrame);
-            ser.Sync("IsNewLine", ref IsNewLine);
-            ser.Sync("HCC", ref HCC);
-            ser.Sync("VLC", ref VLC);
-            ser.Sync("VideoByte1", ref VideoByte1);
-            ser.Sync("VideoByte2", ref VideoByte2);
-            ser.Sync("NextVidRamLine", ref NextVidRamLine, false);
+            ser.SyncEnum(nameof(ChipType), ref ChipType);
+            ser.Sync(nameof(_PENR), ref _PENR);
+            ser.Sync(nameof(_INKR), ref _INKR);
+            ser.Sync(nameof(_RMR), ref _RMR);
+            ser.Sync(nameof(_RAMR), ref _RAMR);
+            ser.Sync(nameof(ColourRegisters), ref ColourRegisters, false);
+            ser.Sync(nameof(CurrentPen), ref CurrentPen);
+            ser.Sync(nameof(ClockCounter), ref ClockCounter);
+            ser.Sync(nameof(FrameClock), ref FrameClock);
+            ser.Sync(nameof(FrameEnd), ref FrameEnd);
+            ser.Sync(nameof(WaitLine), ref WaitLine);
+            ser.Sync(nameof(_interruptCounter), ref _interruptCounter);
+            ser.Sync(nameof(VSYNCDelay), ref VSYNCDelay);
+            ser.Sync(nameof(ScreenMode), ref ScreenMode);
+            ser.Sync(nameof(HSYNC), ref HSYNC);
+            //ser.Sync(nameof(HSYNC_falling), ref HSYNC_falling);
+            ser.Sync(nameof(HSYNC_counter), ref HSYNC_counter);
+            ser.Sync(nameof(VSYNC), ref VSYNC);
+            ser.Sync(nameof(InterruptRaised), ref InterruptRaised);
+            ser.Sync(nameof(InterruptHoldCounter), ref InterruptHoldCounter);
+            ser.Sync(nameof(_MA), ref _MA);
+            ser.Sync(nameof(IsNewFrame), ref IsNewFrame);
+            ser.Sync(nameof(IsNewLine), ref IsNewLine);
+            ser.Sync(nameof(HCC), ref HCC);
+            ser.Sync(nameof(VLC), ref VLC);
+            ser.Sync(nameof(VideoByte1), ref VideoByte1);
+            ser.Sync(nameof(VideoByte2), ref VideoByte2);
+            ser.Sync(nameof(NextVidRamLine), ref NextVidRamLine, false);
             ser.EndSection();
         }
 

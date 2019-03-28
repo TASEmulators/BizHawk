@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("reg", ref reg);
-			ser.Sync("RegionAsia", ref RegionAsia);
+			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(RegionAsia), ref RegionAsia);
 		}
 
 		public override void WriteEXP(int addr, byte value)
