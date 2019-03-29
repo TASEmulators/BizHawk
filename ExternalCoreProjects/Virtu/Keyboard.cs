@@ -264,6 +264,9 @@ namespace Jellyfish.Virtu
         {
         }
 
+		public static bool WhiteAppleDown;
+		public static bool BlackAppleDown;
+
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys
 		/// </summary>
@@ -272,8 +275,15 @@ namespace Jellyfish.Virtu
 		{
 			Keys keys = FromStrings(keynames);
 
-			if (keys.HasFlag(Keys.WhiteApple)) { } // TODO: set GAME1
-			if (keys.HasFlag(Keys.BlackApple)) { } // TODO: set GAME2
+			if (keys.HasFlag(Keys.WhiteApple))
+				WhiteAppleDown = true;
+			else
+				WhiteAppleDown = false;
+
+			if (keys.HasFlag(Keys.BlackApple))
+				BlackAppleDown = true;
+			else
+				BlackAppleDown = false;
 
 			if (keys.HasFlag(Keys.Reset) && keys.HasFlag(Keys.Control)) { } // TODO: reset console
 
