@@ -597,6 +597,39 @@
     </Compile>
     <Compile Include="Consoles\Belogic\LibUzem.cs" />
     <Compile Include="Consoles\Belogic\Uzem.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\Audio.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\Vectrex.CpuLink.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ICodeDataLog.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IDebuggable.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IEmulator.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IInputPollable.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IMemoryDomains.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ISaveRam.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ISettable.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IStatable.cs">
+      <DependentUpon>VectrexHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawkControllerDeck.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\VectrexHawkControllers.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\HW_Registers.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\Mappers\MapperBase.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\Mappers\Mapper_Default.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\MemoryMap.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\PPU.cs" />
+    <Compile Include="Consoles\GCE\Vectrex\SerialPort.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
@@ -1493,6 +1526,13 @@
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
+    <Compile Include="CPUs\MC6809\Execute.cs" />
+    <Compile Include="CPUs\MC6809\Interrupts.cs" />
+    <Compile Include="CPUs\MC6809\MC6809.cs" />
+    <Compile Include="CPUs\MC6809\NewDisassembler.cs" />
+    <Compile Include="CPUs\MC6809\Operations.cs" />
+    <Compile Include="CPUs\MC6809\Registers.cs" />
+    <Compile Include="CPUs\MC6809\Tables_Direct.cs" />
     <Compile Include="CPUs\LR35902\Execute.cs" />
     <Compile Include="CPUs\LR35902\Interrupts.cs" />
     <Compile Include="CPUs\LR35902\LR35902.cs" />
