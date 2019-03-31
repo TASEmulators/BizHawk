@@ -71,6 +71,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort WR_DEC_LO = 57;
 		public const ushort WR_HI = 58;
 		public const ushort ADD8BR = 59;
+		public const ushort ABX = 60;
+		public const ushort MUL = 61;
+		public const ushort JPE = 62;
 
 		public MC6809()
 		{
@@ -206,6 +209,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case SUB8:
 							SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
+						case SET_ADDR:
+							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[cur_instr[instr_pntr++]] << 8) | Regs[cur_instr[instr_pntr++]]);
+							break;
+						case JPE:
+							if (!FlagE) { instr_pntr = 35; };
+							break;
 					}
 					break;
 				case WR:
@@ -240,6 +249,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case SEX:
 					SEX_Func(cur_instr[instr_pntr++]);
+					break;
+				case ABX:
+					Regs[X] += Regs[B];
+					break;
+				case MUL:
+					Mul_Func();
 					break;
 				case ADD16BR:
 					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -414,7 +429,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,
-			ushort d29 = 0, ushort d30 = 0, ushort d31 = 0, ushort d32 = 0, ushort d33 = 0, ushort d34 = 0, ushort d35 = 0, ushort d36 = 0, ushort d37 = 0)
+			ushort d29 = 0, ushort d30 = 0, ushort d31 = 0, ushort d32 = 0, ushort d33 = 0, ushort d34 = 0, ushort d35 = 0, ushort d36 = 0, ushort d37 = 0, ushort d38 = 0,
+			ushort d39 = 0, ushort d40 = 0, ushort d41 = 0, ushort d42 = 0, ushort d43 = 0, ushort d44 = 0, ushort d45 = 0, ushort d46 = 0, ushort d47 = 0, ushort d48 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;

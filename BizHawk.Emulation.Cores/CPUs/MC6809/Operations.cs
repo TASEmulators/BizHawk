@@ -106,6 +106,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 		}
 
+		public void Mul_Func()
+		{
+			Regs[ALU] = (ushort)(Regs[A] * Regs[B]);
+			D = Regs[ALU];
+			FlagC = Regs[B] > 127;
+			FlagZ = D == 0;
+		}
+
 		public void ADD8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
