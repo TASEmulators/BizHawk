@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 	public partial class MC6809
 	{
 		// registers
-		public ushort[] Regs = new ushort[12];
+		public ushort[] Regs = new ushort[14];
 
 		public const ushort PC = 0;
 		public const ushort US = 1;
@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort DP = 10;
 		public const ushort CC = 11;
 		public const ushort Dr = 12;
+		public const ushort IDX_EA = 13;
 
 		public ushort D
 		{
@@ -78,7 +79,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void ResetRegisters()
 		{
-			for (int i = 0; i < 12; i++)
+			for (int i = 0; i < 14; i++)
 			{
 				Regs[i] = 0;
 			}

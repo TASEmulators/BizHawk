@@ -1532,6 +1532,7 @@
     <Compile Include="CPUs\MC6809\NewDisassembler.cs" />
     <Compile Include="CPUs\MC6809\Operations.cs" />
     <Compile Include="CPUs\MC6809\Registers.cs" />
+    <Compile Include="CPUs\MC6809\Indexed_Modes.cs" />
     <Compile Include="CPUs\MC6809\Tables_Direct.cs" />
     <Compile Include="CPUs\LR35902\Execute.cs" />
     <Compile Include="CPUs\LR35902\Interrupts.cs" />

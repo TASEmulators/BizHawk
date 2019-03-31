@@ -69,11 +69,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort EXG = 55;
 		public const ushort TFR = 56;
 		public const ushort WR_DEC_LO = 57;
-		public const ushort WR_HI = 58;
-		public const ushort ADD8BR = 59;
-		public const ushort ABX = 60;
-		public const ushort MUL = 61;
-		public const ushort JPE = 62;
+		public const ushort WR_DEC_HI = 58;
+		public const ushort WR_HI = 59;
+		public const ushort ADD8BR = 60;
+		public const ushort ABX = 61;
+		public const ushort MUL = 62;
+		public const ushort JPE = 63;
+		public const ushort IDX_DCDE = 64;
+		public const ushort IDX_OP_BLD = 65;
+		public const ushort EA_8 = 66;
+		public const ushort EA_16 = 67;
 
 		public MC6809()
 		{
@@ -215,6 +220,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case JPE:
 							if (!FlagE) { instr_pntr = 35; };
 							break;
+						case IDX_DCDE:
+							Index_decode();
+							break;
+						case IDX_OP_BLD:
+							Index_Op_Builder();
+							break;
+						case EA_8:
+							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[ALU2] & 0x80) == 0x80) ? (Regs[ALU2] | 0xFF00) : Regs[ALU2]));
+							Index_Op_Builder();
+							break;
 					}
 					break;
 				case WR:
@@ -222,6 +237,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case WR_DEC_LO:
 					Write_Dec_Lo_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case WR_DEC_HI:
+					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case WR_HI:
 					Write_Hi_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -231,6 +249,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case EXG:
 					EXG_Func(cur_instr[instr_pntr++]);
+					break;
+				case IDX_OP_BLD:
+					Index_Op_Builder();
+					break;
+				case EA_16:
+					Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + Regs[ADDR]);
+					Index_Op_Builder();
 					break;
 				case TFR:
 					TFR_Func(cur_instr[instr_pntr++]);
