@@ -83,6 +83,7 @@
     <Compile Include="IPC\SharedMemoryBlock.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MruStack.cs" />
+    <Compile Include="MutableIntRange.cs" />
     <Compile Include="NDBDatabase.cs" />
     <Compile Include="PlatformLinkedLibSingleton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
