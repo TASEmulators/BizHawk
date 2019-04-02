@@ -75,9 +75,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case 0x31: INDEX_OP(LEAY);							break; // LEAY				(Indexed)
 				case 0x32: INDEX_OP(LEAS);							break; // LEAS				(Indexed)
 				case 0x33: INDEX_OP(LEAU);							break; // LEAU				(Indexed)
-				case 0x34: ;							break; // PSHS				(Immediate)
+				case 0x34: PSH(SP);									break; // PSHS				(Immediate)
 				case 0x35: ;							break; // PULS				(Immediate)
-				case 0x36: ;			break; // PSHU				(Immediate)
+				case 0x36: PSH(US);									break; // PSHU				(Immediate)
 				case 0x37: ;							break; // PULU				(Immediate)
 				case 0x38: ILLEGAL();								break; // ILLEGAL
 				case 0x39: RTS();									break; // RTS				(Inherent)

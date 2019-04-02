@@ -1,3 +1,4 @@
+using BizHawk.Common.NumberExtensions;
 using System;
 
 namespace BizHawk.Emulation.Common.Components.MC6809
@@ -26,9 +27,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							SET_ADDR, ADDR, DP, ALU,
-							RD, ADDR,
+							RD, ALU, ADDR,
 							oper, ALU,
-							WR, ADDR);
+							WR, ADDR, ALU);
 		}
 
 		private void EXT_MEM(ushort oper)
@@ -36,9 +37,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							RD_INC, ALU2, PC,
 							SET_ADDR, ADDR, ALU, ALU2,
-							RD, ADDR,
+							RD, ALU, ADDR,
 							oper, ALU,
-							WR, ADDR);
+							WR, ADDR, ALU);
 		}
 
 		private void REG_OP_IMD_CC(ushort oper)
@@ -185,18 +186,85 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							SET_ADDR, PC, ALU2, ALU);
 		}
 
+		private void PSH(ushort src)
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							IDLE,
+							DEC16, SP,
+							PSH_n, src);
+		}
+
+		// Post byte info is in ALU
+		// mask out bits until the end
+		private void PSH_n_BLD(ushort src)
+		{
+			if (Regs[ALU].Bit(7))
+			{
+				PopulateCURINSTR(WR_DEC_LO, src, PC,
+								WR_DEC_HI_OP, src, PC, PSH_n, src);
+
+				Regs[ALU] &= 0x7F;
+			}
+			else if (Regs[ALU].Bit(6))
+			{
+				if (src == US)
+				{
+					PopulateCURINSTR(WR_DEC_LO, src, SP,
+									WR_DEC_HI_OP, src, SP, PSH_n, src);
+				}
+				else
+				{
+					PopulateCURINSTR(WR_DEC_LO, src, US,
+									WR_DEC_HI_OP, src, US, PSH_n, src);
+				}
+				
+				Regs[ALU] &= 0x3F;
+			}
+			else if (Regs[ALU].Bit(5))
+			{
+				PopulateCURINSTR(WR_DEC_LO, src, Y,
+								WR_DEC_HI_OP, src, Y, PSH_n, src);
+
+				Regs[ALU] &= 0x1F;
+			}
+			else if (Regs[ALU].Bit(4))
+			{
+				PopulateCURINSTR(WR_DEC_LO, src, X,
+								WR_DEC_HI_OP, src, X, PSH_n, src);
+
+				Regs[ALU] &= 0xF;
+			}
+			else if (Regs[ALU].Bit(3))
+			{
+				PopulateCURINSTR(WR_DEC_LO_OP, src, DP, PSH_n, src);
+
+				Regs[ALU] &= 0x7;
+			}
+			else if (Regs[ALU].Bit(2))
+			{
+				PopulateCURINSTR(WR_DEC_LO_OP, src, B, PSH_n, src);
+
+				Regs[ALU] &= 0x3;
+			}
+			else if (Regs[ALU].Bit(1))
+			{
+				PopulateCURINSTR(WR_DEC_LO_OP, src, A, PSH_n, src);
+
+				Regs[ALU] &= 0x1;
+			}
+			else if (Regs[ALU].Bit(0))
+			{
+				PopulateCURINSTR(WR_DEC_LO_OP, src, CC, PSH_n, src);
+			}
+			else
+			{
+				Regs[src] += 1; // we decremented an extra time overall, regardless of what was run
+			}
+		}
 
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
-			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						DEC16, src_l, src_h,
-						IDLE,
-						IDLE,
-						HALT_CHK,
-						OP };
+
 		}
 
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -255,25 +323,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		}
 
-		private void PUSH_(ushort src_l, ushort src_h)
-		{
-
-		}
-
-		// NOTE: this is the only instruction that can write to F
-		// but the bottom 4 bits of F are always 0, so instead of putting a special check for every read op
-		// let's just put a special operation here specifically for F
-		private void POP_(ushort src_l, ushort src_h)
-		{
-
-		}
-
 		private void RST_(ushort n)
-		{
-
-		}
-
-		private void PREFIX_()
 		{
 
 		}

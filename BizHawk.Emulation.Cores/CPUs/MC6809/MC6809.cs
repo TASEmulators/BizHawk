@@ -79,6 +79,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort IDX_OP_BLD = 65;
 		public const ushort EA_8 = 66;
 		public const ushort EA_16 = 67;
+		public const ushort PSH_n = 68;
+		public const ushort WR_DEC_LO_OP = 69;
+		public const ushort WR_DEC_HI_OP = 70;
 
 		public MC6809()
 		{
@@ -241,6 +244,24 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case WR_DEC_HI:
 					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
+				case WR_DEC_LO_OP:
+					Write_Dec_Lo_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					switch (cur_instr[instr_pntr++])
+					{
+						case PSH_n:
+							PSH_n_BLD(cur_instr[instr_pntr++]);
+							break;
+					}
+					break;
+				case WR_DEC_HI_OP:
+					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					switch (cur_instr[instr_pntr++])
+					{
+						case PSH_n:
+							PSH_n_BLD(cur_instr[instr_pntr++]);
+							break;
+					}
+					break;
 				case WR_HI:
 					Write_Hi_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -280,6 +301,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case MUL:
 					Mul_Func();
+					break;
+				case PSH_n:
+					PSH_n_BLD(cur_instr[instr_pntr++]);
 					break;
 				case ADD16BR:
 					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
