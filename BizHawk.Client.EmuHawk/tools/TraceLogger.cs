@@ -413,7 +413,9 @@ namespace BizHawk.Client.EmuHawk
 		private void StartLogFile(bool append = false)
 		{
 			var data = Tracer.Header;
-			_streamWriter = new StreamWriter($"{_baseName}{(_segmentCount == 0 ? string.Empty : $"_{_segmentCount}")}{_extension}", append);
+			_streamWriter = new StreamWriter(
+				string.Concat(_baseName, _segmentCount == 0 ? string.Empty : $"_{_segmentCount}", _extension),
+				append);
 			_streamWriter.WriteLine(data);
 			if (append)
 			{
