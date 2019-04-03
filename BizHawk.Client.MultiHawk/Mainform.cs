@@ -1083,11 +1083,11 @@ namespace BizHawk.Client.MultiHawk
 				{
 					if (Global.MovieSession.Movie.IsFinished)
 					{
-						frame += string.Format(" / {0} (finished)", Global.MovieSession.Movie.FrameCount);
+						frame += $" / {Global.MovieSession.Movie.FrameCount} (finished)";
 					}
 					else if (Global.MovieSession.Movie.IsPlaying)
 					{
-						frame += string.Format(" / {0}", Global.MovieSession.Movie.FrameCount);
+						frame += $" / {Global.MovieSession.Movie.FrameCount}";
 					}
 				}
 

@@ -112,7 +112,7 @@ namespace BizHawk.Client.DBMan
 			{
 				if (s.ToString().Trim() == "")
 				{
-					MessageBox.Show("The selected file: " + s.ToString() + "Cannot be found.\n\nSort this out and try again");
+					MessageBox.Show($"The selected file: {s}Cannot be found.\n\nSort this out and try again");
 					return;
 				}
 
@@ -132,9 +132,7 @@ namespace BizHawk.Client.DBMan
 				res = dp.ParseDAT(files.ToArray());
 			}
 
-			string fName = "gamedb_" + 
-				GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString())) +
-				"_DevExport_" + DateTime.UtcNow.ToString("yyyy-MM-dd_HH_mm_ss") + ".txt";
+			string fName = $"gamedb_{GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString()))}_DevExport_{DateTime.UtcNow:yyyy-MM-dd_HH_mm_ss}.txt";
 
 			try
 			{
@@ -142,7 +140,7 @@ namespace BizHawk.Client.DBMan
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error writing file: " + fName + "\n\n" + ex.Message);
+				MessageBox.Show($"Error writing file: {fName}\n\n{ex.Message}");
 			}
 
 		}
