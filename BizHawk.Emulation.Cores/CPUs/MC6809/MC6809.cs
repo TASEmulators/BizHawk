@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort SET = 32;
 		public const ushort EI = 33;
 		public const ushort DI = 34;
-		public const ushort HALT = 35;
+		public const ushort CWAI = 35;
 		public const ushort STOP = 36;
 		public const ushort ASGN = 38;
 		public const ushort ADDS = 39; // signed 16 bit operation used in 2 instructions
@@ -80,8 +80,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort EA_8 = 66;
 		public const ushort EA_16 = 67;
 		public const ushort PSH_n = 68;
-		public const ushort WR_DEC_LO_OP = 69;
-		public const ushort WR_DEC_HI_OP = 70;
+		public const ushort PUL_n = 69;
+		public const ushort WR_DEC_LO_OP = 70;
+		public const ushort WR_DEC_HI_OP = 71;
+		public const ushort SET_ADDR_PUL = 72;
+		public const ushort SET_F_I = 73;
+		public const ushort SET_E = 74;
+		public const ushort ANDCC = 75;
 
 		public MC6809()
 		{
@@ -233,6 +238,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[ALU2] & 0x80) == 0x80) ? (Regs[ALU2] | 0xFF00) : Regs[ALU2]));
 							Index_Op_Builder();
 							break;
+						case PUL_n:
+							PUL_n_BLD(cur_instr[instr_pntr++]);
+							break;
+						case SET_ADDR_PUL:
+							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[ALU2] << 8) + Regs[ADDR]);
+							PUL_n_BLD(cur_instr[instr_pntr++]);
+							break;
 					}
 					break;
 				case WR:
@@ -302,8 +314,20 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case MUL:
 					Mul_Func();
 					break;
+				case SET_F_I:
+					FlagI = true; FlagF = true;
+					break;
+				case SET_E:
+					FlagE = true;
+					break;
+				case ANDCC:
+					Regs[CC] &= Regs[instr_pntr++];
+					break;
 				case PSH_n:
 					PSH_n_BLD(cur_instr[instr_pntr++]);
+					break;
+				case PUL_n:
+					PUL_n_BLD(cur_instr[instr_pntr++]);
 					break;
 				case ADD16BR:
 					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -399,7 +423,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					interrupts_enabled = false;
 					EI_pending = 0;
 					break;
-				case HALT:
+				case CWAI:
 
 					break;
 				case STOP:
@@ -479,7 +503,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
 			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,
 			ushort d29 = 0, ushort d30 = 0, ushort d31 = 0, ushort d32 = 0, ushort d33 = 0, ushort d34 = 0, ushort d35 = 0, ushort d36 = 0, ushort d37 = 0, ushort d38 = 0,
-			ushort d39 = 0, ushort d40 = 0, ushort d41 = 0, ushort d42 = 0, ushort d43 = 0, ushort d44 = 0, ushort d45 = 0, ushort d46 = 0, ushort d47 = 0, ushort d48 = 0)
+			ushort d39 = 0, ushort d40 = 0, ushort d41 = 0, ushort d42 = 0, ushort d43 = 0, ushort d44 = 0, ushort d45 = 0, ushort d46 = 0, ushort d47 = 0, ushort d48 = 0,
+			ushort d49 = 0, ushort d50 = 0, ushort d51 = 0, ushort d52 = 0, ushort d53 = 0, ushort d54 = 0, ushort d55 = 0, ushort d56 = 0, ushort d57 = 0, ushort d58 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;
@@ -493,7 +518,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			cur_instr[27] = d27; cur_instr[28] = d28; cur_instr[29] = d29;
 			cur_instr[30] = d30; cur_instr[31] = d31; cur_instr[32] = d32;
 			cur_instr[33] = d33; cur_instr[34] = d34; cur_instr[35] = d35;
-			cur_instr[36] = d36; cur_instr[37] = d37;
+			cur_instr[36] = d36; cur_instr[37] = d37; cur_instr[38] = d38;
+			cur_instr[39] = d39; cur_instr[40] = d40; cur_instr[41] = d41;
+			cur_instr[42] = d42; cur_instr[43] = d43; cur_instr[44] = d44;
+			cur_instr[45] = d45; cur_instr[46] = d46; cur_instr[47] = d47;
+			cur_instr[48] = d48; cur_instr[49] = d49; cur_instr[50] = d50;
+			cur_instr[51] = d51; cur_instr[52] = d52; cur_instr[53] = d53;
+			cur_instr[54] = d54; cur_instr[55] = d55; cur_instr[56] = d56;
+			cur_instr[57] = d57; cur_instr[58] = d58;
 		}
 
 		// State Save/Load

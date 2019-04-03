@@ -8,7 +8,18 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort LEAY = 1;
 		public const ushort LEAS = 2;
 		public const ushort LEAU = 3;
-		public const ushort JMP = 4;
+		public const ushort I_NEG = 4;
+		public const ushort I_COM = 5;
+		public const ushort I_LSR = 6;
+		public const ushort I_ROR = 7;
+		public const ushort I_ASR = 8;
+		public const ushort I_ASL = 9;
+		public const ushort I_ROL = 10;
+		public const ushort I_DEC = 11;
+		public const ushort I_INC = 12;
+		public const ushort I_TST = 13;
+		public const ushort I_JMP = 14;
+		public const ushort I_CLR = 15;
 
 		public ushort indexed_op;
 		public ushort indexed_reg;
@@ -38,9 +49,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
 		}
 
-		private void INDEX_OP_EX6()
+		private void INDEX_OP_EX6(ushort oper)
 		{
-			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
+			PopulateCURINSTR(IDLE,
+							RD, ALU, IDX_EA,
+							oper, ALU,
+							WR, IDX_EA, ALU);
 		}
 
 		private void INDEX_OP_EX7()
@@ -284,6 +298,18 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case LEAY: INDEX_OP_LEA(Y);						break; // LEAY
 				case LEAS: INDEX_OP_LEA(SP);					break; // LEAS
 				case LEAU: INDEX_OP_LEA(US);					break; // LEAU
+				case I_NEG: INDEX_OP_EX6(NEG);					break; // NEG
+				case I_COM: INDEX_OP_EX6(COM);					break; // COM
+				case I_LSR: INDEX_OP_EX6(LSR);					break; // LSR
+				case I_ROR: INDEX_OP_EX6(ROR);					break; // ROR
+				case I_ASR: INDEX_OP_EX6(ASR);					break; // ASR
+				case I_ASL: INDEX_OP_EX6(ASL);					break; // ASL
+				case I_ROL: INDEX_OP_EX6(ROL);					break; // ROL
+				case I_DEC: INDEX_OP_EX6(DEC8);					break; // DEC
+				case I_INC: INDEX_OP_EX6(INC8);					break; // INC
+				case I_TST: INDEX_OP_EX6(TST);					break; // TST
+				case I_JMP: INDEX_OP_JMP();						break; // JMP
+				case I_CLR: INDEX_OP_EX6(CLR);					break; // CLR
 			}
 		}
 	}

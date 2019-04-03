@@ -262,6 +262,126 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			}
 		}
 
+		private void PUL(ushort src)
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							IDLE,
+							PSH_n, src);
+		}
+
+		// Post byte info is in ALU
+		// mask out bits until the end
+		private void PUL_n_BLD(ushort src)
+		{
+			if (Regs[ALU].Bit(7))
+			{
+				PopulateCURINSTR(RD_INC_OP, CC, src, PUL_n, src);
+
+				Regs[ALU] &= 0x7F;
+			}
+			else if (Regs[ALU].Bit(6))
+			{
+				PopulateCURINSTR(RD_INC_OP, A, src, PUL_n, src);
+
+				Regs[ALU] &= 0x3F;
+			}
+			else if (Regs[ALU].Bit(5))
+			{
+				PopulateCURINSTR(RD_INC_OP, B, src, PUL_n, src);
+
+
+				Regs[ALU] &= 0x1F;
+			}
+			else if (Regs[ALU].Bit(4))
+			{
+				PopulateCURINSTR(RD_INC_OP, DP, src, PUL_n, src);
+
+				Regs[ALU] &= 0xF;
+			}
+			else if (Regs[ALU].Bit(3))
+			{
+				PopulateCURINSTR(RD_INC_OP, ALU2, src,
+								RD_INC_OP, ADDR, src, SET_ADDR_PUL, X, src);
+
+				Regs[ALU] &= 0x7;
+			}
+			else if (Regs[ALU].Bit(2))
+			{
+				PopulateCURINSTR(RD_INC_OP, ALU2, src,
+								RD_INC_OP, ADDR, src, SET_ADDR_PUL, Y, src);
+
+				Regs[ALU] &= 0x3;
+			}
+			else if (Regs[ALU].Bit(1))
+			{
+				if (src == US)
+				{
+					PopulateCURINSTR(RD_INC_OP, ALU2, src,
+									RD_INC_OP, ADDR, src, SET_ADDR_PUL, SP, src);
+				}
+				else
+				{
+					PopulateCURINSTR(RD_INC_OP, ALU2, src,
+									RD_INC_OP, ADDR, src, SET_ADDR_PUL, US, src);
+				}
+
+				Regs[ALU] &= 0x1;
+			}
+			else if (Regs[ALU].Bit(0))
+			{
+				PopulateCURINSTR(RD_INC_OP, ALU2, src,
+								RD_INC_OP, ADDR, src, SET_ADDR_PUL, PC, src);
+			}
+			else
+			{
+				// extra end cycle
+				PopulateCURINSTR(RD_INC_OP, IDLE);
+			}
+		}
+
+		private void SWI1()
+		{
+			Regs[ADDR] = 0xFFFA;
+			PopulateCURINSTR(SET_E,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR_DEC_LO, SP, US,
+							WR_DEC_HI, SP, US,
+							WR_DEC_LO, SP, Y,
+							WR_DEC_HI, SP, Y,
+							WR_DEC_LO, SP, X,
+							WR_DEC_HI, SP, X,
+							WR_DEC_LO, SP, DP,
+							WR_DEC_LO, SP, B,
+							WR_DEC_LO, SP, A,
+							WR, SP, CC,
+							SET_F_I,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, ADDR, ALU, ALU2);
+		}
+
+		private void CWAI_()
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, ANDCC, ALU,
+							SET_E,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR_DEC_LO, SP, US,
+							WR_DEC_HI, SP, US,
+							WR_DEC_LO, SP, Y,
+							WR_DEC_HI, SP, Y,
+							WR_DEC_LO, SP, X,
+							WR_DEC_HI, SP, X,
+							WR_DEC_LO, SP, DP,
+							WR_DEC_LO, SP, B,
+							WR_DEC_LO, SP, A,
+							WR, SP, CC,
+							CWAI);
+		}
+
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
 
@@ -273,11 +393,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		}
 
 		private void STOP_()
-		{
-
-		}
-
-		private void HALT_()
 		{
 
 		}

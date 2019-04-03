@@ -76,17 +76,17 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case 0x32: INDEX_OP(LEAS);							break; // LEAS				(Indexed)
 				case 0x33: INDEX_OP(LEAU);							break; // LEAU				(Indexed)
 				case 0x34: PSH(SP);									break; // PSHS				(Immediate)
-				case 0x35: ;							break; // PULS				(Immediate)
+				case 0x35: PUL(SP);									break; // PULS				(Immediate)
 				case 0x36: PSH(US);									break; // PSHU				(Immediate)
-				case 0x37: ;							break; // PULU				(Immediate)
+				case 0x37: PUL(US);									break; // PULU				(Immediate)
 				case 0x38: ILLEGAL();								break; // ILLEGAL
 				case 0x39: RTS();									break; // RTS				(Inherent)
 				case 0x3A: ABX_();									break; // ABX				(Inherent)
 				case 0x3B: RTI();									break; // RTI				(Inherent)
-				case 0x3C: ;							break; // CWAI				(Inherent)
+				case 0x3C: CWAI_();									break; // CWAI				(Inherent)
 				case 0x3D: MUL_();									break; // MUL				(Inherent)
 				case 0x3E: ILLEGAL();								break; // ILLEGAL
-				case 0x3F: ;							break; // SWI				(Inherent)
+				case 0x3F: SWI1();									break; // SWI				(Inherent)
 				case 0x40: REG_OP(NEG, A);							break; // NEGA				(Inherent)
 				case 0x41: ILLEGAL();								break; // ILLEGAL
 				case 0x42: ILLEGAL();								break; // ILLEGAL
@@ -119,22 +119,22 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case 0x5D: REG_OP(TST, B);							break; // TSTB				(Inherent)
 				case 0x5E: ILLEGAL();								break; // ILLEGAL
 				case 0x5F: REG_OP(CLR, B);							break; // CLRB				(Inherent)
-				case 0x60: REG_OP(TR, B);						break; // NEG				(Indexed)
+				case 0x60: INDEX_OP(I_NEG);							break; // NEG				(Indexed)
 				case 0x61: ILLEGAL();								break; // ILLEGAL
 				case 0x62: ILLEGAL();								break; // ILLEGAL
-				case 0x63: REG_OP(TR, B);						break; // COM				(Indexed)
-				case 0x64: REG_OP(TR, B);						break; // LSR				(Indexed)
+				case 0x63: INDEX_OP(I_COM);							break; // COM				(Indexed)
+				case 0x64: INDEX_OP(I_LSR);							break; // LSR				(Indexed)
 				case 0x65: ILLEGAL();								break; // ILLEGAL
-				case 0x66: REG_OP(TR, B);					break; // ROR				(Indexed)
-				case 0x67: REG_OP(TR, A);						break; // ASR				(Indexed)
-				case 0x68: REG_OP(TR, A);						break; // ASL , LSL			(Indexed)
-				case 0x69: REG_OP(TR, A);						break; // ROL				(Indexed)
-				case 0x6A: REG_OP(TR, A);						break; // DEC				(Indexed)
+				case 0x66: INDEX_OP(I_ROR);							break; // ROR				(Indexed)
+				case 0x67: INDEX_OP(I_ASR);							break; // ASR				(Indexed)
+				case 0x68: INDEX_OP(I_ASL);							break; // ASL , LSL			(Indexed)
+				case 0x69: INDEX_OP(I_ROL);							break; // ROL				(Indexed)
+				case 0x6A: INDEX_OP(I_DEC);							break; // DEC				(Indexed)
 				case 0x6B: ILLEGAL();								break; // ILLEGAL
-				case 0x6C: REG_OP(TR, A);						break; // INC				(Indexed)
-				case 0x6D: REG_OP(TR, A);						break; // TST				(Indexed)
-				case 0x6E: REG_OP(TR, A);					break; // JMP				(Indexed)
-				case 0x6F: REG_OP(TR, A);						break; // CLR				(Indexed)
+				case 0x6C: INDEX_OP(I_INC);							break; // INC				(Indexed)
+				case 0x6D: INDEX_OP(I_TST);							break; // TST				(Indexed)
+				case 0x6E: INDEX_OP(I_JMP);							break; // JMP				(Indexed)
+				case 0x6F: INDEX_OP(I_CLR);							break; // CLR				(Indexed)
 				case 0x70: EXT_MEM(NEG);							break; // NEG				(Extended)
 				case 0x71: ILLEGAL();								break; // ILLEGAL
 				case 0x72: ILLEGAL();								break; // ILLEGAL
