@@ -747,7 +747,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(RegPC + i)).ToHexString(2);
+				byte_code += $"{ReadMemory((ushort)(RegPC + i)):X2}";
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
