@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				int prevCycles = PendingCycles;
 				//Log.Note("CPU", State());
 				op = (ushort)ReadWord(PC);
-				if (Opcodes[op] == null) throw new Exception(string.Format("unhandled opcode at pc={0:X6}", PC));
+				if (Opcodes[op] == null) throw new Exception($"unhandled opcode at pc={PC:X6}");
 				PC += 2;
 				Opcodes[op]();
 				int delta = prevCycles - PendingCycles;
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		public string State()
 		{
 			string a = Disassemble(PC).ToString().PadRight(64);
-			//string a = string.Format("{0:X6}: {1:X4}", PC, ReadWord(PC)).PadRight(64);
+			//string a = $"{PC:X6}: {ReadWord(PC):X4}".PadRight(64);
 			var dRegStrings = D.Select((r, i) => $"D{i}:{r.u32:X8}");
 			var aRegStrings = A.Select((r, i) => $"A{i}:{r.u32:X8}");
 			return a + string.Join(" ", dRegStrings
@@ -271,9 +271,6 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		[FieldOffset(0)]
 		public sbyte s8;
 
-		public override string ToString()
-		{
-			return String.Format("{0:X8}", u32);
-		}
+		public override string ToString() => $"{u32:X8}";
 	}
 }

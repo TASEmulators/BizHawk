@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = string.Format("{0:X4}:  {1}", pc, opcodeStr).PadRight(26),
+				Disassembly = $"{pc:X4}:  {opcodeStr}".PadRight(26),
 				RegisterInfo = string.Join(" ",
 					$"A:{a:X2}",
 					$"X:{x:X2}",

@@ -756,11 +756,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}: {1} {2}",
-					RegPC,
-					byte_code.PadRight(12),
-					disasm.PadRight(26)),
+				Disassembly = $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
 				RegisterInfo = string.Join(" ",
 					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
 					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",

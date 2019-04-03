@@ -24,11 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}:  {1:X2}  {2} ",
-					RegisterPC-1,
-					opcode,
-					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
+				Disassembly = $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out notused) : "---")} ".PadRight(26),
 				RegisterInfo = string.Join(" ",
 					new[]
 					{

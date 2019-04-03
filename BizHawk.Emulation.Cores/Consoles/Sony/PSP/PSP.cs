@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		void LogCallbackFunc(char type, string message)
 		{
-			debugmsgs.Enqueue(string.Format("PSP: {0} {1}", type, message));
+			debugmsgs.Enqueue($"PSP: {type} {message}");
 		}
 		void LogFlush()
 		{

@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var ptr = imports.Resolve(e);
 					if (ptr == IntPtr.Zero)
 					{
-						var s = string.Format("Trapped on unimplemented function {0}:{1}", moduleName, e);
+						var s = $"Trapped on unimplemented function {moduleName}:{e}";
 						Action del = () =>
 						{
 							Console.WriteLine(s);

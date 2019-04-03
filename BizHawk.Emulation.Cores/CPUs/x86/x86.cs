@@ -92,9 +92,6 @@ namespace BizHawk.Emulation.Cores.Components.x86
 		[FieldOffset(1)]
 		public byte High;
 
-		public override string ToString()
-		{
-			return String.Format("{0:X4}", Word);
-		}
+		public override string ToString() => $"{Word:X4}";
 	}
 }

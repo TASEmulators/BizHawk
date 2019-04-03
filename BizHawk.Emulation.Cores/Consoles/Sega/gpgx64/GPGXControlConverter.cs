@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			foreach (var Button in Buttons)
 			{
-				string Name = string.Format("P{0} {1}", player, Button.Name);
+				string Name = $"P{player} {Button.Name}";
 				ControllerDef.BoolButtons.Add(Name);
 				var ButtonFlag = Button.Key;
 				Converts.Add(delegate()
@@ -127,8 +127,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void DoMouseAnalog(int idx, int player)
 		{
-			string NX = string.Format("P{0} Mouse X", player);
-			string NY = string.Format("P{0} Mouse Y", player);
+			string NX = $"P{player} Mouse X";
+			string NY = $"P{player} Mouse Y";
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
 			ControllerDef.FloatRanges.Add(MouseRange);
@@ -142,8 +142,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void DoLightgunAnalog(int idx, int player)
 		{
-			string NX = string.Format("P{0} Lightgun X", player);
-			string NY = string.Format("P{0} Lightgun Y", player);
+			string NX = $"P{player} Lightgun X";
+			string NY = $"P{player} Lightgun Y";
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
 			ControllerDef.FloatRanges.Add(LightgunRange);
@@ -157,9 +157,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		void DoXEA1PAnalog(int idx, int player)
 		{
-			string NX = string.Format("P{0} Stick X", player);
-			string NY = string.Format("P{0} Stick Y", player);
-			string NZ = string.Format("P{0} Stick Z", player);
+			string NX = $"P{player} Stick X";
+			string NY = $"P{player} Stick Y";
+			string NZ = $"P{player} Stick Z";
 			ControllerDef.FloatControls.Add(NX);
 			ControllerDef.FloatControls.Add(NY);
 			ControllerDef.FloatControls.Add(NZ);

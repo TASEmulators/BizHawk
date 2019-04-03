@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				var traceInfo = new TraceInfo
 				{
-					Disassembly = string.Format("{0:X6}:  {1}", pc, disasm).PadRight(50)
+					Disassembly = $"{pc:X6}:  {disasm}".PadRight(50)
 				};
 
 				var sb = new StringBuilder();
@@ -41,10 +41,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							r.Key != "M68K PC" && // already present in every line start
 							r.Key != "M68K IR") // copy of last opcode, already shown in raw bytes
 						{
-							sb.Append(
-								string.Format("{0}:{1} ",
-								r.Key.Replace("M68K", "").Trim(),
-								r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+							sb.Append($"{r.Key.Replace("M68K", "").Trim()}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 						}
 					}
 				}

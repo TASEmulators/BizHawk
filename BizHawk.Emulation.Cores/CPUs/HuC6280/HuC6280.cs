@@ -273,11 +273,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{3:X2}:{0:X4}:  {1:X2}  {2} ",
-					PC,
-					ReadMemory(PC),
-					Disassemble(PC, out notused), MPR[PC >> 13]).PadRight(30),
+				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out notused)} ".PadRight(30),
 				RegisterInfo = string.Join(" ",
 					$"A:{A:X2}",
 					$"X:{X:X2}",

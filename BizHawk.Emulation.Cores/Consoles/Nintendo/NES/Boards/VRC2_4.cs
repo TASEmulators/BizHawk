@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							remap = AddrA1A0;
 							break;
 						default:
-							throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
+							throw new Exception($"Unknown PCB type for VRC2: \"{Cart.pcb}\"");
 					}
 					break;
 				default:

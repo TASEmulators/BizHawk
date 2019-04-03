@@ -52,7 +52,7 @@
 					{
 						result += " R" + dest + ",";
 					}
-					result += string.Format(" ${0:X4}", addr);
+					result += $" ${addr:X4}";
 					addrToAdvance = 3;
 					return result;
 				case 0x005:
@@ -801,10 +801,10 @@
 						{
 							offset = (ushort)(-offset - 1);
 						}
-						result += string.Format(" ${0:X4}", offset);
+						result += $" ${offset:X4}";
 						if (ext != 0)
 						{
-							result += string.Format(", ${0:X1}", opcode & 0x8);
+							result += $", ${opcode & 0x8:X1}";
 						}
 					}
 					addrToAdvance = 2;
@@ -820,7 +820,7 @@
 					src = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("MVO R{0:d}, ${1:X4}", src, addr);
+					return $"MVO R{src:d}, ${addr:X4}";
 				case 0x248:
 				case 0x249:
 				case 0x24A:
@@ -891,7 +891,7 @@
 					dest = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("MVI R{0:d}, ${1:X4}", dest, addr);
+					return $"MVI R{dest:d}, ${addr:X4}";
 				case 0x288:
 				case 0x289:
 				case 0x28A:
@@ -962,7 +962,7 @@
 					dest = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("ADD R{0:d}, ${1:X4}", dest, addr);
+					return $"ADD R{dest:d}, ${addr:X4}";
 				case 0x2C8:
 				case 0x2C9:
 				case 0x2CA:
@@ -1033,7 +1033,7 @@
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("SUB R{0:d}, ${1:X4}", mem, addr);
+					return $"SUB R{mem:d}, ${addr:X4}";
 				case 0x308:
 				case 0x309:
 				case 0x30A:
@@ -1104,7 +1104,7 @@
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("CMP R{0:d}, ${1:X4}", mem, addr);
+					return $"CMP R{mem:d}, ${addr:X4}";
 				case 0x348:
 				case 0x349:
 				case 0x34A:
@@ -1175,7 +1175,7 @@
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("AND R{0:d}, ${1:X4}", mem, addr);
+					return $"AND R{mem:d}, ${addr:X4}";
 				case 0x388:
 				case 0x389:
 				case 0x38A:
@@ -1246,7 +1246,7 @@
 					mem = (byte)(opcode & 0x7);
 					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
-					return string.Format("XOR R{0:d}, ${1:X4}", mem, addr);
+					return $"XOR R{mem:d}, ${addr:X4}";
 				case 0x3C8:
 				case 0x3C9:
 				case 0x3CA:

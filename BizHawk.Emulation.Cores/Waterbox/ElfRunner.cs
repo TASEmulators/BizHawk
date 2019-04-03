@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				.Where(s => s.PointedSection != null && (s.PointedSection.Flags & SectionFlags.Writable) != 0)
 				.OrderByDescending(s => s.Size)
 				.Take(30)
-				.Select(s => string.Format("{0} size {1}", s.Name, s.Size)))
+				.Select(s => $"{s.Name} size {s.Size}"))
 			{
 				Console.WriteLine(text);
 			}
