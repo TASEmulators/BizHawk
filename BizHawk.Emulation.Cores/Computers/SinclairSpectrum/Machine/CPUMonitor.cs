@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
 
-            _cpu.ExecuteOne();
+			_cpu.ExecuteOne();
         }
 
         /// <summary>

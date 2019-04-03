@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -130,12 +131,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_machine.BuzzerDevice != null)
             {
-                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
+                ((OneBitBeeper)_machine.BuzzerDevice as OneBitBeeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
             }
 
             if (_machine.TapeBuzzer != null)
             {
-                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
+                ((OneBitBeeper)_machine.TapeBuzzer as OneBitBeeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
             }
 
             DCFilter dc = new DCFilter(SoundMixer, 512);            

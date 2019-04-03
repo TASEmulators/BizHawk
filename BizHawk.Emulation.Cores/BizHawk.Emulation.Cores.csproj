@@ -319,7 +319,6 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IFDDHost.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Beeper.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\FloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
@@ -1583,6 +1582,7 @@
     </Compile>
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Sound\OneBitBeeper.cs" />
     <Compile Include="Sound\SN76489sms.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />

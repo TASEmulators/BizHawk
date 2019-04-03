@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private SpectrumBase _machine { get; set; }
         private Z80A _cpu { get; set; }
-        private IBeeperDevice _buzzer { get; set; }
+        private OneBitBeeper _buzzer { get; set; }
 
         /// <summary>
         /// Default constructor

@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -40,12 +41,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The spectrum buzzer/beeper
         /// </summary>
-        public IBeeperDevice BuzzerDevice { get; set; }
+        public OneBitBeeper BuzzerDevice { get; set; }
 
         /// <summary>
         /// A second beeper for the tape
         /// </summary>
-        public IBeeperDevice TapeBuzzer { get; set; }
+        public OneBitBeeper TapeBuzzer { get; set; }
 
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
@@ -164,8 +165,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // run the CPU Monitor cycle
                 CPUMon.ExecuteCycle();
 
-                // cycle the tape device
-                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+				// clock the beepers
+				TapeBuzzer.SetClock((int)CurrentFrameCycle);
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
+
+				// cycle the tape device
+				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
 
                 // has frame end been reached?
