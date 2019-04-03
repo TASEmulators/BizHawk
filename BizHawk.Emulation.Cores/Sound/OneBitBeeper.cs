@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// </summary>
 		public void Clock(int clocksToAdd = 1)
 		{
-			clockCounter++;
+			clockCounter += clocksToAdd;
 		}
 
 		/// <summary>
