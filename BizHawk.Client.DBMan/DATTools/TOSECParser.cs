@@ -61,9 +61,9 @@ namespace BizHawk.Client.DBMan
 				// start comment block
 				List<string> comments = new List<string>
 				{
-					"Type:\t" + category,
-					"Source:\t" + description,
-					"FileGen:\t" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") + " (UTC)",
+					$"Type:\t{category}",
+					$"Source:\t{description}",
+					$"FileGen:\t{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)",
 				};
 
 				AddCommentBlock(comments.ToArray());

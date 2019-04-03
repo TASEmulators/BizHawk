@@ -190,10 +190,7 @@ namespace BizHawk.Client.DBMan
 			}
 		}
 
-		static string Hash_CRC32(byte[] data)
-		{
-			return string.Format("{0:X8}", CRC32.Calculate(data));
-		}
+		static string Hash_CRC32(byte[] data) => $"{CRC32.Calculate(data):X8}";
 
 		static string Hash_SHA1(byte[] data)
 		{

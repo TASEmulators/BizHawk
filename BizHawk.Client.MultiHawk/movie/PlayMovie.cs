@@ -435,7 +435,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			var FpsItem = new ListViewItem("Fps");
-			FpsItem.SubItems.Add(string.Format("{0:0.#######}", Fps(_movieList[firstIndex])));
+			FpsItem.SubItems.Add($"{Fps(_movieList[firstIndex]):0.#######}");
 			DetailsView.Items.Add(FpsItem);
 
 			var FramesItem = new ListViewItem("Frames");

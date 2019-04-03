@@ -183,10 +183,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			public LogicalButton LogicalButton;
 			public InputEventType EventType;
-			public override string ToString()
-			{
-				return string.Format("{0}:{1}", EventType.ToString(), LogicalButton.ToString());
-			}
+			public override string ToString() => $"{EventType.ToString()}:{LogicalButton.ToString()}";
 		}
 
 		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
