@@ -161,7 +161,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void LoadState(string name)
 		{
-			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false, false });
+			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false, false });
 		}
 
 
@@ -250,7 +250,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void SaveState(string name)
 		{
-			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false });
+			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false });
 		}
 
 		/// <summary>
