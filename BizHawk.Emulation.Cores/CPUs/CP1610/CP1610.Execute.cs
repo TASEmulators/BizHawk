@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
@@ -27,23 +29,19 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					RegisterPC-1,
 					opcode,
 					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
-				RegisterInfo = string.Format(
-					"Cy:{0} {1}{2}{3}{4}{5}{6} R0:{7:X4} R1:{8:X4} R2:{9:X4} R3:{10:X4} R4:{11:X4} R5:{12:X4} R6:{13:X4} R7:{14:X4}",
-					TotalExecutedCycles,
-					FlagS ? "S" : "s",
-					FlagC ? "C" : "c",
-					FlagZ ? "Z" : "z",
-					FlagO ? "O" : "o",
-					FlagI ? "I" : "i",
-					FlagD ? "D" : "d",
-					Register[0],
-					Register[1],
-					Register[2],
-					Register[3],
-					Register[4],
-					Register[5],
-					Register[6],
-					Register[7])
+				RegisterInfo = string.Join(" ",
+					new[]
+					{
+						$"Cy:{TotalExecutedCycles}",
+						string.Concat(
+							FlagS ? "S" : "s",
+							FlagC ? "C" : "c",
+							FlagZ ? "Z" : "z",
+							FlagO ? "O" : "o",
+							FlagI ? "I" : "i",
+							FlagD ? "D" : "d")
+					}
+						.Concat(Register.Select((r, i) => $"R{i}:{4:X4}")))
 			};
 		}	
 

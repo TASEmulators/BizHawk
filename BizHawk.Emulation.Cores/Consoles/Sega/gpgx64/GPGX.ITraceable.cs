@@ -49,8 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					}
 				}
 				var sr = regs["M68K SR"].Value;
-				sb.Append(
-					string.Format("{0}{1}{2}{3}{4}",
+				sb.Append(string.Concat(
 					(sr & 16) > 0 ? "X" : "x",
 					(sr &  8) > 0 ? "N" : "n",
 					(sr &  4) > 0 ? "Z" : "z",
