@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((sbyte)val).ToString();
 				case DisplayType.Hex:
-					return val.ToHexString(2);
+					return $"{val:X2}";
 				case DisplayType.Binary:
 					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
 			}
