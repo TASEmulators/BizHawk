@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// Option to clock the beeper every CPU clock
 		/// </summary>
-		public void Clock()
+		public void Clock(int clocksToAdd = 1)
 		{
 			clockCounter++;
 		}
