@@ -71,9 +71,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return new TraceInfo
 			{
 				Disassembly = $"{PC:X4}: {rawbytes,-9}  {disasm} ".PadRight(32),
-				RegisterInfo = string.Format(
-					"A:{0:X2}  X:{1:X2}  Y:{2:X2}  SP:{4:X2}  P:{3:X2}  {6}  Cy:{5}  PPU-Cy:{8}",
-					A, X, Y, P, S, TotalExecutedCycles,
+				RegisterInfo = string.Join("  ",
+					$"A:{A:X2}",
+					$"X:{X:X2}",
+					$"Y:{Y:X2}",
+					$"SP:{S:X2}",
+					$"P:{P:X2}",
 					string.Concat(
 						FlagN ? "N" : "n",
 						FlagV ? "V" : "v",
@@ -82,9 +85,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 						FlagD ? "D" : "d",
 						FlagI ? "I" : "i",
 						FlagZ ? "Z" : "z",
-						FlagC ? "C" : "c"),
-					!RDY ? "R" : "r",
-					ext_ppu_cycle)
+						FlagC ? "C" : "c",
+//						!RDY ? "R" : "r",
+						),
+					$"Cy:{TotalExecutedCycles}",
+					$"PPU-Cy:{ext_ppu_cycle}")
 			};
 		}
 
