@@ -85,8 +85,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 						FlagD ? "D" : "d",
 						FlagI ? "I" : "i",
 						FlagZ ? "Z" : "z",
-						FlagC ? "C" : "c",
-//						!RDY ? "R" : "r",
+						FlagC ? "C" : "c"
+//						!RDY ? "R" : "r"
 						),
 					$"Cy:{TotalExecutedCycles}",
 					$"PPU-Cy:{ext_ppu_cycle}")
