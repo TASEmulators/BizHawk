@@ -32,6 +32,20 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR, ADDR, ALU);
 		}
 
+		private void DIRECT_ST_4(ushort dest)
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
+							RD, ALU, ADDR,
+							WR, ADDR, dest);
+		}
+
+		private void DIRECT_MEM_4(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
+							RD, ALU, ADDR,
+							oper, dest, ALU);
+		}
+
 		private void EXT_MEM(ushort oper)
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
@@ -47,6 +61,48 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[ALU2] = Regs[CC];
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, oper, ALU2, ALU,
 							TR, CC, ALU2);
+		}
+
+		private void REG_OP_IMD(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, oper, dest, ALU);
+		}
+
+		private void IMD_OP_D(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
+							oper, ADDR);
+		}
+
+		private void DIR_OP_D(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
+							RD_INC, ALU, ADDR,
+							RD, ALU2, ADDR, 
+							SET_ADDR, ADDR, ALU, ALU2,
+							oper, ADDR);
+		}
+
+		private void DIR_CMP_16(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
+							RD_INC, ALU, ADDR,
+							RD, ALU2, ADDR,
+							SET_ADDR, ADDR, ALU, ALU2,
+							oper, dest, ADDR);
+		}
+
+		private void REG_OP_LD_16(ushort dest)
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							RD_INC_OP, ALU2, PC, SET_ADDR, dest, ALU, ALU2);
+		}
+
+		private void REG_OP_LD_16D(ushort dest)
+		{
+			PopulateCURINSTR(RD_INC, A, PC,
+							RD_INC, B, PC);
 		}
 
 		private void EXG_()
@@ -116,6 +172,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								IDLE);
 			}
+		}
+
+		private void BSR_()
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							ADD8BR, PC, ALU,
+							TR, ADDR, PC,
+							DEC16, SP,
+							WR_DEC_LO, SP, ADDR,
+							WR_HI, SP, ADDR);
 		}
 
 		private void LBSR_()

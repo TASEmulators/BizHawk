@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			Regs[ALU] = (ushort)(Regs[A] * Regs[B]);
 			D = Regs[ALU];
-			FlagC = Regs[B] > 127;
+			FlagC = Regs[A] > 127;
 			FlagZ = D == 0;
 		}
 
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-
+			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagN = false;
 
 			Regs[dest] = ans;
@@ -157,16 +157,39 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d -= (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagN = true;
+			FlagN = ans > 127;
+			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 
 			Regs[dest] = ans;
 		}
 
-		public void BIT_Func(ushort bit, ushort src)
+		// same as SUB8 but result not stored
+		public void CMP8_Func(ushort dest, ushort src)
 		{
-			FlagZ = !Regs[src].Bit(bit);
-			FlagH = true;
-			FlagN = false;
+			int Reg16_d = Regs[dest];
+			Reg16_d -= Regs[src];
+
+			FlagC = Reg16_d.Bit(8);
+			FlagZ = (Reg16_d & 0xFF) == 0;
+
+			ushort ans = (ushort)(Reg16_d & 0xFF);
+
+			// redo for half carry flag
+			Reg16_d = Regs[dest] & 0xF;
+			Reg16_d -= (Regs[src] & 0xF);
+
+			FlagH = Reg16_d.Bit(4);
+			FlagN = ans > 127;
+			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
+		}
+
+		public void BIT_Func(ushort dest, ushort src)
+		{
+			ushort ans = (ushort)(Regs[dest] & Regs[src]);
+
+			FlagZ = ans == 0;
+			FlagV = false;
+			FlagN = ans > 127;
 		}
 
 		public void SET_Func(ushort bit, ushort src)
@@ -253,7 +276,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			}
 
 			FlagZ = D == 0;
-			FlagN = Regs[B] > 127;
+			FlagN = Regs[A] > 127;
 		}
 
 		public void CCF_Func(ushort src)
@@ -276,7 +299,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			FlagZ = Regs[dest] == 0;
 			FlagV = false;
-			FlagN = Regs[B] > 127;
+			FlagN = Regs[dest] > 127;
 		}
 
 		public void OR8_Func(ushort dest, ushort src)
@@ -285,7 +308,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			FlagZ = Regs[dest] == 0;
 			FlagV = false;
-			FlagN = Regs[B] > 127;
+			FlagN = Regs[dest] > 127;
 		}
 
 		public void XOR8_Func(ushort dest, ushort src)
@@ -293,9 +316,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
 
 			FlagZ = Regs[dest] == 0;
-			FlagC = false;
-			FlagH = false;
-			FlagN = false;
+			FlagV = false;
+			FlagN = Regs[dest] > 127;
 		}
 
 		public void CP8_Func(ushort dest, ushort src)
@@ -418,6 +440,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += ((Regs[src] & 0xF) + c);
 
 			FlagH = Reg16_d.Bit(4);
+			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagN = false;
 
 			Regs[dest] = ans;
@@ -440,7 +463,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d -= ((Regs[src] & 0xF) + c);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagN = true;
+			FlagN = ans > 127;
+			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 
 			Regs[dest] = ans;
 		}
@@ -516,6 +540,60 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest_h] += temp;
 			Regs[dest_h] &= 0xFF;
 
+		}
+
+		// D register implied
+		public void SUB16_Func(ushort src)
+		{
+			int Reg16_d = D;
+			int Reg16_s = Regs[src];
+
+			Reg16_d -= Reg16_s;
+
+			FlagC = Reg16_d.Bit(16);
+			FlagZ = (Reg16_d & 0xFFFF) == 0;
+
+			ushort ans = (ushort)(Reg16_d & 0xFFFF);
+
+			FlagN = ans > 0x7FFF;
+			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
+
+			D = ans;
+		}
+
+		// D register implied
+		public void ADD16_Func(ushort src)
+		{
+			int Reg16_d = D;
+			int Reg16_s = Regs[src];
+
+			Reg16_d += Reg16_s;
+
+			FlagC = Reg16_d.Bit(16);
+			FlagZ = (Reg16_d & 0xFFFF) == 0;
+
+			ushort ans = (ushort)(Reg16_d & 0xFFFF);
+
+			FlagN = ans > 0x7FFF;
+			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
+
+			D = ans;
+		}
+
+		public void CMP16_Func(ushort dest, ushort src)
+		{
+			int Reg16_d = Regs[dest];
+			int Reg16_s = Regs[src];
+
+			Reg16_d += Reg16_s;
+
+			FlagC = Reg16_d.Bit(16);
+			FlagZ = (Reg16_d & 0xFFFF) == 0;
+
+			ushort ans = (ushort)(Reg16_d & 0xFFFF);
+
+			FlagN = ans > 0x7FFF;
+			FlagV = (Regs[dest].Bit(15) != Regs[src].Bit(15)) && (Regs[dest].Bit(15) != ans.Bit(15));
 		}
 
 		public void EXG_Func(ushort sel)

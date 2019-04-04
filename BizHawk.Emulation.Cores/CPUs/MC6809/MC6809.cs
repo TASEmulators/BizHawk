@@ -87,6 +87,10 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort SET_F_I = 73;
 		public const ushort SET_E = 74;
 		public const ushort ANDCC = 75;
+		public const ushort CMP8 = 76;
+		public const ushort SUB16 = 77;
+		public const ushort ADD16 = 78;
+		public const ushort CMP16 = 79;
 
 		public MC6809()
 		{
@@ -216,11 +220,32 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case AND8:
 							AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
+						case ADD8:
+							ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case ADC8:
+							ADC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
 						case OR8:
 							OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
+						case XOR8:
+							XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case BIT:
+							BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
 						case SUB8:
 							SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case SBC8:
+							SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case CMP8:
+							CMP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case TR:
+							TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
 						case SET_ADDR:
 							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[cur_instr[instr_pntr++]] << 8) | Regs[cur_instr[instr_pntr++]]);
@@ -347,6 +372,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case SBC8:
 					SBC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
+				case CMP8:
+					CMP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
 				case INC16:
 					INC16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -355,6 +383,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case DEC16:
 					DEC16_Func(cur_instr[instr_pntr++]);
+					break;
+				case SUB16:
+					SUB16_Func(cur_instr[instr_pntr++]);
+					break;
+				case ADD16:
+					ADD16_Func(cur_instr[instr_pntr++]);
+					break;
+				case CMP16:
+					CMP16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case DEC8:
 					DEC8_Func(cur_instr[instr_pntr++]);
