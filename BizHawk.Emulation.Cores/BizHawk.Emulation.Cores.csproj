@@ -370,7 +370,6 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavHeader.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavStreamReader.cs" />
-    <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs">
@@ -1584,6 +1583,7 @@
     <Compile Include="Sound\DualSyncSound.cs" />
     <Compile Include="Sound\OneBitBeeper.cs" />
     <Compile Include="Sound\SN76489sms.cs" />
+    <Compile Include="Sound\SyncSoundMixer.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
