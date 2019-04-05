@@ -143,11 +143,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.httpCommunication = new Communication.HttpCommunication();
 				if (URL_get != null)
 				{
-					GlobalWin.httpCommunication.SetGetUrl(URL_get);
+					GlobalWin.httpCommunication.GetUrl = URL_get;
 				}
 				if (URL_post != null)
 				{
-					GlobalWin.httpCommunication.SetPostUrl(URL_post);
+					GlobalWin.httpCommunication.PostUrl = URL_post;
 				}
 			}
 
@@ -166,21 +166,13 @@ namespace BizHawk.Client.EmuHawk
 			if (mmf_filename != null)
 			{
 				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
-				GlobalWin.memoryMappedFiles.SetFilename(mmf_filename);
+				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
 			}
 		}
 
 		public static string GetCmdConfigFile(string[] args)
 		{
-			for (int i = 0; i < args.Length; i++)
-			{
-				var arg = args[i].ToLower();
-				if (arg.StartsWith("--config="))
-				{
-					return args[i].Substring(args[i].IndexOf('=') + 1);
-				}
-			}
-			return null;
+			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 	}
 

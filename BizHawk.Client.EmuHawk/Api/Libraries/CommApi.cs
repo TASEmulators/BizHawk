@@ -51,22 +51,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SocketServerSetIp(string ip)
 		{
-			GlobalWin.socketServer.SetIp(ip);
+			GlobalWin.socketServer.Ip = ip;
 		}
 
 		public void SetSocketServerPort(int port)
 		{
-			GlobalWin.socketServer.SetPort(port);
+			GlobalWin.socketServer.Port = port;
 		}
 
 		public string SocketServerGetIp()
 		{
-			return GlobalWin.socketServer.ip;
+			return GlobalWin.socketServer.Ip;
 		}
 
 		public int SocketServerGetPort()
 		{
-			return GlobalWin.socketServer.port;
+			return GlobalWin.socketServer.Port;
 		}
 
 		public string SocketServerGetInfo()
@@ -77,12 +77,12 @@ namespace BizHawk.Client.EmuHawk
 		// All MemoryMappedFile related methods
 		public void MmfSetFilename(string filename)
 		{
-			GlobalWin.memoryMappedFiles.SetFilename(filename);
+			GlobalWin.memoryMappedFiles.Filename = filename;
 		}
 
-		public string MmfSetFilename()
+		public string MmfGetFilename()
 		{
-			return GlobalWin.memoryMappedFiles.GetFilename();
+			return GlobalWin.memoryMappedFiles.Filename;
 		}
 
 		public int MmfScreenshot()
@@ -133,19 +133,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public void HttpSetPostUrl(string url)
 		{
-			GlobalWin.httpCommunication.SetPostUrl(url);
+			GlobalWin.httpCommunication.PostUrl = url;
 		}
 		public void HttpSetGetUrl(string url)
 		{
-			GlobalWin.httpCommunication.SetGetUrl(url);
+			GlobalWin.httpCommunication.GetUrl = url;
 		}
 		public string HttpGetPostUrl()
 		{
-			return GlobalWin.httpCommunication.GetPostUrl();
+			return GlobalWin.httpCommunication.PostUrl;
 		}
 		public string HttpGetGetUrl()
 		{
-			return GlobalWin.httpCommunication.GetGetUrl();
+			return GlobalWin.httpCommunication.GetUrl;
 		}
 	}
 }
