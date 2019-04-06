@@ -1,5 +1,5 @@
-using BizHawk.Common.NumberExtensions;
 using System;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Common.Components.MC6809
 {
@@ -15,12 +15,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void ILLEGAL()
 		{
-
+			throw new Exception("Encountered illegal instruction");
 		}
 
 		private void SYNC_()
 		{
-
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							SYNC);
 		}
 
 		private void REG_OP(ushort oper, ushort src)
@@ -143,6 +145,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC, ALU, ADDR,
 							RD, ALU2, ADDR,
 							SET_ADDR, ADDR, ALU, ALU2,
+							oper, dest, ADDR);
+		}
+
+		private void IMD_CMP_16(ushort oper, ushort dest)
+		{
+			PopulateCURINSTR(RD_INC, ALU, PC,
+							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
 							oper, dest, ADDR);
 		}
 
@@ -323,13 +332,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void PAGE_2()
 		{
-
 			PopulateCURINSTR(OP_PG_2);
 		}
 
 		private void PAGE_3()
 		{
-
 			PopulateCURINSTR(OP_PG_3);
 		}
 
@@ -553,6 +560,29 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							SET_ADDR, ADDR, ALU, ALU2);
 		}
 
+		private void SWI2_3(ushort pick)
+		{
+			Regs[ADDR] = (ushort)((pick == 3) ? 0xFFF2 : 0xFFF4);
+			PopulateCURINSTR(SET_E,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR_DEC_LO, SP, US,
+							WR_DEC_HI, SP, US,
+							WR_DEC_LO, SP, Y,
+							WR_DEC_HI, SP, Y,
+							WR_DEC_LO, SP, X,
+							WR_DEC_HI, SP, X,
+							WR_DEC_LO, SP, DP,
+							WR_DEC_LO, SP, B,
+							WR_DEC_LO, SP, A,
+							WR, SP, CC,
+							IDLE,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, ADDR, ALU, ALU2);
+		}
+
 		private void CWAI_()
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, ANDCC, ALU,
@@ -571,102 +601,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
 							CWAI);
-		}
-
-		private void DEC_16(ushort src_l, ushort src_h)
-		{
-
-		}
-
-		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
-		{
-
-		}
-
-		private void STOP_()
-		{
-
-		}
-
-		private void JR_COND(bool cond)
-		{
-
-		}
-
-		private void JP_COND(bool cond)
-		{
-
-		}
-
-		private void RET_()
-		{
-
-		}
-
-		private void RETI_()
-		{
-
-		}
-
-
-		private void RET_COND(bool cond)
-		{
-
-		}
-
-		private void CALL_COND(bool cond)
-		{
-
-		}
-
-		private void INT_OP(ushort operation, ushort src)
-		{
-
-		}
-
-		private void BIT_OP(ushort operation, ushort bit, ushort src)
-		{
-
-		}
-
-		private void RST_(ushort n)
-		{
-
-		}
-
-		private void DI_()
-		{
-
-		}
-
-		private void EI_()
-		{
-
-		}
-
-		private void JP_HL()
-		{
-
-		}
-
-		private void ADD_SP()
-		{
-
-		}
-
-		private void LD_SP_HL()
-		{
-
-		}
-
-		private void LD_HL_SPn()
-		{
-
-		}
-
-		private void JAM_()
-		{
-
 		}
 	}
 }

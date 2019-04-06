@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort I_ST16 = 32;
 		public const ushort I_LD16D = 33;
 		public const ushort I_ST16D = 34;
+		public const ushort I_CMP16D = 35;
 
 		public ushort indexed_op;
 		public ushort indexed_reg;
@@ -424,6 +425,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case I_ST16: INDEX_OP_ST();						break; // ST X, Y, SP, US
 				case I_LD16D: INDEX_OP_LDD();					break; // LD D
 				case I_ST16D: INDEX_OP_STD();					break; // ST D
+				case I_CMP16D: INDEX_OP_EX6D(CMP16D);			break; // CMP D
 			}
 		}
 	}

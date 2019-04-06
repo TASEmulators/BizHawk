@@ -4,11 +4,10 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 {
 	public partial class MC6809
 	{
-		private ulong totalExecutedCycles;
-		public ulong TotalExecutedCycles { get { return totalExecutedCycles; } set { totalExecutedCycles = value; } }
+		public ulong TotalExecutedCycles;
 
-		private int EI_pending;
-		private bool interrupts_enabled;
+		public int EI_pending;
+		public bool interrupts_enabled;
 
 		// variables for executing instructions
 		public int instr_pntr = 0;
@@ -17,7 +16,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public bool halted;
 		public bool stopped;
 		public bool jammed;
-		public int LY;
 
 		public void FetchInstruction(byte opcode)
 		{
@@ -163,7 +161,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case 0x89: REG_OP_IMD(ADC8, A);						break; // ADCA				(Immediate)
 				case 0x8A: REG_OP_IMD(OR8, A);						break; // ORA				(Immediate)
 				case 0x8B: REG_OP_IMD(ADD8, A);						break; // ADDA				(Immediate)
-				case 0x8C: REG_OP_IMD(ADC8, A);						break; // CMPX				(Immediate)
+				case 0x8C: IMD_CMP_16(CMP16, X);					break; // CMPX				(Immediate)
 				case 0x8D: BSR_();									break; // BSR				(Relative)
 				case 0x8E: REG_OP_LD_16(X);							break; // LDX				(Immediate)
 				case 0x8F: ILLEGAL();								break; // ILLEGAL
@@ -286,44 +284,44 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			switch (opcode)
 			{
-				case 0x21: REG_OP(XOR8, B); break; // LBRN				(Relative)
-				case 0x22: REG_OP(XOR8, B); break; // LBHI				(Relative)
-				case 0x23: REG_OP(XOR8, B); break; // LBLS				(Relative)
-				case 0x24: REG_OP(XOR8, B); break; // LBHS , LBCC		(Relative)
-				case 0x25: REG_OP(XOR8, B); break; // LBCS , LBLO		(Relative)
-				case 0x26: REG_OP(XOR8, B); break; // LBNE				(Relative)
-				case 0x27: REG_OP(XOR8, B); break; // LBEQ				(Relative)
-				case 0x28: REG_OP(XOR8, B); break; // LBVC				(Relative)
-				case 0x29: REG_OP(XOR8, B); break; // LBVS				(Relative)
-				case 0x2A: REG_OP(XOR8, B); break; // LBPL				(Relative)
-				case 0x2B: REG_OP(XOR8, B); break; // LBMI				(Relative)
-				case 0x2C: REG_OP(XOR8, B); break; // LBGE				(Relative)
-				case 0x2D: REG_OP(XOR8, B); break; // LBLT				(Relative)
-				case 0x2E: REG_OP(XOR8, B); break; // LBGT				(Relative)
-				case 0x2F: REG_OP(XOR8, B); break; // LBLE				(Relative)
-				case 0x3F: REG_OP(XOR8, B); break; // SWI2				(Inherent)
-				case 0x83: REG_OP(XOR8, B); break; // CMPD				(Immediate)
-				case 0x8C: REG_OP(XOR8, B); break; // CMPY				(Immediate)
-				case 0x8E: REG_OP(XOR8, B); break; // LDY				(Immediate)
-				case 0x93: REG_OP(XOR8, B); break; // CMPD				(Direct)
-				case 0x9C: REG_OP(XOR8, B); break; // CMPY				(Direct)
-				case 0x9E: REG_OP(XOR8, B); break; // LDY				(Direct)
-				case 0x9F: REG_OP(XOR8, B); break; // STY				(Direct)
-				case 0xA3: REG_OP(XOR8, B); break; // CMPD				(Indexed)
-				case 0xAC: REG_OP(XOR8, B); break; // CMPY				(Indexed)
-				case 0xAE: REG_OP(XOR8, B); break; // LDY				(Indexed)
-				case 0xAF: REG_OP(XOR8, B); break; // STY				(Indexed)
-				case 0xB3: REG_OP(XOR8, B); break; // CMPD				(Extended)
-				case 0xBC: REG_OP(XOR8, B); break; // CMPY				(Extended)
-				case 0xBE: REG_OP(XOR8, B); break; // LDY				(Extended)
-				case 0xBF: REG_OP(XOR8, B); break; // STY				(Extended)
-				case 0xCE: REG_OP(XOR8, B); break; // LDS				(Immediate)
-				case 0xDE: REG_OP(XOR8, B); break; // LDS				(Direct)
-				case 0xDF: REG_OP(XOR8, B); break; // STS				(Direct)
-				case 0xEE: REG_OP(XOR8, B); break; // LDS				(Indexed)
-				case 0xEF: REG_OP(XOR8, B); break; // STS				(Indexed)
-				case 0xFE: REG_OP(XOR8, B); break; // LDS				(Extended)
-				case 0xFF: REG_OP(XOR8, B); break; // STS				(Extended)
+				case 0x21: LBR_(false);								break; // BRN				(Relative)
+				case 0x22: LBR_(!(FlagC | FlagZ));					break; // BHI				(Relative)
+				case 0x23: LBR_(FlagC | FlagZ);						break; // BLS				(Relative)
+				case 0x24: LBR_(!FlagC);							break; // BHS , BCC			(Relative)
+				case 0x25: LBR_(FlagC);								break; // BLO , BCS			(Relative)
+				case 0x26: LBR_(!FlagZ);							break; // BNE				(Relative)
+				case 0x27: LBR_(FlagZ);								break; // BEQ				(Relative)
+				case 0x28: LBR_(!FlagV);							break; // BVC				(Relative)
+				case 0x29: LBR_(FlagV);								break; // BVS				(Relative)
+				case 0x2A: LBR_(!FlagN);							break; // BPL				(Relative)
+				case 0x2B: LBR_(FlagN);								break; // BMI				(Relative)
+				case 0x2C: LBR_(FlagN == FlagV);					break; // BGE				(Relative)
+				case 0x2D: LBR_(FlagN ^ FlagV);						break; // BLT				(Relative)
+				case 0x2E: LBR_((!FlagZ) & (FlagN == FlagV));		break; // BGT				(Relative)
+				case 0x2F: LBR_(FlagZ | (FlagN ^ FlagV));			break; // BLE				(Relative)
+				case 0x3F: SWI2_3(2);								break; // SWI2				(Inherent)
+				case 0x83: IMD_OP_D(CMP16D, D);						break; // CMPD				(Immediate)
+				case 0x8C: IMD_CMP_16(CMP16, Y);					break; // CMPY				(Immediate)
+				case 0x8E: REG_OP_LD_16(Y);							break; // LDY				(Immediate)
+				case 0x93: DIR_OP_D(CMP16D, D);						break; // CMPD				(Direct)
+				case 0x9C: DIR_CMP_16(CMP16, Y);					break; // CMPY				(Direct)
+				case 0x9E: DIR_OP_LD_16(Y);							break; // LDY				(Direct)
+				case 0x9F: DIR_OP_ST_16(Y);							break; // STY				(Direct)
+				case 0xA3: INDEX_OP_REG(I_CMP16D, D);				break; // CMPD				(Indexed)
+				case 0xAC: INDEX_OP_REG(I_CMP16, Y);				break; // CMPY				(Indexed)
+				case 0xAE: INDEX_OP_REG(I_LD16, Y);					break; // LDY				(Indexed)
+				case 0xAF: INDEX_OP_REG(I_ST16, Y);					break; // STY				(Indexed)
+				case 0xB3: EXT_OP_D(CMP16D, D);						break; // CMPD				(Extended)
+				case 0xBC: EXT_CMP_16(CMP16, Y);					break; // CMPY				(Extended)
+				case 0xBE: EXT_OP_LD_16(Y);							break; // LDY				(Extended)
+				case 0xBF: EXT_OP_ST_16(Y);							break; // STY				(Extended)
+				case 0xCE: REG_OP_LD_16(SP);						break; // LDS				(Immediate)
+				case 0xDE: DIR_OP_LD_16(SP);						break; // LDS				(Direct)
+				case 0xDF: DIR_OP_ST_16(SP);						break; // STS				(Direct)
+				case 0xEE: INDEX_OP_REG(I_LD16, SP);				break; // LDS				(Indexed)
+				case 0xEF: INDEX_OP_REG(I_ST16, SP);				break; // STS				(Indexed)
+				case 0xFE: EXT_OP_LD_16(SP);						break; // LDS				(Extended)
+				case 0xFF: EXT_OP_ST_16(SP);						break; // STS				(Extended)
 
 				default: ILLEGAL(); break;
 			}
@@ -333,15 +331,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			switch (opcode)
 			{
-				case 0x3F: REG_OP(XOR8, B); break; // SWI3				(Inherent)
-				case 0x83: REG_OP(XOR8, B); break; // CMPU				(Immediate)
-				case 0x8C: REG_OP(XOR8, B); break; // CMPS				(Immediate)
-				case 0x93: REG_OP(XOR8, B); break; // CMPU				(Direct)
-				case 0x9C: REG_OP(XOR8, B); break; // CMPS				(Direct)
-				case 0xA3: REG_OP(XOR8, B); break; // CMPU				(Indexed)
-				case 0xAC: REG_OP(XOR8, B); break; // CMPS				(Indexed)
-				case 0xB3: REG_OP(XOR8, B); break; // CMPU				(Extended)
-				case 0xBC: REG_OP(XOR8, B); break; // CMPS				(Extended)
+				case 0x3F: SWI2_3(3);								break; // SWI3				(Inherent)
+				case 0x83: IMD_CMP_16(CMP16, US);					break; // CMPU				(Immediate)
+				case 0x8C: IMD_CMP_16(CMP16, SP);					break; // CMPS				(Immediate)
+				case 0x93: DIR_CMP_16(CMP16, US);					break; // CMPU				(Direct)
+				case 0x9C: DIR_CMP_16(CMP16, SP);					break; // CMPS				(Direct)
+				case 0xA3: INDEX_OP_REG(I_CMP16, US);				break; // CMPU				(Indexed)
+				case 0xAC: INDEX_OP_REG(I_CMP16, SP);				break; // CMPS				(Indexed)
+				case 0xB3: EXT_CMP_16(CMP16, US);					break; // CMPU				(Extended)
+				case 0xBC: EXT_CMP_16(CMP16, SP);					break; // CMPS				(Extended)
 
 				default: ILLEGAL(); break;
 			}

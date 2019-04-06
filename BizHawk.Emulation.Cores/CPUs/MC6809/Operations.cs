@@ -1,5 +1,5 @@
-﻿using BizHawk.Common.NumberExtensions;
-using System;
+﻿using System;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Common.Components.MC6809
 {
@@ -50,12 +50,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d -= (Regs[src] & 0xF);
 			FlagH = Reg16_d.Bit(4);
 			Regs[src] = ans;
-		}
-
-		// speical read for POP AF that always clears the lower 4 bits of F 
-		public void Read_Func_F(ushort dest, ushort src_l, ushort src_h)
-		{
-			Regs[dest] = (ushort)(ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8)) & 0xF0);
 		}
 
 		public void Write_Dec_Lo_Func(ushort dest, ushort src)
@@ -199,32 +193,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = ans > 127;
 		}
 
-		public void SET_Func(ushort bit, ushort src)
-		{
-			Regs[src] |= (ushort)(1 << bit);
-		}
-
-		public void RES_Func(ushort bit, ushort src)
-		{
-			Regs[src] &= (ushort)(0xFF - (1 << bit));
-		}
-
-		public void ASGN_Func(ushort src, ushort val)
-		{
-			Regs[src] = val;
-		}
-
-		public void SWAP_Func(ushort src)
-		{
-			ushort temp = (ushort)((Regs[src] << 4) & 0xF0);
-			Regs[src] = (ushort)(temp | (Regs[src] >> 4));
-
-			FlagZ = Regs[src] == 0;
-			FlagH = false;
-			FlagN = false;
-			FlagC = false;
-		}
-
 		public void ASL_Func(ushort src)
 		{
 			FlagC = Regs[src].Bit(7);
@@ -286,20 +254,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = Regs[A] > 127;
 		}
 
-		public void CCF_Func(ushort src)
-		{
-			FlagC = !FlagC;
-			FlagH = false;
-			FlagN = false;
-		}
-
-		public void SCF_Func(ushort src)
-		{
-			FlagC = true;
-			FlagH = false;
-			FlagN = false;
-		}
-
 		public void AND8_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
@@ -344,17 +298,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = true;
 		}
 
-		public void RRC_Func(ushort src)
-		{
-			FlagC = Regs[src].Bit(0);
-
-			Regs[src] = (ushort)((FlagC ? 0x80 : 0) | (Regs[src] >> 1));
-
-			FlagZ = (Regs[src] == 0);
-			FlagH = false;
-			FlagN = false;
-		}
-
 		public void ROR_Func(ushort src)
 		{
 			ushort c = (ushort)(FlagC ? 0x80 : 0);
@@ -365,21 +308,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			FlagZ = Regs[src] == 0;
 			FlagN = (Regs[src] & 0xFF) > 127;
-		}
-
-		public void RLC_Func(ushort src)
-		{
-			bool imm = false;
-			if (imm) { src = A; }
-
-			ushort c = (ushort)(Regs[src].Bit(7) ? 1 : 0);
-			FlagC = Regs[src].Bit(7);
-
-			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
-
-			FlagZ = imm ? false : (Regs[src] == 0);
-			FlagH = false;
-			FlagN = false;
 		}
 
 		public void ROL_Func(ushort src)
@@ -415,14 +343,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = (Regs[src] & 0xFF) > 127;
 		}
 
-		public void INC16_Func(ushort src_l, ushort src_h)
+		public void INC16_Func(ushort src)
 		{
-			int Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
-
-			Reg16_d += 1;
-
-			Regs[src_l] = (ushort)(Reg16_d & 0xFF);
-			Regs[src_h] = (ushort)((Reg16_d & 0xFF00) >> 8);
+			Regs[src] += 1;
 		}
 
 		public void DEC16_Func(ushort src)
@@ -585,6 +508,23 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 
 			D = ans;
+		}
+
+		// D register implied
+		public void CMP16D_Func(ushort src)
+		{
+			int Reg16_d = D;
+			int Reg16_s = Regs[src];
+
+			Reg16_d += Reg16_s;
+
+			FlagC = Reg16_d.Bit(16);
+			FlagZ = (Reg16_d & 0xFFFF) == 0;
+
+			ushort ans = (ushort)(Reg16_d & 0xFFFF);
+
+			FlagN = ans > 0x7FFF;
+			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 		}
 
 		public void CMP16_Func(ushort dest, ushort src)
