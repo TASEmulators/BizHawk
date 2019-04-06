@@ -91,6 +91,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort SUB16 = 77;
 		public const ushort ADD16 = 78;
 		public const ushort CMP16 = 79;
+		public const ushort WR_HI_INC = 80;
 
 		public MC6809()
 		{
@@ -244,6 +245,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case CMP8:
 							CMP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
+						case DEC16:
+							DEC16_Func(cur_instr[instr_pntr++]);
+							break;
 						case TR:
 							TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
@@ -301,6 +305,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case WR_HI:
 					Write_Hi_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case WR_HI_INC:
+					Write_Hi_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

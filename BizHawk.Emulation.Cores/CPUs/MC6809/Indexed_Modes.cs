@@ -20,9 +20,29 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort I_TST = 13;
 		public const ushort I_JMP = 14;
 		public const ushort I_CLR = 15;
+		public const ushort I_SUB = 16;
+		public const ushort I_CMP = 17;
+		public const ushort I_SBC = 18;
+		public const ushort I_AND = 19;
+		public const ushort I_BIT = 20;
+		public const ushort I_LD = 21;
+		public const ushort I_ST = 22;
+		public const ushort I_XOR = 23;
+		public const ushort I_ADC = 24;
+		public const ushort I_OR = 25;
+		public const ushort I_ADD = 26;
+		public const ushort I_SUBD = 27;
+		public const ushort I_ADDD = 28;
+		public const ushort I_CMP16 = 29;
+		public const ushort I_JSR = 30;
+		public const ushort I_LD16 = 31;
+		public const ushort I_ST16 = 32;
+		public const ushort I_LD16D = 33;
+		public const ushort I_ST16D = 34;
 
 		public ushort indexed_op;
 		public ushort indexed_reg;
+		public ushort indexed_op_reg;
 
 		public ushort temp;
 
@@ -33,15 +53,72 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
 		}
 
+		private void INDEX_OP_REG(ushort oper, ushort src)
+		{
+			indexed_op = oper;
+			indexed_op_reg = src;
+
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
+		}
+
 		private void INDEX_OP_JMP()
 		{
 			PopulateCURINSTR(TR, PC, IDX_EA);
+		}
+
+		private void INDEX_OP_JSR()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							TR, PC, IDX_EA,
+							WR_DEC_LO, SP, ADDR,
+							WR_HI, SP, ADDR);
 		}
 
 		private void INDEX_OP_LEA(ushort dest)
 		{
 			PopulateCURINSTR(TR, dest, IDX_EA,
 							IDLE);
+		}
+
+		private void INDEX_OP_LD()
+		{
+			PopulateCURINSTR(IDLE,
+							RD_INC, ALU, IDX_EA,
+							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, indexed_op_reg, ALU, ALU2);
+		}
+
+		private void INDEX_OP_ST()
+		{
+			PopulateCURINSTR(IDLE,
+							WR_HI_INC, IDX_EA, indexed_op_reg,
+							WR_DEC_LO, IDX_EA, indexed_op_reg);
+		}
+
+		private void INDEX_OP_LDD()
+		{
+			PopulateCURINSTR(IDLE,
+							RD_INC, A, IDX_EA,
+							RD_INC, B, IDX_EA);
+		}
+
+		private void INDEX_OP_STD()
+		{
+			PopulateCURINSTR(SET_ADDR, ADDR, A, A,
+							WR_HI_INC, IDX_EA, ADDR,
+							WR_DEC_LO, IDX_EA, B);
+		}
+
+		private void INDEX_OP_EX4(ushort oper)
+		{
+			PopulateCURINSTR(IDLE,
+							RD_INC_OP, ALU, IDX_EA, oper, indexed_op_reg, ALU);
+		}
+
+		private void INDEX_OP_EX4_ST()
+		{
+			PopulateCURINSTR(IDLE,
+							WR, ALU, IDX_EA, indexed_op_reg);
 		}
 
 		private void INDEX_OP_EX5()
@@ -56,6 +133,24 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							oper, ALU,
 							WR, IDX_EA, ALU);
 		}
+
+		private void INDEX_OP_EX6D(ushort oper)
+		{
+			PopulateCURINSTR(IDLE,
+							RD_INC, ALU, IDX_EA,
+							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, ADDR, ALU, ALU2,
+							oper, ADDR);
+		}
+
+		private void INDEX_CMP_EX6(ushort oper)
+		{
+			PopulateCURINSTR(IDLE,
+							RD_INC, ALU, IDX_EA,
+							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, ADDR, ALU, ALU2,
+							oper, indexed_op_reg, ADDR);
+		}
+
+		
 
 		private void INDEX_OP_EX7()
 		{
@@ -310,6 +405,25 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case I_TST: INDEX_OP_EX6(TST);					break; // TST
 				case I_JMP: INDEX_OP_JMP();						break; // JMP
 				case I_CLR: INDEX_OP_EX6(CLR);					break; // CLR
+				case I_SUB: INDEX_OP_EX4(SUB8);					break; // SUB A,B
+				case I_CMP: INDEX_OP_EX4(CMP8);					break; // CMP A,B
+				case I_SBC: INDEX_OP_EX4(SBC8);					break; // SBC A,B
+				case I_AND: INDEX_OP_EX4(AND8);					break; // AND A,B
+				case I_BIT: INDEX_OP_EX4(BIT);					break; // BIT A,B
+				case I_LD: INDEX_OP_EX4(TR);					break; // LD A,B
+				case I_ST: INDEX_OP_EX4_ST();					break; // ST A,B
+				case I_XOR: INDEX_OP_EX4(XOR8);					break; // XOR A,B
+				case I_ADC: INDEX_OP_EX4(ADC8);					break; // ADC A,B
+				case I_OR: INDEX_OP_EX4(OR8);					break; // OR A,B
+				case I_ADD: INDEX_OP_EX4(ADD8);					break; // ADD A,B
+				case I_SUBD: INDEX_OP_EX6D(SUB16);				break; // SUB D
+				case I_ADDD: INDEX_OP_EX6D(ADD16);				break; // ADD D
+				case I_CMP16: INDEX_CMP_EX6(CMP16);				break; // CMP X, Y, SP, US
+				case I_JSR: INDEX_OP_JSR();						break; // JSR
+				case I_LD16: INDEX_OP_LD();						break; // LD X, Y, SP, US
+				case I_ST16: INDEX_OP_ST();						break; // ST X, Y, SP, US
+				case I_LD16D: INDEX_OP_LDD();					break; // LD D
+				case I_ST16D: INDEX_OP_STD();					break; // ST D
 			}
 		}
 	}
