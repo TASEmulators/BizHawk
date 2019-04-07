@@ -1527,11 +1527,11 @@
     <Compile Include="CPUs\MC6809\Execute.cs" />
     <Compile Include="CPUs\MC6809\Interrupts.cs" />
     <Compile Include="CPUs\MC6809\MC6809.cs" />
-    <Compile Include="CPUs\MC6809\NewDisassembler.cs" />
+    <Compile Include="CPUs\MC6809\Disassembler.cs" />
     <Compile Include="CPUs\MC6809\Operations.cs" />
     <Compile Include="CPUs\MC6809\Registers.cs" />
     <Compile Include="CPUs\MC6809\Indexed_Modes.cs" />
-    <Compile Include="CPUs\MC6809\Tables_Direct.cs" />
+    <Compile Include="CPUs\MC6809\OP_Tables.cs" />
     <Compile Include="CPUs\LR35902\Execute.cs" />
     <Compile Include="CPUs\LR35902\Interrupts.cs" />
     <Compile Include="CPUs\LR35902\LR35902.cs" />

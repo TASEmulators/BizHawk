@@ -517,15 +517,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ser.Sync("IRQ", ref interrupts_enabled);
 			ser.Sync("I_use", ref I_use);
 			ser.Sync("skip_once", ref skip_once);
-			ser.Sync("Halt_bug_2", ref Halt_bug_2);
-			ser.Sync("Halt_bug_3", ref Halt_bug_3);
 			ser.Sync("Halted", ref halted);
 			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
 			ser.Sync("int_src", ref int_src);
 			ser.Sync("stop_time", ref stop_time);
 			ser.Sync("stop_check", ref stop_check);
-			ser.Sync("is_GBC", ref is_GBC);
 
 			ser.Sync("instr_pntr", ref instr_pntr);
 			ser.Sync("cur_instr", ref cur_instr, false);
