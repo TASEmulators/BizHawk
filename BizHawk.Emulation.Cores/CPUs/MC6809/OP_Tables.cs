@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void NOP_()
 		{
 			PopulateCURINSTR(IDLE);
+
+			IRQS = 1;
 		}
 
 		private void ILLEGAL()
@@ -21,13 +23,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void SYNC_()
 		{
 			PopulateCURINSTR(IDLE,
-							IDLE,
 							SYNC);
+
+			IRQS = 0;
 		}
 
 		private void REG_OP(ushort oper, ushort src)
 		{
 			PopulateCURINSTR(oper, src);
+
+			IRQS = 1;
 		}
 
 		private void DIRECT_MEM(ushort oper)
@@ -37,6 +42,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU, ADDR,
 							oper, ALU,
 							WR, ADDR, ALU);
+
+			IRQS = 5;
 		}
 
 		private void DIRECT_ST_4(ushort dest)
@@ -44,6 +51,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
 							IDLE,
 							WR, ADDR, dest);
+
+			IRQS = 3;
 		}
 
 		private void DIRECT_MEM_4(ushort oper, ushort dest)
@@ -51,6 +60,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
 							IDLE,			
 							RD_INC_OP, ALU, ADDR, oper, dest, ALU);
+
+			IRQS = 3;
 		}
 
 		private void EXT_MEM(ushort oper)
@@ -61,6 +72,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU, ADDR,
 							oper, ALU,
 							WR, ADDR, ALU);
+
+			IRQS = 6;
 		}
 
 		private void EXT_REG(ushort oper, ushort dest)
@@ -69,6 +82,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
 							RD, ALU, ADDR,
 							oper, dest, ALU);
+
+			IRQS = 4;
 		}
 
 		private void EXT_ST(ushort dest)
@@ -77,6 +92,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
 							IDLE,
 							WR, ADDR, dest);
+
+			IRQS = 4;
 		}
 
 		private void REG_OP_IMD_CC(ushort oper)
@@ -84,11 +101,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[ALU2] = Regs[CC];
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, oper, ALU2, ALU,
 							TR, CC, ALU2);
+
+			IRQS = 2;
 		}
 
 		private void REG_OP_IMD(ushort oper, ushort dest)
 		{
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, oper, dest, ALU);
+
+			IRQS = 1;
 		}
 
 		private void IMD_OP_D(ushort oper, ushort dest)
@@ -96,6 +117,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
 							oper, ADDR);
+
+			IRQS = 3;
 		}
 
 		private void DIR_OP_D(ushort oper, ushort dest)
@@ -105,6 +128,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU2, ADDR, 
 							SET_ADDR, ADDR, ALU, ALU2,
 							oper, ADDR);
+
+			IRQS = 5;
 		}
 
 		private void EXT_OP_D(ushort oper, ushort dest)
@@ -115,12 +140,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU2, ADDR,
 							SET_ADDR, ADDR, ALU, ALU2,
 							oper, ADDR);
+
+			IRQS = 6;
 		}
 
 		private void REG_OP_LD_16D()
 		{
 			PopulateCURINSTR(RD_INC, A, PC,
 							RD_INC, B, PC);
+
+			IRQS = 2;
 		}
 
 		private void DIR_OP_LD_16D()
@@ -129,6 +158,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							RD_INC, A, ADDR,
 							RD_INC, B, ADDR);
+
+			IRQS = 4;
 		}
 
 		private void DIR_OP_ST_16D()
@@ -137,6 +168,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							SET_ADDR, ALU, A, A,
 							WR_HI_INC, ADDR, ALU,
 							WR, ADDR, B);
+
+			IRQS = 4;
 		}
 
 		private void DIR_CMP_16(ushort oper, ushort dest)
@@ -146,6 +179,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU2, ADDR,
 							SET_ADDR, ADDR, ALU, ALU2,
 							oper, dest, ADDR);
+
+			IRQS = 5;
 		}
 
 		private void IMD_CMP_16(ushort oper, ushort dest)
@@ -153,12 +188,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
 							oper, dest, ADDR);
+
+			IRQS = 3;
 		}
 
 		private void REG_OP_LD_16(ushort dest)
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							RD_INC_OP, ALU2, PC, SET_ADDR, dest, ALU, ALU2);
+
+			IRQS = 2;
 		}
 
 		private void DIR_OP_LD_16(ushort dest)
@@ -167,6 +206,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							RD_INC, ALU, ADDR,
 							RD_INC_OP, ALU2, ADDR, SET_ADDR, dest, ALU, ALU2);
+
+			IRQS = 4;
 		}
 
 		private void DIR_OP_ST_16(ushort src)
@@ -175,6 +216,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							WR_HI_INC, ADDR, src, 
 							WR_DEC_LO, ADDR, src);
+
+			IRQS = 4;
 		}
 
 		private void EXT_OP_LD_16(ushort dest)
@@ -184,6 +227,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							RD_INC, ALU, ADDR,
 							RD_INC_OP, ALU2, ADDR, SET_ADDR, dest, ALU, ALU2);
+
+			IRQS = 5;
 		}
 
 		private void EXT_OP_ST_16(ushort src)
@@ -193,6 +238,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							WR_HI_INC, ADDR, src,
 							WR_DEC_LO, ADDR, src);
+
+			IRQS = 5;
 		}
 
 		private void EXT_OP_LD_16D()
@@ -202,6 +249,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							RD_INC, A, ADDR,
 							RD_INC, B, ADDR);
+
+			IRQS = 5;
 		}
 
 		private void EXT_OP_ST_16D()
@@ -211,6 +260,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							SET_ADDR, ALU, A, A,
 							WR_HI_INC, ADDR, ALU,
 							WR, ADDR, B);
+
+			IRQS = 5;
 		}
 
 		private void EXT_CMP_16(ushort oper, ushort dest)
@@ -221,6 +272,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU2, ADDR,
 							SET_ADDR, ADDR, ALU, ALU2,
 							oper, dest, ADDR);
+
+			IRQS = 6;
 		}
 
 		private void EXG_()
@@ -232,6 +285,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							IDLE,
 							IDLE);
+
+			IRQS = 7;
 		}
 
 		private void TFR_()
@@ -241,12 +296,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							IDLE,
 							IDLE);
+
+			IRQS = 5;
 		}
 
 		private void JMP_DIR_()
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							SET_ADDR, PC, DP, ALU);
+
+			IRQS = 2;
 		}
 
 		private void JMP_EXT_()
@@ -254,6 +313,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							RD_INC, ALU2, PC,
 							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 3;
 		}
 
 		private void JSR_()
@@ -264,6 +325,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							TR, PC, ADDR,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
+
+			IRQS = 6;
 		}
 
 		private void JSR_EXT()
@@ -275,6 +338,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							TR, PC, ADDR,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
+
+			IRQS = 7;
 		}
 
 		private void LBR_(bool cond)
@@ -285,12 +350,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 								RD_INC, ALU2, PC,
 								SET_ADDR, ADDR, ALU, ALU2,
 								ADD16BR, PC, ADDR);
+
+				IRQS = 4;
 			}
 			else
 			{
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								RD_INC, ALU2, PC,
 								SET_ADDR, PC, ALU, ALU2);
+
+				IRQS = 3;
 			}			
 		}
 
@@ -300,11 +369,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			{
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								ADD8BR, PC, ALU);
+
+				IRQS = 2;
 			}
 			else
 			{
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								IDLE);
+
+				IRQS = 2;
 			}
 		}
 
@@ -316,6 +389,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							DEC16, SP,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
+
+			IRQS = 6;
 		}
 
 		private void LBSR_()
@@ -328,22 +403,30 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 								DEC16, SP,
 								WR_DEC_LO, SP, ADDR,
 								WR_HI, SP, ADDR);
+
+			IRQS = 8;
 		}
 
 		private void PAGE_2()
 		{
 			PopulateCURINSTR(OP_PG_2);
+
+			IRQS = 0;
 		}
 
 		private void PAGE_3()
 		{
 			PopulateCURINSTR(OP_PG_3);
+
+			IRQS = 0;
 		}
 
 		private void ABX_()
 		{
 			PopulateCURINSTR(ABX,
 							IDLE);
+
+			IRQS = 2;
 		}
 
 		private void MUL_()
@@ -358,6 +441,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							IDLE,
 							IDLE);
+
+			IRQS = 10;
 		}
 
 		private void RTS()
@@ -366,6 +451,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC, ALU, SP,
 							RD_INC, ALU2, SP,
 							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 4;
 		}
 
 		private void RTI()
@@ -381,7 +468,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC_OP, ALU2, SP, SET_ADDR, Y, ALU, ALU2,
 							RD_INC, ALU, SP,
 							RD_INC_OP, ALU2, SP, SET_ADDR, US, ALU, ALU2,
-							SET_ADDR, PC, ALU2, ALU);
+							RD_INC, ALU, SP,
+							RD_INC_OP, ALU2, SP,
+							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 14;
 		}
 
 		private void PSH(ushort src)
@@ -390,6 +481,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							DEC16, SP,
 							PSH_n, src);
+
+			IRQS = 0;
 		}
 
 		// Post byte info is in ALU
@@ -457,7 +550,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			else
 			{
 				Regs[src] += 1; // we decremented an extra time overall, regardless of what was run
+
+				IRQS = irq_pntr + 1;
 			}
+
+			instr_pntr = 0;
 		}
 
 		private void PUL(ushort src)
@@ -465,6 +562,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							IDLE,
 							PSH_n, src);
+
+			IRQS = 0;
 		}
 
 		// Post byte info is in ALU
@@ -533,8 +632,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			else
 			{
 				// extra end cycle
-				PopulateCURINSTR(RD_INC_OP, IDLE);
+				PopulateCURINSTR(IDLE);
+
+				IRQS = irq_pntr + 2;
 			}
+
+			instr_pntr = 0;
 		}
 
 		private void SWI1()
@@ -557,7 +660,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							SET_F_I,
 							RD_INC, ALU, ADDR,
 							RD_INC, ALU2, ADDR,
-							SET_ADDR, ADDR, ALU, ALU2);
+							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 18;
 		}
 
 		private void SWI2_3(ushort pick)
@@ -580,7 +685,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							IDLE,
 							RD_INC, ALU, ADDR,
 							RD_INC, ALU2, ADDR,
-							SET_ADDR, ADDR, ALU, ALU2);
+							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 18;
 		}
 
 		private void CWAI_()
@@ -601,6 +708,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
 							CWAI);
+
+			IRQS = 16;
 		}
 	}
 }

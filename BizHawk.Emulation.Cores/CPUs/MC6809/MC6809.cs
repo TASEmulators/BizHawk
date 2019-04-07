@@ -84,9 +84,17 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			ResetRegisters();
 			ResetInterrupts();
-			TotalExecutedCycles = 8;
-			stop_check = false;
-			cur_instr = new ushort[] { IDLE, IDLE, HALT_CHK, OP };
+			TotalExecutedCycles = 0;
+			Regs[ADDR] = 0xFFFE;
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, PC, ALU, ALU2);
+
+			IRQS = 6;
+			instr_pntr = irq_pntr = 0;
 		}
 
 		// Memory Access 
@@ -146,44 +154,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction
-					if (EI_pending > 0)
-					{
-						EI_pending--;
-						if (EI_pending == 0)
-						{
-							interrupts_enabled = true;
-						}
-					}
-
-					if (I_use && interrupts_enabled && !jammed)
-					{
-						interrupts_enabled = false;
-
-						if (TraceCallback != null)
-						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
-						}
-
-						// call interrupt processor 
-						// lowest bit set is highest priority
-						INTERRUPT_();
-					}
-					else
-					{
-						if (OnExecFetch != null) OnExecFetch(PC);
-						if (TraceCallback != null) TraceCallback(State());
-						if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
-						FetchInstruction(ReadMemory(Regs[PC]++));
-					}
+					// Read the opcode of the next instruction					
+					if (OnExecFetch != null) OnExecFetch(PC);
+					if (TraceCallback != null) TraceCallback(State());
+					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
+					FetchInstruction(ReadMemory(Regs[PC]++));
 					instr_pntr = 0;
-					I_use = false;
 					break;
-
 				case OP_PG_2:
 					FetchInstruction2(ReadMemory(Regs[PC]++));
 					break;
@@ -234,7 +211,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[cur_instr[instr_pntr++]] << 8) | Regs[cur_instr[instr_pntr++]]);
 							break;
 						case JPE:
-							if (!FlagE) { instr_pntr = 35; };
+							if (!FlagE) { instr_pntr = 45; };
 							break;
 						case IDX_DCDE:
 							Index_decode();
@@ -422,10 +399,52 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case CWAI:
+					if (NMIPending)
+					{
+						Regs[ADDR] = 0xFFFC;
+						PopulateCURINSTR(RD_INC, ALU, ADDR,
+										RD_INC, ALU2, ADDR,
+										SET_ADDR, PC, ALU, ALU2);
+						irq_pntr = -1;
+						IRQS = 3;
 
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" }); }
+					}
+					else if (FIRQPending && !FlagF)
+					{
+						Regs[ADDR] = 0xFFF6;
+						PopulateCURINSTR(RD_INC, ALU, ADDR,
+										RD_INC, ALU2, ADDR,
+										SET_ADDR, PC, ALU, ALU2);
+						irq_pntr = -1;
+						IRQS = 3;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" }); }
+					}
+					else if (IRQPending && !FlagI)
+					{
+						Regs[ADDR] = 0xFFF8;
+						PopulateCURINSTR(RD_INC, ALU, ADDR,
+										RD_INC, ALU2, ADDR,
+										SET_ADDR, PC, ALU, ALU2);
+						irq_pntr = -1;
+						IRQS = 3;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI IRQ====", RegisterInfo = "" }); }
+					}
+					else
+					{
+						PopulateCURINSTR(CWAI);
+						irq_pntr = 0;
+						IRQS = 0;
+					}
+					instr_pntr = 0;
 					break;
 				case SYNC:
-
+					IN_SYNC = true;
+					IRQS = 1;				
+					instr_pntr = irq_pntr = 0;
+					PopulateCURINSTR(SYNC);
 					break;
 				case INT_GET:
 
@@ -434,6 +453,81 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 					break;
 			}
+
+			if (++irq_pntr == IRQS)
+			{
+				// NMI has priority
+				if (NMIPending)
+				{
+					NMIPending = false;
+
+					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
+
+					IN_SYNC = false;
+					NMI_();
+					NMICallback();
+					instr_pntr = irq_pntr = 0;
+				}
+				// fast IRQ has next priority
+				else if (FIRQPending)
+				{
+					if (!FlagF)
+					{
+						FIRQPending = false;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
+
+						IN_SYNC = false;
+						FIRQ_();
+						FIRQCallback();
+						instr_pntr = irq_pntr = 0;
+					}
+					else if (IN_SYNC)
+					{
+						FIRQPending = false;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
+
+						IN_SYNC = false;
+						IRQS = 1;
+						instr_pntr = irq_pntr = 0;
+						PopulateCURINSTR(IDLE);
+					}
+				}
+				// then regular IRQ
+				else if (IRQPending && !FlagI)
+				{
+					if (!FlagI)
+					{
+						IRQPending = false;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
+
+						IN_SYNC = false;
+						IRQ_();
+						IRQCallback();
+						instr_pntr = irq_pntr = 0;
+					}
+					else if (IN_SYNC)
+					{
+						IRQPending = false;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
+
+						IN_SYNC = false;
+						IRQS = 1;
+						instr_pntr = irq_pntr = 0;
+						PopulateCURINSTR(IDLE);
+					}
+				}
+				// otherwise start the next instruction
+				else
+				{
+					PopulateCURINSTR(OP);
+					instr_pntr = irq_pntr = 0;
+				}
+			}
+
 			TotalExecutedCycles++;
 		}
 
@@ -514,21 +608,25 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("MC6809");
-			ser.Sync("IRQ", ref interrupts_enabled);
-			ser.Sync("I_use", ref I_use);
-			ser.Sync("skip_once", ref skip_once);
-			ser.Sync("Halted", ref halted);
-			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync("EI_pending", ref EI_pending);
-			ser.Sync("int_src", ref int_src);
-			ser.Sync("stop_time", ref stop_time);
-			ser.Sync("stop_check", ref stop_check);
+
+			ser.Sync("IN_SYNC", ref IN_SYNC);
+			ser.Sync("NMIPending", ref NMIPending);
+			ser.Sync("FIRQPending", ref FIRQPending);
+			ser.Sync("IRQPending", ref IRQPending);
+
+			ser.Sync("indexed_op", ref indexed_op);
+			ser.Sync("indexed_reg", ref indexed_reg);
+			ser.Sync("indexed_op_reg", ref indexed_op_reg);
+			ser.Sync("temp", ref temp);
 
 			ser.Sync("instr_pntr", ref instr_pntr);
 			ser.Sync("cur_instr", ref cur_instr, false);
-			ser.Sync("Stopped", ref stopped);
 			ser.Sync("opcode", ref opcode);
-			ser.Sync("jammped", ref jammed);
+			ser.Sync("IRQS", ref IRQS);
+			ser.Sync("irq_pntr", ref irq_pntr);
+
+			ser.Sync("Regs", ref Regs, false);
+			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
 
 			ser.EndSection();
 		}

@@ -4,28 +4,87 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 {
 	public partial class MC6809
 	{
-		private void INTERRUPT_()
+		private void IRQ_()
 		{
+			Regs[ADDR] = 0xFFF8;
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR_DEC_LO, SP, US,
+							WR_DEC_HI, SP, US,
+							WR_DEC_LO, SP, Y,
+							WR_DEC_HI, SP, Y,
+							WR_DEC_LO, SP, X,
+							WR_DEC_HI, SP, X,
+							WR_DEC_LO, SP, DP,
+							WR_DEC_LO, SP, B,
+							WR_DEC_LO, SP, A,
+							WR, SP, CC,
+							SET_F_I,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, PC, ALU, ALU2);
 
+			IRQS = 19;
 		}
 
-		private void INTERRUPT_GBC_NOP()
+		private void FIRQ_()
 		{
+			Regs[ADDR] = 0xFFF6;
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR, SP, CC,
+							SET_F_I,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, PC, ALU, ALU2);
 
+			IRQS = 10;
 		}
 
-		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
+		private void NMI_()
+		{
+			Regs[ADDR] = 0xFFFC;
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							DEC16, SP,
+							WR_DEC_LO, SP, PC,
+							WR_DEC_HI, SP, PC,
+							WR_DEC_LO, SP, US,
+							WR_DEC_HI, SP, US,
+							WR_DEC_LO, SP, Y,
+							WR_DEC_HI, SP, Y,
+							WR_DEC_LO, SP, X,
+							WR_DEC_HI, SP, X,
+							WR_DEC_LO, SP, DP,
+							WR_DEC_LO, SP, B,
+							WR_DEC_LO, SP, A,
+							WR, SP, CC,
+							SET_F_I,
+							RD_INC, ALU, ADDR,
+							RD_INC, ALU2, ADDR,
+							SET_ADDR, PC, ALU, ALU2);
 
-		public ushort int_src;
-		public int stop_time;
-		public bool stop_check;
-		public bool I_use; // in halt mode, the I flag is checked earlier then when deicision to IRQ is taken
-		public bool skip_once;
+			IRQS = 19;
+		}
+
+		public bool NMIPending;
+		public bool FIRQPending;
+		public bool IRQPending;
+		public bool IN_SYNC;
+
+		public Action IRQCallback = delegate () { };
+		public Action FIRQCallback = delegate () { };
+		public Action NMICallback = delegate () { };
 
 		private void ResetInterrupts()
 		{
-			I_use = false;
-			skip_once = false;
+			IN_SYNC = false;
 		}
 	}
 }

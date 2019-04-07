@@ -6,16 +6,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 	{
 		public ulong TotalExecutedCycles;
 
-		public int EI_pending;
-		public bool interrupts_enabled;
-
 		// variables for executing instructions
 		public int instr_pntr = 0;
 		public ushort[] cur_instr;
 		public int opcode;
-		public bool halted;
-		public bool stopped;
-		public bool jammed;
+
+		public int IRQS;
+		public int irq_pntr;
 
 		public void FetchInstruction(byte opcode)
 		{

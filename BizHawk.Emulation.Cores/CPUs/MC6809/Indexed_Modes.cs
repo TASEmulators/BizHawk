@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			indexed_op = oper;
 
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
+
+			IRQS = 0;
 		}
 
 		private void INDEX_OP_REG(ushort oper, ushort src)
@@ -60,11 +62,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			indexed_op_reg = src;
 
 			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
+
+			IRQS = 0;
 		}
 
 		private void INDEX_OP_JMP()
 		{
 			PopulateCURINSTR(TR, PC, IDX_EA);
+
+			IRQS = irq_pntr + 2;
 		}
 
 		private void INDEX_OP_JSR()
@@ -74,12 +80,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							TR, PC, IDX_EA,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
+
+			IRQS = irq_pntr + 6;
 		}
 
 		private void INDEX_OP_LEA(ushort dest)
 		{
 			PopulateCURINSTR(TR, dest, IDX_EA,
 							IDLE);
+
+			IRQS = irq_pntr + 3;
 		}
 
 		private void INDEX_OP_LD()
@@ -87,6 +97,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(IDLE,
 							RD_INC, ALU, IDX_EA,
 							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, indexed_op_reg, ALU, ALU2);
+
+			IRQS = irq_pntr + 4;
 		}
 
 		private void INDEX_OP_ST()
@@ -94,6 +106,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(IDLE,
 							WR_HI_INC, IDX_EA, indexed_op_reg,
 							WR_DEC_LO, IDX_EA, indexed_op_reg);
+
+			IRQS = irq_pntr + 4;
 		}
 
 		private void INDEX_OP_LDD()
@@ -101,6 +115,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(IDLE,
 							RD_INC, A, IDX_EA,
 							RD_INC, B, IDX_EA);
+
+			IRQS = irq_pntr + 4;
 		}
 
 		private void INDEX_OP_STD()
@@ -108,23 +124,24 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(SET_ADDR, ADDR, A, A,
 							WR_HI_INC, IDX_EA, ADDR,
 							WR_DEC_LO, IDX_EA, B);
+
+			IRQS = irq_pntr + 4;
 		}
 
 		private void INDEX_OP_EX4(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
 							RD_INC_OP, ALU, IDX_EA, oper, indexed_op_reg, ALU);
+
+			IRQS = irq_pntr + 3;
 		}
 
 		private void INDEX_OP_EX4_ST()
 		{
 			PopulateCURINSTR(IDLE,
 							WR, ALU, IDX_EA, indexed_op_reg);
-		}
 
-		private void INDEX_OP_EX5()
-		{
-			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
+			IRQS = irq_pntr + 3;
 		}
 
 		private void INDEX_OP_EX6(ushort oper)
@@ -133,6 +150,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD, ALU, IDX_EA,
 							oper, ALU,
 							WR, IDX_EA, ALU);
+
+			IRQS = irq_pntr + 5;
 		}
 
 		private void INDEX_OP_EX6D(ushort oper)
@@ -141,6 +160,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC, ALU, IDX_EA,
 							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, ADDR, ALU, ALU2,
 							oper, ADDR);
+
+			IRQS = irq_pntr + 5;
 		}
 
 		private void INDEX_CMP_EX6(ushort oper)
@@ -149,15 +170,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC, ALU, IDX_EA,
 							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, ADDR, ALU, ALU2,
 							oper, indexed_op_reg, ADDR);
+
+			IRQS = irq_pntr + 5;
 		}
-
-		
-
-		private void INDEX_OP_EX7()
-		{
-			PopulateCURINSTR(RD_INC_OP, ALU, PC, IDX_DCDE);
-		}
-
 
 		// ALU holds the post byte
 		public void Index_decode()
@@ -384,6 +399,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 				}			
 			}
+
+			instr_pntr = 0;
+			irq_pntr = 100;
 		}
 
 		public void Index_Op_Builder()
@@ -427,6 +445,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case I_ST16D: INDEX_OP_STD();					break; // ST D
 				case I_CMP16D: INDEX_OP_EX6D(CMP16D);			break; // CMP D
 			}
+
+			instr_pntr = 0;
+			irq_pntr = 100;
 		}
 	}
 }
