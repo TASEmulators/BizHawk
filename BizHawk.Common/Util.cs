@@ -299,6 +299,38 @@ namespace BizHawk.Common
 			return ret;
 		}
 
+		public static float[] ByteBufferToFloatBuffer(byte[] buf)
+		{
+			int num = buf.Length / sizeof(float);
+			var ret = new float[num];
+			Buffer.BlockCopy(buf, 0, ret, 0, num);
+			return ret;
+		}
+
+		public static byte[] FloatBufferToByteBuffer(float[] buf)
+		{
+			int num = buf.Length;
+			var ret = new byte[num * sizeof(float)];
+			Buffer.BlockCopy(buf, 0, ret, 0, ret.Length);
+			return ret;
+		}
+
+		public static double[] ByteBufferToDoubleBuffer(byte[] buf)
+		{
+			int num = buf.Length;
+			var ret = new double[num / sizeof(double)];
+			Buffer.BlockCopy(buf, 0, ret, 0, num);
+			return ret;
+		}
+
+		public static byte[] DoubleBufferToByteBuffer(double[] buf)
+		{
+			int num = buf.Length;
+			var ret = new byte[num * sizeof(double)];
+			Buffer.BlockCopy(buf, 0, ret, 0, ret.Length);
+			return ret;
+		}
+
 		public static byte[] ReadByteBuffer(BinaryReader br, bool returnNull)
 		{
 			int len = br.ReadInt32();
