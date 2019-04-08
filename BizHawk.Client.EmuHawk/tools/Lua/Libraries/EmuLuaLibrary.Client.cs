@@ -145,6 +145,8 @@ namespace BizHawk.Client.EmuHawk
 		public static void SetSoundOn(bool enable)
 		{
 			Global.Config.SoundEnabled = enable;
+			GlobalWin.Sound.StopSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		[LuaMethodExample("if ( client.GetSoundOn( ) ) then\r\n\tconsole.log( \"Gets the state of the Sound On toggle\" );\r\nend;")]
