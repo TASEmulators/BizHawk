@@ -93,6 +93,9 @@ namespace BizHawk.Client.ApiHawk
 				case "TI83":
 					return CoreSystem.TI83;
 
+				case "VEC":
+					return CoreSystem.Vectrex;
+
 				case "WSWAN":
 					return CoreSystem.WonderSwan;
 

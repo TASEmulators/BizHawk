@@ -596,7 +596,6 @@
     <Compile Include="Consoles\Belogic\LibUzem.cs" />
     <Compile Include="Consoles\Belogic\Uzem.cs" />
     <Compile Include="Consoles\GCE\Vectrex\Audio.cs" />
-    <Compile Include="Consoles\GCE\Vectrex\Vectrex.CpuLink.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ICodeDataLog.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IDebuggable.cs">

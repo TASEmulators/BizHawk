@@ -22,9 +22,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				if (src == PC) CDLCallback(Regs[src], eCDLogMemFlags.FetchOperand);
 				else CDLCallback(Regs[src], eCDLogMemFlags.Data);
 			}
+			//Console.WriteLine(dest + " " + src + " " + opcode_see);
+
 			Regs[dest] = ReadMemory(Regs[src]);
 
-			Regs[src] = Regs[src]++;
+			Regs[src]++;
 		}
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
@@ -698,7 +700,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				}
 				else
 				{
-					Regs[dest] = Regs[dest];
+					Regs[dest] = Regs[src];
 				}
 			}
 		}

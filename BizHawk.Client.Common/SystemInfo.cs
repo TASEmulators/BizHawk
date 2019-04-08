@@ -184,6 +184,11 @@ namespace BizHawk.Client.Common
 		public static SystemInfo VirtualBoy { get; } = new SystemInfo("Virtual Boy", CoreSystem.VirtualBoy, 1);
 
 		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Vectrex
+		/// </summary>
+		public static SystemInfo Vectrex { get; } = new SystemInfo("Vextrex", CoreSystem.Vectrex, 2);
+
+		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for TI-83
 		/// </summary>
 		public static SystemInfo NeoGeoPocket { get; } = new SystemInfo("Neo-Geo Pocket", CoreSystem.NeoGeoPocket, 1);

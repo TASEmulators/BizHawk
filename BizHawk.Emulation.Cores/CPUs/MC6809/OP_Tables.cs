@@ -17,7 +17,10 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void ILLEGAL()
 		{
-			throw new Exception("Encountered illegal instruction");
+			//throw new Exception("Encountered illegal instruction");
+			PopulateCURINSTR(IDLE);
+
+			IRQS = 1;
 		}
 
 		private void SYNC_()
@@ -25,7 +28,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			PopulateCURINSTR(IDLE,
 							SYNC);
 
-			IRQS = 0;
+			IRQS = -1;
 		}
 
 		private void REG_OP(ushort oper, ushort src)
@@ -278,7 +281,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void EXG_()
 		{
-			PopulateCURINSTR(RD_INC, ALU,
+			PopulateCURINSTR(RD_INC, ALU, PC,
 							EXG, ALU,
 							IDLE,
 							IDLE,
@@ -291,7 +294,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void TFR_()
 		{
-			PopulateCURINSTR(RD_INC, ALU,
+			PopulateCURINSTR(RD_INC, ALU, PC,
 							TFR, ALU,
 							IDLE,
 							IDLE,
@@ -321,7 +324,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							SET_ADDR, ADDR, DP, ALU,
-							IDLE,
+							DEC16, SP,
 							TR, PC, ADDR,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
@@ -332,12 +335,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void JSR_EXT()
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
-							RD_INC_OP, ALU2, PC, 
-							SET_ADDR, ADDR, ALU, ALU2,
-							IDLE,
+							RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
+							TR, ALU, PC,
+							DEC16, SP,
 							TR, PC, ADDR,
-							WR_DEC_LO, SP, ADDR,
-							WR_HI, SP, ADDR);
+							WR_DEC_LO, SP, ALU,
+							WR_HI, SP, ALU);
 
 			IRQS = 7;
 		}
@@ -384,8 +387,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void BSR_()
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
-							ADD8BR, PC, ALU,
 							TR, ADDR, PC,
+							ADD8BR, PC, ALU,
 							DEC16, SP,
 							WR_DEC_LO, SP, ADDR,
 							WR_HI, SP, ADDR);
@@ -398,11 +401,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								RD_INC, ALU2, PC,
 								SET_ADDR, ADDR, ALU, ALU2,
+								TR, ALU, PC,
 								ADD16BR, PC, ADDR,
-								TR, ADDR, PC,
 								DEC16, SP,
-								WR_DEC_LO, SP, ADDR,
-								WR_HI, SP, ADDR);
+								WR_DEC_LO, SP, ALU,
+								WR_HI, SP, ALU);
 
 			IRQS = 8;
 		}
@@ -411,14 +414,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(OP_PG_2);
 
-			IRQS = 0;
+			IRQS = -1;
 		}
 
 		private void PAGE_3()
 		{
 			PopulateCURINSTR(OP_PG_3);
 
-			IRQS = 0;
+			IRQS = -1;
 		}
 
 		private void ABX_()
@@ -482,7 +485,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							DEC16, SP,
 							PSH_n, src);
 
-			IRQS = 0;
+			IRQS = -1;
 		}
 
 		// Post byte info is in ALU
@@ -546,6 +549,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			else if (Regs[ALU].Bit(0))
 			{
 				PopulateCURINSTR(WR_DEC_LO_OP, src, CC, PSH_n, src);
+
+				Regs[ALU] = 0;
 			}
 			else
 			{
@@ -561,55 +566,54 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							IDLE,
-							PSH_n, src);
+							PUL_n, src);
 
-			IRQS = 0;
+			IRQS = -1;
 		}
 
 		// Post byte info is in ALU
 		// mask out bits until the end
 		private void PUL_n_BLD(ushort src)
 		{
-			if (Regs[ALU].Bit(7))
+			if (Regs[ALU].Bit(0))
 			{
 				PopulateCURINSTR(RD_INC_OP, CC, src, PUL_n, src);
 
-				Regs[ALU] &= 0x7F;
+				Regs[ALU] &= 0xFE;
 			}
-			else if (Regs[ALU].Bit(6))
+			else if (Regs[ALU].Bit(1))
 			{
 				PopulateCURINSTR(RD_INC_OP, A, src, PUL_n, src);
 
-				Regs[ALU] &= 0x3F;
+				Regs[ALU] &= 0xFC;
 			}
-			else if (Regs[ALU].Bit(5))
+			else if (Regs[ALU].Bit(2))
 			{
 				PopulateCURINSTR(RD_INC_OP, B, src, PUL_n, src);
 
-
-				Regs[ALU] &= 0x1F;
+				Regs[ALU] &= 0xF8;
 			}
-			else if (Regs[ALU].Bit(4))
+			else if (Regs[ALU].Bit(3))
 			{
 				PopulateCURINSTR(RD_INC_OP, DP, src, PUL_n, src);
 
-				Regs[ALU] &= 0xF;
+				Regs[ALU] &= 0xF0;
 			}
-			else if (Regs[ALU].Bit(3))
+			else if (Regs[ALU].Bit(4))
 			{
 				PopulateCURINSTR(RD_INC_OP, ALU2, src,
 								RD_INC_OP, ADDR, src, SET_ADDR_PUL, X, src);
 
-				Regs[ALU] &= 0x7;
+				Regs[ALU] &= 0xE0;
 			}
-			else if (Regs[ALU].Bit(2))
+			else if (Regs[ALU].Bit(5))
 			{
 				PopulateCURINSTR(RD_INC_OP, ALU2, src,
 								RD_INC_OP, ADDR, src, SET_ADDR_PUL, Y, src);
 
-				Regs[ALU] &= 0x3;
+				Regs[ALU] &= 0xC0;
 			}
-			else if (Regs[ALU].Bit(1))
+			else if (Regs[ALU].Bit(6))
 			{
 				if (src == US)
 				{
@@ -622,12 +626,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 									RD_INC_OP, ADDR, src, SET_ADDR_PUL, US, src);
 				}
 
-				Regs[ALU] &= 0x1;
+				Regs[ALU] &= 0x80;
 			}
-			else if (Regs[ALU].Bit(0))
+			else if (Regs[ALU].Bit(7))
 			{
 				PopulateCURINSTR(RD_INC_OP, ALU2, src,
 								RD_INC_OP, ADDR, src, SET_ADDR_PUL, PC, src);
+
+				Regs[ALU] = 0;
 			}
 			else
 			{

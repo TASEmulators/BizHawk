@@ -44,12 +44,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void do_frame()
 		{
-		
+			for (int i = 0; i < 4500; i++)
+			{
+				cpu.ExecuteOne();
+			}
 		}
 
 		public int Frame => _frame;
 
-		public string SystemId => "VIC20"; 
+		public string SystemId => "VEC"; 
 
 		public bool DeterministicEmulation { get; set; }
 

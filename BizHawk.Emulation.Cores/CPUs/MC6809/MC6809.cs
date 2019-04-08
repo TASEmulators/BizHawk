@@ -85,12 +85,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ResetRegisters();
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
-			Regs[ADDR] = 0xFFFE;
+			Regs[PC] = 0xFFFE;
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							RD_INC, ALU, ADDR,
-							RD_INC, ALU2, ADDR,
+							RD_INC, ALU, PC,
+							RD_INC, ALU2, PC,
 							SET_ADDR, PC, ALU, ALU2);
 
 			IRQS = 6;
@@ -148,6 +148,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		// Execute instructions
 		public void ExecuteOne()
 		{
+			Console.Write(opcode_see + " ");
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:
@@ -160,12 +161,17 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(Regs[PC]++));
 					instr_pntr = 0;
+					irq_pntr = -1;
 					break;
 				case OP_PG_2:
 					FetchInstruction2(ReadMemory(Regs[PC]++));
+					instr_pntr = 0;
+					irq_pntr = -1;
 					break;
 				case OP_PG_3:
 					FetchInstruction3(ReadMemory(Regs[PC]++));
+					instr_pntr = 0;
+					irq_pntr = -1;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -207,8 +213,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case DEC16:
 							DEC16_Func(cur_instr[instr_pntr++]);
 							break;
+						case TR:
+							TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
 						case SET_ADDR:
-							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[cur_instr[instr_pntr++]] << 8) | Regs[cur_instr[instr_pntr++]]);
+							reg_d_ad = cur_instr[instr_pntr++];
+							reg_h_ad = cur_instr[instr_pntr++];
+							reg_l_ad = cur_instr[instr_pntr++];
+
+							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
 						case JPE:
 							if (!FlagE) { instr_pntr = 45; };
@@ -282,7 +295,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					TFR_Func(cur_instr[instr_pntr++]);
 					break;
 				case SET_ADDR:
-					Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[cur_instr[instr_pntr++]] << 8) | Regs[cur_instr[instr_pntr++]]);
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_h_ad = cur_instr[instr_pntr++];
+					reg_l_ad = cur_instr[instr_pntr++];
+
+					// Console.WriteLine(reg_d_ad + " " + reg_h_ad + " " + reg_l_ad);
+					// Console.WriteLine(Regs[reg_d_ad] + " " + Regs[reg_h_ad] + " " + Regs[reg_l_ad]);
+
+					Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
@@ -436,7 +456,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					{
 						PopulateCURINSTR(CWAI);
 						irq_pntr = 0;
-						IRQS = 0;
+						IRQS = -1;
 					}
 					instr_pntr = 0;
 					break;
@@ -525,6 +545,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				{
 					PopulateCURINSTR(OP);
 					instr_pntr = irq_pntr = 0;
+					IRQS = -1;
 				}
 			}
 
@@ -548,7 +569,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			{
 				Disassembly = string.Format(
 					"{0} ",
-					disassemble ? Disassemble(PC, ReadMemory, out notused) : "---").PadRight(40),
+					disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---").PadRight(40),
 				RegisterInfo = string.Format(
 					"A:{0:X2} B:{1:X2} X:{2:X4} Y:{3:X4} US:{4:X4} SP:{5:X4} DP:{6:X2} CC:{7:X2} Cy:{8} {9}{10}{11}{12}{13}{14}{15}{16}",
 					Regs[A],
@@ -621,7 +642,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			ser.Sync("instr_pntr", ref instr_pntr);
 			ser.Sync("cur_instr", ref cur_instr, false);
-			ser.Sync("opcode", ref opcode);
+			ser.Sync("opcode_see", ref opcode_see);
 			ser.Sync("IRQS", ref IRQS);
 			ser.Sync("irq_pntr", ref irq_pntr);
 

@@ -8,14 +8,19 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		// variables for executing instructions
 		public int instr_pntr = 0;
-		public ushort[] cur_instr;
-		public int opcode;
+		public ushort[] cur_instr = new ushort[60];
+		public int opcode_see;
 
 		public int IRQS;
 		public int irq_pntr;
 
+		ushort reg_d_ad;
+		ushort reg_h_ad;
+		ushort reg_l_ad;
+
 		public void FetchInstruction(byte opcode)
 		{
+			opcode_see = opcode;
 			switch (opcode)
 			{
 				case 0x00: DIRECT_MEM(NEG);							break; // NEG				(Direct)
@@ -279,6 +284,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		public void FetchInstruction2(byte opcode)
 		{
+			opcode_see = opcode;
 			switch (opcode)
 			{
 				case 0x21: LBR_(false);								break; // BRN				(Relative)
@@ -326,6 +332,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		public void FetchInstruction3(byte opcode)
 		{
+			opcode_see = opcode;
 			switch (opcode)
 			{
 				case 0x3F: SWI2_3(3);								break; // SWI3				(Inherent)

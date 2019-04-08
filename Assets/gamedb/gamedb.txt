@@ -21,6 +21,7 @@
 #include gamedb_sega_md.txt
 #include gamedb_snes.txt
 #include gamedb_user.txt
+#include gamedb_vectrex.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt
 #include gamedb_zxspectrum.txt

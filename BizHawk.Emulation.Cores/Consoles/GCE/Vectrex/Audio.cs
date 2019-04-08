@@ -8,7 +8,6 @@ using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	// An AY_3_8912
-
 	public class Audio : ISoundProvider
 	{
 		public VectrexHawk Core { get; set; }

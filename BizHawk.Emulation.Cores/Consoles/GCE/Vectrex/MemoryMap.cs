@@ -15,30 +15,104 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	public partial class VectrexHawk
 	{
-		// typically here you have a big if / else if block to decide what to do with memory reads and writes
-		// send hardware register accesses to the Read_register / Write_register methods
-		// make sure you are returning the correct value (typically 0 or 0xFF) for unmapped memory
-
-		// PeekMemory is called by the hex eidtor and other tools to read what's on the bus
-		// make sure it doesn't modify anything in the core or you will be in debugging hell.
-
 		public byte ReadMemory(ushort addr)
 		{
-			// memory callbacks are used for LUA and such
 			MemoryCallbacks.CallReads(addr, "System Bus");
 
-			return 0;
+			if (addr < 0x8000)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xC800)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xD000)
+			{
+				return RAM[(addr-0xC800) & 0x3FF];
+			}
+			else if (addr < 0xD800)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xE000)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xF000)
+			{
+				return 0xFF;
+			}
+			else
+			{
+				return _bios[addr - 0xF000];
+			}
 		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
 			MemoryCallbacks.CallWrites(addr, "System Bus");
-			
+
+			if (addr < 0x8000)
+			{
+
+			}
+			else if (addr < 0xC800)
+			{
+
+			}
+			else if (addr < 0xD000)
+			{
+				RAM[(addr - 0xC800) & 0x3FF] = value;
+			}
+			else if (addr < 0xD800)
+			{
+
+			}
+			else if (addr < 0xE000)
+			{
+
+			}
+			else if (addr < 0xF000)
+			{
+
+			}
+			else
+			{
+
+			}
 		}
 
 		public byte PeekMemory(ushort addr)
 		{
-			return 0;
+			if (addr < 0x8000)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xC800)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xD000)
+			{
+				return RAM[(addr - 0xC800) & 0x3FF];
+			}
+			else if (addr < 0xD800)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xE000)
+			{
+				return 0xFF;
+			}
+			else if (addr < 0xF000)
+			{
+				return 0xFF;
+			}
+			else
+			{
+				return _bios[addr - 0xF000];
+			}
 		}
 	}
 }

@@ -793,17 +793,23 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			bytes.Add(reader(addr++));
 
 			string result = table[bytes[0]];
-			if (bytes[0] == 0xcb)
+			if (bytes[0] == 0x10)
 			{
 				bytes.Add(reader(addr++));
-				result = table[bytes[1] + 256];
+				result = table2[bytes[1]];
 			}
 
-			if (result.Contains("d8"))
+			if (bytes[0] == 0x11)
+			{
+				bytes.Add(reader(addr++));
+				result = table3[bytes[1]];
+			}
+
+			if (result.Contains("i8"))
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = result.Replace("d8", string.Format("#{0:X2}h", d));
+				result = result.Replace("i8", string.Format("#{0:X2}h", d));
 			}
 			else if (result.Contains("d16"))
 			{
