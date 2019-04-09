@@ -518,7 +518,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			int Reg16_d = D;
 			int Reg16_s = Regs[src];
 
-			Reg16_d += Reg16_s;
+			Reg16_d -= Reg16_s;
 
 			FlagC = Reg16_d.Bit(16);
 			FlagZ = (Reg16_d & 0xFFFF) == 0;
@@ -534,7 +534,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			int Reg16_d = Regs[dest];
 			int Reg16_s = Regs[src];
 
-			Reg16_d += Reg16_s;
+			Reg16_d -= Reg16_s;
 
 			FlagC = Reg16_d.Bit(16);
 			FlagZ = (Reg16_d & 0xFFFF) == 0;

@@ -811,27 +811,204 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				bytes.Add(d);
 				result = result.Replace("i8", string.Format("#{0:X2}h", d));
 			}
-			else if (result.Contains("d16"))
+			else if (result.Contains("i16"))
 			{
-				byte dlo = reader(addr++);
 				byte dhi = reader(addr++);
-				bytes.Add(dlo);
+				byte dlo = reader(addr++);
 				bytes.Add(dhi);
-				result = result.Replace("d16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
+				bytes.Add(dlo);
+				result = result.Replace("i16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
 			}
-			else if (result.Contains("a16"))
+			else if (result.Contains("ex16"))
 			{
-				byte dlo = reader(addr++);
 				byte dhi = reader(addr++);
-				bytes.Add(dlo);
+				byte dlo = reader(addr++);
 				bytes.Add(dhi);
-				result = result.Replace("a16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
+				bytes.Add(dlo);
+				result = result.Replace("ex16", "(" + string.Format("#{0:X2}{1:X2}h", dhi, dlo) + ")");
 			}
-			else if (result.Contains("a8"))
+			else if (result.Contains("ix16"))
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = result.Replace("a8", string.Format("#FF{0:X2}h", d));
+
+				string temp_reg = "";
+
+				switch ((d >> 5) & 3)
+				{
+					case 0: temp_reg = "X"; break;
+					case 1: temp_reg = "Y"; break;
+					case 2: temp_reg = "US"; break;
+					case 3: temp_reg = "SP"; break;
+				}
+
+				if ((d & 0x80) == 0)
+				{
+					short tempdis = (short)(d & 0x1F);
+					if (tempdis >= 16)
+						tempdis -= 32;
+
+					result = result.Replace("ix16", temp_reg + " + ea");
+					result = result.Replace("ea", string.Format("{0:N}h", tempdis));
+				}
+				else
+				{
+					if ((d & 0x10) == 0x10)
+					{
+						switch (d & 0xF)
+						{
+							case 0x0:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0x1:
+								result = result.Replace("ix16","(" + temp_reg + ")++");
+								break;
+							case 0x2:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0x3:
+								result = result.Replace("ix16", "--(" + temp_reg + ")");
+								break;
+							case 0x4:
+								result = result.Replace("ix16", "(" + temp_reg + ")");
+								break;
+							case 0x5:
+								result = result.Replace("ix16", "(" + temp_reg + " + B)");
+								break;
+							case 0x6:
+								result = result.Replace("ix16", "(" + temp_reg + " + A)");
+								break;
+							case 0x7:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0x8:
+								byte e = reader(addr++);
+								bytes.Add(e);
+								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
+								result = result.Replace("ea", string.Format("{0:X2}h", e));
+								break;
+							case 0x9:
+								byte f = reader(addr++);
+								bytes.Add(f);
+								byte g = reader(addr++);
+								bytes.Add(g);
+								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
+								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", f, g));
+								break;
+							case 0xA:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0xB:
+								result = result.Replace("ix16", "(" + temp_reg + " + D)");
+								break;
+							case 0xC:
+								temp_reg = "PC";
+								byte h = reader(addr++);
+								bytes.Add(h);
+								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
+								result = result.Replace("ea", string.Format("{0:X2}h", h));
+								break;
+							case 0xD:
+								temp_reg = "PC";
+								byte i = reader(addr++);
+								bytes.Add(i);
+								byte j = reader(addr++);
+								bytes.Add(j);
+								result = result.Replace("ix16", "(" + temp_reg + " + ea)");
+								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", i, j));
+								break;
+							case 0xE:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0xF:
+								if ((d >> 5) == 0)
+								{
+									byte k = reader(addr++);
+									bytes.Add(k);
+									byte l = reader(addr++);
+									bytes.Add(l);
+									result = result.Replace("ix16", "(" + string.Format("{0:X2}{1:X2}h", k, l) + ")");
+								}
+								else
+								{
+									result = result.Replace("ix16", "???");
+								}
+								break;
+						}
+					}
+					else
+					{
+						switch (d & 0xF)
+						{
+							case 0x0:
+								result = result.Replace("ix16", temp_reg + "+");
+								break;
+							case 0x1:
+								result = result.Replace("ix16", temp_reg + "++");
+								break;
+							case 0x2:
+								result = result.Replace("ix16", "-" + temp_reg);
+								break;
+							case 0x3:
+								result = result.Replace("ix16", "--" + temp_reg);
+								break;
+							case 0x4:
+								result = result.Replace("ix16", temp_reg);
+								break;
+							case 0x5:
+								result = result.Replace("ix16", temp_reg + " + B");
+								break;
+							case 0x6:
+								result = result.Replace("ix16", temp_reg + " + A");
+								break;
+							case 0x7:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0x8:
+								byte e = reader(addr++);
+								bytes.Add(e);
+								result = result.Replace("ix16", temp_reg + " + ea");
+								result = result.Replace("ea", string.Format("{0:X2}h", e));
+								break;
+							case 0x9:
+								byte f = reader(addr++);
+								bytes.Add(f);
+								byte g = reader(addr++);
+								bytes.Add(g);
+								result = result.Replace("ix16", temp_reg + " + ea");
+								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", f, g));
+								break;
+							case 0xA:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0xB:
+								result = result.Replace("ix16", temp_reg + " + D");
+								break;
+							case 0xC:
+								temp_reg = "PC";
+								byte h = reader(addr++);
+								bytes.Add(h);
+								result = result.Replace("ix16", temp_reg + " + ea");
+								result = result.Replace("ea", string.Format("{0:X2}h", h));
+								break;
+							case 0xD:
+								temp_reg = "PC";
+								byte i = reader(addr++);
+								bytes.Add(i);
+								byte j = reader(addr++);
+								bytes.Add(j);
+								result = result.Replace("ix16", temp_reg + " + ea");
+								result = result.Replace("ea", string.Format("{0:X2}{1:X2}h", i, j));
+								break;
+							case 0xE:
+								result = result.Replace("ix16", "???");
+								break;
+							case 0xF:
+								result = result.Replace("ix16", "???");
+								break;
+						}
+					}
+				}				
 			}
 			else if (result.Contains("r8"))
 			{
@@ -846,7 +1023,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ret.Append(string.Format("{0:X4}:  ", origaddr));
 			foreach (var b in bytes)
 				ret.Append(string.Format("{0:X2} ", b));
-			while (ret.Length < 17)
+			while (ret.Length < 22)
 				ret.Append(' ');
 			ret.Append(result);
 			size = (ushort)(addr - origaddr);

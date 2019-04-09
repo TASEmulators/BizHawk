@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							// Illegal
 							break;
 					}
-				}			
+				}
 			}
 
 			instr_pntr = 0;
