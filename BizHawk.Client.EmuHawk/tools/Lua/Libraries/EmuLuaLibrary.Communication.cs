@@ -58,7 +58,6 @@ namespace BizHawk.Client.EmuHawk
 				return -1;
 			}
 			int sentBytes = GlobalWin.socketServer.SendString(SendString);
-			Log($"Sent : {sentBytes.ToString()} bytes");
 			return sentBytes;
 		}
 
