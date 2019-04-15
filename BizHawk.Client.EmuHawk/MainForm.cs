@@ -287,6 +287,11 @@ namespace BizHawk.Client.EmuHawk
 				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
 			}
 
+			if (argParser.audiosync.HasValue)
+			{
+				Global.Config.VideoWriterAudioSync = argParser.audiosync.Value;
+			}
+
 			if (argParser.cmdMovie != null)
 			{
 				_supressSyncSettingsWarning = true; // We dont' want to be nagged if we are attempting to automate
