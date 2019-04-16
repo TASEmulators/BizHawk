@@ -204,9 +204,14 @@ namespace BizHawk.Client.Common
         public static SystemInfo AmstradCPC { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
 
 		/// <summary>
-		/// Gets the <see cref="SystemInfo"/> instance for AmstradCPC
+		/// Gets the <see cref="SystemInfo"/> instance for GGL
 		/// </summary>
 		public static SystemInfo GGL { get; } = new SystemInfo("Game Gear Linked", CoreSystem.GGL, 2);
+
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for ChannelF
+		/// </summary>
+		public static SystemInfo ChannelF { get; } = new SystemInfo("Channel F", CoreSystem.ChannelF, 2);
 
 		#endregion Get SystemInfo
 

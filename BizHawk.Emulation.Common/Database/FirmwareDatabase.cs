@@ -61,6 +61,10 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "pentagon.rom", "Russian Pentagon Clone ROM");
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "trdos.rom", "TRDOS ROM");
 
+			// Channel F
+			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF-SL31253.rom", "Channel F Rom0");
+			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF-SL31254.rom", "Channel F Rom1");
+
 			// for saturn, we think any bios region can pretty much run any iso
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");

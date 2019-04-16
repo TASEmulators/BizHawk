@@ -108,6 +108,9 @@ namespace BizHawk.Client.ApiHawk
 				case "GGL":
 					return CoreSystem.GGL;
 
+				case "ChannelF":
+					return CoreSystem.ChannelF;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":

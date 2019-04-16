@@ -154,6 +154,8 @@ namespace BizHawk.Client.Common
                         return SystemInfo.ZXSpectrum;
                     case "AmstradCPC":
                         return SystemInfo.AmstradCPC;
+					case "ChannelF":
+						return SystemInfo.ChannelF;
 				}
 			}
 		}

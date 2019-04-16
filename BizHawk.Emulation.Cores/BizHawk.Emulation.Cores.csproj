@@ -595,6 +595,21 @@
     </Compile>
     <Compile Include="Consoles\Belogic\LibUzem.cs" />
     <Compile Include="Consoles\Belogic\Uzem.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IO.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.MemoryDomains.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IStatable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.ISettable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.InputPollable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.Controllers.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IEmulator.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IVideoProvider.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Disassembler.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Tables.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Registers.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Operations.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Execute.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.cs" />
     <Compile Include="Consoles\GCE\Vectrex\Audio.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ICodeDataLog.cs" />

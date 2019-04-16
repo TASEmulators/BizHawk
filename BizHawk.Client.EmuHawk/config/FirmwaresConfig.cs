@@ -53,7 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			{ "PCFX", "PC-FX" },
 			{ "32X", "32X" },
             { "ZXSpectrum", "ZX Spectrum" },
-            { "AmstradCPC", "Amstrad CPC" }
+            { "AmstradCPC", "Amstrad CPC" },
+			{ "ChannelF", "Channel F" }
         };
 
 		public string TargetSystem = null;

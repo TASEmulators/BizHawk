@@ -382,6 +382,12 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "PCFX", SystemDisplayName = "PCFX", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 			new PathEntry { System = "PCFX", SystemDisplayName = "PCFX", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "PCFX", SystemDisplayName = "PCFX", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+			new PathEntry { System = "ChannelF", SystemDisplayName = "Fairchild Channel F", Type = "Base", Path = Path.Combine(".", "ZXSpectrum"), Ordinal = 0 },
+			new PathEntry { System = "ChannelF", SystemDisplayName = "Fairchild Channel F", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry { System = "ChannelF", SystemDisplayName = "Fairchild Channel F", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry { System = "ChannelF", SystemDisplayName = "Fairchild Channel F", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry { System = "ChannelF", SystemDisplayName = "Fairchild Channel F", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 		};
 	}
 }

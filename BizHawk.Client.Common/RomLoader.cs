@@ -29,6 +29,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Consoles.Vectrex;
+using BizHawk.Emulation.Cores.Consoles.ChannelF;
 
 namespace BizHawk.Client.Common
 {
@@ -1079,6 +1080,9 @@ namespace BizHawk.Client.Common
                                     Deterministic);
                                 nextEmulator = zx;
                                 break;
+							case "ChannelF":
+								nextEmulator = new ChannelF(nextComm, game, rom.FileData, GetCoreSettings<ChannelF>(), GetCoreSyncSettings<ChannelF>());
+								break;
                             case "AmstradCPC":
                                 var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
                                 nextEmulator = cpc;

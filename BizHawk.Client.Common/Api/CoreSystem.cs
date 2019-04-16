@@ -33,6 +33,7 @@
 		NeoGeoPocket,
         ZXSpectrum,
         AmstradCPC,
-		GGL
+		GGL,
+		ChannelF
 	}
 }

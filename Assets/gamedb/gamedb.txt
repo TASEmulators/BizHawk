@@ -27,6 +27,7 @@
 #include gamedb_zxspectrum.txt
 #include gamedb_amstradcpc.txt
 #include gamedb_ngp.txt
+#include gamedb_channelf.txt
 
 ; ************ TI-83 ************
 

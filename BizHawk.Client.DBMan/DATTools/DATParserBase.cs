@@ -218,6 +218,7 @@ namespace BizHawk.Client.DBMan
 		Lynx,
 		VB,
 		UZE,
-		NGP
+		NGP,
+		ChannelF
 	}
 }
