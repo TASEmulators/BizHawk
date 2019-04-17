@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
-	public partial class ChannelF : IVideoProvider
+	public partial class ChannelF : IVideoProvider, IRegionable
 	{
 		public int _frameHz = 60;
 
@@ -22,5 +22,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
+
+
+		#region IRegionable
+
+		public DisplayType Region => DisplayType.NTSC;
+
+		#endregion
 	}
 }

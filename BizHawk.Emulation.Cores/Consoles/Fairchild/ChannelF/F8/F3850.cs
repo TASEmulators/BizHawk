@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
@@ -82,14 +84,38 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort IDLE = 0;
 		public const ushort END = 51;
 
-		public const ushort OP_LR_8 = 100;
+		public const ushort OP_LR8 = 100;
 		public const ushort OP_SHFT_R = 101;
 		public const ushort OP_SHFT_L = 102;
-		public const ushort OP_COM = 103;
-		public const ushort OP_LNK = 104;
-		public const ushort OP_DI = 105;
-		public const ushort OP_EI = 106;
-		public const ushort OP_INC8 = 107;
+		public const ushort OP_LNK = 103;
+		public const ushort OP_DI = 104;
+		public const ushort OP_EI = 105;
+		public const ushort OP_INC8 = 106;
+		public const ushort OP_AND8 = 107;
+		public const ushort OP_OR8 = 108;
+		public const ushort OP_XOR8 = 109;
+		public const ushort OP_XOR8C = 110;
+		public const ushort OP_ADD8 = 111;
+		public const ushort OP_CI = 112;
+		public const ushort OP_LR8_IO = 113;
+		public const ushort OP_DS_IS = 114;
+		public const ushort OP_IS_INC = 115;
+		public const ushort OP_IS_DEC = 116;
+		public const ushort OP_LR_A_IS = 117;
+		public const ushort OP_LR_IS_A = 118;
+		public const ushort OP_LISU = 119;
+		public const ushort OP_LISL = 120;
+		public const ushort OP_BT = 121;
+		public const ushort OP_ADD8D = 122;
+		public const ushort OP_CM = 123;
+		public const ushort OP_BR7 = 124;
+		public const ushort OP_BF = 125;
+		public const ushort OP_IN = 126;
+		public const ushort OP_OUT = 127;
+		public const ushort OP_AS_IS = 128;
+		public const ushort OP_ASD_IS = 129;
+		public const ushort OP_XS_IS = 130;
+		public const ushort OP_NS_IS = 131;
 
 
 		public F3850()
@@ -104,14 +130,17 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			instr_pntr = 0;
 
 			PopulateCURINSTR(
-				ROMC_08,      // S
+				ROMC_1C_S,      // S
+				IDLE,
+				IDLE,
+				IDLE,
+				ROMC_08,		// L
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,
-				IDLE,
+				ROMC_00_S,		// S
 				IDLE,
 				IDLE,
 				END);
@@ -160,7 +189,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				// always the last tick within an opcode instruction cycle
 				case END:
-					opcode = databus;
+					OnExecFetch?.Invoke(RegPC0);
+					TraceCallback?.Invoke(State());
+					opcode = (byte)Regs[DB];
 					instr_pntr = 0;
 					FetchInstruction();
 					break;
@@ -170,23 +201,28 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					break;
 
 				// load one register into another (or databus)
-				case OP_LR_8:
-					LoadReg_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case OP_LR8:
+					LR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// Shift register n bit positions to the right (zero fill)
 				case OP_SHFT_R:
-					ShiftRight_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// Shift register n bit positions to the left (zero fill)
 				case OP_SHFT_L:
-					ShiftLeft_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SL_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
-				// A <- A ^ 255
-				case OP_COM:
-					COM_Func(A);
+				// x <- (x) ADD y
+				case OP_ADD8:
+					ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (x) ADD y (decimal)
+				case OP_ADD8D:
+					ADD8D_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// A <- (A) + (C)
@@ -194,16 +230,220 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					ADD8_Func(Regs[A], (ushort)(FlagC ? 1 : 0));
 					break;
 
+				// Clear ICB status bit
 				case OP_DI:
 					FlagICB = false;
 					break;
 
+				// Set ICB status bit
 				case OP_EI:
 					FlagICB = true;
 					break;
 
+				// x <- (y) XOR DB
+				case OP_XOR8:
+					XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (y) XOR DB (complement accumulator)
+				case OP_XOR8C:
+					XOR8C_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (x) + 1
 				case OP_INC8:
 					INC8_Func(cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (y) & DB
+				case OP_AND8:
+					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (y) | DB
+				case OP_OR8:
+					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// DB + (x) + 1 (modify flags without saving result)
+				case OP_CI:
+					var tmpX = cur_instr[instr_pntr++];
+					var tmpOperand = Regs[DB];
+					INC8_Func(tmpX);
+					ADD8_Func(tmpOperand, tmpX);
+					break;
+
+				// load one register into another (or databus)
+				// ALU also runs flag status checking
+				case OP_LR8_IO:
+					LR8_IO_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// DS op performed indirectly on the ScratchPad register pointed to by the ISAR
+				case OP_DS_IS:
+					LR8_Func(Regs[ISAR], Regs[BYTE]);
+					break;
+
+				// ISAR is incremented
+				case OP_IS_INC:
+					Regs[ISAR] = (ushort)((Regs[ISAR]& 0x38) | ((Regs[ISAR] + 1) & 0x07));
+					break;
+
+				// ISAR is decremented
+				case OP_IS_DEC:
+					Regs[ISAR] = (ushort)((Regs[ISAR] & 0x38) | ((Regs[ISAR] - 1) & 0x07));
+					break;
+
+				// x <- (SR) (as pointed to by ISAR)
+				case OP_LR_A_IS:
+					LR8_Func(cur_instr[instr_pntr++], Regs[ISAR]);
+					break;
+
+				// x <- (SR) (as pointed to by ISAR)
+				case OP_LR_IS_A:
+					LR8_Func(Regs[ISAR], cur_instr[instr_pntr++]);
+					break;
+
+				// set the upper octal ISAR bits (b3,b4,b5)
+				case OP_LISU:
+					var isVala = (Regs[ISAR] & 0x07) | cur_instr[instr_pntr++];
+					Regs[ISAR] = (ushort)(isVala & 0x3F);
+					break;
+
+				// set the lower octal ISAR bits (b0,b1,b2)
+				case OP_LISL:
+					var isValb = (Regs[ISAR] & 0x38) | cur_instr[instr_pntr++];
+					Regs[ISAR] = (ushort)(isValb & 0x3F);
+					break;
+
+				// test operand against status register
+				case OP_BT:
+					instr_pntr = 0;
+					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
+					{
+						PopulateCURINSTR(
+							ROMC_01,  // L
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							ROMC_00_S,	// S
+							IDLE,
+							IDLE,
+							END);
+					}
+					else
+					{
+						PopulateCURINSTR(
+							ROMC_03_S,  // S
+							IDLE,
+							IDLE,
+							IDLE,
+							ROMC_00_S,  // S
+							IDLE,
+							IDLE,
+							END);
+					}
+					break;
+
+				// DC0 - A - set status only
+				case OP_CM:
+					var tmpDB = Regs[DB];
+					var tmpA = Regs[A];
+					SUB8_Func(tmpDB, tmpA);
+					break;
+
+				// Branch based on ISARL
+				case OP_BR7:
+					instr_pntr = 0;
+					if ((Regs[ISAR] & 7) == 7)
+					{
+						PopulateCURINSTR(
+							ROMC_03_S,  // S
+							//IDLE, <- lose a cycle that was stolen in the table
+							IDLE,
+							IDLE,
+							ROMC_00_S,  // S
+							IDLE,
+							IDLE,
+							END);
+					}
+					else
+					{
+						PopulateCURINSTR(
+							ROMC_01,  // L
+							//IDLE, <- lose a cycle that was stolen in the table
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							ROMC_00_S,  // S
+							IDLE,
+							IDLE,
+							END);
+					}
+					break;
+
+				//  PC0 <- PC0+n+1
+				case OP_BF:
+					instr_pntr = 0;
+					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
+					{
+						PopulateCURINSTR(
+							ROMC_03_S,  // S
+							IDLE,
+							IDLE,
+							IDLE,
+							ROMC_00_S,  // S
+							IDLE,
+							IDLE,
+							END);
+					}
+					else
+					{
+						PopulateCURINSTR(
+							ROMC_01,  // L
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							ROMC_00_S,  // S
+							IDLE,
+							IDLE,
+							END);
+					}
+					break;
+
+				// A <- (I/O Port 0 or 1) 
+				case OP_IN:
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// I/O Port 0 or 1 <- (A)
+				case OP_OUT:
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// Add the content of the SR register addressed by ISAR to A (Binary)
+				case OP_AS_IS:
+					ADD8_Func(A, Regs[ISAR]);
+					break;
+
+				// Add the content of the SR register addressed by ISAR to A (Decimal)
+				case OP_ASD_IS:
+					ADD8D_Func(A, Regs[ISAR]);
+					break;
+
+				// XOR the content of the SR register addressed by ISAR to A
+				case OP_XS_IS:
+					XOR8_Func(A, Regs[ISAR]);
+					break;
+
+				// AND the content of the SR register addressed by ISAR to A
+				case OP_NS_IS:
+					AND8_Func(A, Regs[ISAR]);
 					break;
 
 
@@ -213,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// then all devices increments the content of PC0.
 				// CYCLE LENGTH: S
 				case ROMC_00_S:
-					databus = ReadMemory(RegPC0++);
+					Regs[DB] = ReadMemory(RegPC0++);
 					break;
 
 				// instruction fetch
@@ -221,36 +461,36 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// then all devices increments the content of PC0.
 				// CYCLE LENGTH: L
 				case ROMC_00_L:
-					databus = ReadMemory(RegPC0++);
+					Regs[DB] = ReadMemory(RegPC0++);
 					break;
 
 				// The device whose address space includes the contents of the PC0 register must place on the data bus the contents of the memory location
 				// addressed by by PC0; then all devices add the 8-bit value on the data bus, as a signed binary number, to PC0
 				// CYCLE LENGTH: L
 				case ROMC_01:
-					databus = ReadMemory(RegPC0);
-					IncrementBySignedByte(RegPC0, databus);
+					Regs[DB] = ReadMemory(RegPC0);
+					ADDS_Func(PC0l, PC0h, DB, ZERO);
 					break;
 
 				// The device whose DC0 address addresses a memory word within the address space of that device must place on the data bus the contents
 				// of the memory location addressed by DC0; then all devices increment DC0
 				// CYCLE LENGTH: L
 				case ROMC_02:
-					databus = ReadMemory(RegDC0++);
+					Regs[DB] = ReadMemory(RegDC0++);
 					break;
 
 				// Similar to 0x00, except that it is used for Immediate Operand fetches (using PC0) instead of instruction fetches
 				// CYCLE LENGTH: S
 				case ROMC_03_S:
-					databus = ReadMemory(RegPC0++);
-					iobus = databus;
+					Regs[DB] = ReadMemory(RegPC0++);
+					Regs[IO] = Regs[DB];
 					break;
 
 				// Similar to 0x00, except that it is used for Immediate Operand fetches (using PC0) instead of instruction fetches
 				// CYCLE LENGTH: L
 				case ROMC_03_L:
-					databus = ReadMemory(RegPC0++);
-					iobus = databus;
+					Regs[DB] = ReadMemory(RegPC0++);
+					Regs[IO] = Regs[DB];
 					break;
 
 				// Copy the contents of PC1 into PC0
@@ -262,19 +502,19 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// Store the data bus contents into the memory location pointed to by DC0; increment DC0
 				// CYCLE LENGTH: L
 				case ROMC_05:
-					WriteMemory(RegDC0++, databus);
+					WriteMemory(RegDC0++, (byte)Regs[DB]);
 					break;
 
 				// Place the high order byte of DC0 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_06:
-					databus = (byte)Regs[DC0h];
+					Regs[DB] = (byte)Regs[DC0h];
 					break;
 
 				// Place the high order byte of PC1 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_07:
-					databus = (byte)Regs[PC1h];
+					Regs[DB] = (byte)Regs[PC1h];
 					break;
 
 				// All devices copy the contents of PC0 into PC1. The CPU outputs zero on the data bus in this ROMC state.
@@ -282,7 +522,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_08:
 					RegPC1 = RegPC0;
-					databus = 0;
+					Regs[DB] = 0;
 					Regs[PC0h] = 0;
 					Regs[PC0l] = 0;
 					break;
@@ -290,27 +530,27 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// The device whose address space includes the contents of the DC0 register must place the low order byte of DC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_09:
-					databus = (byte)Regs[DC0l];
+					Regs[DB] = (byte)Regs[DC0l];
 					break;
 
 				// All devices add the 8-bit value on the data bus, treated as a signed binary number, to the data counter
 				// CYCLE LENGTH: L
 				case ROMC_0A:
-					IncrementBySignedByte(RegDC0, databus);
+					ADDS_Func(DC0l, DC0h, DB, ZERO);
 					break;
 
 				// The device whose address space includes the value in PC1 must place the low order byte of PC1 on the data bus
 				// CYCLE LENGTH: L
 				case ROMC_0B:
-					databus = (byte)Regs[PC1l];
+					Regs[DB] = (byte)Regs[PC1l];
 					break;
 
 				// The device whose address space includes the contents of the PC0 register must place the contents of the memory word addressed by PC0
 				// onto the data bus; then all devices move the value that has just been placed on the data bus into the low order byte of PC0
 				// CYCLE LENGTH: L
 				case ROMC_0C:
-					databus = ReadMemory(RegPC0);
-					Regs[PC0l] = databus;
+					Regs[DB] = ReadMemory(RegPC0);
+					Regs[PC0l] = Regs[DB];
 					break;
 
 				// All devices store in PC1 the current contents of PC0, incremented by 1; PC1 is unaltered
@@ -323,8 +563,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// The value on the data bus is then moved to the low order byte of DC0 by all devices
 				// CYCLE LENGTH: L
 				case ROMC_0E:
-					databus = ReadMemory(RegPC0);
-					Regs[DC0l] = databus;
+					Regs[DB] = ReadMemory(RegPC0);
+					Regs[DC0l] = Regs[DB];
 					break;
 
 				// The interrupting device with the highest priority must place the low order byte of the interrupt vector on the data bus.
@@ -332,27 +572,25 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_0F:
 					throw new NotImplementedException("ROMC 0x0F not implemented");
-					break;
 
 				// Inhibit any modification to the interrupt priority logic
 				// CYCLE LENGTH: L
 				case ROMC_10:
 					throw new NotImplementedException("ROMC 0x10 not implemented");
-					break;
 
 				// The device whose memory space includes the contents of PC0 must place the contents of the addressed memory word on the data bus.
 				// All devices must then move the contents of the data bus to the upper byte of DC0
 				// CYCLE LENGTH: L
 				case ROMC_11:
-					databus = ReadMemory(RegPC0);
-					Regs[DC0h] = databus;
+					Regs[DB] = ReadMemory(RegPC0);
+					Regs[DC0h] = Regs[DB];
 					break;
 
 				// All devices copy the contents of PC0 into PC1. All devices then move the contents of the data bus into the low order byte of PC0
 				// CYCLE LENGTH: L
 				case ROMC_12:
 					RegPC1 = RegPC0;
-					Regs[PC0l] = databus;
+					Regs[PC0l] = Regs[DB];
 					break;
 
 				// The interrupting device with the highest priority must move the high order half of the interrupt vector onto the data bus.
@@ -361,49 +599,48 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_13:
 					throw new NotImplementedException("ROMC 0x13 not implemented");
-					break;
 
 				// All devices move the contents of the data bus into the high order byte of PC0
 				// CYCLE LENGTH: L
 				case ROMC_14:
-					Regs[PC0h] = databus;
+					Regs[PC0h] = Regs[DB];
 					break;
 
 				// All devices move the contents of the data bus into the high order byte of PC1
 				// CYCLE LENGTH: L
 				case ROMC_15:
-					Regs[PC1h] = databus;
+					Regs[PC1h] = Regs[DB];
 					break;
 
 				// All devices move the contents of the data bus into the high order byte of DC0
 				// CYCLE LENGTH: L
 				case ROMC_16:
-					Regs[DC0h] = databus;
+					Regs[DC0h] = Regs[DB];
 					break;
 
 				// All devices move the contents of the data bus into the low order byte of PC0
 				// CYCLE LENGTH: L
 				case ROMC_17:
-					Regs[PC0l] = databus;
+					Regs[PC0l] = Regs[DB];
 					break;
 
 				// All devices move the contents of the data bus into the low order byte of PC1
 				// CYCLE LENGTH: L
 				case ROMC_18:
-					Regs[PC1l] = databus;
+					Regs[PC1l] = Regs[DB];
 					break;
 
 				// All devices move the contents of the data bus into the low order byte of DC0
 				// CYCLE LENGTH: L
 				case ROMC_19:
-					Regs[DC0l] = databus;
+					Regs[DC0l] = Regs[DB];
 					break;
 
 				// During the prior cycle, an I/O port timer or interrupt control register was addressed; the device containing the addressed
 				// port must move the current contents of the data bus into the addressed port
 				// CYCLE LENGTH: L
 				case ROMC_1A:
-					WriteHardware(iobus, databus);
+					WriteHardware(Regs[IO], (byte)Regs[DB]);
 					break;
 
 				// During the prior cycle, the data bus specified the address of an I/O port. The device containing the addressed I/O port
@@ -411,7 +648,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// registers cannot be read back onto the data bus)
 				// CYCLE LENGTH: L
 				case ROMC_1B:
-					databus = ReadHardware(iobus);
+					Regs[DB] = ReadHardware(Regs[IO]);
 					break;
 
 				// None
@@ -433,19 +670,71 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// The device whose address space includes the contents of PC0 must place the low order byte of PC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_1E:
-					databus = (byte)Regs[PC0l];
+					Regs[DB] = (byte)Regs[PC0l];
 					break;
 
 				// The device whose address space includes the contents of PC0 must place the high order byte of PC0 onto the data bus
 				// CYCLE LENGTH: L
 				case ROMC_1F:
-					databus = (byte)Regs[PC0h];
+					Regs[DB] = (byte)Regs[PC0h];
 					break;
 			}
 
 			TotalExecutedCycles++;
 		}
 
+		public Action<TraceInfo> TraceCallback;
+
+		public string TraceHeader => "F3850: PC, machine code, mnemonic, operands, registers (R0, R1, R2, R3, R4, R5, R6, R7, R8, J, HU, HL, KU, KL, QU, QL, Cy), flags (IOZCS)";
+
+		public TraceInfo State(bool disassemble = true)
+		{
+			int bytes_read = 0;
+			string disasm = disassemble ? Disassemble(RegPC0, ReadMemory, out bytes_read) : "---";
+			string byte_code = null;
+
+			for (ushort i = 0; i < bytes_read; i++)
+			{
+				byte_code += ReadMemory((ushort)(RegPC0 + i)).ToHexString(2);
+				if (i < (bytes_read - 1))
+				{
+					byte_code += " ";
+				}
+			}
+
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{0:X4}: {1} {2}",
+					RegPC0,
+					byte_code.PadRight(12),
+					disasm.PadRight(26)),
+				RegisterInfo = string.Format(
+					"R0:{0:X2} R1:{1:X2} R2:{2:X2} R3:{3:X2} R4:{4:X2} R5:{5:X2} R6:{6:X2} R7:{7:X2} R8:{8:X2} J:{9:X2} HU:{10:X2} HL:{11:X2} KU:{12:X2} KL:{13:X2} QU:{14:X2} QL:{15:X2} Cy:{16} {17}{18}{19}{20}{21}",
+					Regs[0],
+					Regs[1],
+					Regs[2],
+					Regs[3],
+					Regs[4],
+					Regs[5],
+					Regs[6],
+					Regs[7],
+					Regs[8],
+					Regs[J],
+					Regs[Hh],
+					Regs[Hl],
+					Regs[Kh],
+					Regs[Kl],
+					Regs[Qh],
+					Regs[Ql],
+					TotalExecutedCycles,
+					FlagICB ? "I" : "i",
+					FlagO ? "O" : "o",
+					FlagZ ? "Z" : "z",
+					FlagC ? "C" : "c",
+					FlagS ? "S" : "s")
+			};
+		}
 
 		/// <summary>
 		/// Optimization method to set cur_instr
@@ -473,7 +762,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection(nameof(F3850));
-
+			ser.Sync(nameof(Regs), ref Regs, false);
+			ser.Sync(nameof(cur_instr), ref cur_instr, false);
 			ser.EndSection();
 		}
 	}

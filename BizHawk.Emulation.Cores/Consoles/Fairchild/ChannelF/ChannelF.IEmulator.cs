@@ -28,6 +28,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
+			if (_tracer.Enabled)
+			{
+				CPU.TraceCallback = s => _tracer.Put(s);
+			}
+			else
+			{
+				CPU.TraceCallback = null;
+			}
+
 			while (FrameClock++ < ClockPerFrame)
 			{
 				CPU.ExecuteOne();

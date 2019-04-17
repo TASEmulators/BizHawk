@@ -595,6 +595,7 @@
     </Compile>
     <Compile Include="Consoles\Belogic\LibUzem.cs" />
     <Compile Include="Consoles\Belogic\Uzem.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IDebuggable.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IO.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.MemoryDomains.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IStatable.cs" />

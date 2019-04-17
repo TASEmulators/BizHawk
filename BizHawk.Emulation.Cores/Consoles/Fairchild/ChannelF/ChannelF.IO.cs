@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public byte[] Cartridge = new byte[0x2000 - 0x800];
 
+		public byte[] PortLatch = new byte[64];
+
 		public byte ReadBus(ushort addr)
 		{
 			if (addr < 0x400)
@@ -69,12 +71,12 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public byte ReadPort(ushort addr)
 		{
-			return 0xff;
+			return 0x00;
 		}
 
 		public void WritePort(ushort addr, byte value)
 		{
-
+			var port = addr & 0x7;
 		}
 	}
 }
