@@ -256,8 +256,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("BufferHeight", ref _bufferHeight);
             ser.Sync("VirtualHeight", ref _virtualHeight);
             ser.Sync("VirtualWidth", ref _virtualWidth);
-            ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
-            ser.Sync("ScanlineCounter", ref ScanlineCounter);
+            ser.Sync(nameof(ScreenBuffer), ref ScreenBuffer, false);
+            ser.Sync(nameof(ScanlineCounter), ref ScanlineCounter);
             ser.EndSection();
         }
 

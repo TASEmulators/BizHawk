@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
-				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
 			}
 
 			ChangeLog = new TasMovieChangeLog(this);
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
-				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
 			}
 
 			ChangeLog = new TasMovieChangeLog(this);

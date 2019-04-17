@@ -183,9 +183,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//if the shaders arent available, the pipeline isn't either
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
-				string errors = string.Format("Vertex Shader:\r\n {0} \r\n-------\r\nFragment Shader:\r\n{1}", vertexShader.Errors, fragmentShader.Errors);
+				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
-					throw new InvalidOperationException("Couldn't build required GL pipeline:\r\n" + errors);
+					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
 				var pipeline = new Pipeline(this, null, false, null, null, null);
 				pipeline.Errors = errors;
 				return pipeline;
@@ -246,14 +246,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error creating pipeline (error returned from glLinkProgram): " + errcode + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException($"Error creating pipeline (error returned from glLinkProgram): {errcode}\r\n\r\n{resultLog}");
 				else success = false;
 			
 			int linkStatus;
 			GL.GetProgram(pid, GetProgramParameterName.LinkStatus, out linkStatus);
 			if (linkStatus == 0)
 				if (required)
-					throw new InvalidOperationException("Error creating pipeline (link status false returned from glLinkProgram): " + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException($"Error creating pipeline (link status false returned from glLinkProgram): \r\n\r\n{resultLog}");
 				else success = false;
 
 			//need to work on validation. apparently there are some weird caveats to glValidate which make it complicated and possibly excuses (barely) the intel drivers' dysfunctional operation
@@ -271,11 +271,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//errcode = GL.GetError();
 			//resultLog = GL.GetProgramInfoLog(pid);
 			//if (errcode != ErrorCode.NoError)
-			//  throw new InvalidOperationException("Error creating pipeline (error returned from glValidateProgram): " + errcode + "\r\n\r\n" + resultLog);
+			//  throw new InvalidOperationException($"Error creating pipeline (error returned from glValidateProgram): {errcode}\r\n\r\n{resultLog}");
 			//int validateStatus;
 			//GL.GetProgram(pid, GetProgramParameterName.ValidateStatus, out validateStatus);
 			//if (validateStatus == 0)
-			//  throw new InvalidOperationException("Error creating pipeline (validateStatus status false returned from glValidateProgram): " + "\r\n\r\n" + resultLog);
+			//  throw new InvalidOperationException($"Error creating pipeline (validateStatus status false returned from glValidateProgram): \r\n\r\n{resultLog}");
 
 			//set the program to active, in case we need to set sampler uniforms on it
 			GL.UseProgram(pid);
@@ -548,7 +548,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.DrawBuffers(1, buffers);
 
 			if (GL.Ext.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
-				throw new InvalidOperationException("Error creating framebuffer (at CheckFramebufferStatus)");
+				throw new InvalidOperationException($"Error creating framebuffer (at {nameof(GL.Ext.CheckFramebufferStatus)})");
 
 			//since we're done configuring unbind this framebuffer, to return to the default
 			GL.Ext.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
@@ -724,7 +724,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (from previous operation) " + errcode);
+					throw new InvalidOperationException($"Error compiling shader (from previous operation) {errcode}");
 				else success = false;
 
 			GL.ShaderSource(sid, source);
@@ -732,7 +732,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			errcode = GL.GetError();
 			if (errcode != ErrorCode.NoError)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (ShaderSource) " + errcode);
+					throw new InvalidOperationException($"Error compiling shader ({nameof(GL.ShaderSource)}) {errcode}");
 				else success = false;
 
 			GL.CompileShader(sid);
@@ -742,7 +742,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (errcode != ErrorCode.NoError)
 			{
-				string message = "Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog;
+				string message = $"Error compiling shader ({nameof(GL.CompileShader)}) {errcode}\r\n\r\n{resultLog}";
 				if (required)
 					throw new InvalidOperationException(message);
 				else
@@ -757,7 +757,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 			if (n == 0)
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (CompileShader )" + "\r\n\r\n" + resultLog);
+					throw new InvalidOperationException($"Error compiling shader ({nameof(GL.GetShader)})\r\n\r\n{resultLog}");
 				else success = false;
 
 			return success;

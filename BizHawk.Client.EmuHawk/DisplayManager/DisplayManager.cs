@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pass = retroChain.Passes[i];
 				var rsp = new Filters.RetroShaderPass(retroChain, i);
-				string fname = string.Format("{0}[{1}]", name, i);
+				string fname = $"{name}[{i}]";
 				program.AddFilter(rsp, fname);
 				rsp.Parameters = properties;
 			}
@@ -491,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 			bufferWidth += padding.Horizontal;
 			bufferHeight += padding.Vertical;
 
-			//Console.WriteLine("DISPZOOM " + zoom); //test
+			//Console.WriteLine($"DISPZOOM {zoom}"); //test
 
 			//old stuff
 			var fvp = new FakeVideoProvider();
@@ -915,7 +915,7 @@ namespace BizHawk.Client.EmuHawk
 		public DisplaySurface LockLuaSurface(string name, bool clear=true)
 		{
 			if (MapNameToLuaSurface.ContainsKey(name))
-				throw new InvalidOperationException("Lua surface is already locked: " + name);
+				throw new InvalidOperationException($"Lua surface is already locked: {name}");
 
 			SwappableDisplaySurfaceSet sdss;
 			if (!LuaSurfaceSets.TryGetValue(name, out sdss))
@@ -939,7 +939,7 @@ namespace BizHawk.Client.EmuHawk
 				height += GameExtraPadding.Vertical;
 			}
 			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
-			else throw new InvalidOperationException("Unknown lua surface name: " +name);
+			else throw new InvalidOperationException($"Unknown lua surface name: {name}");
 
 			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
 			MapNameToLuaSurface[name] = ret;

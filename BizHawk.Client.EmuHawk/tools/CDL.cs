@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentFilename = fname;
 			if (_currentFilename == null)
 				Text = "Code Data Logger";
-			else Text = string.Format("Code Data Logger - {0}", fname);
+			else Text = $"Code Data Logger - {fname}";
 		}
 
 		[RequiredService]
@@ -147,29 +147,29 @@ namespace BizHawk.Client.EmuHawk
 				long addr = bm[kvp.Key];
 
 				var lvi = listContents[idx++] = new string[13];
-				lvi[0] = string.Format("{0:X8}", addr);
+				lvi[0] = $"{addr:X8}";
 				lvi[1] = kvp.Key;
-				lvi[2] = string.Format("{0:0.00}%", total / (float)kvp.Value.Length * 100f);
+				lvi[2] = $"{total / (float)kvp.Value.Length * 100f:0.00}%";
 				if (tsbViewStyle.SelectedIndex == 2)
-					lvi[3] = string.Format("{0:0.00}", total / 1024.0f);
+					lvi[3] = $"{total / 1024.0f:0.00}";
 				else
-					lvi[3] = string.Format("{0}", total);
+					lvi[3] = $"{total}";
 				if (tsbViewStyle.SelectedIndex == 2)
 				{
 					int n = (int)(kvp.Value.Length / 1024.0f);
 					float ncheck = kvp.Value.Length / 1024.0f;
-					lvi[4] = string.Format("of {0}{1} KBytes", n == ncheck ? "" : "~", n);
+					lvi[4] = $"of {(n == ncheck ? "" : "~")}{n} KBytes";
 				}
 				else
-					lvi[4] = string.Format("of {0} Bytes", kvp.Value.Length);
+					lvi[4] = $"of {kvp.Value.Length} Bytes";
 				for (int i = 0; i < 8; i++)
 				{
 					if (tsbViewStyle.SelectedIndex == 0)
-						lvi[5 + i] = string.Format("{0:0.00}%", totals[i] / (float)kvp.Value.Length * 100f);
+						lvi[5 + i] = $"{totals[i] / (float)kvp.Value.Length * 100f:0.00}%";
 					if (tsbViewStyle.SelectedIndex == 1)
-						lvi[5 + i] = string.Format("{0}", totals[i]);
+						lvi[5 + i] = $"{totals[i]}";
 					if (tsbViewStyle.SelectedIndex == 2)
-						lvi[5 + i] = string.Format("{0:0.00}", totals[i] / 1024.0f);
+						lvi[5 + i] = $"{totals[i] / 1024.0f:0.00}";
 				}
 
 			}
@@ -498,7 +498,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					autoloading = true;
-					var autoresume_file = PathManager.FilesystemSafeName(Global.Game) + ".cdl";
+					var autoresume_file = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
 					var autoresume_dir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 					var autoresume_path = Path.Combine(autoresume_dir, autoresume_file);
 					if (File.Exists(autoresume_path))

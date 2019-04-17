@@ -168,17 +168,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("divider_reg", ref divider_reg);
-			ser.Sync("timer_reload", ref timer_reload);
-			ser.Sync("timer", ref timer);
-			ser.Sync("timer_old", ref timer_old);
-			ser.Sync("timer_control", ref timer_control);
-			ser.Sync("pending_reload", ref pending_reload);
-			ser.Sync("write_ignore", ref write_ignore);
-			ser.Sync("old_state", ref old_state);
-			ser.Sync("state", ref state);
-			ser.Sync("reload_block", ref reload_block);
-			ser.Sync("TMA_coincidence", ref TMA_coincidence);
+			ser.Sync(nameof(divider_reg), ref divider_reg);
+			ser.Sync(nameof(timer_reload), ref timer_reload);
+			ser.Sync(nameof(timer), ref timer);
+			ser.Sync(nameof(timer_old), ref timer_old);
+			ser.Sync(nameof(timer_control), ref timer_control);
+			ser.Sync(nameof(pending_reload), ref pending_reload);
+			ser.Sync(nameof(write_ignore), ref write_ignore);
+			ser.Sync(nameof(old_state), ref old_state);
+			ser.Sync(nameof(state), ref state);
+			ser.Sync(nameof(reload_block), ref reload_block);
+			ser.Sync(nameof(TMA_coincidence), ref TMA_coincidence);
 		}
 	}
 }

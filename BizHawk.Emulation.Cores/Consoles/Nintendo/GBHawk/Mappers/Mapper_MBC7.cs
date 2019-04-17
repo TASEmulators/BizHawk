@@ -159,31 +159,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("RAM_enable_1", ref RAM_enable_1);
-			ser.Sync("RAM_enable_2", ref RAM_enable_2);
-			ser.Sync("acc_x_low", ref acc_x_low);
-			ser.Sync("acc_x_high", ref acc_x_high);
-			ser.Sync("acc_y_low", ref acc_y_low);
-			ser.Sync("acc_y_high", ref acc_y_high);
-			ser.Sync("is_erased", ref is_erased);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(RAM_enable_1), ref RAM_enable_1);
+			ser.Sync(nameof(RAM_enable_2), ref RAM_enable_2);
+			ser.Sync(nameof(acc_x_low), ref acc_x_low);
+			ser.Sync(nameof(acc_x_high), ref acc_x_high);
+			ser.Sync(nameof(acc_y_low), ref acc_y_low);
+			ser.Sync(nameof(acc_y_high), ref acc_y_high);
+			ser.Sync(nameof(is_erased), ref is_erased);
 
-			ser.Sync("CS_prev", ref CS_prev);
-			ser.Sync("CLK_prev", ref CLK_prev);
-			ser.Sync("DI_prev", ref DI_prev);
-			ser.Sync("DO", ref DO);
-			ser.Sync("instr_read", ref instr_read);
-			ser.Sync("perf_instr", ref perf_instr);
-			ser.Sync("instr_bit_counter", ref instr_bit_counter);
-			ser.Sync("instr", ref instr);
-			ser.Sync("WR_EN", ref WR_EN);
-			ser.Sync("EE_addr", ref EE_addr);
-			ser.Sync("instr_case", ref instr_case);
-			ser.Sync("instr_clocks", ref instr_clocks);
-			ser.Sync("EE_value", ref EE_value);
-			ser.Sync("countdown", ref countdown);
-			ser.Sync("countdown_start", ref countdown_start);
+			ser.Sync(nameof(CS_prev), ref CS_prev);
+			ser.Sync(nameof(CLK_prev), ref CLK_prev);
+			ser.Sync(nameof(DI_prev), ref DI_prev);
+			ser.Sync(nameof(DO), ref DO);
+			ser.Sync(nameof(instr_read), ref instr_read);
+			ser.Sync(nameof(perf_instr), ref perf_instr);
+			ser.Sync(nameof(instr_bit_counter), ref instr_bit_counter);
+			ser.Sync(nameof(instr), ref instr);
+			ser.Sync(nameof(WR_EN), ref WR_EN);
+			ser.Sync(nameof(EE_addr), ref EE_addr);
+			ser.Sync(nameof(instr_case), ref instr_case);
+			ser.Sync(nameof(instr_clocks), ref instr_clocks);
+			ser.Sync(nameof(EE_value), ref EE_value);
+			ser.Sync(nameof(countdown), ref countdown);
+			ser.Sync(nameof(countdown_start), ref countdown_start);
 		}
 
 		public byte Register_Access_Read(ushort addr)
@@ -419,11 +419,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 5:
 						if ((instr_clocks >= 0) && (instr_clocks <= 7))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1 ? true : false;
+							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1;
 						}
 						else if ((instr_clocks >= 8) && (instr_clocks <= 15))
 						{
-							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1 ? true : false;
+							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1;
 						}
 
 						if (instr_clocks == 15)

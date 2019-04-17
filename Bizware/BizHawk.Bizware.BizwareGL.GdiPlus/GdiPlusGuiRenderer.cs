@@ -146,7 +146,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public void End()
 		{
 			if (!IsActive)
-				throw new InvalidOperationException("GuiRenderer is not active!");
+				throw new InvalidOperationException($"{nameof(GuiRenderer)} is not active!");
 			IsActive = false;
 			if (CurrentImageAttributes != null)
 			{
@@ -202,7 +202,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
-				throw new InvalidOperationException("tw.MagFilter != tw.MinFilter");
+				throw new InvalidOperationException($"{nameof(tw)}.{nameof(tw.MagFilter)} != {nameof(tw)}.{nameof(tw.MinFilter)}");
 			if (tw.MagFilter == TextureMagFilter.Linear)
 				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
 			if (tw.MagFilter == TextureMagFilter.Nearest)

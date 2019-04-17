@@ -1182,24 +1182,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("CRTC");
-            ser.SyncEnum("ChipType", ref ChipType);
-            ser.Sync("HSYNC", ref HSYNC);
-            ser.Sync("VSYNC", ref VSYNC);
-            ser.Sync("DISPTMG", ref DISPTMG);
-            ser.Sync("MA", ref MA);
-            ser.Sync("CurrentByteAddress", ref CurrentByteAddress);
-            ser.Sync("ByteCounter", ref ByteCounter);
-            ser.Sync("Regs", ref Regs, false);
-            ser.Sync("SelectedRegister", ref SelectedRegister);
-            ser.Sync("HCC", ref HCC);
-            ser.Sync("VCC", ref VCC);
-            ser.Sync("VLC", ref VLC);
-            ser.Sync("CycleCounter", ref CycleCounter);
-            ser.Sync("EndOfScreen", ref EndOfScreen);
-            ser.Sync("HSYNCWidth", ref HSYNCWidth);
-            ser.Sync("HSYNCCounter", ref HSYNCCounter);
-            ser.Sync("VSYNCWidth", ref VSYNCWidth);
-            ser.Sync("VSYNCCounter", ref VSYNCCounter);
+            ser.SyncEnum(nameof(ChipType), ref ChipType);
+            ser.Sync(nameof(HSYNC), ref HSYNC);
+            ser.Sync(nameof(VSYNC), ref VSYNC);
+            ser.Sync(nameof(DISPTMG), ref DISPTMG);
+            ser.Sync(nameof(MA), ref MA);
+            ser.Sync(nameof(CurrentByteAddress), ref CurrentByteAddress);
+            ser.Sync(nameof(ByteCounter), ref ByteCounter);
+            ser.Sync(nameof(Regs), ref Regs, false);
+            ser.Sync(nameof(SelectedRegister), ref SelectedRegister);
+            ser.Sync(nameof(HCC), ref HCC);
+            ser.Sync(nameof(VCC), ref VCC);
+            ser.Sync(nameof(VLC), ref VLC);
+            ser.Sync(nameof(CycleCounter), ref CycleCounter);
+            ser.Sync(nameof(EndOfScreen), ref EndOfScreen);
+            ser.Sync(nameof(HSYNCWidth), ref HSYNCWidth);
+            ser.Sync(nameof(HSYNCCounter), ref HSYNCCounter);
+            ser.Sync(nameof(VSYNCWidth), ref VSYNCWidth);
+            ser.Sync(nameof(VSYNCCounter), ref VSYNCCounter);
             ser.EndSection();
         }
 

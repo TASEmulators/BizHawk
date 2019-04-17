@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
-			string target = _currentDirectory + "\\";
+			string target = $"{_currentDirectory}\\";
 
 			// first we'll bypass it with a general hack: dont do any setting if the value's already there (even at the OS level, setting the directory can be slow)
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 			// WARNING: setting the current directory is SLOW!!! security checks for some reason.
 			// so we're bypassing it with windows hacks
 			#if WINDOWS
-				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes(target + "\0")[0])
+				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
 					return SetCurrentDirectoryW(pstr);
 			#else
 				if (System.IO.Directory.Exists(CurrentDirectory)) // race condition for great justice

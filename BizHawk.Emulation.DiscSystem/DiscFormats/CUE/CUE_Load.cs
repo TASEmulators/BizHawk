@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 							default:
 							case CueTrackType.Mode2_2336:
-								throw new InvalidOperationException("Not supported: " + cct.TrackType);
+								throw new InvalidOperationException($"Not supported: {cct.TrackType}");
 						}
 
 						ss.Blob = curr_blobInfo.Blob;

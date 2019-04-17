@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VPC");
-			ser.Sync("Registers", ref Registers, false);
+			ser.BeginSection(nameof(VPC));
+			ser.Sync(nameof(Registers), ref Registers, false);
 			ser.EndSection();
 
 			if (ser.IsReader)
@@ -357,15 +357,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// clear inter-sprite priority buffer
 			Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
 
+			var testRange = new MutableIntRange(0, vdc.ActiveLine + 1);
 			for (int i = 0; i < 64; i++)
 			{
 				int y = (vdc.SpriteAttributeTable[(i * 4) + 0] & 1023) - 64;
 				int x = (vdc.SpriteAttributeTable[(i * 4) + 1] & 1023) - 32;
 				ushort flags = vdc.SpriteAttributeTable[(i * 4) + 3];
-				int height = heightTable[(flags >> 12) & 3];
-
-				if (y + height <= vdc.ActiveLine || y > vdc.ActiveLine)
-					continue;
+				byte height = heightTable[(flags >> 12) & 3];
+				testRange.Min = vdc.ActiveLine - height;
+				if (!testRange.StrictContains(y)) continue;
 
 				int patternNo = (((vdc.SpriteAttributeTable[(i * 4) + 2]) >> 1) & 0x1FF);
 				int paletteBase = 256 + ((flags & 15) * 16);

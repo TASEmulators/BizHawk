@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			int scanlines = Global.Config.TargetScanlineFilterIntensity;
 			float percentage = (float) scanlines / 256 * 100;
-			lblScanlines.Text = String.Format("{0:F2}", percentage) + "%";
+			lblScanlines.Text = $"{percentage:F2}%";
 		}
 
 		private void trackbarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)

@@ -405,6 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.bilinearMode = GLideN64_bilinearMode.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>();
+			_ss.GLideN64Plugin.enableHalosRemoval = GLideN64_enableHalosRemoval.Checked;
 			_ss.GLideN64Plugin.MaxAnisotropy = GLideN64_MaxAnisotropy.Checked;
 			_ss.GLideN64Plugin.CacheSize = GLideN64_CacheSize.Text.IsSigned()
 				? int.Parse(GLideN64_CacheSize.Text)
@@ -532,9 +533,7 @@ namespace BizHawk.Client.EmuHawk
 			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
 			VideoResolutionYTextBox.Text = _s.VideoSizeY.ToString();
 
-			var videoSetting = _s.VideoSizeX
-						+ " x "
-						+ _s.VideoSizeY;
+			var videoSetting = $"{_s.VideoSizeX} x {_s.VideoSizeY}";
 
 			var index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
 			if (index >= 0)
@@ -604,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 			RiceColorQuality_Combo.SelectedIndex = _ss.RicePlugin.ColorQuality;
 			RiceOpenGLRenderSetting_Combo.SelectedIndex = _ss.RicePlugin.OpenGLRenderSetting;
 			RiceAnisotropicFiltering_TB.Value = _ss.RicePlugin.AnisotropicFiltering;
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 
 			RiceUseDefaultHacks_CB.Checked = _ss.RicePlugin.UseDefaultHacks;
 
@@ -776,6 +775,7 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_UseNativeResolutionFactor.Text = _ss.GLideN64Plugin.UseNativeResolutionFactor.ToString();
 			GLideN64_bilinearMode
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(_ss.GLideN64Plugin.bilinearMode);
+			GLideN64_enableHalosRemoval.Checked = _ss.GLideN64Plugin.enableHalosRemoval;
 			GLideN64_MaxAnisotropy.Checked = _ss.GLideN64Plugin.MaxAnisotropy;
 			GLideN64_CacheSize.Text = _ss.GLideN64Plugin.CacheSize.ToString();
 			GLideN64_ShowInternalResolution.Checked = _ss.GLideN64Plugin.ShowInternalResolution;
@@ -852,7 +852,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void RiceAnisotropicFiltering_Tb_Scroll_1(object sender, EventArgs e)
 		{
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 		}
 
 		private void RiceUseDefaultHacks_Cb_CheckedChanged(object sender, EventArgs e)

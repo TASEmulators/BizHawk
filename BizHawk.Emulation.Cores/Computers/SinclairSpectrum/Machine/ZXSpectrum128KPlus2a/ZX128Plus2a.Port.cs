@@ -157,11 +157,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ULADevice.BorderColor = value & BORDER_BIT;
                 }
 
-                // Buzzer
-                BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
+				// Buzzer
+				BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 
-                // Tape
-                TapeDevice.WritePort(port, value);
+				// Tape
+				TapeDevice.WritePort(port, value);
 
                 // Tape
                 //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);

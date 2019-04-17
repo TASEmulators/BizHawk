@@ -39,10 +39,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("reg", ref reg);
-			ser.Sync("bank", ref bank);
-			ser.Sync("bank", ref Ghostbusters63in1_63set);
-			ser.Sync("bank", ref Ghostbusters63in1_chip_22_select);
+			ser.Sync(nameof(reg), ref reg);
+			ser.Sync(nameof(bank), ref bank);
+			ser.Sync(nameof(bank), ref Ghostbusters63in1_63set);
+			ser.Sync(nameof(bank), ref Ghostbusters63in1_chip_22_select);
 			base.SyncState(ser);
 		}
 

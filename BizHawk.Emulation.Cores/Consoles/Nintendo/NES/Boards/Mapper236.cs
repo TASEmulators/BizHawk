@@ -41,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("isLargeBanks", ref isLargeBanks);
-			ser.Sync("large_bank", ref large_bank);
-			ser.Sync("prg_bank", ref prg_bank);
-			ser.Sync("chr_bank", ref chr_bank);
-			ser.Sync("bank_mode", ref bank_mode);
+			ser.Sync(nameof(isLargeBanks), ref isLargeBanks);
+			ser.Sync(nameof(large_bank), ref large_bank);
+			ser.Sync(nameof(prg_bank), ref prg_bank);
+			ser.Sync(nameof(chr_bank), ref chr_bank);
+			ser.Sync(nameof(bank_mode), ref bank_mode);
 			ser.Sync("Cart_Switch", ref CartSwitch_70in1);
 			ser.Sync("Cart_Switch", ref CartSwitch_800in1);
 		}

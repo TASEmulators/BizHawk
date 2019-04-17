@@ -26,12 +26,12 @@ namespace BizHawk.Emulation.Cores.Components
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("Period", ref Period);
-				ser.Sync("Disable", ref Disable);
-				ser.Sync("Volume", ref Volume);
-				ser.Sync("clock", ref clock);
-				ser.Sync("sequence", ref sequence);
-				ser.Sync("output", ref output);
+				ser.Sync(nameof(Period), ref Period);
+				ser.Sync(nameof(Disable), ref Disable);
+				ser.Sync(nameof(Volume), ref Volume);
+				ser.Sync(nameof(clock), ref clock);
+				ser.Sync(nameof(sequence), ref sequence);
+				ser.Sync(nameof(output), ref output);
 			}
 
 			public Pulse(Action<int> SendDiff)
@@ -122,8 +122,8 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Sunsoft5BAudio");
-			ser.Sync("RegNum", ref RegNum);
+			ser.BeginSection(nameof(Sunsoft5BAudio));
+			ser.Sync(nameof(RegNum), ref RegNum);
 			for (int i = 0; i < pulse.Length; i++)
 			{
 				ser.BeginSection("Pulse" + i);

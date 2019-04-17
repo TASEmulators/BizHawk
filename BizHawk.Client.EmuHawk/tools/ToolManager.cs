@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
-				throw new ArgumentException($"Type {toolType.Name} does not implement IToolForm.");
+				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
 			
 			// The type[] in parameter is used to avoid an ambigous name exception
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (dest == null)
 			{
-				throw new InvalidOperationException("IToolFormAutoConfig must have menu to bind to!");
+				throw new InvalidOperationException($"{nameof(IToolFormAutoConfig)} must have menu to bind to!");
 			}
 
 			int idx = dest.Count;
@@ -631,7 +631,7 @@ namespace BizHawk.Client.EmuHawk
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 						if (tool == null)
 						{
-							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+							MessageBox.Show($"It seems that the object CustomMainForm does not implement {nameof(IExternalToolForm)}. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;
 						}
 					}
@@ -1023,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+			return Path.Combine(path, $"{PathManager.FilesystemSafeName(Global.Game)}.cht");
 		}
 	}
 }

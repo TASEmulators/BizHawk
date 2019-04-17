@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("_driveNumber", ref _driveNumber);
+				ser.Sync(nameof(_driveNumber), ref _driveNumber);
 			}
 		}
 	}

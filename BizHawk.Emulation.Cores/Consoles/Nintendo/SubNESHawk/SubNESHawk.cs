@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				game, rom, subnesSettings, subnesSyncSettings);
 
 			ser.Register<IVideoProvider>(subnes.videoProvider);
-			ser.Register<ISoundProvider>(subnes.magicSoundProvider); 
+			ser.Register<ISoundProvider>(subnes); 
 
 			_tracer = new TraceBuffer { Header = "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR), CPU Cycle, PPU Cycle" };
 			ser.Register<ITraceable>(_tracer);

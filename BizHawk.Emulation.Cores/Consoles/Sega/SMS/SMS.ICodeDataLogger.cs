@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte FetchMemory_CDL(ushort address)
 		{
 			RunCDL(address, CDLog_Flags.ExecFirst);
-			return ReadMemory(address);
+			return FetchMemory(address);
 		}
 
 		/// <summary>

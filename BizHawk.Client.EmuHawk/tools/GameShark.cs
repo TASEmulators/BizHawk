@@ -311,9 +311,9 @@ namespace BizHawk.Client.EmuHawk
 				int cmp = 0;
 				parseString = SingleCheat.Replace("-", "");
 				GBGGDecode(parseString, ref val, ref add, ref cmp);
-				RAMAddress = string.Format("{0:X4}", add);
-				RAMValue = string.Format("{0:X2}", val);
-				RAMCompare = string.Format("{0:X2}", cmp);
+				RAMAddress = $"{add:X4}";
+				RAMValue = $"{val:X2}";
+				RAMCompare = $"{cmp:X2}";
 			}
 			//Game Genie
 			else if (SingleCheat.Contains("-") == true && SingleCheat.LastIndexOf("-") != 7 && SingleCheat.IndexOf("-") != 3)
@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		//Provided by mGBA and endrift
@@ -457,8 +457,8 @@ namespace BizHawk.Client.EmuHawk
 						//op1 has the Address
 						//op2 has the Value
 						//Sum, is pointless?
-						RAMAddress = string.Format("{0:X8}", op1);
-						RAMValue = string.Format("{0:X8}", op2);
+						RAMAddress = $"{op1:X8}";
+						RAMValue = $"{op2:X8}";
 						GBAGameShark();
 					}
 					//We don't do Else If after the if here because it won't allow us to verify the second code check.
@@ -492,8 +492,8 @@ namespace BizHawk.Client.EmuHawk
 						//op1 has the Address
 						//op2 has the Value
 						//Sum, is pointless?
-						RAMAddress = string.Format("{0:X8}", op1);
-						RAMValue = string.Format("{0:X8}", op2);
+						RAMAddress = $"{op1:X8}";
+						RAMValue = $"{op2:X8}";
 						blnEncrypted = true;
 						GBAActionReplay();
 					}
@@ -560,9 +560,9 @@ namespace BizHawk.Client.EmuHawk
 					//	//op1 has the Address
 					//	//op2 has the Value
 					//	//Sum, is pointless?
-					//	RAMAddress = string.Format("{0:X8}", op1);
+					//	RAMAddress = $"{op1:X8}";
 					//	//RAMAddress = RAMAddress.Remove(0, 1);
-					//	RAMValue = string.Format("{0:X8}", op2);
+					//	RAMValue = $"{op2:X8}";
 					//	// && RAMAddress[6] == '0'
 					//}
 
@@ -2052,12 +2052,12 @@ namespace BizHawk.Client.EmuHawk
 				string RealAddress = null;
 				string realValue = null;
 				RealAddress = RAMValue.Remove(0, 1);
-				//MessageBox.Show("Real Address: " + RealAddress);
+				//MessageBox.Show($"Real Address: {RealAddress}");
 				//We need the next line
 				try
 				{
 					loopValue += 1;
-					//MessageBox.Show("Loop Value: " + loopValue.ToString());
+					//MessageBox.Show($"Loop Value: {loopValue}");
 					SingleCheat = txtCheat.Lines[loopValue].ToUpper();
 					//We need to parse now.
 					if (SingleCheat.Length == 17 && SingleCheat.IndexOf(" ") == 8)
@@ -2087,8 +2087,8 @@ namespace BizHawk.Client.EmuHawk
 							//op1 has the Address
 							//op2 has the Value
 							//Sum, is pointless?
-							RAMAddress = string.Format("{0:X8}", op1);
-							RAMValue = string.Format("{0:X8}", op2);
+							RAMAddress = $"{op1:X8}";
+							RAMValue = $"{op2:X8}";
 						}
 						else if (blnEncrypted == false)
 						{
@@ -2134,7 +2134,7 @@ namespace BizHawk.Client.EmuHawk
 				catch (Exception ex)
 				{
 					//We should warn the user.
-					MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 			else if (RAMAddress.StartsWith("080") == true)
@@ -2563,7 +2563,7 @@ namespace BizHawk.Client.EmuHawk
 				//Someone broke the world?
 				catch (Exception ex)
 				{
-					MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 		}
@@ -2691,7 +2691,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		private void NES()
@@ -2734,9 +2734,9 @@ namespace BizHawk.Client.EmuHawk
 					_NESgameGenieTable.TryGetValue(code[5], out x);
 					Address |= (x & 0x07) << 8;
 					Value |= x & 0x08;
-					RAMAddress = string.Format("{0:X4}", Address);
-					RAMValue = string.Format("{0:X2}", Value);
-					strCompare = string.Format("{0:X2}", Compare);
+					RAMAddress = $"{Address:X4}";
+					RAMValue = $"{Value:X2}";
+					strCompare = $"{Compare:X2}";
 				}
 				else if (SingleCheat.Length == 8)
 				{
@@ -2778,9 +2778,9 @@ namespace BizHawk.Client.EmuHawk
 					_NESgameGenieTable.TryGetValue(code[7], out x);
 					Compare |= (x & 0x07) << 4;
 					Value |= x & 0x08;
-					RAMAddress = string.Format("{0:X4}", Address);
-					RAMValue = string.Format("{0:X2}", Value);
-					strCompare = string.Format("{0:X2}", Compare);
+					RAMAddress = $"{Address:X4}";
+					RAMValue = $"{Value:X2}";
+					strCompare = $"{Compare:X2}";
 				}
 			}
 			if (SingleCheat.Length != 6 && SingleCheat.Length != 8)
@@ -2816,7 +2816,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		private void PSX()
@@ -2927,7 +2927,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
 		}
@@ -3003,7 +3003,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		//This also handles Game Gear due to shared hardware.  Go figure.
@@ -3018,9 +3018,9 @@ namespace BizHawk.Client.EmuHawk
 				int cmp = 0;
 				parseString = SingleCheat.Replace("-", "");
 				GBGGDecode(parseString, ref val, ref add, ref cmp);
-				RAMAddress = string.Format("{0:X4}", add);
-				RAMValue = string.Format("{0:X2}", val);
-				RAMCompare = string.Format("{0:X2}", cmp);
+				RAMAddress = $"{add:X4}";
+				RAMValue = $"{val:X2}";
+				RAMCompare = $"{cmp:X2}";
 			}
 			//Action Replay
 			else if (SingleCheat.IndexOf("-") == 3 && SingleCheat.Length == 9)
@@ -3063,7 +3063,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		//Original code from adelikat
@@ -3142,8 +3142,8 @@ namespace BizHawk.Client.EmuHawk
 				//We have to remove the - since it will cause issues later on.
 				input = SingleCheat.Replace("-", "");
 				SnesGGDecode(input, ref val, ref add);
-				RAMAddress = string.Format("{0:X6}", add);
-				RAMValue = string.Format("{0:X2}", val);
+				RAMAddress = $"{add:X6}";
+				RAMValue = $"{val:X2}";
 				//We trim the first value here to make it work.
 				RAMAddress = RAMAddress.Remove(0, 1);
 				//Note, it's not actually a byte, but a Word.  However, we are using this to keep from repeating code.
@@ -3203,7 +3203,7 @@ namespace BizHawk.Client.EmuHawk
 			//Someone broke the world?
 			catch (Exception ex)
 			{
-				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"An Error occured: {ex.GetType()}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		private void btnClear_Click(object sender, EventArgs e)

@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			ControllerNameLabel.Text = "Controller " + ControllerNumber;
+			ControllerNameLabel.Text = $"Controller {ControllerNumber}";
 		}
 
 		public int ControllerNumber
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void Refresh()
 		{
-			ControllerNameLabel.Text = "Controller " + ControllerNumber;
+			ControllerNameLabel.Text = $"Controller {ControllerNumber}";
 			base.Refresh();
 		}
 

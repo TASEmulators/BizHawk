@@ -104,17 +104,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
-			PSG = new SN76489();
+			PSG = new SN76489sms();
 			YM2413 = new YM2413();
-			SoundMixer = new SoundMixer(YM2413, PSG);
+			//SoundMixer = new SoundMixer(YM2413, PSG);
 			if (HasYM2413 && game["WhenFMDisablePSG"])
 			{
-				SoundMixer.DisableSource(PSG);
+				disablePSG = true;
 			}
 
-			ActiveSoundProvider = HasYM2413 ? (IAsyncSoundProvider)SoundMixer : PSG;
-			_fakeSyncSound = new FakeSyncSound(ActiveSoundProvider, 735);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
+			blip_L.SetRates(3579545, 44100);
+			blip_R.SetRates(3579545, 44100);
+
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
 
 			SystemRam = new byte[0x2000];
 
@@ -144,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
 				}
 
-				PSG.StereoPanning = ForceStereoByte;
+				PSG.Set_Panning(ForceStereoByte);
 			}
 
 			if (SyncSettings.AllowOverlock && game["OverclockSafe"])
@@ -230,13 +231,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public Z80A Cpu;
 		public byte[] SystemRam;
 		public VDP Vdp;
-		public SN76489 PSG;
+		public SN76489sms PSG;
 		private YM2413 YM2413;
 		public bool IsGameGear { get; set; }
 		public bool IsGameGear_C { get; set; }
 		public bool IsSG1000 { get; set; }
 
 		private bool HasYM2413 = false;
+		private bool disablePSG = false;
 		private bool PortDEEnabled = false;
 		private IController _controller = NullController.Instance;
 
@@ -387,13 +389,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					case 0x01: Port01 = value; break;
 					case 0x02: Port02 = value; break;
 					case 0x05: Port05 = value; break;
-					case 0x06: PSG.StereoPanning = value; break;
+					case 0x06: PSG.Set_Panning(value); break;
 					case 0x3E: Port3E = value; break;
 					case 0x3F: Port3F = value; break;
 				}
 			}
 			else if (port < 0x80) // PSG
-				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+				PSG.WriteReg(value);
 			else if (port < 0xC0) // VDP
 			{
 				if ((port & 1) == 0)

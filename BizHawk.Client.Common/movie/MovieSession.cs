@@ -201,7 +201,7 @@ namespace BizHawk.Client.Common
 				var result = Movie.Stop(saveChanges);
 				if (result)
 				{
-					Output(Path.GetFileName(Movie.Filename) + " written to disk.");
+					Output($"{Path.GetFileName(Movie.Filename)} written to disk.");
 				}
 
 				Output(message);
@@ -225,7 +225,7 @@ namespace BizHawk.Client.Common
 			if (Movie.IsPlaying)
 			{
 				Movie.ClearFrame(Global.Emulator.Frame);
-				Output("Scrubbed input at frame " + Global.Emulator.Frame);
+				Output($"Scrubbed input at frame {Global.Emulator.Frame}");
 			}
 		}
 

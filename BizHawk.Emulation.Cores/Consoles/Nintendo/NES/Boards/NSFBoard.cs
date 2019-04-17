@@ -84,11 +84,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_banks_4k", ref prg_banks_4k);
-			ser.Sync("Patch_Vectors", ref Patch_Vectors);
-			ser.Sync("CurrentSong", ref CurrentSong);
-			ser.Sync("InitPending", ref InitPending);
-			ser.Sync("ButtonState", ref ButtonState);
+			ser.Sync(nameof(prg_banks_4k), ref prg_banks_4k);
+			ser.Sync(nameof(Patch_Vectors), ref Patch_Vectors);
+			ser.Sync(nameof(CurrentSong), ref CurrentSong);
+			ser.Sync(nameof(InitPending), ref InitPending);
+			ser.Sync(nameof(ButtonState), ref ButtonState);
 		}
 
 		public void InitNSF(NSFFormat nsf)

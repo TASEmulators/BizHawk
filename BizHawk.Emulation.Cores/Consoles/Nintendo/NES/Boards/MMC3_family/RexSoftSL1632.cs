@@ -36,10 +36,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(BizHawk.Common.Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("exmode", ref exmode);
-			ser.Sync("exprg", ref exprg, false);
-			ser.Sync("exchr", ref exchr, false);
-			ser.Sync("exnmt", ref exnmt);
+			ser.Sync(nameof(exmode), ref exmode);
+			ser.Sync(nameof(exprg), ref exprg, false);
+			ser.Sync(nameof(exchr), ref exchr, false);
+			ser.Sync(nameof(exnmt), ref exnmt);
 		}
 
 		public override byte ReadPRG(int addr)

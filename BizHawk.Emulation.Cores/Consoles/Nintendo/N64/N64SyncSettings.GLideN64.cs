@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				AspectRatio = AspectRatioMode.FourThree;
 				BufferSwapMode = SwapMode.OnVIUpdateCall;
 				UseNativeResolutionFactor = 0;
-				bilinearMode = bilinearFilteringMode.Standard;
+				bilinearMode = bilinearFilteringMode.ThreePoint;
+				enableHalosRemoval = false;
 				MaxAnisotropy = false;
 				CacheSize = 8000;
 				ShowInternalResolution = false;
@@ -34,12 +35,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				EnableFragmentDepthWrite = true;
 				EnableFBEmulation = true;
 				EnableCopyAuxiliaryToRDRAM = false;
-				EnableN64DepthCompare = false;
+				EnableN64DepthCompare = true;
 				DisableFBInfo = true;
 				FBInfoReadColorChunk = false;
 				FBInfoReadDepthChunk = true;
-				EnableCopyColorToRDRAM = CopyColorToRDRAMMode.AsyncMode;
-				EnableCopyDepthToRDRAM = CopyDepthToRDRAMMode.DoNotCopy;
+				EnableCopyColorToRDRAM = CopyColorToRDRAMMode.SyncMode;
+				EnableCopyDepthToRDRAM = CopyDepthToRDRAMMode.SoftwareRender;
 				EnableCopyColorFromRDRAM = false;
 				txFilterMode = TextureFilterMode.None;
 				txEnhancementMode = TextureEnhancementMode.None;
@@ -134,6 +135,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DisplayName("Bilinear filtering mode")]
 			[Description("Bilinear filtering mode (0=N64 3point, 1=standard)")]
 			public bilinearFilteringMode bilinearMode { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Enable Halos Removal")]
+			[Description("Remove halos around filtered textures")]
+			public bool enableHalosRemoval { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Max level of Anisotropic Filtering")]

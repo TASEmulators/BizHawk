@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement disassemble()");
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
 				return null;
 			}
 		}
@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement getregister()");
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 				return 0;
 			}
 		}
@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement getregisters()");
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 			}
 
 			return table;
@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement setregister()");
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.SetCpuRegister)}()");
 			}
 		}
 
@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement totalexecutedcycles()");
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.TotalExecutedCycles)}()");
 
 				return 0;
 			}
@@ -204,7 +204,7 @@ namespace BizHawk.Client.Common
 				return InputPollableCore.IsLagFrame;
 			}
 
-			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return false;
 		}
 
@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 
@@ -231,7 +231,7 @@ namespace BizHawk.Client.Common
 				return InputPollableCore.LagCount;
 			}
 
-			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return 0;
 		}
 
@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 

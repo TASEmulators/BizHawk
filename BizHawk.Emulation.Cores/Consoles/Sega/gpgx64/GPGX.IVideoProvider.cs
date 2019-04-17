@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						for (int i = 0; i < xpad; i++)
 							*pdst++ = unchecked((int)0xff000000);
 						for (int i = 0; i < gpwidth; i++)
-							*pdst++ = *psrc++; ;
+							*pdst++ = *psrc++;
 						for (int i = 0; i < xpad2; i++)
 							*pdst++ = unchecked((int)0xff000000);
 						psrc += rinc;

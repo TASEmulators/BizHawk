@@ -31,14 +31,14 @@ namespace BizHawk.Client.EmuHawk
 				mainversion += " (x64)";
 			if (VersionInfo.DeveloperBuild)
 			{
-				Text = " BizHawk  (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
+				Text = $" BizHawk  (GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH})";
 			}
 			else
 			{
-				Text = "Version " + mainversion + " (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
+				Text = $"Version {mainversion} (GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH})";
 			}
 
-			VersionLabel.Text = "Version " + mainversion;
+			VersionLabel.Text = $"Version {mainversion}";
 			DateLabel.Text = VersionInfo.RELEASEDATE;
 
 			var cores = Assembly
@@ -59,12 +59,12 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			linkLabel2.Text = "Commit # " + SubWCRev.GIT_SHORTHASH;
+			linkLabel2.Text = $"Commit # {SubWCRev.GIT_SHORTHASH}";
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk/commit/" + SubWCRev.GIT_SHORTHASH);
+			System.Diagnostics.Process.Start($"https://github.com/TASVideos/BizHawk/commit/{SubWCRev.GIT_SHORTHASH}");
 		}
 
 		private void btnCopyHash_Click(object sender, EventArgs e)

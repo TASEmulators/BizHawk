@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			public InputEventType EventType;
 			public override string ToString()
 			{
-				return string.Format("{0}:{1}", EventType.ToString(), LogicalButton.ToString());
+				return $"{EventType.ToString()}:{LogicalButton.ToString()}";
 			}
 		}
 
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
-				Console.WriteLine("Removing Unpress {0} with newState {1}", button, newState);
+				Console.WriteLine($"Removing Unpress {button} with {nameof(newState)} {newState}");
 				UnpressState.Remove(button);
 				LastState[button] = false;
 				return;
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 						//analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())
 						{
-							string xname = "X" + pad.PlayerNumber + " ";
+							string xname = $"X{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -376,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 						//analyze joysticks
 						foreach (var pad in GamePad.EnumerateDevices())
 						{
-							string jname = "J" + pad.PlayerNumber + " ";
+							string jname = $"J{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -513,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var kvp in LastState)
 						if (kvp.Value)
 						{
-							Console.WriteLine("Unpressing " + kvp.Key);
+							Console.WriteLine($"Unpressing {kvp.Key}");
 							UnpressState[kvp.Key] = true;
 						}
 

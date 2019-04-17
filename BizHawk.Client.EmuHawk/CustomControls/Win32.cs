@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override string ToString()
 			{
-				return "{Left: " + _Left + "; " + "Top: " + _Top + "; Right: " + _Right + "; Bottom: " + _Bottom + "}";
+				return $"{{Left: {_Left}; Top: {_Top}; Right: {_Right}; Bottom: {_Bottom}}}";
 			}
 
 			public override int GetHashCode()

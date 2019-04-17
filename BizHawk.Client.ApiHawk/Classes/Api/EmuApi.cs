@@ -103,7 +103,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement disassemble()");
+				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
 				return null;
 			}
 		}
@@ -124,7 +124,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement getregister()");
+				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 				return null;
 			}
 		}
@@ -147,7 +147,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement getregisters()");
+				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 			}
 
 			return table;
@@ -166,7 +166,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement setregister()");
+				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.SetCpuRegister)}()");
 			}
 		}
 
@@ -183,7 +183,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement totalexecutedcycles()");
+				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.TotalExecutedCycles)}()");
 
 				return 0;
 			}
@@ -201,7 +201,7 @@ namespace BizHawk.Client.ApiHawk
 				return InputPollableCore.IsLagFrame;
 			}
 
-			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return false;
 		}
 
@@ -213,7 +213,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			else
 			{
-				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 
@@ -224,7 +224,7 @@ namespace BizHawk.Client.ApiHawk
 				return InputPollableCore.LagCount;
 			}
 
-			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return 0;
 		}
 
@@ -236,7 +236,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 			else
 			{
-				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 

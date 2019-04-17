@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			if (listBox1.SelectedIndex != -1)
 			{
 				var f = (FormatPreset)listBox1.SelectedItem;
-				label5.Text = "Extension: " + f.Extension;
+				label5.Text = $"Extension: {f.Extension}";
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
 			}

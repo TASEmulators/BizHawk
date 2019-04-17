@@ -2326,44 +2326,39 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("CRCT");
-			ser.SyncEnum("ChipType", ref ChipType);
-			ser.Sync("_VSYNC", ref _VSYNC);
-			ser.Sync("_HSYNC", ref _HSYNC);
-			ser.Sync("_DISPTMG", ref _DISPTMG);
-			ser.Sync("_CUDISP", ref _CUDISP);
-			ser.Sync("_CLK", ref _CLK);
-			ser.Sync("_RESET", ref _RESET);
-			ser.Sync("_LPSTB", ref _LPSTB);
-			ser.Sync("AddressRegister", ref AddressRegister);
-			ser.Sync("Register", ref Register, false);
-			ser.Sync("StatusRegister", ref StatusRegister);
-			ser.Sync("_CharacterCTR", ref _CharacterCTR);
-			ser.Sync("_HorizontalSyncWidthCTR", ref _HorizontalSyncWidthCTR);
-			ser.Sync("_LineCTR", ref _LineCTR);
-			ser.Sync("_RasterCTR", ref _RasterCTR);
-			ser.Sync("StartAddressLatch)", ref StartAddressLatch);
-			//ser.Sync("VDisplay", ref VDisplay);
-			//ser.Sync("HDisplay", ref HDisplay);
-			ser.Sync("RowSelects", ref RowSelects);
-			ser.Sync("DISPTMG_Delay_Counter", ref DISPTMG_Delay_Counter);
-			ser.Sync("CUDISP_Delay_Counter", ref CUDISP_Delay_Counter);
-			ser.Sync("AsicStatusRegister1", ref AsicStatusRegister1);
-			ser.Sync("AsicStatusRegister2", ref AsicStatusRegister2);
-			ser.Sync("LAG_Counter", ref LAG_Counter);
-			ser.Sync("LAG_Counter_Latch", ref LAG_Counter_Latch);
-			ser.Sync("LAG_Counter_RowLatch", ref LAG_Counter_RowLatch);
-			ser.Sync("s_VS", ref s_VS);
-			ser.Sync("s_HDISP", ref s_VS);
-			ser.Sync("s_VDISP", ref s_VDISP);
-			ser.Sync("s_HSYNC", ref s_HSYNC);
-			ser.Sync("CUR_Field_Counter", ref CUR_Field_Counter);
-			//ser.Sync("VS", ref VS);
+			ser.SyncEnum(nameof(ChipType), ref ChipType);
+			ser.Sync(nameof(_VSYNC), ref _VSYNC);
+			ser.Sync(nameof(_HSYNC), ref _HSYNC);
+			ser.Sync(nameof(_DISPTMG), ref _DISPTMG);
+			ser.Sync(nameof(_CUDISP), ref _CUDISP);
+			ser.Sync(nameof(_CLK), ref _CLK);
+			ser.Sync(nameof(_RESET), ref _RESET);
+			ser.Sync(nameof(_LPSTB), ref _LPSTB);
+			ser.Sync(nameof(AddressRegister), ref AddressRegister);
+			ser.Sync(nameof(Register), ref Register, false);
+			ser.Sync(nameof(StatusRegister), ref StatusRegister);
+			ser.Sync(nameof(_CharacterCTR), ref _CharacterCTR);
+			ser.Sync(nameof(_HorizontalSyncWidthCTR), ref _HorizontalSyncWidthCTR);
+			ser.Sync(nameof(_LineCTR), ref _LineCTR);
+			ser.Sync(nameof(_RasterCTR), ref _RasterCTR);
+			ser.Sync(nameof(StartAddressLatch), ref StartAddressLatch);
+			//ser.Sync(nameof(VDisplay), ref VDisplay);
+			//ser.Sync(nameof(HDisplay), ref HDisplay);
+			ser.Sync(nameof(RowSelects), ref RowSelects);
+			ser.Sync(nameof(DISPTMG_Delay_Counter), ref DISPTMG_Delay_Counter);
+			ser.Sync(nameof(CUDISP_Delay_Counter), ref CUDISP_Delay_Counter);
+			ser.Sync(nameof(AsicStatusRegister1), ref AsicStatusRegister1);
+			ser.Sync(nameof(AsicStatusRegister2), ref AsicStatusRegister2);
+			ser.Sync(nameof(LAG_Counter), ref LAG_Counter);
+			ser.Sync(nameof(LAG_Counter_Latch), ref LAG_Counter_Latch);
+			ser.Sync(nameof(LAG_Counter_RowLatch), ref LAG_Counter_RowLatch);
+			ser.Sync(nameof(s_VS), ref s_VS);
+			ser.Sync(nameof(s_HDISP), ref s_VS);
+			ser.Sync(nameof(s_VDISP), ref s_VDISP);
+			ser.Sync(nameof(s_HSYNC), ref s_HSYNC);
+			ser.Sync(nameof(CUR_Field_Counter), ref CUR_Field_Counter);
+			//ser.Sync(nameof(VS), ref VS);
 			ser.EndSection();
-
-			/*
-			 * int ;
-		int ;
-             * */
 		}
 
 		#endregion

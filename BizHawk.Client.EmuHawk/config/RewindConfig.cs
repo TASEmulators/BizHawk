@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = $"{Global.Rewinder.FullnessRatio * 100:0.00}" + "%";
+				FullnessLabel.Text = $"{Global.Rewinder.FullnessRatio * 100:0.00}%";
 				RewindFramesUsedLabel.Text = Global.Rewinder.Count.ToString();
 			}
 			else
@@ -94,10 +94,10 @@ namespace BizHawk.Client.EmuHawk
 			if (num >= 1024)
 			{
 				num /= 1024.0;
-				return $"{num:0.00}" + " MB";
+				return $"{num:0.00} MB";
 			}
 
-			return $"{num:0.00}" + " KB";
+			return $"{num:0.00} KB";
 		}
 
 		private void SetStateSize()
@@ -344,8 +344,8 @@ namespace BizHawk.Client.EmuHawk
 			double minutes = estTotalFrames / 60 / 60;
 
 			AverageStoredStateSizeLabel.Text = FormatKB(avgStateSize);
-			ApproxFramesLabel.Text = $"{estFrames:n0}" + " frames";
-			EstTimeLabel.Text = $"{minutes:n}" + " minutes";
+			ApproxFramesLabel.Text = $"{estFrames:n0} frames";
+			EstTimeLabel.Text = $"{minutes:n} minutes";
 		}
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)

@@ -54,14 +54,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SyncState(Serializer ser)
 		{
 			scnt.SyncState(ser);
-			ser.Sync("chr_mode", ref chr_mode);
-			ser.Sync("prg_mode", ref prg_mode);
-			ser.Sync("prg_slot", ref prg_slot);
-			ser.Sync("chr_0", ref chr_0);
-			ser.Sync("chr_1", ref chr_1);
-			ser.Sync("wram_disable", ref wram_disable);
-			ser.Sync("prg", ref prg);
-			ser.SyncEnum("mirror", ref mirror);
+			ser.Sync(nameof(chr_mode), ref chr_mode);
+			ser.Sync(nameof(prg_mode), ref prg_mode);
+			ser.Sync(nameof(prg_slot), ref prg_slot);
+			ser.Sync(nameof(chr_0), ref chr_0);
+			ser.Sync(nameof(chr_1), ref chr_1);
+			ser.Sync(nameof(wram_disable), ref wram_disable);
+			ser.Sync(nameof(prg), ref prg);
+			ser.SyncEnum(nameof(mirror), ref mirror);
 
 			SyncCHR();
 			SyncPRG();
@@ -103,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("shift_count", ref shift_count);
-				ser.Sync("shift_val", ref shift_val);
+				ser.Sync(nameof(shift_count), ref shift_count);
+				ser.Sync(nameof(shift_val), ref shift_val);
 			}
 
 			public Action Reset;
@@ -393,8 +393,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
-			ser.Sync("ppuclock", ref ppuclock);
-			ser.Sync("chr_wram_enable", ref chr_wram_enable);
+			ser.Sync(nameof(ppuclock), ref ppuclock);
+			ser.Sync(nameof(chr_wram_enable), ref chr_wram_enable);
 			if (NES._isVS)
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}

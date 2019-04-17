@@ -354,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				var sb = new StringBuilder();
 				foreach (var watch in SelectedItems)
 				{
-					sb.AppendLine(ToString());
+					sb.AppendLine(watch.ToString());
 				}
 
 				if (sb.Length > 0)
@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (saved)
 				{
-					message = Path.GetFileName(_watches.CurrentFileName) + " saved.";
+					message = $"{Path.GetFileName(_watches.CurrentFileName)} saved.";
 				}
 				else
 				{

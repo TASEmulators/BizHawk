@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // Buzzer
-            BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
+            BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 
             // Tape
             TapeDevice.WritePort(port, value);

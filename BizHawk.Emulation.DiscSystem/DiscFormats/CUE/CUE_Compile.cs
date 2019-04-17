@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		public override string ToString()
 		{
-			return string.Format("I#{0:D2} {1}", Number, FileMSF);
+			return $"I#{Number:D2} {FileMSF}";
 		}
 	}
 
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		public CompiledCueFileType Type;
 		public override string ToString()
 		{
-			return string.Format("{0}: {1}", Type, Path.GetFileName(FullPath));
+			return $"{Type}: {Path.GetFileName(FullPath)}";
 		}
 	}
 
@@ -109,11 +109,11 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			var idx = Indexes.Find((i) => i.Number == 1);
 			if (idx == null)
-				return string.Format("T#{0:D2} NO INDEX 1", Number);
+				return $"T#{Number:D2} NO INDEX 1";
 			else
 			{
 				var indexlist = string.Join("|", Indexes);
-				return string.Format("T#{0:D2} {1}:{2} ({3})", Number, BlobIndex, idx.FileMSF, indexlist);
+				return $"T#{Number:D2} {BlobIndex}:{idx.FileMSF} ({indexlist})";
 			}
 		}
 	}
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			string choice = null;
 			if (options.Count == 0)
 			{
-				Error(string.Format("Couldn't resolve referenced cue file: {0} ; you can commonly repair the cue file yourself, or a file might be missing", f.Path));
+				Error($"Couldn't resolve referenced cue file: {f.Path} ; you can commonly repair the cue file yourself, or a file might be missing");
 				//add a null entry to keep the count from being wrong later (quiets a warning)
 				OUT_CompiledCueFiles.Add(null);
 				return;
@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			{
 				choice = options[0];
 				if (options.Count > 1)
-					Warn("Multiple options resolving referenced cue file; choosing: " + Path.GetFileName(choice));
+					Warn($"Multiple options resolving referenced cue file; choosing: {Path.GetFileName(choice)}");
 			}
 
 			var cfi = new CompiledCueFile();
@@ -275,13 +275,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				cfi.Type = CompiledCueFileType.ECM;
 				if (!Disc.Blob_ECM.IsECM(choice))
 				{
-					Error("an ECM file was specified or detected, but it isn't a valid ECM file: " + Path.GetFileName(choice));
+					Error($"an ECM file was specified or detected, but it isn't a valid ECM file: {Path.GetFileName(choice)}");
 					cfi.Type = CompiledCueFileType.Unknown;
 				}
 			}
 			else
 			{
-				Error("Unknown cue file type. Since it's likely an unsupported compression, this is an error: ", Path.GetFileName(choice));
+				Error($"Unknown cue file type. Since it's likely an unsupported compression, this is an error: {Path.GetFileName(choice)}");
 				cfi.Type = CompiledCueFileType.Unknown;
 			}
 

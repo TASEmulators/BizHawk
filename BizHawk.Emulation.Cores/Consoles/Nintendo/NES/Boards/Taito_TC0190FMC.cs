@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				base.SyncState(ser);
 				ser.BeginSection("mmc3variant");
-				ser.Sync("pending", ref pending);
-				ser.Sync("delay", ref delay);
+				ser.Sync(nameof(pending), ref pending);
+				ser.Sync(nameof(delay), ref delay);
 				ser.EndSection();
 			}
 
@@ -84,9 +84,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			if(mmc3 != null) mmc3.SyncState(ser);
-			ser.Sync("prg_regs_8k", ref prg_regs_8k);
-			ser.Sync("chr_regs_1k", ref chr_regs_1k);
-			ser.Sync("mirror_mode", ref mirror_mode);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(mirror_mode), ref mirror_mode);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

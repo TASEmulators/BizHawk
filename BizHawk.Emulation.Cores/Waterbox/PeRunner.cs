@@ -1217,7 +1217,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					// if a different runtime instance than this one saved the state,
 					// Exvoker imports need to be reconnected
-					Console.WriteLine("Restoring PeRunner state from a different core...");
+					Console.WriteLine($"Restoring {nameof(PeRunner)} state from a different core...");
 					ConnectAllImports();
 					_psx.ReloadVtables();
 				}

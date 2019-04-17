@@ -53,35 +53,39 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			Cpu.SyncState(ser);
 
-			ser.BeginSection("SMS");			
+			ser.BeginSection(nameof(SMS));			
 			Vdp.SyncState(ser);
 			PSG.SyncState(ser);
 			ser.Sync("RAM", ref SystemRam, false);
-			ser.Sync("RomBank0", ref RomBank0);
-			ser.Sync("RomBank1", ref RomBank1);
-			ser.Sync("RomBank2", ref RomBank2);
-			ser.Sync("RomBank3", ref RomBank3);
-			ser.Sync("Bios_bank", ref Bios_bank);
-			ser.Sync("Port01", ref Port01);
-			ser.Sync("Port02", ref Port02);
-			ser.Sync("Port05", ref Port05);
-			ser.Sync("Port3E", ref Port3E);
-			ser.Sync("Port3F", ref Port3F);
-			ser.Sync("Controller1SelectHigh", ref Controller1SelectHigh);
-			ser.Sync("ControllerSelect2High", ref Controller2SelectHigh);
-			ser.Sync("LatchLightPhaser", ref LatchLightPhaser);
-			ser.Sync("start_pressed", ref start_pressed);
-			ser.Sync("cntr_rd_0", ref cntr_rd_0);
-			ser.Sync("cntr_rd_1", ref cntr_rd_1);
-			ser.Sync("cntr_rd_2", ref cntr_rd_2);
-			ser.Sync("stand_alone", ref stand_alone);
+			ser.Sync(nameof(RomBank0), ref RomBank0);
+			ser.Sync(nameof(RomBank1), ref RomBank1);
+			ser.Sync(nameof(RomBank2), ref RomBank2);
+			ser.Sync(nameof(RomBank3), ref RomBank3);
+			ser.Sync(nameof(Bios_bank), ref Bios_bank);
+			ser.Sync(nameof(Port01), ref Port01);
+			ser.Sync(nameof(Port02), ref Port02);
+			ser.Sync(nameof(Port05), ref Port05);
+			ser.Sync(nameof(Port3E), ref Port3E);
+			ser.Sync(nameof(Port3F), ref Port3F);
+			ser.Sync(nameof(Controller1SelectHigh), ref Controller1SelectHigh);
+			ser.Sync(nameof(Controller2SelectHigh), ref Controller2SelectHigh);
+			ser.Sync(nameof(LatchLightPhaser), ref LatchLightPhaser);
+			ser.Sync(nameof(start_pressed), ref start_pressed);
+			ser.Sync(nameof(cntr_rd_0), ref cntr_rd_0);
+			ser.Sync(nameof(cntr_rd_1), ref cntr_rd_1);
+			ser.Sync(nameof(cntr_rd_2), ref cntr_rd_2);
+			ser.Sync(nameof(stand_alone), ref stand_alone);
+			ser.Sync(nameof(disablePSG), ref disablePSG);
+			ser.Sync(nameof(sampleclock), ref sampleclock);
+			ser.Sync(nameof(old_s_L), ref old_s_L);
+			ser.Sync(nameof(old_s_R), ref old_s_R);
 
 			if (SaveRAM != null)
 			{
-				ser.Sync("SaveRAM", ref SaveRAM, false);
+				ser.Sync(nameof(SaveRAM), ref SaveRAM, false);
 			}
 
-			ser.Sync("SaveRamBank", ref SaveRamBank);
+			ser.Sync(nameof(SaveRamBank), ref SaveRamBank);
 
 			if (ExtRam != null)
 			{

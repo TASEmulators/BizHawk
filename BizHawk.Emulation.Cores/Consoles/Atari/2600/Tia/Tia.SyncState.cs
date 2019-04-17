@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("TIA");
+			ser.BeginSection(nameof(TIA));
 			_ball.SyncState(ser);
 			_hmove.SyncState(ser);
 			ser.Sync("hsyncCnt", ref _hsyncCnt);
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("PRG1_val", ref _prg1Val);
 
 			ser.Sync("Ticks", ref _doTicks);
-			ser.Sync("hmove_cnt_up", ref hmove_cnt_up);
+			ser.Sync(nameof(hmove_cnt_up), ref hmove_cnt_up);
 
 			ser.Sync("VBlankDelay", ref _vblankDelay);
 			ser.Sync("VBlankValue", ref _vblankValue);
@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("vblankEnabled", ref _vblankEnabled);
 			ser.Sync("vsyncEnabled", ref _vsyncEnabled);
 			ser.Sync("CurrentScanLine", ref _currentScanLine);
-			ser.Sync("AudioClocks", ref AudioClocks);
-			ser.Sync("New_Frame", ref New_Frame);
+			ser.Sync(nameof(AudioClocks), ref AudioClocks);
+			ser.Sync(nameof(New_Frame), ref New_Frame);
 
 			ser.BeginSection("Player0");
 			_player0.SyncState(ser);

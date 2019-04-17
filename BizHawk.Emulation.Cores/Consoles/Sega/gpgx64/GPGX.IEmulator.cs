@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ControlConverter.Convert(controller, input);
 
 			if (!Core.gpgx_put_control(input, inputsize))
-				throw new Exception("gpgx_put_control() failed!");
+				throw new Exception($"{nameof(Core.gpgx_put_control)}() failed!");
 
 			IsLagFrame = true;
 			Frame++;

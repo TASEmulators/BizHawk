@@ -13,7 +13,7 @@ namespace BizHawk.Common.BizInvoke
 		public DynamicLibraryImportResolver(string dllName)
 		{
 			_p = libLoader.LoadPlatformSpecific(dllName);
-			if (_p == IntPtr.Zero) throw new InvalidOperationException("null pointer returned by LoadPlatformSpecific");
+			if (_p == IntPtr.Zero) throw new InvalidOperationException($"null pointer returned by {nameof(PlatformLinkedLibSingleton.PlatformLinkedLibManager.LoadPlatformSpecific)}");
 		}
 
 		public IntPtr Resolve(string entryPoint)

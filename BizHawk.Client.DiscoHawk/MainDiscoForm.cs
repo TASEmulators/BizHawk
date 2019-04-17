@@ -58,7 +58,7 @@ namespace BizHawk.Client.DiscoHawk
 
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
-					string outfile = Path.Combine(Path.GetDirectoryName(file), baseName) + ".ccd";
+					string outfile = $"{Path.Combine(Path.GetDirectoryName(file), baseName)}.ccd";
 					CCD_Format.Dump(disc, outfile);
 				}
 				this.Cursor = Cursors.Default;

@@ -9,8 +9,8 @@ namespace Jellyfish.Virtu
     public sealed class GamePort : MachineComponent
     {
 		// TODO: ressurect this
-		public bool ReadButton0() { return false; }
-		public bool ReadButton1() { return false; }
+		public bool ReadButton0() { return Keyboard.WhiteAppleDown; }
+		public bool ReadButton1() { return Keyboard.BlackAppleDown; }
 		public bool ReadButton2() { return false; }
 
 		public bool Paddle0Strobe { get { return false; } }

@@ -53,7 +53,7 @@ namespace BizHawk.Client.Common
 		{
 			if (required)
 			{
-				var fullmsg = $"Couldn't find required firmware \"{sysID}:{firmwareID}\".  This is fatal{(msg != null ? ": " + msg : ".")}";
+				var fullmsg = $"Couldn't find required firmware \"{sysID}:{firmwareID}\".  This is fatal{(msg != null ? $": {msg}" : ".")}";
 				throw new MissingFirmwareException(fullmsg);
 			}
 

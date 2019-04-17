@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
 						if (showmsg)
 						{
-							GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+							GlobalWin.OSD.AddMessage($"Palette file loaded: {palette.Name}");
 						}
 
 						return data;

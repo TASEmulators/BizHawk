@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 			if (extraSampleCount < -maxSamplesDeficit)
 			{
 				int generateSampleCount = -extraSampleCount;
-				if (LogDebug) Console.WriteLine("Generating " + generateSampleCount + " samples");
+				if (LogDebug) Console.WriteLine($"Generating {generateSampleCount} samples");
 				for (int i = 0; i < generateSampleCount * ChannelCount; i++)
 				{
 					_buffer.Enqueue(0);
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (extraSampleCount > maxSamplesSurplus)
 			{
 				int discardSampleCount = extraSampleCount;
-				if (LogDebug) Console.WriteLine("Discarding " + discardSampleCount + " samples");
+				if (LogDebug) Console.WriteLine($"Discarding {discardSampleCount} samples");
 				for (int i = 0; i < discardSampleCount * ChannelCount; i++)
 				{
 					_buffer.Dequeue();

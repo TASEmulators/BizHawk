@@ -353,7 +353,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var sfd = new SaveFileDialog())
 			{
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
-				sfd.FileName = Global.Game.Name + ".pal";
+				sfd.FileName = $"{Global.Game.Name}.pal";
 
 				sfd.Filter = "Gambatte Palettes (*.pal)|*.pal|All Files|*.*";
 				sfd.RestoreDirectory = true;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private SpectrumBase _machine { get; set; }
         private Z80A _cpu { get; set; }
-        private IBeeperDevice _buzzer { get; set; }
+        private OneBitBeeper _buzzer { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -983,19 +984,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("DatacorderDevice");
-            ser.Sync("counter", ref counter);
-            ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
-            ser.Sync("_position", ref _position);
-            ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);
-            ser.Sync("_lastCycle", ref _lastCycle);
-            ser.Sync("_waitEdge", ref _waitEdge);
-            ser.Sync("currentState", ref currentState);
-            ser.Sync("_lastINCycle", ref _lastINCycle);
-            ser.Sync("_monitorCount", ref _monitorCount);
-            ser.Sync("_monitorTimeOut", ref _monitorTimeOut);
-            ser.Sync("_monitorLastPC", ref _monitorLastPC);
-            ser.Sync("_monitorLastRegs", ref _monitorLastRegs, false);
+            ser.BeginSection(nameof(DatacorderDevice));
+            ser.Sync(nameof(counter), ref counter);
+            ser.Sync(nameof(_currentDataBlockIndex), ref _currentDataBlockIndex);
+            ser.Sync(nameof(_position), ref _position);
+            ser.Sync(nameof(_tapeIsPlaying), ref _tapeIsPlaying);
+            ser.Sync(nameof(_lastCycle), ref _lastCycle);
+            ser.Sync(nameof(_waitEdge), ref _waitEdge);
+            ser.Sync(nameof(currentState), ref currentState);
+            ser.Sync(nameof(_lastINCycle), ref _lastINCycle);
+            ser.Sync(nameof(_monitorCount), ref _monitorCount);
+            ser.Sync(nameof(_monitorTimeOut), ref _monitorTimeOut);
+            ser.Sync(nameof(_monitorLastPC), ref _monitorLastPC);
+            ser.Sync(nameof(_monitorLastRegs), ref _monitorLastRegs, false);
             ser.EndSection();
         }
 

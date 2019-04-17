@@ -607,7 +607,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			}
 
-			if (TasView.AllColumns.Count == 0 || file.Extension != "." + TasMovie.Extension)
+			if (TasView.AllColumns.Count == 0 || file.Extension != $".{TasMovie.Extension}")
 			{
 				SetUpColumns();
 			}
@@ -686,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.ClearChanges();
 
 			SetTextProperty();
-			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
+			MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} loaded.";
 
 			return true;
 		}
@@ -788,7 +788,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				TasMovie.DefaultProjectName + "." + TasMovie.Extension);
+				$"{TasMovie.DefaultProjectName}.{TasMovie.Extension}");
 		}
 
 		/// <summary>
@@ -798,7 +798,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Path.Combine(
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
+				$"{PathManager.FilesystemSafeName(Global.Game)}.{TasMovie.Extension}");
 		}
 
 		private void SetTextProperty()
@@ -806,7 +806,7 @@ namespace BizHawk.Client.EmuHawk
 			var text = "TAStudio";
 			if (CurrentTasMovie != null)
 			{
-				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
+				text += $" - {CurrentTasMovie.Name}{(CurrentTasMovie.Changes ? "*" : "")}";
 			}
 
 			if (InvokeRequired)
@@ -986,13 +986,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			SplicerStatusLabel.Text =
-				"Selected: " + TasView.SelectedRows.Count() + " frame" +
-				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
-				", States: " + CurrentTasMovie.TasStateManager.StateCount.ToString() +
-				(_tasClipboard.Any() 
-					? ", Clipboard: " + _tasClipboard.Count + " frame" + (_tasClipboard.Count == 1 ? "" : "s") 
-					: "");
+			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.StateCount}";
+			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
+			SplicerStatusLabel.Text = temp;
 		}
 
 		private void UpdateChangesIndicator()
@@ -1099,7 +1095,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
+			if (Path.GetExtension(filePaths[0]) == $".{TasMovie.Extension}")
 			{
 				FileInfo file = new FileInfo(filePaths[0]);
 				if (file.Exists)
@@ -1138,7 +1134,7 @@ namespace BizHawk.Client.EmuHawk
 				if (lagLog.WasLagged.Value && !isLag)
 				{
 					// Deleting this frame requires rewinding a frame.
-					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, "Bind Input; Delete " + (Emulator.Frame - 1));
+					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, $"Bind Input; Delete {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
@@ -1151,7 +1147,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!lagLog.WasLagged.Value && isLag)
 				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
-					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, false, "Bind Input; Insert " + (Emulator.Frame - 1));
+					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, false, $"Bind Input; Insert {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 

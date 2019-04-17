@@ -221,6 +221,8 @@ For now, the best way to learn how to TAS is to browse pages like [BasicTools](h
 
 ### Testing
 
+* [Latest development build](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/build/artifacts)
+
 Testing bugfixes or new features can be just as helpful as making them! If code's more your thing, see [*Contributing*](#contributing) below.
 
 Dev builds are automated with AppVeyor, every green checkmark in the [commit history](https://github.com/TASVideos/BizHawk/commits/master) is a successful build. Clicking a checkmark and then "Details" in the box that appears takes you straight to the build page. The full list is [here](https://ci.appveyor.com/project/zeromus/bizhawk-udexo/history), in future use the "dev builds" button at the top of this readme.

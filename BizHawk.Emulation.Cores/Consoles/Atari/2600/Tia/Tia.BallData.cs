@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("denabled", ref Denabled);
 				ser.Sync("delay", ref Delay);
 				ser.Sync("size", ref Size);
-				ser.Sync("HM", ref HM);
+				ser.Sync(nameof(HM), ref HM);
 				ser.Sync("hPosCnt", ref HPosCnt);
 				ser.Sync("collisions", ref Collisions);
 				ser.EndSection();

@@ -51,13 +51,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("prg_banks_8k", ref prg_banks_8k);
-			ser.Sync("chr_banks_1k", ref chr_banks_1k);
-			ser.Sync("ppuclock", ref ppuclock);
-			ser.Sync("irqclock", ref irqclock);
-			ser.Sync("irqreload", ref irqreload);
-			ser.Sync("irqcountwidth", ref irqcountwidth);
-			ser.Sync("irqcountpaused", ref irqcountpaused);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(ppuclock), ref ppuclock);
+			ser.Sync(nameof(irqclock), ref irqclock);
+			ser.Sync(nameof(irqreload), ref irqreload);
+			ser.Sync(nameof(irqcountwidth), ref irqcountwidth);
+			ser.Sync(nameof(irqcountpaused), ref irqcountpaused);
 			base.SyncState(ser);
 		}
 

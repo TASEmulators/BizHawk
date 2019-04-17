@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			var hex = $"{num:X}";
 			if (hex.Length == 1)
 			{
-				hex = "0" + hex;
+				hex = $"0{hex}";
 			}
 
 			return hex;
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			var octal = Convert.ToString(num, 8);
 			if (octal.Length == 1)
 			{
-				octal = "0" + octal;
+				octal = $"0{octal}";
 			}
 
 			return octal;

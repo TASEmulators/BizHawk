@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (movie is TasMovie)
 			{
-				(movie as TasMovie).ChangeLog.BeginNewBatch("Place Macro at " + Start);
+				(movie as TasMovie).ChangeLog.BeginNewBatch($"Place Macro at {Start}");
 			}
 
 			if (Start > movie.InputLogLength)
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 			header[0] = InputKey;
 			header[1] = Global.Emulator.ControllerDefinition.Name;
 			header[2] = Global.Emulator.ControllerDefinition.PlayerCount.ToString();
-			header[3] = Overlay.ToString() + "," + Replace.ToString();
+			header[3] = $"{Overlay},{Replace}";
 
 			File.WriteAllLines(fileName, header);
 			File.AppendAllLines(fileName, _log);
@@ -232,8 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!emuKeys.Contains(macroKeys[i]))
 				{
-					System.Windows.Forms.MessageBox.Show("The selected macro is not compatible with the current emulator core." +
-						"\nMacro controller: " + readText[1] + "\nMacro player count: " + readText[2], "Error");
+					System.Windows.Forms.MessageBox.Show($"The selected macro is not compatible with the current emulator core.\nMacro controller: {readText[1]}\nMacro player count: {readText[2]}", "Error");
 					return;
 				}
 			}
