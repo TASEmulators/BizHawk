@@ -518,11 +518,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void FreePipeline(Pipeline pipeline)
 		{
-			var pw = pipeline.Opaque as PipelineWrapper;
-
-			pw.VertexDeclaration.Dispose();
-			pw.FragmentShader.IGLShader.Release();
-			pw.VertexShader.IGLShader.Release();
+			using (pipeline.Opaque as PipelineWrapper) { }
 		}
 
 		public void Internal_FreeShader(Shader shader)
@@ -542,12 +538,23 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper // Disposable fields cleaned up by FreePipeline
+		class PipelineWrapper : IDisposable // Disposable fields cleaned up by FreePipeline
 		{
 			public d3d9.VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;
 			public int VertexStride;
 			public d3d9.ConstantTable fsct, vsct;
+			
+			public void Dispose()
+			{
+				using (VertexDeclaration)
+				{
+					using (fsct)
+						FragmentShader.IGLShader.Release();
+					using (vsct)
+						VertexShader.IGLShader.Release();
+				}
+			}
 		}
 
 		class TextureWrapper
