@@ -69,11 +69,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		private void DestroyDevice()
 		{
-			if (dev != null)
-			{
-				dev.Dispose();
+			using (dev)
 				dev = null;
-			}
 		}
 
 		PresentParameters MakePresentParameters()
@@ -132,8 +129,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		void IDisposable.Dispose()
 		{
-			DestroyDevice();
-			d3d.Dispose();
+			using (d3d)
+				DestroyDevice();
 		}
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
@@ -160,7 +157,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void FreeTexture(Texture2d tex) {
 			var tw = tex.Opaque as TextureWrapper;
-			tw.Texture.Dispose();
+			using (tw.Texture) { }
 		}
 
 		class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
@@ -518,19 +515,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void FreePipeline(Pipeline pipeline)
 		{
-			var pw = pipeline.Opaque as PipelineWrapper;
-
-			pw.VertexDeclaration.Dispose();
-			pw.FragmentShader.IGLShader.Release();
-			pw.VertexShader.IGLShader.Release();
+			using (pipeline.Opaque as PipelineWrapper) { }
 		}
 
 		public void Internal_FreeShader(Shader shader)
 		{
 			var sw = shader.Opaque as ShaderWrapper;
-			sw.bytecode.Dispose();
-			if (sw.ps != null) sw.ps.Dispose();
-			if (sw.vs != null) sw.vs.Dispose();
+			using (sw.bytecode) {
+			using (sw.ps) { }
+			using (sw.vs) { }}
 		}
 
 		class UniformWrapper
@@ -542,12 +535,23 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper // Disposable fields cleaned up by FreePipeline
+		class PipelineWrapper : IDisposable // Disposable fields cleaned up by FreePipeline
 		{
 			public d3d9.VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;
 			public int VertexStride;
 			public d3d9.ConstantTable fsct, vsct;
+			
+			public void Dispose()
+			{
+				using (VertexDeclaration)
+				{
+					using (fsct)
+						FragmentShader.IGLShader.Release();
+					using (vsct)
+						VertexShader.IGLShader.Release();
+				}
+			}
 		}
 
 		class TextureWrapper
@@ -744,17 +748,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//TODO - lazy create and cache resolving target in RT
-			var target = new d3d9.Texture(dev, tex.IntWidth, tex.IntHeight, 1, d3d9.Usage.None, d3d9.Format.A8R8G8B8, d3d9.Pool.SystemMemory);
-			var tw = tex.Opaque as TextureWrapper;
-			dev.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
-			var dr = target.LockRectangle(0, LockFlags.ReadOnly);
-			if (dr.Pitch != tex.IntWidth * 4) throw new InvalidOperationException();
-			int[] pixels = new int[tex.IntWidth * tex.IntHeight];
-			dr.Data.ReadRange(pixels, 0, tex.IntWidth * tex.IntHeight);
-			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight, pixels);
-			target.UnlockRectangle(0);
-			target.Dispose(); //buffer churn warning
-			return bb;
+			using (var target = new d3d9.Texture(dev, tex.IntWidth, tex.IntHeight, 1, d3d9.Usage.None, d3d9.Format.A8R8G8B8, d3d9.Pool.SystemMemory)) {
+				var tw = tex.Opaque as TextureWrapper;
+				dev.GetRenderTargetData(tw.Texture.GetSurfaceLevel(0), target.GetSurfaceLevel(0));
+				var dr = target.LockRectangle(0, LockFlags.ReadOnly);
+				if (dr.Pitch != tex.IntWidth * 4) throw new InvalidOperationException();
+				int[] pixels = new int[tex.IntWidth * tex.IntHeight];
+				dr.Data.ReadRange(pixels, 0, tex.IntWidth * tex.IntHeight);
+				var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight, pixels);
+				target.UnlockRectangle(0);
+				//target.Dispose(); //buffer churn warning
+				return bb;
+			}
 		}
 
 		public Texture2d LoadTexture(string path)
@@ -821,9 +826,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			_CurrentControl = control;
 
 			//this dispose isnt strictly needed but it seems benign
-			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, surface);
-			surface.Dispose();
+			using (var surface = _CurrentControl.SwapChain.GetBackBuffer(0))
+				dev.SetRenderTarget(0, surface);
 		}
 
 		public void EndControl(GLControlWrapper_SlimDX9 control)
@@ -831,9 +835,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
-			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, surface);
-			surface.Dispose();
+			using (var surface = _CurrentControl.SwapChain.GetBackBuffer(0))
+				dev.SetRenderTarget(0, surface);
 
 			_CurrentControl = null;
 		}
@@ -859,8 +862,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void FreeRenderTarget(RenderTarget rt)
 		{
 			var tw = rt.Texture2d.Opaque as TextureWrapper;
-			tw.Texture.Dispose();
-			tw.Texture = null;
+			using (tw.Texture)
+				tw.Texture = null;
 			_renderTargets.Remove(rt);
 		}
 
@@ -883,8 +886,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			foreach (var rt in _renderTargets)
 			{
 				var tw = rt.Opaque as TextureWrapper;
-				tw.Texture.Dispose();
-				tw.Texture = null;
+				using (tw.Texture)
+					tw.Texture = null;
 			}
 		}
 
@@ -903,9 +906,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				//this dispose is needed for correct device resets, I have no idea why
 				//don't try caching it either
-				var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
-				dev.SetRenderTarget(0, surface);
-				surface.Dispose();
+				using (var surface = _CurrentControl.SwapChain.GetBackBuffer(0))
+					dev.SetRenderTarget(0, surface);
 
 				dev.DepthStencilSurface = null;
 				return;
@@ -919,11 +921,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void FreeControlSwapChain(GLControlWrapper_SlimDX9 control)
 		{
-			if (control.SwapChain != null)
-			{
-				control.SwapChain.Dispose();
+			using (control.SwapChain)
 				control.SwapChain = null;
-			}
 		}
 
 		public void RefreshControlSwapChain(GLControlWrapper_SlimDX9 control)
