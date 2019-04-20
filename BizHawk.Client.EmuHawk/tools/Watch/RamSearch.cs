@@ -933,7 +933,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (prompt.PromptText.IsHex())
 				{
-					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
+					int addr;
+					try
+					{
+						addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
+					}
+					catch (OverflowException e)
+					{
+						//TODO repeat dialog `prompt` / show error?
+						return;
+					}
 
 					for (int index = 0; index < _searches.Count; index++)
 					{
