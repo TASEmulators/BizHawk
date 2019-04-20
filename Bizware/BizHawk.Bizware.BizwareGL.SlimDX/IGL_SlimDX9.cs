@@ -516,17 +516,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			return new Pipeline(this, pw, true, vertexLayout, uniforms,memo);
 		}
 
-        public void FreePipeline(Pipeline pipeline)
-        {
-            var pw = pipeline.Opaque as PipelineWrapper;
-            if (pw != null)
-            {
-                if (pw.VertexDeclaration != null)
-                    pw.VertexDeclaration.Dispose();
-                pw.FragmentShader.IGLShader.Release();
-                pw.VertexShader.IGLShader.Release();
-            }
-        }
+		public void FreePipeline(Pipeline pipeline)
+		{
+			var pw = pipeline.Opaque as PipelineWrapper;
+			if (pw != null)
+			{
+				if (pw.VertexDeclaration != null)
+					pw.VertexDeclaration.Dispose();
+				pw.FragmentShader.IGLShader.Release();
+				pw.VertexShader.IGLShader.Release();
+			}
+		}
 
 		public void Internal_FreeShader(Shader shader)
 		{
