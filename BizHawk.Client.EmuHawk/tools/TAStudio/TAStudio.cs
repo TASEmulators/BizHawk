@@ -416,6 +416,12 @@ namespace BizHawk.Client.EmuHawk
 				StartNewTasMovie();
 			}
 
+			if (Global.Emulator is NullEmulator)
+			{
+				DisengageTastudio();
+				return false;
+			}
+
 			EngageTastudio();
 			return true;
 		}
@@ -648,8 +654,11 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();
 				SetTasMovieCallbacks();
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
-				HandleMovieLoadStuff();
-				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+
+				if (HandleMovieLoadStuff())
+				{
+					CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+				}
 
 				// clear all selections
 				TasView.DeselectAll();
@@ -699,7 +708,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				movie = CurrentTasMovie;
 			}
-
+			
 			SetTasMovieCallbacks(movie as TasMovie);
 
 			bool result = Mainform.StartNewMovie(movie, record);
