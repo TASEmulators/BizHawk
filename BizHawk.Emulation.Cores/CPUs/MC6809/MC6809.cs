@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort CWAI = 26;
 		public const ushort SYNC = 27;
 		public const ushort INT_GET = 28;
-		public const ushort HALT_CHK = 29; // when in halt mode, actually check I Flag here
+		public const ushort HALT_CHK = 29;
 		public const ushort RD_INC = 30;
 		public const ushort SET_ADDR = 31;
 		public const ushort NEG = 32;
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		// Execute instructions
 		public void ExecuteOne()
 		{
-			Console.Write(opcode_see + " ");
+			//Console.Write(opcode_see + " ");
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:

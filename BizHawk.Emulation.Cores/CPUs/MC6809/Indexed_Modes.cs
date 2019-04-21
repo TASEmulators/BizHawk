@@ -125,7 +125,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR_HI_INC, IDX_EA, ADDR,
 							WR_DEC_LO, IDX_EA, B);
 
-			Console.WriteLine("here");
 			IRQS = 3;
 		}
 

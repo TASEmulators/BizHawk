@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-				return 0xFF;
+				return Read_Registers(addr & 0xF);
 			}
 			else if (addr < 0xE000)
 			{
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-
+				Write_Registers(addr & 0xF, value);
 			}
 			else if (addr < 0xE000)
 			{
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-				return 0xFF;
+				return Read_Registers(addr & 0xF);
 			}
 			else if (addr < 0xE000)
 			{
