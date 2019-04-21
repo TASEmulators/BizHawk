@@ -148,6 +148,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void DisassemblerView_Wheel(object sender, MouseEventArgs e)
+		{
+			if (e.Delta > 0)
+			{
+				SmallDecrement();
+			}
+			if (e.Delta > 120)
+			{
+				SmallDecrement();
+			}
+			if (e.Delta > 240)
+			{
+				SmallDecrement();
+			}
+
+			if (e.Delta < 0)
+			{
+				SmallIncrement();		
+			}
+			if (e.Delta < -120)
+			{
+				SmallIncrement();
+			}
+			if (e.Delta < -240)
+			{
+				SmallIncrement();
+			}
+		}
+
 		private void SetDisassemblerItemCount()
 		{
 			DisassemblerView.ItemCount = DisassemblerView.NumberOfVisibleRows + 1;
