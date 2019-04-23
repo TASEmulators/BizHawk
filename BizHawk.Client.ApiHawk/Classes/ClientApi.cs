@@ -97,7 +97,9 @@ namespace BizHawk.Client.ApiHawk
 				method = mainFormClass.GetMethod(name, typeList.ToArray());
 			}
 			else method = mainFormClass.GetMethod(name);
-			method.Invoke(clientMainFormInstance, paramList);
+
+			if(method != null)
+				method.Invoke(clientMainFormInstance, paramList);
 		}
 
 		private static object GetMainFormField(string name)
