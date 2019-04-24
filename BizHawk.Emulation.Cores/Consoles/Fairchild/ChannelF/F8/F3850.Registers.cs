@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// 0xff value for arithmetic ops
 		/// </summary>
-		public ushort BYTE = 78;
+		public ushort ONE = 78;
 
 
 		/// <summary>
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				Regs[i] = 0;
 			}
 
-			Regs[BYTE] = 0xff;
+			Regs[ONE] = 1;
 		}
 	}
 }

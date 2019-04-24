@@ -116,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort OP_ASD_IS = 129;
 		public const ushort OP_XS_IS = 130;
 		public const ushort OP_NS_IS = 131;
+		public const ushort OP_AFTEST = 132;
+		public const ushort OP_SUB8 = 133;
 
 
 		public F3850()
@@ -281,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// DS op performed indirectly on the ScratchPad register pointed to by the ISAR
 				case OP_DS_IS:
-					LR8_Func(Regs[ISAR], Regs[BYTE]);
+					SUB8_Func(Regs[ISAR], ONE);
 					break;
 
 				// ISAR is incremented
@@ -418,12 +420,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
-					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					Regs[cur_instr[instr_pntr++]] = ReadHardware(cur_instr[instr_pntr++]);
+					//IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
 				case OP_OUT:
-					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					WriteHardware(cur_instr[instr_pntr++], (byte)cur_instr[instr_pntr++]);
+					//OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// Add the content of the SR register addressed by ISAR to A (Binary)
@@ -445,6 +449,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case OP_NS_IS:
 					AND8_Func(A, Regs[ISAR]);
 					break;
+
+				// Set flags based on accumulator
+				case OP_AFTEST:
+					break;
+
+				// subtraction
+				case OP_SUB8:
+					SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+					
 
 
 
@@ -553,7 +567,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					Regs[PC0l] = Regs[DB];
 					break;
 
-				// All devices store in PC1 the current contents of PC0, incremented by 1; PC1 is unaltered
+				// All devices store in PC1 the current contents of PC0, incremented by 1; PC0 is unaltered
 				// CYCLE LENGTH: S
 				case ROMC_0D:
 					RegPC1 = (ushort)(RegPC0 + 1);
@@ -648,6 +662,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// registers cannot be read back onto the data bus)
 				// CYCLE LENGTH: L
 				case ROMC_1B:
+					//Regs[DB] = ReadHardware(Regs[IO]);
 					Regs[DB] = ReadHardware(Regs[IO]);
 					break;
 

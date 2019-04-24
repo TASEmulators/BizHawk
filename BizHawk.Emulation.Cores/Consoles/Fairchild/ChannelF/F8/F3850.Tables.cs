@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
@@ -16,8 +17,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_A_KU()
 		{
 			PopulateCURINSTR(
-				OP_LR8, A, Kh,		// S
-				ROMC_00_S,
+				// S
+				OP_LR8, A, Kh,				// A <- (r12)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -25,8 +27,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_A_KL()
 		{
 			PopulateCURINSTR(
-				OP_LR8, A, Kl,    // S
-				ROMC_00_S,
+				// S
+				OP_LR8, A, Kl,              // A <- (r13)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -34,8 +37,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_A_QU()
 		{
 			PopulateCURINSTR(
-				OP_LR8, A, Qh,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, A, Qh,              // A <- (r14)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -43,8 +47,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_A_QL()
 		{
 			PopulateCURINSTR(
-				OP_LR8, A, Ql,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, A, Ql,              // A <- (r15)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -52,8 +57,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_KU_A()
 		{
 			PopulateCURINSTR(
-				OP_LR8, Kh, A,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, Kh, A,              // r12 <- (A)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -61,8 +67,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_KL_A()
 		{
 			PopulateCURINSTR(
-				OP_LR8, Kl, A,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, Kl, A,              // r13 <- (A)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -70,8 +77,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_QU_A()
 		{
 			PopulateCURINSTR(
-				OP_LR8, Qh, A,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, Qh, A,              // r14 <- (A)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -79,8 +87,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_QL_A()
 		{
 			PopulateCURINSTR(
-				OP_LR8, Ql, A,    // S
-				ROMC_00_S,
+				// S
+				OP_LR8, Ql, A,              // r15 <- (A)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -88,19 +97,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_K_P()
 		{
 			PopulateCURINSTR(
-				ROMC_07,     // L
+				// L
+				ROMC_07,					// DB <- (PC1h)
 				IDLE,
 				IDLE,
-				OP_LR8, Kh, DB,
+				OP_LR8, Kh, DB,				// r12 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_0B,    // L
+				// L
+				ROMC_0B,                    // DB <- (PC1l)
 				IDLE,
 				IDLE,
-				OP_LR8, Kl, DB,
+				OP_LR8, Kl, DB,             // r13 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,	// S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -109,19 +121,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_P_K()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, Kh,     // L
+				// L
+				OP_LR8, DB, Kh,				// DB <- (r12)
 				IDLE,
 				IDLE,
-				ROMC_15,
+				ROMC_15,					// PC1h <- (DB)
 				IDLE,
 				IDLE,
-				OP_LR8, DB, Kl,     // L
+				// L
+				OP_LR8, DB, Kl,             // DB <- (r13)
 				IDLE,
 				IDLE,
-				ROMC_18,
+				ROMC_18,					// PC1l <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -130,8 +145,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_A_IS()
 		{
 			PopulateCURINSTR(
-				OP_LR8, A, ISAR,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, A, ISAR,			// A <- (ISAR)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -139,28 +155,32 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_IS_A()
 		{
 			PopulateCURINSTR(
-				OP_LR8, ISAR, A,     // S
-				ROMC_00_S,
+				// S
+				OP_LR8, ISAR, A,			// ISAR <- (A)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
 
-		private void LR_PK()
+		private void PK()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, Kh,      // L
+				// L
+				OP_LR8, DB, Kl,				// DB <- (r13)
 				IDLE,
 				IDLE,
-				ROMC_12,
+				ROMC_12,					// PC1 <- (PC0); PC0l <- (DB)
 				IDLE,
 				IDLE,
-				OP_LR8, DB, Kl,    // L
+				// L
+				OP_LR8, DB, Kh,				// DB <- (r12)
 				IDLE,
 				IDLE,
-				ROMC_14,
+				ROMC_14,					// PC0h <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -169,19 +189,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_P0_Q()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, Ql,     // L
+				// L
+				OP_LR8, DB, Ql,				// DB <- (r15)
 				IDLE,
 				IDLE,
-				ROMC_17,
+				ROMC_17,					// PC0l <- (DB)
 				IDLE,
 				IDLE,
-				OP_LR8, DB, Qh,     // L
+				// L
+				OP_LR8, DB, Qh,				// DB <- (r14)
 				IDLE,
 				IDLE,
-				ROMC_14,
+				ROMC_14,					// PC0h <- DB
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -190,19 +213,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_Q_DC()
 		{
 			PopulateCURINSTR(
-				ROMC_06,     // L
+				// L
+				ROMC_06,					// DB <- (DC0h)
 				IDLE,
 				IDLE,
-				OP_LR8, Qh, DB,
+				OP_LR8, Qh, DB,				// r14 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_09,     // L
+				// L
+				ROMC_09,					// DB <- (DC0l)
 				IDLE,
 				IDLE,
-				OP_LR8, Ql, DB,
+				OP_LR8, Ql, DB,				// r15 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -211,19 +237,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_DC_Q()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, Qh,     // L
+				// L
+				OP_LR8, DB, Qh,				// DB <- (r14)
 				IDLE,
 				IDLE,
-				ROMC_16,
+				ROMC_16,					// DC0h <- (DB)
 				IDLE,
 				IDLE,
-				OP_LR8, DB, Ql,     // L
+				// L
+				OP_LR8, DB, Ql,				// DB <- (r15)
 				IDLE,
 				IDLE,
-				ROMC_19,
+				ROMC_19,					// DC0l <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -232,19 +261,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_DC_H()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, Hh,     // L
+				// L
+				OP_LR8, DB, Hh,				// DB <- (r10)
 				IDLE,
 				IDLE,
-				ROMC_16,
+				ROMC_16,                    // DC0h <- (DB)
 				IDLE,
 				IDLE,
-				OP_LR8, DB, Hl,     // L
+				// L
+				OP_LR8, DB, Hl,				// DB <- (r11)
 				IDLE,
 				IDLE,
-				ROMC_19,
+				ROMC_19,                    // DC0l <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -253,19 +285,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_H_DC()
 		{
 			PopulateCURINSTR(
-				ROMC_06,     // L
+				// L
+				ROMC_06,					// DB <- (DC0h)
 				IDLE,
 				IDLE,
-				OP_LR8, Hh, DB,
+				OP_LR8, Hh, DB,				// r10 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_09,     // L
+				// L
+				ROMC_09,					// DB <- (DC0l)
 				IDLE,
 				IDLE,
-				OP_LR8, Hl, DB,
+				OP_LR8, Hl, DB,				// r11 <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -274,8 +309,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void SHIFT_R(ushort index)
 		{
 			PopulateCURINSTR(
-				OP_SHFT_R, A, index,  // S
-				ROMC_00_S,  
+				// S
+				OP_SHFT_R, A, index,		// A >> (index)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -283,8 +319,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void SHIFT_L(ushort index)
 		{
 			PopulateCURINSTR(
-				OP_SHFT_L, A, index,  // S
-				ROMC_00_S,
+				// S
+				OP_SHFT_L, A, index,		// A << (index)
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -292,13 +329,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LM()
 		{
 			PopulateCURINSTR(
-				ROMC_02,     // L
+				// L
+				ROMC_02,					// DB <- ((DC0)); DC0++
 				IDLE,
 				IDLE,
-				OP_LR8, DB, A,
+				OP_LR8, A, DB,				// A <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -307,13 +346,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void ST()
 		{
 			PopulateCURINSTR(
-				OP_LR8, DB, A,     // L
+				// L
+				OP_LR8, DB, A,				// DB <- (A)
 				IDLE,
 				IDLE,
-				ROMC_05,
+				ROMC_05,					// ((DC0)) <- (DB); DC0++
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -322,8 +363,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void COM()
 		{
 			PopulateCURINSTR(
-				OP_XOR8C, A, DB,  // S
-				ROMC_00_S,
+				// S
+				OP_XOR8C, A, ONE,			// A <- A XOR 0xFF
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -331,8 +373,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LNK()
 		{
 			PopulateCURINSTR(
-				OP_LNK,  // S
-				ROMC_00_S,
+				// S
+				OP_LNK,						// A <- A + FlagC
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -340,11 +383,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void DI()
 		{
 			PopulateCURINSTR(
-				ROMC_1C_S,  // S
-				OP_DI,
+				// S
+				ROMC_1C_S,					// Idle
+				OP_DI,						// Clear ICB
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -353,11 +398,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void EI()
 		{
 			PopulateCURINSTR(
-				ROMC_1C_S,  // S
-				OP_EI,
+				// S
+				ROMC_1C_S,                  // Idle
+				OP_EI,						// Set ICB
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -366,11 +413,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void POP()
 		{
 			PopulateCURINSTR(
-				ROMC_04,  // S
+				// S
+				ROMC_04,					// PC0 <- (PC1)
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -379,11 +428,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_W_J()
 		{
 			PopulateCURINSTR(
-				ROMC_1C_S,  // S
+				// S
+				ROMC_1C_S,                  // Idle
 				IDLE,
-				OP_LR8, W, J,
+				OP_LR8, W, J,				// W <- (r9)
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -392,8 +443,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LR_J_W()
 		{
 			PopulateCURINSTR(
-				OP_LR8, J, W,      // S
-				ROMC_00_S,
+				// S
+				OP_LR8, J, W,				// r9 <- (W)    
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -401,8 +453,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void INC()
 		{
 			PopulateCURINSTR(
-				OP_INC8, A,     // S
-				ROMC_00_S,
+				// S
+				OP_INC8, A,					// A <- A + 1 
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				END);
 		}
@@ -410,13 +463,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void LI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,					// DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_LR8, A, DB,
+				OP_LR8, A, DB,				// A <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,		// S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -425,13 +480,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void NI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_AND8, A, DB,
+				OP_AND8, A, DB,				// A <- (A) AND (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,		// S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -440,13 +497,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void OI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_OR8, A, DB,
+				OP_OR8, A, DB,				// A <- (A) OR (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,		// S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -455,13 +514,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void XI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_XOR8, A, DB,
+				OP_XOR8, A, DB,				// A <- (A) XOR (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,      // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -470,13 +531,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void AI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_ADD8, A, DB,
+				OP_ADD8, A, DB,				// A <- (A) + (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,      // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -485,13 +548,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void CI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_CI, A,
+				OP_CI, A,					// Set flags for A <- (A) + (DB) + 1 (do not store result in A)
 				IDLE,
 				IDLE,
-				ROMC_00_S,      // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -501,7 +566,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void ILLEGAL()
 		{
 			PopulateCURINSTR(
-				ROMC_00_S,     // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -510,19 +576,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void IN()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,					// DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_1B,     // L
+				// L
+				ROMC_1B,					// DB <- ((IO));   
 				IDLE,
 				IDLE,
-				OP_LR8_IO, A, DB,
+				OP_LR8_IO, A, DB,			// A <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -531,19 +600,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void OUT()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_LR8, DB, A,
+				OP_LR8, DB, A,				// DB <- (A)
 				IDLE,
 				IDLE,
-				ROMC_1A,     // L
+				// L
+				ROMC_1A,					// ((IO)) <- DB
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -552,29 +624,34 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void PI()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,                  // DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_LR8, A, DB,
+				OP_LR8, A, DB,				// A <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_0D,     // S
-				IDLE,
-				IDLE,
-				IDLE,
-				ROMC_0C,     // L
-				IDLE,
-				IDLE,
-				OP_LR8, DB, A,
-				IDLE,
-				IDLE,
-				ROMC_14,     // L
+				// S
+				ROMC_0D,					// PC1 <- PC0 + 1
 				IDLE,
 				IDLE,
 				IDLE,
+				// L
+				ROMC_0C,					// DB <- ((PC0)); PC0l <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				OP_LR8, DB, A,				// DB <- (A)
+				IDLE,
+				IDLE,
+				// L
+				ROMC_14,					// PC0h <- (DB)
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -583,25 +660,29 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void JMP()
 		{
 			PopulateCURINSTR(
-				ROMC_03_L,     // L
+				// L
+				ROMC_03_L,					// DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
-				OP_LR8, A, DB,
+				OP_LR8, A, DB,				// A <- (DB)
 				IDLE,
 				IDLE,
-				ROMC_0C,     // L
+				// L
+				ROMC_0C,                    // DB <- ((PC0)); PC0l <- DB
 				IDLE,
 				IDLE,
-				OP_LR8, DB, A,
+				OP_LR8, DB, A,				// DB <- (A)
 				IDLE,
 				IDLE,
-				ROMC_14,    // L
+				// L
+				ROMC_14,                    // PC0h <- (DB)
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -610,27 +691,32 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void DCI()
 		{
 			PopulateCURINSTR(
-				ROMC_11,    // L
+				// L
+				ROMC_11,					// DB <- ((PC0)); DC0h <- DB
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_03_S,     // S
+				// S
+				ROMC_03_S,					// DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_0E,		// L
+				// L
+				ROMC_0E,					// DB <- ((PC0)); DC0l <- (DB)
 				IDLE,
 				IDLE,  
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_03_S,     // S
+				// S
+				ROMC_03_S,                  // DB/IO <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,  // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -639,7 +725,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void NOP()
 		{
 			PopulateCURINSTR(
-				ROMC_00_S,     // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -648,11 +735,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void XDC()
 		{
 			PopulateCURINSTR(
-				ROMC_1D,     // S
+				// S
+				ROMC_1D,					// DC0 <-> DC1
 				IDLE,
 				IDLE,
 				IDLE,
-				ROMC_00_S,     // S
+				// S
+				ROMC_00_S,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -661,9 +750,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void DS(ushort rIndex)
 		{
 			PopulateCURINSTR(
-				OP_LR8, rIndex, BYTE, // L
+				// L
+				OP_SUB8, rIndex, ONE, 
 				IDLE,
-				ROMC_00_L,
+				ROMC_00_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);
@@ -671,9 +761,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		private void DS_ISAR()
 		{
 			PopulateCURINSTR(
-				OP_DS_IS, // L
+				// L
+				OP_DS_IS, 
 				IDLE,
-				ROMC_00_L,
+				ROMC_00_L,                  // DB <- ((PC0)); PC0++
 				IDLE,
 				IDLE,
 				END);

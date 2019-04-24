@@ -11,32 +11,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public sealed partial class F3850
 	{
-		/*
-		private void IncrementBySignedByte(ushort dest, byte src)
-		{
-			if (src >= 0x80)
-			{
-				dest -= (ushort)(src & 0x80);
-			}
-			else
-			{
-				dest += (ushort)(src & 0x80);
-			}
-		}
-
-		private void IncrementBySignedByte(byte dest, byte src)
-		{
-			if (src >= 0x80)
-			{
-				dest -= (byte)(src & 0x80);
-			}
-			else
-			{
-				dest += (byte)(src & 0x80);
-			}
-		}
-		*/
-
 		public void LR8_Func(ushort dest, ushort src)
 		{
 			if (dest == DB)
@@ -48,6 +22,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				// mask for status register
 				Regs[dest] = (ushort)(Regs[src] & 0x1F);
+			}
+			else if (dest == ISAR)
+			{
+				// mask for ISAR register
+				Regs[dest] = (ushort)(Regs[src] & 0x3F);
 			}
 			else
 			{
@@ -67,6 +46,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// mask for status register
 				Regs[dest] = (ushort)(Regs[src] & 0x1F);
 			}
+			else if (dest == ISAR)
+			{
+				// mask for ISAR register
+				Regs[dest] = (ushort)(Regs[src] & 0x3F);
+			}
 			else
 			{
 				Regs[dest] = Regs[src];
@@ -77,6 +61,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			FlagC = false;
 			FlagZ = (Regs[dest] & 0xFF) == 0;
 			FlagS = Regs[dest] > 127;
+		}
+
+		public void SZ_FLAG_TEST(ushort value)
+		{
+			// SZ only
+			FlagO = false;
+			FlagC = false;
+			FlagZ = (value & 0xFF) == 0;
+			FlagS = value > 127;
 		}
 
 		public void SR_Func(ushort src, ushort index)
@@ -211,6 +204,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			FlagO = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagS = ans > 127;
+
+			Regs[dest] = ans;
 		}
 
 		public void INC8_Func(ushort src)
