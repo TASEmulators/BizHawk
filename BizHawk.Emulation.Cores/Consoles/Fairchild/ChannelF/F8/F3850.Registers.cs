@@ -69,23 +69,31 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// Temporary Arithmetic Storage
 		/// </summary>
-		public ushort ALU = 74;
+		public ushort ALU0 = 74;
+		/// <summary>
+		/// Temporary Arithmetic Storage
+		/// </summary>
+		public ushort ALU1 = 75;
 		/// <summary>
 		/// Data Bus
 		/// </summary>
-		public ushort DB = 75;
+		public ushort DB = 76;
 		/// <summary>
 		/// IO Bus/Latch
 		/// </summary>
-		public ushort IO = 76;
+		public ushort IO = 77;
 		/// <summary>
 		/// 0x00 value for arithmetic ops
 		/// </summary>
-		public ushort ZERO = 77;
+		public ushort ZERO = 78;
 		/// <summary>
-		/// 0xff value for arithmetic ops
+		/// 0x01 value for arithmetic ops
 		/// </summary>
-		public ushort ONE = 78;
+		public ushort ONE = 79;
+		/// <summary>
+		/// 0xFF value for arithmetic ops
+		/// </summary>
+		public ushort BYTE = 80;
 
 
 		/// <summary>
@@ -180,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			}
 
 			Regs[ONE] = 1;
+			Regs[BYTE] = 0xFF;
 		}
 	}
 }

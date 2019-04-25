@@ -39,18 +39,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public sealed partial class F3850
 	{
 		// operations that can take place in an instruction
-		
-		//public const ushort OP = 1;
-		//public const ushort LR_8 = 2;
-		//public const ushort LR_16 = 3;
-
-
-		public const ushort ROMC_00_S = 40;
-		public const ushort ROMC_00_L = 41;
 		public const ushort ROMC_01 = 1;
 		public const ushort ROMC_02 = 2;
 		public const ushort ROMC_03_S = 3;
-		public const ushort ROMC_03_L = 33;
 		public const ushort ROMC_04 = 4;
 		public const ushort ROMC_05 = 5;
 		public const ushort ROMC_06 = 6;
@@ -76,10 +67,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort ROMC_1A = 26;
 		public const ushort ROMC_1B = 27;
 		public const ushort ROMC_1C_S = 28;
-		public const ushort ROMC_1C_L = 34;
 		public const ushort ROMC_1D = 29;
 		public const ushort ROMC_1E = 30;
 		public const ushort ROMC_1F = 31;
+		public const ushort ROMC_00_S = 32;
+		public const ushort ROMC_00_L = 33;
+		public const ushort ROMC_03_L = 34;
+		public const ushort ROMC_1C_L = 35;
 
 		public const ushort IDLE = 0;
 		public const ushort END = 51;
@@ -94,30 +88,24 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort OP_AND8 = 107;
 		public const ushort OP_OR8 = 108;
 		public const ushort OP_XOR8 = 109;
-		public const ushort OP_XOR8C = 110;
+		public const ushort OP_COM = 110;
 		public const ushort OP_ADD8 = 111;
 		public const ushort OP_CI = 112;
-		public const ushort OP_LR8_IO = 113;
-		public const ushort OP_DS_IS = 114;
-		public const ushort OP_IS_INC = 115;
-		public const ushort OP_IS_DEC = 116;
-		public const ushort OP_LR_A_IS = 117;
-		public const ushort OP_LR_IS_A = 118;
-		public const ushort OP_LISU = 119;
-		public const ushort OP_LISL = 120;
-		public const ushort OP_BT = 121;
-		public const ushort OP_ADD8D = 122;
-		public const ushort OP_CM = 123;
-		public const ushort OP_BR7 = 124;
-		public const ushort OP_BF = 125;
-		public const ushort OP_IN = 126;
-		public const ushort OP_OUT = 127;
-		public const ushort OP_AS_IS = 128;
-		public const ushort OP_ASD_IS = 129;
-		public const ushort OP_XS_IS = 130;
-		public const ushort OP_NS_IS = 131;
-		public const ushort OP_AFTEST = 132;
-		public const ushort OP_SUB8 = 133;
+		public const ushort OP_IS_INC = 113;
+		public const ushort OP_IS_DEC = 114;
+		public const ushort OP_LISU = 115;
+		public const ushort OP_LISL = 116;
+		public const ushort OP_BT = 117;
+		public const ushort OP_ADD8D = 118;
+		public const ushort OP_BR7 = 119;
+		public const ushort OP_BF = 120;
+		public const ushort OP_IN = 121;
+		public const ushort OP_OUT = 122;
+		public const ushort OP_AS_IS = 123;
+		public const ushort OP_XS_IS = 124;
+		public const ushort OP_NS_IS = 125;
+		public const ushort OP_CLEAR_FLAGS = 126;
+		public const ushort OP_SET_FLAGS_SZ = 127;
 
 
 		public F3850()
@@ -147,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				IDLE,
 				END);
 
+			ALU_ClearFlags();
 			FlagICB = false;
 		}
 
@@ -202,6 +191,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case IDLE:
 					break;
 
+				// clears all flags except for ICB
+				case OP_CLEAR_FLAGS:
+					ALU_ClearFlags();
+					break;
+
+				// sets SIGN and CARRY flags based upon the supplied value
+				case OP_SET_FLAGS_SZ:
+					ALU_SetFlags_SZ(cur_instr[instr_pntr++]);
+					break;
+
 				// load one register into another (or databus)
 				case OP_LR8:
 					LR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -209,27 +208,35 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// Shift register n bit positions to the right (zero fill)
 				case OP_SHFT_R:
-					SR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_SR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// Shift register n bit positions to the left (zero fill)
 				case OP_SHFT_L:
-					SL_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_SL_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (x) ADD y
 				case OP_ADD8:
-					ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (x) ADD y (decimal)
 				case OP_ADD8D:
-					ADD8D_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_ADD8D_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// A <- (A) + (C)
 				case OP_LNK:
-					ADD8_Func(Regs[A], (ushort)(FlagC ? 1 : 0));
+					bool fc = FlagC;
+					ALU_ClearFlags();
+
+					if (fc)
+					{
+						ALU_ADD8_Func(A, ONE);
+					}
+
+					ALU_SetFlags_SZ(A);
 					break;
 
 				// Clear ICB status bit
@@ -244,46 +251,38 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// x <- (y) XOR DB
 				case OP_XOR8:
-					XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (y) XOR DB (complement accumulator)
-				case OP_XOR8C:
-					XOR8C_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case OP_COM:
+					Regs[A] = (byte)~Regs[A];
+					ALU_ClearFlags();
+					ALU_SetFlags_SZ(A);
 					break;
 
 				// x <- (x) + 1
 				case OP_INC8:
-					INC8_Func(cur_instr[instr_pntr++]);
+					ALU_ClearFlags();
+					ALU_ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_SetFlags_SZ(A);
 					break;
 
 				// x <- (y) & DB
 				case OP_AND8:
-					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (y) | DB
 				case OP_OR8:
-					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// DB + (x) + 1 (modify flags without saving result)
 				case OP_CI:
-					var tmpX = cur_instr[instr_pntr++];
-					var tmpOperand = Regs[DB];
-					INC8_Func(tmpX);
-					ADD8_Func(tmpOperand, tmpX);
-					break;
-
-				// load one register into another (or databus)
-				// ALU also runs flag status checking
-				case OP_LR8_IO:
-					LR8_IO_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-
-				// DS op performed indirectly on the ScratchPad register pointed to by the ISAR
-				case OP_DS_IS:
-					SUB8_Func(Regs[ISAR], ONE);
+					Regs[ALU0] = (byte)~Regs[cur_instr[instr_pntr++]];
+					ALU_ADD8_Func(ALU0, DB, true);
+					ALU_SetFlags_SZ(ALU0);
 					break;
 
 				// ISAR is incremented
@@ -296,26 +295,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					Regs[ISAR] = (ushort)((Regs[ISAR] & 0x38) | ((Regs[ISAR] - 1) & 0x07));
 					break;
 
-				// x <- (SR) (as pointed to by ISAR)
-				case OP_LR_A_IS:
-					LR8_Func(cur_instr[instr_pntr++], Regs[ISAR]);
-					break;
-
-				// x <- (SR) (as pointed to by ISAR)
-				case OP_LR_IS_A:
-					LR8_Func(Regs[ISAR], cur_instr[instr_pntr++]);
-					break;
-
 				// set the upper octal ISAR bits (b3,b4,b5)
 				case OP_LISU:
-					var isVala = (Regs[ISAR] & 0x07) | cur_instr[instr_pntr++];
-					Regs[ISAR] = (ushort)(isVala & 0x3F);
+					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x07) | cur_instr[instr_pntr++]) & 0x3F);
 					break;
 
 				// set the lower octal ISAR bits (b0,b1,b2)
 				case OP_LISL:
-					var isValb = (Regs[ISAR] & 0x38) | cur_instr[instr_pntr++];
-					Regs[ISAR] = (ushort)(isValb & 0x3F);
+					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x38) | cur_instr[instr_pntr++]) & 0x3F);
 					break;
 
 				// test operand against status register
@@ -324,13 +311,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
 					{
 						PopulateCURINSTR(
-							ROMC_01,  // L
+							// L
+							ROMC_01, 
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
-							ROMC_00_S,	// S
+							// S
+							ROMC_00_S,          // DB <- ((PC0)); PC0++	
 							IDLE,
 							IDLE,
 							END);
@@ -338,35 +327,32 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					else
 					{
 						PopulateCURINSTR(
-							ROMC_03_S,  // S
+							// S
+							ROMC_03_S,  
 							IDLE,
 							IDLE,
 							IDLE,
-							ROMC_00_S,  // S
+							// S
+							ROMC_00_S,          // DB < -((PC0)); PC0++
 							IDLE,
 							IDLE,
 							END);
 					}
 					break;
-
-				// DC0 - A - set status only
-				case OP_CM:
-					var tmpDB = Regs[DB];
-					var tmpA = Regs[A];
-					SUB8_Func(tmpDB, tmpA);
-					break;
-
+					
 				// Branch based on ISARL
 				case OP_BR7:
 					instr_pntr = 0;
 					if ((Regs[ISAR] & 7) == 7)
 					{
 						PopulateCURINSTR(
-							ROMC_03_S,  // S
+							// S
+							ROMC_03_S,			// DB/IO <- ((PC0)); PC0++
 							//IDLE, <- lose a cycle that was stolen in the table
 							IDLE,
 							IDLE,
-							ROMC_00_S,  // S
+							// S
+							ROMC_00_S,			// DB <- ((PC0)); PC0++
 							IDLE,
 							IDLE,
 							END);
@@ -374,13 +360,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					else
 					{
 						PopulateCURINSTR(
-							ROMC_01,  // L
+							// L
+							ROMC_01,  
 							//IDLE, <- lose a cycle that was stolen in the table
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
-							ROMC_00_S,  // S
+							ROMC_00_S,          // DB <- ((PC0)); PC0++
 							IDLE,
 							IDLE,
 							END);
@@ -393,11 +380,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
 					{
 						PopulateCURINSTR(
-							ROMC_03_S,  // S
+							// S
+							ROMC_03_S,          // DB/IO <- ((PC0)); PC0++
 							IDLE,
 							IDLE,
 							IDLE,
-							ROMC_00_S,  // S
+							// S
+							ROMC_00_S,          // DB <- ((PC0)); PC0++
 							IDLE,
 							IDLE,
 							END);
@@ -405,13 +394,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					else
 					{
 						PopulateCURINSTR(
-							ROMC_01,  // L
+							// L
+							ROMC_01,  
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
-							ROMC_00_S,  // S
+							// S
+							ROMC_00_S,          // DB <- ((PC0)); PC0++
 							IDLE,
 							IDLE,
 							END);
@@ -421,7 +412,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
 					Regs[cur_instr[instr_pntr++]] = ReadHardware(cur_instr[instr_pntr++]);
-					//IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
@@ -432,42 +422,33 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// Add the content of the SR register addressed by ISAR to A (Binary)
 				case OP_AS_IS:
-					ADD8_Func(A, Regs[ISAR]);
-					break;
-
-				// Add the content of the SR register addressed by ISAR to A (Decimal)
-				case OP_ASD_IS:
-					ADD8D_Func(A, Regs[ISAR]);
+					ALU_ClearFlags();
+					ALU_ADD8_Func(A, Regs[ISAR]);
+					ALU_SetFlags_SZ(A);
 					break;
 
 				// XOR the content of the SR register addressed by ISAR to A
 				case OP_XS_IS:
-					XOR8_Func(A, Regs[ISAR]);
+					ALU_ClearFlags();
+					ALU_XOR8_Func(A, Regs[ISAR]);
+					ALU_SetFlags_SZ(A);
 					break;
 
 				// AND the content of the SR register addressed by ISAR to A
 				case OP_NS_IS:
-					AND8_Func(A, Regs[ISAR]);
-					break;
-
-				// Set flags based on accumulator
-				case OP_AFTEST:
-					break;
-
-				// subtraction
-				case OP_SUB8:
-					SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ALU_ClearFlags();
+					ALU_AND8_Func(A, Regs[ISAR]);
+					ALU_SetFlags_SZ(A);
 					break;
 					
-
-
 
 				// instruction fetch
 				// The device whose address space includes the contents of the PC0 register must place on the data bus the op code addressed by PC0;
 				// then all devices increments the content of PC0.
 				// CYCLE LENGTH: S
 				case ROMC_00_S:
-					Regs[DB] = ReadMemory(RegPC0++);
+					Read_Func(DB, PC0l, PC0h);
+					RegPC0++;
 					break;
 
 				// instruction fetch
@@ -475,14 +456,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// then all devices increments the content of PC0.
 				// CYCLE LENGTH: L
 				case ROMC_00_L:
-					Regs[DB] = ReadMemory(RegPC0++);
+					Read_Func(DB, PC0l, PC0h);
+					RegPC0++;
 					break;
 
 				// The device whose address space includes the contents of the PC0 register must place on the data bus the contents of the memory location
 				// addressed by by PC0; then all devices add the 8-bit value on the data bus, as a signed binary number, to PC0
 				// CYCLE LENGTH: L
 				case ROMC_01:
-					Regs[DB] = ReadMemory(RegPC0);
+					Read_Func(DB, PC0l, PC0h);
 					ADDS_Func(PC0l, PC0h, DB, ZERO);
 					break;
 
@@ -490,20 +472,23 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// of the memory location addressed by DC0; then all devices increment DC0
 				// CYCLE LENGTH: L
 				case ROMC_02:
-					Regs[DB] = ReadMemory(RegDC0++);
+					Read_Func(DB, DC0l, DC0h);
+					RegDC0++;
 					break;
 
 				// Similar to 0x00, except that it is used for Immediate Operand fetches (using PC0) instead of instruction fetches
 				// CYCLE LENGTH: S
 				case ROMC_03_S:
-					Regs[DB] = ReadMemory(RegPC0++);
+					Read_Func(DB, PC0l, PC0h);
+					RegPC0++;
 					Regs[IO] = Regs[DB];
 					break;
 
 				// Similar to 0x00, except that it is used for Immediate Operand fetches (using PC0) instead of instruction fetches
 				// CYCLE LENGTH: L
 				case ROMC_03_L:
-					Regs[DB] = ReadMemory(RegPC0++);
+					Read_Func(DB, PC0l, PC0h);
+					RegPC0++;
 					Regs[IO] = Regs[DB];
 					break;
 
@@ -516,7 +501,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// Store the data bus contents into the memory location pointed to by DC0; increment DC0
 				// CYCLE LENGTH: L
 				case ROMC_05:
-					WriteMemory(RegDC0++, (byte)Regs[DB]);
+					Write_Func(DC0l, DC0h, DB);
 					break;
 
 				// Place the high order byte of DC0 on the data bus
@@ -563,7 +548,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// onto the data bus; then all devices move the value that has just been placed on the data bus into the low order byte of PC0
 				// CYCLE LENGTH: L
 				case ROMC_0C:
-					Regs[DB] = ReadMemory(RegPC0);
+					Read_Func(DB, PC0l, PC0h);
 					Regs[PC0l] = Regs[DB];
 					break;
 
@@ -577,7 +562,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// The value on the data bus is then moved to the low order byte of DC0 by all devices
 				// CYCLE LENGTH: L
 				case ROMC_0E:
-					Regs[DB] = ReadMemory(RegPC0);
+					Read_Func(DB, PC0l, PC0h);
 					Regs[DC0l] = Regs[DB];
 					break;
 
@@ -596,7 +581,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// All devices must then move the contents of the data bus to the upper byte of DC0
 				// CYCLE LENGTH: L
 				case ROMC_11:
-					Regs[DB] = ReadMemory(RegPC0);
+					Read_Func(DB, PC0l, PC0h);
 					Regs[DC0h] = Regs[DB];
 					break;
 
@@ -662,7 +647,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// registers cannot be read back onto the data bus)
 				// CYCLE LENGTH: L
 				case ROMC_1B:
-					//Regs[DB] = ReadHardware(Regs[IO]);
 					Regs[DB] = ReadHardware(Regs[IO]);
 					break;
 
@@ -779,6 +763,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.BeginSection(nameof(F3850));
 			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
+			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.EndSection();
 		}
 	}

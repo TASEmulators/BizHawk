@@ -76,7 +76,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public void WritePort(ushort addr, byte value)
 		{
-			var port = addr & 0x7;
+			PortLatch[addr] = value;
+
+			VID_PortIN(addr, value);
 		}
 	}
 }

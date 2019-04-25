@@ -47,7 +47,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 0x15: SHIFT_L(4); break;            // Shift (A) left four bit positions (zero fill)
 				case 0x16: LM(); break;                 // A <- ((DC0))
 				case 0x17: ST(); break;                 // (DC) <- (A)
-				case 0x18: COM(); break;				// A <- A XOR 255 (complement A)
+				case 0x18: COM(); break;                // A <- A XOR 255 (complement A)
+				case 0x19: LNK(); break;				// A <- (A) + (C)
 				case 0x1A: DI(); break;					// Clear ICB
 				case 0x1B: EI(); break;					// Set ICB
 				case 0x1C: POP(); break;                // PC0 <- PC1

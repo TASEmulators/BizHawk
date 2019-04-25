@@ -605,10 +605,10 @@
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IEmulator.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IVideoProvider.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.ALU.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Disassembler.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Tables.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Registers.cs" />
-    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Operations.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Execute.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.cs" />
     <Compile Include="Consoles\GCE\Vectrex\Audio.cs" />
