@@ -307,9 +307,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// test operand against status register
 				case OP_BT:
-					instr_pntr = 0;
 					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// L
 							ROMC_01, 
@@ -326,6 +326,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					}
 					else
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// S
 							ROMC_03_S,  
@@ -342,9 +343,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					
 				// Branch based on ISARL
 				case OP_BR7:
-					instr_pntr = 0;
 					if ((Regs[ISAR] & 7) == 7)
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// S
 							ROMC_03_S,			// DB/IO <- ((PC0)); PC0++
@@ -359,6 +360,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					}
 					else
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// L
 							ROMC_01,  
@@ -376,9 +378,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				//  PC0 <- PC0+n+1
 				case OP_BF:
-					instr_pntr = 0;
 					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// S
 							ROMC_03_S,          // DB/IO <- ((PC0)); PC0++
@@ -393,6 +395,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					}
 					else
 					{
+						instr_pntr = 0;
 						PopulateCURINSTR(
 							// L
 							ROMC_01,  
@@ -465,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// CYCLE LENGTH: L
 				case ROMC_01:
 					Read_Func(DB, PC0l, PC0h);
-					ADDS_Func(PC0l, PC0h, DB, ZERO);
+					RegPC0 += (ushort)((SByte) Regs[DB]);
 					break;
 
 				// The device whose DC0 address addresses a memory word within the address space of that device must place on the data bus the contents
@@ -535,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// All devices add the 8-bit value on the data bus, treated as a signed binary number, to the data counter
 				// CYCLE LENGTH: L
 				case ROMC_0A:
-					ADDS_Func(DC0l, DC0h, DB, ZERO);
+					RegDC0 += (ushort) ((sbyte) Regs[DB]);
 					break;
 
 				// The device whose address space includes the value in PC1 must place the low order byte of PC1 on the data bus
@@ -689,12 +692,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public TraceInfo State(bool disassemble = true)
 		{
 			int bytes_read = 0;
-			string disasm = disassemble ? Disassemble(RegPC0, ReadMemory, out bytes_read) : "---";
+			ushort pc = (ushort)(RegPC0 - 1);
+			string disasm = disassemble ? Disassemble(pc, ReadMemory, out bytes_read) : "---";
 			string byte_code = null;
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(RegPC0 + i)).ToHexString(2);
+				byte_code += ReadMemory((ushort)(pc + i)).ToHexString(2);
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -705,7 +709,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				Disassembly = string.Format(
 					"{0:X4}: {1} {2}",
-					RegPC0,
+					pc,
 					byte_code.PadRight(12),
 					disasm.PadRight(26)),
 				RegisterInfo = string.Format(

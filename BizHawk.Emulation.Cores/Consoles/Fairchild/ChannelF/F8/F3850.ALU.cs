@@ -107,7 +107,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			ALU_ClearFlags();
 			ALU_ADD8_FLAGSONLY_Func(dest, src);
-			ALU_SetFlags_SZ(tmp);
+			Regs[ALU0] = tmp;
+			ALU_SetFlags_SZ(ALU0);
 
 			if (c == 0 && ic == 0)
 			{
@@ -229,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 		*/
 
-		public void ADDS_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
+		public void ADDS_FuncX(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			int Reg16_d = Regs[dest_l];
 			int Reg16_s = Regs[src_l];

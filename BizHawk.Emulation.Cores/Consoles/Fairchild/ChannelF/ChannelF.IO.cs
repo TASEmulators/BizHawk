@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public byte[] BIOS01 = new byte[1024];
 		public byte[] BIOS02 = new byte[1024];
 
-		public byte[] FrameBuffer = new byte[2048];
+		public byte[] FrameBuffer = new byte[0x2000];
 
 		public byte[] Cartridge = new byte[0x2000 - 0x800];
 
@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			else if (addr < 0x2000)
 			{
 				// Cart
+				return 0;
 				return Cartridge[addr - 0x800];
 			}
 			else if (addr < 0x2000 + 2048)
