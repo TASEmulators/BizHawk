@@ -869,9 +869,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch
 					{
-						val = 100;
-
-						MessageBox.Show("Invalid Entry. Restoring Default.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
 
 					if (val > 0)
