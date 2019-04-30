@@ -57,7 +57,7 @@ Supported consoles and computers:
 * Bandai WonderSwan + Color
 * CBM Commodore 64
 * Coleco Industries ColecoVision
-* Mattel IntelliVision
+* Mattel Intellivision
 * NEC
 	* PC Engine / TurboGrafx-16 + SuperGrafx + CD
 	* PC-FX
@@ -245,7 +245,7 @@ Commodore 64 | C64Hawk |
 ColecoVision | ColecoHawk |
 Game Boy / Color | GBHawk | Gambatte
 Game Boy Advance | mGBA | VBA-Next
-IntelliVision | IntelliHawk |
+Intellivision | IntelliHawk |
 N64 | Mupen64Plus |
 Neo Geo Pocket / Color | NeoPop |
 NES | NesHawk | QuickNes |
