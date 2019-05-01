@@ -31,9 +31,9 @@ namespace BizHawk.Common.BizInvoke
 
 		private void ResolveFilePath(ref string dllName)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix && !dllName.Contains("/"))
+			if (PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Windows && !dllName.Contains("/"))
 			{
-				// not an absolute path and we are on linux
+				// not an absolute path and we are on Unix
 				// this is needed to actually find the DLL properly
 				string currDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:", "");
 				string dll = dllName;

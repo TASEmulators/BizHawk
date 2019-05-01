@@ -123,25 +123,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix)
-			{
-				OTK_Keyboard.Initialize();
-				OTK_GamePad.Initialize();
-			}
-			else
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				KeyInput.Initialize();
 				IPCKeyInput.Initialize();
 				GamePad.Initialize();
 				GamePad360.Initialize();
+
 				//OTK_GamePad.Initialize();
 			}
+			else
+			{
+				OTK_Keyboard.Initialize();
+				OTK_GamePad.Initialize();
+			}
+
 			Instance = new Input();
 		}
 
 		public static void Cleanup()
 		{
-			if (!PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				KeyInput.Cleanup();
 				GamePad.Cleanup();
@@ -332,18 +334,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
-				var keyEvents = PlatformLinkedLibSingleton.RunningOnUnix
-					? OTK_Keyboard.Update()
-					: KeyInput.Update().Concat(IPCKeyInput.Update());
-				if (PlatformLinkedLibSingleton.RunningOnUnix)
-				{
-					OTK_GamePad.UpdateAll();
-				}
-				else
+				var keyEvents = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+					? KeyInput.Update().Concat(IPCKeyInput.Update())
+					: OTK_Keyboard.Update();
+				if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 				{
 					GamePad.UpdateAll();
 					GamePad360.UpdateAll();
+
 					//OTK_GamePad.UpdateAll();
+				}
+				else
+				{
+					OTK_GamePad.UpdateAll();
 				}
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all

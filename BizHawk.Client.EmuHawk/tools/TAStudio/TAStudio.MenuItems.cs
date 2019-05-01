@@ -9,6 +9,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1109,19 +1110,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectedRendererSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
-				SetRenderer0.Checked = false;
-				SetRenderer0.Enabled = false;
-				SetRenderer0.Visible = false;
-				SetRenderer1.Checked = true;
-				SetRenderer1.Enabled = false;
-				SetRenderer1.Visible = true;
-			}
-			else
-			{
-				
-
 				if (Global.Config.TasStudioRenderer != InputRollRenderer)
 				{
 					switch (Global.Config.TasStudioRenderer)
@@ -1151,7 +1141,16 @@ namespace BizHawk.Client.EmuHawk
 					SetRenderer0.Checked = Global.Config.TasStudioRenderer == 0;
 					SetRenderer1.Checked = Global.Config.TasStudioRenderer == 1;
 				}
-			}			
+			}
+			else
+			{
+				SetRenderer0.Checked = false;
+				SetRenderer0.Enabled = false;
+				SetRenderer0.Visible = false;
+				SetRenderer1.Checked = true;
+				SetRenderer1.Enabled = false;
+				SetRenderer1.Visible = true;
+			}
 		}
 
 		private void HideLagFramesSubMenu_DropDownOpened(object sender, EventArgs e)

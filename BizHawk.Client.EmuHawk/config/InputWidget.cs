@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (!PlatformLinkedLibSingleton.RunningOnUnix) HideCaret(Handle);
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows) HideCaret(Handle);
 			base.OnMouseClick(e);
 		}
 
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			if (!PlatformLinkedLibSingleton.RunningOnUnix) HideCaret(Handle);
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows) HideCaret(Handle);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

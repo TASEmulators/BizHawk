@@ -12,15 +12,24 @@ namespace BizHawk.Common
 {
 	public sealed class PlatformLinkedLibSingleton
 	{
-		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix // macOS doesn't use PlatformID.MacOSX
+		/// <remarks>macOS doesn't use PlatformID.MacOSX</remarks>
+		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
 			? currentIsMacOS() ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
 
-		public static readonly bool RunningOnUnix = CurrentOS != DistinctOS.Windows; //TODO inline and fix double negation
-
-		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() => RunningOnUnix
-			? (PlatformLinkedLibManager) new UnixMonoLinkedLibManager()
-			: (PlatformLinkedLibManager) new Win32LinkedLibManager());
+		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() =>
+		{
+			switch (CurrentOS)
+			{
+				case DistinctOS.Linux:
+				case DistinctOS.macOS:
+					return new UnixMonoLinkedLibManager();
+				case DistinctOS.Windows:
+					return new Win32LinkedLibManager();
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		});
 
 		public static PlatformLinkedLibManager LinkedLibManager => lazy.Value;
 

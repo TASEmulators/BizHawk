@@ -92,8 +92,10 @@ namespace BizHawk.Common
 						{
 							try
 							{
-								if (PlatformLinkedLibSingleton.RunningOnUnix) fi.Delete();
-								else DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+								if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+								else
+									fi.Delete();
 							}
 							catch
 							{

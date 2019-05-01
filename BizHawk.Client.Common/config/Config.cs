@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -342,8 +343,9 @@ namespace BizHawk.Client.Common
 		public int DispPrescale = 1;
 
 		// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
-		public EDispMethod DispMethod = !BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix
-			? EDispMethod.SlimDX9 : EDispMethod.GdiPlus;	// force GDI+ for linux when config is generated
+		public EDispMethod DispMethod = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+			? EDispMethod.SlimDX9
+			: EDispMethod.GdiPlus; // force GDI+ for Unix when config is generated
 
 		public int DispChrome_FrameWindowed = 2;
 		public bool DispChrome_StatusBarWindowed = true;
@@ -371,8 +373,9 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod = !BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix
-			? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;	// force OpenAL for linux when config is generated
+		public ESoundOutputMethod SoundOutputMethod = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+			? ESoundOutputMethod.DirectSound
+			: ESoundOutputMethod.OpenAL; // force OpenAL for Unix when config is generated
 
 		public bool SoundEnabled = true;
 		public bool SoundEnabledNormal = true;
@@ -504,7 +507,7 @@ namespace BizHawk.Client.Common
 
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
-		public int TasStudioRenderer = 0; // defaults to 0 (GDI) - on linux this is forced to GDI+ later on
+		public int TasStudioRenderer = 0; // defaults to 0 (GDI) - on Unix this is forced to GDI+ later on
 
 		// Macro Tool
 		public RecentFiles RecentMacros = new RecentFiles(8);

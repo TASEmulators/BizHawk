@@ -86,9 +86,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = new Process();
-				_ffmpeg.StartInfo.FileName = PlatformLinkedLibSingleton.RunningOnUnix
-					? "ffmpeg"
-					: Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
+				_ffmpeg.StartInfo.FileName = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+					? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
+					: "ffmpeg";
 
 				string filename = _baseName + (_segment > 0 ? $"_{_segment}" : "") + _ext;
 				_ffmpeg.StartInfo.Arguments = string.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);

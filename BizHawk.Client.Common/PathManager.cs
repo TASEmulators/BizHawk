@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -407,7 +408,7 @@ namespace BizHawk.Client.Common
 				GetGlobalBasePathAbsolute() :
 				MakeAbsolutePath(GetPlatformBase(system), system);
 
-			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				if (IsSubfolder(parentPath, absolutePath))
 				{
@@ -443,7 +444,7 @@ namespace BizHawk.Client.Common
 		// http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
 		private static bool IsSubfolder(string parentPath, string childPath)
 		{
-			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				var parentUri = new Uri(parentPath);
 

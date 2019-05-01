@@ -94,18 +94,19 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
-				// no slimdx
+				// Disable SlimDX on Mono
 				rbD3D9.Enabled = false;
 				rbD3D9.AutoCheck = false;
 				cbAlternateVsync.Enabled = false;
 				label13.Enabled = false;
 				label8.Enabled = false;
 			}
-			else
+
+			if (PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Linux)
 			{
-				// Disallow Vulkan selection on Windows
+				// Disable Vulkan where untested
 				rbVulkan.Enabled = false;
 				label14.Enabled = false;
 			}

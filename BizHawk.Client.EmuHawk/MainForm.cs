@@ -159,9 +159,9 @@ namespace BizHawk.Client.EmuHawk
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
-			CGC.CGCBinPath = !PlatformLinkedLibSingleton.RunningOnUnix 
+			CGC.CGCBinPath = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
 				? Path.Combine(PathManager.GetDllDirectory(), "cgc.exe")
-				: "cgc";	// mono requires 'nvidia-cg-toolkit' dep (https://developer.nvidia.com/cg-toolkit-download)
+				: "cgc"; // mono requires 'nvidia-cg-toolkit' dep (https://developer.nvidia.com/cg-toolkit-download)
 
 			PresentationPanel = new PresentationPanel();
 			PresentationPanel.GraphicsControl.MainWindow = true;
@@ -1080,7 +1080,9 @@ namespace BizHawk.Client.EmuHawk
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
 				// Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-				if (!PlatformLinkedLibSingleton.RunningOnUnix && Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
+				if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+					&& Global.Config.DispFullscreenHacks
+					&& Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
 					//It seems that some statusbar elements composite with the backcolor.
@@ -1107,7 +1109,7 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-				if (!PlatformLinkedLibSingleton.RunningOnUnix)
+				if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 				{
 					// do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
 					Padding = new Padding(0);
@@ -2085,8 +2087,22 @@ namespace BizHawk.Client.EmuHawk
 		// sends an alt+mnemonic combination
 		private void SendAltKeyChar(char c)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) {} // no mnemonics for you
-			else typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
+			switch (PlatformLinkedLibSingleton.CurrentOS)
+			{
+				case PlatformLinkedLibSingleton.DistinctOS.Linux:
+				case PlatformLinkedLibSingleton.DistinctOS.macOS:
+					// no mnemonics for you
+					break;
+				case PlatformLinkedLibSingleton.DistinctOS.Windows:
+					//HACK
+					var _ = typeof(ToolStrip).InvokeMember(
+						"ProcessMnemonicInternal",
+						System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance,
+						null,
+						MainformMenu,
+						new object[] { c });
+					break;
+			}
 		}
 
 		public static string FormatFilter(params string[] args)

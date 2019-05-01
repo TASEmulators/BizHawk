@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -280,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 		// http://stackoverflow.com/questions/275689/how-to-get-relative-path-from-absolute-path
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
 				Win32.FileAttributes toAttr = GetPathAttribute(toPath);

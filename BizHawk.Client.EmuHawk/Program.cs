@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				var libLoader = EXE_PROJECT.PlatformLinkedLibSingleton.LinkedLibManager;
 
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			// We have a problem on mono where the application (most of the time) does not terminate correctly
 			// and we have to CTRL-C to kill the mono process
 			// This forces mono to go away immediately
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Linux)
 			{
 				Console.WriteLine("BizHawk has completed it's shutdown routines");
 				Console.WriteLine("Attempting to kill mono...");
@@ -119,15 +119,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileManager.Start();			
-			
-			if (PlatformLinkedLibSingleton.RunningOnUnix)
-				HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
-			else
-				HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			BizHawk.Common.TempFileManager.Start();
 
-			// Uncomment for system-agnostic glory!
-			//HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+			switch (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS)
+			{
+				case EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Linux:
+				case EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.macOS:
+					HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+					break;
+				case EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows:
+					HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+					// Uncomment for system-agnostic glory!
+//					HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+					break;
+			}
 
 			ArgParser argParser = new ArgParser();
 			argParser.ParseArguments(args);
@@ -182,7 +187,8 @@ namespace BizHawk.Client.EmuHawk
 					goto REDO_DISPMETHOD;
 				}
 			}
-			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9 && !EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9
+				&& EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				try
 				{
@@ -225,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".
@@ -358,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 					UseNLua = false;
 				}
 
-				if (!UseNLua && !EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+				if (!UseNLua && EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 				{
 					// currently LuaInterface is not working/implemented on Mono so we always force NLua, otherwise:
 					requested = "LuaInterface";

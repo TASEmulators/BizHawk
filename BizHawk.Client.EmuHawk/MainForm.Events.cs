@@ -1470,17 +1470,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+			{
+				GlobalWin.Tools.Load<RamSearch>();
+			}
+			else
 			{
 				// this is apparently needed for weird mono-forms-on-different-thread issues
 				// dont do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here
 				// the mono winforms implementation is.... weird and buggy
 				RamSearch rs = GlobalWin.Tools.Load<RamSearch>();
 				rs.Show();
-			}
-			else
-			{
-				GlobalWin.Tools.Load<RamSearch>();
 			}
 		}
 

@@ -160,7 +160,9 @@ namespace BizHawk.Client.EmuHawk
 				return ms;
 			}
 		}
-		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
+		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+			? (PlatformSpecificSysTimer) new WinSysTimer()
+			: new UnixMonoSysTimer();
 		static uint TimeBeginPeriod(uint ms)
 		{
 			return sysTimer.TimeBeginPeriod(ms);
@@ -362,20 +364,22 @@ namespace BizHawk.Client.EmuHawk
 				int sleepTime = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
 				if (sleepTime >= 2 || paused)
 				{
-					if (PlatformLinkedLibSingleton.RunningOnUnix)
+					switch (PlatformLinkedLibSingleton.CurrentOS)
 					{
-						// The actual sleep time on OS X with Mono is generally between the request time
-						// and up to 25% over. So we'll scale the sleep time back to account for that.
-						sleepTime = sleepTime * 4 / 5;
-					}
-					else
-					{
-						// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
-						// on Windows XP is generally within a half millisecond either way of the requested
-						// time. The actual sleep time on Windows 8 is generally between the requested time
-						// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
-						// sleeping longer than desired.
-						sleepTime -= 1;
+						case PlatformLinkedLibSingleton.DistinctOS.Linux: //TODO repro
+						case PlatformLinkedLibSingleton.DistinctOS.macOS:
+							// The actual sleep time on OS X with Mono is generally between the request time
+							// and up to 25% over. So we'll scale the sleep time back to account for that.
+							sleepTime = sleepTime * 4 / 5;
+							break;
+						case PlatformLinkedLibSingleton.DistinctOS.Windows:
+							// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
+							// on Windows XP is generally within a half millisecond either way of the requested
+							// time. The actual sleep time on Windows 8 is generally between the requested time
+							// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
+							// sleeping longer than desired.
+							sleepTime -= 1;
+							break;
 					}
 
 					Thread.Sleep(Math.Max(sleepTime, 1));

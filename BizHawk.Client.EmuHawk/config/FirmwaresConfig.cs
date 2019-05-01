@@ -357,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
         private void tbbOpenFolder_Click(object sender, EventArgs e)
         {
             var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
-			if (PlatformLinkedLibSingleton.RunningOnUnix && !Directory.Exists(frmWares))
+			if (PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Windows && !Directory.Exists(frmWares))
 			{
 				Directory.CreateDirectory(frmWares);
 			}

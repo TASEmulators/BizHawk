@@ -25,10 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			// at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
-			if (PlatformLinkedLibSingleton.RunningOnUnix)
-				_outputDevice = new OpenALSoundOutput(this);
-			else
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
 					_outputDevice = new OpenALSoundOutput(this);
@@ -37,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
 					_outputDevice = new XAudio2SoundOutput(this);
 			}
+			else _outputDevice = new OpenALSoundOutput(this); // at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
 
 			if (_outputDevice == null)
 				_outputDevice = new DummySoundOutput(this);

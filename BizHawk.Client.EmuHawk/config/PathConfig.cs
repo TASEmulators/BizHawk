@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -221,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult result = new DialogResult();
 			string selectedPath = "";
 
-			if (!BizHawk.Common.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				var f = new FolderBrowserEx
 				{

@@ -41,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 				//TODO implement
 			}
 		}
-		private static PlatformSpecificScreenBlankInterface screenBlankInterface = PlatformLinkedLibSingleton.RunningOnUnix
-			? (PlatformSpecificScreenBlankInterface) new MiscUnixScreenBlankInterface()
-			: (PlatformSpecificScreenBlankInterface) new WinScreenBlankInterface();
+		private static PlatformSpecificScreenBlankInterface screenBlankInterface = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+			? (PlatformSpecificScreenBlankInterface) new WinScreenBlankInterface()
+			: new MiscUnixScreenBlankInterface();
 
 		private const int SPI_GETSCREENSAVERTIMEOUT = 14;
 		private const int SPI_SETSCREENSAVERTIMEOUT = 15;

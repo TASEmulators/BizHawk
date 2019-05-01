@@ -22,7 +22,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		static QuickNES()
 		{
-			Resolver = new DynamicLibraryImportResolver("libquicknes.dll" + (PlatformLinkedLibSingleton.RunningOnUnix ? ".so.0.7.0" : String.Empty));
+			switch (PlatformLinkedLibSingleton.CurrentOS)
+			{
+				case PlatformLinkedLibSingleton.DistinctOS.Linux:
+				case PlatformLinkedLibSingleton.DistinctOS.macOS:
+					Resolver = new DynamicLibraryImportResolver("libquicknes.dll.so.0.7.0");
+					break;
+				case PlatformLinkedLibSingleton.DistinctOS.Windows:
+					Resolver = new DynamicLibraryImportResolver("libquicknes.dll");
+					break;
+			}
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
 		}
@@ -30,10 +39,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[CoreConstructor("NES")]
 		public QuickNES(CoreComm comm, byte[] file, object settings, object syncSettings)
 		{
-			if (!PlatformLinkedLibSingleton.RunningOnUnix)
-				FP = new Win32_FPCtrl();
-			else
-				FP = new Unix_FPCtrl();
+			switch (PlatformLinkedLibSingleton.CurrentOS)
+			{
+				case PlatformLinkedLibSingleton.DistinctOS.Linux:
+				case PlatformLinkedLibSingleton.DistinctOS.macOS:
+					FP = new Unix_FPCtrl();
+					break;
+				case PlatformLinkedLibSingleton.DistinctOS.Windows:
+					FP = new Win32_FPCtrl();
+					break;
+			}
 
 			using (FP.Save())
 			{
