@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 //put in a different namespace for EXE so we can have an instance of this type (by linking to this file rather than copying it) built-in to the exe
@@ -9,16 +10,35 @@ namespace EXE_PROJECT
 namespace BizHawk.Common
 #endif
 {
-
-public sealed class PlatformLinkedLibSingleton
+	public sealed class PlatformLinkedLibSingleton
 	{
-		public static readonly bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
+		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix // macOS doesn't use PlatformID.MacOSX
+			? currentIsMacOS() ? DistinctOS.macOS : DistinctOS.Linux
+			: DistinctOS.Windows;
+
+		public static readonly bool RunningOnUnix = CurrentOS != DistinctOS.Windows; //TODO inline and fix double negation
 
 		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() => RunningOnUnix
 			? (PlatformLinkedLibManager) new UnixMonoLinkedLibManager()
 			: (PlatformLinkedLibManager) new Win32LinkedLibManager());
 
-		public static PlatformLinkedLibManager LinkedLibManager { get { return lazy.Value; } }
+		public static PlatformLinkedLibManager LinkedLibManager => lazy.Value;
+
+		private static bool currentIsMacOS()
+		{
+			var proc = new Process {
+				StartInfo = new ProcessStartInfo {
+					Arguments = "-s",
+					CreateNoWindow = true,
+					FileName = "uname",
+					RedirectStandardOutput = true,
+					UseShellExecute = false
+				}
+			};
+			proc.Start();
+			if (proc.StandardOutput.EndOfStream) throw new Exception("Can't determine OS (uname wrote nothing to stdout)!");
+			return proc.StandardOutput.ReadLine() == "Darwin";
+		}
 
 		private PlatformLinkedLibSingleton() {}
 
@@ -29,16 +49,16 @@ public sealed class PlatformLinkedLibSingleton
 			int FreePlatformSpecific(IntPtr hModule);
 		}
 
-		public class UnixMonoLinkedLibManager : PlatformLinkedLibManager
+		private class UnixMonoLinkedLibManager : PlatformLinkedLibManager
 		{
 			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
 			const int RTLD_NOW = 2;
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlopen(String fileName, int flags);
+			private static extern IntPtr dlopen(string fileName, int flags);
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlerror();
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlsym(IntPtr handle, String symbol);
+			private static extern IntPtr dlsym(IntPtr handle, string symbol);
 			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
@@ -59,7 +79,7 @@ public sealed class PlatformLinkedLibSingleton
 			}
 		}
 
-		public class Win32LinkedLibManager : PlatformLinkedLibManager
+		private class Win32LinkedLibManager : PlatformLinkedLibManager
 		{
 			[DllImport("kernel32.dll")]
 			private static extern UInt32 GetLastError();
@@ -88,6 +108,13 @@ public sealed class PlatformLinkedLibSingleton
 			{
 				return FreeLibrary(hModule) ? 1 : 0;
 			}
+		}
+
+		public enum DistinctOS : byte
+		{
+			Linux = 0,
+			macOS = 1,
+			Windows = 2
 		}
 	}
 }
