@@ -3642,7 +3642,9 @@ namespace BizHawk.Client.EmuHawk
 				if (ioa is OpenAdvanced_OpenRom)
 				{
 					var ioa_openrom = (OpenAdvanced_OpenRom)ioa;
-					path = ioa_openrom.Path;
+					// path already has the right value, while ioa.Path is null (interestingly, these are swapped below)
+					// I doubt null is meant to be assigned here, and it just prevents gameload
+					//path = ioa_openrom.Path;
 				}
 
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
