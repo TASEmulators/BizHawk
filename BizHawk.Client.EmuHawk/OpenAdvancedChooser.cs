@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Client.Common;
@@ -20,13 +21,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		MainForm mainForm;
 
-		public enum Command
-		{
-			RetroLaunchNoGame, RetroLaunchGame,
-			ClassicLaunchGame
-		}
-
-		public Command Result;
+		public AdvancedRomLoaderType Result;
 		public string SuggestedExtensionFilter;
 
 		public OpenAdvancedChooser(MainForm mainForm)
@@ -131,21 +126,28 @@ namespace BizHawk.Client.EmuHawk
 			filter = MainForm.FormatFilter(args.ToArray());
 			SuggestedExtensionFilter = filter;
 
-			Result = Command.RetroLaunchGame;
+			Result = AdvancedRomLoaderType.LibretroLaunchGame;
 			DialogResult =  DialogResult.OK;
+			Close();
+		}
+
+		private void btnMAMELaunchGame_Click(object sender, EventArgs e)
+		{
+			Result = AdvancedRomLoaderType.MAMELaunchGame;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void btnClassicLaunchGame_Click(object sender, EventArgs e)
 		{
-			Result = Command.ClassicLaunchGame;
+			Result = AdvancedRomLoaderType.ClassicLaunchGame;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void btnLibretroLaunchNoGame_Click(object sender, EventArgs e)
 		{
-			Result = Command.RetroLaunchNoGame;
+			Result = AdvancedRomLoaderType.LibretroLaunchNoGame;
 			DialogResult = DialogResult.OK;
 			Close();
 		}

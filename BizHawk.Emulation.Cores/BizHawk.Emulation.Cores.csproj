@@ -102,6 +102,8 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Arcades\MAME\LibMAME.cs" />
+    <Compile Include="Arcades\MAME\MAME.cs" />
     <Compile Include="Calculator\TI83.IEmulator.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
