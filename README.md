@@ -225,7 +225,7 @@ Automatic flushing is extremely unreliable and not being maintained.
 It may corrupt your previous saves!
 It will be completely removed in future.
 Develop a habit to always flush saves manually every time you save in the game.
-Make backups of in-game save files!
+Make backups of the flushed save files!
 If you don't flush saves manually and backup them, and something breaks, you're on your own.
 If your save has been corrupted, there's nothing we can do about it.
 
