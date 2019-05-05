@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		Unplugged,
 		Joystick,
 		Paddle,
+		BoostGrip,
 		Driving
 	}
 
@@ -158,6 +159,70 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			x = x * 64 + 10;
 
 			return x;
+		}
+	}
+
+	public class BoostGripController : IPort
+	{
+		public BoostGripController(int portNum)
+		{
+			PortNum = portNum;
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = BaseDefinition
+				.Select(b => $"P{PortNum} " + b)
+				.ToList()
+			};
+		}
+
+		public int PortNum { get; }
+
+		public void SyncState(Serializer ser)
+		{
+			// Nothing todo, I think
+		}
+
+		public ControllerDefinition Definition { get; }
+
+		private static readonly string[] BaseDefinition =
+		{
+			"Up", "Down", "Left", "Right", "Button",
+			"Button 1",
+			"Button 2"
+		};
+
+		public byte Read(IController c)
+		{
+			byte result = 0xFF;
+
+			if (c.IsPressed($"P{PortNum} Up")) { result &= 0xEF; }
+			if (c.IsPressed($"P{PortNum} Down")) { result &= 0xDF; }
+			if (c.IsPressed($"P{PortNum} Left")) { result &= 0xBF; }
+			if (c.IsPressed($"P{PortNum} Right")) { result &= 0x7F; }
+			if (c.IsPressed($"P{PortNum} Button")) { result &= 0xF7; }
+
+			return result;
+		}
+
+		public int Read_Pot(IController c, int pot)
+		{
+			bool is_pressed = false;
+
+			if (pot == 0)
+			{
+				is_pressed = c.IsPressed($"P{PortNum} Button 1");
+			}
+			else
+			{
+				is_pressed = c.IsPressed($"P{PortNum} Button 2");
+			}
+			
+			if (is_pressed)
+			{
+				return 10;
+			}
+
+			return 65535;
 		}
 	}
 
