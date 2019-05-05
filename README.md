@@ -209,6 +209,28 @@ Running scripts have a "▶️" beside their name, and stopped scripts (manually
 
 "Toggle script" does just that (paused scripts are stopped). "Reload script" stops it and loads changes to the file, running scripts are then started again. "Remove script" stops it and removes it from the list.
 
+#### In-game Saves
+
+Games may internally [save your progress](https://en.wikipedia.org/wiki/Saved_game) into memory (SRAM, memory cards) or file. When this happens, BizHawk stores this in-game save in the Operating System memory and makes the `File` > `Save RAM` menu bold.
+
+BizHawk can write in-game saves to disk - this is called flushing. Every time you save in the game (not to be confusing with *emulator savestates*), you should backup your saves! Go to `File` > `Save RAM` and hit `Flush Save Ram`. Note that some systems use SRAM for irrelevant tasks and store temporary data there, and the menu may become bold without in-game saves involved. Be aware when the game is *supposed to save* and flush accordingly.
+
+BizHawk can be configured to flush saves to disk automatically in `Config` > `Customize` > `Advanced AutoSaveRAM`. Opon closing the ROM (which includes any core reboot) BizHawk may try to flush save RAM automatically as well.
+
+```
+
+DISCLAIMER
+
+Automatic flushing is extremely unreliable and not being maintained.
+It may corrupt your previous saves!
+It will be completely removed in future.
+Develop a habit to always flush saves manually every time you save in the game.
+Make backups of in-game save files!
+If you don't flush saves manually and backup them, and something breaks, you're on your own.
+If your save has been corrupted, there's nothing we can do about it.
+
+```
+
 [to top](#bizhawk)
 
 ### TASing
