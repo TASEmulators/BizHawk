@@ -189,6 +189,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			Regs[ONE] = 1;
 			Regs[BYTE] = 0xFF;
+
+			// testing only - fill scratchpad with 0xff
+			for (int i = 0; i < 64; i++)
+				Regs[i] = 0xff;
 		}
 	}
 }

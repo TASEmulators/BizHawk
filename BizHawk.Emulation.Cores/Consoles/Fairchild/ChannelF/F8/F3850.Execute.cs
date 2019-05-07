@@ -119,22 +119,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 0x5D: LR_ISAR_A_INC(); break;      // SR <- (A) (SR pointed to by the ISAR); ISAR incremented
 				case 0x5E: LR_ISAR_A_DEC(); break;      // SR <- (A) (SR pointed to by the ISAR); ISAR decremented
 
-				case 0x60: LISU(0); break;            // ISARU <- 0'e' (octal)
-				case 0x61: LISU(8); break;            // ISARU <- 0'e' (octal)
-				case 0x62: LISU(16); break;           // ISARU <- 0'e' (octal)
-				case 0x63: LISU(24); break;           // ISARU <- 0'e' (octal)
-				case 0x64: LISU(32); break;           // ISARU <- 0'e' (octal)
-				case 0x65: LISU(40); break;           // ISARU <- 0'e' (octal)
-				case 0x66: LISU(48); break;           // ISARU <- 0'e' (octal)
-				case 0x67: LISU(56); break;           // ISARU <- 0'e' (octal)
-				case 0x68: LISL(0); break;            // ISARL <- 0'e' (octal)
-				case 0x69: LISL(1); break;            // ISARL <- 0'e' (octal)
-				case 0x6A: LISL(2); break;            // ISARL <- 0'e' (octal)
-				case 0x6B: LISL(3); break;            // ISARL <- 0'e' (octal)
-				case 0x6C: LISL(4); break;            // ISARL <- 0'e' (octal)
-				case 0x6D: LISL(5); break;            // ISARL <- 0'e' (octal)
-				case 0x6E: LISL(6); break;            // ISARL <- 0'e' (octal)
-				case 0x6F: LISL(7); break;            // ISARL <- 0'e' (octal)
+				case 0x60: LISU(0); break;				// ISARU <- 0'e' (octal)
+				case 0x61: LISU(1); break;				// ISARU <- 0'e' (octal)
+				case 0x62: LISU(2); break;				// ISARU <- 0'e' (octal)
+				case 0x63: LISU(3); break;				// ISARU <- 0'e' (octal)
+				case 0x64: LISU(4); break;				// ISARU <- 0'e' (octal)
+				case 0x65: LISU(5); break;				// ISARU <- 0'e' (octal)
+				case 0x66: LISU(6); break;				// ISARU <- 0'e' (octal)
+				case 0x67: LISU(7); break;				// ISARU <- 0'e' (octal)
+				case 0x68: LISL(0); break;				// ISARL <- 0'e' (octal)
+				case 0x69: LISL(1); break;				// ISARL <- 0'e' (octal)
+				case 0x6A: LISL(2); break;				// ISARL <- 0'e' (octal)
+				case 0x6B: LISL(3); break;				// ISARL <- 0'e' (octal)
+				case 0x6C: LISL(4); break;				// ISARL <- 0'e' (octal)
+				case 0x6D: LISL(5); break;				// ISARL <- 0'e' (octal)
+				case 0x6E: LISL(6); break;				// ISARL <- 0'e' (octal)
+				case 0x6F: LISL(7); break;				// ISARL <- 0'e' (octal)
 
 				case 0x70: LIS(0); break;            // A <- H'0a'
 				case 0x71: LIS(1); break;            // A <- H'0a'
@@ -152,14 +152,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 0x7d: LIS(13); break;           // A <- H'0a'
 				case 0x7e: LIS(14); break;           // A <- H'0a'
 				case 0x7f: LIS(15); break;           // A <- H'0a'
-				case 0x80: BT(0); break;            // Test operand against W (Branching instruction)
-				case 0x81: BT(1); break;            // Test operand against W (Branching instruction)
-				case 0x82: BT(2); break;            // Test operand against W (Branching instruction)
-				case 0x83: BT(3); break;            // Test operand against W (Branching instruction)
-				case 0x84: BT(4); break;            // Test operand against W (Branching instruction)
-				case 0x85: BT(5); break;            // Test operand against W (Branching instruction)
-				case 0x86: BT(6); break;            // Test operand against W (Branching instruction)
-				case 0x87: BT(7); break;            // Test operand against W (Branching instruction)
+				case 0x80: BT(0); break;            // Branch on true - test operand against W register
+				case 0x81: BT(1); break;            // Branch if positive (sign bit is set)
+				case 0x82: BT(2); break;            // Branch on carry (carry bit is set)
+				case 0x83: BT(3); break;            // Branch on true - test operand against W register
+				case 0x84: BT(4); break;            // Branch on zero (zero bit is set)
+				case 0x85: BT(5); break;            // Branch on true - test operand against W register
+				case 0x86: BT(6); break;            // Branch on true - test operand against W register
+				case 0x87: BT(7); break;            // Branch on true - test operand against W register
 				case 0x88: AM(); break;                 // A <- (A) + ((DC0))Binary; DC0 <- (DC0) + 1
 				case 0x89: AMD(); break;                // A <- (A) + ((DC0))Decimal; DC0 <- (DC0) + 1
 				case 0x8A: NM(); break;                 // A <- (A) AND ((DC0)); DC0 <- (DC0) + 1
@@ -167,23 +167,23 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case 0x8C: XM(); break;                 // A <- (A) XOR ((DC0)); DC0 <- (DC0) + 1
 				case 0x8D: CM(); break;                 // Set status flags on basis of: ((DC)) + (A) + 1; DC0 <- (DC0) + 1; DC <- (DC) + (A)
 				case 0x8E: ADC(); break;                // DC <- (DC) + (A)
-				case 0x8F: BR7(); break;                // DC <- (DC) + (A)
-				case 0x90: BF(0); break;                // PC0 <- PC0+n+1
-				case 0x91: BF(1); break;                // PC0 <- PC0+n+1
-				case 0x92: BF(2); break;                // PC0 <- PC0+n+1
-				case 0x93: BF(3); break;                // PC0 <- PC0+n+1
-				case 0x94: BF(4); break;                // PC0 <- PC0+n+1
-				case 0x95: BF(5); break;                // PC0 <- PC0+n+1
-				case 0x96: BF(6); break;                // PC0 <- PC0+n+1
-				case 0x97: BF(7); break;                // PC0 <- PC0+n+1
-				case 0x98: BF(8); break;                // PC0 <- PC0+n+1
-				case 0x99: BF(9); break;                // PC0 <- PC0+n+1
-				case 0x9A: BF(10); break;               // PC0 <- PC0+n+1
-				case 0x9B: BF(11); break;               // PC0 <- PC0+n+1
-				case 0x9C: BF(12); break;               // PC0 <- PC0+n+1
-				case 0x9D: BF(13); break;               // PC0 <- PC0+n+1
-				case 0x9E: BF(14); break;               // PC0 <- PC0+n+1
-				case 0x9F: BF(15); break;               // PC0 <- PC0+n+1
+				case 0x8F: BR7(); break;                // Branch on ISAR (any of the low 3 bits of ISAR are reset)
+				case 0x90: BF(0); break;                // Unconditional branch (always)
+				case 0x91: BF(1); break;                // Branch if negative (sign bit is reset)
+				case 0x92: BF(2); break;                // Branch if no carry (carry bit is reset)
+				case 0x93: BF(3); break;                // Branch on false - test operand against W register
+				case 0x94: BF(4); break;                // Branch on not zero (zero bit is reset)
+				case 0x95: BF(5); break;                // Branch on false - test operand against W register
+				case 0x96: BF(6); break;                // Branch on false - test operand against W register
+				case 0x97: BF(7); break;                // Branch on false - test operand against W register
+				case 0x98: BF(8); break;                // Branch if no overflow (OVF bit is reset)
+				case 0x99: BF(9); break;                // Branch on false - test operand against W register
+				case 0x9A: BF(10); break;               // Branch on false - test operand against W register
+				case 0x9B: BF(11); break;               // Branch on false - test operand against W register
+				case 0x9C: BF(12); break;               // Branch on false - test operand against W register
+				case 0x9D: BF(13); break;               // Branch on false - test operand against W register
+				case 0x9E: BF(14); break;               // Branch on false - test operand against W register
+				case 0x9F: BF(15); break;               // Branch on false - test operand against W register
 				case 0xA0: INS_0(0); break;               // A <- (I/O Port 0 or 1)
 				case 0xA1: INS_0(1); break;               // A <- (I/O Port 0 or 1)
 

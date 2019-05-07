@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// Clears all status flags (excluding the ICB flag)
 		/// </summary>
-		public void ALU_ClearFlags()
+		public void ALU_ClearFlags_()
 		{
 			FlagC = false;
 			FlagO = false;
@@ -37,19 +37,19 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// Sets the SIGN and ZERO flags based on the supplied byte
 		/// </summary>
 		/// <param name="val"></param>
-		public void ALU_SetFlags_SZ(ushort src)
+		public void ALU_SetFlags_SZ_(ushort src)
 		{
 			FlagZ = (byte)Regs[src] == 0;
 			FlagS = (~((byte)Regs[src]) & 0x80) != 0;
 		}
-
+		/*
 		/// <summary>
 		/// Performs addition and sets the CARRY and OVERFLOW flags accordingly
 		/// </summary>
 		/// <param name="dest"></param>
 		/// <param name="src"></param>
 		/// <param name="carry"></param>
-		public void ALU_ADD8_Func(ushort dest, ushort src, bool carry = false)
+		public void ALU_ADD8_Func_(ushort dest, ushort src, bool carry = false)
 		{
 			byte d = (byte)Regs[dest];
 			byte s = (byte)Regs[src];
@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			Regs[dest] = (ushort)(result & 0xFF);
 		}
+		*/
 
 		/// <summary>
 		/// Performs addition and sets the CARRY and OVERFLOW flags accordingly WITHOUT saving to destination
@@ -84,49 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		/// <param name="dest"></param>
 		/// <param name="src"></param>
-		public void ALU_ADD8D_Func(ushort dest, ushort src)
-		{
-			// from MAME f8.cpp (BSD-3)
-			// https://github.com/mamedev/mame/blob/97b67170277437131adf6ed4d60139c172529e4f/src/devices/cpu/f8/f8.cpp#L264
-			byte d = (byte)Regs[dest];
-			byte s = (byte)Regs[src];
-			byte tmp = (byte)(d + s);
-
-			byte c = 0; // high order carry
-			byte ic = 0; // low order carry
-
-			if (((d + s) & 0xFF0) > 0xF0)
-			{
-				c = 1;
-			}
-
-			if ((d & 0x0F) + (s & 0x0F) > 0x0F)
-			{
-				ic = 1;
-			}
-
-			ALU_ClearFlags();
-			ALU_ADD8_FLAGSONLY_Func(dest, src);
-			Regs[ALU0] = tmp;
-			ALU_SetFlags_SZ(ALU0);
-
-			if (c == 0 && ic == 0)
-			{
-				tmp = (byte)(((tmp + 0xa0) & 0xf0) + ((tmp + 0x0a) & 0x0f));
-			}
-
-			if (c == 0 && ic == 1)
-			{
-				tmp = (byte)(((tmp + 0xa0) & 0xf0) + (tmp & 0x0f));
-			}
-
-			if (c == 1 && ic == 0)
-			{
-				tmp = (byte)((tmp & 0xf0) + ((tmp + 0x0a) & 0x0f));
-			}
-
-			Regs[dest] = tmp;
-		}
+		
 
 		public void ALU_SUB8_Func(ushort dest, ushort src)
 		{
@@ -169,55 +128,18 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		}
 		*/
 
-		/// <summary>
-		/// Right shift 'src' 'shift' positions (zero fill)
-		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
-		public void ALU_SR_Func(ushort src, ushort shift)
-		{
-			Regs[src] = (ushort)((Regs[src] >> shift) & 0xFF);
-			ALU_ClearFlags();
-			ALU_SetFlags_SZ(src);
-		}
-
-		/// <summary>
-		/// Left shit 'src' 'shift' positions (zero fill)
-		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="shift"></param>
-		public void ALU_SL_Func(ushort src, ushort shift)
-		{
-			Regs[src] = (ushort)((Regs[src] << shift) & 0xFF);
-			ALU_ClearFlags();
-			ALU_SetFlags_SZ(src);
-		}
+		
 
 		/// <summary>
 		/// AND
 		/// </summary>
 		/// <param name="dest"></param>
 		/// <param name="src"></param>
-		public void ALU_AND8_Func(ushort dest, ushort src)
-		{
-			ALU_ClearFlags();
-			Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
-			ALU_SetFlags_SZ(dest);
-		}
+		
 
-		public void ALU_OR8_Func(ushort dest, ushort src)
-		{
-			ALU_ClearFlags();
-			Regs[dest] = (ushort)(Regs[dest] | Regs[src]);
-			ALU_SetFlags_SZ(dest);
-		}
+		
 
-		public void ALU_XOR8_Func(ushort dest, ushort src)
-		{
-			ALU_ClearFlags();
-			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
-			ALU_SetFlags_SZ(dest);
-		}
+		
 		/*
 		public void ALU_XOR8C_Func(ushort dest, ushort src)
 		{
@@ -264,16 +186,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			Regs[dest_h] &= 0xFF;
 		}
 
-		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
-		{
-			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
-		}
-
-		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
-		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
-		}
-
+		
+		/*
 		public void LR8_Func(ushort dest, ushort src)
 		{
 			if (dest == DB)
@@ -296,6 +210,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				Regs[dest] = Regs[src];
 			}
 		}
+		*/
 
 		/*
 		public void ALU_INC8_Func(ushort src)

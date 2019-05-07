@@ -22,12 +22,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void CalcClock()
 		{
-			var c = (cpuFreq * 1000000) / refreshRate;
+			var c = ((cpuFreq * 1000000) / refreshRate) * 4;
 			ClockPerFrame = (int) c;
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
+			_controller = controller;
+			_isLag = false;
+
 			if (_tracer.Enabled)
 			{
 				CPU.TraceCallback = s => _tracer.Put(s);
@@ -36,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			{
 				CPU.TraceCallback = null;
 			}
+
+			_isLag = PollInput();
 
 			while (FrameClock++ < ClockPerFrame)
 			{

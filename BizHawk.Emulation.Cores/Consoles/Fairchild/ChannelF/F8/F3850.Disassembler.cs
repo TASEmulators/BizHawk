@@ -19,7 +19,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 
-			if (format.IndexOf("nn") != -1) format = format.Replace("nn", $"{read(addr++) << 8 + (read(addr++)):X4}h"); // MSB is read first
+			if (format.IndexOf("nn") != -1)
+			{
+				format = format.Replace("nn", read(addr++)
+					.ToString("X2") + read(addr++)
+					.ToString("X2") + "h"); // MSB is read first
+			}
+
 			if (format.IndexOf("n") != -1) format = format.Replace("n", $"{read(addr++):X2}h");
 
 			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
@@ -67,13 +73,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			"LR W, J",			// 0x1D
 			"LR J, W",			// 0x1E
 			"INC",				// 0x1F
-			"LI n",			// 0x20
-			"NI n",			// 0x21
-			"IO n",			// 0x22
-			"XI n",			// 0x23
-			"AI n",			// 0x24
-			"CI n",			// 0x25
-			"IN n",			// 0x26
+			"LI n",				// 0x20
+			"NI n",				// 0x21
+			"OI n",				// 0x22
+			"XI n",				// 0x23
+			"AI n",				// 0x24
+			"CI n",				// 0x25
+			"IN n",				// 0x26
 			"OUT n",			// 0x27
 			"PI nn",			// 0x28
 			"JMP nn",			// 0x29
@@ -111,9 +117,9 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			"LR A, r09",		// 0x49
 			"LR A, r10",		// 0x4A
 			"LR A, r11",		// 0x4B
-			"LR A, ISAR",		// 0x4C
-			"LR A, ISAR INC",	// 0x4D
-			"LR A, ISAR DEC",	// 0x4E
+			"LR A, (ISAR)",		// 0x4C
+			"LR A, (ISAR) INC",	// 0x4D
+			"LR A, (ISAR) DEC",	// 0x4E
 			"ILLEGAL",			// 0x4F
 			"LR r00, A",		// 0x50
 			"LR r01, A",		// 0x51
@@ -131,38 +137,38 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			"LR (ISAR), A INC",	// 0x5D
 			"LR (ISAR), A DEC",	// 0x5E
 			"ILLEGAL",			// 0x5F
-			"LISU 0x00",		// 0x60
-			"LISU 0x08",		// 0x61
-			"LISU 0x10",		// 0x62
-			"LISU 0x18",		// 0x63
-			"LISU 0x20",		// 0x64
-			"LISU 0x28",		// 0x65
-			"LISU 0x30",		// 0x66
-			"LISU 0x38",		// 0x67
-			"LISU 0x00",		// 0x68
-			"LISU 0x01",		// 0x69
-			"LISU 0x02",		// 0x6A
-			"LISU 0x03",		// 0x6B
-			"LISU 0x04",		// 0x6C
-			"LISU 0x05",		// 0x6D
-			"LISU 0x06",		// 0x6E
-			"LISU 0x07",		// 0x6F
-			"LIS 0x0",			// 0x70
-			"LIS 0x01",			// 0x71
-			"LIS 0x2",			// 0x72
-			"LIS 0x3",			// 0x73
-			"LIS 0x4",			// 0x74
-			"LIS 0x5",			// 0x75
-			"LIS 0x6",			// 0x76
-			"LIS 0x7",			// 0x77
-			"LIS 0x8",			// 0x78
-			"LIS 0x9",			// 0x79
-			"LIS 0xA",			// 0x7A
-			"LIS 0xB",			// 0x7B
-			"LIS 0xC",			// 0x7C
-			"LIS 0xD",			// 0x7D
-			"LIS 0xE",			// 0x7E
-			"LIS 0xF",			// 0x7F
+			"LISU 0",			// 0x60
+			"LISU 1",			// 0x61
+			"LISU 2",			// 0x62
+			"LISU 3",			// 0x63
+			"LISU 4",			// 0x64
+			"LISU 5",			// 0x65
+			"LISU 6",			// 0x66
+			"LISU 7",			// 0x67
+			"LISL 0",			// 0x68
+			"LISL 1",			// 0x69
+			"LISL 2",			// 0x6A
+			"LISL 3",			// 0x6B
+			"LISL 4",			// 0x6C
+			"LISL 5",			// 0x6D
+			"LISL 6",			// 0x6E
+			"LISL 7",			// 0x6F
+			"LIS 0",			// 0x70
+			"LIS 1",			// 0x71
+			"LIS 2",			// 0x72
+			"LIS 3",			// 0x73
+			"LIS 4",			// 0x74
+			"LIS 5",			// 0x75
+			"LIS 6",			// 0x76
+			"LIS 7",			// 0x77
+			"LIS 8",			// 0x78
+			"LIS 9",			// 0x79
+			"LIS A",			// 0x7A
+			"LIS B",			// 0x7B
+			"LIS C",			// 0x7C
+			"LIS D",			// 0x7D
+			"LIS E",			// 0x7E
+			"LIS F",			// 0x7F
 			"BT 0",				// 0x80
 			"BT 1",				// 0x81
 			"BT 2",				// 0x82

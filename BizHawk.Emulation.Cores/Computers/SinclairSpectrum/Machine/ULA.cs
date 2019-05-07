@@ -940,7 +940,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     return croppedBuffer;
 
                 case ZXSpectrum.BorderType.None:
-                    // all border sizes now 24
+                    // all border sizes now 0
                     var lR__ = BorderLeftWidth;
                     var rR__ = BorderRightWidth;
                     var tR__ = BorderTopHeight;

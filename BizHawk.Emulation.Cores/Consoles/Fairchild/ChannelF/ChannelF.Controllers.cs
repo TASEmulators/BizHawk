@@ -1,12 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 {
 	public partial class ChannelF
 	{
+		public bool[] StateConsole = new bool[4];
+		public string[] ButtonsConsole = new string[]
+		{
+			"TIME", "MODE", "HOLD", "START"
+		};
+		public byte DataConsole
+		{
+			get
+			{
+				int w = 0;
+				for (int i = 0; i < 4; i++)
+				{
+					byte mask = (byte) (1 << i);
+					w = StateConsole[i] ? w | mask : w & ~mask;
+				}
+
+				return (byte)(w & 0xFF);
+			}
+		}
+
+		public bool[] StateRight = new bool[8];
+		public string[] ButtonsRight = new string[]
+		{
+			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
+		};
+		public byte DataRight
+		{
+			get
+			{
+				int w = 0;
+				for (int i = 0; i < 8; i++)
+				{
+					byte mask = (byte)(1 << i);
+					w = StateRight[i] ? w | mask : w & ~mask;
+				}
+
+				return (byte)(w & 0xFF);
+			}
+		}
+
+		public bool[] StateLeft = new bool[8];
+		public string[] ButtonsLeft = new string[]
+		{
+			"Right", "Left", "Back", "Forward", "CCW", "CW", "Pull", "Push"
+		};
+		public byte DataLeft
+		{
+			get
+			{
+				int w = 0;
+				for (int i = 0; i < 8; i++)
+				{
+					byte mask = (byte)(1 << i);
+					w = StateLeft[i] ? w | mask : w & ~mask;
+				}
+
+				return (byte)(w & 0xFF);
+			}
+		}
+
+
+		/// <summary>
+		/// Cycles through all the input callbacks
+		/// This should be done once per frame
+		/// </summary>
+		public bool PollInput()
+		{
+			bool noInput = true;
+
+			InputCallbacks.Call();
+
+			lock (this)
+			{
+				for (int i = 0; i < ButtonsConsole.Length; i++)
+				{
+					var key = ButtonsConsole[i];
+					bool prevState = StateConsole[i]; // CTRLConsole.Bit(i);
+					bool currState = _controller.IsPressed(key);
+					if (currState != prevState)
+					{
+						StateConsole[i] = currState;
+						noInput = false;
+					}
+				}
+
+				for (int i = 0; i < ButtonsRight.Length; i++)
+				{
+					var key = "P1 " + ButtonsRight[i];
+					bool prevState = StateRight[i];
+					bool currState = _controller.IsPressed(key);
+					if (currState != prevState)
+					{
+						StateRight[i] = currState;
+						noInput = false;
+					}
+				}
+
+				for (int i = 0; i < ButtonsLeft.Length; i++)
+				{
+					var key = "P2 " + ButtonsLeft[i];
+					bool prevState = StateLeft[i];
+					bool currState = _controller.IsPressed(key);
+					if (currState != prevState)
+					{
+						StateLeft[i] = currState;
+						noInput = false;
+					}
+				}
+			}
+
+			return noInput;
+		}
+
 		public ControllerDefinition ChannelFControllerDefinition
 		{
 			get
@@ -14,29 +129,33 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				ControllerDefinition definition = new ControllerDefinition();
 				definition.Name = "ChannelF Controller";
 
+				string pre = "P1 ";
+
 				// sticks
-				List<string> stickL = new List<string>
-				{
-					// P1 (left) stick
-					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button Up", "P1 Button Down", "P1 Rotate Left", "P1 Rotate Right"
-				};
-
-				foreach (var s in stickL)
-				{
-					definition.BoolButtons.Add(s);
-					definition.CategoryLabels[s] = "Left Controller";
-				}
-
 				List<string> stickR = new List<string>
 				{
-					// P1 (left) stick
-					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button Up", "P2 Button Down", "P2 Rotate Left", "P2 Rotate Right"
+					// P1 (right) stick
+					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
 				};
 
 				foreach (var s in stickR)
 				{
 					definition.BoolButtons.Add(s);
 					definition.CategoryLabels[s] = "Right Controller";
+				}
+
+				pre = "P2 ";
+
+				List<string> stickL = new List<string>
+				{
+					// P2 (left) stick
+					pre + "Forward", pre + "Back", pre + "Left", pre + "Right", pre + "CCW", pre + "CW", pre + "Pull", pre + "Push"
+				};
+
+				foreach (var s in stickL)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Left Controller";
 				}
 
 				// console

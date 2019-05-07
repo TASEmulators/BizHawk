@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BizHawk.Common;
@@ -88,7 +89,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort OP_AND8 = 107;
 		public const ushort OP_OR8 = 108;
 		public const ushort OP_XOR8 = 109;
-		public const ushort OP_COM = 110;
+		//public const ushort OP_COM = 110;
+		public const ushort OP_SUB8 = 110;
 		public const ushort OP_ADD8 = 111;
 		public const ushort OP_CI = 112;
 		public const ushort OP_IS_INC = 113;
@@ -101,11 +103,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public const ushort OP_BF = 120;
 		public const ushort OP_IN = 121;
 		public const ushort OP_OUT = 122;
-		public const ushort OP_AS_IS = 123;
-		public const ushort OP_XS_IS = 124;
-		public const ushort OP_NS_IS = 125;
-		public const ushort OP_CLEAR_FLAGS = 126;
-		public const ushort OP_SET_FLAGS_SZ = 127;
+		//public const ushort OP_AS_IS = 123;
+		//public const ushort OP_XS_IS = 124;
+		//public const ushort OP_NS_IS = 125;
+		public const ushort OP_LR_A_DB_IO = 126;
+		public const ushort OP_DS = 127;
+		//public const ushort OP_CLEAR_FLAGS = 126;
+		//public const ushort OP_SET_FLAGS_SZ = 127;
+		public const ushort OP_LIS = 128;
 
 
 		public F3850()
@@ -135,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				IDLE,
 				END);
 
-			ALU_ClearFlags();
+			ClearFlags_Func();
 			FlagICB = false;
 		}
 
@@ -191,52 +196,51 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				case IDLE:
 					break;
 
-				// clears all flags except for ICB
-				case OP_CLEAR_FLAGS:
-					ALU_ClearFlags();
-					break;
-
-				// sets SIGN and CARRY flags based upon the supplied value
-				case OP_SET_FLAGS_SZ:
-					ALU_SetFlags_SZ(cur_instr[instr_pntr++]);
-					break;
-
 				// load one register into another (or databus)
 				case OP_LR8:
-					LR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					LR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// load DB into A (as a part of an IN or INS instruction)
+				case OP_LR_A_DB_IO:
+					LR_A_IO_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// loads supplied index value into register
+				case OP_LIS:
+					Regs[ALU1] = (ushort)(cur_instr[instr_pntr++] & 0x0F);
+					LR_Func(A, ALU1);
 					break;
 
 				// Shift register n bit positions to the right (zero fill)
 				case OP_SHFT_R:
-					ALU_SR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// Shift register n bit positions to the left (zero fill)
 				case OP_SHFT_L:
-					ALU_SL_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SL_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (x) ADD y
 				case OP_ADD8:
-					ALU_ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ADD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+
+				// x <- (x) MINUS y
+				case OP_SUB8:
+					SUB_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (x) ADD y (decimal)
 				case OP_ADD8D:
-					ALU_ADD8D_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ADDD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// A <- (A) + (C)
 				case OP_LNK:
-					bool fc = FlagC;
-					ALU_ClearFlags();
-
-					if (fc)
-					{
-						ALU_ADD8_Func(A, ONE);
-					}
-
-					ALU_SetFlags_SZ(A);
+					Regs[ALU0] = (ushort)(FlagC ? 1 : 0);
+					ADD_Func(A, ALU0);
 					break;
 
 				// Clear ICB status bit
@@ -251,38 +255,27 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// x <- (y) XOR DB
 				case OP_XOR8:
-					ALU_XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-
-				// x <- (y) XOR DB (complement accumulator)
-				case OP_COM:
-					Regs[A] = (byte)~Regs[A];
-					ALU_ClearFlags();
-					ALU_SetFlags_SZ(A);
+					XOR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (x) + 1
 				case OP_INC8:
-					ALU_ClearFlags();
-					ALU_ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					ALU_SetFlags_SZ(A);
+					ADD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (y) & DB
 				case OP_AND8:
-					ALU_AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					AND_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// x <- (y) | DB
 				case OP_OR8:
-					ALU_OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 
 				// DB + (x) + 1 (modify flags without saving result)
 				case OP_CI:
-					Regs[ALU0] = (byte)~Regs[cur_instr[instr_pntr++]];
-					ALU_ADD8_Func(ALU0, DB, true);
-					ALU_SetFlags_SZ(ALU0);
+					CI_Func();
 					break;
 
 				// ISAR is incremented
@@ -297,124 +290,178 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// set the upper octal ISAR bits (b3,b4,b5)
 				case OP_LISU:
-					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x07) | cur_instr[instr_pntr++]) & 0x3F);
+					Regs[ISAR] = (ushort)((((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3)) & 0x3F);
 					break;
 
 				// set the lower octal ISAR bits (b0,b1,b2)
 				case OP_LISL:
-					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x38) | cur_instr[instr_pntr++]) & 0x3F);
+					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
 					break;
 
-				// test operand against status register
+				// decrement scratchpad byte
+				//case OP_DS:
+					//SUB_Func(cur_instr[instr_pntr++], ONE);
+					//break;
+
+				// Branch on TRUE
 				case OP_BT:
-					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
+					bool branchBT = false;
+					switch (cur_instr[instr_pntr++])
 					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// L
-							ROMC_01, 
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							// S
-							ROMC_00_S,          // DB <- ((PC0)); PC0++	
-							IDLE,
-							IDLE,
-							END);
+						case 0:
+							// do not branch
+							break;
+
+						case 1:
+							// branch if positive (sign bit is set)
+							if (FlagS) branchBT = true;
+							break;
+
+						case 2:
+							// branch on carry (carry bit is set)
+							if (FlagC) branchBT = true;
+							break;
+
+						case 3:
+							// branch if positive or on carry
+							if (FlagS || FlagC) branchBT = true;
+							break;
+
+						case 4:
+							// branch if zero (zero bit is set)
+							if (FlagZ) branchBT = true;
+							break;
+
+						case 5:
+							// branch if positive (same as t==1)
+							if (FlagS) branchBT = true;
+							break;
+
+						case 6:
+							// branch if zero or on carry
+							if (FlagZ || FlagC) branchBT = true;
+							break;
+						case 7:
+							// branch if positive or on carry (same as t==3)
+							if (FlagS || FlagC) branchBT = true;
+							break;
 					}
-					else
-					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// S
-							ROMC_03_S,  
-							IDLE,
-							IDLE,
-							IDLE,
-							// S
-							ROMC_00_S,          // DB < -((PC0)); PC0++
-							IDLE,
-							IDLE,
-							END);
-					}
+
+					instr_pntr = 0;
+					if (branchBT) DO_BRANCH();
+					else DONT_BRANCH();
 					break;
 					
-				// Branch based on ISARL
+				// Branch on ISARL
 				case OP_BR7:
-					if ((Regs[ISAR] & 7) == 7)
+					instr_pntr = 1;		// lose a cycle
+					if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
 					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// S
-							ROMC_03_S,			// DB/IO <- ((PC0)); PC0++
-							//IDLE, <- lose a cycle that was stolen in the table
-							IDLE,
-							IDLE,
-							// S
-							ROMC_00_S,			// DB <- ((PC0)); PC0++
-							IDLE,
-							IDLE,
-							END);
+						DO_BRANCH();
 					}
 					else
 					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// L
-							ROMC_01,  
-							//IDLE, <- lose a cycle that was stolen in the table
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							ROMC_00_S,          // DB <- ((PC0)); PC0++
-							IDLE,
-							IDLE,
-							END);
+						DONT_BRANCH();
 					}
 					break;
 
-				//  PC0 <- PC0+n+1
+				//  Branch on FALSE
 				case OP_BF:
-					if ((Regs[W] & cur_instr[instr_pntr++]) != 0)
+					bool branchBF = false;
+					switch (cur_instr[instr_pntr++])
 					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// S
-							ROMC_03_S,          // DB/IO <- ((PC0)); PC0++
-							IDLE,
-							IDLE,
-							IDLE,
-							// S
-							ROMC_00_S,          // DB <- ((PC0)); PC0++
-							IDLE,
-							IDLE,
-							END);
+						case 0:
+							// unconditional branch relative
+							branchBF = true;
+							break;
+
+						case 1:
+							// branch on negative (sign bit is reset)
+							if (!FlagS) branchBF = true;
+							break;
+
+						case 2:
+							// branch if no carry (carry bit is reset)
+							if (!FlagC) branchBF = true;
+							break;
+
+						case 3:
+							// branch if no carry and negative
+							if (!FlagC && !FlagS) branchBF = true;
+							break;
+
+						case 4:
+							// branch if not zero (zero bit is reset)
+							if (!FlagZ) branchBF = true;
+							break;
+
+						case 5:
+							// same as t==1
+							if (!FlagS) branchBF = true;
+							break;
+
+						case 6:
+							// branch if no carry and result is no zero
+							if (!FlagC && !FlagZ) branchBF = true;
+							break;
+
+						case 7:
+							// same as t==3
+							if (!FlagS && !FlagC) branchBF = true;
+							break;
+
+						case 8:
+							// branch if there is no overflow (OVF bit is reset)
+							if (!FlagO) branchBF = true;
+							break;
+
+						case 9:
+							// branch if negative and no overflow
+							if (!FlagS && !FlagO) branchBF = true;
+							break;
+
+						case 0xA:
+							// branch if no overflow and no carry
+							if (!FlagO && !FlagC) branchBF = true;
+							break;
+
+						case 0xB:
+							// branch if no overflow, no carry & negative
+							if (!FlagO && !FlagC && !FlagS) branchBF = true;
+							break;
+
+						case 0xC:
+							// branch if no overflow and not zero
+							if (!FlagO && !FlagZ) branchBF = true;
+							break;
+
+						case 0xD:
+							// same as t==9
+							if (!FlagS && !FlagO) branchBF = true;
+							break;
+
+						case 0xE:
+							// branch if no overflow, no carry & not zero
+							if (!FlagO && !FlagC && !FlagZ) branchBF = true;
+							break;
+
+						case 0xF:
+							// same as t=0xB
+							if (!FlagO && !FlagC && !FlagS) branchBF = true;
+							break;
 					}
-					else
-					{
-						instr_pntr = 0;
-						PopulateCURINSTR(
-							// L
-							ROMC_01,  
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							// S
-							ROMC_00_S,          // DB <- ((PC0)); PC0++
-							IDLE,
-							IDLE,
-							END);
-					}
+
+					instr_pntr = 0;
+					if (branchBF) DO_BRANCH();
+					else DONT_BRANCH();
 					break;
 
 				// A <- (I/O Port 0 or 1) 
 				case OP_IN:
-					Regs[cur_instr[instr_pntr++]] = ReadHardware(cur_instr[instr_pntr++]);
+					instr_pntr++; // dest == A
+					Regs[ALU0] = cur_instr[instr_pntr++]; // src
+					IN_Func(A, ALU0);
+					//Regs[cur_instr[instr_pntr++]] = ReadHardware(cur_instr[instr_pntr++]);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
@@ -422,28 +469,6 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					WriteHardware(cur_instr[instr_pntr++], (byte)cur_instr[instr_pntr++]);
 					//OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-
-				// Add the content of the SR register addressed by ISAR to A (Binary)
-				case OP_AS_IS:
-					ALU_ClearFlags();
-					ALU_ADD8_Func(A, Regs[ISAR]);
-					ALU_SetFlags_SZ(A);
-					break;
-
-				// XOR the content of the SR register addressed by ISAR to A
-				case OP_XS_IS:
-					ALU_ClearFlags();
-					ALU_XOR8_Func(A, Regs[ISAR]);
-					ALU_SetFlags_SZ(A);
-					break;
-
-				// AND the content of the SR register addressed by ISAR to A
-				case OP_NS_IS:
-					ALU_ClearFlags();
-					ALU_AND8_Func(A, Regs[ISAR]);
-					ALU_SetFlags_SZ(A);
-					break;
-					
 
 				// instruction fetch
 				// The device whose address space includes the contents of the PC0 register must place on the data bus the op code addressed by PC0;
@@ -650,7 +675,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// registers cannot be read back onto the data bus)
 				// CYCLE LENGTH: L
 				case ROMC_1B:
-					Regs[DB] = ReadHardware(Regs[IO]);
+					IN_Func(DB, IO);
+					//Regs[DB] = ReadHardware(Regs[IO]);
 					break;
 
 				// None
@@ -687,7 +713,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public Action<TraceInfo> TraceCallback;
 
-		public string TraceHeader => "F3850: PC, machine code, mnemonic, operands, registers (R0, R1, R2, R3, R4, R5, R6, R7, R8, J, HU, HL, KU, KL, QU, QL, Cy), flags (IOZCS)";
+		public string TraceHeader => "F3850: PC, machine code, mnemonic, operands, flags (IOZCS), registers (PC1, DC0, A, ISAR, DB, IO, J, H, K, Q, R00-R63), Cycles";
 
 		public TraceInfo State(bool disassemble = true)
 		{
@@ -713,29 +739,40 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					byte_code.PadRight(12),
 					disasm.PadRight(26)),
 				RegisterInfo = string.Format(
-					"R0:{0:X2} R1:{1:X2} R2:{2:X2} R3:{3:X2} R4:{4:X2} R5:{5:X2} R6:{6:X2} R7:{7:X2} R8:{8:X2} J:{9:X2} HU:{10:X2} HL:{11:X2} KU:{12:X2} KL:{13:X2} QU:{14:X2} QL:{15:X2} Cy:{16} {17}{18}{19}{20}{21}",
-					Regs[0],
-					Regs[1],
-					Regs[2],
-					Regs[3],
-					Regs[4],
-					Regs[5],
-					Regs[6],
-					Regs[7],
-					Regs[8],
+					"Flags:{75}{76}{77}{78}{79} " + 
+					"PC1:{0:X4} DC0:{1:X4} A:{2:X2} ISAR:{3:X2} DB:{4:X2} IO:{5:X2} J:{6:X2} H:{7:X4} K:{8:X4} Q:{9:X4} " + 
+					"R0:{10:X2} R1:{11:X2} R2:{12:X2} R3:{13:X2} R4:{14:X2} R5:{15:X2} R6:{16:X2} R7:{17:X2} R8:{18:X2} R9:{19:X2} " +
+					"R10:{20:X2} R11:{21:X2} R12:{22:X2} R13:{23:X2} R14:{24:X2} R15:{25:X2} R16:{26:X2} R17:{27:X2} R18:{28:X2} R19:{29:X2} " +
+					"R20:{30:X2} R21:{31:X2} R22:{32:X2} R23:{33:X2} R24:{34:X2} R25:{35:X2} R26:{36:X2} R27:{37:X2} R28:{38:X2} R29:{39:X2} " +
+					"R30:{40:X2} R31:{41:X2} R32:{42:X2} R33:{43:X2} R34:{44:X2} R35:{45:X2} R36:{46:X2} R37:{47:X2} R38:{48:X2} R39:{49:X2} " +
+					"R40:{50:X2} R41:{51:X2} R42:{52:X2} R43:{53:X2} R44:{54:X2} R45:{55:X2} R46:{56:X2} R47:{57:X2} R48:{58:X2} R49:{59:X2} " +
+					"R50:{60:X2} R51:{61:X2} R52:{62:X2} R53:{63:X2} R54:{64:X2} R55:{65:X2} R56:{66:X2} R57:{67:X2} R58:{68:X2} R59:{69:X2} " +
+					"R60:{70:X2} R61:{71:X2} R62:{72:X2} R63:{73:X2} " +
+					"Cy:{74}",
+					RegPC1,
+					RegDC0,
+					Regs[A],
+					Regs[ISAR],
+					Regs[DB],
+					Regs[IO],
 					Regs[J],
-					Regs[Hh],
-					Regs[Hl],
-					Regs[Kh],
-					Regs[Kl],
-					Regs[Qh],
-					Regs[Ql],
+					(ushort)(Regs[Hl] | (Regs[Hh] << 8)),
+					(ushort)(Regs[Kl] | (Regs[Kh] << 8)),
+					(ushort)(Regs[Ql] | (Regs[Qh] << 8)),
+					Regs[0], Regs[1], Regs[2], Regs[3], Regs[4], Regs[5], Regs[6], Regs[7], Regs[8], Regs[9],
+					Regs[10], Regs[11], Regs[12], Regs[13], Regs[14], Regs[15], Regs[16], Regs[17], Regs[18], Regs[19],
+					Regs[20], Regs[21], Regs[22], Regs[23], Regs[24], Regs[25], Regs[26], Regs[27], Regs[28], Regs[29],
+					Regs[30], Regs[31], Regs[32], Regs[33], Regs[34], Regs[35], Regs[36], Regs[37], Regs[38], Regs[39],
+					Regs[40], Regs[41], Regs[42], Regs[43], Regs[44], Regs[45], Regs[46], Regs[47], Regs[48], Regs[49],
+					Regs[50], Regs[51], Regs[52], Regs[53], Regs[54], Regs[55], Regs[56], Regs[57], Regs[58], Regs[59],
+					Regs[60], Regs[61], Regs[62], Regs[63],
 					TotalExecutedCycles,
 					FlagICB ? "I" : "i",
 					FlagO ? "O" : "o",
 					FlagZ ? "Z" : "z",
 					FlagC ? "C" : "c",
-					FlagS ? "S" : "s")
+					FlagS ? "S" : "s"),
+
 			};
 		}
 
