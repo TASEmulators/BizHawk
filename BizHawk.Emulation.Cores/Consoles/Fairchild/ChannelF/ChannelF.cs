@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
@@ -39,18 +40,20 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			BIOS01 = bios01;
 			BIOS02 = bios02;
 
-			Array.Copy(rom, 0, Cartridge, 0, rom.Length);
+			Array.Copy(rom, 0, Rom, 0, rom.Length);
 
 			CalcClock();
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(CPU);
+			ser.Register<ISoundProvider>(this);
 
 			SetupMemoryDomains();
 		}
 
 		public F3850 CPU;
 		private readonly TraceBuffer _tracer;
+		public IController _controller;
 	}
 }
