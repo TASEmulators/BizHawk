@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				if (reg > 63)
 					throw new InvalidOperationException();
 
-				CPU.Regs[reg] = (ushort) value;
+				CPU.Regs[reg] = (byte) value;
 			}
 			else
 			{
@@ -56,13 +56,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					default:
 						throw new InvalidOperationException();
 					case "A":
-						CPU.Regs[CPU.A] = (ushort)value;
+						CPU.Regs[CPU.A] = (byte)value;
 						break;
 					case "W":
-						CPU.Regs[CPU.W] = (ushort)value;
+						CPU.Regs[CPU.W] = (byte)value;
 						break;
 					case "ISAR":
-						CPU.Regs[CPU.ISAR] = (ushort)(value & 0x3F);
+						CPU.Regs[CPU.ISAR] = (byte)(value & 0x3F);
 						break;
 					case "PC0":
 						CPU.RegPC0 = (ushort)value;
@@ -74,25 +74,25 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 						CPU.RegDC0 = (ushort)value;
 						break;
 					case "DB":
-						CPU.Regs[CPU.DB] = (ushort)value;
+						CPU.Regs[CPU.DB] = (byte)value;
 						break;
 					case "IO":
-						CPU.Regs[CPU.IO] = (ushort)value;
+						CPU.Regs[CPU.IO] = (byte)value;
 						break;
 					case "J":
-						CPU.Regs[CPU.J] = (ushort)value;
+						CPU.Regs[CPU.J] = (byte)value;
 						break;
 					case "H":
-						CPU.Regs[CPU.Hl] = (ushort)(value & 0xFF);
-						CPU.Regs[CPU.Hh] = (ushort)(value & 0xFF00);
+						CPU.Regs[CPU.Hl] = (byte)(value & 0xFF);
+						CPU.Regs[CPU.Hh] = (byte)(value & 0xFF00);
 						break;
 					case "K":
-						CPU.Regs[CPU.Kl] = (ushort)(value & 0xFF);
-						CPU.Regs[CPU.Kh] = (ushort)(value & 0xFF00);
+						CPU.Regs[CPU.Kl] = (byte)(value & 0xFF);
+						CPU.Regs[CPU.Kh] = (byte)(value & 0xFF00);
 						break;
 					case "Q":
-						CPU.Regs[CPU.Ql] = (ushort)(value & 0xFF);
-						CPU.Regs[CPU.Qh] = (ushort)(value & 0xFF00);
+						CPU.Regs[CPU.Ql] = (byte)(value & 0xFF);
+						CPU.Regs[CPU.Qh] = (byte)(value & 0xFF00);
 						break;
 				}
 			}

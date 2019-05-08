@@ -15,8 +15,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public long TotalExecutedCycles;
 
 		public int instr_pntr = 0;
-		public ushort[] cur_instr = new ushort[MaxInstructionLength];		// fixed size - do not change at runtime
-		public ushort[] cur_romc = new ushort[MaxInstructionLength];        // fixed size - do not change at runtime
+		public byte[] cur_instr = new byte[MaxInstructionLength];		// fixed size - do not change at runtime
+		public byte[] cur_romc = new byte[MaxInstructionLength];        // fixed size - do not change at runtime
 		public byte opcode;
 
 		public void FetchInstruction()

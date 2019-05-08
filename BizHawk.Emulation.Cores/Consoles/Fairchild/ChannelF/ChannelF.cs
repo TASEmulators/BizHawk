@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(CPU);
+			ser.Register<ISoundProvider>(this);
 
 			SetupMemoryDomains();
 		}

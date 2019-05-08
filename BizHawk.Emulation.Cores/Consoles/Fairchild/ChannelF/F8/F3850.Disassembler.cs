@@ -169,14 +169,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			"LIS D",			// 0x7D
 			"LIS E",			// 0x7E
 			"LIS F",			// 0x7F
-			"BT 0",				// 0x80
-			"BT 1",				// 0x81
-			"BT 2",				// 0x82
-			"BT 3",				// 0x83
-			"BT 4",				// 0x84
-			"BT 5",				// 0x85
-			"BT 6",				// 0x86
-			"BT 7",				// 0x87
+			"BT NOBRANCH",		// 0x80
+			"BP d",				// 0x81
+			"BC d",				// 0x82
+			"BP or C d",		// 0x83
+			"BZ d",				// 0x84
+			"BP d",				// 0x85
+			"BZ or C d",		// 0x86
+			"BP or C d",		// 0x87
 			"AM",				// 0x88
 			"AMD",				// 0x89
 			"NM",				// 0x8A
@@ -185,22 +185,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			"CM",				// 0x8D
 			"ADC",				// 0x8E
 			"BR7 n",			// 0x8F
-			"BF 0x0 n",			// 0x90
-			"BF 0x1 n",			// 0x91
-			"BF 0x2 n",			// 0x92
-			"BF 0x3 n",			// 0x93
-			"BF 0x4 n",			// 0x94
-			"BF 0x5 n",			// 0x95
-			"BF 0x6 n",			// 0x96
-			"BF 0x7 n",			// 0x97
-			"BF 0x8 n",			// 0x98
-			"BF 0x9 n",			// 0x99
-			"BF 0xA n",			// 0x9A
-			"BF 0xB n",			// 0x9B
-			"BF 0xC n",			// 0x9C
-			"BF 0xD n",			// 0x9D
-			"BF 0xE n",			// 0x9E
-			"BF 0xF n",			// 0x9F
+			"BF UNCON d",		// 0x90
+			"BN d",				// 0x91
+			"BNC d",			// 0x92
+			"BNC & deg d",		// 0x93
+			"BNZ d",			// 0x94
+			"BN d",				// 0x95
+			"BNC & dZ d",		// 0x96
+			"BNC & deg d",		// 0x97
+			"BNO d",			// 0x98
+			"BN & dO d",		// 0x99
+			"BNO & dC d",		// 0x9A
+			"BNO & dC & deg d",	// 0x9B
+			"BNO & dZ d",		// 0x9C
+			"BN & dO d",		// 0x9D
+			"BNO & dC & dZ d",	// 0x9E
+			"BNO & dC & deg d",	// 0x9F
 			"INS 0",			// 0xA0
 			"INS 1",			// 0xA1
 			"ILLEGAL",			// 0xA2

@@ -605,13 +605,13 @@
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IVideoProvider.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Operations.cs" />
-    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.ALU.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Disassembler.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Tables.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Registers.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Execute.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\Cart.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Audio.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\Video.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\Ports.cs" />
     <Compile Include="Consoles\Fairchild\ChannelF\Memory.cs" />

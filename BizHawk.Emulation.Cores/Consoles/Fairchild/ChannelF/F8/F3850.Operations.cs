@@ -12,22 +12,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	/// </summary>
 	public sealed partial class F3850
 	{
-		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
+		public void Read_Func(byte dest, byte src_l, byte src_h)
 		{
 			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 		}
 
-		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
+		public void Write_Func(byte dest_l, byte dest_h, byte src)
 		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), Regs[src]);
 		}
 
-		public void IN_Func(ushort dest, ushort src)
+		public void IN_Func(byte dest, byte src)
 		{
 			Regs[dest] = ReadHardware(Regs[src]);
 		}
 
-		public void LR_A_IO_Func(ushort dest, ushort src)
+		public void LR_A_IO_Func(byte dest, byte src)
 		{
 			// helper method that simulates transferring DB to accumulator (as part of an IN operation)
 			// this sets flags accordingly
@@ -55,22 +55,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			FlagZ = false;
 		}
 
-		public void LR_Func(ushort dest, ushort src)
+		public void LR_Func(byte dest, byte src)
 		{
 			if (dest == DB)
 			{
 				// byte storage
-				Regs[dest] = (ushort)(Regs[src] & 0xFF);
+				Regs[dest] = (byte)(Regs[src] & 0xFF);
 			}
 			else if (dest == W)
 			{
 				// mask for status register
-				Regs[dest] = (ushort)(Regs[src] & 0x1F);
+				Regs[dest] = (byte)(Regs[src] & 0x1F);
 			}
 			else if (dest == ISAR)
 			{
 				// mask for ISAR register
-				Regs[dest] = (ushort)(Regs[src] & 0x3F);
+				Regs[dest] = (byte)(Regs[src] & 0x3F);
 			}
 			else
 			{
@@ -83,13 +83,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="shift"></param>
-		public void SR_Func(ushort src, ushort shift)
+		public void SR_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
 			FlagO = false;
 			FlagC = false;
 
-			Regs[src] = (ushort)((Regs[src] >> shift) & 0xFF);
+			Regs[src] = (byte)((Regs[src] >> shift) & 0xFF);
 
 			FlagZ = Regs[src] == 0;
 
@@ -104,13 +104,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="shift"></param>
-		public void SL_Func(ushort src, ushort shift)
+		public void SL_Func(byte src, byte shift)
 		{
 			// overflow and carry unconditionally reset
 			FlagO = false;
 			FlagC = false;
 
-			Regs[src] = (ushort)((Regs[src] << shift) & 0xFF);
+			Regs[src] = (byte)((Regs[src] << shift) & 0xFF);
 
 			FlagZ = Regs[src] == 0;
 
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			// ICB flag not affected
 		}
 
-		public void ADD_Func(ushort dest, ushort src)
+		public void ADD_Func_(byte dest, byte src)
 		{
 			// addition of 2 signed bytes
 			ushort dest16 = Regs[dest];
@@ -140,16 +140,32 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			var b7c = dest16 >> 8;
 			FlagO = (b6c ^ b7c) != 0;
 
-			Regs[dest] = ans;
+			Regs[dest] = (byte)ans;
 		}
 
-		public void SUB_Func(ushort dest, ushort src)
+		public void ADD_Func(byte dest, byte src)
 		{
-			Regs[ALU0] = (ushort)((Regs[src] ^ 0xff) + 1);
+			// addition of 2 signed bytes
+			var sD = Regs[dest] & 0x80;
+			var sS = Regs[src] & 0x80;
+			var res = Regs[dest] + Regs[src];
+			var sR = res & 0x80;
+
+			FlagS = !((res & 0x80) > 0);
+			FlagZ = (res & 0xff) == 0;
+			FlagO = (sD == sS && sD != sR);
+			FlagC = (res & 0x100) > 0;
+
+			Regs[dest] = (byte) (res & 0xff);
+		}
+
+		public void SUB_Func(byte dest, byte src)
+		{
+			Regs[ALU0] = (byte)((Regs[src] ^ 0xff) + 1);
 			ADD_Func(dest, ALU0);
 		}
 
-		public void ADDD_Func(ushort dest, ushort src)
+		public void ADDD_Func(byte dest, byte src)
 		{
 			var d = Regs[dest];
 			var s = Regs[src];
@@ -173,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				bcdRes = (bcdRes + 0xA0);
 			}
 
-			Regs[dest] = (ushort)(bcdRes & 0xFF);
+			Regs[dest] = (byte)(bcdRes & 0xFF);
 		}
 		
 		public void CI_Func()
@@ -182,10 +198,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			// we need to achieve DB - A + 1
 			// flags set - results not stored
 			var comp = ((Regs[A] ^ 0xFF) + 1);
-			Regs[ALU0] = (ushort)comp;
-			ADD_Func(DB, ALU0);
+			Regs[ALU0] = (byte)comp;
+			Regs[ALU1] = Regs[DB];
+			ADD_Func(ALU1, ALU0);
 		}
-
+		/*
 		public void ADDD_Func_(ushort dest, ushort src)
 		{
 			// from MAME f8.cpp (BSD-3)
@@ -229,14 +246,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			Regs[dest] = tmp;
 		}
+		*/
 
-		public void AND_Func(ushort dest, ushort src)
+		public void AND_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
 			FlagO = false;
 			FlagC = false;
 
-			Regs[dest] = (ushort)(Regs[dest] & Regs[src]);
+			Regs[dest] = (byte)(Regs[dest] & Regs[src]);
 
 			FlagZ = Regs[src] == 0;
 
@@ -246,13 +264,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			// ICB flag not affected
 		}
 
-		public void OR_Func(ushort dest, ushort src)
+		public void OR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
 			FlagO = false;
 			FlagC = false;
 
-			Regs[dest] = (ushort)(Regs[dest] | Regs[src]);
+			Regs[dest] = (byte)(Regs[dest] | Regs[src]);
 
 			FlagZ = Regs[src] == 0;
 
@@ -262,13 +280,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			// ICB flag not affected
 		}
 
-		public void XOR_Func(ushort dest, ushort src)
+		public void XOR_Func(byte dest, byte src)
 		{
 			// overflow and carry unconditionally reset
 			FlagO = false;
 			FlagC = false;
 
-			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
+			Regs[dest] = (byte)(Regs[dest] ^ Regs[src]);
 
 			FlagZ = Regs[src] == 0;
 

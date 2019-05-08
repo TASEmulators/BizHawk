@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public static readonly int[] FPalette =
 		{
+			/*
+			0x101010, 0xFDFDFD, 0x5331FF, 0x5DCC02, 0xF33F4B, 0xE0E0E0, 0xA6FF91, 0xD0CEFF
+			*/
+			
 			Colors.ARGB(0x10, 0x10, 0x10),		// Black
 			Colors.ARGB(0xFD, 0xFD, 0xFD),		// White
 			Colors.ARGB(0xFF, 0x31, 0x53),		// Red
@@ -28,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			Colors.ARGB(0xE0, 0xE0, 0xE0),		// Gray
 			Colors.ARGB(0x91, 0xFF, 0xA6),		// BGreen
 			Colors.ARGB(0xCE, 0xD0, 0xFF),		// BBlue
+			
 		};
 
 		public static readonly int[] CMap =
@@ -52,67 +58,21 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			for (int row = 0; row < 64; row++)
 			{
 				// columns 125 and 126 hold the palette index modifier for the entire row
-				var rIndex = 64 * row;
-				var c125 = (VRAM[rIndex + 125] & 0x02) >> 1;
+				var rIndex = 128 * row;
+				var c125 = (VRAM[rIndex + 125] & 0x03);
 				var c126 = (VRAM[rIndex + 126] & 0x03);
-				var pModifier = ((c125 | c126) << 2) & 0x0C;
+				var pModifier = (((c126 & 0x02) | c125 >> 1) << 2);
+
+				pModifier = ((VRAM[(row << 7) + 125] & 2) >> 1) | (VRAM[(row << 7) + 126] & 3);
+				pModifier = (pModifier << 2) & 0xc;
 
 				// columns
 				for (int col = 0; col < 128; col++, counter++)
 				{
-					int colour = (VRAM[rIndex + col]) & 0x03;
-					var finalColorIndex = pModifier | colour;
-					var paletteLookup = CMap[finalColorIndex & 0x0f] & 0x07;
-					frameBuffer[counter] = FPalette[paletteLookup];
-				}
-			}
-		}
-
-		private void BuildFrame1()
-		{
-			int cnt = 0;
-			// rows
-			for (int row = 0; row < 64; row++)
-			{
-				var yIndex = row * 128;
-				var yByte = yIndex / 4;
-
-				// last byte for this row contains palette modifier
-				var pModifier = (byte)(VRAM[yByte + 31] & 0x0C);
-
-				// columns
-				for (int col = 0; col < 128; col++)
-				{
-					var fbIndex = (row * 64) + col;
-
-					var xByte = col / 4;
-					var xRem = col % 4;
-					var xyByte = yByte + xByte;
-
-					// each byte contains 4 pixel colour values, b0b1, b2b3, b4b5, b6b7
-					int colour = 0;
-
-					switch (xRem)
-					{
-						case 0:
-							colour = VRAM[xyByte] & 0x03;
-							break;
-						case 1:
-							colour = VRAM[xyByte] & 0x0C;
-							break;
-						case 2:
-							colour = VRAM[xyByte] & 0x30;
-							break;
-						case 3:
-							colour = VRAM[xyByte] & 0xC0;
-							break;
-					}
-
-					var finalColorIndex = pModifier | colour;
-					var paletteLookup = CMap[finalColorIndex & 0x0f] & 0x07;
-					frameBuffer[fbIndex] = FPalette[paletteLookup];
-
-					cnt++;
+					int cl = (VRAM[(row << 7) + col]) & 0x3;
+					frameBuffer[(row << 7) + col] = CMap[pModifier | cl] & 0x7;
+					//var nCol = pModifier + (VRAM[col | (row << 7)] & 0x03);
+					//frameBuffer[counter] = FPalette[CMap[nCol]];
 				}
 			}
 		}

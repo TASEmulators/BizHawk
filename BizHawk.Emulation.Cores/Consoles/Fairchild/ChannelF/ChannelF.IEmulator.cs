@@ -22,8 +22,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void CalcClock()
 		{
-			var c = ((cpuFreq * 1000000) / refreshRate) * 4;
+			var c = ((cpuFreq * 1000000) / refreshRate);
 			ClockPerFrame = (int) c;
+
+			SetupAudio();
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool renderSound)

@@ -35,9 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <returns></returns>
 		public byte ReadPort(ushort addr)
 		{
-			byte port = (byte) (addr & 0x07);
-
-			switch (port)
+			switch (addr)
 			{
 				// Console buttons
 				// b0:	TIME
@@ -45,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// b2:	HOLD
 				// b3:	START
 				case 0:
-					return (byte)((DataConsole ^ 0xFF) & 0x0F);
+					return (byte)((DataConsole ^ 0xff) | PortLatch[PORT0]);
 
 				// Right controller
 				// b0:	RIGHT
@@ -57,11 +55,16 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// b6:	PULL
 				// b7:	PUSH
 				case 1:
-					if (ControllersEnabled)
+					byte ed1;
+					if ((PortLatch[PORT0] & 0x40) == 0)
 					{
-						return (byte)((DataRight ^ 0xFF) & 0xFF);
+						ed1 = DataRight;
 					}
-					return 0;
+					else
+					{
+						ed1 = (byte) (0xC0 | DataRight);
+					}
+					return (byte) ((ed1 ^ 0xff) | PortLatch[PORT1]);
 
 				// Left controller
 				// b0:	RIGHT
@@ -73,14 +76,23 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// b6:	PULL
 				// b7:	PUSH
 				case 4:
-					if (ControllersEnabled)
+					byte ed4;
+					if ((PortLatch[PORT0] & 0x40) == 0)
 					{
-						return (byte)((DataLeft ^ 0xFF) & 0xFF);
+						ed4 = DataLeft;
 					}
+					else
+					{
+						ed4 = 0xff;
+					}
+					return (byte)((ed4 ^ 0xff) | PortLatch[PORT4]);
+
+				case 5:
+					return (byte) (0 | PortLatch[PORT5]);
+
+				default:
 					return 0;
 			}
-			
-			return 0xFF;
 		}
 
 		/// <summary>
@@ -90,88 +102,54 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <param name="value"></param>
 		public void WritePort(ushort addr, byte value)
 		{
-			byte port = (byte)(addr & 0x07);
-
-			switch (port)
+			switch (addr)
 			{
 				case 0:
-
-					ControllersEnabled = (value & 0x40) == 0;
-
-					var val = value & 0x60;
-					if (val == 0x40)// && _arm == 0x60)
-					{
-						VRAM[(128 * _y) + _x] = (byte)_colour;
-					}
-
-					/*
-
-					// RAM WRT - A pulse here executes a write to video RAM
-					bool ramWrt = value.Bit(5);
-
-					// Enable data from controllers (1 equals enable)
-					// also needs pulse to write to video RAM
-					bool controllerDataEnable = value.Bit(6);
-
-					if (ramWrt || controllerDataEnable)
-					{
-						// triggered write to VRAM
-						var yxIndex = (_y * 128) + _x;
-						var byteIndex = yxIndex / 4;
-						var byteRem = yxIndex % 4;
-
-						switch (byteRem)
-						{
-							case 0:
-								VRAM[byteIndex] |= (byte) _colour;
-								break;
-							case 1:
-								VRAM[byteIndex] |= (byte) (_colour << 2);
-								break;
-							case 2:
-								VRAM[byteIndex] |= (byte)(_colour << 4);
-								break;
-							case 3:
-								VRAM[byteIndex] |= (byte)(_colour << 6);
-								break;
-						}
-
-					}
-					*/
-
-					_arm = value;
-
 					PortLatch[PORT0] = value;
-
+					if ((value & 0x20) != 0)
+					{
+						var offset = _x + (_y * 128);
+						VRAM[offset] = (byte)(_colour);
+					}
 					break;
 
 				case 1:
+
+					PortLatch[PORT1] = value;
 
 					// Write Data0 - indicates that valid data is present for both VRAM ODD0 and EVEN0
 					bool data0 = value.Bit(6);
 					// Write Data1 - indicates that valid data is present for both VRAM ODD1 and EVEN1
 					bool data1 = value.Bit(7);
 
-					_colour = ((value ^ 0xff) >> 6) & 0x03;
-
-					PortLatch[PORT1] = value;
-
+					//_colour = ((value) >> 6) & 3;
+					_colour = ((value ^ 0xff) >> 6) & 0x3;
 					break;
 
 				case 4:
+					PortLatch[PORT4] = value;
+					_x = (value ^ 0xff) & 0x7f;
+					//_x = (value | 0x80) ^ 0xFF;
+					/*
 
 					// video horizontal position
 					// 0 - video select
 					// 1-6 - horiz A-F
 
-					_x = (value ^ 0xff) & 0x7f;
+					
 
-					PortLatch[PORT4] = value;
+					*/
 
 					break;
 
 
 				case 5:
+
+					PortLatch[PORT5] = value;
+					//_y = (value & 31); // ^ 0xff;
+					//_y = (value | 0xC0) ^ 0xff;
+
+					//_y = (value ^ 0xff) & 0x1f;
 
 					// video vertical position and sound
 					// 0-5 - Vertical A-F
@@ -179,8 +157,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 					_y = (value ^ 0xff) & 0x3f;
 
-					PortLatch[PORT5] = value;
-
+					// audio
+					var aVal = ((value >> 6) & 0x03); // (value & 0xc0) >> 6;
+					if (aVal != tone)
+					{
+						tone = aVal;
+						time = 0;
+						amplitude = 1;
+						AudioChange();
+					}
 					break;
 			}
 		}

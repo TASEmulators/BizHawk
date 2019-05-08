@@ -17,83 +17,83 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// Registers (counters and scratchpad)
 		/// </summary>
-		public ushort[] Regs = new ushort[100];
+		public byte[] Regs = new byte[100];
 
 		// scratchpad registers live in Regs 0-64
-		public ushort J = 9;
-		public ushort Hh = 10;
-		public ushort Hl = 11;
-		public ushort Kh = 12;
-		public ushort Kl = 13;
-		public ushort Qh = 14;
-		public ushort Ql = 15;
+		public byte J = 9;
+		public byte Hh = 10;
+		public byte Hl = 11;
+		public byte Kh = 12;
+		public byte Kl = 13;
+		public byte Qh = 14;
+		public byte Ql = 15;
 
 		// Internal CPU counters kept after the scratchpad for ease of implementation
 		/// <summary>
 		/// Accumulator
 		/// </summary>
-		public ushort A = 65;
+		public byte A = 65;
 		/// <summary>
 		/// Status Register
 		/// </summary>
-		public ushort W = 66;
+		public byte W = 66;
 		/// <summary>
 		/// Indirect Scratchpad Address Register
 		/// (6bit)
 		/// </summary>
-		public ushort ISAR = 67;
+		public byte ISAR = 67;
 		/// <summary>
 		/// Primary Program Counter (high byte)
 		/// </summary>
-		public  ushort PC0h = 68;
+		public  byte PC0h = 68;
 		/// <summary>
 		/// Primary Program Counter (low byte)
 		/// </summary>
-		public ushort PC0l = 69;
+		public byte PC0l = 69;
 		/// <summary>
 		/// Backup Program Counter (high byte)
 		/// </summary>
-		public ushort PC1h = 70;
+		public byte PC1h = 70;
 		/// <summary>
 		/// Backup Program Counter (low byte)
 		/// </summary>
-		public ushort PC1l = 71;
+		public byte PC1l = 71;
 		/// <summary>
 		/// Data counter (high byte)
 		/// </summary>
-		public ushort DC0h = 72;
+		public byte DC0h = 72;
 		/// <summary>
 		/// Data Counter (low byte)
 		/// </summary>
-		public ushort DC0l = 73;
+		public byte DC0l = 73;
 		/// <summary>
 		/// Temporary Arithmetic Storage
 		/// </summary>
-		public ushort ALU0 = 74;
+		public byte ALU0 = 74;
 		/// <summary>
 		/// Temporary Arithmetic Storage
 		/// </summary>
-		public ushort ALU1 = 75;
+		public byte ALU1 = 75;
 		/// <summary>
 		/// Data Bus
 		/// </summary>
-		public ushort DB = 76;
+		public byte DB = 76;
 		/// <summary>
 		/// IO Bus/Latch
 		/// </summary>
-		public ushort IO = 77;
+		public byte IO = 77;
 		/// <summary>
 		/// 0x00 value for arithmetic ops
 		/// </summary>
-		public ushort ZERO = 78;
+		public byte ZERO = 78;
 		/// <summary>
 		/// 0x01 value for arithmetic ops
 		/// </summary>
-		public ushort ONE = 79;
+		public byte ONE = 79;
 		/// <summary>
 		/// 0xFF value for arithmetic ops
 		/// </summary>
-		public ushort BYTE = 80;
+		public byte BYTE = 80;
 
 
 		/// <summary>
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FlagS
 		{
 			get { return (Regs[W] & 0x01) != 0; }
-			set { Regs[W] = (ushort)((Regs[W] & ~0x01) | (value ? 0x01 : 0x00)); }
+			set { Regs[W] = (byte)((Regs[W] & ~0x01) | (value ? 0x01 : 0x00)); }
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FlagC
 		{
 			get { return (Regs[W] & 0x02) != 0; }
-			set { Regs[W] = (ushort)((Regs[W] & ~0x02) | (value ? 0x02 : 0x00)); }
+			set { Regs[W] = (byte)((Regs[W] & ~0x02) | (value ? 0x02 : 0x00)); }
 		}
 
 		/// <summary>
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FlagZ
 		{
 			get { return (Regs[W] & 0x04) != 0; }
-			set { Regs[W] = (ushort)((Regs[W] & ~0x04) | (value ? 0x04 : 0x00)); }
+			set { Regs[W] = (byte)((Regs[W] & ~0x04) | (value ? 0x04 : 0x00)); }
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FlagO
 		{
 			get { return (Regs[W] & 0x08) != 0; }
-			set { Regs[W] = (ushort)((Regs[W] & ~0x08) | (value ? 0x08 : 0x00)); }
+			set { Regs[W] = (byte)((Regs[W] & ~0x08) | (value ? 0x08 : 0x00)); }
 		}
 
 		/// <summary>
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public bool FlagICB
 		{
 			get { return (Regs[W] & 0x10) != 0; }
-			set { Regs[W] = (ushort)((Regs[W] & ~0x10) | (value ? 0x10 : 0x00)); }
+			set { Regs[W] = (byte)((Regs[W] & ~0x10) | (value ? 0x10 : 0x00)); }
 		}
 
 		/// <summary>
@@ -149,8 +149,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			get { return (ushort)(Regs[PC0l] | (Regs[PC0h] << 8)); }
 			set
 			{
-				Regs[PC0l] = (ushort)(value & 0xFF);
-				Regs[PC0h] = (ushort)((value >> 8) & 0xFF);
+				Regs[PC0l] = (byte)(value & 0xFF);
+				Regs[PC0h] = (byte)((value >> 8) & 0xFF);
 			}
 		}
 
@@ -162,8 +162,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			get { return (ushort)(Regs[PC1l] | (Regs[PC1h] << 8)); }
 			set
 			{
-				Regs[PC1l] = (ushort)(value & 0xFF);
-				Regs[PC1h] = (ushort)((value >> 8) & 0xFF);
+				Regs[PC1l] = (byte)(value & 0xFF);
+				Regs[PC1h] = (byte)((value >> 8) & 0xFF);
 			}
 		}
 
@@ -175,8 +175,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			get { return (ushort)(Regs[DC0l] | (Regs[DC0h] << 8)); }
 			set
 			{
-				Regs[DC0l] = (ushort)(value & 0xFF);
-				Regs[DC0h] = (ushort)((value >> 8) & 0xFF);
+				Regs[DC0l] = (byte)(value & 0xFF);
+				Regs[DC0h] = (byte)((value >> 8) & 0xFF);
 			}
 		}
 

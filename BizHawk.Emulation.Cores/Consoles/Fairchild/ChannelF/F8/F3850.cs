@@ -40,77 +40,77 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	public sealed partial class F3850
 	{
 		// operations that can take place in an instruction
-		public const ushort ROMC_01 = 1;
-		public const ushort ROMC_02 = 2;
-		public const ushort ROMC_03_S = 3;
-		public const ushort ROMC_04 = 4;
-		public const ushort ROMC_05 = 5;
-		public const ushort ROMC_06 = 6;
-		public const ushort ROMC_07 = 7;
-		public const ushort ROMC_08 = 8;
-		public const ushort ROMC_09 = 9;
-		public const ushort ROMC_0A = 10;
-		public const ushort ROMC_0B = 11;
-		public const ushort ROMC_0C = 12;
-		public const ushort ROMC_0D = 13;
-		public const ushort ROMC_0E = 14;
-		public const ushort ROMC_0F = 15;
-		public const ushort ROMC_10 = 16;
-		public const ushort ROMC_11 = 17;
-		public const ushort ROMC_12 = 18;
-		public const ushort ROMC_13 = 19;
-		public const ushort ROMC_14 = 20;
-		public const ushort ROMC_15 = 21;
-		public const ushort ROMC_16 = 22;
-		public const ushort ROMC_17 = 23;
-		public const ushort ROMC_18 = 24;
-		public const ushort ROMC_19 = 25;
-		public const ushort ROMC_1A = 26;
-		public const ushort ROMC_1B = 27;
-		public const ushort ROMC_1C_S = 28;
-		public const ushort ROMC_1D = 29;
-		public const ushort ROMC_1E = 30;
-		public const ushort ROMC_1F = 31;
-		public const ushort ROMC_00_S = 32;
-		public const ushort ROMC_00_L = 33;
-		public const ushort ROMC_03_L = 34;
-		public const ushort ROMC_1C_L = 35;
+		public const byte ROMC_01 = 1;
+		public const byte ROMC_02 = 2;
+		public const byte ROMC_03_S = 3;
+		public const byte ROMC_04 = 4;
+		public const byte ROMC_05 = 5;
+		public const byte ROMC_06 = 6;
+		public const byte ROMC_07 = 7;
+		public const byte ROMC_08 = 8;
+		public const byte ROMC_09 = 9;
+		public const byte ROMC_0A = 10;
+		public const byte ROMC_0B = 11;
+		public const byte ROMC_0C = 12;
+		public const byte ROMC_0D = 13;
+		public const byte ROMC_0E = 14;
+		public const byte ROMC_0F = 15;
+		public const byte ROMC_10 = 16;
+		public const byte ROMC_11 = 17;
+		public const byte ROMC_12 = 18;
+		public const byte ROMC_13 = 19;
+		public const byte ROMC_14 = 20;
+		public const byte ROMC_15 = 21;
+		public const byte ROMC_16 = 22;
+		public const byte ROMC_17 = 23;
+		public const byte ROMC_18 = 24;
+		public const byte ROMC_19 = 25;
+		public const byte ROMC_1A = 26;
+		public const byte ROMC_1B = 27;
+		public const byte ROMC_1C_S = 28;
+		public const byte ROMC_1D = 29;
+		public const byte ROMC_1E = 30;
+		public const byte ROMC_1F = 31;
+		public const byte ROMC_00_S = 32;
+		public const byte ROMC_00_L = 33;
+		public const byte ROMC_03_L = 34;
+		public const byte ROMC_1C_L = 35;
 
-		public const ushort IDLE = 0;
-		public const ushort END = 51;
+		public const byte IDLE = 0;
+		public const byte END = 51;
 
-		public const ushort OP_LR8 = 100;
-		public const ushort OP_SHFT_R = 101;
-		public const ushort OP_SHFT_L = 102;
-		public const ushort OP_LNK = 103;
-		public const ushort OP_DI = 104;
-		public const ushort OP_EI = 105;
-		public const ushort OP_INC8 = 106;
-		public const ushort OP_AND8 = 107;
-		public const ushort OP_OR8 = 108;
-		public const ushort OP_XOR8 = 109;
-		//public const ushort OP_COM = 110;
-		public const ushort OP_SUB8 = 110;
-		public const ushort OP_ADD8 = 111;
-		public const ushort OP_CI = 112;
-		public const ushort OP_IS_INC = 113;
-		public const ushort OP_IS_DEC = 114;
-		public const ushort OP_LISU = 115;
-		public const ushort OP_LISL = 116;
-		public const ushort OP_BT = 117;
-		public const ushort OP_ADD8D = 118;
-		public const ushort OP_BR7 = 119;
-		public const ushort OP_BF = 120;
-		public const ushort OP_IN = 121;
-		public const ushort OP_OUT = 122;
-		//public const ushort OP_AS_IS = 123;
-		//public const ushort OP_XS_IS = 124;
-		//public const ushort OP_NS_IS = 125;
-		public const ushort OP_LR_A_DB_IO = 126;
-		public const ushort OP_DS = 127;
-		//public const ushort OP_CLEAR_FLAGS = 126;
-		//public const ushort OP_SET_FLAGS_SZ = 127;
-		public const ushort OP_LIS = 128;
+		public const byte OP_LR8 = 100;
+		public const byte OP_SHFT_R = 101;
+		public const byte OP_SHFT_L = 102;
+		public const byte OP_LNK = 103;
+		public const byte OP_DI = 104;
+		public const byte OP_EI = 105;
+		public const byte OP_INC8 = 106;
+		public const byte OP_AND8 = 107;
+		public const byte OP_OR8 = 108;
+		public const byte OP_XOR8 = 109;
+		//public const byte OP_COM = 110;
+		public const byte OP_SUB8 = 110;
+		public const byte OP_ADD8 = 111;
+		public const byte OP_CI = 112;
+		public const byte OP_IS_INC = 113;
+		public const byte OP_IS_DEC = 114;
+		public const byte OP_LISU = 115;
+		public const byte OP_LISL = 116;
+		public const byte OP_BT = 117;
+		public const byte OP_ADD8D = 118;
+		public const byte OP_BR7 = 119;
+		public const byte OP_BF = 120;
+		public const byte OP_IN = 121;
+		public const byte OP_OUT = 122;
+		//public const byte OP_AS_IS = 123;
+		//public const byte OP_XS_IS = 124;
+		//public const byte OP_NS_IS = 125;
+		public const byte OP_LR_A_DB_IO = 126;
+		public const byte OP_DS = 127;
+		//public const byte OP_CLEAR_FLAGS = 126;
+		//public const byte OP_SET_FLAGS_SZ = 127;
+		public const byte OP_LIS = 128;
 
 
 		public F3850()
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// loads supplied index value into register
 				case OP_LIS:
-					Regs[ALU1] = (ushort)(cur_instr[instr_pntr++] & 0x0F);
+					Regs[ALU1] = (byte)(cur_instr[instr_pntr++] & 0x0F);
 					LR_Func(A, ALU1);
 					break;
 
@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// A <- (A) + (C)
 				case OP_LNK:
-					Regs[ALU0] = (ushort)(FlagC ? 1 : 0);
+					Regs[ALU0] = (byte)(FlagC ? 1 : 0);
 					ADD_Func(A, ALU0);
 					break;
 
@@ -280,22 +280,22 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 				// ISAR is incremented
 				case OP_IS_INC:
-					Regs[ISAR] = (ushort)((Regs[ISAR]& 0x38) | ((Regs[ISAR] + 1) & 0x07));
+					Regs[ISAR] = (byte)((Regs[ISAR]& 0x38) | ((Regs[ISAR] + 1) & 0x07));
 					break;
 
 				// ISAR is decremented
 				case OP_IS_DEC:
-					Regs[ISAR] = (ushort)((Regs[ISAR] & 0x38) | ((Regs[ISAR] - 1) & 0x07));
+					Regs[ISAR] = (byte)((Regs[ISAR] & 0x38) | ((Regs[ISAR] - 1) & 0x07));
 					break;
 
 				// set the upper octal ISAR bits (b3,b4,b5)
 				case OP_LISU:
-					Regs[ISAR] = (ushort)((((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3)) & 0x3F);
+					Regs[ISAR] = (byte)((((Regs[ISAR] & 0x07) | (cur_instr[instr_pntr++] & 0x07) << 3)) & 0x3F);
 					break;
 
 				// set the lower octal ISAR bits (b0,b1,b2)
 				case OP_LISL:
-					Regs[ISAR] = (ushort) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
+					Regs[ISAR] = (byte) (((Regs[ISAR] & 0x38) | (cur_instr[instr_pntr++] & 0x07)) & 0x3F);
 					break;
 
 				// decrement scratchpad byte
@@ -333,8 +333,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							break;
 
 						case 5:
-							// branch if positive (same as t==1)
-							if (FlagS) branchBT = true;
+							// branch if positive and zero
+							if (FlagS || FlagZ) branchBT = true;
 							break;
 
 						case 6:
@@ -342,8 +342,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							if (FlagZ || FlagC) branchBT = true;
 							break;
 						case 7:
-							// branch if positive or on carry (same as t==3)
-							if (FlagS || FlagC) branchBT = true;
+							// branch if positive or on carry or zero
+							if (FlagS || FlagC || FlagZ) branchBT = true;
 							break;
 					}
 
@@ -355,13 +355,13 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				// Branch on ISARL
 				case OP_BR7:
 					instr_pntr = 1;		// lose a cycle
-					if (!Regs[ISAR].Bit(0) || !Regs[ISAR].Bit(1) || !Regs[ISAR].Bit(2))
+					if (Regs[ISAR].Bit(0) && Regs[ISAR].Bit(1) && Regs[ISAR].Bit(2))
 					{
-						DO_BRANCH();
+						DONT_BRANCH();
 					}
 					else
 					{
-						DONT_BRANCH();
+						DO_BRANCH();
 					}
 					break;
 
@@ -396,8 +396,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							break;
 
 						case 5:
-							// same as t==1
-							if (!FlagS) branchBF = true;
+							// branch if not zero and negative
+							if (!FlagS && !FlagZ) branchBF = true;
 							break;
 
 						case 6:
@@ -406,8 +406,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							break;
 
 						case 7:
-							// same as t==3
-							if (!FlagS && !FlagC) branchBF = true;
+							// branch if not zero, carry and sign
+							if (!FlagS && !FlagC && !FlagZ) branchBF = true;
 							break;
 
 						case 8:
@@ -436,8 +436,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							break;
 
 						case 0xD:
-							// same as t==9
-							if (!FlagS && !FlagO) branchBF = true;
+							// branch if no overflow, not zero and neg
+							if (!FlagS && !FlagO && !FlagZ) branchBF = true;
 							break;
 
 						case 0xE:
@@ -446,8 +446,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 							break;
 
 						case 0xF:
-							// same as t=0xB
-							if (!FlagO && !FlagC && !FlagS) branchBF = true;
+							// all neg
+							if (!FlagO && !FlagC && !FlagS && FlagZ) branchBF = true;
 							break;
 					}
 
@@ -461,13 +461,11 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 					instr_pntr++; // dest == A
 					Regs[ALU0] = cur_instr[instr_pntr++]; // src
 					IN_Func(A, ALU0);
-					//Regs[cur_instr[instr_pntr++]] = ReadHardware(cur_instr[instr_pntr++]);
 					break;
 
 				// I/O Port 0 or 1 <- (A)
 				case OP_OUT:
-					WriteHardware(cur_instr[instr_pntr++], (byte)cur_instr[instr_pntr++]);
-					//OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					WriteHardware(cur_instr[instr_pntr++], (byte)Regs[cur_instr[instr_pntr++]]);
 					break;
 
 				// instruction fetch
@@ -779,10 +777,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// <summary>
 		/// Optimization method to set cur_instr
 		/// </summary>	
-		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
-			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
-			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,
-			ushort d29 = 0, ushort d30 = 0, ushort d31 = 0, ushort d32 = 0, ushort d33 = 0, ushort d34 = 0, ushort d35 = 0, ushort d36 = 0, ushort d37 = 0)
+		private void PopulateCURINSTR(byte d0 = 0, byte d1 = 0, byte d2 = 0, byte d3 = 0, byte d4 = 0, byte d5 = 0, byte d6 = 0, byte d7 = 0, byte d8 = 0,
+			byte d9 = 0, byte d10 = 0, byte d11 = 0, byte d12 = 0, byte d13 = 0, byte d14 = 0, byte d15 = 0, byte d16 = 0, byte d17 = 0, byte d18 = 0,
+			byte d19 = 0, byte d20 = 0, byte d21 = 0, byte d22 = 0, byte d23 = 0, byte d24 = 0, byte d25 = 0, byte d26 = 0, byte d27 = 0, byte d28 = 0,
+			byte d29 = 0, byte d30 = 0, byte d31 = 0, byte d32 = 0, byte d33 = 0, byte d34 = 0, byte d35 = 0, byte d36 = 0, byte d37 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;

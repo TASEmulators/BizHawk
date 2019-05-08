@@ -306,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void SHIFT_R(ushort index)
+		private void SHIFT_R(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void SHIFT_L(ushort index)
+		private void SHIFT_L(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -748,10 +748,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void DS(ushort rIndex)
+		private void DS(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// L
@@ -799,10 +799,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void LR_A_R(ushort rIndex)
+		private void LR_A_R(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -842,10 +842,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void LR_R_A(ushort rIndex)
+		private void LR_R_A(byte rIndex)
 		{
 			// only scratch registers 0-16
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -885,7 +885,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void LISU(ushort octal)
+		private void LISU(byte octal)
 		{
 			PopulateCURINSTR(
 				// S
@@ -895,7 +895,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void LISL(ushort octal)
+		private void LISL(byte octal)
 		{
 			PopulateCURINSTR(
 				// S
@@ -905,7 +905,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void LIS(ushort index)
+		private void LIS(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -915,7 +915,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void BT(ushort index)
+		private void BT(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -1050,7 +1050,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				OP_BR7);  // no END as there is branching logic within OP_BR7
 		}
 
-		private void BF(ushort index)
+		private void BF(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -1060,7 +1060,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				OP_BF, index);				// no END as there is branching logic within OP_BF
 		}
 
-		private void INS_0(ushort index)
+		private void INS_0(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -1075,7 +1075,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void INS_1(ushort index)
+		private void INS_1(byte index)
 		{
 			Regs[IO] = index;				// latch port index early
 
@@ -1101,7 +1101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void OUTS_0(ushort index)
+		private void OUTS_0(byte index)
 		{
 			PopulateCURINSTR(
 				// S
@@ -1116,7 +1116,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void OUTS_1(ushort index)
+		private void OUTS_1(byte index)
 		{
 			Regs[IO] = index;               // latch port index early
 
@@ -1142,10 +1142,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void AS(ushort rIndex)
+		private void AS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (ushort) (rIndex & 0x0F);
+			rIndex = (byte) (rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1188,10 +1188,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void ASD(ushort rIndex)
+		private void ASD(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1251,10 +1251,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void XS(ushort rIndex)
+		private void XS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S
@@ -1295,10 +1295,10 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				END);
 		}
 
-		private void NS(ushort rIndex)
+		private void NS(byte rIndex)
 		{
 			// only scratch registers 0-15
-			rIndex = (ushort)(rIndex & 0x0F);
+			rIndex = (byte)(rIndex & 0x0F);
 
 			PopulateCURINSTR(
 				// S

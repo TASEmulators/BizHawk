@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			else if (addr < 0x2000)
 			{
 				// Cart
-				return 0;
+				//return 0;
 				return Rom[addr - 0x800];
 			}
 

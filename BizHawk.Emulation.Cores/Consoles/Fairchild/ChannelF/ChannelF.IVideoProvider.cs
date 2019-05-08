@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 	{
 		public int _frameHz = 60;
 
-		public int[] CroppedBuffer = new int[(128*64) * 2]; //new int[102 * 58];
+		public int[] CroppedBuffer = new int[102 * 58];
 
 		#region IVideoProvider
 
 		public int VirtualWidth => BufferWidth * 2;
-		public int VirtualHeight => (int)((double)BufferHeight * 1.5) * 2;
-		public int BufferWidth => 128;// 102;
-		public int BufferHeight => 64; // 58;
+		public int VirtualHeight => (int)((double)BufferHeight * 1.3) * 2;
+		public int BufferWidth => 102; //128
+		public int BufferHeight => 58; //64
 		public int BackgroundColor => Colors.ARGB(0x00, 0x00, 0x00);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
@@ -24,41 +24,32 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		public int[] GetVideoBuffer()
 		{
 			BuildFrame();
-			/*
-			for (int i = 0; i < frameBuffer.Length; i++)
+
+			var lBorderWidth = 4;
+			var rBorderWidth = 128 - 102 - lBorderWidth;
+			var tBorderHeight = 4;
+			var bBorderHeight = 64 - 58 - tBorderHeight;
+			var startP = 128 * tBorderHeight;
+			var endP = 128 * bBorderHeight;
+
+			int index = 0;
+
+			for (int i = startP; i < frameBuffer.Length - endP; i += 128)
 			{
-				CroppedBuffer[i] = frameBuffer[i];
-				CroppedBuffer[i + frameBuffer.Length] = frameBuffer[i];
-			}
-
-			return CroppedBuffer;
-			*/
-			return frameBuffer;
-
-			// crop to visible area
-			var lR = 4;
-			var rR = 128 - BufferWidth - lR;
-			var tR = 4;
-			var bR = 64 - BufferHeight - tR;
-			var sW = 128 - lR - rR;
-			var startP = 128 * tR;
-			var endP = 128 * bR;
-
-			int index2 = 0;
-
-			// line by line
-			for (int i = startP; i < CroppedBuffer.Length - endP; i += sW + lR + rR)
-			{
-				// each pixel in each line
-				for (int p = lR; p < sW + lR + rR - rR; p++)
+				for (int p = lBorderWidth; p < 128 - rBorderWidth; p++)
 				{
-					if (index2 == CroppedBuffer.Length)
+					if (index == CroppedBuffer.Length)
 						break;
-					CroppedBuffer[index2++] = frameBuffer[i + p];
+
+					CroppedBuffer[index++] = FPalette[frameBuffer[i + p]];
 				}
 			}
 
 			return CroppedBuffer;
+
+			//return frameBuffer;
+
+			
 		}
 
 		#endregion
