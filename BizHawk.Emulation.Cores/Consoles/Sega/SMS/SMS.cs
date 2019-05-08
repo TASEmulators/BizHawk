@@ -245,8 +245,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private int _frame = 0;
 
 		private byte Port01 = 0xFF;
-		private byte Port02 = 0xFF;
-		private byte Port05 = 0x00;
+		public byte Port02 = 0xFF;
+		public byte Port03 = 0x00;
+		public byte Port04 = 0xFF;
+		public byte Port05 = 0x00;
 		private byte Port3E = 0xAF;
 		private byte Port3F = 0xFF;
 		private byte PortDE = 0x00;
@@ -260,6 +262,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public byte cntr_rd_1;
 		public byte cntr_rd_2;
 		public bool stand_alone = true;
+		public bool p3_write;
+		public bool p4_read;
 
 		public DisplayType Region { get; set; }
 
@@ -345,8 +349,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					case 0x00: if (stand_alone) { return ReadPort0(); } else { _lagged = false; return cntr_rd_0; }
 					case 0x01: return Port01;
 					case 0x02: return Port02;
-					case 0x03: return 0x00;
-					case 0x04: return 0xFF;
+					case 0x03: return Port03;
+					case 0x04: p4_read = true; return Port04;
 					case 0x05: return Port05;
 					case 0x06: return 0xFF;
 					case 0x3E: return Port3E;
@@ -388,7 +392,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					case 0x01: Port01 = value; break;
 					case 0x02: Port02 = value; break;
-					case 0x05: Port05 = value; break;
+					case 0x03: p3_write = true; Port03 = value; break;
+					case 0x04: /*Port04 = value*/; break; // receive port, not sure what writing does
+					case 0x05: Port05 = (byte)(value & 0xF8); break;
 					case 0x06: PSG.Set_Panning(value); break;
 					case 0x3E: Port3E = value; break;
 					case 0x3F: Port3F = value; break;
