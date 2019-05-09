@@ -64,6 +64,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(Bios_bank), ref Bios_bank);
 			ser.Sync(nameof(Port01), ref Port01);
 			ser.Sync(nameof(Port02), ref Port02);
+			ser.Sync(nameof(Port03), ref Port03);
+			ser.Sync(nameof(Port04), ref Port04);
 			ser.Sync(nameof(Port05), ref Port05);
 			ser.Sync(nameof(Port3E), ref Port3E);
 			ser.Sync(nameof(Port3F), ref Port3F);
@@ -74,6 +76,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync(nameof(cntr_rd_0), ref cntr_rd_0);
 			ser.Sync(nameof(cntr_rd_1), ref cntr_rd_1);
 			ser.Sync(nameof(cntr_rd_2), ref cntr_rd_2);
+			ser.Sync(nameof(p3_write), ref p3_write);
+			ser.Sync(nameof(p4_read), ref p4_read);
 			ser.Sync(nameof(stand_alone), ref stand_alone);
 			ser.Sync(nameof(disablePSG), ref disablePSG);
 			ser.Sync(nameof(sampleclock), ref sampleclock);
