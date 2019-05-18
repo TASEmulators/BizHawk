@@ -25,6 +25,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -1469,7 +1470,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<RamSearch>();
+			var ramSearch = GlobalWin.Tools.Load<RamSearch>();
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+			{
+				// this is apparently needed for weird mono-forms-on-different-thread issues
+				// dont do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here
+				// the mono winforms implementation is.... weird and buggy
+				ramSearch.Show();
+			}
 		}
 
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)

@@ -342,8 +342,13 @@ namespace BizHawk.Client.Common
 		
 		public int DispPrescale = 1;
 
-		// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
-		public EDispMethod DispMethod = EDispMethod.SlimDX9;
+		/// <remarks>
+		/// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
+		/// force DX for Windows and GDI+ for Unix when a new config is generated
+		/// </remarks>
+		public EDispMethod DispMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? EDispMethod.SlimDX9
+			: EDispMethod.GdiPlus;
 
 		public int DispChrome_FrameWindowed = 2;
 		public bool DispChrome_StatusBarWindowed = true;

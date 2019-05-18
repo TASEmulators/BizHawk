@@ -80,7 +80,13 @@ namespace BizHawk.Client.EmuHawk
 		[STAThread]
 		private static int Main(string[] args)
 		{
-			return SubMain(args);
+			var exitCode = SubMain(args);
+			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Linux)
+			{
+				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
+				Process.GetCurrentProcess().Kill();
+			}
+			return exitCode;
 		}
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
@@ -309,7 +315,8 @@ REDO_DISPMETHOD:
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (File.Exists(configPath)
+				if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows // LuaInterface is not currently working on Mono
+					&& File.Exists(configPath)
 					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"UseNLua\": ")) ?? string.Empty)
 						.Contains("false"))
 				{

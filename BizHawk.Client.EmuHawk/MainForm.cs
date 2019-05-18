@@ -161,7 +161,9 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
-			CGC.CGCBinPath = Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
+			CGC.CGCBinPath = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				? Path.Combine(PathManager.GetDllDirectory(), "cgc.exe")
+				: "cgc"; // installed separately (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
 			PresentationPanel = new PresentationPanel();
 			PresentationPanel.GraphicsControl.MainWindow = true;
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
@@ -2069,7 +2071,22 @@ namespace BizHawk.Client.EmuHawk
 		// sends an alt+mnemonic combination
 		private void SendAltKeyChar(char c)
 		{
-			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
+			switch (OSTailoredCode.CurrentOS)
+			{
+				case OSTailoredCode.DistinctOS.Linux:
+				case OSTailoredCode.DistinctOS.macOS:
+					// no mnemonics for you
+					break;
+				case OSTailoredCode.DistinctOS.Windows:
+					//HACK
+					var _ = typeof(ToolStrip).InvokeMember(
+						"ProcessMnemonicInternal",
+						System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance,
+						null,
+						MainformMenu,
+						new object[] { c });
+					break;
+			}
 		}
 
 		public static string FormatFilter(params string[] args)
