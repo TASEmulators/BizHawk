@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 				//TODO implement
 			}
 		}
-		private static PlatformSpecificScreenBlankInterface screenBlankInterface = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+		private static PlatformSpecificScreenBlankInterface screenBlankInterface = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
 			? (PlatformSpecificScreenBlankInterface) new WinScreenBlankInterface()
 			: (PlatformSpecificScreenBlankInterface) new MiscUnixScreenBlankInterface();
 

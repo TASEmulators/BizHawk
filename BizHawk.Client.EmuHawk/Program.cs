@@ -22,9 +22,9 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
 			{
-				var libLoader = EXE_PROJECT.PlatformLinkedLibSingleton.LinkedLibManager;
+				var libLoader = EXE_PROJECT.OSTailoredCode.LinkedLibManager;
 
 				//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 
@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS != EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.CurrentOS != EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 
 REDO_DISPMETHOD:
@@ -189,7 +189,7 @@ REDO_DISPMETHOD:
 				goto REDO_DISPMETHOD;
 			}
 
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".

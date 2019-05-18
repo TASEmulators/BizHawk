@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
 				_outputDevice = new OpenALSoundOutput(this);
-			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
 					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);

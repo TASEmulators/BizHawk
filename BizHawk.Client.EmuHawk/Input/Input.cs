@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
 				KeyInput.Initialize();
 				IPCKeyInput.Initialize();
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Cleanup()
 		{
-			if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
 				KeyInput.Cleanup();
 				GamePad.Cleanup();
@@ -331,10 +331,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
-				var keyEvents = PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows
+				var keyEvents = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
 					? KeyInput.Update().Concat(IPCKeyInput.Update())
 					: OTK_Keyboard.Update();
-				if (PlatformLinkedLibSingleton.CurrentOS == PlatformLinkedLibSingleton.DistinctOS.Windows)
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 				{
 					GamePad.UpdateAll();
 					GamePad360.UpdateAll();
