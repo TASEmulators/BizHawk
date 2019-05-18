@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				return timeBeginPeriod(ms);
 			}
 		}
-		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
+		static PlatformSpecificSysTimer sysTimer = PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Windows ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
 		static uint TimeBeginPeriod(uint ms)
 		{
 			return sysTimer.TimeBeginPeriod(ms);

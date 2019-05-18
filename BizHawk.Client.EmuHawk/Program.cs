@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				var libLoader = EXE_PROJECT.PlatformLinkedLibSingleton.LinkedLibManager;
 
@@ -141,8 +141,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-		REDO_DISPMETHOD:
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS != EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
+				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+
+REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
@@ -187,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			if (!EXE_PROJECT.PlatformLinkedLibSingleton.RunningOnUnix)
+			if (EXE_PROJECT.PlatformLinkedLibSingleton.CurrentOS == EXE_PROJECT.PlatformLinkedLibSingleton.DistinctOS.Windows)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".

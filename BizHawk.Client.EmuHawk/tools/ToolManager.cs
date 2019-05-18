@@ -740,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			if (t == typeof(LuaConsole) && PlatformLinkedLibSingleton.RunningOnUnix) return false;
+			if (t == typeof(LuaConsole) && PlatformLinkedLibSingleton.CurrentOS != PlatformLinkedLibSingleton.DistinctOS.Windows) return false;
 
 			var tool = Assembly
 					.GetExecutingAssembly()
