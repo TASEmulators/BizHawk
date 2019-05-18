@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-#if WINDOWS
+
 using Microsoft.VisualBasic.ApplicationServices;
-#endif
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -265,7 +264,6 @@ REDO_DISPMETHOD:
 			return GlobalWin.ExitCode;
 		} //SubMain
 
-#if WINDOWS
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 
 		[DllImport("kernel32.dll", SetLastError = true)]
@@ -292,7 +290,6 @@ REDO_DISPMETHOD:
 					RemoveMOTW(fi.FullName);
 			}
 		}
-#endif
 
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
@@ -336,7 +333,6 @@ REDO_DISPMETHOD:
 			}
 		}
 
-#if WINDOWS
 		private class SingleInstanceController : WindowsFormsApplicationBase
 		{
 			private readonly string[] cmdArgs;
@@ -365,6 +361,5 @@ REDO_DISPMETHOD:
 				GlobalWin.ExitCode = ((MainForm)MainForm).ProgramRunLoop();
 			}
 		}
-#endif
 	}
 }

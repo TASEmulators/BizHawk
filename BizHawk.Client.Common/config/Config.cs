@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -370,11 +371,9 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom = 0;
 
 		// Sound options
-#if WINDOWS
-		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.DirectSound;
-#else
-		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
-#endif
+		public ESoundOutputMethod SoundOutputMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? ESoundOutputMethod.DirectSound
+			: ESoundOutputMethod.OpenAL; // force OpenAL for Unix when config is generated
 		public bool SoundEnabled = true;
 		public bool SoundEnabledNormal = true;
 		public bool SoundEnabledRWFF = true;

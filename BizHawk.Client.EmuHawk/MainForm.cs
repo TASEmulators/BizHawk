@@ -1052,7 +1052,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_inFullscreen)
 			{
 				SuspendLayout();
-#if WINDOWS
+
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
 				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
@@ -1060,7 +1060,9 @@ namespace BizHawk.Client.EmuHawk
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
 				// Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-				if (Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					&& Global.Config.DispFullscreenHacks
+					&& Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
 					//It seems that some statusbar elements composite with the backcolor. 
@@ -1071,7 +1073,6 @@ namespace BizHawk.Client.EmuHawk
 					// FUTURE WORK:
 					// re-add this padding back into the display manager (so the image will get cut off a little but, but a few more resolutions will fully fit into the screen)
 				}
-#endif
 
 				_windowedLocation = Location;
 
@@ -1088,13 +1089,15 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-#if WINDOWS
-				// do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
-				Padding = new Padding(0);
-				// it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
-				// so we need the statusbar and mainform backdrop color to match
-				BackColor = SystemColors.Control;
-#endif
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				{
+					// do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
+					Padding = new Padding(0);
+
+					// it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+					// so we need the statusbar and mainform backdrop color to match
+					BackColor = SystemColors.Control;
+				}
 
 				_inFullscreen = false;
 
