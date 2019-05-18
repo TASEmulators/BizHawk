@@ -153,14 +153,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private class UnixMonoSysTimer : PlatformSpecificSysTimer
 		{
-			[DllImport("winmm.dll.so", EntryPoint = "timeBeginPeriod")]
-			private static extern uint timeBeginPeriod(uint uMilliseconds);
 			public uint TimeBeginPeriod(uint ms)
 			{
-				return timeBeginPeriod(ms);
+				// we are not going to bother trying to set a minimum resolution for periodic timers
+				// (on linux I don't think you can set this in user code)
+				return ms;
 			}
 		}
-		static PlatformSpecificSysTimer sysTimer = OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
+		static PlatformSpecificSysTimer sysTimer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? (PlatformSpecificSysTimer) new WinSysTimer()
+			: new UnixMonoSysTimer();
 		static uint TimeBeginPeriod(uint ms)
 		{
 			return sysTimer.TimeBeginPeriod(ms);
@@ -362,18 +364,23 @@ namespace BizHawk.Client.EmuHawk
 				int sleepTime = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
 				if (sleepTime >= 2 || paused)
 				{
-#if WINDOWS
-					// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
-					// on Windows XP is generally within a half millisecond either way of the requested
-					// time. The actual sleep time on Windows 8 is generally between the requested time
-					// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
-					// sleeping longer than desired.
-					sleepTime -= 1;
-#else
-					// The actual sleep time on OS X with Mono is generally between the request time
-					// and up to 25% over. So we'll scale the sleep time back to account for that.
-					sleepTime = sleepTime * 4 / 5;
-#endif
+					switch (OSTailoredCode.CurrentOS)
+					{
+						case OSTailoredCode.DistinctOS.Linux: //TODO repro
+						case OSTailoredCode.DistinctOS.macOS:
+							// The actual sleep time on OS X with Mono is generally between the request time
+							// and up to 25% over. So we'll scale the sleep time back to account for that.
+							sleepTime = sleepTime * 4 / 5;
+							break;
+						case OSTailoredCode.DistinctOS.Windows:
+							// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
+							// on Windows XP is generally within a half millisecond either way of the requested
+							// time. The actual sleep time on Windows 8 is generally between the requested time
+							// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
+							// sleeping longer than desired.
+							sleepTime -= 1;
+							break;
+					}
 
 					Thread.Sleep(Math.Max(sleepTime, 1));
 				}
