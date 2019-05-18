@@ -12,6 +12,7 @@ svnrev.cs
 **/ipch/**
 
 *.ilk
+*.il
 *.tlog
 *.obj
 *.o
@@ -74,3 +75,7 @@ libsnes/vs2015/libsnes.VC.db
 waterbox/**/*.wbx
 waterbox/**/*.wbx.in
 /BizHawkTool_template.zip
+
+mono_crash*
+
+.idea
