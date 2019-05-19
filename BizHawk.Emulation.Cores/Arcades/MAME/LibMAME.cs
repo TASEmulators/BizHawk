@@ -8,10 +8,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
     public static class LibMAME
     {
-        const string dll = "mame.dll";
+        const string dll = "libpacmansh64d.dll";
         const CallingConvention cc = CallingConvention.Cdecl;
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern UInt32 mame_number();
+		public static extern UInt32 mame_launch(int argc, string[] argv);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern UInt32 mame_five();
 	}
 }
