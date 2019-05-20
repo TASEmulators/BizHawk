@@ -159,7 +159,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
-			newTool.Show();
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows
+			   && newTool is RamSearch)
+			{
+				// the mono winforms implementation is buggy, skip to the return statement and call Show in MainForm instead
+			}
+			else
+			{
+				newTool.Show();
+			}
 			return (T)newTool;
 		}
 
