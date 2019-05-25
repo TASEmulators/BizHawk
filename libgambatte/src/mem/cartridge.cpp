@@ -92,7 +92,7 @@ class Mbc1 : public DefaultMbc {
 
 	static unsigned adjustedRombank(unsigned bank) { return bank & 0x1F ? bank : bank | 1; }
 	void setRambank() const { memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, rambank & (rambanks(memptrs) - 1)); }
-	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank & (rombanks(memptrs) - 1))); }
+	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank) & (rombanks(memptrs) - 1)); }
 
 public:
 	explicit Mbc1(MemPtrs &memptrs)
@@ -172,7 +172,7 @@ class Mbc1Multi64 : public Mbc {
 			memptrs.setRombank(adjustedRombank(rb));
 		} else {
 			memptrs.setRombank0(0);
-			memptrs.setRombank(adjustedRombank(rombank & (rombanks(memptrs) - 1)));
+			memptrs.setRombank(adjustedRombank(rombank) & (rombanks(memptrs) - 1));
 		}
 	}
 
@@ -193,7 +193,9 @@ public:
 			break;
 		case 1:
 			rombank = (rombank   & 0x60) | (data    & 0x1F);
-			memptrs.setRombank(adjustedRombank(rombank0Mode ? toMulti64Rombank(rombank) : rombank & (rombanks(memptrs) - 1)));
+			memptrs.setRombank(rombank0Mode
+				? adjustedRombank(toMulti64Rombank(rombank))
+				: adjustedRombank(rombank) & (rombanks(memptrs) - 1));
 			break;
 		case 2:
 			rombank = (data << 5 & 0x60) | (rombank & 0x1F);
@@ -433,8 +435,13 @@ class Mbc5 : public DefaultMbc {
 	bool enableRam;
 
 	static unsigned adjustedRombank(const unsigned bank) { return bank; }
-	void setRambank() const { memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, rambank & (rambanks(memptrs) - 1)); }
-	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank & (rombanks(memptrs) - 1))); }
+
+	void setRambank() const {
+		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0,
+		                   rambank & (rambanks(memptrs) - 1));
+	}
+
+	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank) & (rombanks(memptrs) - 1)); }
 
 public:
 	explicit Mbc5(MemPtrs &memptrs)
