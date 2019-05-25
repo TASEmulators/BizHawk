@@ -30,7 +30,6 @@ static unsigned char const agbOverride[0xD] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0x
 #include "gambatte.h"
 
 namespace gambatte {
-class InputGetter;
 class FilterInfo;
 
 class Memory {
