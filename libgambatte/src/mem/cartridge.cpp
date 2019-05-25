@@ -593,6 +593,8 @@ LoadRes Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, bool
 		case 0x1C:
 		case 0x1D:
 		case 0x1E: type = MBC5; break;
+		case 0x20: return LOADRES_UNSUPPORTED_MBC_MBC6;
+		case 0x22: return LOADRES_UNSUPPORTED_MBC_MBC7;
 		case 0xFC: return LOADRES_UNSUPPORTED_MBC_POCKET_CAMERA;
 		case 0xFD: return LOADRES_UNSUPPORTED_MBC_TAMA5;
 		case 0xFE: return LOADRES_UNSUPPORTED_MBC_HUC3;
