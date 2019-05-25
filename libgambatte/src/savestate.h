@@ -125,6 +125,7 @@ struct SaveState {
 			unsigned long nextPosUpdate;
 			unsigned char nr3;
 			unsigned char pos;
+			unsigned char /*bool*/ high;
 		};
 
 		struct Env {

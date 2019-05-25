@@ -321,7 +321,7 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 	cycleCounter += 4;
 
 	if (ioamhram[0x14D] & isCgb()) {
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
 
 		display.speedChange(cycleCounter);
 		ioamhram[0x14D] ^= 0x81;
@@ -496,7 +496,7 @@ unsigned Memory::nontrivial_ff_read(const unsigned P, const unsigned long cycleC
 		break;
 	case 0x26:
 		if (ioamhram[0x126] & 0x80) {
-			sound.generate_samples(cycleCounter, isDoubleSpeed());
+			sound.generateSamples(cycleCounter, isDoubleSpeed());
 			ioamhram[0x126] = 0xF0 | sound.getStatus();
 		} else
 			ioamhram[0x126] = 0x70;
@@ -518,7 +518,7 @@ unsigned Memory::nontrivial_ff_read(const unsigned P, const unsigned long cycleC
 	case 0x3D:
 	case 0x3E:
 	case 0x3F:
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
 		return sound.waveRamRead(P & 0xF);
 	case 0x41:
 		return ioamhram[0x141] | display.getStat(ioamhram[0x145], cycleCounter);
@@ -670,8 +670,8 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		return;
 	case 0x10:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr10(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr10(data);
 		data |= 0x80;
 		break;
 	case 0x11:
@@ -682,24 +682,24 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 			data &= 0x3F;
 		}
 
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr11(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr11(data);
 		data |= 0x3F;
 		break;
 	case 0x12:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr12(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr12(data);
 		break;
 	case 0x13:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr13(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr13(data);
 		return;
 	case 0x14:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr14(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr14(data);
 		data |= 0xBF;
 		break;
 	case 0x16:
@@ -710,88 +710,88 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 			data &= 0x3F;
 		}
 
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr21(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr21(data);
 		data |= 0x3F;
 		break;
 	case 0x17:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr22(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr22(data);
 		break;
 	case 0x18:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr23(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr23(data);
 		return;
 	case 0x19:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr24(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr24(data);
 		data |= 0xBF;
 		break;
 	case 0x1A:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr30(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr30(data);
 		data |= 0x7F;
 		break;
 	case 0x1B:
 		if (!sound.isEnabled() && isCgb()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr31(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr31(data);
 		return;
 	case 0x1C:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr32(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr32(data);
 		data |= 0x9F;
 		break;
 	case 0x1D:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr33(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr33(data);
 		return;
 	case 0x1E:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr34(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr34(data);
 		data |= 0xBF;
 		break;
 	case 0x20:
 		if (!sound.isEnabled() && isCgb()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr41(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr41(data);
 		return;
 	case 0x21:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr42(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr42(data);
 		break;
 	case 0x22:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr43(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr43(data);
 		break;
 	case 0x23:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_nr44(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setNr44(data);
 		data |= 0xBF;
 		break;
 	case 0x24:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.set_so_volume(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.setSoVolume(data);
 		break;
 	case 0x25:
 		if (!sound.isEnabled()) return;
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
-		sound.map_so(data);
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
+		sound.mapSo(data);
 		break;
 	case 0x26:
 		if ((ioamhram[0x126] ^ data) & 0x80) {
-			sound.generate_samples(cycleCounter, isDoubleSpeed());
+			sound.generateSamples(cycleCounter, isDoubleSpeed());
 
 			if (!(data & 0x80)) {
 				for (unsigned i = 0xFF10; i < 0xFF26; ++i)
@@ -822,7 +822,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 	case 0x3D:
 	case 0x3E:
 	case 0x3F:
-		sound.generate_samples(cycleCounter, isDoubleSpeed());
+		sound.generateSamples(cycleCounter, isDoubleSpeed());
 		sound.waveRamWrite(P & 0xF, data);
 		break;
 	case 0x40:
@@ -1067,7 +1067,7 @@ LoadRes Memory::loadROM(const char *romfiledata, unsigned romfilelength, const b
 }
 
 unsigned Memory::fillSoundBuffer(const unsigned long cycleCounter) {
-	sound.generate_samples(cycleCounter, isDoubleSpeed());
+	sound.generateSamples(cycleCounter, isDoubleSpeed());
 	return sound.fillBuffer();
 }
 

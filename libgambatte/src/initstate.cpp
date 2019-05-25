@@ -1266,37 +1266,37 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 
 	state.spu.cycleCounter = 0; // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
 
-	state.spu.ch1.sweep.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.sweep.counter = SoundUnit::counter_disabled;
 	state.spu.ch1.sweep.shadow = 0;
 	state.spu.ch1.sweep.nr0 = 0;
 	state.spu.ch1.sweep.negging = false;
-	state.spu.ch1.duty.nextPosUpdate = (state.spu.cycleCounter & ~1ul) + 37 * 2;
-	state.spu.ch1.duty.nr3 = 0;
+	state.spu.ch1.duty.nextPosUpdate = SoundUnit::counter_disabled;
 	state.spu.ch1.duty.pos = 0;
-	state.spu.ch1.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.duty.high = false;
+	state.spu.ch1.duty.nr3 = 0;
+	state.spu.ch1.env.counter = SoundUnit::counter_disabled;
 	state.spu.ch1.env.volume = 0;
-	state.spu.ch1.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.lcounter.counter = SoundUnit::counter_disabled;
 	state.spu.ch1.lcounter.lengthCounter = 0;
 	state.spu.ch1.nr4 = 0;
 	state.spu.ch1.master = false;
 
-	state.spu.ch2.duty.nextPosUpdate = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.duty.nextPosUpdate = SoundUnit::counter_disabled;
 	state.spu.ch2.duty.nr3 = 0;
 	state.spu.ch2.duty.pos = 0;
-	state.spu.ch2.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.duty.high = false;
+	state.spu.ch2.env.counter = SoundUnit::counter_disabled;
 	state.spu.ch2.env.volume = 0;
-	state.spu.ch2.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.lcounter.counter = SoundUnit::counter_disabled;
 	state.spu.ch2.lcounter.lengthCounter = 0;
 	state.spu.ch2.nr4 = 0;
 	state.spu.ch2.master = false;
 
-	for (unsigned i = 0; i < 0x10; ++i)
-		state.spu.ch3.waveRam.ptr[i] = state.mem.ioamhram.get()[0x130 + i];
-
-	state.spu.ch3.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	std::memcpy(state.spu.ch3.waveRam.ptr, state.mem.ioamhram.get() + 0x130, 0x10);
+	state.spu.ch3.lcounter.counter = SoundUnit::counter_disabled;
 	state.spu.ch3.lcounter.lengthCounter = 0x100;
-	state.spu.ch3.waveCounter = SoundUnit::COUNTER_DISABLED;
-	state.spu.ch3.lastReadTime = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch3.waveCounter = SoundUnit::counter_disabled;
+	state.spu.ch3.lastReadTime = SoundUnit::counter_disabled;
 	state.spu.ch3.nr3 = 0;
 	state.spu.ch3.nr4 = 0;
 	state.spu.ch3.wavePos = 0;
@@ -1305,9 +1305,9 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 
 	state.spu.ch4.lfsr.counter = state.spu.cycleCounter + 4;
 	state.spu.ch4.lfsr.reg = 0xFF;
-	state.spu.ch4.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch4.env.counter = SoundUnit::counter_disabled;
 	state.spu.ch4.env.volume = 0;
-	state.spu.ch4.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch4.lcounter.counter = SoundUnit::counter_disabled;
 	state.spu.ch4.lcounter.lengthCounter = 0;
 	state.spu.ch4.nr4 = 0;
 	state.spu.ch4.master = false;
