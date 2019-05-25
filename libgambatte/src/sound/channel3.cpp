@@ -168,12 +168,9 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 				break;
 		}
 	} else {
-		if (outBase) {
-			const unsigned long out = outBase * (0 - 15ul);
-			
-			*buf += out - prevOut;
-			prevOut = out;
-		}
+		const unsigned long out = outBase * (0 - 15ul);
+		*buf += out - prevOut;
+		prevOut = out;
 		
 		cycleCounter += cycles;
 		
