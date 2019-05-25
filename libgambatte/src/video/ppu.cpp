@@ -105,9 +105,9 @@ enum { WIN_DRAW_START = 1, WIN_DRAW_STARTED = 2 };
 enum { M2_DS_OFFSET = 3 };
 enum { MAX_M3START_CYCLES = 80 };
 
-static inline unsigned weMasterCheckPriorToLyIncLineCycle(const bool cgb) { return 450 - cgb; }
-static inline unsigned weMasterCheckAfterLyIncLineCycle(const bool cgb) { return 454 - cgb; }
-static inline unsigned m3StartLineCycle(const bool /*cgb*/) { return 83; }
+static inline int weMasterCheckPriorToLyIncLineCycle(const bool cgb) { return 450 - cgb; }
+static inline int weMasterCheckAfterLyIncLineCycle(const bool cgb) { return 454 - cgb; }
+static inline int m3StartLineCycle(const bool /*cgb*/) { return 83; }
 
 static inline void nextCall(const int cycles, const PPUState &state, PPUPriv &p) {
 	const int c = p.cycles - cycles;
