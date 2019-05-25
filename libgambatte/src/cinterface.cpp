@@ -49,7 +49,7 @@ GBEXPORT int gambatte_loaddmgbios(GB* g, const char* biosfiledata)
 
 GBEXPORT int gambatte_runfor(GB *g, short *soundbuf, unsigned *samples)
 {
-	unsigned sampv = *samples;
+	std::size_t sampv = *samples;
 	int ret = g->runFor((unsigned int *) soundbuf, sampv);
 	*samples = sampv;
 	return ret;

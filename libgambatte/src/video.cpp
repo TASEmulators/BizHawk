@@ -55,7 +55,7 @@ LCD::LCD(unsigned char const *oamram, unsigned char const *vram,
 , scanlinecallbacksl(0)
 {
 	for (std::size_t i = 0; i < sizeof dmgColorsRgb32_ / sizeof dmgColorsRgb32_[0]; ++i)
-		setDmgPaletteColor(i, (3 - (i & 3)) * 85 * 0x010101);
+		dmgColorsRgb32_[i] = (3 - (i & 3)) * 85 * 0x010101ul;
 	std::memset( bgpData_, 0, sizeof  bgpData_);
 	std::memset(objpData_, 0, sizeof objpData_);
 
@@ -867,15 +867,11 @@ void LCD::setVideoBuffer(uint_least32_t *videoBuf, std::ptrdiff_t pitch) {
 	ppu_.setFrameBuf(videoBuf, pitch);
 }
 
-void LCD::setDmgPaletteColor(unsigned index, unsigned long rgb32) {
-	dmgColorsRgb32_[index] = rgb32;
-}
-
 void LCD::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32) {
 	if (palNum > 2 || colorNum > 3)
 		return;
 
-	setDmgPaletteColor(palNum * 4 | colorNum, rgb32);
+	dmgColorsRgb32_[palNum * 4 + colorNum] = rgb32;
 	refreshPalettes();
 }
 

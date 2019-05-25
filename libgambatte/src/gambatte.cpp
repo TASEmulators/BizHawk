@@ -49,7 +49,7 @@ GB::~GB() {
 	delete p_;
 }
 
-long GB::runFor(gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
+std::ptrdiff_t GB::runFor(gambatte::uint_least32_t *const soundBuf, std::size_t &samples) {
 	if (!p_->cpu.loaded()) {
 		samples = 0;
 		return -1;
@@ -60,7 +60,7 @@ long GB::runFor(gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
 	const long cyclesSinceBlit = p_->cpu.runFor(samples * 2);
 	samples = p_->cpu.fillSoundBuffer();
 
-	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
+	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<std::ptrdiff_t>(samples) - (cyclesSinceBlit >> 1);
 }
 
 void GB::setLayers(unsigned mask)
@@ -211,7 +211,7 @@ void GB::ExternalWrite(unsigned short addr, unsigned char val) {
 }
 
 
-void GB::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
+void GB::setDmgPaletteColor(int palNum, int colorNum, unsigned long rgb32) {
 	p_->cpu.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 

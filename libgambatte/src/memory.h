@@ -330,13 +330,16 @@ public:
 	void setEndtime(unsigned long cc, unsigned long inc);
 
 	void setSoundBuffer(uint_least32_t *const buf) { sound.setBuffer(buf); }
-	unsigned fillSoundBuffer(unsigned long cc);
+	std::size_t fillSoundBuffer(unsigned long cc);
 
 	void setVideoBuffer(uint_least32_t *const videoBuf, const std::ptrdiff_t pitch) {
 		display.setVideoBuffer(videoBuf, pitch);
 	}
 
-	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
+	void setDmgPaletteColor(int palNum, int colorNum, unsigned long rgb32) {
+		display.setDmgPaletteColor(palNum, colorNum, rgb32);
+	}
+
 	void setCgbPalette(unsigned *lut);
 
 	void blackScreen() {

@@ -87,7 +87,7 @@ public:
 	  * @param samples in: number of stereo samples to produce, out: actual number of samples produced
 	  * @return sample number at which the video frame was produced. -1 means no frame was produced.
 	  */
-	long runFor(gambatte::uint_least32_t *soundBuf, unsigned &samples);
+	std::ptrdiff_t runFor(gambatte::uint_least32_t *soundBuf, std::size_t &samples);
 
 	void blitTo(gambatte::uint_least32_t *videoBuf, std::ptrdiff_t pitch);
 
@@ -101,7 +101,7 @@ public:
 	/** @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
 	  * @param colorNum 0 <= colorNum < 4
 	  */
-	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32);
+	void setDmgPaletteColor(int palNum, int colorNum, unsigned long rgb32);
 
 	void setCgbPalette(unsigned *lut);
 

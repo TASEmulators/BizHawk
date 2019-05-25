@@ -1068,13 +1068,9 @@ LoadRes Memory::loadROM(const char *romfiledata, unsigned romfilelength, const b
 	return LOADRES_OK;
 }
 
-unsigned Memory::fillSoundBuffer(const unsigned long cycleCounter) {
+std::size_t Memory::fillSoundBuffer(const unsigned long cycleCounter) {
 	sound.generateSamples(cycleCounter, isDoubleSpeed());
 	return sound.fillBuffer();
-}
-
-void Memory::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32) {
-	display.setDmgPaletteColor(palNum, colorNum, rgb32);
 }
 
 void Memory::setCgbPalette(unsigned *lut) {

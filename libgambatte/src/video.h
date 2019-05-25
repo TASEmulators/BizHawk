@@ -226,8 +226,9 @@ public:
 	unsigned char m2IrqStatReg_;
 	unsigned char m1IrqStatReg_;
 
-	static void setDmgPalette(unsigned long palette[], const unsigned long dmgColors[], unsigned data);
-	void setDmgPaletteColor(unsigned index, unsigned long rgb32);
+	static void setDmgPalette(unsigned long palette[],
+	                          unsigned long const dmgColors[],
+	                          unsigned data);
 
 	unsigned long gbcToRgb32(const unsigned bgr15);
 	void doCgbColorChange(unsigned char *const pdata, unsigned long *const palette, unsigned index, const unsigned data);

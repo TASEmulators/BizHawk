@@ -62,7 +62,7 @@ public:
 class Cartridge {
 	MemPtrs memptrs;
 	Rtc rtc;
-	std::auto_ptr<Mbc> mbc;
+	std::unique_ptr<Mbc> mbc;
 
 public:
 	void setStatePtrs(SaveState &);
