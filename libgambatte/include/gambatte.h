@@ -21,6 +21,7 @@
 
 #include "gbint.h"
 #include "loadres.h"
+#include <cstddef>
 #include <string>
 #include <sstream>
 #include <cstdint>
@@ -88,7 +89,7 @@ public:
 	  */
 	long runFor(gambatte::uint_least32_t *soundBuf, unsigned &samples);
 
-	void blitTo(gambatte::uint_least32_t *videoBuf, int pitch);
+	void blitTo(gambatte::uint_least32_t *videoBuf, std::ptrdiff_t pitch);
 
 	void setLayers(unsigned mask);
 

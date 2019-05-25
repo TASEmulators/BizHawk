@@ -127,7 +127,7 @@ public:
 	void loadState(const SaveState &state, const unsigned char *oamram);
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);
-	void setVideoBuffer(uint_least32_t *videoBuf, int pitch);
+	void setVideoBuffer(uint_least32_t *videoBuf, std::ptrdiff_t pitch);
 	void setLayers(unsigned mask) { ppu.setLayers(mask); }
 	void setCgb(bool cgb);
 	void copyCgbPalettesToDmg();

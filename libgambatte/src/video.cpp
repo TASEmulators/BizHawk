@@ -750,7 +750,7 @@ void LCD::update(const unsigned long cycleCounter) {
 	ppu.update(cycleCounter);
 }
 
-void LCD::setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
+void LCD::setVideoBuffer(uint_least32_t *const videoBuf, const std::ptrdiff_t pitch) {
 	ppu.setFrameBuf(videoBuf, pitch);
 }
 

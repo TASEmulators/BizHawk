@@ -68,7 +68,7 @@ void GB::setLayers(unsigned mask)
 	p_->cpu.setLayers(mask);
 }
 
-void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)
+void GB::blitTo(gambatte::uint_least32_t *videoBuf, std::ptrdiff_t pitch)
 {
 	gambatte::uint_least32_t *src = p_->vbuff;
 	gambatte::uint_least32_t *dst = videoBuf;
