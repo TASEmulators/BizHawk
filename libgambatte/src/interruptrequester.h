@@ -87,7 +87,7 @@ public:
 
 inline void flagHdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(0); }
 inline void flagGdmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(1); }
-inline void ackDmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(DISABLED_TIME); }
+inline void ackDmaReq(InterruptRequester *const intreq) { intreq->setEventTime<DMA>(disabled_time); }
 inline bool hdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 0; }
 inline bool gdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 1; }
 

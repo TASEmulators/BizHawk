@@ -25,7 +25,7 @@ namespace gambatte {
 
 Tima::Tima() :
 lastUpdate_(0),
-tmatime_(DISABLED_TIME),
+tmatime_(disabled_time),
 tima_(0),
 tma_(0),
 tac_(0)
@@ -41,11 +41,11 @@ void Tima::loadState(const SaveState &state, const TimaInterruptRequester timaIr
 
 	timaIrq.setNextIrqEventTime((tac_ & 4)
 		?
-			(tmatime_ != DISABLED_TIME && tmatime_ > state.cpu.cycleCounter
+			(tmatime_ != disabled_time && tmatime_ > state.cpu.cycleCounter
 			          ? tmatime_
 			          : lastUpdate_ + ((256u - tima_) << timaClock[tac_ & 3]) + 3)
 		:
-			static_cast<unsigned long>(DISABLED_TIME)
+			static_cast<unsigned long>(disabled_time)
 	);
 }
 
@@ -59,7 +59,7 @@ void Tima::resetCc(const unsigned long oldCc, const unsigned long newCc, const T
 		lastUpdate_ -= dec;
 		timaIrq.setNextIrqEventTime(timaIrq.nextIrqEventTime() - dec);
 
-		if (tmatime_ != DISABLED_TIME)
+		if (tmatime_ != disabled_time)
 			tmatime_ -= dec;
 	}
 }
@@ -71,7 +71,7 @@ void Tima::updateTima(const unsigned long cycleCounter) {
 
 	if (cycleCounter >= tmatime_) {
 		if (cycleCounter >= tmatime_ + 4)
-			tmatime_ = DISABLED_TIME;
+			tmatime_ = disabled_time;
 
 		tima_ = tma_;
 	}
@@ -87,7 +87,7 @@ void Tima::updateTima(const unsigned long cycleCounter) {
 
 		if (cycleCounter >= tmatime_) {
 			if (cycleCounter >= tmatime_ + 4)
-				tmatime_ = DISABLED_TIME;
+				tmatime_ = disabled_time;
 
 			tmp = tma_;
 		}
@@ -102,7 +102,7 @@ void Tima::setTima(const unsigned data, const unsigned long cycleCounter, const 
 		updateTima(cycleCounter);
 
 		if (tmatime_ - cycleCounter < 4)
-			tmatime_ = DISABLED_TIME;
+			tmatime_ = disabled_time;
 
 		timaIrq.setNextIrqEventTime(lastUpdate_ + ((256u - data) << timaClock[tac_ & 3]) + 3);
 	}
@@ -136,8 +136,8 @@ void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const T
 
 			updateTima(cycleCounter);
 
-			tmatime_ = DISABLED_TIME;
-			nextIrqEventTime = DISABLED_TIME;
+			tmatime_ = disabled_time;
+			nextIrqEventTime = disabled_time;
 		}
 
 		if (data & 4) {

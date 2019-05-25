@@ -1200,10 +1200,10 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 
 	state.mem.divLastUpdate = 0 - div;
 	state.mem.timaLastUpdate = 0;
-	state.mem.tmatime = DISABLED_TIME;
-	state.mem.nextSerialtime = DISABLED_TIME;
-	state.mem.lastOamDmaUpdate = DISABLED_TIME;
-	state.mem.unhaltTime = DISABLED_TIME;
+	state.mem.tmatime = disabled_time;
+	state.mem.nextSerialtime = disabled_time;
+	state.mem.lastOamDmaUpdate = disabled_time;
+	state.mem.unhaltTime = disabled_time;
 	state.mem.minIntTime = 0;
 	state.mem.rombank = 1;
 	state.mem.dmaSource = 0;

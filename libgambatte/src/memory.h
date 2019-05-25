@@ -125,7 +125,7 @@ public:
 
 	void setLayers(unsigned mask) { display.setLayers(mask); }
 
-	bool isActive() const { return intreq.eventTime(END) != DISABLED_TIME; }
+	bool isActive() const { return intreq.eventTime(END) != disabled_time; }
 
 	long cyclesSinceBlit(const unsigned long cc) const {
 		return cc < intreq.eventTime(BLIT) ? -1 : static_cast<long>((cc - intreq.eventTime(BLIT)) >> isDoubleSpeed());
