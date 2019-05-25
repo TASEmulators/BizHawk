@@ -64,7 +64,7 @@ public:
 	}
 
 	void doEvent(unsigned char *const ifreg, const unsigned ly, const unsigned statReg, const unsigned lycReg) {
-		if (((statReg_ | statReg) & 0x08) && (!(statReg_ & 0x40) || ly != lycReg_))
+		if (((statReg_ | statReg) & lcdstat_m0irqen) && (!(statReg_ & lcdstat_lycirqen) || ly != lycReg_))
 			*ifreg |= 2;
 
 		statReg_ = statReg;

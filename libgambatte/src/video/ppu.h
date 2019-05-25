@@ -19,6 +19,7 @@
 #ifndef PPU_H
 #define PPU_H
 
+#include "lcddef.h"
 #include "video/ly_counter.h"
 #include "video/sprite_mapper.h"
 #include "gbint.h"
