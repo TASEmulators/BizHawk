@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
+ *   Copyright (C) 2007 by Sindre Aamï¿½s                                    *
  *   aamas@stud.ntnu.no                                                    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,19 +26,19 @@ template<typename T, class Less>
 void insertionSort(T *const start, T *const end, Less less) {
 	if (start >= end)
 		return;
-	
+
 	T *a = start;
-	
+
 	while (++a < end) {
 		const T e = *a;
-		
+
 		T *b = a;
-		
+
 		while (b != start && less(e, *(b - 1))) {
 			*b = *(b - 1);
 			b = b - 1;
 		}
-		
+
 		*b = e;
 	}
 }

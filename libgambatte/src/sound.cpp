@@ -75,7 +75,7 @@ void PSG::loadState(const SaveState &state) {
 	ch2.loadState(state);
 	ch3.loadState(state);
 	ch4.loadState(state);
-	
+
 	lastUpdate = state.cpu.cycleCounter;
 	set_so_volume(state.mem.ioamhram.get()[0x124]);
 	map_so(state.mem.ioamhram.get()[0x125]);
@@ -84,7 +84,7 @@ void PSG::loadState(const SaveState &state) {
 
 void PSG::accumulate_channels(const unsigned long cycles) {
 	uint_least32_t *const buf = buffer + bufferPos;
-	
+
 	std::memset(buf, 0, cycles * sizeof *buf);
 	ch1.update(buf, soVol, cycles);
 	ch2.update(buf, soVol, cycles);
@@ -98,7 +98,7 @@ void PSG::generate_samples(const unsigned long cycleCounter, const unsigned doub
 
 	if (cycles)
 		accumulate_channels(cycles);
-	
+
 	bufferPos += cycles;
 }
 
@@ -111,10 +111,10 @@ unsigned PSG::fillBuffer() {
 	uint_least32_t sum = rsum;
 	uint_least32_t *b = buffer;
 	unsigned n = bufferPos;
-	
+
 	if (unsigned n2 = n >> 3) {
 		n -= n2 << 3;
-		
+
 		do {
 			sum += b[0];
 			b[0] = sum ^ 0x8000;
@@ -132,18 +132,18 @@ unsigned PSG::fillBuffer() {
 			b[6] = sum ^ 0x8000;
 			sum += b[7];
 			b[7] = sum ^ 0x8000;
-			
+
 			b += 8;
 		} while (--n2);
 	}
-	
+
 	while (n--) {
 		sum += *b;
 		*b++ = sum ^ 0x8000; // xor away the initial rsum value of 0x8000 (which prevents borrows from the high word) from the low word
 	}
-	
+
 	rsum = sum;
-	
+
 	return bufferPos;
 }
 
@@ -161,7 +161,7 @@ void PSG::set_so_volume(const unsigned nr50) {
 
 void PSG::map_so(const unsigned nr51) {
 	const unsigned long tmp = nr51 * so1Mul + (nr51 >> 4) * so2Mul;
-	
+
 	ch1.setSo((tmp      & 0x00010001) * 0xFFFF);
 	ch2.setSo((tmp >> 1 & 0x00010001) * 0xFFFF);
 	ch3.setSo((tmp >> 2 & 0x00010001) * 0xFFFF);

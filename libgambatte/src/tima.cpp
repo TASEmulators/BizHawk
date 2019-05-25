@@ -34,11 +34,11 @@ tac_(0)
 void Tima::loadState(const SaveState &state, const TimaInterruptRequester timaIrq) {
 	lastUpdate_ = state.mem.timaLastUpdate;
 	tmatime_ = state.mem.tmatime;
-	
+
 	tima_ = state.mem.ioamhram.get()[0x105];
 	tma_  = state.mem.ioamhram.get()[0x106];
 	tac_  = state.mem.ioamhram.get()[0x107];
-	
+
 	timaIrq.setNextIrqEventTime((tac_ & 4)
 		?
 			(tmatime_ != DISABLED_TIME && tmatime_ > state.cpu.cycleCounter
@@ -51,14 +51,14 @@ void Tima::loadState(const SaveState &state, const TimaInterruptRequester timaIr
 
 void Tima::resetCc(const unsigned long oldCc, const unsigned long newCc, const TimaInterruptRequester timaIrq) {
 	const unsigned long dec = oldCc - newCc;
-	
+
 	if (tac_ & 0x04) {
 		updateIrq(oldCc, timaIrq);
 		updateTima(oldCc);
-		
+
 		lastUpdate_ -= dec;
 		timaIrq.setNextIrqEventTime(timaIrq.nextIrqEventTime() - dec);
-		
+
 		if (tmatime_ != DISABLED_TIME)
 			tmatime_ -= dec;
 	}
@@ -106,7 +106,7 @@ void Tima::setTima(const unsigned data, const unsigned long cycleCounter, const 
 
 		timaIrq.setNextIrqEventTime(lastUpdate_ + ((256u - data) << timaClock[tac_ & 3]) + 3);
 	}
-	
+
 	tima_ = data;
 }
 
@@ -115,14 +115,14 @@ void Tima::setTma(const unsigned data, const unsigned long cycleCounter, const T
 		updateIrq(cycleCounter, timaIrq);
 		updateTima(cycleCounter);
 	}
-	
+
 	tma_ = data;
 }
 
 void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const TimaInterruptRequester timaIrq, bool gbIsCgb) {
 	if (tac_ ^ data) {
 		unsigned long nextIrqEventTime = timaIrq.nextIrqEventTime();
-		
+
 		if (tac_ & 0x04) {
 			updateIrq(cycleCounter, timaIrq);
 			updateTima(cycleCounter);
@@ -130,10 +130,10 @@ void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const T
 			lastUpdate_ -= (1u << (timaClock[tac_ & 3] - 1)) + 3;
 			tmatime_ -= (1u << (timaClock[tac_ & 3] - 1)) + 3;
 			nextIrqEventTime -= (1u << (timaClock[tac_ & 3] - 1)) + 3;
-			
+
 			if (cycleCounter >= nextIrqEventTime)
 				timaIrq.flagIrq();
-			
+
 			updateTima(cycleCounter);
 
 			tmatime_ = DISABLED_TIME;
@@ -143,18 +143,18 @@ void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const T
 		if (data & 4) {
 			lastUpdate_ = (cycleCounter >> timaClock[data & 3]) << timaClock[data & 3];
 			unsigned long diff = cycleCounter - basetime_;
-			
+
 			if (gbIsCgb) {
 				if (((diff >> (timaClock[tac_ & 3] - 1)) & 1) == 1 && ((diff >> (timaClock[data & 3] - 1)) & 1) == 0)
 					tima_++;
-			}		
+			}
 			lastUpdate_ = basetime_ + ((diff >> timaClock[data & 3]) << timaClock[data & 3]);
 			nextIrqEventTime = lastUpdate_ + ((256u - tima_) << timaClock[data & 3]) + 3;
 		}
-		
+
 		timaIrq.setNextIrqEventTime(nextIrqEventTime);
 	}
-	
+
 	tac_ = data;
 }
 

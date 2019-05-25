@@ -41,7 +41,7 @@ public:
 			stream.seekg(0, std::ios::beg);
 		}
 	}
-	
+
 	virtual void rewind() { stream.seekg(0, std::ios::beg); }
 	virtual std::size_t size() const { return fsize; };
 	virtual void read(char *buffer, std::size_t amount) { stream.read(buffer, amount); }

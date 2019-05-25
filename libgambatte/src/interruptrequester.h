@@ -32,41 +32,41 @@ class InterruptRequester {
 	unsigned long minIntTime;
 	unsigned ifreg_;
 	unsigned iereg_;
-	
+
 	class IntFlags {
 		friend class InterruptRequester;
 		unsigned char flags_;
 		enum { IME_MASK = 1, HALTED_MASK = 2 };
-		
+
 	public:
 		IntFlags() : flags_(0) {}
-		
+
 		bool ime() const { return flags_ & IME_MASK; }
 		bool halted() const { return flags_ & HALTED_MASK; }
 		bool imeOrHalted() const { return flags_; }
-		
+
 		void setIme() { flags_ |= IME_MASK; }
 		void unsetIme() { flags_ &= ~IME_MASK; }
-		
+
 		void setHalted() { flags_ |= HALTED_MASK; }
 		void unsetHalted() { flags_ &= ~HALTED_MASK; }
-		
+
 		void set(const bool ime, const bool halted) { flags_ = halted * HALTED_MASK + ime * IME_MASK; }
 	} intFlags;
-	
+
 public:
 	InterruptRequester();
-	
+
 	void loadState(const SaveState &);
-	
+
 	void resetCc(unsigned long oldCc, unsigned long newCc);
-	
+
 	unsigned ifreg() const { return ifreg_; }
 	unsigned iereg() const { return iereg_; }
 	unsigned pendingIrqs() const { return ifreg_ & iereg_; }
 	bool ime() const { return intFlags.ime(); }
 	bool halted() const { return intFlags.halted(); }
-	
+
 	void ei(unsigned long cc);
 	void di();
 	void halt();
@@ -75,7 +75,7 @@ public:
 	void ackIrq(unsigned bit);
 	void setIereg(unsigned iereg);
 	void setIfreg(unsigned ifreg);
-	
+
 	MemEventId minEventId() const { return static_cast<MemEventId>(eventTimes.min()); }
 	unsigned long minEventTime() const { return eventTimes.minValue(); }
 	template<MemEventId id> void setEventTime(unsigned long value) { eventTimes.setValue<id>(value); }

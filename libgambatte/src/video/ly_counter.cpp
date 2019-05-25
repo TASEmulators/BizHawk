@@ -30,28 +30,28 @@ LyCounter::LyCounter()
 
 void LyCounter::doEvent() {
 	++ly_;
-	
+
 	if (ly_ == 154)
 		ly_ = 0;
-	
+
 	time_ = time_ + lineTime_;
 }
 
 unsigned long LyCounter::nextLineCycle(const unsigned lineCycle, const unsigned long cycleCounter) const {
 	unsigned long tmp = time_ + (lineCycle << ds);
-	
+
 	if (tmp - cycleCounter > lineTime_)
 		tmp -= lineTime_;
-	
+
 	return tmp;
 }
 
 unsigned long LyCounter::nextFrameCycle(const unsigned long frameCycle, const unsigned long cycleCounter) const {
 	unsigned long tmp = time_ + (((153U - ly()) * 456U + frameCycle) << ds);
-	
+
 	if (tmp - cycleCounter > 70224U << ds)
 		tmp -= 70224U << ds;
-	
+
 	return tmp;
 }
 

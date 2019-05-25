@@ -32,37 +32,37 @@ struct SaveState;
 
 class Channel2 {
 	friend class StaticOutputTester<Channel2,DutyUnit>;
-	
+
 	StaticOutputTester<Channel2,DutyUnit> staticOutputTest;
 	DutyMasterDisabler disableMaster;
 	LengthCounter lengthCounter;
 	DutyUnit dutyUnit;
 	EnvelopeUnit envelopeUnit;
-	
+
 	SoundUnit *nextEventUnit;
-	
+
 	unsigned long cycleCounter;
 	unsigned long soMask;
 	unsigned long prevOut;
-	
+
 	unsigned char nr4;
 	bool master;
-	
+
 	void setEvent();
-	
+
 public:
 	Channel2();
 	void setNr1(unsigned data);
 	void setNr2(unsigned data);
 	void setNr3(unsigned data);
 	void setNr4(unsigned data);
-	
+
 	void setSo(unsigned long soMask);
 	// void deactivate() { disableMaster(); setEvent(); }
 	bool isActive() const { return master; }
-	
+
 	void update(uint_least32_t *buf, unsigned long soBaseVol, unsigned long cycles);
-	
+
 	void reset();
 	void init(bool cgb);
 	void loadState(const SaveState &state);

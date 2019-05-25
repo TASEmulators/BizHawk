@@ -30,20 +30,20 @@ class LyCounter {
 	unsigned short lineTime_;
 	unsigned char ly_;
 	bool ds;
-	
+
 public:
 	LyCounter();
 	void doEvent();
 	bool isDoubleSpeed() const { return ds; }
-	
+
 	unsigned long frameCycles(const unsigned long cc) const {
 		return ly_ * 456ul + lineCycles(cc);
 	}
-	
+
 	unsigned lineCycles(const unsigned long cc) const {
 		return 456u - ((time_ - cc) >> isDoubleSpeed());
 	}
-	
+
 	unsigned lineTime() const { return lineTime_; }
 	unsigned ly() const { return ly_; }
 	unsigned long nextLineCycle(unsigned lineCycle, unsigned long cycleCounter) const;

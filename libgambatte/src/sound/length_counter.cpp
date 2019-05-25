@@ -44,23 +44,23 @@ void LengthCounter::nr1Change(const unsigned newNr1, const unsigned nr4, const u
 void LengthCounter::nr4Change(const unsigned oldNr4, const unsigned newNr4, const unsigned long cycleCounter) {
 	if (counter != COUNTER_DISABLED)
 		lengthCounter = (counter >> 13) - (cycleCounter >> 13);
-	
+
 	{
 		unsigned dec = 0;
-		
+
 		if (newNr4 & 0x40) {
 			dec = ~cycleCounter >> 12 & 1;
-			
+
 			if (!(oldNr4 & 0x40) && lengthCounter) {
 				if (!(lengthCounter -= dec))
 					disableMaster();
 			}
 		}
-		
+
 		if ((newNr4 & 0x80) && !lengthCounter)
 			lengthCounter = lengthMask + 1 - dec;
 	}
-	
+
 	if ((newNr4 & 0x40) && lengthCounter)
 		counter = ((cycleCounter >> 13) + lengthCounter) << 13;
 	else
@@ -69,7 +69,7 @@ void LengthCounter::nr4Change(const unsigned oldNr4, const unsigned newNr4, cons
 
 /*void LengthCounter::reset() {
 	counter = COUNTER_DISABLED;
-	
+
 	if (cgb)
 		lengthCounter = lengthMask + 1;
 }*/

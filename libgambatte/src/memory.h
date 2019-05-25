@@ -57,13 +57,13 @@ class Memory {
 	unsigned (*getInput)();
 	unsigned long divLastUpdate;
 	unsigned long lastOamDmaUpdate;
-	
+
 	InterruptRequester intreq;
 	Tima tima;
 	LCD display;
 	PSG sound;
 	Interrupter interrupter;
-	
+
 	unsigned short dmaSource;
 	unsigned short dmaDestination;
 	unsigned char oamDmaPos;
@@ -80,24 +80,24 @@ class Memory {
 	void startOamDma(unsigned long cycleCounter);
 	void endOamDma(unsigned long cycleCounter);
 	const unsigned char * oamDmaSrcPtr() const;
-	
+
 	unsigned nontrivial_ff_read(unsigned P, unsigned long cycleCounter);
 	unsigned nontrivial_read(unsigned P, unsigned long cycleCounter);
 	void nontrivial_ff_write(unsigned P, unsigned data, unsigned long cycleCounter);
 	void nontrivial_write(unsigned P, unsigned data, unsigned long cycleCounter);
-	
+
 	unsigned nontrivial_peek(unsigned P);
 	unsigned nontrivial_ff_peek(unsigned P);
 
 	void updateSerial(unsigned long cc);
 	void updateTimaIrq(unsigned long cc);
 	void updateIrqs(unsigned long cc);
-	
+
 	bool isDoubleSpeed() const { return display.isDoubleSpeed(); }
 
 public:
 	explicit Memory(const Interrupter &interrupter, unsigned short &sp, unsigned short &pc);
-	
+
 	bool loaded() const { return cart.loaded(); }
 	unsigned curRomBank() const { return cart.curRomBank(); }
 	const char * romTitle() const { return cart.romTitle(); }
@@ -124,9 +124,9 @@ public:
 	unsigned long nextEventTime() const { return intreq.minEventTime(); }
 
 	void setLayers(unsigned mask) { display.setLayers(mask); }
-	
+
 	bool isActive() const { return intreq.eventTime(END) != DISABLED_TIME; }
-	
+
 	long cyclesSinceBlit(const unsigned long cc) const {
 		return cc < intreq.eventTime(BLIT) ? -1 : static_cast<long>((cc - intreq.eventTime(BLIT)) >> isDoubleSpeed());
 	}
@@ -155,7 +155,7 @@ public:
 			CDMapResult ret = { eCDLog_AddrType_ROM, P };
 			return ret;
 		}
-		else if(P<0x8000) 
+		else if(P<0x8000)
 		{
 			unsigned bank = cart.rmem(P>>12) - cart.rmem(0);
 			unsigned addr = P+bank;
@@ -187,7 +187,7 @@ public:
 			return ret;
 		}
 		else if(P<0xFF80) {}
-		else 
+		else
 		{
 			////this is just for debugging, really, it's pretty useless
 			//CDMapResult ret = { eCDLog_AddrType_HRAM, (P-0xFF80) };
@@ -262,7 +262,7 @@ public:
 		} else
 			nontrivial_write(P, data, cycleCounter);
 	}
-	
+
 	void write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
 		if (cart.wmem(P >> 12)) {
 			cart.wmem(P >> 12)[P] = data;
@@ -277,7 +277,7 @@ public:
 				cdCallback(map.addr,map.type,eCDLog_Flags_Data);
 		}
 	}
-	
+
 	void ff_write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
 		if (P - 0xFF80u < 0x7Fu) {
 			ioamhram[P - 0xFE00] = data;
@@ -329,14 +329,14 @@ public:
 
 	void setBasetime(unsigned long cc) { basetime = cc; }
 	void setEndtime(unsigned long cc, unsigned long inc);
-	
+
 	void setSoundBuffer(uint_least32_t *const buf) { sound.setBuffer(buf); }
 	unsigned fillSoundBuffer(unsigned long cc);
-	
+
 	void setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
 		display.setVideoBuffer(videoBuf, pitch);
 	}
-	
+
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);
 

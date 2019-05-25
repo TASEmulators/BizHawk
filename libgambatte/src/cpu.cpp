@@ -47,12 +47,12 @@ CPU::CPU()
 long CPU::runFor(const unsigned long cycles) {
 	memory.setBasetime(cycleCounter_);
 	process(cycles/* << memory.isDoubleSpeed()*/);
-	
+
 	const long csb = memory.cyclesSinceBlit(cycleCounter_);
-	
+
 	if (cycleCounter_ & 0x80000000)
 		cycleCounter_ = memory.resetCounters(cycleCounter_);
-	
+
 	return csb;
 }
 
@@ -63,7 +63,7 @@ long CPU::runFor(const unsigned long cycles) {
 static void calcHF(const unsigned HF1, unsigned& HF2) {
 	unsigned arg1 = HF1 & 0xF;
 	unsigned arg2 = (HF2 & 0xF) + (HF2 >> 8 & 1);
-	
+
 	if (HF2 & 0x800) {
 		arg1 = arg2;
 		arg2 = 1;
@@ -73,7 +73,7 @@ static void calcHF(const unsigned HF1, unsigned& HF2) {
 		arg1 -= arg2;
 	else
 		arg1 = (arg1 + arg2) << 5;
-	
+
 	HF2 |= arg1 & 0x200;
 }
 
@@ -93,7 +93,7 @@ void CPU::setStatePtrs(SaveState &state) {
 
 void CPU::loadState(const SaveState &state) {
 	memory.loadState(state/*, cycleCounter_*/);
-	
+
 	cycleCounter_ = state.cpu.cycleCounter;
 	PC = state.cpu.PC & 0xFFFF;
 	SP = state.cpu.SP & 0xFFFF;
@@ -497,10 +497,10 @@ void CPU::process(const unsigned long cycles) {
 
 	//unsigned char A = A_;
 	unsigned long cycleCounter = cycleCounter_;
-	
+
 	while (memory.isActive()) {
 		//unsigned short PC = PC_;
-		
+
 		if (memory.halted()) {
 			if (cycleCounter < memory.nextEventTime()) {
 				const unsigned long cycles = memory.nextEventTime() - cycleCounter;
@@ -508,7 +508,7 @@ void CPU::process(const unsigned long cycles) {
 			}
 		} else while (cycleCounter < memory.nextEventTime()) {
 			unsigned char opcode = 0x00;
-			
+
 			int FullPC = PC;
 
 			if (PC >= 0x4000 && PC <= 0x7FFF)
@@ -552,7 +552,7 @@ void CPU::process(const unsigned long cycles) {
 					skip = false;
 				}
 			}
-			
+
 			switch (opcode) {
 				//nop (4 cycles):
 				//Do nothing for 4 cycles:
@@ -591,12 +591,12 @@ void CPU::process(const unsigned long cycles) {
 			case 0x08:
 				{
 					unsigned l, h;
-					
+
 					PC_READ(l);
 					PC_READ(h);
-					
+
 					const unsigned addr = h << 8 | l;
-					
+
 					WRITE(addr, SP & 0xFF);
 					WRITE((addr + 1) & 0xFFFF, SP >> 8);
 				}
@@ -669,7 +669,7 @@ void CPU::process(const unsigned long cycles) {
 					CF = A << 1;
 					A = (CF | oldcf) & 0xFF;
 				}
-				
+
 				HF2 = 0;
 				ZF = 1;
 				break;
@@ -704,7 +704,7 @@ void CPU::process(const unsigned long cycles) {
 					CF = A << 8;
 					A = (A | oldcf) >> 1;
 				}
-				
+
 				HF2 = 0;
 				ZF = 1;
 			break;
@@ -728,9 +728,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x22:
 				{
 					unsigned addr = HL();
-					
+
 					WRITE(addr, A);
-					
+
 					addr = (addr + 1) & 0xFFFF;
 					L = addr;
 					H = addr >> 8;
@@ -756,38 +756,38 @@ void CPU::process(const unsigned long cycles) {
 			case 0x27:
 				/*{
 					unsigned correction = ((A > 0x99) || (CF & 0x100)) ? 0x60 : 0x00;
-					
+
 					calcHF(HF1, HF2);
-					
+
 					if ((A & 0x0F) > 0x09 || (HF2 & 0x200))
 						correction |= 0x06;
-					
+
 					HF1 = A;
 					HF2 = (HF2 & 0x400) | correction;
 					CF = (correction & 0x40) << 2;
 					A = (HF2 & 0x400) ? A - correction : (A + correction);
 					ZF = A;
 				}*/
-				
+
 				calcHF(HF1, HF2);
-				
+
 				{
 					unsigned correction = (CF & 0x100) ? 0x60 : 0x00;
-					
+
 					if (HF2 & 0x200)
 						correction |= 0x06;
-					
+
 					if (!(HF2 &= 0x400)) {
 						if ((A & 0x0F) > 0x09)
 							correction |= 0x06;
-						
+
 						if (A > 0x99)
 							correction |= 0x60;
-						
+
 						A += correction;
 					} else
 						A -= correction;
-					
+
 					CF = correction << 2 & 0x100;
 					ZF = A;
 					A &= 0xFF;
@@ -815,9 +815,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x2A:
 				{
 					unsigned addr = HL();
-					
+
 					READ(A, addr);
-					
+
 					addr = (addr + 1) & 0xFFFF;
 					L = addr;
 					H = addr >> 8;
@@ -859,10 +859,10 @@ void CPU::process(const unsigned long cycles) {
 			case 0x31:
 				{
 					unsigned l, h;
-					
+
 					PC_READ(l);
 					PC_READ(h);
-					
+
 					SP = h << 8 | l;
 				}
 				break;
@@ -872,9 +872,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x32:
 				{
 					unsigned addr = HL();
-					
+
 					WRITE(addr, A);
-					
+
 					addr = (addr - 1) & 0xFFFF;
 					L = addr;
 					H = addr >> 8;
@@ -888,10 +888,10 @@ void CPU::process(const unsigned long cycles) {
 
 				//inc (hl) (12 cycles):
 				//Increment value at address in hl, check flags except CF:
-			case 0x34: 
+			case 0x34:
 				{
 					const unsigned addr = HL();
-					
+
 					READ(HF2, addr);
 					ZF = HF2 + 1;
 					WRITE(addr, ZF & 0xFF);
@@ -904,7 +904,7 @@ void CPU::process(const unsigned long cycles) {
 			case 0x35:
 				{
 					const unsigned addr = HL();
-					
+
 					READ(HF2, addr);
 					ZF = HF2 - 1;
 					WRITE(addr, ZF & 0xFF);
@@ -917,7 +917,7 @@ void CPU::process(const unsigned long cycles) {
 			case 0x36:
 				{
 					unsigned tmp;
-					
+
 					PC_READ(tmp);
 					WRITE(HL(), tmp);
 				}
@@ -958,10 +958,10 @@ void CPU::process(const unsigned long cycles) {
 			case 0x3A:
 				{
 					unsigned addr = HL();
-					
+
 					A = memory.read(addr, cycleCounter);
 					cycleCounter += 4;
-					
+
 					addr = (addr - 1) & 0xFFFF;
 					L = addr;
 					H = addr >> 8;
@@ -1221,7 +1221,7 @@ void CPU::process(const unsigned long cycles) {
 					unsigned data;
 
 					READ(data, HL());
-					
+
 					add_a_u8(data);
 				}
 				break;
@@ -1249,9 +1249,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x8E:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					adc_a_u8(data);
 				}
 				break;
@@ -1279,9 +1279,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x96:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					sub_a_u8(data);
 				}
 				break;
@@ -1311,9 +1311,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0x9E:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					sbc_a_u8(data);
 				}
 				break;
@@ -1341,9 +1341,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xA6:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					and_a_u8(data);
 				}
 				break;
@@ -1374,9 +1374,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xAE:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					xor_a_u8(data);
 				}
 				break;
@@ -1405,9 +1405,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xB6:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					or_a_u8(data);
 				}
 				break;
@@ -1437,9 +1437,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xBE:
 				{
 					unsigned data;
-					
+
 					READ(data, HL());
-					
+
 					cp_a_u8(data);
 				}
 				break;
@@ -1453,7 +1453,7 @@ void CPU::process(const unsigned long cycles) {
 				//Pop two bytes from the stack and jump to that address, if ZF is unset:
 			case 0xC0:
 				cycleCounter += 4;
-				
+
 				if (ZF & 0xFF) {
 					ret();
 				}
@@ -1495,9 +1495,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xC6:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					add_a_u8(data);
 				}
 				break;
@@ -1509,11 +1509,11 @@ void CPU::process(const unsigned long cycles) {
 				//Pop two bytes from the stack and jump to that address, if ZF is set:
 			case 0xC8:
 				cycleCounter += 4;
-				
+
 				if (!(ZF & 0xFF)) {
 					ret();
 				}
-				
+
 				break;
 
 				//ret (16 cycles):
@@ -1537,7 +1537,7 @@ void CPU::process(const unsigned long cycles) {
 				//CB OPCODES (Shifts, rotates and bits):
 			case 0xCB:
 				PC_READ(opcode);
-				
+
 				switch (opcode) {
 				case 0x00:
 					rlc_r(B);
@@ -1562,14 +1562,14 @@ void CPU::process(const unsigned long cycles) {
 				case 0x06:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(CF, addr);
 						CF <<= 1;
-						
+
 						ZF = CF | (CF >> 8);
 
 						WRITE(addr, ZF & 0xFF);
-						
+
 						HF2 = 0;
 					}
 					break;
@@ -1599,13 +1599,13 @@ void CPU::process(const unsigned long cycles) {
 				case 0x0E:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(ZF, addr);
-						
+
 						CF = ZF << 8;
-						
+
 						WRITE(addr, (ZF | CF) >> 1 & 0xFF);
-						
+
 						HF2 = 0;
 					}
 					break;
@@ -1636,14 +1636,14 @@ void CPU::process(const unsigned long cycles) {
 					{
 						const unsigned addr = HL();
 						const unsigned oldcf = CF >> 8 & 1;
-						
+
 						READ(CF, addr);
 						CF <<= 1;
-						
+
 						ZF = CF | oldcf;
-						
+
 						WRITE(addr, ZF & 0xFF);
-						
+
 						HF2 = 0;
 					}
 					break;
@@ -1673,15 +1673,15 @@ void CPU::process(const unsigned long cycles) {
 				case 0x1E:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(ZF, addr);
-						
+
 						const unsigned oldcf = CF & 0x100;
 						CF = ZF << 8;
 						ZF = (ZF | oldcf) >> 1;
-						
+
 						WRITE(addr, ZF);
-						
+
 						HF2 = 0;
 					}
 					break;
@@ -1711,14 +1711,14 @@ void CPU::process(const unsigned long cycles) {
 				case 0x26:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(CF, addr);
 						CF <<= 1;
-						
+
 						ZF = CF;
-						
+
 						WRITE(addr, ZF & 0xFF);
-						
+
 						HF2 = 0;
 					}
 					break;
@@ -1748,13 +1748,13 @@ void CPU::process(const unsigned long cycles) {
 				case 0x2E:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(CF, addr);
-						
+
 						ZF = CF >> 1;
-						
+
 						WRITE(addr, ZF | (CF & 0x80));
-						
+
 						CF <<= 8;
 						HF2 = 0;
 					}
@@ -1785,11 +1785,11 @@ void CPU::process(const unsigned long cycles) {
 				case 0x36:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(ZF, addr);
-						
+
 						WRITE(addr, (ZF << 4 | ZF >> 4) & 0xFF);
-						
+
 						CF = HF2 = 0;
 					}
 					break;
@@ -1819,13 +1819,13 @@ void CPU::process(const unsigned long cycles) {
 				case 0x3E:
 					{
 						const unsigned addr = HL();
-						
+
 						READ(CF, addr);
-						
+
 						ZF = CF >> 1;
-						
+
 						WRITE(addr, ZF);
-						
+
 						CF <<= 8;
 						HF2 = 0;
 					}
@@ -1854,9 +1854,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x46:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit0_u8(data);
 					}
 					break;
@@ -1884,9 +1884,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x4E:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit1_u8(data);
 					}
 					break;
@@ -1914,9 +1914,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x56:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit2_u8(data);
 					}
 					break;
@@ -1944,9 +1944,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x5E:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit3_u8(data);
 					}
 					break;
@@ -1974,9 +1974,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x66:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit4_u8(data);
 					}
 					break;
@@ -2004,9 +2004,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x6E:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit5_u8(data);
 					}
 					break;
@@ -2034,9 +2034,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x76:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit6_u8(data);
 					}
 					break;
@@ -2064,9 +2064,9 @@ void CPU::process(const unsigned long cycles) {
 				case 0x7E:
 					{
 						unsigned data;
-						
+
 						READ(data, HL());
-						
+
 						bit7_u8(data);
 					}
 					break;
@@ -2479,9 +2479,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xCE:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					adc_a_u8(data);
 				}
 				break;
@@ -2493,11 +2493,11 @@ void CPU::process(const unsigned long cycles) {
 				//Pop two bytes from the stack and jump to that address, if CF is unset:
 			case 0xD0:
 				cycleCounter += 4;
-				
+
 				if (!(CF & 0x100)) {
 					ret();
 				}
-				
+
 				break;
 
 			case 0xD1:
@@ -2537,9 +2537,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xD6:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					sub_a_u8(data);
 				}
 				break;
@@ -2551,11 +2551,11 @@ void CPU::process(const unsigned long cycles) {
 				//Pop two bytes from the stack and jump to that address, if CF is set:
 			case 0xD8:
 				cycleCounter += 4;
-				
+
 				if (CF & 0x100) {
 					ret();
 				}
-				
+
 				break;
 
 				//reti (16 cycles):
@@ -2563,11 +2563,11 @@ void CPU::process(const unsigned long cycles) {
 			case 0xD9:
 				{
 					unsigned l, h;
-					
+
 					pop_rr(h, l);
-					
+
 					memory.ei(cycleCounter);
-					
+
 					PC_MOD(h << 8 | l);
 				}
 				break;
@@ -2607,9 +2607,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xDE:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					sbc_a_u8(data);
 				}
 				break;
@@ -2622,9 +2622,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xE0:
 				{
 					unsigned tmp;
-					
+
 					PC_READ(tmp);
-					
+
 					FF_WRITE(0xFF00 | tmp, A);
 				}
 				break;
@@ -2652,9 +2652,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xE6:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					and_a_u8(data);
 				}
 				break;
@@ -2690,10 +2690,10 @@ void CPU::process(const unsigned long cycles) {
 			case 0xEA:
 				{
 					unsigned l, h;
-					
+
 					PC_READ(l);
 					PC_READ(h);
-					
+
 					WRITE(h << 8 | l, A);
 				}
 				break;
@@ -2713,9 +2713,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xEE:
 				{
 					unsigned data;
-					
+
 					PC_READ(data);
-					
+
 					xor_a_u8(data);
 				}
 				break;
@@ -2728,9 +2728,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xF0:
 				{
 					unsigned tmp;
-					
+
 					PC_READ(tmp);
-					
+
 					FF_READ(A, 0xFF00 | tmp);
 				}
 				break;
@@ -2738,9 +2738,9 @@ void CPU::process(const unsigned long cycles) {
 			case 0xF1: /*pop_rr(A, F); Cycles(12); break;*/
 				{
 					unsigned F;
-					
+
 					pop_rr(A, F);
-					
+
 					FROM_F(F);
 				}
 				break;
@@ -2762,10 +2762,10 @@ void CPU::process(const unsigned long cycles) {
 				break;
 			case 0xF5: /*push_rr(A, F); Cycles(16); break;*/
 				calcHF(HF1, HF2);
-				
+
 				{
 					unsigned F = F();
-					
+
 					push_rr(A, F);
 				}
 				break;
@@ -2775,7 +2775,7 @@ void CPU::process(const unsigned long cycles) {
 					unsigned data;
 
 					PC_READ(data);
-					
+
 					or_a_u8(data);
 				}
 				break;
@@ -2816,10 +2816,10 @@ void CPU::process(const unsigned long cycles) {
 			case 0xFA:
 				{
 					unsigned l, h;
-					
+
 					PC_READ(l);
 					PC_READ(h);
-					
+
 					READ(A, h << 8 | l);
 				}
 				break;
@@ -2843,7 +2843,7 @@ void CPU::process(const unsigned long cycles) {
 					unsigned data;
 
 					PC_READ(data);
-					
+
 					cp_a_u8(data);
 				}
 				break;
@@ -2853,11 +2853,11 @@ void CPU::process(const unsigned long cycles) {
 //     default: break;
 			}
 		}
-		
+
 		//PC_ = PC;
 		cycleCounter = memory.event(cycleCounter);
 	}
-	
+
 	//A_ = A;
 	cycleCounter_ = cycleCounter;
 }

@@ -33,9 +33,9 @@ class LycIrq {
 	unsigned char lycReg_;
 	unsigned char statReg_;
 	bool cgb_;
-	
+
 	void regChange(unsigned statReg, unsigned lycReg, const LyCounter &lyCounter, unsigned long cc);
-	
+
 public:
 	LycIrq();
 	void doEvent(unsigned char *ifreg, const LyCounter &lyCounter);
@@ -45,11 +45,11 @@ public:
 	void setCgb(const bool cgb) { cgb_ = cgb; }
 	void lcdReset();
 	void reschedule(const LyCounter & lyCounter, unsigned long cc);
-	
+
 	void statRegChange(unsigned statReg, const LyCounter &lyCounter, unsigned long cc) {
 		regChange(statReg, lycRegSrc_, lyCounter, cc);
 	}
-	
+
 	void lycRegChange(unsigned lycReg, const LyCounter &lyCounter, unsigned long cc) {
 		regChange(statRegSrc_, lycReg, lyCounter, cc);
 	}

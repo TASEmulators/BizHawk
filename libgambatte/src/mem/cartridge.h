@@ -63,13 +63,13 @@ class Cartridge {
 	MemPtrs memptrs;
 	Rtc rtc;
 	std::auto_ptr<Mbc> mbc;
-	
+
 public:
 	void setStatePtrs(SaveState &);
 	void loadState(const SaveState &);
-	
+
 	bool loaded() const { return mbc.get(); }
-	
+
 	const unsigned char * rmem(unsigned area) const { return memptrs.rmem(area); }
 	unsigned char * wmem(unsigned area) const { return memptrs.wmem(area); }
 	unsigned char * vramdata() const { return memptrs.vramdata(); }
@@ -85,14 +85,14 @@ public:
 	void setVrambank(unsigned bank) { memptrs.setVrambank(bank); }
 	void setWrambank(unsigned bank) { memptrs.setWrambank(bank); }
 	void setOamDmaSrc(OamDmaSrc oamDmaSrc) { memptrs.setOamDmaSrc(oamDmaSrc); }
-	
+
 	void mbcWrite(unsigned addr, unsigned data) { mbc->romWrite(addr, data); }
 
 	bool isCgb() const { return gambatte::isCgb(memptrs); }
-	
+
 	void rtcWrite(unsigned data) { rtc.write(data); }
 	unsigned char rtcRead() const { return *rtc.getActive(); }
-	
+
 	void loadSavedata(const char *data);
 	int saveSavedataLength();
 	void saveSavedata(char *dest);

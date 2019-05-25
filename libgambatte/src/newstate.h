@@ -65,7 +65,7 @@ public:
 	virtual void ExitSection(const char *name);
 };
 
-// defines and explicitly instantiates 
+// defines and explicitly instantiates
 #define SYNCFUNC(x)\
 	template void x::SyncState<false>(NewState *ns);\
 	template void x::SyncState<true>(NewState *ns);\

@@ -30,13 +30,13 @@ struct SaveState {
 	class Ptr {
 		T *ptr;
 		unsigned long sz;
-		
+
 	public:
 		Ptr() : ptr(0), sz(0) {}
 		const T* get() const { return ptr; }
 		unsigned long getSz() const { return sz; }
 		void set(T *ptr, const unsigned long sz) { this->ptr = ptr; this->sz = sz; }
-		
+
 		friend class SaverList;
 		friend void setInitState(SaveState &, bool, bool, std::uint32_t, unsigned);
 	};
@@ -55,7 +55,7 @@ struct SaveState {
 		unsigned char L;
 		bool skip;
 	} cpu;
-	
+
 	struct Mem {
 		Ptr<unsigned char> vram;
 		Ptr<unsigned char> sram;
@@ -83,14 +83,14 @@ struct SaveState {
 		bool agbMode;
 		bool gbIsCgb;
 	} mem;
-	
+
 	struct PPU {
 		Ptr<unsigned char> bgpData;
 		Ptr<unsigned char> objpData;
 		//SpriteMapper::OamReader
 		Ptr<unsigned char> oamReaderBuf;
 		Ptr<bool> oamReaderSzbuf;
-		
+
 		unsigned long videoCycles;
 		unsigned long enableDisplayM0Time;
 		unsigned short lastM0Time;
@@ -119,24 +119,24 @@ struct SaveState {
 		bool pendingLcdstatIrq;
 		bool isCgb;
 	} ppu;
-	
+
 	struct SPU {
 		struct Duty {
 			unsigned long nextPosUpdate;
 			unsigned char nr3;
 			unsigned char pos;
 		};
-		
+
 		struct Env {
 			unsigned long counter;
 			unsigned char volume;
 		};
-		
+
 		struct LCounter {
 			unsigned long counter;
 			unsigned short lengthCounter;
 		};
-		
+
 		struct {
 			struct {
 				unsigned long counter;
@@ -150,7 +150,7 @@ struct SaveState {
 			unsigned char nr4;
 			bool master;
 		} ch1;
-		
+
 		struct {
 			Duty duty;
 			Env env;
@@ -158,7 +158,7 @@ struct SaveState {
 			unsigned char nr4;
 			bool master;
 		} ch2;
-		
+
 		struct {
 			Ptr<unsigned char> waveRam;
 			LCounter lcounter;
@@ -170,7 +170,7 @@ struct SaveState {
 			unsigned char sampleBuf;
 			bool master;
 		} ch3;
-		
+
 		struct {
 			struct {
 				unsigned long counter;
@@ -181,10 +181,10 @@ struct SaveState {
 			unsigned char nr4;
 			bool master;
 		} ch4;
-		
+
 		unsigned long cycleCounter;
 	} spu;
-	
+
 	struct RTC {
 		unsigned long baseTime;
 		unsigned long haltTime;

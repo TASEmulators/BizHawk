@@ -31,35 +31,35 @@ struct SaveState;
 class Channel3 {
 	class Ch3MasterDisabler : public MasterDisabler {
 		unsigned long &waveCounter;
-		
+
 	public:
 		Ch3MasterDisabler(bool &m, unsigned long &wC) : MasterDisabler(m), waveCounter(wC) {}
 		void operator()() { MasterDisabler::operator()(); waveCounter = SoundUnit::COUNTER_DISABLED; }
 	};
-	
+
 	unsigned char waveRam[0x10];
-	
+
 	Ch3MasterDisabler disableMaster;
 	LengthCounter lengthCounter;
-	
+
 	unsigned long cycleCounter;
 	unsigned long soMask;
 	unsigned long prevOut;
 	unsigned long waveCounter;
 	unsigned long lastReadTime;
-	
+
 	unsigned char nr0;
 	unsigned char nr3;
 	unsigned char nr4;
 	unsigned char wavePos;
 	unsigned char rShift;
 	unsigned char sampleBuf;
-	
+
 	bool master;
 	bool cgb;
-	
+
 	void updateWaveCounter(unsigned long cc);
-	
+
 public:
 	Channel3();
 	bool isActive() const { return master; }
@@ -74,26 +74,26 @@ public:
 	void setNr4(unsigned data);
 	void setSo(unsigned long soMask);
 	void update(uint_least32_t *buf, unsigned long soBaseVol, unsigned long cycles);
-	
+
 	unsigned waveRamRead(unsigned index) const {
 		if (master) {
 			if (!cgb && cycleCounter != lastReadTime)
 				return 0xFF;
-			
+
 			index = wavePos >> 1;
 		}
-		
+
 		return waveRam[index];
 	}
-	
+
 	void waveRamWrite(unsigned index, unsigned data) {
 		if (master) {
 			if (!cgb && cycleCounter != lastReadTime)
 				return;
-			
+
 			index = wavePos >> 1;
 		}
-		
+
 		waveRam[index] = data;
 	}
 

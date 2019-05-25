@@ -55,7 +55,7 @@ public:
 		GBA_CGB          = 2, /**< Use GBA intial CPU register values when in CGB mode. */
 		MULTICART_COMPAT = 4, /**< Use heuristics to detect and support some multicart MBCs disguised as MBC1. */
 	};
-	
+
 	/** Load ROM image.
 	  *
 	  * @param romfile  Path to rom image file. Typically a .gbc, .gb, or .zip-file (if zip-support is compiled in).
@@ -63,7 +63,7 @@ public:
 	  * @return 0 on success, negative value on failure.
 	  */
 	LoadRes load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
-	
+
 	int loadGBCBios(const char* biosfiledata);
 	int loadDMGBios(const char* biosfiledata);
 
@@ -96,17 +96,17 @@ public:
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
 	void reset(std::uint32_t now, unsigned div);
-	
+
 	/** @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
 	  * @param colorNum 0 <= colorNum < 4
 	  */
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32);
-	
+
 	void setCgbPalette(unsigned *lut);
 
 	/** Sets the callback used for getting input state. */
 	void setInputGetter(unsigned (*getInput)());
-	
+
 	void setReadCallback(MemoryCallback);
 	void setWriteCallback(MemoryCallback);
 	void setExecCallback(MemoryCallback);
@@ -118,7 +118,7 @@ public:
 
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;
-	
+
 	/** Returns true if a ROM image is loaded. */
 	bool isLoaded() const;
 
@@ -126,10 +126,10 @@ public:
 	void loadSavedata(const char *data);
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
-	
+
 	// 0 = vram, 1 = rom, 2 = wram, 3 = cartram, 4 = oam, 5 = hram
 	bool getMemoryArea(int which, unsigned char **data, int *length);
-	
+
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
 

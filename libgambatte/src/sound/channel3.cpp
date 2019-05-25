@@ -47,33 +47,33 @@ Channel3::Channel3() :
 
 void Channel3::setNr0(const unsigned data) {
 	nr0 = data & 0x80;
-	
+
 	if (!(data & 0x80))
 		disableMaster();
 }
 
 void Channel3::setNr2(const unsigned data) {
 	rShift = (data >> 5 & 3U) - 1;
-	
+
 	if (rShift > 3)
 		rShift = 4;
 }
 
 void Channel3::setNr4(const unsigned data) {
 	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
+
 	nr4 = data & 0x7F;
-	
+
 	if (data & nr0/* & 0x80*/) {
 		if (!cgb && waveCounter == cycleCounter + 1) {
 			const unsigned pos = ((wavePos + 1) & 0x1F) >> 1;
-			
+
 			if (pos < 4)
 				waveRam[0] = waveRam[pos];
 			else
 				std::memcpy(waveRam, waveRam + (pos & ~3), 4);
 		}
-		
+
 		master = true;
 		wavePos = 0;
 		lastReadTime = waveCounter = cycleCounter + toPeriod(nr3, data) + 3;
@@ -102,7 +102,7 @@ void Channel3::setStatePtrs(SaveState &state) {
 
 void Channel3::loadState(const SaveState &state) {
 	lengthCounter.loadState(state.spu.ch3.lcounter, state.spu.cycleCounter);
-	
+
 	cycleCounter = state.spu.cycleCounter;
 	waveCounter = std::max(state.spu.ch3.waveCounter, state.spu.cycleCounter);
 	lastReadTime = state.spu.ch3.lastReadTime;
@@ -111,7 +111,7 @@ void Channel3::loadState(const SaveState &state) {
 	wavePos = state.spu.ch3.wavePos & 0x1F;
 	sampleBuf = state.spu.ch3.sampleBuf;
 	master = state.spu.ch3.master;
-	
+
 	nr0 = state.mem.ioamhram.get()[0x11A] & 0x80;
 	setNr2(state.mem.ioamhram.get()[0x11C]);
 }
@@ -133,20 +133,20 @@ void Channel3::updateWaveCounter(const unsigned long cc) {
 
 void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsigned long cycles) {
 	const unsigned long outBase = (nr0/* & 0x80*/) ? soBaseVol & soMask : 0;
-	
+
 	if (outBase && rShift != 4) {
 		const unsigned long endCycles = cycleCounter + cycles;
-		
+
 		for (;;) {
 			const unsigned long nextMajorEvent = lengthCounter.getCounter() < endCycles ? lengthCounter.getCounter() : endCycles;
 			unsigned long out = outBase * (master ? ((sampleBuf >> (~wavePos << 2 & 4) & 0xF) >> rShift) * 2 - 15ul : 0 - 15ul);
-		
+
 			while (waveCounter <= nextMajorEvent) {
 				*buf += out - prevOut;
 				prevOut = out;
 				buf += waveCounter - cycleCounter;
 				cycleCounter = waveCounter;
-			
+
 				lastReadTime = waveCounter;
 				waveCounter += toPeriod(nr3, nr4);
 				++wavePos;
@@ -154,14 +154,14 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 				sampleBuf = waveRam[wavePos >> 1];
 				out = outBase * (/*master ? */((sampleBuf >> (~wavePos << 2 & 4) & 0xF) >> rShift) * 2 - 15ul/* : 0 - 15ul*/);
 			}
-		
+
 			if (cycleCounter < nextMajorEvent) {
 				*buf += out - prevOut;
 				prevOut = out;
 				buf += nextMajorEvent - cycleCounter;
 				cycleCounter = nextMajorEvent;
 			}
-		
+
 			if (lengthCounter.getCounter() == nextMajorEvent) {
 				lengthCounter.event();
 			} else
@@ -171,23 +171,23 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 		const unsigned long out = outBase * (0 - 15ul);
 		*buf += out - prevOut;
 		prevOut = out;
-		
+
 		cycleCounter += cycles;
-		
+
 		while (lengthCounter.getCounter() <= cycleCounter) {
 			updateWaveCounter(lengthCounter.getCounter());
 			lengthCounter.event();
 		}
-		
+
 		updateWaveCounter(cycleCounter);
 	}
-	
+
 	if (cycleCounter & SoundUnit::COUNTER_MAX) {
 		lengthCounter.resetCounters(cycleCounter);
-		
+
 		if (waveCounter != SoundUnit::COUNTER_DISABLED)
 			waveCounter -= SoundUnit::COUNTER_MAX;
-		
+
 		lastReadTime -= SoundUnit::COUNTER_MAX;
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
@@ -196,7 +196,7 @@ void Channel3::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 SYNCFUNC(Channel3)
 {
 	NSS(waveRam);
-	
+
 	SSS(lengthCounter);
 
 	NSS(cycleCounter);

@@ -33,31 +33,31 @@ Channel1::SweepUnit::SweepUnit(MasterDisabler &disabler, DutyUnit &dutyUnit) :
 
 unsigned Channel1::SweepUnit::calcFreq() {
 	unsigned freq = shadow >> (nr0 & 0x07);
-	
+
 	if (nr0 & 0x08) {
 		freq = shadow - freq;
 		negging = true;
 	} else
 		freq = shadow + freq;
-	
+
 	if (freq & 2048)
 		disableMaster();
-	
+
 	return freq;
 }
 
 void Channel1::SweepUnit::event() {
 	const unsigned long period = nr0 >> 4 & 0x07;
-	
+
 	if (period) {
 		const unsigned freq = calcFreq();
-		
+
 		if (!(freq & 2048) && (nr0 & 0x07)) {
 			shadow = freq;
 			dutyUnit.setFreq(freq, counter);
 			calcFreq();
 		}
-		
+
 		counter += period << 14;
 	} else
 		counter += 8ul << 14;
@@ -66,22 +66,22 @@ void Channel1::SweepUnit::event() {
 void Channel1::SweepUnit::nr0Change(const unsigned newNr0) {
 	if (negging && !(newNr0 & 0x08))
 		disableMaster();
-	
+
 	nr0 = newNr0;
 }
 
 void Channel1::SweepUnit::nr4Init(const unsigned long cc) {
 	negging = false;
 	shadow = dutyUnit.getFreq();
-	
+
 	const unsigned period = nr0 >> 4 & 0x07;
 	const unsigned shift = nr0 & 0x07;
-	
+
 	if (period | shift)
 		counter = ((cc >> 14) + (period ? period : 8)) << 14;
 	else
 		counter = COUNTER_DISABLED;
-	
+
 	if (shift)
 		calcFreq();
 }
@@ -139,7 +139,7 @@ void Channel1::setNr0(const unsigned data) {
 void Channel1::setNr1(const unsigned data) {
 	lengthCounter.nr1Change(data, nr4, cycleCounter);
 	dutyUnit.nr1Change(data, cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -148,7 +148,7 @@ void Channel1::setNr2(const unsigned data) {
 		disableMaster();
 	else
 		staticOutputTest(cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -159,18 +159,18 @@ void Channel1::setNr3(const unsigned data) {
 
 void Channel1::setNr4(const unsigned data) {
 	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
+
 	nr4 = data;
-	
+
 	dutyUnit.nr4Change(data, cycleCounter);
-	
+
 	if (data & 0x80) { //init-bit
 		nr4 &= 0x7F;
 		master = !envelopeUnit.nr4Init(cycleCounter);
 		sweepUnit.nr4Init(cycleCounter);
 		staticOutputTest(cycleCounter);
 	}
-	
+
 	setEvent();
 }
 
@@ -187,7 +187,7 @@ void Channel1::reset() {
 	dutyUnit.reset();
 	envelopeUnit.reset();
 	sweepUnit.reset();
-	
+
 	setEvent();
 }
 
@@ -200,7 +200,7 @@ void Channel1::loadState(const SaveState &state) {
 	dutyUnit.loadState(state.spu.ch1.duty, state.mem.ioamhram.get()[0x111], state.spu.ch1.nr4, state.spu.cycleCounter);
 	envelopeUnit.loadState(state.spu.ch1.env, state.mem.ioamhram.get()[0x112], state.spu.cycleCounter);
 	lengthCounter.loadState(state.spu.ch1.lcounter, state.spu.cycleCounter);
-	
+
 	cycleCounter = state.spu.cycleCounter;
 	nr4 = state.spu.ch1.nr4;
 	master = state.spu.ch1.master;
@@ -210,42 +210,42 @@ void Channel1::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	const unsigned long outBase = envelopeUnit.dacIsOn() ? soBaseVol & soMask : 0;
 	const unsigned long outLow = outBase * (0 - 15ul);
 	const unsigned long endCycles = cycleCounter + cycles;
-	
+
 	for (;;) {
 		const unsigned long outHigh = master ? outBase * (envelopeUnit.getVolume() * 2 - 15ul) : outLow;
 		const unsigned long nextMajorEvent = nextEventUnit->getCounter() < endCycles ? nextEventUnit->getCounter() : endCycles;
 		unsigned long out = dutyUnit.isHighState() ? outHigh : outLow;
-		
+
 		while (dutyUnit.getCounter() <= nextMajorEvent) {
 			*buf = out - prevOut;
 			prevOut = out;
 			buf += dutyUnit.getCounter() - cycleCounter;
 			cycleCounter = dutyUnit.getCounter();
-			
+
 			dutyUnit.event();
 			out = dutyUnit.isHighState() ? outHigh : outLow;
 		}
-		
+
 		if (cycleCounter < nextMajorEvent) {
 			*buf = out - prevOut;
 			prevOut = out;
 			buf += nextMajorEvent - cycleCounter;
 			cycleCounter = nextMajorEvent;
 		}
-		
+
 		if (nextEventUnit->getCounter() == nextMajorEvent) {
 			nextEventUnit->event();
 			setEvent();
 		} else
 			break;
 	}
-	
+
 	if (cycleCounter & SoundUnit::COUNTER_MAX) {
 		dutyUnit.resetCounters(cycleCounter);
 		lengthCounter.resetCounters(cycleCounter);
 		envelopeUnit.resetCounters(cycleCounter);
 		sweepUnit.resetCounters(cycleCounter);
-		
+
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
 }

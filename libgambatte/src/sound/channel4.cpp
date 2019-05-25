@@ -23,12 +23,12 @@
 static unsigned long toPeriod(const unsigned nr3) {
 	unsigned s = (nr3 >> 4) + 3;
 	unsigned r = nr3 & 7;
-	
+
 	if (!r) {
 		r = 1;
 		--s;
 	}
-	
+
 	return r << s;
 }
 
@@ -46,13 +46,13 @@ void Channel4::Lfsr::updateBackupCounter(const unsigned long cc) {
 		const unsigned long period = toPeriod(nr3);
 		backupCounter = cc - (cc - backupCounter) % period + period;
 	}*/
-	
+
 	if (backupCounter <= cc) {
 		const unsigned long period = toPeriod(nr3);
 		unsigned long periods = (cc - backupCounter) / period + 1;
-		
+
 		backupCounter += periods * period;
-		
+
 		if (master && nr3 < 0xE0) {
 			if (nr3 & 8) {
 				while (periods > 6) {
@@ -60,7 +60,7 @@ void Channel4::Lfsr::updateBackupCounter(const unsigned long cc) {
 					reg = (reg >> 6 & ~0x7E) | xored | xored << 8;
 					periods -= 6;
 				}
-				
+
 				const unsigned xored = ((reg ^ reg >> 1) << (7 - periods)) & 0x7F;
 				reg = (reg >> periods & ~(0x80 - (0x80 >> periods))) | xored | xored << 8;
 			} else {
@@ -68,7 +68,7 @@ void Channel4::Lfsr::updateBackupCounter(const unsigned long cc) {
 					reg = reg ^ reg >> 1;
 					periods -= 15;
 				}
-				
+
 				reg = reg >> periods | (((reg ^ reg >> 1) << (15 - periods)) & 0x7FFF);
 			}
 		}
@@ -95,27 +95,27 @@ inline void Channel4::Lfsr::event() {
 	if (nr3 < 0xE0) {
 		const unsigned shifted = reg >> 1;
 		const unsigned xored = (reg ^ shifted) & 1;
-		
+
 		reg = shifted | xored << 14;
-		
+
 		if (nr3 & 8)
 			reg = (reg & ~0x40) | xored << 6;
 	}
-	
+
 	counter += toPeriod(nr3);
 	backupCounter = counter;
-	
-	
+
+
 	/*if (nr3 < 0xE0) {
 		const unsigned periods = nextStateDistance[reg & 0x3F];
 		const unsigned xored = ((reg ^ reg >> 1) << (7 - periods)) & 0x7F;
-		
+
 		reg = reg >> periods | xored << 8;
-		
+
 		if (nr3 & 8)
 			reg = reg & ~(0x80 - (0x80 >> periods)) | xored;
 	}
-	
+
 	const unsigned long period = toPeriod(nr3);
 	backupCounter = counter + period;
 	counter += period * nextStateDistance[reg & 0x3F];*/
@@ -124,7 +124,7 @@ inline void Channel4::Lfsr::event() {
 void Channel4::Lfsr::nr3Change(const unsigned newNr3, const unsigned long cc) {
 	updateBackupCounter(cc);
 	nr3 = newNr3;
-	
+
 // 	if (counter != COUNTER_DISABLED)
 // 		counter = backupCounter + toPeriod(nr3) * (nextStateDistance[reg & 0x3F] - 1);
 }
@@ -191,7 +191,7 @@ void Channel4::setEvent() {
 
 void Channel4::setNr1(const unsigned data) {
 	lengthCounter.nr1Change(data, nr4, cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -200,26 +200,26 @@ void Channel4::setNr2(const unsigned data) {
 		disableMaster();
 	else
 		staticOutputTest(cycleCounter);
-	
+
 	setEvent();
 }
 
 void Channel4::setNr4(const unsigned data) {
 	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
+
 	nr4 = data;
-	
+
 	if (data & 0x80) { //init-bit
 		nr4 &= 0x7F;
-		
+
 		master = !envelopeUnit.nr4Init(cycleCounter);
-		
+
 		if (master)
 			lfsr.nr4Init(cycleCounter);
-		
+
 		staticOutputTest(cycleCounter);
 	}
-	
+
 	setEvent();
 }
 
@@ -235,7 +235,7 @@ void Channel4::reset() {
 // 	lengthCounter.reset();
 	lfsr.reset(cycleCounter);
 	envelopeUnit.reset();
-	
+
 	setEvent();
 }
 
@@ -247,7 +247,7 @@ void Channel4::loadState(const SaveState &state) {
 	lfsr.loadState(state);
 	envelopeUnit.loadState(state.spu.ch4.env, state.mem.ioamhram.get()[0x121], state.spu.cycleCounter);
 	lengthCounter.loadState(state.spu.ch4.lcounter, state.spu.cycleCounter);
-	
+
 	cycleCounter = state.spu.cycleCounter;
 	nr4 = state.spu.ch4.nr4;
 	master = state.spu.ch4.master;
@@ -257,41 +257,41 @@ void Channel4::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	const unsigned long outBase = envelopeUnit.dacIsOn() ? soBaseVol & soMask : 0;
 	const unsigned long outLow = outBase * (0 - 15ul);
 	const unsigned long endCycles = cycleCounter + cycles;
-	
+
 	for (;;) {
 		const unsigned long outHigh = /*master ? */outBase * (envelopeUnit.getVolume() * 2 - 15ul)/* : outLow*/;
 		const unsigned long nextMajorEvent = nextEventUnit->getCounter() < endCycles ? nextEventUnit->getCounter() : endCycles;
 		unsigned long out = lfsr.isHighState() ? outHigh : outLow;
-		
+
 		while (lfsr.getCounter() <= nextMajorEvent) {
 			*buf += out - prevOut;
 			prevOut = out;
 			buf += lfsr.getCounter() - cycleCounter;
 			cycleCounter = lfsr.getCounter();
-			
+
 			lfsr.event();
 			out = lfsr.isHighState() ? outHigh : outLow;
 		}
-		
+
 		if (cycleCounter < nextMajorEvent) {
 			*buf += out - prevOut;
 			prevOut = out;
 			buf += nextMajorEvent - cycleCounter;
 			cycleCounter = nextMajorEvent;
 		}
-		
+
 		if (nextEventUnit->getCounter() == nextMajorEvent) {
 			nextEventUnit->event();
 			setEvent();
 		} else
 			break;
 	}
-	
+
 	if (cycleCounter & SoundUnit::COUNTER_MAX) {
 		lengthCounter.resetCounters(cycleCounter);
 		lfsr.resetCounters(cycleCounter);
 		envelopeUnit.resetCounters(cycleCounter);
-		
+
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
 }
@@ -311,7 +311,7 @@ SYNCFUNC(Channel4)
 	NSS(cycleCounter);
 	NSS(soMask);
 	NSS(prevOut);
-	
+
 	NSS(nr4);
 	NSS(master);
 }

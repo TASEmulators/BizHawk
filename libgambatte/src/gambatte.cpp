@@ -30,7 +30,7 @@ struct GB::Priv {
 	unsigned layersMask;
 
 	uint_least32_t vbuff[160*144];
-	
+
 	Priv() : loadflags(0), layersMask(LAYER_MASK_BG | LAYER_MASK_OBJ)
 	{
 	}
@@ -39,13 +39,13 @@ struct GB::Priv {
 	{
 	}
 };
-	
+
 GB::GB() : p_(new Priv) {}
 
 GB::~GB() {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
-	
+
 	delete p_;
 }
 
@@ -54,12 +54,12 @@ long GB::runFor(gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
 		samples = 0;
 		return -1;
 	}
-	
+
 	p_->cpu.setVideoBuffer(p_->vbuff, 160);
 	p_->cpu.setSoundBuffer(soundBuf);
 	const long cyclesSinceBlit = p_->cpu.runFor(samples * 2);
 	samples = p_->cpu.fillSoundBuffer();
-	
+
 	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
 }
 
@@ -83,7 +83,7 @@ void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)
 
 void GB::reset(const std::uint32_t now, const unsigned div) {
 	if (p_->cpu.loaded()) {
-		
+
 		int length = p_->cpu.saveSavedataLength();
 		char *s;
 		if (length > 0)
@@ -91,7 +91,7 @@ void GB::reset(const std::uint32_t now, const unsigned div) {
 			s = (char *) std::malloc(length);
 			p_->cpu.saveSavedata(s);
 		}
-		
+
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now, div);
@@ -143,9 +143,9 @@ void GB::setLinkCallback(void(*callback)()) {
 LoadRes GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, unsigned const flags, const unsigned div) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
-	
+
 	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
-	
+
 	if (loadres == LOADRES_OK) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
@@ -154,7 +154,7 @@ LoadRes GB::load(const char *romfiledata, unsigned romfilelength, const std::uin
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 	}
-	
+
 	return loadres;
 }
 
@@ -226,7 +226,7 @@ const std::string GB::romTitle() const {
 		title[title[0xF] & 0x80 ? 0xF : 0x10] = '\0';
 		return std::string(title);
 	}
-	
+
 	return std::string();
 }
 

@@ -21,7 +21,7 @@
 
 static inline bool toOutState(const unsigned duty, const unsigned pos) {
 	static const unsigned char duties[4] = { 0x80, 0x81, 0xE1, 0x7E };
-	
+
 	return duties[duty] >> pos & 1;
 }
 
@@ -52,7 +52,7 @@ void DutyUnit::setCounter() {
 		0, 3, 2, 1, 0, 3, 2, 1,
 		0, 5, 4, 3, 2, 1, 0, 1
 	};
-	
+
 	if (enableEvents && nextPosUpdate != COUNTER_DISABLED)
 		counter = nextPosUpdate + period * nextStateDistance[(duty * 8) | pos];
 	else
@@ -67,13 +67,13 @@ void DutyUnit::setFreq(const unsigned newFreq, const unsigned long cc) {
 
 void DutyUnit::event() {
 	unsigned inc = period << duty;
-	
+
 	if (duty == 3)
 		inc -= period * 2;
-	
+
 	if (!(high ^= true))
 		inc = period * 8 - inc;
-	
+
 	counter += inc;
 }
 
@@ -89,7 +89,7 @@ void DutyUnit::nr3Change(const unsigned newNr3, const unsigned long cc) {
 
 void DutyUnit::nr4Change(const unsigned newNr4, const unsigned long cc) {
 	setFreq((newNr4 << 8 & 0x700) | (getFreq() & 0xFF), cc);
-	
+
 	if (newNr4 & 0x80) {
 		nextPosUpdate = (cc & ~1) + period;
 		setCounter();
@@ -124,7 +124,7 @@ void DutyUnit::loadState(const SaveState::SPU::Duty &dstate, const unsigned nr1,
 void DutyUnit::resetCounters(const unsigned long oldCc) {
 	if (nextPosUpdate == COUNTER_DISABLED)
 		return;
-	
+
 	updatePos(oldCc);
 	nextPosUpdate -= COUNTER_MAX;
 	SoundUnit::resetCounters(oldCc);

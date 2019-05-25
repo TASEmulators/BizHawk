@@ -46,7 +46,7 @@ void Channel2::setEvent() {
 void Channel2::setNr1(const unsigned data) {
 	lengthCounter.nr1Change(data, nr4, cycleCounter);
 	dutyUnit.nr1Change(data, cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -55,7 +55,7 @@ void Channel2::setNr2(const unsigned data) {
 		disableMaster();
 	else
 		staticOutputTest(cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -66,17 +66,17 @@ void Channel2::setNr3(const unsigned data) {
 
 void Channel2::setNr4(const unsigned data) {
 	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
+
 	nr4 = data;
-	
+
 	if (data & 0x80) { //init-bit
 		nr4 &= 0x7F;
 		master = !envelopeUnit.nr4Init(cycleCounter);
 		staticOutputTest(cycleCounter);
 	}
-	
+
 	dutyUnit.nr4Change(data, cycleCounter);
-	
+
 	setEvent();
 }
 
@@ -88,11 +88,11 @@ void Channel2::setSo(const unsigned long soMask) {
 
 void Channel2::reset() {
 	cycleCounter = 0x1000 | (cycleCounter & 0xFFF); // cycleCounter >> 12 & 7 represents the frame sequencer position.
-	
+
 // 	lengthCounter.reset();
 	dutyUnit.reset();
 	envelopeUnit.reset();
-	
+
 	setEvent();
 }
 
@@ -104,7 +104,7 @@ void Channel2::loadState(const SaveState &state) {
 	dutyUnit.loadState(state.spu.ch2.duty, state.mem.ioamhram.get()[0x116], state.spu.ch2.nr4,state.spu.cycleCounter);
 	envelopeUnit.loadState(state.spu.ch2.env, state.mem.ioamhram.get()[0x117], state.spu.cycleCounter);
 	lengthCounter.loadState(state.spu.ch2.lcounter, state.spu.cycleCounter);
-	
+
 	cycleCounter = state.spu.cycleCounter;
 	nr4 = state.spu.ch2.nr4;
 	master = state.spu.ch2.master;
@@ -114,41 +114,41 @@ void Channel2::update(uint_least32_t *buf, const unsigned long soBaseVol, unsign
 	const unsigned long outBase = envelopeUnit.dacIsOn() ? soBaseVol & soMask : 0;
 	const unsigned long outLow = outBase * (0 - 15ul);
 	const unsigned long endCycles = cycleCounter + cycles;
-	
+
 	for (;;) {
 		const unsigned long outHigh = master ? outBase * (envelopeUnit.getVolume() * 2 - 15ul) : outLow;
 		const unsigned long nextMajorEvent = nextEventUnit->getCounter() < endCycles ? nextEventUnit->getCounter() : endCycles;
 		unsigned long out = dutyUnit.isHighState() ? outHigh : outLow;
-		
+
 		while (dutyUnit.getCounter() <= nextMajorEvent) {
 			*buf += out - prevOut;
 			prevOut = out;
 			buf += dutyUnit.getCounter() - cycleCounter;
 			cycleCounter = dutyUnit.getCounter();
-			
+
 			dutyUnit.event();
 			out = dutyUnit.isHighState() ? outHigh : outLow;
 		}
-		
+
 		if (cycleCounter < nextMajorEvent) {
 			*buf += out - prevOut;
 			prevOut = out;
 			buf += nextMajorEvent - cycleCounter;
 			cycleCounter = nextMajorEvent;
 		}
-		
+
 		if (nextEventUnit->getCounter() == nextMajorEvent) {
 			nextEventUnit->event();
 			setEvent();
 		} else
 			break;
 	}
-	
+
 	if (cycleCounter & SoundUnit::COUNTER_MAX) {
 		dutyUnit.resetCounters(cycleCounter);
 		lengthCounter.resetCounters(cycleCounter);
 		envelopeUnit.resetCounters(cycleCounter);
-		
+
 		cycleCounter -= SoundUnit::COUNTER_MAX;
 	}
 }

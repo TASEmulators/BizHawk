@@ -22,7 +22,7 @@
 namespace gambatte {
 class MasterDisabler {
 	bool &master;
-	
+
 public:
 	MasterDisabler(bool &m) : master(m) {}
 	virtual ~MasterDisabler() {}

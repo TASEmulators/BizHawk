@@ -31,13 +31,13 @@ public:
 		virtual ~VolOnOffEvent() {}
 		virtual void operator()(unsigned long /*cc*/) {}
 	};
-	
+
 private:
 	static VolOnOffEvent nullEvent;
 	VolOnOffEvent &volOnOffEvent;
 	unsigned char nr2;
 	unsigned char volume;
-	
+
 public:
 	explicit EnvelopeUnit(VolOnOffEvent &volOnOffEvent = nullEvent);
 	void event();

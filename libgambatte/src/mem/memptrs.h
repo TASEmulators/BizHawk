@@ -29,7 +29,7 @@ enum OamDmaSrc { OAM_DMA_SRC_ROM, OAM_DMA_SRC_SRAM, OAM_DMA_SRC_VRAM,
 class MemPtrs {
 	const unsigned char *rmem_[0x10];
 	      unsigned char *wmem_[0x10];
-	
+
 	unsigned char *romdata_[2];
 	unsigned char *wramdata_[2];
 	unsigned char *vrambankptr_;
@@ -38,7 +38,7 @@ class MemPtrs {
 	unsigned char *memchunk_;
 	unsigned char *rambankdata_;
 	unsigned char *wramdataend_;
-	
+
 	OamDmaSrc oamDmaSrc_;
 
 	unsigned curRomBank_;
@@ -54,11 +54,11 @@ class MemPtrs {
 	unsigned char * wdisabledRam()  const { return wramdataend_ + 0x2000; }
 public:
 	enum RamFlag { READ_EN = 1, WRITE_EN = 2, RTC_EN = 4 };
-	
+
 	MemPtrs();
 	~MemPtrs();
 	void reset(unsigned rombanks, unsigned rambanks, unsigned wrambanks);
-	
+
 	const unsigned char * rmem(unsigned area) const { return rmem_[area]; }
 	unsigned char * wmem(unsigned area) const { return wmem_[area]; }
 	unsigned char * vramdata() const { return rambankdata_ - 0x4000; }

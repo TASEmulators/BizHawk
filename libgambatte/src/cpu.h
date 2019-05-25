@@ -26,48 +26,48 @@ namespace gambatte {
 
 class CPU {
 	Memory memory;
-	
+
 	unsigned long cycleCounter_;
 
 	unsigned short PC;
 	unsigned short SP;
-	
+
 	unsigned HF1, HF2, ZF, CF;
 
 	unsigned char A, B, C, D, E, /*F,*/ H, L;
 
 	bool skip;
-	
+
 	int *interruptAddresses;
 	int numInterruptAddresses;
 	int hitInterruptAddress;
 
 	void process(unsigned long cycles);
-	
+
 	void (*tracecallback)(void *);
 
 public:
-	
+
 	CPU();
 // 	void halt();
 
 // 	unsigned interrupt(unsigned address, unsigned cycleCounter);
-	
+
 	long runFor(unsigned long cycles);
 	void setStatePtrs(SaveState &state);
 	void loadState(const SaveState &state);
 	void setLayers(unsigned mask) { memory.setLayers(mask); }
-	
+
 	void loadSavedata(const char *data) { memory.loadSavedata(data); }
 	int saveSavedataLength() {return memory.saveSavedataLength(); }
 	void saveSavedata(char *dest) { memory.saveSavedata(dest); }
-	
+
 	bool getMemoryArea(int which, unsigned char **data, int *length) { return memory.getMemoryArea(which, data, length); }
 
 	void setVideoBuffer(uint_least32_t *const videoBuf, const int pitch) {
 		memory.setVideoBuffer(videoBuf, pitch);
 	}
-	
+
 	void setInputGetter(unsigned (*getInput)()) {
 		memory.setInputGetter(getInput);
 	}
@@ -103,19 +103,19 @@ public:
 	void setLinkCallback(void(*callback)()) {
 		memory.setLinkCallback(callback);
 	}
-	
+
 	LoadRes load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
 		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
 	}
-	
+
 	bool loaded() const { return memory.loaded(); }
 	const char * romTitle() const { return memory.romTitle(); }
-	
+
 	void setSoundBuffer(uint_least32_t *const buf) { memory.setSoundBuffer(buf); }
 	unsigned fillSoundBuffer() { return memory.fillSoundBuffer(cycleCounter_); }
-	
+
 	bool isCgb() const { return memory.isCgb(); }
-	
+
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned rgb32) {
 		memory.setDmgPaletteColor(palNum, colorNum, rgb32);
 	}
@@ -123,7 +123,7 @@ public:
 	void setCgbPalette(unsigned *lut) {
 		memory.setCgbPalette(lut);
 	}
-	
+
 	unsigned char* cgbBiosBuffer() { return memory.cgbBiosBuffer(); }
 	unsigned char* dmgBiosBuffer() { return memory.dmgBiosBuffer(); }
 	bool gbIsCgb() { return memory.gbIsCgb(); }

@@ -32,16 +32,16 @@ class PSG {
 	Channel2 ch2;
 	Channel3 ch3;
 	Channel4 ch4;
-		
+
 	uint_least32_t *buffer;
-	
+
 	unsigned long lastUpdate;
 	unsigned long soVol;
-	
+
 	uint_least32_t rsum;
-	
+
 	unsigned bufferPos;
-	
+
 	bool enabled;
 
 	void accumulate_channels(unsigned long cycles);
@@ -57,7 +57,7 @@ public:
 	void resetCounter(unsigned long newCc, unsigned long oldCc, unsigned doubleSpeed);
 	unsigned fillBuffer();
 	void setBuffer(uint_least32_t *const buf) { buffer = buf; bufferPos = 0; }
-	
+
 	bool isEnabled() const { return enabled; }
 	void setEnabled(bool value) { enabled = value; }
 

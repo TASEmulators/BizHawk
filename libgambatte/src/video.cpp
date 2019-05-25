@@ -23,7 +23,7 @@
 
 namespace gambatte {
 
-void LCD::setDmgPalette(unsigned long *const palette, const unsigned long *const dmgColors, const unsigned data) {
+void LCD::setDmgPalette(unsigned long palette[], const unsigned long dmgColors[], unsigned data) {
 	palette[0] = dmgColors[data      & 3];
 	palette[1] = dmgColors[data >> 2 & 3];
 	palette[2] = dmgColors[data >> 4 & 3];
@@ -77,18 +77,18 @@ void LCD::setCgb(bool cgb) {
 static unsigned long mode2IrqSchedule(const unsigned statReg, const LyCounter &lyCounter, const unsigned long cycleCounter) {
 	if (!(statReg & 0x20))
 		return DISABLED_TIME;
-	
+
 	unsigned next = lyCounter.time() - cycleCounter;
-	
+
 	if (lyCounter.ly() >= 143 || (lyCounter.ly() == 142 && next <= 4) || (statReg & 0x08)) {
 		next += (153u - lyCounter.ly()) * lyCounter.lineTime();
 	} else {
 		if (next <= 4)
 			next += lyCounter.lineTime();
-		
+
 		next -= 4;
 	}
-	
+
 	return cycleCounter + next;
 }
 
@@ -96,12 +96,12 @@ static inline unsigned long m0IrqTimeFromXpos166Time(const unsigned long xpos166
 	return xpos166Time + cgb - ds;
 }
 
-static inline unsigned long hdmaTimeFromM0Time(const unsigned long m0Time, const bool ds) {
+static inline unsigned long hdmaTimeFromM0Time(unsigned long m0Time, bool ds) {
 	return m0Time + 1 - ds;
 }
 
-static unsigned long nextHdmaTime(const unsigned long lastM0Time,
-		const unsigned long nextM0Time, const unsigned long cycleCounter, const bool ds) {
+static unsigned long nextHdmaTime(unsigned long lastM0Time,
+		unsigned long nextM0Time, unsigned long cycleCounter, bool ds) {
 	return cycleCounter < hdmaTimeFromM0Time(lastM0Time, ds)
 	                    ? hdmaTimeFromM0Time(lastM0Time, ds)
 	                    : hdmaTimeFromM0Time(nextM0Time, ds);
@@ -125,7 +125,7 @@ void LCD::loadState(const SaveState &state, const unsigned char *const oamram) {
 	if (ppu.lcdc() & 0x80) {
 		nextM0Time_.predictNextM0Time(ppu);
 		lycIrq.reschedule(ppu.lyCounter(), ppu.now());
-		
+
 		eventTimes_.setm<ONESHOT_LCDSTATIRQ>(state.ppu.pendingLcdstatIrq
 							? ppu.now() + 1 : static_cast<unsigned long>(DISABLED_TIME));
 		eventTimes_.setm<ONESHOT_UPDATEWY2>(state.ppu.oldWy != state.mem.ioamhram.get()[0x14A]
@@ -140,8 +140,8 @@ void LCD::loadState(const SaveState &state, const unsigned char *const oamram) {
 				? nextHdmaTime(ppu.lastM0Time(), nextM0Time_.predictedNextM0Time(), ppu.now(), isDoubleSpeed())
 				: static_cast<unsigned long>(DISABLED_TIME));
 	} else for (int i = 0; i < NUM_MEM_EVENTS; ++i)
-		eventTimes_.set(static_cast<MemEvent>(i), DISABLED_TIME);
-	
+		eventTimes_.set(MemEvent(i), DISABLED_TIME);
+
 	refreshPalettes();
 }
 
@@ -200,7 +200,7 @@ static void clear(T *buf, const unsigned long color, const int dpitch) {
 
 void LCD::updateScreen(const bool blanklcd, const unsigned long cycleCounter) {
 	update(cycleCounter);
-	
+
 	if (blanklcd && ppu.frameBuf().fb()) {
 		const unsigned long color = ppu.cgb() ? gbcToRgb32(0xFFFF) : dmgColorsRgb32[0];
 		clear(ppu.frameBuf().fb(), color, ppu.frameBuf().pitch());
@@ -210,18 +210,18 @@ void LCD::updateScreen(const bool blanklcd, const unsigned long cycleCounter) {
 void LCD::resetCc(const unsigned long oldCc, const unsigned long newCc) {
 	update(oldCc);
 	ppu.resetCc(oldCc, newCc);
-	
+
 	if (ppu.lcdc() & 0x80) {
 		const unsigned long dec = oldCc - newCc;
-		
+
 		nextM0Time_.invalidatePredictedNextM0Time();
 		lycIrq.reschedule(ppu.lyCounter(), newCc);
-		
+
 		for (int i = 0; i < NUM_MEM_EVENTS; ++i) {
-			if (eventTimes_(static_cast<MemEvent>(i)) != DISABLED_TIME)
-				eventTimes_.set(static_cast<MemEvent>(i), eventTimes_(static_cast<MemEvent>(i)) - dec);
+			if (eventTimes_(MemEvent(i)) != DISABLED_TIME)
+				eventTimes_.set(MemEvent(i), eventTimes_(MemEvent(i)) - dec);
 		}
-		
+
 		eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
 	}
 }
@@ -229,20 +229,20 @@ void LCD::resetCc(const unsigned long oldCc, const unsigned long newCc) {
 void LCD::speedChange(const unsigned long cycleCounter) {
 	update(cycleCounter);
 	ppu.speedChange(cycleCounter);
-	
+
 	if (ppu.lcdc() & 0x80) {
 		nextM0Time_.predictNextM0Time(ppu);
 		lycIrq.reschedule(ppu.lyCounter(), cycleCounter);
-		
+
 		eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
 		eventTimes_.setm<SPRITE_MAP>(SpriteMapper::schedule(ppu.lyCounter(), cycleCounter));
 		eventTimes_.setm<LYC_IRQ>(lycIrq.time());
 		eventTimes_.setm<MODE1_IRQ>(ppu.lyCounter().nextFrameCycle(144 * 456, cycleCounter));
 		eventTimes_.setm<MODE2_IRQ>(mode2IrqSchedule(statReg, ppu.lyCounter(), cycleCounter));
-		
+
 		if (eventTimes_(MODE0_IRQ) != DISABLED_TIME && eventTimes_(MODE0_IRQ) - cycleCounter > 1)
 			eventTimes_.setm<MODE0_IRQ>(m0IrqTimeFromXpos166Time(ppu.predictedNextXposTime(166), ppu.cgb(), isDoubleSpeed()));
-		
+
 		if (hdmaIsEnabled() && eventTimes_(HDMA_REQ) - cycleCounter > 1) {
 			eventTimes_.setm<HDMA_REQ>(nextHdmaTime(ppu.lastM0Time(),
 					nextM0Time_.predictedNextM0Time(), cycleCounter, isDoubleSpeed()));
@@ -261,7 +261,7 @@ unsigned long LCD::m0TimeOfCurrentLine(const unsigned long cc) {
 		update(cc);
 		nextM0Time_.predictNextM0Time(ppu);
 	}
-	
+
 	return gambatte::m0TimeOfCurrentLine(ppu.lyCounter().time(), ppu.lastM0Time(), nextM0Time_.predictedNextM0Time());
 }
 
@@ -269,7 +269,7 @@ static bool isHdmaPeriod(const LyCounter &lyCounter,
 		const unsigned long m0TimeOfCurrentLy, const unsigned long cycleCounter)
 {
 	const unsigned timeToNextLy = lyCounter.time() - cycleCounter;
-	
+
 	return /*(ppu.lcdc & 0x80) && */lyCounter.ly() < 144 && timeToNextLy > 4
 			&& cycleCounter >= hdmaTimeFromM0Time(m0TimeOfCurrentLy, lyCounter.isDoubleSpeed());
 }
@@ -280,27 +280,27 @@ void LCD::enableHdma(const unsigned long cycleCounter) {
 		nextM0Time_.predictNextM0Time(ppu);
 	} else if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
-	
+
 	if (isHdmaPeriod(ppu.lyCounter(),
 			gambatte::m0TimeOfCurrentLine(ppu.lyCounter().time(),
 				ppu.lastM0Time(), nextM0Time_.predictedNextM0Time()), cycleCounter)) {
 		eventTimes_.flagHdmaReq();
 	}
-	
+
 	eventTimes_.setm<HDMA_REQ>(nextHdmaTime(ppu.lastM0Time(), nextM0Time_.predictedNextM0Time(), cycleCounter, isDoubleSpeed()));
 }
 
 void LCD::disableHdma(const unsigned long cycleCounter) {
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
-	
+
 	eventTimes_.setm<HDMA_REQ>(DISABLED_TIME);
 }
 
 bool LCD::vramAccessible(const unsigned long cycleCounter) {
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
-	
+
 	return !(ppu.lcdc() & 0x80) || ppu.lyCounter().ly() >= 144
 			|| ppu.lyCounter().lineCycles(cycleCounter) < 80U
 			|| cycleCounter + isDoubleSpeed() - ppu.cgb() + 2 >= m0TimeOfCurrentLine(cycleCounter);
@@ -309,7 +309,7 @@ bool LCD::vramAccessible(const unsigned long cycleCounter) {
 bool LCD::cgbpAccessible(const unsigned long cycleCounter) {
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
-	
+
 	return !(ppu.lcdc() & 0x80) || ppu.lyCounter().ly() >= 144
 			|| ppu.lyCounter().lineCycles(cycleCounter) < 80U + isDoubleSpeed()
 			|| cycleCounter >= m0TimeOfCurrentLine(cycleCounter) + 3 - isDoubleSpeed();
@@ -319,17 +319,17 @@ void LCD::doCgbColorChange(unsigned char *const pdata,
 		unsigned long *const palette, unsigned index, const unsigned data) {
 	pdata[index] = data;
 	index >>= 1;
-	palette[index] = gbcToRgb32(pdata[index << 1] | pdata[(index << 1) + 1] << 8);
+	palette[index] = gbcToRgb32(pdata[index * 2] | pdata[(index * 2) + 1] << 8);
 }
 
-void LCD::doCgbBgColorChange(unsigned index, const unsigned data, const unsigned long cycleCounter) {
+void LCD::doCgbBgColorChange(unsigned index, unsigned data, unsigned long cycleCounter) {
 	if (cgbpAccessible(cycleCounter)) {
 		update(cycleCounter);
 		doCgbColorChange(bgpData, ppu.bgPalette(), index, data);
 	}
 }
 
-void LCD::doCgbSpColorChange(unsigned index, const unsigned data, const unsigned long cycleCounter) {
+void LCD::doCgbSpColorChange(unsigned index, unsigned data, unsigned long cycleCounter) {
 	if (cgbpAccessible(cycleCounter)) {
 		update(cycleCounter);
 		doCgbColorChange(objpData, ppu.spPalette(), index, data);
@@ -339,7 +339,7 @@ void LCD::doCgbSpColorChange(unsigned index, const unsigned data, const unsigned
 bool LCD::oamReadable(const unsigned long cycleCounter) {
 	if (!(ppu.lcdc() & 0x80) || ppu.inactivePeriodAfterDisplayEnable(cycleCounter))
 		return true;
-	
+
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
 
@@ -352,7 +352,7 @@ bool LCD::oamReadable(const unsigned long cycleCounter) {
 bool LCD::oamWritable(const unsigned long cycleCounter) {
 	if (!(ppu.lcdc() & 0x80) || ppu.inactivePeriodAfterDisplayEnable(cycleCounter))
 		return true;
-	
+
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
 
@@ -387,7 +387,7 @@ void LCD::wyChange(const unsigned newValue, const unsigned long cycleCounter) {
 	update(cycleCounter + 1);
 	ppu.setWy(newValue);
 // 	mode3CyclesChange(); // should be safe to wait until after wy2 delay, because no mode3 events are close to when wy1 is read.
-	
+
 	// wy2 is a delayed version of wy. really just slowness of ly == wy comparison.
 	if (ppu.cgb() && (ppu.lcdc() & 0x80)) {
 		eventTimes_.setm<ONESHOT_UPDATEWY2>(cycleCounter + 5);
@@ -420,7 +420,7 @@ void LCD::oamChange(const unsigned long cycleCounter) {
 void LCD::oamChange(const unsigned char *const oamram, const unsigned long cycleCounter) {
 	update(cycleCounter);
 	ppu.oamChange(oamram, cycleCounter);
-	
+
 	if (ppu.lcdc() & 0x80)
 		eventTimes_.setm<SPRITE_MAP>(SpriteMapper::schedule(ppu.lyCounter(), cycleCounter));
 }
@@ -428,53 +428,53 @@ void LCD::oamChange(const unsigned char *const oamram, const unsigned long cycle
 void LCD::lcdcChange(const unsigned data, const unsigned long cycleCounter) {
 	const unsigned oldLcdc = ppu.lcdc();
 	update(cycleCounter);
-	
+
 	if ((oldLcdc ^ data) & 0x80) {
 		ppu.setLcdc(data, cycleCounter);
-		
+
 		if (data & 0x80) {
 			lycIrq.lcdReset();
 			m0Irq_.lcdReset(statReg, lycIrq.lycReg());
-			
+
 			if (lycIrq.lycReg() == 0 && (statReg & 0x40))
 				eventTimes_.flagIrq(2);
 
 			nextM0Time_.predictNextM0Time(ppu);
 			lycIrq.reschedule(ppu.lyCounter(), cycleCounter);
-			
+
 			eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
 			eventTimes_.setm<SPRITE_MAP>(SpriteMapper::schedule(ppu.lyCounter(), cycleCounter));
 			eventTimes_.setm<LYC_IRQ>(lycIrq.time());
 			eventTimes_.setm<MODE1_IRQ>(ppu.lyCounter().nextFrameCycle(144 * 456, cycleCounter));
 			eventTimes_.setm<MODE2_IRQ>(mode2IrqSchedule(statReg, ppu.lyCounter(), cycleCounter));
-			
+
 			if (statReg & 0x08)
 				eventTimes_.setm<MODE0_IRQ>(m0IrqTimeFromXpos166Time(ppu.predictedNextXposTime(166), ppu.cgb(), isDoubleSpeed()));
-			
+
 			if (hdmaIsEnabled()) {
 				eventTimes_.setm<HDMA_REQ>(nextHdmaTime(ppu.lastM0Time(),
 						nextM0Time_.predictedNextM0Time(), cycleCounter, isDoubleSpeed()));
 			}
 		} else for (int i = 0; i < NUM_MEM_EVENTS; ++i)
-			eventTimes_.set(static_cast<MemEvent>(i), DISABLED_TIME);
+			eventTimes_.set(MemEvent(i), DISABLED_TIME);
 	} else if (data & 0x80) {
 		if (ppu.cgb()) {
 			ppu.setLcdc((oldLcdc & ~0x14) | (data & 0x14), cycleCounter);
-			
+
 			if ((oldLcdc ^ data) & 0x04)
 				eventTimes_.setm<SPRITE_MAP>(SpriteMapper::schedule(ppu.lyCounter(), cycleCounter));
-			
+
 			update(cycleCounter + isDoubleSpeed() + 1);
 			ppu.setLcdc(data, cycleCounter + isDoubleSpeed() + 1);
-			
+
 			if ((oldLcdc ^ data) & 0x20)
 				mode3CyclesChange();
 		} else {
 			ppu.setLcdc(data, cycleCounter);
-			
+
 			if ((oldLcdc ^ data) & 0x04)
 				eventTimes_.setm<SPRITE_MAP>(SpriteMapper::schedule(ppu.lyCounter(), cycleCounter));
-			
+
 			if ((oldLcdc ^ data) & 0x22)
 				mode3CyclesChange();
 		}
@@ -512,7 +512,7 @@ void LCD::lcdstatChange(unsigned const data, unsigned long const cycleCounter) {
 	unsigned const old = statReg;
 	statReg = data;
 	lycIrq.statRegChange(data, ppu.lyCounter(), cycleCounter);
-	
+
 	if (ppu.lcdc() & 0x80) {
 		int const timeToNextLy = ppu.lyCounter().time() - cycleCounter;
 		LyCnt const lycCmp = getLycCmpLy(ppu.lyCounter(), cycleCounter);
@@ -565,12 +565,12 @@ void LCD::lcdstatChange(unsigned const data, unsigned long const cycleCounter) {
 		eventTimes_.setm<MODE2_IRQ>(mode2IrqSchedule(data, ppu.lyCounter(), cycleCounter));
 		eventTimes_.setm<LYC_IRQ>(lycIrq.time());
 	}
-	
+
 	m2IrqStatReg_ = eventTimes_(MODE2_IRQ) - cycleCounter > (ppu.cgb() - isDoubleSpeed()) * 4U
 			? data : (m2IrqStatReg_ & 0x10) | (statReg & ~0x10);
 	m1IrqStatReg_ = eventTimes_(MODE1_IRQ) - cycleCounter > (ppu.cgb() - isDoubleSpeed()) * 4U
 			? data : (m1IrqStatReg_ & 0x08) | (statReg & ~0x08);
-	
+
 	m0Irq_.statRegChange(data, eventTimes_(MODE0_IRQ), cycleCounter, ppu.cgb());
 }
 
@@ -583,16 +583,16 @@ void LCD::lycRegChange(unsigned const data, unsigned long const cycleCounter) {
 	if (cycleCounter >= eventTimes_.nextEventTime())
 		update(cycleCounter);
 
-	m0Irq_.lycRegChange(data, eventTimes_(MODE0_IRQ), cycleCounter, isDoubleSpeed(), ppu.cgb());	
+	m0Irq_.lycRegChange(data, eventTimes_(MODE0_IRQ), cycleCounter, isDoubleSpeed(), ppu.cgb());
 	lycIrq.lycRegChange(data, ppu.lyCounter(), cycleCounter);
-	
+
 	if (!(ppu.lcdc() & 0x80))
 		return;
-	
+
 	eventTimes_.setm<LYC_IRQ>(lycIrq.time());
 
 	int const timeToNextLy = ppu.lyCounter().time() - cycleCounter;
-	
+
 	if ((statReg & 0x40) && data < 154
 			&& (ppu.lyCounter().ly() < 144
 			    ? !(statReg & 0x08) || cycleCounter < m0TimeOfCurrentLine(cycleCounter) || timeToNextLy <= 4 << ppu.cgb()
@@ -649,22 +649,22 @@ inline void LCD::doMode2IrqEvent() {
 	const unsigned ly = eventTimes_(LY_COUNT) - eventTimes_(MODE2_IRQ) < 8
 			? (ppu.lyCounter().ly() == 153 ? 0 : ppu.lyCounter().ly() + 1)
 			: ppu.lyCounter().ly();
-	
+
 	if ((ly != 0 || !(m2IrqStatReg_ & 0x10)) &&
 			(!(m2IrqStatReg_ & 0x40) || (lycIrq.lycReg() != 0 ? ly != (lycIrq.lycReg() + 1U) : ly > 1))) {
 		eventTimes_.flagIrq(2);
 	}
-	
+
 	m2IrqStatReg_ = statReg;
-	
+
 	if (!(statReg & 0x08)) {
 		unsigned long nextTime = eventTimes_(MODE2_IRQ) + ppu.lyCounter().lineTime();
-		
+
 		if (ly == 0) {
 			nextTime -= 4;
 		} else if (ly == 143)
 			nextTime += ppu.lyCounter().lineTime() * 10 + 4;
-		
+
 		eventTimes_.setm<MODE2_IRQ>(nextTime);
 	} else
 		eventTimes_.setm<MODE2_IRQ>(eventTimes_(MODE2_IRQ) + (70224 << isDoubleSpeed()));
@@ -679,7 +679,7 @@ inline void LCD::event() {
 			m1IrqStatReg_ = statReg;
 			eventTimes_.setm<MODE1_IRQ>(eventTimes_(MODE1_IRQ) + (70224 << isDoubleSpeed()));
 			break;
-			
+
 		case LYC_IRQ: {
 			unsigned char ifreg = 0;
 			lycIrq.doEvent(&ifreg, ppu.lyCounter());
@@ -687,48 +687,48 @@ inline void LCD::event() {
 			eventTimes_.setm<LYC_IRQ>(lycIrq.time());
 			break;
 		}
-		
+
 		case SPRITE_MAP:
 			eventTimes_.setm<SPRITE_MAP>(ppu.doSpriteMapEvent(eventTimes_(SPRITE_MAP)));
 			mode3CyclesChange();
 			break;
-		
+
 		case HDMA_REQ:
 			eventTimes_.flagHdmaReq();
 			nextM0Time_.predictNextM0Time(ppu);
 			eventTimes_.setm<HDMA_REQ>(hdmaTimeFromM0Time(nextM0Time_.predictedNextM0Time(), isDoubleSpeed()));
 			break;
-		
+
 		case MODE2_IRQ:
 			doMode2IrqEvent();
 			break;
-		
+
 		case MODE0_IRQ:
 			{
 				unsigned char ifreg = 0;
 				m0Irq_.doEvent(&ifreg, ppu.lyCounter().ly(), statReg, lycIrq.lycReg());
 				eventTimes_.flagIrq(ifreg);
 			}
-			
-			eventTimes_.setm<MODE0_IRQ>((statReg & 0x08)
+
+			eventTimes_.setm<MODE0_IRQ>(statReg & 0x08
 					? m0IrqTimeFromXpos166Time(ppu.predictedNextXposTime(166), ppu.cgb(), isDoubleSpeed())
 					: static_cast<unsigned long>(DISABLED_TIME));
 			break;
-		
+
 		case ONESHOT_LCDSTATIRQ:
 			eventTimes_.flagIrq(2);
 			eventTimes_.setm<ONESHOT_LCDSTATIRQ>(DISABLED_TIME);
 			break;
-		
+
 		case ONESHOT_UPDATEWY2:
 			ppu.updateWy2();
 			mode3CyclesChange();
 			eventTimes_.setm<ONESHOT_UPDATEWY2>(DISABLED_TIME);
 			break;
 		}
-		
+
 		break;
-		
+
 	case LY_COUNT:
 		ppu.doLyCountEvent();
 		eventTimes_.set<LY_COUNT>(ppu.lyCounter().time());
@@ -741,12 +741,12 @@ inline void LCD::event() {
 void LCD::update(const unsigned long cycleCounter) {
 	if (!(ppu.lcdc() & 0x80))
 		return;
-	
+
 	while (cycleCounter >= eventTimes_.nextEventTime()) {
 		ppu.update(eventTimes_.nextEventTime());
 		event();
 	}
-	
+
 	ppu.update(cycleCounter);
 }
 

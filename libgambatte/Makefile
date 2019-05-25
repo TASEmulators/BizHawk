@@ -61,6 +61,6 @@ $(TARGET) : $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) $(TARGET)
-	
+
 install:
 	$(CP) $(TARGET) $(DEST_$(ARCH))

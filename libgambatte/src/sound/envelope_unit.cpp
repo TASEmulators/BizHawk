@@ -25,21 +25,21 @@ EnvelopeUnit::VolOnOffEvent EnvelopeUnit::nullEvent;
 
 void EnvelopeUnit::event() {
 	const unsigned long period = nr2 & 7;
-	
+
 	if (period) {
 		unsigned newVol = volume;
-		
+
 		if (nr2 & 8)
 			++newVol;
 		else
 			--newVol;
-		
+
 		if (newVol < 0x10U) {
 			volume = newVol;
-			
+
 			if (volume < 2)
 				volOnOffEvent(counter);
-			
+
 			counter += period << 15;
 		} else
 			counter = COUNTER_DISABLED;
@@ -52,32 +52,32 @@ bool EnvelopeUnit::nr2Change(const unsigned newNr2) {
 		++volume;
 	else if (!(nr2 & 8))
 		volume += 2;
-	
+
 	if ((nr2 ^ newNr2) & 8)
 		volume = 0x10 - volume;
-	
+
 	volume &= 0xF;
-	
+
 	nr2 = newNr2;
-	
+
 	return !(newNr2 & 0xF8);
 }
 
 bool EnvelopeUnit::nr4Init(const unsigned long cc) {
 	{
 		unsigned long period = nr2 & 7;
-		
+
 		if (!period)
 			period = 8;
-		
+
 		if (!(cc & 0x7000))
 			++period;
-		
+
 		counter = cc - ((cc - 0x1000) & 0x7FFF) + period * 0x8000;
 	}
-	
+
 	volume = nr2 >> 4;
-	
+
 	return !(nr2 & 0xF8);
 }
 

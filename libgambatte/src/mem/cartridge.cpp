@@ -76,11 +76,11 @@ public:
 };
 
 static inline unsigned rambanks(const MemPtrs &memptrs) {
-	return static_cast<std::size_t>(memptrs.rambankdataend() - memptrs.rambankdata()) / 0x2000;
+	return std::size_t(memptrs.rambankdataend() - memptrs.rambankdata()) / 0x2000;
 }
 
 static inline unsigned rombanks(const MemPtrs &memptrs) {
-	return static_cast<std::size_t>(memptrs.romdataend()     - memptrs.romdata()    ) / 0x4000;
+	return std::size_t(memptrs.romdataend()     - memptrs.romdata()    ) / 0x4000;
 }
 
 class Mbc1 : public DefaultMbc {
@@ -219,7 +219,7 @@ public:
 		memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, 0);
 		setRombank();
 	}
-	
+
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned addr, unsigned bank) const {
 		return (addr < 0x4000) == ((bank & 0xF) == 0);
 	}
@@ -287,10 +287,10 @@ class Mbc3 : public DefaultMbc {
 	static unsigned adjustedRombank(unsigned bank) { return bank & 0x7F ? bank : bank | 1; }
 	void setRambank() const {
 		unsigned flags = enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0;
-		
+
 		if (rtc) {
 			rtc->set(enableRam, rambank);
-			
+
 			if (rtc->getActive())
 				flags |= MemPtrs::RTC_EN;
 		}
@@ -546,7 +546,7 @@ LoadRes Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, bool
 
 	//if (rom->fail())
 	//	return -1;
-	
+
 	unsigned rambanks = 1;
 	unsigned rombanks = 2;
 	bool cgb = false;
@@ -609,8 +609,8 @@ LoadRes Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, bool
 		default: return -1;
 		}*/
 
-		rambanks = numRambanksFromH14x(header[0x147], header[0x149]);	
-	
+		rambanks = numRambanksFromH14x(header[0x147], header[0x149]);
+
 		cgb = !forceDmg;
 	}
 	std::size_t const filesize = romfilelength; //rom->size();
@@ -625,10 +625,10 @@ LoadRes Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, bool
 	std::memcpy(memptrs.romdata(), romfiledata, (filesize / 0x4000) * 0x4000ul);
 	std::memset(memptrs.romdata() + (filesize / 0x4000) * 0x4000ul, 0xFF, (rombanks - filesize / 0x4000) * 0x4000ul);
 	enforce8bit(memptrs.romdata(), rombanks * 0x4000ul);
-	
+
 	//if (rom->fail())
 	//	return -1;
-	
+
 	switch (type) {
 	case PLAIN: mbc.reset(new Mbc0(memptrs)); break;
 	case MBC1:

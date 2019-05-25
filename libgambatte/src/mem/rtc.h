@@ -41,7 +41,7 @@ private:
 	bool enabled;
 	bool lastLatchData;
 	std::uint32_t (*timeCB)();
-	
+
 	void doLatch();
 	void doSwapActive();
 	void setDh(unsigned new_dh);
@@ -49,37 +49,37 @@ private:
 	void setH(unsigned new_hours);
 	void setM(unsigned new_minutes);
 	void setS(unsigned new_seconds);
-	
+
 public:
 	Rtc();
-	
+
 	const unsigned char* getActive() const { return activeData; }
 	std::uint32_t getBaseTime() const { return baseTime; }
-	
+
 	void setBaseTime(const std::uint32_t baseTime) {
 		this->baseTime = baseTime;
 // 		doLatch();
 	}
-	
+
 	void latch(const unsigned data) {
 		if (!lastLatchData && data == 1)
 			doLatch();
-		
+
 		lastLatchData = data;
 	}
-	
+
 	void loadState(const SaveState &state);
-	
+
 	void set(const bool enabled, unsigned bank) {
 		bank &= 0xF;
 		bank -= 8;
-		
+
 		this->enabled = enabled;
 		this->index = bank;
-		
+
 		doSwapActive();
 	}
-	
+
 	void write(const unsigned data) {
 // 		if (activeSet)
 		(this->*activeSet)(data);

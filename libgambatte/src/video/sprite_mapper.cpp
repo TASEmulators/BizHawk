@@ -83,10 +83,10 @@ void SpriteMapper::OamReader::update(const unsigned long cc) {
 				if (!(pos & 1)) {
 					if (pos == 80)
 						pos = 0;
-					
+
 					if (cgb_)
 						szbuf[pos >> 1] = largeSpritesSrc;
-					
+
 					buf[pos    ] = oamram[pos * 2    ];
 					buf[pos + 1] = oamram[pos * 2 + 1];
 				} else
@@ -194,7 +194,7 @@ SYNCFUNC(SpriteMapper)
 {
 	NSS(spritemap);
 	NSS(num);
-	
+
 	SSS(nextM0Time_);
 	SSS(oamReader);
 }

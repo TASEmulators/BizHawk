@@ -78,7 +78,7 @@ namespace M3Loop {
 		DECLARE_FUNC(4, 0x84);
 		DECLARE_FUNC(5, 0x85);
 	}
-	
+
 	namespace LoadSprites     {
 		DECLARE_FUNC(0, 0x88);
 		DECLARE_FUNC(1, 0x89);
@@ -87,7 +87,7 @@ namespace M3Loop {
 		DECLARE_FUNC(4, 0x8C);
 		DECLARE_FUNC(5, 0x8D);
 	}
-	
+
 	namespace StartWindowDraw {
 		DECLARE_FUNC(0, 0x90);
 		DECLARE_FUNC(1, 0x91);
@@ -129,25 +129,25 @@ namespace M2 {
 			nextCall(m3StartLineCycle(p.cgb), M3Start::f0_, p);
 		}
 	}
-	
+
 	namespace LyNon0 {
 		static void f0(PPUPriv &p) {
 			p.weMaster |= (p.lcdc & 0x20) && p.lyCounter.ly() == p.wy;
 			nextCall(weMasterCheckAfterLyIncLineCycle(p.cgb) - weMasterCheckPriorToLyIncLineCycle(p.cgb), f1_, p);
 		}
-		
+
 		static void f1(PPUPriv &p) {
 			p.weMaster |= (p.lcdc & 0x20) && p.lyCounter.ly() + 1 == p.wy;
 			nextCall(456 - weMasterCheckAfterLyIncLineCycle(p.cgb) + m3StartLineCycle(p.cgb), M3Start::f0_, p);
 		}
 	}
-	
+
 	/*struct SpriteLess {
 		bool operator()(const Sprite lhs, const Sprite rhs) const {
 			return lhs.spx < rhs.spx;
 		}
 	};
-	
+
 	static void f0(PPUPriv &p) {
 		std::memset(&p.spLut, 0, sizeof p.spLut);
 		p.reg0 = 0;
@@ -155,37 +155,37 @@ namespace M2 {
 		p.nextCallPtr = &f1_;
 		f1(p);
 	}
-	
+
 	static void f1(PPUPriv &p) {
 		int cycles = p.cycles;
 		unsigned oampos = p.reg0;
 		unsigned nextSprite = p.nextSprite;
 		const unsigned nly = (p.lyCounter.ly() + 1 == 154 ? 0 : p.lyCounter.ly() + 1) + ((p.lyCounter.time()-(p.now-p.cycles)) <= 4);
 		const bool ls = p.spriteMapper.largeSpritesSource();
-	
+
 		do {
 			const unsigned spy = p.spriteMapper.oamram()[oampos  ];
 			const unsigned spx = p.spriteMapper.oamram()[oampos+1];
 			const unsigned ydiff = spy - nly;
-			
+
 			if (ls ? ydiff < 16u : ydiff - 8u < 8u) {
 				p.spriteList[nextSprite].spx = spx;
 				p.spriteList[nextSprite].line = 15u - ydiff;
 				p.spriteList[nextSprite].oampos = oampos;
-				
+
 				if (++nextSprite == 10) {
 					cycles -= (0xA0 - 4 - oampos) >> 1;
 					oampos = 0xA0 - 4;
 				}
 			}
-			
+
 			oampos += 4;
 		} while ((cycles-=2) >= 0 && oampos != 0xA0);
-		
+
 		p.reg0 = oampos;
 		p.nextSprite = nextSprite;
 		p.cycles = cycles;
-		
+
 		if (oampos == 0xA0) {
 			insertionSort(p.spriteList, p.spriteList + nextSprite, SpriteLess());
 			p.spriteList[nextSprite].spx = 0xFF;
@@ -198,23 +198,23 @@ namespace M2 {
 namespace M3Start {
 	static void f0(PPUPriv &p) {
 		p.xpos = 0;
-		
+
 		if (p.winDrawState & p.lcdc >> 5 & WIN_DRAW_START) {
 			p.winDrawState = WIN_DRAW_STARTED;
 			p.wscx = 8 + (p.scx & 7);
 			++p.winYPos;
 		} else
 			p.winDrawState = 0;
-		
+
 		p.nextCallPtr = &f1_;
 		f1(p);
 	}
-	
+
 	static void f1(PPUPriv &p) {
 		while (p.xpos < MAX_M3START_CYCLES) {
 			if ((p.xpos & 7) == (p.scx & 7))
 				break;
-			
+
 			switch (p.xpos & 7) {
 			case 0:
 				if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
@@ -229,31 +229,31 @@ namespace M3Start {
 			case 2:
 				{
 					const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
-					
+
 					p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000) - ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 										+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2];
 				}
-				
+
 				break;
 			case 4:
 				{
 					const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 					const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000) - ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 											+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];
-						
+
 					p.ntileword = (expand_lut + (p.nattrib << 3 & 0x100))[p.reg0] +
 					              (expand_lut + (p.nattrib << 3 & 0x100))[r1    ] * 2;
 				}
-				
+
 				break;
 			}
-			
+
 			++p.xpos;
-			
+
 			if (--p.cycles < 0)
 				return;
 		}
-		
+
 		{
 			const unsigned ly = p.lyCounter.ly();
 			const unsigned numSprites = p.spriteMapper.numSprites(ly);
@@ -269,14 +269,14 @@ namespace M3Start {
 				p.spriteList[i].oampos = pos * 2;
 				p.spwordList[i] = 0;
 			}
-			
+
 			p.spriteList[numSprites].spx = 0xFF;
 			p.nextSprite = 0;
 		}
-		
+
 		p.xpos = 0;
 		p.endx = 8 - (p.scx & 7);
-		
+
 		static const PPUState *const flut[8] = {
 			&M3Loop::Tile::f0_,
 			&M3Loop::Tile::f1_,
@@ -287,7 +287,7 @@ namespace M3Start {
 			&M3Loop::Tile::f5_,
 			&M3Loop::Tile::f5_
 		};
-		
+
 		nextCall(1-p.cgb, *flut[p.scx & 7], p);
 	}
 }
@@ -298,66 +298,66 @@ namespace M3Loop {
 		const unsigned tileIndexSign = ~p.lcdc << 3 & 0x80;
 		const unsigned char *const tileDataLine = p.vram + tileIndexSign * 32 + tileline * 2;
 		int xpos = p.xpos;
-		
+
 		do {
 			int nextSprite = p.nextSprite;
-			
-			if (static_cast<int>(p.spriteList[nextSprite].spx) < xpos + 8) {
+
+			if (int(p.spriteList[nextSprite].spx) < xpos + 8) {
 				int cycles = p.cycles - 8;
-				
+
 				if (p.lcdc & 2) {
-					cycles -= std::max(11 - (static_cast<int>(p.spriteList[nextSprite].spx) - xpos), 6);
-					
-					for (unsigned i = nextSprite + 1; static_cast<int>(p.spriteList[i].spx) < xpos + 8; ++i)
+					cycles -= std::max(11 - (int(p.spriteList[nextSprite].spx) - xpos), 6);
+
+					for (unsigned i = nextSprite + 1; int(p.spriteList[i].spx) < xpos + 8; ++i)
 						cycles -= 6;
-					
+
 					if (cycles < 0)
 						break;
-					
+
 					p.cycles = cycles;
-					
+
 					do {
 						unsigned reg0, reg1   = p.spriteMapper.oamram()[p.spriteList[nextSprite].oampos + 2] * 16;
 						const unsigned attrib = p.spriteMapper.oamram()[p.spriteList[nextSprite].oampos + 3];
-		
+
 						{
 							const unsigned spline = (attrib & 0x40 ?
 								p.spriteList[nextSprite].line ^ 15 : p.spriteList[nextSprite].line) * 2;
 							reg0 = p.vram[(p.lcdc & 4 ? (reg1 & ~16) | spline : reg1 | (spline & ~16))    ];
 							reg1 = p.vram[(p.lcdc & 4 ? (reg1 & ~16) | spline : reg1 | (spline & ~16)) + 1];
 						}
-						
+
 						p.spwordList[nextSprite] = expand_lut[reg0 + (attrib << 3 & 0x100)]
 						                         + expand_lut[reg1 + (attrib << 3 & 0x100)] * 2;
 						p.spriteList[nextSprite].attrib = attrib;
 						++nextSprite;
-					} while (static_cast<int>(p.spriteList[nextSprite].spx) < xpos + 8);
+					} while (int(p.spriteList[nextSprite].spx) < xpos + 8);
 				} else {
 					if (cycles < 0)
 						break;
-					
+
 					p.cycles = cycles;
-					
+
 					do {
 						++nextSprite;
-					} while (static_cast<int>(p.spriteList[nextSprite].spx) < xpos + 8);
+					} while (int(p.spriteList[nextSprite].spx) < xpos + 8);
 				}
-				
+
 				p.nextSprite = nextSprite;
-			} else if (nextSprite-1 < 0 || static_cast<int>(p.spriteList[nextSprite-1].spx) <= xpos - 8) {
+			} else if (nextSprite-1 < 0 || int(p.spriteList[nextSprite-1].spx) <= xpos - 8) {
 				if (!(p.cycles & ~7))
 					break;
-				
-				int n = ((  xend + 7 < static_cast<int>(p.spriteList[nextSprite].spx)
-				          ? xend + 7 : static_cast<int>(p.spriteList[nextSprite].spx)) - xpos) & ~7;
+
+				int n = ((  xend + 7 < int(p.spriteList[nextSprite].spx)
+				          ? xend + 7 : int(p.spriteList[nextSprite].spx)) - xpos) & ~7;
 				n = (p.cycles & ~7) < n ? p.cycles & ~7 : n;
 				p.cycles -= n;
-				
+
 				unsigned ntileword = p.ntileword;
 				uint_least32_t *      dst    = dbufline + xpos - 8;
 				uint_least32_t *const dstend = dst + n;
 				xpos += n;
-				
+
 				if (!(p.lcdc & 1)) {
 					do { *dst++ = p.bgPalette[0]; } while (dst != dstend);
 					tileMapXpos += n >> 3;
@@ -375,28 +375,28 @@ namespace M3Loop {
 					dst[6] = p.bgPalette[(ntileword & 0x3000) >> 12];
 					dst[7] = p.bgPalette[ ntileword           >> 14];
 					dst += 8;
-					
+
 					unsigned const tno = tileMapLine[tileMapXpos & 0x1F];
 					tileMapXpos = (tileMapXpos & 0x1F) + 1;
 					ntileword = expand_lut[(tileDataLine + tno * 16 - (tno & tileIndexSign) * 32)[0]]
 					          + expand_lut[(tileDataLine + tno * 16 - (tno & tileIndexSign) * 32)[1]] * 2;
 				} while (dst != dstend);
-				
+
 				p.ntileword = ntileword;
 				continue;
 			} else {
 				int cycles = p.cycles - 8;
-				
+
 				if (cycles < 0)
 					break;
-				
+
 				p.cycles = cycles;
 			}
-			
+
 			{
 				uint_least32_t *const dst = dbufline + (xpos - 8);
 				const unsigned tileword = -(p.lcdc & 1U) & p.ntileword;
-				
+
 				dst[0] = p.bgPalette[ tileword & 0x0003       ];
 				dst[1] = p.bgPalette[(tileword & 0x000C) >>  2];
 				dst[2] = p.bgPalette[(tileword & 0x0030) >>  4];
@@ -405,21 +405,21 @@ namespace M3Loop {
 				dst[5] = p.bgPalette[(tileword & 0x0C00) >> 10];
 				dst[6] = p.bgPalette[(tileword & 0x3000) >> 12];
 				dst[7] = p.bgPalette[ tileword           >> 14];
-				
+
 				int i = nextSprite - 1;
-			
+
 				if(p.layersMask & LAYER_MASK_OBJ)
 				{
 					if (!(p.lcdc & 2)) {
 						do {
-							const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							const int pos = int(p.spriteList[i].spx) - xpos;
 							p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
 							--i;
-						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+						} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 					} else {
 						do {
 							int n;
-							int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							int pos = int(p.spriteList[i].spx) - xpos;
 
 							if (pos < 0) {
 								n = pos + 8;
@@ -471,24 +471,24 @@ namespace M3Loop {
 
 							p.spwordList[i] = spword;
 							--i;
-						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+						} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 					}
 				}
 			}
-			
+
 			{
 				unsigned const tno = tileMapLine[tileMapXpos & 0x1F];
 				tileMapXpos = (tileMapXpos & 0x1F) + 1;
 				p.ntileword = expand_lut[(tileDataLine + tno * 16 - (tno & tileIndexSign) * 32)[0]]
 				            + expand_lut[(tileDataLine + tno * 16 - (tno & tileIndexSign) * 32)[1]] * 2;
 			}
-			
+
 			xpos = xpos + 8;
 		} while (xpos < xend);
-		
+
 		p.xpos = xpos;
 	}
-	
+
 	static void doFullTilesUnrolledCgb(PPUPriv &p, const int xend, uint_least32_t *const dbufline,
 			const unsigned char *const tileMapLine, const unsigned tileline, unsigned tileMapXpos) {
 		int xpos = p.xpos;
@@ -501,26 +501,26 @@ namespace M3Loop {
 				dbufline[i] = p.bgPalette[0]; //guessing?
 			return;
 		}
-		
+
 		do {
 			int nextSprite = p.nextSprite;
-			
-			if (static_cast<int>(p.spriteList[nextSprite].spx) < xpos + 8) {
+
+			if (int(p.spriteList[nextSprite].spx) < xpos + 8) {
 				int cycles = p.cycles - 8;
-				cycles -= std::max(11 - (static_cast<int>(p.spriteList[nextSprite].spx) - xpos), 6);
-				
-				for (unsigned i = nextSprite + 1; static_cast<int>(p.spriteList[i].spx) < xpos + 8; ++i)
+				cycles -= std::max(11 - (int(p.spriteList[nextSprite].spx) - xpos), 6);
+
+				for (unsigned i = nextSprite + 1; int(p.spriteList[i].spx) < xpos + 8; ++i)
 					cycles -= 6;
-				
+
 				if (cycles < 0)
 					break;
-				
+
 				p.cycles = cycles;
-				
+
 				do {
 					unsigned reg0, reg1   = p.spriteMapper.oamram()[p.spriteList[nextSprite].oampos + 2] * 16;
 					const unsigned attrib = p.spriteMapper.oamram()[p.spriteList[nextSprite].oampos + 3];
-	
+
 					{
 						const unsigned spline = (attrib & 0x40 ?
 							p.spriteList[nextSprite].line ^ 15 : p.spriteList[nextSprite].line) * 2;
@@ -529,29 +529,29 @@ namespace M3Loop {
 						reg1 = vram[(attrib << 10 & 0x2000) +
 								(p.lcdc & 4 ? (reg1 & ~16) | spline : reg1 | (spline & ~16)) + 1];
 					}
-					
+
 					p.spwordList[nextSprite] = expand_lut[reg0 + (attrib << 3 & 0x100)]
 					                         + expand_lut[reg1 + (attrib << 3 & 0x100)] * 2;
 					p.spriteList[nextSprite].attrib = attrib;
 					++nextSprite;
-				} while (static_cast<int>(p.spriteList[nextSprite].spx) < xpos + 8);
-				
+				} while (int(p.spriteList[nextSprite].spx) < xpos + 8);
+
 				p.nextSprite = nextSprite;
-			} else if (nextSprite-1 < 0 || static_cast<int>(p.spriteList[nextSprite-1].spx) <= xpos - 8) {
+			} else if (nextSprite-1 < 0 || int(p.spriteList[nextSprite-1].spx) <= xpos - 8) {
 				if (!(p.cycles & ~7))
 					break;
-				
-				int n = ((  xend + 7 < static_cast<int>(p.spriteList[nextSprite].spx)
-				          ? xend + 7 : static_cast<int>(p.spriteList[nextSprite].spx)) - xpos) & ~7;
+
+				int n = ((  xend + 7 < int(p.spriteList[nextSprite].spx)
+				          ? xend + 7 : int(p.spriteList[nextSprite].spx)) - xpos) & ~7;
 				n = (p.cycles & ~7) < n ? p.cycles & ~7 : n;
 				p.cycles -= n;
-				
+
 				unsigned ntileword = p.ntileword;
 				unsigned nattrib   = p.nattrib;
 				uint_least32_t *      dst    = dbufline + xpos - 8;
 				uint_least32_t *const dstend = dst + n;
 				xpos += n;
-				
+
 				do {
 					const unsigned long *const bgPalette = p.bgPalette + (nattrib & 7) * 4;
 					dst[0] = bgPalette[ ntileword & 0x0003       ];
@@ -563,36 +563,36 @@ namespace M3Loop {
 					dst[6] = bgPalette[(ntileword & 0x3000) >> 12];
 					dst[7] = bgPalette[ ntileword           >> 14];
 					dst += 8;
-					
+
 					unsigned const tno = tileMapLine[ tileMapXpos & 0x1F          ];
 					nattrib            = tileMapLine[(tileMapXpos & 0x1F) + 0x2000];
 					tileMapXpos = (tileMapXpos & 0x1F) + 1;
-					
+
 					unsigned const tdo = tdoffset & ~(tno << 5);
 					unsigned char const *const td = vram + tno * 16
 						+ (nattrib & 0x40 ? tdo ^ 14 : tdo) + (nattrib << 10 & 0x2000);
 					unsigned short const *const explut = expand_lut + (nattrib << 3 & 0x100);
 					ntileword = explut[td[0]] + explut[td[1]] * 2;
 				} while (dst != dstend);
-				
+
 				p.ntileword = ntileword;
 				p.nattrib   = nattrib;
 				continue;
 			} else {
 				int cycles = p.cycles - 8;
-				
+
 				if (cycles < 0)
 					break;
-				
+
 				p.cycles = cycles;
 			}
-			
+
 			{
 				uint_least32_t *const dst = dbufline + (xpos - 8);
 				const unsigned tileword = p.ntileword;
 				const unsigned attrib   = p.nattrib;
 				const unsigned long *const bgPalette = p.bgPalette + (attrib & 7) * 4;
-				
+
 				dst[0] = bgPalette[ tileword & 0x0003       ];
 				dst[1] = bgPalette[(tileword & 0x000C) >>  2];
 				dst[2] = bgPalette[(tileword & 0x0030) >>  4];
@@ -601,24 +601,24 @@ namespace M3Loop {
 				dst[5] = bgPalette[(tileword & 0x0C00) >> 10];
 				dst[6] = bgPalette[(tileword & 0x3000) >> 12];
 				dst[7] = bgPalette[ tileword           >> 14];
-				
+
 				int i = nextSprite - 1;
 
 				if(p.layersMask & LAYER_MASK_OBJ)
 				{
 					if (!(p.lcdc & 2)) {
 						do {
-							const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							const int pos = int(p.spriteList[i].spx) - xpos;
 							p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
 							--i;
-						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+						} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 					} else {
 						unsigned char idtab[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 						const unsigned bgenmask = p.lcdc << 7 & 0x80;
 
 						do {
 							int n;
-							int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							int pos = int(p.spriteList[i].spx) - xpos;
 
 							if (pos < 0) {
 								n = pos + 8;
@@ -698,7 +698,7 @@ namespace M3Loop {
 
 							p.spwordList[i] = spword;
 							--i;
-						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+						} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 					}
 				}
 			}
@@ -707,7 +707,7 @@ namespace M3Loop {
 				unsigned const tno     = tileMapLine[ tileMapXpos & 0x1F          ];
 				unsigned const nattrib = tileMapLine[(tileMapXpos & 0x1F) + 0x2000];
 				tileMapXpos = (tileMapXpos & 0x1F) + 1;
-				
+
 				unsigned const tdo = tdoffset & ~(tno << 5);
 				unsigned char const *const td = vram + tno * 16
 					+ (nattrib & 0x40 ? tdo ^ 14 : tdo) + (nattrib << 10 & 0x2000);
@@ -715,25 +715,25 @@ namespace M3Loop {
 				p.ntileword = explut[td[0]] + explut[td[1]] * 2;
 				p.nattrib   = nattrib;
 			}
-			
+
 			xpos = xpos + 8;
 		} while (xpos < xend);
-		
+
 		p.xpos = xpos;
 	}
-	
+
 	static void doFullTilesUnrolled(PPUPriv &p) {
 		int xpos = p.xpos;
-		const int xend = static_cast<int>(p.wx) < xpos || p.wx >= 168 ? 161 : static_cast<int>(p.wx) - 7;
-		
+		const int xend = int(p.wx) < xpos || p.wx >= 168 ? 161 : int(p.wx) - 7;
+
 		if (xpos >= xend)
 			return;
-	
+
 		uint_least32_t *const dbufline = p.framebuf.fbline();
 		const unsigned char *tileMapLine;
 		unsigned tileline;
 		unsigned tileMapXpos;
-		
+
 		if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
 			tileMapLine = p.vram + (p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x1800;
 			tileMapXpos = (xpos + p.wscx) >> 3;
@@ -743,75 +743,75 @@ namespace M3Loop {
 			tileMapXpos = (p.scx + xpos + 1 - p.cgb) >> 3;
 			tileline    = (p.scy + p.lyCounter.ly()) & 7;
 		}
-		
+
 		if (xpos < 8) {
 			uint_least32_t prebuf[16];
-			
+
 			if (p.cgb) {
 				doFullTilesUnrolledCgb(p, xend < 8 ? xend : 8, prebuf + (8 - xpos), tileMapLine, tileline, tileMapXpos);
 			} else
 				doFullTilesUnrolledDmg(p, xend < 8 ? xend : 8, prebuf + (8 - xpos), tileMapLine, tileline, tileMapXpos);
-			
+
 			const int newxpos = p.xpos;
-			
+
 			if (newxpos > 8) {
 				std::memcpy(dbufline, prebuf + (8 - xpos), (newxpos - 8) * sizeof *dbufline);
 			} else if (newxpos < 8)
 				return;
-			
+
 			if (newxpos >= xend)
 				return;
-			
+
 			tileMapXpos += (newxpos - xpos) >> 3;
 		}
-		
+
 		if (p.cgb) {
 			doFullTilesUnrolledCgb(p, xend, dbufline, tileMapLine, tileline, tileMapXpos);
 		} else
 			doFullTilesUnrolledDmg(p, xend, dbufline, tileMapLine, tileline, tileMapXpos);
 	}
-	
+
 	static void plotPixel(PPUPriv &p) {
 		//ZING!
 		const int xpos = p.xpos;
 		const unsigned tileword = p.tileword;
 		uint_least32_t *const fbline = p.framebuf.fbline();
-		
-		if (static_cast<int>(p.wx) == xpos && (p.weMaster || (p.wy2 == p.lyCounter.ly() && (p.lcdc & 0x20))) && xpos < 167) {
+
+		if (int(p.wx) == xpos && (p.weMaster || (p.wy2 == p.lyCounter.ly() && (p.lcdc & 0x20))) && xpos < 167) {
 			if (p.winDrawState == 0 && (p.lcdc & 0x20)) {
 				p.winDrawState = WIN_DRAW_START | WIN_DRAW_STARTED;
 				++p.winYPos;
 			} else if (!p.cgb && (p.winDrawState == 0 || xpos == 166))
 				p.winDrawState |= WIN_DRAW_START;
 		}
-		
+
 		const unsigned twdata = tileword & ((p.lcdc & 1) | p.cgb) * 3;
 		unsigned long pixel = p.bgPalette[twdata + (p.attrib & 7) * 4];
-		int i = static_cast<int>(p.nextSprite) - 1;
+		int i = int(p.nextSprite) - 1;
 
 		if(!(p.layersMask & LAYER_MASK_BG))
 		{
 			pixel = p.bgPalette[0]; //guessing? clobber the tile that was read
 		}
-		
-		if (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8) {
+
+		if (i >= 0 && int(p.spriteList[i].spx) > xpos - 8) {
 			unsigned spdata = 0;
 			unsigned attrib = 0;
-			
+
 			if (p.cgb) {
 				unsigned minId = 0xFF;
-				
+
 				do {
 					if ((p.spwordList[i] & 3) && p.spriteList[i].oampos < minId) {
 						spdata = p.spwordList[i] & 3;
 						attrib = p.spriteList[i].attrib;
 						minId  = p.spriteList[i].oampos;
 					}
-					
+
 					p.spwordList[i] >>= 2;
 					--i;
-				} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
-				
+				} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
+
 				if(p.layersMask & LAYER_MASK_OBJ)
 				{
 					if (spdata && (p.lcdc & 2) && (!((attrib | p.attrib) & 0x80) || !twdata || !(p.lcdc & 1)))
@@ -823,11 +823,11 @@ namespace M3Loop {
 						spdata = p.spwordList[i] & 3;
 						attrib = p.spriteList[i].attrib;
 					}
-					
+
 					p.spwordList[i] >>= 2;
 					--i;
-				} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
-				
+				} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
+
 				if(p.layersMask & LAYER_MASK_OBJ)
 				{
 					if (spdata && (p.lcdc & 2) && (!(attrib & 0x80) || !twdata))
@@ -835,27 +835,27 @@ namespace M3Loop {
 				}
 			}
 		}
-		
+
 		if (xpos - 8 >= 0)
 			fbline[xpos - 8] = pixel;
-		
+
 		p.xpos = xpos + 1;
 		p.tileword = tileword >> 2;
 	}
-	
+
 	static void plotPixelIfNoSprite(PPUPriv &p) {
 		if (p.spriteList[p.nextSprite].spx == p.xpos) {
 			if (!((p.lcdc & 2) | p.cgb)) {
 				do {
 					++p.nextSprite;
 				} while (p.spriteList[p.nextSprite].spx == p.xpos);
-				
+
 				plotPixel(p);
 			}
 		} else
 			plotPixel(p);
 	}
-	
+
 	static unsigned long nextM2Time(const PPUPriv &p) {
 		unsigned long nextm2 = p.lyCounter.isDoubleSpeed()
 				? p.lyCounter.time() + (weMasterCheckPriorToLyIncLineCycle(true ) + M2_DS_OFFSET) * 2 - 456 * 2
@@ -863,62 +863,62 @@ namespace M3Loop {
 
 		if (p.lyCounter.ly() == 143)
 			nextm2 += (456 * 10 + 456 - weMasterCheckPriorToLyIncLineCycle(p.cgb)) << p.lyCounter.isDoubleSpeed();
-		
+
 		return nextm2;
 	}
-	
+
 	static void xpos168(PPUPriv &p) {
 		p.lastM0Time = p.now - (p.cycles << p.lyCounter.isDoubleSpeed());
-		
+
 		const unsigned long nextm2 = nextM2Time(p);
-		
+
 		p.cycles = p.now >= nextm2
-				?  (static_cast<long>(p.now - nextm2) >> p.lyCounter.isDoubleSpeed())
-				: -(static_cast<long>(nextm2 - p.now) >> p.lyCounter.isDoubleSpeed());
-				
+				?  (long(p.now - nextm2) >> p.lyCounter.isDoubleSpeed())
+				: -(long(nextm2 - p.now) >> p.lyCounter.isDoubleSpeed());
+
 		nextCall(0, p.lyCounter.ly() == 143 ? M2::Ly0::f0_ : M2::LyNon0::f0_, p);
 	}
-	
+
 	static bool handleWinDrawStartReq(const PPUPriv &p, const int xpos, unsigned char &winDrawState) {
 		const bool startWinDraw = (xpos < 167 || p.cgb) && (winDrawState &= WIN_DRAW_STARTED);
-		
+
 		if (!(p.lcdc & 0x20))
 			winDrawState &= ~WIN_DRAW_STARTED;
-		
+
 		return startWinDraw;
 	}
-	
+
 	static bool handleWinDrawStartReq(PPUPriv &p) {
 		return handleWinDrawStartReq(p, p.xpos, p.winDrawState);
 	}
-	
+
 	namespace StartWindowDraw {
 		static void inc(const PPUState &nextf, PPUPriv &p) {
 			if (!(p.lcdc & 0x20) && p.cgb) {
 				plotPixelIfNoSprite(p);
-				
+
 				if (p.xpos == p.endx) {
 					if (p.xpos < 168) {
 						nextCall(1,Tile::f0_,p);
 					} else
 						xpos168(p);
-					
+
 					return;
 				}
 			}
-			
+
 			nextCall(1,nextf,p);
 		}
-		
+
 		static void f0(PPUPriv &p) {
 			if (p.xpos == p.endx) {
 				p.tileword = p.ntileword;
 				p.attrib   = p.nattrib;
 				p.endx = p.xpos < 160 ? p.xpos + 8 : 168;
 			}
-			
+
 			p.wscx = 8 - p.xpos;
-			
+
 			if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
 				p.reg1    = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x1800];
 				p.nattrib = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x3800];
@@ -926,40 +926,40 @@ namespace M3Loop {
 				p.reg1    = p.vram[(p.lcdc << 7 & 0x400) + ((p.scy + p.lyCounter.ly()) & 0xF8) * 4 + 0x1800];
 				p.nattrib = p.vram[(p.lcdc << 7 & 0x400) + ((p.scy + p.lyCounter.ly()) & 0xF8) * 4 + 0x3800];
 			}
-			
+
 			inc(f1_,p);
 		}
-		
+
 		static void f1(PPUPriv &p) {
 			inc(f2_,p);
 		}
-		
+
 		static void f2(PPUPriv &p) {
 			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
-			
+
 			p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 					- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 					+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2];
 
 			inc(f3_,p);
 		}
-		
+
 		static void f3(PPUPriv &p) {
 			inc(f4_,p);
 		}
-		
+
 		static void f4(PPUPriv &p) {
 			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 						- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 						+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];
-				
+
 			p.ntileword = (expand_lut + (p.nattrib << 3 & 0x100))[p.reg0] +
 			              (expand_lut + (p.nattrib << 3 & 0x100))[r1    ] * 2;
-			
+
 			inc(f5_,p);
 		}
-		
+
 		static void f5(PPUPriv &p) {
 			inc(Tile::f0_,p);
 		}
@@ -968,7 +968,7 @@ namespace M3Loop {
 	namespace LoadSprites {
 		static void inc(const PPUState &nextf, PPUPriv &p) {
 			plotPixelIfNoSprite(p);
-			
+
 			if (p.xpos == p.endx) {
 				if (p.xpos < 168) {
 					nextCall(1,Tile::f0_,p);
@@ -977,68 +977,68 @@ namespace M3Loop {
 			} else
 				nextCall(1,nextf,p);
 		}
-		
+
 		static void f0(PPUPriv &p) {
 			p.reg1 = p.spriteMapper.oamram()[p.spriteList[p.currentSprite].oampos + 2];
 			nextCall(1,f1_,p);
 		}
-		
+
 		static void f1(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			p.spriteList[p.currentSprite].attrib = p.spriteMapper.oamram()[p.spriteList[p.currentSprite].oampos + 3];
 			inc(f2_,p);
 		}
-		
+
 		static void f2(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			const unsigned spline = ((p.spriteList[p.currentSprite].attrib & 0x40) ?
 					p.spriteList[p.currentSprite].line ^ 15 : p.spriteList[p.currentSprite].line) * 2;
 			p.reg0 = p.vram[(p.spriteList[p.currentSprite].attrib << 10 & p.cgb * 0x2000) +
 					((p.lcdc & 4) ? (p.reg1 * 16 & ~16) | spline : p.reg1 * 16 | (spline & ~16))];
 			inc(f3_,p);
 		}
-		
+
 		static void f3(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			inc(f4_,p);
 		}
-		
+
 		static void f4(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			const unsigned spline = ((p.spriteList[p.currentSprite].attrib & 0x40) ?
 					p.spriteList[p.currentSprite].line ^ 15 : p.spriteList[p.currentSprite].line) * 2;
 			p.reg1 = p.vram[(p.spriteList[p.currentSprite].attrib << 10 & p.cgb * 0x2000) +
 					((p.lcdc & 4) ? (p.reg1 * 16 & ~16) | spline : p.reg1 * 16 | (spline & ~16)) + 1];
 			inc(f5_,p);
 		}
-		
+
 		static void f5(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			plotPixelIfNoSprite(p);
-			
+
 			unsigned entry = p.currentSprite;
-			
+
 			if (entry == p.nextSprite) {
 				++p.nextSprite;
 			} else {
 				entry = p.nextSprite - 1;
 				p.spriteList[entry] = p.spriteList[p.currentSprite];
 			}
-			
+
 			p.spwordList[entry] = expand_lut[p.reg0 + (p.spriteList[entry].attrib << 3 & 0x100)] +
 			                      expand_lut[p.reg1 + (p.spriteList[entry].attrib << 3 & 0x100)] * 2;
 			p.spriteList[entry].spx = p.xpos;
-			
+
 			if (p.xpos == p.endx) {
 				if (p.xpos < 168) {
 					nextCall(1,Tile::f0_,p);
@@ -1050,32 +1050,32 @@ namespace M3Loop {
 			}
 		}
 	};
-	
+
 	namespace Tile {
 		static void inc(const PPUState &nextf, PPUPriv &p) {
 			plotPixelIfNoSprite(p);
-			
+
 			if (p.xpos == 168) {
 				xpos168(p);
 			} else
 				nextCall(1,nextf,p);
 		}
-		
+
 		static void f0(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
  			doFullTilesUnrolled(p);
-			
+
 			if (p.xpos == 168) {
 				++p.cycles;
 				return xpos168(p);
 			}
-			
+
 			p.tileword = p.ntileword;
 			p.attrib   = p.nattrib;
 			p.endx = p.xpos < 160 ? p.xpos + 8 : 168;
-			
+
 			if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW) ) {
 				p.reg1    = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4
 							+ ((p.xpos + p.wscx) >> 3 & 0x1F) + 0x1800];
@@ -1087,84 +1087,84 @@ namespace M3Loop {
 				p.nattrib = p.vram[((p.lcdc << 7 | (p.scx + p.xpos + 1 - p.cgb) >> 3) & 0x41F)
 								+ ((p.scy + p.lyCounter.ly()) & 0xF8) * 4 + 0x3800];
 			}
-			
+
 			inc(f1_,p);
 		}
-		
+
 		static void f1(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			inc(f2_,p);
 		}
-		
+
 		static void f2(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
-			
+
 			p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 					- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 					+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2];
 
 			inc(f3_,p);
 		}
-		
+
 		static void f3(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			inc(f4_,p);
 		}
-		
+
 		static void f4(PPUPriv &p) {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
-			
+
 			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 						- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 						+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];
-				
+
 			p.ntileword = (expand_lut + (p.nattrib << 3 & 0x100))[p.reg0] +
 			              (expand_lut + (p.nattrib << 3 & 0x100))[r1    ] * 2;
-			
+
 			plotPixelIfNoSprite(p);
-			
+
 			if (p.xpos == 168) {
 				xpos168(p);
 			} else
 				nextCall(1,f5_,p);
 		}
-		
+
 		static void f5(PPUPriv &p) {
 			int endx = p.endx;
 			p.nextCallPtr = &f5_;
-		
+
 			do {
 				if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 					return StartWindowDraw::f0(p);
-				
+
 				if (p.spriteList[p.nextSprite].spx == p.xpos) {
 					if ((p.lcdc & 2) | p.cgb) {
 						p.currentSprite = p.nextSprite;
 						return LoadSprites::f0(p);
 					}
-					
+
 					do {
 						++p.nextSprite;
 					} while (p.spriteList[p.nextSprite].spx == p.xpos);
 				}
-				
+
 				plotPixel(p);
-				
+
 				if (p.xpos == endx) {
 					if (endx < 168) {
 						nextCall(1,f0_,p);
 					} else
 						xpos168(p);
-					
+
 					return;
 				}
 			} while (--p.cycles >= 0);
@@ -1177,7 +1177,7 @@ namespace M2 {
 	namespace Ly0 {
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, unsigned winDrawState, int targetxpos, unsigned cycles);
 	}
-	
+
 	namespace LyNon0 {
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, unsigned winDrawState, int targetxpos, unsigned cycles);
 	}
@@ -1187,19 +1187,19 @@ namespace M3Loop {
 	static unsigned predictCyclesUntilXposNextLine(const PPUPriv &p, unsigned winDrawState, const int targetx) {
 		if (p.wx == 166 && !p.cgb && p.xpos < 167 && (p.weMaster || (p.wy2 == p.lyCounter.ly() && (p.lcdc & 0x20))))
 			winDrawState = WIN_DRAW_START | (WIN_DRAW_STARTED & p.lcdc >> 4);
-		
+
 		const unsigned cycles = (nextM2Time(p) - p.now) >> p.lyCounter.isDoubleSpeed();
 
 		return p.lyCounter.ly() == 143
 			?    M2::Ly0::predictCyclesUntilXpos_f0(p, winDrawState, targetx, cycles)
 			: M2::LyNon0::predictCyclesUntilXpos_f0(p, winDrawState, targetx, cycles);
 	}
-	
+
 	namespace StartWindowDraw {
 		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, int xpos, int endx, unsigned ly,
 				unsigned nextSprite, bool weMaster, unsigned winDrawState, int fno, int targetx, unsigned cycles);
 	}
-	
+
 	namespace Tile {
 		static const unsigned char* addSpriteCycles(const unsigned char *nextSprite,
 				const unsigned char *spriteEnd, const unsigned char *const spxOf, const unsigned maxSpx,
@@ -1223,7 +1223,7 @@ namespace M3Loop {
 
 			return nextSprite;
 		}
-		
+
 		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, const int xpos,
 				const int endx, const unsigned ly, const unsigned nextSprite,
 				const bool weMaster, unsigned char winDrawState, const int fno, const int targetx, unsigned cycles) {
@@ -1231,16 +1231,16 @@ namespace M3Loop {
 				return StartWindowDraw::predictCyclesUntilXpos_fn(p, xpos, endx,
 						ly, nextSprite, weMaster, WIN_DRAW_STARTED & p.lcdc >> 4, 0, targetx, cycles);
 			}
-			
+
 			if (xpos > targetx)
 				return predictCyclesUntilXposNextLine(p, winDrawState, targetx);
-			
+
 			enum { NO_TILE_NUMBER = 1 }; // low bit set, so it will never be equal to an actual tile number.
-			
+
 			int nwx = 0xFF;
 			cycles += targetx - xpos;
 
-			if (p.wx - static_cast<unsigned>(xpos) < targetx - static_cast<unsigned>(xpos) && (p.lcdc & 0x20)
+			if (p.wx - unsigned(xpos) < targetx - unsigned(xpos) && (p.lcdc & 0x20)
 					&& (weMaster || p.wy2 == ly) && !(winDrawState & WIN_DRAW_STARTED) && (p.cgb || p.wx != 166)) {
 				nwx = p.wx;
 				cycles += 6;
@@ -1250,10 +1250,10 @@ namespace M3Loop {
 				const unsigned char *sprite = p.spriteMapper.sprites(ly);
 				const unsigned char *const spriteEnd = sprite + p.spriteMapper.numSprites(ly);
 				sprite += nextSprite;
-				
+
 				if (sprite < spriteEnd) {
 					const int spx = p.spriteMapper.posbuf()[*sprite + 1];
-					unsigned firstTileXpos = static_cast<unsigned>(endx) & 7; // ok even if endx is capped at 168, because fno will be used.
+					unsigned firstTileXpos = unsigned(endx) & 7; // ok even if endx is capped at 168, because fno will be used.
 					unsigned prevSpriteTileNo = (xpos - firstTileXpos) & ~7; // this tile. all sprites on this tile will now add 6 cycles.
 
 					// except this one
@@ -1273,16 +1273,16 @@ namespace M3Loop {
 							targetx, firstTileXpos, prevSpriteTileNo, &cycles);
 				}
 			}
-			
+
 			return cycles;
 		}
-		
+
 		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p,
-				const int endx, const int fno, const int targetx, const unsigned cycles) {
+				int endx, int fno, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_fn(p, p.xpos, endx, p.lyCounter.ly(),
 					p.nextSprite, p.weMaster, p.winDrawState, fno, targetx, cycles);
 		}
-		
+
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_fn(p, p.xpos < 160 ? p.xpos + 8 : 168, 0, targetx, cycles);
 		}
@@ -1302,14 +1302,14 @@ namespace M3Loop {
 			return predictCyclesUntilXpos_fn(p, p.endx, 5, targetx, cycles);
 		}
 	}
-	
+
 	namespace StartWindowDraw {
 		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, int xpos,
 				const int endx, const unsigned ly, const unsigned nextSprite, const bool weMaster,
 				const unsigned winDrawState, const int fno, const int targetx, unsigned cycles) {
 			if (xpos > targetx)
 				return predictCyclesUntilXposNextLine(p, winDrawState, targetx);
-			
+
 			unsigned cinc = 6 - fno;
 
 			if (!(p.lcdc & 0x20) && p.cgb) {
@@ -1322,23 +1322,23 @@ namespace M3Loop {
 					xpos += xinc;
 				}
 			}
-			
+
 			cycles += cinc;
 
 			if (xpos <= targetx) {
 				return Tile::predictCyclesUntilXpos_fn(p, xpos, xpos < 160 ? xpos + 8 : 168,
 							ly, nextSprite, weMaster, winDrawState, 0, targetx, cycles);
 			}
-			
+
 			return cycles - 1;
 		}
-		
-		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, const int endx,
-					const int fno, const int targetx, const unsigned cycles) {
+
+		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, int endx,
+					int fno, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_fn(p, p.xpos, endx,
 					p.lyCounter.ly(), p.nextSprite, p.weMaster, p.winDrawState, fno, targetx, cycles);
 		}
-		
+
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, const int targetx, const unsigned cycles) {
 			return predictCyclesUntilXpos_fn(p, p.xpos == p.endx ? (p.xpos < 160 ? p.xpos + 8 : 168) : p.endx, 0, targetx, cycles);
 		}
@@ -1362,16 +1362,16 @@ namespace M3Loop {
 	namespace LoadSprites {
 		static unsigned predictCyclesUntilXpos_fn(const PPUPriv &p, const int fno, const int targetx, unsigned cycles) {
 			unsigned nextSprite = p.nextSprite;
-			
+
 			if ((p.lcdc & 2) | p.cgb) {
 				cycles += 6 - fno;
 				nextSprite += 1;
 			}
-			
+
 			return Tile::predictCyclesUntilXpos_fn(p, p.xpos, p.endx, p.lyCounter.ly(),
 					nextSprite, p.weMaster, p.winDrawState, 5, targetx, cycles);
 		}
-		
+
  		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_fn(p, 0, targetx, cycles);
 		}
@@ -1394,24 +1394,24 @@ namespace M3Loop {
 }
 
 namespace M3Start {
-	static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, const unsigned xpos, const unsigned ly,
-				const bool weMaster, const unsigned winDrawState, const int targetx, unsigned cycles) {
-		cycles += std::min((static_cast<unsigned>(p.scx) - static_cast<unsigned>(xpos)) & 7, MAX_M3START_CYCLES - xpos) + 1 - p.cgb;
+	static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, unsigned xpos, unsigned ly,
+				bool weMaster, unsigned winDrawState, int targetx, unsigned cycles) {
+		cycles += std::min((unsigned(p.scx) - unsigned(xpos)) & 7, MAX_M3START_CYCLES - xpos) + 1 - p.cgb;
 		return M3Loop::Tile::predictCyclesUntilXpos_fn(p, 0, 8 - (p.scx & 7), ly, 0,
 				weMaster, winDrawState, std::min(p.scx & 7, 5), targetx, cycles);
 	}
-	
-	static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, const unsigned ly,
-			const bool weMaster, unsigned winDrawState, const int targetx, const unsigned cycles) {
+
+	static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, unsigned ly,
+			bool weMaster, unsigned winDrawState, int targetx, unsigned cycles) {
 		winDrawState = (winDrawState & p.lcdc >> 5 & WIN_DRAW_START) ? WIN_DRAW_STARTED : 0;
 		return predictCyclesUntilXpos_f1(p, 0, ly, weMaster, winDrawState, targetx, cycles);
 	}
-	
-	static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, const int targetx, const unsigned cycles) {
+
+	static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, int targetx, unsigned cycles) {
 		const unsigned ly = p.lyCounter.ly() + (p.lyCounter.time() - p.now < 16);
 		return predictCyclesUntilXpos_f0(p, ly, p.weMaster, p.winDrawState, targetx, cycles);
 	}
-	
+
 	static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, const int targetx, const unsigned cycles) {
 		return predictCyclesUntilXpos_f1(p, p.xpos, p.lyCounter.ly(), p.weMaster, p.winDrawState, targetx, cycles);
 	}
@@ -1420,44 +1420,44 @@ namespace M3Start {
 namespace M2 {
 	namespace Ly0 {
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p,
-				const unsigned winDrawState, const int targetx, const unsigned cycles) {
-			const bool weMaster = (p.lcdc & 0x20) && 0 == p.wy;
-			const unsigned ly = 0;
-			
+				unsigned winDrawState, int targetx, unsigned cycles) {
+			bool weMaster = (p.lcdc & 0x20) && 0 == p.wy;
+			unsigned ly = 0;
+
 			return M3Start::predictCyclesUntilXpos_f0(p, ly, weMaster,
 					winDrawState, targetx, cycles + m3StartLineCycle(p.cgb));
 
 		}
-		
-		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, const int targetx, const unsigned cycles) {
+
+		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_f0(p, p.winDrawState, targetx, cycles);
 		}
 	}
-	
+
 	namespace LyNon0 {
 		static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, bool weMaster,
-				const unsigned winDrawState, const int targetx, const unsigned cycles) {
-			const unsigned ly = p.lyCounter.ly() + 1;
-			
+				unsigned winDrawState, int targetx, unsigned cycles) {
+			unsigned ly = p.lyCounter.ly() + 1;
+
 			weMaster |= (p.lcdc & 0x20) && ly == p.wy;
-			
+
 			return M3Start::predictCyclesUntilXpos_f0(p, ly, weMaster, winDrawState, targetx,
 					cycles + 456 - weMasterCheckAfterLyIncLineCycle(p.cgb) + m3StartLineCycle(p.cgb));
 		}
-		
-		static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, const int targetx, const unsigned cycles) {
+
+		static unsigned predictCyclesUntilXpos_f1(const PPUPriv &p, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_f1(p, p.weMaster, p.winDrawState, targetx, cycles);
 		}
-		
+
 		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p,
-				const unsigned winDrawState, const int targetx, const unsigned cycles) {
-			const bool weMaster = p.weMaster || ((p.lcdc & 0x20) && p.lyCounter.ly() == p.wy);
-			
+				unsigned winDrawState, int targetx, unsigned cycles) {
+			bool weMaster = p.weMaster || ((p.lcdc & 0x20) && p.lyCounter.ly() == p.wy);
+
 			return predictCyclesUntilXpos_f1(p, weMaster, winDrawState, targetx,
 					cycles + weMasterCheckAfterLyIncLineCycle(p.cgb) - weMasterCheckPriorToLyIncLineCycle(p.cgb));
 		}
-		
-		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, const int targetx, const unsigned cycles) {
+
+		static unsigned predictCyclesUntilXpos_f0(const PPUPriv &p, int targetx, unsigned cycles) {
 			return predictCyclesUntilXpos_f0(p, p.winDrawState, targetx, cycles);
 		}
 	}
@@ -1508,7 +1508,7 @@ struct BSearch {
 	static std::size_t upperBound(const T a[], const K e) {
 		if (e < a[start + len / 2])
 			return BSearch<T, K, start, len / 2>::upperBound(a, e);
-		
+
 		return BSearch<T, K, start + len / 2 + 1, len - (len / 2 + 1)>::upperBound(a, e);
 	}
 };
@@ -1539,14 +1539,14 @@ static const PPUState * decodeM3LoopState(const unsigned state) {
 	case M3Loop::Tile::ID3: return &M3Loop::Tile::f3_;
 	case M3Loop::Tile::ID4: return &M3Loop::Tile::f4_;
 	case M3Loop::Tile::ID5: return &M3Loop::Tile::f5_;
-	
+
 	case M3Loop::LoadSprites::ID0: return &M3Loop::LoadSprites::f0_;
 	case M3Loop::LoadSprites::ID1: return &M3Loop::LoadSprites::f1_;
 	case M3Loop::LoadSprites::ID2: return &M3Loop::LoadSprites::f2_;
 	case M3Loop::LoadSprites::ID3: return &M3Loop::LoadSprites::f3_;
 	case M3Loop::LoadSprites::ID4: return &M3Loop::LoadSprites::f4_;
 	case M3Loop::LoadSprites::ID5: return &M3Loop::LoadSprites::f5_;
-	
+
 	case M3Loop::StartWindowDraw::ID0: return &M3Loop::StartWindowDraw::f0_;
 	case M3Loop::StartWindowDraw::ID1: return &M3Loop::StartWindowDraw::f1_;
 	case M3Loop::StartWindowDraw::ID2: return &M3Loop::StartWindowDraw::f2_;
@@ -1560,10 +1560,10 @@ static const PPUState * decodeM3LoopState(const unsigned state) {
 
 static long cyclesUntilM0Upperbound(const PPUPriv &p) {
 	long cycles = 168 - p.xpos + 6;
-	
+
 	for (unsigned i = p.nextSprite; i < 10 && p.spriteList[i].spx < 168; ++i)
 		cycles += 11;
-	
+
 	return cycles;
 }
 
@@ -1584,13 +1584,13 @@ static void loadSpriteList(PPUPriv &p, const SaveState &ss) {
 			p.spriteList[i].attrib = ss.ppu.spAttribList[i] & 0xFF;
 			p.spwordList[i] = (ss.ppu.spByte1List[i] * 0x100 + ss.ppu.spByte0List[i]) & 0xFFFF;
 		}
-		
+
 		p.spriteList[numSprites].spx = 0xFF;
 		p.nextSprite = std::min<unsigned>(ss.ppu.nextSprite, numSprites);
-		
+
 		while (p.spriteList[p.nextSprite].spx < ss.ppu.xpos)
 			++p.nextSprite;
-		
+
 		p.currentSprite = std::min<unsigned>(p.nextSprite, ss.ppu.currentSprite);
 	}
 }
@@ -1605,7 +1605,7 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 	                 ? videoCycles - ds * M2_DS_OFFSET + 70224
 	                 : videoCycles - ds * M2_DS_OFFSET;
 	const long lineCycles = static_cast<unsigned long>(vcycs) % 456;
-	
+
 	p_.now = ss.cpu.cycleCounter;
 	p_.lcdc = ss.mem.ioamhram.get()[0x140];
 	p_.lyCounter.setDoubleSpeed(ds);
@@ -1632,12 +1632,12 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 	p_.lastM0Time = p_.now - ss.ppu.lastM0Time;
 	p_.cgb = ss.ppu.isCgb;
 	loadSpriteList(p_, ss);
-	
+
 	if (m3loopState && videoCycles < 144 * 456L && p_.xpos < 168
-			&& lineCycles + cyclesUntilM0Upperbound(p_) < static_cast<long>(weMasterCheckPriorToLyIncLineCycle(p_.cgb))) {
+			&& lineCycles + cyclesUntilM0Upperbound(p_) < long(weMasterCheckPriorToLyIncLineCycle(p_.cgb))) {
 		p_.nextCallPtr = m3loopState;
 		p_.cycles = -1;
-	} else if (vcycs < 143 * 456L + static_cast<long>(m3StartLineCycle(p_.cgb)) + MAX_M3START_CYCLES) {
+	} else if (vcycs < 143 * 456L + long(m3StartLineCycle(p_.cgb)) + MAX_M3START_CYCLES) {
 		const CycleState lineCycleStates[] = {
 			{    &M3Start::f0_, m3StartLineCycle(p_.cgb) },
 			{    &M3Start::f1_, m3StartLineCycle(p_.cgb) + MAX_M3START_CYCLES },
@@ -1645,13 +1645,13 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 			{ &M2::LyNon0::f1_, weMasterCheckAfterLyIncLineCycle(p_.cgb) },
 			{    &M3Start::f0_, m3StartLineCycle(p_.cgb) + 456 }
 		};
-		
+
 		const std::size_t pos =
 			upperBound<sizeof lineCycleStates / sizeof *lineCycleStates - 1>(lineCycleStates, lineCycles);
-		
+
 		p_.cycles = lineCycles - lineCycleStates[pos].cycle;
 		p_.nextCallPtr = lineCycleStates[pos].state;
-		
+
 		if (&M3Start::f1_ == lineCycleStates[pos].state) {
 			p_.xpos   = lineCycles - m3StartLineCycle(p_.cgb) + 1;
 			p_.cycles = -1;
@@ -1671,7 +1671,7 @@ void PPU::reset(const unsigned char *const oamram, const unsigned char *const vr
 void PPU::resetCc(const unsigned long oldCc, const unsigned long newCc) {
 	const unsigned long dec = oldCc - newCc;
 	const unsigned long videoCycles = p_.lcdc & 0x80 ? p_.lyCounter.frameCycles(p_.now) : 0;
-	
+
 	p_.now -= dec;
 	p_.lastM0Time = p_.lastM0Time ? p_.lastM0Time - dec : p_.lastM0Time;
 	p_.lyCounter.reset(videoCycles, p_.now);
@@ -1680,12 +1680,12 @@ void PPU::resetCc(const unsigned long oldCc, const unsigned long newCc) {
 
 void PPU::speedChange(const unsigned long cycleCounter) {
 	const unsigned long videoCycles = p_.lcdc & 0x80 ? p_.lyCounter.frameCycles(p_.now) : 0;
-	
+
 	p_.spriteMapper.preSpeedChange(cycleCounter);
 	p_.lyCounter.setDoubleSpeed(!p_.lyCounter.isDoubleSpeed());
 	p_.lyCounter.reset(videoCycles, p_.now);
 	p_.spriteMapper.postSpeedChange(cycleCounter);
-	
+
 	if (&M2::Ly0::f0_ == p_.nextCallPtr || &M2::LyNon0::f0_ == p_.nextCallPtr) {
 		if (p_.lyCounter.isDoubleSpeed()) {
 			p_.cycles -= M2_DS_OFFSET;
@@ -1707,7 +1707,7 @@ void PPU::setLcdc(const unsigned lcdc, const unsigned long cc) {
 		p_.weMaster = (lcdc & 0x20) && 0 == p_.wy;
 		p_.winDrawState = 0;
 		p_.nextCallPtr = &M3Start::f0_;
-		p_.cycles = -static_cast<int>(m3StartLineCycle(p_.cgb) + M2_DS_OFFSET * p_.lyCounter.isDoubleSpeed());
+		p_.cycles = -int(m3StartLineCycle(p_.cgb) + M2_DS_OFFSET * p_.lyCounter.isDoubleSpeed());
 	} else if ((p_.lcdc ^ lcdc) & 0x20) {
 		if (!(lcdc & 0x20)) {
 			if (p_.winDrawState == WIN_DRAW_STARTED || p_.xpos == 168)
@@ -1717,23 +1717,23 @@ void PPU::setLcdc(const unsigned lcdc, const unsigned long cc) {
 			++p_.winYPos;
 		}
 	}
-	
+
 	if ((p_.lcdc ^ lcdc) & 0x04) {
 		if (p_.lcdc & lcdc & 0x80)
 			p_.spriteMapper.oamChange(cc);
-		
+
 		p_.spriteMapper.setLargeSpritesSource(lcdc & 0x04);
 	}
-	
+
 	p_.lcdc = lcdc;
 }
 
 void PPU::update(const unsigned long cc) {
 	const int cycles = (cc - p_.now) >> p_.lyCounter.isDoubleSpeed();
-	
+
 	p_.now += cycles << p_.lyCounter.isDoubleSpeed();
 	p_.cycles += cycles;
-	
+
 	if (p_.cycles >= 0) {
 		p_.framebuf.setFbline(p_.lyCounter.ly());
 		p_.nextCallPtr->f(p_);

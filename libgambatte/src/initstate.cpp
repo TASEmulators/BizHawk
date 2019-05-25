@@ -677,29 +677,29 @@ static void setInitialCgbWram(unsigned char *const wram) {
 		{ 0x7FCD, 0xBF }, { 0x7FCE, 0x7F }, { 0x7FCF, 0xFB }, { 0x7FDB, 0xF7 },
 		{ 0x7FDF, 0x7F }, { 0x7FE8, 0xDF }, { 0x7FEC, 0xFB }, { 0x7FF2, 0xF7 }
 	};
-	
+
 	for (unsigned addr = 0x0000; addr < 0x0800; addr += 0x10) {
 		std::memset(wram + addr + 0x00, 0xFF, 0x08);
 		std::memset(wram + addr + 0x08, 0x00, 0x08);
 	}
-	
+
 	for (unsigned addr = 0x0800; addr < 0x1000; addr += 0x10) {
 		std::memset(wram + addr + 0x00, 0x00, 0x08);
 		std::memset(wram + addr + 0x08, 0xFF, 0x08);
 	}
-	
+
 	for (unsigned addr = 0x0E00; addr < 0x1000; addr += 0x10) {
 		wram[addr + 0x02] = 0xFF;
 		wram[addr + 0x0A] = 0x00;
 	}
-	
+
 	for (unsigned addr = 0x1000; addr < 0x8000; addr += 0x1000) {
 		if (0x2000 != addr)
 			std::memcpy(wram + addr, wram, 0x1000);
 	}
-	
+
 	std::memset(wram + 0x2000, 0, 0x1000);
-	
+
 	for (std::size_t i = 0; i < sizeof cgbWramDumpDiff / sizeof cgbWramDumpDiff[0]; ++i)
 		wram[cgbWramDumpDiff[i].addr] = cgbWramDumpDiff[i].val;
 }
@@ -959,19 +959,19 @@ static void setInitialDmgWram(unsigned char *const wram) {
 		{ 0x1FA2, 0x40 }, { 0x1FB6, 0x80 }, { 0x1FC6, 0x10 }, { 0x1FCC, 0x20 },
 		{ 0x1FD2, 0x20 }, { 0x1FD8, 0x04 }, { 0x1FDC, 0x10 }, { 0x1FDE, 0x04 }
 	};
-	
+
 	for (unsigned addr = 0x0000; addr < 0x0800; addr += 0x200) {
 		std::memset(wram + addr        , 0x00, 0x100);
 		std::memset(wram + addr + 0x100, 0xFF, 0x100);
 	}
-	
+
 	for (unsigned addr = 0x0800; addr < 0x1000; addr += 0x200) {
 		std::memset(wram + addr        , 0xFF, 0x100);
 		std::memset(wram + addr + 0x100, 0x00, 0x100);
 	}
-	
+
 	std::memcpy(wram + 0x1000, wram, 0x1000);
-	
+
 	for (std::size_t i = 0; i < sizeof dmgWramDumpDiff / sizeof dmgWramDumpDiff[0]; ++i)
 		wram[dmgWramDumpDiff[i].addr] = dmgWramDumpDiff[i].val;
 }
@@ -1004,21 +1004,21 @@ static void setInitialVram(unsigned char *const vram, const bool cgb) {
 		0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0xFC, 0xFC,
 		0x3C, 0x42, 0xB9, 0xA5, 0xB9, 0xA5, 0x42, 0x3C
 	};
-	
+
 	std::memset(vram, 0, 0x4000);
-	
+
 	for (std::size_t i = 0; i < sizeof even_numbered_8010_to_81a0_dump; ++i) {
 		vram[0x0010 + i * 2] = even_numbered_8010_to_81a0_dump[i];
 	}
-	
+
 	if (!cgb) {
 		unsigned i = 1;
-		
+
 		for (unsigned addr = 0x1904; addr < 0x1910; ++addr)
 			vram[addr] = i++;
-		
+
 		vram[0x1910] = 0x19;
-		
+
 		for (unsigned addr = 0x1924; addr < 0x1930; ++addr)
 			vram[addr] = i++;
 	}
@@ -1039,7 +1039,7 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 		0x24, 0x13, 0xFD, 0x3A, 0x10, 0x10, 0xAD, 0x45,
 		0x24, 0x13, 0xFD, 0x3A, 0x10, 0x10, 0xAD, 0x45
 	};
-	
+
 	static const unsigned char ffxxDump[0x100] = {
 		0xCF, 0x00, 0x7C, 0xFF, 0x00, 0x00, 0x00, 0xF8,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,
@@ -1074,7 +1074,7 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 		0x98, 0xD1, 0x71, 0x02, 0x4D, 0x01, 0xC1, 0xFF,
 		0x0D, 0x00, 0xD3, 0x05, 0xF9, 0x00, 0x0B, 0x00
 	};
-	
+
 	std::memset(ioamhram, 0x00, 0x0A0);
 	std::memcpy(ioamhram + 0x0A0, feaxDump, sizeof feaxDump);
 	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof ffxxDump);
@@ -1103,7 +1103,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 		0x24, 0x40, 0x42, 0x05, 0x0E, 0x04, 0x20, 0xA6,
 		0x5E, 0xC1, 0x97, 0x7E, 0x44, 0x05, 0x01, 0xA9
 	};
-	
+
 	static const unsigned char ffxxDump[0x100] = {
 		0xCF, 0x00, 0x7E, 0xFF, 0xD3, 0x00, 0x00, 0xF8,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,
@@ -1138,7 +1138,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 		0xBC, 0x7F, 0x7E, 0xD0, 0xC7, 0xC3, 0xBD, 0xCF,
 		0x59, 0xEA, 0x39, 0x01, 0x2E, 0x00, 0x69, 0x00
 	};
-	
+
 	std::memcpy(ioamhram        ,  oamDump, sizeof oamDump);
 	std::memset(ioamhram + 0x0A0, 0x00, 0x060);
 	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof ffxxDump);
@@ -1148,24 +1148,24 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 
 void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, const unsigned div) {
 	static const unsigned char cgbObjpDump[0x40] = {
-		0x00, 0x00, 0xF2, 0xAB, 
-		0x61, 0xC2, 0xD9, 0xBA, 
-		0x88, 0x6E, 0xDD, 0x63, 
-		0x28, 0x27, 0xFB, 0x9F, 
-		0x35, 0x42, 0xD6, 0xD4, 
-		0x50, 0x48, 0x57, 0x5E, 
-		0x23, 0x3E, 0x3D, 0xCA, 
-		0x71, 0x21, 0x37, 0xC0, 
-		0xC6, 0xB3, 0xFB, 0xF9, 
-		0x08, 0x00, 0x8D, 0x29, 
-		0xA3, 0x20, 0xDB, 0x87, 
-		0x62, 0x05, 0x5D, 0xD4, 
-		0x0E, 0x08, 0xFE, 0xAF, 
-		0x20, 0x02, 0xD7, 0xFF, 
-		0x07, 0x6A, 0x55, 0xEC, 
+		0x00, 0x00, 0xF2, 0xAB,
+		0x61, 0xC2, 0xD9, 0xBA,
+		0x88, 0x6E, 0xDD, 0x63,
+		0x28, 0x27, 0xFB, 0x9F,
+		0x35, 0x42, 0xD6, 0xD4,
+		0x50, 0x48, 0x57, 0x5E,
+		0x23, 0x3E, 0x3D, 0xCA,
+		0x71, 0x21, 0x37, 0xC0,
+		0xC6, 0xB3, 0xFB, 0xF9,
+		0x08, 0x00, 0x8D, 0x29,
+		0xA3, 0x20, 0xDB, 0x87,
+		0x62, 0x05, 0x5D, 0xD4,
+		0x0E, 0x08, 0xFE, 0xAF,
+		0x20, 0x02, 0xD7, 0xFF,
+		0x07, 0x6A, 0x55, 0xEC,
 		0x83, 0x40, 0x0B, 0x77
 	};
-	
+
 	state.cpu.cycleCounter = 8;
 	state.cpu.PC = 0;
 	state.cpu.SP = 0;
@@ -1183,7 +1183,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.agbMode = gbaCgbMode;
 
 	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
-	
+
 	setInitialVram(state.mem.vram.ptr, cgb);
 
 	if (cgb) {
@@ -1193,11 +1193,11 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		setInitialDmgWram(state.mem.wram.ptr);
 		setInitialDmgIoamhram(state.mem.ioamhram.ptr);
 	}
-	
+
 	state.mem.ioamhram.ptr[0x104] = 0;
 	state.mem.ioamhram.ptr[0x140] = 0;
 	state.mem.ioamhram.ptr[0x144] = 0x00;
-	
+
 	state.mem.divLastUpdate = 0 - div;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = DISABLED_TIME;
@@ -1217,23 +1217,23 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.hdmaTransfer = false;
 	state.mem.gbIsCgb = cgb;
 
-	
+
 	for (unsigned i = 0x00; i < 0x40; i += 0x02) {
 		state.ppu.bgpData.ptr[i    ] = 0xFF;
 		state.ppu.bgpData.ptr[i + 1] = 0x7F;
 	}
-	
+
 	std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof cgbObjpDump);
-	
+
 	if (!cgb) {
 		state.ppu.bgpData.ptr[0] = state.mem.ioamhram.get()[0x147];
 		state.ppu.objpData.ptr[0] = state.mem.ioamhram.get()[0x148];
 		state.ppu.objpData.ptr[1] = state.mem.ioamhram.get()[0x149];
 	}
-	
+
 	for (unsigned pos = 0; pos < 80; ++pos)
 		state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
-	
+
 	std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);
 	std::memset(state.ppu.spAttribList, 0, sizeof state.ppu.spAttribList);
 	std::memset(state.ppu.spByte0List, 0, sizeof state.ppu.spByte0List);
@@ -1263,9 +1263,9 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.ppu.pendingLcdstatIrq = false;
 	state.ppu.isCgb = cgb;
 
-	
+
 	state.spu.cycleCounter = 0; // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
-	
+
 	state.spu.ch1.sweep.counter = SoundUnit::COUNTER_DISABLED;
 	state.spu.ch1.sweep.shadow = 0;
 	state.spu.ch1.sweep.nr0 = 0;
@@ -1279,7 +1279,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.spu.ch1.lcounter.lengthCounter = 0;
 	state.spu.ch1.nr4 = 0;
 	state.spu.ch1.master = false;
-	
+
 	state.spu.ch2.duty.nextPosUpdate = SoundUnit::COUNTER_DISABLED;
 	state.spu.ch2.duty.nr3 = 0;
 	state.spu.ch2.duty.pos = 0;
@@ -1289,10 +1289,10 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.spu.ch2.lcounter.lengthCounter = 0;
 	state.spu.ch2.nr4 = 0;
 	state.spu.ch2.master = false;
-	
+
 	for (unsigned i = 0; i < 0x10; ++i)
 		state.spu.ch3.waveRam.ptr[i] = state.mem.ioamhram.get()[0x130 + i];
-	
+
 	state.spu.ch3.lcounter.counter = SoundUnit::COUNTER_DISABLED;
 	state.spu.ch3.lcounter.lengthCounter = 0x100;
 	state.spu.ch3.waveCounter = SoundUnit::COUNTER_DISABLED;
@@ -1302,7 +1302,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.spu.ch3.wavePos = 0;
 	state.spu.ch3.sampleBuf = 0;
 	state.spu.ch3.master = false;
-	
+
 	state.spu.ch4.lfsr.counter = state.spu.cycleCounter + 4;
 	state.spu.ch4.lfsr.reg = 0xFF;
 	state.spu.ch4.env.counter = SoundUnit::COUNTER_DISABLED;
@@ -1311,7 +1311,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.spu.ch4.lcounter.lengthCounter = 0;
 	state.spu.ch4.nr4 = 0;
 	state.spu.ch4.master = false;
-	
+
 	state.rtc.baseTime = now;
 	state.rtc.haltTime = state.rtc.baseTime;
 	state.rtc.dataDh = 0;

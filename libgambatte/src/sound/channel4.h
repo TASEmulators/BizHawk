@@ -36,9 +36,9 @@ class Channel4 {
 		unsigned short reg;
 		unsigned char nr3;
 		bool master;
-		
+
 		void updateBackupCounter(unsigned long cc);
-		
+
 	public:
 		Lfsr();
 		void event();
@@ -54,45 +54,45 @@ class Channel4 {
 
 		template<bool isReader>void SyncState(NewState *ns);
 	};
-	
+
 	class Ch4MasterDisabler : public MasterDisabler {
 		Lfsr &lfsr;
 	public:
 		Ch4MasterDisabler(bool &m, Lfsr &lfsr) : MasterDisabler(m), lfsr(lfsr) {}
 		void operator()() { MasterDisabler::operator()(); lfsr.disableMaster(); }
 	};
-	
+
 	friend class StaticOutputTester<Channel4,Lfsr>;
-	
+
 	StaticOutputTester<Channel4,Lfsr> staticOutputTest;
 	Ch4MasterDisabler disableMaster;
 	LengthCounter lengthCounter;
 	EnvelopeUnit envelopeUnit;
 	Lfsr lfsr;
-	
+
 	SoundUnit *nextEventUnit;
-	
+
 	unsigned long cycleCounter;
 	unsigned long soMask;
 	unsigned long prevOut;
-	
+
 	unsigned char nr4;
 	bool master;
-	
+
 	void setEvent();
-	
+
 public:
 	Channel4();
 	void setNr1(unsigned data);
 	void setNr2(unsigned data);
 	void setNr3(unsigned data) { lfsr.nr3Change(data, cycleCounter); /*setEvent();*/ }
 	void setNr4(unsigned data);
-	
+
 	void setSo(unsigned long soMask);
 	bool isActive() const { return master; }
-	
+
 	void update(uint_least32_t *buf, unsigned long soBaseVol, unsigned long cycles);
-	
+
 	void reset();
 	void init(bool cgb);
 	void loadState(const SaveState &state);

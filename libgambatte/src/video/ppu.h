@@ -33,9 +33,9 @@ class PPUFrameBuf {
 	uint_least32_t *buf_;
 	uint_least32_t *fbline_;
 	int pitch_;
-	
+
 	static uint_least32_t * nullfbline() { static uint_least32_t nullfbline_[160]; return nullfbline_; }
-	
+
 public:
 	PPUFrameBuf() : buf_(0), fbline_(nullfbline()), pitch_(0) {}
 	uint_least32_t * fb() const { return buf_; }
@@ -93,7 +93,7 @@ struct PPUPriv {
 
 	bool cgb;
 	bool weMaster;
-	
+
 	PPUPriv(NextM0Time &nextM0Time, const unsigned char *oamram, const unsigned char *vram);
 };
 
@@ -104,7 +104,7 @@ public:
 	: p_(nextM0Time, oamram, vram)
 	{
 	}
-	
+
 	unsigned long * bgPalette() { return p_.bgPalette; }
 	bool cgb() const { return p_.cgb; }
 	void doLyCountEvent() { p_.lyCounter.doEvent(); }

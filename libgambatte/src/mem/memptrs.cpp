@@ -45,7 +45,7 @@ void MemPtrs::reset(const unsigned rombanks, const unsigned rambanks, const unsi
 	wramdataend_ = wramdata_[0] + wrambanks * 0x1000ul;
 
 	std::memset(rdisabledRamw(), 0xFF, 0x2000);
-	
+
 	oamDmaSrc_ = OAM_DMA_SRC_OFF;
 	rmem_[0x3] = rmem_[0x2] = rmem_[0x1] = rmem_[0x0] = romdata_[0];
 	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - 0xC000;
@@ -87,7 +87,7 @@ void MemPtrs::setRambank(const unsigned flags, const unsigned rambank) {
 }
 
 void MemPtrs::setWrambank(const unsigned bank) {
-	wramdata_[1] = wramdata_[0] + ((bank & 0x07) ? (bank & 0x07) : 1) * 0x1000;
+	wramdata_[1] = wramdata_[0] + (bank & 0x07 ? bank & 0x07 : 1) * 0x1000;
 	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - 0xD000;
 	disconnectOamDmaAreas();
 }
@@ -100,7 +100,7 @@ void MemPtrs::setOamDmaSrc(const OamDmaSrc oamDmaSrc) {
 	rmem_[0xC] = wmem_[0xC] = wramdata_[0] - 0xC000;
 	rmem_[0xD] = wmem_[0xD] = wramdata_[1] - 0xD000;
 	rmem_[0xE] = wmem_[0xE] = wramdata_[0] - 0xE000;
-	
+
 	oamDmaSrc_ = oamDmaSrc;
 	disconnectOamDmaAreas();
 }

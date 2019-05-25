@@ -35,7 +35,7 @@ unsigned long Interrupter::interrupt(const unsigned address, unsigned long cycle
 	memory.write(SP, PC & 0xFF, cycleCounter);
 	PC = address;
 	cycleCounter += 8;
-	
+
 	return cycleCounter;
 }
 

@@ -45,20 +45,20 @@ void LycIrq::regChange(const unsigned statReg, const unsigned lycReg, const LyCo
 	statRegSrc_ = statReg;
 	lycRegSrc_ = lycReg;
 	time_ = std::min(time_, timeSrc);
-	
+
 	if (cgb_) {
 		if (time_ - cc > 8 || (timeSrc != time_ && time_ - cc > 4U - lyCounter.isDoubleSpeed() * 4U))
 			lycReg_ = lycReg;
-		
+
 		if (time_ - cc > 4U - lyCounter.isDoubleSpeed() * 4U)
 			statReg_ = statReg;
 	} else {
 		if (time_ - cc > 4 || timeSrc != time_)
 			lycReg_ = lycReg;
-		
+
 		if (time_ - cc > 4 || lycReg_ != 0)
 			statReg_ = statReg;
-		
+
 		statReg_ = (statReg_ & 0x40) | (statReg & ~0x40);
 	}
 }
@@ -66,13 +66,13 @@ void LycIrq::regChange(const unsigned statReg, const unsigned lycReg, const LyCo
 void LycIrq::doEvent(unsigned char *const ifreg, const LyCounter &lyCounter) {
 	if ((statReg_ | statRegSrc_) & 0x40) {
 		const unsigned cmpLy = lyCounter.time() - time_ < lyCounter.lineTime() ? 0 : lyCounter.ly();
-		
+
 		if (lycReg_ == cmpLy &&
 				(lycReg_ - 1U < 144U - 1U ? !(statReg_ & 0x20) : !(statReg_ & 0x10))) {
 			*ifreg |= 2;
 		}
 	}
-	
+
 	lycReg_ = lycRegSrc_;
 	statReg_ = statRegSrc_;
 	time_ = schedule(statReg_, lycReg_, lyCounter, time_);

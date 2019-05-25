@@ -50,7 +50,7 @@ public:
 	void resetCounters(unsigned long oldCc);
 	void killCounter();
 	void reviveCounter(unsigned long cc);
-	
+
 	//intended for use by SweepUnit only.
 	unsigned getFreq() const { return 2048 - (period >> 1); }
 	void setFreq(unsigned newFreq, unsigned long cc);
