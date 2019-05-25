@@ -85,7 +85,7 @@ void PSG::loadState(const SaveState &state) {
 void PSG::accumulate_channels(const unsigned long cycles) {
 	uint_least32_t *const buf = buffer + bufferPos;
 	
-	std::memset(buf, 0, cycles * sizeof(uint_least32_t));
+	std::memset(buf, 0, cycles * sizeof *buf);
 	ch1.update(buf, soVol, cycles);
 	ch2.update(buf, soVol, cycles);
 	ch3.update(buf, soVol, cycles);

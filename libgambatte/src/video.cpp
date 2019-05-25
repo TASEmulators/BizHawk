@@ -57,7 +57,7 @@ LCD::LCD(const unsigned char *const oamram, const unsigned char *const vram, con
 	std::memset( bgpData, 0, sizeof  bgpData);
 	std::memset(objpData, 0, sizeof objpData);
 
-	for (std::size_t i = 0; i < sizeof(dmgColorsRgb32) / sizeof(dmgColorsRgb32[0]); ++i)
+	for (std::size_t i = 0; i < sizeof dmgColorsRgb32 / sizeof dmgColorsRgb32[0]; ++i)
 		setDmgPaletteColor(i, (3 - (i & 3)) * 85 * 0x010101);
 
 	reset(oamram, vram, false);

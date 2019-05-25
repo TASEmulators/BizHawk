@@ -107,7 +107,7 @@ void SpriteMapper::OamReader::change(const unsigned long cc) {
 
 void SpriteMapper::OamReader::setStatePtrs(SaveState &state) {
 	state.ppu.oamReaderBuf.set(buf, sizeof buf);
-	state.ppu.oamReaderSzbuf.set(szbuf, sizeof(szbuf) / sizeof(bool));
+	state.ppu.oamReaderSzbuf.set(szbuf, sizeof szbuf / sizeof *szbuf);
 }
 
 void SpriteMapper::OamReader::loadState(const SaveState &ss, const unsigned char *const oamram) {
@@ -129,7 +129,7 @@ SYNCFUNC(SpriteMapper::OamReader)
 }
 
 void SpriteMapper::OamReader::enableDisplay(const unsigned long cc) {
-	std::memset(buf, 0x00, sizeof(buf));
+	std::memset(buf, 0x00, sizeof buf);
 	std::fill(szbuf, szbuf + 40, false);
 	lu = cc + (80 << lyCounter.isDoubleSpeed());
 	lastChange = 80;

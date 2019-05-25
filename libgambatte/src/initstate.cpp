@@ -700,7 +700,7 @@ static void setInitialCgbWram(unsigned char *const wram) {
 	
 	std::memset(wram + 0x2000, 0, 0x1000);
 	
-	for (std::size_t i = 0; i < sizeof(cgbWramDumpDiff) / sizeof(cgbWramDumpDiff[0]); ++i)
+	for (std::size_t i = 0; i < sizeof cgbWramDumpDiff / sizeof cgbWramDumpDiff[0]; ++i)
 		wram[cgbWramDumpDiff[i].addr] = cgbWramDumpDiff[i].val;
 }
 
@@ -972,7 +972,7 @@ static void setInitialDmgWram(unsigned char *const wram) {
 	
 	std::memcpy(wram + 0x1000, wram, 0x1000);
 	
-	for (std::size_t i = 0; i < sizeof(dmgWramDumpDiff) / sizeof(dmgWramDumpDiff[0]); ++i)
+	for (std::size_t i = 0; i < sizeof dmgWramDumpDiff / sizeof dmgWramDumpDiff[0]; ++i)
 		wram[dmgWramDumpDiff[i].addr] = dmgWramDumpDiff[i].val;
 }
 
@@ -1007,7 +1007,7 @@ static void setInitialVram(unsigned char *const vram, const bool cgb) {
 	
 	std::memset(vram, 0, 0x4000);
 	
-	for (std::size_t i = 0; i < sizeof(even_numbered_8010_to_81a0_dump) / sizeof(even_numbered_8010_to_81a0_dump[0]); ++i) {
+	for (std::size_t i = 0; i < sizeof even_numbered_8010_to_81a0_dump; ++i) {
 		vram[0x0010 + i * 2] = even_numbered_8010_to_81a0_dump[i];
 	}
 	
@@ -1076,8 +1076,8 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 	};
 	
 	std::memset(ioamhram, 0x00, 0x0A0);
-	std::memcpy(ioamhram + 0x0A0, feaxDump, sizeof(feaxDump));
-	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof(ffxxDump));
+	std::memcpy(ioamhram + 0x0A0, feaxDump, sizeof feaxDump);
+	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof ffxxDump);
 }
 
 static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
@@ -1139,9 +1139,9 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 		0x59, 0xEA, 0x39, 0x01, 0x2E, 0x00, 0x69, 0x00
 	};
 	
-	std::memcpy(ioamhram        ,  oamDump, sizeof(oamDump));
+	std::memcpy(ioamhram        ,  oamDump, sizeof oamDump);
 	std::memset(ioamhram + 0x0A0, 0x00, 0x060);
-	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof(ffxxDump));
+	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof ffxxDump);
 }
 
 } // anon namespace
@@ -1223,7 +1223,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		state.ppu.bgpData.ptr[i + 1] = 0x7F;
 	}
 	
-	std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof(cgbObjpDump));
+	std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof cgbObjpDump);
 	
 	if (!cgb) {
 		state.ppu.bgpData.ptr[0] = state.mem.ioamhram.get()[0x147];
@@ -1235,9 +1235,9 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
 	
 	std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);
-	std::memset(state.ppu.spAttribList, 0, sizeof(state.ppu.spAttribList));
-	std::memset(state.ppu.spByte0List, 0, sizeof(state.ppu.spByte0List));
-	std::memset(state.ppu.spByte1List, 0, sizeof(state.ppu.spByte1List));
+	std::memset(state.ppu.spAttribList, 0, sizeof state.ppu.spAttribList);
+	std::memset(state.ppu.spByte0List, 0, sizeof state.ppu.spByte0List);
+	std::memset(state.ppu.spByte1List, 0, sizeof state.ppu.spByte1List);
 	state.ppu.videoCycles = 0;
 	state.ppu.enableDisplayM0Time = state.cpu.cycleCounter;
 	state.ppu.winYPos = 0xFF;

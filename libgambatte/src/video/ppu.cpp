@@ -149,7 +149,7 @@ namespace M2 {
 	};
 	
 	static void f0(PPUPriv &p) {
-		std::memset(&p.spLut, 0, sizeof(p.spLut));
+		std::memset(&p.spLut, 0, sizeof p.spLut);
 		p.reg0 = 0;
 		p.nextSprite = 0;
 		p.nextCallPtr = &f1_;
@@ -1638,7 +1638,7 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 		p_.nextCallPtr = m3loopState;
 		p_.cycles = -1;
 	} else if (vcycs < 143 * 456L + static_cast<long>(m3StartLineCycle(p_.cgb)) + MAX_M3START_CYCLES) {
-		const struct CycleState lineCycleStates[] = {
+		const CycleState lineCycleStates[] = {
 			{    &M3Start::f0_, m3StartLineCycle(p_.cgb) },
 			{    &M3Start::f1_, m3StartLineCycle(p_.cgb) + MAX_M3START_CYCLES },
 			{ &M2::LyNon0::f0_, weMasterCheckPriorToLyIncLineCycle(p_.cgb) },
@@ -1647,7 +1647,7 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 		};
 		
 		const std::size_t pos =
-			upperBound<sizeof(lineCycleStates) / sizeof(lineCycleStates[0]) - 1>(lineCycleStates, lineCycles);
+			upperBound<sizeof lineCycleStates / sizeof *lineCycleStates - 1>(lineCycleStates, lineCycles);
 		
 		p_.cycles = lineCycles - lineCycleStates[pos].cycle;
 		p_.nextCallPtr = lineCycleStates[pos].state;

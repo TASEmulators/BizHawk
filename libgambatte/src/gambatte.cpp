@@ -75,7 +75,7 @@ void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)
 
 	for (int i = 0; i < 144; i++)
 	{
-		std::memcpy(dst, src, sizeof(gambatte::uint_least32_t) * 160);
+		std::memcpy(dst, src, sizeof gambatte::uint_least32_t * 160);
 		src += 160;
 		dst += pitch;
 	}

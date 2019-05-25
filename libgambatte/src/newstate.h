@@ -80,18 +80,18 @@ public:
 
 
 // first line is default value in converted enum; last line is default value in argument x
-#define EBS(x,d) do { int _ttmp = (d); if (isReader) ns->Load(&_ttmp, sizeof(_ttmp), #x); if (0)
+#define EBS(x,d) do { int _ttmp = (d); if (isReader) ns->Load(&_ttmp, sizeof _ttmp, #x); if (0)
 #define EVS(x,v,n) else if (!isReader && (x) == (v)) _ttmp = (n); else if (isReader && _ttmp == (n)) (x) = (v)
-#define EES(x,d) else if (isReader) (x) = (d); if (!isReader) ns->Save(&_ttmp, sizeof(_ttmp), #x); } while (0)
+#define EES(x,d) else if (isReader) (x) = (d); if (!isReader) ns->Save(&_ttmp, sizeof _ttmp, #x); } while (0)
 
 #define RSS(x,b) do { if (isReader)\
-{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof(_ttmp), #x); (x) = (_ttmp == (ptrdiff_t)0xdeadbeef ? 0 : (b) + _ttmp); }\
+{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof _ttmp, #x); (x) = (_ttmp == (ptrdiff_t)0xdeadbeef ? 0 : (b) + _ttmp); }\
 	else\
-{ ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof(_ttmp), #x); } } while (0)
+{ ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof _ttmp, #x); } } while (0)
 
 #define PSS(x,s) do { if (isReader) ns->Load((x), (s), #x); else ns->Save((x), (s), #x); } while (0)
 
-#define NSS(x) do { if (isReader) ns->Load(&(x), sizeof(x), #x); else ns->Save(&(x), sizeof(x), #x); } while (0)
+#define NSS(x) do { if (isReader) ns->Load(&(x), sizeof x, #x); else ns->Save(&(x), sizeof x, #x); } while (0)
 
 #define SSS(x) do { ns->EnterSection(#x); (x).SyncState<isReader>(ns); ns->ExitSection(#x); } while (0)
 
