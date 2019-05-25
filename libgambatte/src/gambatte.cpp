@@ -140,13 +140,13 @@ void GB::setLinkCallback(void(*callback)()) {
 	p_->cpu.setLinkCallback(callback);
 }
 
-int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags, const unsigned div) {
+LoadRes GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, unsigned const flags, const unsigned div) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
 	
-	const int failed = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
+	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
 	
-	if (!failed) {
+	if (loadres == LOADRES_OK) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->loadflags = flags;
@@ -155,7 +155,7 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 		//p_->cpu.loadSavedata();
 	}
 	
-	return failed;
+	return loadres;
 }
 
 int GB::loadGBCBios(const char* biosfiledata) {
@@ -223,7 +223,7 @@ const std::string GB::romTitle() const {
 	if (p_->cpu.loaded()) {
 		char title[0x11];
 		std::memcpy(title, p_->cpu.romTitle(), 0x10);
-		title[(title[0xF] & 0x80) ? 0xF : 0x10] = '\0';
+		title[title[0xF] & 0x80 ? 0xF : 0x10] = '\0';
 		return std::string(title);
 	}
 	

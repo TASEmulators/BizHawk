@@ -296,7 +296,7 @@ public:
 	unsigned long event(unsigned long cycleCounter);
 	unsigned long resetCounters(unsigned long cycleCounter);
 
-	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
+	LoadRes loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 
 	void setInputGetter(unsigned (*getInput)()) {
 		this->getInput = getInput;

@@ -104,7 +104,7 @@ public:
 		memory.setLinkCallback(callback);
 	}
 	
-	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
+	LoadRes load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
 		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
 	}
 	

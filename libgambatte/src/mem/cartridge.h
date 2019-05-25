@@ -19,6 +19,7 @@
 #ifndef CARTRIDGE_H
 #define CARTRIDGE_H
 
+#include "loadres.h"
 #include "memptrs.h"
 #include "rtc.h"
 #include "savestate.h"
@@ -98,7 +99,7 @@ public:
 
 	bool getMemoryArea(int which, unsigned char **data, int *length) const;
 
-	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
+	LoadRes loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }
 
 	void setRTCCallback(std::uint32_t (*callback)()) {

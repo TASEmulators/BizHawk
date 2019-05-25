@@ -20,6 +20,7 @@
 #define GAMBATTE_H
 
 #include "gbint.h"
+#include "loadres.h"
 #include <string>
 #include <sstream>
 #include <cstdint>
@@ -48,7 +49,7 @@ class GB {
 public:
 	GB();
 	~GB();
-	
+
 	enum LoadFlag {
 		FORCE_DMG        = 1, /**< Treat the ROM as not having CGB support regardless of what its header advertises. */
 		GBA_CGB          = 2, /**< Use GBA intial CPU register values when in CGB mode. */
@@ -61,7 +62,7 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	int load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
+	LoadRes load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
 	
 	int loadGBCBios(const char* biosfiledata);
 	int loadDMGBios(const char* biosfiledata);

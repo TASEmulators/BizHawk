@@ -1056,14 +1056,14 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		ioamhram[P - 0xFE00] = data;
 }
 
-int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
-	if (const int fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
+LoadRes Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+	if (LoadRes const fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
 		return fail;
 
 	sound.init(cart.isCgb());
 	display.reset(ioamhram, cart.vramdata(), cart.isCgb());
 
-	return 0;
+	return LOADRES_OK;
 }
 
 unsigned Memory::fillSoundBuffer(const unsigned long cycleCounter) {
