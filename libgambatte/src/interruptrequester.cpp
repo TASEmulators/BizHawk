@@ -29,14 +29,14 @@ void InterruptRequester::loadState(const SaveState &state) {
 	iereg_ = state.mem.ioamhram.get()[0x1FF] & 0x1F;
 	intFlags.set(state.mem.IME, state.mem.halted);
 
-	eventTimes.setValue<INTERRUPTS>(intFlags.imeOrHalted() && pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
+	eventTimes.setValue<intevent_interrupts>(intFlags.imeOrHalted() && pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
 }
 
 void InterruptRequester::resetCc(const unsigned long oldCc, const unsigned long newCc) {
 	minIntTime = minIntTime < oldCc ? 0 : minIntTime - (oldCc - newCc);
 
-	if (eventTimes.value(INTERRUPTS) != disabled_time)
-		eventTimes.setValue<INTERRUPTS>(minIntTime);
+	if (eventTimes.value(intevent_interrupts) != disabled_time)
+		eventTimes.setValue<intevent_interrupts>(minIntTime);
 }
 
 void InterruptRequester::ei(const unsigned long cc) {
@@ -44,35 +44,35 @@ void InterruptRequester::ei(const unsigned long cc) {
 	minIntTime = cc + 1;
 
 	if (pendingIrqs())
-		eventTimes.setValue<INTERRUPTS>(minIntTime);
+		eventTimes.setValue<intevent_interrupts>(minIntTime);
 }
 
 void InterruptRequester::di() {
 	intFlags.unsetIme();
 
 	if (!intFlags.imeOrHalted())
-		eventTimes.setValue<INTERRUPTS>(disabled_time);
+		eventTimes.setValue<intevent_interrupts>(disabled_time);
 }
 
 void InterruptRequester::halt() {
 	intFlags.setHalted();
 
 	if (pendingIrqs())
-		eventTimes.setValue<INTERRUPTS>(minIntTime);
+		eventTimes.setValue<intevent_interrupts>(minIntTime);
 }
 
 void InterruptRequester::unhalt() {
 	intFlags.unsetHalted();
 
 	if (!intFlags.imeOrHalted())
-		eventTimes.setValue<INTERRUPTS>(disabled_time);
+		eventTimes.setValue<intevent_interrupts>(disabled_time);
 }
 
 void InterruptRequester::flagIrq(const unsigned bit) {
 	ifreg_ |= bit;
 
 	if (intFlags.imeOrHalted() && pendingIrqs())
-		eventTimes.setValue<INTERRUPTS>(minIntTime);
+		eventTimes.setValue<intevent_interrupts>(minIntTime);
 }
 
 void InterruptRequester::ackIrq(const unsigned bit) {
@@ -84,14 +84,14 @@ void InterruptRequester::setIereg(const unsigned iereg) {
 	iereg_ = iereg & 0x1F;
 
 	if (intFlags.imeOrHalted())
-		eventTimes.setValue<INTERRUPTS>(pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
+		eventTimes.setValue<intevent_interrupts>(pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
 }
 
 void InterruptRequester::setIfreg(const unsigned ifreg) {
 	ifreg_ = ifreg;
 
 	if (intFlags.imeOrHalted())
-		eventTimes.setValue<INTERRUPTS>(pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
+		eventTimes.setValue<intevent_interrupts>(pendingIrqs() ? minIntTime : static_cast<unsigned long>(disabled_time));
 }
 
 SYNCFUNC(InterruptRequester)

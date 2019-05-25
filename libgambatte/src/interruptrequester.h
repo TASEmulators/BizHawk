@@ -25,10 +25,10 @@
 
 namespace gambatte {
 struct SaveState;
-enum MemEventId { UNHALT, END, BLIT, SERIAL, OAM, DMA, TIMA, VIDEO, INTERRUPTS };
+enum IntEventId { intevent_unhalt, intevent_end, intevent_blit, intevent_serial, intevent_oam, intevent_dma, intevent_tima, intevent_video, intevent_interrupts };
 
 class InterruptRequester {
-	MinKeeper<INTERRUPTS + 1> eventTimes;
+	MinKeeper<intevent_interrupts + 1> eventTimes;
 	unsigned long minIntTime;
 	unsigned ifreg_;
 	unsigned iereg_;
@@ -76,20 +76,20 @@ public:
 	void setIereg(unsigned iereg);
 	void setIfreg(unsigned ifreg);
 
-	MemEventId minEventId() const { return static_cast<MemEventId>(eventTimes.min()); }
+	IntEventId minEventId() const { return static_cast<IntEventId>(eventTimes.min()); }
 	unsigned long minEventTime() const { return eventTimes.minValue(); }
-	template<MemEventId id> void setEventTime(unsigned long value) { eventTimes.setValue<id>(value); }
-	void setEventTime(const MemEventId id, unsigned long value) { eventTimes.setValue(id, value); }
-	unsigned long eventTime(MemEventId id) const { return eventTimes.value(id); }
+	template<IntEventId id> void setEventTime(unsigned long value) { eventTimes.setValue<id>(value); }
+	void setEventTime(const IntEventId id, unsigned long value) { eventTimes.setValue(id, value); }
+	unsigned long eventTime(IntEventId id) const { return eventTimes.value(id); }
 
 	template<bool isReader>void SyncState(NewState *ns);
 };
 
-inline void flagHdmaReq(InterruptRequester &intreq) { intreq.setEventTime<DMA>(0); }
-inline void flagGdmaReq(InterruptRequester &intreq) { intreq.setEventTime<DMA>(1); }
-inline void ackDmaReq(InterruptRequester &intreq) { intreq.setEventTime<DMA>(disabled_time); }
-inline bool hdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 0; }
-inline bool gdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(DMA) == 1; }
+inline void flagHdmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(0); }
+inline void flagGdmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(1); }
+inline void ackDmaReq(InterruptRequester &intreq) { intreq.setEventTime<intevent_dma>(disabled_time); }
+inline bool hdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(intevent_dma) == 0; }
+inline bool gdmaReqFlagged(const InterruptRequester &intreq) { return intreq.eventTime(intevent_dma) == 1; }
 
 }
 

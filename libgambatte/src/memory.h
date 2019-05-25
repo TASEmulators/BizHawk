@@ -72,7 +72,7 @@ class Memory {
 	bool LINKCABLE;
 	bool linkClockTrigger;
 
-	void decEventCycles(MemEventId eventId, unsigned long dec);
+	void decEventCycles(IntEventId eventId, unsigned long dec);
 
 	void oamDmaInitSetup();
 	void updateOamDma(unsigned long cycleCounter);
@@ -124,10 +124,10 @@ public:
 
 	void setLayers(unsigned mask) { display.setLayers(mask); }
 
-	bool isActive() const { return intreq.eventTime(END) != disabled_time; }
+	bool isActive() const { return intreq.eventTime(intevent_end) != disabled_time; }
 
 	long cyclesSinceBlit(const unsigned long cc) const {
-		return cc < intreq.eventTime(BLIT) ? -1 : static_cast<long>((cc - intreq.eventTime(BLIT)) >> isDoubleSpeed());
+		return cc < intreq.eventTime(intevent_blit) ? -1 : static_cast<long>((cc - intreq.eventTime(intevent_blit)) >> isDoubleSpeed());
 	}
 
 	void halt(unsigned long cycleCounter) { halttime = cycleCounter; intreq.halt(); }

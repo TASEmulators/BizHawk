@@ -1,43 +1,47 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include "video/ppu.h"
+#include "interruptrequester.h"
+#include "minkeeper.h"
 #include "video/lyc_irq.h"
 #include "video/m0_irq.h"
 #include "video/next_m0_time.h"
-#include "interruptrequester.h"
-#include "minkeeper.h"
-#include <memory>
+#include "video/ppu.h"
 #include "newstate.h"
 
 namespace gambatte {
 
 class VideoInterruptRequester {
-	InterruptRequester &intreq;
-
 public:
-	explicit VideoInterruptRequester(InterruptRequester &intreq) : intreq(intreq) {}
-	void flagHdmaReq() const { gambatte::flagHdmaReq(intreq); }
-	void flagIrq(const unsigned bit) const { intreq.flagIrq(bit); }
-	void setNextEventTime(const unsigned long time) const { intreq.setEventTime<VIDEO>(time); }
+	explicit VideoInterruptRequester(InterruptRequester &intreq)
+	: intreq_(intreq)
+	{
+	}
+
+	void flagHdmaReq() const { gambatte::flagHdmaReq(intreq_); }
+	void flagIrq(unsigned bit) const { intreq_.flagIrq(bit); }
+	void setNextEventTime(unsigned long time) const { intreq_.setEventTime<intevent_video>(time); }
+
+private:
+	InterruptRequester &intreq_;
 };
 
 class LCD {

@@ -45,8 +45,8 @@ Memory::Memory(const Interrupter &interrupter_in, unsigned short &sp, unsigned s
   SP(sp),
   PC(pc)
 {
-	intreq.setEventTime<BLIT>(144*456ul);
-	intreq.setEventTime<END>(0);
+	intreq.setEventTime<intevent_blit>(144*456ul);
+	intreq.setEventTime<intevent_end>(0);
 }
 
 void Memory::setStatePtrs(SaveState &state) {
@@ -74,14 +74,14 @@ void Memory::loadState(const SaveState &state) {
 	intreq.loadState(state);
 
 	divLastUpdate = state.mem.divLastUpdate;
-	intreq.setEventTime<SERIAL>(state.mem.nextSerialtime > state.cpu.cycleCounter ? state.mem.nextSerialtime : state.cpu.cycleCounter);
-	intreq.setEventTime<UNHALT>(state.mem.unhaltTime);
+	intreq.setEventTime<intevent_serial>(state.mem.nextSerialtime > state.cpu.cycleCounter ? state.mem.nextSerialtime : state.cpu.cycleCounter);
+	intreq.setEventTime<intevent_unhalt>(state.mem.unhaltTime);
 	lastOamDmaUpdate = state.mem.lastOamDmaUpdate;
 	dmaSource = state.mem.dmaSource;
 	dmaDestination = state.mem.dmaDestination;
 	oamDmaPos = state.mem.oamDmaPos;
-	serialCnt = intreq.eventTime(SERIAL) != disabled_time
-			? serialCntFrom(intreq.eventTime(SERIAL) - state.cpu.cycleCounter, ioamhram[0x102] & isCgb() * 2)
+	serialCnt = intreq.eventTime(intevent_serial) != disabled_time
+			? serialCntFrom(intreq.eventTime(intevent_serial) - state.cpu.cycleCounter, ioamhram[0x102] & isCgb() * 2)
 			: 8;
 
 	cart.setVrambank(ioamhram[0x14F] & isCgb());
@@ -93,10 +93,10 @@ void Memory::loadState(const SaveState &state) {
 
 		const unsigned oamEventPos = oamDmaPos < 0xA0 ? 0xA0 : 0x100;
 
-		intreq.setEventTime<OAM>(lastOamDmaUpdate + (oamEventPos - oamDmaPos) * 4);
+		intreq.setEventTime<intevent_oam>(lastOamDmaUpdate + (oamEventPos - oamDmaPos) * 4);
 	}
 
-	intreq.setEventTime<BLIT>((ioamhram[0x140] & 0x80) ? display.nextMode1IrqTime() : state.cpu.cycleCounter);
+	intreq.setEventTime<intevent_blit>((ioamhram[0x140] & 0x80) ? display.nextMode1IrqTime() : state.cpu.cycleCounter);
 	blanklcd = false;
 
 	if (!isCgb())
@@ -104,32 +104,32 @@ void Memory::loadState(const SaveState &state) {
 }
 
 void Memory::setEndtime(const unsigned long cycleCounter, const unsigned long inc) {
-	if (intreq.eventTime(BLIT) <= cycleCounter)
-		intreq.setEventTime<BLIT>(intreq.eventTime(BLIT) + (70224 << isDoubleSpeed()));
+	if (intreq.eventTime(intevent_blit) <= cycleCounter)
+		intreq.setEventTime<intevent_blit>(intreq.eventTime(intevent_blit) + (70224 << isDoubleSpeed()));
 
-	intreq.setEventTime<END>(cycleCounter + (inc << isDoubleSpeed()));
+	intreq.setEventTime<intevent_end>(cycleCounter + (inc << isDoubleSpeed()));
 }
 
 void Memory::updateSerial(const unsigned long cc) {
 	if (!LINKCABLE) {
-		if (intreq.eventTime(SERIAL) != disabled_time) {
-			if (intreq.eventTime(SERIAL) <= cc) {
+		if (intreq.eventTime(intevent_serial) != disabled_time) {
+			if (intreq.eventTime(intevent_serial) <= cc) {
 				ioamhram[0x101] = (((ioamhram[0x101] + 1) << serialCnt) - 1) & 0xFF;
 				ioamhram[0x102] &= 0x7F;
-				intreq.setEventTime<SERIAL>(disabled_time);
+				intreq.setEventTime<intevent_serial>(disabled_time);
 				intreq.flagIrq(8);
 			} else {
-				const int targetCnt = serialCntFrom(intreq.eventTime(SERIAL) - cc, ioamhram[0x102] & isCgb() * 2);
+				const int targetCnt = serialCntFrom(intreq.eventTime(intevent_serial) - cc, ioamhram[0x102] & isCgb() * 2);
 				ioamhram[0x101] = (((ioamhram[0x101] + 1) << (serialCnt - targetCnt)) - 1) & 0xFF;
 				serialCnt = targetCnt;
 			}
 		}
 	}
 	else {
-		if (intreq.eventTime(SERIAL) != disabled_time) {
-			if (intreq.eventTime(SERIAL) <= cc) {
+		if (intreq.eventTime(intevent_serial) != disabled_time) {
+			if (intreq.eventTime(intevent_serial) <= cc) {
 				linkClockTrigger = true;
-				intreq.setEventTime<SERIAL>(disabled_time);
+				intreq.setEventTime<intevent_serial>(disabled_time);
 				if (linkCallback)
 					linkCallback();
 			}
@@ -138,7 +138,7 @@ void Memory::updateSerial(const unsigned long cc) {
 }
 
 void Memory::updateTimaIrq(const unsigned long cc) {
-	while (intreq.eventTime(TIMA) <= cc)
+	while (intreq.eventTime(intevent_tima) <= cc)
 		tima.doIrqEvent(TimaInterruptRequester(intreq));
 }
 
@@ -153,31 +153,31 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 		updateOamDma(cycleCounter);
 
 	switch (intreq.minEventId()) {
-	case UNHALT:
+	case intevent_unhalt:
 		nontrivial_ff_write(0xFF04, 0, cycleCounter);
 		PC = (PC + 1) & 0xFFFF;
 		cycleCounter += 4;
 		intreq.unhalt();
-		intreq.setEventTime<UNHALT>(disabled_time);
+		intreq.setEventTime<intevent_unhalt>(disabled_time);
 		break;
-	case END:
-		intreq.setEventTime<END>(disabled_time - 1);
+	case intevent_end:
+		intreq.setEventTime<intevent_end>(disabled_time - 1);
 
-		while (cycleCounter >= intreq.minEventTime() && intreq.eventTime(END) != disabled_time)
+		while (cycleCounter >= intreq.minEventTime() && intreq.eventTime(intevent_end) != disabled_time)
 			cycleCounter = event(cycleCounter);
 
-		intreq.setEventTime<END>(disabled_time);
+		intreq.setEventTime<intevent_end>(disabled_time);
 
 		break;
-	case BLIT:
+	case intevent_blit:
 		{
 			const bool lcden = ioamhram[0x140] >> 7 & 1;
-			unsigned long blitTime = intreq.eventTime(BLIT);
+			unsigned long blitTime = intreq.eventTime(intevent_blit);
 
 			if (lcden | blanklcd) {
 				display.updateScreen(blanklcd, cycleCounter);
-				intreq.setEventTime<BLIT>(disabled_time);
-				intreq.setEventTime<END>(disabled_time);
+				intreq.setEventTime<intevent_blit>(disabled_time);
+				intreq.setEventTime<intevent_end>(disabled_time);
 
 				while (cycleCounter >= intreq.minEventTime())
 					cycleCounter = event(cycleCounter);
@@ -185,17 +185,17 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 				blitTime += 70224 << isDoubleSpeed();
 
 			blanklcd = lcden ^ 1;
-			intreq.setEventTime<BLIT>(blitTime);
+			intreq.setEventTime<intevent_blit>(blitTime);
 		}
 		break;
-	case SERIAL:
+	case intevent_serial:
 		updateSerial(cycleCounter);
 		break;
-	case OAM:
-		intreq.setEventTime<OAM>(lastOamDmaUpdate == disabled_time ?
-				static_cast<unsigned long>(disabled_time) : intreq.eventTime(OAM) + 0xA0 * 4);
+	case intevent_oam:
+		intreq.setEventTime<intevent_oam>(lastOamDmaUpdate == disabled_time ?
+				static_cast<unsigned long>(disabled_time) : intreq.eventTime(intevent_oam) + 0xA0 * 4);
 		break;
-	case DMA:
+	case intevent_dma:
 		{
 			const bool doubleSpeed = isDoubleSpeed();
 			unsigned dmaSrc = dmaSource;
@@ -261,15 +261,15 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 		}
 
 		break;
-	case TIMA:
+	case intevent_tima:
 		tima.doIrqEvent(TimaInterruptRequester(intreq));
 		break;
-	case VIDEO:
+	case intevent_video:
 		display.update(cycleCounter);
 		break;
-	case INTERRUPTS:
+	case intevent_interrupts:
 		if (stopped) {
-			intreq.setEventTime<INTERRUPTS>(disabled_time);
+			intreq.setEventTime<intevent_interrupts>(disabled_time);
 			break;
 		}
 		if (halted()) {
@@ -277,7 +277,7 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 				cycleCounter += 4;
 
 			intreq.unhalt();
-			intreq.setEventTime<UNHALT>(disabled_time);
+			intreq.setEventTime<intevent_unhalt>(disabled_time);
 		}
 
 		if (ime()) {
@@ -326,17 +326,17 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 		display.speedChange(cycleCounter);
 		ioamhram[0x14D] ^= 0x81;
 
-		intreq.setEventTime<BLIT>((ioamhram[0x140] & 0x80) ? display.nextMode1IrqTime() : cycleCounter + (70224 << isDoubleSpeed()));
+		intreq.setEventTime<intevent_blit>((ioamhram[0x140] & 0x80) ? display.nextMode1IrqTime() : cycleCounter + (70224 << isDoubleSpeed()));
 
-		if (intreq.eventTime(END) > cycleCounter) {
-			intreq.setEventTime<END>(cycleCounter + (isDoubleSpeed() ?
-					(intreq.eventTime(END) - cycleCounter) << 1 : (intreq.eventTime(END) - cycleCounter) >> 1));
+		if (intreq.eventTime(intevent_end) > cycleCounter) {
+			intreq.setEventTime<intevent_end>(cycleCounter + (isDoubleSpeed() ?
+					(intreq.eventTime(intevent_end) - cycleCounter) << 1 : (intreq.eventTime(intevent_end) - cycleCounter) >> 1));
 		}
 		// when switching speed, it seems that the CPU spontaneously restarts soon?
 		// otherwise, the cpu should be allowed to stay halted as long as needed
 		// so only execute this line when switching speed
 		intreq.halt();
-		intreq.setEventTime<UNHALT>(cycleCounter + 0x20000);
+		intreq.setEventTime<intevent_unhalt>(cycleCounter + 0x20000);
 	}
 	else {
 		stopped = true;
@@ -351,7 +351,7 @@ static void decCycles(unsigned long &counter, const unsigned long dec) {
 		counter -= dec;
 }
 
-void Memory::decEventCycles(const MemEventId eventId, const unsigned long dec) {
+void Memory::decEventCycles(const IntEventId eventId, const unsigned long dec) {
 	if (intreq.eventTime(eventId) != disabled_time)
 		intreq.setEventTime(eventId, intreq.eventTime(eventId) - dec);
 }
@@ -374,11 +374,11 @@ unsigned long Memory::resetCounters(unsigned long cycleCounter) {
 
 	decCycles(divLastUpdate, dec);
 	decCycles(lastOamDmaUpdate, dec);
-	decEventCycles(SERIAL, dec);
-	decEventCycles(OAM, dec);
-	decEventCycles(BLIT, dec);
-	decEventCycles(END, dec);
-	decEventCycles(UNHALT, dec);
+	decEventCycles(intevent_serial, dec);
+	decEventCycles(intevent_oam, dec);
+	decEventCycles(intevent_blit, dec);
+	decEventCycles(intevent_end, dec);
+	decEventCycles(intevent_unhalt, dec);
 
 	cycleCounter -= dec;
 
@@ -644,7 +644,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		updateSerial(cycleCounter);
 
 		serialCnt = 8;
-		intreq.setEventTime<SERIAL>((data & 0x81) == 0x81
+		intreq.setEventTime<intevent_serial>((data & 0x81) == 0x81
 				? (data & isCgb() * 2 ? (cycleCounter & ~0x7ul) + 0x10 * 8 : (cycleCounter & ~0xFFul) + 0x200 * 8)
 				: static_cast<unsigned long>(disabled_time));
 
@@ -837,10 +837,10 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 				ioamhram[0x141] &= 0xF8;
 
 				if (data & 0x80) {
-					intreq.setEventTime<BLIT>(display.nextMode1IrqTime() + (blanklcd ? 0 : 70224 << isDoubleSpeed()));
+					intreq.setEventTime<intevent_blit>(display.nextMode1IrqTime() + (blanklcd ? 0 : 70224 << isDoubleSpeed()));
 				} else {
 					ioamhram[0x141] |= lyc;
-					intreq.setEventTime<BLIT>(cycleCounter + (456 * 4 << isDoubleSpeed()));
+					intreq.setEventTime<intevent_blit>(cycleCounter + (456 * 4 << isDoubleSpeed()));
 
 					if (hdmaEnabled)
 						flagHdmaReq(intreq);
@@ -870,7 +870,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 			endOamDma(cycleCounter);
 
 		lastOamDmaUpdate = cycleCounter;
-		intreq.setEventTime<OAM>(cycleCounter + 8);
+		intreq.setEventTime<intevent_oam>(cycleCounter + 8);
 		ioamhram[0x146] = data;
 		oamDmaInitSetup();
 		return;
