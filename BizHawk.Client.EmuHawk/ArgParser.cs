@@ -32,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		public string mmf_filename = null;
 		public string URL_get = null;
 		public string URL_post = null;
+		public bool? audiosync = null;
 
 		public void ParseArguments(string[] args)
 
@@ -130,6 +131,10 @@ namespace BizHawk.Client.EmuHawk
 				else if (arg.StartsWith("--url_post="))
 				{
 					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--audiosync="))
+				{
+					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
 				}
 				else
 				{
