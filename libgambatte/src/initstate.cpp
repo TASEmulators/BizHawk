@@ -25,8 +25,8 @@
 
 namespace {
 
-static void setInitialCgbWram(unsigned char *const wram) {
-	static const struct { unsigned short addr; unsigned char val; } cgbWramDumpDiff[] = {
+static void setInitialCgbWram(unsigned char wram[]) {
+	static struct { unsigned short addr; unsigned char val; } const cgbWramDumpDiff[] = {
 		{ 0x0083, 0x7F }, { 0x008B, 0x10 }, { 0x00C0, 0x7F }, { 0x00E1, 0x7F },
 		{ 0x00E2, 0x7F }, { 0x00EA, 0x10 }, { 0x010A, 0x40 }, { 0x0179, 0x01 },
 		{ 0x01AF, 0x01 }, { 0x0201, 0xFB }, { 0x0254, 0xF7 }, { 0x0264, 0x7F },
@@ -704,8 +704,8 @@ static void setInitialCgbWram(unsigned char *const wram) {
 		wram[cgbWramDumpDiff[i].addr] = cgbWramDumpDiff[i].val;
 }
 
-static void setInitialDmgWram(unsigned char *const wram) {
-	static const struct { unsigned short addr; unsigned char val; } dmgWramDumpDiff[] = {
+static void setInitialDmgWram(unsigned char wram[]) {
+	static struct { unsigned short addr; unsigned char val; } const dmgWramDumpDiff[] = {
 		{ 0x0000, 0x08 }, { 0x0004, 0x08 }, { 0x0008, 0x4D }, { 0x000A, 0x80 },
 		{ 0x0010, 0x02 }, { 0x0018, 0x04 }, { 0x0020, 0x10 }, { 0x0028, 0x05 },
 		{ 0x002C, 0x08 }, { 0x0038, 0x21 }, { 0x003A, 0x40 }, { 0x0060, 0x02 },
@@ -976,8 +976,8 @@ static void setInitialDmgWram(unsigned char *const wram) {
 		wram[dmgWramDumpDiff[i].addr] = dmgWramDumpDiff[i].val;
 }
 
-static void setInitialVram(unsigned char *const vram, const bool cgb) {
-	static const unsigned char even_numbered_8010_to_81a0_dump[] = {
+static void setInitialVram(unsigned char vram[], bool const cgb) {
+	static unsigned char const even_numbered_8010_to_81a0_dump[] = {
 		0xF0, 0xF0, 0xFC, 0xFC, 0xFC, 0xFC, 0xF3, 0xF3,
 		0x3C, 0x3C, 0x3C, 0x3C, 0x3C, 0x3C, 0x3C, 0x3C,
 		0xF0, 0xF0, 0xF0, 0xF0, 0x00, 0x00, 0xF3, 0xF3,
@@ -1024,8 +1024,8 @@ static void setInitialVram(unsigned char *const vram, const bool cgb) {
 	}
 }
 
-static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
-	static const unsigned char feaxDump[0x60] = {
+static void setInitialCgbIoamhram(unsigned char ioamhram[]) {
+	static unsigned char const feaxDump[0x60] = {
 		0x08, 0x01, 0xEF, 0xDE, 0x06, 0x4A, 0xCD, 0xBD,
 		0x08, 0x01, 0xEF, 0xDE, 0x06, 0x4A, 0xCD, 0xBD,
 		0x08, 0x01, 0xEF, 0xDE, 0x06, 0x4A, 0xCD, 0xBD,
@@ -1040,7 +1040,7 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 		0x24, 0x13, 0xFD, 0x3A, 0x10, 0x10, 0xAD, 0x45
 	};
 
-	static const unsigned char ffxxDump[0x100] = {
+	static unsigned char const ffxxDump[0x100] = {
 		0xCF, 0x00, 0x7C, 0xFF, 0x00, 0x00, 0x00, 0xF8,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,
 		0x80, 0x3F, 0x00, 0xFF, 0xBF, 0xFF, 0x3F, 0x00,
@@ -1080,8 +1080,8 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 	std::memcpy(ioamhram + 0x100, ffxxDump, sizeof ffxxDump);
 }
 
-static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
-	static const unsigned char oamDump[0xA0] = {
+static void setInitialDmgIoamhram(unsigned char ioamhram[]) {
+	static unsigned char const oamDump[0xA0] = {
 		0xBB, 0xD8, 0xC4, 0x04, 0xCD, 0xAC, 0xA1, 0xC7,
 		0x7D, 0x85, 0x15, 0xF0, 0xAD, 0x19, 0x11, 0x6A,
 		0xBA, 0xC7, 0x76, 0xF8, 0x5C, 0xA0, 0x67, 0x0A,
@@ -1104,7 +1104,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 		0x5E, 0xC1, 0x97, 0x7E, 0x44, 0x05, 0x01, 0xA9
 	};
 
-	static const unsigned char ffxxDump[0x100] = {
+	static unsigned char const ffxxDump[0x100] = {
 		0xCF, 0x00, 0x7E, 0xFF, 0xD3, 0x00, 0x00, 0xF8,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,
 		0x80, 0xBF, 0xF3, 0xFF, 0xBF, 0xFF, 0x3F, 0x00,
@@ -1147,7 +1147,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 } // anon namespace
 
 void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, const unsigned div) {
-	static const unsigned char cgbObjpDump[0x40] = {
+	static unsigned char const cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB,
 		0x61, 0xC2, 0xD9, 0xBA,
 		0x88, 0x6E, 0xDD, 0x63,
@@ -1182,7 +1182,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.cgbSwitching = false;
 	state.mem.agbMode = gbaCgbMode;
 
-	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
+	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.size());
 
 	setInitialVram(state.mem.vram.ptr, cgb);
 
@@ -1263,8 +1263,8 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.ppu.pendingLcdstatIrq = false;
 	state.ppu.isCgb = cgb;
 
-
-	state.spu.cycleCounter = 0; // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
+	// spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
+	state.spu.cycleCounter = state.cpu.cycleCounter >> 1;
 
 	state.spu.ch1.sweep.counter = SoundUnit::counter_disabled;
 	state.spu.ch1.sweep.shadow = 0;
