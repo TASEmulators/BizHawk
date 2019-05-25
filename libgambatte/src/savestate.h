@@ -43,17 +43,17 @@ struct SaveState {
 
 	struct CPU {
 		unsigned long cycleCounter;
-		unsigned short PC;
-		unsigned short SP;
-		unsigned char A;
-		unsigned char B;
-		unsigned char C;
-		unsigned char D;
-		unsigned char E;
-		unsigned char F;
-		unsigned char H;
-		unsigned char L;
-		bool skip;
+		unsigned short pc;
+		unsigned short sp;
+		unsigned char a;
+		unsigned char b;
+		unsigned char c;
+		unsigned char d;
+		unsigned char e;
+		unsigned char f;
+		unsigned char h;
+		unsigned char l;
+		unsigned char /*bool*/ skip;
 	} cpu;
 
 	struct Mem {

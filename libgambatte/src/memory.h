@@ -139,7 +139,7 @@ public:
 	unsigned ff_read(const unsigned P, const unsigned long cycleCounter) {
 		if (readCallback)
 			readCallback(P, (cycleCounter - basetime) >> 1);
-		return P < 0xFF80 ? nontrivial_ff_read(P, cycleCounter) : ioamhram[P - 0xFE00];
+		return P < 0x80 ? nontrivial_ff_read(P, cycleCounter) : ioamhram[P + 0x100];
 	}
 
 	struct CDMapResult
@@ -279,8 +279,8 @@ public:
 	}
 
 	void ff_write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
-		if (P - 0xFF80u < 0x7Fu) {
-			ioamhram[P - 0xFE00] = data;
+		if (P - 0x80u < 0x7Fu) {
+			ioamhram[P + 0x100] = data;
 		} else
 			nontrivial_ff_write(P, data, cycleCounter);
 		if (writeCallback)

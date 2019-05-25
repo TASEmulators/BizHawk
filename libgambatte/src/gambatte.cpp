@@ -200,14 +200,14 @@ bool GB::getMemoryArea(int which, unsigned char **data, int *length) {
 
 unsigned char GB::ExternalRead(unsigned short addr) {
 	if (p_->cpu.loaded())
-		return p_->cpu.ExternalRead(addr);
+		return p_->cpu.externalRead(addr);
 	else
 		return 0;
 }
 
 void GB::ExternalWrite(unsigned short addr, unsigned char val) {
 	if (p_->cpu.loaded())
-		p_->cpu.ExternalWrite(addr, val);
+		p_->cpu.externalWrite(addr, val);
 }
 
 
@@ -235,17 +235,17 @@ int GB::LinkStatus(int which) {
 }
 
 void GB::GetRegs(int *dest) {
-	p_->cpu.GetRegs(dest);
+	p_->cpu.getRegs(dest);
 }
 
 void GB::SetInterruptAddresses(int *addrs, int numAddrs)
 {
-	p_->cpu.SetInterruptAddresses(addrs, numAddrs);
+	p_->cpu.setInterruptAddresses(addrs, numAddrs);
 }
 
 int GB::GetHitInterruptAddress()
 {
-	return p_->cpu.GetHitInterruptAddress();
+	return p_->cpu.getHitInterruptAddress();
 }
 
 SYNCFUNC(GB)

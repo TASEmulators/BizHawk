@@ -471,7 +471,7 @@ unsigned Memory::nontrivial_ff_read(const unsigned P, const unsigned long cycleC
 	if (lastOamDmaUpdate != disabled_time)
 		updateOamDma(cycleCounter);
 
-	switch (P & 0x7F) {
+	switch (P) {
 	case 0x00:
 		updateInput();
 		break;
@@ -531,7 +531,7 @@ unsigned Memory::nontrivial_ff_read(const unsigned P, const unsigned long cycleC
 	default: break;
 	}
 
-	return ioamhram[P - 0xFE00];
+	return ioamhram[P + 0x100];
 }
 
 static bool isInOamDmaConflictArea(const OamDmaSrc oamDmaSrc, const unsigned addr, const bool cgb) {
@@ -589,8 +589,9 @@ unsigned Memory::nontrivial_read(const unsigned P, const unsigned long cycleCoun
 		if (P < 0xFE00)
 			return cart.wramdata(P >> 12 & 1)[P & 0xFFF];
 
-		if (P >= 0xFF00)
-			return nontrivial_ff_read(P, cycleCounter);
+		long const ffp = long(P) - 0xFF00;
+		if (ffp >= 0)
+			return nontrivial_ff_read(ffp, cycleCounter);
 
 		if (!display.oamReadable(cycleCounter) || oamDmaPos < 0xA0)
 			return 0xFF;
@@ -794,7 +795,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 			sound.generateSamples(cycleCounter, isDoubleSpeed());
 
 			if (!(data & 0x80)) {
-				for (unsigned i = 0xFF10; i < 0xFF26; ++i)
+				for (unsigned i = 0x10; i < 0x26; ++i)
 					ff_write(i, 0, cycleCounter);
 
 				sound.setEnabled(false);
@@ -1016,7 +1017,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		return;
 	}
 
-	ioamhram[P - 0xFE00] = data;
+	ioamhram[P + 0x100] = data;
 }
 
 void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
@@ -1045,13 +1046,14 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		} else
 			cart.wramdata(P >> 12 & 1)[P & 0xFFF] = data;
 	} else if (P - 0xFF80u >= 0x7Fu) {
-		if (P < 0xFF00) {
+ 		long const ffp = long(P) - 0xFF00;
+		if (ffp < 0) {
 			if (display.oamWritable(cycleCounter) && oamDmaPos >= 0xA0 && (P < 0xFEA0 || isCgb())) {
 				display.oamChange(cycleCounter);
 				ioamhram[P - 0xFE00] = data;
 			}
 		} else
-			nontrivial_ff_write(P, data, cycleCounter);
+			nontrivial_ff_write(ffp, data, cycleCounter);
 	} else
 		ioamhram[P - 0xFE00] = data;
 }

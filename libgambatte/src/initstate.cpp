@@ -1167,16 +1167,16 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	};
 
 	state.cpu.cycleCounter = 8;
-	state.cpu.PC = 0;
-	state.cpu.SP = 0;
-	state.cpu.A = 0;
-	state.cpu.B = 0;
-	state.cpu.C = 0;
-	state.cpu.D = 0;
-	state.cpu.E = 0;
-	state.cpu.F = 0;
-	state.cpu.H = 0;
-	state.cpu.L = 0;
+	state.cpu.pc = 0;
+	state.cpu.sp = 0;
+	state.cpu.a = 0;
+	state.cpu.b = 0;
+	state.cpu.c = 0;
+	state.cpu.d = 0;
+	state.cpu.e = 0;
+	state.cpu.f = 0;
+	state.cpu.h = 0;
+	state.cpu.l = 0;
 	state.cpu.skip = false;
 	state.mem.biosMode = true;
 	state.mem.cgbSwitching = false;
