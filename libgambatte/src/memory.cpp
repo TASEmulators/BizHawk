@@ -30,6 +30,7 @@ Memory::Memory(unsigned short &sp, unsigned short &pc)
 , execCallback_(0)
 , cdCallback_(0)
 , linkCallback_(0)
+, bios_(0)
 , getInput_(0)
 , divLastUpdate_(0)
 , lastOamDmaUpdate_(disabled_time)
@@ -46,6 +47,9 @@ Memory::Memory(unsigned short &sp, unsigned short &pc)
 {
 	intreq_.setEventTime<intevent_blit>(144 * 456ul);
 	intreq_.setEventTime<intevent_end>(0);
+}
+Memory::~Memory() {
+	delete []bios_;
 }
 
 void Memory::setStatePtrs(SaveState &state) {

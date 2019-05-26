@@ -95,8 +95,7 @@ public:
 		mem_.setCgbPalette(lut);
 	}
 
-	unsigned char* cgbBiosBuffer() { return mem_.cgbBiosBuffer(); }
-	unsigned char* dmgBiosBuffer() { return mem_.dmgBiosBuffer(); }
+	void setBios(char const *buffer, std::size_t size) { mem_.setBios(buffer, size); }
 	bool gbIsCgb() { return mem_.gbIsCgb(); }
 
 	unsigned char externalRead(unsigned short addr) {return mem_.peek(addr); }

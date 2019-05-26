@@ -148,13 +148,8 @@ LoadRes GB::load(char const *romfiledata, unsigned romfilelength, const std::uin
 	return loadres;
 }
 
-int GB::loadGBCBios(char const* biosfiledata) {
-	memcpy(p_->cpu.cgbBiosBuffer(), biosfiledata, 0x900);
-	return 0;
-}
-
-int GB::loadDMGBios(char const* biosfiledata) {
-	memcpy(p_->cpu.dmgBiosBuffer(), biosfiledata, 0x100);
+int GB::loadBios(char const* biosfiledata, std::size_t size) {
+	p_->cpu.setBios(biosfiledata, size);
 	return 0;
 }
 

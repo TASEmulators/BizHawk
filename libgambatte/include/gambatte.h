@@ -66,8 +66,7 @@ public:
 	  */
 	LoadRes load(char const *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
 
-	int loadGBCBios(char const* biosfiledata);
-	int loadDMGBios(char const* biosfiledata);
+	int loadBios(char const* biosfiledata, std::size_t size);
 
 	/**
 	  * Emulates until at least 'samples' audio samples are produced in the

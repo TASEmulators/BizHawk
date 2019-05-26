@@ -60,22 +60,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, long now, LoadFlags flags, uint div);
 
 		/// <summary>
-		/// Load GB BIOS image.
+		/// Load GB(C) BIOS image.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="biosdata">the bios data, can be disposed of once this function returns</param>
+		/// <param name="length">length of romdata in bytes</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_loaddmgbios(IntPtr core, byte[] biosdata);
-
-		/// <summary>
-		/// Load GBC BIOS image.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="biosdata">the bios data, can be disposed of once this function returns</param>
-		/// <returns>0 on success, negative value on failure.</returns>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_loadgbcbios(IntPtr core, byte[] biosdata);
+		public static extern int gambatte_loadbios(IntPtr core, byte[] biosdata, uint length);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,

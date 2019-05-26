@@ -34,6 +34,7 @@ class FilterInfo;
 class Memory {
 public:
 	explicit Memory(unsigned short &sp, unsigned short &pc);
+	~Memory();
 
 	bool loaded() const { return cart_.loaded(); }
 	unsigned char curRomBank() const { return cart_.curRomBank(); }
@@ -46,8 +47,12 @@ public:
 	void saveSavedata(char *dest) { cart_.saveSavedata(dest); }
 	void updateInput();
 
-	unsigned char* cgbBiosBuffer() { return (unsigned char*)cgbBios_; }
-	unsigned char* dmgBiosBuffer() { return (unsigned char*)dmgBios_; }
+	void setBios(char const *buffer, std::size_t size) {
+		delete []bios_;
+		bios_ = new unsigned char[size];
+		memcpy(bios_, buffer, size);
+		biosSize_ = size;
+	}
 	bool gbIsCgb() { return gbIsCgb_; }
 
 	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
@@ -72,13 +77,10 @@ public:
 	void di() { intreq_.di(); }
 
 	unsigned readBios(unsigned p) {
-		if (gbIsCgb_) {
-			if (agbMode_ && p >= 0xF3 && p < 0x100) {
-				return (agbOverride[p - 0xF3] + cgbBios_[p]) & 0xFF;
-			}
-			return cgbBios_[p];
+		if(agbMode_ && p >= 0xF3 && p < 0x100) {
+			return (agbOverride[p-0xF3] + bios_[p]) & 0xFF;
 		}
-		return dmgBios_[p];
+		return bios_[p];
 	}
 
 	unsigned ff_read(unsigned p, unsigned long cc) {
@@ -146,9 +148,8 @@ public:
 	unsigned read(unsigned p, unsigned long cc) {
 		if (readCallback_)
 			readCallback_(p, (cc - basetime_) >> 1);
-		bool biosRange = ((!gbIsCgb_ && p < 0x100) || (gbIsCgb_ && p < 0x900 && (p < 0x100 || p >= 0x200)));
 		if(biosMode_) {
-			if (biosRange)
+			if (p < biosSize_ && !(p >= 0x100 && p < 0x200))
 				return readBios(p);
 		}
 		else if(cdCallback_) {
@@ -162,9 +163,8 @@ public:
 	unsigned read_excb(unsigned p, unsigned long cc, bool first) {
 		if (execCallback_)
 			execCallback_(p, (cc - basetime_) >> 1);
-		bool biosRange = ((!gbIsCgb_ && p < 0x100) || (gbIsCgb_ && p < 0x900 && (p < 0x100 || p >= 0x200)));
 		if (biosMode_) {
-			if(biosRange)
+			if(p < biosSize_ && !(p >= 0x100 && p < 0x200))
 				return readBios(p);
 		}
 		else if(cdCallback_) {
@@ -176,8 +176,7 @@ public:
 	}
 
 	unsigned peek(unsigned p) {
-		bool biosRange = ((!gbIsCgb_ && p < 0x100) || (gbIsCgb_ && p < 0x900 && (p < 0x100 || p >= 0x200)));
-		if (biosMode_ && biosRange) {
+		if (biosMode_ && p < biosSize_ && !(p >= 0x100 && p < 0x200)) {
 			return readBios(p);
 		}
 		return cart_.rmem(p >> 12) ? cart_.rmem(p >> 12)[p] : nontrivial_peek(p);
@@ -273,8 +272,8 @@ public:
 private:
 	Cartridge cart_;
 	unsigned char ioamhram_[0x200];
-	unsigned char cgbBios_[0x900];
-	unsigned char dmgBios_[0x100];
+	unsigned char *bios_;
+	std::size_t biosSize_;
 	unsigned (*getInput_)();
 	unsigned long divLastUpdate_;
 	unsigned long lastOamDmaUpdate_;

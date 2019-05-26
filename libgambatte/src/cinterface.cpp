@@ -35,15 +35,9 @@ GBEXPORT int gambatte_load(GB *g, char const *romfiledata, unsigned romfilelengt
 	return ret;
 }
 
-GBEXPORT int gambatte_loadgbcbios(GB* g, char const* biosfiledata)
+GBEXPORT int gambatte_loadbios(GB* g, char const* biosfiledata, unsigned size)
 {
-	int ret = g->loadGBCBios(biosfiledata);
-	return ret;
-}
-
-GBEXPORT int gambatte_loaddmgbios(GB* g, char const* biosfiledata)
-{
-	int ret = g->loadDMGBios(biosfiledata);
+	int ret = g->loadBios(biosfiledata, size);
 	return ret;
 }
 
