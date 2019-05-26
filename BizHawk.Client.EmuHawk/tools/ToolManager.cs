@@ -728,32 +728,59 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly Lazy<Type[]> lazyAsmTypes = new Lazy<Type[]>(() => Assembly.ReflectionOnlyLoadFrom(Assembly.GetExecutingAssembly().Location).GetTypes());
-
-		public bool IsAvailable(Type tool)
+		public bool IsAvailable<T>()
 		{
-			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool)
-				|| (tool == typeof(LuaConsole) && PlatformLinkedLibSingleton.RunningOnUnix) // simply doesn't work (for now)
-				|| !Array.Exists(lazyAsmTypes.Value, t => t == tool)) // not a tool
+			return IsAvailable(typeof(T));
+		}
+
+		public bool IsAvailable(Type t)
+		{
+			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
 			{
 				return false;
 			}
 
-			ToolAttribute attr;
-			try
-			{
-				attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().Single();
-			}
-			catch (InvalidOperationException e) // no ToolAttribute on given type
-			{
-				return true;
-			}
-			var sysName = Global.Emulator.DisplayName();
-			return !attr.UnsupportedCores.Contains(sysName) // not unsupported
-				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(sysName)); // supported (no supported list -> assumed all supported)
-		}
+			if (t == typeof(LuaConsole) && PlatformLinkedLibSingleton.RunningOnUnix) return false;
 
-		public bool IsAvailable<T>() => IsAvailable(typeof(T));
+			var tool = Assembly
+					.GetExecutingAssembly()
+					.GetTypes()
+					.FirstOrDefault(type => type == t);
+
+			if (tool == null) // This isn't a tool, must not be available
+			{
+				return false;
+			}
+
+			var attr = tool.GetCustomAttributes(false)
+				.OfType<ToolAttribute>()
+				.FirstOrDefault();
+
+            // start with the assumption that if no supported systems are mentioned and no unsupported cores are mentioned
+            // then this is available for all
+            bool supported = true;
+            
+            if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
+			{
+                // supported systems are available
+                supported = attr.SupportedSystems.Contains(Global.Emulator.SystemId);
+
+                if (supported)
+                {
+                    // check for a core not supported override
+                    if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                        supported = false; 
+                }
+			}
+            else if (attr?.UnsupportedCores != null && attr.UnsupportedCores.Any())
+            {
+                // no supported system specified, but unsupported cores are
+                if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                    supported = false;
+            }
+
+			return supported;
+		}
 
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
