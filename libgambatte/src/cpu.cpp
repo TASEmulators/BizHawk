@@ -1701,9 +1701,14 @@ void CPU::process(unsigned long const cycles) {
 
 				break;
 
-			case 0xD3: /*doesn't exist*/
-				skip_ = true;
+			case 0xD3: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 				// call nc,nn (24;12 cycles):
@@ -1770,9 +1775,14 @@ void CPU::process(unsigned long const cycles) {
 
 				break;
 
-			case 0xDB: /*doesn't exist*/
-				skip_ = true;
+			case 0xDB: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 				// call z,nn (24;12 cycles):
@@ -1787,10 +1797,14 @@ void CPU::process(unsigned long const cycles) {
 				}
 
 				break;
-
-			case 0xDD: /*doesn't exist*/
-				skip_ = true;
+			case 0xDD: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 			case 0xDE:
@@ -1826,10 +1840,16 @@ void CPU::process(unsigned long const cycles) {
 			case 0xE2:
 				FF_WRITE(c, a);
 				break;
-			case 0xE3:
-			case 0xE4: /*doesn't exist*/
-				skip_ = true;
+
+			case 0xE3: 
+			case 0xE4: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 			case 0xE5:
@@ -1874,11 +1894,17 @@ void CPU::process(unsigned long const cycles) {
 				}
 
 				break;
+
 			case 0xEB:
 			case 0xEC:
-			case 0xED: /*doesn't exist*/
-				skip_ = true;
+			case 0xED: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 			case 0xEE:
@@ -1927,9 +1953,14 @@ void CPU::process(unsigned long const cycles) {
 				mem_.di();
 				break;
 
-			case 0xF4: /*doesn't exist*/
-				skip_ = true;
+			case 0xF4: // not specified. should freeze.
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 
 			case 0xF5:
@@ -1994,9 +2025,14 @@ void CPU::process(unsigned long const cycles) {
 				break;
 
 			case 0xFC:
-			case 0xFD: /*doesn't exist*/
-				skip_ = true;
+			case 0xFD: // not specified. should freeze
 				mem_.di();
+				cycleCounter = mem_.stop(cycleCounter);
+
+				if (cycleCounter < mem_.nextEventTime()) {
+					unsigned long cycles = mem_.nextEventTime() - cycleCounter;
+					cycleCounter += cycles + (-cycles & 3);
+				}
 				break;
 			case 0xFE:
 				{
