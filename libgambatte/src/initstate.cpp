@@ -1206,6 +1206,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.lastOamDmaUpdate = disabled_time;
 	state.mem.unhaltTime = disabled_time;
 	state.mem.minIntTime = 0;
+	state.mem.halttime = 0;
 	state.mem.rombank = 1;
 	state.mem.dmaSource = 0;
 	state.mem.dmaDestination = 0;
@@ -1217,6 +1218,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.rambankMode = false;
 	state.mem.hdmaTransfer = false;
 	state.mem.gbIsCgb = cgb;
+	state.mem.stopped = false;
 
 
 	for (int i = 0x00; i < 0x40; i += 0x02) {
