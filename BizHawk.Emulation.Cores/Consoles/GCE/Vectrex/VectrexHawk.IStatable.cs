@@ -66,9 +66,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(t1_low), ref t1_low);
 			ser.Sync(nameof(t1_high), ref t1_high);
 			ser.Sync(nameof(t1_counter), ref t1_counter);
-			ser.Sync(nameof(t1_on), ref t1_on);
-			ser.Sync(nameof(t1_shot_done), ref t1_shot_done);
+			ser.Sync(nameof(t1_shot_go), ref t1_shot_go);
 			ser.Sync(nameof(PB7), ref PB7);
+			ser.Sync(nameof(PB7_prev), ref PB7_prev);
+
+			ser.Sync(nameof(t2_low), ref t2_low);
+			ser.Sync(nameof(t2_high), ref t2_high);
+			ser.Sync(nameof(t2_counter), ref t2_counter);
+			ser.Sync(nameof(t2_shot_go), ref t2_shot_go);
+			ser.Sync(nameof(PB6), ref PB6);
+			ser.Sync(nameof(PB6_prev), ref PB6_prev);
 
 			ser.Sync(nameof(int_en), ref int_en);
 			ser.Sync(nameof(int_fl), ref int_fl);

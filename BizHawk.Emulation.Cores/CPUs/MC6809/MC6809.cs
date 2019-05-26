@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 					break;
 				case WR:
-					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case WR_DEC_LO:
 					Write_Dec_Lo_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

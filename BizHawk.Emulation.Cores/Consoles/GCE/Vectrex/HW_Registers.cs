@@ -20,10 +20,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte portB_ret, portA_ret;
 
-		public byte t1_low, t1_high;
-		public int t1_counter;
-		public bool t1_on, t1_shot_done;
-		public bool PB7;
+		public byte t1_low, t1_high;	
+		public int t1_counter, t1_ctrl;	
+		public bool t1_shot_go;
+
+		public byte t2_low, t2_high;
+		public int t2_counter, t2_ctrl;
+		public bool t2_shot_go;
+
+		public bool PB7, PB6;
+		public bool PB7_prev, PB6_prev;
 
 		public byte int_en, int_fl, aux_ctrl;
 
@@ -67,8 +73,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					ret = t1_high;
 					break;
 				case 0x8:
+					ret = (byte)(t2_counter & 0xFF);
+
+					int_fl &= 0xDF;
+					update_int_fl();
 					break;
 				case 0x9:
+					ret = (byte)((t2_counter >> 8) & 0xFF);
 					break;
 				case 0xA:
 					int_fl &= 0xFB;
@@ -120,10 +131,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					break;
 				case 0x5:
 					t1_high = value;
+
 					t1_counter = (t1_high << 8) | t1_low;
-					t1_on = true;
-					t1_shot_done = false;
+					t1_shot_go = true;
 					if (aux_ctrl.Bit(7)) { PB7 = true; }
+					t1_ctrl = aux_ctrl;
 
 					int_fl &= 0xBF;				
 					update_int_fl();
@@ -138,8 +150,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					update_int_fl();
 					break;
 				case 0x8:
+					t2_low = value;
 					break;
 				case 0x9:
+					t2_high = value;
+
+					t2_counter = (t2_high << 8) | t2_low;
+					t2_shot_go = true;
+					t2_ctrl = aux_ctrl;
+
+					int_fl &= 0xDF;
+					update_int_fl();
 					break;
 				case 0xA:
 					int_fl &= 0xFB;
@@ -166,53 +187,74 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_en &= (byte)((~value) & 0x7F);
 					}
+					update_int_fl();
 					break;
 				case 0xF:
 					break;
 			}
 		}
 
-		public void Register_Reset()
-		{
-
-		}
-
 		public void timer_1_tick()
 		{
-			if (t1_on)
+			t1_counter--;
+
+			if (t1_counter < 0)
 			{
-				t1_counter--;
-
-				if (t1_counter == 0)
+				if (t1_ctrl.Bit(6))
 				{
-					if (aux_ctrl.Bit(6))
-					{
-						t1_counter = (t1_high << 8) | t1_low;
+					t1_counter = (t1_high << 8) | t1_low;
 
+					int_fl |= 0x40;
+					update_int_fl();
+					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+
+					if (t1_ctrl.Bit(7)) { PB7 = !PB7; }
+				}
+				else
+				{
+					t1_counter = 0xFFFF;
+
+					if (t1_shot_go)
+					{
 						int_fl |= 0x40;
+						update_int_fl();
 						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+						if (t1_ctrl.Bit(7)) { PB7 = false; }
 
-						if (aux_ctrl.Bit(7)) { PB7 = !PB7; }
-					}
-					else
-					{
-						t1_counter = 0xFFFF;
-
-						if (!t1_shot_done)
-						{
-							int_fl |= 0x40;
-							//if (int_en.Bit(6)) { cpu.IRQPending = true; }
-							if (aux_ctrl.Bit(7)) { PB7 = false; }
-						}
-						t1_shot_done = true;
-					}
+						t1_shot_go = false;
+					}				
 				}
 			}
 		}
 
 		public void timer_2_tick()
 		{
+			t2_counter--;
 
+			if (t2_counter < 0)
+			{
+				if (t2_ctrl.Bit(5))
+				{
+					t2_counter = (t2_high << 8) | t2_low;
+
+					int_fl |= 0x20;
+					update_int_fl();
+					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+				}
+				else
+				{
+					t2_counter = 0xFFFF;
+
+					if (t2_shot_go)
+					{
+						int_fl |= 0x20;
+						update_int_fl();
+						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+
+						t2_shot_go = false;
+					}
+				}
+			}
 		}
 
 		public void update_int_fl()
@@ -226,6 +268,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 
 			int_fl |= (byte)(test ? 0x80 : 0);
+		}
+
+		public void Register_Reset()
+		{
+			dir_dac = dir_ctrl = 0;
+
+			portB_ret = portA_ret = 0;
+
+			t1_low = t1_high = 0;
+			t1_counter = t1_ctrl = 0;
+			t1_shot_go = false;
+			PB7 = PB7_prev = false;
+
+			t2_low = t2_high = 0;
+			t2_counter = t2_ctrl = 0;
+			t2_shot_go = false;
+			PB6 = PB7_prev = false;
+
+			int_en = int_fl = aux_ctrl = 0;
 		}
 	}
 }

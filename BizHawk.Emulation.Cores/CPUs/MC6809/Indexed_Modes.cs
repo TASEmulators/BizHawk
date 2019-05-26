@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							// Illegal
 							break;
 						case 0xF:
-							if ((Regs[ALU] >> 5) == 0)
+							if (((Regs[ALU] >> 5) & 3) == 0)
 							{
 								PopulateCURINSTR(RD_INC, ALU, PC,
 												RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
