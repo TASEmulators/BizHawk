@@ -99,13 +99,13 @@ public:
 
 	bool loaded() const { return cart.loaded(); }
 	unsigned curRomBank() const { return cart.curRomBank(); }
-	const char * romTitle() const { return cart.romTitle(); }
+	char const * romTitle() const { return cart.romTitle(); }
 
 	int debugGetLY() const { return display.debugGetLY(); }
 
 	void setStatePtrs(SaveState &state);
 	void loadState(const SaveState &state/*, unsigned long oldCc*/);
-	void loadSavedata(const char *data) { cart.loadSavedata(data); }
+	void loadSavedata(char const *data) { cart.loadSavedata(data); }
 	int saveSavedataLength() {return cart.saveSavedataLength(); }
 	void saveSavedata(char *dest) { cart.saveSavedata(dest); }
 	void updateInput();
@@ -295,7 +295,7 @@ public:
 	unsigned long event(unsigned long cycleCounter);
 	unsigned long resetCounters(unsigned long cycleCounter);
 
-	LoadRes loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
+	LoadRes loadROM(char const *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 
 	void setInputGetter(unsigned (*getInput)()) {
 		this->getInput = getInput;
@@ -346,7 +346,7 @@ public:
 		display.blackScreen();
 	}
 
-	int LinkStatus(int which);
+	int linkStatus(int which);
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

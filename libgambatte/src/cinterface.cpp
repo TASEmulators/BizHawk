@@ -29,19 +29,19 @@ GBEXPORT void gambatte_destroy(GB *g)
 	delete g;
 }
 
-GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags, unsigned div)
+GBEXPORT int gambatte_load(GB *g, char const *romfiledata, unsigned romfilelength, long long now, unsigned flags, unsigned div)
 {
 	int ret = g->load(romfiledata, romfilelength, now, flags, div);
 	return ret;
 }
 
-GBEXPORT int gambatte_loadgbcbios(GB* g, const char* biosfiledata)
+GBEXPORT int gambatte_loadgbcbios(GB* g, char const* biosfiledata)
 {
 	int ret = g->loadGBCBios(biosfiledata);
 	return ret;
 }
 
-GBEXPORT int gambatte_loaddmgbios(GB* g, const char* biosfiledata)
+GBEXPORT int gambatte_loaddmgbios(GB* g, char const* biosfiledata)
 {
 	int ret = g->loadDMGBios(biosfiledata);
 	return ret;
@@ -141,7 +141,7 @@ GBEXPORT void gambatte_savesavedata(GB *g, char *dest)
 	g->saveSavedata(dest);
 }
 
-GBEXPORT void gambatte_loadsavedata(GB *g, const char *data)
+GBEXPORT void gambatte_loadsavedata(GB *g, char const *data)
 {
 	g->loadSavedata(data);
 }
@@ -165,7 +165,7 @@ GBEXPORT int gambatte_newstatesave(GB *g, char *data, int len)
 	return !saver.Overflow() && saver.GetLength() == len;
 }
 
-GBEXPORT int gambatte_newstateload(GB *g, const char *data, int len)
+GBEXPORT int gambatte_newstateload(GB *g, char const *data, int len)
 {
 	NewStateExternalBuffer loader((char *)data, len);
 	g->SyncState<true>(&loader);
@@ -196,30 +196,30 @@ GBEXPORT int gambatte_getmemoryarea(GB *g, int which, unsigned char **data, int 
 
 GBEXPORT unsigned char gambatte_cpuread(GB *g, unsigned short addr)
 {
-	return g->ExternalRead(addr);
+	return g->externalRead(addr);
 }
 
 GBEXPORT void gambatte_cpuwrite(GB *g, unsigned short addr, unsigned char val)
 {
-	g->ExternalWrite(addr, val);
+	g->externalWrite(addr, val);
 }
 
 GBEXPORT int gambatte_linkstatus(GB *g, int which)
 {
-	return g->LinkStatus(which);
+	return g->linkStatus(which);
 }
 
 GBEXPORT void gambatte_getregs(GB *g, int *dest)
 {
-	g->GetRegs(dest);
+	g->getRegs(dest);
 }
 
 GBEXPORT void gambatte_setinterruptaddresses(GB *g, int *addrs, int numAddrs)
 {
-	g->SetInterruptAddresses(addrs, numAddrs);
+	g->setInterruptAddresses(addrs, numAddrs);
 }
 
 GBEXPORT int gambatte_gethitinterruptaddress(GB *g)
 {
-	return g->GetHitInterruptAddress();
+	return g->getHitInterruptAddress();
 }

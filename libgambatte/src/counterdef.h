@@ -2,7 +2,9 @@
 #define COUNTERDEF_H
 
 namespace gambatte {
-enum { disabled_time = 0xFFFFFFFFul };
+
+enum { disabled_time = 0xfffffffful };
+
 }
 
 #endif

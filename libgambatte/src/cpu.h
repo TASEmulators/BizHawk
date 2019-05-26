@@ -31,7 +31,7 @@ public:
 	void setStatePtrs(SaveState &state);
 	void loadState(SaveState const &state);
 	void setLayers(unsigned mask) { mem_.setLayers(mask); }
-	void loadSavedata(const char *data) { mem_.loadSavedata(data); }
+	void loadSavedata(char const *data) { mem_.loadSavedata(data); }
 	int saveSavedataLength() {return mem_.saveSavedataLength(); }
 	void saveSavedata(char *dest) { mem_.saveSavedata(dest); }
 
@@ -105,7 +105,7 @@ public:
 		mem_.write_nocb(addr, val, cycleCounter_);
 	}
 
-	int LinkStatus(int which) { return mem_.LinkStatus(which); }
+	int linkStatus(int which) { return mem_.linkStatus(which); }
 
 	void getRegs(int *dest);
 	void setInterruptAddresses(int *addrs, int numAddrs);

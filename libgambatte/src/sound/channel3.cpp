@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <cstring>
 
-static inline unsigned toPeriod(const unsigned nr3, const unsigned nr4) {
+static inline unsigned toPeriod(unsigned nr3, unsigned nr4) {
 	return 0x800 - ((nr4 << 8 & 0x700) | nr3);
 }
 

@@ -64,10 +64,10 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	LoadRes load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
+	LoadRes load(char const *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
 
-	int loadGBCBios(const char* biosfiledata);
-	int loadDMGBios(const char* biosfiledata);
+	int loadGBCBios(char const* biosfiledata);
+	int loadDMGBios(char const* biosfiledata);
 
 	/**
 	  * Emulates until at least 'samples' audio samples are produced in the
@@ -136,7 +136,7 @@ public:
 	bool isLoaded() const;
 
 	/** Writes persistent cartridge data to disk. NOT Done implicitly on ROM close. */
-	void loadSavedata(const char *data);
+	void loadSavedata(char const *data);
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
 
@@ -146,15 +146,15 @@ public:
 	/** ROM header title of currently loaded ROM image. */
 	const std::string romTitle() const;
 
-	unsigned char ExternalRead(unsigned short addr);
-	void ExternalWrite(unsigned short addr, unsigned char val);
+	unsigned char externalRead(unsigned short addr);
+	void externalWrite(unsigned short addr, unsigned char val);
 
-	int LinkStatus(int which);
+	int linkStatus(int which);
 
-	void GetRegs(int *dest);
+	void getRegs(int *dest);
 
-	void SetInterruptAddresses(int *addrs, int numAddrs);
-	int GetHitInterruptAddress();
+	void setInterruptAddresses(int *addrs, int numAddrs);
+	int getHitInterruptAddress();
 
 	template<bool isReader>void SyncState(NewState *ns);
 

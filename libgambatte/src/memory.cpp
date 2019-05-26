@@ -1058,7 +1058,7 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		ioamhram[P - 0xFE00] = data;
 }
 
-LoadRes Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+LoadRes Memory::loadROM(char const *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
 	if (LoadRes const fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
 		return fail;
 
@@ -1104,7 +1104,7 @@ bool Memory::getMemoryArea(int which, unsigned char **data, int *length) {
 	}
 }
 
-int Memory::LinkStatus(int which)
+int Memory::linkStatus(int which)
 {
 	switch (which)
 	{

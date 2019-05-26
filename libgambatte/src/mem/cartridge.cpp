@@ -572,7 +572,7 @@ static bool presumedMulti64Mbc1(unsigned char const header[], unsigned rombanks)
 	return header[0x147] == 1 && header[0x149] == 0 && rombanks == 64;
 }
 
-LoadRes Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, bool const forceDmg, bool const multicartCompat) {
+LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool const forceDmg, bool const multicartCompat) {
 	//const std::auto_ptr<File> rom(newFileInstance(romfile));
 
 	//if (rom->fail())
@@ -698,7 +698,7 @@ static bool hasBattery(unsigned char headerByte0x147) {
 	}
 }
 
-void Cartridge::loadSavedata(const char *data) {
+void Cartridge::loadSavedata(char const *data) {
 	if (hasBattery(memptrs_.romdata()[0x147])) {
 		int length = memptrs_.rambankdataend() - memptrs_.rambankdata();
 		std::memcpy(memptrs_.rambankdata(), data, length);

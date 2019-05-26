@@ -9,10 +9,10 @@ namespace gambatte {
 class NewState
 {
 public:
-	virtual void Save(const void *ptr, size_t size, const char *name) = 0;
-	virtual void Load(void *ptr, size_t size, const char *name) = 0;
-	virtual void EnterSection(const char *name) { }
-	virtual void ExitSection(const char *name) { }
+	virtual void Save(const void *ptr, size_t size, char const *name) = 0;
+	virtual void Load(void *ptr, size_t size, char const *name) = 0;
+	virtual void EnterSection(char const *name) { }
+	virtual void ExitSection(char const *name) { }
 };
 
 class NewStateDummy : public NewState
@@ -23,8 +23,8 @@ public:
 	NewStateDummy();
 	long GetLength() { return length; }
 	void Rewind() { length = 0; }
-	virtual void Save(const void *ptr, size_t size, const char *name);
-	virtual void Load(void *ptr, size_t size, const char *name);
+	virtual void Save(const void *ptr, size_t size, char const *name);
+	virtual void Load(void *ptr, size_t size, char const *name);
 };
 
 class NewStateExternalBuffer : public NewState
@@ -38,31 +38,31 @@ public:
 	long GetLength() { return length; }
 	void Rewind() { length = 0; }
 	bool Overflow() { return length > maxlength; }
-	virtual void Save(const void *ptr, size_t size, const char *name);
-	virtual void Load(void *ptr, size_t size, const char *name);
+	virtual void Save(const void *ptr, size_t size, char const *name);
+	virtual void Load(void *ptr, size_t size, char const *name);
 };
 
 struct FPtrs
 {
-	void (*Save_)(const void *ptr, size_t size, const char *name);
-	void (*Load_)(void *ptr, size_t size, const char *name);
-	void (*EnterSection_)(const char *name);
-	void (*ExitSection_)(const char *name);
+	void (*Save_)(const void *ptr, size_t size, char const *name);
+	void (*Load_)(void *ptr, size_t size, char const *name);
+	void (*EnterSection_)(char const *name);
+	void (*ExitSection_)(char const *name);
 };
 
 class NewStateExternalFunctions : public NewState
 {
 private:
-	void (*Save_)(const void *ptr, size_t size, const char *name);
-	void (*Load_)(void *ptr, size_t size, const char *name);
-	void (*EnterSection_)(const char *name);
-	void (*ExitSection_)(const char *name);
+	void (*Save_)(const void *ptr, size_t size, char const *name);
+	void (*Load_)(void *ptr, size_t size, char const *name);
+	void (*EnterSection_)(char const *name);
+	void (*ExitSection_)(char const *name);
 public:
 	NewStateExternalFunctions(const FPtrs *ff);
-	virtual void Save(const void *ptr, size_t size, const char *name);
-	virtual void Load(void *ptr, size_t size, const char *name);
-	virtual void EnterSection(const char *name);
-	virtual void ExitSection(const char *name);
+	virtual void Save(const void *ptr, size_t size, char const *name);
+	virtual void Load(void *ptr, size_t size, char const *name);
+	virtual void EnterSection(char const *name);
+	virtual void ExitSection(char const *name);
 };
 
 // defines and explicitly instantiates
