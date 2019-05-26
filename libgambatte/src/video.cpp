@@ -139,7 +139,7 @@ void LCD::loadState(SaveState const &state, unsigned char const *const oamram) {
 			SpriteMapper::schedule(ppu_.lyCounter(), ppu_.now()));
 		eventTimes_.setm<memevent_lycirq>(lycIrq_.time());
 		eventTimes_.setm<memevent_m1irq>(
-			ppu_.lyCounter().nextFrameCycle(144 * 456, ppu_.now()));
+			ppu_.lyCounter().nextFrameCycle(144 * 456, ppu_.now()) - 2);
 		eventTimes_.setm<memevent_m2irq>(
 			mode2IrqSchedule(statReg_, ppu_.lyCounter(), ppu_.now()));
 		eventTimes_.setm<memevent_m0irq>(statReg_ & lcdstat_m0irqen
@@ -230,7 +230,7 @@ void LCD::speedChange(unsigned long const cc) {
 		eventTimes_.set<event_ly>(ppu_.lyCounter().time());
 		eventTimes_.setm<memevent_spritemap>(SpriteMapper::schedule(ppu_.lyCounter(), cc));
 		eventTimes_.setm<memevent_lycirq>(lycIrq_.time());
-		eventTimes_.setm<memevent_m1irq>(ppu_.lyCounter().nextFrameCycle(144 * 456, cc));
+		eventTimes_.setm<memevent_m1irq>(ppu_.lyCounter().nextFrameCycle(144 * 456, cc) - 2);
 		eventTimes_.setm<memevent_m2irq>(mode2IrqSchedule(statReg_, ppu_.lyCounter(), cc));
 
 		if (eventTimes_(memevent_m0irq) != disabled_time
@@ -458,7 +458,7 @@ void LCD::lcdcChange(unsigned const data, unsigned long const cc) {
 				SpriteMapper::schedule(ppu_.lyCounter(), cc));
 			eventTimes_.setm<memevent_lycirq>(lycIrq_.time());
 			eventTimes_.setm<memevent_m1irq>(
-				ppu_.lyCounter().nextFrameCycle(144 * 456, cc));
+				ppu_.lyCounter().nextFrameCycle(144 * 456, cc) - 2);
 			eventTimes_.setm<memevent_m2irq>(
 				mode2IrqSchedule(statReg_, ppu_.lyCounter(), cc));
 			if (statReg_ & lcdstat_m0irqen) {

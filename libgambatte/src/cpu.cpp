@@ -277,8 +277,8 @@ void CPU::loadState(SaveState const &state) {
 // push rr (16 cycles):
 // Push value of register pair onto stack:
 #define push_rr(r1, r2) do { \
-	PUSH(r1, r2); \
 	cycleCounter += 4; \
+	PUSH(r1, r2); \
 } while (0)
 
 // pop rr (12 cycles):
@@ -461,8 +461,9 @@ void CPU::loadState(SaveState const &state) {
 // rst n (16 Cycles):
 // Push present address onto stack, jump to address n (one of 00h,08h,10h,18h,20h,28h,30h,38h):
 #define rst_n(n) do { \
+	cycleCounter += 4; \
 	PUSH(pc >> 8, pc & 0xFF); \
-	PC_MOD(n); \
+	pc = n; \
 } while (0)
 
 // ret (16 cycles):
@@ -475,8 +476,9 @@ void CPU::loadState(SaveState const &state) {
 
 void CPU::process(unsigned long const cycles) {
 	mem_.setEndtime(cycleCounter_, cycles);
-	hitInterruptAddress = 0;
 	mem_.updateInput();
+
+	hitInterruptAddress = -1;
 
 	//unsigned char a = a_;
 	unsigned long cycleCounter = cycleCounter_;
@@ -490,50 +492,51 @@ void CPU::process(unsigned long const cycles) {
 				cycleCounter += cycles + (-cycles & 3);
 			}
 		} else while (cycleCounter < mem_.nextEventTime()) {
-			unsigned char opcode = 0x00;
+			unsigned char opcode;
 
-			int FullPC = pc;
+#ifdef DLLABLES
+			for (int i = 0; i < numInterruptAddresses; ++i) {
+				if (pc == (interruptAddresses[i] & 0xFFFF)) {
+					unsigned bank = interruptAddresses[i] >> 16;
 
-			if (pc >= 0x4000 && pc <= 0x7FFF)
-				FullPC |= mem_.curRomBank() << 16;
-
-			for (int i = 0; i < numInterruptAddresses; i++) {
-				if (FullPC == interruptAddresses[i]) {
-					hitInterruptAddress = interruptAddresses[i];
-					mem_.setEndtime(cycleCounter, 0);
-					break;
+					if (!bank || bank == mem_.curRomBank()) {
+						hitInterruptAddress = interruptAddresses[i];
+						mem_.setEndtime(cycleCounter, 0);
+						break;
+					}
 				}
 			}
 
-			if (!hitInterruptAddress)
-			{
-				if (tracecallback) {
-					int result[14];
-					result[0] = cycleCounter;
-					result[1] = pc;
-					result[2] = sp;
-					result[3] = a;
-					result[4] = b;
-					result[5] = c;
-					result[6] = d;
-					result[7] = e;
-					result[8] = toF(hf2, cf, zf);
-					result[9] = h;
-					result[10] = l;
-					result[11] = skip_;
-					PC_READ_FIRST(opcode);
-					result[12] = opcode;
-					result[13] = mem_.debugGetLY();
-					tracecallback((void *)result);
-				}
-				else {
-					PC_READ_FIRST(opcode);
-				}
+			if (hitInterruptAddress != -1)
+				break;
+#endif
 
-				if (skip_) {
-					pc = (pc - 1) & 0xFFFF;
-					skip_ = false;
-				}
+			if (tracecallback) {
+				int result[14];
+				result[0] = cycleCounter;
+				result[1] = pc;
+				result[2] = sp;
+				result[3] = a;
+				result[4] = b;
+				result[5] = c;
+				result[6] = d;
+				result[7] = e;
+				result[8] = toF(hf2, cf, zf);
+				result[9] = h;
+				result[10] = l;
+				result[11] = skip_;
+				PC_READ_FIRST(opcode);
+				result[12] = opcode;
+				result[13] = mem_.debugGetLY();
+				tracecallback((void *)result);
+			}
+			else {
+				PC_READ_FIRST(opcode);
+			}
+
+			if (skip_) {
+				pc = (pc - 1) & 0xFFFF;
+				skip_ = false;
 			}
 
 			switch (opcode) {

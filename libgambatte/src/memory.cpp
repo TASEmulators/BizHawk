@@ -48,6 +48,7 @@ Memory::Memory(unsigned short &sp, unsigned short &pc)
 	intreq_.setEventTime<intevent_blit>(144 * 456ul);
 	intreq_.setEventTime<intevent_end>(0);
 }
+
 Memory::~Memory() {
 	delete []bios_;
 }
@@ -166,11 +167,11 @@ unsigned long Memory::event(unsigned long cc) {
 
 	switch (intreq_.minEventId()) {
 	case intevent_unhalt:
+		intreq_.unhalt();
+		intreq_.setEventTime<intevent_unhalt>(disabled_time);
 		nontrivial_ff_write(0xFF04, 0, cc);
 		pc_ = (pc_ + 1) & 0xFFFF;
 		cc += 4;
-		intreq_.unhalt();
-		intreq_.setEventTime<intevent_unhalt>(disabled_time);
 		break;
 	case intevent_end:
 		intreq_.setEventTime<intevent_end>(disabled_time - 1);
@@ -324,6 +325,7 @@ unsigned long Memory::event(unsigned long cc) {
 			} else
 				address = 0x50 + n;
 
+			updateIrqs(cc);
 			intreq_.ackIrq(n);
 
 			cc += 2;
@@ -980,7 +982,6 @@ void Memory::nontrivial_ff_write(unsigned const p, unsigned data, unsigned long 
 		if(cgbSwitching_) {
 			lcd_.copyCgbPalettesToDmg();
 			lcd_.setCgb(false);
-			cgbSwitching_ = false;
 		}
 		return;
 	case 0x51:
@@ -1050,8 +1051,10 @@ void Memory::nontrivial_ff_write(unsigned const p, unsigned data, unsigned long 
 
 		return;
 	case 0x6C:
-		ioamhram_[0x16C] = data | 0xFE;
-		cgbSwitching_ = true;
+		if (isCgb()) {
+			ioamhram_[0x16C] = data | 0xFE;
+			cgbSwitching_ = true;
+		}
 
 		return;
 	case 0x70:
