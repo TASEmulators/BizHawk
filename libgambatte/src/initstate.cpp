@@ -1199,6 +1199,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.ioamhram.ptr[0x144] = 0x00;
 
 	state.mem.divLastUpdate = 0 - div;
+	state.mem.timaBasetime = 0;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = disabled_time;
 	state.mem.nextSerialtime = disabled_time;

@@ -63,6 +63,7 @@ struct SaveState {
 		Ptr<unsigned char> wram;
 		Ptr<unsigned char> ioamhram;
 		unsigned long divLastUpdate;
+		unsigned long timaBasetime;
 		unsigned long timaLastUpdate;
 		unsigned long tmatime;
 		unsigned long nextSerialtime;
