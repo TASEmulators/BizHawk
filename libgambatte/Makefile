@@ -25,7 +25,6 @@ SRCS = \
 	src/cpu.cpp \
 	src/gambatte.cpp \
 	src/initstate.cpp \
-	src/interrupter.cpp \
 	src/interruptrequester.cpp \
 	src/memory.cpp \
 	src/mem/cartridge.cpp \

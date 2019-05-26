@@ -161,9 +161,6 @@
     <ClCompile Include="src\mem\rtc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\interrupter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\video\next_m0_time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -197,7 +197,6 @@
     <ClCompile Include="src\cpu.cpp" />
     <ClCompile Include="src\gambatte.cpp" />
     <ClCompile Include="src\initstate.cpp" />
-    <ClCompile Include="src\interrupter.cpp" />
     <ClCompile Include="src\interruptrequester.cpp" />
     <ClCompile Include="src\memory.cpp" />
     <ClCompile Include="src\mem\cartridge.cpp" />

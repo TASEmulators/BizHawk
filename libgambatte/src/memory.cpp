@@ -24,7 +24,7 @@
 
 namespace gambatte {
 
-Memory::Memory(const Interrupter &interrupter_in, unsigned short &sp, unsigned short &pc)
+Memory::Memory(unsigned short &sp, unsigned short &pc)
 : readCallback(0),
   writeCallback(0),
   execCallback(0),
@@ -34,7 +34,6 @@ Memory::Memory(const Interrupter &interrupter_in, unsigned short &sp, unsigned s
   divLastUpdate(0),
   lastOamDmaUpdate(disabled_time),
   display(ioamhram, 0, VideoInterruptRequester(intreq)),
-  interrupter(interrupter_in),
   dmaSource(0),
   dmaDestination(0),
   oamDmaPos(0xFE),
@@ -1148,7 +1147,6 @@ SYNCFUNC(Memory)
 	SSS(tima);
 	SSS(display);
 	SSS(sound);
-	//SSS(interrupter); // no state
 
 	NSS(dmaSource);
 	NSS(dmaDestination);

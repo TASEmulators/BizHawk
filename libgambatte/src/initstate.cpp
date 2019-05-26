@@ -1,21 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2008 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2008 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "initstate.h"
 #include "counterdef.h"
 #include "savestate.h"
@@ -1218,7 +1218,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.gbIsCgb = cgb;
 
 
-	for (unsigned i = 0x00; i < 0x40; i += 0x02) {
+	for (int i = 0x00; i < 0x40; i += 0x02) {
 		state.ppu.bgpData.ptr[i    ] = 0xFF;
 		state.ppu.bgpData.ptr[i + 1] = 0x7F;
 	}
@@ -1231,7 +1231,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		state.ppu.objpData.ptr[1] = state.mem.ioamhram.get()[0x149];
 	}
 
-	for (unsigned pos = 0; pos < 80; ++pos)
+	for (int pos = 0; pos < 80; ++pos)
 		state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
 
 	std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);

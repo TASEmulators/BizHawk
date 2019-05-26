@@ -24,7 +24,6 @@ static unsigned char const agbOverride[0xD] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0x
 #include "mem/cartridge.h"
 #include "video.h"
 #include "sound.h"
-#include "interrupter.h"
 #include "tima.h"
 #include "newstate.h"
 #include "gambatte.h"
@@ -61,7 +60,6 @@ class Memory {
 	Tima tima;
 	LCD display;
 	PSG sound;
-	Interrupter interrupter;
 
 	unsigned short dmaSource;
 	unsigned short dmaDestination;
@@ -95,7 +93,7 @@ class Memory {
 	bool isDoubleSpeed() const { return display.isDoubleSpeed(); }
 
 public:
-	explicit Memory(const Interrupter &interrupter, unsigned short &sp, unsigned short &pc);
+	explicit Memory(unsigned short &sp, unsigned short &pc);
 
 	bool loaded() const { return cart.loaded(); }
 	unsigned curRomBank() const { return cart.curRomBank(); }
