@@ -1,21 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #ifndef GAMBATTE_H
 #define GAMBATTE_H
 
@@ -23,11 +23,10 @@
 #include "loadres.h"
 #include <cstddef>
 #include <string>
-#include <sstream>
-#include <cstdint>
 #include "newstate.h"
 
 namespace gambatte {
+
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
 
 typedef void (*MemoryCallback)(int32_t address, int64_t cycleOffset);
@@ -57,9 +56,11 @@ public:
 		MULTICART_COMPAT = 4, /**< Use heuristics to detect and support some multicart MBCs disguised as MBC1. */
 	};
 
-	/** Load ROM image.
+	/**
+	  * Load ROM image.
 	  *
-	  * @param romfile  Path to rom image file. Typically a .gbc, .gb, or .zip-file (if zip-support is compiled in).
+	  * @param romfile  Path to rom image file. Typically a .gbc, .gb, or .zip-file (if
+	  *                 zip-support is compiled in).
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
@@ -68,24 +69,33 @@ public:
 	int loadGBCBios(const char* biosfiledata);
 	int loadDMGBios(const char* biosfiledata);
 
-	/** Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
-	  * or until a video frame has been drawn.
+	/**
+	  * Emulates until at least 'samples' audio samples are produced in the
+	  * supplied audio buffer, or until a video frame has been drawn.
 	  *
-	  * There are 35112 stereo sound samples in a video frame.
-	  * May run for up to 2064 stereo samples too long.
-	  * A stereo sample consists of two native endian 2s complement 16-bit PCM samples,
-	  * with the left sample preceding the right one. Usually casting soundBuf to/from
-	  * short* is OK and recommended. The reason for not using a short* in the interface
-	  * is to avoid implementation-defined behaviour without compromising performance.
+	  * There are 35112 audio (stereo) samples in a video frame.
+	  * May run for up to 2064 audio samples too long.
+	  *
+	  * An audio sample consists of two native endian 2s complement 16-bit PCM samples,
+	  * with the left sample preceding the right one. Usually casting audioBuf to
+	  * int16_t* is OK. The reason for using an uint_least32_t* in the interface is to
+	  * avoid implementation-defined behavior without compromising performance.
+	  * libgambatte is strictly c++98, so fixed-width types are not an option (and even
+	  * c99/c++11 cannot guarantee their availability).
 	  *
 	  * Returns early when a new video frame has finished drawing in the video buffer,
 	  * such that the caller may update the video output before the frame is overwritten.
 	  * The return value indicates whether a new video frame has been drawn, and the
-	  * exact time (in number of samples) at which it was drawn.
+	  * exact time (in number of samples) at which it was completed.
 	  *
-	  * @param soundBuf buffer with space >= samples + 2064
-	  * @param samples in: number of stereo samples to produce, out: actual number of samples produced
-	  * @return sample number at which the video frame was produced. -1 means no frame was produced.
+	  * @param videoBuf 160x144 RGB32 (native endian) video frame buffer or 0
+	  * @param pitch distance in number of pixels (not bytes) from the start of one line
+	  *              to the next in videoBuf.
+	  * @param audioBuf buffer with space >= samples + 2064
+	  * @param samples  in: number of stereo samples to produce,
+	  *                out: actual number of samples produced
+	  * @return sample offset in audioBuf at which the video frame was completed, or -1
+	  *         if no new video frame was completed.
 	  */
 	std::ptrdiff_t runFor(gambatte::uint_least32_t *soundBuf, std::size_t &samples);
 
@@ -93,12 +103,14 @@ public:
 
 	void setLayers(unsigned mask);
 
-	/** Reset to initial state.
+	/**
+	  * Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
 	void reset(std::uint32_t now, unsigned div);
 
-	/** @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
+	/**
+	  * @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
 	  * @param colorNum 0 <= colorNum < 4
 	  */
 	void setDmgPaletteColor(int palNum, int colorNum, unsigned long rgb32);
@@ -150,8 +162,8 @@ private:
 	struct Priv;
 	Priv *const p_;
 
-	GB(const GB &);
-	GB & operator=(const GB &);
+	GB(GB const &);
+	GB & operator=(GB const &);
 };
 }
 

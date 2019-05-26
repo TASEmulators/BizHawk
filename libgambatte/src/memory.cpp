@@ -85,7 +85,7 @@ void Memory::loadState(const SaveState &state) {
 			: 8;
 
 	cart.setVrambank(ioamhram[0x14F] & isCgb());
-	cart.setOamDmaSrc(OAM_DMA_SRC_OFF);
+	cart.setOamDmaSrc(oam_dma_src_off);
 	cart.setWrambank(isCgb() && (ioamhram[0x170] & 0x07) ? ioamhram[0x170] & 0x07 : 1);
 
 	if (lastOamDmaUpdate != disabled_time) {
@@ -432,11 +432,11 @@ void Memory::updateOamDma(const unsigned long cycleCounter) {
 
 void Memory::oamDmaInitSetup() {
 	if (ioamhram[0x146] < 0xA0) {
-		cart.setOamDmaSrc(ioamhram[0x146] < 0x80 ? OAM_DMA_SRC_ROM : OAM_DMA_SRC_VRAM);
+		cart.setOamDmaSrc(ioamhram[0x146] < 0x80 ? oam_dma_src_rom : oam_dma_src_vram);
 	} else if (ioamhram[0x146] < 0xFE - isCgb() * 0x1E) {
-		cart.setOamDmaSrc(ioamhram[0x146] < 0xC0 ? OAM_DMA_SRC_SRAM : OAM_DMA_SRC_WRAM);
+		cart.setOamDmaSrc(ioamhram[0x146] < 0xC0 ? oam_dma_src_sram : oam_dma_src_wram);
 	} else
-		cart.setOamDmaSrc(OAM_DMA_SRC_INVALID);
+		cart.setOamDmaSrc(oam_dma_src_invalid);
 }
 
 static const unsigned char * oamDmaSrcZero() {
@@ -446,12 +446,12 @@ static const unsigned char * oamDmaSrcZero() {
 
 const unsigned char * Memory::oamDmaSrcPtr() const {
 	switch (cart.oamDmaSrc()) {
-	case OAM_DMA_SRC_ROM:  return cart.romdata(ioamhram[0x146] >> 6) + (ioamhram[0x146] << 8);
-	case OAM_DMA_SRC_SRAM: return cart.rsrambankptr() ? cart.rsrambankptr() + (ioamhram[0x146] << 8) : 0;
-	case OAM_DMA_SRC_VRAM: return cart.vrambankptr() + (ioamhram[0x146] << 8);
-	case OAM_DMA_SRC_WRAM: return cart.wramdata(ioamhram[0x146] >> 4 & 1) + (ioamhram[0x146] << 8 & 0xFFF);
-	case OAM_DMA_SRC_INVALID:
-	case OAM_DMA_SRC_OFF:  break;
+	case oam_dma_src_rom:  return cart.romdata(ioamhram[0x146] >> 6) + (ioamhram[0x146] << 8);
+	case oam_dma_src_sram: return cart.rsrambankptr() ? cart.rsrambankptr() + (ioamhram[0x146] << 8) : 0;
+	case oam_dma_src_vram: return cart.vrambankptr() + (ioamhram[0x146] << 8);
+	case oam_dma_src_wram: return cart.wramdata(ioamhram[0x146] >> 4 & 1) + (ioamhram[0x146] << 8 & 0xFFF);
+	case oam_dma_src_invalid:
+	case oam_dma_src_off:  break;
 	}
 
 	return ioamhram[0x146] == 0xFF && !isCgb() ? oamDmaSrcZero() : cart.rdisabledRam();
@@ -463,7 +463,7 @@ void Memory::startOamDma(const unsigned long cycleCounter) {
 
 void Memory::endOamDma(const unsigned long cycleCounter) {
 	oamDmaPos = 0xFE;
-	cart.setOamDmaSrc(OAM_DMA_SRC_OFF);
+	cart.setOamDmaSrc(oam_dma_src_off);
 	display.oamChange(ioamhram, cycleCounter);
 }
 
