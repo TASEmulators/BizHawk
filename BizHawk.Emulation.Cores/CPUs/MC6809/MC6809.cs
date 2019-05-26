@@ -633,24 +633,24 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			ser.BeginSection("MC6809");
 
-			ser.Sync("IN_SYNC", ref IN_SYNC);
-			ser.Sync("NMIPending", ref NMIPending);
-			ser.Sync("FIRQPending", ref FIRQPending);
-			ser.Sync("IRQPending", ref IRQPending);
+			ser.Sync(nameof(IN_SYNC), ref IN_SYNC);
+			ser.Sync(nameof(NMIPending), ref NMIPending);
+			ser.Sync(nameof(FIRQPending), ref FIRQPending);
+			ser.Sync(nameof(IRQPending), ref IRQPending);
 
-			ser.Sync("indexed_op", ref indexed_op);
-			ser.Sync("indexed_reg", ref indexed_reg);
-			ser.Sync("indexed_op_reg", ref indexed_op_reg);
-			ser.Sync("temp", ref temp);
+			ser.Sync(nameof(indexed_op), ref indexed_op);
+			ser.Sync(nameof(indexed_reg), ref indexed_reg);
+			ser.Sync(nameof(indexed_op_reg), ref indexed_op_reg);
+			ser.Sync(nameof(temp), ref temp);
 
-			ser.Sync("instr_pntr", ref instr_pntr);
-			ser.Sync("cur_instr", ref cur_instr, false);
-			ser.Sync("opcode_see", ref opcode_see);
-			ser.Sync("IRQS", ref IRQS);
-			ser.Sync("irq_pntr", ref irq_pntr);
+			ser.Sync(nameof(instr_pntr), ref instr_pntr);
+			ser.Sync(nameof(cur_instr), ref cur_instr, false);
+			ser.Sync(nameof(opcode_see), ref opcode_see);
+			ser.Sync(nameof(IRQS), ref IRQS);
+			ser.Sync(nameof(irq_pntr), ref irq_pntr);
 
-			ser.Sync("Regs", ref Regs, false);
-			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
+			ser.Sync(nameof(Regs), ref Regs, false);
+			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 
 			ser.EndSection();
 		}
