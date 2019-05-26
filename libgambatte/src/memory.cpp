@@ -337,8 +337,8 @@ unsigned long Memory::stop(unsigned long cc) {
 	cc += 4;
 
 	if (ioamhram_[0x14D] & isCgb()) {
-		psg_.generateSamples(cc, isDoubleSpeed());
-		lcd_.speedChange(cc);
+		psg_.generateSamples(cc + 4, isDoubleSpeed());
+		lcd_.speedChange((cc + 7) & ~7);
 		ioamhram_[0x14D] ^= 0x81;
 		intreq_.setEventTime<intevent_blit>(ioamhram_[0x140] & lcdc_en
 			? lcd_.nextMode1IrqTime()
@@ -686,7 +686,7 @@ void Memory::nontrivial_ff_write(unsigned const p, unsigned data, unsigned long 
 		break;
 	case 0x07:
 		data |= 0xF8;
-		tima_.setTac(data, cc, TimaInterruptRequester(intreq_), gbIsCgb_);
+		tima_.setTac(data, cc, TimaInterruptRequester(intreq_), agbMode_);
 		break;
 	case 0x0F:
 		updateIrqs(cc);

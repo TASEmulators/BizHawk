@@ -41,7 +41,7 @@ public:
 	void resetCc(unsigned long oldCc, unsigned long newCc, TimaInterruptRequester timaIrq);
 	void setTima(unsigned tima, unsigned long cc, TimaInterruptRequester timaIrq);
 	void setTma(unsigned tma, unsigned long cc, TimaInterruptRequester timaIrq);
-	void setTac(unsigned tac, unsigned long cc, TimaInterruptRequester timaIrq, bool gbIsCgb);
+	void setTac(unsigned tac, unsigned long cc, TimaInterruptRequester timaIrq, bool agbFlag);
 	void resTac(unsigned long cc, TimaInterruptRequester timaIrq);
 	unsigned tima(unsigned long cc);
 	void doIrqEvent(TimaInterruptRequester timaIrq);
