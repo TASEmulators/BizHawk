@@ -57,10 +57,6 @@ public:
 		}
 	}
 
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.enableRam = enableRam_;
-	}
-
 	virtual void loadState(SaveState::Mem const &ss) {
 		enableRam_ = ss.enableRam;
 		memptrs_.setRambank(enableRam_ ? MemPtrs::read_en | MemPtrs::write_en : 0, 0);
@@ -122,13 +118,6 @@ public:
 			rambankMode_ = data & 1;
 			break;
 		}
-	}
-
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.rambank = rambank_;
-		ss.enableRam = enableRam_;
-		ss.rambankMode = rambankMode_;
 	}
 
 	virtual void loadState(SaveState::Mem const &ss) {
@@ -200,12 +189,6 @@ public:
 		}
 	}
 
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.enableRam = enableRam_;
-		ss.rambankMode = rombank0Mode_;
-	}
-
 	virtual void loadState(SaveState::Mem const &ss) {
 		rombank_ = ss.rombank;
 		enableRam_ = ss.enableRam;
@@ -268,11 +251,6 @@ public:
 		}
 	}
 
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.enableRam = enableRam_;
-	}
-
 	virtual void loadState(SaveState::Mem const &ss) {
 		rombank_ = ss.rombank;
 		enableRam_ = ss.enableRam;
@@ -324,12 +302,6 @@ public:
 
 			break;
 		}
-	}
-
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.rambank = rambank_;
-		ss.enableRam = enableRam_;
 	}
 
 	virtual void loadState(SaveState::Mem const &ss) {
@@ -406,13 +378,6 @@ public:
 		}
 	}
 
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.rambank = rambank_;
-		ss.enableRam = enableRam_;
-		ss.rambankMode = rambankMode_;
-	}
-
 	virtual void loadState(SaveState::Mem const &ss) {
 		rombank_ = ss.rombank;
 		rambank_ = ss.rambank;
@@ -478,12 +443,6 @@ public:
 		case 3:
 			break;
 		}
-	}
-
-	virtual void saveState(SaveState::Mem &ss) const {
-		ss.rombank = rombank_;
-		ss.rambank = rambank_;
-		ss.enableRam = enableRam_;
 	}
 
 	virtual void loadState(SaveState::Mem const &ss) {
