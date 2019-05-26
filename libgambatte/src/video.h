@@ -57,7 +57,6 @@ public:
 	void setLayers(unsigned mask) { ppu_.setLayers(mask); }
 	void setCgb(bool cgb);
 	void copyCgbPalettesToDmg();
-	void blackScreen();
 
 	int debugGetLY() const { return ppu_.lyCounter().ly(); }
 

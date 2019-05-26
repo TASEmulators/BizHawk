@@ -295,33 +295,35 @@ unsigned long Memory::event(unsigned long cc) {
 		}
 
 		if (ime()) {
-			unsigned address;
-
 			cc += 12;
-			lcd_.update(cc);
-			sp_ = (sp_ - 2) & 0xFFFF;
-			write(sp_ + 1, pc_ >> 8, cc);
-			unsigned ie = intreq_.iereg();
+
+			sp_ = (sp_ - 1) & 0xFFFF;
+			write(sp_, pc_ >> 8, cc);
 
 			cc += 4;
-			lcd_.update(cc);
+
+			updateIrqs(cc);
+			unsigned const pendingIrqs = intreq_.pendingIrqs();
+
+			sp_ = (sp_ - 1) & 0xFFFF;
 			write(sp_, pc_ & 0xFF, cc);
-			const unsigned pendingIrqs = ie & intreq_.ifreg();
 
-			cc += 4;
-			lcd_.update(cc);
-			const unsigned n = pendingIrqs & -pendingIrqs;
+			cc += 2;
 
+			unsigned const n = pendingIrqs & -pendingIrqs;
+			unsigned address;
 			if (n == 0) {
 				address = 0;
-			}
-			else if (n < 8) {
-				static const unsigned char lut[] = { 0x40, 0x48, 0x48, 0x50 };
+			} else if (n <= 4) {
+				static unsigned char const lut[] = { 0x40, 0x48, 0x48, 0x50 };
 				address = lut[n-1];
 			} else
 				address = 0x50 + n;
 
 			intreq_.ackIrq(n);
+
+			cc += 2;
+
 			pc_ = address;
 		}
 

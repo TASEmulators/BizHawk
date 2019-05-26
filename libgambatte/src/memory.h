@@ -268,10 +268,6 @@ public:
 
 	void setCgbPalette(unsigned *lut);
 
-	void blackScreen() {
-		lcd_.blackScreen();
-	}
-
 	int linkStatus(int which);
 
 private:

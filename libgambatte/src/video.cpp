@@ -177,23 +177,6 @@ void LCD::copyCgbPalettesToDmg() {
 	}
 }
 
-void LCD::blackScreen() {
-    if (ppu_.cgb()) {
-        for (unsigned i = 0; i < 8 * 8; i += 2) {
-			ppu_.bgPalette()[i >> 1] = 0;
-			ppu_.spPalette()[i >> 1] = 0;
-		}
-	}
-	else {
-		for (unsigned i = 0; i < 4; i++) {
-			dmgColorsRgb32_[i] = 0;
-		}
-		for (unsigned i = 0; i < 8; i++) {
-			dmgColorsRgb32_[i + 4] = 0;
-		}
-	}
-}
-
 namespace {
 
 template<typename T>
