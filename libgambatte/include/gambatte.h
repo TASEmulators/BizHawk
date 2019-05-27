@@ -66,7 +66,7 @@ public:
 	  */
 	LoadRes load(char const *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
 
-	int loadBios(char const* biosfiledata, std::size_t size);
+	int loadBios(char const *biosfiledata, std::size_t size);
 
 	/**
 	  * Emulates until at least 'samples' audio samples are produced in the
@@ -143,7 +143,7 @@ public:
 	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	/** ROM header title of currently loaded ROM image. */
-	const std::string romTitle() const;
+	std::string const romTitle() const;
 
 	unsigned char externalRead(unsigned short addr);
 	void externalWrite(unsigned short addr, unsigned char val);

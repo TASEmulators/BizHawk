@@ -1203,24 +1203,21 @@ SYNCFUNC(Memory)
 	NSS(ioamhram_);
 	NSS(divLastUpdate_);
 	NSS(lastOamDmaUpdate_);
-	NSS(biosMode_);
-	NSS(cgbSwitching_);
-	NSS(agbMode_);
-	NSS(gbIsCgb_);
-	NSS(stopped_);
-	NSS(halttime_);
-
 	SSS(intreq_);
 	SSS(tima_);
 	SSS(lcd_);
 	SSS(psg_);
-
 	NSS(dmaSource_);
 	NSS(dmaDestination_);
 	NSS(oamDmaPos_);
 	NSS(serialCnt_);
 	NSS(blanklcd_);
-
+	NSS(biosMode_);
+	NSS(cgbSwitching_);
+	NSS(agbMode_);
+	NSS(gbIsCgb_);
+	NSS(halttime_);
+	NSS(stopped_);
 	NSS(LINKCABLE_);
 	NSS(linkClockTrigger_);
 }

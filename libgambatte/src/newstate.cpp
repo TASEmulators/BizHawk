@@ -8,7 +8,7 @@ NewStateDummy::NewStateDummy()
 	:length(0)
 {
 }
-void NewStateDummy::Save(const void *ptr, size_t size, char const *name)
+void NewStateDummy::Save(void const *ptr, size_t size, char const *name)
 {
 	length += size;
 }
@@ -21,7 +21,7 @@ NewStateExternalBuffer::NewStateExternalBuffer(char *buffer, long maxlength)
 {
 }
 
-void NewStateExternalBuffer::Save(const void *ptr, size_t size, char const *name)
+void NewStateExternalBuffer::Save(void const *ptr, size_t size, char const *name)
 {
 	if (maxlength - length >= (long)size)
 	{
@@ -48,7 +48,7 @@ NewStateExternalFunctions::NewStateExternalFunctions(const FPtrs *ff)
 {
 }
 
-void NewStateExternalFunctions::Save(const void *ptr, size_t size, char const *name)
+void NewStateExternalFunctions::Save(void const *ptr, size_t size, char const *name)
 {
 	Save_(ptr, size, name);
 }

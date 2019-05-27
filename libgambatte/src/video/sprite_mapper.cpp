@@ -212,7 +212,6 @@ SYNCFUNC(SpriteMapper)
 	NSS(spritemap_);
 	NSS(num_);
 
-	SSS(nextM0Time_);
 	SSS(oamReader_);
 }
 

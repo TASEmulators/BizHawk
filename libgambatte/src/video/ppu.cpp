@@ -102,10 +102,10 @@ enum { max_m3start_cycles = 80 };
 enum { attr_yflip = 0x40, attr_bgpriority = 0x80 };
 
 static inline int lcdcEn(   PPUPriv const &p) { return p.lcdc & lcdc_en;    }
-static inline int lcdcWinEn(PPUPriv const &p) { return p.lcdc & lcdc_we;    }
+static inline int lcdcWinEn(PPUPriv const &p) { return (p.lcdc & lcdc_we) && (p.layersMask & layer_mask_window);    }
 static inline int lcdcObj2x(PPUPriv const &p) { return p.lcdc & lcdc_obj2x; }
-static inline int lcdcObjEn(PPUPriv const &p) { return p.lcdc & lcdc_objen; }
-static inline int lcdcBgEn( PPUPriv const &p) { return p.lcdc & lcdc_bgen;  }
+static inline int lcdcObjEn(PPUPriv const &p) { return (p.lcdc & lcdc_objen) && (p.layersMask & layer_mask_obj); }
+static inline int lcdcBgEn( PPUPriv const &p) { return (p.lcdc & lcdc_bgen) && (p.layersMask & layer_mask_bg);  }
 
 static inline int weMasterCheckPriorToLyIncLineCycle(bool cgb) { return 450 - cgb; }
 static inline int weMasterCheckAfterLyIncLineCycle(bool cgb) { return 454 - cgb; }
@@ -418,7 +418,7 @@ static void doFullTilesUnrolledDmg(PPUPriv &p, int const xend, uint_least32_t *c
 
 		{
 			uint_least32_t *const dst = dbufline + (xpos - 8);
-			unsigned const tileword = -(p.lcdc & 1U) & p.ntileword;
+			unsigned const tileword = -(p.lcdc & 1U & p.layersMask) & p.ntileword;
 
 			dst[0] = p.bgPalette[ tileword & 0x0003       ];
 			dst[1] = p.bgPalette[(tileword & 0x000C) >>  2];
@@ -624,7 +624,7 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 				} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 			} else {
 				unsigned char idtab[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-				unsigned const bgprioritymask = p.lcdc << 7;
+				unsigned const bgprioritymask = (p.lcdc & p.layersMask & layer_mask_bg) << 7;
 
 				do {
 					int n;
@@ -804,7 +804,7 @@ static void plotPixel(PPUPriv &p) {
 			p.winDrawState |= win_draw_start;
 	}
 
-	unsigned const twdata = tileword & ((p.lcdc & 1) | p.cgb) * 3;
+	unsigned const twdata = tileword & ((p.lcdc & 1 & p.layersMask) | p.cgb) * 3;
 	unsigned long pixel = p.bgPalette[twdata + (p.attrib & 7) * 4];
 	int i = static_cast<int>(p.nextSprite) - 1;
 
@@ -1488,6 +1488,7 @@ namespace gambatte {
 PPUPriv::PPUPriv(NextM0Time &nextM0Time, unsigned char const *const oamram, unsigned char const *const vram)
 : nextSprite(0)
 , currentSprite(0xFF)
+, layersMask(layer_mask_bg | layer_mask_window | layer_mask_obj)
 , vram(vram)
 , nextCallPtr(&M2_Ly0::f0_)
 , now(0)
@@ -1812,7 +1813,6 @@ SYNCFUNC(PPU)
 
 	SSS(p_.spriteMapper);
 	SSS(p_.lyCounter);
-	//SSS(p_.framebuf); // no state
 
 	NSS(p_.lcdc);
 	NSS(p_.scy);

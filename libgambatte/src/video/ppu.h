@@ -29,7 +29,7 @@
 
 namespace gambatte {
 
-enum { LAYER_MASK_BG = 1, LAYER_MASK_OBJ = 2, LAYER_MASK_WINDOW = 4 };
+enum { layer_mask_bg = 1, layer_mask_obj = 2, layer_mask_window = 4 };
 
 class PPUFrameBuf {
 public:

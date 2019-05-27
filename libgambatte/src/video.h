@@ -208,7 +208,6 @@ public:
 		{
 			SSS(eventMin_);
 			SSS(memEventMin_);
-			//SSS(memEventRequester_); // not needed
 		}
 	};
 

@@ -45,7 +45,13 @@ MemPtrs::~MemPtrs() {
 
 void MemPtrs::reset(unsigned const rombanks, unsigned const rambanks, unsigned const wrambanks) {
 	delete []memchunk_;
-	memchunk_len = 0x4000 + rombanks * 0x4000ul + 0x4000 + rambanks * 0x2000ul + wrambanks * 0x1000ul + 0x4000;
+	memchunk_len = 
+		  0x4000
+		+ rombanks * 0x4000ul
+		+ 0x4000
+		+ rambanks * 0x2000ul
+		+ wrambanks * 0x1000ul
+		+ 0x4000;
 	memchunk_ = new unsigned char[memchunk_len];
 
 	romdata_[0] = romdata();
@@ -163,23 +169,9 @@ void MemPtrs::disconnectOamDmaAreas() {
 
 SYNCFUNC(MemPtrs)
 {
-	/*
-	int memchunk_len_old = memchunk_len;
-	int memchunk_saveoffs_old = memchunk_saveoffs;
-	int memchunk_savelen_old = memchunk_savelen;
-	*/
-
 	NSS(memchunk_len);
 	NSS(memchunk_saveoffs);
 	NSS(memchunk_savelen);
-
-	/*
-	if (isReader)
-	{
-		if (memchunk_len != memchunk_len_old || memchunk_saveoffs != memchunk_saveoffs_old || memchunk_savelen != memchunk_savelen_old)
-			__debugbreak();
-	}
-	*/
 
 	PSS(memchunk_ + memchunk_saveoffs, memchunk_savelen);
 
@@ -215,11 +207,6 @@ SYNCFUNC(MemPtrs)
 	MSS(wmem_[0xe]);
 	MSS(rmem_[0xf]);
 	MSS(wmem_[0xf]);
-	//for (int i = 0; i < 0x10; i++)
-	//{
-	//	MSS(rmem_[i]);
-	//	MSS(wmem_[i]);
-	//}
 	MSS(romdata_[0]);
 	MSS(romdata_[1]);
 	MSS(wramdata_[0]);

@@ -116,7 +116,7 @@ void CPU::loadState(SaveState const &state) {
 #define hl() ( h << 8 | l )
 
 #define READ(dest, addr) do { (dest) = mem_.read(addr, cycleCounter); cycleCounter += 4; } while (0)
-#define PEEK(dest, addr) do { (dest) = mem_.read(addr, cycleCounter); } while(0)
+#define PEEK(dest, addr) do { (dest) = mem_.read(addr, cycleCounter); } while (0)
 #define PC_READ(dest) do { (dest) = mem_.read_excb(pc, cycleCounter, false); pc = (pc + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define PC_READ_FIRST(dest) do { (dest) = mem_.read_excb(pc, cycleCounter, true); pc = (pc + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define FF_READ(dest, addr) do { (dest) = mem_.ff_read(addr, cycleCounter); cycleCounter += 4; } while (0)

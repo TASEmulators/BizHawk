@@ -532,11 +532,6 @@ static bool presumedMulti64Mbc1(unsigned char const header[], unsigned rombanks)
 }
 
 LoadRes Cartridge::loadROM(char const *romfiledata, unsigned romfilelength, bool const forceDmg, bool const multicartCompat) {
-	//const std::auto_ptr<File> rom(newFileInstance(romfile));
-
-	//if (rom->fail())
-	//	return -1;
-
 	enum Cartridgetype { type_plain,
 	                     type_mbc1,
 	                     type_mbc2,

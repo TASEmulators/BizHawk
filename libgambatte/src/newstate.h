@@ -9,8 +9,8 @@ namespace gambatte {
 class NewState
 {
 public:
-	virtual void Save(const void *ptr, size_t size, char const *name) = 0;
-	virtual void Load(void *ptr, size_t size, char const *name) = 0;
+	virtual void Save(void const *ptr, std::size_t size, char const *name) = 0;
+	virtual void Load(void *ptr, std::size_t size, char const *name) = 0;
 	virtual void EnterSection(char const *name) { }
 	virtual void ExitSection(char const *name) { }
 };
@@ -23,8 +23,8 @@ public:
 	NewStateDummy();
 	long GetLength() { return length; }
 	void Rewind() { length = 0; }
-	virtual void Save(const void *ptr, size_t size, char const *name);
-	virtual void Load(void *ptr, size_t size, char const *name);
+	virtual void Save(void const *ptr, std::size_t size, char const *name);
+	virtual void Load(void *ptr, std::size_t size, char const *name);
 };
 
 class NewStateExternalBuffer : public NewState
@@ -38,14 +38,14 @@ public:
 	long GetLength() { return length; }
 	void Rewind() { length = 0; }
 	bool Overflow() { return length > maxlength; }
-	virtual void Save(const void *ptr, size_t size, char const *name);
-	virtual void Load(void *ptr, size_t size, char const *name);
+	virtual void Save(void const *ptr, std::size_t size, char const *name);
+	virtual void Load(void *ptr, std::size_t size, char const *name);
 };
 
 struct FPtrs
 {
-	void (*Save_)(const void *ptr, size_t size, char const *name);
-	void (*Load_)(void *ptr, size_t size, char const *name);
+	void (*Save_)(void const *ptr, std::size_t size, char const *name);
+	void (*Load_)(void *ptr, std::size_t size, char const *name);
 	void (*EnterSection_)(char const *name);
 	void (*ExitSection_)(char const *name);
 };
@@ -53,14 +53,14 @@ struct FPtrs
 class NewStateExternalFunctions : public NewState
 {
 private:
-	void (*Save_)(const void *ptr, size_t size, char const *name);
-	void (*Load_)(void *ptr, size_t size, char const *name);
+	void (*Save_)(void const *ptr, std::size_t size, char const *name);
+	void (*Load_)(void *ptr, std::size_t size, char const *name);
 	void (*EnterSection_)(char const *name);
 	void (*ExitSection_)(char const *name);
 public:
 	NewStateExternalFunctions(const FPtrs *ff);
-	virtual void Save(const void *ptr, size_t size, char const *name);
-	virtual void Load(void *ptr, size_t size, char const *name);
+	virtual void Save(void const *ptr, std::size_t size, char const *name);
+	virtual void Load(void *ptr, std::size_t size, char const *name);
 	virtual void EnterSection(char const *name);
 	virtual void ExitSection(char const *name);
 };
@@ -85,9 +85,9 @@ public:
 #define EES(x,d) else if (isReader) (x) = (d); if (!isReader) ns->Save(&_ttmp, sizeof _ttmp, #x); } while (0)
 
 #define RSS(x,b) do { if (isReader)\
-{ ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof _ttmp, #x); (x) = (_ttmp == (ptrdiff_t)0xdeadbeef ? 0 : (b) + _ttmp); }\
+{ std::ptrdiff_t _ttmp; ns->Load(&_ttmp, sizeof _ttmp, #x); (x) = (_ttmp == (std::ptrdiff_t)0xdeadbeef ? 0 : (b) + _ttmp); }\
 	else\
-{ ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof _ttmp, #x); } } while (0)
+{ std::ptrdiff_t _ttmp = (x) == 0 ? 0xdeadbeef : (x) - (b); ns->Save(&_ttmp, sizeof _ttmp, #x); } } while (0)
 
 #define PSS(x,s) do { if (isReader) ns->Load((x), (s), #x); else ns->Save((x), (s), #x); } while (0)
 

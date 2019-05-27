@@ -863,14 +863,13 @@ void LCD::setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long r
 SYNCFUNC(LCD)
 {
 	SSS(ppu_);
+	NSS(dmgColorsRgb32_);
 	NSS(bgpData_);
 	NSS(objpData_);
-	NSS(dmgColorsRgb32_);
 	SSS(eventTimes_);
 	SSS(m0Irq_);
 	SSS(lycIrq_);
 	SSS(nextM0Time_);
-
 	NSS(statReg_);
 	NSS(m2IrqStatReg_);
 	NSS(m1IrqStatReg_);

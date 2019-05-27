@@ -37,7 +37,7 @@ public:
 	~Memory();
 
 	bool loaded() const { return cart_.loaded(); }
-	unsigned char curRomBank() const { return cart_.curRomBank(); }
+	unsigned curRomBank() const { return cart_.curRomBank(); }
 	char const * romTitle() const { return cart_.romTitle(); }
 	int debugGetLY() const { return lcd_.debugGetLY(); }
 	void setStatePtrs(SaveState &state);
@@ -55,7 +55,7 @@ public:
 	}
 	bool gbIsCgb() { return gbIsCgb_; }
 
-	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
+	bool getMemoryArea(int which, unsigned char **data, int *length);
 
 	unsigned long stop(unsigned long cycleCounter);
 	bool isCgb() const { return lcd_.isCgb(); }

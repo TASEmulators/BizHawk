@@ -32,7 +32,7 @@ struct GB::Priv {
 
 	uint_least32_t vbuff[160*144];
 
-	Priv() : loadflags(0), layersMask(LAYER_MASK_BG | LAYER_MASK_OBJ)
+	Priv() : loadflags(0), layersMask(layer_mask_bg | layer_mask_window | layer_mask_obj)
 	{
 	}
 };
@@ -223,13 +223,11 @@ void GB::getRegs(int *dest) {
 	p_->cpu.getRegs(dest);
 }
 
-void GB::setInterruptAddresses(int *addrs, int numAddrs)
-{
+void GB::setInterruptAddresses(int *addrs, int numAddrs) {
 	p_->cpu.setInterruptAddresses(addrs, numAddrs);
 }
 
-int GB::getHitInterruptAddress()
-{
+int GB::getHitInterruptAddress() {
 	return p_->cpu.getHitInterruptAddress();
 }
 
