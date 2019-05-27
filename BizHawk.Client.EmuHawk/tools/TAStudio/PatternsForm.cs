@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
 				if (SelectedButton == "Default bool Auto-Fire")
 				{
-					index = _tastudio.BoolPatterns.Length + 1;
+					index = _tastudio.BoolPatterns.Length - 1;
 				}
 
 				if (index != -1)
@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (SelectedButton == "Default float Auto-Fire")
 					{
-						index = _tastudio.FloatPatterns.Length + 1;
+						index = _tastudio.FloatPatterns.Length - 1;
 					}
 					else
 					{
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			int index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
 			if (SelectedButton == "Default bool Auto-Fire")
 			{
-				index = _tastudio.BoolPatterns.Length + 1;
+				index = _tastudio.BoolPatterns.Length - 1;
 			}
 
 			if (index != -1)
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (SelectedButton == "Default float Auto-Fire")
 				{
-					index = _tastudio.FloatPatterns.Length + 1;
+					index = _tastudio.FloatPatterns.Length - 1;
 				}
 				else
 				{
@@ -263,15 +263,19 @@ namespace BizHawk.Client.EmuHawk
 				_tastudio.FloatPatterns[index] = new AutoPatternFloat(p.ToArray(), LagBox.Checked, 0, _loopAt);
 			}
 
-			_tastudio.UpdateAutoFire(SelectedButton, null);
+			if ((SelectedButton != "Default float Auto-Fire") && (SelectedButton != "Default bool Auto-Fire"))
+			{
+				_tastudio.UpdateAutoFire(SelectedButton, null);
+			}			
 		}
 
 		private void GetPattern()
 		{
 			int index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(SelectedButton);
+
 			if (SelectedButton == "Default bool Auto-Fire")
 			{
-				index = _tastudio.BoolPatterns.Length + 1;
+				index = _tastudio.BoolPatterns.Length - 1;
 			}
 
 			if (index != -1)
@@ -296,13 +300,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				_loopAt = _tastudio.BoolPatterns[index].Loop;
+				_loopAt = _tastudio.BoolPatterns[index].Loop;			
 			}
 			else
 			{
 				if (SelectedButton == "Default float Auto-Fire")
 				{
-					index = _tastudio.FloatPatterns.Length + 1;
+					index = _tastudio.FloatPatterns.Length - 1;
 				}
 				else
 				{
