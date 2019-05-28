@@ -557,8 +557,8 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 			n = (p.cycles & ~7) < n ? p.cycles & ~7 : n;
 			p.cycles -= n;
 
-			unsigned ntileword = p.ntileword;
-			unsigned nattrib   = p.nattrib;
+			unsigned ntileword = -(p.layersMask & layer_mask_bg) & p.ntileword;
+			unsigned nattrib   = -(p.layersMask & layer_mask_bg) & p.nattrib;
 			uint_least32_t *      dst    = dbufline + xpos - 8;
 			uint_least32_t *const dstend = dst + n;
 			xpos += n;
@@ -576,7 +576,7 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 				dst += 8;
 
 				unsigned const tno = tileMapLine[ tileMapXpos & 0x1F          ];
-				nattrib            = tileMapLine[(tileMapXpos & 0x1F) + 0x2000];
+				nattrib            = -(p.layersMask & layer_mask_bg) & tileMapLine[(tileMapXpos & 0x1F) + 0x2000];
 				tileMapXpos = (tileMapXpos & 0x1F) + 1;
 
 				unsigned const tdo = tdoffset & ~(tno << 5);
@@ -584,7 +584,7 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 				                                     + (nattrib & attr_yflip ? tdo ^ 14 : tdo)
 				                                     + (nattrib << 10 & 0x2000);
 				unsigned short const *const explut = expand_lut + (nattrib << 3 & 0x100);
-				ntileword = explut[td[0]] + explut[td[1]] * 2;
+				ntileword = -(p.layersMask & layer_mask_bg) & (explut[td[0]] + explut[td[1]] * 2);
 			} while (dst != dstend);
 
 			p.ntileword = ntileword;
@@ -601,8 +601,8 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 
 		{
 			uint_least32_t *const dst = dbufline + (xpos - 8);
-			unsigned const tileword = p.ntileword;
-			unsigned const attrib   = p.nattrib;
+			unsigned const tileword = -(p.layersMask & layer_mask_bg) & p.ntileword;
+			unsigned const attrib   = -(p.layersMask & layer_mask_bg) & p.nattrib;
 			unsigned long const *const bgPalette = p.bgPalette + (attrib & 7) * 4;
 
 			dst[0] = bgPalette[ tileword & 0x0003       ];
@@ -624,7 +624,7 @@ static void doFullTilesUnrolledCgb(PPUPriv &p, int const xend, uint_least32_t *c
 				} while (i >= 0 && int(p.spriteList[i].spx) > xpos - 8);
 			} else {
 				unsigned char idtab[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-				unsigned const bgprioritymask = (p.lcdc & p.layersMask & layer_mask_bg) << 7;
+				unsigned const bgprioritymask = p.lcdc << 7;
 
 				do {
 					int n;
@@ -804,8 +804,8 @@ static void plotPixel(PPUPriv &p) {
 			p.winDrawState |= win_draw_start;
 	}
 
-	unsigned const twdata = tileword & ((p.lcdc & 1 & p.layersMask) | p.cgb) * 3;
-	unsigned long pixel = p.bgPalette[twdata + (p.attrib & 7) * 4];
+	unsigned const twdata = tileword & (((p.lcdc & 1) | p.cgb) & p.layersMask) * 3;
+	unsigned long pixel = p.bgPalette[twdata + (p.attrib & 7 & -(p.layersMask & layer_mask_bg)) * 4];
 	int i = static_cast<int>(p.nextSprite) - 1;
 
 	if (i >= 0 && int(p.spriteList[i].spx) > xpos - 8) {
