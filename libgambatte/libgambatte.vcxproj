@@ -170,6 +170,7 @@
     <ClInclude Include="src\mem\cartridge.h" />
     <ClInclude Include="src\mem\memptrs.h" />
     <ClInclude Include="src\mem\rtc.h" />
+    <ClInclude Include="src\mem\time.h" />
     <ClInclude Include="src\minkeeper.h" />
     <ClInclude Include="src\newstate.h" />
     <ClInclude Include="src\savestate.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="src\mem\cartridge.cpp" />
     <ClCompile Include="src\mem\memptrs.cpp" />
     <ClCompile Include="src\mem\rtc.cpp" />
+    <ClCompile Include="src\mem\time.cpp" />
     <ClCompile Include="src\newstate.cpp" />
     <ClCompile Include="src\sound.cpp" />
     <ClCompile Include="src\sound\channel1.cpp" />

@@ -45,8 +45,8 @@ GBEXPORT void gambatte_destroy(GB *g) {
 	delete g;
 }
 
-GBEXPORT int gambatte_load(GB *g, char const *romfiledata, unsigned romfilelength, long long now, unsigned flags, unsigned div) {
-	return g->load(romfiledata, romfilelength, now, flags, div);
+GBEXPORT int gambatte_load(GB *g, char const *romfiledata, unsigned romfilelength, unsigned flags) {
+	return g->load(romfiledata, romfilelength, flags);
 }
 
 GBEXPORT int gambatte_loadbios(GB *g, char const *biosfiledata, unsigned size) {
@@ -68,8 +68,12 @@ GBEXPORT void gambatte_setlayers(GB *g, unsigned mask) {
 	g->setLayers(mask);
 }
 
-GBEXPORT void gambatte_reset(GB *g, long long now, unsigned div) {
-	g->reset(now, div);
+GBEXPORT void gambatte_setTimeMode(GB *g, bool useCycles) {
+	g->setTimeMode(useCycles);
+}
+
+GBEXPORT void gambatte_reset(GB *g) {
+	g->reset();
 }
 
 GBEXPORT void gambatte_setdmgpalettecolor(GB *g, unsigned palnum, unsigned colornum, unsigned rgb32) {
@@ -107,10 +111,6 @@ GBEXPORT void gambatte_settracecallback(GB *g, void (*callback)(void *)) {
 
 GBEXPORT void gambatte_setscanlinecallback(GB *g, void (*callback)(), int sl) {
 	g->setScanlineCallback(callback, sl);
-}
-
-GBEXPORT void gambatte_setrtccallback(GB *g, unsigned int (*callback)()) {
-	g->setRTCCallback(callback);
 }
 
 GBEXPORT void gambatte_setlinkcallback(GB *g, void(*callback)()) {

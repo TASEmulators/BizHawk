@@ -75,7 +75,7 @@ void GB::blitTo(gambatte::uint_least32_t *videoBuf, std::ptrdiff_t pitch) {
 	}
 }
 
-void GB::reset(const std::uint32_t now, const unsigned div) {
+void GB::reset() {
 	if (p_->cpu.loaded()) {
 
 		int length = p_->cpu.saveSavedataLength();
@@ -88,7 +88,7 @@ void GB::reset(const std::uint32_t now, const unsigned div) {
 
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now, div);
+		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -126,22 +126,22 @@ void GB::setScanlineCallback(void (*callback)(), int sl) {
 	p_->cpu.setScanlineCallback(callback, sl);
 }
 
-void GB::setRTCCallback(std::uint32_t (*callback)()) {
-	p_->cpu.setRTCCallback(callback);
-}
-
 void GB::setLinkCallback(void(*callback)()) {
 	p_->cpu.setLinkCallback(callback);
 }
 
-LoadRes GB::load(char const *romfiledata, unsigned romfilelength, const std::uint32_t now, unsigned const flags, const unsigned div) {
+void GB::setTimeMode(bool useCycles) {
+	p_->cpu.setTimeMode(useCycles);
+}
+
+LoadRes GB::load(char const *romfiledata, unsigned romfilelength, unsigned const flags) {
 	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
 
 	if (loadres == LOADRES_OK) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->loadflags = flags;
-		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, now, div);
+		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB);
 		p_->cpu.loadState(state);
 	}
 

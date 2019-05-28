@@ -64,7 +64,7 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	LoadRes load(char const *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
+	LoadRes load(char const *romfiledata, unsigned romfilelength, unsigned flags);
 
 	int loadBios(char const *biosfiledata, std::size_t size);
 
@@ -106,7 +106,7 @@ public:
 	  * Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
-	void reset(std::uint32_t now, unsigned div);
+	void reset();
 
 	/**
 	  * @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
@@ -127,6 +127,9 @@ public:
 	void setScanlineCallback(void (*callback)(), int sl);
 	void setRTCCallback(std::uint32_t (*callback)());
 	void setLinkCallback(void(*callback)());
+
+	/** Use cycle-based RTC instead of real-time. */
+	void setTimeMode(bool useCycles);
 
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;

@@ -36,7 +36,7 @@ struct SaveState {
 		void set(T *p, std::size_t size) { ptr = p; size_ = size; }
 
 		friend class SaverList;
-		friend void setInitState(SaveState &, bool, bool, std::uint32_t, unsigned);
+		friend void setInitState(SaveState &, bool, bool);
 	private:
 		T *ptr;
 		std::size_t size_;
@@ -190,8 +190,14 @@ struct SaveState {
 		unsigned long cycleCounter;
 	} spu;
 
+	struct Time {
+		unsigned long seconds;
+		unsigned long lastTimeSec;
+		unsigned long lastTimeUsec;
+		unsigned long lastCycles;
+	} time;
+
 	struct RTC {
-		unsigned long baseTime;
 		unsigned long haltTime;
 		unsigned char dataDh;
 		unsigned char dataDl;

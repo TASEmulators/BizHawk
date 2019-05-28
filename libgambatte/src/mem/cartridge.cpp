@@ -50,7 +50,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		if (p < 0x2000) {
 			enableRam_ = (data & 0xF) == 0xA;
 			memptrs_.setRambank(enableRam_ ? MemPtrs::read_en | MemPtrs::write_en : 0, 0);
@@ -92,7 +92,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p >> 13 & 3) {
 		case 0:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -166,7 +166,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p >> 13 & 3) {
 		case 0:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -238,7 +238,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p & 0x6100) {
 		case 0x0000:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -282,7 +282,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const cc) {
 		switch (p >> 13 & 3) {
 		case 0:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -298,7 +298,7 @@ public:
 			break;
 		case 3:
 			if (rtc_)
-				rtc_->latch(data);
+				rtc_->latch(data, cc);
 
 			break;
 		}
@@ -356,7 +356,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p >> 13 & 3) {
 		case 0:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -424,7 +424,7 @@ public:
 	{
 	}
 
-	virtual void romWrite(unsigned const p, unsigned const data) {
+	virtual void romWrite(unsigned const p, unsigned const data, unsigned long const /*cc*/) {
 		switch (p >> 13 & 3) {
 		case 0:
 			enableRam_ = (data & 0xF) == 0xA;
@@ -485,6 +485,11 @@ static bool hasRtc(unsigned headerByte0x147) {
 	}
 }
 
+}
+
+Cartridge::Cartridge()
+: rtc_(time_)
+{
 }
 
 void Cartridge::setStatePtrs(SaveState &state) {
@@ -652,7 +657,7 @@ static bool hasBattery(unsigned char headerByte0x147) {
 	}
 }
 
-void Cartridge::loadSavedata(char const *data) {
+void Cartridge::loadSavedata(char const *data, unsigned long const cc) {
 	if (hasBattery(memptrs_.romdata()[0x147])) {
 		int length = memptrs_.rambankdataend() - memptrs_.rambankdata();
 		std::memcpy(memptrs_.rambankdata(), data, length);
@@ -661,9 +666,17 @@ void Cartridge::loadSavedata(char const *data) {
 	}
 
 	if (hasRtc(memptrs_.romdata()[0x147])) {
-		unsigned long basetime;
-		std::memcpy(&basetime, data, 4);
-		rtc_.setBaseTime(basetime);
+		timeval basetime;
+		basetime.tv_sec = (*data++);
+		basetime.tv_sec = basetime.tv_sec << 8 | (*data++);
+		basetime.tv_sec = basetime.tv_sec << 8 | (*data++);
+		basetime.tv_sec = basetime.tv_sec << 8 | (*data++);
+		basetime.tv_usec = (*data++);
+		basetime.tv_usec = basetime.tv_usec << 8 | (*data++);
+		basetime.tv_usec = basetime.tv_usec << 8 | (*data++);
+		basetime.tv_usec = basetime.tv_usec << 8 | (*data++);
+
+		time_.setBaseTime(basetime, cc);
 	}
 }
 
@@ -673,12 +686,12 @@ int Cartridge::saveSavedataLength() {
 		ret = memptrs_.rambankdataend() - memptrs_.rambankdata();
 	}
 	if (hasRtc(memptrs_.romdata()[0x147])) {
-		ret += 4;
+		ret += 8;
 	}
 	return ret;
 }
 
-void Cartridge::saveSavedata(char *dest) {
+void Cartridge::saveSavedata(char *dest, unsigned long const cc) {
 	if (hasBattery(memptrs_.romdata()[0x147])) {
 		int length = memptrs_.rambankdataend() - memptrs_.rambankdata();
 		std::memcpy(dest, memptrs_.rambankdata(), length);
@@ -686,8 +699,15 @@ void Cartridge::saveSavedata(char *dest) {
 	}
 
 	if (hasRtc(memptrs_.romdata()[0x147])) {
-		const unsigned long basetime = rtc_.getBaseTime();
-		std::memcpy(dest, &basetime, 4);
+		timeval basetime = time_.baseTime(cc);
+		*dest++ = (basetime.tv_sec  >> 24 & 0xFF);
+		*dest++ = (basetime.tv_sec  >> 16 & 0xFF);
+		*dest++ = (basetime.tv_sec  >>  8 & 0xFF);
+		*dest++ = (basetime.tv_sec        & 0xFF);
+		*dest++ = (basetime.tv_usec >> 24 & 0xFF);
+		*dest++ = (basetime.tv_usec >> 16 & 0xFF);
+		*dest++ = (basetime.tv_usec >>  8 & 0xFF);
+		*dest++ = (basetime.tv_usec       & 0xFF);
 	}
 }
 
@@ -723,6 +743,7 @@ bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) cons
 SYNCFUNC(Cartridge)
 {
 	SSS(memptrs_);
+	SSS(time_);
 	SSS(rtc_);
 	TSS(mbc_);
 }

@@ -23,7 +23,7 @@
 
 namespace gambatte {
 
-void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode, std::uint32_t now, unsigned div);
+void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode);
 }
 
 #endif

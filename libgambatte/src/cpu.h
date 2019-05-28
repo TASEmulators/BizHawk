@@ -31,9 +31,9 @@ public:
 	void setStatePtrs(SaveState &state);
 	void loadState(SaveState const &state);
 	void setLayers(unsigned mask) { mem_.setLayers(mask); }
-	void loadSavedata(char const *data) { mem_.loadSavedata(data); }
+	void loadSavedata(char const *data) { mem_.loadSavedata(data, cycleCounter_); }
 	int saveSavedataLength() {return mem_.saveSavedataLength(); }
-	void saveSavedata(char *dest) { mem_.saveSavedata(dest); }
+	void saveSavedata(char *dest) { mem_.saveSavedata(dest, cycleCounter_); }
 
 	bool getMemoryArea(int which, unsigned char **data, int *length) { return mem_.getMemoryArea(which, data, length); }
 
@@ -69,10 +69,6 @@ public:
 		mem_.setScanlineCallback(callback, sl);
 	}
 
-	void setRTCCallback(std::uint32_t (*callback)()) {
-		mem_.setRTCCallback(callback);
-	}
-
 	void setLinkCallback(void(*callback)()) {
 		mem_.setLinkCallback(callback);
 	}
@@ -94,6 +90,7 @@ public:
 	void setCgbPalette(unsigned *lut) {
 		mem_.setCgbPalette(lut);
 	}
+	void setTimeMode(bool useCycles) { mem_.setTimeMode(useCycles, cycleCounter_); }
 
 	void setBios(char const *buffer, std::size_t size) { mem_.setBios(buffer, size); }
 	bool gbIsCgb() { return mem_.gbIsCgb(); }

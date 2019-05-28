@@ -116,18 +116,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
-			[DisplayName("RTC Initial Time")]
-			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
-			[DefaultValue(0)]
-			public int RTCInitialTime
-			{
-				get { return _RTCInitialTime; }
-				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
-			}
-
-			[JsonIgnore]
-			private int _RTCInitialTime;
-
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
 			[DefaultValue(false)]
@@ -140,11 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[JsonIgnore]
 			[DeepEqualsIgnore]
 			private bool _equalLengthFrames;
-
-			[DisplayName("Initial DIV offset")]
-			[Description("Internal.  Probably doesn't work.  Leave this set to 0.  Accepts values from 0 to 65532 in steps of 4")]
-			[DefaultValue(0)]
-			public int InitialDiv { get; set; }
 
 			public GambatteSyncSettings()
 			{
@@ -159,11 +142,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
 			{
 				return !DeepEquality.DeepEquals(x, y);
-			}
-
-			public uint GetInitialDivInternal()
-			{
-				return (uint)(InitialDiv & 0xfffc);
 			}
 		}
 	}

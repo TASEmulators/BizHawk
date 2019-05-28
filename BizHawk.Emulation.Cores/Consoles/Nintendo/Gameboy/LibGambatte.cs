@@ -53,11 +53,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="romdata">the rom data, can be disposed of once this function returns</param>
 		/// <param name="length">length of romdata in bytes</param>
-		/// <param name="now">RTC time when the rom is loaded</param>
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, long now, LoadFlags flags, uint div);
+		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, LoadFlags flags);
 
 		/// <summary>
 		/// Load GB(C) BIOS image.
@@ -114,9 +113,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="now">RTC time when the reset occurs</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_reset(IntPtr core, long now, uint div);
+		public static extern void gambatte_reset(IntPtr core);
 
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor
@@ -259,21 +257,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="sl">0-153 inclusive</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setscanlinecallback(IntPtr core, ScanlineCallback callback, int sl);
-
-		/// <summary>
-		/// type of the RTC callback
-		/// </summary>
-		/// <returns>what time is it, unixy</returns>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate uint RTCCallback();
-
-		/// <summary>
-		/// sets RTC callback.  probably mandatory.
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="callback">the callback</param>
-		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_setrtccallback(IntPtr core, RTCCallback callback);
 		
 		/// <summary>
 		/// type of the link data sent callback
@@ -288,6 +271,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="callback">the callback</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setlinkcallback(IntPtr core, LinkCallback callback);
+
+		/// <summary>
+		/// Changes between cycle-based and real-time RTC. Defaults to cycle-based.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="useCycles">use cycle-based RTC</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_settimemode(IntPtr core, bool useCycles);
 
 		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.

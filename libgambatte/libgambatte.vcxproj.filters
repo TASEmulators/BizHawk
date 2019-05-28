@@ -126,6 +126,9 @@
     <ClInclude Include="src\sound\static_output_tester.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mem\time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cinterface.cpp">
@@ -201,6 +204,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\newstate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mem\time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

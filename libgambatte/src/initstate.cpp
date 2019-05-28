@@ -20,6 +20,7 @@
 #include "counterdef.h"
 #include "savestate.h"
 #include "sound/sound_unit.h"
+#include "mem/time.h"
 #include <algorithm>
 #include <cstring>
 
@@ -1146,7 +1147,7 @@ static void setInitialDmgIoamhram(unsigned char ioamhram[]) {
 
 } // anon namespace
 
-void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, const unsigned div) {
+void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode) {
 	static unsigned char const cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB,
 		0x61, 0xC2, 0xD9, 0xBA,
@@ -1198,7 +1199,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.ioamhram.ptr[0x140] = 0;
 	state.mem.ioamhram.ptr[0x144] = 0x00;
 
-	state.mem.divLastUpdate = 0 - div;
+	state.mem.divLastUpdate = 0;
 	state.mem.timaBasetime = 0;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = disabled_time;
@@ -1315,8 +1316,12 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.spu.ch4.nr4 = 0;
 	state.spu.ch4.master = false;
 
-	state.rtc.baseTime = now;
-	state.rtc.haltTime = state.rtc.baseTime;
+	state.time.seconds = 0;
+	state.time.lastTimeSec = Time::now().tv_sec;
+	state.time.lastTimeUsec = Time::now().tv_usec;
+	state.time.lastCycles = state.cpu.cycleCounter;
+
+	state.rtc.haltTime = state.time.seconds;
 	state.rtc.dataDh = 0;
 	state.rtc.dataDl = 0;
 	state.rtc.dataH = 0;

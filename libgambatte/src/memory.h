@@ -29,6 +29,7 @@ static unsigned char const agbOverride[0xD] = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0x
 #include "gambatte.h"
 
 namespace gambatte {
+
 class FilterInfo;
 
 class Memory {
@@ -42,9 +43,9 @@ public:
 	int debugGetLY() const { return lcd_.debugGetLY(); }
 	void setStatePtrs(SaveState &state);
 	void loadState(SaveState const &state);
-	void loadSavedata(char const *data) { cart_.loadSavedata(data); }
+	void loadSavedata(char const *data, unsigned long const cc) { cart_.loadSavedata(data, cc); }
 	int saveSavedataLength() {return cart_.saveSavedataLength(); }
-	void saveSavedata(char *dest) { cart_.saveSavedata(dest); }
+	void saveSavedata(char *dest, unsigned long const cc) { cart_.saveSavedata(dest, cc); }
 	void updateInput();
 
 	void setBios(char const *buffer, std::size_t size) {
@@ -243,10 +244,6 @@ public:
 		lcd_.setScanlineCallback(callback, sl);
 	}
 
-	void setRTCCallback(std::uint32_t (*callback)()) {
-		cart_.setRTCCallback(callback);
-	}
-
 	void setLinkCallback(void(*callback)()) {
 		this->linkCallback_ = callback;
 	}
@@ -266,6 +263,9 @@ public:
 	}
 
 	void setCgbPalette(unsigned *lut);
+	void setTimeMode(bool useCycles, unsigned long const cc) {
+		cart_.setTimeMode(useCycles, cc);
+	}
 
 	int linkStatus(int which);
 

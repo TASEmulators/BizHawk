@@ -21,6 +21,7 @@
 
 #include "loadres.h"
 #include "memptrs.h"
+#include "time.h"
 #include "rtc.h"
 #include "savestate.h"
 #include <memory>
@@ -33,7 +34,7 @@ namespace gambatte {
 class Mbc {
 public:
 	virtual ~Mbc() {}
-	virtual void romWrite(unsigned P, unsigned data) = 0;
+	virtual void romWrite(unsigned P, unsigned data, unsigned long cycleCounter) = 0;
 	virtual void loadState(SaveState::Mem const &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
 
@@ -47,6 +48,7 @@ public:
 
 class Cartridge {
 public:
+	Cartridge();
 	void setStatePtrs(SaveState &);
 	void loadState(SaveState const &);
 	bool loaded() const { return mbc_.get(); }
@@ -64,23 +66,23 @@ public:
 	void setWrambank(unsigned bank) { memptrs_.setWrambank(bank); }
 	void setOamDmaSrc(OamDmaSrc oamDmaSrc) { memptrs_.setOamDmaSrc(oamDmaSrc); }
 	unsigned curRomBank() const { return memptrs_.curRomBank(); }
-	void mbcWrite(unsigned addr, unsigned data) { mbc_->romWrite(addr, data); }
+	void mbcWrite(unsigned addr, unsigned data, unsigned long const cc) { mbc_->romWrite(addr, data, cc); }
 	bool isCgb() const { return gambatte::isCgb(memptrs_); }
-	void rtcWrite(unsigned data) { rtc_.write(data); }
+	void resetCc(unsigned long const oldCc, unsigned long const newCc) { time_.resetCc(oldCc, newCc); }
+	void speedChange(unsigned long const cc) { time_.speedChange(cc); }
+	void setTimeMode(bool useCycles, unsigned long const cc) { time_.setTimeMode(useCycles, cc); }
+	void rtcWrite(unsigned data, unsigned long const cc) { rtc_.write(data, cc); }
 	unsigned char rtcRead() const { return *rtc_.activeData(); }
-	void loadSavedata(char const *data);
+	void loadSavedata(char const *data, unsigned long cycleCounter);
 	int saveSavedataLength();
-	void saveSavedata(char *dest);
+	void saveSavedata(char *dest, unsigned long cycleCounter);
 	bool getMemoryArea(int which, unsigned char **data, int *length) const;
 	LoadRes loadROM(char const *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	char const * romTitle() const { return reinterpret_cast<char const *>(memptrs_.romdata() + 0x134); }
 
-	void setRTCCallback(std::uint32_t (*callback)()) {
-		rtc_.setRTCCallback(callback);
-	}
-
 private:
 	MemPtrs memptrs_;
+	Time time_;
 	Rtc rtc_;
 	std::unique_ptr<Mbc> mbc_;
 
