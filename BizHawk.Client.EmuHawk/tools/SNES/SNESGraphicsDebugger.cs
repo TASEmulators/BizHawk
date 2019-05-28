@@ -725,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (mode == SNESGraphicsDecoder.BGMode.Unavailable) return "Unavailable";
 			if (mode == SNESGraphicsDecoder.BGMode.Text) return $"Text{bpp}bpp";
-			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return string.Format("OBJ", bpp);
+			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return "OBJ";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7) return "Mode7";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7Ext) return "Mode7Ext";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7DC) return "Mode7DC";
