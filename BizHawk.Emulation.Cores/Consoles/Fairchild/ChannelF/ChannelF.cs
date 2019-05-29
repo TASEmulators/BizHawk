@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
@@ -18,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 			ServiceProvider = ser;
 			CoreComm = comm;
 			InputCallbacks = new InputCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			ControllerDefinition = ChannelFControllerDefinition;
 
@@ -30,19 +32,28 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 				DummyReadMemory = ReadBus
 			};
 
+			_tracer = new TraceBuffer { Header = CPU.TraceHeader };
+
 			byte[] bios01 = comm.CoreFileProvider.GetFirmware("ChannelF", "ChannelF_sl131253", true);
 			byte[] bios02 = comm.CoreFileProvider.GetFirmware("ChannelF", "ChannelF_sl131254", true);
 
 			BIOS01 = bios01;
 			BIOS02 = bios02;
 
-			Array.Copy(rom, 0, Cartridge, 0, rom.Length);
+			Array.Copy(rom, 0, Rom, 0, rom.Length);
 
 			CalcClock();
 
 			ser.Register<IVideoProvider>(this);
+			ser.Register<ITraceable>(_tracer);
+			ser.Register<IDisassemblable>(CPU);
+			ser.Register<ISoundProvider>(this);
+
+			SetupMemoryDomains();
 		}
 
 		public F3850 CPU;
+		private readonly TraceBuffer _tracer;
+		public IController _controller;
 	}
 }

@@ -5,10 +5,13 @@ using BizHawk.Emulation.Common;
 
 
 /*
-	Fill in the memory map in this space for easy reference
-	ex:
-	0x0000 - 0x0FFF		RAM
-	etc
+	0x0000 - 0x7FFF		ROM
+	0x8000 - 0xC7FF		Unmapped
+	0xC800 - 0xCFFF		RAM (and shadows)
+	0xD000 - 0XD7FF		6522 (and shadows)
+	0xD800 - 0xDFFF		6522 + RAM
+	0xE000 - 0xEFFF		Minestorm
+	0xF000 - 0xFFFF		BIOS
 */
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
@@ -21,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			if (addr < 0x8000)
 			{
-				return 0xFF;
+				return mapper.ReadMemory(addr);
 			}
 			else if (addr < 0xC800)
 			{
@@ -33,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-				return 0xFF;
+				return Read_Registers(addr & 0xF);
 			}
 			else if (addr < 0xE000)
 			{
@@ -67,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-
+				Write_Registers(addr & 0xF, value);
 			}
 			else if (addr < 0xE000)
 			{
@@ -99,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xD800)
 			{
-				return 0xFF;
+				return Read_Registers(addr & 0xF);
 			}
 			else if (addr < 0xE000)
 			{

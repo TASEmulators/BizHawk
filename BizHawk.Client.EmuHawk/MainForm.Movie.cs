@@ -104,6 +104,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.OSD.AddMessage("Warning: Movie hash does not match the ROM");
 			}
 
+			if (Emulator is NullEmulator)
+			{
+				return false;
+			}
+
 			return true;
 		}
 

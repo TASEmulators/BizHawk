@@ -41,7 +41,15 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void SyncState(Serializer ser)
 		{
-
+			ser.BeginSection("ChannelF");
+			ser.Sync(nameof(VRAM), ref VRAM, false);
+			ser.Sync(nameof(_colour), ref _colour);
+			ser.Sync(nameof(_x), ref _x);
+			ser.Sync(nameof(_y), ref _y);
+			ser.Sync(nameof(_arm), ref _arm);
+			ser.Sync(nameof(ControllersEnabled), ref ControllersEnabled);
+			CPU.SyncState(ser);
+			ser.EndSection();
 			/*
 
 			byte[] core = null;

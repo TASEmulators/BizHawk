@@ -921,7 +921,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 								result = result.Replace("ix16", "???");
 								break;
 							case 0xF:
-								if ((d >> 5) == 0)
+								if (((d >> 5) & 3) == 0)
 								{
 									byte k = reader(addr++);
 									bytes.Add(k);

@@ -927,23 +927,31 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = prompt.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
+			while (prompt.ShowHawkDialog() == DialogResult.OK)
 			{
-				if (prompt.PromptText.IsHex())
+				try
 				{
 					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
-
 					for (int index = 0; index < _searches.Count; index++)
 					{
-						if (addr == _searches[index].Address)
+						if (_searches[index].Address == addr)
 						{
 							WatchListView.SelectItem(index, true);
 							WatchListView.ensureVisible();
-							break;
+							return; // Don't re-show dialog on success
 						}
 					}
+					//TODO add error text to dialog?
+					// Re-show dialog if the address isn't found
+				}
+				catch (FormatException e)
+				{
+					// Re-show dialog if given invalid text (shouldn't happen)
+				}
+				catch (OverflowException e)
+				{
+					//TODO add error text to dialog?
+					// Re-show dialog if the address isn't valid
 				}
 			}
 		}

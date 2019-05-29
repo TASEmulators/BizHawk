@@ -862,7 +862,16 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult result = prompt.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					int val = int.Parse(prompt.PromptText);
+					int val = 0;
+					try
+					{
+						val = int.Parse(prompt.PromptText);
+					}
+					catch
+					{
+						MessageBox.Show("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+
 					if (val > 0)
 					{
 						CurrentTasMovie.ChangeLog.MaxSteps = val;

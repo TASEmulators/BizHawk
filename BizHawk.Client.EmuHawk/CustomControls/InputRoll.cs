@@ -1196,7 +1196,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AllowRightClickSelecton && e.Button == MouseButtons.Right)
 			{
-				if (!IsHoveringOnColumnCell)
+				if (!IsHoveringOnColumnCell && CurrentCell != null)
 				{
 					_currentX = e.X;
 					_currentY = e.Y;

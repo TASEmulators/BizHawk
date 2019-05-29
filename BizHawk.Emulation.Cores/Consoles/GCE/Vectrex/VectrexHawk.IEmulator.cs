@@ -44,9 +44,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void do_frame()
 		{
-			for (int i = 0; i < 4500; i++)
+			for (int i = 0; i < 45000; i++)
 			{
-				cpu.ExecuteOne();
+				timer_1_tick();
+				timer_2_tick();
+				cpu.ExecuteOne();				
 			}
 		}
 

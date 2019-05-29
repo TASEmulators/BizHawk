@@ -29,29 +29,10 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[src]++;
 		}
 
-		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
+		public void Write_Func(ushort dest, ushort src)
 		{
-			ushort addr = (ushort)(Regs[dest_l] | (Regs[dest_h]) << 8);
-			if (CDLCallback != null) CDLCallback(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
-			WriteMemory(addr, (byte)Regs[src]);
-		}
-
-		public void NEG_8_Func(ushort src)
-		{
-			int Reg16_d = 0;
-			Reg16_d -= Regs[src];
-
-			FlagC = Regs[src] != 0x0;
-			FlagZ = (Reg16_d & 0xFF) == 0;
-			FlagV = Regs[src] == 0x80;
-			FlagN = (Reg16_d & 0xFF) > 127;
-
-			ushort ans = (ushort)(Reg16_d & 0xFF);
-			// redo for half carry flag
-			Reg16_d = 0;
-			Reg16_d -= (Regs[src] & 0xF);
-			FlagH = Reg16_d.Bit(4);
-			Regs[src] = ans;
+			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			WriteMemory(Regs[dest], (byte)Regs[src]);
 		}
 
 		public void Write_Dec_Lo_Func(ushort dest, ushort src)
@@ -79,6 +60,24 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(Regs[dest], (byte)(Regs[src] >> 8));
 			Regs[dest]++;
+		}
+
+		public void NEG_8_Func(ushort src)
+		{
+			int Reg16_d = 0;
+			Reg16_d -= Regs[src];
+
+			FlagC = Regs[src] != 0x0;
+			FlagZ = (Reg16_d & 0xFF) == 0;
+			FlagV = Regs[src] == 0x80;
+			FlagN = (Reg16_d & 0xFF) > 127;
+
+			ushort ans = (ushort)(Reg16_d & 0xFF);
+			// redo for half carry flag
+			Reg16_d = 0;
+			Reg16_d -= (Regs[src] & 0xF);
+			FlagH = Reg16_d.Bit(4);
+			Regs[src] = ans;
 		}
 
 		public void TR_Func(ushort dest, ushort src)

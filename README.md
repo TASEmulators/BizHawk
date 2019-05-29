@@ -57,7 +57,7 @@ Supported consoles and computers:
 * Bandai WonderSwan + Color
 * CBM Commodore 64
 * Coleco Industries ColecoVision
-* Mattel IntelliVision
+* Mattel Intellivision
 * NEC
 	* PC Engine / TurboGrafx-16 + SuperGrafx + CD
 	* PC-FX
@@ -106,7 +106,7 @@ Before you start (by running `EmuHawk.exe`), you'll need the following Windows-o
 
 BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1709 "Redstone 3", Win8 is supported from 8.1, and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
+Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1803 "Redstone 4", Win8 is supported from 8.1, and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP and/or 32-bit Windows. Being in the 1.x series, many bugs remain and features are missing.
 
@@ -209,6 +209,28 @@ Running scripts have a "▶️" beside their name, and stopped scripts (manually
 
 "Toggle script" does just that (paused scripts are stopped). "Reload script" stops it and loads changes to the file, running scripts are then started again. "Remove script" stops it and removes it from the list.
 
+#### In-game Saves
+
+Games may internally [save your progress](https://en.wikipedia.org/wiki/Saved_game) into memory (SRAM, memory cards) or file. When this happens, BizHawk stores this in-game save in the Operating System memory and makes the `File` > `Save RAM` menu bold.
+
+BizHawk can write in-game saves to disk - this is called flushing. Every time you save in the game (not to be confusing with *emulator savestates*), you should backup your saves! Go to `File` > `Save RAM` and hit `Flush Save Ram`. Note that some systems use SRAM for irrelevant tasks and store temporary data there, and the menu may become bold without in-game saves involved. Be aware when the game is *supposed to save* and flush accordingly.
+
+BizHawk can be configured to flush saves to disk automatically in `Config` > `Customize` > `Advanced AutoSaveRAM`. Opon closing the ROM (which includes any core reboot) BizHawk may try to flush save RAM automatically as well.
+
+```
+
+DISCLAIMER
+
+Automatic flushing is extremely unreliable and not being maintained.
+It may corrupt your previous saves!
+It will be completely removed in future.
+Develop a habit to always flush saves manually every time you save in the game.
+Make backups of the flushed save files!
+If you don't flush saves manually and backup them, and something breaks, you're on your own.
+If your save has been corrupted, there's nothing we can do about it.
+
+```
+
 [to top](#bizhawk)
 
 ### TASing
@@ -245,7 +267,7 @@ Commodore 64 | C64Hawk |
 ColecoVision | ColecoHawk |
 Game Boy / Color | GBHawk | Gambatte
 Game Boy Advance | mGBA | VBA-Next
-IntelliVision | IntelliHawk |
+Intellivision | IntelliHawk |
 N64 | Mupen64Plus |
 Neo Geo Pocket / Color | NeoPop |
 NES | NesHawk | QuickNes |

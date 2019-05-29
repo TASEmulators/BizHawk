@@ -23,8 +23,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public byte[] _bios;
 		public readonly byte[] _rom;	
 		
-		public readonly byte[] header = new byte[0x50];
-
 		public byte[] cart_RAM;
 		public bool has_bat;
 
@@ -67,10 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");			
 			_bios = Bios;
 
-			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
-			string hash_md5 = null;
-			hash_md5 = "md5:" + rom.HashMD5(0, rom.Length);
-			Console.WriteLine(hash_md5);
+			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
 
 			_rom = rom;
 			Setup_Mapper();

@@ -908,7 +908,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// 6105 roughly centers the paddle in Breakout
 			if (maskedAddr == 0x08) // INPT0
 			{
-				if (_core.ReadPot1(0)>0 && _capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= _core.ReadPot1(0))
+				if (_core.ReadPot1(0) > 0 && _capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= _core.ReadPot1(0))
 				{
 					coll = 0x80;
 				}
@@ -922,7 +922,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (maskedAddr == 0x09) // INPT1
 			{
-				if (_core.ReadPot1(1) > 0 &&  _capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= _core.ReadPot1(1))
+				if (_core.ReadPot1(1) > 0 && _capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= _core.ReadPot1(1))
 				{
 					coll = 0x80;
 				}
