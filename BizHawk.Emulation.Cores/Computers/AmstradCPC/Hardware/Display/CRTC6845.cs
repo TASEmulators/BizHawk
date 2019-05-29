@@ -147,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is connected up to the CRTC
 		/// Built from R12, R13 and CLK
+		/// </summary>
 		/*
             Memory Address Signal	Signal source	Signal name
             A15	                    6845	        MA13
@@ -166,7 +167,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             A1	                    6845	        MA0
             A0	                    Gate-Array	    CLK
          */
-		/// </summary>
 		public ushort AddressLineCPC
 		{
 			get

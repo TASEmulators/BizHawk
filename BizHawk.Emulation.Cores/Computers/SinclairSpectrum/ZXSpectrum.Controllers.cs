@@ -59,9 +59,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // keyboard
                 List<string> keys = new List<string>
                 {
-                    /// Controller mapping includes all keyboard keys from the following models:
-                    /// https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/ZXSpectrum48k.jpg/1200px-ZXSpectrum48k.jpg
-                    /// https://upload.wikimedia.org/wikipedia/commons/c/ca/ZX_Spectrum%2B.jpg
+                    // Controller mapping includes all keyboard keys from the following models:
+                    // https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/ZXSpectrum48k.jpg/1200px-ZXSpectrum48k.jpg
+                    // https://upload.wikimedia.org/wikipedia/commons/c/ca/ZX_Spectrum%2B.jpg
         
                     // Keyboard - row 1    
                     "Key True Video", "Key Inv Video", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Break",

@@ -165,10 +165,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// The block address of the first block of the system Path Table is kept in this field
         /// </summary>
         public int AddressOfPathTable;
-        /// <summary>
-        /// This number is used to indicate the revision number of the file structure standard to which the 
-        /// directory search files conform. It is set to one
-        /// </summary>
 
         #endregion
 

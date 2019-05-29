@@ -692,10 +692,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         private class Command
         {
-            /// <summary>
-            /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
-            /// </summary>
-            //public int BitMask { get; set; }
+//          /// <summary>
+//          /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
+//          /// </summary>
+//          public int BitMask { get; set; }
             /// <summary>
             /// The command code after bitmask has been applied
             /// </summary>

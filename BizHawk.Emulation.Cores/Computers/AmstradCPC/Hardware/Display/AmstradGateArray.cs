@@ -375,12 +375,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         private bool HSYNC;
 
-        /// <summary>
-        /// Is set when an initial HSYNC is seen from the CRCT
-        /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
-        /// So in this emulation, once the falling edge is detected, interrupt processing happens
-        /// </summary>
-        //private bool HSYNC_falling;
+//      /// <summary>
+//      /// Is set when an initial HSYNC is seen from the CRCT
+//      /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
+//      /// So in this emulation, once the falling edge is detected, interrupt processing happens
+//      /// </summary>
+//      private bool HSYNC_falling;
 
         /// <summary>
         /// Used to count HSYNCs during a VSYNC

@@ -395,6 +395,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         /// <summary>
         /// The register array
+        /// </summary>
         /*
             The AY-3-8910/8912 contains 16 internal registers as follows:
 
@@ -426,7 +427,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             The AY-3-8912 ignores bit 7 of this register.    
         */
-        /// </summary>
         private int[] _registers = new int[16];
 
         /// <summary>
