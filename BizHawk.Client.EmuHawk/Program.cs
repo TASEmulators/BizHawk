@@ -113,9 +113,8 @@ namespace BizHawk.Client.EmuHawk
 
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-			var argParser = new ArgParser();
-			argParser.ParseArguments(args);
-			if (argParser.cmdConfigFile != null) PathManager.SetDefaultIniPath(argParser.cmdConfigFile);
+			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
+			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
 
 			try
 			{

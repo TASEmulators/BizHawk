@@ -13,7 +13,7 @@
 
 		#region MemoryMappedFiles
 		void MmfSetFilename(string filename);
-		string MmfSetFilename();
+		string MmfGetFilename();
 		int MmfScreenshot();
 		int MmfWrite(string mmf_filename, string outputString);
 		string MmfRead(string mmf_filename, int expectedSize);
