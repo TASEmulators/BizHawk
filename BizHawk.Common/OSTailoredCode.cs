@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 //put in a different namespace for EXE so we can have an instance of this type (by linking to this file rather than copying it) built-in to the exe
@@ -9,36 +10,64 @@ namespace EXE_PROJECT
 namespace BizHawk.Common
 #endif
 {
-
-public sealed class PlatformLinkedLibSingleton
+	public sealed class OSTailoredCode
 	{
-		public static readonly bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
+		/// <remarks>macOS doesn't use PlatformID.MacOSX</remarks>
+		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
+			? currentIsMacOS() ? DistinctOS.macOS : DistinctOS.Linux
+			: DistinctOS.Windows;
 
-		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() => RunningOnUnix
-			? (PlatformLinkedLibManager) new UnixMonoLinkedLibManager()
-			: (PlatformLinkedLibManager) new Win32LinkedLibManager());
+		private static readonly Lazy<ILinkedLibManager> lazy = new Lazy<ILinkedLibManager>(() =>
+		{
+			switch (CurrentOS)
+			{
+				case DistinctOS.Linux:
+				case DistinctOS.macOS:
+					return new UnixMonoLLManager();
+				case DistinctOS.Windows:
+					return new WindowsLLManager();
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		});
 
-		public static PlatformLinkedLibManager LinkedLibManager { get { return lazy.Value; } }
+		public static ILinkedLibManager LinkedLibManager => lazy.Value;
 
-		private PlatformLinkedLibSingleton() {}
+		private static bool currentIsMacOS()
+		{
+			var proc = new Process {
+				StartInfo = new ProcessStartInfo {
+					Arguments = "-s",
+					CreateNoWindow = true,
+					FileName = "uname",
+					RedirectStandardOutput = true,
+					UseShellExecute = false
+				}
+			};
+			proc.Start();
+			if (proc.StandardOutput.EndOfStream) throw new Exception("Can't determine OS (uname wrote nothing to stdout)!");
+			return proc.StandardOutput.ReadLine() == "Darwin";
+		}
 
-		public interface PlatformLinkedLibManager
+		private OSTailoredCode() {}
+
+		public interface ILinkedLibManager
 		{
 			IntPtr LoadPlatformSpecific(string dllToLoad);
 			IntPtr GetProcAddr(IntPtr hModule, string procName);
 			int FreePlatformSpecific(IntPtr hModule);
 		}
 
-		public class UnixMonoLinkedLibManager : PlatformLinkedLibManager
+		/// <remarks>This class is copied from a tutorial, so don't git blame and then email me expecting insight.</remarks>
+		private class UnixMonoLLManager : ILinkedLibManager
 		{
-			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
-			const int RTLD_NOW = 2;
+			private const int RTLD_NOW = 2;
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlopen(String fileName, int flags);
+			private static extern IntPtr dlopen(string fileName, int flags);
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlerror();
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlsym(IntPtr handle, String symbol);
+			private static extern IntPtr dlsym(IntPtr handle, string symbol);
 			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
@@ -59,10 +88,10 @@ public sealed class PlatformLinkedLibSingleton
 			}
 		}
 
-		public class Win32LinkedLibManager : PlatformLinkedLibManager
+		private class WindowsLLManager : ILinkedLibManager
 		{
 			[DllImport("kernel32.dll")]
-			private static extern UInt32 GetLastError();
+			private static extern uint GetLastError();
 			// was annotated `[DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]` in SevenZip.NativeMethods
 			// param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]` in SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
@@ -88,6 +117,13 @@ public sealed class PlatformLinkedLibSingleton
 			{
 				return FreeLibrary(hModule) ? 1 : 0;
 			}
+		}
+
+		public enum DistinctOS : byte
+		{
+			Linux,
+			macOS,
+			Windows
 		}
 	}
 }

@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 
 //TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
   //perhaps missing domains shouldnt fail a check
@@ -98,7 +99,16 @@ namespace BizHawk.Client.EmuHawk
 			if (_cdl == null)
 			{
 				lvCDL.BeginUpdate();
-				lvCDL.Items.Clear();
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				{
+					lvCDL.Items.Clear();
+				}
+				else
+				{
+					// this is a winforms implementation problem for mono
+					// see https://github.com/mono/mono/issues/11070
+					// until this is resolved in mono we should just skip this call
+				}
 				lvCDL.EndUpdate();
 				return;
 			}

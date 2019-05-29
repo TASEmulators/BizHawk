@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
+
 using NLua;
 
 // TODO - evaluate for re-entrancy problems
@@ -18,12 +21,10 @@ namespace BizHawk.Client.Common
 
 		private string _currentDirectory;
 
-		#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool SetCurrentDirectoryW(byte* lpPathName);
 		[DllImport("kernel32.dll", SetLastError=true)]
 		static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-		#endif
 
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
@@ -42,40 +43,43 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			// WARNING: setting the current directory is SLOW!!! security checks for some reason.
-			// so we're bypassing it with windows hacks
-			#if WINDOWS
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			{
+				// WARNING: setting the current directory is SLOW!!! security checks for some reason.
+				// so we're bypassing it with windows hacks
 				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
 					return SetCurrentDirectoryW(pstr);
-			#else
-				if (System.IO.Directory.Exists(CurrentDirectory)) // race condition for great justice
-				{
-					Environment.CurrentDirectory = CurrentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			#endif
+			}
+			else
+			{
+				if (System.IO.Directory.Exists(_currentDirectory)) // race condition for great justice
+                {
+                	Environment.CurrentDirectory = _currentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
+                	return true;
+                }
+                else
+                {
+                	return false;
+                }
+			}
 		}
 
 		private string CoolGetCurrentDirectory()
 		{
-			// GUESS WHAT!
-			// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
-			// AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
-			// SCREW YOU
-			#if WINDOWS
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			{
+				// GUESS WHAT!
+				// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
+				// AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
+				// SCREW YOU
 				var buf = new byte[32768];
-				fixed(byte* pBuf = &buf[0])
-				{
-					uint ret = GetCurrentDirectoryW(32767, pBuf);
-					return System.Text.Encoding.Unicode.GetString(buf, 0, (int)ret*2);
-				}
-			#else
+				fixed (byte* pBuf = &buf[0])
+					return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) GetCurrentDirectoryW(32767, pBuf));
+			}
+			else
+			{
 				return Environment.CurrentDirectory;
-			#endif
+			}
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)

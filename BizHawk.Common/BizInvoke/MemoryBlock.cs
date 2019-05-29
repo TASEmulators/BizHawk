@@ -79,6 +79,9 @@ namespace BizHawk.Common.BizInvoke
 		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+				throw new InvalidOperationException("MemoryBlock ctor called on Unix");
+
 			if (!WaterboxUtils.Aligned(start))
 				throw new ArgumentOutOfRangeException();
 			if (size == 0)
