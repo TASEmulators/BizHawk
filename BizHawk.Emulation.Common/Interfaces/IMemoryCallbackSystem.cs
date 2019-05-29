@@ -64,21 +64,21 @@ namespace BizHawk.Emulation.Common
 		/// Executes all Read callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
-		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallReads(uint addr, string scope);
 
 		/// <summary>
 		/// Executes all Write callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
-		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallWrites(uint addr, string scope);
 
 		/// <summary>
 		/// Executes all Execute callbacks for the given address and domain
 		/// </summary>
 		/// <param name="addr">The address to check for callbacks</param>
-		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallExecutes(uint addr, string scope);
 
 		/// <summary>

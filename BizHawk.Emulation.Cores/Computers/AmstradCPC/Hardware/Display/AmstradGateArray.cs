@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// 1	0	0	I   UR  LR  VM-->
         /// 
         /// I   : if set (1), this will reset the interrupt counter
-        /// UR  : Enable (0) or Disable (1) the upper ROM paging (&C000 to &FFFF). You can select which upper ROM with the I/O address &DF00
+        /// UR  : Enable (0) or Disable (1) the upper ROM paging (&amp;C000 to &amp;FFFF). You can select which upper ROM with the I/O address &amp;DF00
         /// LR  : Enable (0) or Disable (1) the lower ROM paging
         /// VM  : Select the video mode 0,1,2 or 3 (it will take effect after the next HSync)
         /// </summary>
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
         /// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
-        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&h=500
+        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&amp;h=500
         /// Therefore when the gate array initialises, we will attempt end the frame early in order to
         /// sync up at the point where VSYNC is active and HSYNC just begins. This is roughly how a CRT monitor would display the picture.
         /// The CRT would start a new line at the point where an HSYNC is detected.

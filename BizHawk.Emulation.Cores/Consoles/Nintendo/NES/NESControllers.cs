@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		/// <summary>
 		/// returns true if light was detected at the ppu coordinates specified
-		/// </summary
+		/// </summary>
 		public LightgunDelegate PPUCallback { get; set; }
 
 		bool resetting = false;
