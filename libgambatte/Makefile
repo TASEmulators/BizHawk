@@ -30,6 +30,7 @@ SRCS = \
 	src/mem/cartridge.cpp \
 	src/mem/memptrs.cpp \
 	src/mem/rtc.cpp \
+	src/mem/time.cpp \
 	src/newstate.cpp \
 	src/sound.cpp \
 	src/sound/channel1.cpp \

@@ -156,15 +156,12 @@
   <ItemGroup>
     <ClInclude Include="include\gambatte.h" />
     <ClInclude Include="include\gbint.h" />
+    <ClInclude Include="include\loadres.h" />
     <ClInclude Include="src\cinterface.h" />
-    <ClInclude Include="src\common\array.h" />
-    <ClInclude Include="src\common\uncopyable.h" />
     <ClInclude Include="src\counterdef.h" />
     <ClInclude Include="src\cpu.h" />
-    <ClInclude Include="src\file\stdfile.h" />
     <ClInclude Include="src\initstate.h" />
     <ClInclude Include="src\insertion_sort.h" />
-    <ClInclude Include="src\interrupter.h" />
     <ClInclude Include="src\interruptrequester.h" />
     <ClInclude Include="src\memory.h" />
     <ClInclude Include="src\mem\cartridge.h" />
@@ -189,6 +186,7 @@
     <ClInclude Include="src\video.h" />
     <ClInclude Include="src\video\lyc_irq.h" />
     <ClInclude Include="src\video\ly_counter.h" />
+    <ClInclude Include="src\video\m0_irq.h" />
     <ClInclude Include="src\video\next_m0_time.h" />
     <ClInclude Include="src\video\ppu.h" />
     <ClInclude Include="src\video\sprite_mapper.h" />
