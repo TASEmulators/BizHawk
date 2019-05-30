@@ -68,7 +68,7 @@ GBEXPORT void gambatte_setlayers(GB *g, unsigned mask) {
 	g->setLayers(mask);
 }
 
-GBEXPORT void gambatte_setTimeMode(GB *g, bool useCycles) {
+GBEXPORT void gambatte_settimemode(GB *g, bool useCycles) {
 	g->setTimeMode(useCycles);
 }
 
