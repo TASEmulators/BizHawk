@@ -125,7 +125,6 @@ public:
 	void setCDCallback(CDCallback);
 	void setTraceCallback(void (*callback)(void *));
 	void setScanlineCallback(void (*callback)(), int sl);
-	void setRTCCallback(std::uint32_t (*callback)());
 	void setLinkCallback(void(*callback)());
 
 	/** Use cycle-based RTC instead of real-time. */
