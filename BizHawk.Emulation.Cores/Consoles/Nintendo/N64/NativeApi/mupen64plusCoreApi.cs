@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		bool event_frameend = false;
 		bool event_breakpoint = false;
 
-		private static readonly PlatformLinkedLibSingleton.PlatformLinkedLibManager libLoader = PlatformLinkedLibSingleton.LinkedLibManager;
+		private static readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
 
 		public enum m64p_error
 		{
