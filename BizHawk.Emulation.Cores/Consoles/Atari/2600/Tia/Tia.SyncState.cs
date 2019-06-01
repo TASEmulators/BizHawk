@@ -72,6 +72,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync(nameof(AudioClocks), ref AudioClocks);
 			ser.Sync(nameof(New_Frame), ref New_Frame);
 
+			ser.BeginSection("Audio");
+			AUD.SyncState(ser);
+			ser.EndSection();
+
 			ser.BeginSection("Player0");
 			_player0.SyncState(ser);
 			ser.EndSection();

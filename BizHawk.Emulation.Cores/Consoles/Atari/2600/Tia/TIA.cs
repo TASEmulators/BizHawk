@@ -126,10 +126,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private HMoveData _hmove;
 		private BallData _ball;
 
-		private readonly Audio[] AUD = { new Audio(), new Audio() };
+		private readonly Audio AUD =new Audio();
 
 		// current audio register state used to sample correct positions in the scanline (clrclk 0 and 114)
-		////public byte[] current_audio_register = new byte[6];
 		public readonly short[] LocalAudioCycles = new short[2000];
 
 		private static int ReverseBits(int value, int bits)
@@ -809,8 +808,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				if (AudioClocks < 2000)
 				{
-					LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
-					LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
+					LocalAudioCycles[AudioClocks] += (short)(AUD.Cycle_L() / 2);
+					LocalAudioCycles[AudioClocks] += (short)(AUD.Cycle_R() / 2);
 					AudioClocks++;
 				}
 			}
@@ -1258,27 +1257,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
-				AUD[0].AUDC = (byte)(value & 15);
+				AUD.AUDC_L = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x16) // AUDC1
 			{
-				AUD[1].AUDC = (byte)(value & 15);
+				AUD.AUDC_R = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x17) // AUDF0
 			{
-				AUD[0].AUDF = (byte)((value & 31) + 1);
+				AUD.AUDF_L = (byte)((value & 31) + 1);
 			}
 			else if (maskedAddr == 0x18) // AUDF1
 			{
-				AUD[1].AUDF = (byte)((value & 31) + 1);
+				AUD.AUDF_R = (byte)((value & 31) + 1);
 			}
 			else if (maskedAddr == 0x19) // AUDV0
 			{
-				AUD[0].AUDV = (byte)(value & 15);
+				AUD.AUDV_L = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x1A) // AUDV1
 			{
-				AUD[1].AUDV = (byte)(value & 15);
+				AUD.AUDV_R = (byte)(value & 15);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
