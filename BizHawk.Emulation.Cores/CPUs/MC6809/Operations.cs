@@ -85,6 +85,35 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest] = Regs[src];
 		}
 
+		public void LD_8_Func(ushort dest, ushort src)
+		{
+			Regs[dest] = Regs[src];
+
+			FlagZ = (Regs[dest] & 0xFF) == 0;
+			FlagV = false;
+			FlagN = (Regs[dest] & 0xFF) > 127;
+		}
+
+		public void LD_16_Func(ushort dest, ushort src_h, ushort src_l)
+		{
+			Regs[dest] = (ushort)(Regs[src_h] << 8 | Regs[src_l]);
+
+			FlagZ = Regs[dest] == 0;
+			FlagV = false;
+			FlagN = Regs[dest] > 0x7FFF;
+		}
+
+		// for LEAX/Y, zero flag can be effected, but not for U/S
+		public void LEA_Func(ushort dest, ushort src)
+		{
+			Regs[dest] = Regs[src];
+
+			if ((dest == X) || (dest == Y))
+			{
+				FlagZ = Regs[dest] == 0;
+			}
+		}
+
 		public void TST_Func(ushort src)
 		{
 			FlagZ = Regs[src] == 0;

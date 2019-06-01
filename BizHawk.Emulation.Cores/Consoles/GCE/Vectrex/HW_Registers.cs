@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	public partial class VectrexHawk
 	{
 		public byte dir_dac, dir_ctrl;
+		public byte reg_A, reg_B;
 
 		public byte portB_ret, portA_ret;
 
@@ -111,20 +112,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				case 0x0:
 					wrt_val = (byte)(value & dir_ctrl);
 
+					portB_ret = (byte)(wrt_val | (reg_B & ~(dir_ctrl)));
+
 					int_fl &= 0xE7;
 					update_int_fl();
 					break;
 				case 0x1:
 					wrt_val = (byte)(value & dir_dac);
 
+					portA_ret = (byte)(wrt_val | (reg_A & ~(dir_dac)));
+
 					int_fl &= 0xFC;
 					update_int_fl();
 					break;
 				case 0x2:
 					dir_ctrl = value;
+					Console.WriteLine("dir_ctrl: " + value);
 					break;
 				case 0x3:
 					dir_dac = value;
+					Console.WriteLine("dir_dac: " + value);
 					break;
 				case 0x4:
 					t1_low = value;
