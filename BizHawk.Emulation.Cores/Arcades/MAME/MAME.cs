@@ -18,41 +18,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	public partial class MAME : IEmulator
 	{
 		[CoreConstructor("MAME")]
-		public MAME()
+		public MAME(string dir, string file)
 		{
-			UInt32 test = LibMAME.mame_five();
-			var args = CommandLineToArgs("mame -window");
+			string[] args = build_options(dir, file);
 			LibMAME.mame_launch(args.Length, args);
 		}
 
-		[DllImport("shell32.dll", SetLastError = true)]
-		public static extern IntPtr CommandLineToArgvW(
-		[MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
-
-		public static string[] CommandLineToArgs(string commandLine)
+		// https://docs.mamedev.org/commandline/commandline-index.html
+		private string[] build_options(string directory, string rom)
 		{
-			int argc;
-			var argv = CommandLineToArgvW(commandLine, out argc);
-
-			if (argv == IntPtr.Zero)
-			{
-				throw new System.ComponentModel.Win32Exception();
-			}
-			try
-			{
-				var args = new string[argc];
-				for (var i = 0; i < args.Length; i++)
-				{
-					var p = Marshal.ReadIntPtr(argv, i * IntPtr.Size);
-					args[i] = Marshal.PtrToStringUni(p);
-				}
-
-				return args;
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(argv);
-			}
+			return new string[] {
+				"mame",
+				rom,
+				"-window",
+				"-nokeepaspect",
+				"-nomaximize",
+				"-noreadconfig",
+				"-rompath", directory
+			};
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
