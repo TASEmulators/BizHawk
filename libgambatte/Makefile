@@ -25,12 +25,12 @@ SRCS = \
 	src/cpu.cpp \
 	src/gambatte.cpp \
 	src/initstate.cpp \
-	src/interrupter.cpp \
 	src/interruptrequester.cpp \
 	src/memory.cpp \
 	src/mem/cartridge.cpp \
 	src/mem/memptrs.cpp \
 	src/mem/rtc.cpp \
+	src/mem/time.cpp \
 	src/newstate.cpp \
 	src/sound.cpp \
 	src/sound/channel1.cpp \
@@ -61,6 +61,6 @@ $(TARGET) : $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(RM) $(TARGET)
-	
+
 install:
 	$(CP) $(TARGET) $(DEST_$(ARCH))
