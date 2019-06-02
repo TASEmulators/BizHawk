@@ -34,6 +34,7 @@ static timeval operator-(timeval l, timeval r) {
 
 Time::Time()
 : useCycles_(true)
+, rtcDivisor_(0x400000)
 {
 }
 
@@ -108,9 +109,9 @@ void Time::setTimeMode(bool useCycles, unsigned long const cc) {
 
 void Time::update(unsigned long const cc) {
 	if (useCycles_) {
-		std::uint32_t diff = (cc - lastCycles_) / (0x400000 << ds_);
+		std::uint32_t diff = (cc - lastCycles_) / (rtcDivisor_ << ds_);
 		seconds_ += diff;
-		lastCycles_ += diff * (0x400000 << ds_);
+		lastCycles_ += diff * (rtcDivisor_ << ds_);
 	} else {
 		std::uint32_t diff = (now() - lastTime_).tv_sec;
 		seconds_ += diff;
@@ -121,13 +122,13 @@ void Time::update(unsigned long const cc) {
 void Time::cyclesFromTime(unsigned long const cc) {
 	update(cc);
 	timeval diff = now() - lastTime_;
-	lastCycles_ = cc - diff.tv_usec * ((0x400000 << ds_) / 1000000.0f);
+	lastCycles_ = cc - diff.tv_usec * ((rtcDivisor_ << ds_) / 1000000.0f);
 }
 
 void Time::timeFromCycles(unsigned long const cc) {
 	update(cc);
 	unsigned long diff = cc - lastCycles_;
-	timeval usec = { 0, (long)(diff / ((0x400000 << ds_) / 1000000.0f)) };
+	timeval usec = { 0, (long)(diff / ((rtcDivisor_ << ds_) / 1000000.0f)) };
 	lastTime_ = now() - usec;
 }
 

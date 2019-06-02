@@ -116,6 +116,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
+			[DisplayName("RTC Divisor Offset")]
+			[Description("CPU clock frequency relative to real time clock. Base value is 2^22 Hz. Used in cycle-based RTC to sync on real hardware to account for RTC imperfections.")]
+			[DefaultValue(0)]
+			public int RTCDivisorOffset { get; set; }
+
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
 			[DefaultValue(false)]

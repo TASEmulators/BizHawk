@@ -71,6 +71,7 @@ public:
 	void resetCc(unsigned long const oldCc, unsigned long const newCc) { time_.resetCc(oldCc, newCc); }
 	void speedChange(unsigned long const cc) { time_.speedChange(cc); }
 	void setTimeMode(bool useCycles, unsigned long const cc) { time_.setTimeMode(useCycles, cc); }
+	void setRtcDivisorOffset(long const rtcDivisorOffset) { time_.setRtcDivisorOffset(rtcDivisorOffset); }
 	void rtcWrite(unsigned data, unsigned long const cc) { rtc_.write(data, cc); }
 	unsigned char rtcRead() const { return *rtc_.activeData(); }
 	void loadSavedata(char const *data, unsigned long cycleCounter);

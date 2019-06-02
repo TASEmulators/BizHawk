@@ -130,6 +130,9 @@ public:
 	/** Use cycle-based RTC instead of real-time. */
 	void setTimeMode(bool useCycles);
 
+	/** adjust the assumed clock speed of the CPU compared to the RTC */
+	void setRtcDivisorOffset(long const rtcDivisorOffset);
+
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;
 

@@ -281,6 +281,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public static extern void gambatte_settimemode(IntPtr core, bool useCycles);
 
 		/// <summary>
+		/// Adjusts the CPU clock frequency relative to real time. Base value is 2^22 Hz.
+		/// This is used to account for drift in the RTC when syncing cycle-based RTC to real hardware.
+		/// RTCs in carts are not perfectly accurate, and the value will differ from cart to cart.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="rtcDivisorOffset">CPU frequency adjustment</param>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setrtcdivisoroffset(IntPtr core, int rtcDivisorOffset);
+
+		/// <summary>
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>

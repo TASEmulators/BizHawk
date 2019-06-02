@@ -91,6 +91,7 @@ public:
 		mem_.setCgbPalette(lut);
 	}
 	void setTimeMode(bool useCycles) { mem_.setTimeMode(useCycles, cycleCounter_); }
+	void setRtcDivisorOffset(long const rtcDivisorOffset) { mem_.setRtcDivisorOffset(rtcDivisorOffset); }
 
 	void setBios(char const *buffer, std::size_t size) { mem_.setBios(buffer, size); }
 	bool gbIsCgb() { return mem_.gbIsCgb(); }

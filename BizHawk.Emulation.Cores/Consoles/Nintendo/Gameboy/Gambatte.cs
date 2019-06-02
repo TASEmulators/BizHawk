@@ -130,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					LibGambatte.gambatte_settimemode(GambatteState, false);
 				}
+				LibGambatte.gambatte_setrtcdivisoroffset(GambatteState, _syncSettings.RTCDivisorOffset);
 
 				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 

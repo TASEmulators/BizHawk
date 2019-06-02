@@ -134,6 +134,10 @@ void GB::setTimeMode(bool useCycles) {
 	p_->cpu.setTimeMode(useCycles);
 }
 
+void GB::setRtcDivisorOffset(long const rtcDivisorOffset) {
+	p_->cpu.setRtcDivisorOffset(rtcDivisorOffset);
+}
+
 LoadRes GB::load(char const *romfiledata, unsigned romfilelength, unsigned const flags) {
 	LoadRes const loadres = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
 

@@ -57,12 +57,14 @@ public:
 	timeval baseTime(unsigned long cycleCounter);
 	void setBaseTime(timeval baseTime, unsigned long cycleCounter);
 	void setTimeMode(bool useCycles, unsigned long cycleCounter);
+	void setRtcDivisorOffset(long const rtcDivisorOffset) { rtcDivisor_ = 0x400000L + rtcDivisorOffset; }
 
 private:
 	std::uint32_t seconds_;
 	timeval lastTime_;
 	unsigned long lastCycles_;
 	bool useCycles_;
+	unsigned long rtcDivisor_;
 	bool ds_;
 
 	void update(unsigned long cycleCounter);
