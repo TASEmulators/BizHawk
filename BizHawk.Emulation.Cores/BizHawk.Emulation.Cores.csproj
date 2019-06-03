@@ -65,6 +65,10 @@
     <Reference Include="ELFSharp">
       <HintPath>..\References\ELFSharp.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=2019.1.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.2019.1.1\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -1700,6 +1704,7 @@
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
     <Compile Include="Consoles\Nintendo\NES\NES.CpuLink.cs" />
+    <None Include="packages.config" />
     <None Include="Resources\128.ROM.gz" />
     <None Include="Resources\48.ROM.gz" />
     <None Include="Resources\cgb_boot.bin.gz" />
