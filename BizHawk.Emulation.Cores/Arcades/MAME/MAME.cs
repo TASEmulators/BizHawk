@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[CoreConstructor("MAME")]
 		public MAME(string dir, string file)
 		{
+			LibMAME.mame_set_log_callback(MAMELog);
+
 			string[] args = build_options(dir, file);
 			LibMAME.mame_launch(args.Length, args);
 		}
@@ -28,14 +30,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string[] build_options(string directory, string rom)
 		{
 			return new string[] {
-				"mame",
-				rom,
-				"-window",
-				"-nokeepaspect",
-				"-nomaximize",
-				"-noreadconfig",
-				"-rompath", directory
+				"mame",                 // dummy, internally discarded by index, so has to go first
+				rom,                    // no dash for rom names, internally called "unadorned" option
+				"-window",              // forbid fullscreen
+				"-nokeepaspect",        // forbid mame from stretching the window
+				"-nomaximize",          // forbid windowed fullscreen
+				"-noreadconfig",        // forbid reading any config files
+				"-rompath", directory   // mame doesn't load roms from full paths, only from dirs for scan
 			};
+		}
+
+		private void MAMELog(LibMAME.osd_output_channel channel, int size, string data)
+		{
+			Console.WriteLine(string.Format(
+				"[MAME {0}] {1}",
+				channel.ToString().Substring(19),
+				data.Replace('\n', ' ')));
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
