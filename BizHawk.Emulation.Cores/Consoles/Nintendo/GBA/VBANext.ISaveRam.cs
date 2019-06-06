@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var data = new byte[LibVBANext.SaveRamSize(Core)];
 			if (!LibVBANext.SaveRamSave(Core, data, data.Length))
 			{
-				throw new InvalidOperationException("SaveRamSave() failed!");
+				throw new InvalidOperationException($"{nameof(LibVBANext.SaveRamSave)}() failed!");
 			}
 
 			return data;
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			// internally, we try to salvage bad-sized saverams
 			if (!LibVBANext.SaveRamLoad(Core, data, data.Length))
 			{
-				throw new InvalidOperationException("SaveRamLoad() failed!");
+				throw new InvalidOperationException($"{nameof(LibVBANext.SaveRamLoad)}() failed!");
 			}
 		}
 	}

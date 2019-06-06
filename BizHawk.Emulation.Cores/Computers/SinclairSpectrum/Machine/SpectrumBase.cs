@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -40,12 +41,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The spectrum buzzer/beeper
         /// </summary>
-        public IBeeperDevice BuzzerDevice { get; set; }
+        public OneBitBeeper BuzzerDevice { get; set; }
 
         /// <summary>
         /// A second beeper for the tape
         /// </summary>
-        public IBeeperDevice TapeBuzzer { get; set; }
+        public OneBitBeeper TapeBuzzer { get; set; }
 
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
@@ -164,8 +165,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // run the CPU Monitor cycle
                 CPUMon.ExecuteCycle();
 
-                // cycle the tape device
-                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+				// clock the beepers
+				TapeBuzzer.SetClock((int)CurrentFrameCycle);
+				BuzzerDevice.SetClock((int)CurrentFrameCycle);
+
+				// cycle the tape device
+				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
 
                 // has frame end been reached?
@@ -321,34 +326,34 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("ZXMachine");
-            ser.Sync("FrameCompleted", ref FrameCompleted);
-            ser.Sync("OverFlow", ref OverFlow);
-            ser.Sync("FrameCount", ref FrameCount);
-            ser.Sync("_frameCycles", ref _frameCycles);
-            ser.Sync("inputRead", ref inputRead);
-            ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
-            ser.Sync("LastULAOutByte", ref LastULAOutByte);
-            ser.Sync("ROM0", ref ROM0, false);
-            ser.Sync("ROM1", ref ROM1, false);
-            ser.Sync("ROM2", ref ROM2, false);
-            ser.Sync("ROM3", ref ROM3, false);
-            ser.Sync("RAM0", ref RAM0, false);
-            ser.Sync("RAM1", ref RAM1, false);
-            ser.Sync("RAM2", ref RAM2, false);
-            ser.Sync("RAM3", ref RAM3, false);
-            ser.Sync("RAM4", ref RAM4, false);
-            ser.Sync("RAM5", ref RAM5, false);
-            ser.Sync("RAM6", ref RAM6, false);
-            ser.Sync("RAM7", ref RAM7, false);
-            ser.Sync("ROMPaged", ref ROMPaged);
-            ser.Sync("SHADOWPaged", ref SHADOWPaged);
-            ser.Sync("RAMPaged", ref RAMPaged);
-            ser.Sync("PagingDisabled", ref PagingDisabled);
-            ser.Sync("SpecialPagingMode", ref SpecialPagingMode);
-            ser.Sync("PagingConfiguration", ref PagingConfiguration);
-            ser.Sync("ROMhigh", ref ROMhigh);
-            ser.Sync("ROMlow", ref ROMlow);
-            ser.Sync("LastContendedReadByte", ref LastContendedReadByte);
+            ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
+            ser.Sync(nameof(OverFlow), ref OverFlow);
+            ser.Sync(nameof(FrameCount), ref FrameCount);
+            ser.Sync(nameof(_frameCycles), ref _frameCycles);
+            ser.Sync(nameof(inputRead), ref inputRead);
+            ser.Sync(nameof(LastFrameStartCPUTick), ref LastFrameStartCPUTick);
+            ser.Sync(nameof(LastULAOutByte), ref LastULAOutByte);
+            ser.Sync(nameof(ROM0), ref ROM0, false);
+            ser.Sync(nameof(ROM1), ref ROM1, false);
+            ser.Sync(nameof(ROM2), ref ROM2, false);
+            ser.Sync(nameof(ROM3), ref ROM3, false);
+            ser.Sync(nameof(RAM0), ref RAM0, false);
+            ser.Sync(nameof(RAM1), ref RAM1, false);
+            ser.Sync(nameof(RAM2), ref RAM2, false);
+            ser.Sync(nameof(RAM3), ref RAM3, false);
+            ser.Sync(nameof(RAM4), ref RAM4, false);
+            ser.Sync(nameof(RAM5), ref RAM5, false);
+            ser.Sync(nameof(RAM6), ref RAM6, false);
+            ser.Sync(nameof(RAM7), ref RAM7, false);
+            ser.Sync(nameof(ROMPaged), ref ROMPaged);
+            ser.Sync(nameof(SHADOWPaged), ref SHADOWPaged);
+            ser.Sync(nameof(RAMPaged), ref RAMPaged);
+            ser.Sync(nameof(PagingDisabled), ref PagingDisabled);
+            ser.Sync(nameof(SpecialPagingMode), ref SpecialPagingMode);
+            ser.Sync(nameof(PagingConfiguration), ref PagingConfiguration);
+            ser.Sync(nameof(ROMhigh), ref ROMhigh);
+            ser.Sync(nameof(ROMlow), ref ROMlow);
+            ser.Sync(nameof(LastContendedReadByte), ref LastContendedReadByte);
 
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
@@ -362,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ((AY38912)AYDevice as AY38912).PanningConfiguration = Spectrum.Settings.AYPanConfig;
             }
 
-            ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
+            ser.Sync(nameof(tapeMediaIndex), ref tapeMediaIndex);
             if (ser.IsReader)
             {
                 IsLoadState = true;
@@ -373,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             TapeDevice.SyncState(ser);
 
-            ser.Sync("diskMediaIndex", ref diskMediaIndex);
+            ser.Sync(nameof(diskMediaIndex), ref diskMediaIndex);
             if (ser.IsReader)
             {
                 IsLoadState = true;

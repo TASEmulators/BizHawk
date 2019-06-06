@@ -51,7 +51,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			SetMemoryDomains();
 		}
 
-		public bool LinkConnected { get; private set; }
+		public bool LinkConnected
+		{
+			get { return _cableconnected; }
+			set { _cableconnected = value; }
+		}
 
 		private bool _disposed = false;
 

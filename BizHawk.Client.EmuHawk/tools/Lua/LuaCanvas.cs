@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log("File not found: " + path + "\nScript Terminated");
+				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
 				return;
 			}
 
@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				ConsoleLuaLibrary.Log("File not found: " + path + "\nScript Terminated");
+				ConsoleLuaLibrary.Log($"File not found: {path}\nScript Terminated");
 				return;
 			}
 

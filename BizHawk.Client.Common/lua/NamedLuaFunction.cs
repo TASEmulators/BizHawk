@@ -25,11 +25,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception ex)
 				{
-					logCallback(
-						"error running function attached by the event " +
-						Event +
-						"\nError message: " +
-						ex.Message);
+					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
 			};
 

@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Log("File not found: " + path);
+				Log($"File not found: {path}");
 				return;
 			}
 
@@ -365,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Log("File not found: " + path);
+				Log($"File not found: {path}");
 				return;
 			}
 

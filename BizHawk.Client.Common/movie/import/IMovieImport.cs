@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 				return Result;
 			}
 
-			var newFileName = SourceFile.FullName + "." + Bk2Movie.Extension;
+			var newFileName = $"{SourceFile.FullName}.{Bk2Movie.Extension}";
 			Result.Movie = new Bk2Movie(newFileName);
 
 			RunImport();

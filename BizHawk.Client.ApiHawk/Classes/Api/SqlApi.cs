@@ -87,7 +87,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				var table = new Dictionary<string, object>();
 				m_dbConnection.Open();
-				string sql = "PRAGMA read_uncommitted =1;" + query;
+				string sql = $"PRAGMA read_uncommitted =1;{query}";
 				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 				SQLiteDataReader reader = command.ExecuteReader();
 				bool rows = reader.HasRows;
@@ -101,7 +101,7 @@ namespace BizHawk.Client.ApiHawk
 				{
 					for (int i = 0; i < reader.FieldCount; ++i)
 					{
-						table[columns[i] + " " + rowCount.ToString()] = reader.GetValue(i);
+						table[$"{columns[i]} {rowCount}"] = reader.GetValue(i);
 					}
 					rowCount += 1;
 				}

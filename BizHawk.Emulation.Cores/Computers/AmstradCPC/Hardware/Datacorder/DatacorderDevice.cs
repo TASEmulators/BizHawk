@@ -824,15 +824,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("DatacorderDevice");
-            ser.Sync("counter", ref counter);
-            ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
-            ser.Sync("_position", ref _position);
-            ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);
-            ser.Sync("_lastCycle", ref _lastCycle);
-            ser.Sync("_waitEdge", ref _waitEdge);
-            ser.Sync("currentState", ref currentState);
-            ser.Sync("TapeMotor", ref tapeMotor);
+            ser.BeginSection(nameof(DatacorderDevice));
+            ser.Sync(nameof(counter), ref counter);
+            ser.Sync(nameof(_currentDataBlockIndex), ref _currentDataBlockIndex);
+            ser.Sync(nameof(_position), ref _position);
+            ser.Sync(nameof(_tapeIsPlaying), ref _tapeIsPlaying);
+            ser.Sync(nameof(_lastCycle), ref _lastCycle);
+            ser.Sync(nameof(_waitEdge), ref _waitEdge);
+            ser.Sync(nameof(currentState), ref currentState);
+            ser.Sync(nameof(tapeMotor), ref tapeMotor);
             ser.EndSection();
         }
 

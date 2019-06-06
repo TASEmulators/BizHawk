@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void SyncState(Serializer ser)
 		{
 			// since we need rate of change of angle, need to savestate them
-			ser.Sync("theta", ref theta);
+			ser.Sync(nameof(theta), ref theta);
 		}
 	}
 }

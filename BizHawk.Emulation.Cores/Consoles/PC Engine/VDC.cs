@@ -309,21 +309,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void SyncState(Serializer ser, int vdcNo)
 		{
 			ser.BeginSection("VDC"+vdcNo);
-			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.Sync("SAT", ref SpriteAttributeTable, false);
-			ser.Sync("Registers", ref Registers, false);
-			ser.Sync("RegisterLatch", ref RegisterLatch);
-			ser.Sync("ReadBuffer", ref ReadBuffer);
-			ser.Sync("StatusByte", ref StatusByte);
+			ser.Sync(nameof(Registers), ref Registers, false);
+			ser.Sync(nameof(RegisterLatch), ref RegisterLatch);
+			ser.Sync(nameof(ReadBuffer), ref ReadBuffer);
+			ser.Sync(nameof(StatusByte), ref StatusByte);
 
-			ser.Sync("DmaRequested", ref DmaRequested);
-			ser.Sync("SatDmaRequested", ref SatDmaRequested);
-			ser.Sync("SatDmaPerformed", ref SatDmaPerformed);
+			ser.Sync(nameof(DmaRequested), ref DmaRequested);
+			ser.Sync(nameof(SatDmaRequested), ref SatDmaRequested);
+			ser.Sync(nameof(SatDmaPerformed), ref SatDmaPerformed);
 
-			ser.Sync("ScanLine", ref ScanLine);
-			ser.Sync("BackgroundY", ref BackgroundY);
-			ser.Sync("RCRCounter", ref RCRCounter);
-			ser.Sync("ActiveLine", ref ActiveLine);
+			ser.Sync(nameof(ScanLine), ref ScanLine);
+			ser.Sync(nameof(BackgroundY), ref BackgroundY);
+			ser.Sync(nameof(RCRCounter), ref RCRCounter);
+			ser.Sync(nameof(ActiveLine), ref ActiveLine);
 			ser.EndSection();
 
 			if (ser.IsReader)

@@ -97,10 +97,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void SyncState(Serializer ser)
 			{
-				ser.Sync("vram", ref vram, true);
-				ser.Sync("wram", ref wram, true);
+				ser.Sync(nameof(vram), ref vram, true);
+				ser.Sync(nameof(wram), ref wram, true);
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
-				ser.Sync("irq_signal", ref irq_signal);
+				ser.Sync(nameof(irq_signal), ref irq_signal);
 				SyncStateFlag = true;
 			}
 
@@ -490,7 +490,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 #if DEBUG
 							if (ret != null)
-								throw new Exception(string.Format("Boards {0} and {1} both responded to Configure!", ret, type));
+								throw new Exception($"Boards {ret} and {type} both responded to {nameof(NESBoardBase.Configure)}!");
 							else
 								ret = type;
 #else

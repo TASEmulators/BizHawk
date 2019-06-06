@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("reg", ref _reg);
-			ser.Sync("_isRom2", ref _isRom2);
+			ser.Sync(nameof(_isRom2), ref _isRom2);
 
 		}
 

@@ -59,11 +59,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Port1");
+			ser.BeginSection(nameof(Port1));
 			Port1.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Port2");
+			ser.BeginSection(nameof(Port2));
 			Port2.SyncState(ser);
 			ser.EndSection();
 		}

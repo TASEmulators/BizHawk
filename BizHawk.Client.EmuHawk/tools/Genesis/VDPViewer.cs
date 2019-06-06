@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			int idx = e.Y / 16;
 			idx = Math.Min(3, Math.Max(idx, 0));
 			palindex = idx;
-			DrawTiles();
+			UpdateValues();
 		}
 
 		private void VDPViewer_KeyDown(object sender, KeyEventArgs e)

@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception)
 			{
-				MessageBox.Show("Invalid mnemonic string: " + inputLogEntry, "Paste Input failed!");
+				MessageBox.Show($"Invalid mnemonic string: {inputLogEntry}", "Paste Input failed!");
 				return null;
 			}
 		}

@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.DiscSystem
 					dsr.Policy.UserData2048Mode = DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1;
 					break;
 				default:
-					throw new NotSupportedException("Unsupported EDiscStreamView");
+					throw new NotSupportedException($"Unsupported {nameof(EDiscStreamView)}");
 			}
 
 

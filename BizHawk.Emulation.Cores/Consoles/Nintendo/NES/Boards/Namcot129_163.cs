@@ -45,18 +45,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_banks_8k", ref prg_banks_8k);
-			ser.Sync("chr_banks_1k", ref chr_banks_1k);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
 			for (int i = 0; i < vram_enable.Length; i++)
 				ser.Sync("vram_enable_" + i, ref vram_enable[i]);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_pending", ref irq_pending);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
 			SyncIRQ();
-			ser.Sync("audio_cycles", ref audio_cycles);
+			ser.Sync(nameof(audio_cycles), ref audio_cycles);
 			audio.SyncState(ser);
-			ser.Sync("audio_disable", ref audio_disable);
-			ser.Sync("prgram_write", ref prgram_write);
+			ser.Sync(nameof(audio_disable), ref audio_disable);
+			ser.Sync(nameof(prgram_write), ref prgram_write);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

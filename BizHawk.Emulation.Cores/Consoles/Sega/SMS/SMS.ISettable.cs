@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
+	public partial class SMS : ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		public SMSSettings GetSettings()
 		{

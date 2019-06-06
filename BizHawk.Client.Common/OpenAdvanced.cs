@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			else if (type == OpenAdvancedTypes.LibretroNoGame) ioa = new OpenAdvanced_LibretroNoGame();
 			else ioa = null;
 			if (ioa == null)
-				throw new InvalidOperationException("IOpenAdvanced deserialization error");
+				throw new InvalidOperationException($"{nameof(IOpenAdvanced)} deserialization error");
 			ioa.Deserialize(token);
 			return ioa;
 		}
@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 		public Token token = new Token();
 
 		public string TypeName { get { return "Libretro"; } }
-		public string DisplayName { get { return string.Format("{0}:{1}", Path.GetFileNameWithoutExtension(token.CorePath), token.Path); } }
+		public string DisplayName { get { return $"{Path.GetFileNameWithoutExtension(token.CorePath)}:{token.Path}"; } }
 		public string SimplePath { get { return token.Path; } }
 
 		public void Deserialize(string str)

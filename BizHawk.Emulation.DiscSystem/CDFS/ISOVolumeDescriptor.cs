@@ -466,7 +466,7 @@ namespace BizHawk.Emulation.DiscSystem
         public bool GetISO9660(byte[] buffer)
         {
             //zero 24-jun-2013 - validate ISO9660
-            //  "CD001" + 0x01
+            //  "CD001\x01"
             if (buffer[1] == 'C' && buffer[2] == 'D' && buffer[3] == '0' && buffer[4] == '0' && buffer[5] == '1' && buffer[6] == 0x01)
             {
                 ISOFile.Format = ISOFile.ISOFormat.ISO9660;

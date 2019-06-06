@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("nametables", ref nametables, false);
+			ser.Sync(nameof(nametables), ref nametables, false);
 		}
 	}
 }

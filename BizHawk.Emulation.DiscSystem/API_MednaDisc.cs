@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.DiscSystem
 		public MednaDisc(string pathToDisc)
 		{
 			if (!IsLibraryAvailable)
-				throw new InvalidOperationException("MednaDisc library is not available!");
+				throw new InvalidOperationException($"{nameof(MednaDisc)} library is not available!");
 
 			handle = mednadisc_LoadCD(pathToDisc);
 			if (handle == IntPtr.Zero)
-				throw new InvalidOperationException("Failed to load MednaDisc: " + pathToDisc);
+				throw new InvalidOperationException($"Failed to load {nameof(MednaDisc)}: {pathToDisc}");
 
 			//read the mednafen toc
 			TOCTracks = new MednadiscTOCTrack[101];

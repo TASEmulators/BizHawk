@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("preg", ref prg);
-			ser.Sync("chrlo", ref chrlo);
-			ser.Sync("chrhi", ref chrhi);
+			ser.Sync(nameof(chrlo), ref chrlo);
+			ser.Sync(nameof(chrhi), ref chrhi);
 		}
 
 		public override void ClockCPU()

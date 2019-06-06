@@ -41,11 +41,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("wram_enabled", ref wram_enabled);
-			ser.Sync("wram_h_enabled", ref wram_h_enabled);
-			ser.Sync("wram_l_enabled", ref wram_l_enabled);
-			ser.Sync("wram_h_enabled_write", ref wram_h_enabled_write);
-			ser.Sync("wram_l_enabled_write", ref wram_l_enabled_write);
+			ser.Sync(nameof(wram_enabled), ref wram_enabled);
+			ser.Sync(nameof(wram_h_enabled), ref wram_h_enabled);
+			ser.Sync(nameof(wram_l_enabled), ref wram_l_enabled);
+			ser.Sync(nameof(wram_h_enabled_write), ref wram_h_enabled_write);
+			ser.Sync(nameof(wram_l_enabled_write), ref wram_l_enabled_write);
 		}
 
 		public override void WritePRG(int addr, byte value)

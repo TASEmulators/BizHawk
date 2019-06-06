@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				byte cart_1 = header[0x35];
 				byte cart_2 = header[0x36];
 
-				_isPAL = (header[0x39] > 0) ? true : false;
+				_isPAL = (header[0x39] > 0);
 
 				if (cart_2.Bit(1))
 				{

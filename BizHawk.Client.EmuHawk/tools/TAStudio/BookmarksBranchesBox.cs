@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
-				GlobalWin.OSD.AddMessage("Loaded branch " + Movie.CurrentBranch.ToString());
+				GlobalWin.OSD.AddMessage($"Loaded branch {Movie.CurrentBranch}");
 			}
 		}
 
@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			CallSavedCallback(Movie.BranchCount - 1);
-			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
+			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
 			CallSavedCallback(Movie.BranchCount - 1);
-			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
+			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateBranch(SelectedBranch);
 				CallSavedCallback(Movie.CurrentBranch);
-				GlobalWin.OSD.AddMessage("Saved branch " + Movie.CurrentBranch);
+				GlobalWin.OSD.AddMessage($"Saved branch {Movie.CurrentBranch}");
 			}
 		}
 
@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 					toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
 					_branchUndo = BranchUndo.Text;
 
-					GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+					GlobalWin.OSD.AddMessage($"Edited branch {index}");
 				}
 			}
 		}
@@ -358,7 +358,7 @@ namespace BizHawk.Client.EmuHawk
 
 				CallRemovedCallback(index);
 				Tastudio.RefreshDialog();
-				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
+				GlobalWin.OSD.AddMessage($"Removed branch {index}");
 			}
 		}
 
@@ -578,7 +578,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var i = new InputPrompt
 			{
-				Text = "Text for branch " + index,
+				Text = $"Text for branch {index}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
 				InitialValue = branch.UserText

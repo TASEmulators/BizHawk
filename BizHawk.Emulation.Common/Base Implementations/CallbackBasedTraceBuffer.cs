@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Common
 			}
 			catch (NotImplementedException)
 			{
-				throw new InvalidOperationException("GetCpuFlagsAndRegisters is required");
+				throw new InvalidOperationException($"{nameof(IDebuggable.GetCpuFlagsAndRegisters)} is required");
 			}
 
 			Header = "Instructions";

@@ -97,7 +97,9 @@ namespace BizHawk.Client.ApiHawk
 				method = mainFormClass.GetMethod(name, typeList.ToArray());
 			}
 			else method = mainFormClass.GetMethod(name);
-			method.Invoke(clientMainFormInstance, paramList);
+
+			if(method != null)
+				method.Invoke(clientMainFormInstance, paramList);
 		}
 
 		private static object GetMainFormField(string name)
@@ -145,7 +147,7 @@ namespace BizHawk.Client.ApiHawk
 		{
 			if (player < 1 || player > RunningSystem.MaxControllers)
 			{
-				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
 			else
 			{
@@ -161,7 +163,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void LoadState(string name)
 		{
-			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false, false });
+			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false, false });
 		}
 
 
@@ -250,7 +252,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void SaveState(string name)
 		{
-			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false });
+			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false });
 		}
 
 		/// <summary>
@@ -358,7 +360,7 @@ namespace BizHawk.Client.ApiHawk
 		{
 			if (player < 1 || player > RunningSystem.MaxControllers)
 			{
-				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
 			else
 			{
@@ -376,11 +378,11 @@ namespace BizHawk.Client.ApiHawk
 							AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
 							if (RunningSystem == SystemInfo.GB)
 							{
-								joypadAdaptor.SetSticky(string.Format("{0}", JoypadConverter.ConvertBack(button, RunningSystem)), true);
+								joypadAdaptor.SetSticky($"{JoypadConverter.ConvertBack(button, RunningSystem)}", true);
 							}
 							else
 							{
-								joypadAdaptor.SetSticky(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+								joypadAdaptor.SetSticky($"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}", true);
 							}
 						}
 					}
@@ -392,8 +394,8 @@ namespace BizHawk.Client.ApiHawk
 					AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
 					for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 					{
-						joypadAdaptor.SetFloat(string.Format("P{0} X Axis", i), allJoypads[i - 1].AnalogX);
-						joypadAdaptor.SetFloat(string.Format("P{0} Y Axis", i), allJoypads[i - 1].AnalogY);
+						joypadAdaptor.SetFloat($"P{i} X Axis", allJoypads[i - 1].AnalogX);
+						joypadAdaptor.SetFloat($"P{i} Y Axis", allJoypads[i - 1].AnalogY);
 					}
 				}*/
 			}
@@ -446,8 +448,8 @@ namespace BizHawk.Client.ApiHawk
 			{
 				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat(string.Format("P{0} X Axis", i));
-					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat(string.Format("P{0} Y Axis", i));
+					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat($"P{i} X Axis");
+					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat($"P{i} Y Axis");
 				}
 			}
 		}
@@ -650,7 +652,7 @@ namespace BizHawk.Client.ApiHawk
 				object osd = f.GetValue(null);
 				t = f.GetType();
 				MethodInfo m = t.GetMethod("AddMessage");
-				m.Invoke(osd, new Object[] { "Window size set to " + size + "x" });
+				m.Invoke(osd, new Object[] { $"Window size set to {size}x" });
 			}
 			else
 			{

@@ -4,7 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : ICodeDataLogger
+	public partial class SMS : ICodeDataLogger
 	{
 		public void SetCDL(ICodeDataLog cdl)
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		}
 
-		private enum CDLog_AddrType
+		public enum CDLog_AddrType
 		{
 			None,
 			ROM, 
@@ -58,24 +58,24 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		[Flags]
-		private enum CDLog_Flags
+		public enum CDLog_Flags
 		{
 			ExecFirst = 0x01,
 			ExecOperand = 0x02,
 			Data = 0x04
 		};
 
-		private struct CDLog_MapResults
+		public struct CDLog_MapResults
 		{
 			public CDLog_AddrType Type;
 			public int Address;
 		}
 
-		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
-		private MapMemoryDelegate MapMemory;
-		private ICodeDataLog CDL;
+		public delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
+		public MapMemoryDelegate MapMemory;
+		public ICodeDataLog CDL;
 
-		private void RunCDL(ushort address, CDLog_Flags flags)
+		public void RunCDL(ushort address, CDLog_Flags flags)
 		{
 				if (MapMemory != null)
 				{
@@ -94,16 +94,16 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// <summary>
 		/// A wrapper for FetchMemory which inserts CDL logic
 		/// </summary>
-		private byte FetchMemory_CDL(ushort address)
+		public byte FetchMemory_CDL(ushort address)
 		{
 			RunCDL(address, CDLog_Flags.ExecFirst);
-			return ReadMemory(address);
+			return FetchMemory(address);
 		}
 
 		/// <summary>
 		/// A wrapper for ReadMemory which inserts CDL logic
 		/// </summary>
-		private byte ReadMemory_CDL(ushort address)
+		public byte ReadMemory_CDL(ushort address)
 		{
 			RunCDL(address, CDLog_Flags.Data);
 			return ReadMemory(address);

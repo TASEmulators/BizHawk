@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -36,11 +37,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }                
             if (_machine != null && _machine.BuzzerDevice != null)
             {
-                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = o.EarVolume;
+                ((OneBitBeeper)_machine.BuzzerDevice as OneBitBeeper).Volume = o.EarVolume;
             }
             if (_machine != null && _machine.TapeBuzzer != null)
             {
-                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = o.TapeVolume;
+                ((OneBitBeeper)_machine.TapeBuzzer as OneBitBeeper).Volume = o.TapeVolume;
             }
 
             Settings = o;
@@ -390,7 +391,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // output the data splitting and tabbing as neccessary
                 var arr = d.Value.Split(' ');
-                int cnt = 0;
+                //int cnt = 0;
 
                 List<string> builder = new List<string>();
                 string working = "";

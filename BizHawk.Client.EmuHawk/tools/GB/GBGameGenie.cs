@@ -458,17 +458,17 @@ namespace BizHawk.Client.EmuHawk
 					GBGGDecode(GGCodeMaskBox.Text, ref val, ref add, ref cmp);
 					if (add > -1)
 					{
-						AddressBox.Text = string.Format("{0:X4}", add);
+						AddressBox.Text = $"{add:X4}";
 					}
 
 					if (val > -1)
 					{
-						ValueBox.Text = string.Format("{0:X2}", val);
+						ValueBox.Text = $"{val:X2}";
 					}
 
 					if (cmp > -1)
 					{
-						CompareBox.Text = string.Format("{0:X2}", cmp);
+						CompareBox.Text = $"{cmp:X2}";
 					}
 					else
 					{

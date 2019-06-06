@@ -1532,34 +1532,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			ser.Sync("pal_transfer_byte", ref BG_transfer_byte);
 			ser.Sync("spr_transfer_byte", ref OBJ_transfer_byte);
-			ser.Sync("HDMA_src_hi", ref HDMA_src_hi);
-			ser.Sync("HDMA_src_lo", ref HDMA_src_lo);
-			ser.Sync("HDMA_dest_hi", ref HDMA_dest_hi);
-			ser.Sync("HDMA_dest_lo", ref HDMA_dest_lo);
-			ser.Sync("HDMA_tick", ref HDMA_tick);
-			ser.Sync("HDMA_byte", ref HDMA_byte);
+			ser.Sync(nameof(HDMA_src_hi), ref HDMA_src_hi);
+			ser.Sync(nameof(HDMA_src_lo), ref HDMA_src_lo);
+			ser.Sync(nameof(HDMA_dest_hi), ref HDMA_dest_hi);
+			ser.Sync(nameof(HDMA_dest_lo), ref HDMA_dest_lo);
+			ser.Sync(nameof(HDMA_tick), ref HDMA_tick);
+			ser.Sync(nameof(HDMA_byte), ref HDMA_byte);
 
-			ser.Sync("VRAM_sel", ref VRAM_sel);
-			ser.Sync("BG_V_flip", ref BG_V_flip);
-			ser.Sync("HDMA_mode", ref HDMA_mode);
-			ser.Sync("cur_DMA_src", ref cur_DMA_src);
-			ser.Sync("cur_DMA_dest", ref cur_DMA_dest);
-			ser.Sync("HDMA_length", ref HDMA_length);
-			ser.Sync("HDMA_countdown", ref HDMA_countdown);
-			ser.Sync("HBL_HDMA_count", ref HBL_HDMA_count);
-			ser.Sync("last_HBL", ref last_HBL);
-			ser.Sync("HBL_HDMA_go", ref HBL_HDMA_go);
-			ser.Sync("HBL_test", ref HBL_test);
+			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
+			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
+			ser.Sync(nameof(HDMA_mode), ref HDMA_mode);
+			ser.Sync(nameof(cur_DMA_src), ref cur_DMA_src);
+			ser.Sync(nameof(cur_DMA_dest), ref cur_DMA_dest);
+			ser.Sync(nameof(HDMA_length), ref HDMA_length);
+			ser.Sync(nameof(HDMA_countdown), ref HDMA_countdown);
+			ser.Sync(nameof(HBL_HDMA_count), ref HBL_HDMA_count);
+			ser.Sync(nameof(last_HBL), ref last_HBL);
+			ser.Sync(nameof(HBL_HDMA_go), ref HBL_HDMA_go);
+			ser.Sync(nameof(HBL_test), ref HBL_test);
 
-			ser.Sync("BG_bytes", ref BG_bytes, false);
-			ser.Sync("OBJ_bytes", ref OBJ_bytes, false);
-			ser.Sync("BG_bytes_inc", ref BG_bytes_inc);
-			ser.Sync("OBJ_bytes_inc", ref OBJ_bytes_inc);
-			ser.Sync("BG_bytes_index", ref BG_bytes_index);
-			ser.Sync("OBJ_bytes_index", ref OBJ_bytes_index);
+			ser.Sync(nameof(BG_bytes), ref BG_bytes, false);
+			ser.Sync(nameof(OBJ_bytes), ref OBJ_bytes, false);
+			ser.Sync(nameof(BG_bytes_inc), ref BG_bytes_inc);
+			ser.Sync(nameof(OBJ_bytes_inc), ref OBJ_bytes_inc);
+			ser.Sync(nameof(BG_bytes_index), ref BG_bytes_index);
+			ser.Sync(nameof(OBJ_bytes_index), ref OBJ_bytes_index);
 
-			ser.Sync("LYC_t", ref LYC_t);
-			ser.Sync("LYC_cd", ref LYC_cd);
+			ser.Sync(nameof(LYC_t), ref LYC_t);
+			ser.Sync(nameof(LYC_cd), ref LYC_cd);
 
 			base.SyncState(ser);
 		}

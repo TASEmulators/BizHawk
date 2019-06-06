@@ -38,11 +38,11 @@ namespace BizHawk.Client.EmuHawk
 			mProjectFile = projFile;
 			mBaseDirectory = Path.GetDirectoryName(mProjectFile);
 			string basename = Path.GetFileNameWithoutExtension(projFile);
-			string framesDirFragment = basename + "_frames";
+			string framesDirFragment = $"{basename}_frames";
 			mFramesDirectory = Path.Combine(mBaseDirectory, framesDirFragment);
 			StringBuilder sb = new StringBuilder();
 			sb.AppendLine("version=1");
-			sb.AppendLine("framesdir=" + framesDirFragment);
+			sb.AppendLine($"framesdir={framesDirFragment}");
 			File.WriteAllText(mProjectFile, sb.ToString());
 		}
 
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer()))
 			{
 				string subpath = GetAndCreatePathForFrameNum(mCurrFrame);
-				string path = subpath + ".png";
+				string path = $"{subpath}.png";
 				bb.ToSysdrawingBitmap().Save(path, System.Drawing.Imaging.ImageFormat.Png);
 			}
 		}
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddSamples(short[] samples)
 		{
 			string subpath = GetAndCreatePathForFrameNum(mCurrFrame);
-			string path = subpath + ".wav";
+			string path = $"{subpath}.wav";
 			WavWriterV wwv = new WavWriterV();
 			wwv.SetAudioParameters(paramSampleRate, paramChannels, paramBits);
 			wwv.OpenFile(path);
@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			string subpath = GetPathFragmentForFrameNum(index);
 			string path = mFramesDirectory;
 			path = Path.Combine(path, subpath);
-			string fpath = path + ".nothing";
+			string fpath = $"{path}.nothing";
 			Directory.CreateDirectory(Path.GetDirectoryName(fpath));
 			return path;
 		}

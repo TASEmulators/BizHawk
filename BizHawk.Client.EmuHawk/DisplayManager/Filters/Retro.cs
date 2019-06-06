@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				Shaders[i] = shader;
 				if (!shader.Available)
 				{
-					Errors += string.Format("===================\r\nPass {0}:\r\n{1}",i,shader.Errors);
+					Errors += $"===================\r\nPass {i}:\r\n{shader.Errors}";
 					ok = false;
 				}
 			}
@@ -141,25 +141,25 @@ namespace BizHawk.Client.EmuHawk.Filters
 				sp.Index = i;
 				Passes.Add(sp);
 
-				sp.InputFilterLinear = FetchBool(dict, "filter_linear" + i, false); //Should this value not be defined, the filtering option is implementation defined.
-				sp.OuputFloat = FetchBool(dict, "float_framebuffer" + i, false);
-				sp.FrameCountMod = FetchInt(dict, "frame_count_mod" + i, 1);
-				sp.ShaderPath = FetchString(dict, "shader" + i, "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
+				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); //Should this value not be defined, the filtering option is implementation defined.
+				sp.OuputFloat = FetchBool(dict, $"float_framebuffer{i}", false);
+				sp.FrameCountMod = FetchInt(dict, $"frame_count_mod{i}", 1);
+				sp.ShaderPath = FetchString(dict, $"shader{i}", "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
 
 				//If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
 				//It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
-				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type_x" + i, "Source"), true);
-				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type_y" + i, "Source"), true);
-				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, "scale_type" + i, "NotSet"), true);
+				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_x{i}", "Source"), true);
+				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_y{i}", "Source"), true);
+				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
 				if (st != ScaleType.NotSet)
 					sp.ScaleTypeX = sp.ScaleTypeY = st;
 
 				//scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
-				sp.Scale.X = FetchFloat(dict, "scale_x" + i, 1);
-				sp.Scale.Y = FetchFloat(dict, "scale_y" + i, 1);
-				float scale = FetchFloat(dict, "scale" + i, -999);
+				sp.Scale.X = FetchFloat(dict, $"scale_x{i}", 1);
+				sp.Scale.Y = FetchFloat(dict, $"scale_y{i}", 1);
+				float scale = FetchFloat(dict, $"scale{i}", -999);
 				if (scale != -999)
-					sp.Scale.X = sp.Scale.Y = FetchFloat(dict, "scale" + i, 1);
+					sp.Scale.X = sp.Scale.Y = FetchFloat(dict, $"scale{i}", 1);
 
 				//TODO - LUTs
 			}
@@ -249,10 +249,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		int RSI;
 		Size OutputSize;
 
-		public override string ToString()
-		{
-			return string.Format("RetroShaderPass[#{0}]", RSI);
-		}
+		public override string ToString() => $"{nameof(RetroShaderPass)}[#{RSI}]";
 
 		public RetroShaderPass(RetroShaderChain RSC, int index)
 		{

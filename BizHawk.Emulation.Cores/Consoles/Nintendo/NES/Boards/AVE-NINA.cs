@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr_banks_4k", ref chr_banks_4k);
-			ser.Sync("prg_bank_32k", ref prg_bank_32k);
+			ser.Sync(nameof(chr_banks_4k), ref chr_banks_4k);
+			ser.Sync(nameof(prg_bank_32k), ref prg_bank_32k);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -105,9 +105,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr_bank_8k", ref chr_bank_8k);
-			ser.Sync("prg_bank_32k", ref prg_bank_32k);
-			ser.Sync("isMapper79", ref isMapper79);
+			ser.Sync(nameof(chr_bank_8k), ref chr_bank_8k);
+			ser.Sync(nameof(prg_bank_32k), ref prg_bank_32k);
+			ser.Sync(nameof(isMapper79), ref isMapper79);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

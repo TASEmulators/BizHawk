@@ -42,7 +42,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public BitmapData LockBits() //TODO - add read/write semantic, for wraps
 		{
 			if(CurrLock != null)
-				throw new InvalidOperationException("BitmapBuffer can only be locked once!");
+				throw new InvalidOperationException($"{nameof(BitmapBuffer)} can only be locked once!");
 
 			if (WrappedBitmap != null)
 			{
@@ -287,7 +287,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void DiscardAlpha()
 		{
-			//HasAlpha = false;
+			HasAlpha = false;
 		}
 
 		void LoadInternal(Stream stream, sd.Bitmap bitmap, BitmapLoadOptions options)

@@ -8,11 +8,11 @@ NewStateDummy::NewStateDummy()
 	:length(0)
 {
 }
-void NewStateDummy::Save(const void *ptr, size_t size, const char *name)
+void NewStateDummy::Save(void const *ptr, size_t size, char const *name)
 {
 	length += size;
 }
-void NewStateDummy::Load(void *ptr, size_t size, const char *name)
+void NewStateDummy::Load(void *ptr, size_t size, char const *name)
 {
 }
 
@@ -21,7 +21,7 @@ NewStateExternalBuffer::NewStateExternalBuffer(char *buffer, long maxlength)
 {
 }
 
-void NewStateExternalBuffer::Save(const void *ptr, size_t size, const char *name)
+void NewStateExternalBuffer::Save(void const *ptr, size_t size, char const *name)
 {
 	if (maxlength - length >= (long)size)
 	{
@@ -30,7 +30,7 @@ void NewStateExternalBuffer::Save(const void *ptr, size_t size, const char *name
 	length += size;
 }
 
-void NewStateExternalBuffer::Load(void *ptr, size_t size, const char *name)
+void NewStateExternalBuffer::Load(void *ptr, size_t size, char const *name)
 {
 	char *dst = static_cast<char *>(ptr);
 	if (maxlength - length >= (long)size)
@@ -48,19 +48,19 @@ NewStateExternalFunctions::NewStateExternalFunctions(const FPtrs *ff)
 {
 }
 
-void NewStateExternalFunctions::Save(const void *ptr, size_t size, const char *name)
+void NewStateExternalFunctions::Save(void const *ptr, size_t size, char const *name)
 {
 	Save_(ptr, size, name);
 }
-void NewStateExternalFunctions::Load(void *ptr, size_t size, const char *name)
+void NewStateExternalFunctions::Load(void *ptr, size_t size, char const *name)
 {
 	Load_(ptr, size, name);
 }
-void NewStateExternalFunctions::EnterSection(const char *name)
+void NewStateExternalFunctions::EnterSection(char const *name)
 {
 	EnterSection_(name);
 }
-void NewStateExternalFunctions::ExitSection(const char *name)
+void NewStateExternalFunctions::ExitSection(char const *name)
 {
 	ExitSection_(name);
 }

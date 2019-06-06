@@ -17,6 +17,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -27,6 +28,8 @@ using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+using BizHawk.Emulation.Cores.Consoles.Vectrex;
+using BizHawk.Emulation.Cores.Consoles.ChannelF;
 
 namespace BizHawk.Client.Common
 {
@@ -218,7 +221,7 @@ namespace BizHawk.Client.Common
 
 				else if (discMountJob.OUT_ErrorLevel)
 				{
-					throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 				}
 
 				else if (disc == null)
@@ -427,7 +430,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_ErrorLevel)
 							{
-								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+								throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 							}
 
 							if (disc == null)
@@ -495,7 +498,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_ErrorLevel)
 						{
-							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 						}
 
 						var disc = discMountJob.OUT_Disc;                        
@@ -728,7 +731,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_ErrorLevel)
 										{
-											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+											throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 										}
 
 										if (disc == null)
@@ -804,6 +807,22 @@ namespace BizHawk.Client.Common
 										return false;
 									}
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+									break;
+								case "Game Gear":
+									var leftBytesGG = xmlGame.Assets.First().Value;
+									var rightBytesGG = xmlGame.Assets.Skip(1).First().Value;
+
+									var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
+									var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");
+
+									nextEmulator = new GGHawkLink(
+									nextComm,
+									leftGG,
+									leftBytesGG,
+									rightGG,
+									rightBytesGG,
+									GetCoreSettings<GGHawkLink>(),
+									GetCoreSyncSettings<GGHawkLink>());
 									break;
 								default:
 									return false;
@@ -1061,6 +1080,9 @@ namespace BizHawk.Client.Common
                                     Deterministic);
                                 nextEmulator = zx;
                                 break;
+							case "ChannelF":
+								nextEmulator = new ChannelF(nextComm, game, rom.FileData, GetCoreSettings<ChannelF>(), GetCoreSyncSettings<ChannelF>());
+								break;
                             case "AmstradCPC":
                                 var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
                                 nextEmulator = cpc;
@@ -1154,12 +1176,12 @@ namespace BizHawk.Client.Common
                     // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
                     else if (ex is NoAvailableCoreException)
                     {
-                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                        DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
                     }
 
                     else
 					{
-						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
+						DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
 					}
 
 					return false;

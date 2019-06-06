@@ -398,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 				if (value == View.LargeIcon ||
 					value == View.SmallIcon) 
 				{
-					throw new ArgumentException("Icon views are invalid for virtual ListViews", "View");
+					throw new ArgumentException($"Icon views are invalid for virtual {nameof(ListView)}s", nameof(View));
 				}
 
 				base.View = value;
@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			} 
 			catch (Exception ex) 
 			{
-				System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
+				System.Diagnostics.Trace.WriteLine($"VirtualListView.SetItemState error={ex.Message}");
 				
 				// TODO: should this eat any exceptions?
 				throw;
@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						catch (Exception e)
 						{
-							Debug.WriteLine("Failed to copy text name from client: " + e, "VirtualListView.OnDispInfoNotice");
+							Debug.WriteLine($"Failed to copy text name from client: {e}", $"{nameof(VirtualListView)}.{nameof(OnDispInfoNotice)}");
 						}
 					}
 				}
@@ -687,7 +687,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception ex)
 				{
-					Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
+					Trace.WriteLine($"Message {m} caused an exception: {ex.Message}");
 				}
 			}
 		}
@@ -705,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (item == null) 
 			{
-				throw new ArgumentException("cannot find item " + idx + " via QueryItem event");
+				throw new ArgumentException($"cannot find item {idx} via {nameof(QueryItem)} event");
 			}
 
 			return item;

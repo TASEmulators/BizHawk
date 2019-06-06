@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					new FormatPreset("MP4", "AVC video and AAC audio in an MP4 container.",
 						"-c:a aac -c:v libx264 -f mp4", false, "mp4"),
 					new FormatPreset("WebM", "VP8 video and Vorbis audio in a WebM container.",
-						"-c:a libvorbis -c:v libvpx -f webm", false, "webm"),
+						"-c:a libvorbis -c:v libvpx -auto-alt-ref 0 -f webm", false, "webm"),
 					new FormatPreset("Ogg", "Theora video and Vorbis audio in an Ogg contrainer.",
 						"-c:a libvorbis -c:v libtheora -f ogg", false, "ogg"),
 					new FormatPreset("Xvid", "Xvid video and MP3 audio in an AVI container.",
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			if (listBox1.SelectedIndex != -1)
 			{
 				var f = (FormatPreset)listBox1.SelectedItem;
-				label5.Text = "Extension: " + f.Extension;
+				label5.Text = $"Extension: {f.Extension}";
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
 			}

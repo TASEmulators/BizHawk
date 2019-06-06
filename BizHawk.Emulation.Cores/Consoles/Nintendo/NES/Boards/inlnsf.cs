@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg", ref prg, true);
+			ser.Sync(nameof(prg), ref prg, true);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

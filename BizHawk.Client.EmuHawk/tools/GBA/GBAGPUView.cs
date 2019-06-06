@@ -790,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 		private void hScrollBar1_ValueChanged(object sender, EventArgs e)
 		{
 			_cbscanline = (hScrollBar1.Value + 160) % 228;
-			radioButtonScanline.Text = "Scanline " + _cbscanline;
+			radioButtonScanline.Text = $"Scanline {_cbscanline}";
 		}
 
 		private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
@@ -838,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 				if (found is BmpView)
 				{
 					Clipboard.SetImage((found as BmpView).BMP);
-					labelClipboard.Text = found.Text + " copied to clipboard.";
+					labelClipboard.Text = $"{found.Text} copied to clipboard.";
 					timerMessage.Stop();
 					timerMessage.Start();
 				}

@@ -158,10 +158,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("port", ref port);
-			ser.Sync("prg", ref prg);
-			ser.Sync("chr", ref chr, false);
-			ser.Sync("simple", ref simple);
+			ser.Sync(nameof(port), ref port);
+			ser.Sync(nameof(prg), ref prg);
+			ser.Sync(nameof(chr), ref chr, false);
+			ser.Sync(nameof(simple), ref simple);
 		}
 	}
 
@@ -304,9 +304,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("port", ref port);
-			ser.Sync("prg", ref prg);
-			ser.Sync("chr", ref chr, false);
+			ser.Sync(nameof(port), ref port);
+			ser.Sync(nameof(prg), ref prg);
+			ser.Sync(nameof(chr), ref chr, false);
 		}
 
 	}

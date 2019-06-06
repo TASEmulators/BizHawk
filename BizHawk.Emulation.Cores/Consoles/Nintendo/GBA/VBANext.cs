@@ -57,11 +57,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			Core = LibVBANext.Create();
 			if (Core == IntPtr.Zero)
-				throw new InvalidOperationException("Create() returned nullptr!");
+				throw new InvalidOperationException($"{nameof(LibVBANext.Create)}() returned nullptr!");
 			try
 			{
 				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
-					throw new InvalidOperationException("LoadRom() returned false!");
+					throw new InvalidOperationException($"{nameof(LibVBANext.LoadRom)}() returned false!");
 
 				Tracer = new TraceBuffer()
 				{

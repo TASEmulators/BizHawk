@@ -331,12 +331,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("_databus", ref _databus);
-			ser.Sync("_cachedCycles", ref _cachedCycles);
-			ser.Sync("_disableVoice3", ref _disableVoice3);
-			ser.Sync("_envelopeOutput0", ref _envelopeOutput0);
-			ser.Sync("_envelopeOutput1", ref _envelopeOutput1);
-			ser.Sync("_envelopeOutput2", ref _envelopeOutput2);
+			ser.Sync(nameof(_databus), ref _databus);
+			ser.Sync(nameof(_cachedCycles), ref _cachedCycles);
+			ser.Sync(nameof(_disableVoice3), ref _disableVoice3);
+			ser.Sync(nameof(_envelopeOutput0), ref _envelopeOutput0);
+			ser.Sync(nameof(_envelopeOutput1), ref _envelopeOutput1);
+			ser.Sync(nameof(_envelopeOutput2), ref _envelopeOutput2);
 
 			for (int i = 0; i < _envelopes.Length; i++)
 			{
@@ -345,20 +345,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ser.EndSection();
 			}
 
-			ser.Sync("_filterEnable", ref _filterEnable, useNull: false);
-			ser.Sync("_filterFrequency", ref _filterFrequency);
-			ser.Sync("_filterResonance", ref _filterResonance);
-			ser.Sync("_filterSelectBandPass", ref _filterSelectBandPass);
-			ser.Sync("_filterSelectLoPass", ref _filterSelectLoPass);
-			ser.Sync("_filterSelectHiPass", ref _filterSelectHiPass);
-			ser.Sync("_mixer", ref _mixer);
-			ser.Sync("_potCounter", ref _potCounter);
-			ser.Sync("_potX", ref _potX);
-			ser.Sync("_potY", ref _potY);
-			ser.Sync("_sample", ref _sample);
-			ser.Sync("_voiceOutput0", ref _voiceOutput0);
-			ser.Sync("_voiceOutput1", ref _voiceOutput1);
-			ser.Sync("_voiceOutput2", ref _voiceOutput2);
+			ser.Sync(nameof(_filterEnable), ref _filterEnable, useNull: false);
+			ser.Sync(nameof(_filterFrequency), ref _filterFrequency);
+			ser.Sync(nameof(_filterResonance), ref _filterResonance);
+			ser.Sync(nameof(_filterSelectBandPass), ref _filterSelectBandPass);
+			ser.Sync(nameof(_filterSelectLoPass), ref _filterSelectLoPass);
+			ser.Sync(nameof(_filterSelectHiPass), ref _filterSelectHiPass);
+			ser.Sync(nameof(_mixer), ref _mixer);
+			ser.Sync(nameof(_potCounter), ref _potCounter);
+			ser.Sync(nameof(_potX), ref _potX);
+			ser.Sync(nameof(_potY), ref _potY);
+			ser.Sync(nameof(_sample), ref _sample);
+			ser.Sync(nameof(_voiceOutput0), ref _voiceOutput0);
+			ser.Sync(nameof(_voiceOutput1), ref _voiceOutput1);
+			ser.Sync(nameof(_voiceOutput2), ref _voiceOutput2);
 
 			for (int i = 0; i < _voices.Length; i++)
 			{
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ser.EndSection();
 			}
 
-			ser.Sync("_volume", ref _volume);
+			ser.Sync(nameof(_volume), ref _volume);
 		}
 	}
 }

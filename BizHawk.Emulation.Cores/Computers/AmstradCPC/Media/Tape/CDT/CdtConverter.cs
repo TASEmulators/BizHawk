@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             tb.PauseInMS = db.PauseInMS;
 
             double multiplier = (double)4 / (double)3.5;
-            double cycleScale = ((40 << 16) / 35);
+            //double cycleScale = ((40 << 16) / 35);
             double origPeriods = db.DataPeriods.Count();
 
             for (int i = 0; i < origPeriods; i++)
@@ -1372,7 +1372,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // get text length
                 int strLen = data[_position++];
 
-                string title = "Info: ";
+				string title = string.Empty;
+				title = "Info: ";
 
                 switch (type)
                 {

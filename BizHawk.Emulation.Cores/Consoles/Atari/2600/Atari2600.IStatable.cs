@@ -46,12 +46,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
-			ser.Sync("cyc_counter", ref cyc_counter);
+			ser.Sync(nameof(cyc_counter), ref cyc_counter);
 			ser.Sync("leftDifficultySwitchPressed", ref _leftDifficultySwitchPressed);
 			ser.Sync("rightDifficultySwitchPressed", ref _rightDifficultySwitchPressed);
 			ser.Sync("leftDifficultySwitchHeld", ref _leftDifficultySwitchHeld);
 			ser.Sync("rightDifficultySwitchHeld", ref _rightDifficultySwitchHeld);
-			ser.Sync("unselect_reset", ref unselect_reset);
+			ser.Sync(nameof(unselect_reset), ref unselect_reset);
 
 			_tia.SyncState(ser);
 			_m6532.SyncState(ser);

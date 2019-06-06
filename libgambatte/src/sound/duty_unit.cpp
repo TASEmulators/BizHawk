@@ -1,156 +1,162 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "duty_unit.h"
 #include <algorithm>
 
-static inline bool toOutState(const unsigned duty, const unsigned pos) {
-	static const unsigned char duties[4] = { 0x80, 0x81, 0xE1, 0x7E };
-	
-	return duties[duty] >> pos & 1;
+static inline bool toOutState(unsigned duty, unsigned pos) {
+	return 0x7EE18180 >> (duty * 8 + pos) & 1;
 }
 
-static inline unsigned toPeriod(const unsigned freq) {
-	return (2048 - freq) << 1;
+static inline unsigned toPeriod(unsigned freq) {
+	return (2048 - freq) * 2;
 }
 
 namespace gambatte {
 
-void DutyUnit::updatePos(const unsigned long cc) {
-	if (cc >= nextPosUpdate) {
-		const unsigned long inc = (cc - nextPosUpdate) / period + 1;
-		nextPosUpdate += period * inc;
-		pos += inc;
-		pos &= 7;
+DutyUnit::DutyUnit()
+: nextPosUpdate_(counter_disabled)
+, period_(4096)
+, pos_(0)
+, duty_(0)
+, inc_(0)
+, high_(false)
+, enableEvents_(true)
+{
+}
+
+void DutyUnit::updatePos(unsigned long const cc) {
+	if (cc >= nextPosUpdate_) {
+		unsigned long const inc = (cc - nextPosUpdate_) / period_ + 1;
+		nextPosUpdate_ += period_ * inc;
+		pos_ += inc;
+		pos_ &= 7;
+		high_ = toOutState(duty_, pos_);
 	}
 }
 
-void DutyUnit::setDuty(const unsigned nr1) {
-	duty = nr1 >> 6;
-	high = toOutState(duty, pos);
-}
-
 void DutyUnit::setCounter() {
-	static const unsigned char nextStateDistance[4 * 8] = {
-		6, 5, 4, 3, 2, 1, 0, 0,
-		0, 5, 4, 3, 2, 1, 0, 1,
-		0, 3, 2, 1, 0, 3, 2, 1,
-		0, 5, 4, 3, 2, 1, 0, 1
+	static unsigned char const nextStateDistance[4 * 8] = {
+		7, 6, 5, 4, 3, 2, 1, 1,
+		1, 6, 5, 4, 3, 2, 1, 2,
+		1, 4, 3, 2, 1, 4, 3, 2,
+		1, 6, 5, 4, 3, 2, 1, 2
 	};
-	
-	if (enableEvents && nextPosUpdate != COUNTER_DISABLED)
-		counter = nextPosUpdate + period * nextStateDistance[(duty * 8) | pos];
-	else
-		counter = COUNTER_DISABLED;
+
+	if (enableEvents_ && nextPosUpdate_ != counter_disabled) {
+		unsigned const npos = (pos_ + 1) & 7;
+		counter_ = nextPosUpdate_;
+		inc_ = nextStateDistance[duty_ * 8 + npos];
+		if (toOutState(duty_, npos) == high_) {
+			counter_ += period_ * inc_;
+			inc_ = nextStateDistance[duty_ * 8 + ((npos + inc_) & 7)];
+		}
+	} else
+		counter_ = counter_disabled;
 }
 
-void DutyUnit::setFreq(const unsigned newFreq, const unsigned long cc) {
+void DutyUnit::setFreq(unsigned newFreq, unsigned long cc) {
 	updatePos(cc);
-	period = toPeriod(newFreq);
+	period_ = toPeriod(newFreq);
 	setCounter();
 }
 
 void DutyUnit::event() {
-	unsigned inc = period << duty;
-	
-	if (duty == 3)
-		inc -= period * 2;
-	
-	if (!(high ^= true))
-		inc = period * 8 - inc;
-	
-	counter += inc;
+	static unsigned char const inc[] = {
+		1, 7,
+		2, 6,
+		4, 4,
+		6, 2,
+	};
+
+	high_ ^= true;
+	counter_ += inc_ * period_;
+	inc_ = inc[duty_ * 2 + high_];
 }
 
-void DutyUnit::nr1Change(const unsigned newNr1, const unsigned long cc) {
+void DutyUnit::nr1Change(unsigned newNr1, unsigned long cc) {
 	updatePos(cc);
-	setDuty(newNr1);
+	duty_ = newNr1 >> 6;
 	setCounter();
 }
 
-void DutyUnit::nr3Change(const unsigned newNr3, const unsigned long cc) {
-	setFreq((getFreq() & 0x700) | newNr3, cc);
+void DutyUnit::nr3Change(unsigned newNr3, unsigned long cc) {
+	setFreq((freq() & 0x700) | newNr3, cc);
 }
 
-void DutyUnit::nr4Change(const unsigned newNr4, const unsigned long cc) {
-	setFreq((newNr4 << 8 & 0x700) | (getFreq() & 0xFF), cc);
-	
+void DutyUnit::nr4Change(unsigned const newNr4, unsigned long const cc,
+		bool const master) {
+	setFreq((newNr4 << 8 & 0x700) | (freq() & 0xFF), cc);
+
 	if (newNr4 & 0x80) {
-		nextPosUpdate = (cc & ~1) + period;
+		nextPosUpdate_ = (cc & ~1ul) + period_ + 4 - (master << 1);
 		setCounter();
 	}
 }
 
-DutyUnit::DutyUnit() :
-nextPosUpdate(COUNTER_DISABLED),
-period(4096),
-pos(0),
-duty(0),
-high(false),
-enableEvents(true)
-{}
-
 void DutyUnit::reset() {
-	pos = 0;
-	high = toOutState(duty, pos);
-	nextPosUpdate = COUNTER_DISABLED;
+	pos_ = 0;
+	high_ = false;
+	nextPosUpdate_ = counter_disabled;
 	setCounter();
 }
 
-void DutyUnit::loadState(const SaveState::SPU::Duty &dstate, const unsigned nr1, const unsigned nr4, const unsigned long cc) {
-	nextPosUpdate = std::max(dstate.nextPosUpdate, cc);
-	pos = dstate.pos & 7;
-	setDuty(nr1);
-	period = toPeriod((nr4 << 8 & 0x700) | dstate.nr3);
-	enableEvents = true;
+void DutyUnit::loadState(SaveState::SPU::Duty const &dstate,
+		unsigned const nr1, unsigned const nr4, unsigned long const cc) {
+	nextPosUpdate_ = std::max(dstate.nextPosUpdate, cc);
+	pos_ = dstate.pos & 7;
+	high_ = dstate.high;
+	duty_ = nr1 >> 6;
+	period_ = toPeriod((nr4 << 8 & 0x700) | dstate.nr3);
+	enableEvents_ = true;
 	setCounter();
 }
 
-void DutyUnit::resetCounters(const unsigned long oldCc) {
-	if (nextPosUpdate == COUNTER_DISABLED)
+void DutyUnit::resetCounters(unsigned long const oldCc) {
+	if (nextPosUpdate_ == counter_disabled)
 		return;
-	
+
 	updatePos(oldCc);
-	nextPosUpdate -= COUNTER_MAX;
-	SoundUnit::resetCounters(oldCc);
+	nextPosUpdate_ -= counter_max;
+	setCounter();
 }
 
 void DutyUnit::killCounter() {
-	enableEvents = false;
+	enableEvents_ = false;
 	setCounter();
 }
 
-void DutyUnit::reviveCounter(const unsigned long cc) {
+void DutyUnit::reviveCounter(unsigned long const cc) {
 	updatePos(cc);
-	high = toOutState(duty, pos);
-	enableEvents = true;
+	enableEvents_ = true;
 	setCounter();
 }
 
 SYNCFUNC(DutyUnit)
 {
-	NSS(counter);
-	NSS(nextPosUpdate);
-	NSS(period);
-	NSS(pos);
-	NSS(duty);
-	NSS(high);
-	NSS(enableEvents);
+	NSS(counter_);
+	NSS(nextPosUpdate_);
+	NSS(period_);
+	NSS(pos_);
+	NSS(duty_);
+	NSS(inc_);
+	NSS(high_);
+	NSS(enableEvents_);
 }
 
 }

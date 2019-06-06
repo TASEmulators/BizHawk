@@ -43,11 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
-			ser.Sync("_frameCycles", ref _frameCycles);
-			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLagFrame", ref _isLagFrame);
-			ser.Sync("LagCount", ref _lagCount);
-			ser.Sync("CurrentDisk", ref _currentDisk);
+			ser.Sync(nameof(_frameCycles), ref _frameCycles);
+			ser.Sync(nameof(Frame), ref _frame);
+			ser.Sync(nameof(IsLagFrame), ref _isLagFrame);
+			ser.Sync(nameof(LagCount), ref _lagCount);
+			ser.Sync(nameof(CurrentDisk), ref _currentDisk);
 			ser.Sync("PreviousDiskPressed", ref _prevPressed);
 			ser.Sync("NextDiskPressed", ref _nextPressed);
 			ser.BeginSection("Board");

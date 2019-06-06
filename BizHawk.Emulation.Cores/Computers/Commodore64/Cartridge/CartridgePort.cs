@@ -127,9 +127,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("_connected", ref _connected);
+			ser.Sync(nameof(_connected), ref _connected);
 
-			ser.BeginSection("CartridgeDevice");
+			ser.BeginSection(nameof(CartridgeDevice));
 			_cartridgeDevice.SyncState(ser);
 			ser.EndSection();
 		}

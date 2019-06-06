@@ -26,8 +26,8 @@ namespace BizHawk.Bizware.BizwareGL
 			VertexLayout.Close();
 
 			string defines = "#define TEXCOORD TEXCOORD0\r\n"; //maybe not safe..
-			string vsSource = "#define VERTEX\r\n" + defines + source;
-			string psSource = "#define FRAGMENT\r\n" + defines + source;
+			string vsSource = $"#define VERTEX\r\n{defines}{source}";
+			string psSource = $"#define FRAGMENT\r\n{defines}{source}";
 			var vs = owner.CreateVertexShader(true, vsSource, "main_vertex", debug);
 			var ps = owner.CreateFragmentShader(true, psSource, "main_fragment", debug);
 			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");

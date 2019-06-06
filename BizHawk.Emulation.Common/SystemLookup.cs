@@ -34,7 +34,8 @@ namespace BizHawk.Emulation.Common
 			new SystemInfo { SystemId = "AppleII", FullName = "Apple II" },
 			new SystemInfo { SystemId = "INTV", FullName = "Intellivision" },
             new SystemInfo { SystemId = "ZXSpectrum", FullName = "Sinclair ZX Spectrum" },
-            new SystemInfo { SystemId = "AmstradCPC", FullName = "Amstrad CPC" }
+            new SystemInfo { SystemId = "AmstradCPC", FullName = "Amstrad CPC" },
+			new SystemInfo { SystemId = "ChannelF", FullName = "Fairchild Channel F"},
 		};
 
 		public SystemInfo this[string systemId]

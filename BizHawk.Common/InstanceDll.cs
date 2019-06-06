@@ -12,7 +12,7 @@ namespace BizHawk.Common
 		public InstanceDll(string dllPath)
 		{
 			// copy the dll to a temp directory
-			var path = TempFileManager.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
+			var path = TempFileManager.GetTempFilename(Path.GetFileNameWithoutExtension(dllPath), ".dll", false);
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
 			using (var sdll = File.OpenRead(dllPath))
 				sdll.CopyTo(stream);
@@ -24,7 +24,7 @@ namespace BizHawk.Common
 			var envpath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
 			try
 			{
-				string envpath_new = Path.GetDirectoryName(path) + ";" + envpath;
+				string envpath_new = $"{Path.GetDirectoryName(path)};{envpath}";
 				Environment.SetEnvironmentVariable("PATH", envpath_new, EnvironmentVariableTarget.Process);
 				_hModule = LoadLibrary(path); //consider using LoadLibraryEx instead of shenanigans?
 				if (_hModule == IntPtr.Zero)

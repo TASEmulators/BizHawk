@@ -940,7 +940,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     return croppedBuffer;
 
                 case ZXSpectrum.BorderType.None:
-                    // all border sizes now 24
+                    // all border sizes now 0
                     var lR__ = BorderLeftWidth;
                     var rR__ = BorderRightWidth;
                     var tR__ = BorderTopHeight;
@@ -1035,29 +1035,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("ULA");
+            ser.BeginSection(nameof(ULA));
             if (ScreenBuffer != null)
-                ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
-            ser.Sync("BorderColor", ref BorderColor);
-            ser.Sync("LastTState", ref LastTState);
-            ser.Sync("flashOn", ref flashOn);
-            ser.Sync("fetchB1", ref fetchB1);
-            ser.Sync("fetchA1", ref fetchA1);
-            ser.Sync("fetchB2", ref fetchB2);
-            ser.Sync("fetchA2", ref fetchA2);
-            ser.Sync("ink", ref ink);
-            ser.Sync("paper", ref paper);
-            ser.Sync("fetchBorder", ref fetchBorder);
-            ser.Sync("bright", ref bright);
-            ser.Sync("flash", ref flash);
-            ser.Sync("palPaper", ref palPaper);
-            ser.Sync("palInk", ref palInk);
+                ser.Sync(nameof(ScreenBuffer), ref ScreenBuffer, false);
+            ser.Sync(nameof(BorderColor), ref BorderColor);
+            ser.Sync(nameof(LastTState), ref LastTState);
+            ser.Sync(nameof(flashOn), ref flashOn);
+            ser.Sync(nameof(fetchB1), ref fetchB1);
+            ser.Sync(nameof(fetchA1), ref fetchA1);
+            ser.Sync(nameof(fetchB2), ref fetchB2);
+            ser.Sync(nameof(fetchA2), ref fetchA2);
+            ser.Sync(nameof(ink), ref ink);
+            ser.Sync(nameof(paper), ref paper);
+            ser.Sync(nameof(fetchBorder), ref fetchBorder);
+            ser.Sync(nameof(bright), ref bright);
+            ser.Sync(nameof(flash), ref flash);
+            ser.Sync(nameof(palPaper), ref palPaper);
+            ser.Sync(nameof(palInk), ref palInk);
 
-            ser.Sync("LastULATick", ref LastULATick);
-            ser.Sync("ULACycleCounter", ref ULACycleCounter);
-            ser.Sync("FrameEnd", ref FrameEnd);
+            ser.Sync(nameof(LastULATick), ref LastULATick);
+            ser.Sync(nameof(ULACycleCounter), ref ULACycleCounter);
+            ser.Sync(nameof(FrameEnd), ref FrameEnd);
 
-            ser.Sync("InterruptRaised", ref InterruptRaised);
+            ser.Sync(nameof(InterruptRaised), ref InterruptRaised);
             ser.EndSection();
         }
 

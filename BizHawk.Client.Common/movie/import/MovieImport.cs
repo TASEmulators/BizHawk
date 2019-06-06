@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				messageCallback(Path.GetFileName(fn) + " imported as " + m.Filename);
+				messageCallback($"{Path.GetFileName(fn)} imported as {m.Filename}");
 			}
 
 			if (!Directory.Exists(d))
@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 
 			if (importerType == default(Type))
 			{
-				errorMsg = "No importer found for file type " + ext;
+				errorMsg = $"No importer found for file type {ext}";
 				return null;
 			}
 
@@ -205,7 +205,7 @@ namespace BizHawk.Client.Common
 
 			if (m != null)
 			{
-				m.Filename += "." + BkmMovie.Extension;
+				m.Filename += $".{BkmMovie.Extension}";
 			}
 			else
 			{
@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 			{
 				"BKM", "FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
-			return extensions.Any(ext => extension.ToUpper() == "." + ext);
+			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
 
 		// Reduce all whitespace to single spaces.
@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 			for (int section = 2; section < sections.Length - 1; section++)
 			{
 				int player = section - 1; // We start with 1
-				string prefix = "P" + player + " "; // "P1"
+				string prefix = $"P{player} "; // "P1"
 
 				for (int button = 0; button < buttons.Length; button++)
 				{
@@ -344,7 +344,7 @@ namespace BizHawk.Client.Common
 
 					if (warningMsg != "")
 					{
-						warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
+						warningMsg = $"Unable to import {warningMsg} command on line {lineNum}.";
 					}
 				}
 			}
@@ -397,7 +397,7 @@ namespace BizHawk.Client.Common
 			{
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + playerOffset;
-				string prefix = "P" + player + " ";
+				string prefix = $"P{player} ";
 				
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
 				if (controllers.Definition.Name == "Gameboy Controller")
@@ -450,7 +450,7 @@ namespace BizHawk.Client.Common
 				}
 
 				string message = line.Substring(second + 1).Trim();
-				m.Subtitles.AddFromString("subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message);
+				m.Subtitles.AddFromString($"subtitle {frame} 0 0 {length} FFFFFFFF {message}");
 			}
 
 			return m;
@@ -507,14 +507,12 @@ namespace BizHawk.Client.Common
 				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
-					m.Comments.Add(
-						EMULATIONORIGIN + " " + emulator + " version " + ParseHeader(line, "emuVersion"));
+					m.Comments.Add($"{EMULATIONORIGIN} {emulator} version {ParseHeader(line, "emuVersion")}");
 				}
 				else if (line.ToLower().StartsWith("version"))
 				{
 					string version = ParseHeader(line, "version");
-					m.Comments.Add(
-						MOVIEORIGIN + " " + Path.GetExtension(path) + " version " + version);
+					m.Comments.Add($"{MOVIEORIGIN} {Path.GetExtension(path)} version {version}");
 					if (Path.GetExtension(path).ToUpper() == ".FM2" && version != "3")
 					{
 						errorMsg = ".FM2 movie version must always be 3.";
@@ -683,7 +681,7 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			m.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
+			m.Comments.Add($"{MOVIEORIGIN} .FCM version {version}");
 
 			// 008 1-byte flags
 			byte flags = r.ReadByte();
@@ -715,7 +713,7 @@ namespace BizHawk.Client.Common
 
 			// other: reserved, set to 0
 			bool syncHack = ((flags >> 4) & 0x1) != 0;
-			m.Comments.Add(SYNCHACK + " " + syncHack);
+			m.Comments.Add($"{SYNCHACK} {syncHack}");
 
 			// 009 1-byte flags: reserved, set to 0
 			r.ReadByte();
@@ -749,7 +747,7 @@ namespace BizHawk.Client.Common
 
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion);
+			m.Comments.Add($"{EMULATIONORIGIN} FCEU {emuVersion}");
 
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
 			List<byte> gameBytes = new List<byte>();
@@ -870,7 +868,7 @@ namespace BizHawk.Client.Common
 
 						if (warningMsg != "")
 						{
-							warningMsg = "Unable to import " + warningMsg + " command at frame " + frame + ".";
+							warningMsg = $"Unable to import {warningMsg} command at frame {frame}.";
 						}
 					}
 
@@ -917,7 +915,7 @@ namespace BizHawk.Client.Common
 					 The controller update toggles the affected input. Controller update data is emitted to the movie file
 					 only when the state of the controller changes.
 					*/
-					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
+					controllers[$"P{player} {buttons[button]}"] = !controllers[$"P{player} {buttons[button]}"];
 				}
 			}
 
@@ -1012,12 +1010,12 @@ namespace BizHawk.Client.Common
 
 			// 010 64-byte zero-terminated emulator identifier string
 			string emuVersion = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
-			m.Comments.Add(MOVIEORIGIN + " .FMV");
+			m.Comments.Add($"{EMULATIONORIGIN} Famtasia version {emuVersion}");
+			m.Comments.Add($"{MOVIEORIGIN} .FMV");
 
 			// 050 64-byte zero-terminated movie title string
 			string description = NullTerminated(r.ReadStringFixedAscii(64));
-			m.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add($"{COMMENT} {description}");
 			if (!controller1 && !controller2 && !fds)
 			{
 				warningMsg = "No input recorded.";
@@ -1080,7 +1078,7 @@ namespace BizHawk.Client.Common
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
-							controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+							controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 						}
 					}
 					else
@@ -1119,8 +1117,8 @@ namespace BizHawk.Client.Common
 
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
-			m.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
-			m.Comments.Add(EMULATIONORIGIN + " Gens");
+			m.Comments.Add($"{MOVIEORIGIN} .GMV version {version}");
+			m.Comments.Add($"{EMULATIONORIGIN} Gens");
 
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
@@ -1169,7 +1167,7 @@ namespace BizHawk.Client.Common
 
 			// 018 40-byte zero-terminated ASCII movie name string
 			string description = NullTerminated(r.ReadStringFixedAscii(40));
-			m.Comments.Add(COMMENT + " " + description);
+			m.Comments.Add($"{COMMENT} {description}");
 
 			/*
 			 040 frame data
@@ -1213,7 +1211,7 @@ namespace BizHawk.Client.Common
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
-							controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) == 0;
+							controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) == 0;
 						}
 					}
 					else
@@ -1222,12 +1220,12 @@ namespace BizHawk.Client.Common
 						{
 							if (player1Config == "6")
 							{
-								controllers["P1 " + other[button]] = ((controllerState >> button) & 0x1) == 0;
+								controllers[$"P1 {other[button]}"] = ((controllerState >> button) & 0x1) == 0;
 							}
 
 							if (player2Config == "6")
 							{
-								controllers["P2 " + other[button]] = ((controllerState >> (button + 4)) & 0x1) == 0;
+								controllers[$"P2 {other[button]}"] = ((controllerState >> (button + 4)) & 0x1) == 0;
 							}
 						}
 					}
@@ -1275,7 +1273,7 @@ namespace BizHawk.Client.Common
 							{
 								if (authorLast != "")
 								{
-									authorList += authorLast + ", ";
+									authorList += $"{authorLast}, ";
 								}
 
 								authorLast = author;
@@ -1301,7 +1299,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string coreversion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Comments.Add(COREORIGIN + " " + coreversion);
+					m.Comments.Add($"{COREORIGIN} {coreversion}");
 					hf.Unbind();
 				}
 				else if (item.Name == "gamename")
@@ -1446,7 +1444,7 @@ namespace BizHawk.Client.Common
 					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
 					int pos = item.Name.LastIndexOf(".sha256");
 					string name = item.Name.Substring(0, pos);
-					m.Header[SHA256 + "_" + name] = rom;
+					m.Header[$"{SHA256}_{name}"] = rom;
 					hf.Unbind();
 				}
 				else if (item.Name == "savestate")
@@ -1491,7 +1489,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string systemid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Comments.Add(EMULATIONORIGIN + " " + systemid);
+					m.Comments.Add($"{EMULATIONORIGIN} {systemid}");
 					hf.Unbind();
 				}
 			}
@@ -1528,11 +1526,11 @@ namespace BizHawk.Client.Common
 
 			// 008 uint32	 Mednafen Version (Current is 0A 08)
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion);
+			m.Comments.Add($"{EMULATIONORIGIN} Mednafen {emuVersion}");
 
 			// 00C uint32	 Movie Format Version (Current is 01)
 			uint version = r.ReadUInt32();
-			m.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
+			m.Comments.Add($"{MOVIEORIGIN} .MCM version {version}");
 
 			// 010 32-byte	MD5 of the ROM used
 			byte[] md5 = r.ReadBytes(16);
@@ -1580,7 +1578,7 @@ namespace BizHawk.Client.Common
 			};
 			if (!platforms.ContainsKey(platform))
 			{
-				errorMsg = "Platform " + platform + " not supported.";
+				errorMsg = $"Platform {platform} not supported.";
 				r.Close();
 				fs.Close();
 				return null;
@@ -1601,7 +1599,7 @@ namespace BizHawk.Client.Common
 
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
-			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = name + " Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = $"{name} Controller" } };
 			int bytes = 256;
 
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
@@ -1632,7 +1630,7 @@ namespace BizHawk.Client.Common
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						string prefix = platform == "lynx" ? "" : "P" + player + " "; // hack
+						string prefix = platform == "lynx" ? "" : $"P{player} "; // hack
 						controllers[prefix + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 					}
 				}
@@ -1677,8 +1675,8 @@ namespace BizHawk.Client.Common
 
 			// 0004: 4-byte little endian unsigned int: dega version
 			uint emuVersion = r.ReadUInt32();
-			m.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion);
-			m.Comments.Add(MOVIEORIGIN + " .MMV");
+			m.Comments.Add($"{EMULATIONORIGIN} Dega version {emuVersion}");
+			m.Comments.Add($"{MOVIEORIGIN} .MMV");
 
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint frameCount = r.ReadUInt32();
@@ -1771,7 +1769,7 @@ namespace BizHawk.Client.Common
 					byte controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+						controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 					}
 
 					if (player == 1)
@@ -1810,8 +1808,8 @@ namespace BizHawk.Client.Common
 
 			// 004 4-byte version string (example "0960")
 			string emuVersion = r.ReadStringFixedAscii(4);
-			m.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
-			m.Comments.Add(MOVIEORIGIN + " .NMV");
+			m.Comments.Add($"{EMULATIONORIGIN} Nintendulator version {emuVersion}");
+			m.Comments.Add($"{MOVIEORIGIN} .NMV");
 
 			// 008 4-byte file size, not including the 16-byte header
 			r.ReadUInt32();
@@ -1918,7 +1916,7 @@ namespace BizHawk.Client.Common
 
 						if (warningMsg != "")
 						{
-							warningMsg = warningMsg + " is not properly supported.";
+							warningMsg = $"{warningMsg} is not properly supported.";
 						}
 					}
 				}
@@ -1945,7 +1943,7 @@ namespace BizHawk.Client.Common
 			};
 			if (expansion != 0 && warningMsg == "")
 			{
-				warningMsg = "Expansion port is not properly supported. This movie uses " + expansions[expansion] + ".";
+				warningMsg = $"Expansion port is not properly supported. This movie uses {expansions[expansion]}.";
 			}
 
 			// 003 1-byte number of bytes per frame, plus flags
@@ -1989,7 +1987,7 @@ namespace BizHawk.Client.Common
 			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
 			*/
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii((int)r.ReadUInt32()));
-			m.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add($"{COMMENT} {movieDescription}");
 
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
@@ -2027,7 +2025,7 @@ namespace BizHawk.Client.Common
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
-							controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+							controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 						}
 					}
 					else if (warningMsg == "")
@@ -2084,8 +2082,8 @@ namespace BizHawk.Client.Common
 					return null;
 			}
 
-			m.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
-			m.Comments.Add(MOVIEORIGIN + " .SMV");
+			m.Comments.Add($"{EMULATIONORIGIN} Snes9x version {version}");
+			m.Comments.Add($"{MOVIEORIGIN} .SMV");
 			/*
 			 008 4-byte little-endian integer: movie "uid" - identifies the movie-savestate relationship, also used as the
 			 recording time in Unix epoch format
@@ -2302,7 +2300,7 @@ namespace BizHawk.Client.Common
 
 						if (peripheral != "" && warningMsg == "")
 						{
-							warningMsg = "Unable to import " + peripheral + ".";
+							warningMsg = $"Unable to import {peripheral}.";
 						}
 					}
 
@@ -2311,13 +2309,13 @@ namespace BizHawk.Client.Common
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
-							controllers["P" + player + " " + buttons[button]] =
+							controllers[$"P{player} {buttons[button]}"] =
 								((controllerState >> button) & 0x1) != 0;
 						}
 					}
 					else if (warningMsg == "")
 					{
-						warningMsg = "Controller " + player + " not supported.";
+						warningMsg = $"Controller {player} not supported.";
 					}
 				}
 
@@ -2475,7 +2473,7 @@ namespace BizHawk.Client.Common
 
 			if (isSGB)
 			{
-				m.Comments.Add(SUPERGAMEBOYMODE + " True");
+				m.Comments.Add($"{SUPERGAMEBOYMODE} True");
 			}
 
 			m.Header[HeaderKeys.PLATFORM] = platform;
@@ -2521,8 +2519,8 @@ namespace BizHawk.Client.Common
 
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
-			m.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
-			m.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
+			m.Comments.Add($"{MOVIEORIGIN} .VBM version {majorVersion}.{minorVersion}");
+			m.Comments.Add($"{EMULATIONORIGIN} Visual Boy Advance");
 
 			// 031 1-byte unsigned char: the internal CRC of the ROM used while recording
 			r.ReadByte();
@@ -2559,7 +2557,7 @@ namespace BizHawk.Client.Common
 
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
-			m.Comments.Add(COMMENT + " " + movieDescription);
+			m.Comments.Add($"{COMMENT} {movieDescription}");
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition() };
 			controllers.Definition.Name = platform != "GBA"
@@ -2615,7 +2613,7 @@ namespace BizHawk.Client.Common
 					{
 						if (((controllerState >> (button + 10)) & 0x1) != 0)
 						{
-							warningMsg = "Unable to import " + other[button] + " at frame " + frame + ".";
+							warningMsg = $"Unable to import {other[button]} at frame {frame}.";
 							break;
 						}
 					}
@@ -2660,12 +2658,12 @@ namespace BizHawk.Client.Common
 
 			// 00C 2-byte little-endian integer: movie version 0x0400
 			ushort version = r.ReadUInt16();
-			m.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
-			m.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
+			m.Comments.Add($"{MOVIEORIGIN} .VMV version {version}");
+			m.Comments.Add($"{EMULATIONORIGIN} VirtuaNES");
 
 			// 00E 2-byte little-endian integer: record version
 			ushort recordVersion = r.ReadUInt16();
-			m.Comments.Add(COMMENT + " Record version " + recordVersion);
+			m.Comments.Add($"{COMMENT} Record version {recordVersion}");
 
 			// 010 4-byte flags (control byte)
 			uint flags = r.ReadUInt32();
@@ -2837,12 +2835,12 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								commandName = "NESCMD_EXCONTROLLER, " + (command & 0xFF00);
+								commandName = $"NESCMD_EXCONTROLLER, {(command & 0xFF00)}";
 							}
 
 							if (commandName != "" && warningMsg == "")
 							{
-								warningMsg = "Unable to run command \"" + commandName + "\".";
+								warningMsg = $"Unable to run command \"{commandName}\".";
 							}
 						}
 						else if (controllerState == 0xF3)
@@ -2852,7 +2850,7 @@ namespace BizHawk.Client.Common
 							// TODO: Make a clearer warning message.
 							if (warningMsg == "")
 							{
-								warningMsg = "Unable to run SetSyncExData(" + dwdata + ").";
+								warningMsg = $"Unable to run SetSyncExData({dwdata}).";
 							}
 						}
 
@@ -2861,7 +2859,7 @@ namespace BizHawk.Client.Common
 
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
+						controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) != 0;
 					}
 				}
 
@@ -2901,8 +2899,8 @@ namespace BizHawk.Client.Common
 
 			// 003 2-byte little-endian unsigned int: zsnes version number
 			short version = r.ReadInt16();
-			m.Comments.Add(EMULATIONORIGIN + " ZSNES version " + version);
-			m.Comments.Add(MOVIEORIGIN + " .ZMV");
+			m.Comments.Add($"{EMULATIONORIGIN} ZSNES version {version}");
+			m.Comments.Add($"{MOVIEORIGIN} .ZMV");
 
 			// 005 4-byte little-endian integer: CRC32 of the ROM
 			int crc32 = r.ReadInt32();
@@ -2973,7 +2971,7 @@ namespace BizHawk.Client.Common
 
 			if (peripheral != "")
 			{
-				warningMsg = "Unable to import " + peripheral + ".";
+				warningMsg = $"Unable to import {peripheral}.";
 			}
 
 			// 027 1-byte flags:
@@ -3182,14 +3180,14 @@ namespace BizHawk.Client.Common
 								{
 									for (int button = 0; button < buttons.Length; button++)
 									{
-										controllers["P" + player + " " + buttons[button]] = 
+										controllers[$"P{player} {buttons[button]}"] =
 											((controllerState >> button) & 0x1) != 0;
 									}
 								}
 							}
 							else if (warningMsg == "")
 							{
-								warningMsg = "Controller " + player + " not supported.";
+								warningMsg = $"Controller {player} not supported.";
 							}
 						}
 					}

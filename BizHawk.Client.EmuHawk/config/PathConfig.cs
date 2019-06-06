@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var f = new FolderBrowserEx
 			{
-				Description = "Set the directory for " + name,
+				Description = $"Set the directory for {name}",
 				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
 			};
 			var result = f.ShowDialog();

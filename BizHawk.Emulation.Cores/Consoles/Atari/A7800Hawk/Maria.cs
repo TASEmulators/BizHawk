@@ -698,9 +698,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		// also since DMA is always killed at scanline boundaries, most related check variables are also not needed
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Maria");
+			ser.BeginSection(nameof(Maria));
 
-			ser.Sync("GFX_index", ref GFX_index);
+			ser.Sync(nameof(GFX_index), ref GFX_index);
 
 			ser.EndSection();
 		}

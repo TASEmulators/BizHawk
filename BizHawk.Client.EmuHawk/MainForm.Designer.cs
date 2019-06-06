@@ -354,6 +354,8 @@
             this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBHawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
@@ -507,6 +509,7 @@
             this.SaturnSubMenu,
             this.DGBSubMenu,
 			this.DGBHawkSubMenu,
+			this.GGLSubMenu,
 			this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
             this.AppleSubMenu,
@@ -3205,6 +3208,21 @@
 			this.DGBHawksettingsToolStripMenuItem.Text = "Settings...";
 			this.DGBHawksettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbHawkSettingsMenuItem_Click);
 			// 
+			// GGLSubMenu
+			// 
+			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GGLsettingsToolStripMenuItem});
+			this.GGLSubMenu.Name = "GGLSubMenu";
+			this.GGLSubMenu.Size = new System.Drawing.Size(59, 19);
+			this.GGLSubMenu.Text = "&GG Link";
+			// 
+			// GGLsettingsToolStripMenuItem
+			// 
+			this.GGLsettingsToolStripMenuItem.Name = "GGLsettingsToolStripMenuItem";
+			this.GGLsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
+			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GGLSettingsMenuItem_Click);
+			// 
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3847,10 +3865,11 @@
             this.LinkConnectStatusBarButton.Size = new System.Drawing.Size(16, 17);
             this.LinkConnectStatusBarButton.Text = "Link connection is currently enabled";
             this.LinkConnectStatusBarButton.ToolTipText = "Link connection is currently enabled";
-            // 
-            // UpdateNotification
-            // 
-            this.UpdateNotification.IsLink = true;
+			this.LinkConnectStatusBarButton.Click += new System.EventHandler(this.LinkConnectStatusBarButton_Click);
+			// 
+			// UpdateNotification
+			// 
+			this.UpdateNotification.IsLink = true;
             this.UpdateNotification.LinkColor = System.Drawing.Color.Red;
             this.UpdateNotification.Name = "UpdateNotification";
             this.UpdateNotification.Size = new System.Drawing.Size(46, 17);
@@ -4533,6 +4552,8 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DGBHawkSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;

@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.DiscSystem
 			session.Number = 1;
 
 			if (TOCRaw.FirstRecordedTrackNumber != 1)
-				throw new InvalidOperationException("Unsupported: FirstRecordedTrackNumber != 1");
+				throw new InvalidOperationException($"Unsupported: {nameof(TOCRaw.FirstRecordedTrackNumber)} != 1");
 
 			//add a lead-in track
 			session.Tracks.Add(new DiscStructure.Track()

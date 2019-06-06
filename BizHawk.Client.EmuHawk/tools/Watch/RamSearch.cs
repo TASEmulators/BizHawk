@@ -566,12 +566,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetRemovedMessage(int val)
 		{
-			MessageLabel.Text = val + " address" + (val != 1 ? "es" : "") + " removed";
+			MessageLabel.Text = $"{val} {(val == 1 ? "address" : "addresses")} removed";
 		}
 
 		private void SetTotal()
 		{
-			TotalSearchLabel.Text = $"{_searches.Count:n0}" + " addresses";
+			TotalSearchLabel.Text = $"{_searches.Count:n0} addresses";
 		}
 
 		private void SetDomainLabel()
@@ -838,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					_searches.AddRange(addresses, append);
-					MessageLabel.Text = file.Name + " loaded";
+					MessageLabel.Text = $"{file.Name} loaded";
 				}
 
 				UpdateList();
@@ -927,23 +927,31 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Enter a hexadecimal value"
 			};
 
-			var result = prompt.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
+			while (prompt.ShowHawkDialog() == DialogResult.OK)
 			{
-				if (prompt.PromptText.IsHex())
+				try
 				{
 					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
-
 					for (int index = 0; index < _searches.Count; index++)
 					{
-						if (addr == _searches[index].Address)
+						if (_searches[index].Address == addr)
 						{
 							WatchListView.SelectItem(index, true);
 							WatchListView.ensureVisible();
-							break;
+							return; // Don't re-show dialog on success
 						}
 					}
+					//TODO add error text to dialog?
+					// Re-show dialog if the address isn't found
+				}
+				catch (FormatException e)
+				{
+					// Re-show dialog if given invalid text (shouldn't happen)
+				}
+				catch (OverflowException e)
+				{
+					//TODO add error text to dialog?
+					// Re-show dialog if the address isn't valid
 				}
 			}
 		}
@@ -1015,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 					if (watches.Save())
 					{
 						_currentFileName = watches.CurrentFileName;
-						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+						MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
 						Settings.RecentSearches.Add(watches.CurrentFileName);
 					}
 				}
@@ -1024,7 +1032,7 @@ namespace BizHawk.Client.EmuHawk
 					var result = watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName));
 					if (result)
 					{
-						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+						MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
 						Settings.RecentSearches.Add(watches.CurrentFileName);
 					}
 				}
@@ -1042,7 +1050,7 @@ namespace BizHawk.Client.EmuHawk
 			if (watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName)))
 			{
 				_currentFileName = watches.CurrentFileName;
-				MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+				MessageLabel.Text = $"{Path.GetFileName(_currentFileName)} saved";
 				Settings.RecentSearches.Add(watches.CurrentFileName);
 			}
 		}
@@ -1107,7 +1115,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ToolStripMenuItem
 					{
-						Name = type + "ToolStripMenuItem",
+						Name = $"{type}ToolStripMenuItem",
 						Text = Watch.DisplayTypeToString(type),
 						Checked = _settings.Type == type,
 					};
@@ -1246,7 +1254,7 @@ namespace BizHawk.Client.EmuHawk
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
-				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : "") + " restored";
+				MessageLabel.Text = $"{restoredCount} {(restoredCount == 1 ? "address" : "addresses")} restored";
 			}
 		}
 
@@ -1259,7 +1267,7 @@ namespace BizHawk.Client.EmuHawk
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
-				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : "") + " removed";
+				MessageLabel.Text = $"{restoredCount} {(restoredCount == 1 ? "address" : "addresses")} removed";
 			}
 		}
 

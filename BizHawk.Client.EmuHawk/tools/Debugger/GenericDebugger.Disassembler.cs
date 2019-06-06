@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (column == 0)
 				{
-					text = string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address);
+					text = string.Format($"{{0:X{_pcRegisterSize}}}", _disassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
@@ -139,16 +139,41 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Type == ScrollEventType.SmallIncrement)
 			{
-				IncrementCurrentAddress();
-				Disassemble();
-				DisassemblerView.Refresh();
+				SmallIncrement();
 			}
 
 			if (e.Type == ScrollEventType.SmallDecrement)
 			{
-				DecrementCurrentAddress();
-				Disassemble();
-				DisassemblerView.Refresh();
+				SmallDecrement();
+			}
+		}
+
+		private void DisassemblerView_Wheel(object sender, MouseEventArgs e)
+		{
+			if (e.Delta > 0)
+			{
+				SmallDecrement();
+			}
+			if (e.Delta > 120)
+			{
+				SmallDecrement();
+			}
+			if (e.Delta > 240)
+			{
+				SmallDecrement();
+			}
+
+			if (e.Delta < 0)
+			{
+				SmallIncrement();		
+			}
+			if (e.Delta < -120)
+			{
+				SmallIncrement();
+			}
+			if (e.Delta < -240)
+			{
+				SmallIncrement();
 			}
 		}
 
@@ -166,11 +191,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SmallIncrement()
+		{
+			IncrementCurrentAddress();
+			Disassemble();
+			DisassemblerView.Refresh();
+		}
+
+		private void SmallDecrement()
+		{
+			DecrementCurrentAddress();
+			Disassemble();
+			DisassemblerView.Refresh();
+		}
+
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.C) // Ctrl + C
 			{
 				CopySelectedDisassembler();
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown)
+			{
+				SmallIncrement();
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageUp)
+			{
+				SmallDecrement();
 			}
 		}
 
@@ -188,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 						blob.AppendLine();
 					}
 
-					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address))
+					blob.Append(string.Format($"{{0:X{_pcRegisterSize}}}", _disassemblyLines[index].Address))
 						.Append(" ")
 						.Append(_disassemblyLines[index].Mnemonic);
 				}

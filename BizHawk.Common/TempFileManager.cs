@@ -37,7 +37,7 @@ namespace BizHawk.Common
 				throw new InvalidOperationException();
 			}
 
-			filename = "bizdelete-" + filename.Remove(0, 4);
+			filename = $"bizdelete-{filename.Remove(0, 4)}";
 			return Path.Combine(dir, filename);
 		}
 
@@ -59,10 +59,8 @@ namespace BizHawk.Common
 			}
 		}
 
-		#if WINDOWS
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-		#endif
 
 		static void ThreadProc()
 		{
@@ -94,12 +92,10 @@ namespace BizHawk.Common
 						{
 							try
 							{
-								// SHUT. UP. THE. EXCEPTIONS.
-								#if WINDOWS
-								DeleteFileW(fi.FullName);
-								#else
-								fi.Delete();
-								#endif
+								if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+								else
+									fi.Delete();
 							}
 							catch
 							{

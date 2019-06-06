@@ -1,12 +1,8 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.LR35902;
 
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 {
@@ -14,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		"GBHawkLink",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawkLink : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ILinkable,
 	ISettable<GBHawkLink.GBLinkSettings, GBHawkLink.GBLinkSyncSettings>
@@ -39,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			linkSettings = (GBLinkSettings)settings ?? new GBLinkSettings();
 			linkSyncSettings = (GBLinkSyncSettings)syncSettings ?? new GBLinkSyncSettings();
-			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkControllerDeck.DefaultControllerName, GBHawkControllerDeck.DefaultControllerName);
+			_controllerDeck = new GBHawkLinkControllerDeck(GBHawkLinkControllerDeck.DefaultControllerName, GBHawkLinkControllerDeck.DefaultControllerName);
 
 			CoreComm = comm;
 
@@ -74,8 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			SetupMemoryDomains();
 
 			HardReset();
-
-			LinkConnected = _cableconnected;
 		}
 
 		public void HardReset()
@@ -92,7 +86,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		private readonly ITraceable _tracer;
 
-		public bool LinkConnected { get; private set; }
+		public bool LinkConnected
+		{
+			get { return _cableconnected; }
+			set { _cableconnected = value; }
+		}
 
 		private void ExecFetch(ushort addr)
 		{

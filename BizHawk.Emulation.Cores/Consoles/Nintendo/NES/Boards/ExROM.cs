@@ -66,25 +66,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("irq_target", ref irq_target);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("in_frame", ref in_frame);
-			ser.Sync("exram_mode", ref exram_mode);
-			ser.Sync("chr_mode", ref chr_mode);
-			ser.Sync("prg_mode", ref prg_mode);
-			ser.Sync("chr_reg_high", ref chr_reg_high);
-			ser.Sync("ab_mode", ref ab_mode);
-			ser.Sync("regs_a", ref regs_a);
-			ser.Sync("regs_b", ref regs_b);
-			ser.Sync("regs_prg", ref regs_prg);
-			ser.Sync("nt_modes", ref nt_modes);
-			ser.Sync("nt_fill_tile", ref nt_fill_tile);
-			ser.Sync("nt_fill_attrib", ref nt_fill_attrib);
-			ser.Sync("wram_bank", ref wram_bank);
-			ser.Sync("last_nt_read", ref last_nt_read);
-			ser.Sync("EXRAM", ref EXRAM, false);
+			ser.Sync(nameof(irq_target), ref irq_target);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(in_frame), ref in_frame);
+			ser.Sync(nameof(exram_mode), ref exram_mode);
+			ser.Sync(nameof(chr_mode), ref chr_mode);
+			ser.Sync(nameof(prg_mode), ref prg_mode);
+			ser.Sync(nameof(chr_reg_high), ref chr_reg_high);
+			ser.Sync(nameof(ab_mode), ref ab_mode);
+			ser.Sync(nameof(regs_a), ref regs_a);
+			ser.Sync(nameof(regs_b), ref regs_b);
+			ser.Sync(nameof(regs_prg), ref regs_prg);
+			ser.Sync(nameof(nt_modes), ref nt_modes);
+			ser.Sync(nameof(nt_fill_tile), ref nt_fill_tile);
+			ser.Sync(nameof(nt_fill_attrib), ref nt_fill_attrib);
+			ser.Sync(nameof(wram_bank), ref wram_bank);
+			ser.Sync(nameof(last_nt_read), ref last_nt_read);
+			ser.Sync(nameof(EXRAM), ref EXRAM, false);
 
 			SyncPRGBanks();
 			SyncCHRBanks();
@@ -255,7 +255,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// top 2 bits of address come from chr_reg_high
 				bank_1k += chr_reg_high << 8;
 				ofs = addr & (4 * 1024 - 1);
-				goto MAPPED;
+
+				bank_1k &= chr_bank_mask_1k;
+				addr = (bank_1k << 10) | ofs;
+				return addr;
 			}
 
 			if (NES.ppu.reg_2000.obj_size_16)
@@ -278,7 +281,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bank_1k = a_banks_1k[bank_1k];
 			}
 		
-			MAPPED:
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
 			return addr;

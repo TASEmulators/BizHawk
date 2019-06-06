@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common
         }
 
         public NoAvailableCoreException(string message)
-            : base ("System is currently NOT emulated: " + message)
+            : base ($"System is currently NOT emulated: {message}")
         {
 
         }

@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_regs_8k", ref prg_regs_8k);
-			ser.Sync("chr_regs_1k", ref chr_regs_1k);
-			ser.Sync("prg_mode", ref chr_regs_1k);
-			ser.Sync("mirror_mode", ref chr_regs_1k);
+			ser.Sync(nameof(prg_regs_8k), ref prg_regs_8k);
+			ser.Sync(nameof(chr_regs_1k), ref chr_regs_1k);
+			ser.Sync(nameof(prg_mode), ref chr_regs_1k);
+			ser.Sync(nameof(mirror_mode), ref chr_regs_1k);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

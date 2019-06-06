@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
-			ser.Register<ISoundProvider>(magicSoundProvider);
+			ser.Register<ISoundProvider>(this);
 
 			if (Board is BANDAI_FCG_1)
 			{

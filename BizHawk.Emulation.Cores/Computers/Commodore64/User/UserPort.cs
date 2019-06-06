@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.User
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("_connected", ref _connected);
+			ser.Sync(nameof(_connected), ref _connected);
 			_device?.SyncState(ser);
 		}
 	}

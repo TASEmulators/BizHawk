@@ -180,7 +180,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void End()
 		{
 			if (!IsActive)
-				throw new InvalidOperationException("GuiRenderer is not active!");
+				throw new InvalidOperationException($"{nameof(GuiRenderer)} is not active!");
 			IsActive = false;
 		}
 

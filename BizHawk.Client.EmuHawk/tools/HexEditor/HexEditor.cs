@@ -394,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 					return '.';
 				}
 
-				if (val >= 0x80)
+				if (val >= 0x7F)
 				{
 					return '.';
 				}
@@ -545,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 					addrStr.Append("  ");
 				}
 
-				addrStr.AppendLine(_addr.ToHexString(_numDigits) + " |");
+				addrStr.AppendLine($"{_addr.ToHexString(_numDigits)} |");
 			}
 
 			return addrStr.ToString();
@@ -700,9 +700,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGroupBoxTitle()
 		{
-			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / DataSize).TrimStart('0');
-			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + (_domain.CanPoke() ? "" : " (READ-ONLY)") +
-				"  -  " + addressesString + " addresses";
+			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
+			MemoryViewerBox.Text = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
 		}
 
 		private void ClearNibbles()
@@ -769,8 +768,7 @@ namespace BizHawk.Client.EmuHawk
 				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
 				if (_secondaryHighlightedAddresses.Any())
 				{
-					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count() +
-						(_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1));
+					Text += $" (Selected 0x{_secondaryHighlightedAddresses.Count() + (_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1):X})";
 				}
 			}
 		}
@@ -797,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_numDigits = GetNumDigits(_domain.Size);
-			_numDigitsStr = "{0:X" + _numDigits + "}  ";
+			_numDigitsStr = $"{{0:X{_numDigits}}}  ";
 		}
 
 		private void SetDataSize(int size)
@@ -805,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			if (size == 1 || size == 2 || size == 4)
 			{
 				DataSize = size;
-				_digitFormatString = "{0:X" + (DataSize * 2) + "} ";
+				_digitFormatString = $"{{0:X{DataSize * 2}}} ";
 				SetHeader();
 				UpdateGroupBoxTitle();
 				UpdateValues();
@@ -907,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var extension = Path.GetExtension(RomName);
 
-				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
+				return $"Binary (*{extension})|*{extension}|All Files|*.*";
 			}
 			
 			return "Binary (*.bin)|*.bin|All Files|*.*";
@@ -988,7 +986,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(RomName) + ".txt";
+				sfd.FileName = $"{Path.GetFileNameWithoutExtension(RomName)}.txt";
 			}
 			else
 			{
@@ -1386,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (var j = 0; j < 16; j++)
 						{
-							sb.Append(string.Format("{0:X2} ", _domain.PeekByte((i * 16) + j)));
+							sb.Append($"{_domain.PeekByte((i * 16) + j):X2} ");
 						}
 
 						sb.AppendLine();
@@ -1412,7 +1410,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var ofd = new OpenFileDialog
 			{
-				FileName = Path.GetFileNameWithoutExtension(romName) + ".tbl",
+				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
 				InitialDirectory = intialDirectory,
 				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
 				RestoreDirectory = false
@@ -2332,7 +2330,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
+				//e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
 			}
 		}
 

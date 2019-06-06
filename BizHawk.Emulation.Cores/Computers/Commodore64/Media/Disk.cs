@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("WriteProtected", ref WriteProtected);
+			ser.Sync(nameof(WriteProtected), ref WriteProtected);
 
 			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
 			// So commenting out this (very slow) code for now

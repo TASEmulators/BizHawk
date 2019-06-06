@@ -131,7 +131,7 @@ namespace BizHawk.Common
 		{
 			if (_boundStream == null)
 			{
-				throw new InvalidOperationException("HawkFile: Can't call GetStream() before youve successfully bound something!");
+				throw new InvalidOperationException($"{nameof(HawkFile)}: Can't call {nameof(GetStream)}() before you've successfully bound something!");
 			}
 
 			return _boundStream;
@@ -217,7 +217,7 @@ namespace BizHawk.Common
 		{
 			if (_rootPath != null)
 			{
-				throw new InvalidOperationException("Don't reopen a HawkFile.");
+				throw new InvalidOperationException($"Don't reopen a {nameof(HawkFile)}.");
 			}
 
 			string autobind = null;
@@ -334,7 +334,7 @@ namespace BizHawk.Common
 			_extractor.ExtractFile(archiveIndex, _boundStream);
 			_boundStream.Position = 0;
 			_memberPath = _archiveItems[index].Name; // TODO - maybe go through our own list of names? maybe not, its indexes dont match..
-			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
+			Console.WriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
 			_boundIndex = archiveIndex;
 			return this;
 		}
@@ -360,7 +360,7 @@ namespace BizHawk.Common
 		private void BindRoot()
 		{
 			_boundStream = _rootStream;
-			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
+			Console.WriteLine($"{nameof(HawkFile)} bound {CanonicalFullPath}");
 		}
 
 		/// <summary>

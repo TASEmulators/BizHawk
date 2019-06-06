@@ -166,15 +166,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("serial_control", ref serial_control);
-			ser.Sync("serial_data", ref serial_data);
-			ser.Sync("serial_start", ref serial_start);
-			ser.Sync("serial_clock", ref serial_clock);
-			ser.Sync("serial_bits", ref serial_bits);
-			ser.Sync("clk_internal", ref clk_internal);
-			ser.Sync("clk_rate", ref clk_rate);
-			ser.Sync("going_out", ref going_out);
-			ser.Sync("coming_in", ref coming_in);
+			ser.Sync(nameof(serial_control), ref serial_control);
+			ser.Sync(nameof(serial_data), ref serial_data);
+			ser.Sync(nameof(serial_start), ref serial_start);
+			ser.Sync(nameof(serial_clock), ref serial_clock);
+			ser.Sync(nameof(serial_bits), ref serial_bits);
+			ser.Sync(nameof(clk_internal), ref clk_internal);
+			ser.Sync(nameof(clk_rate), ref clk_rate);
+			ser.Sync(nameof(going_out), ref going_out);
+			ser.Sync(nameof(coming_in), ref coming_in);
 		}
 	}
 }

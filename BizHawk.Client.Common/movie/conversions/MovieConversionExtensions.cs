@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 	{
 		public static TasMovie ToTasMovie(this IMovie old, bool copy = false)
 		{
-			string newFilename = old.Filename + "." + TasMovie.Extension;
+			string newFilename = $"{old.Filename}.{TasMovie.Extension}";
 
 			if (File.Exists(newFilename))
 			{
@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				{
 					if (File.Exists(newFilename))
 					{
-						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
 						fileNum++;
 					}
 					else
@@ -131,11 +131,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (old.Filename.Contains("tasproj"))
 			{
 				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
-				newFilename = newFilename + "nfn." + TasMovie.Extension;
+				newFilename = $"{newFilename}nfn.{TasMovie.Extension}";
 			}
 			else
 			{
-				newFilename = old.Filename + "." + TasMovie.Extension;
+				newFilename = $"{old.Filename}.{TasMovie.Extension}";
 			}
 
 			if (File.Exists(newFilename))
@@ -146,7 +146,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				{
 					if (File.Exists(newFilename))
 					{
-						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
 						fileNum++;
 					}
 					else
@@ -216,11 +216,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (old.Filename.Contains("tasproj"))
 			{
 				newFilename = newFilename.Remove(newFilename.Length - 7, 7);
-				newFilename = newFilename + "nfsr." + TasMovie.Extension;
+				newFilename = $"{newFilename}nfsr.{TasMovie.Extension}";
 			}
 			else
 			{
-				newFilename = old.Filename + "." + TasMovie.Extension;
+				newFilename = $"{old.Filename}.{TasMovie.Extension}";
 			}
 
 			if (File.Exists(newFilename))
@@ -231,7 +231,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				{
 					if (File.Exists(newFilename))
 					{
-						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						newFilename = $"{old.Filename} ({fileNum}).{TasMovie.Extension}";
 						fileNum++;
 					}
 					else
@@ -323,7 +323,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			{
 				foreach (var firmware in Global.FirmwareManager.RecentlyServed)
 				{
-					var key = firmware.SystemId + "_Firmware_" + firmware.FirmwareId;
+					var key = $"{firmware.SystemId}_Firmware_{firmware.FirmwareId}";
 
 					if (!movie.HeaderEntries.ContainsKey(key))
 					{

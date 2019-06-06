@@ -1,81 +1,96 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "sprite_mapper.h"
 #include "counterdef.h"
 #include "next_m0_time.h"
 #include "../insertion_sort.h"
-#include <cstring>
 #include <algorithm>
+#include <cstring>
+
+namespace {
+
+class SpxLess {
+public:
+	explicit SpxLess(unsigned char const *spxlut) : spxlut_(spxlut) {}
+
+	bool operator()(unsigned char lhs, unsigned char rhs) const {
+		return spxlut_[lhs] < spxlut_[rhs];
+	}
+
+private:
+	unsigned char const *const spxlut_;
+};
+
+}
 
 namespace gambatte {
 
-SpriteMapper::OamReader::OamReader(const LyCounter &lyCounter, const unsigned char *oamram)
-: lyCounter(lyCounter), oamram(oamram), cgb_(false) {
+SpriteMapper::OamReader::OamReader(LyCounter const &lyCounter, unsigned char const *oamram)
+: lyCounter_(lyCounter)
+, oamram_(oamram)
+, cgb_(false)
+{
 	reset(oamram, false);
 }
 
-void SpriteMapper::OamReader::reset(const unsigned char *const oamram, const bool cgb) {
-	this->oamram = oamram;
-	this->cgb_   = cgb;
+void SpriteMapper::OamReader::reset(unsigned char const *const oamram, bool const cgb) {
+	oamram_ = oamram;
+	cgb_ = cgb;
 	setLargeSpritesSrc(false);
-	lu = 0;
-	lastChange = 0xFF;
-	std::fill_n(szbuf, 40, largeSpritesSrc);
+	lu_ = 0;
+	lastChange_ = 0xFF;
+	std::fill(szbuf_, szbuf_ + 40, largeSpritesSrc_);
 
 	unsigned pos = 0;
 	unsigned distance = 80;
-
 	while (distance--) {
-		buf[pos] = oamram[((pos * 2) & ~3) | (pos & 1)];
+		buf_[pos] = oamram[((pos * 2) & ~3) | (pos & 1)];
 		++pos;
 	}
 }
 
-static unsigned toPosCycles(const unsigned long cc, const LyCounter &lyCounter) {
+static unsigned toPosCycles(unsigned long const cc, LyCounter const &lyCounter) {
 	unsigned lc = lyCounter.lineCycles(cc) + 3 - lyCounter.isDoubleSpeed() * 3u;
-
 	if (lc >= 456)
 		lc -= 456;
 
 	return lc;
 }
 
-void SpriteMapper::OamReader::update(const unsigned long cc) {
-	if (cc > lu) {
+void SpriteMapper::OamReader::update(unsigned long const cc) {
+	if (cc > lu_) {
 		if (changed()) {
-			const unsigned lulc = toPosCycles(lu, lyCounter);
-
+			unsigned const lulc = toPosCycles(lu_, lyCounter_);
 			unsigned pos = std::min(lulc, 80u);
 			unsigned distance = 80;
 
-			if ((cc - lu) >> lyCounter.isDoubleSpeed() < 456) {
-				const unsigned cclc = toPosCycles(cc, lyCounter);
-
+			if ((cc - lu_) >> lyCounter_.isDoubleSpeed() < 456) {
+				unsigned cclc = toPosCycles(cc, lyCounter_);
 				distance = std::min(cclc, 80u) - pos + (cclc < lulc ? 80 : 0);
 			}
 
 			{
-				const unsigned targetDistance = lastChange - pos + (lastChange <= pos ? 80 : 0);
-
+				unsigned targetDistance =
+					lastChange_ - pos + (lastChange_ <= pos ? 80 : 0);
 				if (targetDistance <= distance) {
 					distance = targetDistance;
-					lastChange = 0xFF;
+					lastChange_ = 0xFF;
 				}
 			}
 
@@ -83,93 +98,92 @@ void SpriteMapper::OamReader::update(const unsigned long cc) {
 				if (!(pos & 1)) {
 					if (pos == 80)
 						pos = 0;
-					
+
 					if (cgb_)
-						szbuf[pos >> 1] = largeSpritesSrc;
-					
-					buf[pos    ] = oamram[pos * 2    ];
-					buf[pos + 1] = oamram[pos * 2 + 1];
+						szbuf_[pos >> 1] = largeSpritesSrc_;
+
+					buf_[pos    ] = oamram_[pos * 2    ];
+					buf_[pos + 1] = oamram_[pos * 2 + 1];
 				} else
-					szbuf[pos >> 1] = (szbuf[pos >> 1] & cgb_) | largeSpritesSrc;
+					szbuf_[pos >> 1] = (szbuf_[pos >> 1] & cgb_) | largeSpritesSrc_;
 
 				++pos;
 			}
 		}
 
-		lu = cc;
+		lu_ = cc;
 	}
 }
 
-void SpriteMapper::OamReader::change(const unsigned long cc) {
+void SpriteMapper::OamReader::change(unsigned long cc) {
 	update(cc);
-	lastChange = std::min(toPosCycles(lu, lyCounter), 80u);
+	lastChange_ = std::min(toPosCycles(lu_, lyCounter_), 80u);
 }
 
 void SpriteMapper::OamReader::setStatePtrs(SaveState &state) {
-	state.ppu.oamReaderBuf.set(buf, sizeof buf);
-	state.ppu.oamReaderSzbuf.set(szbuf, sizeof(szbuf) / sizeof(bool));
+	state.ppu.oamReaderBuf.set(buf_, sizeof buf_);
+	state.ppu.oamReaderSzbuf.set(szbuf_, sizeof szbuf_ / sizeof *szbuf_);
 }
 
-void SpriteMapper::OamReader::loadState(const SaveState &ss, const unsigned char *const oamram) {
-	this->oamram = oamram;
-	largeSpritesSrc = ss.mem.ioamhram.get()[0x140] >> 2 & 1;
-	lu = ss.ppu.enableDisplayM0Time;
-	change(lu);
+void SpriteMapper::OamReader::loadState(SaveState const &ss, unsigned char const *const oamram) {
+	oamram_ = oamram;
+	largeSpritesSrc_ = ss.mem.ioamhram.get()[0x140] >> 2 & 1;
+	lu_ = ss.ppu.enableDisplayM0Time;
+	change(lu_);
 }
 
 SYNCFUNC(SpriteMapper::OamReader)
 {
-	NSS(buf);
-	NSS(szbuf);
+	NSS(buf_);
+	NSS(szbuf_);
 
-	NSS(lu);
-	NSS(lastChange);
-	NSS(largeSpritesSrc);
+	NSS(lu_);
+	NSS(lastChange_);
+	NSS(largeSpritesSrc_);
 	NSS(cgb_);
 }
 
-void SpriteMapper::OamReader::enableDisplay(const unsigned long cc) {
-	std::memset(buf, 0x00, sizeof(buf));
-	std::fill(szbuf, szbuf + 40, false);
-	lu = cc + (80 << lyCounter.isDoubleSpeed());
-	lastChange = 80;
+void SpriteMapper::OamReader::enableDisplay(unsigned long cc) {
+	std::memset(buf_, 0x00, sizeof buf_);
+	std::fill(szbuf_, szbuf_ + 40, false);
+	lu_ = cc + (80 << lyCounter_.isDoubleSpeed());
+	lastChange_ = 80;
 }
 
 SpriteMapper::SpriteMapper(NextM0Time &nextM0Time,
-                           const LyCounter &lyCounter,
-                           const unsigned char *const oamram) :
-	nextM0Time_(nextM0Time),
-	oamReader(lyCounter, oamram)
+                           LyCounter const &lyCounter,
+                           unsigned char const *oamram)
+: nextM0Time_(nextM0Time)
+, oamReader_(lyCounter, oamram)
 {
 	clearMap();
 }
 
-void SpriteMapper::reset(const unsigned char *const oamram, const bool cgb) {
-	oamReader.reset(oamram, cgb);
+void SpriteMapper::reset(unsigned char const *oamram, bool cgb) {
+	oamReader_.reset(oamram, cgb);
 	clearMap();
 }
 
 void SpriteMapper::clearMap() {
-	std::memset(num, NEED_SORTING_MASK, sizeof num);
+	std::memset(num_, need_sorting_mask, sizeof num_);
 }
 
 void SpriteMapper::mapSprites() {
 	clearMap();
 
 	for (unsigned i = 0x00; i < 0x50; i += 2) {
-		const int spriteHeight = 8 << largeSprites(i >> 1);
-		const unsigned bottom_pos = posbuf()[i] - (17u - spriteHeight);
+		int const spriteHeight = 8 << largeSprites(i >> 1);
+		unsigned const bottomPos = posbuf()[i] - (17u - spriteHeight);
 
-		if (bottom_pos < 143u + spriteHeight) {
-			const unsigned startly = static_cast<int>(bottom_pos) + 1 - spriteHeight >= 0
-			                       ? static_cast<int>(bottom_pos) + 1 - spriteHeight :  0;
-			unsigned char *map = spritemap + startly * 10;
-			unsigned char *n   = num       + startly;
-			unsigned char *const nend = num + (bottom_pos < 143 ? bottom_pos : 143) + 1;
+		if (bottomPos < 143u + spriteHeight) {
+			unsigned const startly = std::max(int(bottomPos) + 1 - spriteHeight, 0);
+			unsigned char *map = spritemap_ + startly * 10;
+			unsigned char *n   = num_       + startly;
+			unsigned char *const nend = num_ + std::min(bottomPos, 143u) + 1;
 
 			do {
-				if (*n < NEED_SORTING_MASK + 10)
-					map[(*n)++ - NEED_SORTING_MASK] = i;
+				if (*n < need_sorting_mask + 10)
+					map[(*n)++ - need_sorting_mask] = i;
 
 				map += 10;
 			} while (++n != nend);
@@ -179,24 +193,26 @@ void SpriteMapper::mapSprites() {
 	nextM0Time_.invalidatePredictedNextM0Time();
 }
 
-void SpriteMapper::sortLine(const unsigned ly) const {
-	num[ly] &= ~NEED_SORTING_MASK;
-	insertionSort(spritemap + ly * 10, spritemap + ly * 10 + num[ly], SpxLess(posbuf()));
+void SpriteMapper::sortLine(unsigned const ly) const {
+	num_[ly] &= ~need_sorting_mask;
+	insertionSort(spritemap_ + ly * 10, spritemap_ + ly * 10 + num_[ly],
+	              SpxLess(posbuf() + 1));
 }
 
-unsigned long SpriteMapper::doEvent(const unsigned long time) {
-	oamReader.update(time);
+unsigned long SpriteMapper::doEvent(unsigned long const time) {
+	oamReader_.update(time);
 	mapSprites();
-	return oamReader.changed() ? time + oamReader.lyCounter.lineTime() : static_cast<unsigned long>(DISABLED_TIME);
+	return oamReader_.changed()
+	     ? time + oamReader_.lineTime()
+	     : static_cast<unsigned long>(disabled_time);
 }
 
 SYNCFUNC(SpriteMapper)
 {
-	NSS(spritemap);
-	NSS(num);
-	
-	SSS(nextM0Time_);
-	SSS(oamReader);
+	NSS(spritemap_);
+	NSS(num_);
+
+	SSS(oamReader_);
 }
 
 }

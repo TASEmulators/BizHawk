@@ -93,6 +93,9 @@ namespace BizHawk.Client.ApiHawk
 				case "TI83":
 					return CoreSystem.TI83;
 
+				case "VEC":
+					return CoreSystem.Vectrex;
+
 				case "WSWAN":
 					return CoreSystem.WonderSwan;
 
@@ -101,6 +104,12 @@ namespace BizHawk.Client.ApiHawk
 
                 case "AmstradCPC":
                     return CoreSystem.AmstradCPC;
+
+				case "GGL":
+					return CoreSystem.GGL;
+
+				case "ChannelF":
+					return CoreSystem.ChannelF;
 
 				case "VB":
 				case "NGP":
@@ -112,7 +121,7 @@ namespace BizHawk.Client.ApiHawk
 					return 0; // like I give a shit
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
+					throw new IndexOutOfRangeException($"{value} is missing in convert list");
 			}
 		}
 
@@ -218,7 +227,7 @@ namespace BizHawk.Client.ApiHawk
                     return "AmstradCPC";
 
 				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value.ToString()));
+					throw new IndexOutOfRangeException($"{value.ToString()} is missing in convert list");
 			}
 		}
 

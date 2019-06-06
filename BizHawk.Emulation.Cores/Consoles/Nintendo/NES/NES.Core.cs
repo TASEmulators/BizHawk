@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ICycleTiming
+	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
 		//hardware/state
 		public MOS6502X<CpuLink> cpu;
@@ -72,92 +72,65 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return Board;
 		}
 
+		#region Audio
+
+		BlipBuffer blip = new BlipBuffer(4096);
+		const int blipbuffsize = 4096;
+
+		public int old_s = 0;
+
+		public bool CanProvideAsync { get { return false; } }
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new NotSupportedException("Only sync mode is supported");
+			}
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async not supported");
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
 		public void Dispose()
 		{
-			if (magicSoundProvider != null)
-				magicSoundProvider.Dispose();
-			magicSoundProvider = null;
+			if (blip != null)
+			{
+				blip.Dispose();
+				blip = null;
+			}
 		}
 
-		public class MagicSoundProvider : ISoundProvider, IDisposable
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			BlipBuffer blip;
-			NES nes;
+			blip.EndFrame(apu.sampleclock);
+			apu.sampleclock = 0;
 
-			const int blipbuffsize = 4096;
+			nsamp = blip.SamplesAvailable();
+			samples = new short[nsamp * 2];
 
-			public MagicSoundProvider(NES nes, uint infreq)
-			{
-				this.nes = nes;
+			blip.ReadSamples(samples, nsamp, true);
+			// duplicate to stereo
+			for (int i = 0; i < nsamp * 2; i += 2)
+				samples[i + 1] = samples[i];
 
-				blip = new BlipBuffer(blipbuffsize);
-				blip.SetRates(infreq, 44100);
-
-				//var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-				//1.789773mhz NTSC
-				//resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
-				//output = new Sound.Utilities.DCFilter(actualMetaspu);
-			}
-
-			public bool CanProvideAsync
-			{
-				get { return false; }
-			}
-
-			public SyncSoundMode SyncMode
-			{
-				get { return SyncSoundMode.Sync; }
-			}
-
-			public void SetSyncMode(SyncSoundMode mode)
-			{
-				if (mode != SyncSoundMode.Sync)
-				{
-					throw new NotSupportedException("Only sync mode is supported");
-				}
-			}
-
-			public void GetSamplesAsync(short[] samples)
-			{
-				throw new NotSupportedException("Async not supported");
-			}
-
-			public void GetSamplesSync(out short[] samples, out int nsamp)
-			{
-				//Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
-				foreach (var d in nes.apu.dlist)
-					blip.AddDelta(d.time, d.value);
-				nes.apu.dlist.Clear();
-				blip.EndFrame(nes.apu.sampleclock);
-				nes.apu.sampleclock = 0;
-
-				nsamp = blip.SamplesAvailable();
-				samples = new short[nsamp * 2];
-
-				blip.ReadSamples(samples, nsamp, true);
-				// duplicate to stereo
-				for (int i = 0; i < nsamp * 2; i += 2)
-					samples[i + 1] = samples[i];
-
-				nes.Board.ApplyCustomAudio(samples);
-			}
-
-			public void DiscardSamples()
-			{
-				nes.apu.dlist.Clear();
-				nes.apu.sampleclock = 0;
-			}
-
-			public void Dispose()
-			{
-				if (blip != null)
-				{
-					blip.Dispose();
-					blip = null;
-				}
-			}
+			Board.ApplyCustomAudio(samples);
 		}
-		public MagicSoundProvider magicSoundProvider;
+
+		public void DiscardSamples()
+		{
+			blip.Clear();
+			apu.sampleclock = 0;
+		}
+
+		#endregion
 
 		public void HardReset()
 		{
@@ -243,8 +216,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					throw new Exception("Unknown displaytype!");
 			}
-			if (magicSoundProvider == null)
-				magicSoundProvider = new MagicSoundProvider(this, (uint)cpuclockrate);
+
+			blip.SetRates((uint)cpuclockrate, 44100);
 
 			BoardSystemHardReset();
 
@@ -563,7 +536,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			/////////////////////////////
 			// dmc dma end
 			/////////////////////////////
-			apu.RunOne(true);
+			apu.RunOneFirst();
 
 			if (cpu.RDY && !IRQ_delay)
 			{
@@ -576,7 +549,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			cpu.ExecuteOne();
-			apu.RunOne(false);
+			Board.ClockCPU();
+
+			int s = apu.EmitSample();
+
+			if (s != old_s)
+			{
+				blip.AddDelta(apu.sampleclock, s - old_s);
+				old_s = s;
+			}
+			apu.sampleclock++;
+
+			apu.RunOneLast();
 
 			if (ppu.double_2007_read > 0)
 				ppu.double_2007_read--;
@@ -592,8 +576,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cpu.RDY = true;
 				IRQ_delay = true;
 			}
-			
-			Board.ClockCPU();
 		}
 
 		public byte ReadReg(int addr)

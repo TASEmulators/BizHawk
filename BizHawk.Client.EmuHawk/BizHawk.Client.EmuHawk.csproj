@@ -113,8 +113,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\BizHawk.Common\PlatformLinkedLibSingleton.cs">
-      <Link>PlatformLinkedLibSingleton.cs</Link>
+    <Compile Include="..\BizHawk.Common\OSTailoredCode.cs">
+      <Link>OSTailoredCode.cs</Link>
     </Compile>
     <Compile Include="..\Version\svnrev.cs">
       <Link>svnrev.cs</Link>
@@ -1216,7 +1216,7 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\controls\components\AnalogSticklPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\components\AnalogStickPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
@@ -1252,6 +1252,7 @@
     <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GGLSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
