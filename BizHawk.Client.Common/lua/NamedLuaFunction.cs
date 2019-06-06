@@ -1,6 +1,8 @@
 ﻿using System;
 using NLua;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class NamedLuaFunction
@@ -47,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		public Action Callback { get; }
 
-		public Action<uint, uint> MemCallback { get; }
+		public MemoryCallbackDelegate MemCallback { get; }
 
 		public void Call(string name = null)
 		{

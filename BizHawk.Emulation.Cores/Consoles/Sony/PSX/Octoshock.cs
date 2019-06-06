@@ -880,18 +880,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void ShockMemCallback(uint address, OctoshockDll.eShockMemCb type, uint size, uint value)
 		{
+			MemoryCallbackFlags flags = 0;
 			switch (type)
 			{
-				case OctoshockDll.eShockMemCb.Read: 
-					MemoryCallbacks.CallReads(address, value, "System Bus");
+				case OctoshockDll.eShockMemCb.Read:
+					flags |= MemoryCallbackFlags.AccessRead;
 					break;
 				case OctoshockDll.eShockMemCb.Write:
-					MemoryCallbacks.CallWrites(address, value, "System Bus");
+					flags |= MemoryCallbackFlags.AccessWrite;
 					break;
 				case OctoshockDll.eShockMemCb.Execute:
-					MemoryCallbacks.CallExecutes(address, value, "System Bus");
+					flags |= MemoryCallbackFlags.AccessExecute;
 					break;
 			}
+			MemoryCallbacks.CallMemoryCallbacks(address, value, (uint)flags, "System Bus");
 		}
 
 		void InitMemCallbacks()

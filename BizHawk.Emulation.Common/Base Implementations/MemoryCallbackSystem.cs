@@ -67,38 +67,57 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, string scope)
+		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
 		{
 			for (int i = 0; i < cbs.Count; i++)
 			{
 				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
 				{
-					cbs[i].Callback(addr, value);
+					cbs[i].Callback(addr, value, flags);
 				}
 			}
 		}
 
-		public void CallReads(uint addr, uint value, string scope)
+		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
+		{
+			var flagEnum = (MemoryCallbackFlags)flags;
+			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessRead) && _hasReads)
+			{
+				Call(_reads, addr, value, flags, scope);
+			}
+
+			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessWrite) && _hasWrites)
+			{
+				Call(_writes, addr, value, flags, scope);
+			}
+
+			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessExecute) && _hasExecutes)
+			{
+				Call(_execs, addr, value, flags, scope);
+			}
+		}
+
+		public void CallReads(uint addr, uint value, uint flags, string scope)
 		{
 			if (_hasReads)
 			{
-				Call(_reads, addr, value, scope);
+				Call(_reads, addr, value, flags, scope);
 			}
 		}
 
-		public void CallWrites(uint addr, uint value, string scope)
+		public void CallWrites(uint addr, uint value, uint flags, string scope)
 		{
 			if (_hasWrites)
 			{
-				Call(_writes, addr, value, scope);
+				Call(_writes, addr, value, flags, scope);
 			}
 		}
 
-		public void CallExecutes(uint addr, uint value, string scope)
+		public void CallExecutes(uint addr, uint value, uint flags, string scope)
 		{
 			if (_hasExecutes)
 			{
-				Call(_execs, addr, value, scope);
+				Call(_execs, addr, value, flags, scope);
 			}
 		}
 
@@ -136,7 +155,7 @@ namespace BizHawk.Emulation.Common
 			return (_hasReads != hadReads || _hasWrites != hadWrites || _hasExecutes != hadExecutes);
 		}
 
-		private int RemoveInternal(Action<uint, uint> action)
+		private int RemoveInternal(MemoryCallbackDelegate action)
 		{
 			var readsToRemove = _reads.Where(imc => imc.Callback == action).ToList();
 			var writesToRemove = _writes.Where(imc => imc.Callback == action).ToList();
@@ -160,7 +179,7 @@ namespace BizHawk.Emulation.Common
 			return readsToRemove.Count + writesToRemove.Count + execsToRemove.Count;
 		}
 
-		public void Remove(Action<uint, uint> action)
+		public void Remove(MemoryCallbackDelegate action)
 		{
 			if (RemoveInternal(action) > 0)
 			{
@@ -171,7 +190,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void RemoveAll(IEnumerable<Action<uint, uint>> actions)
+		public void RemoveAll(IEnumerable<MemoryCallbackDelegate> actions)
 		{
 			bool changed = false;
 			foreach (var action in actions)
@@ -286,7 +305,7 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallback : IMemoryCallback
 	{
-		public MemoryCallback(string scope, MemoryCallbackType type, string name, Action<uint, uint> callback, uint? address, uint? mask)
+		public MemoryCallback(string scope, MemoryCallbackType type, string name, MemoryCallbackDelegate callback, uint? address, uint? mask)
 		{
 			if (type == MemoryCallbackType.Execute && !address.HasValue)
 			{
@@ -303,7 +322,7 @@ namespace BizHawk.Emulation.Common
 
 		public MemoryCallbackType Type { get; }
 		public string Name { get; }
-		public Action<uint, uint> Callback { get; }
+		public MemoryCallbackDelegate Callback { get; }
 		public uint? Address { get; }
 		public uint? AddressMask { get; }
 		public string Scope { get; }

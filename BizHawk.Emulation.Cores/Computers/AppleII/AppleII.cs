@@ -183,9 +183,21 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void SetCallbacks()
 		{
-			_machine.Memory.ReadCallback = (addr) => MemoryCallbacks.CallReads(addr, 0, "System Bus");
-			_machine.Memory.WriteCallback = (addr) => MemoryCallbacks.CallWrites(addr, 0, "System Bus");
-			_machine.Memory.ExecuteCallback = (addr) => MemoryCallbacks.CallExecutes(addr, 0, "System Bus");
+			_machine.Memory.ReadCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
+			_machine.Memory.WriteCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
+			_machine.Memory.ExecuteCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
 			_machine.Memory.InputCallback = InputCallbacks.Call;
 		}
 	}
