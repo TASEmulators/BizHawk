@@ -170,7 +170,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Used for snapshot generation
         /// </summary>
-        /// <returns></returns>
         public int[] ExportRegisters()
         {
             return _registers;
@@ -223,7 +222,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Reads the value from the currently selected register
         /// </summary>
-        /// <returns></returns>
         public int PortRead()
         {
             return _registers[_activeRegister];
@@ -232,7 +230,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes to the currently selected register
         /// </summary>
-        /// <param name="value"></param>
         public void PortWrite(int value)
         {
             if (_activeRegister >= 0x10)
@@ -347,7 +344,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="frameCycle"></param>
         public void UpdateSound(int frameCycle)
         {
             BufferUpdate(frameCycle);
@@ -595,8 +591,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initializes timing information for the frame
         /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="frameTactCount"></param>
         private void InitTiming(int sampleRate, int frameTactCount)
         {
             _sampleRate = sampleRate;
@@ -620,7 +614,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="cycle"></param>
         private void BufferUpdate(int cycle)
         {
             if (cycle > _tStatesPerFrame)
@@ -763,7 +756,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// State serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PSG-AY");

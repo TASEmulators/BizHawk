@@ -428,8 +428,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return result;
 		}
 
-		/// <summary>
-		/// </summary>
 		/// <param name="port">0 or 1, corresponding to L and R physical ports on the snes</param>
 		/// <param name="device">LibsnesApi.SNES_DEVICE enum index specifying type of device</param>
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>

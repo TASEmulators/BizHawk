@@ -457,8 +457,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// <summary>
         /// Detect ISO9660
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
         public bool GetISO9660(byte[] buffer)
         {
             //zero 24-jun-2013 - validate ISO9660
@@ -475,8 +473,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// <summary>
         /// Detect CD-I
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
         public bool GetCDI(byte[] buffer)
         {
             // CD-Interactive

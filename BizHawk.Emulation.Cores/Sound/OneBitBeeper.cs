@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// Processes an incoming pulse value
 		/// </summary>
-		/// <param name="pulse"></param>
 		public void ProcessPulseValue(bool pulse, bool renderSound = true)
 		{
 			if (!renderSound)
@@ -110,8 +109,6 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// Takes an int 0-100 and returns the relevant short volume to output
 		/// </summary>
-		/// <param name="vol"></param>
-		/// <returns></returns>
 		private int VolumeConverterIn(int vol)
 		{
 			int maxLimit = short.MaxValue / 3;
@@ -123,8 +120,6 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// <summary>
 		/// Takes an short volume and returns the relevant int value 0-100
 		/// </summary>
-		/// <param name="vol"></param>
-		/// <returns></returns>
 		private int VolumeConverterOut(int shortvol)
 		{
 			int maxLimit = short.MaxValue / 3;

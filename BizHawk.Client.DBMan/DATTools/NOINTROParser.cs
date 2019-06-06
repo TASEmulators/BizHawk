@@ -27,8 +27,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Parses multiple DAT files and returns a single GamesDB format csv string
 		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
 		public override string ParseDAT(string[] filePath)
 		{
 			foreach (var s in filePath)
@@ -116,7 +114,6 @@ namespace BizHawk.Client.DBMan
 		/// Detailed info here: https://www.tosecdev.org/tosec-naming-convention
 		/// Guts of this has been reused from here: https://github.com/Asnivor/MedLaunch/blob/master/MedLaunch/_Debug/DATDB/Platforms/TOSEC/StringConverterToSec.cs
 		/// </summary>
-		/// <param name="g"></param>
 		private void ParseNOINTROFlags(GameDB g)
 		{
 			string nameString = g.Name;

@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		/// <returns></returns>
 		public INESBoard GetBoard()
 		{
 			return Board;

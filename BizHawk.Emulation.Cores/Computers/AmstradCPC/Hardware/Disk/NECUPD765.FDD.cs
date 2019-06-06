@@ -69,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Searches for the requested sector
         /// </summary>
-        /// <returns></returns>
         private FloppyDisk.Sector GetSector()
         {
             FloppyDisk.Sector sector = null;
@@ -155,7 +154,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Parses a new disk image and loads it into this floppy drive
         /// </summary>
-        /// <param name="tapeData"></param>
         public void FDD_LoadDisk(byte[] diskData)
         {
             // we are only going to load into the first drive
@@ -335,8 +333,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Moves the head across the disk cylinders
             /// </summary>
-            /// <param name="direction"></param>
-            /// <param name="cylinderCount"></param>
             public void MoveHead(SkipDirection direction, int cylinderCount)
             {
                 // get total tracks
@@ -378,10 +374,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Finds a supplied sector
             /// </summary>
-            /// <param name="resBuffer"></param>
-            /// <param name=""></param>
-            /// <param name=""></param>
-            /// <returns></returns>
             public FloppyDisk.Sector FindSector(ref byte[] resBuffer, CommandParameters prms)
             {
                 int index =CurrentSector;
@@ -449,8 +441,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Populates a result buffer
             /// </summary>
-            /// <param name="resBuffer"></param>
-            /// <param name="chrn"></param>
             public void FillResult(ref byte[] resBuffer, CHRN chrn)
             {
                 // clear results
@@ -480,7 +470,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Populates the result buffer with ReadID data
             /// </summary>
-            /// <returns></returns>
             public void ReadID(ref byte[] resBuffer)
             {
                 if (CheckDriveStatus() == false)
@@ -797,7 +786,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Parses a new disk image and loads it into this floppy drive
             /// </summary>
-            /// <param name="tapeData"></param>
             public void FDD_LoadDisk(byte[] diskData)
             {
                 // try dsk first

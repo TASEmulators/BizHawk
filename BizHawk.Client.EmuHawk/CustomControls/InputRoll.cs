@@ -289,7 +289,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Returns all columns including those that are not visible
 		/// </summary>
-		/// <returns></returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns => _columns;

@@ -115,7 +115,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Called on first instantiation (and subsequent core reboots)
         /// </summary>
-        /// <param name="files"></param>
         protected void InitializeMedia(List<byte[]> files)
         {
             mediaImages = files;
@@ -240,7 +239,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Identifies and sorts the various media types
         /// </summary>
-        /// <returns></returns>
         private SpectrumMediaType IdentifyMedia(byte[] data)
         {
             // get first 16 bytes as a string

@@ -109,8 +109,6 @@ namespace BizHawk.Emulation.DiscSystem
             /// <summary>
             /// Parse mds stream for the header
             /// </summary>
-            /// <param name="stream"></param>
-            /// <returns></returns>
             public AHeader Parse(Stream stream)
             {
                 EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();

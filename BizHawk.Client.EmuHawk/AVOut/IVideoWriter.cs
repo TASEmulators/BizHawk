@@ -105,7 +105,6 @@ namespace BizHawk.Client.EmuHawk
 //		/// <summary>
 //		/// name that command line parameters can refer to
 //		/// </summary>
-//		/// <returns></returns>
 //		string ShortName();
 	}
 

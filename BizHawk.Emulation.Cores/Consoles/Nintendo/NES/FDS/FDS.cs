@@ -91,7 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// should only be called once, before emulation begins
 		/// </summary>
-		/// <param name="diskimage"></param>
 		public void SetDiskImage(byte[] diskimage)
 		{
 			// each FDS format is worse than the last
@@ -116,7 +115,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns the currently set disk image.  no effect on emulation (provided the image is not modified).
 		/// </summary>
-		/// <returns></returns>
 		public byte[] GetDiskImage()
 		{
 			return diskimage;

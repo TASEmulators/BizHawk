@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if pzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             // CSW Header
@@ -80,7 +79,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks
@@ -242,11 +240,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Processes a CSW v2 data block
         /// </summary>
-        /// <param name="srcBuff"></param>
-        /// <param name="destBuff"></param>
-        /// <param name="sampleRate"></param>
-        /// <param name="compType"></param>
-        /// <param name="pulseCount"></param>
         public static void ProcessCSWV2(
             byte[] srcBuff,
             ref byte[] destBuff,

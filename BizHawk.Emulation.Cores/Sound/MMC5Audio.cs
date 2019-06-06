@@ -165,11 +165,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private readonly Pulse[] pulse = new Pulse[2];
 		
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="addr">0x5000..0x5015</param>
-		/// <param name="val"></param>
 		public void WriteExp(int addr, byte val)
 		{
 			switch (addr)
@@ -231,7 +227,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// call for 8000:bfff reads
 		/// </summary>
-		/// <param name="val"></param>
 		public void ReadROMTrigger(byte val)
 		{
 			if (PCMRead)

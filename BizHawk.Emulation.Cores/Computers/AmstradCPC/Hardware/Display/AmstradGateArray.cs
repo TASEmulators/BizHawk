@@ -1197,9 +1197,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             // gate array is OUT only
@@ -1209,9 +1206,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
@@ -1306,7 +1300,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// Screenmode is defined at each HSYNC (start of a new character line)
             /// Therefore we pass the mode in via constructor
             /// </summary>
-            /// <param name="screenMode"></param>
             //public CharacterLine(int screenMode)
             //{
                 //ScreenMode = screenMode;
@@ -1319,7 +1312,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Adds a new horizontal character to the list
             /// </summary>
-            /// <param name="phase"></param>
             public void AddCharacter(Phase phase)
             {
                 Phases.Add(phase);

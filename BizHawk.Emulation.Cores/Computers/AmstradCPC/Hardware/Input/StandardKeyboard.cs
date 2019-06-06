@@ -102,7 +102,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads the currently selected line
         /// </summary>
-        /// <returns></returns>
         public byte ReadCurrentLine()
         {
             var lin = _currentLine; // - 0x40;
@@ -118,8 +117,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns the index of the key within the matrix
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         public int GetKeyIndexFromMatrix(string key)
         {
             int index = Array.IndexOf(KeyboardMatrix, key);
@@ -129,8 +126,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Sets key status
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isPressed"></param>
         public void SetKeyStatus(string key, bool isPressed)
         {
             int index = GetKeyIndexFromMatrix(key);
@@ -140,8 +135,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Gets a key's status
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         public bool GetKeyStatus(string key)
         {
             int index = GetKeyIndexFromMatrix(key);

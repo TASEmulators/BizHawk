@@ -24,15 +24,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the joystick line based on key pressed
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isPressed"></param>
         void SetJoyInput(string key, bool isPressed);
 
         /// <summary>
         /// Gets the state of a particular joystick binding
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         bool GetJoyInput(string key);
     }
 }

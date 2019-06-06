@@ -408,7 +408,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// Functionally the same as WaitOne(), but pumps com messa
 		/// </summary>
-		/// <param name="handle"></param>
 		public static void HackyComWaitOne(WaitHandle handle)
 		{
 			uint nativeResult; // result of the native wait API (WaitForMultipleObjects or MsgWaitForMultipleObjectsEx)

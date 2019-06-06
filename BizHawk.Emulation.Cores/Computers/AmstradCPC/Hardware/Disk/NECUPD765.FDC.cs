@@ -2471,7 +2471,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Handles CPU writing to the data register
         /// </summary>
-        /// <param name="data"></param>
         private void WriteDataRegister(byte data)
         {
             if (!GetBit(MSR_RQM, StatusMain) || GetBit(MSR_DIO, StatusMain))
@@ -2523,9 +2522,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Returns TRUE if successful. FALSE if otherwise
         /// Called only in idle phase
         /// </summary>
-        /// <param name="cmdByte"></param>
-        /// <param name="direction"></param>
-        /// <returns></returns>
         private bool ParseCommandByte(byte cmdByte)
         {
             // clear counters
@@ -2618,7 +2614,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Parses the first 5 command argument bytes that are of the standard format
         /// </summary>
-        /// <param name="paramIndex"></param>
         private void ParseParamByteStandard(int index)
         {
             byte currByte = CommBuffer[index];

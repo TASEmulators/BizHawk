@@ -9,16 +9,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	/// </summary>
 	public static class LibGambatte
 	{
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <returns>opaque state pointer</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr gambatte_create();
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_destroy(IntPtr core);
@@ -104,7 +98,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// blit from internal framebuffer to provided framebuffer
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf"></param>
 		/// <param name="pitch">in pixels</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		unsafe public static extern void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
@@ -112,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// blit from internal framebuffer to provided framebuffer
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="videobuf"></param>
 		/// <param name="pitch">in pixels</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_blitto(IntPtr core, int[] videobuf, int pitch);
@@ -136,13 +128,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			SP2_PALETTE = 2
 		};
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="palnum">in [0, 2]: One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>
 		/// <param name="colornum">in [0, 3]</param>
-		/// <param name="rgb32"></param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setdmgpalettecolor(IntPtr core, PalType palnum, uint colornum, uint rgb32);
 
@@ -181,7 +169,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Sets the callback used for getting input state.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="getinput"></param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setinputgetter(IntPtr core, InputGetter getinput);
 
@@ -301,7 +288,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Returns true if the currently loaded ROM image is treated as having CGB support.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_iscgb(IntPtr core);
 
@@ -309,7 +295,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// Returns true if a ROM image is loaded.
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_isloaded(IntPtr core);
 
@@ -340,28 +325,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <summary>
 		/// new savestate method
 		/// </summary>
-		/// <param name="core"></param>
-		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_newstatelen(IntPtr core);
 
 		/// <summary>
 		/// new savestate method
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="data"></param>
-		/// <param name="len"></param>
-		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_newstatesave(IntPtr core, byte[] data, int len);
 
 		/// <summary>
 		/// new savestate method
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="data"></param>
-		/// <param name="len"></param>
-		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_newstateload(IntPtr core, byte[] data, int len);
 

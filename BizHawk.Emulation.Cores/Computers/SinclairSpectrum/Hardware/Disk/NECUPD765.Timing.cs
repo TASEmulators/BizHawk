@@ -96,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Returns true if there is no delay
         /// Returns false if read is to be deferred
         /// </summary>
-        /// <returns></returns>
         private bool CheckTiming()
         {
             // get delta

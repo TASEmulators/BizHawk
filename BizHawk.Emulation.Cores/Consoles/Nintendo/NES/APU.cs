@@ -1355,7 +1355,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		/// <summary>only call in board.ClockCPU()</summary>
-		/// <param name="value"></param>
 		public void ExternalQueue(int value)
 		{
 			cart_sound = value + old_cart_sound;

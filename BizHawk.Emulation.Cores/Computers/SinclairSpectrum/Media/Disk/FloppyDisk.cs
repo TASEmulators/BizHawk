@@ -88,7 +88,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Attempts to parse incoming disk data
         /// </summary>
-        /// <param name="diskData"></param>
         /// <returns>
         /// TRUE:   disk parsed
         /// FALSE:  unable to parse disk
@@ -183,7 +182,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Detection routine for shadow of the beast game
         /// Still cannot get this to work, but at least the game is detected
         /// </summary>
-        /// <returns></returns>
         public bool DetectShadowOfTheBeast()
         {
             if (DiskTracks[0].Sectors.Length != 9)
@@ -222,8 +220,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Detect speedlock weak sector
         /// </summary>
-        /// <param name="weak"></param>
-        /// <returns></returns>
         public bool DetectSpeedlock(ref int[] weak)
         {
             // SPEEDLOCK NOTES (-asni 2018-05-01)
@@ -287,8 +283,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Detect Alkatraz
         /// </summary>
-        /// <param name="weak"></param>
-        /// <returns></returns>
         public bool DetectAlkatraz(ref int[] weak)
         {
             try
@@ -330,8 +324,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Detect Paul Owens
         /// </summary>
-        /// <param name="weak"></param>
-        /// <returns></returns>
         public bool DetectPaulOwens(ref int[] weak)
         {
             try
@@ -368,8 +360,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Detect Hexagon copy protection
         /// </summary>
-        /// <param name="weak"></param>
-        /// <returns></returns>
         public bool DetectHexagon(ref int[] weak)
         {
             try
@@ -417,7 +407,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Should be run at the end of the ParseDisk process
         /// If speedlock is detected the flag is set in the disk image
         /// </summary>
-        /// <returns></returns>
         protected virtual void SpeedlockDetection()
         {
 
@@ -515,7 +504,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the track count for the disk
         /// </summary>
-        /// <returns></returns>
         public virtual int GetTrackCount()
         {
             return DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides;
@@ -524,8 +512,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Reads the current sector ID info
         /// </summary>
-        /// <param name="track"></param>
-        /// <returns></returns>
         public virtual CHRN ReadID(byte trackIndex, byte side, int sectorIndex)
         {
             if (side != 0)
@@ -578,7 +564,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// State serialization routines
         /// </summary>
-        /// <param name="ser"></param>
         public abstract void SyncState(Serializer ser);
 
 

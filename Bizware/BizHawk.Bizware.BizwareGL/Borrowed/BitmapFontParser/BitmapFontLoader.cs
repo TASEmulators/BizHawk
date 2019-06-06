@@ -54,7 +54,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// Loads a bitmap font from a text file.
     /// </summary>
     /// <param name="fileName">Name of the file to load.</param>
-    /// <returns></returns>
     public static BitmapFont LoadFontFromTextFile(string fileName)
     {
       BitmapFont font;
@@ -173,7 +172,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// Loads a bitmap font from an XML file.
     /// </summary>
     /// <param name="fileName">Name of the file to load.</param>
-    /// <returns></returns>
     public static BitmapFont LoadFontFromXmlFile(Stream stream)
     {
       XmlDocument document;
@@ -287,7 +285,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// </summary>
     /// <param name="parts">The array of parts.</param>
     /// <param name="name">The name of the value to return.</param>
-    /// <returns></returns>
     private static bool GetNamedBool(string[] parts, string name)
     {
       return BitmapFontLoader.GetNamedInt(parts, name) != 0;
@@ -298,7 +295,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// </summary>
     /// <param name="parts">The array of parts.</param>
     /// <param name="name">The name of the value to return.</param>
-    /// <returns></returns>
     private static int GetNamedInt(string[] parts, string name)
     {
       return Convert.ToInt32(BitmapFontLoader.GetNamedString(parts, name));
@@ -309,7 +305,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// </summary>
     /// <param name="parts">The array of parts.</param>
     /// <param name="name">The name of the value to return.</param>
-    /// <returns></returns>
     private static string GetNamedString(string[] parts, string name)
     {
       string result;
@@ -348,7 +343,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// Creates a Padding object from a string representation
     /// </summary>
     /// <param name="s">The string.</param>
-    /// <returns></returns>
     private static Padding ParsePadding(string s)
     {
       string[] parts;
@@ -368,7 +362,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// Creates a Point object from a string representation
     /// </summary>
     /// <param name="s">The string.</param>
-    /// <returns></returns>
     private static Point ParsePoint(string s)
     {
       string[] parts;
@@ -387,7 +380,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// </summary>
     /// <param name="s">The string to split.</param>
     /// <param name="delimiter">The delimiter.</param>
-    /// <returns></returns>
     private static string[] Split(string s, char delimiter)
     {
       string[] results;
@@ -439,7 +431,6 @@ namespace Cyotek.Drawing.BitmapFont
     /// </summary>
     /// <typeparam name="T">Type of the items in the array</typeparam>
     /// <param name="values">The values.</param>
-    /// <returns></returns>
     private static T[] ToArray<T>(ICollection<T> values)
     {
       T[] result;

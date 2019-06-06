@@ -11,8 +11,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initlization routine
         /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="tStatesPerFrame"></param>
         void Init(int sampleRate, int tStatesPerFrame);
 
         /// <summary>
@@ -25,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes to the PSG
         /// </summary>
-        /// <param name="value"></param>
         void PortWrite(int value);
 
         /// <summary>
@@ -57,13 +54,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Updates the sound based on number of frame cycles
         /// </summary>
-        /// <param name="frameCycle"></param>
         void UpdateSound(int frameCycle);
 
         /// <summary>
         /// IStatable serialization
         /// </summary>
-        /// <param name="ser"></param>
         void SyncState(Serializer ser);
     }
 }

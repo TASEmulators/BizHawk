@@ -42,7 +42,6 @@
 		/// when a Tool sets WantsToControlRewind
 		/// Returns whether or not the rewind action actually occured
 		/// </summary>
-		/// <returns></returns>
 		bool Rewind();
 
 		bool WantsToControlRestartMovie { get; }

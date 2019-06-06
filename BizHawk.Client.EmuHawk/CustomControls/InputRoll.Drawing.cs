@@ -530,7 +530,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		/// </summary>
-		/// <param name="e"></param>
 		private void DoBackGroundCallback(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
 			int startIndex = FirstVisibleRow;

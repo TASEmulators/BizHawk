@@ -12,9 +12,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// copy `len` bytes from `src` to `dest`
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="dst"></param>
-		/// <param name="len"></param>
 		public static void CopySome(Stream src, Stream dst, long len)
 		{
 			var buff = new byte[4096];

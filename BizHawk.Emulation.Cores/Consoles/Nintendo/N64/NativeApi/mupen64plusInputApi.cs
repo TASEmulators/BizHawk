@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Callback to use when mupen64plus wants input
 		/// </summary>
-		/// <param name="i"></param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int InputCallback(int i);
 		InputCallback InpInputCallback;

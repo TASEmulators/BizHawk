@@ -96,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <param name="controller">controller input from user, remapped</param>
 		/// <param name="index">libsnes specific value, sometimes multitap number</param>
 		/// <param name="id">libsnes specific value, sometimes button number</param>
-		/// <returns></returns>
 		short GetState(IController controller, int index, int id);
 
 		ControllerDefinition Definition { get; }

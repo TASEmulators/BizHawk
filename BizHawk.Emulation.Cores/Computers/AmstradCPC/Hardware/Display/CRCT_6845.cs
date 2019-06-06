@@ -873,7 +873,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Selects a register
         /// </summary>
-        /// <param name="data"></param>
         private void RegisterSelect(int data)
         {
             SelectedRegister = data & 0x1F;
@@ -909,7 +908,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Writes to the currently selected register
         /// </summary>
-        /// <param name="data"></param>
         private void WriteRegister(int data)
         {
             // 16 and 17 are read only registers on all types
@@ -953,7 +951,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads from the currently selected register
         /// </summary>
-        /// <param name="data"></param>
         private bool ReadRegister(ref int data)
         {
             bool addressed = false;
@@ -1029,8 +1026,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads from the status register
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         private bool ReadStatus(ref int data)
         {
             bool addressed = false;
@@ -1107,9 +1102,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             byte portUpper = (byte)(port >> 8);
@@ -1143,9 +1135,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             byte portUpper = (byte)(port >> 8);

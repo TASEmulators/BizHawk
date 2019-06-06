@@ -29,8 +29,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Choose output directory
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void button2_Click(object sender, EventArgs e)
 		{
 			var fbd = new FolderBrowserDialog();
@@ -45,8 +43,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Add import files to the list box
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonAddFiles_Click(object sender, EventArgs e)
 		{
 			var ofd = new OpenFileDialog();
@@ -70,8 +66,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Removes selected input files from the listbox
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonRemove_Click(object sender, EventArgs e)
 		{
 			List<string> files = new List<string>();
@@ -90,8 +84,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Attempt to process all selected files
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonStartProcessing_Click(object sender, EventArgs e)
 		{
 			// initial checks

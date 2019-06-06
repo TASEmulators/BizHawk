@@ -29,7 +29,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Initializes the datacorder device
         /// </summary>
-        /// <param name="machine"></param>
         public void Init(CPCBase machine)
         {
             _machine = machine;
@@ -296,7 +295,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// TRUE:   skip forward
         /// FALSE:  skip backward
         /// </summary>
-        /// <param name="skipForward"></param>
         public void SkipBlock(bool skipForward)
         {
             int blockCount = _dataBlocks.Count;
@@ -354,7 +352,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Inserts a new tape and sets up the tape device accordingly
         /// </summary>
-        /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
             // instantiate converters
@@ -416,8 +413,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
         /// </summary>
-        /// <param name="cpuCycles"></param>
-        /// <returns></returns>
         public bool GetEarBit(long cpuCycle)
         {
             // decide how many cycles worth of data we are capturing
@@ -768,7 +763,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <returns></returns>
         public bool ReadPort()
         {
             if (TapeIsPlaying)
@@ -800,8 +794,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
         public void WritePort(bool state)
         {
             // not implemented
@@ -821,7 +813,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Bizhawk state serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
             ser.BeginSection(nameof(DatacorderDevice));

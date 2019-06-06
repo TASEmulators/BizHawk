@@ -141,9 +141,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// returns a new surface 
 		/// </summary>
-		/// <param name="xpad"></param>
-		/// <param name="ypad"></param>
-		/// <returns></returns>
 		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
 		{
 			int new_width = Width + xpad0 + xpad1;
