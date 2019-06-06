@@ -123,7 +123,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Setup_Mapper()
