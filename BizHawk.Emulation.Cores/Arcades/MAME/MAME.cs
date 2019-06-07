@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 using BizHawk.Emulation.Common;
 
@@ -19,12 +20,35 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 	{
 		public MAME(string dir, string file)
 		{
+			GameDirectory = dir;
+			GameFilename = file;
+
+			MAMEThread = new Thread(ExecuteMAMEThread);
+			AsyncLaunchMAME();
+		}
+
+
+		private Thread MAMEThread;
+		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
+		private string GameDirectory;
+		private string GameFilename;
+
+
+		private void AsyncLaunchMAME()
+		{
+			MAMEThread.Start();
+			MAMEStartupComplete.WaitOne();
+		}
+
+		private void ExecuteMAMEThread()
+		{
 			LibMAME.mame_set_boot_callback(MAMEBoot);
 			LibMAME.mame_set_log_callback(MAMELog);
 
-			string[] args = build_options(dir, file);
+			string[] args = build_options(GameDirectory, GameFilename);
 			LibMAME.mame_launch(args.Length, args);
 		}
+
 
 		// https://docs.mamedev.org/commandline/commandline-index.html
 		private string[] build_options(string directory, string rom)
@@ -41,10 +65,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			};
 		}
 
+
 		private void MAMEBoot()
 		{
 			LibMAME.mame_lua_execute("emu.pause()");
+			MAMEStartupComplete.Set();
 		}
+
 
 		// mame sends osd_output_channel casted to int, we implicitly cast is back
 		private void MAMELog(LibMAME.osd_output_channel channel, int size, string data)
@@ -54,6 +81,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				channel.ToString().Substring(19),
 				data.Replace('\n', ' ')));
 		}
+
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
