@@ -17,9 +17,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		singleInstance: false)]
 	public partial class MAME : IEmulator
 	{
-		[CoreConstructor("MAME")]
 		public MAME(string dir, string file)
 		{
+			LibMAME.mame_set_boot_callback(MAMEBoot);
 			LibMAME.mame_set_log_callback(MAMELog);
 
 			string[] args = build_options(dir, file);
@@ -36,10 +36,17 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"-nokeepaspect",        // forbid mame from stretching the window
 				"-nomaximize",          // forbid windowed fullscreen
 				"-noreadconfig",        // forbid reading any config files
+				"-norewind",            // forbid rewind savestates, captured upon frame advance
 				"-rompath", directory   // mame doesn't load roms from full paths, only from dirs for scan
 			};
 		}
 
+		private void MAMEBoot()
+		{
+			LibMAME.mame_lua_execute("emu.pause()");
+		}
+
+		// mame sends osd_output_channel casted to int, we implicitly cast is back
 		private void MAMELog(LibMAME.osd_output_channel channel, int size, string data)
 		{
 			Console.WriteLine(string.Format(

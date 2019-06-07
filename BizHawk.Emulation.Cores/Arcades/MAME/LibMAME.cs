@@ -27,6 +27,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern UInt32 mame_launch(int argc, string[] argv);
 
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void mame_lua_execute(string code);
+
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void BootCallback();
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void mame_set_boot_callback(BootCallback cb);
+
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void LogCallback(osd_output_channel channel, int size, string data);
 
