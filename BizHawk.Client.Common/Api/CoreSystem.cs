@@ -37,5 +37,7 @@
 		ChannelF,
 		GB3x,
 		GB4x
+		ChannelF,
+		MAME
 	}
 }

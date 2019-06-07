@@ -16,10 +16,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		portedVersion: "0.209",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
-	public partial class MAME : IEmulator
+	public partial class MAME : IEmulator, IVideoProvider
 	{
-		public MAME(string dir, string file)
+		public MAME(CoreComm comm, string dir, string file)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+
+			CoreComm = comm;
 			GameDirectory = dir;
 			GameFilename = file;
 
@@ -27,12 +30,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			AsyncLaunchMAME();
 		}
 
-
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private string GameDirectory;
 		private string GameFilename;
-
 
 		private void AsyncLaunchMAME()
 		{
@@ -56,20 +57,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return new string[] {
 				"mame",                 // dummy, internally discarded by index, so has to go first
 				rom,                    // no dash for rom names, internally called "unadorned" option
+				"-rompath", directory,   // mame doesn't load roms from full paths, only from dirs for scan
 				"-window",              // forbid fullscreen
 				"-nokeepaspect",        // forbid mame from stretching the window
 				"-nomaximize",          // forbid windowed fullscreen
 				"-noreadconfig",        // forbid reading any config files
 				"-norewind",            // forbid rewind savestates, captured upon frame advance
-				"-rompath", directory   // mame doesn't load roms from full paths, only from dirs for scan
+				"-video", "none"
 			};
 		}
 
 
 		private void MAMEBoot()
 		{
-			LibMAME.mame_lua_execute("emu.pause()");
 			MAMEStartupComplete.Set();
+			LibMAME.mame_lua_execute("emu.pause()");
 		}
 
 
@@ -83,9 +85,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		}
 
 
+		public CoreComm CoreComm { get; private set; }
+
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		public ControllerDefinition ControllerDefinition => MAMEController;
+
+		public static readonly ControllerDefinition MAMEController = new ControllerDefinition
+		{
+			Name = "MAME Controller",
+			BoolButtons =
+			{
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
+			}
+		};
+
+		private int[] frameBuffer = new int[0];
+
+		public int[] GetVideoBuffer() { return frameBuffer; }
 
 		public int Frame { get; private set; }
 
@@ -93,17 +110,29 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public bool DeterministicEmulation => true;
 
-		public CoreComm CoreComm { get; private set; }
+		public int VirtualWidth => 240;
+
+		public int VirtualHeight => 320;
+
+		public int BufferWidth => 240;
+
+		public int BufferHeight => 320;
+
+		public int VsyncNumerator => 60;
+
+		public int VsyncDenominator => 1;
+
+		public int BackgroundColor => unchecked((int)0xFF0000FF);
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			//throw new NotImplementedException();
-			return false;
+			LibMAME.mame_lua_execute("emu.step()");
+			return true;
 		}
 
 		public void ResetCounters()
 		{
-			//throw new NotImplementedException();
+			Frame = 0;
 		}
 
 		#region IDisposable Support
@@ -139,6 +168,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// TODO: uncomment the following line if the finalizer is overridden above.
 			// GC.SuppressFinalize(this);
 		}
+
 		#endregion
 
 	}

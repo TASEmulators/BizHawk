@@ -1159,7 +1159,7 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "Arcade":
-								nextEmulator = new MAME(file.Directory, file.CanonicalName);
+								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName);
 								break;
 							case "GEN":
 								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
