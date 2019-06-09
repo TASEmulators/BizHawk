@@ -2023,7 +2023,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private BitmapBuffer MakeScreenshotImage()
+		public BitmapBuffer MakeScreenshotImage()
 		{
 			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}

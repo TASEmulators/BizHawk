@@ -182,6 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.InputLog.Clone(),
+				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				LagLog = Movie.TasLagLog.Clone(),
 				ChangeLog = new TasMovieChangeLog(Movie),
@@ -203,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			Movie.TasStateManager.Capture(true);
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
 
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Movie.Truncate(branch.Frame);
