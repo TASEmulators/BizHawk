@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			Decoder decoder = Encoding.UTF8.GetDecoder();
+			readonly Decoder decoder = Encoding.UTF8.GetDecoder();
 			Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			IPAddress ipAdd;
 			IPEndPoint remoteEP;
@@ -175,19 +175,14 @@ namespace BizHawk.Client.EmuHawk
 			public int Retries { get; set; } = 10;
 			public bool success = false; //indicates whether the last command was executed succesfully
 
-			public void Initialize(IVideoProvider _currentVideoProvider)
+			public void Initialize()
 			{
-				currentVideoProvider = _currentVideoProvider;
-				SetIp(ip, port);
+				if (currentVideoProvider == null) currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
 				initialized = true;
 			}
 
 			public void Connect()
 			{
-				if (!initialized)
-				{
-					Initialize(currentVideoProvider);
-				}
 				remoteEP = new IPEndPoint(ipAdd, port);
 				soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				soc.Connect(remoteEP);
@@ -200,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 				ip = ip_;
 				port = port_;
 				ipAdd = System.Net.IPAddress.Parse(ip);
-				remoteEP = new IPEndPoint(ipAdd, port);
+				Connect();
 			}
 
 			public string GetInfo()
@@ -248,9 +243,9 @@ namespace BizHawk.Client.EmuHawk
 
 			public string SendScreenshot(int waitingTime)
 			{
-				if (!connected)
+				if (!initialized)
 				{
-					Connect();
+					Initialize();
 				}
 				ScreenShot screenShot = new ScreenShot();
 				using (BitmapBuffer bb = screenShot.MakeScreenShotImage())
