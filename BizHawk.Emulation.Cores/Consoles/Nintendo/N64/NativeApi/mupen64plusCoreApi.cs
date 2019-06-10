@@ -752,18 +752,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 				if (event_breakpoint)
 				{
+					MemoryCallbackFlags flags = 0;
 					switch (_breakparams._type)
 					{
 						case BreakType.Read:
-							_breakparams._mcs.CallReads(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessRead;
 							break;
 						case BreakType.Write:
-							_breakparams._mcs.CallWrites(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessWrite;
 							break;
 						case BreakType.Execute:
-							_breakparams._mcs.CallExecutes(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessExecute;
 							break;
 					}
+
+					_breakparams._mcs.CallMemoryCallbacks(_breakparams._addr, 0, (uint)flags, "System Bus");
 
 					event_breakpoint = false;
 					Resume();

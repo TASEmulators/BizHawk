@@ -20,7 +20,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)(Common.MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 
 			if ((addr & 0xFCE0) == 0)
 			{
@@ -98,7 +99,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			uint flags = (uint)(Common.MemoryCallbackFlags.AccessWrite);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 
 			if ((addr & 0xFCE0) == 0)
 			{

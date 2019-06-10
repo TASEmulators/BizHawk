@@ -90,7 +90,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 	}
 }
