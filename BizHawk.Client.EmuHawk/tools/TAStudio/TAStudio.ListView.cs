@@ -76,19 +76,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void StartSeeking(int? frame)
+		private void StartSeeking(int? frame, bool fromMiddleClick = false)
 		{
 			if (!frame.HasValue)
 			{
 				return;
 			}
 
-			if (Mainform.PauseOnFrame != null)
+			if (!fromMiddleClick)
 			{
-				StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
+				if (Mainform.PauseOnFrame != null)
+				{
+					StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
+				}
+				_seekStartFrame = Emulator.Frame;
 			}
 
-			_seekStartFrame = Emulator.Frame;
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
@@ -510,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
 					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 					{
-						StartSeeking(LastPositionFrame);
+						StartSeeking(LastPositionFrame, true);
 					}
 					else
 					{
