@@ -66,9 +66,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void JumpToGreenzone()
 		{
-			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
+			if (Emulator.Frame > CurrentTasMovie.LastEditedFrame)
 			{
-				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
+				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame);
 			}
 			else
 			{
@@ -1132,7 +1132,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!Settings.AutoRestoreOnMouseUpOnly)
 					{
-						_triggerAutoRestore = true;
+						_triggerAutoRestore = startVal < Emulator.Frame && endVal < Emulator.Frame;
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}

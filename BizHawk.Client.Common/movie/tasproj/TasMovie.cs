@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog TasLagLog => _lagLog;
 		public IStringLog InputLog => Log;
 		public int BranchCount => Branches.Count;
-		public int LastValidFrame => _lagLog.LastValidFrame;
+		public int LastStatedFrame => _stateManager.LastStatedFrame;
 		public override string PreferredExtension => Extension;
 		public TasStateManager TasStateManager => _stateManager;
 
@@ -225,7 +225,9 @@ namespace BizHawk.Client.Common
 
 		public void GreenzoneCurrentFrame()
 		{
-			if (Global.Emulator.Frame > LastValidFrame)
+			// todo: this isn't working quite right when autorestore is off and we're editing while seeking
+			// but accounting for that requires access to Mainform.IsSeeking
+			if (Global.Emulator.Frame > LastEditedFrame)
 			{
 				// emulated a new frame, current editing segment may change now. taseditor logic
 				LastPositionStable = false;
