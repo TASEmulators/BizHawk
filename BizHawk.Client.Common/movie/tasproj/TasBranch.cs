@@ -14,7 +14,6 @@ namespace BizHawk.Client.Common
 		public IStringLog InputLog { get; set; }
 		public BitmapBuffer CoreFrameBuffer { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
-		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
@@ -52,7 +51,6 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var ncoreframebuffer = new IndexedStateLump(BinaryStateLump.BranchCoreFrameBuffer);
-			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
@@ -94,11 +92,6 @@ namespace BizHawk.Client.Common
 					QuickBmpFile.Save(vp, s, b.CoreFrameBuffer.Width, b.CoreFrameBuffer.Height);
 				});
 
-				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
-				{
-					b.LagLog.Save(bw);
-				});
-
 				bs.PutLump(nmarkers, delegate(TextWriter tw)
 				{
 					tw.WriteLine(b.Markers.ToString());
@@ -114,7 +107,6 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				ncoreframebuffer.Increment();
-				nlaglog.Increment();
 				nmarkers.Increment();
 				nusertext.Increment();
 			}
@@ -127,7 +119,6 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var ncoreframebuffer = new IndexedStateLump(BinaryStateLump.BranchCoreFrameBuffer);
-			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 
@@ -197,12 +188,6 @@ namespace BizHawk.Client.Common
 					b.CoreFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.VideoBuffer);
 				});
 
-				bl.GetLump(nlaglog, false, delegate(BinaryReader br)
-				{
-					b.LagLog = new TasLagLog();
-					b.LagLog.Load(br);
-				});
-
 				b.Markers = new TasMovieMarkerList(movie);
 				bl.GetLump(nmarkers, false, delegate(TextReader tr)
 				{
@@ -235,7 +220,6 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				ncoreframebuffer.Increment();
-				nlaglog.Increment();
 				nmarkers.Increment();
 				nusertext.Increment();
 			}

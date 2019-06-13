@@ -184,7 +184,6 @@ namespace BizHawk.Client.EmuHawk
 				InputLog = Movie.InputLog.Clone(),
 				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				LagLog = Movie.TasLagLog.Clone(),
 				ChangeLog = new TasMovieChangeLog(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
