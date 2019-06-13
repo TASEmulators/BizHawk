@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 			manualTheta.ValueChanged -= PolarNumeric_Changed;
 
 			var polar = PolarRectConversion.RectToPolarDeg(AnalogStick.X - rangeAverageX, AnalogStick.Y - rangeAverageY);
-			manualR.Value = Math.Min(manualR.Value, (decimal) polar.Item1); //TODO bug? if not, this can be `if (polar.Item1 < manualR.Value) manualR.Value = polar.Item1;`
+			manualR.Value = (decimal) polar.Item1;
 			manualTheta.Value = (decimal) polar.Item2;
 
 			manualR.ValueChanged += PolarNumeric_Changed;
