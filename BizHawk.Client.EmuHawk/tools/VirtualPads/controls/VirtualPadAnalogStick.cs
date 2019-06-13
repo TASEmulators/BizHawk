@@ -178,15 +178,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
-			ManualX.ValueChanged -= ManualXY_ValueChanged;
+			ManualX.ValueChanged -= ManualXY_ValueChanged; //TODO is setting and checking a bool faster than subscription?
 			ManualY.ValueChanged -= ManualXY_ValueChanged;
 
-			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageX;
-			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageY;
-
-			AnalogStick.X = (int)ManualX.Value;
-			AnalogStick.Y = (int)ManualY.Value;
-
+			var rect = PolarRectConversion.PolarDegToRect((double) manualR.Value, (double) manualTheta.Value);
+			rect = new Tuple<double, double>(
+				rangeAverageX + Math.Ceiling(rect.Item1).Clamp(-127, 127),
+				rangeAverageY + Math.Ceiling(rect.Item2).Clamp(-127, 127));
+			ManualX.Value = (decimal) rect.Item1;
+			ManualY.Value = (decimal) rect.Item2;
+			AnalogStick.X = (int) rect.Item1;
+			AnalogStick.Y = (int) rect.Item2;
 			AnalogStick.HasValue = true;
 			AnalogStick.Refresh();
 
@@ -238,8 +240,9 @@ namespace BizHawk.Client.EmuHawk
 			manualR.ValueChanged -= PolarNumeric_Changed;
 			manualTheta.ValueChanged -= PolarNumeric_Changed;
 
-			manualR.Value =  Math.Min(manualR.Value, (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2)));
-			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y - rangeAverageY, AnalogStick.X - rangeAverageX) * (180 / Math.PI));
+			var polar = PolarRectConversion.RectToPolarDeg(AnalogStick.X - rangeAverageX, AnalogStick.Y - rangeAverageY);
+			manualR.Value = Math.Min(manualR.Value, (decimal) polar.Item1); //TODO bug? if not, this can be `if (polar.Item1 < manualR.Value) manualR.Value = polar.Item1;`
+			manualTheta.Value = (decimal) polar.Item2;
 
 			manualR.ValueChanged += PolarNumeric_Changed;
 			manualTheta.ValueChanged += PolarNumeric_Changed;
