@@ -18,9 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		private int rangeAverageX; //for coordinate transformation when non orthogonal (like PSX for example)
 		private int rangeAverageY;
 
-		private EventHandler manualXYValueChangedEventHandler;
-		private EventHandler polarNumericChangedEventHandler;
-
 		#endregion
 
 		public VirtualPadAnalogStick()
@@ -28,13 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
 
-			manualXYValueChangedEventHandler = new EventHandler(ManualXY_ValueChanged);
-			polarNumericChangedEventHandler = new EventHandler(PolarNumeric_Changed);
-
-			ManualX.ValueChanged += manualXYValueChangedEventHandler;
-			ManualY.ValueChanged += manualXYValueChangedEventHandler;
-			manualR.ValueChanged += polarNumericChangedEventHandler;
-			manualTheta.ValueChanged += polarNumericChangedEventHandler;
+			ManualX.ValueChanged += ManualXY_ValueChanged;
+			ManualY.ValueChanged += ManualXY_ValueChanged;
+			manualR.ValueChanged += PolarNumeric_Changed;
+			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
 		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
@@ -184,8 +178,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
-			ManualX.ValueChanged -= manualXYValueChangedEventHandler;
-			ManualY.ValueChanged -= manualXYValueChangedEventHandler;
+			ManualX.ValueChanged -= ManualXY_ValueChanged;
+			ManualY.ValueChanged -= ManualXY_ValueChanged;
 
 			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageX;
 			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageY;
@@ -196,8 +190,8 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.HasValue = true;
 			AnalogStick.Refresh();
 
-			ManualX.ValueChanged += manualXYValueChangedEventHandler;
-			ManualY.ValueChanged += manualXYValueChangedEventHandler;
+			ManualX.ValueChanged += ManualXY_ValueChanged;
+			ManualY.ValueChanged += ManualXY_ValueChanged;
 		}
 
 		private void SetAnalogControlFromNumerics()
@@ -241,14 +235,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			manualR.ValueChanged -= polarNumericChangedEventHandler;
-			manualTheta.ValueChanged -= polarNumericChangedEventHandler;
+			manualR.ValueChanged -= PolarNumeric_Changed;
+			manualTheta.ValueChanged -= PolarNumeric_Changed;
 
 			manualR.Value =  Math.Min(manualR.Value, (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2)));
 			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y - rangeAverageY, AnalogStick.X - rangeAverageX) * (180 / Math.PI));
 
-			manualR.ValueChanged += polarNumericChangedEventHandler;
-			manualTheta.ValueChanged += polarNumericChangedEventHandler;
+			manualR.ValueChanged += PolarNumeric_Changed;
+			manualTheta.ValueChanged += PolarNumeric_Changed;
 
 			_programmaticallyUpdatingNumerics = false;
 		}
