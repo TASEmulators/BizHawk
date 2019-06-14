@@ -1911,7 +1911,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPauseStatusbarIcon()
 		{
-			if (IsTurboSeeking)
+			if (EmulatorPaused)
+			{
+				PauseStatusButton.Image = Properties.Resources.Pause;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator Paused";
+			}
+			else if (IsTurboSeeking)
 			{
 				PauseStatusButton.Image = Properties.Resources.Lightning;
 				PauseStatusButton.Visible = true;
@@ -1922,12 +1928,6 @@ namespace BizHawk.Client.EmuHawk
 				PauseStatusButton.Image = Properties.Resources.YellowRight;
 				PauseStatusButton.Visible = true;
 				PauseStatusButton.ToolTipText = $"Emulator is playing to frame {PauseOnFrame.Value} click to stop seek";
-			}
-			else if (EmulatorPaused)
-			{
-				PauseStatusButton.Image = Properties.Resources.Pause;
-				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator Paused";
 			}
 			else
 			{
@@ -2023,7 +2023,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private BitmapBuffer MakeScreenshotImage()
+		public BitmapBuffer MakeScreenshotImage()
 		{
 			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}

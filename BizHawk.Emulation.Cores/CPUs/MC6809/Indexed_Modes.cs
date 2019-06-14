@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void INDEX_OP_LEA(ushort dest)
 		{
-			PopulateCURINSTR(TR, dest, IDX_EA,
+			PopulateCURINSTR(LEA, dest, IDX_EA,
 							IDLE);
 
 			IRQS = 2;
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(IDLE,
 							RD_INC, ALU, IDX_EA,
-							RD_INC_OP, ALU2, IDX_EA, SET_ADDR, indexed_op_reg, ALU, ALU2);
+							RD_INC_OP, ALU2, IDX_EA, LD_16, indexed_op_reg, ALU, ALU2);
 
 			IRQS = 3;
 		}
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(IDLE,
 							RD_INC, A, IDX_EA,
-							RD_INC, B, IDX_EA);
+							RD_INC_OP, B, IDX_EA, LD_16, ADDR, A, B);
 
 			IRQS = 3;
 		}
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case I_SBC: INDEX_OP_EX4(SBC8);					break; // SBC A,B
 				case I_AND: INDEX_OP_EX4(AND8);					break; // AND A,B
 				case I_BIT: INDEX_OP_EX4(BIT);					break; // BIT A,B
-				case I_LD: INDEX_OP_EX4(TR);					break; // LD A,B
+				case I_LD: INDEX_OP_EX4(LD_8);					break; // LD A,B
 				case I_ST: INDEX_OP_EX4_ST();					break; // ST A,B
 				case I_XOR: INDEX_OP_EX4(XOR8);					break; // XOR A,B
 				case I_ADC: INDEX_OP_EX4(ADC8);					break; // ADC A,B

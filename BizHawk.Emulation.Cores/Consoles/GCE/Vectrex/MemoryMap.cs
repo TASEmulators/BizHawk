@@ -20,7 +20,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)MemoryCallbackFlags.AccessRead;
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 
 			if (addr < 0x8000)
 			{
@@ -54,7 +55,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			uint flags = (uint)MemoryCallbackFlags.AccessWrite;
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 
 			if (addr < 0x8000)
 			{

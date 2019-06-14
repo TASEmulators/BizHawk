@@ -60,16 +60,16 @@ namespace BizHawk.Client.EmuHawk
 				: Color.White;
 		}
 
-		private void BreakpointCallback()
+		private void BreakpointCallback(uint addr, uint value, uint flags)
 		{
 			GlobalWin.MainForm.PauseEmulator();
 			UpdateValues();
 			GlobalWin.OSD.AddMessage("Breakpoint hit");
 		}
 
-		private void SeekCallback()
+		private void SeekCallback(uint addr, uint value, uint flags)
 		{
-			BreakpointCallback();
+			BreakpointCallback(addr, value, flags);
 
 			var seekBreakpoint = _breakpoints.FirstOrDefault(x => x.Name.StartsWith(SeekName));
 

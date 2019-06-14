@@ -68,6 +68,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
 
 			_rom = rom;
+
+			// mirror games that are too small
+			if (_rom.Length < 0x8000)
+			{
+				_rom = new byte[0x8000];
+
+				for (int i = 0; i < 0x8000 / rom.Length; i++)
+				{
+					for (int j = 0; j < rom.Length; j++)
+					{
+						_rom[j + i * rom.Length] = rom[j];
+					}
+				}
+			}
+
 			Setup_Mapper();
 
 			_frameHz = 60;
@@ -108,12 +123,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)MemoryCallbackFlags.AccessExecute;
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Setup_Mapper()
 		{
 			mapper = new MapperDefault();
+			mapper.Core = this;
 		}
 	}
 }

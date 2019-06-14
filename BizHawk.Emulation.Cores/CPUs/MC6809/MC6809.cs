@@ -74,6 +74,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort CMP16 = 63;
 		public const ushort CMP16D = 64;
 		public const ushort WR_HI_INC = 65;
+		public const ushort LD_8 = 66;
+		public const ushort LD_16 = 67;
+		public const ushort LEA = 68;
 
 		public MC6809()
 		{
@@ -149,6 +152,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public void ExecuteOne()
 		{
 			//Console.Write(opcode_see + " ");
+			//Console.WriteLine(Regs[PC] + " ");
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:
@@ -246,6 +250,16 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[ALU2] << 8) + Regs[ADDR]);
 							PUL_n_BLD(cur_instr[instr_pntr++]);
 							break;
+						case LD_8:
+							LD_8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case LD_16:
+							LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+						case LEA:
+							LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+							break;
+
 					}
 					break;
 				case WR:
@@ -283,6 +297,15 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case LD_8:
+					LD_8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case LD_16:
+					LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case LEA:
+					LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case EXG:
 					EXG_Func(cur_instr[instr_pntr++]);
