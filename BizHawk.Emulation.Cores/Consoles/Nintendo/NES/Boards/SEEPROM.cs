@@ -221,7 +221,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// read a bit back from eprom, might be mapped in 6000:7fff
 		/// </summary>
 		/// <param name="deadbit">bit from NES.DB</param>
-		/// <returns></returns>
 		public bool ReadBit(bool deadbit)
 		{
 			if (!OutEnable)
@@ -233,9 +232,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte[] GetSaveRAM() { return rom; }
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="Big">256 byte instead of 128 byte</param>
 		public SEEPROM(bool Big)
 		{

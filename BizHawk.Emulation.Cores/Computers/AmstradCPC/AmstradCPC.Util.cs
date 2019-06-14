@@ -13,8 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Helper method that returns a single INT32 from a BitArray
         /// </summary>
-        /// <param name="bitarray"></param>
-        /// <returns></returns>
         public static int GetIntFromBitArray(BitArray bitArray)
         {
             if (bitArray.Length > 32)
@@ -28,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// POKEs a memory bus address
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public void PokeMemory(ushort addr, byte value)
         {
             _machine.WriteBus(addr, value);

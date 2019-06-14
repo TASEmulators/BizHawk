@@ -10,20 +10,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initialisation
         /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="tStatesPerFrame"></param>
         void Init(int sampleRate, int tStatesPerFrame);
 
         /// <summary>
         /// Processes an incoming pulse value and adds it to the blipbuffer
         /// </summary>
-        /// <param name="pulse"></param>
         void ProcessPulseValue(bool pulse);
 
         /// <summary>
         /// State serialization
         /// </summary>
-        /// <param name="ser"></param>
         void SyncState(Serializer ser);
     }
 }

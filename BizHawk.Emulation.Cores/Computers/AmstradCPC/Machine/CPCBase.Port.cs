@@ -14,15 +14,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
         public abstract byte ReadPort(ushort port);
 
         /// <summary>
         /// Writes a byte of data to a specified port address
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="value"></param>
         public abstract void WritePort(ushort port, byte value);
 
         /// <summary>
@@ -31,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// https://web.archive.org/web/20090808085929/http://www.cepece.info/amstrad/docs/iopord.html
         /// http://www.cpcwiki.eu/index.php/I/O_Port_Summary
         /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
         protected virtual PortDevice DecodeINPort(ushort port)
         {
             PortDevice dev = PortDevice.Unknown;
@@ -67,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// https://web.archive.org/web/20090808085929/http://www.cepece.info/amstrad/docs/iopord.html
         /// http://www.cpcwiki.eu/index.php/I/O_Port_Summary
         /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
         protected virtual List<PortDevice> DecodeOUTPort(ushort port)
         {
             List<PortDevice> devs = new List<PortDevice>();

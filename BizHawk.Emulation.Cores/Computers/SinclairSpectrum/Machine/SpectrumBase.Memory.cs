@@ -96,15 +96,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Simulates reading from the bus
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public abstract byte ReadBus(ushort addr);
 
         /// <summary>
         ///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public virtual byte PushBus()
         {
             return 0xFF;
@@ -114,8 +110,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Simulates writing to the bus
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public virtual void WriteBus(ushort addr, byte value)
         {
             throw new NotImplementedException("Must be overriden");
@@ -125,37 +119,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Reads a byte of data from a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public abstract byte ReadMemory(ushort addr);
 
         /// <summary>
         /// Returns the ROM/RAM enum that relates to this particular memory read operation
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public abstract ZXSpectrum.CDLResult ReadCDL(ushort addr);
 
         /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public abstract void WriteMemory(ushort addr, byte value);
 
         /// <summary>
         /// Sets up the ROM
         /// </summary>
-        /// <param name="buffer"></param>
         public abstract void InitROM(RomData romData);
 
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public virtual byte FetchScreenMemory(ushort addr)
         {
             var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
@@ -166,14 +151,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Checks whether supplied address is in a potentially contended bank
         /// </summary>
-        /// <param name="addr"></param>
         public abstract bool IsContended(ushort addr);
 
 
         /// <summary>
         /// Returns TRUE if there is a contended bank paged in
         /// </summary>
-        /// <returns></returns>
         public abstract bool ContendedBankPaged();
 
         #endregion
@@ -183,7 +166,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Detects whether this is a 48k machine (or a 128k in 48k mode)
         /// </summary>
-        /// <returns></returns>
         public virtual bool IsIn48kMode()
         {
             if (this.GetType() == typeof(ZX48) ||
@@ -201,7 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Used to auto start/stop the tape device when appropriate
 		/// * This isnt really used anymore for tape trap detection *
         /// </summary>
-        /// <param name="addr"></param>
         public virtual void TestForTapeTraps(int addr)
         {
             if (TapeDevice.TapeIsPlaying)

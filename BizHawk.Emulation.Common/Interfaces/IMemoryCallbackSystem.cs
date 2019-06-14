@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="addr">The address to check for callbacks</param>
 		/// <param name="value">The value contained (or written to) addr</param>
 		/// <param name="flags">The callback flags relevant to this access</param>
-		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"/></param>
 		void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope);
 
 		/// <summary>

@@ -110,7 +110,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// Removes an existing ISoundProvider from the SyncSoundMixer
 		/// </summary>
-		/// <param name="source"></param>
 		public void UnPinSource(ISoundProvider source)
 		{
 			var sp = _soundProviders.Where(a => a.SoundProvider == source);
@@ -162,7 +161,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// Returns the value of the highest nsamp in the SoundProviders collection
 		/// </summary>
-		/// <returns></returns>
 		private int GetHigestSampleCount()
 		{
 			var lookup = _soundProviders.OrderByDescending(x => x.InputNSamp)
@@ -297,7 +295,6 @@ namespace BizHawk.Emulation.Cores.Components
 			/// Ensures the output buffer is ready for mixing based on the supplied nsamp value
 			/// Overflow samples will be omitted and underflow samples will be empty air
 			/// </summary>
-			/// <param name="nsamp"></param>
 			public void PrepareOutput(int nsamp)
 			{
 				OutputNSamp = nsamp;

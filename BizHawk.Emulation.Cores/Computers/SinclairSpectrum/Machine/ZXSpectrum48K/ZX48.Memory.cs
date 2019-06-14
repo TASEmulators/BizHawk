@@ -40,8 +40,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Simulates reading from the bus (no contention)
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public override byte ReadBus(ushort addr)
         {
             int divisor = addr / 0x4000;
@@ -65,8 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Simulates writing to the bus (no contention)
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
@@ -96,8 +92,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Reads a byte of data from a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
             var data = ReadBus(addr);
@@ -107,8 +101,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the ROM/RAM enum that relates to this particular memory read operation
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
         {
             var res = new ZXSpectrum.CDLResult();
@@ -132,8 +124,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {                     
             WriteBus(addr, value);
@@ -142,7 +132,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Checks whether supplied address is in a potentially contended bank
         /// </summary>
-        /// <param name="addr"></param>
         public override bool IsContended(ushort addr)
         {
             if ((addr & 49152) == 16384)
@@ -153,7 +142,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if there is a contended bank paged in
         /// </summary>
-        /// <returns></returns>
         public override bool ContendedBankPaged()
         {
             return false;
@@ -162,8 +150,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets up the ROM
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="startAddress"></param>
         public override void InitROM(RomData romData)
         {
             RomData = romData;

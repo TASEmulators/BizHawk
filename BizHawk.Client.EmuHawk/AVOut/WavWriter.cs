@@ -104,7 +104,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// open a new underlying stream
 		/// </summary>
-		/// <param name="next"></param>
 		private void opencurrent(Stream next)
 		{
 			file = new BinaryWriter(next, Encoding.ASCII);

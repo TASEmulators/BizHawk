@@ -89,8 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Adds a single metadata item to the Dictionary
         /// </summary>
-        /// <param name="descriptor"></param>
-        /// <param name="data"></param>
         public void AddMetaData(BlockDescriptorTitle descriptor, string data)
         {
             // check whether entry already exists
@@ -144,7 +142,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Returns the data periods as an array
         /// (primarily to aid in bizhawk state serialization)
         /// </summary>
-        /// <returns></returns>
         public int[] GetDataPeriodsArray()
         {
             return DataPeriods.ToArray();
@@ -154,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Accepts an array of data periods and updates the DataPeriods list accordingly
         /// (primarily to aid in bizhawk state serialization)
         /// </summary>
-        /// <returns></returns>
         public void SetDataPeriodsArray(int[] periodArray)
         {
             DataPeriods = new List<int>();
@@ -168,7 +164,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Bizhawk state serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser, int blockPosition)
         {
             ser.BeginSection("DataBlock" + blockPosition);

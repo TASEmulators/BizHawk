@@ -62,10 +62,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public AmstradGateArray GateArray { get; set; }
 
-        /// <summary>
-        /// Renders pixels to the screen
-        /// </summary>
-        //public CRTDevice CRT { get; set; }
+//      /// <summary>
+//      /// Renders pixels to the screen
+//      /// </summary>
+//      public CRTDevice CRT { get; set; }
 
         /// <summary>
         /// The PPI contoller chip

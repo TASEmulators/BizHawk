@@ -56,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Returns currently used sampling rate
 		/// </summary>
-		/// <returns></returns>
 		public uint GetSamplingRate()
 		{
 			return (uint)dllGetAudioRate();
@@ -65,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Returns size of bytes currently in the audio buffer
 		/// </summary>
-		/// <returns></returns>
 		public int GetAudioBufferSize()
 		{
 			return dllGetBufferSize();
@@ -76,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Afterwards audio buffer is cleared
 		/// buffer.Length must be greater than GetAudioBufferSize()
 		/// </summary>
-		/// <param name="buffer"></param>
 		public void GetAudioBuffer(short[] buffer)
 		{
 			dllReadAudioBuffer(buffer);

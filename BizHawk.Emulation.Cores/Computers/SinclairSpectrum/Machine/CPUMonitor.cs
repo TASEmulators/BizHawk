@@ -103,7 +103,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Looks up the current BUSRQ address that is about to be signalled on the upcoming cycle
         /// </summary>
-        /// <returns></returns>
         private ushort AscertainBUSRQAddress()
         {
             ushort addr = 0;
@@ -172,7 +171,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Running every cycle, this determines whether the upcoming BUSRQ is for an IO operation
         /// Also processes any contention
         /// </summary>
-        /// <returns></returns>
         private bool CheckIO()
         {
             bool isIO = false;
@@ -245,8 +243,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Returns TRUE if the supplied T-cycle within an IO operation has the possibility of being contended
         /// This can be different based on the emulated ZX Spectrum model
         /// </summary>
-        /// <param name="T"></param>
-        /// <returns></returns>
         private bool IsIOCycleContended(int T)
         {
             bool lowBitSet = (lastPortAddr & 0x0001) != 0;
@@ -384,7 +380,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Called when the first byte of an instruction is fetched
         /// </summary>
-        /// <param name="firstByte"></param>
         public void OnExecFetch(ushort firstByte)
         {
             // fetch instruction without incrementing pc

@@ -136,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 		/// opens an avi file for recording with the supplied enumerator used to name files.
 		/// set a video codec token first.
 		/// </summary>
-		/// <param name="nameProvider"></param>
 		public void OpenFile(IEnumerator<string> nameProvider)
 		{
 			_nameProvider = nameProvider;

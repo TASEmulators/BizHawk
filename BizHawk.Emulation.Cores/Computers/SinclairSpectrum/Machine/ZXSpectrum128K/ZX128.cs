@@ -14,8 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Main constructor
         /// </summary>
-        /// <param name="spectrum"></param>
-        /// <param name="cpu"></param>
         public ZX128(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;

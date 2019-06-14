@@ -97,7 +97,7 @@ namespace BizHawk.Common
 		public long Consumed { get; private set; }
 
 		/// <summary>
-		/// The amount of bytes of storage available. Store operations <= Remain will always succeed
+		/// The amount of bytes of storage available. Store operations &lt;= Remain will always succeed
 		/// </summary>
 		public long Remain { get { return Capacity - Consumed; } }
 

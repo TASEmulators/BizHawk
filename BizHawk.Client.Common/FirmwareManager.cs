@@ -129,8 +129,6 @@ namespace BizHawk.Client.Common
         /// <summary>
         /// Test to determine whether the supplied firmware file matches something in the firmware database
         /// </summary>
-        /// <param name="f"></param>
-        /// <returns></returns>
         public bool CanFileBeImported(string f)
         {
             try

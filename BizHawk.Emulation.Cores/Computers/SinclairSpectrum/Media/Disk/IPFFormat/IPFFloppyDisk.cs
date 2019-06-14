@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Attempts to parse incoming disk data 
         /// </summary>
-        /// <param name="diskData"></param>
         /// <returns>
         /// TRUE:   disk parsed
         /// FALSE:  unable to parse disk
@@ -434,7 +433,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// State serlialization
         /// </summary>
-        /// <param name="ser"></param>
         public override void SyncState(Serializer ser)
         {
             ser.BeginSection("Plus3FloppyDisk");

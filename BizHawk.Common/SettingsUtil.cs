@@ -21,7 +21,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// set all properties (not fields!) of obj with a DefaultValueAttribute to that value
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="obj">the obj to act on</param>
 		public static void SetDefaultValues<T>(T obj)
 		{

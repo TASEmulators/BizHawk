@@ -32,7 +32,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <param name="e">context</param>
 		/// <param name="data">file</param>
 		/// <param name="length">length of file</param>
-		/// <returns></returns>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract IntPtr qn_loadines(IntPtr e, byte[] data, int length);
 		/// <summary>
@@ -174,12 +173,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// get memory area for debugging
 		/// </summary>
 		/// <param name="e">Context</param>
-		/// <param name="which"></param>
-		/// <param name="data"></param>
-		/// <param name="size"></param>
-		/// <param name="writable"></param>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract bool qn_get_memory_area(IntPtr e, int which, ref IntPtr data, ref int size, ref bool writable, ref IntPtr name);
 		/// <summary>
@@ -187,7 +180,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		/// <param name="e">Context</param>
 		/// <param name="addr">0000:ffff, but non-ram/rom addresses won't work</param>
-		/// <returns></returns>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract byte qn_peek_prgbus(IntPtr e, int addr);
 		/// <summary>
@@ -195,7 +187,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// </summary>
 		/// <param name="e">Context</param>
 		/// <param name="addr">0000:ffff, but non-ram/rom addresses won't work</param>
-		/// <param name="val"></param>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void qn_poke_prgbus(IntPtr e, int addr, byte val);
 		/// <summary>
@@ -221,7 +212,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// set a trace callback to be run on each cycle
 		/// </summary>
 		/// <param name="e">Context</param>
-		/// <param name="cb"></param>
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void qn_set_tracecb(IntPtr e, TraceCallback cb);
 
@@ -241,7 +231,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions
 		/// </summary>
-		/// <param name="p"></param>
 		public static void ThrowStringError(IntPtr p)
 		{
 			if (p == IntPtr.Zero)

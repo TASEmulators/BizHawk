@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if pzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             // PZX Header
@@ -90,7 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks

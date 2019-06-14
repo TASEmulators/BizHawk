@@ -160,7 +160,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// returns a string containing the commandline sent to ffmpeg and recent console (stderr) output
 		/// </summary>
-		/// <returns></returns>
 		private string ffmpeg_geterror()
 		{
 			if (_ffmpeg.StartInfo.RedirectStandardError)

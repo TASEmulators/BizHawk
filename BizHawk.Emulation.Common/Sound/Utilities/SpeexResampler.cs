@@ -216,7 +216,6 @@ namespace BizHawk.Emulation.Common
 			/// Get the latency in input samples introduced by the resampler.
 			/// </summary>
 			/// <param name="st">Resampler state</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int speex_resampler_get_input_latency(IntPtr st);
 
@@ -224,7 +223,6 @@ namespace BizHawk.Emulation.Common
 			/// Get the latency in output samples introduced by the resampler.
 			/// </summary>
 			/// <param name="st">Resampler state</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int speex_resampler_get_output_latency(IntPtr st);
 

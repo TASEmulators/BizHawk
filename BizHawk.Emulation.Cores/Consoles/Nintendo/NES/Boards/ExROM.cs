@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// use with caution
 		/// </summary>
-		/// <returns></returns>
 		public byte[] GetExRAMArray()
 		{
 			return EXRAM;

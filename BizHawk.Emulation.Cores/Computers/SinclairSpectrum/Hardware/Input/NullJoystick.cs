@@ -43,8 +43,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the joystick line based on key pressed
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isPressed"></param>
         public void SetJoyInput(string key, bool isPressed)
         {
             var pos = GetBitPos(key);
@@ -57,8 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Gets the state of a particular joystick binding
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         public bool GetJoyInput(string key)
         {
             var pos = GetBitPos(key);
@@ -80,8 +76,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Gets the bit position of a particular joystick binding from the matrix
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         public int GetBitPos(string key)
         {
             int index = Array.IndexOf(ButtonCollection, key);

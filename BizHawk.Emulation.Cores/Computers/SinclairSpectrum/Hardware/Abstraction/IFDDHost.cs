@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Parses a new disk image and loads it into this floppy drive
         /// </summary>
-        /// <param name="diskData"></param>
         void FDD_LoadDisk(byte[] diskData);
 
         /// <summary>

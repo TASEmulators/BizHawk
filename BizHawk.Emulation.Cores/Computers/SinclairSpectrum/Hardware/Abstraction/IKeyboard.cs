@@ -43,36 +43,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the spectrum key status
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isPressed"></param>
         void SetKeyStatus(string key, bool isPressed);
 
         /// <summary>
         /// Gets the status of a spectrum key
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         bool GetKeyStatus(string key);
 
         /// <summary>
         /// Returns the query byte
         /// </summary>
-        /// <param name="lines"></param>
-        /// <returns></returns>
         byte GetLineStatus(byte lines);
 
         /// <summary>
         /// Reads a keyboard byte
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         byte ReadKeyboardByte(ushort addr);
 
         /// <summary>
         /// Looks up a key in the keyboard matrix and returns the relevent byte value
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         byte GetByteFromKeyMatrix(string key);
 
         void SyncState(Serializer ser);

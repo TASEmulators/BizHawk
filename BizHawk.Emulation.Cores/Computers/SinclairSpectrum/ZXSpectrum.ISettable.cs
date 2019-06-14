@@ -246,8 +246,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Detailed info to be displayed within the settings UIs
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
         public static ZXMachineMetaData GetMetaObject(MachineType type)
         {
             ZXMachineMetaData m = new ZXMachineMetaData();
@@ -354,8 +352,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns machine metadata as a formatted string (to be displayed in a textbox)
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
         public static string GetMetaString(MachineType type)
         {
             var m = GetMetaObject(type);

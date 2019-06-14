@@ -186,7 +186,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads the value from the currently selected register
         /// </summary>
-        /// <returns></returns>
         public int PortRead()
         {
             if (ActiveFunction == 1)
@@ -215,7 +214,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Writes to the currently selected register
         /// </summary>
-        /// <param name="value"></param>
         public void PortWrite(int value)
         {
             switch (ActiveFunction)
@@ -363,7 +361,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="frameCycle"></param>
         public void UpdateSound(int frameCycle)
         {
            BufferUpdate(frameCycle);
@@ -395,6 +392,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         /// <summary>
         /// The register array
+        /// </summary>
         /*
             The AY-3-8910/8912 contains 16 internal registers as follows:
 
@@ -426,7 +424,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             The AY-3-8912 ignores bit 7 of this register.    
         */
-        /// </summary>
         private int[] _registers = new int[16];
 
         /// <summary>
@@ -613,8 +610,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Initializes timing information for the frame
         /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="frameTactCount"></param>
         private void InitTiming(int sampleRate, int frameTactCount)
         {
             _sampleRate = sampleRate;
@@ -636,7 +631,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="cycle"></param>
         private void BufferUpdate(int cycle)
         {
             if (cycle > _tStatesPerFrame)
@@ -822,7 +816,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// State serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PSG-AY");

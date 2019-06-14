@@ -165,10 +165,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// The block address of the first block of the system Path Table is kept in this field
         /// </summary>
         public int AddressOfPathTable;
-        /// <summary>
-        /// This number is used to indicate the revision number of the file structure standard to which the 
-        /// directory search files conform. It is set to one
-        /// </summary>
 
         #endregion
 
@@ -461,8 +457,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// <summary>
         /// Detect ISO9660
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
         public bool GetISO9660(byte[] buffer)
         {
             //zero 24-jun-2013 - validate ISO9660
@@ -479,8 +473,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// <summary>
         /// Detect CD-I
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
         public bool GetCDI(byte[] buffer)
         {
             // CD-Interactive

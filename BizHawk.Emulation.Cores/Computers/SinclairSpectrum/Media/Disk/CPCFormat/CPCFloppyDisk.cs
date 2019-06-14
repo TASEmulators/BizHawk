@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Attempts to parse incoming disk data 
         /// </summary>
-        /// <param name="diskData"></param>
         /// <returns>
         /// TRUE:   disk parsed
         /// FALSE:  unable to parse disk
@@ -165,9 +164,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Takes a double-sided disk byte array and converts into 2 single-sided arrays
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="results"></param>
-        /// <returns></returns>
         public static bool SplitDoubleSided(byte[] data, List<byte[]> results)
         {
             // look for standard magic string
@@ -236,7 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// State serlialization
         /// </summary>
-        /// <param name="ser"></param>
         public override void SyncState(Serializer ser)
         {
             ser.BeginSection("Plus3FloppyDisk");
