@@ -96,7 +96,7 @@ Released binaries can be found right here on GitHub:
 
 Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full version of which is [here at TASVideos](http://tasvideos.org/Bizhawk/ReleaseHistory.html). **Don't mix different versions** of BizHawk, keep each version in its own folder.
 
-Before you start (by running `EmuHawk.exe`), you'll need the following Windows-only prerequisites installed. You can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest).
+**Note**: Before you start (by running `EmuHawk.exe`), you'll need the Windows-only prerequisites installed. You can get them all at once with [this program](https://github.com/TASVideos/BizHawk-Prereqs/releases/latest) (you don't need to do this every time BizHawk updates, check the date on its release page, but it can't hurt installing it again to be sure). The specific libraries it installs are:
 * .NET Framework 4.6.1
 * Visual C++ Redists
 	* 2010 SP1
@@ -106,7 +106,7 @@ Before you start (by running `EmuHawk.exe`), you'll need the following Windows-o
 
 BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1803 "Redstone 4", Win8 is supported from 8.1, and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
+Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1803 "Redstone 4", Win8 is supported from 8.1 (*not* 8.0), and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP and/or 32-bit Windows. Being in the 1.x series, many bugs remain and features are missing.
 
