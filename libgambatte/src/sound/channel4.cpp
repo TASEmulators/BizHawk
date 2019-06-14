@@ -1,319 +1,275 @@
-/***************************************************************************
- *   Copyright (C) 2007 by Sindre Aamås                                    *
- *   aamas@stud.ntnu.no                                                    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License version 2 as     *
- *   published by the Free Software Foundation.                            *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License version 2 for more details.                *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   version 2 along with this program; if not, write to the               *
- *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
- ***************************************************************************/
+//
+//   Copyright (C) 2007 by sinamas <sinamas at users.sourceforge.net>
+//
+//   This program is free software; you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License version 2 as
+//   published by the Free Software Foundation.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License version 2 for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   version 2 along with this program; if not, write to the
+//   Free Software Foundation, Inc.,
+//   51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
 #include "channel4.h"
 #include "../savestate.h"
 #include <algorithm>
 
-static unsigned long toPeriod(const unsigned nr3) {
+static unsigned long toPeriod(unsigned const nr3) {
 	unsigned s = (nr3 >> 4) + 3;
 	unsigned r = nr3 & 7;
-	
+
 	if (!r) {
 		r = 1;
 		--s;
 	}
-	
+
 	return r << s;
 }
 
 namespace gambatte {
 
-Channel4::Lfsr::Lfsr() :
-backupCounter(COUNTER_DISABLED),
-reg(0x7FFF),
-nr3(0),
-master(false)
-{}
+Channel4::Lfsr::Lfsr()
+: backupCounter_(counter_disabled)
+, reg_(0x7FFF)
+, nr3_(0)
+, master_(false)
+{
+}
 
-void Channel4::Lfsr::updateBackupCounter(const unsigned long cc) {
-	/*if (backupCounter <= cc) {
-		const unsigned long period = toPeriod(nr3);
-		backupCounter = cc - (cc - backupCounter) % period + period;
-	}*/
-	
-	if (backupCounter <= cc) {
-		const unsigned long period = toPeriod(nr3);
-		unsigned long periods = (cc - backupCounter) / period + 1;
-		
-		backupCounter += periods * period;
-		
-		if (master && nr3 < 0xE0) {
-			if (nr3 & 8) {
+void Channel4::Lfsr::updateBackupCounter(unsigned long const cc) {
+	if (backupCounter_ <= cc) {
+		unsigned long const period = toPeriod(nr3_);
+		unsigned long periods = (cc - backupCounter_) / period + 1;
+		backupCounter_ += periods * period;
+
+		if (master_ && nr3_ < 0xE0) {
+			if (nr3_ & 8) {
 				while (periods > 6) {
-					const unsigned xored = (reg << 1 ^ reg) & 0x7E;
-					reg = (reg >> 6 & ~0x7E) | xored | xored << 8;
+					unsigned const xored = (reg_ << 1 ^ reg_) & 0x7E;
+					reg_ = (reg_ >> 6 & ~0x7E) | xored | xored << 8;
 					periods -= 6;
 				}
-				
-				const unsigned xored = ((reg ^ reg >> 1) << (7 - periods)) & 0x7F;
-				reg = (reg >> periods & ~(0x80 - (0x80 >> periods))) | xored | xored << 8;
+
+				unsigned const xored = ((reg_ ^ reg_ >> 1) << (7 - periods)) & 0x7F;
+				reg_ = (reg_ >> periods & ~(0x80 - (0x80 >> periods))) | xored | xored << 8;
 			} else {
 				while (periods > 15) {
-					reg = reg ^ reg >> 1;
+					reg_ = reg_ ^ reg_ >> 1;
 					periods -= 15;
 				}
-				
-				reg = reg >> periods | (((reg ^ reg >> 1) << (15 - periods)) & 0x7FFF);
+
+				reg_ = reg_ >> periods | (((reg_ ^ reg_ >> 1) << (15 - periods)) & 0x7FFF);
 			}
 		}
 	}
 }
 
-void Channel4::Lfsr::reviveCounter(const unsigned long cc) {
+void Channel4::Lfsr::reviveCounter(unsigned long cc) {
 	updateBackupCounter(cc);
-	counter = backupCounter;
+	counter_ = backupCounter_;
 }
-
-/*static const unsigned char nextStateDistance[0x40] = {
-	6, 1, 1, 2, 2, 1, 1, 3,
-	3, 1, 1, 2, 2, 1, 1, 4,
-	4, 1, 1, 2, 2, 1, 1, 3,
-	3, 1, 1, 2, 2, 1, 1, 5,
-	5, 1, 1, 2, 2, 1, 1, 3,
-	3, 1, 1, 2, 2, 1, 1, 4,
-	4, 1, 1, 2, 2, 1, 1, 3,
-	3, 1, 1, 2, 2, 1, 1, 6,
-};*/
 
 inline void Channel4::Lfsr::event() {
-	if (nr3 < 0xE0) {
-		const unsigned shifted = reg >> 1;
-		const unsigned xored = (reg ^ shifted) & 1;
-		
-		reg = shifted | xored << 14;
-		
-		if (nr3 & 8)
-			reg = (reg & ~0x40) | xored << 6;
+	if (nr3_ < 0xE0) {
+		unsigned const shifted = reg_ >> 1;
+		unsigned const xored = (reg_ ^ shifted) & 1;
+		reg_ = shifted | xored << 14;
+
+		if (nr3_ & 8)
+			reg_ = (reg_ & ~0x40) | xored << 6;
 	}
-	
-	counter += toPeriod(nr3);
-	backupCounter = counter;
-	
-	
-	/*if (nr3 < 0xE0) {
-		const unsigned periods = nextStateDistance[reg & 0x3F];
-		const unsigned xored = ((reg ^ reg >> 1) << (7 - periods)) & 0x7F;
-		
-		reg = reg >> periods | xored << 8;
-		
-		if (nr3 & 8)
-			reg = reg & ~(0x80 - (0x80 >> periods)) | xored;
-	}
-	
-	const unsigned long period = toPeriod(nr3);
-	backupCounter = counter + period;
-	counter += period * nextStateDistance[reg & 0x3F];*/
+
+	counter_ += toPeriod(nr3_);
+	backupCounter_ = counter_;
 }
 
-void Channel4::Lfsr::nr3Change(const unsigned newNr3, const unsigned long cc) {
+void Channel4::Lfsr::nr3Change(unsigned newNr3, unsigned long cc) {
 	updateBackupCounter(cc);
-	nr3 = newNr3;
-	
-// 	if (counter != COUNTER_DISABLED)
-// 		counter = backupCounter + toPeriod(nr3) * (nextStateDistance[reg & 0x3F] - 1);
+	nr3_ = newNr3;
 }
 
 void Channel4::Lfsr::nr4Init(unsigned long cc) {
 	disableMaster();
 	updateBackupCounter(cc);
-	master = true;
-	backupCounter += 4;
-	counter = backupCounter;
-// 	counter = backupCounter + toPeriod(nr3) * (nextStateDistance[reg & 0x3F] - 1);
+	master_ = true;
+	backupCounter_ += 4;
+	counter_ = backupCounter_;
 }
 
-void Channel4::Lfsr::reset(const unsigned long cc) {
-	nr3 = 0;
+void Channel4::Lfsr::reset(unsigned long cc) {
+	nr3_ = 0;
 	disableMaster();
-	backupCounter = cc + toPeriod(nr3);
+	backupCounter_ = cc + toPeriod(nr3_);
 }
 
-void Channel4::Lfsr::resetCounters(const unsigned long oldCc) {
+void Channel4::Lfsr::resetCounters(unsigned long oldCc) {
 	updateBackupCounter(oldCc);
-	backupCounter -= COUNTER_MAX;
+	backupCounter_ -= counter_max;
 	SoundUnit::resetCounters(oldCc);
 }
 
-void Channel4::Lfsr::loadState(const SaveState &state) {
-	counter = backupCounter = std::max(state.spu.ch4.lfsr.counter, state.spu.cycleCounter);
-	reg = state.spu.ch4.lfsr.reg;
-	master = state.spu.ch4.master;
-	nr3 = state.mem.ioamhram.get()[0x122];
+void Channel4::Lfsr::loadState(SaveState const &state) {
+	counter_ = backupCounter_ = std::max(state.spu.ch4.lfsr.counter, state.spu.cycleCounter);
+	reg_ = state.spu.ch4.lfsr.reg;
+	master_ = state.spu.ch4.master;
+	nr3_ = state.mem.ioamhram.get()[0x122];
 }
 
 template<bool isReader>
 void Channel4::Lfsr::SyncState(NewState *ns)
 {
-	NSS(counter);
-	NSS(backupCounter);
-	NSS(reg);
-	NSS(nr3);
-	NSS(master);
+	NSS(counter_);
+	NSS(backupCounter_);
+	NSS(reg_);
+	NSS(nr3_);
+	NSS(master_);
 }
 
-Channel4::Channel4() :
-	staticOutputTest(*this, lfsr),
-	disableMaster(master, lfsr),
-	lengthCounter(disableMaster, 0x3F),
-	envelopeUnit(staticOutputTest),
-	cycleCounter(0),
-	soMask(0),
-	prevOut(0),
-	nr4(0),
-	master(false)
+Channel4::Channel4()
+: staticOutputTest_(*this, lfsr_)
+, disableMaster_(master_, lfsr_)
+, lengthCounter_(disableMaster_, 0x3F)
+, envelopeUnit_(staticOutputTest_)
+, nextEventUnit_(0)
+, cycleCounter_(0)
+, soMask_(0)
+, prevOut_(0)
+, nr4_(0)
+, master_(false)
 {
 	setEvent();
 }
 
 void Channel4::setEvent() {
-// 	nextEventUnit = &lfsr;
-// 	if (envelopeUnit.getCounter() < nextEventUnit->getCounter())
-		nextEventUnit = &envelopeUnit;
-	if (lengthCounter.getCounter() < nextEventUnit->getCounter())
-		nextEventUnit = &lengthCounter;
+	nextEventUnit_ = &envelopeUnit_;
+	if (lengthCounter_.counter() < nextEventUnit_->counter())
+		nextEventUnit_ = &lengthCounter_;
 }
 
-void Channel4::setNr1(const unsigned data) {
-	lengthCounter.nr1Change(data, nr4, cycleCounter);
-	
+void Channel4::setNr1(unsigned data) {
+	lengthCounter_.nr1Change(data, nr4_, cycleCounter_);
 	setEvent();
 }
 
-void Channel4::setNr2(const unsigned data) {
-	if (envelopeUnit.nr2Change(data))
-		disableMaster();
+void Channel4::setNr2(unsigned data) {
+	if (envelopeUnit_.nr2Change(data))
+		disableMaster_();
 	else
-		staticOutputTest(cycleCounter);
-	
+		staticOutputTest_(cycleCounter_);
+
 	setEvent();
 }
 
-void Channel4::setNr4(const unsigned data) {
-	lengthCounter.nr4Change(nr4, data, cycleCounter);
-		
-	nr4 = data;
-	
-	if (data & 0x80) { //init-bit
-		nr4 &= 0x7F;
-		
-		master = !envelopeUnit.nr4Init(cycleCounter);
-		
-		if (master)
-			lfsr.nr4Init(cycleCounter);
-		
-		staticOutputTest(cycleCounter);
+void Channel4::setNr4(unsigned const data) {
+	lengthCounter_.nr4Change(nr4_, data, cycleCounter_);
+	nr4_ = data;
+
+	if (data & 0x80) { // init-bit
+		nr4_ &= 0x7F;
+		master_ = !envelopeUnit_.nr4Init(cycleCounter_);
+
+		if (master_)
+			lfsr_.nr4Init(cycleCounter_);
+
+		staticOutputTest_(cycleCounter_);
 	}
-	
+
 	setEvent();
 }
 
-void Channel4::setSo(const unsigned long soMask) {
-	this->soMask = soMask;
-	staticOutputTest(cycleCounter);
+void Channel4::setSo(unsigned long soMask) {
+	soMask_ = soMask;
+	staticOutputTest_(cycleCounter_);
 	setEvent();
 }
 
 void Channel4::reset() {
-	cycleCounter = 0x1000 | (cycleCounter & 0xFFF); // cycleCounter >> 12 & 7 represents the frame sequencer position.
+	// cycleCounter >> 12 & 7 represents the frame sequencer position.
+	cycleCounter_ &= 0xFFF;
+	cycleCounter_ += ~(cycleCounter_ + 2) << 1 & 0x1000;
 
-// 	lengthCounter.reset();
-	lfsr.reset(cycleCounter);
-	envelopeUnit.reset();
-	
+	lfsr_.reset(cycleCounter_);
+	envelopeUnit_.reset();
 	setEvent();
 }
 
-void Channel4::init(const bool cgb) {
-	lengthCounter.init(cgb);
+void Channel4::loadState(SaveState const &state) {
+	lfsr_.loadState(state);
+	envelopeUnit_.loadState(state.spu.ch4.env, state.mem.ioamhram.get()[0x121],
+	                        state.spu.cycleCounter);
+	lengthCounter_.loadState(state.spu.ch4.lcounter, state.spu.cycleCounter);
+
+	cycleCounter_ = state.spu.cycleCounter;
+	nr4_ = state.spu.ch4.nr4;
+	master_ = state.spu.ch4.master;
 }
 
-void Channel4::loadState(const SaveState &state) {
-	lfsr.loadState(state);
-	envelopeUnit.loadState(state.spu.ch4.env, state.mem.ioamhram.get()[0x121], state.spu.cycleCounter);
-	lengthCounter.loadState(state.spu.ch4.lcounter, state.spu.cycleCounter);
-	
-	cycleCounter = state.spu.cycleCounter;
-	nr4 = state.spu.ch4.nr4;
-	master = state.spu.ch4.master;
-}
+void Channel4::update(uint_least32_t *buf, unsigned long const soBaseVol, unsigned long cycles) {
+	unsigned long const outBase = envelopeUnit_.dacIsOn() ? soBaseVol & soMask_ : 0;
+	unsigned long const outLow = outBase * (0 - 15ul);
+	unsigned long const endCycles = cycleCounter_ + cycles;
 
-void Channel4::update(uint_least32_t *buf, const unsigned long soBaseVol, unsigned long cycles) {
-	const unsigned long outBase = envelopeUnit.dacIsOn() ? soBaseVol & soMask : 0;
-	const unsigned long outLow = outBase * (0 - 15ul);
-	const unsigned long endCycles = cycleCounter + cycles;
-	
 	for (;;) {
-		const unsigned long outHigh = /*master ? */outBase * (envelopeUnit.getVolume() * 2 - 15ul)/* : outLow*/;
-		const unsigned long nextMajorEvent = nextEventUnit->getCounter() < endCycles ? nextEventUnit->getCounter() : endCycles;
-		unsigned long out = lfsr.isHighState() ? outHigh : outLow;
-		
-		while (lfsr.getCounter() <= nextMajorEvent) {
-			*buf += out - prevOut;
-			prevOut = out;
-			buf += lfsr.getCounter() - cycleCounter;
-			cycleCounter = lfsr.getCounter();
-			
-			lfsr.event();
-			out = lfsr.isHighState() ? outHigh : outLow;
+		unsigned long const outHigh = outBase * (envelopeUnit_.getVolume() * 2 - 15ul);
+		unsigned long const nextMajorEvent = std::min(nextEventUnit_->counter(), endCycles);
+		unsigned long out = lfsr_.isHighState() ? outHigh : outLow;
+
+		while (lfsr_.counter() <= nextMajorEvent) {
+			*buf += out - prevOut_;
+			prevOut_ = out;
+			buf += lfsr_.counter() - cycleCounter_;
+			cycleCounter_ = lfsr_.counter();
+
+			lfsr_.event();
+			out = lfsr_.isHighState() ? outHigh : outLow;
 		}
-		
-		if (cycleCounter < nextMajorEvent) {
-			*buf += out - prevOut;
-			prevOut = out;
-			buf += nextMajorEvent - cycleCounter;
-			cycleCounter = nextMajorEvent;
+
+		if (cycleCounter_ < nextMajorEvent) {
+			*buf += out - prevOut_;
+			prevOut_ = out;
+			buf += nextMajorEvent - cycleCounter_;
+			cycleCounter_ = nextMajorEvent;
 		}
-		
-		if (nextEventUnit->getCounter() == nextMajorEvent) {
-			nextEventUnit->event();
+
+		if (nextEventUnit_->counter() == nextMajorEvent) {
+			nextEventUnit_->event();
 			setEvent();
 		} else
 			break;
 	}
-	
-	if (cycleCounter & SoundUnit::COUNTER_MAX) {
-		lengthCounter.resetCounters(cycleCounter);
-		lfsr.resetCounters(cycleCounter);
-		envelopeUnit.resetCounters(cycleCounter);
-		
-		cycleCounter -= SoundUnit::COUNTER_MAX;
+
+	if (cycleCounter_ >= SoundUnit::counter_max) {
+		lengthCounter_.resetCounters(cycleCounter_);
+		lfsr_.resetCounters(cycleCounter_);
+		envelopeUnit_.resetCounters(cycleCounter_);
+		cycleCounter_ -= SoundUnit::counter_max;
 	}
 }
 
 SYNCFUNC(Channel4)
 {
-	SSS(lengthCounter);
-	SSS(envelopeUnit);
-	SSS(lfsr);
+	SSS(lengthCounter_);
+	SSS(envelopeUnit_);
+	SSS(lfsr_);
 
-	EBS(nextEventUnit, 0);
-	EVS(nextEventUnit, &lfsr, 1);
-	EVS(nextEventUnit, &envelopeUnit, 2);
-	EVS(nextEventUnit, &lengthCounter, 3);
-	EES(nextEventUnit, NULL);
+	EBS(nextEventUnit_, 0);
+	EVS(nextEventUnit_, &lfsr_, 1);
+	EVS(nextEventUnit_, &envelopeUnit_, 2);
+	EVS(nextEventUnit_, &lengthCounter_, 3);
+	EES(nextEventUnit_, NULL);
 
-	NSS(cycleCounter);
-	NSS(soMask);
-	NSS(prevOut);
-	
-	NSS(nr4);
-	NSS(master);
+	NSS(cycleCounter_);
+	NSS(soMask_);
+	NSS(prevOut_);
+
+	NSS(nr4_);
+	NSS(master_);
 }
 
 }

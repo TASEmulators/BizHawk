@@ -186,7 +186,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 			if (MemoryCallbacks != null)
 			{
-				MemoryCallbacks.CallExecutes(RegisterPC, "System Bus");
+				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(RegisterPC, 0, flags, "System Bus");
 			}
 
 			switch (opcode)

@@ -59,6 +59,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ser.Sync(nameof(_cableconnected), ref _cableconnected);
 			ser.Sync(nameof(_cablediscosignal), ref _cablediscosignal);
 			ser.Sync(nameof(do_r_next), ref do_r_next);
+			ser.Sync(nameof(L_NMI_CD), ref L_NMI_CD);
+			ser.Sync(nameof(L_NMI_CD), ref R_NMI_CD);
 			_controllerDeck.SyncState(ser);
 		}
 	}

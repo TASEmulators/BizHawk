@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		/// <returns></returns>
 		public INESBoard GetBoard()
 		{
 			return Board;
@@ -898,7 +897,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -948,7 +948,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
 
 			DB = ret;
 			return ret;
@@ -995,7 +996,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.WritePRG(addr - 0x8000, value);
 			}
 
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.

@@ -89,7 +89,7 @@ namespace SevenZip
         // private static string _LibraryVersion;
         private static bool? _modifyCapabale;
 
-        private static readonly PlatformLinkedLibSingleton.PlatformLinkedLibManager libLoader = PlatformLinkedLibSingleton.LinkedLibManager;
+        private static readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
 
         private static void InitUserInFormat(object user, InArchiveFormat format)
         {

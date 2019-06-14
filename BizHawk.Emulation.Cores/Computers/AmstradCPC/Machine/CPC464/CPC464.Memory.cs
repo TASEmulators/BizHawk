@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Simulates reading from the bus
         /// ROM paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public override byte ReadBus(ushort addr)
         {
             int divisor = addr / 0x4000;
@@ -61,8 +59,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Simulates writing to the bus
         /// Writes to the bus ALWAYS go to RAM, regardless of what upper and lower ROMs are paged in
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
@@ -96,8 +92,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads a byte of data from a specified memory address
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
             var data = ReadBus(addr);
@@ -108,8 +102,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
             WriteBus(addr, value);
@@ -119,8 +111,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Sets up the ROM
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="startAddress"></param>
         public override void InitROM(RomData[] romData)
         {
             foreach (var r in romData)

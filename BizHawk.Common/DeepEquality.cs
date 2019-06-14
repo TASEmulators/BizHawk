@@ -19,7 +19,6 @@ namespace BizHawk.Common
 		/// <summary>
 		/// return true if an array type is not 0-based
 		/// </summary>
-		/// <param name="t"></param>
 		private static bool IsNonZeroBaedArray(Type t)
 		{
 			if (!t.IsArray)

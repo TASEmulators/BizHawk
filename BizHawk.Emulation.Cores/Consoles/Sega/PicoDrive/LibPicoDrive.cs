@@ -29,13 +29,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			Europe = 8
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="cd">If TRUE, load a CD and not a cart.</param>
 		/// <param name="_32xPreinit">If TRUE, preallocate 32X data structures.  When set to false,
 		///		32X games will still run, but will not have memory domains</param>
-		/// <returns></returns>
 		[BizImport(CC)]
 		public abstract bool Init(bool cd, bool _32xPreinit, Region regionAutoOrder,  Region regionOverride);
 

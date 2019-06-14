@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int tone = note % 12;
 			int octave = note / 12;
-			return $"{noteNames[tone]}{octave}";
+			return noteNames[tone] + octave;
 		}
 
 		//this isnt thoroughly debugged but it seems to work OK

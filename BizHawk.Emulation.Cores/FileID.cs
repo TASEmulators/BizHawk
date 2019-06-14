@@ -80,9 +80,6 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public int Confidence;
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public FileIDType FileIDType;
 
 		/// <summary>

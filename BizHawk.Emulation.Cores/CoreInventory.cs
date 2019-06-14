@@ -64,13 +64,6 @@ namespace BizHawk.Emulation.Cores
 			/// <summary>
 			/// instatiate an emulator core
 			/// </summary>
-			/// <param name="comm"></param>
-			/// <param name="game"></param>
-			/// <param name="rom"></param>
-			/// <param name="deterministic"></param>
-			/// <param name="settings"></param>
-			/// <param name="syncsettings"></param>
-			/// <returns></returns>
 			public IEmulator Create
 			(
 				CoreComm comm,
@@ -113,8 +106,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find a core matching a particular game.system
 		/// </summary>
-		/// <param name="system"></param>
-		/// <returns></returns>
 		public Core this[string system]
 		{
 			get
@@ -129,9 +120,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find a core matching a particular game.system with a particular coreattributes.name
 		/// </summary>
-		/// <param name="system"></param>
-		/// <param name="core"></param>
-		/// <returns></returns>
 		public Core this[string system, string core]
 		{
 			get
@@ -149,8 +137,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find an exact core type.  slow lookup.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
 		public Core FindByType(Type type)
 		{
 			foreach (List<Core> cc in systems.Values)
@@ -167,7 +153,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assembilies
 		/// </summary>
-		/// <param name="assys"></param>
 		public CoreInventory(IEnumerable<Assembly> assys)
 		{
 			foreach (var assy in assys)

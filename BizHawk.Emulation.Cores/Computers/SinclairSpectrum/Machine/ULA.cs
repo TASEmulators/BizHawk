@@ -137,7 +137,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Cycles the ULA clock
         /// Handles interrupt generation
         /// </summary>
-        /// <param name="currentCycle"></param>
         public virtual void CycleClock(long totalCycles)
         {
             // render the screen
@@ -306,7 +305,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// <summary>
             /// Constructor
             /// </summary>
-            /// <param name="contPattern"></param>
             public RenderTable(ULA ula, MachineType machineType)
             {
                 _ula = ula;
@@ -318,7 +316,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// <summary>
             /// Initializes the renderer
             /// </summary>
-            /// <param name="machineType"></param>
             private void InitRenderer(MachineType machineType)
             {
                 for (var t = 0; t < _ula.FrameCycleLength; t++)
@@ -549,7 +546,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Renders to the screen buffer based on the current cycle
         /// </summary>
-        /// <param name="toCycle"></param>
         public void RenderScreen(int toCycle)
         {
             // check boundaries
@@ -690,8 +686,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns floating bus value (if available)
         /// </summary>
-        /// <param name="tstate"></param>
-        /// <returns></returns>
         public void ReadFloatingBus(int tstate, ref int result, ushort port)
         {
             tstate += FloatingBusOffset;
@@ -773,7 +767,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the contention value for the current t-state
         /// </summary>
-        /// <returns></returns>
         public int GetContentionValue()
         {
             return GetContentionValue((int)_machine.CurrentFrameCycle);
@@ -782,7 +775,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the contention value for the supplied t-state
         /// </summary>
-        /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
             if (tstate >= FrameCycleLength)
@@ -797,7 +789,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the contention value for the supplied t-state
         /// </summary>
-        /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
             if (tstate >= FrameCycleLength)
@@ -940,7 +931,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     return croppedBuffer;
 
                 case ZXSpectrum.BorderType.None:
-                    // all border sizes now 24
+                    // all border sizes now 0
                     var lR__ = BorderLeftWidth;
                     var rR__ = BorderRightWidth;
                     var tR__ = BorderTopHeight;

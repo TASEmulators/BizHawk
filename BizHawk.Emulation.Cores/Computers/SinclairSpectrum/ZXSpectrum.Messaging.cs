@@ -13,8 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes a message to the OSD
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="category"></param>
         public void SendMessage(string message, MessageCategory category)
         {
             if (!CheckMessageSettings(category))
@@ -51,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Called when certain input presses are detected
         /// </summary>
-        /// <param name="input"></param>
         public void OSD_FireInputMessage(string input)
         {
             StringBuilder sb = new StringBuilder();
@@ -438,8 +435,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Checks whether message category is allowed to be sent
         /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
         public bool CheckMessageSettings(MessageCategory category)
         {
             switch (Settings.OSDMessageVerbosity)

@@ -215,7 +215,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((int)val).ToString();
 				case DisplayType.Hex:
-					return val.ToHexString(8);
+					return $"{val:X8}";
 				case DisplayType.FixedPoint_20_12:
 					return $"{(int)val / 4096.0:0.######}";
 				case DisplayType.FixedPoint_16_16:

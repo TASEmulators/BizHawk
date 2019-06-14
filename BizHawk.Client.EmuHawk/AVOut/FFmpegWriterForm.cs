@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// get a list of canned presets
 			/// </summary>
-			/// <returns></returns>
 			public static FormatPreset[] GetPresets()
 			{
 				return new[]

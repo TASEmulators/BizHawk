@@ -155,13 +155,22 @@ namespace BizHawk.Client.EmuHawk
 						.ReadAllBytes();
 				}
 			};
-
-			argParser.ParseArguments(args);
+			try
+			{
+				argParser.ParseArguments(args);
+			}
+			catch (ArgParserException e)
+			{
+				MessageBox.Show(e.Message);
+			}
+			
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
-			CGC.CGCBinPath = Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
+			CGC.CGCBinPath = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				? Path.Combine(PathManager.GetDllDirectory(), "cgc.exe")
+				: "cgc"; // installed separately (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
 			PresentationPanel = new PresentationPanel();
 			PresentationPanel.GraphicsControl.MainWindow = true;
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
@@ -285,6 +294,11 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
 			{
 				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
+			}
+
+			if (argParser.audiosync.HasValue)
+			{
+				Global.Config.VideoWriterAudioSync = argParser.audiosync.Value;
 			}
 
 			if (argParser.cmdMovie != null)
@@ -1052,7 +1066,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!_inFullscreen)
 			{
 				SuspendLayout();
-#if WINDOWS
+
 				// Work around an AMD driver bug in >= vista:
 				// It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
 				// AMD cards manifest a problem under these circumstances, flickering other monitors. 
@@ -1060,7 +1074,9 @@ namespace BizHawk.Client.EmuHawk
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
 				// Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-				if (Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					&& Global.Config.DispFullscreenHacks
+					&& Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
 					//It seems that some statusbar elements composite with the backcolor. 
@@ -1071,7 +1087,6 @@ namespace BizHawk.Client.EmuHawk
 					// FUTURE WORK:
 					// re-add this padding back into the display manager (so the image will get cut off a little but, but a few more resolutions will fully fit into the screen)
 				}
-#endif
 
 				_windowedLocation = Location;
 
@@ -1088,13 +1103,15 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-#if WINDOWS
-				// do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
-				Padding = new Padding(0);
-				// it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
-				// so we need the statusbar and mainform backdrop color to match
-				BackColor = SystemColors.Control;
-#endif
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				{
+					// do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
+					Padding = new Padding(0);
+
+					// it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+					// so we need the statusbar and mainform backdrop color to match
+					BackColor = SystemColors.Control;
+				}
 
 				_inFullscreen = false;
 
@@ -1388,6 +1405,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastOpenRomFilter;
 
 		private ArgParser argParser = new ArgParser();
+
 		// Resources
 		private Bitmap _statusBarDiskLightOnImage;
 		private Bitmap _statusBarDiskLightOffImage;
@@ -1893,7 +1911,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetPauseStatusbarIcon()
 		{
-			if (IsTurboSeeking)
+			if (EmulatorPaused)
+			{
+				PauseStatusButton.Image = Properties.Resources.Pause;
+				PauseStatusButton.Visible = true;
+				PauseStatusButton.ToolTipText = "Emulator Paused";
+			}
+			else if (IsTurboSeeking)
 			{
 				PauseStatusButton.Image = Properties.Resources.Lightning;
 				PauseStatusButton.Visible = true;
@@ -1904,12 +1928,6 @@ namespace BizHawk.Client.EmuHawk
 				PauseStatusButton.Image = Properties.Resources.YellowRight;
 				PauseStatusButton.Visible = true;
 				PauseStatusButton.ToolTipText = $"Emulator is playing to frame {PauseOnFrame.Value} click to stop seek";
-			}
-			else if (EmulatorPaused)
-			{
-				PauseStatusButton.Image = Properties.Resources.Pause;
-				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator Paused";
 			}
 			else
 			{
@@ -2005,7 +2023,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private BitmapBuffer MakeScreenshotImage()
+		public BitmapBuffer MakeScreenshotImage()
 		{
 			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}
@@ -2066,7 +2084,22 @@ namespace BizHawk.Client.EmuHawk
 		// sends an alt+mnemonic combination
 		private void SendAltKeyChar(char c)
 		{
-			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
+			switch (OSTailoredCode.CurrentOS)
+			{
+				case OSTailoredCode.DistinctOS.Linux:
+				case OSTailoredCode.DistinctOS.macOS:
+					// no mnemonics for you
+					break;
+				case OSTailoredCode.DistinctOS.Windows:
+					//HACK
+					var _ = typeof(ToolStrip).InvokeMember(
+						"ProcessMnemonicInternal",
+						System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance,
+						null,
+						MainformMenu,
+						new object[] { c });
+					break;
+			}
 		}
 
 		public static string FormatFilter(params string[] args)
@@ -3642,7 +3675,9 @@ namespace BizHawk.Client.EmuHawk
 				if (ioa is OpenAdvanced_OpenRom)
 				{
 					var ioa_openrom = (OpenAdvanced_OpenRom)ioa;
-					path = ioa_openrom.Path;
+					// path already has the right value, while ioa.Path is null (interestingly, these are swapped below)
+					// I doubt null is meant to be assigned here, and it just prevents gameload
+					//path = ioa_openrom.Path;
 				}
 
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);

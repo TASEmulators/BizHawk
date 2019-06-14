@@ -63,8 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// However all timings are based on spectrum timings (3.5Mhz)
         /// so need to be adjusted for the CPC (4Mhz)
         /// </summary>
-        /// <param name="db"></param>
-        /// <returns></returns>
         private TapeDataBlock ConvertClock(TapeDataBlock db)
         {
             TapeDataBlock tb = new TapeDataBlock();
@@ -110,7 +108,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns TRUE if tzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             /*
@@ -147,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks
@@ -207,8 +203,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Processes a TZX block
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="id"></param>
         private void ProcessBlock(byte[] data, int id)
         {
             // process based on detected block ID
@@ -1674,9 +1668,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Used to process either a standard or turbo data block
         /// </summary>
-        /// <param name="block"></param>
-        /// <param name="blockData"></param>
-        /// <returns></returns>
         private TapeDataBlock DecodeDataBlock
             (
                 TapeDataBlock block,
@@ -1900,9 +1891,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Used to process either a standard or turbo data block
         /// </summary>
-        /// <param name="block"></param>
-        /// <param name="blockData"></param>
-        /// <returns></returns>
         private TapeDataBlock DecodeDataBlock
             (
                 TapeDataBlock block,
@@ -1957,7 +1945,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// If neccessary a seperate PAUSE block will be created
         /// </summary>
-        /// <param name="original"></param>
         private void CreatePauseBlock(TapeDataBlock original)
         {
             if (original.PauseInMS > 0)

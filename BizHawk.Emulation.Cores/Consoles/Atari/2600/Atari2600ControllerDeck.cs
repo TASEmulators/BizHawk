@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			typeof(UnpluggedController), // Order must match Atari2600ControllerTypes enum values
 			typeof(StandardController),
 			typeof(PaddleController),
+			typeof(BoostGripController),
 			typeof(DrivingController)
 		};
 

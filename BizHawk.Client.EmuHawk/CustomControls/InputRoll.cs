@@ -289,7 +289,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Returns all columns including those that are not visible
 		/// </summary>
-		/// <returns></returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns => _columns;
@@ -1196,7 +1195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AllowRightClickSelecton && e.Button == MouseButtons.Right)
 			{
-				if (!IsHoveringOnColumnCell)
+				if (!IsHoveringOnColumnCell && CurrentCell != null)
 				{
 					_currentX = e.X;
 					_currentY = e.Y;

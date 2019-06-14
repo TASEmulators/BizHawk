@@ -1,6 +1,7 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -14,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Main constructor
         /// </summary>
-        /// <param name="spectrum"></param>
-        /// <param name="cpu"></param>
         public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;
@@ -24,13 +23,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             CPUMon = new CPUMonitor(this);
             ULADevice = new Screen48(this);
 
-            BuzzerDevice = new Beeper(this);
-            BuzzerDevice.Init(44100, ULADevice.FrameLength);
+			BuzzerDevice = new OneBitBeeper(44100, ULADevice.FrameLength, 50, "SystemBuzzer");
 
-            TapeBuzzer = new Beeper(this);
-            TapeBuzzer.Init(44100, ULADevice.FrameLength);
+			TapeBuzzer = new OneBitBeeper(44100, ULADevice.FrameLength, 50, "TapeBuzzer");
 
-            KeyboardDevice = new StandardKeyboard(this);
+			KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
 

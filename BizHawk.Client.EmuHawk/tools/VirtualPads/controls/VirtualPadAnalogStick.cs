@@ -39,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
 		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
+		private bool ReverseX;
+		private bool ReverseY;
 
 		public string SecondaryName { get; set; }
 
@@ -50,7 +52,17 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName)
 				? SecondaryName
 				: Name.Replace("X", "Y"); // Fallback
+			if (RangeX[0] > RangeX[2])
+			{
+				RangeX = new[] { RangeX[2], RangeX[1], RangeX[0] };
+				ReverseX = true;
+			}
 			AnalogStick.SetRangeX(RangeX);
+			if (RangeY[0] > RangeY[2])
+			{
+				RangeY = new[] { RangeY[2], RangeY[1], RangeY[0] };
+				ReverseY = true;
+			}
 			AnalogStick.SetRangeY(RangeY);
 
 			ManualX.Minimum = (decimal)RangeX[0];
@@ -264,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAnalogMaxFromNumerics()
 		{
 			if (!_programmaticallyUpdatingNumerics)
-				AnalogStick.SetUserRange((sbyte)MaxXNumeric.Value, (sbyte)MaxYNumeric.Value);
+				AnalogStick.SetUserRange(ReverseX ? -MaxXNumeric.Value : MaxXNumeric.Value, ReverseY ? -MaxYNumeric.Value : MaxYNumeric.Value);
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private SpectrumBase _machine { get; set; }
         private Z80A _cpu { get; set; }
-        private IBeeperDevice _buzzer { get; set; }
+        private OneBitBeeper _buzzer { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -29,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initializes the datacorder device
         /// </summary>
-        /// <param name="machine"></param>
         public void Init(SpectrumBase machine)
         {
             _machine = machine;
@@ -262,7 +262,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// TRUE:   skip forward
         /// FALSE:  skip backward
         /// </summary>
-        /// <param name="skipForward"></param>
         public void SkipBlock(bool skipForward)
         {
             int blockCount = _dataBlocks.Count;
@@ -317,7 +316,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Inserts a new tape and sets up the tape device accordingly
         /// </summary>
-        /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
             // instantiate converters
@@ -462,8 +460,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
         /// </summary>
-        /// <param name="cpuCycles"></param>
-        /// <returns></returns>
         public bool GetEarBit(long cpuCycle)
         {
             // decide how many cycles worth of data we are capturing
@@ -928,9 +924,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             if (TapeIsPlaying)
@@ -960,9 +953,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             if (!TapeIsPlaying)
@@ -980,7 +970,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Bizhawk state serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
             ser.BeginSection(nameof(DatacorderDevice));

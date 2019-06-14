@@ -279,7 +279,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Instantiates the joysticks array
         /// </summary>
-        /// <param name="joys"></param>
         protected void InitJoysticks(List<JoystickType> joys)
         {
             List<IJoystick> jCollection = new List<IJoystick>();
@@ -300,9 +299,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Instantiates a new IJoystick object
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="playerNumber"></param>
-        /// <returns></returns>
         public IJoystick InstantiateJoystick(JoystickType type, int playerNumber)
         {
             switch (type)
@@ -325,8 +321,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns a IJoystick object depending on the type (or null if not found)
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         protected IJoystick LocateUniqueJoystick(JoystickType type)
         {
             return JoystickCollection.Where(a => a.JoyType == type).FirstOrDefault();

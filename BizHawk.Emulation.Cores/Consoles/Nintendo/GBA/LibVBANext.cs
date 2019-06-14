@@ -63,25 +63,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <summary>
 		/// create a new context
 		/// </summary>
-		/// <returns></returns>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern IntPtr Create();
 
 		/// <summary>
 		/// destroy a context
 		/// </summary>
-		/// <param name="g"></param>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void Destroy(IntPtr g);
 
 		/// <summary>
 		/// load a rom
 		/// </summary>
-		/// <param name="g"></param>
-		/// <param name="romfile"></param>
-		/// <param name="romfilelen"></param>
-		/// <param name="biosfile"></param>
-		/// <param name="biosfilelen"></param>
 		/// <returns>success</returns>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool LoadRom(IntPtr g, byte[] romfile, uint romfilelen, byte[] biosfile, uint biosfilelen, [In]FrontEndSettings settings);
@@ -89,19 +82,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <summary>
 		/// hard reset
 		/// </summary>
-		/// <param name="g"></param>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern void Reset(IntPtr g);
 
 		/// <summary>
 		/// frame advance
 		/// </summary>
-		/// <param name="g"></param>
-		/// <param name="input"></param>
 		/// <param name="videobuffer">240x160 packed argb32</param>
 		/// <param name="audiobuffer">buffer to recieve stereo audio</param>
 		/// <param name="numsamp">number of samples created</param>
-		/// <param name="videopalette"></param>
 		/// <returns>true if lagged</returns>
 		[DllImport(dllname, CallingConvention = cc)]
 		public static extern bool FrameAdvance(IntPtr g, Buttons input, int[] videobuffer, short[] audiobuffer, out int numsamp, int[] videopalette);
@@ -143,11 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void AddressCallback(uint addr);
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="addr">if bit 0 is set, thumb mode</param>
-		/// <param name="opcode"></param>
 		[UnmanagedFunctionPointer(cc)]
 		public delegate void TraceCallback(uint addr, uint opcode);
 

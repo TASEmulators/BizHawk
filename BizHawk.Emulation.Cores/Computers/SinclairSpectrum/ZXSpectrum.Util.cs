@@ -13,8 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Helper method that returns a single INT32 from a BitArray
         /// </summary>
-        /// <param name="bitarray"></param>
-        /// <returns></returns>
         public static int GetIntFromBitArray(BitArray bitArray)
         {
             if (bitArray.Length > 32)
@@ -28,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// POKEs a memory bus address
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public void PokeMemory(ushort addr, byte value)
         {
             _machine.WriteBus(addr, value);
@@ -38,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Called by MainForm so that the core label can display a more detailed tooltip about the emulated spectrum model
 		/// </summary>
-		/// <returns></returns>
         public string GetMachineType()
         {
             string m = "";
@@ -74,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// Called by MainForm - dumps a close approximation of the Spectaculator SZX snapshot format
 		/// DEV use only - this is nowhere near accurate
 		/// </summary>
-		/// <returns></returns>
         public byte[] GetSZXSnapshot()
         {
             return SZX.ExportSZX(_machine);
@@ -83,10 +77,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Utility method to get MemberName from an object
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TValue"></typeparam>
-		/// <param name="memberAccess"></param>
-		/// <returns></returns>
         public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
         {
             return ((MemberExpression)memberAccess.Body).Member.Name;

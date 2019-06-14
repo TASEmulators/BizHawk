@@ -97,7 +97,9 @@ namespace BizHawk.Client.ApiHawk
 				method = mainFormClass.GetMethod(name, typeList.ToArray());
 			}
 			else method = mainFormClass.GetMethod(name);
-			method.Invoke(clientMainFormInstance, paramList);
+
+			if(method != null)
+				method.Invoke(clientMainFormInstance, paramList);
 		}
 
 		private static object GetMainFormField(string name)
@@ -161,7 +163,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void LoadState(string name)
 		{
-			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false, false });
+			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false, false });
 		}
 
 
@@ -250,7 +252,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void SaveState(string name)
 		{
-			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.{"State"}"), name, false });
+			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false });
 		}
 
 		/// <summary>

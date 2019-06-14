@@ -66,7 +66,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// allocate size bytes at any address
 		/// </summary>
-		/// <param name="size"></param>
 		public MemoryBlock(ulong size)
 			: this(0, size)
 		{
@@ -75,10 +74,11 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// allocate size bytes starting at a particular address
 		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+				throw new InvalidOperationException("MemoryBlock ctor called on Unix");
+
 			if (!WaterboxUtils.Aligned(start))
 				throw new ArgumentOutOfRangeException();
 			if (size == 0)
@@ -189,7 +189,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// take a hash of the current full contents of the block, including unreadable areas
 		/// </summary>
-		/// <returns></returns>
 		public byte[] FullHash()
 		{
 			if (!Active)

@@ -14,8 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Main constructor
         /// </summary>
-        /// <param name="spectrum"></param>
-        /// <param name="cpu"></param>
         public CPC464(AmstradCPC cpc, Z80A cpu, List<byte[]> files, bool autoTape, AmstradCPC.BorderType borderType)
         {
             CPC = cpc;

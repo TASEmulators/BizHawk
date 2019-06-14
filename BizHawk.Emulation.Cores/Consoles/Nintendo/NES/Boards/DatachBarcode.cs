@@ -228,7 +228,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// d3
 		/// </summary>
-		/// <returns></returns>
 		public bool GetOutput()
 		{
 			return output == 8;

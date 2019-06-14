@@ -109,8 +109,6 @@ namespace BizHawk.Emulation.DiscSystem
             /// <summary>
             /// Parse mds stream for the header
             /// </summary>
-            /// <param name="stream"></param>
-            /// <returns></returns>
             public AHeader Parse(Stream stream)
             {
                 EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
@@ -250,10 +248,10 @@ namespace BizHawk.Emulation.DiscSystem
             /// </summary>
             public int Session;
 
-            /// <summary>
-            /// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
-            /// </summary>
-            //public int ALBA;
+//          /// <summary>
+//          /// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
+//          /// </summary>
+//          public int ALBA;
 
             /// <summary>
             /// this seems just to be the LBA corresponding to PMIN:PSEC:PFRAME (give or take 150).

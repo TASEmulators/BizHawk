@@ -612,29 +612,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		/// <summary>
-		/// returns a tilemap which might be resized into 8x8 physical tiles if the 16x16 logical tilesize is specified
-		/// </summary>
-		//TileEntry[] AdaptTilemap(TileEntry[] map8x8, int tilesWide, int tilesTall, int tilesize)
-		//{
-		//  if (tilesize == 8) return map8x8;
-		//  int numTiles = tilesWide * tilesTall;
-		//  var ret = new TileEntry[numTiles * 4];
-		//  for(int y=0;y<tilesTall;y++)
-		//  {
-		//    for (int x = 0; x < tilesWide; x++)
-		//    {
-		//      int si = tilesWide * y + x;
-		//      int di = tilesHigh 
-		//      for (int tx = 0; tx < 2; tx++)
-		//      {
-		//        for (int ty = 0; ty < 2; ty++)
-		//        {
-		//        }
-		//      }
-		//    }
-		//  }
-		//}
+//		/// <summary>
+//		/// returns a tilemap which might be resized into 8x8 physical tiles if the 16x16 logical tilesize is specified
+//		/// </summary>
+//		TileEntry[] AdaptTilemap(TileEntry[] map8x8, int tilesWide, int tilesTall, int tilesize)
+//		{
+//			if (tilesize == 8) return map8x8;
+//			int numTiles = tilesWide * tilesTall;
+//			var ret = new TileEntry[numTiles * 4];
+//			for(int y=0;y<tilesTall;y++)
+//			{
+//				for (int x = 0; x < tilesWide; x++)
+//				{
+//					int si = tilesWide * y + x;
+//					int di = tilesHigh
+//					for (int tx = 0; tx < 2; tx++)
+//					{
+//						for (int ty = 0; ty < 2; ty++)
+//						{
+//						}
+//					}
+//				}
+//			}
+//		}
 
 		/// <summary>
 		/// decodes a BG. youll still need to paletteize and colorize it.

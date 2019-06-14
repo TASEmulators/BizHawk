@@ -460,8 +460,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns index of the state right above the given frame
 		/// </summary>
-		/// <param name="frame"></param>
-		/// <returns></returns>
 		public int GetStateIndexByFrame(int frame)
 		{
 			return _states.IndexOfKey(GetStateClosestToFrame(frame).Key);
@@ -470,8 +468,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Returns frame of the state at the given index
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
 		public int GetStateFrameByIndex(int index)
 		{
 			// feos: this is called super often by decay

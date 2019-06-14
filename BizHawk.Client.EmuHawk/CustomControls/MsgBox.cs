@@ -288,7 +288,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Paint the System Icon in the top left corner.
 		/// </summary>
-		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (m_sysIcon != null)

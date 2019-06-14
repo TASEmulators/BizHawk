@@ -36,7 +36,7 @@ namespace BizHawk.Client.DBMan
 			}
 		}
 		
-		public string SizeFriendly { get { return string.Format("{0} bytes ({1}k)", Size, Size / 1024); } }
+		public string SizeFriendly => $"{Size} bytes ({Size >> 10}k)";
 		public bool New { get { return (Created > Modified); } }
 
 		public string NameWithTheFlipped

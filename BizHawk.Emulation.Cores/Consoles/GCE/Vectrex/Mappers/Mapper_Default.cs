@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public override byte ReadMemory(ushort addr)
 		{
-			return 0xFF;
+			return Core._rom[addr];
 		}
 
 		public override byte PeekMemory(ushort addr)

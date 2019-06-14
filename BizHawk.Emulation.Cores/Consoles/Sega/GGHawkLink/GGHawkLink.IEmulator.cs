@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
+		public int L_NMI_CD, R_NMI_CD;
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
@@ -62,6 +64,33 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			L.FrameAdvancePrep();
 			R.FrameAdvancePrep();
 
+			if (!_cableconnected)
+			{
+				if ((L.Port05 & 0x38) == 0x38)
+				{
+					L.Port05 |= 4;
+					L.Cpu.NonMaskableInterrupt = true;
+				}
+
+				if ((R.Port05 & 0x38) == 0x38)
+				{
+					R.Port05 |= 4;
+					R.Cpu.NonMaskableInterrupt = true;
+				}
+			}
+			else
+			{
+				if ((L.Port05 & 0x38) == 0x38)
+				{
+					L.Port05 &= 0xFB;
+				}
+
+				if ((R.Port05 & 0x38) == 0x38)
+				{
+					R.Port05 &= 0xFB;
+				}
+			}
+
 			int scanlinesPerFrame = 262;
 
 			L.Vdp.ScanLine = 0;
@@ -84,11 +113,92 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 					L.Cpu.ExecuteOne();
 					R.Cpu.ExecuteOne();
 
-					/*
-					 * 
-					 *  Linking code goes here
-					 * 
-					 */
+					// linking code
+					if (L.p3_write)
+					{
+						L.p3_write = false;
+
+						if (((L.Port05 & 0x38) == 0x38) && _cableconnected)
+						{
+							L.Port05 |= 1;
+
+							if ((R.Port05 & 0x38) == 0x38)
+							{
+								R.Port05 |= 2;
+								R.Port04 = L.Port03;
+								R_NMI_CD = 256;
+								//R.Cpu.NonMaskableInterrupt = true;
+							}
+						}					
+					}
+
+					if (L.p4_read)
+					{
+						L.p4_read = false;
+						L.Cpu.NonMaskableInterrupt = false;
+
+						if (((L.Port05 & 0x38) == 0x38) && _cableconnected)
+						{
+							L.Port05 &= 0xFD;
+
+							if ((R.Port05 & 0x38) == 0x38)
+							{
+								R.Port05 &= 0xFE;
+							}
+						}
+					}
+
+					if (R.p3_write)
+					{
+						R.p3_write = false;
+
+						if (((R.Port05 & 0x38) == 0x38) && _cableconnected)
+						{
+							R.Port05 |= 1;
+
+							if ((L.Port05 & 0x38) == 0x38)
+							{
+								L.Port05 |= 2;
+								L.Port04 = R.Port03;
+								L_NMI_CD = 256;
+								//L.Cpu.NonMaskableInterrupt = true;
+							}
+						}
+					}
+
+					if (R.p4_read)
+					{
+						R.p4_read = false;
+						R.Cpu.NonMaskableInterrupt = false;
+
+						if (((R.Port05 & 0x38) == 0x38) && _cableconnected)
+						{
+							R.Port05 &= 0xFD;
+
+							if ((L.Port05 & 0x38) == 0x38)
+							{
+								L.Port05 &= 0xFE;
+							}
+						}
+					}
+
+					if (L_NMI_CD > 0)
+					{
+						L_NMI_CD--;
+						if (L_NMI_CD == 0)
+						{
+							L.Cpu.NonMaskableInterrupt = true;
+						}
+					}
+
+					if (R_NMI_CD > 0)
+					{
+						R_NMI_CD--;
+						if (R_NMI_CD == 0)
+						{
+							R.Cpu.NonMaskableInterrupt = true;
+						}
+					}
 
 					L.PSG.generate_sound();
 					R.PSG.generate_sound();

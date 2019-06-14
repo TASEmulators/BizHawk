@@ -158,10 +158,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
-			string hash_md5 = null;
-			hash_md5 = "md5:" + rom.HashMD5(0, rom.Length);
-			Console.WriteLine(hash_md5);
-
+			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
+			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;
 			Setup_Mapper();
 
@@ -296,7 +294,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Setup_Mapper()

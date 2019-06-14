@@ -98,9 +98,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 1 new input bit.  x.25 standard
 		/// </summary>
-		/// <param name="crc"></param>
-		/// <param name="bit"></param>
-		/// <returns></returns>
 		static ushort CCITT(ushort crc, int bit)
 		{
 			int bitc = crc & 1;
@@ -113,9 +110,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 8 new input bits.  x.25 standard
 		/// </summary>
-		/// <param name="crc"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
 		static ushort CCITT_8(ushort crc, byte b)
 		{
 			for (int i = 0; i < 8; i++)
@@ -289,8 +283,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// memorydomain debugging
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public byte PeekData(long addr)
 		{
 			if (disk != null && disk.Length > addr)
@@ -357,7 +349,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// data write reg
 		/// </summary>
-		/// <param name="value"></param>
 		public void Write4024(byte value)
 		{
 			bytetransferflag = false;
@@ -369,7 +360,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// control reg
 		/// </summary>
-		/// <param name="value"></param>
 		public void Write4025(byte value)
 		{
 			if ((value & 1) != 0) // start motor
@@ -425,7 +415,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// general status reg, some bits are from outside the RamAdapter class
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4030()
 		{
 			byte ret = 0;
@@ -448,7 +437,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// more status stuff
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4031()
 		{
 			bytetransferflag = false;
@@ -465,7 +453,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// more status stuff
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4032()
 		{
 			byte ret = 0xff;

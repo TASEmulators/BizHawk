@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		bool event_frameend = false;
 		bool event_breakpoint = false;
 
-		private static readonly PlatformLinkedLibSingleton.PlatformLinkedLibManager libLoader = PlatformLinkedLibSingleton.LinkedLibManager;
+		private static readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
 
 		public enum m64p_error
 		{
@@ -179,7 +179,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="DebugCallback">A function to use when the core wants to output debug messages</param>
 		/// <param name="context2">Use ""</param>
 		/// <param name="dummy">Use IntPtr.Zero</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
 		CoreStartup m64pCoreStartup;
@@ -187,7 +186,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Cleans up the core
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreShutdown();
 		CoreShutdown m64pCoreShutdown;
@@ -197,7 +195,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		/// <param name="PluginType">The type of plugin that is being connected</param>
 		/// <param name="PluginLibHandle">The DLL handle for the plugin</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
 		CoreAttachPlugin m64pCoreAttachPlugin;
@@ -206,7 +203,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Disconnects a plugin DLL from the core DLL
 		/// </summary>
 		/// <param name="PluginType">The type of plugin to be disconnected</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
 		CoreDetachPlugin m64pCoreDetachPlugin;
@@ -216,7 +212,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		/// <param name="SectionName">The name of the section to open</param>
 		/// <param name="ConfigSectionHandle">A pointer to the pointer to use as the section handle</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigOpenSection(string SectionName, ref IntPtr ConfigSectionHandle);
 		ConfigOpenSection m64pConfigOpenSection;
@@ -228,7 +223,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamName">The name of the parameter to set</param>
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be an int right now)</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
 		ConfigSetParameter m64pConfigSetParameter;
@@ -240,7 +234,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamName">The name of the parameter to set</param>
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be a string)</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameterStr(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, StringBuilder ParamValue);
 		ConfigSetParameterStr m64pConfigSetParameterStr;
@@ -249,7 +242,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Saves the mupen64plus state to the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array to use to save the state. Must be at least 16788288 + 1024 bytes</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int savestates_save_bkm(byte[] buffer);
 		savestates_save_bkm m64pCoreSaveState;
@@ -258,7 +250,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Loads the mupen64plus state from the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array filled with the state to load. Must be at least 16788288 + 1024 bytes</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int savestates_load_bkm(byte[] buffer);
 		savestates_load_bkm m64pCoreLoadState;
@@ -332,7 +323,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Reads from the "system bus"
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate byte biz_read_memory(uint addr);
 		public biz_read_memory m64p_read_memory_8;
@@ -340,7 +330,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Writes to the "system bus"
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void biz_write_memory(uint addr, byte value);
 		public biz_write_memory m64p_write_memory_8;
@@ -353,14 +342,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="CoreHandle">The DLL handle for the core DLL</param>
 		/// <param name="Context">Giving a context to the DebugCallback</param>
 		/// <param name="DebugCallback">A function to use when the pluging wants to output debug messages</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
 
 		/// <summary>
 		/// Cleans up the plugin
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate m64p_error PluginShutdown();
 
@@ -369,8 +356,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Handles a debug message from mupen64plus
 		/// </summary>
-		/// <param name="Context"></param>
-		/// <param name="level"></param>
 		/// <param name="Message">The message to display</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
@@ -752,18 +737,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 				if (event_breakpoint)
 				{
+					MemoryCallbackFlags flags = 0;
 					switch (_breakparams._type)
 					{
 						case BreakType.Read:
-							_breakparams._mcs.CallReads(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessRead;
 							break;
 						case BreakType.Write:
-							_breakparams._mcs.CallWrites(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessWrite;
 							break;
 						case BreakType.Execute:
-							_breakparams._mcs.CallExecutes(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessExecute;
 							break;
 					}
+
+					_breakparams._mcs.CallMemoryCallbacks(_breakparams._addr, 0, (uint)flags, "System Bus");
 
 					event_breakpoint = false;
 					Resume();

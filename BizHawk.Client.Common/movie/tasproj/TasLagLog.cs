@@ -146,8 +146,6 @@ namespace BizHawk.Client.Common
 		{
 			_lagLog.Clear();
 			_wasLag.Clear();
-			////if (br.BaseStream.Length > 0)
-			////{ BaseStream.Length does not return the expected value.
 			int formatVersion = br.ReadByte();
 			if (formatVersion == 0)
 			{
@@ -175,7 +173,6 @@ namespace BizHawk.Client.Common
 					_wasLag.Add(br.ReadBoolean());
 				}
 			}
-			////}
 		}
 
 		public bool? History(int frame)
@@ -191,19 +188,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return null;
-		}
-
-		public int LastValidFrame
-		{
-			get
-			{
-				if (_lagLog.Count == 0)
-				{
-					return 0;
-				}
-
-				return _lagLog.Count - 1;
-			}
 		}
 
 		public TasLagLog Clone()

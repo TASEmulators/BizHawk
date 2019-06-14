@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 				var sb = new StringBuilder();
 				foreach (var b in _syncSettings.InitialWRamStatePattern)
 				{
-					sb.Append(b.ToHexString(2));
+					sb.Append($"{b:X2}");
 				}
 
 				RamPatternOverrideBox.Text = sb.ToString();

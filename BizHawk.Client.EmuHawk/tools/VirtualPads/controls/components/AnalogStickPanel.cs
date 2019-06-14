@@ -51,10 +51,10 @@ namespace BizHawk.Client.EmuHawk
 		private sbyte UserRangePercentageX = 100;
 		private sbyte UserRangePercentageY = 100;
 
-		public void SetUserRange(sbyte rx, sbyte ry)
+		public void SetUserRange(decimal rx, decimal ry)
 		{
-			UserRangePercentageX = rx;
-			UserRangePercentageY = ry;
+			UserRangePercentageX = (sbyte) rx;
+			UserRangePercentageY = (sbyte) ry;
 			Rerange();
 			Refresh();
 		}

@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		#region Enumerable to Enumerable<T>
 
 		/// <summary>
-		/// Converts the outdated IEnumerable Controls property to a IEnumerable<T> like .NET should have done a long time ago
+		/// Converts the outdated IEnumerable Controls property to an <see cref="IEnumerable{T}"/> like .NET should have done a long time ago
 		/// </summary>
 		public static IEnumerable<Control> Controls(this Control control)
 		{

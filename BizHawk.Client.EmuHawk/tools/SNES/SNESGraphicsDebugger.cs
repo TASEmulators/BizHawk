@@ -130,8 +130,8 @@ namespace BizHawk.Client.EmuHawk
 		string FormatVramAddress(int address)
 		{
 			int excess = address & 1023;
-			if (excess != 0) return $"@{address.ToHexString(4)}";
-			else return $"@{address.ToHexString(4)} ({address / 1024}K)";
+			if (excess != 0) return $"@{address:X4}";
+			else return $"@{address:X4} ({address / 1024}K)";
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
@@ -725,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (mode == SNESGraphicsDecoder.BGMode.Unavailable) return "Unavailable";
 			if (mode == SNESGraphicsDecoder.BGMode.Text) return $"Text{bpp}bpp";
-			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return string.Format("OBJ", bpp);
+			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return "OBJ";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7) return "Mode7";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7Ext) return "Mode7Ext";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7DC) return "Mode7DC";
@@ -786,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 				addr *= 2;
 
 			addr &= 0xFFFF;
-			txtMapEntryTileAddr.Text = $"@{addr.ToHexString(4)}";
+			txtMapEntryTileAddr.Text = $"@{addr:X4}";
 		}
 
 		void UpdateColorDetails()

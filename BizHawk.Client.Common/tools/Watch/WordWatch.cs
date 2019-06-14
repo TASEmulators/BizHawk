@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((short)val).ToString();
 				case DisplayType.Hex:
-					return val.ToHexString(4);
+					return $"{val:X4}";
 				case DisplayType.FixedPoint_12_4:
 					return $"{val / 16.0:F4}";
 				case DisplayType.Binary:

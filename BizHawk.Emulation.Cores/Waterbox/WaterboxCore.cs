@@ -316,7 +316,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// variables that it needs to.
 		/// the default implementation does nothing
 		/// </summary>
-		/// <param name="writer"></param>
 		protected virtual void SaveStateBinaryInternal(BinaryWriter writer)
 		{
 
@@ -327,7 +326,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// that were in SaveStateBinaryInternal and reset any native pointers.
 		/// the default implementation does nothing
 		/// </summary>
-		/// <param name="reader"></param>
 		protected virtual void LoadStateBinaryInternal(BinaryReader reader)
 		{
 

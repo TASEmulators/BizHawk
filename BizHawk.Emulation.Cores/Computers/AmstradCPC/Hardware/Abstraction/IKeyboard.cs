@@ -36,21 +36,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads the current line status
         /// </summary>
-        /// <returns></returns>
         byte ReadCurrentLine();
 
         /// <summary>
         /// Sets the CPC key status
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="isPressed"></param>
         void SetKeyStatus(string key, bool isPressed);
 
         /// <summary>
         /// Gets the status of a CPC key
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
         bool GetKeyStatus(string key);
 
         void SyncState(Serializer ser);

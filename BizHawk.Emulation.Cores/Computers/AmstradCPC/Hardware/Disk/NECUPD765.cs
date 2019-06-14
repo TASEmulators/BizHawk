@@ -30,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Main constructor
         /// </summary>
-        /// <param name="machine"></param>
         public NECUPD765()
         {            
             InitCommandList();

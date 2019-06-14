@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
 
                     // zxhawk hack - it uses multiple categoryLabels
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
+                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
                         pageidx++;
 
                 }
@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 				if (buckets[0].Count > 0)
 				{
                     // ZXHawk needs to skip this bit
-                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC")
+                    if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
                         return;
 
                     string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
@@ -274,6 +274,11 @@ namespace BizHawk.Client.EmuHawk
                 pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
                 tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
             }
+
+			if (controlName == "ChannelF Controller")
+			{
+
+			}
 
             if (controlName == "AmstradCPC Controller")
             {

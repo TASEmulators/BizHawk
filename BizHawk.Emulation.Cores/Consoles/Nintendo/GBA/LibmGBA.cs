@@ -87,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <summary>
 		/// start a savestate operation
 		/// </summary>
-		/// <param name="ctx"></param>
 		/// <param name="p">private parameter to be passed to BizFinishGetState</param>
 		/// <param name="size">size of buffer to be allocated for BizFinishGetState</param>
 		/// <returns>if false, operation failed and BizFinishGetState should not be called</returns>

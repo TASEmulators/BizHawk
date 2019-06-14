@@ -48,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The only constructor
 		/// </summary>
-		/// <param name="type"></param>
 		public CRTC6845(CRTCType type)
 		{
 			ChipType = type;
@@ -147,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is connected up to the CRTC
 		/// Built from R12, R13 and CLK
+		/// </summary>
 		/*
             Memory Address Signal	Signal source	Signal name
             A15	                    6845	        MA13
@@ -166,7 +166,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             A1	                    6845	        MA0
             A0	                    Gate-Array	    CLK
          */
-		/// </summary>
 		public ushort AddressLineCPC
 		{
 			get
@@ -363,8 +362,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// CPU (or other device) reads from the 8-bit databus
 		/// </summary>
-		/// <param name="port"></param>
-		/// <param name="result"></param>
 		public virtual bool ReadPort(ushort port, ref int result)
 		{
 			byte portUpper = (byte)(port >> 8);
@@ -398,8 +395,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// CPU (or other device) writes to the 8-bit databus
 		/// </summary>
-		/// <param name="port"></param>
-		/// <param name="result"></param>
 		public virtual bool WritePort(ushort port, int value)
 		{
 			byte portUpper = (byte)(port >> 8);
@@ -496,7 +491,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Selects a specific register
 		/// </summary>
-		/// <param name="value"></param>
 		private void SelectRegister(int value)
 		{
 			var v = (byte)((byte)value & 0x1F);
@@ -509,8 +503,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to read from the currently selected register
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister(ref int data)
 		{
 			switch ((int)ChipType)
@@ -527,8 +519,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to write to the currently selected register
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private void WriteRegister(int data)
 		{
 			switch ((int)ChipType)
@@ -544,8 +534,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to read from the internal status register (if present)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus(ref int data)
 		{
 			switch ((int)ChipType)
@@ -756,8 +744,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type0(ref int data)
 		{
 			// Type 0 - write only register returns 0 when it is read from
@@ -805,8 +791,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (UM6845R)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type1(ref int data)
 		{
 			// Type 1 - write only register returns 0 when it is read from
@@ -865,8 +849,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type2(ref int data)
 		{
 			switch (AddressRegister)
@@ -916,8 +898,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (AMS40489 & pre-ASIC)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type3_4(ref int data)
 		{
 			// unsure of the register sizes at the moment
@@ -984,7 +964,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type0(int data)
 		{
 			byte v = (byte)data;
@@ -1022,7 +1001,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type1(int data)
 		{
 			byte v = (byte)data;
@@ -1062,7 +1040,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type2(int data)
 		{
 			byte v = (byte)data;
@@ -1102,7 +1079,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type3_4(int data)
 		{
 			// unsure of the register sizes at the moment
@@ -1132,8 +1108,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Read Status Register (UM6845R)
 		/// This is fully implemented
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Type1(ref int data)
 		{
 			// Bit6: Set when latched LPEN strobe input is received / Reset when R17 or R16 is read from
@@ -1147,8 +1121,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Status Register is unavailable but attempts to read will return the currently
 		/// selected register data instead
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Type3_4(ref int data)
 		{
 			return ReadRegister(ref data);
@@ -1158,8 +1130,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Read Status Register (HD6845S & UM6845)
 		/// No status register available
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Unavailable(ref int data)
 		{
 			return false;

@@ -319,7 +319,6 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IFDDHost.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Beeper.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\FloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
@@ -371,7 +370,6 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavHeader.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavStreamReader.cs" />
-    <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs">
@@ -597,8 +595,27 @@
     </Compile>
     <Compile Include="Consoles\Belogic\LibUzem.cs" />
     <Compile Include="Consoles\Belogic\Uzem.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IDebuggable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.MemoryDomains.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IStatable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.ISettable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.InputPollable.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.Controllers.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IEmulator.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.IVideoProvider.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\ChannelF.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Operations.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Disassembler.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Tables.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Registers.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.Execute.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\F8\F3850.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Cart.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Audio.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Video.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Ports.cs" />
+    <Compile Include="Consoles\Fairchild\ChannelF\Memory.cs" />
     <Compile Include="Consoles\GCE\Vectrex\Audio.cs" />
-    <Compile Include="Consoles\GCE\Vectrex\Vectrex.CpuLink.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.ICodeDataLog.cs" />
     <Compile Include="Consoles\GCE\Vectrex\VectrexHawk.IDebuggable.cs">
@@ -1529,11 +1546,11 @@
     <Compile Include="CPUs\MC6809\Execute.cs" />
     <Compile Include="CPUs\MC6809\Interrupts.cs" />
     <Compile Include="CPUs\MC6809\MC6809.cs" />
-    <Compile Include="CPUs\MC6809\NewDisassembler.cs" />
+    <Compile Include="CPUs\MC6809\Disassembler.cs" />
     <Compile Include="CPUs\MC6809\Operations.cs" />
     <Compile Include="CPUs\MC6809\Registers.cs" />
     <Compile Include="CPUs\MC6809\Indexed_Modes.cs" />
-    <Compile Include="CPUs\MC6809\Tables_Direct.cs" />
+    <Compile Include="CPUs\MC6809\OP_Tables.cs" />
     <Compile Include="CPUs\LR35902\Execute.cs" />
     <Compile Include="CPUs\LR35902\Interrupts.cs" />
     <Compile Include="CPUs\LR35902\LR35902.cs" />
@@ -1583,7 +1600,9 @@
     </Compile>
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Sound\OneBitBeeper.cs" />
     <Compile Include="Sound\SN76489sms.cs" />
+    <Compile Include="Sound\SyncSoundMixer.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />

@@ -53,7 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			{ "PCFX", "PC-FX" },
 			{ "32X", "32X" },
             { "ZXSpectrum", "ZX Spectrum" },
-            { "AmstradCPC", "Amstrad CPC" }
+            { "AmstradCPC", "Amstrad CPC" },
+			{ "ChannelF", "Channel F" }
         };
 
 		public string TargetSystem = null;
@@ -357,6 +358,8 @@ namespace BizHawk.Client.EmuHawk
         private void tbbOpenFolder_Click(object sender, EventArgs e)
         {
             var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows && !Directory.Exists(frmWares))
+				Directory.CreateDirectory(frmWares);
             System.Diagnostics.Process.Start(frmWares);
         }
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -36,11 +37,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }                
             if (_machine != null && _machine.BuzzerDevice != null)
             {
-                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = o.EarVolume;
+                ((OneBitBeeper)_machine.BuzzerDevice as OneBitBeeper).Volume = o.EarVolume;
             }
             if (_machine != null && _machine.TapeBuzzer != null)
             {
-                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = o.TapeVolume;
+                ((OneBitBeeper)_machine.TapeBuzzer as OneBitBeeper).Volume = o.TapeVolume;
             }
 
             Settings = o;
@@ -245,8 +246,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Detailed info to be displayed within the settings UIs
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
         public static ZXMachineMetaData GetMetaObject(MachineType type)
         {
             ZXMachineMetaData m = new ZXMachineMetaData();
@@ -353,8 +352,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
 		/// Returns machine metadata as a formatted string (to be displayed in a textbox)
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
         public static string GetMetaString(MachineType type)
         {
             var m = GetMetaObject(type);

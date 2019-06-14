@@ -160,7 +160,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
 			_tia.BusState = temp;
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			var flags = (uint)(MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 
 			return temp;
 		}
@@ -180,8 +181,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
-
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			var flags = (uint)(MemoryCallbackFlags.AccessWrite);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 		}
 
 		internal void PokeMemory(ushort addr, byte value)
@@ -191,7 +192,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			var flags = (uint)(MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void RebootCore()

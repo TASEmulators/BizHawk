@@ -8,13 +8,9 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	/// <summary>
-	/// </summary>
 	/// <param name="lcdc">current value of register $ff40 (LCDC)</param>
 	public delegate void ScanlineCallback(byte lcdc);
 
-	/// <summary>
-	/// </summary>
 	/// <param name="image">The image data</param>
 	/// <param name="height">How tall an image is, in pixels. Image is only valid up to that height and must be assumed to be garbage below that.</param>
 	/// <param name="top_margin">The top margin of blank pixels. Just form feeds the printer a certain amount at the top.</param>

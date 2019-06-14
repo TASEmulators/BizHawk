@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -85,12 +86,9 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = new Process();
-#if WINDOWS
-				_ffmpeg.StartInfo.FileName = Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
-#else
-				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
-#endif
-
+				_ffmpeg.StartInfo.FileName = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
+					: "ffmpeg";
 				_ffmpeg.StartInfo.Arguments = $"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"";
 				_ffmpeg.StartInfo.CreateNoWindow = true;
 
@@ -162,7 +160,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// returns a string containing the commandline sent to ffmpeg and recent console (stderr) output
 		/// </summary>
-		/// <returns></returns>
 		private string ffmpeg_geterror()
 		{
 			if (_ffmpeg.StartInfo.RedirectStandardError)

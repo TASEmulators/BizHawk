@@ -29,9 +29,11 @@
 		WonderSwan,
 		Libretro,
 		VirtualBoy,
+		Vectrex,
 		NeoGeoPocket,
         ZXSpectrum,
         AmstradCPC,
-		GGL
+		GGL,
+		ChannelF
 	}
 }

@@ -520,6 +520,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
 
+			//unavailable pipelines will have no opaque
+			if (pw == null)
+				return;
+
 			pw.VertexDeclaration.Dispose();
 			pw.FragmentShader.IGLShader.Release();
 			pw.VertexShader.IGLShader.Release();

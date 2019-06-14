@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System;
 
 namespace BizHawk.Emulation.Common.Components.MC6809

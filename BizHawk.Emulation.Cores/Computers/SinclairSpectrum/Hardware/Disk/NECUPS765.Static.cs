@@ -18,9 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns the specified bit value from supplied byte
         /// </summary>
-        /// <param name="bitNumber"></param>
-        /// <param name="dataByte"></param>
-        /// <returns></returns>
         public static bool GetBit(int bitNumber, byte dataByte)
         {
             if (bitNumber < 0 || bitNumber > 7)
@@ -34,8 +31,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the specified bit of the supplied byte to 1
         /// </summary>
-        /// <param name="bitNumber"></param>
-        /// <param name=""></param>
         public static void SetBit(int bitNumber, ref byte dataByte)
         {
             if (bitNumber < 0 || bitNumber > 7)
@@ -51,8 +46,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the specified bit of the supplied byte to 0
         /// </summary>
-        /// <param name="bitNumber"></param>
-        /// <param name=""></param>
         public static void UnSetBit(int bitNumber, ref byte dataByte)
         {
             if (bitNumber < 0 || bitNumber > 7)
@@ -68,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns a drive number (0-3) based on the first two bits of the supplied byte
         /// </summary>
-        /// <param name="dataByte"></param>
-        /// <returns></returns>
         public static int GetUnitSelect(byte dataByte)
         {
             int driveNumber = dataByte & 0x03;
@@ -79,8 +70,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Sets the first two bits of a byte based on the supplied drive number (0-3)
         /// </summary>
-        /// <param name="driveNumber"></param>
-        /// <param name="dataByte"></param>
         public static void SetUnitSelect(int driveNumber, ref byte dataByte)
         {
             switch (driveNumber)

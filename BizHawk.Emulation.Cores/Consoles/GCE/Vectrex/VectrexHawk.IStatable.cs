@@ -38,14 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return ms.ToArray();
 		}
 
-		// here is where all your savestated stuff will be called 
-		// make sure every variable you make is savestated
-		// also all the components with their own savestate functions need to be called form here
-		// for normal single variables the format is:
-		// ser.Sync("var_name", ref var_name);
-
-		// for arrays, use:
-		// ser.Sync("var_name", ref var_name, false);
 		private void SyncState(Serializer ser)
 		{
 			byte[] core = null;
@@ -61,14 +53,42 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
-			ser.BeginSection("VIC20");
+			ser.BeginSection("VECTREX");
 
-			ser.Sync("RAM", ref RAM, false);
+			ser.Sync(nameof(RAM), ref RAM, false);
+
+			ser.Sync(nameof(dir_dac), ref dir_dac);
+			ser.Sync(nameof(dir_ctrl), ref dir_ctrl);
+
+			ser.Sync(nameof(portB_ret), ref portB_ret);
+			ser.Sync(nameof(portA_ret), ref portA_ret);
+
+			ser.Sync(nameof(t1_low), ref t1_low);
+			ser.Sync(nameof(t1_high), ref t1_high);
+			ser.Sync(nameof(t1_counter), ref t1_counter);
+			ser.Sync(nameof(t1_shot_go), ref t1_shot_go);
+			ser.Sync(nameof(PB7), ref PB7);
+			ser.Sync(nameof(PB7_prev), ref PB7_prev);
+
+			ser.Sync(nameof(t2_low), ref t2_low);
+			ser.Sync(nameof(t2_high), ref t2_high);
+			ser.Sync(nameof(t2_counter), ref t2_counter);
+			ser.Sync(nameof(t2_shot_go), ref t2_shot_go);
+			ser.Sync(nameof(PB6), ref PB6);
+			ser.Sync(nameof(PB6_prev), ref PB6_prev);
+
+			ser.Sync(nameof(int_en), ref int_en);
+			ser.Sync(nameof(int_fl), ref int_fl);
+			ser.Sync(nameof(aux_ctrl), ref aux_ctrl);
+
+			ser.Sync(nameof(_frame), ref _frame);
+			ser.Sync(nameof(_lagcount), ref _lagcount);
+			ser.Sync(nameof(_islag), ref _islag);
 
 			// probably a better way to do this
 			if (cart_RAM != null)
 			{
-				ser.Sync("cart_RAM", ref cart_RAM, false);
+				ser.Sync(nameof(cart_RAM), ref cart_RAM, false);
 			}
 
 			ser.EndSection();

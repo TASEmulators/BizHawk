@@ -124,10 +124,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// Returns a byte array of any length
         /// Not really anything endian going on, but I struggled to find a better place for it
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
         public byte[] ReadBytes(byte[] buffer, int offset, int length)
         {
             return buffer.Skip(offset).Take(length).ToArray();
@@ -137,10 +133,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// Returns an int32 value from any size byte array
         /// (careful, data may/will be truncated)
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
         public int ReadIntValue(byte[] buffer, int offset, int length)
         {
             var bytes = buffer.Skip(offset).Take(length).ToArray();
