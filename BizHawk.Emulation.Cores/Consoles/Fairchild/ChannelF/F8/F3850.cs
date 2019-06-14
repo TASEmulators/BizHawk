@@ -722,7 +722,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(pc + i)).ToHexString(2);
+				byte_code += ReadMemory((ushort)(pc + i)).ToString("X2");
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
