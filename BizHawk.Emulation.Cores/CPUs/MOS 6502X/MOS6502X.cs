@@ -65,27 +65,31 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 			for (int i = 0; i < length; i++)
 			{
-				rawbytes += string.Format(" {0:X2}", _link.PeekMemory((ushort)(PC + i)));
+				rawbytes += $" {_link.PeekMemory((ushort)(PC + i)):X2}";
 			}
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}: {1,-9}  {2} ",
-					PC, rawbytes, disasm).PadRight(32),
-				RegisterInfo = string.Format(
-					"A:{0:X2}  X:{1:X2}  Y:{2:X2}  SP:{4:X2}  P:{3:X2}  {6}{7}{8}{9}{10}{11}{12}{13}  Cy:{5}  PPU-Cy:{15}",
-					A, X, Y, P, S, TotalExecutedCycles,
-					FlagN ? "N" : "n",
-					FlagV ? "V" : "v",
-					FlagT ? "T" : "t",
-					FlagB ? "B" : "b",
-					FlagD ? "D" : "d",
-					FlagI ? "I" : "i",
-					FlagZ ? "Z" : "z",
-					FlagC ? "C" : "c",
-					!RDY ? "R" : "r",
-					ext_ppu_cycle)
+				Disassembly = $"{PC:X4}: {rawbytes,-9}  {disasm} ".PadRight(32),
+				RegisterInfo = string.Join("  ",
+					$"A:{A:X2}",
+					$"X:{X:X2}",
+					$"Y:{Y:X2}",
+					$"SP:{S:X2}",
+					$"P:{P:X2}",
+					string.Concat(
+						FlagN ? "N" : "n",
+						FlagV ? "V" : "v",
+						FlagT ? "T" : "t",
+						FlagB ? "B" : "b",
+						FlagD ? "D" : "d",
+						FlagI ? "I" : "i",
+						FlagZ ? "Z" : "z",
+						FlagC ? "C" : "c"
+//						!RDY ? "R" : "r"
+						),
+					$"Cy:{TotalExecutedCycles}",
+					$"PPU-Cy:{ext_ppu_cycle}")
 			};
 		}
 

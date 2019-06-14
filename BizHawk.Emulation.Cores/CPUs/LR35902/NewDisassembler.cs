@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = result.Replace("d8", string.Format("#{0:X2}h", d));
+				result = result.Replace("d8", $"#{d:X2}h");
 			}
 			else if (result.Contains("d16"))
 			{
@@ -548,7 +548,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				byte dhi = reader(addr++);
 				bytes.Add(dlo);
 				bytes.Add(dhi);
-				result = result.Replace("d16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
+				result = result.Replace("d16", $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a16"))
 			{
@@ -556,13 +556,13 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				byte dhi = reader(addr++);
 				bytes.Add(dlo);
 				bytes.Add(dhi);
-				result = result.Replace("a16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
+				result = result.Replace("a16", $"#{dhi:X2}{dlo:X2}h");
 			}
 			else if (result.Contains("a8"))
 			{
 				byte d = reader(addr++);
 				bytes.Add(d);
-				result = result.Replace("a8", string.Format("#FF{0:X2}h", d));
+				result = result.Replace("a8", $"#FF{d:X2}h");
 			}
 			else if (result.Contains("r8"))
 			{
@@ -571,12 +571,12 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				int offs = d;
 				if (offs >= 128)
 					offs -= 256;
-				result = result.Replace("r8", string.Format("{0:X4}h", (ushort)(addr + offs)));
+				result = result.Replace("r8", $"{(ushort)(addr + offs):X4}h");
 			}
 			StringBuilder ret = new StringBuilder();
-			ret.Append(string.Format("{0:X4}:  ", origaddr));
+			ret.Append($"{origaddr:X4}:  ");
 			foreach (var b in bytes)
-				ret.Append(string.Format("{0:X2} ", b));
+				ret.Append($"{b:X2} ");
 			while (ret.Length < 17)
 				ret.Append(' ');
 			ret.Append(result);

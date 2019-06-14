@@ -484,7 +484,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			CoreDll = libLoader.LoadPlatformSpecific("mupen64plus");
 			if (CoreDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
+				throw new InvalidOperationException("Failed to load mupen64plus.dll");
 
 			connectFunctionPointers();
 
@@ -942,7 +942,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			if (result != m64p_error.M64ERR_SUCCESS)
 			{
 				libLoader.FreePlatformSpecific(plugin.dllHandle);
-				throw new InvalidOperationException(string.Format("Error during attaching plugin {0}", PluginName));
+				throw new InvalidOperationException($"Error during attaching plugin {PluginName}");
 			}
 
 			plugins.Add(type, plugin);

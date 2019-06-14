@@ -756,30 +756,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}: {1} {2}",
-					RegPC,
-					byte_code.PadRight(12),
-					disasm.PadRight(26)),
-				RegisterInfo = string.Format(
-					"AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7} {8}{9}{10}{11}{12}{13}{14}{15}{16}",
-					(Regs[A] << 8) + Regs[F],
-					(Regs[B] << 8) + Regs[C],
-					(Regs[D] << 8) + Regs[E],
-					(Regs[H] << 8) + Regs[L],
-					(Regs[Ixh] << 8) + Regs[Ixl],
-					(Regs[Iyh] << 8) + Regs[Iyl],
-					Regs[SPl] | (Regs[SPh] << 8),
-					TotalExecutedCycles,
-					FlagC ? "C" : "c",
-					FlagN ? "N" : "n",
-					FlagP ? "P" : "p",
-					Flag3 ? "3" : "-",
-					FlagH ? "H" : "h",
-					Flag5 ? "5" : "-",
-					FlagZ ? "Z" : "z",
-					FlagS ? "S" : "s",
-					FlagI ? "E" : "e")
+				Disassembly = $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
+				RegisterInfo = string.Join(" ",
+					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
+					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",
+					$"DE:{(Regs[D] << 8) + Regs[E]:X4}",
+					$"HL:{(Regs[H] << 8) + Regs[L]:X4}",
+					$"IX:{(Regs[Ixh] << 8) + Regs[Ixl]:X4}",
+					$"IY:{(Regs[Iyh] << 8) + Regs[Iyl]:X4}",
+					$"SP:{Regs[SPl] | (Regs[SPh] << 8):X4}",
+					$"Cy:{TotalExecutedCycles}",
+					string.Concat(
+						FlagC ? "C" : "c",
+						FlagN ? "N" : "n",
+						FlagP ? "P" : "p",
+						Flag3 ? "3" : "-",
+						FlagH ? "H" : "h",
+						Flag5 ? "5" : "-",
+						FlagZ ? "Z" : "z",
+						FlagS ? "S" : "s",
+						FlagI ? "E" : "e"))
 			};
 		}
 

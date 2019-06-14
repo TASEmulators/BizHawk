@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				throw new Exception("Missing \"UNIF\" header mark!");
 			int ver = br.ReadInt32();
 			//if (ver != 7)
-			//	throw new Exception(string.Format("Unknown UNIF version {0}!", ver));
+			//	throw new Exception($"Unknown UNIF version {ver}!");
 			Console.WriteLine("Processing Version {0} UNIF...", ver);
 			br.ReadBytes(32 - 4 - 4);
 
@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			MemoryStream chrs = new MemoryStream();
 			for (int i = 0; i < 16; i++)
 			{
-				TryAdd(prgs, string.Format("PRG{0:X1}", i));
-				TryAdd(chrs, string.Format("CHR{0:X1}", i));
+				TryAdd(prgs, $"PRG{i:X1}");
+				TryAdd(chrs, $"CHR{i:X1}");
 			}
 			prgs.Close();
 			chrs.Close();

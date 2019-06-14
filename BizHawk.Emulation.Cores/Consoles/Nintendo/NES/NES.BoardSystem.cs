@@ -459,10 +459,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public string palette; // Palette override for VS system
 			public byte vs_security; // for VS system games that do a ppu dheck
 
-			public override string ToString()
-			{
-				return string.Format("pr={1},ch={2},wr={3},vr={4},ba={5},pa={6}|{7},brd={8},sys={9}", board_type, prg_size, chr_size, wram_size, vram_size, wram_battery ? 1 : 0, pad_h, pad_v, board_type, system);
-			}
+			public override string ToString() => string.Join(",",
+				$"pr={prg_size}",
+				$"ch={chr_size}",
+				$"wr={wram_size}",
+				$"vr={vram_size}",
+				$"ba={(wram_battery ? 1 : 0)}",
+				$"pa={pad_h}|{pad_v}",
+				$"brd={board_type}",
+				$"sys={system}");
 		}
 
 		/// <summary>

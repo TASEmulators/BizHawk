@@ -563,28 +563,26 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0} ",
-					disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---").PadRight(40),
-				RegisterInfo = string.Format(
-					"A:{0:X2} F:{1:X2} B:{2:X2} C:{3:X2} D:{4:X2} E:{5:X2} H:{6:X2} L:{7:X2} SP:{8:X2} Cy:{9} LY:{10} {11}{12}{13}{14}{15}{16}",
-					Regs[A],
-					Regs[F],
-					Regs[B],
-					Regs[C],
-					Regs[D],
-					Regs[E],
-					Regs[H],
-					Regs[L],
-					Regs[SPl] | (Regs[SPh] << 8),
-					TotalExecutedCycles,
-					LY,
-					FlagZ ? "Z" : "z",
-					FlagN ? "N" : "n",
-					FlagH ? "H" : "h",
-					FlagC ? "C" : "c",			
-					FlagI ? "I" : "i",
-					interrupts_enabled ? "E" : "e")
+				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---")} ".PadRight(40),
+				RegisterInfo = string.Join(" ",
+					$"A:{Regs[A]:X2}",
+					$"F:{Regs[F]:X2}",
+					$"B:{Regs[B]:X2}",
+					$"C:{Regs[C]:X2}",
+					$"D:{Regs[D]:X2}",
+					$"E:{Regs[E]:X2}",
+					$"H:{Regs[H]:X2}",
+					$"L:{Regs[L]:X2}",
+					$"SP:{Regs[SPl] | (Regs[SPh] << 8):X2}",
+					$"Cy:{TotalExecutedCycles}",
+					$"LY:{LY}",
+					string.Concat(
+						FlagZ ? "Z" : "z",
+						FlagN ? "N" : "n",
+						FlagH ? "H" : "h",
+						FlagC ? "C" : "c",
+						FlagI ? "I" : "i",
+						interrupts_enabled ? "E" : "e"))
 			};
 		}
 		// State Save/Load

@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		void MOVEQ_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "moveq";
-			info.Args = String.Format("#{0}, D{1}", (sbyte)op, (op >> 9) & 7);
+			info.Args = $"#{(sbyte)op}, D{(op >> 9) & 7}";
 		}
 
 		void MOVEM0()
@@ -438,7 +438,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				}
 				registers <<= 1;
 			}
-			//str.Append(string.Format("[{0:X4}]", registers >> 16));
+			//str.Append($"[{registers >> 16:X4}]");
 			return str.ToString();
 		}
 
@@ -493,7 +493,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				}
 				registers >>= 1;
 			}
-			//str.Append(string.Format("[{0:X4}]", registers & 0xFFFF));
+			//str.Append($"[{registers & 0xFFFF:X4}]");
 			return str.ToString();
 		}
 

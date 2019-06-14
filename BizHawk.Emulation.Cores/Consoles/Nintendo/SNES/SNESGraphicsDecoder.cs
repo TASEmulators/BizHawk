@@ -31,10 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			public Dimensions(int w, int h) { Width = w; Height = h; }
 			public int Width, Height;
-			public override string ToString()
-			{
-				return string.Format("{0}x{1}", Width, Height);
-			}
+			public override string ToString() => $"{Width}x{Height}";
 		}
 
 		public enum ScreenSize

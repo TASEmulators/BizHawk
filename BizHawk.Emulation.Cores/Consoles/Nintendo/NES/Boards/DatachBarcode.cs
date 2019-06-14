@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				throw new ArgumentNullException(nameof(s));
 			if (!s.Length.In(MIN_DIGITS, MAX_DIGITS))
 			{
-				why = string.Format("String must be {0} or {1} digits long!", MIN_DIGITS, MAX_DIGITS);
+				why = $"String must be {MIN_DIGITS} or {MAX_DIGITS} digits long!";
 				return false;
 			}
 			foreach (char c in s)

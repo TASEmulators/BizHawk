@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private static PadEnt[] GetPadList(int player)
 		{
-			string prefix = string.Format("P{0} ", player);
+			string prefix = $"P{player} ";
 			return PadNames.Zip(PadMasks, (s, i) => new PadEnt(prefix + s, i)).ToArray();
 		}
 
