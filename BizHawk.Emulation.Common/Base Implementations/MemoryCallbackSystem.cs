@@ -36,6 +36,7 @@ namespace BizHawk.Emulation.Common
 		private bool _hasReads;
 		private bool _hasWrites;
 		private bool _hasExecutes;
+		private bool _hasAny;
 
 		public bool ExecuteCallbacksAvailable { get; }
 
@@ -80,20 +81,24 @@ namespace BizHawk.Emulation.Common
 
 		public void CallMemoryCallbacks(uint addr, uint value, uint flags, string scope)
 		{
-			var flagEnum = (MemoryCallbackFlags)flags;
-			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessRead) && _hasReads)
+			if (!_hasAny) return;
+
+			if (_hasReads)
 			{
-				Call(_reads, addr, value, flags, scope);
+				if((flags & (uint)MemoryCallbackFlags.AccessRead)!=0)
+					Call(_reads, addr, value, flags, scope);
 			}
 
-			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessWrite) && _hasWrites)
+			if (_hasWrites)
 			{
-				Call(_writes, addr, value, flags, scope);
+				if((flags & (uint)MemoryCallbackFlags.AccessWrite)!=0)
+					Call(_writes, addr, value, flags, scope);
 			}
 
-			if (flagEnum.HasFlag(MemoryCallbackFlags.AccessExecute) && _hasExecutes)
+			if (_hasExecutes)
 			{
-				Call(_execs, addr, value, flags, scope);
+				if((flags & (uint)MemoryCallbackFlags.AccessExecute)!=0)
+					Call(_execs, addr, value, flags, scope);
 			}
 		}
 
@@ -151,6 +156,7 @@ namespace BizHawk.Emulation.Common
 			_hasReads = _reads.Count > 0;
 			_hasWrites = _writes.Count > 0;
 			_hasExecutes = _execs.Count > 0;
+			_hasAny = _hasReads || _hasWrites || _hasExecutes;
 
 			return (_hasReads != hadReads || _hasWrites != hadWrites || _hasExecutes != hadExecutes);
 		}
