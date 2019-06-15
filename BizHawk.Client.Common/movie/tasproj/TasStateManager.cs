@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		private readonly StateManagerDecay _decay;
 		private readonly TasMovie _movie;
 
-		private readonly SortedList<int, StateManagerState> _states;
+		private readonly SortedList<int, byte[]> _states;
 		private readonly ulong _expectedStateSize;
 
 		private ulong _used;
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 				throw new InvalidOperationException("Savestate size can not be zero!");
 			}
 
-			_states = new SortedList<int, StateManagerState>(MaxStates);
+			_states = new SortedList<int, byte[]>(MaxStates);
 
 			UpdateStateFrequency();
 		}
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 
 				if (_states.ContainsKey(frame))
 				{
-					return _states[frame].State;
+					return _states[frame];
 				}
 
 				return new byte[0];
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 					return _movie.BinarySavestate;
 				}
 
-				return _states[0].State;
+				return _states[0];
 			}
 		}
 
@@ -152,14 +152,20 @@ namespace BizHawk.Client.Common
 		{
 			if (_states.Any())
 			{
-				var tempState = _states.Values;
-				var power = tempState[0].Frame == 0
-					? _states.Values.First(s => s.Frame == 0)
-					: _states.Values[0];
-				
+				// For power-on movies, we can't lose frame 0;
+				byte[] power = null;
+				if (!_movie.StartsFromSavestate)
+				{
+					power = _states[0];
+				}
+
 				_states.Clear();
-				SetState(0, power.State);
-				_used = (ulong)power.State.Length;
+
+				if (power != null)
+				{
+					SetState(0, power);
+					_used = (ulong)power.Length;
+				}
 			}
 		}
 
@@ -184,7 +190,7 @@ namespace BizHawk.Client.Common
 					frame = 1;
 				}
 
-				List<KeyValuePair<int, StateManagerState>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
+				List<KeyValuePair<int, byte[]>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
 				anyInvalidated = statesToRemove.Any();
 
 				foreach (var state in statesToRemove)
@@ -207,7 +213,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			StateManagerState state = _states.Values[index]; // TODO: remove .Values here?
+			var state = _states.Values[index]; // TODO: remove .Values here and use frame?
 
 			_used -= (ulong)state.Length;
 
@@ -236,7 +242,7 @@ namespace BizHawk.Client.Common
 				
 				bw.Write(_states.Keys[i]);
 				bw.Write(_states.Values[i].Length);
-				bw.Write(_states.Values[i].State);
+				bw.Write(_states.Values[i]);
 			}
 		}
 
@@ -269,7 +275,7 @@ namespace BizHawk.Client.Common
 			var s = _states.LastOrDefault(state => state.Key < frame);
 			if (s.Key > 0)
 			{
-				return new KeyValuePair<int, byte[]>(s.Key, s.Value.State);
+				return s;
 			}
 
 			return new KeyValuePair<int, byte[]>(0, InitialState);
@@ -299,12 +305,12 @@ namespace BizHawk.Client.Common
 
 			if (_states.ContainsKey(frame))
 			{
-				_states[frame].State = state;
+				_states[frame] = state;
 			}
 			else
 			{
 				_used += (ulong)state.Length;
-				_states.Add(frame, new StateManagerState(state, frame));
+				_states.Add(frame, state);
 			}
 		}
 

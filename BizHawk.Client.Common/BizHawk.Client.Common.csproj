@@ -188,7 +188,6 @@
     <Compile Include="movie\import\PXMImport.cs" />
     <Compile Include="movie\tasproj\IStateManager.cs" />
     <Compile Include="movie\tasproj\StateManagerDecay.cs" />
-    <Compile Include="movie\tasproj\StateManagerState.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
     <Compile Include="movie\tasproj\TasMovie.History.cs" />
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
