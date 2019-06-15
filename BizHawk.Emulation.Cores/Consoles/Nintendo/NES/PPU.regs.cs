@@ -803,21 +803,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//BWrite[x+7]=B2007;
 
 
-//Address 	Size 	Description
-//$0000 	$1000 	Pattern Table 0
-//$1000 	$1000 	Pattern Table 1
-//$2000 	$3C0 	Name Table 0
-//$23C0 	$40 	Attribute Table 0
-//$2400 	$3C0 	Name Table 1
-//$27C0 	$40 	Attribute Table 1
-//$2800 	$3C0 	Name Table 2
-//$2BC0 	$40 	Attribute Table 2
-//$2C00 	$3C0 	Name Table 3
-//$2FC0 	$40 	Attribute Table 3
-//$3000 	$F00 	Mirror of 2000h-2EFFh
-//$3F00 	$10 	BG Palette
-//$3F10 	$10 	Sprite Palette
-//$3F20 	$E0 	Mirror of 3F00h-3F1Fh
+//Address    Size    Description
+//$0000      $1000   Pattern Table 0
+//$1000      $1000   Pattern Table 1
+//$2000      $3C0    Name Table 0
+//$23C0      $40     Attribute Table 0
+//$2400      $3C0    Name Table 1
+//$27C0      $40     Attribute Table 1
+//$2800      $3C0    Name Table 2
+//$2BC0      $40     Attribute Table 2
+//$2C00      $3C0    Name Table 3
+//$2FC0      $40     Attribute Table 3
+//$3000      $F00    Mirror of 2000h-2EFFh
+//$3F00      $10     BG Palette
+//$3F10      $10     Sprite Palette
+//$3F20      $E0     Mirror of 3F00h-3F1Fh
 
 
 //appendix 1
