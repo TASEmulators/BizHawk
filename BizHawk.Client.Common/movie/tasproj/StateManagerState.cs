@@ -9,14 +9,14 @@ namespace BizHawk.Client.Common
 	internal class StateManagerState : IDisposable
 	{
 		private static long _stateId;
-		private readonly TasStateManager _manager;
+		private readonly IStateManager _manager;
 		private readonly long _id;
 
 		private byte[] _state;
 
 		public int Frame { get; }
 
-		public static StateManagerState Read(BinaryReader r, TasStateManager m)
+		public static StateManagerState Read(BinaryReader r, IStateManager m)
 		{
 			int frame = r.ReadInt32();
 			byte[] data = r.ReadBytes(r.ReadInt32());
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 
 	    public bool IsOnDisk => _state == null;
 
-	    public StateManagerState(TasStateManager manager, byte[] state, int frame)
+	    public StateManagerState(IStateManager manager, byte[] state, int frame)
 		{
 			_manager = manager;
 			_state = state;

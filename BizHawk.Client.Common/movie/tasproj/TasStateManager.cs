@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 	/// Captures savestates and manages the logic of adding, retrieving, 
 	/// invalidating/clearing of states.  Also does memory management and limiting of states
 	/// </summary>
-	public class TasStateManager : IDisposable
+	public class TasStateManager : IStateManager
 	{
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			InvalidateCallback?.Invoke(index);
 		}
 
-		internal NDBDatabase NdbDatabase { get; set; }
+		public NDBDatabase NdbDatabase { get; private set; }
 		private Guid _guid = Guid.NewGuid();
 		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
 
