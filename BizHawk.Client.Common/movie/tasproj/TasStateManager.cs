@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Used += (ulong)state.Length;
+				_used += (ulong)state.Length;
 				_states.Add(frame, new StateManagerState(state, frame));
 			}
 		}
@@ -239,7 +239,7 @@ namespace BizHawk.Client.Common
 
 			StateManagerState state = _states.Values[index]; // TODO: remove .Values here?
 
-			Used -= (ulong)state.Length;
+			_used -= (ulong)state.Length;
 
 			_states.RemoveAt(index);
 
@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
-			ulong saveUsed = Used;
+			ulong saveUsed = _used;
 
 			// respect state gap no matter how small the resulting size will be
 			// still leave marker states
@@ -328,7 +328,7 @@ namespace BizHawk.Client.Common
 				
 				_states.Clear();
 				SetState(0, power.State);
-				Used = (ulong)power.State.Length;
+				_used = (ulong)power.State.Length;
 			}
 		}
 
@@ -404,26 +404,6 @@ namespace BizHawk.Client.Common
 		}
 
 		private ulong _used;
-		private ulong Used
-		{
-			get
-			{
-				return _used;
-			}
-
-			set
-			{
-				// TODO: Shouldn't we throw an exception? Debug.Fail only runs in debug mode?
-				if (value > 0xf000000000000000)
-				{
-					System.Diagnostics.Debug.Fail("ulong Used underfow!");
-				}
-				else
-				{
-					_used = value;
-				}
-			}
-		}
 
 		public int Count => _states.Count;
 
