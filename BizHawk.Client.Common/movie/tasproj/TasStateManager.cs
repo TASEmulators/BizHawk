@@ -72,9 +72,8 @@ namespace BizHawk.Client.Common
 
 		public void UpdateStateFrequency()
 		{
-			_stateFrequency = NumberExtensions.Clamp(
-					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
-					_minFrequency, _maxFrequency);
+			_stateFrequency = ((int)_expectedStateSize / Settings.MemStateGapDivider / 1024)
+				.Clamp(_minFrequency, _maxFrequency);
 
 			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
 		}
@@ -162,7 +161,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (force)
 			{
-				shouldCapture = force;
+				shouldCapture = true;
 			}
 			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a .tasproj file for the start state in non-savestate anchored movies
 			{
@@ -451,8 +450,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int GetStateFrameByIndex(int index)
 		{
-			// feos: this is called super often by decay
-			// this method is hundred times faster than _states.ElementAt(index).Key
 			return _states.Keys[index];
 		}
 
