@@ -27,18 +27,7 @@ namespace BizHawk.Client.Common
 			InvalidateCallback?.Invoke(index);
 		}
 
-		public NDBDatabase NdbDatabase { get; private set; }
-		private Guid _guid = Guid.NewGuid();
 		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
-
-		private string StatePath
-		{
-			get
-			{
-				var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
-				return Path.Combine(basePath, _guid.ToString());
-			}
-		}
 
 		private bool _isMountedForWrite;
 		private readonly TasMovie _movie;
@@ -66,8 +55,6 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
-			// States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the below
-			NdbDatabase?.Dispose();
 		}
 
 		public void UpdateStateFrequency()
@@ -104,8 +91,6 @@ namespace BizHawk.Client.Common
 			{
 				throw new InvalidOperationException();
 			}
-
-			NdbDatabase = new NDBDatabase(StatePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
 		
 		public TasStateManagerSettings Settings { get; set; }
@@ -196,7 +181,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Used += (ulong)state.Length;
-				_states.Add(frame, new StateManagerState(this, state, frame));
+				_states.Add(frame, new StateManagerState(state, frame));
 			}
 		}
 
@@ -257,16 +242,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			StateManagerState state = _states.Values[index];
+			StateManagerState state = _states.Values[index]; // TODO: remove .Values here?
 
-			if (state.IsOnDisk)
-			{
-				state.Dispose();
-			}
-			else
-			{
-				Used -= (ulong)state.Length;
-			}
+			Used -= (ulong)state.Length;
 
 			_states.RemoveAt(index);
 
@@ -279,7 +257,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (Count + 1 > MaxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			if (Count + 1 > MaxStates)
 			{
 				_decay.Trigger(Count + 1 - MaxStates);
 			}
@@ -288,7 +266,7 @@ namespace BizHawk.Client.Common
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
-			ulong saveUsed = Used + DiskUsed;
+			ulong saveUsed = Used;
 
 			// respect state gap no matter how small the resulting size will be
 			// still leave marker states
@@ -303,14 +281,7 @@ namespace BizHawk.Client.Common
 
 				ret.Add(i);
 
-				if (_states.Values[i].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[i].Length;
-				}
+				saveUsed -= (ulong)_states.Values[i].Length;
 			}
 
 			// if the size is still too big, exclude states form the beginning
@@ -333,15 +304,7 @@ namespace BizHawk.Client.Common
 				}
 
 				ret.Add(index);
-
-				if (_states.Values[index].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[index].Length;
-				}
+				saveUsed -= (ulong)_states.Values[index].Length;
 			}
 
 			// if there are enough markers to still be over the limit, remove marker frames
@@ -353,14 +316,7 @@ namespace BizHawk.Client.Common
 					ret.Add(index);
 				}
 
-				if (_states.Values[index].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[index].Length;
-				}
+				saveUsed -= (ulong)_states.Values[index].Length;
 			}
 
 			return ret;
@@ -378,7 +334,6 @@ namespace BizHawk.Client.Common
 				_states.Clear();
 				SetState(0, power.State);
 				Used = (ulong)power.State.Length;
-				NdbDatabase?.Clear();
 			}
 		}
 
@@ -472,19 +427,6 @@ namespace BizHawk.Client.Common
 				{
 					_used = value;
 				}
-			}
-		}
-
-		private ulong DiskUsed
-		{
-			get
-			{
-				if (NdbDatabase == null)
-				{
-					return 0;
-				}
-
-				return (ulong)NdbDatabase.Consumed;
 			}
 		}
 

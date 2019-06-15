@@ -44,9 +44,6 @@ namespace BizHawk.Client.Common
 		// ********* Delete these **********
 		void MountWriteAccess();
 
-		// TODO: delete me, I don't work
-		NDBDatabase NdbDatabase { get; }
-
 		// *********** Reconsider these ************/
 		void LimitStateCount();
 
