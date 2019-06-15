@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			// TODO: shouldn't _waslag get cleared too?
+			_wasLag.Clear();
 			_lagLog.Clear();
 		}
 
