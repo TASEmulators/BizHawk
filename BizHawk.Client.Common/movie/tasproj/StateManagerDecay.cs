@@ -8,7 +8,7 @@
 	First element is always assumed to be 16, which has all 4 bits set to 0. Each right zero
 	means that we lower the priority of a state that goes at that index. Priority changes
 	depending on current frame and amount of states. States with biggest priority get erased
-	first. With a 4-bit battern and no initial gap between states, total frame coverage is
+	first. With a 4-bit pattern and no initial gap between states, total frame coverage is
 	about 5 times state count.
 	
 	Initial state gap can screw up our patterns, so do all the calculations like the gap
@@ -18,7 +18,7 @@
 	don't drop it) or appears inside the state gap (in which case we forcibly drop it). This
 	step doesn't involve numbers reduction.
 
-	_zeros values are essentialy the values of rshiftby here:
+	_zeros values are essentially the values of rshiftby here:
 	bitwise view     frame    rshiftby priority
 	  00010000         0         4         1
 	  00000001         1         0        15
@@ -108,11 +108,11 @@ namespace BizHawk.Client.Common
 					}
 
 					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = ((baseStateFrame - currentFrame) >> zeroCount);
+					int priority = (baseStateFrame - currentFrame) >> zeroCount;
 
 					if (_align)
 					{
-						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
+						priority -= (_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount;
 					}
 
 					if (priority > forwardPriority)
@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 					}
 
 					int zeroCount = _zeros[currentFrame & _mask];
-					int priority = ((currentFrame - baseStateFrame) >> zeroCount);
+					int priority = (currentFrame - baseStateFrame) >> zeroCount;
 
 					if (_align)
 					{
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 				}
 
 				// this is the kind of highly complex loops that might justify goto
-				next_state:;
+				next_state: ;
 			}
 		}
 
@@ -225,8 +225,7 @@ namespace BizHawk.Client.Common
 			_bits = bits;
 			_mask = (1 << _bits) - 1;
 			_base = (_capacity + _bits / 2) / (_bits + 1);
-			_zeros = new List<int>();
-			_zeros.Add(_bits);
+			_zeros = new List<int> { _bits };
 
 			for (int i = 1; i < (1 << _bits); i++)
 			{
