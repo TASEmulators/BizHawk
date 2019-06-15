@@ -287,11 +287,6 @@ namespace BizHawk.Client.Common
 
 		private bool IsMarkerState(int frame)
 		{
-			if (frame == -1)
-			{
-				return false;
-			}
-
 			return _movie.Markers.IsMarker(frame + 1);
 		}
 
