@@ -22,6 +22,7 @@ namespace BizHawk.Client.Common
 
 		public Action<int> InvalidateCallback { get; set; }
 
+
 		private void CallInvalidateCallback(int index)
 		{
 			InvalidateCallback?.Invoke(index);
@@ -135,7 +136,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public byte[] InitialState
+		private byte[] InitialState
 		{
 			get
 			{
@@ -281,9 +282,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (StateCount + 1 > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			if (Count + 1 > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				_decay.Trigger(StateCount + 1 - _maxStates);
+				_decay.Trigger(Count + 1 - _maxStates);
 			}
 		}
 
@@ -498,7 +499,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int StateCount => _states.Count;
+		public int Count => _states.Count;
 
 		public bool Any()
 		{
@@ -527,7 +528,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (StateCount > 0)
+				if (Count > 0)
 				{
 					return LastKey;
 				}

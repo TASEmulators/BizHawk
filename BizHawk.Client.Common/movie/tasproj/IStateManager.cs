@@ -34,6 +34,8 @@ namespace BizHawk.Client.Common
 
 		bool Any();
 
+		int Count { get; }
+
 		// TODO: rename to Last
 		int LastStatedFrame { get; }
 
@@ -51,8 +53,6 @@ namespace BizHawk.Client.Common
 		void UpdateStateFrequency();
 
 		bool RemoveState(int frame);
-
-		int StateCount { get; }
 
 		int GetStateIndexByFrame(int frame);
 
