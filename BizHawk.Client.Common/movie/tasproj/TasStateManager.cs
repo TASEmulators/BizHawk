@@ -210,7 +210,7 @@ namespace BizHawk.Client.Common
 
 				foreach (var state in statesToRemove)
 				{
-					RemoveState(state.Key);
+					Remove(state.Key);
 				}
 
 				CallInvalidateCallback(frame);
@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common
 			return _movie.Markers.IsMarker(frame + 1);
 		}
 
-		public bool RemoveState(int frame)
+		public bool Remove(int frame)
 		{
 			int index = _states.IndexOfKey(frame);
 

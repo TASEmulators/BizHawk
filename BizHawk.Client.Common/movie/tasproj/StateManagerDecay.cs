@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 					else if (currentFrame % _step > 0)
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.RemoveState(currentFrame))
+						if (_tsm.Remove(currentFrame))
 						{
 							// decrementing this if no state was removed is BAD
 							decayStates--;
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _movie.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						if (_tsm.RemoveState(currentFrame))
+						if (_tsm.Remove(currentFrame))
 						{
 							// decrementing this if no state was removed is BAD
 							decayStates--;
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 				{
 					if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
 					{
-						if (_tsm.RemoveState(forwardFrame * _step))
+						if (_tsm.Remove(forwardFrame * _step))
 						{
 							// decrementing this if no state was removed is BAD
 							decayStates--;
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						if (_tsm.RemoveState(backwardFrame * _step))
+						if (_tsm.Remove(backwardFrame * _step))
 						{
 							// decrementing this if no state was removed is BAD
 							decayStates--;
@@ -184,7 +184,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (forwardFrame > -1)
 				{
-					if (_tsm.RemoveState(forwardFrame * _step))
+					if (_tsm.Remove(forwardFrame * _step))
 					{
 						// decrementing this if no state was removed is BAD
 						decayStates--;
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 				}
 				else if (backwardFrame > -1)
 				{
-					if (_tsm.RemoveState(backwardFrame * _step))
+					if (_tsm.Remove(backwardFrame * _step))
 					{
 						// decrementing this if no state was removed is BAD
 						decayStates--;
@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common
 				// this shouldn't happen, but if we don't do it here, nothing good will happen either
 				if (decayStatesLast == decayStates)
 				{
-					if (_tsm.RemoveState(_tsm.GetStateFrameByIndex(1)))
+					if (_tsm.Remove(_tsm.GetStateFrameByIndex(1)))
 					{
 						// decrementing this if no state was removed is BAD
 						decayStates--;
