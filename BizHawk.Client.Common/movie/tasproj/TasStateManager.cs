@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		public void ClearStateHistory()
+		public void Clear()
 		{
 			if (_states.Any())
 			{
@@ -450,7 +450,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int LastStatedFrame
+		public int Last
 		{
 			get
 			{

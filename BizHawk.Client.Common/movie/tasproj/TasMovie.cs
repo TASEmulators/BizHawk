@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog TasLagLog => _lagLog;
 		public IStringLog InputLog => Log;
 		public int BranchCount => Branches.Count;
-		public int LastStatedFrame => _stateManager.LastStatedFrame;
+		public int LastStatedFrame => _stateManager.Last;
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager => _stateManager;
 
@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_stateManager.Any())
 			{
-				_stateManager.ClearStateHistory();
+				_stateManager.Clear();
 				Changes = true;
 			}
 		}

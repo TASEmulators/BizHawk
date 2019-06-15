@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common
 
 	using BizHawk.Common;
 
-	public interface IStateManager : IDisposable
+	public interface IStateManager
 	{
 		// byte[] this[int frame] { get; } // TODO: I had it refactored to this back in the day
 		KeyValuePair<int, byte[]> this[int frame] { get; }
@@ -22,9 +22,8 @@ namespace BizHawk.Client.Common
 
 		bool Invalidate(int frame);
 
-		// TODO: rename to Clear()
 		// TODO: consider it passing a bool if anything was cleared, and the .Any() could go away
-		void ClearStateHistory();
+		void Clear();
 
 		void Save(BinaryWriter bw);
 
@@ -36,8 +35,7 @@ namespace BizHawk.Client.Common
 
 		int Count { get; }
 
-		// TODO: rename to Last
-		int LastStatedFrame { get; }
+		int Last { get; }
 
 		bool IsMarkerState(int frame);
 
