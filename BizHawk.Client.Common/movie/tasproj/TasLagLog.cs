@@ -9,8 +9,8 @@ namespace BizHawk.Client.Common
 	public class TasLagLog
 	{
 		// TODO: Change this into a regular list.
-		private List<bool> _lagLog = new List<bool>();
-		private List<bool> _wasLag = new List<bool>();
+		private List<bool?> _lagLog = new List<bool?>();
+		private List<bool?> _wasLag = new List<bool?>();
 
 		public bool? this[int frame]
 		{
@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!value.HasValue)
 				{
-					_lagLog.RemoveAt(frame);
+					_lagLog[frame] = null;
 					return;
 				}
 
@@ -50,18 +50,17 @@ namespace BizHawk.Client.Common
 
 				if (frame > _lagLog.Count)
 				{
-					System.Diagnostics.Debug.Print($"Lag Log error. f{frame}, log: {_lagLog.Count}");
-					return; // Can this break anything?
+					Append(frame - _lagLog.Count);
 				}
 
-				bool wasValue;
+				bool? wasValue;
 				if (frame < _lagLog.Count)
 				{
 					wasValue = _lagLog[frame];
 				}
 				else if (frame == _wasLag.Count)
 				{
-					wasValue = value.Value;
+					wasValue = value;
 				}
 				else
 				{
@@ -77,18 +76,18 @@ namespace BizHawk.Client.Common
 					_wasLag[frame] = wasValue;
 				}
 
-				if (frame != 0)
+				if (frame != 0 && (_lagLog[frame - 1]).HasValue)
 				{
 					_wasLag[frame - 1] = _lagLog[frame - 1];
 				}
 
 				if (frame >= _lagLog.Count)
 				{
-					_lagLog.Add(value.Value);
+					_lagLog.Add(value);
 				}
 				else
 				{
-					_lagLog[frame] = value.Value;
+					_lagLog[frame] = value;
 				}
 			}
 		}
@@ -107,6 +106,14 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		public void Append(int count)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				_lagLog.Add(null);
+			}
 		}
 
 		public void RemoveHistoryAt(int frame)
@@ -132,13 +139,13 @@ namespace BizHawk.Client.Common
 			bw.Write(_wasLag.Count);
 			for (int i = 0; i < _lagLog.Count; i++)
 			{
-				bw.Write(_lagLog[i]);
-				bw.Write(_wasLag[i]);
+				bw.Write(_lagLog[i].Value);
+				bw.Write(_wasLag[i].Value);
 			}
 
 			for (int i = _lagLog.Count; i < _wasLag.Count; i++)
 			{
-				bw.Write(_wasLag[i]);
+				bw.Write(_wasLag[i].Value);
 			}
 		}
 
