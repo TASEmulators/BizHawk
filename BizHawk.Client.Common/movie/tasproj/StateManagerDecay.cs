@@ -42,6 +42,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
+	// TODO: interface me
 	internal class StateManagerDecay
 	{
 		private readonly TasMovie _movie;

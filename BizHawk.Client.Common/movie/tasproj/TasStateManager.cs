@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
@@ -19,9 +18,9 @@ namespace BizHawk.Client.Common
 	{
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
+		private readonly StateManagerDecay _decay;
 
 		public Action<int> InvalidateCallback { get; set; }
-
 
 		private void CallInvalidateCallback(int index)
 		{
@@ -44,14 +43,13 @@ namespace BizHawk.Client.Common
 		private bool _isMountedForWrite;
 		private readonly TasMovie _movie;
 
-		private StateManagerDecay _decay;
 		private ulong _expectedStateSize;
 		private int _stateFrequency;
 		private readonly int _minFrequency = 1;
 		private readonly int _maxFrequency = 16;
-		private int _maxStates => (int)(Settings.Cap / _expectedStateSize) +
+		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
 			(int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
-		private int _fileStateGap => 1 << Settings.FileStateGap;
+		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -78,7 +76,7 @@ namespace BizHawk.Client.Common
 					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
 					_minFrequency, _maxFrequency);
 
-			_decay.UpdateSettings(_maxStates, _stateFrequency, 4);
+			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
 		}
 
 		/// <summary>
@@ -98,7 +96,7 @@ namespace BizHawk.Client.Common
 
 			if (_expectedStateSize > 0)
 			{
-				limit = _maxStates;
+				limit = MaxStates;
 			}
 
 			_states = new SortedList<int, StateManagerState>(limit);
@@ -282,9 +280,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (Count + 1 > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			if (Count + 1 > MaxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				_decay.Trigger(Count + 1 - _maxStates);
+				_decay.Trigger(Count + 1 - MaxStates);
 			}
 		}
 
@@ -299,7 +297,7 @@ namespace BizHawk.Client.Common
 			{
 				int frame = GetStateFrameByIndex(i);
 
-				if (IsMarkerState(frame) || frame % _fileStateGap < _stateFrequency)
+				if (IsMarkerState(frame) || frame % FileStateGap < _stateFrequency)
 				{
 					continue;
 				}
@@ -373,16 +371,10 @@ namespace BizHawk.Client.Common
 		{
 			if (_states.Any())
 			{
-				var temp_state = _states.Values;
-				StateManagerState power = null;
-				if (temp_state[0].Frame==0)
-				{
-					power = _states.Values.First(s => s.Frame == 0);
-				}
-				else
-				{
-					power = _states.Values[0];
-				}
+				var tempState = _states.Values;
+				var power = tempState[0].Frame == 0
+					? _states.Values.First(s => s.Frame == 0)
+					: _states.Values[0];
 				
 				_states.Clear();
 				SetState(0, power.State);
