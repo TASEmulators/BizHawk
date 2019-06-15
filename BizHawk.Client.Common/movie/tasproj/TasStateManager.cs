@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Requests that the current emulator state be captured 
-		/// Unless force is true, the state may or may not be captured depending on the logic employed by "greenzone" management
+		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
 		/// </summary>
 		public void Capture(bool force = false)
 		{
@@ -165,13 +165,13 @@ namespace BizHawk.Client.Common
 			{
 				shouldCapture = force;
 			}
-			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a tasproj file for the start state in non-savestate anchored movies
+			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a .tasproj file for the start state in non-savestate anchored movies
 			{
 				shouldCapture = true;
 			}
-			else if (StateIsMarker(frame))
+			else if (IsMarkerState(frame))
 			{
-				shouldCapture = true; // Markers shoudl always get priority
+				shouldCapture = true; // Markers should always get priority
 			}
 			else
 			{
@@ -182,18 +182,6 @@ namespace BizHawk.Client.Common
 			{
 				SetState(frame, (byte[])Core.SaveStateBinary().Clone(), skipRemoval: false);
 			}
-		}
-
-		private void MoveStateToDisk(int index)
-		{
-			Used -= (ulong)_states[index].Length;
-			_states[index].MoveToDisk();
-		}
-
-		private void MoveStateToMemory(int index)
-		{
-			_states[index].MoveToRAM();
-			Used += (ulong)_states[index].Length;
 		}
 
 		internal void SetState(int frame, byte[] state, bool skipRemoval = true)
@@ -252,7 +240,7 @@ namespace BizHawk.Client.Common
 			return anyInvalidated;
 		}
 
-		public bool StateIsMarker(int frame)
+		public bool IsMarkerState(int frame)
 		{
 			if (frame == -1)
 			{
@@ -310,7 +298,7 @@ namespace BizHawk.Client.Common
 			{
 				int frame = GetStateFrameByIndex(i);
 
-				if (StateIsMarker(frame) || frame % _fileStateGap < _stateFrequency)
+				if (IsMarkerState(frame) || frame % _fileStateGap < _stateFrequency)
 				{
 					continue;
 				}
@@ -339,7 +327,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 				}
-				while (StateIsMarker(GetStateFrameByIndex(index)));
+				while (IsMarkerState(GetStateFrameByIndex(index)));
 
 				if (index >= _states.Count)
 				{
@@ -546,16 +534,6 @@ namespace BizHawk.Client.Common
 
 				return 0;
 			}
-		}
-
-		private int FindState(StateManagerState s)
-		{
-			if (!_states.ContainsValue(s))
-			{
-				return -1;
-			}
-
-			return s.Frame;
 		}
 	}
 }

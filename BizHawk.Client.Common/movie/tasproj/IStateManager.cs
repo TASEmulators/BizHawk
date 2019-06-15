@@ -37,6 +37,8 @@ namespace BizHawk.Client.Common
 		// TODO: rename to Last
 		int LastStatedFrame { get; }
 
+		bool IsMarkerState(int frame);
+
 		// ********* Delete these **********
 		void MountWriteAccess();
 
@@ -49,8 +51,6 @@ namespace BizHawk.Client.Common
 		void UpdateStateFrequency();
 
 		bool RemoveState(int frame);
-
-		bool StateIsMarker(int frame);
 
 		int StateCount { get; }
 

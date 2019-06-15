@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-					if (_tsm.StateIsMarker(currentFrame))
+					if (_tsm.IsMarkerState(currentFrame))
 					{
 						continue;
 					}
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-					if (_tsm.StateIsMarker(currentFrame))
+					if (_tsm.IsMarkerState(currentFrame))
 					{
 						continue;
 					}
