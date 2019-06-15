@@ -437,30 +437,8 @@ namespace BizHawk.Client.Common
 			return _states.Count > 1;
 		}
 
-		public int LastKey
-		{
-			get
-			{
-				if (_states.Count == 0)
-				{
-					return 0;
-				}
-
-				return _states.Last().Key;
-			}
-		}
-
-		public int Last
-		{
-			get
-			{
-				if (Count > 0)
-				{
-					return LastKey;
-				}
-
-				return 0;
-			}
-		}
+		public int Last => _states.Count > 0
+			? _states.Last().Key
+			: 0;
 	}
 }
