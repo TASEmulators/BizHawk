@@ -15,6 +15,9 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager : IStateManager
 	{
+		private const int MinFrequency = 1;
+		private const int MaxFrequency = 16;
+
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
 		private readonly StateManagerDecay _decay;
@@ -23,9 +26,9 @@ namespace BizHawk.Client.Common
 		private readonly SortedList<int, StateManagerState> _states;
 		private readonly ulong _expectedStateSize;
 
+		private ulong _used;
 		private int _stateFrequency;
-		private readonly int _minFrequency = 1;
-		private readonly int _maxFrequency = 16;
+		
 		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
 			(int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
 		private int FileStateGap => 1 << Settings.FileStateGap;
@@ -55,22 +58,8 @@ namespace BizHawk.Client.Common
 
 		public Action<int> InvalidateCallback { get; set; }
 
-		public void UpdateStateFrequency()
-		{
-			_stateFrequency = ((int)_expectedStateSize / Settings.MemStateGapDivider / 1024)
-				.Clamp(_minFrequency, _maxFrequency);
-
-			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
-			LimitStateCount();
-		}
-
 		public TasStateManagerSettings Settings { get; set; }
 
-		/// <summary>
-		/// Retrieves the savestate for the given frame,
-		/// If this frame does not have a state currently, will return an empty array
-		/// </summary>
-		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
 		public KeyValuePair<int, byte[]> this[int frame]
 		{
 			get
@@ -89,6 +78,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public int Count => _states.Count;
+
+		public int Last => _states.Count > 0
+			? _states.Last().Key
+			: 0;
+
 		private byte[] InitialState
 		{
 			get
@@ -102,10 +97,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Requests that the current emulator state be captured 
-		/// Unless force is true, the state may or may not be captured depending on the logic employed by "green-zone" management
-		/// </summary>
+		public bool Any()
+		{
+			if (_movie.StartsFromSavestate)
+			{
+				return _states.Count > 0;
+			}
+
+			return _states.Count > 1;
+		}
+
+		public void UpdateStateFrequency()
+		{
+			_stateFrequency = ((int)_expectedStateSize / Settings.MemStateGapDivider / 1024)
+				.Clamp(MinFrequency, MaxFrequency);
+
+			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
+			LimitStateCount();
+		}
+
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture;
@@ -138,21 +148,18 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		internal void SetState(int frame, byte[] state, bool skipRemoval = true)
+		public void Clear()
 		{
-			if (!skipRemoval) // skipRemoval: false only when capturing new states
+			if (_states.Any())
 			{
-				LimitStateCount(); // Remove before adding so this state won't be removed.
-			}
-
-			if (_states.ContainsKey(frame))
-			{
-				_states[frame].State = state;
-			}
-			else
-			{
-				_used += (ulong)state.Length;
-				_states.Add(frame, new StateManagerState(state, frame));
+				var tempState = _states.Values;
+				var power = tempState[0].Frame == 0
+					? _states.Values.First(s => s.Frame == 0)
+					: _states.Values[0];
+				
+				_states.Clear();
+				SetState(0, power.State);
+				_used = (ulong)power.State.Length;
 			}
 		}
 
@@ -166,9 +173,6 @@ namespace BizHawk.Client.Common
 			return _states.ContainsKey(frame);
 		}
 
-		/// <summary>
-		/// Clears out all savestates after the given frame number
-		/// </summary>
 		public bool Invalidate(int frame)
 		{
 			bool anyInvalidated = false;
@@ -220,6 +224,89 @@ namespace BizHawk.Client.Common
 			_states.RemoveAt(index);
 
 			return true;
+		}
+
+		// Map:
+		// 4 bytes - total savestate count
+		// [Foreach state]
+		// 4 bytes - frame
+		// 4 bytes - length of savestate
+		// 0 - n savestate
+		public void Save(BinaryWriter bw)
+		{
+			List<int> noSave = ExcludeStates();
+			bw.Write(_states.Count - noSave.Count);
+
+			for (int i = 0; i < _states.Count; i++)
+			{
+				if (noSave.Contains(i))
+				{
+					continue;
+				}
+				
+				bw.Write(_states.Keys[i]);
+				bw.Write(_states.Values[i].Length);
+				bw.Write(_states.Values[i].State);
+			}
+		}
+
+		public void Load(BinaryReader br)
+		{
+			_states.Clear();
+
+			try
+			{
+				int nstates = br.ReadInt32();
+
+				for (int i = 0; i < nstates; i++)
+				{
+					int frame = br.ReadInt32();
+					int len = br.ReadInt32();
+					byte[] data = br.ReadBytes(len);
+
+					// whether we should allow state removal check here is an interesting question
+					// nothing was edited yet, so it might make sense to show the project untouched first
+					SetState(frame, data);
+				}
+			}
+			catch (EndOfStreamException)
+			{
+			}
+		}
+
+		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
+		{
+			var s = _states.LastOrDefault(state => state.Key < frame);
+
+			return this[s.Key];
+		}
+
+		public int GetStateIndexByFrame(int frame)
+		{
+			return _states.IndexOfKey(GetStateClosestToFrame(frame).Key);
+		}
+
+		public int GetStateFrameByIndex(int index)
+		{
+			return _states.Keys[index];
+		}
+
+		private void SetState(int frame, byte[] state, bool skipRemoval = true)
+		{
+			if (!skipRemoval) // skipRemoval: false only when capturing new states
+			{
+				LimitStateCount(); // Remove before adding so this state won't be removed.
+			}
+
+			if (_states.ContainsKey(frame))
+			{
+				_states[frame].State = state;
+			}
+			else
+			{
+				_used += (ulong)state.Length;
+				_states.Add(frame, new StateManagerState(state, frame));
+			}
 		}
 
 		// Deletes states to follow the state storage size limits.
@@ -290,109 +377,5 @@ namespace BizHawk.Client.Common
 
 			return ret;
 		}
-
-		public void Clear()
-		{
-			if (_states.Any())
-			{
-				var tempState = _states.Values;
-				var power = tempState[0].Frame == 0
-					? _states.Values.First(s => s.Frame == 0)
-					: _states.Values[0];
-				
-				_states.Clear();
-				SetState(0, power.State);
-				_used = (ulong)power.State.Length;
-			}
-		}
-
-		// Map:
-		// 4 bytes - total savestate count
-		// [Foreach state]
-		// 4 bytes - frame
-		// 4 bytes - length of savestate
-		// 0 - n savestate
-		public void Save(BinaryWriter bw)
-		{
-			List<int> noSave = ExcludeStates();
-			bw.Write(_states.Count - noSave.Count);
-
-			for (int i = 0; i < _states.Count; i++)
-			{
-				if (noSave.Contains(i))
-				{
-					continue;
-				}
-				
-				bw.Write(_states.Keys[i]);
-				bw.Write(_states.Values[i].Length);
-				bw.Write(_states.Values[i].State);
-			}
-		}
-
-		public void Load(BinaryReader br)
-		{
-			_states.Clear();
-
-			try
-			{
-				int nstates = br.ReadInt32();
-
-				for (int i = 0; i < nstates; i++)
-				{
-					int frame = br.ReadInt32();
-					int len = br.ReadInt32();
-					byte[] data = br.ReadBytes(len);
-
-					// whether we should allow state removal check here is an interesting question
-					// nothing was edited yet, so it might make sense to show the project untouched first
-					SetState(frame, data);
-				}
-			}
-			catch (EndOfStreamException)
-			{
-			}
-		}
-
-		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
-		{
-			var s = _states.LastOrDefault(state => state.Key < frame);
-
-			return this[s.Key];
-		}
-
-		/// <summary>
-		/// Returns index of the state right above the given frame
-		/// </summary>
-		public int GetStateIndexByFrame(int frame)
-		{
-			return _states.IndexOfKey(GetStateClosestToFrame(frame).Key);
-		}
-
-		/// <summary>
-		/// Returns frame of the state at the given index
-		/// </summary>
-		public int GetStateFrameByIndex(int index)
-		{
-			return _states.Keys[index];
-		}
-
-		private ulong _used;
-
-		public int Count => _states.Count;
-
-		public bool Any()
-		{
-			if (_movie.StartsFromSavestate)
-			{
-				return _states.Count > 0;
-			}
-
-			return _states.Count > 1;
-		}
-
-		public int Last => _states.Count > 0
-			? _states.Last().Key
-			: 0;
 	}
 }
