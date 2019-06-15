@@ -815,9 +815,9 @@ namespace BizHawk.Client.EmuHawk
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
 					byte[] state = StatableEmulator.SaveStateBinary();
-					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
+					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
-					if (!state.SequenceEqual(greenzone))
+					if (!state.SequenceEqual(greenZone))
 					{
 						MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}");
 						return;

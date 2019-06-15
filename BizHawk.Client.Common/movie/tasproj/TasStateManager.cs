@@ -60,21 +60,21 @@ namespace BizHawk.Client.Common
 
 		public TasStateManagerSettings Settings { get; set; }
 
-		public KeyValuePair<int, byte[]> this[int frame]
+		public byte[] this[int frame]
 		{
 			get
 			{
 				if (frame == 0)
 				{
-					return new KeyValuePair<int, byte[]>(0, InitialState);
+					return InitialState;
 				}
 
 				if (_states.ContainsKey(frame))
 				{
-					return new KeyValuePair<int, byte[]>(frame, _states[frame].State);
+					return _states[frame].State;
 				}
 
-				return new KeyValuePair<int, byte[]>(-1, new byte[0]);
+				return new byte[0];
 			}
 		}
 
@@ -267,8 +267,12 @@ namespace BizHawk.Client.Common
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
 			var s = _states.LastOrDefault(state => state.Key < frame);
+			if (s.Key > 0)
+			{
+				return new KeyValuePair<int, byte[]>(s.Key, s.Value.State);
+			}
 
-			return this[s.Key];
+			return new KeyValuePair<int, byte[]>(0, InitialState);
 		}
 
 		public int GetStateIndexByFrame(int frame)

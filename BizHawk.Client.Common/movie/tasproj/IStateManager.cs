@@ -6,14 +6,12 @@ namespace BizHawk.Client.Common
 {
 	public interface IStateManager
 	{
-		// byte[] this[int frame] { get; } // TODO: I had it refactored to this back in the day
-
 		/// <summary>
 		/// Retrieves the savestate for the given frame,
 		/// If this frame does not have a state currently, will return an empty array
 		/// </summary>
 		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		KeyValuePair<int, byte[]> this[int frame] { get; }
+		byte[] this[int frame] { get; }
 
 		TasStateManagerSettings Settings { get; set; }
 
