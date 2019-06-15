@@ -280,8 +280,6 @@ namespace BizHawk.Emulation.Common.Components
 		static short[] fullsintable = new short[PG_WIDTH];
 		static short[] halfsintable = new short[PG_WIDTH];
 
-		static short[][] waveform = new short[2][] { fullsintable, halfsintable };
-
 		/* LFO Table */
 		static int[] pmtable = new int[PM_PG_WIDTH];
 		static int[] amtable = new int[AM_PG_WIDTH];
@@ -636,7 +634,7 @@ namespace BizHawk.Emulation.Common.Components
 			}
 		}
 		static void UPDATE_RKS(OPLL_SLOT S) { (S).rks = (uint)rksTable[((S).fnum) >> 8, (S).block, (S).patch.kr]; }
-		static void UPDATE_WF(OPLL_SLOT S) { (S).sintbl = waveform[(S).patch.wf]; }
+		static void UPDATE_WF(OPLL_SLOT S) { (S).sintbl = (S).patch.wf == 0 ? fullsintable : halfsintable; }
 		static void UPDATE_EG(OPLL_SLOT S) { (S).eg_dphase = calc_eg_dphase(S); }
 		static void UPDATE_ALL(OPLL_SLOT S)
 		{
@@ -891,7 +889,7 @@ namespace BizHawk.Emulation.Common.Components
 		static void OPLL_SLOT_reset(OPLL_SLOT slot, int type)
 		{
 			slot.type = type;
-			slot.sintbl = waveform[0];
+			slot.sintbl = fullsintable;
 			slot.phase = 0;
 			slot.dphase = 0;
 			slot.output[0] = 0;
