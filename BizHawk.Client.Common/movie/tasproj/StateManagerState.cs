@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Represents a savestate in the <seealso cref="TasStateManager"/>
 	/// </summary>
-	internal class StateManagerState : IDisposable
+	internal class StateManagerState
 	{
 		public int Frame { get; }
 
@@ -18,10 +18,6 @@ namespace BizHawk.Client.Common
 		{
 			State = state;
 			Frame = frame;
-		}
-
-		public void Dispose()
-		{
 		}
 	}
 }
