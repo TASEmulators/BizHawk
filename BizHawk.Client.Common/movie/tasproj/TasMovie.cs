@@ -41,7 +41,6 @@ namespace BizHawk.Client.Common
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
-			// State = StateManager[index],
 			HasState = _stateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),
 			Lagged = _lagLog[index + 1],
@@ -246,14 +245,6 @@ namespace BizHawk.Client.Common
 			_lagLog.Clear();
 		}
 
-		public void DeleteLogBefore(int frame)
-		{
-			if (frame < Log.Count)
-			{
-				Log.RemoveRange(0, frame);
-			}
-		}
-
 		public void CopyLog(IEnumerable<string> log)
 		{
 			Log.Clear();
@@ -276,7 +267,7 @@ namespace BizHawk.Client.Common
 			return Log;
 		}
 
-		private int? _timelineBranchFrame = null;
+		private int? _timelineBranchFrame;
 
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
