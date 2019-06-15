@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone(); // Why is this cloning it?
+					byte[] state = StatableEmulator.SaveStateBinary();
 					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
 
 					if (!state.SequenceEqual(greenzone))
