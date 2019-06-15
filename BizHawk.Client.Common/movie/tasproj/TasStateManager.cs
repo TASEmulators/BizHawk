@@ -21,11 +21,6 @@ namespace BizHawk.Client.Common
 
 		public Action<int> InvalidateCallback { get; set; }
 
-		private void CallInvalidateCallback(int index)
-		{
-			InvalidateCallback?.Invoke(index);
-		}
-
 		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
 
 		private bool _isMountedForWrite;
@@ -213,7 +208,7 @@ namespace BizHawk.Client.Common
 					Remove(state.Key);
 				}
 
-				CallInvalidateCallback(frame);
+				InvalidateCallback?.Invoke(frame);
 			}
 
 			return anyInvalidated;
