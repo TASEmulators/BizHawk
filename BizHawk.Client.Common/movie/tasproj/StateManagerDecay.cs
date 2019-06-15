@@ -44,7 +44,9 @@ namespace BizHawk.Client.Common
 {
 	internal class StateManagerDecay
 	{
-		private readonly IStateManager _tsm;	// access tsm methods to make life easier
+		private readonly TasMovie _movie;
+		private readonly IStateManager _tsm;
+
 		private List<int> _zeros;		// amount of least significant zeros in bitwise view (also max pattern step)
 		private int _bits;				// size of _zeros is 2 raised to the power of _bits
 		private int _mask;				// for remainder calculation using bitwise instead of division
@@ -53,8 +55,9 @@ namespace BizHawk.Client.Common
 		private int _step;				// initial memory state gap
 		private bool _align;			// extra care about fine alignment. TODO: do we want it?
 
-		public StateManagerDecay(IStateManager tsm)
+		public StateManagerDecay(TasMovie movie, IStateManager tsm)
 		{
+			_movie = movie;
 			_tsm = tsm;
 			_align = false;
 		}
@@ -79,7 +82,7 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if (currentFrame + 1 == _tsm.LastEditedFrame)
+					else if (currentFrame + 1 == _movie.LastEditedFrame)
 					{
 						continue;
 					}
@@ -124,7 +127,7 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
+					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _movie.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.RemoveState(currentFrame))

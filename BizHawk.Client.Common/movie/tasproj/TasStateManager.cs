@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 				SetState(0, _movie.BinarySavestate);
 			}
 
-			_decay = new StateManagerDecay(this);
+			_decay = new StateManagerDecay(_movie, this);
 		}
 
 		public void Dispose()
@@ -511,7 +511,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public int StateCount => _states.Count;
-		public int LastEditedFrame => _movie.LastEditedFrame;
 
 		public bool Any()
 		{

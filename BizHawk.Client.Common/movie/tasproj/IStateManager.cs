@@ -50,7 +50,6 @@ namespace BizHawk.Client.Common
 
 		bool RemoveState(int frame);
 
-		int LastEditedFrame { get; }
 		bool StateIsMarker(int frame);
 
 		int StateCount { get; }
