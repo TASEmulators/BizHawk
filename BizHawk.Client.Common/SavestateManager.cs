@@ -91,9 +91,9 @@ namespace BizHawk.Client.Common
 				if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 				{
 					bs.PutLump(BinaryStateLump.LagLog,
-						delegate(BinaryWriter bw)
+						delegate(TextWriter tw)
 						{
-							(Global.MovieSession.Movie as TasMovie).TasLagLog.Save(bw);
+							(Global.MovieSession.Movie as TasMovie).TasLagLog.Save(tw);
 						});
 				}
 			}
@@ -195,9 +195,9 @@ namespace BizHawk.Client.Common
 
 					if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 					{
-						bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 						{
-							((TasMovie)Global.MovieSession.Movie).TasLagLog.Load(br);
+							((TasMovie)Global.MovieSession.Movie).TasLagLog.Load(tr);
 						});
 					}
 				}
