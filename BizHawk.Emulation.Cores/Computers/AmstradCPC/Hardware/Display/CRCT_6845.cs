@@ -302,25 +302,25 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #region Internal Registers and State
 
         /*
-        Index	Register Name	                    Range	    CPC Setting	Notes
-        0	    Horizontal Total	                00000000	63	        Width of the screen, in characters. Should always be 63 (64 characters). 1 character == 1μs.
-        1	    Horizontal Displayed	            00000000	40	        Number of characters displayed. Once horizontal character count (HCC) matches this value, DISPTMG is set to 1.
-        2	    Horizontal Sync Position	        00000000	46	        When to start the HSync signal.
-        3	    Horizontal and Vertical Sync Widths	VVVVHHHH	128+14	    HSync pulse width in characters (0 means 16 on some CRTC), should always be more than 8; VSync width in scan-lines. (0 means 16 on some CRTC. Not present on all CRTCs, fixed to 16 lines on these)
-        4	    Vertical Total	                    x0000000	38	        Height of the screen, in characters.
-        5	    Vertical Total Adjust	            xxx00000	0	        Measured in scanlines, can be used for smooth vertical scrolling on CPC.
-        6	    Vertical Displayed	                x0000000	25	        Height of displayed screen in characters. Once vertical character count (VCC) matches this value, DISPTMG is set to 1.
-        7	    Vertical Sync position	            x0000000	30	        When to start the VSync signal, in characters.
-        8	    Interlace and Skew	                xxxxxx00	0	        00: No interlace; 01: Interlace Sync Raster Scan Mode; 10: No Interlace; 11: Interlace Sync and Video Raster Scan Mode
-        9	    Maximum Raster Address	            xxx00000	7	        Maximum scan line address on CPC can hold between 0 and 7, higher values' upper bits are ignored
-        10	    Cursor Start Raster	                xBP00000	0	        Cursor not used on CPC. B = Blink On/Off; P = Blink Period Control (Slow/Fast). Sets first raster row of character that cursor is on to invert.
-        11	    Cursor End Raster	                xxx00000	0	        Sets last raster row of character that cursor is on to invert
-        12	    Display Start Address (High)	    xx000000	32
-        13	    Display Start Address (Low)	        00000000	0	        Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &0000 with the firmware.
-        14	    Cursor Address (High)	            xx000000	0
-        15	    Cursor Address (Low)	            00000000	0
-        16	    Light Pen Address (High)	        xx000000		        Read Only
-        17	    Light Pen Address (Low)	            00000000		        Read Only
+        Index    Register Name                          Range       CPC Setting    Notes
+        0        Horizontal Total                       00000000    63             Width of the screen, in characters. Should always be 63 (64 characters). 1 character == 1μs.
+        1        Horizontal Displayed                   00000000    40             Number of characters displayed. Once horizontal character count (HCC) matches this value, DISPTMG is set to 1.
+        2        Horizontal Sync Position               00000000    46             When to start the HSync signal.
+        3        Horizontal and Vertical Sync Widths    VVVVHHHH    128+14         HSync pulse width in characters (0 means 16 on some CRTC), should always be more than 8; VSync width in scan-lines. (0 means 16 on some CRTC. Not present on all CRTCs, fixed to 16 lines on these)
+        4        Vertical Total                         x0000000    38             Height of the screen, in characters.
+        5        Vertical Total Adjust                  xxx00000    0              Measured in scanlines, can be used for smooth vertical scrolling on CPC.
+        6        Vertical Displayed                     x0000000    25             Height of displayed screen in characters. Once vertical character count (VCC) matches this value, DISPTMG is set to 1.
+        7        Vertical Sync position                 x0000000    30             When to start the VSync signal, in characters.
+        8        Interlace and Skew                     xxxxxx00    0              00: No interlace; 01: Interlace Sync Raster Scan Mode; 10: No Interlace; 11: Interlace Sync and Video Raster Scan Mode
+        9        Maximum Raster Address                 xxx00000    7              Maximum scan line address on CPC can hold between 0 and 7, higher values' upper bits are ignored
+        10       Cursor Start Raster                    xBP00000    0              Cursor not used on CPC. B = Blink On/Off; P = Blink Period Control (Slow/Fast). Sets first raster row of character that cursor is on to invert.
+        11       Cursor End Raster                      xxx00000    0              Sets last raster row of character that cursor is on to invert
+        12       Display Start Address (High)           xx000000    32
+        13       Display Start Address (Low)            00000000    0              Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &0000 with the firmware.
+        14       Cursor Address (High)                  xx000000    0
+        15       Cursor Address (Low)                   00000000    0
+        16       Light Pen Address (High)               xx000000                   Read Only
+        17       Light Pen Address (Low)                00000000                   Read Only
         */
         /// <summary>
         /// 6845 internal registers
@@ -879,26 +879,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /*
-                RegIdx	Register Name	            Type
-                                                    0	        1	        2	        3	                4
-                0	    Horizontal Total	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                1	    Horizontal Displayed	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                2	    Horizontal Sync Position	Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                3	    H and V Sync Widths	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                4	    Vertical Total	            Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                5	    Vertical Total Adjust	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                6	    Vertical Displayed	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                7	    Vertical Sync position	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                8	    Interlace and Skew	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                9	    Maximum Raster Address	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                10	    Cursor Start Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                11	    Cursor End Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                12	    Disp. Start Address (High)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                13	    Disp. Start Address (Low)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                14	    Cursor Address (High)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                15	    Cursor Address (Low)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                16	    Light Pen Address (High)	Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
-                17	    Light Pen Address (Low)	    Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
+                RegIdx    Register Name                 Type
+                                                        0             1             2             3                      4
+                0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
+                1         Horizontal Displayed          Write Only    Write Only    Write Only    (note 2)               (note 3)
+                2         Horizontal Sync Position      Write Only    Write Only    Write Only    (note 2)               (note 3)
+                3         H and V Sync Widths           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                4         Vertical Total                Write Only    Write Only    Write Only    (note 2)               (note 3)
+                5         Vertical Total Adjust         Write Only    Write Only    Write Only    (note 2)               (note 3)
+                6         Vertical Displayed            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                7         Vertical Sync position        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                8         Interlace and Skew            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                9         Maximum Raster Address        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                10        Cursor Start Raster           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                11        Cursor End Raster             Write Only    Write Only    Write Only    (note 2)               (note 3)
+                12        Disp. Start Address (High)    Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                13        Disp. Start Address (Low)     Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
+                17        Light Pen Address (Low)       Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
 
                 1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
                 2. See the document "Extra CPC Plus Hardware Information" for more details.
@@ -1093,10 +1093,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #region PortIODevice
 
         /*
-            #BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index	                        -	    Write
-            #BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out	                    -	    Write
-            #BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported)	Read	-
-            #BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
+            #BCXX    %x0xxxx00 xxxxxxxx    6845 CRTC Index                            -       Write
+            #BDXX    %x0xxxx01 xxxxxxxx    6845 CRTC Data Out                         -       Write
+            #BEXX    %x0xxxx10 xxxxxxxx    6845 CRTC Status (as far as supported)     Read    -
+            #BFXX    %x0xxxx11 xxxxxxxx    6845 CRTC Data In (as far as supported)    Read    -
          */
 
         /// <summary>
