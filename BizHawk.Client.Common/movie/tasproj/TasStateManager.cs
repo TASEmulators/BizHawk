@@ -198,16 +198,6 @@ namespace BizHawk.Client.Common
 			return anyInvalidated;
 		}
 
-		public bool IsMarkerState(int frame)
-		{
-			if (frame == -1)
-			{
-				return false;
-			}
-
-			return _movie.Markers.IsMarker(frame + 1);
-		}
-
 		public bool Remove(int frame)
 		{
 			int index = _states.IndexOfKey(frame);
@@ -289,6 +279,16 @@ namespace BizHawk.Client.Common
 		public int GetStateFrameByIndex(int index)
 		{
 			return _states.Keys[index];
+		}
+
+		private bool IsMarkerState(int frame)
+		{
+			if (frame == -1)
+			{
+				return false;
+			}
+
+			return _movie.Markers.IsMarker(frame + 1);
 		}
 
 		private void SetState(int frame, byte[] state, bool skipRemoval = true)

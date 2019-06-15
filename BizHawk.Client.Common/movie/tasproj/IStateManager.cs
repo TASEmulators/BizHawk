@@ -46,8 +46,6 @@ namespace BizHawk.Client.Common
 
 		int Last { get; }
 
-		bool IsMarkerState(int frame);
-
 		void UpdateStateFrequency();
 
 		/// <summary>
@@ -60,6 +58,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		int GetStateFrameByIndex(int index);
 
+		/// <summary>
+		/// Directly remove a state from the given frame, if it exists
+		/// Should only be called by pruning operations
+		/// </summary>
 		bool Remove(int frame);
 	}
 }

@@ -79,15 +79,17 @@ namespace BizHawk.Client.Common
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-					if (_tsm.IsMarkerState(currentFrame))
+					if (_movie.Markers.IsMarker(currentFrame + 1))
 					{
 						continue;
 					}
-					else if (currentFrame + 1 == _movie.LastEditedFrame)
+
+					if (currentFrame + 1 == _movie.LastEditedFrame)
 					{
 						continue;
 					}
-					else if (currentFrame % _step > 0)
+
+					if (currentFrame % _step > 0)
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.Remove(currentFrame))
@@ -124,11 +126,12 @@ namespace BizHawk.Client.Common
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-					if (_tsm.IsMarkerState(currentFrame))
+					if (_movie.Markers.IsMarker(currentFrame + 1))
 					{
 						continue;
 					}
-					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _movie.LastEditedFrame))
+
+					if ((currentFrame % _step > 0) && (currentFrame + 1 != _movie.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.Remove(currentFrame))
