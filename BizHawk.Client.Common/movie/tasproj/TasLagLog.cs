@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!value.HasValue)
 				{
-					_lagLog.Remove(frame);
+					RemoveLagEntry(frame);
 					return;
 				}
 
@@ -54,13 +54,7 @@ namespace BizHawk.Client.Common
 			var frames = _lagLog.Keys.Where(k => k > frame).ToList();
 			foreach (var f in frames)
 			{
-				bool lag;
-				if (_lagLog.TryGetValue(f, out lag))
-				{
-					_wasLag[f] = lag;
-				}
-
-				_lagLog.Remove(f);
+				RemoveLagEntry(frame);
 			}
 
 			return frames.Any();
@@ -115,6 +109,18 @@ namespace BizHawk.Client.Common
 				_lagLog.Remove(i);
 				_wasLag.Remove(i);
 			}
+		}
+
+		private void RemoveLagEntry(int frame)
+		{
+			bool lag;
+			var result = _lagLog.TryGetValue(frame, out lag);
+			if (result)
+			{
+				_wasLag[frame] = lag;
+			}
+
+			_lagLog.Remove(frame);
 		}
 	}
 }
