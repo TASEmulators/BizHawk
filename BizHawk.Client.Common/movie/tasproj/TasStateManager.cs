@@ -18,15 +18,11 @@ namespace BizHawk.Client.Common
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
 		private readonly StateManagerDecay _decay;
-
-		public Action<int> InvalidateCallback { get; set; }
-
-		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
-
-		private bool _isMountedForWrite;
 		private readonly TasMovie _movie;
 
-		private ulong _expectedStateSize;
+		private readonly SortedList<int, StateManagerState> _states;
+		private readonly ulong _expectedStateSize;
+
 		private int _stateFrequency;
 		private readonly int _minFrequency = 1;
 		private readonly int _maxFrequency = 16;
@@ -45,7 +41,19 @@ namespace BizHawk.Client.Common
 			}
 
 			_decay = new StateManagerDecay(_movie, this);
+
+			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
+			if (_expectedStateSize == 0)
+			{
+				throw new InvalidOperationException("Savestate size can not be zero!");
+			}
+
+			_states = new SortedList<int, StateManagerState>(MaxStates);
+
+			UpdateStateFrequency();
 		}
+
+		public Action<int> InvalidateCallback { get; set; }
 
 		public void UpdateStateFrequency()
 		{
@@ -56,34 +64,6 @@ namespace BizHawk.Client.Common
 			LimitStateCount();
 		}
 
-		/// <summary>
-		/// Mounts this instance for write access. Prior to that it's read-only
-		/// </summary>
-		public void MountWriteAccess()
-		{
-			if (_isMountedForWrite)
-			{
-				return;
-			}
-
-			int limit = 0;
-			_isMountedForWrite = true;
-			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
-			UpdateStateFrequency();
-
-			if (_expectedStateSize > 0)
-			{
-				limit = MaxStates;
-			}
-
-			_states = new SortedList<int, StateManagerState>(limit);
-
-			if (_expectedStateSize > int.MaxValue)
-			{
-				throw new InvalidOperationException();
-			}
-		}
-		
 		public TasStateManagerSettings Settings { get; set; }
 
 		/// <summary>

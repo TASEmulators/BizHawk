@@ -1,12 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace BizHawk.Client.Common
 {
-	using System.Collections.Generic;
-	using System.IO;
-
-	using BizHawk.Common;
-
 	public interface IStateManager
 	{
 		// byte[] this[int frame] { get; } // TODO: I had it refactored to this back in the day
@@ -45,8 +42,5 @@ namespace BizHawk.Client.Common
 		int GetStateFrameByIndex(int index);
 
 		bool Remove(int frame);
-
-		// ********* Delete these **********
-		void MountWriteAccess();
 	}
 }

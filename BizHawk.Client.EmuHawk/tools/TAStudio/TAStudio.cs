@@ -642,7 +642,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
 				
-				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
 				BookMarkControl.LoadedCallback = BranchLoaded;
