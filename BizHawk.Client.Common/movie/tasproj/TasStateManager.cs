@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			var state = _states.Values[index]; // TODO: remove .Values here and use frame?
+			var state = _states[frame];
 
 			_used -= (ulong)state.Length;
 
