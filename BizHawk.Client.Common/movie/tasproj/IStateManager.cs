@@ -22,7 +22,6 @@ namespace BizHawk.Client.Common
 
 		bool Invalidate(int frame);
 
-		// TODO: consider it passing a bool if anything was cleared, and the .Any() could go away
 		void Clear();
 
 		void Save(BinaryWriter bw);
