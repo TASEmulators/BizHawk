@@ -38,18 +38,16 @@ namespace BizHawk.Client.Common
 
 		bool IsMarkerState(int frame);
 
+		int GetStateIndexByFrame(int frame);
+
+		int GetStateFrameByIndex(int index);
+
+		void UpdateStateFrequency();
+
 		// ********* Delete these **********
 		void MountWriteAccess();
 
 		// *********** Reconsider these ************/
-		void LimitStateCount();
-
-		void UpdateStateFrequency();
-
 		bool RemoveState(int frame);
-
-		int GetStateIndexByFrame(int frame);
-
-		int GetStateFrameByIndex(int index);
 	}
 }

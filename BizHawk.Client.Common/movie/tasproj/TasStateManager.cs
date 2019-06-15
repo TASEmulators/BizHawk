@@ -58,6 +58,7 @@ namespace BizHawk.Client.Common
 				.Clamp(_minFrequency, _maxFrequency);
 
 			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
+			LimitStateCount();
 		}
 
 		/// <summary>
@@ -246,11 +247,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		/// <summary>
-		/// Deletes states to follow the state storage size limits.
-		/// Used after changing the settings too.
-		/// </summary>
-		public void LimitStateCount()
+		// Deletes states to follow the state storage size limits.
+		// Used after changing the settings too.
+		private void LimitStateCount()
 		{
 			if (Count + 1 > MaxStates)
 			{

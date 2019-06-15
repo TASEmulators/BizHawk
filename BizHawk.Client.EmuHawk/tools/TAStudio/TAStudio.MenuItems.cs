@@ -1080,7 +1080,6 @@ namespace BizHawk.Client.EmuHawk
 				Statable = this.StatableEmulator
 			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
-			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
 
