@@ -12,12 +12,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public VectrexHawk Core { get; set; }
 
-		private BlipBuffer _blip_L = new BlipBuffer(15000);
-		private BlipBuffer _blip_R = new BlipBuffer(15000);
+		private BlipBuffer _blip = new BlipBuffer(15000);
 
 		public uint master_audio_clock;
 
-		private short current_sample;
+		private short current_sample, old_sample;
 
 		public byte[] Register = new byte[16];
 
@@ -71,7 +70,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(noise), ref noise);
 			ser.Sync(nameof(env_E), ref env_E);
 			ser.Sync(nameof(E_up_down), ref E_up_down);
+
 			ser.Sync(nameof(port_sel), ref port_sel);
+			ser.Sync(nameof(current_sample), ref current_sample);
+			ser.Sync(nameof(old_sample), ref old_sample);
+			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 
 			sync_psg_state();
 
@@ -145,6 +148,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void WriteReg(int addr, byte value)
 		{
+			//Console.WriteLine("PORT: " + port_sel + " value: " + value + " cpu: " + Core.cpu.TotalExecutedCycles);
+
 			value &= 0xFF;
 
 			Register[port_sel] = value;
@@ -176,8 +181,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			bool sound_out_C;
 
 			psg_clock++;
+			master_audio_clock++;
 
-			if (psg_clock == 8)
+			if (psg_clock == 1)
 			{
 				psg_clock = 0;
 
@@ -294,6 +300,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 
 				current_sample = (short)v;
+
+				if (current_sample != old_sample)
+				{
+					_blip.AddDelta(master_audio_clock, current_sample - old_sample);
+					old_sample = current_sample;
+				}
 			}
 		}
 
@@ -302,6 +314,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			clock_A = clock_B = clock_C = 0x1000;
 			noise_clock = 0x20;
 			port_sel = 0;
+			current_sample = old_sample = 0;
+			master_audio_clock = 0;
 
 			for (int i = 0; i < 16; i++)
 			{
@@ -309,8 +323,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			sync_psg_state();
 
-			_blip_L.SetRates(4194304, 44100);
-			_blip_R.SetRates(4194304, 44100);
+			_blip.SetRates(1500000, 44100);
 		}
 
 		#region audio
@@ -329,19 +342,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_blip_L.EndFrame(master_audio_clock);
-			_blip_R.EndFrame(master_audio_clock);
-			
-			nsamp = _blip_L.SamplesAvailable();
+			_blip.EndFrame(master_audio_clock);
 
-			// only for running without errors, remove this line once you get audio
-			nsamp = 1;
+			nsamp = _blip.SamplesAvailable();
 
 			samples = new short[nsamp * 2];
 
-			// uncomment these once you have audio to play
-			//_blip_L.ReadSamplesLeft(samples, nsamp);
-			//_blip_R.ReadSamplesRight(samples, nsamp);
+			_blip.ReadSamples(samples, nsamp, true);
 
 			master_audio_clock = 0;
 		}
@@ -353,8 +360,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void DiscardSamples()
 		{
-			_blip_L.Clear();
-			_blip_R.Clear();
+			_blip.Clear();
 			master_audio_clock = 0;
 		}
 
@@ -365,12 +371,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void DisposeSound()
 		{
-			_blip_L.Clear();
-			_blip_R.Clear();
-			_blip_L.Dispose();
-			_blip_R.Dispose();
-			_blip_L = null;
-			_blip_R = null;
+			_blip.Clear();
+			_blip.Dispose();
+			_blip = null;
 		}
 
 		#endregion

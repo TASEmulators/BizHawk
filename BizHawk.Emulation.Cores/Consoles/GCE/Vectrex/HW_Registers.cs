@@ -32,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public bool PB7, PB6;
 		public bool PB7_prev, PB6_prev;
 
+		// Port B controls
+		public bool sw, sel0, sel1, bc1, bdir, compare, ramp;
+
 		public byte int_en, int_fl, aux_ctrl;
 
 		public byte Read_Registers(int addr)
@@ -47,7 +50,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					update_int_fl();
 					break;
 				case 0x1:
-					ret = portA_ret;
+					if (!bdir && bc1)
+					{
+						ret = audio.ReadReg(0);
+					}
+					else
+					{
+						ret = portA_ret;
+					}
 
 					int_fl &= 0xFC;
 					update_int_fl();
@@ -98,6 +108,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					ret = int_en;
 					break;
 				case 0xF:
+					ret = portA_ret;
+
+					int_fl &= 0xFC;
+					update_int_fl();
 					break;
 			}
 			return ret;
@@ -114,6 +128,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					portB_ret = (byte)(wrt_val | (reg_B & ~(dir_ctrl)));
 
+					if (dir_ctrl.Bit(0)) { sw = value.Bit(0); }
+					if (dir_ctrl.Bit(1)) { sel0 = value.Bit(1); }
+					if (dir_ctrl.Bit(2)) { sel1 = value.Bit(2); }
+					if (dir_ctrl.Bit(3)) { bc1 = value.Bit(3); }
+					if (dir_ctrl.Bit(4)) { bdir = value.Bit(4); }
+					if (dir_ctrl.Bit(5)) { /*compare = value.Bit(5);*/ }
+					if (dir_ctrl.Bit(6)) { /* cart bank switch */ }
+					if (dir_ctrl.Bit(7)) { ramp = !value.Bit(7); }
+
+					// writing to sound reg
+					if (bdir)
+					{
+						if (bc1) { audio.port_sel = (byte)(portA_ret & 0xF); }
+						else { audio.WriteReg(0, portA_ret); }
+					}
+
 					int_fl &= 0xE7;
 					update_int_fl();
 					break;
@@ -122,16 +152,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					portA_ret = (byte)(wrt_val | (reg_A & ~(dir_dac)));
 
+					// writing to sound reg
+					if (bdir)
+					{
+						if (bc1) { audio.port_sel = (byte)(portA_ret & 0xf); }
+						else { audio.WriteReg(0, portA_ret); }
+					}
+
 					int_fl &= 0xFC;
 					update_int_fl();
 					break;
 				case 0x2:
 					dir_ctrl = value;
-					Console.WriteLine("dir_ctrl: " + value);
 					break;
 				case 0x3:
 					dir_dac = value;
-					Console.WriteLine("dir_dac: " + value);
 					break;
 				case 0x4:
 					t1_low = value;
@@ -197,6 +232,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					update_int_fl();
 					break;
 				case 0xF:
+					wrt_val = (byte)(value & dir_dac);
+
+					portA_ret = (byte)(wrt_val | (reg_A & ~(dir_dac)));
+
+					int_fl &= 0xFC;
+					update_int_fl();
 					break;
 			}
 		}

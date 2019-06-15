@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			PopulateCURINSTR(RD_INC, ALU, PC,
 							IDLE,
-							DEC16, SP,
+							DEC16, src,
 							PSH_n, src);
 
 			IRQS = -1;

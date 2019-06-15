@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		private void INDEX_OP_EX4_ST()
 		{
 			PopulateCURINSTR(IDLE,
-							WR, ALU, IDX_EA, indexed_op_reg);
+							WR, IDX_EA, indexed_op_reg);
 
 			IRQS = 2;
 		}

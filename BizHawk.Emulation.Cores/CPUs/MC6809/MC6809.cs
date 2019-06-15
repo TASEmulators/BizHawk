@@ -259,7 +259,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						case LEA:
 							LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
-
+						case ANDCC:
+							Regs[CC] &= Regs[instr_pntr++];
+							break;
 					}
 					break;
 				case WR:
