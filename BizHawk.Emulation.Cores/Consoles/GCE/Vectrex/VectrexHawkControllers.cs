@@ -45,12 +45,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte Read(IController c)
 		{
-			byte result = 0x0;
+			byte result = 0xFF;
 
-			if (c.IsPressed($"P{PortNum} Button 1")) { result |= 0x1; }
-			if (c.IsPressed($"P{PortNum} Button 2")) { result |= 0x2; }
-			if (c.IsPressed($"P{PortNum} Button 3")) { result |= 0x4; }
-			if (c.IsPressed($"P{PortNum} Button 4")) { result |= 0x8; }
+			if (c.IsPressed($"P{PortNum} Button 1")) { result &= 0xFE; }
+			if (c.IsPressed($"P{PortNum} Button 2")) { result &= 0xFD; }
+			if (c.IsPressed($"P{PortNum} Button 3")) { result &= 0xFB; }
+			if (c.IsPressed($"P{PortNum} Button 4")) { result &= 0xF7; }
 
 			return result;
 		}

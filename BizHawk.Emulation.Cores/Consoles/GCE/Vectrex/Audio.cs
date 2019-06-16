@@ -152,8 +152,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			value &= 0xFF;
 
-			Register[port_sel] = value;
-
+			// do not write to input ports, controller input is directly assigned seperately
+			if (port_sel < 14) { Register[port_sel] = value; }
+			
 			sync_psg_state();
 
 			if (port_sel == 13)

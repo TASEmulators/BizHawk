@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_islag = true;
 
 			// button inputs go to port 14 in the audio registers
-			audio.Register[14] = _controllerDeck.ReadPort1(controller);
+			audio.Register[14] = (byte)(_controllerDeck.ReadPort1(controller) & 0xF);
 			audio.Register[14] |= (byte)(_controllerDeck.ReadPort2(controller) << 4);
 
 			do_frame();
