@@ -81,6 +81,8 @@ namespace BizHawk.Client.Common
 			["Button"] = 'B',
 			["Button 1"] = '1',
 			["Button 2"] = '2',
+			["Button 3"] = '3',
+			["Button 4"] = '4',
 			["B1"] = '1',
 			["B2"] = '2',
 

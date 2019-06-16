@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if (!bdir && bc1)
 					{
 						ret = audio.ReadReg(0);
+						if (audio.port_sel == 14) { _islag = false; }
 					}
 					else
 					{

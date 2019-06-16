@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			_settings = (VectrexSettings)settings ?? new VectrexSettings();
 			_syncSettings = (VectrexSyncSettings)syncSettings ?? new VectrexSyncSettings();
-			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1);
+			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			byte[] Bios = null;
 			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");			

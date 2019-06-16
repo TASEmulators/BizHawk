@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			psg_clock++;
 			master_audio_clock++;
 
-			if (psg_clock == 1)
+			if (psg_clock == 8)
 			{
 				psg_clock = 0;
 

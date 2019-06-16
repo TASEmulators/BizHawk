@@ -33,7 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				Name = "Vectrex Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
-				.ToList()
+				.ToList(),
+				FloatControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
+				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
 			};
 		}
 
@@ -43,14 +45,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte Read(IController c)
 		{
-			byte result = 0xFF;
+			byte result = 0x0;
+
+			if (c.IsPressed($"P{PortNum} Button 1")) { result |= 0x1; }
+			if (c.IsPressed($"P{PortNum} Button 2")) { result |= 0x2; }
+			if (c.IsPressed($"P{PortNum} Button 3")) { result |= 0x4; }
+			if (c.IsPressed($"P{PortNum} Button 4")) { result |= 0x8; }
 
 			return result;
 		}
 
 		private static readonly string[] BaseDefinition =
 		{
-
+			"Button 1",
+			"Button 2",
+			"Button 3",
+			"Button 4"
 		};
 
 		public void SyncState(Serializer ser)
