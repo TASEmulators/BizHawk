@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		"VectrexHawk",
 		"",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, 
 	ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
