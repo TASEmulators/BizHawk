@@ -4440,7 +4440,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
-        private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
+		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 
