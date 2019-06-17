@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			{
 				PopulateCURINSTR(RD_INC, ALU, PC,
 								RD_INC, ALU2, PC,
-								SET_ADDR, PC, ALU, ALU2);
+								SET_ADDR, ADDR, ALU, ALU2);
 
 				IRQS = 3;
 			}			

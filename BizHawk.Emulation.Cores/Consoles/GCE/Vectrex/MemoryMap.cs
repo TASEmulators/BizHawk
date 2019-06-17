@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xF000)
 			{
-				return 0xFF;
+				return minestorm[addr-0xE000];
 			}
 			else
 			{
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 			else if (addr < 0xF000)
 			{
-				return 0xFF;
+				return minestorm[addr - 0xE000];
 			}
 			else
 			{

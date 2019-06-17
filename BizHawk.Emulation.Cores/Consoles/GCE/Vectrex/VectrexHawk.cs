@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public byte[] RAM = new byte[0x400];
 
 
-		public byte[] _bios;
+		public byte[] _bios, minestorm;
 		public readonly byte[] _rom;	
 		
 		public byte[] cart_RAM;
@@ -62,12 +62,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_controllerDeck = new VectrexHawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			byte[] Bios = null;
+			byte[] Mine = null;
+
 			Bios = comm.CoreFileProvider.GetFirmware("Vectrex", "Bios", true, "BIOS Not Found, Cannot Load");			
 			_bios = Bios;
+
+			Mine = comm.CoreFileProvider.GetFirmware("Vectrex", "Minestorm", true, "Minestorm Not Found, Cannot Load");
+			minestorm = Mine;
 
 			Console.WriteLine("SHA1:" + rom.HashSHA1(0, rom.Length));
 
 			_rom = rom;
+
+			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
+			if ((rom.HashSHA1(0, rom.Length) == "65D07426B520DDD3115D40F255511E0FD2E20AE7") ||
+				(rom.HashSHA1(0, rom.Length) == "1FDCC6E54AE5177BC9CDC79CE616AE3401E5C229"))
+			{
+				_rom  = new byte[0x8000];
+
+				for (int i = 0; i < 0x8000; i++)
+				{
+					_rom[i] = 0xFF;
+				}
+			}
 
 			// mirror games that are too small
 			if (_rom.Length < 0x8000)
