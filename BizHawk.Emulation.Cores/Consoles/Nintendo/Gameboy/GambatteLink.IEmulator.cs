@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public ControllerDefinition ControllerDefinition => DualGbController;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			LCont.Clear();
 			RCont.Clear();
@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				_cableconnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
-				LinkConnected = _cableconnected;
 			}
 
 			_cablediscosignal = cablediscosignalNew;
@@ -148,6 +147,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				LagCount++;
 			}
+
+			return true;
 		}
 
 		public int Frame { get; private set; }

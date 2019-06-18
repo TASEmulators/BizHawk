@@ -67,8 +67,7 @@ namespace BizHawk.Client.Common
 				return d.PeekByte(addr);
 			}
 
-			Log("Warning: attempted read of " + addr +
-				" outside the memory size of " + d.Size);
+			Log($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
 			return 0;
 		}
 
@@ -83,8 +82,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Log("Warning: attempted write to " + addr +
-					" outside the memory size of " + d.Size);
+					Log($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
 				}
 			}
 			else
@@ -188,8 +186,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Log("Warning: Attempted read " + lastAddr + " outside memory domain size of " +
-					d.Size + " in readbyterange()");
+				Log($"Warning: Attempted read {lastAddr} outside memory domain size of {d.Size} in readbyterange()");
 			}
 
 			return table;
@@ -209,8 +206,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						Log("Warning: Attempted write " + addr + " outside memory domain size of " +
-							d.Size + " in writebyterange()");
+						Log($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in writebyterange()");
 					}
 				}
 			}
@@ -230,8 +226,7 @@ namespace BizHawk.Client.Common
 				return BitConverter.ToSingle(bytes, 0);
 			}
 
-			Log("Warning: Attempted read " + addr +
-					" outside memory size of " + d.Size);
+			Log($"Warning: Attempted read {addr} outside memory size of {d.Size}");
 
 			return 0;
 		}
@@ -250,8 +245,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Log("Warning: Attempted write " + addr +
-						" outside memory size of " + d.Size);
+					Log($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				}
 			}
 			else

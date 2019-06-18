@@ -53,7 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			{ "PCFX", "PC-FX" },
 			{ "32X", "32X" },
             { "ZXSpectrum", "ZX Spectrum" },
-            { "AmstradCPC", "Amstrad CPC" }
+            { "AmstradCPC", "Amstrad CPC" },
+			{ "ChannelF", "Channel F" }
         };
 
 		public string TargetSystem = null;
@@ -109,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload " + reloadRomPath;
+					tbbCloseReload.ToolTipText = $"Close Firmware Manager and reload {reloadRomPath}";
 				}
 
 			}
@@ -313,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lvi.SubItems[6].Text = ri.Size.ToString();
 
-					if (ri.Hash != null) lvi.SubItems[7].Text = "sha1:" + ri.Hash;
+					if (ri.Hash != null) lvi.SubItems[7].Text = $"sha1:{ri.Hash}";
 					else lvi.SubItems[7].Text = "";
 				}
 			}
@@ -357,6 +358,8 @@ namespace BizHawk.Client.EmuHawk
         private void tbbOpenFolder_Click(object sender, EventArgs e)
         {
             var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows && !Directory.Exists(frmWares))
+				Directory.CreateDirectory(frmWares);
             System.Diagnostics.Process.Start(frmWares);
         }
 
@@ -443,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
                                             }
                                             catch (Exception ex)
                                             {
-                                                MessageBox.Show(this, "There was an issue copying the file. The customization has NOT been set.\n\n" + ex.StackTrace);
+                                                MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
                                                 continue;
                                             }
                                         }
@@ -456,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(this, "There was an issue during the process. The customization has NOT been set.\n\n" + ex.StackTrace);
+                        MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
                         return;
                     }
 
@@ -526,7 +529,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = this.Font; // why doesnt this work?
-				olvi.SubItems[1].Text = "sha1:" + o.Hash;
+				olvi.SubItems[1].Text = $"sha1:{o.Hash}";
 				olvi.SubItems[1].Font = fixedFont;
 				olvi.SubItems[2].Text = ff.RecommendedName;
 				olvi.SubItems[2].Font = this.Font; // why doesnt this work?
@@ -648,7 +651,7 @@ namespace BizHawk.Client.EmuHawk
 					if (hf.IsArchive)
 					{
 						// blech. the worst extraction code in the universe.
-						string extractpath = Path.GetTempFileName() + ".dir";
+						string extractpath = $"{Path.GetTempFileName()}.dir";
 						DirectoryInfo di = Directory.CreateDirectory(extractpath);
 
 						try

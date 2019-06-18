@@ -13,27 +13,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
 	/// If different implementations share the same type number it indicates that they are functionally identical:
 	/// 
-	///		Part No.	Manufacturer	Type No.	Info.
-	///		------------------------------------------------------------------------------------------------------
-	///		HD6845S		Hitachi			0	
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		UM6845		UMC				0
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/1/13/Um6845.umc.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		UM6845R		UMC				1
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		MC6845		Motorola		2
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf & http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		AMS40489	Amstrad			3			Only exists in the CPC464+, CPC6128+ and GX4000 and is integrated into a single CPC+ ASIC chip (along with the gatearray)
-	///		Datasheet:	{none}
-	///		------------------------------------------------------------------------------------------------------
-	///		AMS40041	Amstrad			4			'Pre-ASIC' IC. The CRTC is integrated into a aingle ASIC IC with functionality being almost identical to the AMS40489
-	///		(or 40226)								Used in the 'Cost-Down' range of CPC464 and CPC6128 systems
-	///		Datasheet:	{none}
-	/// 
+	/// Part No.      Manufacturer    Type No.    Info.
+	/// ------------------------------------------------------------------------------------------------------
+	/// HD6845S       Hitachi         0
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// UM6845        UMC             0
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/1/13/Um6845.umc.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// UM6845R       UMC             1
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// MC6845        Motorola        2
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf & http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// AMS40489      Amstrad         3           Only exists in the CPC464+, CPC6128+ and GX4000 and is integrated into a single CPC+ ASIC chip (along with the gatearray)
+	/// Datasheet:    {none}
+	/// ------------------------------------------------------------------------------------------------------
+	/// AMS40041      Amstrad         4           'Pre-ASIC' IC. The CRTC is integrated into a aingle ASIC IC with functionality being almost identical to the AMS40489
+	/// (or 40226)                                Used in the 'Cost-Down' range of CPC464 and CPC6128 systems
+	/// Datasheet:    {none}
+	///
 	/// </summary>
 	public class CRTC6845
 	{
@@ -48,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// The only constructor
 		/// </summary>
-		/// <param name="type"></param>
 		public CRTC6845(CRTCType type)
 		{
 			ChipType = type;
@@ -147,26 +146,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// This 16-bit property emulates how the Amstrad CPC Gate Array is connected up to the CRTC
 		/// Built from R12, R13 and CLK
-		/*
-            Memory Address Signal	Signal source	Signal name
-            A15	                    6845	        MA13
-            A14	                    6845	        MA12
-            A13	                    6845	        RA2
-            A12	                    6845	        RA1
-            A11	                    6845	        RA0
-            A10	                    6845	        MA9
-            A9	                    6845	        MA8
-            A8	                    6845	        MA7
-            A7	                    6845	        MA6
-            A6	                    6845	        MA5
-            A5	                    6845	        MA4
-            A4	                    6845	        MA3
-            A3	                    6845	        MA2
-            A2	                    6845	        MA1
-            A1	                    6845	        MA0
-            A0	                    Gate-Array	    CLK
-         */
 		/// </summary>
+		/*
+            Memory Address Signal    Signal source    Signal name
+            A15                      6845             MA13
+            A14                      6845             MA12
+            A13                      6845             RA2
+            A12                      6845             RA1
+            A11                      6845             RA0
+            A10                      6845             MA9
+            A9                       6845             MA8
+            A8                       6845             MA7
+            A7                       6845             MA6
+            A6                       6845             MA5
+            A5                       6845             MA4
+            A4                       6845             MA3
+            A3                       6845             MA2
+            A2                       6845             MA1
+            A1                       6845             MA0
+            A0                       Gate-Array       CLK
+         */
 		public ushort AddressLineCPC
 		{
 			get
@@ -324,26 +323,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		#region Databus Interface
 
 		/*
-                RegIdx	Register Name	            Type
-                                                    0	        1	        2	        3	                4
-                0	    Horizontal Total	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                1	    Horizontal Displayed	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                2	    Horizontal Sync Position	Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                3	    H and V Sync Widths	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                4	    Vertical Total	            Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                5	    Vertical Total Adjust	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                6	    Vertical Displayed	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                7	    Vertical Sync position	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                8	    Interlace and Skew	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                9	    Maximum Raster Address	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                10	    Cursor Start Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                11	    Cursor End Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                12	    Disp. Start Address (High)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                13	    Disp. Start Address (Low)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                14	    Cursor Address (High)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                15	    Cursor Address (Low)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                16	    Light Pen Address (High)	Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
-                17	    Light Pen Address (Low)	    Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
+                RegIdx    Register Name                 Type
+                                                        0             1             2             3                      4
+                0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
+                1         Horizontal Displayed          Write Only    Write Only    Write Only    (note 2)               (note 3)
+                2         Horizontal Sync Position      Write Only    Write Only    Write Only    (note 2)               (note 3)
+                3         H and V Sync Widths           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                4         Vertical Total                Write Only    Write Only    Write Only    (note 2)               (note 3)
+                5         Vertical Total Adjust         Write Only    Write Only    Write Only    (note 2)               (note 3)
+                6         Vertical Displayed            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                7         Vertical Sync position        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                8         Interlace and Skew            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                9         Maximum Raster Address        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                10        Cursor Start Raster           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                11        Cursor End Raster             Write Only    Write Only    Write Only    (note 2)               (note 3)
+                12        Disp. Start Address (High)    Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                13        Disp. Start Address (Low)     Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
+                17        Light Pen Address (Low)       Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
 
                 1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
                 2. See the document "Extra CPC Plus Hardware Information" for more details.
@@ -351,10 +350,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         */
 
 		/* CPC:
-        #BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index	                        -	    Write
-        #BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out	                    -	    Write
-        #BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported)	Read	-
-        #BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
+        #BCXX    %x0xxxx00 xxxxxxxx    6845 CRTC Index                            -       Write
+        #BDXX    %x0xxxx01 xxxxxxxx    6845 CRTC Data Out                         -       Write
+        #BEXX    %x0xxxx10 xxxxxxxx    6845 CRTC Status (as far as supported)     Read    -
+        #BFXX    %x0xxxx11 xxxxxxxx    6845 CRTC Data In (as far as supported)    Read    -
 
 			The Read/Write functions below are geared toward Amstrad CPC only
 			They could be overridden for a different implementation if needs be
@@ -363,8 +362,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// CPU (or other device) reads from the 8-bit databus
 		/// </summary>
-		/// <param name="port"></param>
-		/// <param name="result"></param>
 		public virtual bool ReadPort(ushort port, ref int result)
 		{
 			byte portUpper = (byte)(port >> 8);
@@ -398,8 +395,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// CPU (or other device) writes to the 8-bit databus
 		/// </summary>
-		/// <param name="port"></param>
-		/// <param name="result"></param>
 		public virtual bool WritePort(ushort port, int value)
 		{
 			byte portUpper = (byte)(port >> 8);
@@ -496,7 +491,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Selects a specific register
 		/// </summary>
-		/// <param name="value"></param>
 		private void SelectRegister(int value)
 		{
 			var v = (byte)((byte)value & 0x1F);
@@ -509,8 +503,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to read from the currently selected register
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister(ref int data)
 		{
 			switch ((int)ChipType)
@@ -527,8 +519,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to write to the currently selected register
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private void WriteRegister(int data)
 		{
 			switch ((int)ChipType)
@@ -544,8 +534,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Attempts to read from the internal status register (if present)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus(ref int data)
 		{
 			switch ((int)ChipType)
@@ -756,8 +744,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type0(ref int data)
 		{
 			// Type 0 - write only register returns 0 when it is read from
@@ -805,8 +791,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (UM6845R)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type1(ref int data)
 		{
 			// Type 1 - write only register returns 0 when it is read from
@@ -865,8 +849,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type2(ref int data)
 		{
 			switch (AddressRegister)
@@ -916,8 +898,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Read Register (AMS40489 & pre-ASIC)
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadRegister_Type3_4(ref int data)
 		{
 			// unsure of the register sizes at the moment
@@ -984,7 +964,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type0(int data)
 		{
 			byte v = (byte)data;
@@ -1022,7 +1001,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (HD6845S & UM6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type1(int data)
 		{
 			byte v = (byte)data;
@@ -1062,7 +1040,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type2(int data)
 		{
 			byte v = (byte)data;
@@ -1102,7 +1079,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// <summary>
 		/// Write Active Register (MC6845)
 		/// </summary>
-		/// <param name="data"></param>
 		private void WriteRegister_Type3_4(int data)
 		{
 			// unsure of the register sizes at the moment
@@ -1132,8 +1108,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Read Status Register (UM6845R)
 		/// This is fully implemented
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Type1(ref int data)
 		{
 			// Bit6: Set when latched LPEN strobe input is received / Reset when R17 or R16 is read from
@@ -1147,8 +1121,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Status Register is unavailable but attempts to read will return the currently
 		/// selected register data instead
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Type3_4(ref int data)
 		{
 			return ReadRegister(ref data);
@@ -1158,8 +1130,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Read Status Register (HD6845S & UM6845)
 		/// No status register available
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		private bool ReadStatus_Unavailable(ref int data)
 		{
 			return false;
@@ -2326,44 +2296,39 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("CRCT");
-			ser.SyncEnum("ChipType", ref ChipType);
-			ser.Sync("_VSYNC", ref _VSYNC);
-			ser.Sync("_HSYNC", ref _HSYNC);
-			ser.Sync("_DISPTMG", ref _DISPTMG);
-			ser.Sync("_CUDISP", ref _CUDISP);
-			ser.Sync("_CLK", ref _CLK);
-			ser.Sync("_RESET", ref _RESET);
-			ser.Sync("_LPSTB", ref _LPSTB);
-			ser.Sync("AddressRegister", ref AddressRegister);
-			ser.Sync("Register", ref Register, false);
-			ser.Sync("StatusRegister", ref StatusRegister);
-			ser.Sync("_CharacterCTR", ref _CharacterCTR);
-			ser.Sync("_HorizontalSyncWidthCTR", ref _HorizontalSyncWidthCTR);
-			ser.Sync("_LineCTR", ref _LineCTR);
-			ser.Sync("_RasterCTR", ref _RasterCTR);
-			ser.Sync("StartAddressLatch)", ref StartAddressLatch);
-			//ser.Sync("VDisplay", ref VDisplay);
-			//ser.Sync("HDisplay", ref HDisplay);
-			ser.Sync("RowSelects", ref RowSelects);
-			ser.Sync("DISPTMG_Delay_Counter", ref DISPTMG_Delay_Counter);
-			ser.Sync("CUDISP_Delay_Counter", ref CUDISP_Delay_Counter);
-			ser.Sync("AsicStatusRegister1", ref AsicStatusRegister1);
-			ser.Sync("AsicStatusRegister2", ref AsicStatusRegister2);
-			ser.Sync("LAG_Counter", ref LAG_Counter);
-			ser.Sync("LAG_Counter_Latch", ref LAG_Counter_Latch);
-			ser.Sync("LAG_Counter_RowLatch", ref LAG_Counter_RowLatch);
-			ser.Sync("s_VS", ref s_VS);
-			ser.Sync("s_HDISP", ref s_VS);
-			ser.Sync("s_VDISP", ref s_VDISP);
-			ser.Sync("s_HSYNC", ref s_HSYNC);
-			ser.Sync("CUR_Field_Counter", ref CUR_Field_Counter);
-			//ser.Sync("VS", ref VS);
+			ser.SyncEnum(nameof(ChipType), ref ChipType);
+			ser.Sync(nameof(_VSYNC), ref _VSYNC);
+			ser.Sync(nameof(_HSYNC), ref _HSYNC);
+			ser.Sync(nameof(_DISPTMG), ref _DISPTMG);
+			ser.Sync(nameof(_CUDISP), ref _CUDISP);
+			ser.Sync(nameof(_CLK), ref _CLK);
+			ser.Sync(nameof(_RESET), ref _RESET);
+			ser.Sync(nameof(_LPSTB), ref _LPSTB);
+			ser.Sync(nameof(AddressRegister), ref AddressRegister);
+			ser.Sync(nameof(Register), ref Register, false);
+			ser.Sync(nameof(StatusRegister), ref StatusRegister);
+			ser.Sync(nameof(_CharacterCTR), ref _CharacterCTR);
+			ser.Sync(nameof(_HorizontalSyncWidthCTR), ref _HorizontalSyncWidthCTR);
+			ser.Sync(nameof(_LineCTR), ref _LineCTR);
+			ser.Sync(nameof(_RasterCTR), ref _RasterCTR);
+			ser.Sync(nameof(StartAddressLatch), ref StartAddressLatch);
+			//ser.Sync(nameof(VDisplay), ref VDisplay);
+			//ser.Sync(nameof(HDisplay), ref HDisplay);
+			ser.Sync(nameof(RowSelects), ref RowSelects);
+			ser.Sync(nameof(DISPTMG_Delay_Counter), ref DISPTMG_Delay_Counter);
+			ser.Sync(nameof(CUDISP_Delay_Counter), ref CUDISP_Delay_Counter);
+			ser.Sync(nameof(AsicStatusRegister1), ref AsicStatusRegister1);
+			ser.Sync(nameof(AsicStatusRegister2), ref AsicStatusRegister2);
+			ser.Sync(nameof(LAG_Counter), ref LAG_Counter);
+			ser.Sync(nameof(LAG_Counter_Latch), ref LAG_Counter_Latch);
+			ser.Sync(nameof(LAG_Counter_RowLatch), ref LAG_Counter_RowLatch);
+			ser.Sync(nameof(s_VS), ref s_VS);
+			ser.Sync(nameof(s_HDISP), ref s_VS);
+			ser.Sync(nameof(s_VDISP), ref s_VDISP);
+			ser.Sync(nameof(s_HSYNC), ref s_HSYNC);
+			ser.Sync(nameof(CUR_Field_Counter), ref CUR_Field_Counter);
+			//ser.Sync(nameof(VS), ref VS);
 			ser.EndSection();
-
-			/*
-			 * int ;
-		int ;
-             * */
 		}
 
 		#endregion

@@ -53,31 +53,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.BeginSection("FDS");
-			ser.BeginSection("RamAdapter");
+			ser.BeginSection(nameof(FDS));
+			ser.BeginSection(nameof(RamAdapter));
 			diskdrive.SyncState(ser);
 			ser.EndSection();
-			ser.BeginSection("audio");
+			ser.BeginSection(nameof(audio));
 			audio.SyncState(ser);
 			ser.EndSection();
 			{
 				// silly little hack
 				int tmp = currentside != null ? (int)currentside : 1234567;
-				ser.Sync("currentside", ref tmp);
+				ser.Sync(nameof(currentside), ref tmp);
 				currentside = tmp == 1234567 ? null : (int?)tmp;
 			}
 			for (int i = 0; i < NumSides; i++)
 				ser.Sync("diskdiffs" + i, ref diskdiffs[i], true);
-			ser.Sync("_timerirq", ref _timerirq);
-			ser.Sync("timer_irq_active", ref timer_irq_active);
-			ser.Sync("timerirq_cd", ref timerirq_cd);
-			ser.Sync("_diskirq", ref _diskirq);
-			ser.Sync("diskenable", ref diskenable);
-			ser.Sync("soundenable", ref soundenable);
-			ser.Sync("reg4026", ref reg4026);
-			ser.Sync("timerlatch", ref timerlatch);
-			ser.Sync("timervalue", ref timervalue);
-			ser.Sync("timerreg", ref timerreg);
+			ser.Sync(nameof(_timerirq), ref _timerirq);
+			ser.Sync(nameof(timer_irq_active), ref timer_irq_active);
+			ser.Sync(nameof(timerirq_cd), ref timerirq_cd);
+			ser.Sync(nameof(_diskirq), ref _diskirq);
+			ser.Sync(nameof(diskenable), ref diskenable);
+			ser.Sync(nameof(soundenable), ref soundenable);
+			ser.Sync(nameof(reg4026), ref reg4026);
+			ser.Sync(nameof(timerlatch), ref timerlatch);
+			ser.Sync(nameof(timervalue), ref timervalue);
+			ser.Sync(nameof(timerreg), ref timerreg);
 			ser.EndSection();
 
 			SetIRQ();
@@ -91,7 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// should only be called once, before emulation begins
 		/// </summary>
-		/// <param name="diskimage"></param>
 		public void SetDiskImage(byte[] diskimage)
 		{
 			// each FDS format is worse than the last
@@ -116,7 +115,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns the currently set disk image.  no effect on emulation (provided the image is not modified).
 		/// </summary>
-		/// <returns></returns>
 		public byte[] GetDiskImage()
 		{
 			return diskimage;

@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -141,6 +142,7 @@
     <Compile Include="inputAdapters\OverrideAdaptor.cs" />
     <Compile Include="inputAdapters\SimpleController.cs" />
     <Compile Include="inputAdapters\UDLRController.cs" />
+    <Compile Include="input\PolarRectConversion.cs" />
     <Compile Include="IonicZipWriter.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="IZipWriter.cs" />
@@ -244,6 +246,7 @@
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
+    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickBmpFile.cs" />
@@ -318,7 +321,6 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

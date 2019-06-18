@@ -32,12 +32,12 @@ namespace BizHawk.Emulation.Cores
 					string pname = p.Name.ToLowerInvariant();
 					Type expectedtype;
 					if (!paramtypes.TryGetValue(pname, out expectedtype))
-						throw new InvalidOperationException(string.Format("Unexpected parameter name {0} in constructor for {1}", p.Name, Type));
+						throw new InvalidOperationException($"Unexpected parameter name {p.Name} in constructor for {Type}");
 					
 					// disabling the typecheck here doesn't really hurt anything, because the Invoke call will still catch any forbidden casts
 					// it does allow us to write "MySettingsType settings" instead of "object settings"
 					// if (expectedtype != p.ParameterType)
-					//	throw new InvalidOperationException(string.Format("Unexpected type mismatch in parameter {0} in constructor for {1}", p.Name, Type));
+					//	throw new InvalidOperationException($"Unexpected type mismatch in parameter {p.Name} in constructor for {Type}");
 					parammap.Add(pname, i);
 				}
 			}
@@ -64,13 +64,6 @@ namespace BizHawk.Emulation.Cores
 			/// <summary>
 			/// instatiate an emulator core
 			/// </summary>
-			/// <param name="comm"></param>
-			/// <param name="game"></param>
-			/// <param name="rom"></param>
-			/// <param name="deterministic"></param>
-			/// <param name="settings"></param>
-			/// <param name="syncsettings"></param>
-			/// <returns></returns>
 			public IEmulator Create
 			(
 				CoreComm comm,
@@ -113,8 +106,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find a core matching a particular game.system
 		/// </summary>
-		/// <param name="system"></param>
-		/// <returns></returns>
 		public Core this[string system]
 		{
 			get
@@ -129,9 +120,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find a core matching a particular game.system with a particular coreattributes.name
 		/// </summary>
-		/// <param name="system"></param>
-		/// <param name="core"></param>
-		/// <returns></returns>
 		public Core this[string system, string core]
 		{
 			get
@@ -149,8 +137,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// find an exact core type.  slow lookup.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
 		public Core FindByType(Type type)
 		{
 			foreach (List<Core> cc in systems.Values)
@@ -167,7 +153,6 @@ namespace BizHawk.Emulation.Cores
 		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assembilies
 		/// </summary>
-		/// <param name="assys"></param>
 		public CoreInventory(IEnumerable<Assembly> assys)
 		{
 			foreach (var assy in assys)
@@ -178,7 +163,7 @@ namespace BizHawk.Emulation.Cores
 					{
 						var coreattr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
 						if (coreattr.Length != 1)
-							throw new InvalidOperationException(string.Format("IEmulator {0} without CoreAttributes!", typ));
+							throw new InvalidOperationException($"{nameof(IEmulator)} {typ} without {nameof(CoreAttribute)}s!");
 						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
 							.Where(c => c.GetCustomAttributes(typeof(CoreConstructorAttribute), false).Length > 0).ToList();
 						foreach(var con in cons)

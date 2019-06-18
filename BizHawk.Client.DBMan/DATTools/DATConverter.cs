@@ -29,8 +29,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Choose output directory
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void button2_Click(object sender, EventArgs e)
 		{
 			var fbd = new FolderBrowserDialog();
@@ -45,8 +43,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Add import files to the list box
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonAddFiles_Click(object sender, EventArgs e)
 		{
 			var ofd = new OpenFileDialog();
@@ -70,8 +66,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Removes selected input files from the listbox
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonRemove_Click(object sender, EventArgs e)
 		{
 			List<string> files = new List<string>();
@@ -90,8 +84,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Attempt to process all selected files
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void buttonStartProcessing_Click(object sender, EventArgs e)
 		{
 			// initial checks
@@ -120,7 +112,7 @@ namespace BizHawk.Client.DBMan
 			{
 				if (s.ToString().Trim() == "")
 				{
-					MessageBox.Show("The selected file: " + s.ToString() + "Cannot be found.\n\nSort this out and try again");
+					MessageBox.Show($"The selected file: {s}Cannot be found.\n\nSort this out and try again");
 					return;
 				}
 
@@ -140,9 +132,7 @@ namespace BizHawk.Client.DBMan
 				res = dp.ParseDAT(files.ToArray());
 			}
 
-			string fName = "gamedb_" + 
-				GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString())) +
-				"_DevExport_" + DateTime.UtcNow.ToString("yyyy-MM-dd_HH_mm_ss") + ".txt";
+			string fName = $"gamedb_{GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString()))}_DevExport_{DateTime.UtcNow:yyyy-MM-dd_HH_mm_ss}.txt";
 
 			try
 			{
@@ -150,7 +140,7 @@ namespace BizHawk.Client.DBMan
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Error writing file: " + fName + "\n\n" + ex.Message);
+				MessageBox.Show($"Error writing file: {fName}\n\n{ex.Message}");
 			}
 
 		}

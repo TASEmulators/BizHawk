@@ -74,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
 		};
 
-
 		public sealed class PulseUnit
 		{
 			public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
@@ -97,35 +96,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Pulse" + unit);
-				ser.Sync("duty_cnt", ref duty_cnt);
-				ser.Sync("env_loop", ref env_loop);
-				ser.Sync("env_constant", ref env_constant);
-				ser.Sync("env_cnt_value", ref env_cnt_value);
-				ser.Sync("len_halt", ref len_halt);
+				ser.Sync(nameof(duty_cnt), ref duty_cnt);
+				ser.Sync(nameof(env_loop), ref env_loop);
+				ser.Sync(nameof(env_constant), ref env_constant);
+				ser.Sync(nameof(env_cnt_value), ref env_cnt_value);
+				ser.Sync(nameof(len_halt), ref len_halt);
 
-				ser.Sync("sweep_en", ref sweep_en);
-				ser.Sync("sweep_divider_cnt", ref sweep_divider_cnt);
-				ser.Sync("sweep_negate", ref sweep_negate);
-				ser.Sync("sweep_shiftcount", ref sweep_shiftcount);
-				ser.Sync("sweep_reload", ref sweep_reload);
+				ser.Sync(nameof(sweep_en), ref sweep_en);
+				ser.Sync(nameof(sweep_divider_cnt), ref sweep_divider_cnt);
+				ser.Sync(nameof(sweep_negate), ref sweep_negate);
+				ser.Sync(nameof(sweep_shiftcount), ref sweep_shiftcount);
+				ser.Sync(nameof(sweep_reload), ref sweep_reload);
 
-				ser.Sync("len_cnt", ref len_cnt);
-				ser.Sync("timer_raw_reload_value", ref timer_raw_reload_value);
-				ser.Sync("timer_reload_value", ref timer_reload_value);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
+				ser.Sync(nameof(timer_raw_reload_value), ref timer_raw_reload_value);
+				ser.Sync(nameof(timer_reload_value), ref timer_reload_value);
 
-				ser.Sync("lenctr_en", ref lenctr_en);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
 
-				ser.Sync("swp_divider_counter", ref swp_divider_counter);
-				ser.Sync("swp_silence", ref swp_silence);
-				ser.Sync("duty_step", ref duty_step);
-				ser.Sync("timer_counter", ref timer_counter);
-				ser.Sync("sample", ref sample);
-				ser.Sync("duty_value", ref duty_value);
+				ser.Sync(nameof(swp_divider_counter), ref swp_divider_counter);
+				ser.Sync(nameof(swp_silence), ref swp_silence);
+				ser.Sync(nameof(duty_step), ref duty_step);
+				ser.Sync(nameof(timer_counter), ref timer_counter);
+				ser.Sync(nameof(sample), ref sample);
+				ser.Sync(nameof(duty_value), ref duty_value);
 
-				ser.Sync("env_start_flag", ref env_start_flag);
-				ser.Sync("env_divider", ref env_divider);
-				ser.Sync("env_counter", ref env_counter);
-				ser.Sync("env_output", ref env_output);
+				ser.Sync(nameof(env_start_flag), ref env_start_flag);
+				ser.Sync(nameof(env_divider), ref env_divider);
+				ser.Sync(nameof(env_counter), ref env_counter);
+				ser.Sync(nameof(env_output), ref env_output);
 				ser.EndSection();
 			}
 
@@ -395,25 +394,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Noise");
-				ser.Sync("env_cnt_value", ref env_cnt_value);
-				ser.Sync("env_loop", ref env_loop);
-				ser.Sync("env_constant", ref env_constant);
-				ser.Sync("mode_cnt", ref mode_cnt);
-				ser.Sync("period_cnt", ref period_cnt);
+				ser.Sync(nameof(env_cnt_value), ref env_cnt_value);
+				ser.Sync(nameof(env_loop), ref env_loop);
+				ser.Sync(nameof(env_constant), ref env_constant);
+				ser.Sync(nameof(mode_cnt), ref mode_cnt);
+				ser.Sync(nameof(period_cnt), ref period_cnt);
 
-				ser.Sync("len_halt", ref len_halt);
-				ser.Sync("len_cnt", ref len_cnt);
-				ser.Sync("lenctr_en", ref lenctr_en);
+				ser.Sync(nameof(len_halt), ref len_halt);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
 
-				ser.Sync("shift_register", ref shift_register);
-				ser.Sync("timer_counter", ref timer_counter);
-				ser.Sync("sample", ref sample);
+				ser.Sync(nameof(shift_register), ref shift_register);
+				ser.Sync(nameof(timer_counter), ref timer_counter);
+				ser.Sync(nameof(sample), ref sample);
 
-				ser.Sync("env_output", ref env_output);
-				ser.Sync("env_start_flag", ref env_start_flag);
-				ser.Sync("env_divider", ref env_divider);
-				ser.Sync("env_counter", ref env_counter);
-				ser.Sync("noise_bit", ref noise_bit);
+				ser.Sync(nameof(env_output), ref env_output);
+				ser.Sync(nameof(env_start_flag), ref env_start_flag);
+				ser.Sync(nameof(env_divider), ref env_divider);
+				ser.Sync(nameof(env_counter), ref env_counter);
+				ser.Sync(nameof(noise_bit), ref noise_bit);
 				ser.EndSection();
 			}
 
@@ -553,18 +552,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("Triangle");
-				ser.Sync("linear_counter_reload", ref linear_counter_reload);
-				ser.Sync("control_flag", ref control_flag);
-				ser.Sync("timer_cnt", ref timer_cnt);
-				ser.Sync("reload_flag", ref reload_flag);
-				ser.Sync("len_cnt", ref len_cnt);
+				ser.Sync(nameof(linear_counter_reload), ref linear_counter_reload);
+				ser.Sync(nameof(control_flag), ref control_flag);
+				ser.Sync(nameof(timer_cnt), ref timer_cnt);
+				ser.Sync(nameof(reload_flag), ref reload_flag);
+				ser.Sync(nameof(len_cnt), ref len_cnt);
 
-				ser.Sync("lenctr_en", ref lenctr_en);
-				ser.Sync("linear_counter", ref linear_counter);
-				ser.Sync("timer", ref timer);
-				ser.Sync("timer_cnt_reload", ref timer_cnt_reload);
-				ser.Sync("seq", ref seq);
-				ser.Sync("sample", ref sample);
+				ser.Sync(nameof(lenctr_en), ref lenctr_en);
+				ser.Sync(nameof(linear_counter), ref linear_counter);
+				ser.Sync(nameof(timer), ref timer);
+				ser.Sync(nameof(timer_cnt_reload), ref timer_cnt_reload);
+				ser.Sync(nameof(seq), ref seq);
+				ser.Sync(nameof(sample), ref sample);
 				ser.EndSection();
 			}
 
@@ -704,6 +703,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 0;
+				user_address = 0x8000; // even though this can't be accessed by writing, it is indeed the power up address
+				user_length = 1;
 			}
 
 			bool irq_enabled;
@@ -728,23 +729,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void SyncState(Serializer ser)
 			{
 				ser.BeginSection("DMC");
-				ser.Sync("irq_enabled", ref irq_enabled);
-				ser.Sync("loop_flag", ref loop_flag);
-				ser.Sync("timer_reload", ref timer_reload);
+				ser.Sync(nameof(irq_enabled), ref irq_enabled);
+				ser.Sync(nameof(loop_flag), ref loop_flag);
+				ser.Sync(nameof(timer_reload), ref timer_reload);
 
-				ser.Sync("timer", ref timer);
-				ser.Sync("user_address", ref user_address);
-				ser.Sync("user_length", ref user_length);
+				ser.Sync(nameof(timer), ref timer);
+				ser.Sync(nameof(user_address), ref user_address);
+				ser.Sync(nameof(user_length), ref user_length);
 
-				ser.Sync("sample_address", ref sample_address);
-				ser.Sync("sample_length", ref sample_length);
-				ser.Sync("sample_buffer", ref sample_buffer);
-				ser.Sync("sample_buffer_filled", ref sample_buffer_filled);
+				ser.Sync(nameof(sample_address), ref sample_address);
+				ser.Sync(nameof(sample_length), ref sample_length);
+				ser.Sync(nameof(sample_buffer), ref sample_buffer);
+				ser.Sync(nameof(sample_buffer_filled), ref sample_buffer_filled);
 
-				ser.Sync("out_shift", ref out_shift);
-				ser.Sync("out_bits_remaining", ref out_bits_remaining);
-				ser.Sync("out_deltacounter", ref out_deltacounter);
-				ser.Sync("out_silence", ref out_silence);
+				ser.Sync(nameof(out_shift), ref out_shift);
+				ser.Sync(nameof(out_bits_remaining), ref out_bits_remaining);
+				ser.Sync(nameof(out_deltacounter), ref out_deltacounter);
+				ser.Sync(nameof(out_silence), ref out_silence);
 
 				ser.Sync("dmc_call_delay", ref delay);
 
@@ -944,27 +945,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("dmc_irq", ref dmc_irq);
-			ser.Sync("pending_reg", ref pending_reg);
-			ser.Sync("pending_val", ref pending_val);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(dmc_irq), ref dmc_irq);
+			ser.Sync(nameof(pending_reg), ref pending_reg);
+			ser.Sync(nameof(pending_val), ref pending_val);
 
-			ser.Sync("sequencer_counter", ref sequencer_counter);
-			ser.Sync("sequencer_step", ref sequencer_step);
-			ser.Sync("sequencer_mode", ref sequencer_mode);
-			ser.Sync("sequencer_irq_inhibit;", ref sequencer_irq_inhibit);
-			ser.Sync("sequencer_irq", ref sequencer_irq);
-			ser.Sync("sequence_reset_pending", ref sequence_reset_pending);
-			ser.Sync("sequencer_irq_clear_pending", ref sequencer_irq_clear_pending);
-			ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
+			ser.Sync(nameof(sequencer_counter), ref sequencer_counter);
+			ser.Sync(nameof(sequencer_step), ref sequencer_step);
+			ser.Sync(nameof(sequencer_mode), ref sequencer_mode);
+			ser.Sync(nameof(sequencer_irq_inhibit), ref sequencer_irq_inhibit);
+			ser.Sync(nameof(sequencer_irq), ref sequencer_irq);
+			ser.Sync(nameof(sequence_reset_pending), ref sequence_reset_pending);
+			ser.Sync(nameof(sequencer_irq_clear_pending), ref sequencer_irq_clear_pending);
+			ser.Sync(nameof(sequencer_irq_assert), ref sequencer_irq_assert);
 
-			ser.Sync("dmc_dma_countdown", ref dmc_dma_countdown);
+			ser.Sync(nameof(dmc_dma_countdown), ref dmc_dma_countdown);
 			ser.Sync("sample_length_delay", ref pending_length_change);
 			ser.Sync("dmc_called_from_write", ref call_from_write);
 			ser.Sync("sequencer_tick_delay", ref seq_tick);
 			ser.Sync("seq_val_to_apply", ref seq_val);
-			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
-			ser.Sync("len_clock_active", ref len_clock_active);
+			ser.Sync(nameof(sequencer_irq_flag), ref sequencer_irq_flag);
+			ser.Sync(nameof(len_clock_active), ref len_clock_active);
+
+			ser.Sync(nameof(oldmix), ref oldmix);
+			ser.Sync(nameof(cart_sound), ref cart_sound);
+			ser.Sync(nameof(old_cart_sound), ref old_cart_sound);
 
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);
@@ -1257,127 +1262,117 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int pending_length_change;
 
-		public void RunOne(bool read)
+		public void RunOneFirst()
 		{
-			if (read)
-			{
-				pulse[0].Run();
-				pulse[1].Run();
-				triangle.Run();
-				noise.Run();
-				dmc.Run();
 
-				pulse[0].len_halt = false;
-				pulse[1].len_halt = false;
-				noise.len_halt = false;
+			pulse[0].Run();
+			pulse[1].Run();
+			triangle.Run();
+			noise.Run();
+			dmc.Run();
 
-			}
-			else
-			{
-				if (pending_length_change>0)
-				{
-					pending_length_change--;
-					if (pending_length_change==0)
-					{
-						dmc.sample_length--;
-					}
-				}
-
-				EmitSample();
-
-				// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
-				// timer reload shouldn't happen if length clock and write happen simultaneously
-				// I'm not sure if we can avoid this by simply processing the sequencer first
-				// but at the moment that would break everything, so this is good enough for now
-				if (sequencer_counter == (sequencer_lut[0][1] - 1) || 
-					(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode==0) ||
-					(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
-				{
-					len_clock_active = true;
-				}
-
-				// handle writes
-				// notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
-				// in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
-				// the current code simply matches known behaviour			
-				if (pending_reg != -1)
-				{
-					if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg==0x4007)
-					{
-						_WriteReg(pending_reg, pending_val);
-						pending_reg = -1;
-					}
-					else if (dmc.timer%2==0)
-					{
-						_WriteReg(pending_reg, pending_val);
-						pending_reg = -1;
-					}
-				}
-
-				len_clock_active = false;
-
-				sequencer_tick();
-				sequencer_write_tick(seq_val);
-				doing_tick_quarter = false;
-				
-				if (sequencer_irq_assert>0) {
-					sequencer_irq_assert--;
-					if (sequencer_irq_assert==0)
-					{
-						sequencer_irq = true;
-					}					
-				}				
-
-				SyncIRQ();
-				nes._irq_apu = irq_pending;
-
-				// since the units run concurrently, the APU frame sequencer is ran last because
-				// it can change the ouput values of the pulse/triangle channels
-				// we want the changes to affect it on the *next* cycle.
-
-				if (sequencer_irq_flag == false)
-					sequencer_irq = false;
-
-				if (DebugCallbackDivider != 0)
-				{
-					if (DebugCallbackTimer == 0)
-					{
-						if (DebugCallback != null)
-							DebugCallback();
-						DebugCallbackTimer = DebugCallbackDivider;
-					}
-					else DebugCallbackTimer--;
-
-				}
-			}
+			pulse[0].len_halt = false;
+			pulse[1].len_halt = false;
+			noise.len_halt = false;
 		}
 
-		public struct Delta
+		public void RunOneLast()
 		{
-			public uint time;
-			public int value;
-			public Delta(uint time, int value)
+			if (pending_length_change > 0)
 			{
-				this.time = time;
-				this.value = value;
+				pending_length_change--;
+				if (pending_length_change == 0)
+				{
+					dmc.sample_length--;
+				}
+			}
+
+			// we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
+			// timer reload shouldn't happen if length clock and write happen simultaneously
+			// I'm not sure if we can avoid this by simply processing the sequencer first
+			// but at the moment that would break everything, so this is good enough for now
+			if (sequencer_counter == (sequencer_lut[0][1] - 1) ||
+				(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode == 0) ||
+				(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
+			{
+				len_clock_active = true;
+			}
+
+			// handle writes
+			// notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
+			// in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
+			// the current code simply matches known behaviour			
+			if (pending_reg != -1)
+			{
+				if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg == 0x4007)
+				{
+					_WriteReg(pending_reg, pending_val);
+					pending_reg = -1;
+				}
+				else if (dmc.timer % 2 == 0)
+				{
+					_WriteReg(pending_reg, pending_val);
+					pending_reg = -1;
+				}
+			}
+
+			len_clock_active = false;
+
+			sequencer_tick();
+			sequencer_write_tick(seq_val);
+			doing_tick_quarter = false;
+
+			if (sequencer_irq_assert > 0)
+			{
+				sequencer_irq_assert--;
+				if (sequencer_irq_assert == 0)
+				{
+					sequencer_irq = true;
+				}
+			}
+
+			SyncIRQ();
+			nes._irq_apu = irq_pending;
+
+			// since the units run concurrently, the APU frame sequencer is ran last because
+			// it can change the ouput values of the pulse/triangle channels
+			// we want the changes to affect it on the *next* cycle.
+
+			if (sequencer_irq_flag == false)
+				sequencer_irq = false;
+
+			if (DebugCallbackDivider != 0)
+			{
+				if (DebugCallbackTimer == 0)
+				{
+					if (DebugCallback != null)
+						DebugCallback();
+					DebugCallbackTimer = DebugCallbackDivider;
+				}
+				else DebugCallbackTimer--;
+
 			}
 		}
-
-		public List<Delta> dlist = new List<Delta>();
 
 		/// <summary>only call in board.ClockCPU()</summary>
-		/// <param name="value"></param>
 		public void ExternalQueue(int value)
 		{
-			// sampleclock is incremented right before board.ClockCPU()
-			dlist.Add(new Delta(sampleclock - 1, value));
+			cart_sound = value + old_cart_sound;
+
+			if (cart_sound != old_cart_sound)
+			{
+				recalculate = true;
+				old_cart_sound = cart_sound;
+			}
 		}
 
 		public uint sampleclock = 0;
 
 		int oldmix = 0;
+		int cart_sound = 0;
+		int old_cart_sound = 0;
 
-		void EmitSample()
+		public int EmitSample()
 		{
 			if (recalculate)
 			{
@@ -1388,16 +1383,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int s_tri = triangle.sample;
 				int s_noise = noise.sample;
 				int s_dmc = dmc.sample;
-
-				// int s_ext = 0; //gamepak
-
-				/*
-				if (!EnableSquare1) s_pulse0 = 0;
-				if (!EnableSquare2) s_pulse1 = 0;
-				if (!EnableTriangle) s_tri = 0;
-				if (!EnableNoise) s_noise = 0;
-				if (!EnableDMC) s_dmc = 0;
-				*/
 
 				// more properly correct
 				float pulse_out, tnd_out;
@@ -1410,13 +1395,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				float output = pulse_out + tnd_out;
 				// output = output * 2 - 1;
 				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-				int mix = (int)(20000 * output * (1 + m_vol/5));
+				int mix = (int)(20000 * output * (1 + m_vol/5)) + cart_sound;
 
-				dlist.Add(new Delta(sampleclock, mix - oldmix));
 				oldmix = mix;
+
+				return mix;
 			}
 
-			sampleclock++;
+			return oldmix;			
 		}
 	}
 }

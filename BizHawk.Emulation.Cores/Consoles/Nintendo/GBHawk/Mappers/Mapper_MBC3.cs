@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr < 0x2000)
 				{
-					RAM_enable = ((value & 0xA) == 0xA) ? true : false;
+					RAM_enable = ((value & 0xA) == 0xA);
 				}
 				else if (addr < 0x4000)
 				{
@@ -258,17 +258,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("RAM_Bank", ref RAM_bank);
-			ser.Sync("RAM_Mask", ref RAM_mask);
-			ser.Sync("RAM_enable", ref RAM_enable);
-			ser.Sync("halt", ref halt);
-			ser.Sync("RTC_regs", ref RTC_regs, false);
-			ser.Sync("RTC_regs_latch", ref RTC_regs_latch, false);
-			ser.Sync("RTC_regs_latch_wr", ref RTC_regs_latch_wr);
-			ser.Sync("RTC_timer", ref RTC_timer);
-			ser.Sync("RTC_low_clock", ref RTC_low_clock);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(RAM_bank), ref RAM_bank);
+			ser.Sync(nameof(RAM_mask), ref RAM_mask);
+			ser.Sync(nameof(RAM_enable), ref RAM_enable);
+			ser.Sync(nameof(halt), ref halt);
+			ser.Sync(nameof(RTC_regs), ref RTC_regs, false);
+			ser.Sync(nameof(RTC_regs_latch), ref RTC_regs_latch, false);
+			ser.Sync(nameof(RTC_regs_latch_wr), ref RTC_regs_latch_wr);
+			ser.Sync(nameof(RTC_timer), ref RTC_timer);
+			ser.Sync(nameof(RTC_low_clock), ref RTC_low_clock);
 		}
 	}
 }

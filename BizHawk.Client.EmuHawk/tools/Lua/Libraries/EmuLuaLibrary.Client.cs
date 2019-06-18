@@ -7,6 +7,8 @@ using NLua;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using System.Threading;
+using System.Diagnostics;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable UnusedMember.Global
@@ -145,6 +147,8 @@ namespace BizHawk.Client.EmuHawk
 		public static void SetSoundOn(bool enable)
 		{
 			Global.Config.SoundEnabled = enable;
+			GlobalWin.Sound.StopSound();
+			GlobalWin.Sound.StartSound();
 		}
 
 		[LuaMethodExample("if ( client.GetSoundOn( ) ) then\r\n\tconsole.log( \"Gets the state of the Sound On toggle\" );\r\nend;")]
@@ -320,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
-				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
+				GlobalWin.OSD.AddMessage($"Window size set to {size}x");
 			}
 			else
 			{
@@ -471,6 +475,31 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveRam()
 		{
 			GlobalWin.MainForm.FlushSaveRAM();
+		}
+
+		[LuaMethodExample("client.sleep( 50 );")]
+		[LuaMethod("sleep", "sleeps for n milliseconds")]
+		public void Sleep(int millis)
+		{
+			Thread.Sleep(millis);
+		}
+
+		[LuaMethodExample("client.exactsleep( 50 );")]
+		[LuaMethod("exactsleep", "sleeps exactly for n milliseconds")]
+		public void ExactSleep(int millis)
+		{
+			Stopwatch stopwatch = Stopwatch.StartNew();
+			while (millis - stopwatch.ElapsedMilliseconds > 100)
+			{
+				Thread.Sleep(50);
+			}
+			while (true)
+			{
+				if (stopwatch.ElapsedMilliseconds >= millis)
+				{
+					break;
+				}
+			}
 		}
 	}
 }

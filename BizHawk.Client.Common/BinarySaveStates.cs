@@ -60,8 +60,8 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump BranchInputLog { get; private set; }
 		[Name("Branches\\FrameBuffer", "bmp")]
 		public static BinaryStateLump BranchFrameBuffer { get; private set; }
-		[Name("Branches\\LagLog", "bin")]
-		public static BinaryStateLump BranchLagLog { get; private set; }
+		[Name("Branches\\CoreFrameBuffer", "bmp")]
+		public static BinaryStateLump BranchCoreFrameBuffer { get; private set; }
 		[Name("Branches\\Header", "json")]
 		public static BinaryStateLump BranchHeader { get; private set; }
 		[Name("Branches\\Markers", "txt")]
@@ -260,7 +260,7 @@ namespace BizHawk.Client.Common
 			
 			if (abort)
 			{
-				throw new Exception("Essential zip section not found: " + lump.ReadName);
+				throw new Exception($"Essential zip section not found: {lump.ReadName}");
 			}
 			
 			return false;

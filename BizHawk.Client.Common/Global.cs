@@ -154,12 +154,12 @@ namespace BizHawk.Client.Common
                         return SystemInfo.ZXSpectrum;
                     case "AmstradCPC":
                         return SystemInfo.AmstradCPC;
+					case "ChannelF":
+						return SystemInfo.ChannelF;
 				}
 			}
 		}
 
 		public static Dictionary<string, object> UserBag = new Dictionary<string, object>();
-
-		public static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
 	}
 }

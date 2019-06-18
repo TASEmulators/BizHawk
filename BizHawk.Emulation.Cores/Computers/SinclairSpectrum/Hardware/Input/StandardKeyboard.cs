@@ -188,9 +188,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             /*
@@ -264,9 +261,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             // not implemented
@@ -278,8 +272,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("Keyboard");
-            ser.Sync("LineStatus", ref LineStatus, false);
-            ser.Sync("_keyLine", ref _keyLine, false);
+            ser.Sync(nameof(LineStatus), ref LineStatus, false);
+            ser.Sync(nameof(_keyLine), ref _keyLine, false);
             ser.EndSection();
         }
     }

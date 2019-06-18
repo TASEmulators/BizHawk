@@ -149,7 +149,6 @@ namespace BizHawk.Client.EmuHawk
             /// <summary>
             /// Add a given color value to the octree
             /// </summary>
-            /// <param name="pixel"></param>
             public void AddColor(int pixel)
             {
                 // Check if this request is for the same color as the last
@@ -267,8 +266,6 @@ namespace BizHawk.Client.EmuHawk
             /// <summary>
             /// Get the palette index for the passed color
             /// </summary>
-            /// <param name="pixel"></param>
-            /// <returns></returns>
             public int GetPaletteIndex(int pixel)
             {
                 int ret = -1;

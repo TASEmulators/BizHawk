@@ -105,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Called on first instantiation (and subsequent core reboots)
         /// </summary>
-        /// <param name="files"></param>
         protected void InitializeMedia(List<byte[]> files)
         {
             mediaImages = files;
@@ -227,7 +226,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Identifies and sorts the various media types
         /// </summary>
-        /// <returns></returns>
         private CPCMediaType IdentifyMedia(byte[] data)
         {
             // get first 16 bytes as a string

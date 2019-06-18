@@ -61,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if tzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             /*
@@ -98,7 +97,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks
@@ -147,8 +145,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Processes a TZX block
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="id"></param>
         private void ProcessBlock(byte[] data, int id)
         {
             // process based on detected block ID
@@ -1312,9 +1308,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // get text length
                 int strLen = data[_position++];
 
-                string title = "Info: ";
+				string title = String.Empty;
+				title = "Info: ";
 
-                switch (type)
+				switch (type)
                 {
                     case 0x00:
                         title = "Full Title: ";
@@ -1613,9 +1610,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Used to process either a standard or turbo data block
         /// </summary>
-        /// <param name="block"></param>
-        /// <param name="blockData"></param>
-        /// <returns></returns>
         private TapeDataBlock DecodeDataBlock
             (
                 TapeDataBlock block,
@@ -1692,8 +1686,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                 {
                     // some other type (turbo data etc..)
-                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
-                    //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
+                    description = $"#{blockdata[0].ToString("X2")} block, {blockSize} bytes";
+                    //description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
                     block.AddMetaData(BlockDescriptorTitle.Undefined, description);
                 }
                 /*
@@ -1735,8 +1729,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                 {
                     // other type
-                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
-                    //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
+                    description = $"#{blockdata[0]:X2} block, {blockSize} bytes";
+                    //description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
                     block.AddMetaData(BlockDescriptorTitle.Undefined, description);
                 }  
                 */              
@@ -1838,9 +1832,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Used to process either a standard or turbo data block
         /// </summary>
-        /// <param name="block"></param>
-        /// <param name="blockData"></param>
-        /// <returns></returns>
         private TapeDataBlock DecodeDataBlock
             (
                 TapeDataBlock block,
@@ -1891,7 +1882,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// If neccessary a seperate PAUSE block will be created
         /// </summary>
-        /// <param name="original"></param>
         private void CreatePauseBlock(TapeDataBlock original)
         {
             if (original.PauseInMS > 0)

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputWidget : TextBox
@@ -69,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			HideCaret(Handle);
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows) HideCaret(Handle);
 			base.OnMouseClick(e);
 		}
 
@@ -262,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			HideCaret(Handle);
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows) HideCaret(Handle);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

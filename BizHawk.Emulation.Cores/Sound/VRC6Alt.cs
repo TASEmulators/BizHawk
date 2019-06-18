@@ -14,9 +14,6 @@ namespace BizHawk.Emulation.Cores.Components
 
 		Action<int> enqueuer;
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="freq">frequency of the M2 clock in hz</param>
 		/// <param name="enqueuer">a place to dump deltas to</param>
 		public VRC6Alt(Action<int> enqueuer)
@@ -44,8 +41,8 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("VRC6Alt");
-			ser.Sync("masterenable", ref masterenable);
+			ser.BeginSection(nameof(VRC6Alt));
+			ser.Sync(nameof(masterenable), ref masterenable);
 			ser.BeginSection("Pulse1");
 			pulse1.SyncState(ser);
 			ser.EndSection();
@@ -135,14 +132,14 @@ namespace BizHawk.Emulation.Cores.Components
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("A", ref A);
-				ser.Sync("F", ref F);
-				ser.Sync("E", ref E);
-				ser.Sync("RSHIFT", ref RSHIFT);
-				ser.Sync("count", ref count);
-				ser.Sync("accum", ref accum);
-				ser.Sync("acount", ref acount);
-				ser.Sync("output", ref output);
+				ser.Sync(nameof(A), ref A);
+				ser.Sync(nameof(F), ref F);
+				ser.Sync(nameof(E), ref E);
+				ser.Sync(nameof(RSHIFT), ref RSHIFT);
+				ser.Sync(nameof(count), ref count);
+				ser.Sync(nameof(accum), ref accum);
+				ser.Sync(nameof(acount), ref acount);
+				ser.Sync(nameof(output), ref output);
 			}
 
 			public void Write0(byte value)
@@ -247,14 +244,14 @@ namespace BizHawk.Emulation.Cores.Components
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("V", ref V);
-				ser.Sync("D", ref D);
-				ser.Sync("F", ref F);
-				ser.Sync("E", ref E);
-				ser.Sync("RSHIFT", ref RSHIFT);
-				ser.Sync("count", ref count);
-				ser.Sync("duty", ref duty);
-				ser.Sync("output", ref output);
+				ser.Sync(nameof(V), ref V);
+				ser.Sync(nameof(D), ref D);
+				ser.Sync(nameof(F), ref F);
+				ser.Sync(nameof(E), ref E);
+				ser.Sync(nameof(RSHIFT), ref RSHIFT);
+				ser.Sync(nameof(count), ref count);
+				ser.Sync(nameof(duty), ref duty);
+				ser.Sync(nameof(output), ref output);
 			}
 
 			public void Write0(byte value)

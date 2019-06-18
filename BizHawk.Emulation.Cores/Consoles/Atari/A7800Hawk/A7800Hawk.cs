@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				byte cart_1 = header[0x35];
 				byte cart_2 = header[0x36];
 
-				_isPAL = (header[0x39] > 0) ? true : false;
+				_isPAL = (header[0x39] > 0);
 
 				if (cart_2.Bit(1))
 				{
@@ -291,7 +291,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Reset_Mapper(string m)

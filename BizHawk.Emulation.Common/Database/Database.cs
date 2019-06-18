@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Common
 			DB.TryGetValue(hashNotype, out cgi);
 			if (cgi == null)
 			{
-				Console.WriteLine("DB: hash " + hash + " not in game database.");
+				Console.WriteLine($"DB: hash {hash} not in game database.");
 				return null;
 			}
 
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Common
 					}
 					catch
 					{
-						Console.WriteLine("Error parsing database entry: " + line);
+						Console.WriteLine($"Error parsing database entry: {line}");
 					}
 				}
 			}
@@ -374,6 +374,11 @@ namespace BizHawk.Emulation.Common
 				case ".32X":
 					game.System = "32X";
 					game.AddOption("32X", "true");
+					break;
+
+				case ".VEC":
+					game.System = "VEC";
+					game.AddOption("VEC", "true");
 					break;
 			}
 

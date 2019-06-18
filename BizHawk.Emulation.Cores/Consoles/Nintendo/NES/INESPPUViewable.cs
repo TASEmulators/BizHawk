@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// get the 512 color overall palette in use
 		/// </summary>
-		/// <returns></returns>
 		int[] GetPalette();
 
 		/// <summary>
@@ -35,32 +34,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// get the first 0x3000 bytes of ppu data
 		/// </summary>
-		/// <returns></returns>
 		byte[] GetPPUBus();
 
 		/// <summary>
 		/// get the 32 byte palette ram
 		/// </summary>
-		/// <returns></returns>
 		byte[] GetPalRam();
 
 		/// <summary>
 		/// returns the object attribute memory
 		/// </summary>
-		/// <returns></returns>
 		byte[] GetOam();
 
 		/// <summary>
 		/// return one byte of PPU bus data
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		byte PeekPPU(int addr);
 
 		/// <summary>
 		/// get MMC5 extile source data
 		/// </summary>
-		/// <returns></returns>
 		byte[] GetExTiles();
 
 		/// <summary>
@@ -71,26 +64,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// get MMC5 exram for exattr mode
 		/// </summary>
-		/// <returns></returns>
 		byte[] GetExRam();
 
 		/// <summary>
 		/// get memory domain for chr rom; return null if RAM or other N/A.  for direct viewing of ROM tiles.
 		/// </summary>
-		/// <returns></returns>
 		MemoryDomain GetCHRROM();
 
 		/// <summary>
 		/// install a callback to run at a particular scanline
 		/// </summary>
-		/// <param name="cb"></param>
-		/// <param name="sl"></param>
 		void InstallCallback1(Action cb, int sl);
 		/// <summary>
 		/// install a callback to run at a particular scanline
 		/// </summary>
-		/// <param name="cb"></param>
-		/// <param name="sl"></param>
 		void InstallCallback2(Action cb, int sl);
 
 		/// <summary>

@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// 1	0	0	I   UR  LR  VM-->
         /// 
         /// I   : if set (1), this will reset the interrupt counter
-        /// UR  : Enable (0) or Disable (1) the upper ROM paging (&C000 to &FFFF). You can select which upper ROM with the I/O address &DF00
+        /// UR  : Enable (0) or Disable (1) the upper ROM paging (&amp;C000 to &amp;FFFF). You can select which upper ROM with the I/O address &amp;DF00
         /// LR  : Enable (0) or Disable (1) the lower ROM paging
         /// VM  : Select the video mode 0,1,2 or 3 (it will take effect after the next HSync)
         /// </summary>
@@ -375,12 +375,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         private bool HSYNC;
 
-        /// <summary>
-        /// Is set when an initial HSYNC is seen from the CRCT
-        /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
-        /// So in this emulation, once the falling edge is detected, interrupt processing happens
-        /// </summary>
-        //private bool HSYNC_falling;
+//      /// <summary>
+//      /// Is set when an initial HSYNC is seen from the CRCT
+//      /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
+//      /// So in this emulation, once the falling edge is detected, interrupt processing happens
+//      /// </summary>
+//      private bool HSYNC_falling;
 
         /// <summary>
         /// Used to count HSYNCs during a VSYNC
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
         /// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
-        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&h=500
+        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&amp;h=500
         /// Therefore when the gate array initialises, we will attempt end the frame early in order to
         /// sync up at the point where VSYNC is active and HSYNC just begins. This is roughly how a CRT monitor would display the picture.
         /// The CRT would start a new line at the point where an HSYNC is detected.
@@ -1103,7 +1103,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ScreenLines.Clear();
 
             return ScreenBuffer;
-
+			/*
             switch (borderType)
             {
                 // crop to 768x272 (544)
@@ -1139,18 +1139,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     }
                     return croppedBuffer;
                     */
+			/*
+			var slWidth = BufferWidth;
+			return ScreenBuffer;
 
-                    var slWidth = BufferWidth;
-                    return ScreenBuffer;
+			break;
 
-                    break;
-                    
-            }
 
-            return ScreenBuffer;
-        }
+	}
+	*/
+			//return ScreenBuffer;
+		}
 
-        public void SetupScreenSize()
+		public void SetupScreenSize()
         {
             SysBufferWidth = 800;
             SysBufferHeight = 600;
@@ -1196,9 +1197,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             // gate array is OUT only
@@ -1208,9 +1206,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
@@ -1261,34 +1256,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("GateArray");
-            ser.SyncEnum("ChipType", ref ChipType);
-            ser.Sync("_PENR", ref _PENR);
-            ser.Sync("_INKR", ref _INKR);
-            ser.Sync("_RMR", ref _RMR);
-            ser.Sync("_RAMR", ref _RAMR);
-            ser.Sync("ColourRegisters", ref ColourRegisters, false);
-            ser.Sync("CurrentPen", ref CurrentPen);
-            ser.Sync("ClockCounter", ref ClockCounter);
-            ser.Sync("FrameClock", ref FrameClock);
-            ser.Sync("FrameEnd", ref FrameEnd);
-            ser.Sync("WaitLine", ref WaitLine);
-            ser.Sync("_interruptCounter", ref _interruptCounter);
-            ser.Sync("VSYNCDelay", ref VSYNCDelay);
-            ser.Sync("ScreenMode", ref ScreenMode);
-            ser.Sync("HSYNC", ref HSYNC);
-            //ser.Sync("HSYNC_falling", ref HSYNC_falling);
-            ser.Sync("HSYNC_counter", ref HSYNC_counter);
-            ser.Sync("VSYNC", ref VSYNC);
-            ser.Sync("InterruptRaised", ref InterruptRaised);
-            ser.Sync("InterruptHoldCounter", ref InterruptHoldCounter);
-            ser.Sync("_MA", ref _MA);
-            ser.Sync("IsNewFrame", ref IsNewFrame);
-            ser.Sync("IsNewLine", ref IsNewLine);
-            ser.Sync("HCC", ref HCC);
-            ser.Sync("VLC", ref VLC);
-            ser.Sync("VideoByte1", ref VideoByte1);
-            ser.Sync("VideoByte2", ref VideoByte2);
-            ser.Sync("NextVidRamLine", ref NextVidRamLine, false);
+            ser.SyncEnum(nameof(ChipType), ref ChipType);
+            ser.Sync(nameof(_PENR), ref _PENR);
+            ser.Sync(nameof(_INKR), ref _INKR);
+            ser.Sync(nameof(_RMR), ref _RMR);
+            ser.Sync(nameof(_RAMR), ref _RAMR);
+            ser.Sync(nameof(ColourRegisters), ref ColourRegisters, false);
+            ser.Sync(nameof(CurrentPen), ref CurrentPen);
+            ser.Sync(nameof(ClockCounter), ref ClockCounter);
+            ser.Sync(nameof(FrameClock), ref FrameClock);
+            ser.Sync(nameof(FrameEnd), ref FrameEnd);
+            ser.Sync(nameof(WaitLine), ref WaitLine);
+            ser.Sync(nameof(_interruptCounter), ref _interruptCounter);
+            ser.Sync(nameof(VSYNCDelay), ref VSYNCDelay);
+            ser.Sync(nameof(ScreenMode), ref ScreenMode);
+            ser.Sync(nameof(HSYNC), ref HSYNC);
+            //ser.Sync(nameof(HSYNC_falling), ref HSYNC_falling);
+            ser.Sync(nameof(HSYNC_counter), ref HSYNC_counter);
+            ser.Sync(nameof(VSYNC), ref VSYNC);
+            ser.Sync(nameof(InterruptRaised), ref InterruptRaised);
+            ser.Sync(nameof(InterruptHoldCounter), ref InterruptHoldCounter);
+            ser.Sync(nameof(_MA), ref _MA);
+            ser.Sync(nameof(IsNewFrame), ref IsNewFrame);
+            ser.Sync(nameof(IsNewLine), ref IsNewLine);
+            ser.Sync(nameof(HCC), ref HCC);
+            ser.Sync(nameof(VLC), ref VLC);
+            ser.Sync(nameof(VideoByte1), ref VideoByte1);
+            ser.Sync(nameof(VideoByte2), ref VideoByte2);
+            ser.Sync(nameof(NextVidRamLine), ref NextVidRamLine, false);
             ser.EndSection();
         }
 
@@ -1305,7 +1300,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// Screenmode is defined at each HSYNC (start of a new character line)
             /// Therefore we pass the mode in via constructor
             /// </summary>
-            /// <param name="screenMode"></param>
             //public CharacterLine(int screenMode)
             //{
                 //ScreenMode = screenMode;
@@ -1318,7 +1312,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Adds a new horizontal character to the list
             /// </summary>
-            /// <param name="phase"></param>
             public void AddCharacter(Phase phase)
             {
                 Phases.Add(phase);

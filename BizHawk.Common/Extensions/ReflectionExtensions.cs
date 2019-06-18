@@ -205,7 +205,6 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <summary>
 		/// the address of a field relative to the address an object reference of that type points to.  this function is very expensive to call.
 		/// </summary>
-		/// <param name="field"></param>
 		public static IntPtr GetManagedOffset(this FieldInfo field)
 		{
 			Type type = field.DeclaringType;

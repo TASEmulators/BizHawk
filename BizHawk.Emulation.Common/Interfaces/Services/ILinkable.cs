@@ -9,6 +9,6 @@
 		/// <summary>
 		/// Gets a value indicating whether or not the link cable is currently connected
 		/// </summary>
-		bool LinkConnected { get; }
+		bool LinkConnected { get; set; }
 	}
 }

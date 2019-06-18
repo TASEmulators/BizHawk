@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
             int result = 0xFF;
@@ -62,8 +60,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes a byte of data to a specified port address
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
             // Check whether the low bit is reset
@@ -91,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // Buzzer
-            BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
+            BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0, _renderSound);
 
             // Tape
             TapeDevice.WritePort(port, value);

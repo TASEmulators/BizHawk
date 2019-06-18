@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int tone = note % 12;
 			int octave = note / 12;
-			return string.Format("{0}{1}", noteNames[tone], octave);
+			return noteNames[tone] + octave;
 		}
 
 		//this isnt thoroughly debugged but it seems to work OK
@@ -471,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void SyncContents()
 		{
-			lblContents.Text = string.Format("{0} Rows", Log.Count);
+			lblContents.Text = $"{Log.Count} Rows";
 		}
 
 		private void btnControl_Click(object sender, EventArgs e)

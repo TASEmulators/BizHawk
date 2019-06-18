@@ -141,7 +141,7 @@ namespace BizHawk.Common.BizInvoke
 				var uo = baseMethods.FirstOrDefault(a => !a.Info.IsVirtual || a.Info.IsFinal);
 				if (uo != null)
 				{
-					throw new InvalidOperationException("Method " + uo.Info.Name + " cannot be overriden!");
+					throw new InvalidOperationException($"Method {uo.Info.Name} cannot be overriden!");
 				}
 
 				// there's no technical reason to disallow this, but we wouldn't be doing anything
@@ -149,14 +149,14 @@ namespace BizHawk.Common.BizInvoke
 				var na = baseMethods.FirstOrDefault(a => !a.Info.IsAbstract);
 				if (na != null)
 				{
-					throw new InvalidOperationException("Method " + na.Info.Name + " is not abstract!");
+					throw new InvalidOperationException($"Method {na.Info.Name} is not abstract!");
 				}
 			}
 
 			// hooks that will be run on the created proxy object
 			var postCreateHooks = new List<Action<object, IImportResolver, ICallingConventionAdapter>>();
 
-			var type = ImplModuleBuilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
+			var type = ImplModuleBuilder.DefineType($"Bizhawk.BizInvokeProxy{baseType.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
 			var monitorField = monitor ? type.DefineField("MonitorField", typeof(IMonitor), FieldAttributes.Public) : null;
 
@@ -210,7 +210,7 @@ namespace BizHawk.Common.BizInvoke
 
 			// define a field on the class to hold the delegate
 			var field = type.DefineField(
-				"DelegateField" + baseMethod.Name,
+				$"DelegateField{baseMethod.Name}",
 				delegateType,
 				FieldAttributes.Public);
 
@@ -293,7 +293,7 @@ namespace BizHawk.Common.BizInvoke
 
 			// define a field on the type to hold the entry pointer
 			var field = type.DefineField(
-				"EntryPtrField" + baseMethod.Name,
+				$"EntryPtrField{baseMethod.Name}",
 				typeof(IntPtr),
 				FieldAttributes.Public);
 

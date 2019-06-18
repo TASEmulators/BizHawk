@@ -63,11 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("DatachBarcode");
-			ser.Sync("cycles", ref cycles);
-			ser.Sync("output", ref output);
-			ser.Sync("stream_idx", ref stream_idx);
-			ser.Sync("data", ref data, false);
+			ser.BeginSection(nameof(DatachBarcode));
+			ser.Sync(nameof(cycles), ref cycles);
+			ser.Sync(nameof(output), ref output);
+			ser.Sync(nameof(stream_idx), ref stream_idx);
+			ser.Sync(nameof(data), ref data, false);
 			ser.EndSection();
 		}
 
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				throw new ArgumentNullException(nameof(s));
 			if (!s.Length.In(MIN_DIGITS, MAX_DIGITS))
 			{
-				why = string.Format("String must be {0} or {1} digits long!", MIN_DIGITS, MAX_DIGITS);
+				why = $"String must be {MIN_DIGITS} or {MAX_DIGITS} digits long!";
 				return false;
 			}
 			foreach (char c in s)
@@ -228,7 +228,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// d3
 		/// </summary>
-		/// <returns></returns>
 		public bool GetOutput()
 		{
 			return output == 8;

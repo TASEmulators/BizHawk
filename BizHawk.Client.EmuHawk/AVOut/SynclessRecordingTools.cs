@@ -21,8 +21,8 @@ namespace BizHawk.Client.EmuHawk
 			string subpath = SynclessRecorder.GetPathFragmentForFrameNum(index);
 			string path = mFramesDirectory;
 			path = Path.Combine(path, subpath);
-			png = path + ".png";
-			wav = path + ".wav";
+			png = $"{path}.png";
+			wav = $"{path}.wav";
 		}
 
 		private string mSynclessConfigFile;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = new OpenFileDialog
 			{
-				FileName = PathManager.FilesystemSafeName(Global.Game) + ".syncless.txt",
+				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}.syncless.txt",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.AvPathFragment, null)
 			};
 

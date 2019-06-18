@@ -11,7 +11,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator, ICycleTiming
+	public partial class NES : IEmulator, ISoundProvider, ICycleTiming
 	{
 		//hardware/state
 		public MOS6502X<CpuLink> cpu;
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int cpuclockrate { get; private set; }
 
 		//user configuration 
-		int[] palette_compiled = new int[64 * 8];
+		public int[] palette_compiled = new int[64 * 8];
 
 		//variable set when VS system games are running
 		internal bool _isVS = false;
@@ -66,98 +66,70 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// for debugging only!
 		/// </summary>
-		/// <returns></returns>
 		public INESBoard GetBoard()
 		{
 			return Board;
 		}
 
+		#region Audio
+
+		BlipBuffer blip = new BlipBuffer(4096);
+		const int blipbuffsize = 4096;
+
+		public int old_s = 0;
+
+		public bool CanProvideAsync { get { return false; } }
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new NotSupportedException("Only sync mode is supported");
+			}
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async not supported");
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
 		public void Dispose()
 		{
-			if (magicSoundProvider != null)
-				magicSoundProvider.Dispose();
-			magicSoundProvider = null;
+			if (blip != null)
+			{
+				blip.Dispose();
+				blip = null;
+			}
 		}
 
-		class MagicSoundProvider : ISoundProvider, IDisposable
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			BlipBuffer blip;
-			NES nes;
+			blip.EndFrame(apu.sampleclock);
+			apu.sampleclock = 0;
 
-			const int blipbuffsize = 4096;
+			nsamp = blip.SamplesAvailable();
+			samples = new short[nsamp * 2];
 
-			public MagicSoundProvider(NES nes, uint infreq)
-			{
-				this.nes = nes;
+			blip.ReadSamples(samples, nsamp, true);
+			// duplicate to stereo
+			for (int i = 0; i < nsamp * 2; i += 2)
+				samples[i + 1] = samples[i];
 
-				blip = new BlipBuffer(blipbuffsize);
-				blip.SetRates(infreq, 44100);
-
-				//var actualMetaspu = new Sound.MetaspuSoundProvider(Sound.ESynchMethod.ESynchMethod_V);
-				//1.789773mhz NTSC
-				//resampler = new Sound.Utilities.SpeexResampler(2, infreq, 44100 * APU.DECIMATIONFACTOR, infreq, 44100, actualMetaspu.buffer.enqueue_samples);
-				//output = new Sound.Utilities.DCFilter(actualMetaspu);
-			}
-
-			public bool CanProvideAsync
-			{
-				get { return false; }
-			}
-
-			public SyncSoundMode SyncMode
-			{
-				get { return SyncSoundMode.Sync; }
-			}
-
-			public void SetSyncMode(SyncSoundMode mode)
-			{
-				if (mode != SyncSoundMode.Sync)
-				{
-					throw new NotSupportedException("Only sync mode is supported");
-				}
-			}
-
-			public void GetSamplesAsync(short[] samples)
-			{
-				throw new NotSupportedException("Async not supported");
-			}
-
-			public void GetSamplesSync(out short[] samples, out int nsamp)
-			{
-				//Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
-				foreach (var d in nes.apu.dlist)
-					blip.AddDelta(d.time, d.value);
-				nes.apu.dlist.Clear();
-				blip.EndFrame(nes.apu.sampleclock);
-				nes.apu.sampleclock = 0;
-
-				nsamp = blip.SamplesAvailable();
-				samples = new short[nsamp * 2];
-
-				blip.ReadSamples(samples, nsamp, true);
-				// duplicate to stereo
-				for (int i = 0; i < nsamp * 2; i += 2)
-					samples[i + 1] = samples[i];
-
-				nes.Board.ApplyCustomAudio(samples);
-			}
-
-			public void DiscardSamples()
-			{
-				nes.apu.dlist.Clear();
-				nes.apu.sampleclock = 0;
-			}
-
-			public void Dispose()
-			{
-				if (blip != null)
-				{
-					blip.Dispose();
-					blip = null;
-				}
-			}
+			Board.ApplyCustomAudio(samples);
 		}
-		MagicSoundProvider magicSoundProvider;
+
+		public void DiscardSamples()
+		{
+			blip.Clear();
+			apu.sampleclock = 0;
+		}
+
+		#endregion
 
 		public void HardReset()
 		{
@@ -195,6 +167,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
 					ControllerDefinition.BoolButtons.Add("Service Switch");
 				}
+			}
+
+			// Add in the reset timing float control for subneshawk
+			if (using_reset_timing && (ControllerDefinition.FloatControls.Count() == 0))
+			{
+				ControllerDefinition.FloatControls.Add("Reset Cycle");
+				ControllerDefinition.FloatRanges.Add(new ControllerDefinition.FloatRange(0, 0, 500000));
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
@@ -236,8 +215,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					throw new Exception("Unknown displaytype!");
 			}
-			if (magicSoundProvider == null)
-				magicSoundProvider = new MagicSoundProvider(this, (uint)cpuclockrate);
+
+			blip.SetRates((uint)cpuclockrate, 44100);
 
 			BoardSystemHardReset();
 
@@ -311,7 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		bool resetSignal;
 		bool hardResetSignal;
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 
@@ -377,12 +356,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				ppu.ppu_init_frame();
-
-				ppu.do_vbl = true;
-				ppu.do_active_sl = true;
-				ppu.do_pre_vbl = true;
-
 				// do the vbl ticks seperate, that will save us a few checks that don't happen in active region
 				while (ppu.do_vbl)
 				{
@@ -415,6 +388,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// turn off all cheats
 			// any cheats still active will be re-applied by the buspoke at the start of the next frame
 			num_cheats = 0;
+
+			return true;
+		}
+
+		// these variables are for subframe input control
+		public bool controller_was_latched;
+		public bool frame_is_done;
+		public bool current_strobe;
+		public bool new_strobe;
+		public bool alt_lag;
+		// variable used with subneshawk to trigger reset at specific cycle after reset
+		public bool using_reset_timing = false;
+		// this function will run one step of the ppu 
+		// it will return whether the controller is read or not.
+		public void do_single_step(IController controller, out bool cont_read, out bool frame_done)
+		{
+			_controller = controller;
+
+			controller_was_latched = false;
+			frame_is_done = false;
+
+			current_strobe = new_strobe;
+			if (ppu.ppudead > 0)
+			{
+				ppu.NewDeadPPU();
+			}
+			else if (ppu.do_vbl)
+			{
+				ppu.TickPPU_VBL();
+			}
+			else if (ppu.do_active_sl)
+			{
+				ppu.TickPPU_active();
+			}
+			else if (ppu.do_pre_vbl)
+			{
+				ppu.TickPPU_preVBL();
+			}
+
+			cont_read = controller_was_latched;
+			frame_done = frame_is_done;
 		}
 
 		//PAL:
@@ -521,7 +535,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			/////////////////////////////
 			// dmc dma end
 			/////////////////////////////
-			apu.RunOne(true);
+			apu.RunOneFirst();
 
 			if (cpu.RDY && !IRQ_delay)
 			{
@@ -534,7 +548,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			cpu.ExecuteOne();
-			apu.RunOne(false);
+			Board.ClockCPU();
+
+			int s = apu.EmitSample();
+
+			if (s != old_s)
+			{
+				blip.AddDelta(apu.sampleclock, s - old_s);
+				old_s = s;
+			}
+			apu.sampleclock++;
+
+			apu.RunOneLast();
 
 			if (ppu.double_2007_read > 0)
 				ppu.double_2007_read--;
@@ -550,8 +575,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cpu.RDY = true;
 				IRQ_delay = true;
 			}
-			
-			Board.ClockCPU();
 		}
 
 		public byte ReadReg(int addr)
@@ -736,6 +759,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			var si = new StrobeInfo(latched4016, value);
 			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
+			new_strobe = (value & 1) > 0;
+			if (current_strobe && !new_strobe)
+			{
+				controller_was_latched = true;
+				alt_lag = false;
+			}
 		}
 
 		byte read_joyport(int addr)
@@ -743,6 +772,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			InputCallbacks.Call();
 			lagged = false;
 			byte ret = 0;
+
 			if (_isVS)
 			{
 				// for whatever reason, in VS left and right controller have swapped regs
@@ -752,7 +782,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
-			
+
 			ret &= 0x1f;
 			ret |= (byte)(0xe0 & DB);
 			return ret;
@@ -810,7 +840,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte DummyReadMemory(ushort addr) { return 0; }
 
-		private void ApplySystemBusPoke(int addr, byte value)
+		public void ApplySystemBusPoke(int addr, byte value)
 		{
 			if (addr < 0x2000)
 			{
@@ -867,7 +897,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -917,7 +948,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, ret, flags, "System Bus");
 
 			DB = ret;
 			return ret;
@@ -964,7 +996,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.WritePRG(addr - 0x8000, value);
 			}
 
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.CPUZero | MemoryCallbackFlags.AccessWrite | MemoryCallbackFlags.SizeByte);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.

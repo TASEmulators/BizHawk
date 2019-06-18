@@ -30,15 +30,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("STIC");
+			ser.BeginSection(nameof(STIC));
 
-			ser.Sync("Sr1", ref Sr1);
-			ser.Sync("Sr2", ref Sr2);
-			ser.Sync("Sst", ref Sst);
-			ser.Sync("active_display", ref active_display);
-			ser.Sync("in_vb_1", ref in_vb_1);
-			ser.Sync("in_vb_2", ref in_vb_2);
-			ser.Sync("Fgbg", ref Fgbg);
+			ser.Sync(nameof(Sr1), ref Sr1);
+			ser.Sync(nameof(Sr2), ref Sr2);
+			ser.Sync(nameof(Sst), ref Sst);
+			ser.Sync(nameof(active_display), ref active_display);
+			ser.Sync(nameof(in_vb_1), ref in_vb_1);
+			ser.Sync(nameof(in_vb_2), ref in_vb_2);
+			ser.Sync(nameof(Fgbg), ref Fgbg);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
 			ser.Sync("Pending_Cycles", ref PendingCycles);
 			ser.Sync("Registers", ref Register, false);

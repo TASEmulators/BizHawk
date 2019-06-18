@@ -101,7 +101,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             /*
@@ -228,8 +227,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                 {
                     // some other type (turbo data etc..)
-                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
-                    //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
+                    description = $"#{blockdata[0].ToString("X2")} block, {blockSize} bytes";
+                    //description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
                     tdb.AddMetaData(BlockDescriptorTitle.Undefined, description);
                 }
                 /*
@@ -270,8 +269,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 else
                 {
                     // other type
-                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize - 2);
-                    description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
+                    description = $"#{blockdata[0]:X2} block, {blockSize - 2} bytes";
+                    description += (crc != 0) ? $", crc bad (#{crcFile:X2}!=#{crcValue:X2})" : ", crc ok";
                 }
                 */
 
@@ -335,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // add block pause
-                int actualPause = PAUSE_MS * 1000;
+                //int actualPause = PAUSE_MS * 1000;
                 //dataPeriods.Add(actualPause);
 
                 // default pause for tap files

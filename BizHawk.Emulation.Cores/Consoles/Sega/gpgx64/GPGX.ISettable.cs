@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				if (destinationType == typeof(string) && value.GetType() == typeof(uint))
 				{
-					return string.Format("0x{0:x8}", value);
+					return $"0x{value:x8}";
 				}
 				else
 				{
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				if (destinationType == typeof(string) && value.GetType() == typeof(ushort))
 				{
-					return string.Format("0x{0:x4}", value);
+					return $"0x{value:x4}";
 				}
 				else
 				{

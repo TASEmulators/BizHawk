@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
 using NLua;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -106,7 +105,7 @@ namespace BizHawk.Client.Common
 			{
 				var table = Lua.NewTable();
 				m_dbConnection.Open();
-				string sql = "PRAGMA read_uncommitted =1;" + query;
+				string sql = $"PRAGMA read_uncommitted =1;{query}";
 				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 				SQLiteDataReader reader = command.ExecuteReader();
 				bool rows = reader.HasRows;
@@ -120,7 +119,7 @@ namespace BizHawk.Client.Common
 				{
 					for (int i = 0; i < reader.FieldCount; ++i)
 					{
-						table[columns[i] + " " + rowCount.ToString()] = reader.GetValue(i);
+						table[$"{columns[i]} {rowCount}"] = reader.GetValue(i);
 					}
 					rowCount += 1;
 				}

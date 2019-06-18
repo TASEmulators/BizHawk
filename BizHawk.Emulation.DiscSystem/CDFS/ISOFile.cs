@@ -173,7 +173,6 @@ namespace BizHawk.Emulation.DiscSystem
         /// <summary>
         /// Returns a flat list of all recursed files
         /// </summary>
-        /// <returns></returns>
         public List<KeyValuePair<string, ISOFileNode>> EnumerateAllFilesRecursively()
         {
             fileNodes = new List<KeyValuePair<string, ISOFileNode>>();

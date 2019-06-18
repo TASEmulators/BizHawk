@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		private bool GetButton(uint pnum, string type, string button)
 		{
-			string key = string.Format("P{0} {1} {2}", pnum, type, button);
+			string key = $"P{pnum} {type} {button}";
 			bool b = _controller.IsPressed(key);
 			if (b == true)
 			{

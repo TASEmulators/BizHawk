@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			_zones.Add(main);
-			ZonesList.Items.Add(main.Name + " - length: " + main.Length);
+			ZonesList.Items.Add($"{main.Name} - length: {main.Length}");
 			ZonesList.Items[0] += " [Zones don't change!]";
 
 			SetUpButtonBoxes();
@@ -150,9 +150,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var newZone = new MovieZone(CurrentMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
-			newZone.Name = "Zone " + _zones.Count;
+			newZone.Name = $"Zone {_zones.Count}";
 			_zones.Add(newZone);
-			ZonesList.Items.Add(newZone.Name + " - length: " + newZone.Length);
+			ZonesList.Items.Add($"{newZone.Name} - length: {newZone.Length}");
 
 			_unsavedZones.Add(ZonesList.Items.Count - 1);
 		}
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			selectedZone.Name = NameTextbox.Text;
-			ZonesList.Items[ZonesList.SelectedIndex] = selectedZone.Name + " - length: " + selectedZone.Length;
+			ZonesList.Items[ZonesList.SelectedIndex] = $"{selectedZone.Name} - length: {selectedZone.Length}";
 		}
 
 		private void PlaceNum_ValueChanged(object sender, EventArgs e)
@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			if (loadZone != null)
 			{
 				_zones.Add(loadZone);
-				ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+				ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 
 				// Options only for TasMovie
 				if (!(CurrentMovie is TasMovie))
@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MovieZone loadZone = new MovieZone(path);
 			_zones.Add(loadZone);
-			ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+			ZonesList.Items.Add($"{loadZone.Name} - length: {loadZone.Length}");
 		}
 
 		private static string SuggestedFolder()

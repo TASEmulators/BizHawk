@@ -100,7 +100,7 @@ namespace BizHawk.Common.BufferExtensions
 
 			for (int i = 0; i < buffer.Length && i * 2 < hex.Length; i++)
 			{
-				var bytehex = "" + hex[i * 2] + hex[(i * 2) + 1];
+				var bytehex = hex[i * 2].ToString() + hex[(i * 2) + 1];
 				buffer[i] = byte.Parse(bytehex, NumberStyles.HexNumber);
 			}
 		}
@@ -136,7 +136,7 @@ namespace BizHawk.Common.BufferExtensions
 
 			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
 			{
-				var shorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
+				var shorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
 				buffer[i] = short.Parse(shorthex, NumberStyles.HexNumber);
 			}
 		}
@@ -150,7 +150,7 @@ namespace BizHawk.Common.BufferExtensions
 
 			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
 			{
-				var ushorthex = "" + hex[i * 4] + hex[(i * 4) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3];
+				var ushorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
 				buffer[i] = ushort.Parse(ushorthex, NumberStyles.HexNumber);
 			}
 		}

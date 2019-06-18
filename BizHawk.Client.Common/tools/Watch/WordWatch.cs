@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((short)val).ToString();
 				case DisplayType.Hex:
-					return val.ToHexString(4);
+					return $"{val:X4}";
 				case DisplayType.FixedPoint_12_4:
 					return $"{val / 16.0:F4}";
 				case DisplayType.Binary:
@@ -214,24 +214,7 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of difference
 		/// between current value and the previous one
 		/// </summary>
-		public override string Diff
-		{
-			get
-			{
-				string diff = "";
-				int diffVal = _value - _previous;
-				if (diffVal > 0)
-				{
-					diff = "+";
-				}
-				else if (diffVal < 0)
-				{
-					diff = "-";
-				}
-
-				return $"{diff}{((ushort)Math.Abs(diffVal))}";
-			}
-		}
+		public override string Diff => $"{_value - (int)_previous:+#;-#;0}";
 
 		/// <summary>
 		/// Get the maximum possible value

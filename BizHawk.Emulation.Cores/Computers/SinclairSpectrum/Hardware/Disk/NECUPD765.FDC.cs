@@ -362,6 +362,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             // calculate maximum transfer capacity
                             if (!CMD_FLAG_MF)
                                 maxTransferCap = 3328;
+
+							if (maxTransferCap == 0) { }
                         }
                         else
                         {
@@ -655,6 +657,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         int buffPos = 0;
                         int sectorSize = 0;
                         int maxTransferCap = 0;
+						if (maxTransferCap > 0) { }
 
                         // calculate requested size of data required
                         if (ActiveCommandParams.SectorSize == 0)
@@ -967,6 +970,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         int buffPos = 0;
                         int sectorSize = 0;
                         int maxTransferCap = 0;
+						if (maxTransferCap > 0) { }
 
                         // calculate requested size of data required
                         if (ActiveCommandParams.SectorSize == 0)
@@ -1031,7 +1035,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             break;
                         }
 
-                        FloppyDisk.Sector sector = null;
+                        //FloppyDisk.Sector sector = null;
                         ActiveDrive.SectorIndex = 0;
 
                         int secCount = 0;
@@ -1371,7 +1375,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                             // get the first sector
                             var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                            int secIndex = 0;
+                            //int secIndex = 0;
                             for (int s = 0; s < track.Sectors.Length; s++)
                             {
                                 if (track.Sectors[s].SectorID == endSecID)
@@ -1422,7 +1426,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         byte endSecID = ActiveCommandParams.EOT;
                         bool lastSec = false;
                         var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                        int secIndex = 0;
+                        //int secIndex = 0;
 
                         for (int s = 0; s < track.Sectors.Length; s++)
                         {
@@ -1664,7 +1668,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                             // get the first sector
                             var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                            int secIndex = 0;
+                            //int secIndex = 0;
                             for (int s = 0; s < track.Sectors.Length; s++)
                             {
                                 if (track.Sectors[s].SectorID == endSecID)
@@ -1715,7 +1719,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         byte endSecID = ActiveCommandParams.EOT;
                         bool lastSec = false;
                         var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
-                        int secIndex = 0;
+                        //int secIndex = 0;
 
                         for (int s = 0; s < track.Sectors.Length; s++)
                         {
@@ -2404,11 +2408,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             return StatusMain;            
         }
-        private int testCount = 0;
+
+		//private int testCount = 0;
         /// <summary>
         /// Handles CPU reading from the data register
         /// </summary>
-        /// <returns></returns>
         private byte ReadDataRegister()
         {
             // default return value
@@ -2473,7 +2477,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Handles CPU writing to the data register
         /// </summary>
-        /// <param name="data"></param>
         private void WriteDataRegister(byte data)
         {
             if (!GetBit(MSR_RQM, StatusMain) || GetBit(MSR_DIO, StatusMain))
@@ -2525,9 +2528,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Returns TRUE if successful. FALSE if otherwise
         /// Called only in idle phase
         /// </summary>
-        /// <param name="cmdByte"></param>
-        /// <param name="direction"></param>
-        /// <returns></returns>
         private bool ParseCommandByte(byte cmdByte)
         {
             // clear counters
@@ -2620,7 +2620,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Parses the first 5 command argument bytes that are of the standard format
         /// </summary>
-        /// <param name="paramIndex"></param>
         private void ParseParamByteStandard(int index)
         {
             byte currByte = CommBuffer[index];

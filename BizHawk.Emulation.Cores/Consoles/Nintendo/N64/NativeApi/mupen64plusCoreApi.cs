@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.Text;
 
@@ -26,17 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		bool event_frameend = false;
 		bool event_breakpoint = false;
 
-		[DllImport("kernel32.dll")]
-		public static extern UInt32 GetLastError();
-
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(string dllToLoad);
-
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-		[DllImport("kernel32.dll")]
-		public static extern bool FreeLibrary(IntPtr hModule);
+		private static readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
 
 		public enum m64p_error
 		{
@@ -188,7 +179,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="DebugCallback">A function to use when the core wants to output debug messages</param>
 		/// <param name="context2">Use ""</param>
 		/// <param name="dummy">Use IntPtr.Zero</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreStartup(int APIVersion, string ConfigPath, string DataPath, string Context, DebugCallback DebugCallback, string context2, IntPtr dummy);
 		CoreStartup m64pCoreStartup;
@@ -196,7 +186,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Cleans up the core
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreShutdown();
 		CoreShutdown m64pCoreShutdown;
@@ -206,7 +195,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		/// <param name="PluginType">The type of plugin that is being connected</param>
 		/// <param name="PluginLibHandle">The DLL handle for the plugin</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreAttachPlugin(m64p_plugin_type PluginType, IntPtr PluginLibHandle);
 		CoreAttachPlugin m64pCoreAttachPlugin;
@@ -215,7 +203,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Disconnects a plugin DLL from the core DLL
 		/// </summary>
 		/// <param name="PluginType">The type of plugin to be disconnected</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error CoreDetachPlugin(m64p_plugin_type PluginType);
 		CoreDetachPlugin m64pCoreDetachPlugin;
@@ -225,7 +212,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		/// <param name="SectionName">The name of the section to open</param>
 		/// <param name="ConfigSectionHandle">A pointer to the pointer to use as the section handle</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigOpenSection(string SectionName, ref IntPtr ConfigSectionHandle);
 		ConfigOpenSection m64pConfigOpenSection;
@@ -237,7 +223,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamName">The name of the parameter to set</param>
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be an int right now)</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
 		ConfigSetParameter m64pConfigSetParameter;
@@ -249,7 +234,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="ParamName">The name of the parameter to set</param>
 		/// <param name="ParamType">The type of the parameter</param>
 		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be a string)</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameterStr(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, StringBuilder ParamValue);
 		ConfigSetParameterStr m64pConfigSetParameterStr;
@@ -258,7 +242,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Saves the mupen64plus state to the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array to use to save the state. Must be at least 16788288 + 1024 bytes</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int savestates_save_bkm(byte[] buffer);
 		savestates_save_bkm m64pCoreSaveState;
@@ -267,7 +250,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Loads the mupen64plus state from the provided buffer
 		/// </summary>
 		/// <param name="buffer">A byte array filled with the state to load. Must be at least 16788288 + 1024 bytes</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int savestates_load_bkm(byte[] buffer);
 		savestates_load_bkm m64pCoreLoadState;
@@ -341,7 +323,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Reads from the "system bus"
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate byte biz_read_memory(uint addr);
 		public biz_read_memory m64p_read_memory_8;
@@ -349,7 +330,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Writes to the "system bus"
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void biz_write_memory(uint addr, byte value);
 		public biz_write_memory m64p_write_memory_8;
@@ -362,14 +342,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <param name="CoreHandle">The DLL handle for the core DLL</param>
 		/// <param name="Context">Giving a context to the DebugCallback</param>
 		/// <param name="DebugCallback">A function to use when the pluging wants to output debug messages</param>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
 
 		/// <summary>
 		/// Cleans up the plugin
 		/// </summary>
-		/// <returns></returns>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate m64p_error PluginShutdown();
 
@@ -378,8 +356,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// <summary>
 		/// Handles a debug message from mupen64plus
 		/// </summary>
-		/// <param name="Context"></param>
-		/// <param name="level"></param>
 		/// <param name="Message">The message to display</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void DebugCallback(IntPtr Context, int level, string Message);
@@ -506,9 +482,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			}
 			this.bizhawkCore = bizhawkCore;
 
-			CoreDll = LoadLibrary("mupen64plus.dll");
+			CoreDll = libLoader.LoadPlatformSpecific("mupen64plus");
 			if (CoreDll == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load mupen64plus.dll"));
+				throw new InvalidOperationException("Failed to load mupen64plus.dll");
 
 			connectFunctionPointers();
 
@@ -605,41 +581,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		void connectFunctionPointers()
 		{
-			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreStartup"), typeof(CoreStartup));
-			m64pCoreShutdown = (CoreShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreShutdown"), typeof(CoreShutdown));
-			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
-			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
-			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
-			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
-			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
-			m64pCoreDoCommandRenderCallback = (CoreDoCommandRenderCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRenderCallback));
-			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
-			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
-			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
-			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
-			m64pConfigSetParameterStr = (ConfigSetParameterStr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameterStr));
-			m64pCoreSaveState = (savestates_save_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(savestates_save_bkm));
-			m64pCoreLoadState = (savestates_load_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(savestates_load_bkm));
-			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
-			m64pDebugSetCallbacks = (DebugSetCallbacks)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugSetCallbacks"), typeof(DebugSetCallbacks));
-			m64pDebugBreakpointLookup = (DebugBreakpointLookup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugBreakpointLookup"), typeof(DebugBreakpointLookup));
-			m64pDebugBreakpointCommand = ( DebugBreakpointCommand )Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugBreakpointCommand"), typeof(DebugBreakpointCommand));
-			m64pDebugGetState = (DebugGetState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugGetState"), typeof(DebugGetState));
-			m64pDebugSetRunState = (DebugSetRunState)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugSetRunState"), typeof(DebugSetRunState));
-			m64pDebugStep = (DebugStep)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugStep"), typeof(DebugStep));
-			m64pMemGetSize = (MemGetSize)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "MemGetSize"), typeof(MemGetSize));
-			m64pinit_saveram = (init_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "init_saveram"), typeof(init_saveram));
-			m64psave_saveram = (save_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "save_saveram"), typeof(save_saveram));
-			m64pload_saveram = (load_saveram)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "load_saveram"), typeof(load_saveram));
+			m64pCoreStartup = (CoreStartup)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreStartup"), typeof(CoreStartup));
+			m64pCoreShutdown = (CoreShutdown)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreShutdown"), typeof(CoreShutdown));
+			m64pCoreDoCommandByteArray = (CoreDoCommandByteArray)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandByteArray));
+			m64pCoreDoCommandPtr = (CoreDoCommandPtr)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandPtr));
+			m64pCoreDoCommandRefInt = (CoreDoCommandRefInt)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRefInt));
+			m64pCoreDoCommandFrameCallback = (CoreDoCommandFrameCallback)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandFrameCallback));
+			m64pCoreDoCommandVICallback = (CoreDoCommandVICallback)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandVICallback));
+			m64pCoreDoCommandRenderCallback = (CoreDoCommandRenderCallback)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDoCommand"), typeof(CoreDoCommandRenderCallback));
+			m64pCoreAttachPlugin = (CoreAttachPlugin)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreAttachPlugin"), typeof(CoreAttachPlugin));
+			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
+			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
+			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
+			m64pConfigSetParameterStr = (ConfigSetParameterStr)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameterStr));
+			m64pCoreSaveState = (savestates_save_bkm)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "savestates_save_bkm"), typeof(savestates_save_bkm));
+			m64pCoreLoadState = (savestates_load_bkm)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "savestates_load_bkm"), typeof(savestates_load_bkm));
+			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
+			m64pDebugSetCallbacks = (DebugSetCallbacks)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugSetCallbacks"), typeof(DebugSetCallbacks));
+			m64pDebugBreakpointLookup = (DebugBreakpointLookup)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugBreakpointLookup"), typeof(DebugBreakpointLookup));
+			m64pDebugBreakpointCommand = ( DebugBreakpointCommand )Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugBreakpointCommand"), typeof(DebugBreakpointCommand));
+			m64pDebugGetState = (DebugGetState)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugGetState"), typeof(DebugGetState));
+			m64pDebugSetRunState = (DebugSetRunState)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugSetRunState"), typeof(DebugSetRunState));
+			m64pDebugStep = (DebugStep)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "DebugStep"), typeof(DebugStep));
+			m64pMemGetSize = (MemGetSize)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "MemGetSize"), typeof(MemGetSize));
+			m64pinit_saveram = (init_saveram)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "init_saveram"), typeof(init_saveram));
+			m64psave_saveram = (save_saveram)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "save_saveram"), typeof(save_saveram));
+			m64pload_saveram = (load_saveram)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "load_saveram"), typeof(load_saveram));
 
-			m64pSetTraceCallback = (SetTraceCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetTraceCallback"), typeof(SetTraceCallback));
+			m64pSetTraceCallback = (SetTraceCallback)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "SetTraceCallback"), typeof(SetTraceCallback));
 
-			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
+			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "GetRegisters"), typeof(GetRegisters));
 
-			m64p_read_memory_8 = (biz_read_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_read_memory"), typeof(biz_read_memory));
-			m64p_write_memory_8 = (biz_write_memory)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_write_memory"), typeof(biz_write_memory));
+			m64p_read_memory_8 = (biz_read_memory)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "biz_read_memory"), typeof(biz_read_memory));
+			m64p_write_memory_8 = (biz_write_memory)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "biz_write_memory"), typeof(biz_write_memory));
 
-			m64p_decode_op = (biz_r4300_decode_op)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "biz_r4300_decode_op"), typeof(biz_r4300_decode_op));
+			m64p_decode_op = (biz_r4300_decode_op)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(CoreDll, "biz_r4300_decode_op"), typeof(biz_r4300_decode_op));
 		}
 
 		/// <summary>
@@ -761,18 +737,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 					break;
 				if (event_breakpoint)
 				{
+					MemoryCallbackFlags flags = 0;
 					switch (_breakparams._type)
 					{
 						case BreakType.Read:
-							_breakparams._mcs.CallReads(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessRead;
 							break;
 						case BreakType.Write:
-							_breakparams._mcs.CallWrites(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessWrite;
 							break;
 						case BreakType.Execute:
-							_breakparams._mcs.CallExecutes(_breakparams._addr, "System Bus");
+							flags |= MemoryCallbackFlags.AccessExecute;
 							break;
 					}
+
+					_breakparams._mcs.CallMemoryCallbacks(_breakparams._addr, 0, (uint)flags, "System Bus");
 
 					event_breakpoint = false;
 					Resume();
@@ -933,7 +912,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_ROM_CLOSE, 0, IntPtr.Zero);
 				m64pCoreShutdown();
-				FreeLibrary(CoreDll);
+				libLoader.FreePlatformSpecific(CoreDll);
 
 				disposed = true;
 			}
@@ -953,19 +932,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				DetachPlugin(type);
 
 			AttachedPlugin plugin;
-			plugin.dllHandle = LoadLibrary(PluginName);
-			if (plugin.dllHandle == IntPtr.Zero)
-				throw new InvalidOperationException(string.Format("Failed to load plugin {0}, error code: 0x{1:X}", PluginName, GetLastError()));
+			plugin.dllHandle = libLoader.LoadPlatformSpecific(PluginName);
 
-			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
-			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(GetProcAddress(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));
+			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
+			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));
 			plugin.dllStartup(CoreDll, null, null);
 
 			m64p_error result = m64pCoreAttachPlugin(type, plugin.dllHandle);
 			if (result != m64p_error.M64ERR_SUCCESS)
 			{
-				FreeLibrary(plugin.dllHandle);
-				throw new InvalidOperationException(string.Format("Error during attaching plugin {0}", PluginName));
+				libLoader.FreePlatformSpecific(plugin.dllHandle);
+				throw new InvalidOperationException($"Error during attaching plugin {PluginName}");
 			}
 
 			plugins.Add(type, plugin);
@@ -980,7 +957,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				plugins.Remove(type);
 				m64pCoreDetachPlugin(type);
 				plugin.dllShutdown();
-				FreeLibrary(plugin.dllHandle);
+				libLoader.FreePlatformSpecific(plugin.dllHandle);
 			}
 		}
 

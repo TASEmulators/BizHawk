@@ -80,9 +80,6 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		public int Confidence;
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public FileIDType FileIDType;
 
 		/// <summary>
@@ -573,17 +570,9 @@ namespace BizHawk.Emulation.Cores
 				//first we can check for SMD magic words.
 				//since this extension is ambiguous, we can't be completely sure about it. but it's almost surely accurate
 				if (CheckMagic(job.Stream, SimpleMagics.SEGAGENESIS))
-				{
-					var ret = new FileIDResult(FileIDType.SMD, 95);
-					ret.ExtraInfo["type"] = "genesis";
-					return ret;
-				}
-
+					return new FileIDResult(FileIDType.SMD, 95) { ExtraInfo = { ["type"] = "genesis" } };
 				if (CheckMagic(job.Stream, SimpleMagics.SEGAMEGADRIVE))
-				{
-					var ret = new FileIDResult(FileIDType.SMD, 95);
-					ret.ExtraInfo["type"] = "megadrive";
-				}
+					return new FileIDResult(FileIDType.SMD, 95) { ExtraInfo = { ["type"] = "megadrive" } };
 			}
 
 			//well... guess it's a disc.

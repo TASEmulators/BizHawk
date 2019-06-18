@@ -40,10 +40,8 @@ namespace BizHawk.Emulation.DiscSystem
 			BaseStream = null;
 		}
 
-		private static string ReadTag(BinaryReader br)
-		{
-			return "" + br.ReadChar() + br.ReadChar() + br.ReadChar() + br.ReadChar();
-		}
+		private static string ReadTag(BinaryReader br) =>
+			string.Concat(br.ReadChar(), br.ReadChar(), br.ReadChar(), br.ReadChar());
 
 		protected static void WriteTag(BinaryWriter bw, string tag)
 		{

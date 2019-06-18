@@ -49,17 +49,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void SyncState(Serializer ser)
 		{
 			int version = 4;
-			ser.BeginSection("NES");
-			ser.Sync("version", ref version);
+			ser.BeginSection(nameof(NES));
+			ser.Sync(nameof(version), ref version);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("IsLag", ref islag);
 			cpu.SyncState(ser);
-			ser.Sync("ram", ref ram, false);
-			ser.Sync("CIRAM", ref CIRAM, false);
-			ser.Sync("_irq_apu", ref _irq_apu);
-			ser.Sync("sprdma_countdown", ref sprdma_countdown);
-			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
+			ser.Sync(nameof(ram), ref ram, false);
+			ser.Sync(nameof(CIRAM), ref CIRAM, false);
+			ser.Sync(nameof(_irq_apu), ref _irq_apu);
+			ser.Sync(nameof(sprdma_countdown), ref sprdma_countdown);
+			ser.Sync(nameof(cpu_deadcounter), ref cpu_deadcounter);
+
+			ser.Sync(nameof(old_s), ref old_s);
 
 			//oam related
 			ser.Sync("Oam_Dma_Index", ref oam_dma_index);
@@ -67,10 +69,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
 			ser.Sync("Oam_Dma_Byte", ref oam_dma_byte);
 			ser.Sync("Dmc_Dma_Exec", ref dmc_dma_exec);
-			ser.Sync("dmc_realign", ref dmc_realign);
-			ser.Sync("IRQ_delay", ref IRQ_delay);
-			ser.Sync("special_case_delay", ref special_case_delay);
-			ser.Sync("do_the_reread", ref do_the_reread);
+			ser.Sync(nameof(dmc_realign), ref dmc_realign);
+			ser.Sync(nameof(IRQ_delay), ref IRQ_delay);
+			ser.Sync(nameof(special_case_delay), ref special_case_delay);
+			ser.Sync(nameof(do_the_reread), ref do_the_reread);
 
 			//VS related
 			ser.Sync("VS", ref _isVS);
@@ -82,29 +84,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("VS_Coin", ref VS_coin_inserted);
 			ser.Sync("VS_ROM_Control", ref VS_ROM_control);
 
-		ser.BeginSection("Board");
+			// single cycle execution related
+			ser.Sync(nameof(current_strobe), ref current_strobe);
+			ser.Sync(nameof(new_strobe), ref new_strobe);
+
+			ser.BeginSection(nameof(Board));
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
-				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
+				throw new InvalidOperationException($"the current NES mapper didn't call base.{nameof(INESBoard.SyncState)}");
 			ser.EndSection();
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
 
 			if (version >= 2)
 			{
-				ser.Sync("DB", ref DB);
+				ser.Sync(nameof(DB), ref DB);
 			}
 			if (version >= 3)
 			{
-				ser.Sync("latched4016", ref latched4016);
-				ser.BeginSection("ControllerDeck");
+				ser.Sync(nameof(latched4016), ref latched4016);
+				ser.BeginSection(nameof(ControllerDeck));
 				ControllerDeck.SyncState(ser);
 				ser.EndSection();
 			}
 			if (version >= 4)
 			{
-				ser.Sync("resetSignal", ref resetSignal);
-				ser.Sync("hardResetSignal", ref hardResetSignal);
+				ser.Sync(nameof(resetSignal), ref resetSignal);
+				ser.Sync(nameof(hardResetSignal), ref hardResetSignal);
 			}
 
 			ser.EndSection();

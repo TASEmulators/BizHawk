@@ -592,6 +592,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				return 0xFF;
 			}
 
+			_lagged = false;
+
 			byte value = 0xFF;
 			if ((_controller.IsPressed("Pause") && !IsGameGear) ||
 				(_controller.IsPressed("P1 Start") && IsGameGear_C))

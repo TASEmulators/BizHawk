@@ -43,7 +43,7 @@ namespace BizHawk.Common
 			}
 
 			if (FreeWatermark == BlockCount)
-				throw new OutOfMemoryException("NDBDatabase out of reserved space");
+				throw new OutOfMemoryException($"{nameof(NDBDatabase)} out of reserved space");
 
 			var b = new Block() { Number = FreeWatermark };
 			FreeWatermark++;
@@ -97,7 +97,7 @@ namespace BizHawk.Common
 		public long Consumed { get; private set; }
 
 		/// <summary>
-		/// The amount of bytes of storage available. Store operations <= Remain will always succeed
+		/// The amount of bytes of storage available. Store operations &lt;= Remain will always succeed
 		/// </summary>
 		public long Remain { get { return Capacity - Consumed; } }
 
@@ -107,10 +107,10 @@ namespace BizHawk.Common
 		public void Store(string name, byte[] buf, int offset, int length)
 		{
 			if (Items.ContainsKey(name))
-				throw new InvalidOperationException(string.Format("Can't add already existing key of name {0}", name));
+				throw new InvalidOperationException($"Can't add already existing key of name {name}");
 
 			if (length > Remain)
-				throw new OutOfMemoryException(string.Format("Insufficient storage reserved for {0} bytes", length));
+				throw new OutOfMemoryException($"Insufficient storage reserved for {length} bytes");
 
 			long todo = length;
 			int src = offset;

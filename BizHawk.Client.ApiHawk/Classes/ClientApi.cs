@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
@@ -20,6 +21,9 @@ namespace BizHawk.Client.ApiHawk
 	public static class ClientApi
 	{
 		#region Fields
+
+		private static IEmulator Emulator;
+		private static IVideoProvider VideoProvider;
 
 		private static readonly Assembly clientAssembly;
 		private static readonly object clientMainFormInstance;
@@ -68,9 +72,47 @@ namespace BizHawk.Client.ApiHawk
 			mainFormClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
 		}
 
+		public static void UpdateEmulatorAndVP(IEmulator emu = null)
+		{
+			Emulator = emu;
+			VideoProvider = Emulation.Common.IEmulatorExtensions.Extensions.AsVideoProviderOrDefault(emu);
+		}
+
 		#endregion
 
 		#region Methods
+
+		#region Helpers
+
+		private static void InvokeMainFormMethod(string name, dynamic[] paramList = null)
+		{
+			List<Type> typeList = new List<Type>();
+			MethodInfo method;
+			if (paramList != null)
+			{
+				foreach (var obj in paramList)
+				{
+					typeList.Add(obj.GetType());
+				}
+				method = mainFormClass.GetMethod(name, typeList.ToArray());
+			}
+			else method = mainFormClass.GetMethod(name);
+
+			if(method != null)
+				method.Invoke(clientMainFormInstance, paramList);
+		}
+
+		private static object GetMainFormField(string name)
+		{
+			return mainFormClass.GetField(name);
+		}
+
+		private static void SetMainFormField(string name, object value)
+		{
+			mainFormClass.GetField(name).SetValue(clientMainFormInstance, value);
+		}
+
+		#endregion
 
 		#region Public
 		/// <summary>
@@ -78,14 +120,11 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		public static void DoFrameAdvance()
 		{
-			MethodInfo method = mainFormClass.GetMethod("FrameAdvance");
-			method.Invoke(clientMainFormInstance, null);
+			InvokeMainFormMethod("FrameAdvance", null);
 
-			method = mainFormClass.GetMethod("StepRunLoop_Throttle", BindingFlags.NonPublic | BindingFlags.Instance);
-			method.Invoke(clientMainFormInstance, null);
+			InvokeMainFormMethod("StepRunLoop_Throttle", null);
 
-			method = mainFormClass.GetMethod("Render", BindingFlags.NonPublic | BindingFlags.Instance);
-			method.Invoke(clientMainFormInstance, null);
+			InvokeMainFormMethod("Render", null);
 		}
 
 		/// <summary>
@@ -108,7 +147,7 @@ namespace BizHawk.Client.ApiHawk
 		{
 			if (player < 1 || player > RunningSystem.MaxControllers)
 			{
-				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
 			else
 			{
@@ -124,8 +163,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void LoadState(string name)
 		{
-			MethodInfo method = mainFormClass.GetMethod("LoadState");
-			method.Invoke(clientMainFormInstance, new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false, false });
+			InvokeMainFormMethod("LoadState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false, false });
 		}
 
 
@@ -194,12 +232,11 @@ namespace BizHawk.Client.ApiHawk
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
 		/// </summary>
-		public static void OnRomLoaded()
+		public static void OnRomLoaded(IEmulator emu)
 		{
-			if (RomLoaded != null)
-			{
-				RomLoaded(null, EventArgs.Empty);
-			}
+			Emulator = emu;
+			VideoProvider = Emulation.Common.IEmulatorExtensions.Extensions.AsVideoProviderOrDefault(emu);
+			RomLoaded?.Invoke(null, EventArgs.Empty);
 
 			allJoypads = new List<Joypad>(RunningSystem.MaxControllers);
 			for (int i = 1; i <= RunningSystem.MaxControllers; i++)
@@ -215,10 +252,55 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Savetate friendly name</param>
 		public static void SaveState(string name)
 		{
-			MethodInfo method = mainFormClass.GetMethod("SaveState");
-			method.Invoke(clientMainFormInstance, new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false });
+			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false });
 		}
 
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		/// <param name="right">Right padding</param>
+		/// <param name="bottom">Bottom padding</param>
+		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+		{
+			FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			f = f.FieldType.GetField("GameExtraPadding");
+			f.SetValue(displayManager, new Padding(left, top, right, bottom));
+
+			InvokeMainFormMethod("FrameBufferResized");
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		public static void SetGameExtraPadding(int left)
+		{
+			SetGameExtraPadding(left, 0, 0, 0);
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		public static void SetGameExtraPadding(int left, int top)
+		{
+			SetGameExtraPadding(left, top, 0, 0);
+		}
+
+		/// <summary>
+		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
+		/// </summary>
+		/// <param name="left">Left padding</param>
+		/// <param name="top">Top padding</param>
+		/// <param name="right">Right padding</param>
+		public static void SetGameExtraPadding(int left, int top, int right)
+		{
+			SetGameExtraPadding(left, top, right, 0);
+		}
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -234,8 +316,7 @@ namespace BizHawk.Client.ApiHawk
 			f = f.FieldType.GetField("ClientExtraPadding");
 			f.SetValue(displayManager, new Padding(left, top, right, bottom));
 
-			MethodInfo resize = mainFormClass.GetMethod("FrameBufferResized");
-			resize.Invoke(clientMainFormInstance, null);
+			InvokeMainFormMethod("FrameBufferResized");
 		}
 
 		/// <summary>
@@ -268,7 +349,6 @@ namespace BizHawk.Client.ApiHawk
 			SetExtraPadding(left, top, right, 0);
 		}
 
-
 		/// <summary>
 		/// Set inputs in specified <see cref="Joypad"/> to specified player
 		/// </summary>
@@ -280,7 +360,7 @@ namespace BizHawk.Client.ApiHawk
 		{
 			if (player < 1 || player > RunningSystem.MaxControllers)
 			{
-				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
 			else
 			{
@@ -298,11 +378,11 @@ namespace BizHawk.Client.ApiHawk
 							AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
 							if (RunningSystem == SystemInfo.GB)
 							{
-								joypadAdaptor.SetSticky(string.Format("{0}", JoypadConverter.ConvertBack(button, RunningSystem)), true);
+								joypadAdaptor.SetSticky($"{JoypadConverter.ConvertBack(button, RunningSystem)}", true);
 							}
 							else
 							{
-								joypadAdaptor.SetSticky(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+								joypadAdaptor.SetSticky($"P{player} {JoypadConverter.ConvertBack(button, RunningSystem)}", true);
 							}
 						}
 					}
@@ -314,8 +394,8 @@ namespace BizHawk.Client.ApiHawk
 					AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
 					for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 					{
-						joypadAdaptor.SetFloat(string.Format("P{0} X Axis", i), allJoypads[i - 1].AnalogX);
-						joypadAdaptor.SetFloat(string.Format("P{0} Y Axis", i), allJoypads[i - 1].AnalogY);
+						joypadAdaptor.SetFloat($"P{i} X Axis", allJoypads[i - 1].AnalogX);
+						joypadAdaptor.SetFloat($"P{i} Y Axis", allJoypads[i - 1].AnalogY);
 					}
 				}*/
 			}
@@ -327,8 +407,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		public static void UnpauseEmulation()
 		{
-			MethodInfo method = mainFormClass.GetMethod("UnpauseEmulator");
-			method.Invoke(clientMainFormInstance, null);
+			InvokeMainFormMethod("UnpauseEmulator", null);
 		}
 		#endregion Public
 
@@ -369,10 +448,279 @@ namespace BizHawk.Client.ApiHawk
 			{
 				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat(string.Format("P{0} X Axis", i));
-					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat(string.Format("P{0} Y Axis", i));
+					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat($"P{i} X Axis");
+					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat($"P{i} Y Axis");
 				}
 			}
+		}
+
+		public static void CloseEmulator()
+		{
+			InvokeMainFormMethod("CloseEmulator");
+		}
+
+		public static void CloseEmulatorWithCode(int exitCode)
+		{
+			InvokeMainFormMethod("CloseEmulator", new object[] {exitCode});
+		}
+
+		public static int BorderHeight()
+		{
+			var point = new System.Drawing.Point(0, 0);
+			Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+			FieldInfo f = t.GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			MethodInfo m = t.GetMethod("TransFormPoint");
+			point = (System.Drawing.Point) m.Invoke(displayManager, new object[] { point });
+			return point.Y;
+		}
+
+		public static int BorderWidth()
+		{
+			var point = new System.Drawing.Point(0, 0);
+			Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+			FieldInfo f = t.GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			MethodInfo m = t.GetMethod("TransFormPoint");
+			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
+			return point.X;
+		}
+
+		public static int BufferHeight()
+		{
+			return VideoProvider.BufferHeight;
+		}
+
+		public static int BufferWidth()
+		{
+			return VideoProvider.BufferWidth;
+		}
+
+		public static void ClearAutohold()
+		{
+			InvokeMainFormMethod("ClearHolds");
+		}
+
+		public static void CloseRom()
+		{
+			InvokeMainFormMethod("CloseRom");
+		}
+
+		public static void DisplayMessages(bool value)
+		{
+			Global.Config.DisplayMessages = value;
+		}
+
+		public static void EnableRewind(bool enabled)
+		{
+			InvokeMainFormMethod("EnableRewind", new object[] {enabled});
+		}
+
+		public static void FrameSkip(int numFrames)
+		{
+			if (numFrames > 0)
+			{
+				Global.Config.FrameSkip = numFrames;
+				InvokeMainFormMethod("FrameSkipMessage");
+			}
+			else
+			{
+				Console.WriteLine("Invalid frame skip value");
+			}
+		}
+
+		public static int GetTargetScanlineIntensity()
+		{
+			return Global.Config.TargetScanlineFilterIntensity;
+		}
+
+		public static int GetWindowSize()
+		{
+			return Global.Config.TargetZoomFactors[Emulator.SystemId];
+		}
+
+		public static void SetSoundOn(bool enable)
+		{
+			Global.Config.SoundEnabled = enable;
+		}
+
+		public static bool GetSoundOn()
+		{
+			return Global.Config.SoundEnabled;
+		}
+
+		public static bool IsPaused()
+		{
+			return (bool) GetMainFormField("EmulatorPaused");
+		}
+
+		public static bool IsTurbo()
+		{
+			return (bool)GetMainFormField("IsTurboing");
+		}
+
+		public static bool IsSeeking()
+		{
+			return (bool)GetMainFormField("IsSeeking");
+		}
+
+		public static void OpenRom(string path)
+		{
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(path);
+			Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin.MainForm.LoadRomArgs");
+			object o = Activator.CreateInstance(t);
+			t.GetField("OpenAdvanced").SetValue(o, ioa);
+
+			InvokeMainFormMethod("LoadRom", new object[] {path, o});
+		}
+
+		public static void Pause()
+		{
+			InvokeMainFormMethod("PauseEmulator");
+		}
+
+		public static void PauseAv()
+		{
+			SetMainFormField("PauseAvi", true);
+		}
+
+		public static void RebootCore()
+		{
+			InvokeMainFormMethod("RebootCore");
+		}
+
+		public static void SaveRam()
+		{
+			InvokeMainFormMethod("FlushSaveRAM");
+		}
+
+		public static int ScreenHeight()
+		{
+			Type t = GetMainFormField("PresentationPanel").GetType();
+			object o = GetMainFormField("PresentationPanel");
+			o = t.GetField("NativeSize").GetValue(o);
+			t = t.GetField("NativeSize").GetType();
+
+			return (int) t.GetField("Height").GetValue(o);
+		}
+
+		public static void Screenshot(string path = null)
+		{
+			if (path == null)
+			{
+				InvokeMainFormMethod("TakeScreenshot");
+			}
+			else
+			{
+				InvokeMainFormMethod("TakeScreenshot", new object[] {path});
+			}
+		}
+
+		public static void ScreenshotToClipboard()
+		{
+			InvokeMainFormMethod("TakeScreenshotToClipboard");
+		}
+
+		public static void SetTargetScanlineIntensity(int val)
+		{
+			Global.Config.TargetScanlineFilterIntensity = val;
+		}
+
+		public static void SetScreenshotOSD(bool value)
+		{
+			Global.Config.Screenshot_CaptureOSD = value;
+		}
+
+		public static int ScreenWidth()
+		{
+			Type t = GetMainFormField("PresentationPanel").GetType();
+			object o = GetMainFormField("PresentationPanel");
+			o = t.GetField("NativeSize").GetValue(o);
+			t = t.GetField("NativeSize").GetType();
+
+			return (int) t.GetField("Width").GetValue(o);
+		}
+
+		public static void SetWindowSize(int size)
+		{
+			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
+			{
+				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
+				InvokeMainFormMethod("FrameBufferResized");
+				Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+				FieldInfo f = t.GetField("OSD");
+				object osd = f.GetValue(null);
+				t = f.GetType();
+				MethodInfo m = t.GetMethod("AddMessage");
+				m.Invoke(osd, new Object[] { $"Window size set to {size}x" });
+			}
+			else
+			{
+				Console.WriteLine("Invalid window size");
+			}
+		}
+
+		public static void SpeedMode(int percent)
+		{
+			if (percent > 0 && percent < 6400)
+			{
+				InvokeMainFormMethod("ClickSpeedItem", new object[] {percent});
+			}
+			else
+			{
+				Console.WriteLine("Invalid speed value");
+			}
+		}
+
+		public static void TogglePause()
+		{
+			InvokeMainFormMethod("TogglePause");
+		}
+
+		public static int TransformPointX(int x)
+		{
+			var point = new System.Drawing.Point(x, 0);
+			Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+			FieldInfo f = t.GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			MethodInfo m = t.GetMethod("TransFormPoint");
+			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
+			return point.X;
+		}
+
+		public static int TransformPointY(int y)
+		{
+			var point = new System.Drawing.Point(0, y);
+			Type t = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin");
+			FieldInfo f = t.GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			MethodInfo m = t.GetMethod("TransFormPoint");
+			point = (System.Drawing.Point)m.Invoke(displayManager, new object[] { point });
+			return point.Y;
+		}
+
+		public static void Unpause()
+		{
+			InvokeMainFormMethod("UnpauseEmulator");
+		}
+
+		public static void UnpauseAv()
+		{
+			SetMainFormField("PauseAvi", false);
+		}
+
+		public static int Xpos()
+		{
+			object o = GetMainFormField("DesktopLocation");
+			Type t = mainFormClass.GetField("DesktopLocation").GetType();
+			return (int)t.GetField("X").GetValue(o);
+		}
+
+		public static int Ypos()
+		{
+			object o = GetMainFormField("DesktopLocation");
+			Type t = mainFormClass.GetField("DesktopLocation").GetType();
+			return (int)t.GetField("Y").GetValue(o);
 		}
 
 		#endregion
@@ -427,11 +775,11 @@ namespace BizHawk.Client.ApiHawk
 						}
 						else
 						{
-							return SystemInfo.DualGB;                            
+							return SystemInfo.DualGB;
 						}
 
 					default:
-                        return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
 				}
 			}
 		}

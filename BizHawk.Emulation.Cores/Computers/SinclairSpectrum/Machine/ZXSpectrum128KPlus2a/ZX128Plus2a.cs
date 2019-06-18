@@ -1,5 +1,6 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
 using System.Collections.Generic;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -13,8 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Main constructor
         /// </summary>
-        /// <param name="spectrum"></param>
-        /// <param name="cpu"></param>
         public ZX128Plus2a(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;
@@ -30,13 +29,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             ULADevice = new Screen128Plus2a(this);
 
-            BuzzerDevice = new Beeper(this);
-            BuzzerDevice.Init(44100, ULADevice.FrameLength);
+			BuzzerDevice = new OneBitBeeper(44100, ULADevice.FrameLength, 50, "SystemBuzzer");
 
-            TapeBuzzer = new Beeper(this);
-            TapeBuzzer.Init(44100, ULADevice.FrameLength);
+			TapeBuzzer = new OneBitBeeper(44100, ULADevice.FrameLength, 50, "TapeBuzzer");
 
-            AYDevice = new AY38912(this);
+			AYDevice = new AY38912(this);
             AYDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new StandardKeyboard(this);

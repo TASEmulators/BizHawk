@@ -26,10 +26,16 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("FECBAE2CEC76C710422486BAA186FFA7CA1CF925", 53248, "SNES", "ST011", "st011.rom", "ST011 Rom");
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "st018.rom", "ST018 Rom");
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "pcecd-3.0-(J).pce", "Super CD Bios (J)");
-			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+			//FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+			FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
+
+			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "Vectrex", "Bios", "VectrexBios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "Vectrex", "Minestorm", "Minestorm.vec", "Game");
+			FirmwareAndOption("1FDCC6E54AE5177BC9CDC79CE616AE3401E5C229", 8192, "Vectrex", "Minestorm", "MinestormII.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
@@ -59,6 +65,10 @@ namespace BizHawk.Emulation.Common
             */
 			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "pentagon.rom", "Russian Pentagon Clone ROM");
 			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "trdos.rom", "TRDOS ROM");
+
+			// Channel F
+			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF-SL31253.rom", "Channel F Rom0");
+			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF-SL31254.rom", "Channel F Rom1");
 
 			// for saturn, we think any bios region can pretty much run any iso
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region

@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new PadSchema
 			{
-				DisplayName = "Player " + controller,
+				DisplayName = $"Player {controller}",
 				IsConsole = false,
 				DefaultSize = new Size(174, 74),
 				MaxSize = new Size(174, 74),
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Up",
+						Name = $"P{controller} Up",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
 						Location = new Point(23, 15),
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Down",
+						Name = $"P{controller} Down",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
 						Location = new Point(23, 36),
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Left",
+						Name = $"P{controller} Left",
 						DisplayName = "",
 						Icon = Properties.Resources.Back,
 						Location = new Point(2, 24),
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Right",
+						Name = $"P{controller} Right",
 						DisplayName = "",
 						Icon = Properties.Resources.Forward,
 						Location = new Point(44, 24),
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Button",
+						Name = $"P{controller} Button",
 						DisplayName = "B",
 						Location = new Point(124, 24),
 						Type = PadSchema.PadInputType.Boolean

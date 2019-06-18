@@ -47,8 +47,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // keyboard
                 List<string> keys = new List<string>
                 {
-                    /// http://www.cpcwiki.eu/index.php/Programming:Keyboard_scanning
-                    /// http://www.cpcwiki.eu/index.php/File:Grimware_cpc464_version3_case_top.jpg
+                    // http://www.cpcwiki.eu/index.php/Programming:Keyboard_scanning
+                    // http://www.cpcwiki.eu/index.php/File:Grimware_cpc464_version3_case_top.jpg
         
                     // Keyboard - row 1
                     "Key ESC", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Dash", "Key Hat", "Key CLR", "Key DEL",

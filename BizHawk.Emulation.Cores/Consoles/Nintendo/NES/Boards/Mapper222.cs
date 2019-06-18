@@ -66,14 +66,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//Console.WriteLine("IRQ GO: SL {0} val {1}", NES.ppu.ppur.status.sl, value);
 				//break;
 				case 0x1000: SetMirrorType(!value.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);break;
-				case 0x3000: chr[0] = value & chr_bank_mask_1k; ; break;
-				case 0x3002: chr[1] = value & chr_bank_mask_1k; ; break;
-				case 0x4000: chr[2] = value & chr_bank_mask_1k; ; break;
-				case 0x4002: chr[3] = value & chr_bank_mask_1k; ; break;
-				case 0x5000: chr[4] = value & chr_bank_mask_1k; ; break;
-				case 0x5002: chr[5] = value & chr_bank_mask_1k; ; break;
-				case 0x6000: chr[6] = value & chr_bank_mask_1k; ; break;
-				case 0x6002: chr[7] = value & chr_bank_mask_1k; ; break;
+				case 0x3000: chr[0] = value & chr_bank_mask_1k; break;
+				case 0x3002: chr[1] = value & chr_bank_mask_1k; break;
+				case 0x4000: chr[2] = value & chr_bank_mask_1k; break;
+				case 0x4002: chr[3] = value & chr_bank_mask_1k; break;
+				case 0x5000: chr[4] = value & chr_bank_mask_1k; break;
+				case 0x5002: chr[5] = value & chr_bank_mask_1k; break;
+				case 0x6000: chr[6] = value & chr_bank_mask_1k; break;
+				case 0x6002: chr[7] = value & chr_bank_mask_1k; break;
 
 
 			}
@@ -120,10 +120,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("prg", ref prg, false);
-			ser.Sync("chr", ref chr, false);
-			ser.Sync("irq_time", ref irq_time);
-			ser.Sync("irq_counting", ref irq_counting);
+			ser.Sync(nameof(prg), ref prg, false);
+			ser.Sync(nameof(chr), ref chr, false);
+			ser.Sync(nameof(irq_time), ref irq_time);
+			ser.Sync(nameof(irq_counting), ref irq_counting);
 			base.SyncState(ser);
 		}
 	}

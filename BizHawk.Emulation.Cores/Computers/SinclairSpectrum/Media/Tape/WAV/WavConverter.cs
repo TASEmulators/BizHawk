@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Position counter
         /// </summary>
-        private int _position = 0;
+        //private int _position = 0;
 
         #region Construction
 
@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if pzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             // WAV Header
@@ -75,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks
@@ -91,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     "This is not a valid WAV format file");
             }
 
-            _position = 0;
+            //_position = 0;
 
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);

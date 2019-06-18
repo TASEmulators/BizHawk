@@ -238,7 +238,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 					// output the data splitting and tabbing as neccessary
 					var arr = d.Value.Split(' ');
-					int cnt = 0;
 
 					List<string> builder = new List<string>();
 					string working = "";

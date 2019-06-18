@@ -53,38 +53,38 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("IsLag", ref _islag);
 			_controllerDeck.SyncState(ser);
 
-			ser.Sync("A7800_control_register", ref A7800_control_register);
-			ser.Sync("_isPAL", ref _isPAL);
+			ser.Sync(nameof(A7800_control_register), ref A7800_control_register);
+			ser.Sync(nameof(_isPAL), ref _isPAL);
 
-			ser.Sync("Maria_regs", ref Maria_regs, false);
-			ser.Sync("RAM", ref RAM, false);
-			ser.Sync("RAM_6532", ref RAM_6532, false);
-			ser.Sync("hs_bios_mem", ref hs_bios_mem, false);
+			ser.Sync(nameof(Maria_regs), ref Maria_regs, false);
+			ser.Sync(nameof(RAM), ref RAM, false);
+			ser.Sync(nameof(RAM_6532), ref RAM_6532, false);
+			ser.Sync(nameof(hs_bios_mem), ref hs_bios_mem, false);
 
-			ser.Sync("cycle", ref cycle);
-			ser.Sync("cpu_cycle", ref cpu_cycle);
-			ser.Sync("cpu_is_haltable", ref cpu_is_haltable);
-			ser.Sync("cpu_is_halted", ref cpu_is_halted);
-			ser.Sync("cpu_halt_pending", ref cpu_halt_pending);
-			ser.Sync("cpu_resume_pending", ref cpu_resume_pending);
+			ser.Sync(nameof(cycle), ref cycle);
+			ser.Sync(nameof(cpu_cycle), ref cpu_cycle);
+			ser.Sync(nameof(cpu_is_haltable), ref cpu_is_haltable);
+			ser.Sync(nameof(cpu_is_halted), ref cpu_is_halted);
+			ser.Sync(nameof(cpu_halt_pending), ref cpu_halt_pending);
+			ser.Sync(nameof(cpu_resume_pending), ref cpu_resume_pending);
 
-			ser.Sync("slow_access", ref slow_access);
-			ser.Sync("slow_access", ref slow_countdown);
+			ser.Sync(nameof(slow_access), ref slow_access);
+			ser.Sync(nameof(slow_access), ref slow_countdown);
 			ser.Sync("small flag", ref small_flag);
 			ser.Sync("pal kara", ref PAL_Kara);
 			ser.Sync("Cart RAM", ref cart_RAM);
-			ser.Sync("is_pokey", ref is_pokey);
-			ser.Sync("left_toggle", ref left_toggle);
-			ser.Sync("right_toggle", ref right_toggle);
-			ser.Sync("left_was_pressed", ref left_was_pressed);
-			ser.Sync("right_was_pressed", ref right_was_pressed);
+			ser.Sync(nameof(is_pokey), ref is_pokey);
+			ser.Sync(nameof(left_toggle), ref left_toggle);
+			ser.Sync(nameof(right_toggle), ref right_toggle);
+			ser.Sync(nameof(left_was_pressed), ref left_was_pressed);
+			ser.Sync(nameof(right_was_pressed), ref right_was_pressed);
 
-			ser.Sync("temp_s_tia", ref temp_s_tia);
-			ser.Sync("temp_s_pokey", ref temp_s_pokey);
-			ser.Sync("samp_l", ref samp_l);
-			ser.Sync("samp_c", ref samp_c);
-			ser.Sync("master_audio_clock", ref master_audio_clock);
-			ser.Sync("temp", ref temp);
+			ser.Sync(nameof(temp_s_tia), ref temp_s_tia);
+			ser.Sync(nameof(temp_s_pokey), ref temp_s_pokey);
+			ser.Sync(nameof(samp_l), ref samp_l);
+			ser.Sync(nameof(samp_c), ref samp_c);
+			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
+			ser.Sync(nameof(temp), ref temp);
 
 			ser.EndSection();
 		}

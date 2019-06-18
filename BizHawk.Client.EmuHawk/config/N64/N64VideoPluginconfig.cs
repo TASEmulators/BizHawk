@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private N64Settings _s;
 		private N64SyncSettings _ss;
 
+		private static string _customResItemName = "Custom";
 		private static readonly string[] ValidResolutions =
 		{
 			"320 x 240",
@@ -31,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			"1920 x 1440",
 			"2048 x 1536",
 			"2880 x 2160",
-			"Custom"
+			_customResItemName
 		};
 
 		private bool _programmaticallyChangingPluginComboBox = false;
@@ -105,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			// Global
-			if (VideoResolutionComboBox.Text != "Custom")
+			if (VideoResolutionComboBox.Text != _customResItemName)
 			{
 				var videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
 				var strArr = videoSettings.Split('x');
@@ -405,6 +406,7 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.bilinearMode = GLideN64_bilinearMode.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>();
+			_ss.GLideN64Plugin.enableHalosRemoval = GLideN64_enableHalosRemoval.Checked;
 			_ss.GLideN64Plugin.MaxAnisotropy = GLideN64_MaxAnisotropy.Checked;
 			_ss.GLideN64Plugin.CacheSize = GLideN64_CacheSize.Text.IsSigned()
 				? int.Parse(GLideN64_CacheSize.Text)
@@ -532,18 +534,17 @@ namespace BizHawk.Client.EmuHawk
 			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
 			VideoResolutionYTextBox.Text = _s.VideoSizeY.ToString();
 
-			var videoSetting = _s.VideoSizeX
-						+ " x "
-						+ _s.VideoSizeY;
+			var videoSetting = $"{_s.VideoSizeX} x {_s.VideoSizeY}";
 
 			var index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			else if (PluginComboBox.SelectedIndex != 4)
+			else if (PluginComboBox.SelectedIndex != 4) // wtf
 			{
-				VideoResolutionComboBox.SelectedIndex = 13;
+				VideoResolutionComboBox.SelectedIndex =
+					VideoResolutionComboBox.Items.IndexOf(_customResItemName);
 				ShowCustomVideoResolutionControls();
 			}
 
@@ -604,7 +605,7 @@ namespace BizHawk.Client.EmuHawk
 			RiceColorQuality_Combo.SelectedIndex = _ss.RicePlugin.ColorQuality;
 			RiceOpenGLRenderSetting_Combo.SelectedIndex = _ss.RicePlugin.OpenGLRenderSetting;
 			RiceAnisotropicFiltering_TB.Value = _ss.RicePlugin.AnisotropicFiltering;
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 
 			RiceUseDefaultHacks_CB.Checked = _ss.RicePlugin.UseDefaultHacks;
 
@@ -776,6 +777,7 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_UseNativeResolutionFactor.Text = _ss.GLideN64Plugin.UseNativeResolutionFactor.ToString();
 			GLideN64_bilinearMode
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(_ss.GLideN64Plugin.bilinearMode);
+			GLideN64_enableHalosRemoval.Checked = _ss.GLideN64Plugin.enableHalosRemoval;
 			GLideN64_MaxAnisotropy.Checked = _ss.GLideN64Plugin.MaxAnisotropy;
 			GLideN64_CacheSize.Text = _ss.GLideN64Plugin.CacheSize.ToString();
 			GLideN64_ShowInternalResolution.Checked = _ss.GLideN64Plugin.ShowInternalResolution;
@@ -852,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void RiceAnisotropicFiltering_Tb_Scroll_1(object sender, EventArgs e)
 		{
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 		}
 
 		private void RiceUseDefaultHacks_Cb_CheckedChanged(object sender, EventArgs e)
@@ -1204,7 +1206,7 @@ namespace BizHawk.Client.EmuHawk
 			int oldSizeX, oldSizeY;
 
 			var oldResolution = VideoResolutionComboBox.SelectedItem.ToString();
-			if (oldResolution != "Custom")
+			if (oldResolution != _customResItemName)
 			{
 				strArr = oldResolution.Split('x');
 				oldSizeX = int.Parse(strArr[0].Trim());
@@ -1233,7 +1235,7 @@ namespace BizHawk.Client.EmuHawk
 				int bestFit = -1;
 				for (int i = 0; i < VideoResolutionComboBox.Items.Count; i++)
 				{
-					if ((string)VideoResolutionComboBox.Items[i] != "Custom")
+					if ((string)VideoResolutionComboBox.Items[i] != _customResItemName)
 					{
 						string option = (string)VideoResolutionComboBox.Items[i];
 						strArr = option.Split('x');
@@ -1268,7 +1270,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VideoResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (VideoResolutionComboBox.Text == "Custom")
+			if (VideoResolutionComboBox.Text == _customResItemName)
 			{
 				ShowCustomVideoResolutionControls();
 			}

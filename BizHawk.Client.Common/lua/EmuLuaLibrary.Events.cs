@@ -62,10 +62,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					Log(
-						"error running function attached by lua function event.onsavestate" +
-						"\nError message: " +
-						e.Message);
+					Log($"error running function attached by lua function event.onsavestate\nError message: {e.Message}");
 				}
 			}
 		}
@@ -84,10 +81,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					Log(
-						"error running function attached by lua function event.onloadstate" +
-						"\nError message: " +
-						e.Message);
+					Log($"error running function attached by lua function event.onloadstate\nError message: {e.Message}");
 				}
 			}
 		}
@@ -106,10 +100,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					Log(
-						"error running function attached by lua function event.onframestart" +
-						"\nError message: " +
-						e.Message);
+					Log($"error running function attached by lua function event.onframestart\nError message: {e.Message}");
 				}
 			}
 		}
@@ -128,10 +119,7 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception e)
 				{
-					Log(
-						"error running function attached by lua function event.onframeend" +
-						"\nError message: " +
-						e.Message);
+					Log($"error running function attached by lua function event.onframeend\nError message: {e.Message}");
 				}
 			}
 		}
@@ -243,7 +231,7 @@ namespace BizHawk.Client.Common
 					}
 
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -282,7 +270,7 @@ namespace BizHawk.Client.Common
 					}
 
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -321,7 +309,7 @@ namespace BizHawk.Client.Common
 					}
 
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}

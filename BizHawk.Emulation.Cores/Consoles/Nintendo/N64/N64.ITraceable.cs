@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			var traceInfo = new TraceInfo
 			{
-				Disassembly = string.Format("{0:X}:  {1}", pc, disasm.PadRight(32))
+				Disassembly = $"{pc:X}:  {disasm.PadRight(32)}"
 			};
 
 			var sb = new StringBuilder();
@@ -32,19 +32,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				UInt64 val = (regs[GPRnames[i] + "_hi"].Value << 32) | regs[GPRnames[i] + "_lo"].Value;
 				string name = GPRnames[i];
-				sb.Append(string.Format("{0}:{1:X16} ", name, val));
+				sb.Append($"{name}:{val:X16} ");
 			}
 
-			sb.Append(string.Format("LL:{0:X8} ", regs["LL"].Value));
-			sb.Append(string.Format("LO:{0:X8}{1:X8} ", regs["LO_hi"].Value, regs["LO_lo"].Value));
-			sb.Append(string.Format("HI:{0:X8}{1:X8} ", regs["HI_hi"].Value, regs["HI_lo"].Value));
-			sb.Append(string.Format("FCR0:{0:X8} ", regs["FCR0"].Value));
-			sb.Append(string.Format("FCR31:{0:X8} ", regs["FCR31"].Value));
+			sb.Append($"LL:{regs["LL"].Value:X8} ");
+			sb.Append($"LO:{regs["LO_hi"].Value:X8}{regs["LO_lo"].Value:X8} ");
+			sb.Append($"HI:{regs["HI_hi"].Value:X8}{regs["HI_lo"].Value:X8} ");
+			sb.Append($"FCR0:{regs["FCR0"].Value:X8} ");
+			sb.Append($"FCR31:{regs["FCR31"].Value:X8} ");
 
 			for (int i = 0; i < 32; i++) // r0 is always zero
 			{
 				UInt64 val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
-				sb.Append(string.Format("f{0}:{1:X16} ", i, val));
+				sb.Append($"f{i}:{val:X16} ");
 			}
 
 			// drop MMU co-processor regs for now

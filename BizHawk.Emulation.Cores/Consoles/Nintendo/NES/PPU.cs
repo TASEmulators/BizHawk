@@ -105,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int sum = 0;
 			int ymin = Math.Max(Math.Max(y - radius, ppur.status.sl - 20), 0);
+			if (ymin > 239) { ymin = 239; }
 			int ymax = Math.Min(y + radius, 239);
 			int xmin = Math.Max(x - radius, 0);
 			int xmax = Math.Min(x + radius, 255);
@@ -112,21 +113,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int ystop = ppur.status.sl - 2;
 			int xstop = ppur.status.cycle - 20;
 
-			for (int j = ymin; j <= ymax; j++)
+			bool all_stop = false;
+
+			int j = ymin;
+			int i = xmin;
+			short s = 0;
+			short palcolor = 0;
+			short intensity = 0;
+
+			if (j >= ystop && i >= xstop || j > ystop) { all_stop = true; }
+
+			while (!all_stop)
 			{
-				for (int i = xmin; i <= xmax; i++)
+				s = xbuf[j * 256 + i];
+				palcolor = (short)(s & 0x3F);
+				intensity = (short)((s >> 6) & 0x7);
+
+				sum += _currentLuma[palcolor];
+
+				i++;
+				if (i > xmax)
 				{
-					if (j >= ystop && i >= xstop || j > ystop)
-						goto loopout;
+					i = xmin;
+					j++;
 
-					short s = xbuf[j * 256 + i];
-
-					short palcolor = (short)(s & 0x3F);
-					short intensity = (short)((s >> 6) & 0x7);
-					sum += _currentLuma[palcolor];
+					if (j > ymax)
+					{
+						all_stop = true;
+					}
 				}
+
+				if (j >= ystop && i >= xstop || j > ystop) { all_stop = true; }
 			}
-			loopout:
+
 			return sum >= 2000;
 		}
 
@@ -158,11 +177,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return nes.Board.PeekPPU(addr);
 		}
 
-		public enum PPUPHASE
-		{
-			VBL, BG, OBJ
-		};
-		public PPUPHASE ppuphase;
+		public static int PPU_PHASE_VBL = 0;
+		public static int PPU_PHASE_BG = 1;
+		public static int PPU_PHASE_OBJ = 2;
+
+		public int ppuphase;
 
 		private readonly NES nes;
 		public PPU(NES nes)
@@ -206,87 +225,87 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("cpu_step", ref cpu_step);
-			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
-			ser.Sync("ppudead", ref ppudead);
-			ser.Sync("idleSynch", ref idleSynch);
-			ser.Sync("NMI_PendingInstructions", ref NMI_PendingInstructions);
-			ser.Sync("PPUGenLatch", ref PPUGenLatch);
-			ser.Sync("vtoggle", ref vtoggle);
-			ser.Sync("VRAMBuffer", ref VRAMBuffer);
-			ser.Sync("ppu_addr_temp", ref ppu_addr_temp);
+			ser.Sync(nameof(cpu_step), ref cpu_step);
+			ser.Sync(nameof(cpu_stepcounter), ref cpu_stepcounter);
+			ser.Sync(nameof(ppudead), ref ppudead);
+			ser.Sync(nameof(idleSynch), ref idleSynch);
+			ser.Sync(nameof(NMI_PendingInstructions), ref NMI_PendingInstructions);
+			ser.Sync(nameof(PPUGenLatch), ref PPUGenLatch);
+			ser.Sync(nameof(vtoggle), ref vtoggle);
+			ser.Sync(nameof(VRAMBuffer), ref VRAMBuffer);
+			ser.Sync(nameof(ppu_addr_temp), ref ppu_addr_temp);
 
-			ser.Sync("spr_true_count", ref spr_true_count);
-			ser.Sync("sprite_eval_write", ref sprite_eval_write);
-			ser.Sync("Read_Value", ref read_value);
+			ser.Sync(nameof(spr_true_count), ref spr_true_count);
+			ser.Sync(nameof(sprite_eval_write), ref sprite_eval_write);
+			ser.Sync(nameof(read_value), ref read_value);
 			ser.Sync("Prev_soam_index", ref soam_index_prev);
 			ser.Sync("Spr_Zero_Go", ref sprite_zero_go);
 			ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
-			ser.Sync("Is_even_cycle", ref is_even_cycle);
-			ser.Sync("soam_index", ref soam_index);
-			ser.Sync("soam_m_index", ref soam_m_index);
-			ser.Sync("oam_index", ref oam_index);
-			ser.Sync("oam_index_aux", ref oam_index_aux);
-			ser.Sync("soam_index_aux", ref soam_index_aux);
-			ser.Sync("yp", ref yp);
-			ser.Sync("target", ref target);
-			ser.Sync("ppu_was_on", ref ppu_was_on);
-			ser.Sync("spriteHeight", ref spriteHeight);
-			ser.Sync("install_2006", ref install_2006);
-			ser.Sync("race_2006", ref race_2006);
-			ser.Sync("race_2006_2", ref race_2006_2);
-			ser.Sync("install_2001", ref install_2001);
-			ser.Sync("show_bg_new", ref show_bg_new);
-			ser.Sync("show_obj_new", ref show_obj_new);
+			ser.Sync(nameof(is_even_cycle), ref is_even_cycle);
+			ser.Sync(nameof(soam_index), ref soam_index);
+			ser.Sync(nameof(soam_m_index), ref soam_m_index);
+			ser.Sync(nameof(oam_index), ref oam_index);
+			ser.Sync(nameof(oam_index_aux), ref oam_index_aux);
+			ser.Sync(nameof(soam_index_aux), ref soam_index_aux);
+			ser.Sync(nameof(yp), ref yp);
+			ser.Sync(nameof(target), ref target);
+			ser.Sync(nameof(ppu_was_on), ref ppu_was_on);
+			ser.Sync(nameof(spriteHeight), ref spriteHeight);
+			ser.Sync(nameof(install_2006), ref install_2006);
+			ser.Sync(nameof(race_2006), ref race_2006);
+			ser.Sync(nameof(race_2006_2), ref race_2006_2);
+			ser.Sync(nameof(install_2001), ref install_2001);
+			ser.Sync(nameof(show_bg_new), ref show_bg_new);
+			ser.Sync(nameof(show_obj_new), ref show_obj_new);
 
-			ser.Sync("ppu_open_bus", ref ppu_open_bus);
-			ser.Sync("double_2007_read", ref double_2007_read);
-			ser.Sync("ppu_open_bus_decay_timer", ref ppu_open_bus_decay_timer, false);
-			ser.Sync("glitchy_reads_2003", ref glitchy_reads_2003, false);
+			ser.Sync(nameof(ppu_open_bus), ref ppu_open_bus);
+			ser.Sync(nameof(double_2007_read), ref double_2007_read);
+			ser.Sync(nameof(ppu_open_bus_decay_timer), ref ppu_open_bus_decay_timer, false);
+			ser.Sync(nameof(glitchy_reads_2003), ref glitchy_reads_2003, false);
 
-			ser.Sync("OAM", ref OAM, false);
-			ser.Sync("soam", ref soam, false);
-			ser.Sync("PALRAM", ref PALRAM, false);
+			ser.Sync(nameof(OAM), ref OAM, false);
+			ser.Sync(nameof(soam), ref soam, false);
+			ser.Sync(nameof(PALRAM), ref PALRAM, false);
+			ser.Sync(nameof(ppuphase), ref ppuphase);
 
-			ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
-			ser.Sync("Reg2002_objhit", ref Reg2002_objhit);
-			ser.Sync("Reg2002_vblank_active", ref Reg2002_vblank_active);
-			ser.Sync("Reg2002_vblank_active_pending", ref Reg2002_vblank_active_pending);
-			ser.Sync("Reg2002_vblank_clear_pending", ref Reg2002_vblank_clear_pending);
+			ser.Sync(nameof(Reg2002_objoverflow), ref Reg2002_objoverflow);
+			ser.Sync(nameof(Reg2002_objhit), ref Reg2002_objhit);
+			ser.Sync(nameof(Reg2002_vblank_active), ref Reg2002_vblank_active);
+			ser.Sync(nameof(Reg2002_vblank_active_pending), ref Reg2002_vblank_active_pending);
+			ser.Sync(nameof(Reg2002_vblank_clear_pending), ref Reg2002_vblank_clear_pending);
 			ppur.SyncState(ser);
-			byte temp8 = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp8); reg_2000.Value = temp8;
-			temp8 = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp8); reg_2001.Value = temp8;
-			ser.Sync("reg_2003", ref reg_2003);
+			byte temp8 = reg_2000.Value; ser.Sync($"{nameof(reg_2000)}.{nameof(reg_2000.Value)}", ref temp8); reg_2000.Value = temp8;
+			temp8 = reg_2001.Value; ser.Sync($"{nameof(reg_2001)}.{nameof(reg_2001.Value)}", ref temp8); reg_2001.Value = temp8;
+			ser.Sync(nameof(reg_2003), ref reg_2003);
 
 			//don't sync framebuffer into binary (rewind) states
 			if(ser.IsText)
-				ser.Sync("xbuf", ref xbuf, false);
+				ser.Sync(nameof(xbuf), ref xbuf, false);
 
-			ser.Sync("_totalCycles", ref _totalCycles);
+			ser.Sync(nameof(_totalCycles), ref _totalCycles);
 
-			ser.Sync("do_vbl", ref do_vbl);
-			ser.Sync("do_active_sl", ref do_active_sl);
-			ser.Sync("do_pre_vbl", ref do_pre_vbl);
+			ser.Sync(nameof(do_vbl), ref do_vbl);
+			ser.Sync(nameof(do_active_sl), ref do_active_sl);
+			ser.Sync(nameof(do_pre_vbl), ref do_pre_vbl);
 
-			ser.Sync("nmi_destiny", ref nmi_destiny);
-			ser.Sync("evenOddDestiny", ref evenOddDestiny);
-			ser.Sync("NMI_offset", ref NMI_offset);
-			ser.Sync("yp_shift", ref yp_shift);
-			ser.Sync("sprite_eval_cycle", ref sprite_eval_cycle);
-			ser.Sync("xt", ref xt);
-			ser.Sync("xp", ref xp);
-			ser.Sync("xstart", ref xstart);
-			ser.Sync("rasterpos", ref rasterpos);
-			ser.Sync("renderspritenow", ref renderspritenow);
-			ser.Sync("renderbgnow", ref renderbgnow);
-			ser.Sync("s", ref s);
-			ser.Sync("ppu_aux_index", ref ppu_aux_index);
-			ser.Sync("junksprite", ref junksprite);
-			ser.Sync("line", ref line);
-			ser.Sync("patternNumber", ref patternNumber);
-			ser.Sync("patternAddress", ref patternAddress);
-			ser.Sync("temp_addr", ref temp_addr);
-			ser.Sync("sl_sprites", ref sl_sprites, false);
+			ser.Sync(nameof(nmi_destiny), ref nmi_destiny);
+			ser.Sync(nameof(evenOddDestiny), ref evenOddDestiny);
+			ser.Sync(nameof(NMI_offset), ref NMI_offset);
+			ser.Sync(nameof(yp_shift), ref yp_shift);
+			ser.Sync(nameof(sprite_eval_cycle), ref sprite_eval_cycle);
+			ser.Sync(nameof(xt), ref xt);
+			ser.Sync(nameof(xp), ref xp);
+			ser.Sync(nameof(xstart), ref xstart);
+			ser.Sync(nameof(rasterpos), ref rasterpos);
+			ser.Sync(nameof(renderspritenow), ref renderspritenow);
+			ser.Sync(nameof(s), ref s);
+			ser.Sync(nameof(ppu_aux_index), ref ppu_aux_index);
+			ser.Sync(nameof(junksprite), ref junksprite);
+			ser.Sync(nameof(line), ref line);
+			ser.Sync(nameof(patternNumber), ref patternNumber);
+			ser.Sync(nameof(patternAddress), ref patternAddress);
+			ser.Sync(nameof(temp_addr), ref temp_addr);
+			ser.Sync(nameof(sl_sprites), ref sl_sprites, false);
 
 			byte bg_byte;
 			for (int i = 0; i < 34; i++)
@@ -307,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				string str = "oamdata" + i.ToString() + "y";
 				oam_byte = t_oam[i].oam_y; ser.Sync(str, ref oam_byte); t_oam[i].oam_y = oam_byte;
 				str = "oamdata" + i.ToString() + "ind";
-				oam_byte = t_oam[i].oam_ind; ; ser.Sync(str, ref oam_byte); t_oam[i].oam_ind = oam_byte;
+				oam_byte = t_oam[i].oam_ind; ser.Sync(str, ref oam_byte); t_oam[i].oam_ind = oam_byte;
 				str = "oamdata" + i.ToString() + "attr";
 				oam_byte = t_oam[i].oam_attr; ser.Sync(str, ref oam_byte); t_oam[i].oam_attr = oam_byte;
 				str = "oamdata" + i.ToString() + "x";
@@ -330,10 +349,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void runppu()
 		{
-			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
-
-			
-			if (install_2006>0)
+			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity			
+			if (install_2006 > 0)
 			{
 				install_2006--;
 				if (install_2006==0)
@@ -366,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.cycle++;
 			is_even_cycle = !is_even_cycle;
 
-			if (PPUON && ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && ppur.status.sl <= 240)
+			if (ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && ppur.status.sl <= 240 && PPUON)
 			{
 				reg_2003 = 0;
 			}
@@ -395,18 +412,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						nes.cpu.NMI = true;
 					}
 				}
-			}
-
-			if (Reg2002_vblank_active_pending)
-			{
-				Reg2002_vblank_active = 1;
-				Reg2002_vblank_active_pending = false;
-			}
-
-			if (Reg2002_vblank_clear_pending)
-			{
-				Reg2002_vblank_active = 0;
-				Reg2002_vblank_clear_pending = false;
 			}
 
 			if (HasClockPPU)

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BizHawk.Emulation.Cores.Components;
+using BizHawk.Emulation.Cores.Sound;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -46,11 +48,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
 
             List<JoystickType> joysticks = new List<JoystickType>();
-            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType1);
-            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType2);
-            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType1);
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType2);
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings).JoystickType3);
 
-            deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).DeterministicEmulation;
+            deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings).DeterministicEmulation;
 
             if (deterministic != null && deterministic == true)
             {
@@ -116,26 +118,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Register<IVideoProvider>(_machine.ULADevice);
 
             // initialize sound mixer and attach the various ISoundProvider devices
-            SoundMixer = new SoundProviderMixer((int)(32767 / 10), "System Beeper", (ISoundProvider)_machine.BuzzerDevice);
-            SoundMixer.AddSource((ISoundProvider)_machine.TapeBuzzer, "Tape Audio");
-            if (_machine.AYDevice != null)
-                SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
+			SoundMixer = new SyncSoundMixer(targetSampleCount: 882);
+			SoundMixer.PinSource(_machine.BuzzerDevice, "System Beeper", (int)(32767 / 10));
+			SoundMixer.PinSource(_machine.TapeBuzzer, "Tape Audio", (int)(32767 / 10));
+			if (_machine.AYDevice != null)
+			{
+				SoundMixer.PinSource(_machine.AYDevice, "AY-3-3912");
+			}
 
             // set audio device settings
             if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
             {
-                ((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYPanConfig;
-                _machine.AYDevice.Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYVolume;
+                ((AY38912)_machine.AYDevice).PanningConfiguration = ((ZXSpectrumSettings)settings).AYPanConfig;
+                _machine.AYDevice.Volume = ((ZXSpectrumSettings)settings).AYVolume;
             }
 
             if (_machine.BuzzerDevice != null)
             {
-                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
+                _machine.BuzzerDevice.Volume = ((ZXSpectrumSettings)settings).EarVolume;
             }
 
             if (_machine.TapeBuzzer != null)
             {
-                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
+                _machine.TapeBuzzer.Volume = ((ZXSpectrumSettings)settings).TapeVolume;
             }
 
             DCFilter dc = new DCFilter(SoundMixer, 512);            
@@ -159,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public List<GameInfo> _tapeInfo = new List<GameInfo>();
         public List<GameInfo> _diskInfo = new List<GameInfo>();
 
-        private SoundProviderMixer SoundMixer;
+        private SyncSoundMixer SoundMixer;
 
         private readonly List<byte[]> _files;
 

@@ -69,7 +69,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Searches for the requested sector
         /// </summary>
-        /// <returns></returns>
         private FloppyDisk.Sector GetSector()
         {
             FloppyDisk.Sector sector = null;
@@ -155,7 +154,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Parses a new disk image and loads it into this floppy drive
         /// </summary>
-        /// <param name="tapeData"></param>
         public void FDD_LoadDisk(byte[] diskData)
         {
             // we are only going to load into the first drive
@@ -335,8 +333,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Moves the head across the disk cylinders
             /// </summary>
-            /// <param name="direction"></param>
-            /// <param name="cylinderCount"></param>
             public void MoveHead(SkipDirection direction, int cylinderCount)
             {
                 // get total tracks
@@ -378,10 +374,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Finds a supplied sector
             /// </summary>
-            /// <param name="resBuffer"></param>
-            /// <param name=""></param>
-            /// <param name=""></param>
-            /// <returns></returns>
             public FloppyDisk.Sector FindSector(ref byte[] resBuffer, CommandParameters prms)
             {
                 int index =CurrentSector;
@@ -449,8 +441,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Populates a result buffer
             /// </summary>
-            /// <param name="resBuffer"></param>
-            /// <param name="chrn"></param>
             public void FillResult(ref byte[] resBuffer, CHRN chrn)
             {
                 // clear results
@@ -480,7 +470,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Populates the result buffer with ReadID data
             /// </summary>
-            /// <returns></returns>
             public void ReadID(ref byte[] resBuffer)
             {
                 if (CheckDriveStatus() == false)
@@ -797,7 +786,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             /// <summary>
             /// Parses a new disk image and loads it into this floppy drive
             /// </summary>
-            /// <param name="tapeData"></param>
             public void FDD_LoadDisk(byte[] diskData)
             {
                 // try dsk first
@@ -861,28 +849,28 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             public void SyncState(Serializer ser)
             {
-                ser.Sync("ID", ref ID);
-                ser.Sync("FLAG_WRITEPROTECT", ref FLAG_WRITEPROTECT);
-                //ser.Sync("FLAG_DISKCHANGED", ref FLAG_DISKCHANGED);
-                //ser.Sync("FLAG_RECALIBRATING", ref FLAG_RECALIBRATING);
-                //ser.Sync("FLAG_SEEK_INTERRUPT", ref FLAG_SEEK_INTERRUPT);
-                //ser.Sync("IntStatus", ref IntStatus);
-                //ser.Sync("ST0", ref ST0);
-                //ser.Sync("RecalibrationCounter", ref RecalibrationCounter);
-                ser.Sync("SeekCounter", ref SeekCounter);
-                ser.Sync("SeekStatus", ref SeekStatus);
-                ser.Sync("SeekAge", ref SeekAge);
-                ser.Sync("CurrentSide", ref CurrentSide);
-                //ser.Sync("CurrentTrack", ref CurrentTrack);
-                ser.Sync("TrackIndex", ref TrackIndex);
-                ser.Sync("SeekingTrack", ref SeekingTrack);
-                //ser.Sync("CurrentSector", ref CurrentSector);
-                ser.Sync("SectorIndex", ref SectorIndex);
-                //ser.Sync("RAngles", ref RAngles);
-                //ser.Sync("DataPointer", ref DataPointer);
-                //ser.SyncEnum("CurrentState", ref CurrentState);
-                //ser.SyncEnum("SeekState", ref SeekState);
-                //ser.SyncEnum("SeekIntState", ref SeekIntState);
+                ser.Sync(nameof(ID), ref ID);
+                ser.Sync(nameof(FLAG_WRITEPROTECT), ref FLAG_WRITEPROTECT);
+                //ser.Sync(nameof(FLAG_DISKCHANGED), ref FLAG_DISKCHANGED);
+                //ser.Sync(nameof(FLAG_RECALIBRATING), ref FLAG_RECALIBRATING);
+                //ser.Sync(nameof(FLAG_SEEK_INTERRUPT), ref FLAG_SEEK_INTERRUPT);
+                //ser.Sync(nameof(IntStatus), ref IntStatus);
+                //ser.Sync(nameof(ST0), ref ST0);
+                //ser.Sync(nameof(RecalibrationCounter), ref RecalibrationCounter);
+                ser.Sync(nameof(SeekCounter), ref SeekCounter);
+                ser.Sync(nameof(SeekStatus), ref SeekStatus);
+                ser.Sync(nameof(SeekAge), ref SeekAge);
+                ser.Sync(nameof(CurrentSide), ref CurrentSide);
+                //ser.Sync(nameof(CurrentTrack), ref CurrentTrack);
+                ser.Sync(nameof(TrackIndex), ref TrackIndex);
+                ser.Sync(nameof(SeekingTrack), ref SeekingTrack);
+                //ser.Sync(nameof(CurrentSector), ref CurrentSector);
+                ser.Sync(nameof(SectorIndex), ref SectorIndex);
+                //ser.Sync(nameof(RAngles), ref RAngles);
+                //ser.Sync(nameof(DataPointer), ref DataPointer);
+                //ser.SyncEnum(nameof(CurrentState), ref CurrentState);
+                //ser.SyncEnum(nameof(SeekState), ref SeekState);
+                //ser.SyncEnum(nameof(SeekIntState), ref SeekIntState);
             }
 
                 #endregion

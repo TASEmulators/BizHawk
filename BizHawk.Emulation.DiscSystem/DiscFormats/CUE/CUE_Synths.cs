@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 				case CueTrackType.Mode2_2336:
 				default:
-					throw new InvalidOperationException("Not supported: " + TrackType);
+					throw new InvalidOperationException($"Not supported: {TrackType}");
 			}
 
 			//audio has no sector header but the others do

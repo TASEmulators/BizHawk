@@ -107,8 +107,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetTextFromTag(string info, string tagName)
 		{
-			string openTag = "[" + tagName + "]";
-			string closeTag = "[/" + tagName + "]";
+			string openTag = $"[{tagName}]";
+			string closeTag = $"[/{tagName}]";
 			int start = info.IndexOf(openTag, StringComparison.OrdinalIgnoreCase);
 			if (start == -1) return null;
 			start += openTag.Length;

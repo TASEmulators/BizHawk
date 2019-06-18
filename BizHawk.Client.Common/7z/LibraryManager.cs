@@ -14,6 +14,8 @@
     along with SevenZipSharp.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using BizHawk.Common;
+
 using System;
 using System.Collections.Generic;
 #if !WINCE && !MONO
@@ -61,7 +63,7 @@ namespace SevenZip
         /// 7z.dll (from the 7-zip distribution) supports every InArchiveFormat for encoding and decoding.
         /// </remarks>
         //private static string _libraryFileName = ConfigurationManager.AppSettings["7zLocation"] ?? Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "7z.dll");
-				private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "7z.dll");
+				private static string _libraryFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "dll\\7z.dll");
 
 #endif
 #if WINCE 		
@@ -86,6 +88,8 @@ namespace SevenZip
 
         // private static string _LibraryVersion;
         private static bool? _modifyCapabale;
+
+        private static readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
 
         private static void InitUserInFormat(object user, InArchiveFormat format)
         {
@@ -148,16 +152,16 @@ namespace SevenZip
 								//{
 								//    throw new SevenZipLibraryException("DLL file does not exist.");
 								//}
-                if ((_modulePtr = NativeMethods.LoadLibrary(_libraryFileName)) == IntPtr.Zero)
+                if ((_modulePtr = libLoader.LoadPlatformSpecific(_libraryFileName)) == IntPtr.Zero)
                 {
 									//try a different directory
 									string alternateFilename = Path.Combine(Path.Combine(Path.GetDirectoryName(_libraryFileName),"dll"),"7z.dll");
-									if ((_modulePtr = NativeMethods.LoadLibrary(alternateFilename)) == IntPtr.Zero)
+									if ((_modulePtr = libLoader.LoadPlatformSpecific(alternateFilename)) == IntPtr.Zero)
                     throw new SevenZipLibraryException("failed to load library.");
                 }
-                if (NativeMethods.GetProcAddress(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
+                if (libLoader.GetProcAddr(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
                 {
-                    NativeMethods.FreeLibrary(_modulePtr);
+                    libLoader.FreePlatformSpecific(_modulePtr);
                     throw new SevenZipLibraryException("library is invalid.");
                 }
             }
@@ -431,7 +435,7 @@ namespace SevenZip
                     if (_totalUsers == 0)
                     {
 #if !WINCE && !MONO
-                        NativeMethods.FreeLibrary(_modulePtr);
+                        libLoader.FreePlatformSpecific(_modulePtr);
 
 #endif
                         _modulePtr = IntPtr.Zero;
@@ -466,7 +470,7 @@ namespace SevenZip
                     }
                     var createObject = (NativeMethods.CreateObjectDelegate)
                         Marshal.GetDelegateForFunctionPointer(
-                            NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
+                            libLoader.GetProcAddr(_modulePtr, "CreateObject"),
                             typeof(NativeMethods.CreateObjectDelegate));
                     if (createObject == null)
                     {
@@ -525,7 +529,7 @@ namespace SevenZip
                     }
                     var createObject = (NativeMethods.CreateObjectDelegate)
                         Marshal.GetDelegateForFunctionPointer(
-                            NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
+                            libLoader.GetProcAddr(_modulePtr, "CreateObject"),
                             typeof(NativeMethods.CreateObjectDelegate));
                     if (createObject == null)
                     {

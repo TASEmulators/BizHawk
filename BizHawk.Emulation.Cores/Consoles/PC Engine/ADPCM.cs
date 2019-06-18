@@ -322,27 +322,27 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("ADPCM");
-			ser.Sync("RAM", ref RAM, false);
-			ser.Sync("IOAddress", ref IOAddress);
-			ser.Sync("AdpcmLength", ref AdpcmLength);
-			ser.Sync("ReadAddress", ref ReadAddress);
-			ser.Sync("ReadTimer", ref ReadTimer);
-			ser.Sync("ReadPending", ref ReadPending);
-			ser.Sync("WriteAddress", ref WriteAddress);
-			ser.Sync("WriteTimer", ref WriteTimer);
-			ser.Sync("WriteBuffer", ref WriteBuffer);
-			ser.Sync("WritePending", ref WritePending);
+			ser.BeginSection(nameof(ADPCM));
+			ser.Sync(nameof(RAM), ref RAM, false);
+			ser.Sync(nameof(IOAddress), ref IOAddress);
+			ser.Sync(nameof(AdpcmLength), ref AdpcmLength);
+			ser.Sync(nameof(ReadAddress), ref ReadAddress);
+			ser.Sync(nameof(ReadTimer), ref ReadTimer);
+			ser.Sync(nameof(ReadPending), ref ReadPending);
+			ser.Sync(nameof(WriteAddress), ref WriteAddress);
+			ser.Sync(nameof(WriteTimer), ref WriteTimer);
+			ser.Sync(nameof(WriteBuffer), ref WriteBuffer);
+			ser.Sync(nameof(WritePending), ref WritePending);
 
-			ser.Sync("Port180B", ref Port180B);
-			ser.Sync("Port180D", ref Port180D);
-			ser.Sync("Port180E", ref port180E);
+			ser.Sync(nameof(Port180B), ref Port180B);
+			ser.Sync(nameof(Port180D), ref Port180D);
+			ser.Sync(nameof(Port180E), ref port180E);
 
-			ser.Sync("AdpcmIsPlaying", ref AdpcmIsPlaying);
-			ser.Sync("HalfReached", ref HalfReached);
-			ser.Sync("EndReached", ref EndReached);
+			ser.Sync(nameof(AdpcmIsPlaying), ref AdpcmIsPlaying);
+			ser.Sync(nameof(HalfReached), ref HalfReached);
+			ser.Sync(nameof(EndReached), ref EndReached);
 
-			ser.Sync("Playback44khzTimer", ref Playback44khzTimer);
+			ser.Sync(nameof(Playback44khzTimer), ref Playback44khzTimer);
 			ser.Sync("PlayingSample", ref playingSample);
 			ser.Sync("NextSampleTimer", ref nextSampleTimer);
 			ser.Sync("Nibble", ref nibble);

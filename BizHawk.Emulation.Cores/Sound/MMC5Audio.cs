@@ -50,20 +50,20 @@ namespace BizHawk.Emulation.Cores.Components
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("V", ref V);
-				ser.Sync("T", ref T);
-				ser.Sync("L", ref L);
-				ser.Sync("D", ref D);
-				ser.Sync("LenCntDisable", ref LenCntDisable);
-				ser.Sync("ConstantVolume", ref ConstantVolume);
-				ser.Sync("Enable", ref Enable);
-				ser.Sync("estart", ref estart);
-				ser.Sync("etime", ref etime);
-				ser.Sync("ecount", ref ecount);
-				ser.Sync("length", ref length);
-				ser.Sync("sequence", ref sequence);
-				ser.Sync("clock", ref clock);
-				ser.Sync("output", ref output);
+				ser.Sync(nameof(V), ref V);
+				ser.Sync(nameof(T), ref T);
+				ser.Sync(nameof(L), ref L);
+				ser.Sync(nameof(D), ref D);
+				ser.Sync(nameof(LenCntDisable), ref LenCntDisable);
+				ser.Sync(nameof(ConstantVolume), ref ConstantVolume);
+				ser.Sync(nameof(Enable), ref Enable);
+				ser.Sync(nameof(estart), ref estart);
+				ser.Sync(nameof(etime), ref etime);
+				ser.Sync(nameof(ecount), ref ecount);
+				ser.Sync(nameof(length), ref length);
+				ser.Sync(nameof(sequence), ref sequence);
+				ser.Sync(nameof(clock), ref clock);
+				ser.Sync(nameof(output), ref output);
 			}
 
 			public void Write0(byte val)
@@ -165,11 +165,7 @@ namespace BizHawk.Emulation.Cores.Components
 
 		private readonly Pulse[] pulse = new Pulse[2];
 		
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="addr">0x5000..0x5015</param>
-		/// <param name="val"></param>
 		public void WriteExp(int addr, byte val)
 		{
 			switch (addr)
@@ -231,7 +227,6 @@ namespace BizHawk.Emulation.Cores.Components
 		/// <summary>
 		/// call for 8000:bfff reads
 		/// </summary>
-		/// <param name="val"></param>
 		public void ReadROMTrigger(byte val)
 		{
 			if (PCMRead)
@@ -265,19 +260,19 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("MMC5Audio");
-			ser.Sync("frame", ref frame);
+			ser.BeginSection(nameof(MMC5Audio));
+			ser.Sync(nameof(frame), ref frame);
 			ser.BeginSection("Pulse0");
 			pulse[0].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("Pulse1");
 			pulse[1].SyncState(ser);
 			ser.EndSection();
-			ser.Sync("PCMRead", ref PCMRead);
-			ser.Sync("PCMEnableIRQ", ref PCMEnableIRQ);
-			ser.Sync("PCMIRQTriggered", ref PCMIRQTriggered);
-			ser.Sync("PCMVal", ref PCMVal);
-			ser.Sync("PCMNextVal", ref PCMNextVal);
+			ser.Sync(nameof(PCMRead), ref PCMRead);
+			ser.Sync(nameof(PCMEnableIRQ), ref PCMEnableIRQ);
+			ser.Sync(nameof(PCMIRQTriggered), ref PCMIRQTriggered);
+			ser.Sync(nameof(PCMVal), ref PCMVal);
+			ser.Sync(nameof(PCMNextVal), ref PCMNextVal);
 			ser.EndSection();
 			if (ser.IsReader)
 				RaiseIRQ(PCMEnableIRQ && PCMIRQTriggered);

@@ -27,10 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (m_header.fmtCode != WAVE_FORMAT_PCM &&
                 m_header.fmtCode != WAVE_FORMAT_IEEE_FLOAT)
             {
-                throw new FormatException(string.Format(
-                    "Not supported audio format: fmtCode={0}, bitDepth={1}",
-                    m_header.fmtCode,
-                    m_header.bitDepth));
+                throw new FormatException($"Not supported audio format: fmtCode={m_header.fmtCode}, bitDepth={m_header.bitDepth}");
             }
             byte[] data = new byte[m_header.fmtBlockAlign];
             m_stream.Read(data, 0, data.Length);
@@ -54,10 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (m_header.bitDepth == 64)
                     return getSampleFloat64(data, 0, 0);
             }
-            throw new NotSupportedException(string.Format(
-                "Not supported audio format ({0}/{1} bit)",
-                m_header.fmtCode == WAVE_FORMAT_PCM ? "PCM" : "FLOAT",
-                m_header.bitDepth));
+            throw new NotSupportedException($"Not supported audio format ({(m_header.fmtCode == WAVE_FORMAT_PCM ? "PCM" : "FLOAT")}/{m_header.bitDepth} bit)");
         }
 
         private Int32 getSamplePcm8(byte[] bufferRaw, int offset, int channel)

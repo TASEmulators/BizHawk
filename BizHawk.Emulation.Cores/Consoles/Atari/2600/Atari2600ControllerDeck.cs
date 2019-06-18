@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			typeof(UnpluggedController), // Order must match Atari2600ControllerTypes enum values
 			typeof(StandardController),
 			typeof(PaddleController),
+			typeof(BoostGripController),
 			typeof(DrivingController)
 		};
 
@@ -66,11 +67,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Port1");
+			ser.BeginSection(nameof(Port1));
 			Port1.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Port2");
+			ser.BeginSection(nameof(Port2));
 			Port2.SyncState(ser);
 			ser.EndSection();
 		}

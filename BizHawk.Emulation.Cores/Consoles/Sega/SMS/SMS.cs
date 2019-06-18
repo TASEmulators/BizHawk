@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using BizHawk.Common.BufferExtensions;
 
 /*****************************************************
   TODO: 
@@ -23,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
+	public partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("SMS", "SG", "GG")]
@@ -93,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				OnExecFetch = OnExecMemory
 			};
 
-
 			if (game["GG_in_SMS"])
 			{
 				// skip setting the BIOS because this is a game gear game that puts the system
@@ -106,17 +104,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
-			PSG = new SN76489();
+			PSG = new SN76489sms();
 			YM2413 = new YM2413();
-			SoundMixer = new SoundMixer(YM2413, PSG);
+			//SoundMixer = new SoundMixer(YM2413, PSG);
 			if (HasYM2413 && game["WhenFMDisablePSG"])
 			{
-				SoundMixer.DisableSource(PSG);
+				disablePSG = true;
 			}
 
-			ActiveSoundProvider = HasYM2413 ? (IAsyncSoundProvider)SoundMixer : PSG;
-			_fakeSyncSound = new FakeSyncSound(ActiveSoundProvider, 735);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
+			blip_L.SetRates(3579545, 44100);
+			blip_R.SetRates(3579545, 44100);
+
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(this);
 
 			SystemRam = new byte[0x2000];
 
@@ -146,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
 				}
 
-				PSG.StereoPanning = ForceStereoByte;
+				PSG.Set_Panning(ForceStereoByte);
 			}
 
 			if (SyncSettings.AllowOverlock && game["OverclockSafe"])
@@ -213,35 +212,43 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.Regs[Cpu.SPh] = 0xDF;
 		}
 
+		public void HardReset()
+		{
+
+		}
+
 		// Constants
 		private const int BankSize = 16384;
 
 		// ROM
-		private byte[] RomData;
+		public byte[] RomData;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
 		private byte Bios_bank;
 		private byte RomBanks;
 		private byte[] BiosRom;
 
 		// Machine resources
-		private Z80A Cpu;
-		private byte[] SystemRam;
+		public Z80A Cpu;
+		public byte[] SystemRam;
 		public VDP Vdp;
-		private SN76489 PSG;
+		public SN76489sms PSG;
 		private YM2413 YM2413;
 		public bool IsGameGear { get; set; }
 		public bool IsGameGear_C { get; set; }
 		public bool IsSG1000 { get; set; }
 
 		private bool HasYM2413 = false;
+		private bool disablePSG = false;
 		private bool PortDEEnabled = false;
 		private IController _controller = NullController.Instance;
 
 		private int _frame = 0;
 
 		private byte Port01 = 0xFF;
-		private byte Port02 = 0xFF;
-		private byte Port05 = 0x00;
+		public byte Port02 = 0xFF;
+		public byte Port03 = 0x00;
+		public byte Port04 = 0xFF;
+		public byte Port05 = 0x00;
 		private byte Port3E = 0xAF;
 		private byte Port3F = 0xFF;
 		private byte PortDE = 0x00;
@@ -249,10 +256,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private byte ForceStereoByte = 0xAD;
 		private bool IsGame3D = false;
 
+		// Linked Play Only
+		public bool start_pressed;
+		public byte cntr_rd_0;
+		public byte cntr_rd_1;
+		public byte cntr_rd_2;
+		public bool stand_alone = true;
+		public bool p3_write;
+		public bool p4_read;
+
 		public DisplayType Region { get; set; }
 
-
-		private ITraceable Tracer { get; set; }
+		private readonly ITraceable Tracer;
 
 		string DetermineRegion(string gameRegion)
 		{
@@ -281,28 +296,31 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
-		private byte ReadMemory(ushort addr)
+		public byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 
 			return ReadMemoryMapper(addr);
 		}
 
-		private void WriteMemory(ushort addr, byte value)
+		public void WriteMemory(ushort addr, byte value)
 		{
 			WriteMemoryMapper(addr, value);
 
-			MemoryCallbacks.CallWrites(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
 		}
 
-		private byte FetchMemory(ushort addr)
+		public byte FetchMemory(ushort addr)
 		{
 			return ReadMemoryMapper(addr);
 		}
 
 		private void OnExecMemory(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		/// <summary>
@@ -331,11 +349,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				
 				switch (port)
 				{
-					case 0x00: return ReadPort0();
+					case 0x00: if (stand_alone) { return ReadPort0(); } else { _lagged = false; return cntr_rd_0; }
 					case 0x01: return Port01;
 					case 0x02: return Port02;
-					case 0x03: return 0x00;
-					case 0x04: return 0xFF;
+					case 0x03: return Port03;
+					case 0x04: p4_read = true; return Port04;
 					case 0x05: return Port05;
 					case 0x06: return 0xFF;
 					case 0x3E: return Port3E;
@@ -359,9 +377,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			switch (port) 
 			{
 				case 0xC0:
-				case 0xDC: return ReadControls1();
+				case 0xDC: if (stand_alone) { return ReadControls1(); } else { _lagged = false; return cntr_rd_1; }
 				case 0xC1:
-				case 0xDD: return ReadControls2();
+				case 0xDD: if (stand_alone) { return ReadControls2(); } else { _lagged = false; return cntr_rd_2; }
 				case 0xDE: return PortDEEnabled ? PortDE : (byte)0xFF;
 				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
 				default: return 0xFF;
@@ -377,14 +395,16 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					case 0x01: Port01 = value; break;
 					case 0x02: Port02 = value; break;
-					case 0x05: Port05 = value; break;
-					case 0x06: PSG.StereoPanning = value; break;
+					case 0x03: p3_write = true; Port03 = value; break;
+					case 0x04: /*Port04 = value*/; break; // receive port, not sure what writing does
+					case 0x05: Port05 = (byte)(value & 0xF8); break;
+					case 0x06: PSG.Set_Panning(value); break;
 					case 0x3E: Port3E = value; break;
 					case 0x3F: Port3F = value; break;
 				}
 			}
 			else if (port < 0x80) // PSG
-				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
+				PSG.WriteReg(value);
 			else if (port < 0xC0) // VDP
 			{
 				if ((port & 1) == 0)
@@ -398,8 +418,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
 
-		private string _region;
-		private string RegionStr
+		public string _region;
+		public string RegionStr
 		{
 			get { return _region; }
 			set

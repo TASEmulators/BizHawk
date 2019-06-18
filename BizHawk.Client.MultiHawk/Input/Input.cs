@@ -183,10 +183,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			public LogicalButton LogicalButton;
 			public InputEventType EventType;
-			public override string ToString()
-			{
-				return string.Format("{0}:{1}", EventType.ToString(), LogicalButton.ToString());
-			}
+			public override string ToString() => $"{EventType.ToString()}:{LogicalButton.ToString()}";
 		}
 
 		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
@@ -221,7 +218,7 @@ namespace BizHawk.Client.MultiHawk
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
-				Console.WriteLine("Removing Unpress {0} with newState {1}", button, newState);
+				Console.WriteLine($"Removing Unpress {button} with {nameof(newState)} {newState}");
 				UnpressState.Remove(button);
 				LastState[button] = false;
 				return;

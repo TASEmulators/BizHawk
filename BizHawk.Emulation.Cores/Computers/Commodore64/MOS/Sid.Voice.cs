@@ -276,30 +276,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// ------------------------------------
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("_accBits", ref _accBits);
-				ser.Sync("_accNext", ref _accNext);
-				ser.Sync("_accumulator", ref _accumulator);
-				ser.Sync("_controlTestPrev", ref _controlTestPrev);
-				ser.Sync("_controlWavePrev", ref _controlWavePrev);
-				ser.Sync("_delay", ref _delay);
-				ser.Sync("_floatOutputTtl", ref _floatOutputTtl);
-				ser.Sync("_frequency", ref _frequency);
-				ser.Sync("_msbRising", ref _msbRising);
-				ser.Sync("_noise", ref _noise);
-				ser.Sync("_noNoise", ref _noNoise);
-				ser.Sync("_noNoiseOrNoise", ref _noNoiseOrNoise);
-				ser.Sync("_noPulse", ref _noPulse);
-				ser.Sync("_output", ref _output);
-				ser.Sync("_pulse", ref _pulse);
-				ser.Sync("_pulseWidth", ref _pulseWidth);
-				ser.Sync("_ringMod", ref _ringMod);
-				ser.Sync("_ringMsbMask", ref _ringMsbMask);
-				ser.Sync("_shiftRegister", ref _shiftRegister);
-				ser.Sync("_shiftRegisterReset", ref _shiftRegisterReset);
-				ser.Sync("_sync", ref _sync);
-				ser.Sync("_test", ref _test);
-				ser.Sync("_waveform", ref _waveform);
-				ser.Sync("_waveformIndex", ref _waveformIndex);
+				ser.Sync(nameof(_accBits), ref _accBits);
+				ser.Sync(nameof(_accNext), ref _accNext);
+				ser.Sync(nameof(_accumulator), ref _accumulator);
+				ser.Sync(nameof(_controlTestPrev), ref _controlTestPrev);
+				ser.Sync(nameof(_controlWavePrev), ref _controlWavePrev);
+				ser.Sync(nameof(_delay), ref _delay);
+				ser.Sync(nameof(_floatOutputTtl), ref _floatOutputTtl);
+				ser.Sync(nameof(_frequency), ref _frequency);
+				ser.Sync(nameof(_msbRising), ref _msbRising);
+				ser.Sync(nameof(_noise), ref _noise);
+				ser.Sync(nameof(_noNoise), ref _noNoise);
+				ser.Sync(nameof(_noNoiseOrNoise), ref _noNoiseOrNoise);
+				ser.Sync(nameof(_noPulse), ref _noPulse);
+				ser.Sync(nameof(_output), ref _output);
+				ser.Sync(nameof(_pulse), ref _pulse);
+				ser.Sync(nameof(_pulseWidth), ref _pulseWidth);
+				ser.Sync(nameof(_ringMod), ref _ringMod);
+				ser.Sync(nameof(_ringMsbMask), ref _ringMsbMask);
+				ser.Sync(nameof(_shiftRegister), ref _shiftRegister);
+				ser.Sync(nameof(_shiftRegisterReset), ref _shiftRegisterReset);
+				ser.Sync(nameof(_sync), ref _sync);
+				ser.Sync(nameof(_test), ref _test);
+				ser.Sync(nameof(_waveform), ref _waveform);
+				ser.Sync(nameof(_waveformIndex), ref _waveformIndex);
 
 				_wave = _waveTable[_waveform & 0x07];
 			}

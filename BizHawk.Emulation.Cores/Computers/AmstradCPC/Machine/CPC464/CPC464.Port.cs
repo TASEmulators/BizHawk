@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
@@ -58,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Writes a byte of data to a specified port address
         /// Because of the port decoding, multiple devices can be written to
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));

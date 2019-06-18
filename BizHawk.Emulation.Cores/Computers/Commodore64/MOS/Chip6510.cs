@@ -219,14 +219,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_cpu.SyncState(ser);
 			ser.EndSection();
 
-			ser.Sync("_pinNmiLast", ref _pinNmiLast);
+			ser.Sync(nameof(_pinNmiLast), ref _pinNmiLast);
 
-			ser.BeginSection("_port");
+			ser.BeginSection(nameof(_port));
 			_port.SyncState(ser);
 			ser.EndSection();
 
-			ser.Sync("_thisNmi", ref _thisNmi);
-			ser.Sync("LagCycles", ref LagCycles);
+			ser.Sync(nameof(_thisNmi), ref _thisNmi);
+			ser.Sync(nameof(LagCycles), ref LagCycles);
 		}
 
 		public void Write(int addr, int val)

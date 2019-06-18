@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
 						// If no valid movie extension, add movie extension
-						path += "." + MovieService.DefaultExtension;
+						path += $".{MovieService.DefaultExtension}";
 					}
 				}
 			}
@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				var test = new FileInfo(path);
 				if (test.Exists)
 				{
-					var result = MessageBox.Show(path + " already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+					var result = MessageBox.Show($"{path} already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 					if (result == DialogResult.Cancel)
 					{
 						return;
@@ -180,10 +180,10 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,
-				DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension,
+				DefaultExt = $".{Global.MovieSession.Movie.PreferredExtension}",
 				FileName = RecordBox.Text,
 				OverwritePrompt = false,
-				Filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*"
+				Filter = $"Movie Files (*.{Global.MovieSession.Movie.PreferredExtension})|*.{Global.MovieSession.Movie.PreferredExtension}|All Files|*.*"
 			};
 
 			var result = sfd.ShowHawkDialog();

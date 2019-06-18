@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -341,8 +342,13 @@ namespace BizHawk.Client.Common
 		
 		public int DispPrescale = 1;
 
-		// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
-		public EDispMethod DispMethod = EDispMethod.SlimDX9;
+		/// <remarks>
+		/// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
+		/// force DX for Windows and GDI+ for Unix when a new config is generated
+		/// </remarks>
+		public EDispMethod DispMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? EDispMethod.SlimDX9
+			: EDispMethod.GdiPlus;
 
 		public int DispChrome_FrameWindowed = 2;
 		public bool DispChrome_StatusBarWindowed = true;
@@ -363,12 +369,16 @@ namespace BizHawk.Client.Common
 		public float DispCustomUserARX = -1;
 		public float DispCustomUserARY = -1;
 
+		//these default to 0 because by default we crop nothing
+		public int DispCropLeft = 0;
+		public int DispCropTop = 0;
+		public int DispCropRight = 0;
+		public int DispCropBottom = 0;
+
 		// Sound options
-#if WINDOWS
-		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.DirectSound;
-#else
-		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
-#endif
+		public ESoundOutputMethod SoundOutputMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? ESoundOutputMethod.DirectSound
+			: ESoundOutputMethod.OpenAL; // force OpenAL for Unix when config is generated
 		public bool SoundEnabled = true;
 		public bool SoundEnabledNormal = true;
 		public bool SoundEnabledRWFF = true;
@@ -554,6 +564,7 @@ namespace BizHawk.Client.Common
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
+		public bool UseSubNESHawk = false;
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = true;
 		public bool GBA_UsemGBA = true;

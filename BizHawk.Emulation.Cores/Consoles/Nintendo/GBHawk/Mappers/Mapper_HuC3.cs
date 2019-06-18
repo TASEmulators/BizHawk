@@ -284,20 +284,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("RAM_Bank", ref RAM_bank);
-			ser.Sync("RAM_Mask", ref RAM_mask);
-			ser.Sync("RAM_enable", ref RAM_enable);
-			ser.Sync("IR_signal", ref IR_signal);
-			ser.Sync("control", ref control);
-			ser.Sync("chip_read", ref chip_read);
-			ser.Sync("timer_read", ref timer_read);
-			ser.Sync("time_val_shift", ref time_val_shift);
-			ser.Sync("time", ref time);
-			ser.Sync("RTC_timer", ref RTC_timer);
-			ser.Sync("RTC_low_clock", ref RTC_low_clock);
-			ser.Sync("RTC_seconds", ref RTC_seconds);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(RAM_bank), ref RAM_bank);
+			ser.Sync(nameof(RAM_mask), ref RAM_mask);
+			ser.Sync(nameof(RAM_enable), ref RAM_enable);
+			ser.Sync(nameof(IR_signal), ref IR_signal);
+			ser.Sync(nameof(control), ref control);
+			ser.Sync(nameof(chip_read), ref chip_read);
+			ser.Sync(nameof(timer_read), ref timer_read);
+			ser.Sync(nameof(time_val_shift), ref time_val_shift);
+			ser.Sync(nameof(time), ref time);
+			ser.Sync(nameof(RTC_timer), ref RTC_timer);
+			ser.Sync(nameof(RTC_low_clock), ref RTC_low_clock);
+			ser.Sync(nameof(RTC_seconds), ref RTC_seconds);
 		}
 	}
 }

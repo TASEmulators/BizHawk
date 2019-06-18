@@ -256,8 +256,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("BufferHeight", ref _bufferHeight);
             ser.Sync("VirtualHeight", ref _virtualHeight);
             ser.Sync("VirtualWidth", ref _virtualWidth);
-            ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
-            ser.Sync("ScanlineCounter", ref ScanlineCounter);
+            ser.Sync(nameof(ScreenBuffer), ref ScreenBuffer, false);
+            ser.Sync(nameof(ScanlineCounter), ref ScanlineCounter);
             ser.EndSection();
         }
 
@@ -306,8 +306,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Adds a single scanline character into the matrix
         /// </summary>
-        /// <param name="charIndex"></param>
-        /// <param name="phase"></param>
         public void AddScanlineCharacter(int index, RenderPhase phase, byte vid1, byte vid2, int[] pens)
         {
             if (index >= 64)
@@ -332,8 +330,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Adds a HSYNC, VSYNC or HSYNC+VSYNC character into the scanline
         /// </summary>
-        /// <param name="charIndex"></param>
-        /// <param name="phase"></param>
         private void AddSyncValue(int charIndex, RenderPhase phase)
         {
             Characters[charIndex].Phase = phase;
@@ -343,8 +339,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Adds a border character into the scanline
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="colourValue"></param>
         private void AddBorderValue(int charIndex, int colourValue)
         {
             Characters[charIndex].Phase = RenderPhase.BORDER;
@@ -377,9 +371,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Adds a display character into the scanline
         /// Pixel matrix is calculated based on the current ScreenMode
         /// </summary>
-        /// <param name="charIndex"></param>
-        /// <param name="vid1"></param>
-        /// <param name="vid2"></param>
         public void AddDisplayValue(int charIndex, byte vid1, byte vid2, int[] pens)
         {
             Characters[charIndex].Phase = RenderPhase.DISPLAY;
@@ -521,7 +512,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns the number of pixels decoded in this scanline (border and display)
         /// </summary>
-        /// <returns></returns>
         private int GetPixelCount()
         {
             int cnt = 0;

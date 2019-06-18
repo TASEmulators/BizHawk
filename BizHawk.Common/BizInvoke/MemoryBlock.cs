@@ -66,7 +66,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// allocate size bytes at any address
 		/// </summary>
-		/// <param name="size"></param>
 		public MemoryBlock(ulong size)
 			: this(0, size)
 		{
@@ -75,10 +74,11 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// allocate size bytes starting at a particular address
 		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+				throw new InvalidOperationException("MemoryBlock ctor called on Unix");
+
 			if (!WaterboxUtils.Aligned(start))
 				throw new ArgumentOutOfRangeException();
 			if (size == 0)
@@ -89,7 +89,7 @@ namespace BizHawk.Common.BizInvoke
 				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
 
 			if (_handle == IntPtr.Zero)
-				throw new InvalidOperationException("CreateFileMapping() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.CreateFileMapping)}() returned NULL");
 			Start = start;
 			End = start + size;
 			Size = size;
@@ -106,7 +106,7 @@ namespace BizHawk.Common.BizInvoke
 			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
 				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
 			{
-				throw new InvalidOperationException("MapViewOfFileEx() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
 			}
 			ProtectAll();
 			Active = true;
@@ -120,7 +120,7 @@ namespace BizHawk.Common.BizInvoke
 			if (!Active)
 				throw new InvalidOperationException("Not active");
 			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
-				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
+				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
 			Active = false;
 		}
 
@@ -175,7 +175,7 @@ namespace BizHawk.Common.BizInvoke
 			// that to complicate things
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
-				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 
 			_snapshot = new byte[Size];
 			var ds = new MemoryStream(_snapshot, true);
@@ -189,7 +189,6 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// take a hash of the current full contents of the block, including unreadable areas
 		/// </summary>
-		/// <returns></returns>
 		public byte[] FullHash()
 		{
 			if (!Active)
@@ -197,7 +196,7 @@ namespace BizHawk.Common.BizInvoke
 			// temporarily switch the entire block to `R`
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
-				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
 			ProtectAll();
 			return ret;
@@ -232,7 +231,7 @@ namespace BizHawk.Common.BizInvoke
 					ulong zend = GetStartAddr(i + 1);
 					Kernel32.MemoryProtection old;
 					if (!Kernel32.VirtualProtect(Z.UU(zstart), Z.UU(zend - zstart), p, out old))
-						throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+						throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 					ps = i + 1;
 				}
 			}
@@ -261,7 +260,7 @@ namespace BizHawk.Common.BizInvoke
 				Kernel32.MemoryProtection old;
 				if (!Kernel32.VirtualProtect(Z.UU(computedStart),
 					Z.UU(computedLength), p, out old))
-					throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+					throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 			}
 		}
 
@@ -302,7 +301,7 @@ namespace BizHawk.Common.BizInvoke
 			private void EnsureNotDisposed()
 			{
 				if (_owner.Start == 0)
-					throw new ObjectDisposedException("MemoryBlock");
+					throw new ObjectDisposedException(nameof(MemoryBlock));
 			}
 
 			private MemoryBlock _owner;
@@ -443,35 +442,8 @@ namespace BizHawk.Common.BizInvoke
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern UIntPtr VirtualAlloc(UIntPtr lpAddress, UIntPtr dwSize,
-			   AllocationType flAllocationType, MemoryProtection flProtect);
-
-			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern bool VirtualFree(UIntPtr lpAddress, UIntPtr dwSize,
-			   FreeType dwFreeType);
-
-			[DllImport("kernel32.dll", SetLastError = true)]
 			public static extern bool VirtualProtect(UIntPtr lpAddress, UIntPtr dwSize,
 			   MemoryProtection flNewProtect, out MemoryProtection lpflOldProtect);
-
-			public enum FreeType : uint
-			{
-				DECOMMIT = 0x4000,
-				RELEASE = 0x8000
-			}
-
-			[Flags]
-			public enum AllocationType : uint
-			{
-				COMMIT = 0x1000,
-				RESERVE = 0x2000,
-				RESET = 0x80000,
-				RESET_UNDO = 0x1000000,
-				LARGE_PAGES = 0x20000000,
-				PHYSICAL = 0x400000,
-				TOP_DOWN = 0x100000,
-				WRITE_WATCH = 0x200000
-			}
 
 			[Flags]
 			public enum MemoryProtection : uint

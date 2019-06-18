@@ -221,7 +221,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// read a bit back from eprom, might be mapped in 6000:7fff
 		/// </summary>
 		/// <param name="deadbit">bit from NES.DB</param>
-		/// <returns></returns>
 		public bool ReadBit(bool deadbit)
 		{
 			if (!OutEnable)
@@ -233,9 +232,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte[] GetSaveRAM() { return rom; }
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="Big">256 byte instead of 128 byte</param>
 		public SEEPROM(bool Big)
 		{
@@ -245,17 +241,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("SEEPROM");
-			ser.Sync("rom", ref rom, false);
-			ser.Sync("OutEnable", ref OutEnable);
-			ser.Sync("SCK", ref SCK);
-			ser.Sync("SDA", ref SDA);
-			ser.Sync("PullDown", ref PullDown);
-			ser.Sync("BitsLeft", ref BitsLeft);
-			ser.Sync("Data", ref Data);
-			ser.Sync("Addr", ref Addr);
+			ser.BeginSection(nameof(SEEPROM));
+			ser.Sync(nameof(rom), ref rom, false);
+			ser.Sync(nameof(OutEnable), ref OutEnable);
+			ser.Sync(nameof(SCK), ref SCK);
+			ser.Sync(nameof(SDA), ref SDA);
+			ser.Sync(nameof(PullDown), ref PullDown);
+			ser.Sync(nameof(BitsLeft), ref BitsLeft);
+			ser.Sync(nameof(Data), ref Data);
+			ser.Sync(nameof(Addr), ref Addr);
 			int tmp = (int)State;
-			ser.Sync("State", ref tmp);
+			ser.Sync(nameof(State), ref tmp);
 			State = (EState)tmp;
 			ser.EndSection();
 		}

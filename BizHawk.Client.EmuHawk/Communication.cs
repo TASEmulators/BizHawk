@@ -12,7 +12,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using System.Windows.Forms;
-using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -23,16 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		public class HttpCommunication
 		{
 			private static HttpClient client = new HttpClient();
-			private string PostUrl = "http://localhost:9876/post/";
-			private string GetUrl = "http://localhost:9876/index";
-			public bool initialized = false;
+			public string PostUrl { get; set; } = null;
+			public string GetUrl { get; set; } = null;
 			private ScreenShot screenShot = new ScreenShot();
 			public int timeout = 0;
 			public int default_timeout = 500;
 			
 			public void SetTimeout(int _timeout)
 			{
-				//timeout = _timeout.TotalMilliseconds;
 				if (timeout == 0 && _timeout == 0)
 				{
 					timeout = default_timeout;
@@ -41,32 +38,15 @@ namespace BizHawk.Client.EmuHawk
 				{
 					client.Timeout = new TimeSpan(0, 0, 0, _timeout / 1000, _timeout % 1000);
 					timeout = _timeout;
-				}
-				
-			}
-			public void SetPostUrl(string url)
-			{
-				PostUrl = url;
-			}
-			public void SetGetUrl(string url)
-			{
-				GetUrl = url;
-			}
-
-			public string GetGetUrl()
-			{
-				return GetUrl;
-			}
-			public string GetPostUrl()
-			{
-				return PostUrl;
+				}	
 			}
 
 			public async Task<string> Get(string url)
 			{
 				client.DefaultRequestHeaders.ConnectionClose = false;
 				HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
-				if (response.IsSuccessStatusCode) {
+				if (response.IsSuccessStatusCode)
+				{
 					return await response.Content.ReadAsStringAsync();
 				}
 				else
@@ -82,11 +62,9 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					response = await client.PostAsync(url, content).ConfigureAwait(false);
-
 				}
 				catch (Exception e)
 				{
-					MessageBox.Show(e.ToString());
 					return e.ToString();
 					
 				}
@@ -161,75 +139,89 @@ namespace BizHawk.Client.EmuHawk
 				return Post(PostUrl, content).Result;
 			}
 		}
+
 		public class SocketServer
 		{
+			string ip = null;
+			public string Ip
+			{
+				get { return ip; }
+				set
+				{
+					ip = value;
+					ipAdd = System.Net.IPAddress.Parse(ip);
+					Connect();
+				}
+			}
 
-			public string ip = "192.168.178.21";
-			public int port = 9999;
-			public Decoder decoder = Encoding.UTF8.GetDecoder();
-			public Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			public IPAddress ipAdd;
-			public IPEndPoint remoteEP;
-			public IVideoProvider currentVideoProvider = null;
+			int port = 0;
+			public int Port
+			{
+				get { return port; }
+				set
+				{
+					port = value;
+					Connect();
+				}
+			}
+
+			readonly Decoder decoder = Encoding.UTF8.GetDecoder();
+			Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			IPAddress ipAdd;
+			IPEndPoint remoteEP;
+			IVideoProvider currentVideoProvider = null;
 			public bool connected = false;
 			public bool initialized = false;
-			public int retries = 10;
+			public int Retries { get; set; } = 10;
 			public bool success = false; //indicates whether the last command was executed succesfully
 
-			public void Initialize(IVideoProvider _currentVideoProvider)
+			public void Initialize()
 			{
-				currentVideoProvider = _currentVideoProvider;
-				SetIp(ip, port);
+				if (currentVideoProvider == null) currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
 				initialized = true;
-				
 			}
+
 			public void Connect()
 			{
-				if (!initialized)
-				{
-					Initialize(currentVideoProvider);
-				}
 				remoteEP = new IPEndPoint(ipAdd, port);
 				soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				soc.Connect(remoteEP);
 				connected = true;
 				soc.ReceiveTimeout = 5;
-				
 			}
-			public void SetIp(string ip_)
-			{
-				ip = ip_;
-				ipAdd = System.Net.IPAddress.Parse(ip);
-				remoteEP = new IPEndPoint(ipAdd, port);
-			}
+
 			public void SetIp(string ip_, int port_)
 			{
 				ip = ip_;
 				port = port_;
 				ipAdd = System.Net.IPAddress.Parse(ip);
-				remoteEP = new IPEndPoint(ipAdd, port);
-				
+				Connect();
 			}
+
+			public string GetInfo()
+			{
+				return $"{ip}:{port}";
+			}
+
 			public void SetTimeout(int timeout)
 			{
 				soc.ReceiveTimeout = timeout;
 			}
+
 			public void SocketConnected()
 			{
 				bool part1 = soc.Poll(1000, SelectMode.SelectRead);
 				bool part2 = (soc.Available == 0);
-				if (part1 && part2)
-					connected = false;
-				else
-					connected = true;
+				connected = !(part1 && part2);
 			}
+
 			public int SendString(string SendString)
 			{
-				
 				int sentBytes = SendBytes(Encoding.ASCII.GetBytes(SendString));
 				success = sentBytes > 0;
 				return sentBytes;
 			}
+
 			public int SendBytes(byte[] SendBytes)
 			{
 				int sentBytes = 0;
@@ -248,11 +240,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return SendScreenshot(0);
 			}
+
 			public string SendScreenshot(int waitingTime)
 			{
-				if (!connected)
+				if (!initialized)
 				{
-					Connect();
+					Initialize();
 				}
 				ScreenShot screenShot = new ScreenShot();
 				using (BitmapBuffer bb = screenShot.MakeScreenShotImage())
@@ -262,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 						byte[] bmpBytes = screenShot.ImageToByte(img);
 						int sentBytes = 0;
 						int tries = 0;
-						while (sentBytes <= 0 && tries < retries)
+						while (sentBytes <= 0 && tries < Retries)
 						{
 							try
 							{
@@ -279,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 								Connect();
 							}
 						}
-						success = (tries < retries);
+						success = (tries < Retries);
 					}
 				}
 				String resp = "";
@@ -294,7 +287,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return resp;
 				}
-				resp = "";
+
 				resp = ReceiveMessage();
 				if (resp == "")
 				{
@@ -302,6 +295,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				return resp;
 			}
+
 			public string ReceiveMessage()
 			{
 				if (!connected)
@@ -318,14 +312,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						receivedLength = soc.Receive(receivedBytes, receivedBytes.Length, 0);
 						resp += Encoding.ASCII.GetString(receivedBytes);
-					} catch
+					}
+					catch
 					{
 						receivedLength = 0;
 					}
 				}
-				
 				return resp;
 			}
+
 			public bool Successful()
 			{
 				return success;
@@ -334,21 +329,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public class MemoryMappedFiles
 		{
-			public string filename_main = "BizhawkTemp_main";
+			public string Filename { get; set; } = "BizhawkTemp_main";
 			public Dictionary<string, MemoryMappedFile> mmf_files = new Dictionary<string, MemoryMappedFile>();
 			public int index = 0;
-			public bool initialized = false;
 			public int main_size = 10 ^ 5;
 			ScreenShot screenShot = new ScreenShot();
-
-			public void SetFilename(string filename)
-			{
-				filename_main = filename;
-			}
-			public string GetFilename()
-			{
-				return filename_main;
-			}
 
 			public int ScreenShotToFile()
 			{
@@ -356,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 				var bb = screenShot.MakeScreenShotImage();
 				var img = bb.ToSysdrawingBitmap();
 				byte[] bmpBytes = screenShot.ImageToByte(img);
-				return WriteToFile(@filename_main, bmpBytes);
+				return WriteToFile(@Filename, bmpBytes);
 			}
 
 			public int WriteToFile(string filename, byte[] outputBytes)
@@ -384,7 +369,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception)
 					{
-
 					}
 
 					mmf_file = MemoryMappedFile.CreateOrOpen(filename, outputBytes.Length);
@@ -417,6 +401,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			private IVideoProvider currentVideoProvider = null;
 			private ImageConverter converter = new ImageConverter();
+
 			public BitmapBuffer MakeScreenShotImage()
 			{
 				if (currentVideoProvider == null)
@@ -425,14 +410,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 				return GlobalWin.DisplayManager.RenderVideoProvider(currentVideoProvider);
 			}
+
 			public byte[] ImageToByte(Image img)
 			{
 				return (byte[])converter.ConvertTo(img, typeof(byte[]));
 			}
+
 			public string ImageToString(Image img)
 			{
 				return Convert.ToBase64String(ImageToByte(img));
 			}
+
 			public string GetScreenShotAsString()
 			{
 				BitmapBuffer bb = MakeScreenShotImage();
@@ -440,6 +428,18 @@ namespace BizHawk.Client.EmuHawk
 				return Convert.ToBase64String(imgBytes);
 			}
 		}
+
+		class CommunicationSocketServerException : Exception
+		{
+			public CommunicationSocketServerException()
+			{
+			}
+
+			public CommunicationSocketServerException(string message) : base(message)
+			{
+			}
+		}
 	}
 }
+
 

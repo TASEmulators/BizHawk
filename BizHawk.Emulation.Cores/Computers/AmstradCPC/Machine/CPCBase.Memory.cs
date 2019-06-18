@@ -71,15 +71,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Simulates reading from the bus
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public abstract byte ReadBus(ushort addr);
 
         /// <summary>
         ///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public virtual byte PushBus()
         {
             return 0xFF;
@@ -89,38 +85,29 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Simulates writing to the bus
         /// Paging should be handled here
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public abstract void WriteBus(ushort addr, byte value);
 
         /// <summary>
         /// Reads a byte of data from a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public abstract byte ReadMemory(ushort addr);
 
         /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
         public abstract void WriteMemory(ushort addr, byte value);
 
         /// <summary>
         /// Sets up the ROM
         /// </summary>
-        /// <param name="buffer"></param>
         public abstract void InitROM(RomData[] romData);
 
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)
         /// </summary>
-        /// <param name="addr"></param>
-        /// <returns></returns>
         public virtual byte FetchScreenMemory(ushort addr)
         {
             int divisor = addr / 0x4000;

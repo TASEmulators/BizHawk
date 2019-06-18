@@ -184,6 +184,11 @@ namespace BizHawk.Client.Common
 		public static SystemInfo VirtualBoy { get; } = new SystemInfo("Virtual Boy", CoreSystem.VirtualBoy, 1);
 
 		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Vectrex
+		/// </summary>
+		public static SystemInfo Vectrex { get; } = new SystemInfo("Vextrex", CoreSystem.Vectrex, 2);
+
+		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for TI-83
 		/// </summary>
 		public static SystemInfo NeoGeoPocket { get; } = new SystemInfo("Neo-Geo Pocket", CoreSystem.NeoGeoPocket, 1);
@@ -198,14 +203,24 @@ namespace BizHawk.Client.Common
         /// </summary>
         public static SystemInfo AmstradCPC { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
 
-        #endregion Get SystemInfo
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for GGL
+		/// </summary>
+		public static SystemInfo GGL { get; } = new SystemInfo("Game Gear Linked", CoreSystem.GGL, 2);
 
-        /// <summary>
-        /// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
-        /// </summary>
-        /// <param name="system"><see cref="CoreSystem"/> you're looking for</param>
-        /// <returns><see cref="SystemInfo"/></returns>
-        public static SystemInfo FindByCoreSystem(CoreSystem system)
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for ChannelF
+		/// </summary>
+		public static SystemInfo ChannelF { get; } = new SystemInfo("Channel F", CoreSystem.ChannelF, 2);
+
+		#endregion Get SystemInfo
+
+		/// <summary>
+		/// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
+		/// </summary>
+		/// <param name="system"><see cref="CoreSystem"/> you're looking for</param>
+		/// <returns><see cref="SystemInfo"/></returns>
+		public static SystemInfo FindByCoreSystem(CoreSystem system)
 		{
 			return _allSystemInfos.Find(s => s.System == system);
 		}

@@ -56,9 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		public readonly int OUT2old;
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="oldvalue">the old latched $4016 byte</param>
 		/// <param name="newvalue">the new latched $4016 byte</param>
 		public StrobeInfo(byte oldvalue, byte newvalue)
@@ -80,19 +77,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// call whenever $4016 is written
 		/// </summary>
-		/// <param name="s"></param>
-		/// <param name="c"></param>
 		void Strobe(StrobeInfo s, IController c);
 		/// <summary>
 		/// call whenever $4016 is read
 		/// </summary>
-		/// <param name="c"></param>
 		/// <returns>bits 0-4 are valid</returns>
 		byte ReadA(IController c); // D0:D4
 		/// <summary>
 		/// call whenever $4017 is read
 		/// </summary>
-		/// <param name="c"></param>
 		/// <returns>bits 0-4 are valid</returns>
 		byte ReadB(IController c); // D0:D4
 		ControllerDefinition GetDefinition();
@@ -108,13 +101,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// read data from $4016
 		/// </summary>
-		/// <param name="c"></param>
 		/// <returns>only bit 1 is valid</returns>
 		byte ReadA(IController c);
 		/// <summary>
 		/// read data from $4017
 		/// </summary>
-		/// <param name="c"></param>
 		/// <returns>bits 1-4 are valid</returns>
 		byte ReadB(IController c);
 		ControllerDefinition GetDefinition();
@@ -190,10 +181,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Left");
+			ser.BeginSection(nameof(Left));
 			Left.SyncState(ser);
 			ser.EndSection();
-			ser.BeginSection("Right");
+			ser.BeginSection(nameof(Right));
 			Right.SyncState(ser);
 			ser.EndSection();
 		}
@@ -323,8 +314,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 
@@ -386,8 +377,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 
@@ -439,9 +430,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("shiftidx", ref shiftidx);
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(shiftidx), ref shiftidx);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 
@@ -497,8 +488,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 
@@ -546,9 +537,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latched3", ref latched3);
-			ser.Sync("latched4", ref latched4);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latched3), ref latched3);
+			ser.Sync(nameof(latched4), ref latched4);
 		}
 	}
 
@@ -612,7 +603,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		/// <summary>
 		/// returns true if light was detected at the ppu coordinates specified
-		/// </summary
+		/// </summary>
 		public LightgunDelegate PPUCallback { get; set; }
 
 		bool resetting = false;
@@ -663,8 +654,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 
 		// famicom expansion hookups
@@ -805,9 +796,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("shiftidx", ref shiftidx);
-			ser.Sync("restting", ref resetting);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(shiftidx), ref shiftidx);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 
@@ -951,9 +942,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("active", ref active);
-			ser.Sync("column", ref column);
-			ser.Sync("row", ref row);
+			ser.Sync(nameof(active), ref active);
+			ser.Sync(nameof(column), ref column);
+			ser.Sync(nameof(row), ref row);
 		}
 	}
 
@@ -1013,9 +1004,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("resetting", ref resetting);
-			ser.Sync("latchedp1", ref latchedp1);
-			ser.Sync("latchedp2", ref latchedp2);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(latchedp1), ref latchedp1);
+			ser.Sync(nameof(latchedp2), ref latchedp2);
 		}
 	}
 
@@ -1085,9 +1076,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("resetting", ref resetting);
-			ser.Sync("shiftidx", ref shiftidx);
-			ser.Sync("latchedvalue", ref latchedvalue);
+			ser.Sync(nameof(resetting), ref resetting);
+			ser.Sync(nameof(shiftidx), ref shiftidx);
+			ser.Sync(nameof(latchedvalue), ref latchedvalue);
 		}
 	}
 

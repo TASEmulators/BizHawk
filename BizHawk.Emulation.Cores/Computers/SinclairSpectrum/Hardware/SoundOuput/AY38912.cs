@@ -170,7 +170,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Used for snapshot generation
         /// </summary>
-        /// <returns></returns>
         public int[] ExportRegisters()
         {
             return _registers;
@@ -223,7 +222,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Reads the value from the currently selected register
         /// </summary>
-        /// <returns></returns>
         public int PortRead()
         {
             return _registers[_activeRegister];
@@ -232,7 +230,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Writes to the currently selected register
         /// </summary>
-        /// <param name="value"></param>
         public void PortWrite(int value)
         {
             if (_activeRegister >= 0x10)
@@ -347,7 +344,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="frameCycle"></param>
         public void UpdateSound(int frameCycle)
         {
             BufferUpdate(frameCycle);
@@ -379,6 +375,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// The register array
+        /// </summary>
         /*
             The AY-3-8910/8912 contains 16 internal registers as follows:
 
@@ -410,7 +407,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             The AY-3-8912 ignores bit 7 of this register.    
         */
-        /// </summary>
         private int[] _registers = new int[16];
 
         /// <summary>
@@ -595,8 +591,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initializes timing information for the frame
         /// </summary>
-        /// <param name="sampleRate"></param>
-        /// <param name="frameTactCount"></param>
         private void InitTiming(int sampleRate, int frameTactCount)
         {
             _sampleRate = sampleRate;
@@ -620,7 +614,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
         /// </summary>
-        /// <param name="cycle"></param>
         private void BufferUpdate(int cycle)
         {
             if (cycle > _tStatesPerFrame)
@@ -763,51 +756,50 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// State serialization
         /// </summary>
-        /// <param name="ser"></param>
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PSG-AY");
 
-            ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
-            ser.Sync("_sampleRate", ref _sampleRate);
-            ser.Sync("_samplesPerFrame", ref _samplesPerFrame);
-            ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
-            ser.Sync("_audioBufferIndex", ref _audioBufferIndex);
-            ser.Sync("_audioBuffer", ref _audioBuffer, false);
+            ser.Sync(nameof(_tStatesPerFrame), ref _tStatesPerFrame);
+            ser.Sync(nameof(_sampleRate), ref _sampleRate);
+            ser.Sync(nameof(_samplesPerFrame), ref _samplesPerFrame);
+            ser.Sync(nameof(_tStatesPerSample), ref _tStatesPerSample);
+            ser.Sync(nameof(_audioBufferIndex), ref _audioBufferIndex);
+            ser.Sync(nameof(_audioBuffer), ref _audioBuffer, false);
 
-            ser.Sync("_registers", ref _registers, false);
-            ser.Sync("_activeRegister", ref _activeRegister);
-            ser.Sync("_bitA", ref _bitA);
-            ser.Sync("_bitB", ref _bitB);
-            ser.Sync("_bitC", ref _bitC);
-            ser.Sync("_eState", ref _eState);
-            ser.Sync("_eDirection", ref _eDirection);
-            ser.Sync("_noiseSeed", ref _noiseSeed);
-            ser.Sync("_bit0", ref _bit0);
-            ser.Sync("_bit1", ref _bit1);
-            ser.Sync("_bit2", ref _bit2);
-            ser.Sync("_bit3", ref _bit3);
-            ser.Sync("_bit4", ref _bit4);
-            ser.Sync("_bit5", ref _bit5);
-            ser.Sync("_bitN", ref _bitN);
-            ser.Sync("_eMaskA", ref _eMaskA);
-            ser.Sync("_eMaskB", ref _eMaskB);
-            ser.Sync("_eMaskC", ref _eMaskC);
-            ser.Sync("_vA", ref _vA);
-            ser.Sync("_vB", ref _vB);
-            ser.Sync("_vC", ref _vC);
-            ser.Sync("_countA", ref _countA);
-            ser.Sync("_countB", ref _countB);
-            ser.Sync("_countC", ref _countC);
-            ser.Sync("_countE", ref _countE);
-            ser.Sync("_countN", ref _countN);
-            ser.Sync("_dividerA", ref _dividerA);
-            ser.Sync("_dividerB", ref _dividerB);
-            ser.Sync("_dividerC", ref _dividerC);
-            ser.Sync("_dividerE", ref _dividerE);
-            ser.Sync("_dividerN", ref _dividerN);
-            ser.SyncEnum("_currentPanTab", ref _currentPanTab);
-            ser.Sync("_volume", ref nullDump);
+            ser.Sync(nameof(_registers), ref _registers, false);
+            ser.Sync(nameof(_activeRegister), ref _activeRegister);
+            ser.Sync(nameof(_bitA), ref _bitA);
+            ser.Sync(nameof(_bitB), ref _bitB);
+            ser.Sync(nameof(_bitC), ref _bitC);
+            ser.Sync(nameof(_eState), ref _eState);
+            ser.Sync(nameof(_eDirection), ref _eDirection);
+            ser.Sync(nameof(_noiseSeed), ref _noiseSeed);
+            ser.Sync(nameof(_bit0), ref _bit0);
+            ser.Sync(nameof(_bit1), ref _bit1);
+            ser.Sync(nameof(_bit2), ref _bit2);
+            ser.Sync(nameof(_bit3), ref _bit3);
+            ser.Sync(nameof(_bit4), ref _bit4);
+            ser.Sync(nameof(_bit5), ref _bit5);
+            ser.Sync(nameof(_bitN), ref _bitN);
+            ser.Sync(nameof(_eMaskA), ref _eMaskA);
+            ser.Sync(nameof(_eMaskB), ref _eMaskB);
+            ser.Sync(nameof(_eMaskC), ref _eMaskC);
+            ser.Sync(nameof(_vA), ref _vA);
+            ser.Sync(nameof(_vB), ref _vB);
+            ser.Sync(nameof(_vC), ref _vC);
+            ser.Sync(nameof(_countA), ref _countA);
+            ser.Sync(nameof(_countB), ref _countB);
+            ser.Sync(nameof(_countC), ref _countC);
+            ser.Sync(nameof(_countE), ref _countE);
+            ser.Sync(nameof(_countN), ref _countN);
+            ser.Sync(nameof(_dividerA), ref _dividerA);
+            ser.Sync(nameof(_dividerB), ref _dividerB);
+            ser.Sync(nameof(_dividerC), ref _dividerC);
+            ser.Sync(nameof(_dividerE), ref _dividerE);
+            ser.Sync(nameof(_dividerN), ref _dividerN);
+            ser.SyncEnum(nameof(_currentPanTab), ref _currentPanTab);
+            ser.Sync(nameof(_volume), ref nullDump);
 
             for (int i = 0; i < 6; i++)
             {

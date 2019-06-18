@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("M6532");
+			ser.BeginSection(nameof(M6532));
 			ser.Sync("ddra", ref _ddRa);
 			ser.Sync("ddrb", ref _ddRb);
 			ser.Sync("OutputA", ref _outputA);

@@ -215,11 +215,11 @@ namespace BizHawk.Client.Common
 				case DisplayType.Signed:
 					return ((int)val).ToString();
 				case DisplayType.Hex:
-					return val.ToHexString(8);
+					return $"{val:X8}";
 				case DisplayType.FixedPoint_20_12:
-					return $"{val / 4096.0:0.######}";
+					return $"{(int)val / 4096.0:0.######}";
 				case DisplayType.FixedPoint_16_16:
-					return $"{val / 65536.0:0.######}";
+					return $"{(int)val / 65536.0:0.######}";
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
@@ -231,7 +231,7 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of difference
 		/// between current value and the previous one
 		/// </summary>
-		public override string Diff => (_previous - _value).ToString();
+		public override string Diff => $"{_value - (long)_previous:+#;-#;0}";
 
 		/// <summary>
 		/// Get the maximum possible value

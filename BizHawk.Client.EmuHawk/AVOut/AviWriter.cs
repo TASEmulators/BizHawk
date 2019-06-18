@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				throw new ArgumentException("AviWriter only takes its own Codec Tokens!");
+				throw new ArgumentException($"{nameof(AviWriter)} only takes its own {nameof(CodecToken)}s!");
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			int counter = 1;
 			for (;;)
 			{
-				yield return Path.Combine(dir, baseName) + "_" + counter + ext;
+				yield return Path.Combine(dir, $"{baseName}_{counter}{ext}");
 				counter++;
 			}
 		}
@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show("AVIFIL32 Thread died:\n\n" + e);
+				MessageBox.Show($"AVIFIL32 Thread died:\n\n{e}");
 			}
 		}
 
@@ -136,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 		/// opens an avi file for recording with the supplied enumerator used to name files.
 		/// set a video codec token first.
 		/// </summary>
-		/// <param name="nameProvider"></param>
 		public void OpenFile(IEnumerator<string> nameProvider)
 		{
 			_nameProvider = nameProvider;
@@ -321,11 +320,10 @@ namespace BizHawk.Client.EmuHawk
 				int bytes = 0;
 				if (a_bits == 16) bytes = 2;
 				else if (a_bits == 8) bytes = 1;
-				else throw new InvalidOperationException("only 8/16 bits audio are supported by AviWriter and you chose: " + a_bits);
+				else throw new InvalidOperationException($"only 8/16 bits audio are supported by {nameof(AviWriter)} and you chose: {a_bits}");
 				if (a_channels == 1) { }
 				else if (a_channels == 2) { }
-				else throw new InvalidOperationException("only 1/2 channels audio are supported by AviWriter and you chose: " + a_channels);
-
+				else throw new InvalidOperationException($"only 1/2 channels audio are supported by {nameof(AviWriter)} and you chose: {a_channels}");
 				wfex.Init();
 				wfex.nBlockAlign = (ushort)(bytes * a_channels);
 				wfex.nChannels = (ushort)a_channels;
@@ -648,7 +646,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Win32.FAILED(Win32.AVIFileOpenW(ref pAviFile, destPath, Win32.OpenFileStyle.OF_CREATE | Win32.OpenFileStyle.OF_WRITE, 0)))
 				{
-					throw new InvalidOperationException("Couldnt open dest path for avi file: " + destPath);
+					throw new InvalidOperationException($"Couldnt open dest path for avi file: {destPath}");
 				}
 
 				// initialize the video stream
@@ -954,7 +952,7 @@ namespace BizHawk.Client.EmuHawk
 			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);
 			if (ct == null)
 			{
-				throw new Exception("No default AVICodecToken in config!");
+				throw new Exception($"No default {nameof(Global.Config.AVICodecToken)} in config!");
 			}
 
 			_currVideoCodecToken = ct;
@@ -991,7 +989,7 @@ namespace BizHawk.Client.EmuHawk
 //        using (Font f = new Font(FontFamily.GenericMonospace, 10))
 //            g.DrawString(i.ToString(), f, Brushes.Black, 0, 0);
 //    }
-//    //bmp.Save(string.Format("c:\\dump\\{0}.bmp", i), ImageFormat.Bmp);
+//    //bmp.Save($"c:\\dump\\{i}.bmp", ImageFormat.Bmp);
 //    for (int y = 0, idx = 0; y < 256; y++)
 //        for (int x = 0; x < 256; x++)
 //            video.buffer[idx++] = bmp.GetPixel(x, y).ToArgb();

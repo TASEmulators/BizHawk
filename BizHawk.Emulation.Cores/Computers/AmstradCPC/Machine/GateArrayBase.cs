@@ -216,14 +216,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private int CurrentPen;
         private int ScreenMode;
         private int INTScanlineCnt;
-        private int VSYNCDelyCnt;
+        //private int VSYNCDelyCnt;
 
         private int[][] Lookup = new int[4][];
 
-        private bool DoModeUpdate;
+        //private bool DoModeUpdate;
 
-        private int LatchedMode;
-        private int buffPos;
+        //private int LatchedMode;
+        //private int buffPos;
 
         public bool FrameEnd;
 
@@ -276,7 +276,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Selects the pen
         /// </summary>
-        /// <param name="data"></param>
         public virtual void SetPen(BitArray bi)
         {
             if (bi[4])
@@ -296,7 +295,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Selects colour for the currently selected pen
         /// </summary>
-        /// <param name="data"></param>
         public virtual void SetPenColour(BitArray bi)
         {
             byte[] b = new byte[1];
@@ -308,8 +306,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns the actual ARGB pen colour value
         /// </summary>
-        /// <param name="idx"></param>
-        /// <returns></returns>
         public virtual int GetPenColour(int idx)
         {
             return CPCHardwarePalette[PenColours[idx]];
@@ -318,7 +314,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Screen mode and ROM config
         /// </summary>
-        /// <param name="data"></param>
         public virtual void SetReg2(BitArray bi)
         {
             byte[] b = new byte[1];
@@ -361,7 +356,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Only available on machines with a 64KB memory expansion
         /// Default assume we dont have this
         /// </summary>
-        /// <param name="data"></param>
         public virtual void SetRAM(BitArray bi)
         {
             return;
@@ -387,7 +381,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             for (int i = 0; i < 17; i++)
                 PenColours[i] = 0;
             INTScanlineCnt = 0;
-            VSYNCDelyCnt = 0;
+            //VSYNCDelyCnt = 0;
         }
 
         #endregion
@@ -397,9 +391,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             // gate array is OUT only
@@ -409,9 +400,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));

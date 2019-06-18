@@ -27,8 +27,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Parses multiple DAT files and returns a single GamesDB format csv string
 		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
 		public override string ParseDAT(string[] filePath)
 		{
 			foreach (var s in filePath)
@@ -61,9 +59,9 @@ namespace BizHawk.Client.DBMan
 				// start comment block
 				List<string> comments = new List<string>
 				{
-					"Type:\t" + category,
-					"Source:\t" + description,
-					"FileGen:\t" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") + " (UTC)",
+					$"Type:\t{category}",
+					$"Source:\t{description}",
+					$"FileGen:\t{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} (UTC)",
 				};
 
 				AddCommentBlock(comments.ToArray());
@@ -121,7 +119,6 @@ namespace BizHawk.Client.DBMan
 		/// Detailed info here: https://www.tosecdev.org/tosec-naming-convention
 		/// Guts of this has been reused from here: https://github.com/Asnivor/MedLaunch/blob/master/MedLaunch/_Debug/DATDB/Platforms/TOSEC/StringConverterToSec.cs
 		/// </summary>
-		/// <param name="g"></param>
 		private void ParseTOSECFlags(GameDB g)
 		{
 			string nameString = g.Name;

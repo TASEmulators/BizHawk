@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	public sealed partial class SMS : IDebuggable
+	public partial class SMS : IDebuggable
 	{
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

@@ -2,11 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
-#if WINDOWS
+
 using SlimDX.DirectInput;
-#else
-using OpenTK.Input;
-#endif
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -116,39 +113,38 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
-#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
 				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			UpdateThread.Start();
-#endif
 		}
 
 		public static void Initialize()
 		{
-			if (Global.RunningOnUnix)
-			{
-				OTK_Keyboard.Initialize();
-//				OTK_Gamepad.Initialize();
-			}
-			else
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
 				KeyInput.Initialize();
 				IPCKeyInput.Initialize();
 				GamePad.Initialize();
 				GamePad360.Initialize();
 			}
+			else
+			{
+				OTK_Keyboard.Initialize();
+//				OTK_Gamepad.Initialize();
+			}
 			Instance = new Input();
 		}
 
 		public static void Cleanup()
 		{
-#if WINDOWS
-			KeyInput.Cleanup();
-			GamePad.Cleanup();
-#endif
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			{
+				KeyInput.Cleanup();
+				GamePad.Cleanup();
+			}
 		}
 
 		public enum InputEventType
@@ -202,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			public InputEventType EventType;
 			public override string ToString()
 			{
-				return string.Format("{0}:{1}", EventType.ToString(), LogicalButton.ToString());
+				return $"{EventType.ToString()}:{LogicalButton.ToString()}";
 			}
 		}
 
@@ -238,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			if (UnpressState.ContainsKey(button))
 			{
 				if (newState) return;
-				Console.WriteLine("Removing Unpress {0} with newState {1}", button, newState);
+				Console.WriteLine($"Removing Unpress {button} with {nameof(newState)} {newState}");
 				UnpressState.Remove(button);
 				LastState[button] = false;
 				return;
@@ -331,14 +327,22 @@ namespace BizHawk.Client.EmuHawk
 			return FloatValuesCopy;
 		}
 
-#if WINDOWS
 		void UpdateThreadProc()
 		{
-			for (; ; )
+			while (true)
 			{
-				var keyEvents = KeyInput.Update().Concat(IPCKeyInput.Update());
-				GamePad.UpdateAll();
-				GamePad360.UpdateAll();
+				var keyEvents = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					? KeyInput.Update().Concat(IPCKeyInput.Update())
+					: OTK_Keyboard.Update();
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				{
+					GamePad.UpdateAll();
+					GamePad360.UpdateAll();
+				}
+				else
+				{
+					//TODO
+				}
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -356,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 						//analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())
 						{
-							string xname = "X" + pad.PlayerNumber + " ";
+							string xname = $"X{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -372,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 						//analyze joysticks
 						foreach (var pad in GamePad.EnumerateDevices())
 						{
-							string jname = "J" + pad.PlayerNumber + " ";
+							string jname = $"J{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -441,7 +445,6 @@ namespace BizHawk.Client.EmuHawk
 				Thread.Sleep(10);
 			}
 		}
-#endif
 
 		public void StartListeningForFloatEvents()
 		{
@@ -510,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var kvp in LastState)
 						if (kvp.Value)
 						{
-							Console.WriteLine("Unpressing " + kvp.Key);
+							Console.WriteLine($"Unpressing {kvp.Key}");
 							UnpressState[kvp.Key] = true;
 						}
 

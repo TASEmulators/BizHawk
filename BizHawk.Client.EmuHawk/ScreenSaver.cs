@@ -1,79 +1,66 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	// Derived from http://www.codeproject.com/KB/cs/ScreenSaverControl.aspx
+	/// <remarks>Derived from http://www.codeproject.com/KB/cs/ScreenSaverControl.aspx</remarks>
 	public static class ScreenSaver
 	{
-		private interface PlatformSpecificScreenBlankInterface
+		private interface IScreenBlankTimer
 		{
-			Int32 Get();
-			void Set(Int32 v);
+			/// <summary>
+			/// The screen saver timeout setting, in seconds
+			/// </summary>
+			int Duration { get; set; }
 		}
-		private class WinScreenBlankInterface : PlatformSpecificScreenBlankInterface
+
+		private class Win32ScreenBlankTimer : IScreenBlankTimer
 		{
 			[DllImport("user32.dll", CharSet = CharSet.Auto)]
 			private static extern bool SystemParametersInfo(int uAction, int uParam, ref int lpvParam, int flags);
-			public Int32 Get()
-			{
-				Int32 value = 0;
-				SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
-				return value;
-			}
-			public void Set(Int32 v)
-			{
-				int nullVar = 0;
-				SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, v, ref nullVar, SPIF_SENDWININICHANGE);
-			}
-		}
-		private class MiscUnixScreenBlankInterface : PlatformSpecificScreenBlankInterface
-		{
-			public Int32 Get()
-			{
-				return 0; //TODO implement
-			}
-			public void Set(Int32 v)
-			{
-				//TODO implement
-			}
-		}
-		private static PlatformSpecificScreenBlankInterface screenBlankInterface = Global.RunningOnUnix
-			? (PlatformSpecificScreenBlankInterface) new MiscUnixScreenBlankInterface()
-			: (PlatformSpecificScreenBlankInterface) new WinScreenBlankInterface();
 
-		private const int SPI_GETSCREENSAVERTIMEOUT = 14;
-		private const int SPI_SETSCREENSAVERTIMEOUT = 15;
-		private const int SPIF_SENDWININICHANGE = 2;
+			private const int SPI_GETSCREENSAVERTIMEOUT = 14;
+			private const int SPI_SETSCREENSAVERTIMEOUT = 15;
+			private const int SPIF_SENDWININICHANGE = 2;
+
+			public int Duration
+			{
+				get
+				{
+					var value = 0;
+					SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
+					return value;
+				}
+				set
+				{
+					var nullVar = 0;
+					SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
+				}
+			}
+		}
+
+		private class UnixScreenBlankTimer : IScreenBlankTimer
+		{
+			public int Duration { get; set; } = 0; //TODO implementation
+		}
+
+		private static readonly IScreenBlankTimer _screenBlankTimer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			? (IScreenBlankTimer) new Win32ScreenBlankTimer()
+			: new UnixScreenBlankTimer();
+
+		private static int ctr;
 
 		public static void ResetTimerImmediate()
 		{
-			SetScreenSaverTimeout(GetScreenSaverTimeout());
+			_screenBlankTimer.Duration = _screenBlankTimer.Duration;
 		}
 
-		private static int ctr;
 		public static void ResetTimerPeriodically()
 		{
-			ctr++;
-			if (ctr == 120)
-			{
-				SetScreenSaverTimeout(GetScreenSaverTimeout());
-				ctr = 0;
-			}
-		}
-
-		// Returns the screen saver timeout setting, in seconds
-		private static Int32 GetScreenSaverTimeout()
-		{
-			return screenBlankInterface.Get();
-		}
-
-		// Pass in the number of seconds to set the screen saver timeout value.
-		private static void SetScreenSaverTimeout(Int32 Value)
-		{
-			screenBlankInterface.Set(Value);
+			if (++ctr < 120) return;
+			ctr = 0;
+			ResetTimerImmediate();
 		}
 	}
 }

@@ -154,7 +154,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Writes to the control register
         /// </summary>
-        /// <param name="data"></param>
         private void OUTControl(int data)
         {
             if (data.Bit(7))
@@ -214,7 +213,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads from Port A
         /// </summary>
-        /// <returns></returns>
         private int INPortA()
         {
             if (DirPortA == PortDirection.Input)
@@ -233,7 +231,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads from Port B
         /// </summary>
-        /// <returns></returns>
         private int INPortB()
         {
             if (DirPortB == PortDirection.Input)
@@ -279,7 +276,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Reads from Port C
         /// </summary>
-        /// <returns></returns>
         private int INPortC()
         {
             // get the PortC value
@@ -349,9 +345,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
             byte portUpper = (byte)(port >> 8);
@@ -396,9 +389,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
             byte portUpper = (byte)(port >> 8);
@@ -455,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PPI");
-            ser.Sync("Regs", ref Regs, false);
+            ser.Sync(nameof(Regs), ref Regs, false);
             ser.EndSection();
         }
 

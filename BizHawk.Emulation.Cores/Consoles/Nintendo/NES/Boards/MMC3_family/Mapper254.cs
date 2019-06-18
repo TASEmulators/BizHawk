@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("regs", ref regs);
+			ser.Sync(nameof(regs), ref regs);
 		}
 
 		public override byte ReadWRAM(int addr)

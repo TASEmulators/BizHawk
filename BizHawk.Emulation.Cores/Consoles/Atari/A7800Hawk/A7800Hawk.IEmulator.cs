@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool slow_access = false;
 		public int slow_countdown;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -88,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				_lagcount++;
 			}
+
+			return true;
 		}
 
 		public void RunCPUCycle()

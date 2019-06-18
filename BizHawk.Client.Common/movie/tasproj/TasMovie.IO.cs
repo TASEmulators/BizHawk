@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 				// TasProj extras
 				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(_stateManager.Settings.ToString()));
 
-				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => _lagLog.Save(bw));
+				bs.PutLump(BinaryStateLump.LagLog, tw => _lagLog.Save(tw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
@@ -179,9 +179,9 @@ namespace BizHawk.Client.Common
 				}
 
 				// TasMovie enhanced information
-				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
+				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 				{
-					_lagLog.Load(br);
+					_lagLog.Load(tr);
 				});
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common
 
 		private void ClearTasprojExtras()
 		{
-			_lagLog.Clear();
+			ClearLagLog();
 			_stateManager.ClearStateHistory();
 			Markers.Clear();
 			ChangeLog.ClearLog();

@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		void LogCallbackFunc(char type, string message)
 		{
-			debugmsgs.Enqueue(string.Format("PSP: {0} {1}", type, message));
+			debugmsgs.Enqueue($"PSP: {type} {message}");
 		}
 		void LogFlush()
 		{
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		}
 
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 			UpdateInput(controller);
@@ -147,6 +147,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			//nsampavail = PPSSPPDll.mixsound(audiobuffer, audiobuffer.Length / 2);
 			LogFlush();
 			//Console.WriteLine("Audio Service: {0}", nsampavail);
+
+			return true;
 		}
 
 		public int Frame

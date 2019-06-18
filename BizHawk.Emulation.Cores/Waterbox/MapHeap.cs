@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_pages = (MemoryBlock.Protection[])(object)_pagesAsBytes;
 			for (var i = 0; i < _pages.Length; i++)
 				_pages[i] = FREE;
-			Console.WriteLine("Created mapheap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
+			Console.WriteLine($"Created {nameof(MapHeap)} `{name}` at {start:x16}:{start + size:x16}");
 		}
 
 		// find consecutive unused pages to map
@@ -294,14 +294,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var name = br.ReadString();
 			if (name != Name)
-				throw new InvalidOperationException(string.Format("Name did not match for mapheap {0}", Name));
+				throw new InvalidOperationException($"Name did not match for {nameof(MapHeap)} {Name}");
 			var size = br.ReadUInt64();
 			if (size != Memory.Size)
-				throw new InvalidOperationException(string.Format("Size did not match for mapheap {0}", Name));
+				throw new InvalidOperationException($"Size did not match for {nameof(MapHeap)} {Name}");
 			var used = br.ReadUInt64();
 			var hash = br.ReadBytes(Memory.XorHash.Length);
 			if (!hash.SequenceEqual(Memory.XorHash))
-				throw new InvalidOperationException(string.Format("Hash did not match for mapheap {0}.  Is this the same rom?", Name));
+				throw new InvalidOperationException($"Hash did not match for {nameof(MapHeap)} {Name}.  Is this the same rom?");
 
 			if (br.BaseStream.Read(_pagesAsBytes, 0, _pagesAsBytes.Length) != _pagesAsBytes.Length)
 				throw new InvalidOperationException("Unexpected error reading!");

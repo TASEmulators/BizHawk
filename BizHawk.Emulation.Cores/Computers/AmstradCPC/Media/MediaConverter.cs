@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Serialization method
         /// </summary>
-        /// <param name="data"></param>
         public virtual void Read(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() + 
@@ -49,7 +48,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public virtual void Write(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() + 
@@ -59,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Serializer does a quick check, returns TRUE if file is detected as this type
         /// </summary>
-        /// <param name="data"></param>
         public virtual bool CheckType(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() +
@@ -71,8 +68,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Converts an int32 value into a byte array
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         public static byte[] GetBytes(int value)
         {
             byte[] buf = new byte[4];
@@ -86,9 +81,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns an int32 from a byte array based on offset
         /// </summary>
-        /// <param name="buf"></param>
-        /// <param name="offsetIndex"></param>
-        /// <returns></returns>
        public static int GetInt32(byte[] buf, int offsetIndex)
         {
             return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
@@ -97,9 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Returns an uint16 from a byte array based on offset
         /// </summary>
-        /// <param name="buf"></param>
-        /// <param name="offsetIndex"></param>
-        /// <returns></returns>
         public static ushort GetWordValue(byte[] buf, int offsetIndex)
         {
             return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
@@ -108,9 +97,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Updates a byte array with a uint16 value based on offset
         /// </summary>
-        /// <param name="buf"></param>
-        /// <param name="offsetIndex"></param>
-        /// <param name="value"></param>
         public static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
         {
             buf[offsetIndex] = (byte)value;
@@ -120,8 +106,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Takes a PauseInMilliseconds value and returns the value in T-States
         /// </summary>
-        /// <param name="pauseInMS"></param>
-        /// <returns></returns>
         public static int TranslatePause(int pauseInMS)
         {
             // t-states per millisecond
@@ -135,8 +119,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Decompresses a byte array that is Z-RLE compressed
         /// </summary>
-        /// <param name="sourceBuffer"></param>
-        /// <param name="destBuffer"></param>
         public static void DecompressZRLE(byte[] sourceBuffer, ref byte[] destBuffer)
         {
             MemoryStream stream = new MemoryStream();

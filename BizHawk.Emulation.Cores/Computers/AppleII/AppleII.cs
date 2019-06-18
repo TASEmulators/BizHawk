@@ -115,8 +115,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		}
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
-			.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
-			.Where(k => k != "Black Apple")
+			//.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
+			//.Where(k => k != "Black Apple")
 			.Where(k => k != "Reset"));
 
 		private static readonly List<string> ExtraButtons = new List<string>
@@ -183,9 +183,21 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void SetCallbacks()
 		{
-			_machine.Memory.ReadCallback = (addr) => MemoryCallbacks.CallReads(addr, "System Bus");
-			_machine.Memory.WriteCallback = (addr) => MemoryCallbacks.CallWrites(addr, "System Bus");
-			_machine.Memory.ExecuteCallback = (addr) => MemoryCallbacks.CallExecutes(addr, "System Bus");
+			_machine.Memory.ReadCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
+			_machine.Memory.WriteCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
+			_machine.Memory.ExecuteCallback = (addr) =>
+			{
+				uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+				MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			};
 			_machine.Memory.InputCallback = InputCallbacks.Call;
 		}
 	}

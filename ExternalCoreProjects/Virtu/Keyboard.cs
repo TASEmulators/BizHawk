@@ -210,13 +210,7 @@ namespace Jellyfish.Virtu
 			0x7a1a5a1a, // z
 		};
 
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="key">0 - 55</param>
-		/// <param name="control"></param>
-		/// <param name="shift"></param>
-		/// <returns></returns>
 		private static int KeyToAscii(int key, bool control, bool shift)
 		{
 			int s = control ? (shift ? 0 : 16) : (shift ? 8 : 24);
@@ -264,16 +258,25 @@ namespace Jellyfish.Virtu
         {
         }
 
+		public static bool WhiteAppleDown;
+		public static bool BlackAppleDown;
+
 		/// <summary>
 		/// Call this at 60hz with all of the currently pressed keys
 		/// </summary>
-		/// <param name="keys"></param>
 		public void SetKeys(IEnumerable<string> keynames)
 		{
 			Keys keys = FromStrings(keynames);
 
-			if (keys.HasFlag(Keys.WhiteApple)) { } // TODO: set GAME1
-			if (keys.HasFlag(Keys.BlackApple)) { } // TODO: set GAME2
+			if (keys.HasFlag(Keys.WhiteApple))
+				WhiteAppleDown = true;
+			else
+				WhiteAppleDown = false;
+
+			if (keys.HasFlag(Keys.BlackApple))
+				BlackAppleDown = true;
+			else
+				BlackAppleDown = false;
 
 			if (keys.HasFlag(Keys.Reset) && keys.HasFlag(Keys.Control)) { } // TODO: reset console
 

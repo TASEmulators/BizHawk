@@ -17,8 +17,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Parses multiple DAT files and returns a single GamesDB format csv string
 		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
 		public abstract string ParseDAT(string[] filePath);
 
 		protected List<string> IncomingData = new List<string>();
@@ -170,8 +168,6 @@ namespace BizHawk.Client.DBMan
 		/// <summary>
 		/// Used to get the correct system code (that each gamedb csv needs)
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
 		public static string GetSystemCode(SystemType type)
 		{
 			switch (type)
@@ -218,6 +214,7 @@ namespace BizHawk.Client.DBMan
 		Lynx,
 		VB,
 		UZE,
-		NGP
+		NGP,
+		ChannelF
 	}
 }

@@ -93,11 +93,17 @@ namespace BizHawk.Client.Common
 			{
 				if (value)
 				{
-					Header.Add(HeaderKeys.STARTSFROMSAVERAM, "True");
+					if (!Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
+					{
+						Header.Add(HeaderKeys.STARTSFROMSAVERAM, "True");
+					}
 				}
 				else
 				{
-					Header.Remove(HeaderKeys.STARTSFROMSAVERAM);
+					if (Header.ContainsKey(HeaderKeys.STARTSFROMSAVERAM))
+					{
+						Header.Remove(HeaderKeys.STARTSFROMSAVERAM);
+					}
 				}
 			}
 		}

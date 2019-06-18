@@ -82,8 +82,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Takes an int 0-100 and returns the relevant short volume to output
         /// </summary>
-        /// <param name="vol"></param>
-        /// <returns></returns>
         private int VolumeConverterIn(int vol)
         {
             int maxLimit = short.MaxValue / 3;
@@ -95,8 +93,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Takes an short volume and returns the relevant int value 0-100
         /// </summary>
-        /// <param name="vol"></param>
-        /// <returns></returns>
         private int VolumeConverterOut(int shortvol)
         {
             int maxLimit = short.MaxValue / 3;
@@ -134,7 +130,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Processes an incoming pulse value and adds it to the blipbuffer
         /// </summary>
-        /// <param name="pulse"></param>
         public void ProcessPulseValue(bool pulse)
         {
             if (!_machine._renderSound)
@@ -202,10 +197,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("Buzzer");
-            ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
-            ser.Sync("_sampleRate", ref _sampleRate);
-            ser.Sync("LastPulse", ref LastPulse);
-            ser.Sync("LastPulseTState", ref LastPulseTState);
+            ser.Sync(nameof(_tStatesPerFrame), ref _tStatesPerFrame);
+            ser.Sync(nameof(_sampleRate), ref _sampleRate);
+            ser.Sync(nameof(LastPulse), ref LastPulse);
+            ser.Sync(nameof(LastPulseTState), ref LastPulseTState);
             ser.EndSection();
         }
 

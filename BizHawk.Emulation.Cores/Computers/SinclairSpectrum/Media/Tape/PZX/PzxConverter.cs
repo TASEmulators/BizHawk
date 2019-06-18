@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Returns TRUE if pzx header is detected
         /// </summary>
-        /// <param name="data"></param>
         public override bool CheckType(byte[] data)
         {
             // PZX Header
@@ -90,7 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// DeSerialization method
         /// </summary>
-        /// <param name="data"></param>
         public override void Read(byte[] data)
         {
             // clear existing tape blocks
@@ -249,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             dCount = GetInt32(b, pos);
                             initPulseLevel = (uint)((dCount & 0x80000000) == 0 ? 0 : 1);
 
-                            t.InitialPulseLevel =  initPulseLevel == 1 ? true : false;
+                            t.InitialPulseLevel =  initPulseLevel == 1;
 
                             dCount = (int)(dCount & 0x7FFFFFFF);
                             pos += 4;
@@ -334,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                         var d = GetInt32(b, pos);
                         iniPulseLevel = ((d & 0x80000000) == 0 ? 0 : 1);
-                        t.InitialPulseLevel = iniPulseLevel == 1 ? true : false;
+                        t.InitialPulseLevel = iniPulseLevel == 1;
                         pCount = (d & 0x7FFFFFFF);
 
                         // convert to tape block

@@ -692,10 +692,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         private class Command
         {
-            /// <summary>
-            /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
-            /// </summary>
-            //public int BitMask { get; set; }
+//          /// <summary>
+//          /// Mask to remove potential parameter bits (5,6, and or 7) in order to identify the command
+//          /// </summary>
+//          public int BitMask { get; set; }
             /// <summary>
             /// The command code after bitmask has been applied
             /// </summary>
@@ -806,15 +806,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 ser.BeginSection("ActiveCmdParams");
 
-                ser.Sync("UnitSelect", ref UnitSelect);
-                ser.Sync("Side", ref Side);
-                ser.Sync("Cylinder", ref Cylinder);
-                ser.Sync("Head", ref Head);
-                ser.Sync("Sector", ref Sector);
-                ser.Sync("SectorSize", ref SectorSize);
-                ser.Sync("EOT", ref EOT);
-                ser.Sync("Gap3Length", ref Gap3Length);
-                ser.Sync("DTL", ref DTL);
+                ser.Sync(nameof(UnitSelect), ref UnitSelect);
+                ser.Sync(nameof(Side), ref Side);
+                ser.Sync(nameof(Cylinder), ref Cylinder);
+                ser.Sync(nameof(Head), ref Head);
+                ser.Sync(nameof(Sector), ref Sector);
+                ser.Sync(nameof(SectorSize), ref SectorSize);
+                ser.Sync(nameof(EOT), ref EOT);
+                ser.Sync(nameof(Gap3Length), ref Gap3Length);
+                ser.Sync(nameof(DTL), ref DTL);
 
                 ser.EndSection();
             }

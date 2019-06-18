@@ -66,13 +66,13 @@ namespace BizHawk.Client.EmuHawk
 		private void TrackBarSensitivity_ValueChanged(object sender, EventArgs e)
 		{
 			_bind.Mult = trackBarSensitivity.Value / 10.0f;
-			labelSensitivity.Text = $"Sensitivity: {(Bind.Mult * 100)}" + "%";
+			labelSensitivity.Text = $"Sensitivity: {Bind.Mult * 100}%";
 		}
 
 		private void TrackBarDeadzone_ValueChanged(object sender, EventArgs e)
 		{
 			_bind.Deadzone = trackBarDeadzone.Value / 20.0f;
-			labelDeadzone.Text = $"Deadzone: {(Bind.Deadzone * 100)}" + "%";
+			labelDeadzone.Text = $"Deadzone: {Bind.Deadzone * 100}%";
 		}
 
 		private void ButtonFlip_Click(object sender, EventArgs e)

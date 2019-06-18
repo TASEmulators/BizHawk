@@ -44,9 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             if (riffType != BitConverter.ToInt32(Encoding.ASCII.GetBytes("WAVE"), 0))
             {
-                throw new FormatException(string.Format(
-                    "Not supported RIFF type: '{0}'",
-                    Encoding.ASCII.GetString(BitConverter.GetBytes(riffType))));
+                throw new FormatException($"Not supported RIFF type: '{Encoding.ASCII.GetString(BitConverter.GetBytes(riffType))}'");
             }
             Int32 chunkId;
             Int32 chunkSize;

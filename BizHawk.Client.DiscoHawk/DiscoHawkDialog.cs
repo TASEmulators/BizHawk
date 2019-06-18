@@ -95,7 +95,7 @@ namespace BizHawk.Client.DiscoHawk
 			}
 
 			var cueBin = boundDisc.DumpCueBin(boundDiscRecord.BaseName, GetCuePrefs());
-			txtCuePreview.Text = cueBin.cue.Replace("\n", "\r\n"); ;
+			txtCuePreview.Text = cueBin.cue.Replace("\n", "\r\n");
 		}
 
 		private void btnPresetCanonical_Click(object sender, EventArgs e)

@@ -10,8 +10,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZXSpectrumPokeMemory : Form
 	{
-		private ZXSpectrum.ZXSpectrumSettings _settings;
-
 		public ZXSpectrumPokeMemory()
 		{
 			InitializeComponent();

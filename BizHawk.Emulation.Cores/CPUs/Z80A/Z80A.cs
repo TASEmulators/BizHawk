@@ -747,7 +747,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			for (ushort i = 0; i < bytes_read; i++)
 			{
-				byte_code += ReadMemory((ushort)(RegPC + i)).ToHexString(2);
+				byte_code += $"{ReadMemory((ushort)(RegPC + i)):X2}";
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -756,30 +756,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}: {1} {2}",
-					RegPC,
-					byte_code.PadRight(12),
-					disasm.PadRight(26)),
-				RegisterInfo = string.Format(
-					"AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7} {8}{9}{10}{11}{12}{13}{14}{15}{16}",
-					(Regs[A] << 8) + Regs[F],
-					(Regs[B] << 8) + Regs[C],
-					(Regs[D] << 8) + Regs[E],
-					(Regs[H] << 8) + Regs[L],
-					(Regs[Ixh] << 8) + Regs[Ixl],
-					(Regs[Iyh] << 8) + Regs[Iyl],
-					Regs[SPl] | (Regs[SPh] << 8),
-					TotalExecutedCycles,
-					FlagC ? "C" : "c",
-					FlagN ? "N" : "n",
-					FlagP ? "P" : "p",
-					Flag3 ? "3" : "-",
-					FlagH ? "H" : "h",
-					Flag5 ? "5" : "-",
-					FlagZ ? "Z" : "z",
-					FlagS ? "S" : "s",
-					FlagI ? "E" : "e")
+				Disassembly = $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
+				RegisterInfo = string.Join(" ",
+					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
+					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",
+					$"DE:{(Regs[D] << 8) + Regs[E]:X4}",
+					$"HL:{(Regs[H] << 8) + Regs[L]:X4}",
+					$"IX:{(Regs[Ixh] << 8) + Regs[Ixl]:X4}",
+					$"IY:{(Regs[Iyh] << 8) + Regs[Iyl]:X4}",
+					$"SP:{Regs[SPl] | (Regs[SPh] << 8):X4}",
+					$"Cy:{TotalExecutedCycles}",
+					string.Concat(
+						FlagC ? "C" : "c",
+						FlagN ? "N" : "n",
+						FlagP ? "P" : "p",
+						Flag3 ? "3" : "-",
+						FlagH ? "H" : "h",
+						Flag5 ? "5" : "-",
+						FlagZ ? "Z" : "z",
+						FlagS ? "S" : "s",
+						FlagI ? "E" : "e"))
 			};
 		}
 
@@ -839,38 +835,38 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// State Save/Load
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Z80A");
-			ser.Sync("Regs", ref Regs, false);
+			ser.BeginSection(nameof(Z80A));
+			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync("NMI", ref nonMaskableInterrupt);
 			ser.Sync("NMIPending", ref nonMaskableInterruptPending);
 			ser.Sync("IM", ref interruptMode);
 			ser.Sync("IFF1", ref iff1);
 			ser.Sync("IFF2", ref iff2);
 			ser.Sync("Halted", ref halted);
-			ser.Sync("I_skip", ref I_skip);
+			ser.Sync(nameof(I_skip), ref I_skip);
 			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync("EI_pending", ref EI_pending);
+			ser.Sync(nameof(EI_pending), ref EI_pending);
 
-			ser.Sync("instr_pntr", ref instr_pntr);
-			ser.Sync("bus_pntr", ref bus_pntr);
-			ser.Sync("mem_pntr", ref mem_pntr);
-			ser.Sync("irq_pntr", ref irq_pntr);
-			ser.Sync("cur_instr", ref cur_instr, false);
-			ser.Sync("BUSRQ", ref BUSRQ, false);
-			ser.Sync("IRQS", ref IRQS);
-			ser.Sync("MEMRQ", ref MEMRQ, false);
-			ser.Sync("opcode", ref opcode);
-			ser.Sync("FlagI", ref FlagI);
-			ser.Sync("FlagW", ref FlagW);
+			ser.Sync(nameof(instr_pntr), ref instr_pntr);
+			ser.Sync(nameof(bus_pntr), ref bus_pntr);
+			ser.Sync(nameof(mem_pntr), ref mem_pntr);
+			ser.Sync(nameof(irq_pntr), ref irq_pntr);
+			ser.Sync(nameof(cur_instr), ref cur_instr, false);
+			ser.Sync(nameof(BUSRQ), ref BUSRQ, false);
+			ser.Sync(nameof(IRQS), ref IRQS);
+			ser.Sync(nameof(MEMRQ), ref MEMRQ, false);
+			ser.Sync(nameof(opcode), ref opcode);
+			ser.Sync(nameof(FlagI), ref FlagI);
+			ser.Sync(nameof(FlagW), ref FlagW);
 
-			ser.Sync("NO Preifx", ref NO_prefix);
-			ser.Sync("CB Preifx", ref CB_prefix);
-			ser.Sync("IX_prefix", ref IX_prefix);
-			ser.Sync("IY_prefix", ref IY_prefix);
-			ser.Sync("IXCB_prefix", ref IXCB_prefix);
-			ser.Sync("IYCB_prefix", ref IYCB_prefix);
-			ser.Sync("EXTD_prefix", ref EXTD_prefix);
-			ser.Sync("PRE_SRC", ref PRE_SRC);
+			ser.Sync(nameof(NO_prefix), ref NO_prefix);
+			ser.Sync(nameof(CB_prefix), ref CB_prefix);
+			ser.Sync(nameof(IX_prefix), ref IX_prefix);
+			ser.Sync(nameof(IY_prefix), ref IY_prefix);
+			ser.Sync(nameof(IXCB_prefix), ref IXCB_prefix);
+			ser.Sync(nameof(IYCB_prefix), ref IYCB_prefix);
+			ser.Sync(nameof(EXTD_prefix), ref EXTD_prefix);
+			ser.Sync(nameof(PRE_SRC), ref PRE_SRC);
 
 			ser.EndSection();
 		}

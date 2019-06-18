@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("hPosCnt", ref HPosCnt);
 				ser.Sync("scanCnt", ref ScanCnt);
 				ser.Sync("scanCntInit", ref ScanCntInit);
-				ser.Sync("HM", ref HM);
+				ser.Sync(nameof(HM), ref HM);
 				ser.Sync("reflect", ref Reflect);
 				ser.Sync("delay", ref Delay);
 				ser.Sync("nusiz", ref Nusiz);

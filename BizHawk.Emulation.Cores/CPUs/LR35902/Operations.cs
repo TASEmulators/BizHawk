@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		public void SRL_Func(ushort src)
 		{
-			FlagC = Regs[src].Bit(0) ? true : false;
+			FlagC = Regs[src].Bit(0);
 
 			Regs[src] = (ushort)(Regs[src] >> 1);
 

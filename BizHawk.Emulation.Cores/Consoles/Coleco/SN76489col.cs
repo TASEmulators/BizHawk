@@ -53,28 +53,28 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			ser.BeginSection("SN76489");
 
-			ser.Sync("Chan_vol", ref Chan_vol, false);
-			ser.Sync("Chan_tone", ref Chan_tone, false);
+			ser.Sync(nameof(Chan_vol), ref Chan_vol, false);
+			ser.Sync(nameof(Chan_tone), ref Chan_tone, false);
 
 			ser.Sync("Chan_sel", ref chan_sel);
-			ser.Sync("vol_tone", ref vol_tone);
-			ser.Sync("noise_type", ref noise_type);
-			ser.Sync("noise_rate", ref noise_rate);
+			ser.Sync(nameof(vol_tone), ref vol_tone);
+			ser.Sync(nameof(noise_type), ref noise_type);
+			ser.Sync(nameof(noise_rate), ref noise_rate);
 
 			ser.Sync("Clock_A", ref clock_A);
 			ser.Sync("Clock_B", ref clock_B);
 			ser.Sync("Clock_C", ref clock_C);
-			ser.Sync("noise_clock", ref noise_clock);
-			ser.Sync("noise_bit", ref noise_bit);
+			ser.Sync(nameof(noise_clock), ref noise_clock);
+			ser.Sync(nameof(noise_bit), ref noise_bit);
 
-			ser.Sync("psg_clock", ref psg_clock);
+			ser.Sync(nameof(psg_clock), ref psg_clock);
 
-			ser.Sync("A_up", ref A_up);
-			ser.Sync("B_up", ref B_up);
-			ser.Sync("C_up", ref C_up);
-			ser.Sync("noise", ref noise);
+			ser.Sync(nameof(A_up), ref A_up);
+			ser.Sync(nameof(B_up), ref B_up);
+			ser.Sync(nameof(C_up), ref C_up);
+			ser.Sync(nameof(noise), ref noise);
 
-			ser.Sync("current_sample", ref current_sample);
+			ser.Sync(nameof(current_sample), ref current_sample);
 
 			ser.EndSection();
 		}

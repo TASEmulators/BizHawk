@@ -62,10 +62,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public AmstradGateArray GateArray { get; set; }
 
-        /// <summary>
-        /// Renders pixels to the screen
-        /// </summary>
-        //public CRTDevice CRT { get; set; }
+//      /// <summary>
+//      /// Renders pixels to the screen
+//      /// </summary>
+//      public CRTDevice CRT { get; set; }
 
         /// <summary>
         /// The PPI contoller chip
@@ -319,29 +319,29 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("CPCMachine");
-            ser.Sync("FrameCompleted", ref FrameCompleted);
-            ser.Sync("OverFlow", ref OverFlow);
-            ser.Sync("FrameCount", ref FrameCount);
-            ser.Sync("_frameCycles", ref _frameCycles);
-            ser.Sync("inputRead", ref inputRead);
-            ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
-            ser.Sync("ROMLower", ref ROMLower, false);
-            ser.Sync("ROM0", ref ROM0, false);
-            ser.Sync("ROM7", ref ROM7, false);
-            ser.Sync("RAM0", ref RAM0, false);
-            ser.Sync("RAM1", ref RAM1, false);
-            ser.Sync("RAM2", ref RAM2, false);
-            ser.Sync("RAM3", ref RAM3, false);
-            ser.Sync("RAM4", ref RAM4, false);
-            ser.Sync("RAM5", ref RAM5, false);
-            ser.Sync("RAM6", ref RAM6, false);
-            ser.Sync("RAM7", ref RAM7, false);
+            ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
+            ser.Sync(nameof(OverFlow), ref OverFlow);
+            ser.Sync(nameof(FrameCount), ref FrameCount);
+            ser.Sync(nameof(_frameCycles), ref _frameCycles);
+            ser.Sync(nameof(inputRead), ref inputRead);
+            ser.Sync(nameof(LastFrameStartCPUTick), ref LastFrameStartCPUTick);
+            ser.Sync(nameof(ROMLower), ref ROMLower, false);
+            ser.Sync(nameof(ROM0), ref ROM0, false);
+            ser.Sync(nameof(ROM7), ref ROM7, false);
+            ser.Sync(nameof(RAM0), ref RAM0, false);
+            ser.Sync(nameof(RAM1), ref RAM1, false);
+            ser.Sync(nameof(RAM2), ref RAM2, false);
+            ser.Sync(nameof(RAM3), ref RAM3, false);
+            ser.Sync(nameof(RAM4), ref RAM4, false);
+            ser.Sync(nameof(RAM5), ref RAM5, false);
+            ser.Sync(nameof(RAM6), ref RAM6, false);
+            ser.Sync(nameof(RAM7), ref RAM7, false);
 
-            ser.Sync("UpperROMPosition", ref UpperROMPosition);
-            ser.Sync("UpperROMPaged", ref UpperROMPaged);
-            ser.Sync("LowerROMPaged", ref LowerROMPaged);
-            ser.Sync("RAMConfig", ref RAMConfig);
-            ser.Sync("RAM64KBank", ref RAM64KBank);
+            ser.Sync(nameof(UpperROMPosition), ref UpperROMPosition);
+            ser.Sync(nameof(UpperROMPaged), ref UpperROMPaged);
+            ser.Sync(nameof(LowerROMPaged), ref LowerROMPaged);
+            ser.Sync(nameof(RAMConfig), ref RAMConfig);
+            ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
 
             CRCT.SyncState(ser);
             //CRT.SyncState(ser);
@@ -350,13 +350,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             TapeBuzzer.SyncState(ser);
             AYDevice.SyncState(ser);
 
-            ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
+            ser.Sync(nameof(tapeMediaIndex), ref tapeMediaIndex);
             if (ser.IsReader)
                 TapeMediaIndex = tapeMediaIndex;
 
             TapeDevice.SyncState(ser);
 
-            ser.Sync("diskMediaIndex", ref diskMediaIndex);
+            ser.Sync(nameof(diskMediaIndex), ref diskMediaIndex);
             if (ser.IsReader)
                 DiskMediaIndex = diskMediaIndex;
 

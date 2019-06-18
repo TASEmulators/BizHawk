@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 						NotesBox.Text = "";
 
 						AddressBox.Enabled = false;
-						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => $"{addrStr},{nextStr}");
 
 						BigEndianCheckBox.ThreeState = true;
 
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "New Watch";
 					break;
 				case Mode.Edit:
-					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : "");
+					Text = $"Edit {(_watchList.Count == 1 ? "Watch" : "Watches")}";
 					break;
 				case Mode.Duplicate:
 					Text = "Duplicate Watch";

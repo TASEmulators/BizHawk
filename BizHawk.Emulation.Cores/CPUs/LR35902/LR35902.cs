@@ -563,57 +563,55 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0} ",
-					disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---").PadRight(40),
-				RegisterInfo = string.Format(
-					"A:{0:X2} F:{1:X2} B:{2:X2} C:{3:X2} D:{4:X2} E:{5:X2} H:{6:X2} L:{7:X2} SP:{8:X2} Cy:{9} LY:{10} {11}{12}{13}{14}{15}{16}",
-					Regs[A],
-					Regs[F],
-					Regs[B],
-					Regs[C],
-					Regs[D],
-					Regs[E],
-					Regs[H],
-					Regs[L],
-					Regs[SPl] | (Regs[SPh] << 8),
-					TotalExecutedCycles,
-					LY,
-					FlagZ ? "Z" : "z",
-					FlagN ? "N" : "n",
-					FlagH ? "H" : "h",
-					FlagC ? "C" : "c",			
-					FlagI ? "I" : "i",
-					interrupts_enabled ? "E" : "e")
+				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---")} ".PadRight(40),
+				RegisterInfo = string.Join(" ",
+					$"A:{Regs[A]:X2}",
+					$"F:{Regs[F]:X2}",
+					$"B:{Regs[B]:X2}",
+					$"C:{Regs[C]:X2}",
+					$"D:{Regs[D]:X2}",
+					$"E:{Regs[E]:X2}",
+					$"H:{Regs[H]:X2}",
+					$"L:{Regs[L]:X2}",
+					$"SP:{Regs[SPl] | (Regs[SPh] << 8):X2}",
+					$"Cy:{TotalExecutedCycles}",
+					$"LY:{LY}",
+					string.Concat(
+						FlagZ ? "Z" : "z",
+						FlagN ? "N" : "n",
+						FlagH ? "H" : "h",
+						FlagC ? "C" : "c",
+						FlagI ? "I" : "i",
+						interrupts_enabled ? "E" : "e"))
 			};
 		}
 		// State Save/Load
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("LR35902");
-			ser.Sync("Regs", ref Regs, false);
+			ser.BeginSection(nameof(LR35902));
+			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync("IRQ", ref interrupts_enabled);
-			ser.Sync("I_use", ref I_use);
-			ser.Sync("skip_once", ref skip_once);
-			ser.Sync("Halt_bug_2", ref Halt_bug_2);
-			ser.Sync("Halt_bug_3", ref Halt_bug_3);
+			ser.Sync(nameof(I_use), ref I_use);
+			ser.Sync(nameof(skip_once), ref skip_once);
+			ser.Sync(nameof(Halt_bug_2), ref Halt_bug_2);
+			ser.Sync(nameof(Halt_bug_3), ref Halt_bug_3);
 			ser.Sync("Halted", ref halted);
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
-			ser.Sync("EI_pending", ref EI_pending);
-			ser.Sync("int_src", ref int_src);
-			ser.Sync("stop_time", ref stop_time);
-			ser.Sync("stop_check", ref stop_check);
-			ser.Sync("is_GBC", ref is_GBC);
+			ser.Sync(nameof(EI_pending), ref EI_pending);
+			ser.Sync(nameof(int_src), ref int_src);
+			ser.Sync(nameof(stop_time), ref stop_time);
+			ser.Sync(nameof(stop_check), ref stop_check);
+			ser.Sync(nameof(is_GBC), ref is_GBC);
 
-			ser.Sync("instr_pntr", ref instr_pntr);
-			ser.Sync("cur_instr", ref cur_instr, false);
-			ser.Sync("CB Preifx", ref CB_prefix);
+			ser.Sync(nameof(instr_pntr), ref instr_pntr);
+			ser.Sync(nameof(cur_instr), ref cur_instr, false);
+			ser.Sync("CB Prefix", ref CB_prefix);
 			ser.Sync("Stopped", ref stopped);
-			ser.Sync("opcode", ref opcode);
-			ser.Sync("jammped", ref jammed);
-			ser.Sync("LY", ref LY);
-			ser.Sync("FlagI", ref FlagI);
+			ser.Sync(nameof(opcode), ref opcode);
+			ser.Sync(nameof(jammed), ref jammed);
+			ser.Sync(nameof(LY), ref LY);
+			ser.Sync(nameof(FlagI), ref FlagI);
 
 			ser.EndSection();
 		}

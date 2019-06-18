@@ -278,83 +278,83 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Cia0");
+			ser.BeginSection(nameof(Cia0));
 			Cia0.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Cia1");
+			ser.BeginSection(nameof(Cia1));
 			Cia1.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("ColorRam");
+			ser.BeginSection(nameof(ColorRam));
 			ColorRam.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Cpu");
+			ser.BeginSection(nameof(Cpu));
 			Cpu.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Pla");
+			ser.BeginSection(nameof(Pla));
 			Pla.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Ram");
+			ser.BeginSection(nameof(Ram));
 			Ram.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Sid");
+			ser.BeginSection(nameof(Sid));
 			Sid.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Vic");
+			ser.BeginSection(nameof(Vic));
 			Vic.SyncState(ser);
 			ser.EndSection();
 
 			if (CartPort.IsConnected)
 			{
-				ser.BeginSection("CartPort");
+				ser.BeginSection(nameof(CartPort));
 				CartPort.SyncState(ser);
 				ser.EndSection();
 			}
 
-			ser.BeginSection("Cassette");
+			ser.BeginSection(nameof(Cassette));
 			Cassette.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Serial");
+			ser.BeginSection(nameof(Serial));
 			Serial.SyncState(ser);
 			ser.EndSection();
 
 			if (TapeDrive != null) // TODO: a tape object is already in a nested class, is it the same reference? do we need this?
 			{
-				ser.BeginSection("TapeDrive");
+				ser.BeginSection(nameof(TapeDrive));
 				TapeDrive.SyncState(ser);
 				ser.EndSection();
 			}
 
-			ser.BeginSection("User");
+			ser.BeginSection(nameof(User));
 			User.SyncState(ser);
 			ser.EndSection();
 
 			if (DiskDrive != null) // TODO: a disk object is already in a nested class, is it the same reference? do we need this?
 			{
-				ser.BeginSection("DiskDrive");
+				ser.BeginSection(nameof(DiskDrive));
 				DiskDrive.SyncState(ser);
 				ser.EndSection();
 			}
 
-			ser.Sync("Bus", ref Bus);
-			ser.Sync("InputRead", ref InputRead);
-			ser.Sync("Irq", ref Irq);
-			ser.Sync("Nmi", ref Nmi);
+			ser.Sync(nameof(Bus), ref Bus);
+			ser.Sync(nameof(InputRead), ref InputRead);
+			ser.Sync(nameof(Irq), ref Irq);
+			ser.Sync(nameof(Nmi), ref Nmi);
 
-			ser.Sync("_lastReadVicAddress", ref _lastReadVicAddress);
-			ser.Sync("_lastReadVicData", ref _lastReadVicData);
-			ser.Sync("_vicBank", ref _vicBank);
+			ser.Sync(nameof(_lastReadVicAddress), ref _lastReadVicAddress);
+			ser.Sync(nameof(_lastReadVicData), ref _lastReadVicData);
+			ser.Sync(nameof(_vicBank), ref _vicBank);
 
-			ser.Sync("_joystickPressed", ref _joystickPressed, useNull: false);
-			ser.Sync("_keyboardPressed", ref _keyboardPressed, useNull: false);
-			ser.Sync("_restorePressed", ref _restorePressed);
+			ser.Sync(nameof(_joystickPressed), ref _joystickPressed, useNull: false);
+			ser.Sync(nameof(_keyboardPressed), ref _keyboardPressed, useNull: false);
+			ser.Sync(nameof(_restorePressed), ref _restorePressed);
 		}
 	}
 }

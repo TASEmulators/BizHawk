@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// need to be fancy here, so call the ofd constructor directly instead of helper
-				var all = "*." + string.Join(";*.", MovieService.MovieExtensions.Reverse());
+				var all = $"*.{string.Join(";*.", MovieService.MovieExtensions.Reverse())}";
 				var ofd = new OpenFileDialog
 				{
 					FileName = filename,
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 					_autosaveTimer.Start();
 				}
 
-				MessageStatusLabel.Text = CurrentTasMovie.Name + " saved.";
+				MessageStatusLabel.Text = $"{CurrentTasMovie.Name} saved.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				Cursor = Cursors.Default;
 				GlobalWin.Sound.StartSound();
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
-				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+				MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} saved.";
 				Cursor = Cursors.Default;
 			}
 
@@ -169,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
+			Mainform.SetWindowText();
 			GlobalWin.Sound.StartSound();
 		}
 
@@ -267,17 +268,41 @@ namespace BizHawk.Client.EmuHawk
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2(true);
+			var bk2 = CurrentTasMovie.ToBk2(true, true);
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
-			bk2.Save();
+			string d_exp = " not exported.";
+			var file = new FileInfo(bk2.Filename);
+			if (file.Exists)
+			{
+				GlobalWin.Sound.StopSound();
+				var result = MessageBox.Show(
+					"Overwrite Existing File?",
+					"Tastudio",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button3);
+
+				GlobalWin.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					bk2.Save();
+					d_exp = " exported.";
+				}
+			}
+			else
+			{
+				bk2.Save();
+				d_exp = " exported.";
+			}
+
 			if (Settings.AutosaveInterval > 0)
 			{
 				_autosaveTimer.Start();
 			}
 
-			MessageStatusLabel.Text = bk2.Name + " exported.";
+			MessageStatusLabel.Text = bk2.Name + d_exp;
 			Cursor = Cursors.Default;
 		}
 
@@ -599,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 				bool needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 				int rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				CurrentTasMovie.ChangeLog.BeginNewBatch("Clear frames " + TasView.SelectedRows.Min() + "-" + TasView.SelectedRows.Max());
+				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectedRows.Min()}-{TasView.SelectedRows.Max()}");
 				foreach (int frame in TasView.SelectedRows)
 				{
 					CurrentTasMovie.ClearFrame(frame);
@@ -782,7 +807,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GoToFrame(0);
 			int lastState = 0;
-			int goToFrame = CurrentTasMovie.TasStateManager.LastStatedFrame;
+			int goToFrame = CurrentTasMovie.LastStatedFrame;
 			do
 			{
 				Mainform.FrameAdvance();
@@ -794,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!state.SequenceEqual(greenzone))
 					{
-						MessageBox.Show("Bad data between frames " + lastState + " and " + Emulator.Frame);
+						MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}");
 						return;
 					}
 
@@ -837,7 +862,16 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult result = prompt.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					int val = int.Parse(prompt.PromptText);
+					int val = 0;
+					try
+					{
+						val = int.Parse(prompt.PromptText);
+					}
+					catch
+					{
+						MessageBox.Show("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+
 					if (val > 0)
 					{
 						CurrentTasMovie.ChangeLog.MaxSteps = val;
@@ -1236,14 +1270,14 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
-				playerMenus[i] = new ToolStripMenuItem("Player " + i);
+				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
 			}
 
 			foreach (InputRoll.RollColumn column in columns)
 			{
 				ToolStripMenuItem menuItem = new ToolStripMenuItem
 				{
-					Text = column.Text + " (" + column.Name + ")",
+					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
 					Tag = column.Name
@@ -1287,9 +1321,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < keysMenus.Length; i++)
 			{
-				string text = "Keys (" +
-					keysMenus[i].DropDownItems[0].Tag + " - " +
-					keysMenus[i].DropDownItems[keysMenus[i].DropDownItems.Count - 1].Tag + ")";
+				string text = $"Keys ({keysMenus[i].DropDownItems[0].Tag} - {keysMenus[i].DropDownItems[keysMenus[i].DropDownItems.Count - 1].Tag})";
 				keysMenus[i].Text = text.Replace("Key ", "");
 				ColumnsSubMenu.DropDownItems.Add(keysMenus[i]);
 			}
@@ -1343,7 +1375,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (playerMenus[i].HasDropDownItems)
 				{
-					var item = new ToolStripMenuItem("Show Player " + i)
+					var item = new ToolStripMenuItem($"Show Player {i}")
 					{
 						CheckOnClick = true,
 						Checked = true
@@ -1453,14 +1485,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				int index = TasView.SelectedRows.First();
-				GoToFrame(index);
-
-				TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-					SaveRamEmulator.CloneSaveRam());
-
-				Mainform.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+				if (SaveRamEmulator.CloneSaveRam() != null)
+				{
+					int index = 0;
+					if (TasView.SelectedRows.Count() > 0) { index = TasView.SelectedRows.First(); }
+					GoToFrame(index);
+					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+						SaveRamEmulator.CloneSaveRam());
+					Mainform.PauseEmulator();
+					LoadFile(new FileInfo(newProject.Filename), true);
+				}
+				else
+				{
+					throw new Exception("No SaveRam");
+				}
 			}
 		}
 

@@ -227,28 +227,28 @@ namespace BizHawk.Emulation.Cores.Components
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("PSG");
-			ser.Sync("MainVolumeLeft", ref MainVolumeLeft);
-			ser.Sync("MainVolumeRight", ref MainVolumeRight);
-			ser.Sync("VoiceLatch", ref VoiceLatch);
-			ser.Sync("WaveTableWriteOffset", ref WaveTableWriteOffset);
+			ser.Sync(nameof(MainVolumeLeft), ref MainVolumeLeft);
+			ser.Sync(nameof(MainVolumeRight), ref MainVolumeRight);
+			ser.Sync(nameof(VoiceLatch), ref VoiceLatch);
+			ser.Sync(nameof(WaveTableWriteOffset), ref WaveTableWriteOffset);
 
 			for (int i = 0; i < 6; i++)
 			{
 				ser.BeginSection("Channel"+i);
-				ser.Sync("Frequency", ref Channels[i].Frequency);
-				ser.Sync("Panning", ref Channels[i].Panning);
-				ser.Sync("Volume", ref Channels[i].Volume);
-				ser.Sync("Enabled", ref Channels[i].Enabled);
+				ser.Sync(nameof(PSGChannel.Frequency), ref Channels[i].Frequency);
+				ser.Sync(nameof(PSGChannel.Panning), ref Channels[i].Panning);
+				ser.Sync(nameof(PSGChannel.Volume), ref Channels[i].Volume);
+				ser.Sync(nameof(PSGChannel.Enabled), ref Channels[i].Enabled);
 				if (i.In(4, 5))
 				{
-					ser.Sync("NoiseChannel", ref Channels[i].NoiseChannel);
-					ser.Sync("NoiseFreq", ref Channels[i].NoiseFreq);
+					ser.Sync(nameof(PSGChannel.NoiseChannel), ref Channels[i].NoiseChannel);
+					ser.Sync(nameof(PSGChannel.NoiseFreq), ref Channels[i].NoiseFreq);
 				}
 
-				ser.Sync("DDA", ref Channels[i].DDA);
-				ser.Sync("DDAValue", ref Channels[i].DDAValue);
-				ser.Sync("SampleOffset", ref Channels[i].SampleOffset);
-				ser.Sync("Wave", ref Channels[i].Wave, false);
+				ser.Sync(nameof(PSGChannel.DDA), ref Channels[i].DDA);
+				ser.Sync(nameof(PSGChannel.DDAValue), ref Channels[i].DDAValue);
+				ser.Sync(nameof(PSGChannel.SampleOffset), ref Channels[i].SampleOffset);
+				ser.Sync(nameof(PSGChannel.Wave), ref Channels[i].Wave, false);
 				ser.EndSection();
 			}
 

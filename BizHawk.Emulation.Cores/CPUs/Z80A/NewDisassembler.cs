@@ -12,28 +12,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
-			if (format.IndexOf("nn") != -1)
-			{
-				byte B = read(addr++);
-				byte C = read(addr++);
-				format = format.Replace("nn", string.Format("{0:X4}h", B + C * 256));
-			}
 
-			if (format.IndexOf("n") != -1)
-			{
-				byte B = read(addr++);
-				format = format.Replace("n", string.Format("{0:X2}h", B));
-			}
+			if (format.IndexOf("nn") != -1) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
+			if (format.IndexOf("n") != -1) format = format.Replace("n", $"{read(addr++):X2}h");
 
 			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
-
 			if (format.IndexOf("d") != -1)
 			{
-				byte B = read(addr++);
-				bool neg = ((B & 0x80) != 0);
-				char sign = neg ? '-' : '+';
-				int val = neg ? 256 - B : B;
-				format = format.Replace("d", string.Format("{0}{1:X2}h", sign, val));
+				var b = unchecked ((sbyte) read(addr++));
+				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
 			}
 
 			return format;

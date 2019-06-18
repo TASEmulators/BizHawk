@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
 	class ArgParser
-		//parses command line arguments and adds the values to a class attribute
-		//default values are null for strings and false for boolean
-		//the last value will overwrite previously set values
-		//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
+	//parses command line arguments and adds the values to a class attribute
+	//default values are null for strings and false for boolean
+	//the last value will overwrite previously set values
+	//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
 	{
 		public string cmdRom = null;
 		public string cmdLoadSlot = null;
@@ -27,14 +28,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool startFullscreen = false;
 		public string luaScript = null;
 		public bool luaConsole = false;
-		public int socket_port = 9999;
+		public int socket_port = 0;
 		public string socket_ip = null;
 		public string mmf_filename = null;
 		public string URL_get = null;
 		public string URL_post = null;
+		public bool? audiosync = null;
 
 		public void ParseArguments(string[] args)
-
 		{
 			for (int i = 0; i < args.Length; i++)
 			{
@@ -131,43 +132,63 @@ namespace BizHawk.Client.EmuHawk
 				{
 					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
+				else if (arg.StartsWith("--audiosync="))
+				{
+					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
+				}
 				else
 				{
 					cmdRom = args[i];
 				}
 			}
-			////initialize HTTP communication
+
+			//initialize HTTP communication
 			if (URL_get != null || URL_post != null)
 			{
+				GlobalWin.httpCommunication = new Communication.HttpCommunication();
 				if (URL_get != null)
 				{
-					GlobalWin.httpCommunication.initialized = true;
-					GlobalWin.httpCommunication.SetGetUrl(URL_get);
+					GlobalWin.httpCommunication.GetUrl = URL_get;
 				}
 				if (URL_post != null)
 				{
-					GlobalWin.httpCommunication.initialized = true;
-					GlobalWin.httpCommunication.SetPostUrl(URL_post);
+					GlobalWin.httpCommunication.PostUrl = URL_post;
 				}
 			}
+
 			//inititalize socket server
-			if (socket_ip != null && socket_port > -1)
+			if (socket_ip != null && socket_port > 0)
 			{
-				GlobalWin.socketServer.initialized = true;
+				GlobalWin.socketServer = new Communication.SocketServer();
 				GlobalWin.socketServer.SetIp(socket_ip, socket_port);
 			}
-			else if (socket_ip != null)
+			else if (socket_ip == null ^ socket_port == 0)
 			{
-				GlobalWin.socketServer.initialized = true;
-				GlobalWin.socketServer.SetIp(socket_ip);
+				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 			}
-			
+
 			//initialize mapped memory files
 			if (mmf_filename != null)
 			{
-				GlobalWin.memoryMappedFiles.initialized = true;
-				GlobalWin.memoryMappedFiles.SetFilename(mmf_filename);
+				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
+				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
 			}
+		}
+
+		public static string GetCmdConfigFile(string[] args)
+		{
+			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
+		}
+	}
+
+	class ArgParserException : Exception
+	{
+		public ArgParserException()
+		{
+		}
+
+		public ArgParserException(string message) : base(message)
+		{
 		}
 	}
 }

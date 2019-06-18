@@ -4,6 +4,7 @@ using System.Threading;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -24,15 +25,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
-				_outputDevice = new OpenALSoundOutput(this);
-			if (!Global.RunningOnUnix)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
+					_outputDevice = new OpenALSoundOutput(this);
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
 					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
 					_outputDevice = new XAudio2SoundOutput(this);
 			}
+			else _outputDevice = new OpenALSoundOutput(this); // at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
+
 			if (_outputDevice == null)
 				_outputDevice = new DummySoundOutput(this);
 		}

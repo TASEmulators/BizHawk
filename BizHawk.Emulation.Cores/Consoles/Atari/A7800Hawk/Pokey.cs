@@ -311,21 +311,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Pokey");
+			ser.BeginSection(nameof(Pokey));
 
-			ser.Sync("Regs", ref Regs, false);
+			ser.Sync(nameof(Regs), ref Regs, false);
 
-			ser.Sync("poly4", ref poly4);
-			ser.Sync("poly5", ref poly5);
-			ser.Sync("poly9", ref poly9);
-			ser.Sync("poly17", ref poly17);
-			ser.Sync("ch_div", ref ch_div, false);
-			ser.Sync("inc_ch", ref inc_ch, false);
-			ser.Sync("ch_out", ref ch_out, false);
-			ser.Sync("ch_src", ref ch_src, false);
-			ser.Sync("ch_vol", ref ch_vol, false);
-			ser.Sync("high_pass_1", ref high_pass_1);
-			ser.Sync("high_pass_2", ref high_pass_2);
+			ser.Sync(nameof(poly4), ref poly4);
+			ser.Sync(nameof(poly5), ref poly5);
+			ser.Sync(nameof(poly9), ref poly9);
+			ser.Sync(nameof(poly17), ref poly17);
+			ser.Sync(nameof(ch_div), ref ch_div, false);
+			ser.Sync(nameof(inc_ch), ref inc_ch, false);
+			ser.Sync(nameof(ch_out), ref ch_out, false);
+			ser.Sync(nameof(ch_src), ref ch_src, false);
+			ser.Sync(nameof(ch_vol), ref ch_vol, false);
+			ser.Sync(nameof(high_pass_1), ref high_pass_1);
+			ser.Sync(nameof(high_pass_2), ref high_pass_2);
 
 			ser.EndSection();
 		}

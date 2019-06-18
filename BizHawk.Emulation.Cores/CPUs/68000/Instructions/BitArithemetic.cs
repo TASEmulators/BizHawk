@@ -51,15 +51,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 0: // Byte
 					info.Mnemonic = "and.b";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 1, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 1, ref pc)}, D{dstReg}";
 					break;
 				case 1: // Word
 					info.Mnemonic = "and.w";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 2, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 2, ref pc)}, D{dstReg}";
 					break;
 				case 2: // Long
 					info.Mnemonic = "and.l";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 4, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 4, ref pc)}, D{dstReg}";
 					break;
 			}
 
@@ -124,15 +124,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 0: // Byte
 					info.Mnemonic = "and.b";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 1, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 1, ref pc)}";
 					break;
 				case 1: // Word
 					info.Mnemonic = "and.w";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 2, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 2, ref pc)}";
 					break;
 				case 2: // Long
 					info.Mnemonic = "and.l";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 4, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 4, ref pc)}";
 					break;
 			}
 
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.b";
 						sbyte imm = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = string.Format("#${0:X}, ", imm);
+						info.Args = $"#${imm:X}, ";
 						info.Args += DisassembleValue(dstMode, dstReg, 1, ref pc);
 						break;
 					}
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.w";
 						short imm = ReadWord(pc); pc += 2;
-						info.Args = string.Format("#${0:X}, ", imm);
+						info.Args = $"#${imm:X}, ";
 						info.Args += DisassembleValue(dstMode, dstReg, 2, ref pc);
 						break;
 					}
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.l";
 						int imm = ReadLong(pc); pc += 4;
-						info.Args = string.Format("#${0:X}, ", imm);
+						info.Args = $"#${imm:X}, ";
 						info.Args += DisassembleValue(dstMode, dstReg, 4, ref pc);
 						break;
 					}
@@ -283,15 +283,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 0: // Byte
 					info.Mnemonic = "eor.b";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 1, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 1, ref pc)}";
 					break;
 				case 1: // Word
 					info.Mnemonic = "eor.w";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 2, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 2, ref pc)}";
 					break;
 				case 2: // Long
 					info.Mnemonic = "eor.l";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 4, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 4, ref pc)}";
 					break;
 			}
 
@@ -355,21 +355,21 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "eori.b";
 						sbyte immed = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 1, ref pc)}";
 						break;
 					}
 				case 1: // word
 					{
 						info.Mnemonic = "eori.w";
 						short immed = ReadWord(pc); pc += 2;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 2, ref pc)}";
 						break;
 					}
 				case 2: // long
 					{
 						info.Mnemonic = "eori.l";
 						int immed = ReadLong(pc); pc += 4;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 4, ref pc)}";
 						break;
 					}
 			}
@@ -423,15 +423,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 0: // Byte
 					info.Mnemonic = "or.b";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 1, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 1, ref pc)}, D{dstReg}";
 					break;
 				case 1: // Word
 					info.Mnemonic = "or.w";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 2, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 2, ref pc)}, D{dstReg}";
 					break;
 				case 2: // Long
 					info.Mnemonic = "or.l";
-					info.Args = string.Format("{0}, D{1}", DisassembleValue(srcMode, srcReg, 4, ref pc), dstReg);
+					info.Args = $"{DisassembleValue(srcMode, srcReg, 4, ref pc)}, D{dstReg}";
 					break;
 			}
 
@@ -496,15 +496,15 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 0: // Byte
 					info.Mnemonic = "or.b";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 1, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 1, ref pc)}";
 					break;
 				case 1: // Word
 					info.Mnemonic = "or.w";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 2, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 2, ref pc)}";
 					break;
 				case 2: // Long
 					info.Mnemonic = "or.l";
-					info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 4, ref pc));
+					info.Args = $"D{srcReg}, {DisassembleValue(dstMode, dstReg, 4, ref pc)}";
 					break;
 			}
 
@@ -568,21 +568,21 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "ori.b";
 						sbyte immed = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 1, ref pc)}";
 						break;
 					}
 				case 1: // word
 					{
 						info.Mnemonic = "ori.w";
 						short immed = ReadWord(pc); pc += 2;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 2, ref pc)}";
 						break;
 					}
 				case 2: // long
 					{
 						info.Mnemonic = "ori.l";
 						int immed = ReadLong(pc); pc += 4;
-						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+						info.Args = $"#${immed:X}, {DisassembleValue(mode, reg, 4, ref pc)}";
 						break;
 					}
 			}

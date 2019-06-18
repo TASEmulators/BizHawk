@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -13,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_bank_mask_32k, chr_bank_mask_4k;
 
 		//state
-		int[] chr = new int[2];
+		ByteBuffer chr = new ByteBuffer(2);
 		int prg;
 
 
@@ -36,6 +37,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr[1] = 1;
 
 			return true;
+		}
+
+		public override void Dispose()
+		{
+			chr.Dispose();
+			base.Dispose();
 		}
 
 		public override byte ReadPPU(int addr)
@@ -64,16 +71,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg = value & prg_bank_mask_32k;
 					break;
 				case 0x1ffe:
-					chr[0] = value & chr_bank_mask_4k;
+					chr[0] = (byte)(value & chr_bank_mask_4k);
 					break;
 				case 0x1fff:
-					chr[1] = value & chr_bank_mask_4k;
+					chr[1] = (byte)(value & chr_bank_mask_4k);
 					break;
 				default:
 					// on NINA, the regs sit on top of WRAM
 					base.WriteWRAM(addr, value);
 					break;
 			}
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync(nameof(prg), ref prg);
+			ser.Sync(nameof(chr), ref chr);
 		}
 	}
 }

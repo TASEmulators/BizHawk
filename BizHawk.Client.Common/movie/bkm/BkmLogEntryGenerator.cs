@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 				var prefix = "";
 				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
 				{
-					prefix = "P" + player + " ";
+					prefix = $"P{player} ";
 				}
 
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
@@ -313,7 +313,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -448,7 +448,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				if (BkmMnemonicConstants.Analogs[_controlType].Keys.Count > 0)
@@ -460,37 +460,37 @@ namespace BizHawk.Client.Common
 						// Nasty hackery
 						if (name == "Y Axis")
 						{
-							if (IsBasePressed("P" + player + " A Up"))
+							if (IsBasePressed($"P{player} A Up"))
 							{
 								val = 127;
 							}
-							else if (IsBasePressed("P" + player + " A Down"))
+							else if (IsBasePressed($"P{player} A Down"))
 							{
 								val = -127;
 							}
 							else
 							{
-								val = (int)GetBaseFloat("P" + player + " " + name);
+								val = (int)GetBaseFloat($"P{player} {name}");
 							}
 						}
 						else if (name == "X Axis")
 						{
-							if (IsBasePressed("P" + player + " A Left"))
+							if (IsBasePressed($"P{player} A Left"))
 							{
 								val = -127;
 							}
-							else if (IsBasePressed("P" + player + " A Right"))
+							else if (IsBasePressed($"P{player} A Right"))
 							{
 								val = 127;
 							}
 							else
 							{
-								val = (int)GetBaseFloat("P" + player + " " + name);
+								val = (int)GetBaseFloat($"P{player} {name}");
 							}
 						}
 						else
 						{
-							val = (int)GetBaseFloat("P" + player + " " + name);
+							val = (int)GetBaseFloat($"P{player} {name}");
 						}
 
 						if (val >= 0)
@@ -532,7 +532,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -563,7 +563,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
@@ -595,7 +595,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
+					input.Append(IsBasePressed($"P{player} {button}") ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
