@@ -57,12 +57,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			return new string[] {
 				"mame",                 // dummy, internally discarded by index, so has to go first
 				rom,                    // no dash for rom names, internally called "unadorned" option
-				"-rompath", directory,   // mame doesn't load roms from full paths, only from dirs for scan
+				"-rompath", directory,  // mame doesn't load roms from full paths, only from dirs for scan
 				"-window",              // forbid fullscreen
 				"-nokeepaspect",        // forbid mame from stretching the window
 				"-nomaximize",          // forbid windowed fullscreen
 				"-noreadconfig",        // forbid reading any config files
 				"-norewind",            // forbid rewind savestates, captured upon frame advance
+				"-skip_gameinfo",       // forbid showing this blocking screen that requires user input
 				"-video", "none"
 			};
 		}
