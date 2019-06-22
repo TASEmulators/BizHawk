@@ -11,14 +11,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public byte vec_scale, x_vel, y_vel, bright;
 		public double x_pos, y_pos;
 
-		public static uint br = 0xFFA4C505;
+		public static uint br = 0xFFFFFFFF;
 
 		public void tick()
 		{
 			if (ramp_sig && !zero_sig)
 			{
-				x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 1);
-				y_pos = y_pos + (y_vel - 128.0) / 256.0 * (vec_scale + 1);
+				x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 2);
+				y_pos = y_pos - (y_vel - 128.0) / 256.0 * (vec_scale + 2);
 
 				if (x_pos > 255) { x_pos = 255; }
 				if (x_pos < 0) { x_pos = 0; }

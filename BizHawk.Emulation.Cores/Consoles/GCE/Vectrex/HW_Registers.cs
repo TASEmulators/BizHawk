@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					ret = (byte)(t1_counter & 0xFF);
 
 					int_fl &= 0xBF;
+
 					update_int_fl();
 					break;
 				case 0x5:
@@ -129,6 +130,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				case 0x0:
 					wrt_val = (byte)(value & dir_ctrl);
 
+					if (aux_ctrl.Bit(7))
+					{
+						wrt_val = (byte)((wrt_val & 0x7F) | (PB7 ? 0x80 : 0x0));
+					}
+
 					portB_ret = (byte)(wrt_val | (reg_B & ~(dir_ctrl)));
 
 					if (dir_ctrl.Bit(0)) { sw = !value.Bit(0); }
@@ -138,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if (dir_ctrl.Bit(4)) { bdir = value.Bit(4); }
 					if (dir_ctrl.Bit(5)) { /*compare = value.Bit(5);*/ }
 					if (dir_ctrl.Bit(6)) { /* cart bank switch */ }
-					if (dir_ctrl.Bit(7)) { ppu.ramp_sig = !value.Bit(7); }
+					if (dir_ctrl.Bit(7)) { ppu.ramp_sig = !wrt_val.Bit(7); }
 
 					// writing to sound reg
 					if (bdir)
@@ -152,20 +158,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						if (sel0)
 						{
 							if (sel1) {/* sound line? */ }
-							else { ppu.vec_scale = portA_ret; Console.WriteLine("scale " + value + " " + cpu.TotalExecutedCycles); }
+							else { ppu.vec_scale = portA_ret; }
 						}
 						else
 						{
 							if (sel1) { ppu.bright = portA_ret; }
-							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); Console.WriteLine("y vel " + value + " " + cpu.TotalExecutedCycles); }
+							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
 						}
 					}
-					else
-					{
-						ppu.x_vel = portA_ret; Console.WriteLine("x vel " + value + " " + cpu.TotalExecutedCycles);
-					}
 
-					ppu.x_vel = (byte)(portA_ret ^ 0x80); Console.WriteLine("x vel " + value + " " + cpu.TotalExecutedCycles);
+					ppu.x_vel = (byte)(portA_ret ^ 0x80);;
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -195,10 +197,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
 						}
 					}
-					else
-					{
-						ppu.x_vel = portA_ret;
-					}
 
 					ppu.x_vel = (byte)(portA_ret ^ 0x80);
 
@@ -219,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					t1_counter = (t1_high << 8) | t1_low;
 					t1_shot_go = true;
-					if (aux_ctrl.Bit(7)) { PB7 = true; }
+					if (aux_ctrl.Bit(7)) { PB7 = false; ppu.ramp_sig = true; }
 					t1_ctrl = aux_ctrl;
 
 					int_fl &= 0xBF;
@@ -255,11 +253,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					shift_count = 0;
 
 					update_int_fl();
-					//Console.WriteLine("shift " + value + " " + cpu.TotalExecutedCycles);
 					break;
 				case 0xB:
 					aux_ctrl = value;
-					//Console.WriteLine(value + " " + cpu.TotalExecutedCycles);
+					if (!aux_ctrl.Bit(7)) { ppu.ramp_sig = value.Bit(7); }
 					break;
 				case 0xC:
 					prt_ctrl = value;
@@ -270,10 +267,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if ((value & 0xE) == 0xC) { ppu.zero_sig = true; }
 					else { ppu.zero_sig = false; }
 
-					if ((value & 0xE0) == 0xC0) { ppu.blank_sig = false; }
-					else { ppu.blank_sig = true; }
+					if ((value & 0xE0) == 0xC0) { ppu.blank_sig = true; }
+					else { ppu.blank_sig = false; }
 
-					//Console.WriteLine(value + " " + cpu.TotalExecutedCycles);
 					break;
 				case 0xD:
 					// writing to flags does not clear bit 7 directly
@@ -343,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					update_int_fl();
 					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
 
-					if (t1_ctrl.Bit(7)) { PB7 = !PB7; }
+					if (t1_ctrl.Bit(7)) { PB7 = !PB7; ppu.ramp_sig = !ppu.ramp_sig; }
 				}
 				else
 				{
@@ -354,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						int_fl |= 0x40;
 						update_int_fl();
 						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
-						if (t1_ctrl.Bit(7)) { PB7 = false; }
+						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; }
 
 						t1_shot_go = false;
 					}				
@@ -409,8 +405,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						{
 							// reset blank signal back to contorl of peripheral controller
 							shift_start = false;
-							if ((prt_ctrl & 0xE0) == 0xC0) { ppu.blank_sig = false; }
-							else { ppu.blank_sig = true; }
+							if ((prt_ctrl & 0xE0) == 0xC0) { ppu.blank_sig = true; }
+							else { ppu.blank_sig = false; }
 						}
 						else
 						{
@@ -451,7 +447,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			t2_low = t2_high = 0;
 			t2_counter = t2_ctrl = 0;
 			t2_shot_go = false;
-			PB6 = PB7_prev = false;
+			PB6 = PB6_prev = false;
 
 			int_en = int_fl = aux_ctrl = 0;
 
