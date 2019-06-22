@@ -48,11 +48,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void do_frame()
 		{
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+
 			for (int i = 0; i < 25000; i++)
 			{
 				timer_1_tick();
 				timer_2_tick();
+				shift_reg_tick();
 				audio.tick();
+				ppu.tick();
 				cpu.ExecuteOne();				
 			}
 		}
@@ -88,15 +92,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return _vidbuffer;		
 		}
 
-		public int VirtualWidth => 160;
-		public int VirtualHeight => 144;
-		public int BufferWidth => 160;
-		public int BufferHeight => 144;
+		public int VirtualWidth => 256;
+		public int VirtualHeight => 384;
+		public int BufferWidth => 256;
+		public int BufferHeight => 384;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
 
 		public uint[] color_palette = new uint[4];

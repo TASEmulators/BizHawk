@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public bool PB7_prev, PB6_prev;
 
 		// Port B controls
-		public bool sw, sel0, sel1, bc1, bdir, compare, ramp;
+		public bool sw, sel0, sel1, bc1, bdir, compare, shift_start;
 
-		public byte int_en, int_fl, aux_ctrl;
+		public byte int_en, int_fl, aux_ctrl, prt_ctrl, shift_reg, shift_reg_wait, shift_count;
 
 		public byte Read_Registers(int addr)
 		{
@@ -95,12 +95,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					break;
 				case 0xA:
 					int_fl &= 0xFB;
+					ret = shift_reg;
 					update_int_fl();
 					break;
 				case 0xB:
 					ret = aux_ctrl;
 					break;
 				case 0xC:
+					ret = prt_ctrl;
 					break;
 				case 0xD:
 					ret = int_fl;
@@ -129,14 +131,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					portB_ret = (byte)(wrt_val | (reg_B & ~(dir_ctrl)));
 
-					if (dir_ctrl.Bit(0)) { sw = value.Bit(0); }
+					if (dir_ctrl.Bit(0)) { sw = !value.Bit(0); }
 					if (dir_ctrl.Bit(1)) { sel0 = value.Bit(1); }
 					if (dir_ctrl.Bit(2)) { sel1 = value.Bit(2); }
 					if (dir_ctrl.Bit(3)) { bc1 = value.Bit(3); }
 					if (dir_ctrl.Bit(4)) { bdir = value.Bit(4); }
 					if (dir_ctrl.Bit(5)) { /*compare = value.Bit(5);*/ }
 					if (dir_ctrl.Bit(6)) { /* cart bank switch */ }
-					if (dir_ctrl.Bit(7)) { ramp = !value.Bit(7); }
+					if (dir_ctrl.Bit(7)) { ppu.ramp_sig = !value.Bit(7); }
 
 					// writing to sound reg
 					if (bdir)
@@ -144,6 +146,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						if (bc1) { audio.port_sel = (byte)(portA_ret & 0xF); }
 						else { audio.WriteReg(0, portA_ret); }
 					}
+
+					if (sw)
+					{
+						if (sel0)
+						{
+							if (sel1) {/* sound line? */ }
+							else { ppu.vec_scale = portA_ret; Console.WriteLine("scale " + value + " " + cpu.TotalExecutedCycles); }
+						}
+						else
+						{
+							if (sel1) { ppu.bright = portA_ret; }
+							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); Console.WriteLine("y vel " + value + " " + cpu.TotalExecutedCycles); }
+						}
+					}
+					else
+					{
+						ppu.x_vel = portA_ret; Console.WriteLine("x vel " + value + " " + cpu.TotalExecutedCycles);
+					}
+
+					ppu.x_vel = (byte)(portA_ret ^ 0x80); Console.WriteLine("x vel " + value + " " + cpu.TotalExecutedCycles);
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -159,6 +181,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						if (bc1) { audio.port_sel = (byte)(portA_ret & 0xf); }
 						else { audio.WriteReg(0, portA_ret); }
 					}
+
+					if (sw)
+					{
+						if (sel0)
+						{
+							if (sel1) {/* sound line? */ }
+							else { ppu.vec_scale = portA_ret; }
+						}
+						else
+						{
+							if (sel1) { ppu.bright = portA_ret; }
+							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
+						}
+					}
+					else
+					{
+						ppu.x_vel = portA_ret;
+					}
+
+					ppu.x_vel = (byte)(portA_ret ^ 0x80);
 
 					int_fl &= 0xFC;
 					update_int_fl();
@@ -180,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if (aux_ctrl.Bit(7)) { PB7 = true; }
 					t1_ctrl = aux_ctrl;
 
-					int_fl &= 0xBF;				
+					int_fl &= 0xBF;
 					update_int_fl();
 					break;
 				case 0x6:
@@ -207,12 +249,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					break;
 				case 0xA:
 					int_fl &= 0xFB;
+					shift_reg = value;
+					shift_start = true;
+					shift_reg_wait = 2;
+					shift_count = 0;
+
 					update_int_fl();
+					//Console.WriteLine("shift " + value + " " + cpu.TotalExecutedCycles);
 					break;
 				case 0xB:
 					aux_ctrl = value;
+					//Console.WriteLine(value + " " + cpu.TotalExecutedCycles);
 					break;
 				case 0xC:
+					prt_ctrl = value;
+
+					// since CA2 / CB2 are tied to beam controls, most of their functions can be glossed over here
+					// If there are games / demos that make use of other modes, they will have to be accounted for here
+
+					if ((value & 0xE) == 0xC) { ppu.zero_sig = true; }
+					else { ppu.zero_sig = false; }
+
+					if ((value & 0xE0) == 0xC0) { ppu.blank_sig = false; }
+					else { ppu.blank_sig = true; }
+
+					//Console.WriteLine(value + " " + cpu.TotalExecutedCycles);
 					break;
 				case 0xD:
 					// writing to flags does not clear bit 7 directly
@@ -236,6 +297,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					wrt_val = (byte)(value & dir_dac);
 
 					portA_ret = (byte)(wrt_val | (reg_A & ~(dir_dac)));
+
+					// writing to sound reg
+					if (bdir)
+					{
+						if (bc1) { audio.port_sel = (byte)(portA_ret & 0xf); }
+						else { audio.WriteReg(0, portA_ret); }
+					}
+
+					if (sw)
+					{
+						if (sel0)
+						{
+							if (sel1) {/* sound line? */ }
+							else { ppu.vec_scale = portA_ret; }
+						}
+						else
+						{
+							if (sel1) { ppu.bright = portA_ret; }
+							else { ppu.y_vel = portA_ret; }
+						}
+					}
+					else
+					{
+						ppu.x_vel = portA_ret;
+					}
 
 					int_fl &= 0xFC;
 					update_int_fl();
@@ -306,6 +392,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			}
 		}
 
+		public void shift_reg_tick()
+		{
+			if (shift_start)
+			{
+				if (shift_reg_wait > 0)
+				{
+					shift_reg_wait--;
+				}
+				else
+				{
+					// tick on every clock cycle
+					if ((aux_ctrl & 0x1C) == 0x18)
+					{
+						if (shift_count == 8)
+						{
+							// reset blank signal back to contorl of peripheral controller
+							shift_start = false;
+							if ((prt_ctrl & 0xE0) == 0xC0) { ppu.blank_sig = false; }
+							else { ppu.blank_sig = true; }
+						}
+						else
+						{
+							ppu.blank_sig = !shift_reg.Bit(7 - shift_count);
+							shift_count++;
+						}
+					}
+
+					// other clocking modes are not used. Maybe some demos use them?
+				}
+			}
+		}
+
 		public void update_int_fl()
 		{
 			// bit 7 is (IF.bit(X) & IE.bit(X)) OR'ed together for each bit
@@ -336,6 +454,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			PB6 = PB7_prev = false;
 
 			int_en = int_fl = aux_ctrl = 0;
+
+			shift_reg = shift_reg_wait = 0;
+			shift_start = false;
 		}
 	}
 }

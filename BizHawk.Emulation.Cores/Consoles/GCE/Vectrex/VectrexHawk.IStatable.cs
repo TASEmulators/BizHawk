@@ -82,6 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(int_en), ref int_en);
 			ser.Sync(nameof(int_fl), ref int_fl);
 			ser.Sync(nameof(aux_ctrl), ref aux_ctrl);
+			ser.Sync(nameof(prt_ctrl), ref prt_ctrl);
 
 			ser.Sync(nameof(sw), ref sw);
 			ser.Sync(nameof(sel0), ref sel0);
@@ -89,13 +90,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(bc1), ref bc1);
 			ser.Sync(nameof(bdir), ref bdir);
 			ser.Sync(nameof(compare), ref compare);
-			ser.Sync(nameof(ramp), ref ramp);
 
 			ser.Sync(nameof(_frame), ref _frame);
 			ser.Sync(nameof(_lagcount), ref _lagcount);
 			ser.Sync(nameof(_islag), ref _islag);
 
-
+			ser.Sync(nameof(shift_start), ref shift_start);
+			ser.Sync(nameof(shift_reg), ref shift_reg);
+			ser.Sync(nameof(shift_reg_wait), ref shift_reg_wait);
+			ser.Sync(nameof(shift_count), ref shift_count);
 
 			// probably a better way to do this
 			if (cart_RAM != null)
