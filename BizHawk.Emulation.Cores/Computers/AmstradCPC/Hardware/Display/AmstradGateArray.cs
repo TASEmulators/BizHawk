@@ -1035,8 +1035,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public int[] GetVideoBuffer()
         {
             // get only lines that have pixel data
-            var lines = ScreenLines.Where(a => a.Pixels.Count > 0).ToList();
-            var height = lines.Count();
+            var lines = ScreenLines.Where(a => a.Pixels.Count > 0);
 
             int pos = 0;
             int lCount = 0;

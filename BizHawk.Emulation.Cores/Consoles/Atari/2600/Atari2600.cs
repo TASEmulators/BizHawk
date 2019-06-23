@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Name = _game.Name,
 				System = "A26",
-				MetaData = "m=" + _mapper.GetType().ToString().Split('.').ToList().Last(),
+				MetaData = "m=" + _mapper.GetType().ToString().Split('.').Last(),
 				Hash = Rom.HashSHA1(),
 				Region = _game.Region,
 				Status = RomStatus.Unknown

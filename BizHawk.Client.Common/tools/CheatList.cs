@@ -222,7 +222,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Cheat> cheats)
 		{
-			foreach (var cheat in cheats.ToList())
+			foreach (var cheat in cheats.ToList()) // enumerate passed IEnumerable because it may depend on the value of _cheatList
 			{
 				_cheatList.Remove(cheat);
 			}
@@ -232,12 +232,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveRange(IEnumerable<Watch> watches)
 		{
-			var removeList = _cheatList.Where(cheat => watches.Any(w => w == cheat)).ToList();
-			foreach (var cheat in removeList)
-			{
-				_cheatList.Remove(cheat);
-			}
-
+			_cheatList.RemoveAll(cheat => watches.Any(w => w == cheat));
 			Changes = true;
 		}
 

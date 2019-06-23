@@ -876,7 +876,7 @@ namespace BizHawk.Client.EmuHawk
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
 
-				poke.SetWatch(SelectedIndices.Select(t => _searches[t]).ToList());
+				poke.SetWatch(SelectedIndices.Select(t => _searches[t]));
 				poke.ShowHawkDialog();
 
 				UpdateList();

@@ -152,12 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public void SetDataPeriodsArray(int[] periodArray)
         {
-            DataPeriods = new List<int>();
-
-            if (periodArray == null)
-                return;
-
-            DataPeriods = periodArray.ToList();
+            DataPeriods = periodArray?.ToList() ?? new List<int>();
         }
 
         /// <summary>

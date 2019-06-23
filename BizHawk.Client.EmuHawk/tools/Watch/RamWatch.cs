@@ -921,7 +921,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Changes();
 
-			var indices = indexes.Select(t => t - 1).ToList();
+			var indices = indexes.Select(t => t - 1);
 
 			WatchListView.SelectedIndices.Clear();
 			foreach (var t in indices)
@@ -947,7 +947,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Insert(indices[i] + 1, watch);
 			}
 
-			var newindices = indices.Select(t => t + 1).ToList();
+			var newindices = indices.Select(t => t + 1);
 
 			WatchListView.SelectedIndices.Clear();
 			foreach (var t in newindices)
@@ -1309,7 +1309,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var items = _watches
 				.Where(watch => watch.Address >= watch.Domain.Size)
-				.ToList();
+				.ToList(); // enumerate because _watches is about to be changed
 
 			foreach (var item in items)
 			{

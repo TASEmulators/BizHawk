@@ -89,17 +89,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Frozen)
 			{
-				var removed = false;
-				foreach (var recent in recentlist.ToList())
-				{
-					if (string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0)
-					{
-						recentlist.Remove(newFile); // intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
-						removed = true;
-					}
-				}
-
-				return removed;
+				return recentlist.RemoveAll(recent => string.Compare(newFile, recent, StringComparison.CurrentCultureIgnoreCase) == 0) != 0; // none removed => return false
 			}
 
 			return false;

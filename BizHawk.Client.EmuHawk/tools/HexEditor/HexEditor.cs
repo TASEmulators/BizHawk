@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				SetDomain(domain);
 				SetHighlighted(addrList[0]);
 				_secondaryHighlightedAddresses.Clear();
-				_secondaryHighlightedAddresses.AddRange(addrList.Where(addr => addr != addrList[0]).ToList());
+				_secondaryHighlightedAddresses.AddRange(addrList.Where(addr => addr != addrList[0]));
 				ClearNibbles();
 				UpdateValues();
 				MemoryViewerBox.Refresh();
@@ -835,8 +835,7 @@ namespace BizHawk.Client.EmuHawk
 			if (address >= 0) 
 			{
 				// TODO: can't unfreeze address 0??
-				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Contains(address)).ToList());
+				Global.CheatList.RemoveRange(Global.CheatList.Where(x => x.Contains(address)));
 			}
 
 			MemoryViewerBox.Refresh();

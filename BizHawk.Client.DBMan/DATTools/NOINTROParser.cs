@@ -188,11 +188,11 @@ namespace BizHawk.Client.DBMan
 				// process dump info flags and other info contained in []
 				if (nameString.Contains("[") && nameString.Contains("]"))
 				{
-					List<string> e = nameString.ToString().Split('[', ']').ToList();
-					// remove first entry (this is the bit before the [] entries start
-					e.RemoveAt(0);
-					// remove empty entries
-					e = e.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+					var e = nameString.Split('[', ']')
+						.Skip(1) // remove first entry (this is the bit before the [] entries start)
+						.Where(s => !string.IsNullOrWhiteSpace(s)) // remove empty entries
+						.Distinct()
+						.ToList();
 
 					if (e.Count > 0)
 					{

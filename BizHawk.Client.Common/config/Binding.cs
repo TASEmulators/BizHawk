@@ -96,13 +96,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(b => b.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
-
 			// Remove entries that no longer exist in defaults
-			foreach (Binding entry in entriesToRemove)
-			{
-				Bindings.Remove(entry);
-			}
+			Bindings.RemoveAll(entry => DefaultValues.All(b => b.DisplayName != entry.DisplayName));
 		}
 
 		private static List<Binding> _defaultValues;

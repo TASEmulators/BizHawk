@@ -341,8 +341,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var addresses = watches.Select(w => w.Address);
-			var removeList = _watchList.Where(w => addresses.Contains(w.Address)).ToList();
-			_watchList = _watchList.Except(removeList).ToList();
+			_watchList.RemoveAll(w => addresses.Contains(w.Address));
 		}
 
 		public void RemoveRange(IEnumerable<int> indices)

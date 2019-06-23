@@ -123,8 +123,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						kvps = kvps.OrderBy(x => x.Key).ToList();
-						foreach (var kvp in kvps)
+						foreach (var kvp in kvps.OrderBy(x => x.Key))
 						{
 							sb
 								.Append("\"")
