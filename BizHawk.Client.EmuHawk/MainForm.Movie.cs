@@ -5,10 +5,6 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,9 +26,6 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var tasmovie = (movie as TasMovie);
-				if (tasmovie != null)
-					tasmovie.TasStateManager.MountWriteAccess();
 				Global.MovieSession.QueueNewMovie(movie, record, Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)

@@ -814,10 +814,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone(); // Why is this cloning it?
-					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
+					byte[] state = StatableEmulator.SaveStateBinary();
+					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
-					if (!state.SequenceEqual(greenzone))
+					if (!state.SequenceEqual(greenZone))
 					{
 						MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}");
 						return;
@@ -1080,7 +1080,6 @@ namespace BizHawk.Client.EmuHawk
 				Statable = this.StatableEmulator
 			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
-			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
 

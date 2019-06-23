@@ -642,7 +642,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
 				
-				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
 				BookMarkControl.LoadedCallback = BranchLoaded;
@@ -740,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone loadZone = new MovieZone(path)
+			var loadZone = new MovieZone(path)
 			{
 				Start = TasView.FirstSelectedIndex.Value
 			};
@@ -865,7 +864,6 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
-			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
@@ -896,12 +894,14 @@ namespace BizHawk.Client.EmuHawk
 		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
+			{
 				return;
+			}
 
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
-			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
+			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
+			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
 			}
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.StateCount}";
+			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
 			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
 		}
