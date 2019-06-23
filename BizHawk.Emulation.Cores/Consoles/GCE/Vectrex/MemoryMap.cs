@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			if (addr < 0x8000)
 			{
-				return 0xFF;
+				return mapper.ReadMemory(addr);
 			}
 			else if (addr < 0xC800)
 			{

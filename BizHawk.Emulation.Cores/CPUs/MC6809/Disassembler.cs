@@ -182,8 +182,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"ADD   A,ix16", // ab
 			"CMP   X,ix16", // ac
 			"JSR   ix16", // ad
-			"LD    X,ex16", // ae
-			"ST    X,ex16", // af
+			"LD    X,ix16", // ae
+			"ST    X,ix16", // af
 			"SUB   A,ex16", // b0
 			"CMP   A,ex16", // b1
 			"SBC   A,ex16", // b2

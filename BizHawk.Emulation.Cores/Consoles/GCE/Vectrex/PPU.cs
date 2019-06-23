@@ -15,6 +15,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void tick()
 		{
+			//Console.WriteLine(ramp_sig + " " + zero_sig + " " + blank_sig + " " + Core.cpu.TotalExecutedCycles + " " + (x_vel - 128.0) + " " + x_pos 
+			//+ " " + (y_vel - 128.0) + " " + y_pos + " " + Core.t1_counter + " " + vec_scale);
+
 			if (ramp_sig && !zero_sig)
 			{
 				x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 2);
@@ -25,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				if (y_pos > 383) { y_pos = 383; }
 				if (y_pos < 0) { y_pos = 0; }
 
-				if (!blank_sig) { Core._vidbuffer[(int)(Math.Floor(x_pos) + 256 * Math.Floor(y_pos))] = (int)br; }		
+				if (!blank_sig) { Core._vidbuffer[(int)(Math.Round(x_pos) + 256 * Math.Round(y_pos))] = (int)br; }		
 			}
 			else if (zero_sig)
 			{

@@ -36,6 +36,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.Register[14] = (byte)(_controllerDeck.ReadPort1(controller) & 0xF);
 			audio.Register[14] |= (byte)(_controllerDeck.ReadPort2(controller) << 4);
 
+			frame_end = false;
+
 			do_frame();
 
 			if (_islag)
@@ -50,11 +52,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 
-			for (int i = 0; i < 25000; i++)
+			//for (int i = 0; i < 1000; i++)
+			while (!frame_end)
 			{
-				timer_1_tick();
-				timer_2_tick();
-				shift_reg_tick();
+				internal_state_tick();
 				audio.tick();
 				ppu.tick();
 				cpu.ExecuteOne();				
@@ -83,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		#region Video provider
 
-		public int _frameHz = 60;
+		public int _frameHz = 50;
 
 		public int[] _vidbuffer;
 
@@ -99,10 +100,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
-
-		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
-
-		public uint[] color_palette = new uint[4];
 
 		#endregion
 	}
