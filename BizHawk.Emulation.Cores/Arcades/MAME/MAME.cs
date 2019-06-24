@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			MAMEStartupComplete.Set();
 			LibMAME.mame_lua_execute("emu.pause()");
+			LibMAME.mame_lua_execute("return manager:machine():render():ui_target():width()");
 		}
 
 
