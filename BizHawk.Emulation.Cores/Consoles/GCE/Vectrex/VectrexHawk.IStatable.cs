@@ -101,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(shift_count), ref shift_count);
 
 			ser.Sync(nameof(frame_end), ref frame_end);
+			ser.Sync(nameof(PB7_undriven), ref PB7_undriven);
 
 			// probably a better way to do this
 			if (cart_RAM != null)

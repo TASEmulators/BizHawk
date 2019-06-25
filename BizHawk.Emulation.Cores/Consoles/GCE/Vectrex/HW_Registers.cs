@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public bool PB7, PB6;
 		public bool PB7_prev, PB6_prev;
 
-		public bool PB7_last_write;
+		public bool PB7_undriven;
 
 		// Port B controls
 		public bool sw, sel0, sel1, bc1, bdir, compare, shift_start;
@@ -143,7 +143,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					if (aux_ctrl.Bit(7))
 					{
-						PB7_last_write = wrt_val.Bit(7);
 						wrt_val = (byte)((wrt_val & 0x7F) | (PB7 ? 0x80 : 0x0));
 					}
 
@@ -156,7 +155,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					if (dir_ctrl.Bit(4)) { bdir = value.Bit(4); }
 					if (dir_ctrl.Bit(5)) { /*compare = value.Bit(5);*/ }
 					if (dir_ctrl.Bit(6)) { /* cart bank switch */ }
-					if (dir_ctrl.Bit(7)) { ppu.ramp_sig = !wrt_val.Bit(7); }
+					if (dir_ctrl.Bit(7))
+					{
+						ppu.ramp_sig = !wrt_val.Bit(7);
+						if (PB7_undriven && !wrt_val.Bit(7))
+						{
+							PB7_undriven = false; 
+							ppu.skip = 14;
+						}
+					}
 
 					// writing to sound reg
 					if (bdir)
@@ -179,9 +186,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						}
 					}
 
-					//ppu.x_vel = ~portA_ret;
 					ppu.x_vel = (byte)(portA_ret ^ 0x80);
-					//ppu.x_vel = portA_ret; if (ppu.x_vel >= 128) { ppu.x_vel -= 128; ppu.x_vel = -ppu.x_vel; }
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -212,9 +217,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						}
 					}
 
-					//ppu.x_vel = ~portA_ret;
 					ppu.x_vel = (byte)(portA_ret ^ 0x80);
-					//ppu.x_vel = portA_ret; if (ppu.x_vel >= 128) { ppu.x_vel -= 128; ppu.x_vel = -ppu.x_vel; }
 
 					int_fl &= 0xFC;
 					update_int_fl();
@@ -233,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					t1_counter = (t1_high << 8) | t1_low;
 					t1_shot_go = true;
-					if (aux_ctrl.Bit(7)) { PB7 = false; ppu.ramp_sig = true; }
+					if (aux_ctrl.Bit(7)) { PB7 = false; ppu.ramp_sig = true; ppu.skip = 0; }
 					t1_ctrl = aux_ctrl;
 
 					int_fl &= 0xBF;
@@ -265,16 +268,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					int_fl &= 0xFB;
 					shift_reg = value;
 					shift_start = true;
+					if (ppu.skip == 1) { ppu.ramp_sig = true; ppu.skip = 0; }
 					shift_reg_wait = 2;
 					shift_count = 0;
 
 					update_int_fl();
 					break;
 				case 0xB:
+					if (aux_ctrl.Bit(7) && !value.Bit(7))
+					{
+						PB7_undriven = true;
+					}
+
 					aux_ctrl = value;
 					t1_ctrl = aux_ctrl;
-					//if (aux_ctrl.Bit(7)) { ppu.ramp_sig = !PB7; }
-					//else { ppu.ramp_sig = !PB7_last_write; }
+					
 					break;
 				case 0xC:
 					prt_ctrl = value;

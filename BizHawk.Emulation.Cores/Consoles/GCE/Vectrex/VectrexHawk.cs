@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			Setup_Mapper();
 
-			_frameHz = 60;
+			_frameHz = 50;
 
 			audio.Core = this;
 			ppu.Core = this;

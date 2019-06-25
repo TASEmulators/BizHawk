@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public byte vec_scale, x_vel, y_vel, bright;
 		public double x_pos, y_pos;
 
+		public int skip;
+
 		public static uint br = 0xFFFFFFFF;
 
 		public void tick()
@@ -20,9 +22,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			if (ramp_sig && !zero_sig)
 			{
-				x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 2);
-				y_pos = y_pos - (y_vel - 128.0) / 256.0 * (vec_scale + 2);
-
+				if (skip == 0)
+				{
+					x_pos = x_pos + (x_vel - 128.0) / 256.0 * (vec_scale + 2);
+					y_pos = y_pos - (y_vel - 128.0) / 256.0 * (vec_scale + 2);
+				}
+				else
+				{
+					skip--;
+				}
+				
 				if (x_pos > 255) { x_pos = 255; }
 				if (x_pos < 0) { x_pos = 0; }
 				if (y_pos > 383) { y_pos = 383; }
@@ -61,6 +70,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			ser.Sync(nameof(x_pos), ref x_pos);
 			ser.Sync(nameof(y_pos), ref y_pos);
+
+			ser.Sync(nameof(skip), ref skip);
 		}
 	}
 }

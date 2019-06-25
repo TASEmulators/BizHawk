@@ -166,8 +166,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"ADD   A,DP+i8", // 9b
 			"CMP   X,DP+i8", // 9c
 			"JSR   DP+i8", // 9d
-			"LD    X,ix16", // 9e
-			"ST    X,ix16", // 9f
+			"LD    X,DP+i8", // 9e
+			"ST    X,DP+i8", // 9f
 			"SUB   A,ix16", // a0
 			"CMP   A,ix16", // a1
 			"SBC   A,ix16", // a2
