@@ -71,12 +71,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private readonly ITraceable _tracer;
 
-		private void ExecFetch(ushort addr)
-		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
-		}
-
 		#region ISettable
 		private NES.NES.NESSettings subnesSettings = new NES.NES.NESSettings();
 		public NES.NES.NESSyncSettings subnesSyncSettings = new NES.NES.NESSyncSettings();
