@@ -944,11 +944,11 @@ namespace BizHawk.Client.EmuHawk
 					//TODO add error text to dialog?
 					// Re-show dialog if the address isn't found
 				}
-				catch (FormatException e)
+				catch (FormatException)
 				{
 					// Re-show dialog if given invalid text (shouldn't happen)
 				}
-				catch (OverflowException e)
+				catch (OverflowException)
 				{
 					//TODO add error text to dialog?
 					// Re-show dialog if the address isn't valid
