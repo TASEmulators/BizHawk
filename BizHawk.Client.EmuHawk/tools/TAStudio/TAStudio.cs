@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		private Timer _autosaveTimer;
 
 		/// <summary>
-		/// Gets or sets a value that separates "restore last position" logic from seeking caused by navigation.
+		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
 		public int LastPositionFrame { get; private set; }
@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// Start Scenario 3: No movie, but user wants to autload their last project
+			// Start Scenario 3: No movie, but user wants to autoload their last project
 			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
 			{
 				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
@@ -974,9 +974,9 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.AddBranchExternal();
 		}
 
-		public void RemoveBranchExtrenal()
+		public void RemoveBranchExternal()
 		{
-			BookMarkControl.RemoveBranchExtrenal();
+			BookMarkControl.RemoveBranchExternal();
 		}
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
@@ -1036,11 +1036,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DeleteFrames(int beginningFrame, int numberofFrames)
+		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberofFrames).ToArray();
+				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
 
