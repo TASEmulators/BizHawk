@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			return false;
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks => subnes.MemoryCallbacks;
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
