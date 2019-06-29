@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 	{
 		public TasMovieChangeLog(TasMovie movie)
 		{
-			_history = new List<List<IMovieAction>>();
 			_movie = movie;
 		}
 

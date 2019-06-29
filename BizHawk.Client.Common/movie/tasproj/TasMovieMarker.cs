@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 
 			if (obj is TasMovieMarker)
 			{
-				return Frame == (obj as TasMovieMarker).Frame;
+				return Frame == ((TasMovieMarker)obj).Frame;
 			}
 			
 			return false;
@@ -59,13 +59,21 @@ namespace BizHawk.Client.Common
 
 		public static bool operator ==(TasMovieMarker marker, int frame)
 		{
-			// TODO: account for null marker
+			if (marker == null)
+			{
+				return false;
+			}
+
 			return marker.Frame == frame;
 		}
 
 		public static bool operator !=(TasMovieMarker marker, int frame)
 		{
-			// TODO: account for null marker
+			if (marker == null)
+			{
+				return false;
+			}
+
 			return marker.Frame != frame;
 		}
 	}
