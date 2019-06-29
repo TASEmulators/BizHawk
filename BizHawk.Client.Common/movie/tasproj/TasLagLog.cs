@@ -79,7 +79,6 @@ namespace BizHawk.Client.Common
 
 		public void Load(TextReader tr)
 		{
-			// TODO: support legacy lag logs that were List<bool>
 			_lagLog = JsonConvert.DeserializeObject<Dictionary<int, bool>>(tr.ReadLine());
 			_wasLag = JsonConvert.DeserializeObject<Dictionary<int, bool>>(tr.ReadLine());
 		}
