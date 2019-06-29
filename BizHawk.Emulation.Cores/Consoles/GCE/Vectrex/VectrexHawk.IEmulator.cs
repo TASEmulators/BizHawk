@@ -36,6 +36,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.Register[14] = (byte)(_controllerDeck.ReadPort1(controller) & 0xF);
 			audio.Register[14] |= (byte)(_controllerDeck.ReadPort2(controller) << 4);
 
+			// joystick position is based on pot reading
+
+
+
 			frame_end = false;
 
 			do_frame();
@@ -51,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public void do_frame()
 		{
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-
+			//PB7_undriven = true;
 			//for (int i = 0; i < 1000; i++)
 			while (!frame_end)
 			{

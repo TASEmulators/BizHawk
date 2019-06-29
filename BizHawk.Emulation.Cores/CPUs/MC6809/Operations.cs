@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			FlagH = Reg16_d.Bit(4);
 			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
-			FlagN = false;
+			FlagN = ans > 127;
 
 			Regs[dest] = ans;
 		}
@@ -451,55 +451,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 			FlagZ = a == 0; 
 			FlagH = false;
-		}
-
-		// used for signed operations
-		public void ADDS_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
-		{
-			int Reg16_d = Regs[dest_l];
-			int Reg16_s = Regs[src_l];
-
-			Reg16_d += Reg16_s;
-
-			ushort temp = 0;
-
-			// since this is signed addition, calculate the high byte carry appropriately
-			if (Reg16_s.Bit(7))
-			{
-				if (((Reg16_d & 0xFF) >= Regs[dest_l]))
-				{
-					temp = 0xFF;
-				}
-				else
-				{
-					temp = 0;
-				}
-			}
-			else
-			{
-				temp = (ushort)(Reg16_d.Bit(8) ? 1 : 0);
-			}
-
-			ushort ans_l = (ushort)(Reg16_d & 0xFF);
-
-			// JR operations do not effect flags
-			if (dest_l != PC)
-			{
-				FlagC = Reg16_d.Bit(8);
-
-				// redo for half carry flag
-				Reg16_d = Regs[dest_l] & 0xF;
-				Reg16_d += Regs[src_l] & 0xF;
-
-				FlagH = Reg16_d.Bit(4);
-				FlagN = false;
-				FlagZ = false; 			
-			}
-
-			Regs[dest_l] = ans_l;
-			Regs[dest_h] += temp;
-			Regs[dest_h] &= 0xFF;
-
 		}
 
 		// D register implied

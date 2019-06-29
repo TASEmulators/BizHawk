@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public double x_pos, y_pos;
 
 		public int skip;
+		public uint bright_int;
 
 		public static uint br = 0xFFFFFFFF;
 
@@ -37,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				if (y_pos > 383) { y_pos = 383; }
 				if (y_pos < 0) { y_pos = 0; }
 
-				if (!blank_sig) { Core._vidbuffer[(int)(Math.Round(x_pos) + 256 * Math.Round(y_pos))] = (int)br; }		
+				if (!blank_sig) { Core._vidbuffer[(int)(Math.Round(x_pos) + 256 * Math.Round(y_pos))] = (int)(br & bright_int); }		
 			}
 			else if (zero_sig)
 			{
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(y_pos), ref y_pos);
 
 			ser.Sync(nameof(skip), ref skip);
+			ser.Sync(nameof(bright_int), ref bright_int);
 		}
 	}
 }
