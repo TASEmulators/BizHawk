@@ -54,7 +54,7 @@ namespace BizHawk.Client.Common
 			var frames = _lagLog.Keys.Where(k => k > frame).ToList();
 			foreach (var f in frames)
 			{
-				RemoveLagEntry(frame);
+				RemoveLagEntry(f);
 			}
 
 			return frames.Any();
