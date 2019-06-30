@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public double x_pos, y_pos;
 
 		public int skip;
-		public uint bright_int;
+		public uint bright_int_1, bright_int_2, bright_int_3;
 
 		public static uint br = 0xFFFFFFFF;
 
@@ -33,17 +33,38 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					skip--;
 				}
 				
-				if (x_pos > 255) { x_pos = 255; }
-				if (x_pos < 0) { x_pos = 0; }
-				if (y_pos > 383) { y_pos = 383; }
-				if (y_pos < 0) { y_pos = 0; }
+				if (x_pos > 257) { x_pos = 257; }
+				if (x_pos < 2) { x_pos = 2; }
+				if (y_pos > 385) { y_pos = 385; }
+				if (y_pos < 2) { y_pos = 2; }
 
-				if (!blank_sig) { Core._vidbuffer[(int)(Math.Round(x_pos) + 256 * Math.Round(y_pos))] = (int)(br & bright_int); }		
+		
 			}
 			else if (zero_sig)
 			{
-				x_pos = 128;
-				y_pos = 192;
+				x_pos = 128 + 2;
+				y_pos = 192 + 2;
+			}
+
+			if (!blank_sig)
+			{
+
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_1);
+
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
+				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_2);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_2);
+				
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 2 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) - 2 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) + 2))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) - 2))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_3);
+				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
+				
 			}
 		}
 
@@ -54,8 +75,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ramp_sig = false;
 
 			vec_scale = x_vel = y_vel = bright = 0;
-			x_pos = 128;
-			y_pos = 192;
+			x_pos = 128 + 2;
+			y_pos = 192 + 2;
 		}
 
 		public void SyncState(Serializer ser)
@@ -73,7 +94,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(y_pos), ref y_pos);
 
 			ser.Sync(nameof(skip), ref skip);
-			ser.Sync(nameof(bright_int), ref bright_int);
+			ser.Sync(nameof(bright_int_1), ref bright_int_1);
+			ser.Sync(nameof(bright_int_2), ref bright_int_2);
+			ser.Sync(nameof(bright_int_3), ref bright_int_3);
 		}
 	}
 }

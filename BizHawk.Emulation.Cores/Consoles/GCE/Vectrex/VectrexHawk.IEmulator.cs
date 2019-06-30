@@ -97,10 +97,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			return _vidbuffer;		
 		}
 
-		public int VirtualWidth => 256;
-		public int VirtualHeight => 384;
-		public int BufferWidth => 256;
-		public int BufferHeight => 384;
+		public int VirtualWidth => 256 + 4;
+		public int VirtualHeight => 384 + 4;
+		public int BufferWidth => 256 + 4;
+		public int BufferHeight => 384 + 4;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;

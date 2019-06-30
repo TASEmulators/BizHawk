@@ -100,6 +100,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 			}
 
+			// RAM appears to power up to either random values or 0xFF, otherwise all the asteroids in minestorm are on the same side if RAM[0x7E]=0
+			for (int i = 0; i < RAM.Length; i++)
+			{
+				RAM[i] = 0xFF;
+			}
+
 			Setup_Mapper();
 
 			_frameHz = 50;
