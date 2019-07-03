@@ -71,14 +71,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBoot()
 		{
-			MAMEStartupComplete.Set();
 			LibMAME.mame_lua_execute("emu.pause()");
-			int lol = LibMAME.mame_lua_get_int("return manager:machine():render():ui_target():width()");
-			int length;
-			IntPtr ptr = LibMAME.mame_lua_get_string("return emu.app_name()..emu.app_version()", out length);
-			string see = Marshal.PtrToStringAnsi(ptr, length);
-			bool test = LibMAME.mame_lua_free_string(ptr);
-			int ok = lol;
+			_updateVideo();
+			MAMEStartupComplete.Set();
+			//int ok = lol;
 		}
 
 
@@ -87,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			Console.WriteLine(string.Format(
 				"[MAME {0}] {1}",
-				channel.ToString().Substring(19),
+				channel.ToString(),
 				data.Replace('\n', ' ')));
 		}
 
@@ -108,32 +104,35 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		};
 
 		private int[] frameBuffer = new int[0];
-
-		public int[] GetVideoBuffer() { return frameBuffer; }
-
-		public int Frame { get; private set; }
-
 		public string SystemId => "MAME";
-
+		public int[] GetVideoBuffer() { return frameBuffer; }
+		public int Frame { get; private set; }
 		public bool DeterministicEmulation => true;
-
 		public int VirtualWidth => 240;
-
 		public int VirtualHeight => 320;
-
-		public int BufferWidth => 240;
-
-		public int BufferHeight => 320;
-
+		public int BufferWidth { get; private set; }
+		public int BufferHeight { get; private set; }
 		public int VsyncNumerator => 60;
-
 		public int VsyncDenominator => 1;
-
 		public int BackgroundColor => unchecked((int)0xFF0000FF);
+
+		private void _updateVideo()
+		{
+			int length;
+			BufferWidth = LibMAME.mame_lua_get_int("return manager:machine():render():ui_target():width()");
+			BufferHeight = LibMAME.mame_lua_get_int("return manager:machine():render():ui_target():height()");
+			IntPtr ptr = LibMAME.mame_lua_get_string("return manager:machine().screens[\":screen\"]:pixels()", out length);
+			frameBuffer = new int[BufferWidth * BufferHeight];
+			Marshal.Copy(ptr, frameBuffer, 0, BufferWidth * BufferHeight);
+			//string see = Marshal.PtrToStringAnsi(ptr, length);
+			bool test = LibMAME.mame_lua_free_string(ptr);
+		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			Frame++;
 			LibMAME.mame_lua_execute("emu.step()");
+			_updateVideo();
 			return true;
 		}
 

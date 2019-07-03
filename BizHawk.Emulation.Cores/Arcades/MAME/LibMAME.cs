@@ -11,13 +11,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public enum osd_output_channel
 		{
-			OSD_OUTPUT_CHANNEL_ERROR,
-			OSD_OUTPUT_CHANNEL_WARNING,
-			OSD_OUTPUT_CHANNEL_INFO,
-			OSD_OUTPUT_CHANNEL_DEBUG,
-			OSD_OUTPUT_CHANNEL_VERBOSE,
-			OSD_OUTPUT_CHANNEL_LOG,
-			OSD_OUTPUT_CHANNEL_COUNT
+			ERROR,
+			WARNING,
+			INFO,
+			DEBUG,
+			VERBOSE,
+			LOG,
+			COUNT
 		};
 
 
