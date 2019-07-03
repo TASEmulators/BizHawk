@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
+			FlagV = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagN = ans > 127;
 
 			Regs[dest] = ans;
@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += ((Regs[src] & 0xF) + c);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
+			FlagV = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagN = false;
 
 			Regs[dest] = ans;
@@ -486,7 +486,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ushort ans = (ushort)(Reg16_d & 0xFFFF);
 
 			FlagN = ans > 0x7FFF;
-			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
+			FlagV = (D.Bit(15) == Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 
 			D = ans;
 		}
