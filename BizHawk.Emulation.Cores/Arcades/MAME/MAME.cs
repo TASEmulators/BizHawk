@@ -73,7 +73,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			MAMEStartupComplete.Set();
 			LibMAME.mame_lua_execute("emu.pause()");
-			LibMAME.mame_lua_execute("return manager:machine():render():ui_target():width()");
+			int lol = LibMAME.mame_lua_get_int("return manager:machine():render():ui_target():width()");
+			int length;
+			IntPtr ptr = LibMAME.mame_lua_get_string("return emu.app_name()..emu.app_version()", out length);
+			string see = Marshal.PtrToStringAnsi(ptr, length);
+			bool test = LibMAME.mame_lua_free_string(ptr);
+			int ok = lol;
 		}
 
 
