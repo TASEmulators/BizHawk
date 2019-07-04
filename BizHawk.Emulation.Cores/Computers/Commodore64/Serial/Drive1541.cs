@@ -117,6 +117,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("Clocks", ref _clocks);
 			ser.Sync("CpuClocks", ref _cpuClocks);
 			ser.Sync("OverflowFlagDelayShiftRegister", ref _overflowFlagDelaySr);
+			ser.Sync("DiskWriteBitsRemaining", ref _diskWriteBitsRemaining);
+			ser.Sync("DiskWriteEnabled", ref _diskWriteEnabled);
+			ser.Sync("DiskWriteLatch", ref _diskWriteLatch);
+			ser.Sync("DiskOutputBits", ref _diskOutputBits);
+			ser.Sync("DiskWriteProtected", ref _diskWriteProtected);
 		}
 
 		public override void ExecutePhase()

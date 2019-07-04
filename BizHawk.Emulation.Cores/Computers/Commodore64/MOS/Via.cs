@@ -129,15 +129,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_acrSrControl = 0;
 			_acrT1Control = 0;
 			_acrT2Control = 0;
-			_ca1L = false;
-			_cb1L = false;
-			Ca1 = false;
-			Ca2 = false;
-			Cb1 = false;
-			Cb2 = false;
+			_ca1L = true;
+			_cb1L = true;
+			Ca1 = true;
+			Ca2 = true;
+			Cb1 = true;
+			Cb2 = true;
 
-			_pb6L = false;
-			_pb6 = false;
+			_pb6L = true;
+			_pb6 = true;
 			_resetCa2NextClock = false;
 			_resetCb2NextClock = false;
 			_handshakeCa2NextClock = false;
@@ -222,9 +222,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					switch (_acrT1Control)
 					{
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
-							_t1C = _t1L;
-							_t1CLoaded = true;
-							break;
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7:
 							_t1C = _t1L;
 							_t1CLoaded = true;
@@ -261,11 +258,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						if (!_pb6 && _pb6L)
 						{
 							_t2C--;
-							if (_t2C < 0)
+							if (_t2C == 0)
 							{
 								_ifr |= 0x20;
-								_t2C = 0xFFFF;
 							}
+							_t2C &= 0xFFFF;
 						}
 						break;
 				}
@@ -331,26 +328,45 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 			}
 
-			// interrupt generation
-			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
-				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
-			{
-				_ifr |= 0x10;
-				if (_acrPbLatchEnable)
-				{
-					_pbLatch = _port.ReadExternalPrb();
-				}
-			}
+            // interrupt generation
 
-			if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
-				(_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
-			{
-				_ifr |= 0x02;
-				if (_acrPaLatchEnable)
-				{
-					_paLatch = _port.ReadExternalPra();
-				}
-			}
+            /*
+                As long as the CA1 interrupt flag is set, the data on the peripheral pins can change
+                without affecting the data in the latches. This input latching can be used with any of the CA2
+                input or output modes.
+                It is important to note that on the PA port, the processor always reads the data on the
+                peripheral pins (as reflected in the latches). For output pins, the processor still reads the
+                latches. This may or may not reflect the data currently in the ORA. Proper system operation
+                requires careful planning on the part of the system designer if input latching is combined
+                with output pins on the peripheral ports.
+            */
+
+            if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
+                (_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
+            {
+                if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
+                {
+                    _paLatch = _port.ReadExternalPra();
+                }
+                _ifr |= 0x02;
+            }
+
+            /*
+                Input latching on the PB port is controlled in the same manner as that described for the PA port.
+                However, with the peripheral B port the input latch will store either the voltage on the pin or the contents
+                of the Output Register (ORB) depending on whether the pin is programmed to act as an input or an
+                output. As with the PA port, the processor always reads the input latches.
+            */
+
+            if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
+                (_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
+            {
+                if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
+                {
+                    _pbLatch = _port.ReadPrb(_prb, _ddrb);
+                }
+                _ifr |= 0x10;
+            }
 
 			switch (_acrSrControl)
 			{
