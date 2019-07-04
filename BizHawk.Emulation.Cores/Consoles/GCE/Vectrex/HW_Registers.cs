@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound line? */ }
+							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
 							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
 						}
 						else
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound line? */ }
+							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
 							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
 						}
 						else
