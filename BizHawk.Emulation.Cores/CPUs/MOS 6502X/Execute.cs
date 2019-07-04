@@ -1659,34 +1659,32 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void _Adc()
 		{
+			//TODO - an extra cycle penalty on 65C02 only
+			value8 = (byte)alu_temp;
+			if (FlagD && BCD_Enabled)
 			{
-				//TODO - an extra cycle penalty?
-				value8 = (byte)alu_temp;
-				if (FlagD && BCD_Enabled)
-				{
-					lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
-					hi = (A & 0xF0) + (value8 & 0xF0);
-					if (lo > 0x09)
-					{
-						hi += 0x10;
-						lo += 0x06;
-					}
-					if (hi > 0x90) hi += 0x60;
-					FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
-					FlagC = hi > 0xFF;
-					A = (byte)((lo & 0x0F) | (hi & 0xF0));
-				}
-				else
-				{
-					tempint = value8 + A + (FlagC ? 1 : 0);
-					FlagV = (~(A ^ value8) & (A ^ tempint) & 0x80) != 0;
-					FlagC = tempint > 0xFF;
-					A = (byte)tempint;
-				}
+				tempint = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 0x01 : 0x00);
+				if (tempint > 0x09)
+					tempint += 0x06;
+				tempint = (tempint & 0x0F) + (A & 0xF0) + (value8 & 0xF0) + (tempint > 0x0F ? 0x10 : 0x00);
+				FlagV = (~(A ^ value8) & (A ^ tempint) & 0x80) != 0;
+				FlagZ = ((A + value8 + (FlagC ? 1 : 0)) & 0xFF) == 0;
+				FlagN = (tempint & 0x80) != 0;
+				if ((tempint & 0x1F0) > 0x090)
+					tempint += 0x060;
+				FlagC = tempint > 0xFF;
+				A = (byte)(tempint & 0xFF);
+			}
+			else
+			{
+				tempint = value8 + A + (FlagC ? 1 : 0);
+				FlagV = (~(A ^ value8) & (A ^ tempint) & 0x80) != 0;
+				FlagC = tempint > 0xFF;
+				A = (byte)tempint;
 				NZ_A();
 			}
-
 		}
+
 		void Unsupported()
 		{
 
