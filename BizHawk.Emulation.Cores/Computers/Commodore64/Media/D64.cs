@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
@@ -63,6 +64,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			6250, 6666, 7142, 7692
 		};
 
+		private static readonly int[] StandardSectorGapLength =
+		{
+			9, 19, 13, 10
+		};
+
 		private static byte Checksum(byte[] source)
 		{
 			var count = source.Length;
@@ -76,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			return result;
 		}
 
-		private static byte[] ConvertSectorToGcr(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, out int bitsWritten)
+		private static byte[] ConvertSectorToGcr(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, int gapLength, out int bitsWritten)
 		{
 			using (var mem = new MemoryStream())
 			{
@@ -96,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
 				writer.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }); // sync
 				writer.Write(EncodeGcr(writtenData)); // data
-				writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
+				writer.Write(Enumerable.Repeat((byte)0x55, gapLength).ToArray()); // gap
 
 				bitsWritten = (int)mem.Length * 8;
 
@@ -185,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 						{
 							int bitsWritten;
 							var sectorData = reader.ReadBytes(256);
-							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), 0xA0, 0xA0, out bitsWritten);
+							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), 0xA0, 0xA0, StandardSectorGapLength[DensityTable[i]], out bitsWritten);
 							trackMem.Write(diskData, 0, diskData.Length);
 							trackLengthBits += bitsWritten;
 						}
