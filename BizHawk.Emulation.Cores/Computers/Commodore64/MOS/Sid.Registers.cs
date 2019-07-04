@@ -222,7 +222,7 @@
 					_filterSelectLoPass = (val & 0x10) != 0;
 					_filterSelectBandPass = (val & 0x20) != 0;
 					_filterSelectHiPass = (val & 0x40) != 0;
-					_disableVoice3 = (val & 0x40) != 0;
+					_disableVoice3 = (val & 0x80) != 0;
 					break;
 				case 0x19:
 					_potX = val;
