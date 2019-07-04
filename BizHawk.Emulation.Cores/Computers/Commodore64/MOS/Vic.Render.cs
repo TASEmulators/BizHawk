@@ -247,6 +247,7 @@
 								{
 									_spr.CollideSprite = true;
 									_sprites[_pixelOwner].CollideSprite = true;
+									_intSpriteCollision = true;
 								}
 							}
 
@@ -254,6 +255,7 @@
 							if (!_borderOnVertical && (_pixelData >= SrMask2))
 							{
 								_spr.CollideData = true;
+								_intSpriteDataCollision = true;
 							}
 
 							// sprite priority logic
