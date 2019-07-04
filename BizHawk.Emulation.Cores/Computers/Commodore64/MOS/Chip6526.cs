@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// * A low RES pin is emulated via HardReset().
 	public static class Chip6526
 	{
-		public static Cia Create(C64.CiaType type, Func<int> readIec, Func<int> readUserPort)
+		public static Cia CreateCia1(C64.CiaType type, Func<int> readIec, Func<int> readUserPort)
 		{
 			switch (type)
 			{
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public static Cia Create(C64.CiaType type, Func<bool[]> keyboard, Func<bool[]> joysticks)
+		public static Cia CreateCia0(C64.CiaType type, Func<bool[]> keyboard, Func<bool[]> joysticks)
 		{
 			switch (type)
 			{
