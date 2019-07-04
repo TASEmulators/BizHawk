@@ -181,7 +181,7 @@
 					{
 						spr.Dma = true;
 						spr.Mcbase = 0;
-						spr.YCrunch = true;
+						spr.YCrunch = !spr.YExpand;
 					}
 				}
 			}
