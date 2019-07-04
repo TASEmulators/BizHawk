@@ -9,6 +9,7 @@
 		private int _pixelCounter;
 		private int _pixelData;
 		private int _pixelOwner;
+		private Sprite _spr;
 		private int _sprData;
 		private int _sprIndex;
 		private int _sprPixel;
@@ -43,8 +44,8 @@
 				_hblank = true;
 
 			_renderEnabled = !_hblank && !_vblank;
-			_pixelCounter = -1;
-			while (_pixelCounter++ < 3)
+			_pixelCounter = 4;
+			while (--_pixelCounter >= 0)
 			{
 
 				if ((_srColorSync & SrColorMask) != 0)
@@ -173,53 +174,53 @@
 				#region SPRITES
 				// render sprites
 				_pixelOwner = -1;
-				_sprIndex = 0;
-				foreach (var spr in _sprites)
+				for (_sprIndex = 0; _sprIndex < 8; _sprIndex++)
 				{
+					_spr = _sprites[_sprIndex];
 					_sprData = 0;
 					_sprPixel = _pixel;
 
-					if (spr.X == _rasterX)
+					if (_spr.X == _rasterX)
 					{
-						spr.ShiftEnable = spr.Display;
-						spr.XCrunch = !spr.XExpand;
-						spr.MulticolorCrunch = false;
+						_spr.ShiftEnable = _spr.Display;
+						_spr.XCrunch = !_spr.XExpand;
+						_spr.MulticolorCrunch = false;
 					}
 					else
 					{
-						spr.XCrunch |= !spr.XExpand;
+						_spr.XCrunch |= !_spr.XExpand;
 					}
 
-					if (spr.ShiftEnable) // sprite rule 6
+					if (_spr.ShiftEnable) // sprite rule 6
 					{
-						if (spr.Multicolor)
+						if (_spr.Multicolor)
 						{
-							_sprData = spr.Sr & SrSpriteMaskMc;
-							if (spr.MulticolorCrunch && spr.XCrunch && !_rasterXHold)
+							_sprData = _spr.Sr & SrSpriteMaskMc;
+							if (_spr.MulticolorCrunch && _spr.XCrunch && !_rasterXHold)
 							{
-								if (spr.Loaded == 0)
+								if (_spr.Loaded == 0)
 								{
-									spr.ShiftEnable = false;
+									_spr.ShiftEnable = false;
 								}
-								spr.Sr <<= 2;
-								spr.Loaded >>= 2;
+								_spr.Sr <<= 2;
+								_spr.Loaded >>= 2;
 							}
-							spr.MulticolorCrunch ^= spr.XCrunch;
+							_spr.MulticolorCrunch ^= _spr.XCrunch;
 						}
 						else
 						{
-							_sprData = spr.Sr & SrSpriteMask;
-							if (spr.XCrunch && !_rasterXHold)
+							_sprData = _spr.Sr & SrSpriteMask;
+							if (_spr.XCrunch && !_rasterXHold)
 							{
-								if (spr.Loaded == 0)
+								if (_spr.Loaded == 0)
 								{
-									spr.ShiftEnable = false;
+									_spr.ShiftEnable = false;
 								}
-								spr.Sr <<= 1;
-								spr.Loaded >>= 1;
+								_spr.Sr <<= 1;
+								_spr.Loaded >>= 1;
 							}
 						}
-						spr.XCrunch ^= spr.XExpand;
+						_spr.XCrunch ^= _spr.XExpand;
 
 						if (_sprData != 0)
 						{
@@ -232,7 +233,7 @@
 										_sprPixel = _spriteMulticolor0;
 										break;
 									case SrSpriteMask2:
-										_sprPixel = spr.Color;
+										_sprPixel = _spr.Color;
 										break;
 									case SrSpriteMask3:
 										_sprPixel = _spriteMulticolor1;
@@ -244,7 +245,7 @@
 							{
 								if (!_borderOnVertical)
 								{
-									spr.CollideSprite = true;
+									_spr.CollideSprite = true;
 									_sprites[_pixelOwner].CollideSprite = true;
 								}
 							}
@@ -252,11 +253,11 @@
 							// sprite-data collision
 							if (!_borderOnVertical && (_pixelData >= SrMask2))
 							{
-								spr.CollideData = true;
+								_spr.CollideData = true;
 							}
 
 							// sprite priority logic
-							if (spr.Priority)
+							if (_spr.Priority)
 							{
 								_pixel = _pixelData >= SrMask2 ? _pixel : _sprPixel;
 							}
@@ -266,8 +267,6 @@
 							}
 						}
 					}
-
-					_sprIndex++;
 				}
 
 				#endregion
