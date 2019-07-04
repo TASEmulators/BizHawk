@@ -124,6 +124,7 @@
 					_t1C = _t1L;
 					_t1CLoaded = true;
 					_t1Delayed = 1;
+					_resetPb7NextClock = _acrT1Control == ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7;
 					break;
 				case 0x7:
 					_t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);

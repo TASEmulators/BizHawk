@@ -18,43 +18,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (Cpu.PortData & 0x20) != 0;
 		}
 
-		/*
-		private bool Cia0_ReadCnt()
-		{
-			return User.ReadCounter1() && Cia0.ReadCntBuffer();
-		}
-
-		private int Cia0_ReadPortA()
-		{
-			return cia0InputLatchA;
-		}
-
-	    private int Cia0_ReadPortB()
-		{
-			return cia0InputLatchB;
-		}
-
-		private bool Cia0_ReadSP()
-		{
-			return User.ReadSerial1() && Cia0.ReadSpBuffer();
-		}
-
-		private bool Cia1_ReadSP()
-		{
-			return User.ReadSerial2() && Cia1.ReadSpBuffer();
-		}
-
-	    private bool Cia1_ReadCnt()
-		{
-			return User.ReadCounter2() && Cia1.ReadCntBuffer();
-		}
-		*/
-
 		private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
 			return (SerPort_ReadDataOut() && Serial.ReadDeviceData() ? 0x80 : 0x00) |
-				   (SerPort_ReadClockOut() && Serial.ReadDeviceClock() ? 0x40 : 0x00);
+				   (SerPort_ReadClockOut() && Serial.ReadDeviceClock() ? 0x40 : 0x00) |
+					0x3F;
 		}
 
 		private int Cia1_ReadPortB()
