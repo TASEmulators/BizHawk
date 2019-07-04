@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int ReadPra(int pra, int ddra)
 			{
-				return _readPrA();
+				return (pra | ~ddra) & ReadExternalPra();
 			}
 
 			public int ReadPrb(int prb, int ddrb)
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int ReadPra(int pra, int ddra)
 			{
-				return (pra | ~ddra) & 0xFF;
+				return (pra | ~ddra) & ReadExternalPra();
 			}
 
 			public int ReadPrb(int prb, int ddrb)

@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _acrSrControl;
 		private int _acrT1Control;
 		private int _acrT2Control;
+		private int _srCount;
 
 		private bool _ca1L;
 		private bool _ca2L;
@@ -135,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			Ca2 = true;
 			Cb1 = true;
 			Cb2 = true;
+			_srCount = 0;
 
 			_pb6L = true;
 			_pb6 = true;
@@ -151,6 +153,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
+			var _shiftIn = false;
+			var _shiftOut = false;
+
 			// Process delayed interrupts
 			_ifr |= _interruptNextClock;
 			_interruptNextClock = 0;
@@ -259,9 +264,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						{
 							_t2C--;
 							if (_t2C == 0)
-							{
 								_ifr |= 0x20;
-							}
 							_t2C &= 0xFFFF;
 						}
 						break;
@@ -330,24 +333,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             // interrupt generation
 
-            /*
-                As long as the CA1 interrupt flag is set, the data on the peripheral pins can change
-                without affecting the data in the latches. This input latching can be used with any of the CA2
-                input or output modes.
-                It is important to note that on the PA port, the processor always reads the data on the
-                peripheral pins (as reflected in the latches). For output pins, the processor still reads the
-                latches. This may or may not reflect the data currently in the ORA. Proper system operation
-                requires careful planning on the part of the system designer if input latching is combined
-                with output pins on the peripheral ports.
-            */
+			if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
+			{
+				_ifr &= 0xFB;
+				_srCount = 0;
+			}
+
+			/*
+				As long as the CA1 interrupt flag is set, the data on the peripheral pins can change
+				without affecting the data in the latches. This input latching can be used with any of the CA2
+				input or output modes.
+				It is important to note that on the PA port, the processor always reads the data on the
+				peripheral pins (as reflected in the latches). For output pins, the processor still reads the
+				latches. This may or may not reflect the data currently in the ORA. Proper system operation
+				requires careful planning on the part of the system designer if input latching is combined
+				with output pins on the peripheral ports.
+			*/
 
             if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
                 (_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
             {
                 if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
-                {
-                    _paLatch = _port.ReadExternalPra();
-                }
+					_paLatch = _port.ReadExternalPra();
                 _ifr |= 0x02;
             }
 
@@ -362,29 +369,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 (_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
             {
                 if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
-                {
-                    _pbLatch = _port.ReadPrb(_prb, _ddrb);
-                }
+					_pbLatch = _port.ReadPrb(_prb, _ddrb);
+				if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
+					_shiftIn = true;
                 _ifr |= 0x10;
             }
 
-			switch (_acrSrControl)
+			if (_shiftIn)
 			{
-				case ACR_SR_CONTROL_DISABLED:
-					_ifr &= 0xFB;
-					break;
-				default:
-					break;
+				_sr <<= 1;
+				_sr |= Cb2 ? 1 : 0;
 			}
 
 			if ((_ifr & _ier & 0x7F) != 0)
-			{
 				_ifr |= 0x80;
-			}
 			else
-			{
 				_ifr &= 0x7F;
-			}
 
 			_ca1L = Ca1;
 			_ca2L = Ca2;
@@ -444,6 +444,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("T2Delayed", ref _t2Delayed);
 			ser.Sync("ResetPb7NextClock", ref _resetPb7NextClock);
 			ser.Sync("SetPb7NextClock", ref _setPb7NextClock);
+			ser.Sync("ShiftRegisterCount", ref _srCount);
 		}
 	}
 }

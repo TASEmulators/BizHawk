@@ -18,18 +18,16 @@
 			switch (addr)
 			{
 				case 0x0:
-					_ifr &= 0xE7;
+					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xE7;
 					if (_acrPbLatchEnable)
-					{
 						return _pbLatch;
-					}
 					break;
 				case 0x1:
-					_ifr &= 0xFC;
+					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xFC;
 					if (_acrPaLatchEnable)
-					{
 						return _paLatch;
-					}
 					break;
 				case 0x4:
 					_ifr &= 0xBF;
@@ -39,6 +37,7 @@
 					break;
 				case 0xA:
 					_ifr &= 0xFB;
+					_srCount = 8;
 					break;
 				case 0xF:
 					if (_acrPaLatchEnable)
@@ -58,6 +57,7 @@
 				case 0x0:
 					return _port.ReadPrb(_prb, _ddrb);
 				case 0x1:
+				case 0xF:
 					return _port.ReadExternalPra();
 				case 0x2:
 					return _ddrb;
@@ -85,8 +85,6 @@
 					return _ifr;
 				case 0xE:
 					return _ier | 0x80;
-				case 0xF:
-					return _port.ReadExternalPra();
 			}
 
 			return 0xFF;
@@ -98,20 +96,17 @@
 			switch (addr)
 			{
 				case 0x0:
-					_ifr &= 0xE7;
-					if (_pcrCb2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
-					{
+					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xE7;
+					if (_pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCb2NextClock = true;
-					}
 					WriteRegister(addr, val);
 					break;
 				case 0x1:
-					_ifr &= 0xFC;
-					if (_pcrCa2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
-					{
+					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xFC;
+					if (_pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCa2NextClock = true;
-					}
-
 					WriteRegister(addr, val);
 					break;
 				case 0x4:
@@ -146,6 +141,7 @@
 					break;
 				case 0xA:
 					_ifr &= 0xFB;
+					_srCount = 8;
 					WriteRegister(addr, val);
 					break;
 				case 0xD:
@@ -238,7 +234,7 @@
 
 		public int EffectivePrB => _prb | ~_ddrb;
 
-		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadExternalPra();
+		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra);
 
 		public int ActualPrB => _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb);
 	}
