@@ -110,11 +110,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_prb = 0;
 			_ddra = 0;
 			_ddrb = 0;
-			_t1C = 0;
-			_t1L = 0;
-			_t2C = 0;
-			_t2L = 0;
-			_sr = 0;
+			_t1C = 0xFFFF;
+			_t1L = 0xFFFF;
+			_t2C = 0xFFFF;
+			_t2L = 0xFFFF;
+			_sr = 0xFF;
 			_acr = 0;
 			_pcr = 0;
 			_ifr = 0;

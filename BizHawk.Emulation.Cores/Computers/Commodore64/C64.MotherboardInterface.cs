@@ -28,7 +28,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int Cia1_ReadPortB()
 		{
-			return 0xFF;
+			// Ordinarily these are connected to the userport.
+			return 0x00;
 		}
 
 		private int Cpu_ReadPort()
@@ -111,16 +112,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private bool SerPort_ReadAtnOut()
 		{
+			// inverted PA3 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x08) != 0 && (Cia1.PrA & 0x08) != 0);
 		}
 
 		private bool SerPort_ReadClockOut()
 		{
+			// inverted PA4 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x10) != 0 && (Cia1.PrA & 0x10) != 0);
 		}
 
 		private bool SerPort_ReadDataOut()
 		{
+			// inverted PA5 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x20) != 0 && (Cia1.PrA & 0x20) != 0);
 		}
 
