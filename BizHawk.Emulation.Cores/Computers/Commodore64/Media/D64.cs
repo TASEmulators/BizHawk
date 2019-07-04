@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class D64
 	{
+		const int D64_DISK_ID_OFFSET = 0x165A2; // track 18, sector 0, 0xA2
+
 		private static readonly int[] DensityTable =
 		{
 			3, 3, 3, 3, 3,
@@ -154,6 +156,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public static Disk Read(byte[] source)
 		{
+			var formatB = source[D64_DISK_ID_OFFSET + 0x00];
+			var formatA = source[D64_DISK_ID_OFFSET + 0x01];
+
 			using (var mem = new MemoryStream(source))
 			{
 				var reader = new BinaryReader(mem);
@@ -191,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 						{
 							int bitsWritten;
 							var sectorData = reader.ReadBytes(256);
-							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), 0xA0, 0xA0, StandardSectorGapLength[DensityTable[i]], out bitsWritten);
+							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], out bitsWritten);
 							trackMem.Write(diskData, 0, diskData.Length);
 							trackLengthBits += bitsWritten;
 						}
