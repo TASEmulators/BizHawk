@@ -39,12 +39,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _filterSelectHiPass;
 		private int _mixer;
 		private short[] _outputBuffer;
-		private int[] _outputBuffer_filtered;
-		private int[] _outputBuffer_not_filtered;
-		private int[] _volume_at_sample_time;
+		private readonly int[] _outputBufferFiltered;
+		private readonly int[] _outputBufferNotFiltered;
+		private readonly int[] _volumeAtSampleTime;
 		private int _outputBufferIndex;
-		private int filter_index;
-		private int last_filtered_value;
+		private int _filterIndex;
+		private int _lastFilteredValue;
 		private int _potCounter;
 		private int _potX;
 		private int _potY;
@@ -92,9 +92,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			for (var i = 0; i < 3; i++)
 				_filterEnable[i] = false;
 
-			_outputBuffer_filtered = new int[sampleRate];
-			_outputBuffer_not_filtered = new int[sampleRate];
-			_volume_at_sample_time = new int[sampleRate];
+			_outputBufferFiltered = new int[sampleRate];
+			_outputBufferNotFiltered = new int[sampleRate];
+			_volumeAtSampleTime = new int[sampleRate];
 		}
 
 		// ------------------------------------
@@ -109,6 +109,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_potCounter = 0;
 			_potX = 0;
 			_potY = 0;
+			_filterEnable[0] = false;
+			_filterEnable[1] = false;
+			_filterEnable[2] = false;
+			_filterFrequency = 0;
+			_filterSelectBandPass = false;
+			_filterSelectHiPass = false;
+			_filterSelectLoPass = false;
+			_filterResonance = 0;
+			_volume = 0;
 		}
 
 		// ------------------------------------
@@ -190,9 +199,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 					if (_outputBufferIndex < _sampleRate)
 					{
-						_outputBuffer_not_filtered[_outputBufferIndex] = temp_not_filtered;
-						_outputBuffer_filtered[_outputBufferIndex] = temp_filtered;
-						_volume_at_sample_time[_outputBufferIndex] = _volume;
+						_outputBufferNotFiltered[_outputBufferIndex] = temp_not_filtered;
+						_outputBufferFiltered[_outputBufferIndex] = temp_filtered;
+						_volumeAtSampleTime[_outputBufferIndex] = _volume;
 						_outputBufferIndex++;
 					}
 				}
@@ -202,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				if (_filterEnable[0] | _filterEnable[1] | _filterEnable[2])
 				{
-					if ((_outputBufferIndex - filter_index) >= 16)
+					if ((_outputBufferIndex - _filterIndex) >= 16)
 					{
 						filter_operator();
 					}
@@ -210,22 +219,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						// the length is too short for the FFT to reliably act on the output
 						// instead, clamp it to the previous output.
-						for (int i = filter_index; i < _outputBufferIndex; i++)
+						for (int i = _filterIndex; i < _outputBufferIndex; i++)
 						{
-							_outputBuffer_filtered[i] = last_filtered_value;
+							_outputBufferFiltered[i] = _lastFilteredValue;
 						}
 					}
 				}
 
-				filter_index = _outputBufferIndex;
+				_filterIndex = _outputBufferIndex;
 				if (_outputBufferIndex>0)
-					last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
+					_lastFilteredValue = _outputBufferFiltered[_outputBufferIndex - 1];
 			}
 
 			// if the filter is off, keep updating the filter index to the most recent Flush
 			if (!(_filterEnable[0] | _filterEnable[1] | _filterEnable[2]))
 			{
-				filter_index = _outputBufferIndex;
+				_filterIndex = _outputBufferIndex;
 			}	
 		}
 
@@ -236,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			double attenuation;
 
-			int nsamp = _outputBufferIndex - filter_index;
+			int nsamp = _outputBufferIndex - _filterIndex;
 
 			// pass the list of filtered samples to the FFT
 			// but needs to be a power of 2, so find the next highest power of 2 and re-sample
@@ -258,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// linearly interpolate the original sample set into the new denser sample set
 			for (double i = 0; i < nsamp_2; i++)
 			{
-				temp_buffer[(int)i] = _outputBuffer_filtered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + filter_index];
+				temp_buffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
 			}
 
 			// now we have everything we need to perform the FFT
@@ -312,11 +321,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			//re-sample back down to the original number of samples
 			for (double i = 0; i < nsamp; i++)
 			{
-				_outputBuffer_filtered[(int)i + filter_index] = (int)(temp_buffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
+				_outputBufferFiltered[(int)i + _filterIndex] = (int)(temp_buffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
 
-				if (_outputBuffer_filtered[(int)i + filter_index] < 0)
+				if (_outputBufferFiltered[(int)i + _filterIndex] < 0)
 				{
-					_outputBuffer_filtered[(int)i + filter_index] = 0;
+					_outputBufferFiltered[(int)i + _filterIndex] = 0;
 				}
 
 				// the FFT is only an approximate model and fails at low sample rates
@@ -324,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				// thus smoothing out the FT samples
 				
 				if (i<16)
-					_outputBuffer_filtered[(int)i + filter_index] = (int)((last_filtered_value * Math.Pow(15 - i,1) + _outputBuffer_filtered[(int)i + filter_index] * Math.Pow(i,1))/ Math.Pow(15,1));
+					_outputBufferFiltered[(int)i + _filterIndex] = (int)((_lastFilteredValue * Math.Pow(15 - i,1) + _outputBufferFiltered[(int)i + _filterIndex] * Math.Pow(i,1))/ Math.Pow(15,1));
 			}
 		}
 		// ----------------------------------

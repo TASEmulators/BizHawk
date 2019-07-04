@@ -47,10 +47,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_outputBuffer = new short[_outputBufferIndex * 2];
 			for (int i = 0; i < _outputBufferIndex; i++)
 			{
-				_mixer = _outputBuffer_not_filtered[i] + _outputBuffer_filtered[i];
+				_mixer = _outputBufferNotFiltered[i] + _outputBufferFiltered[i];
 				_mixer = _mixer >> 7;
-				_mixer = (_mixer * _volume_at_sample_time[i]) >> 4;
-				_mixer -= _volume_at_sample_time[i] << 8;
+				_mixer = (_mixer * _volumeAtSampleTime[i]) >> 4;
+				_mixer -= _volumeAtSampleTime[i] << 8;
 
 				if (_mixer > 0x7FFF)
 				{
@@ -69,9 +69,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			samples = _outputBuffer;
 			nsamp = _outputBufferIndex;
-			last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
+			_lastFilteredValue = _outputBufferFiltered[_outputBufferIndex - 1];
 			_outputBufferIndex = 0;
-			filter_index = 0;
+			_filterIndex = 0;
 		}
 
 	}
