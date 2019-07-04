@@ -57,10 +57,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 						throw new Exception("Byte-level speeds are not yet supported in the G64 loader.");
 					}
 
-					return new Disk(trackDatas, trackNumbers, trackDensities, 84);
+					return new Disk(trackDatas, trackNumbers, trackDensities, 84) {WriteProtected = true};
 				}
 
-				return new Disk(84);
+				return new Disk(84) {WriteProtected = false};
 			}
 		}
 		

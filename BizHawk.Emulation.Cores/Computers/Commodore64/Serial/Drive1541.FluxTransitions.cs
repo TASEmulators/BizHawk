@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     }
                     _diskOutputBits >>= 1;
 
-                    if (_diskWriteEnabled)
+                    if (_diskWriteEnabled && !_diskWriteProtected)
                         _countsBeforeRandomTransition = 0;
 
                     if ((_diskBits & 1) != 0)

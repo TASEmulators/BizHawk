@@ -58,7 +58,7 @@
 				case 0x0:
 					return _port.ReadPrb(_prb, _ddrb);
 				case 0x1:
-					return _port.ReadPra(_pra, _ddra);
+					return _port.ReadExternalPra();
 				case 0x2:
 					return _ddrb;
 				case 0x3:
@@ -86,7 +86,7 @@
 				case 0xE:
 					return _ier | 0x80;
 				case 0xF:
-					return _port.ReadPra(_pra, _ddra);
+					return _port.ReadExternalPra();
 			}
 
 			return 0xFF;
@@ -238,7 +238,7 @@
 
 		public int EffectivePrB => _prb | ~_ddrb;
 
-		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra);
+		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadExternalPra();
 
 		public int ActualPrB => _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb);
 	}

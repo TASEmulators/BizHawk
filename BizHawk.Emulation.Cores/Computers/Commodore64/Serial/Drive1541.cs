@@ -214,6 +214,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			{
 				_trackImageData = _disk.GetDataForTrack(_trackNumber);
 				_diskBits = _trackImageData[_diskByteOffset] >> (Disk.FluxBitsPerEntry - _diskBitsLeft);
+				_diskWriteProtected = _disk.WriteProtected;
+			}
+			else
+			{
+				_diskWriteProtected = true;
 			}
 		}
 
