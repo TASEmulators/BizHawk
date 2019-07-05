@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
+		byte joy1_LR, joy2_LR, joy1_UD, joy2_UD;
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			if (_tracer.Enabled)
@@ -37,7 +39,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.Register[14] |= (byte)(_controllerDeck.ReadPort2(controller) << 4);
 
 			// joystick position is based on pot reading
+			joy1_LR = (byte)(Math.Floor(controller.GetFloat("P1 Stick X")) + 128);
+			joy1_UD = (byte)(Math.Floor(controller.GetFloat("P1 Stick Y")) + 128);
+			joy2_LR = (byte)(Math.Floor(controller.GetFloat("P2 Stick X")) + 128);
+			joy2_UD = (byte)(Math.Floor(controller.GetFloat("P2 Stick Y")) + 128);
 
+			// override stick reading with digital input if supplied
+			// On vectrex there is no such thing as pressing left + right or up + down
+			// so convention will be up and right dominate
+			if (controller.IsPressed("P1 Down")) { joy1_UD = 0xFF; }
+			if (controller.IsPressed("P1 Up")) { joy1_UD = 0; }
+			if (controller.IsPressed("P1 Left")) { joy1_LR = 0xFF; }
+			if (controller.IsPressed("P1 Right")) { joy1_LR = 0; }
+
+			if (controller.IsPressed("P2 Down")) { joy2_UD = 0xFF; }
+			if (controller.IsPressed("P2 Up")) { joy2_UD = 0; }
+			if (controller.IsPressed("P2 Left")) { joy2_LR = 0xFF; }
+			if (controller.IsPressed("P2 Right")) { joy2_LR = 0; }
 
 
 			frame_end = false;

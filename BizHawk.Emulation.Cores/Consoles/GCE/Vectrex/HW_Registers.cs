@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						ret = (byte)((portB_ret & 0x7F) | (PB7 ? 0x80 : 0x0));
 					}
 
-					if (!dir_ctrl.Bit(5)) { ret |= (byte)(compare ? 0x0 : 0x20); }
+					if (!dir_ctrl.Bit(5)) { ret |= (byte)(!compare ? 0x0 : 0x20); }
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -181,8 +181,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
-							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
+							if (sel1)
+							{
+								/* sound samples direct to output */
+								audio.pcm_sample = (short)(portA_ret << 6);
+							}
+							else
+							{
+								ppu.vec_scale = portA_ret;
+								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+							}
 						}
 						else
 						{
@@ -195,7 +203,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 								ppu.bright = (byte)(portA_ret & 0x3F);
 								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
 							}
-							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
+							else
+							{
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);
+							}
+						}
+					}
+					else
+					{
+						if (sel0)
+						{
+							if (sel1)
+							{
+								if (portA_ret >= joy2_UD) { compare = true; }
+								else { compare = false; }
+							}
+							else
+							{							
+								if (portA_ret >= joy1_UD) { compare = true; }
+								else { compare = false; }
+							}
+						}
+						else
+						{
+							if (sel1)
+							{
+								if (portA_ret >= joy2_LR) { compare = true; }
+								else { compare = false; }
+							}
+							else
+							{
+								if (portA_ret >= joy1_LR) { compare = true; }
+								else { compare = false; }
+							}
 						}
 					}
 
@@ -220,8 +260,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
-							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
+							if (sel1)
+							{
+								/* sound samples direct to output */
+								audio.pcm_sample = (short)(portA_ret << 6);
+							}
+							else
+							{
+								ppu.vec_scale = portA_ret;
+								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+							}
 						}
 						else
 						{
@@ -234,7 +282,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 								ppu.bright = (byte)(portA_ret & 0x3F);
 								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
 							}
-							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
+							else
+							{
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);
+							}
+						}
+					}
+					else
+					{
+						if (sel0)
+						{
+							if (sel1)
+							{
+								if (portA_ret >= joy2_UD) { compare = true; }
+								else { compare = false; }
+							}
+							else
+							{								
+								if (portA_ret >= joy1_UD) { compare = true; }
+								else { compare = false; }
+							}
+						}
+						else
+						{
+							if (sel1)
+							{
+								if (portA_ret >= joy2_LR) { compare = true; }
+								else { compare = false; }
+							}
+							else
+							{
+								if (portA_ret >= joy1_LR) { compare = true; }
+								else { compare = false; }
+							}
 						}
 					}
 

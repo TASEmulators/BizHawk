@@ -104,6 +104,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(PB7_undriven), ref PB7_undriven);
 			ser.Sync(nameof(pot_val), ref pot_val);
 
+			ser.Sync(nameof(joy1_LR), ref joy1_LR);
+			ser.Sync(nameof(joy1_UD), ref joy1_UD);
+			ser.Sync(nameof(joy2_LR), ref joy2_LR);
+			ser.Sync(nameof(joy2_UD), ref joy2_UD);
+
+
 			// probably a better way to do this
 			if (cart_RAM != null)
 			{
