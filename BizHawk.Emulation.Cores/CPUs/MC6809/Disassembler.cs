@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"RTS", // 39
 			"ABX", // 3a
 			"RTI", // 3b
-			"CWAI", // 3c
+			"CWAI  i8", // 3c
 			"MUL", // 3d
 			"???", // 3e
 			"SWI1", // 3f

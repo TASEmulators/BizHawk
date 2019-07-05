@@ -417,6 +417,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_en &= (byte)((~value) & 0x7F);
 					}
+
 					update_int_fl();
 					break;
 				case 0xF:
@@ -468,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					int_fl |= 0x40;
 					update_int_fl();
-					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+					if (int_en.Bit(6)) { cpu.IRQPending = true; }
 
 					if (t1_ctrl.Bit(7)) { PB7 = !PB7; ppu.ramp_sig = !PB7; }
 				}
@@ -480,7 +481,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_fl |= 0x40;
 						update_int_fl();
-						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+						if (int_en.Bit(6)) { cpu.IRQPending = true; }
 						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; }
 
 						t1_shot_go = false;
@@ -496,10 +497,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				if (t2_ctrl.Bit(5))
 				{
 					t2_counter = (t2_high << 8) | t2_low;
-
 					int_fl |= 0x20;
 					update_int_fl();
-					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+					if (int_en.Bit(5)) { cpu.IRQPending = true; }
 				}
 				else
 				{
@@ -509,7 +509,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_fl |= 0x20;
 						update_int_fl();
-						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+						if (int_en.Bit(5)) { cpu.IRQPending = true; }
 
 						t2_shot_go = false;
 					}
@@ -564,6 +564,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				test |= int_en.Bit(i) & int_fl.Bit(i);
 			}
 
+			if (!test) { cpu.IRQPending = false; }
 			int_fl |= (byte)(test ? 0x80 : 0);
 		}
 

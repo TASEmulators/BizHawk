@@ -73,8 +73,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public void do_frame()
 		{
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-			//PB7_undriven = true;
-			//for (int i = 0; i < 1000; i++)
+
+			//for (int i = 0; i < 100; i++)
 			while (!frame_end)
 			{
 				internal_state_tick();

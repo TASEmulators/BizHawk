@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR_DEC_LO, SP, B,
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
-							SET_F_I,
+							SET_I,
 							RD_INC, ALU, ADDR,
 							RD_INC, ALU2, ADDR,
 							SET_ADDR, PC, ALU, ALU2);
