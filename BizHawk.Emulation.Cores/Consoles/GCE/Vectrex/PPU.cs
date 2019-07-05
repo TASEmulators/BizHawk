@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 	{
 		public VectrexHawk Core { get; set; }
 
-		public bool zero_sig, ramp_sig, blank_sig;
+		public bool zero_sig, ramp_sig, blank_sig, off_screen;
 		public byte vec_scale, x_vel, y_vel, bright;
 		public double x_pos, y_pos;
 
@@ -32,13 +32,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				{
 					skip--;
 				}
-				
-				if (x_pos > 257) { x_pos = 257; }
-				if (x_pos < 2) { x_pos = 2; }
-				if (y_pos > 385) { y_pos = 385; }
-				if (y_pos < 2) { y_pos = 2; }
 
-		
+				off_screen = false;
+				
+				if (x_pos > 257) { off_screen = true; if (x_pos > (257 + 256)) { x_pos = (257 + 256); } }
+				if (x_pos < 2) { off_screen = true; if (x_pos < (2 - 256)) { x_pos = (2 - 256); } }
+				if (y_pos > 385) { off_screen = true; if (y_pos > (385 + 256)) { y_pos = (385 + 256); } }
+				if (y_pos < 2) { off_screen = true; if (y_pos < (2 - 256)) { y_pos = (2 - 256); } }
+
+
 			}
 			else if (zero_sig)
 			{
@@ -46,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				y_pos = 192 + 2;
 			}
 
-			if (!blank_sig)
+			if (!blank_sig && !off_screen)
 			{
 
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_1);
@@ -84,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(zero_sig), ref zero_sig);
 			ser.Sync(nameof(blank_sig), ref blank_sig);
 			ser.Sync(nameof(ramp_sig), ref ramp_sig);
+			ser.Sync(nameof(off_screen), ref off_screen);
 
 			ser.Sync(nameof(vec_scale), ref vec_scale);
 			ser.Sync(nameof(x_vel), ref x_vel);
