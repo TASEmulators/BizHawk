@@ -209,33 +209,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							}
 						}
 					}
+
+					if (sel0)
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_UD) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{							
+							if (portA_ret >= joy1_UD) { compare = true; }
+							else { compare = false; }
+						}
+					}
 					else
 					{
-						if (sel0)
+						if (sel1)
 						{
-							if (sel1)
-							{
-								if (portA_ret >= joy2_UD) { compare = true; }
-								else { compare = false; }
-							}
-							else
-							{							
-								if (portA_ret >= joy1_UD) { compare = true; }
-								else { compare = false; }
-							}
+							if (portA_ret >= joy2_LR) { compare = true; }
+							else { compare = false; }
 						}
 						else
 						{
-							if (sel1)
-							{
-								if (portA_ret >= joy2_LR) { compare = true; }
-								else { compare = false; }
-							}
-							else
-							{
-								if (portA_ret >= joy1_LR) { compare = true; }
-								else { compare = false; }
-							}
+							if (portA_ret >= joy1_LR) { compare = true; }
+							else { compare = false; }
 						}
 					}
 
@@ -288,33 +286,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							}
 						}
 					}
+
+					if (sel0)
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_UD) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{								
+							if (portA_ret >= joy1_UD) { compare = true; }
+							else { compare = false; }
+						}
+					}
 					else
 					{
-						if (sel0)
+						if (sel1)
 						{
-							if (sel1)
-							{
-								if (portA_ret >= joy2_UD) { compare = true; }
-								else { compare = false; }
-							}
-							else
-							{								
-								if (portA_ret >= joy1_UD) { compare = true; }
-								else { compare = false; }
-							}
+							if (portA_ret >= joy2_LR) { compare = true; }
+							else { compare = false; }
 						}
 						else
 						{
-							if (sel1)
-							{
-								if (portA_ret >= joy2_LR) { compare = true; }
-								else { compare = false; }
-							}
-							else
-							{
-								if (portA_ret >= joy1_LR) { compare = true; }
-								else { compare = false; }
-							}
+							if (portA_ret >= joy1_LR) { compare = true; }
+							else { compare = false; }
 						}
 					}
 
