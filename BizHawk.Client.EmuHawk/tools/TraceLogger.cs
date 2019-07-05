@@ -133,7 +133,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ToWindowRadio.Checked)
 				{
-					TraceView.VirtualListSize = _instructions.Count;
+					// setting to zero first fixes an exception when scrolling the view
+					// how or why I don't know
+					// it's hidden behind an internal class ListViewNativeItemCollection
+					TraceView.VirtualListSize = 0;
+					TraceView.VirtualListSize = _instructions.Count;		
 				}
 				else
 				{
@@ -148,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 					//connect tracer to sink for next frame
 					if (ToWindowRadio.Checked)
 					{
-						//update listview with most recentr results
+						//update listview with most recent results
 						TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
 
 						Tracer.Sink = new CallbackSink()
