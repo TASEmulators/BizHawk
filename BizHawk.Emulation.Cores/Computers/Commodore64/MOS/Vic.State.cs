@@ -137,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_xScroll = 0;
 			_yScroll = 0;
 			_cycle = 0;
+			_cycleIndex = 0;
 
 			// reset sprites
 			for (var i = 0; i < 8; i++)

@@ -21,6 +21,32 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				_board.Cpu.TraceCallback = null;
 			}
 
+			if (controller.IsPressed("Power"))
+			{
+				if (!_powerPressed)
+				{
+					_powerPressed = true;
+					HardReset();
+				}
+			}
+			else
+			{
+				_powerPressed = false;
+			}
+
+			if (controller.IsPressed("Reset"))
+			{
+				if (!_resetPressed)
+				{
+					_resetPressed = true;
+					SoftReset();
+				}
+			}
+			else
+			{
+				_resetPressed = false;
+			}
+
 			if (controller.IsPressed("Next Disk") && !_nextPressed)
 			{
 				_nextPressed = true;

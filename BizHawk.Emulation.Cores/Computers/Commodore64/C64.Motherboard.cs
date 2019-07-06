@@ -191,6 +191,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			CartPort.HardReset();
 		}
 
+		public void SoftReset()
+		{
+			// equivalent to a hard reset EXCEPT cpu, color ram, memory
+			Bus = 0xFF;
+			InputRead = false;
+
+			Cia0.HardReset();
+			Cia1.HardReset();
+			Serial.HardReset();
+			Sid.HardReset();
+			Vic.HardReset();
+			User.HardReset();
+			Cassette.HardReset();
+			Serial.HardReset();
+			Cpu.SoftReset();
+			CartPort.HardReset();
+		}
+
 		public void Init()
 		{
 			CartPort.ReadOpenBus = ReadOpenBus;

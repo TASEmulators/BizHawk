@@ -97,6 +97,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_pinNmiLast = true;
 		}
 
+		public void SoftReset()
+		{
+			_cpu.NESSoftReset();
+			_port.Direction = 0x00;
+			_port.Latch = 0xFF;
+		}
+
 		// ------------------------------------
 		public void ExecutePhase()
 		{
