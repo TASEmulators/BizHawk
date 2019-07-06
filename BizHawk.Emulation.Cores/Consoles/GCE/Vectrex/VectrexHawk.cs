@@ -4,8 +4,6 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.MC6809;
 
-using System.Runtime.InteropServices;
-
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	[Core(

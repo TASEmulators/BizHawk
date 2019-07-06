@@ -1,8 +1,5 @@
-﻿using BizHawk.Common.NumberExtensions;
+﻿using System;
 using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {

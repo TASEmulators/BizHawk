@@ -29,56 +29,53 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort AND8 = 18;
 		public const ushort XOR8 = 19;
 		public const ushort OR8 = 20;
-		public const ushort CP8 = 21;
-		public const ushort ASL = 22;
-		public const ushort ASR = 23;
-		public const ushort LSR = 24;
-		public const ushort BIT = 25;
-		public const ushort CWAI = 26;
-		public const ushort SYNC = 27;
-		public const ushort INT_GET = 28;
-		public const ushort HALT_CHK = 29;
-		public const ushort RD_INC = 30;
-		public const ushort SET_ADDR = 31;
-		public const ushort NEG = 32;
-		public const ushort TST = 33;
-		public const ushort CLR = 34;
-		public const ushort OP_PG_2 = 35;
-		public const ushort OP_PG_3 = 36;
-		public const ushort SEX = 37;
-		public const ushort RD_INC_OP = 38;
+		public const ushort ASL = 21;
+		public const ushort ASR = 22;
+		public const ushort LSR = 23;
+		public const ushort BIT = 24;
+		public const ushort CWAI = 25;
+		public const ushort SYNC = 26;
+		public const ushort RD_INC = 27;
+		public const ushort RD_INC_OP = 28;
+		public const ushort WR_DEC_LO = 29;
+		public const ushort WR_DEC_HI = 30;
+		public const ushort WR_HI = 31;
+		public const ushort SET_ADDR = 32;
+		public const ushort NEG = 33;
+		public const ushort TST = 34;
+		public const ushort CLR = 35;
+		public const ushort OP_PG_2 = 36;
+		public const ushort OP_PG_3 = 37;
+		public const ushort SEX = 38;	
 		public const ushort EXG = 39;
 		public const ushort TFR = 40;
-		public const ushort WR_DEC_LO = 41;
-		public const ushort WR_DEC_HI = 42;
-		public const ushort WR_HI = 43;
-		public const ushort ADD8BR = 44;
-		public const ushort ABX = 45;
-		public const ushort MUL = 46;
-		public const ushort JPE = 47;
-		public const ushort IDX_DCDE = 48;
-		public const ushort IDX_OP_BLD = 49;
-		public const ushort EA_8 = 50;
-		public const ushort EA_16 = 51;
-		public const ushort PSH_n = 52;
-		public const ushort PUL_n = 53;
-		public const ushort WR_DEC_LO_OP = 54;
-		public const ushort WR_DEC_HI_OP = 55;
-		public const ushort SET_ADDR_PUL = 56;
-		public const ushort SET_F_I = 57;
-		public const ushort SET_I = 58;
-		public const ushort SET_E = 59;
-		public const ushort ANDCC = 60;
-		public const ushort CMP8 = 61;
-		public const ushort SUB16 = 62;
-		public const ushort ADD16 = 63;
-		public const ushort CMP16 = 64;
-		public const ushort CMP16D = 65;
-		public const ushort WR_HI_INC = 66;
-		public const ushort LD_8 = 67;
-		public const ushort LD_16 = 68;
-		public const ushort LEA = 69;
-		public const ushort CLR_E = 70;
+		public const ushort ADD8BR = 41;
+		public const ushort ABX = 42;
+		public const ushort MUL = 43;
+		public const ushort JPE = 44;
+		public const ushort IDX_DCDE = 45;
+		public const ushort IDX_OP_BLD = 46;
+		public const ushort EA_8 = 47;
+		public const ushort EA_16 = 48;
+		public const ushort PSH_n = 49;
+		public const ushort PUL_n = 50;
+		public const ushort WR_DEC_LO_OP = 51;
+		public const ushort WR_DEC_HI_OP = 52;
+		public const ushort WR_HI_INC = 53;
+		public const ushort SET_ADDR_PUL = 54;
+		public const ushort SET_F_I = 55;
+		public const ushort SET_I = 56;
+		public const ushort SET_E = 57;
+		public const ushort ANDCC = 58;
+		public const ushort CMP8 = 59;
+		public const ushort SUB16 = 60;
+		public const ushort ADD16 = 61;
+		public const ushort CMP16 = 62;
+		public const ushort CMP16D = 63;
+		public const ushort LD_8 = 64;
+		public const ushort LD_16 = 65;
+		public const ushort LEA = 66;
+		public const ushort CLR_E = 67;
 
 		public MC6809()
 		{
@@ -439,9 +436,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case OR8:
 					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case CP8:
-					CP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case ASL:
 					ASL_Func(cur_instr[instr_pntr++]);
 					break;
@@ -507,12 +501,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					IRQS = 1;				
 					instr_pntr = irq_pntr = 0;
 					PopulateCURINSTR(SYNC);
-					break;
-				case INT_GET:
-
-					break;
-				case HALT_CHK:
-
 					break;
 			}
 

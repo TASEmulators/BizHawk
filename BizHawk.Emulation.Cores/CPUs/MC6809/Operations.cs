@@ -311,23 +311,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = Regs[dest] > 127;
 		}
 
-		public void CP8_Func(ushort dest, ushort src)
-		{
-			int Reg16_d = Regs[dest];
-			Reg16_d -= Regs[src];
-
-			FlagC = Reg16_d.Bit(8);
-			FlagZ = (Reg16_d & 0xFF) == 0;
-
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d -= (Regs[src] & 0xF);
-
-			FlagH = Reg16_d.Bit(4);
-
-			FlagN = true;
-		}
-
 		public void ROR_Func(ushort src)
 		{
 			ushort c = (ushort)(FlagC ? 0x80 : 0);
