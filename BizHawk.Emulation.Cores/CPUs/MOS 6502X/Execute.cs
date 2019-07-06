@@ -528,7 +528,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			get
 			{
-				return NMI || (IRQ && !FlagI);
+				return RDY && (NMI || (IRQ && !FlagI));
 			}
 		}
 
@@ -560,6 +560,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		void Fetch1()
 		{
+			rdy_freeze = !RDY;
+			if (!RDY)
+				return;
+
 			my_iflag = FlagI;
 			FlagI = iflag_pending;
 			if (!branch_irq_hack)
