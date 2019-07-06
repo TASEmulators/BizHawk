@@ -93,13 +93,13 @@
 									_pixel = _backgroundColor0;
 									break;
 								case SrMask1:
-									_pixel = _backgroundColor1;
+									_pixel = _idle ? 0 : _backgroundColor1;
 									break;
 								case SrMask2:
-									_pixel = _backgroundColor2;
+									_pixel = _idle ? 0 :_backgroundColor2;
 									break;
 								default:
-									_pixel = (_displayC & 0x700) >> 8;
+									_pixel = _idle ? 0 : (_displayC & 0x700) >> 8;
 									break;
 							}
 						}
@@ -107,12 +107,12 @@
 						{
 							// standard 001
 							_pixelData = _sr & SrMask2;
-							_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
+							_pixel = _pixelData != 0 ? (_idle ? 0 : _displayC >> 8) : _backgroundColor0;
 						}
 						break;
 					case VideoMode010:
 						_pixelData = _sr & SrMask2;
-						_pixel = _pixelData != 0 ? _displayC >> 4 : _displayC;
+						_pixel = _idle ? 0 : _pixelData != 0 ? _displayC >> 4 : _displayC;
 						break;
 					case VideoMode011:
 						if ((_srSync & SrMask2) != 0)
@@ -124,13 +124,13 @@
 								_pixel = _backgroundColor0;
 								break;
 							case SrMask1:
-								_pixel = _displayC >> 4;
+								_pixel = _idle ? 0 : _displayC >> 4;
 								break;
 							case SrMask2:
-								_pixel = _displayC;
+								_pixel = _idle ? 0 : _displayC;
 								break;
 							default:
-								_pixel = _displayC >> 8;
+								_pixel = _idle ? 0 : _displayC >> 8;
 								break;
 						}
 						break;
@@ -138,7 +138,7 @@
 						_pixelData = _sr & SrMask2;
 						if (_pixelData != 0)
 						{
-							_pixel = _displayC >> 8;
+							_pixel = _idle ? 0 : _displayC >> 8;
 						}
 						else
 						{
@@ -149,13 +149,13 @@
 									_pixel = _backgroundColor0;
 									break;
 								case 1:
-									_pixel = _backgroundColor1;
+									_pixel = _idle ? 0 : _backgroundColor1;
 									break;
 								case 2:
-									_pixel = _backgroundColor2;
+									_pixel = _idle ? 0 : _backgroundColor2;
 									break;
 								default:
-									_pixel = _backgroundColor3;
+									_pixel = _idle ? 0 : _backgroundColor3;
 									break;
 							}
 						}
