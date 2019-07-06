@@ -357,6 +357,8 @@
 			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.VectrexsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
@@ -521,6 +523,7 @@
             this.virtualBoyToolStripMenuItem,
             this.neoGeoPocketToolStripMenuItem,
             this.zXSpectrumToolStripMenuItem,
+			this.VectrexSubMenu,
             this.HelpSubMenu,
             this.amstradCPCToolStripMenuItem});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
@@ -3230,6 +3233,21 @@
 			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
 			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GGLSettingsMenuItem_Click);
 			// 
+			// VectrexSubMenu
+			// 
+			this.VectrexSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.VectrexsettingsToolStripMenuItem});
+			this.VectrexSubMenu.Name = "VectrexSubMenu";
+			this.VectrexSubMenu.Size = new System.Drawing.Size(60, 19);
+			this.VectrexSubMenu.Text = "&Vectrex";
+			// 
+			// VectrexsettingsToolStripMenuItem
+			// 
+			this.VectrexsettingsToolStripMenuItem.Name = "VectrexsettingsToolStripMenuItem";
+			this.VectrexsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.VectrexsettingsToolStripMenuItem.Text = "Settings...";
+			this.VectrexsettingsToolStripMenuItem.Click += new System.EventHandler(this.VectrexSettingsMenuItem_Click);
+			// 
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -4561,6 +4579,8 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem VectrexSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem VectrexsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
