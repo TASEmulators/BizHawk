@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_rngCurrent = 1;
 			}
 
-			_rngCurrent = (int)(_rngCurrent * LEHMER_RNG_PRIME % int.MaxValue);
+			_rngCurrent = unchecked((int) ((_rngCurrent * LEHMER_RNG_PRIME) & int.MaxValue));
 		}
 
         private void ExecuteFlux()
