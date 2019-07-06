@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Stick X", "P" + PortNum + " Stick Y" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = { new[] { 127.0f, 0, -128.0f }, new[] { -128.0f, 0, 127.0f } }
 			};
 		}
 
@@ -57,6 +57,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		private static readonly string[] BaseDefinition =
 		{
+			"Up",
+			"Down",
+			"Left",
+			"Right",
 			"Button 1",
 			"Button 2",
 			"Button 3",

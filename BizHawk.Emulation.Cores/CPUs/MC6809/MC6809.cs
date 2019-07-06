@@ -66,17 +66,19 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort WR_DEC_HI_OP = 55;
 		public const ushort SET_ADDR_PUL = 56;
 		public const ushort SET_F_I = 57;
-		public const ushort SET_E = 58;
-		public const ushort ANDCC = 59;
-		public const ushort CMP8 = 60;
-		public const ushort SUB16 = 61;
-		public const ushort ADD16 = 62;
-		public const ushort CMP16 = 63;
-		public const ushort CMP16D = 64;
-		public const ushort WR_HI_INC = 65;
-		public const ushort LD_8 = 66;
-		public const ushort LD_16 = 67;
-		public const ushort LEA = 68;
+		public const ushort SET_I = 58;
+		public const ushort SET_E = 59;
+		public const ushort ANDCC = 60;
+		public const ushort CMP8 = 61;
+		public const ushort SUB16 = 62;
+		public const ushort ADD16 = 63;
+		public const ushort CMP16 = 64;
+		public const ushort CMP16D = 65;
+		public const ushort WR_HI_INC = 66;
+		public const ushort LD_8 = 67;
+		public const ushort LD_16 = 68;
+		public const ushort LEA = 69;
+		public const ushort CLR_E = 70;
 
 		public MC6809()
 		{
@@ -231,7 +233,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
 						case JPE:
-							if (!FlagE) { instr_pntr = 45; };
+							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; };
 							break;
 						case IDX_DCDE:
 							Index_decode();
@@ -353,8 +355,14 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case SET_F_I:
 					FlagI = true; FlagF = true;
 					break;
+				case SET_I:
+					FlagI = true;
+					break;
 				case SET_E:
 					FlagE = true;
+					break;
+				case CLR_E:
+					FlagE = false;
 					break;
 				case ANDCC:
 					Regs[CC] &= Regs[instr_pntr++];
@@ -449,6 +457,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case CWAI:
 					if (NMIPending)
 					{
+						NMIPending = false;
+
 						Regs[ADDR] = 0xFFFC;
 						PopulateCURINSTR(RD_INC, ALU, ADDR,
 										RD_INC, ALU2, ADDR,
@@ -460,6 +470,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 					else if (FIRQPending && !FlagF)
 					{
+						FIRQPending = false;
+
 						Regs[ADDR] = 0xFFF6;
 						PopulateCURINSTR(RD_INC, ALU, ADDR,
 										RD_INC, ALU2, ADDR,
@@ -471,6 +483,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 					else if (IRQPending && !FlagI)
 					{
+						IRQPending = false;
+
 						Regs[ADDR] = 0xFFF8;
 						PopulateCURINSTR(RD_INC, ALU, ADDR,
 										RD_INC, ALU2, ADDR,
@@ -542,7 +556,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						PopulateCURINSTR(IDLE);
 					}
 				}
-				// then regular IRQ
+				// then regular IRQ				
 				else if (IRQPending && !FlagI)
 				{
 					if (!FlagI)
@@ -567,7 +581,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						instr_pntr = irq_pntr = 0;
 						PopulateCURINSTR(IDLE);
 					}
-				}
+				}				
 				// otherwise start the next instruction
 				else
 				{

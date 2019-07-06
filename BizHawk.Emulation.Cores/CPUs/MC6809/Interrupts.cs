@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			Regs[ADDR] = 0xFFF8;
 			PopulateCURINSTR(IDLE,
-							IDLE,
+							SET_E,
 							DEC16, SP,
 							WR_DEC_LO, SP, PC,
 							WR_DEC_HI, SP, PC,
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							WR_DEC_LO, SP, B,
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
-							SET_F_I,
+							SET_I,
 							RD_INC, ALU, ADDR,
 							RD_INC, ALU2, ADDR,
 							SET_ADDR, PC, ALU, ALU2);
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			Regs[ADDR] = 0xFFF6;
 			PopulateCURINSTR(IDLE,
-							IDLE,
+							CLR_E,
 							DEC16, SP,
 							WR_DEC_LO, SP, PC,
 							WR_DEC_HI, SP, PC,
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			Regs[ADDR] = 0xFFFC;
 			PopulateCURINSTR(IDLE,
-							IDLE,
+							SET_E,
 							DEC16, SP,
 							WR_DEC_LO, SP, PC,
 							WR_DEC_HI, SP, PC,

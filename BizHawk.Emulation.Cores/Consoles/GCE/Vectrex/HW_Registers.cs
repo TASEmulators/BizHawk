@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 						ret = (byte)((portB_ret & 0x7F) | (PB7 ? 0x80 : 0x0));
 					}
 
-					if (!dir_ctrl.Bit(5)) { ret |= (byte)(compare ? 0x0 : 0x20); }
+					if (!dir_ctrl.Bit(5)) { ret |= (byte)(!compare ? 0x0 : 0x20); }
 
 					int_fl &= 0xE7;
 					update_int_fl();
@@ -181,8 +181,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
-							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
+							if (sel1)
+							{
+								/* sound samples direct to output */
+								audio.pcm_sample = (short)(portA_ret << 6);
+							}
+							else
+							{
+								ppu.vec_scale = portA_ret;
+								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+							}
 						}
 						else
 						{
@@ -195,7 +203,37 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 								ppu.bright = (byte)(portA_ret & 0x3F);
 								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
 							}
-							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
+							else
+							{
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);
+							}
+						}
+					}
+
+					if (sel0)
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_UD) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{							
+							if (portA_ret >= joy1_UD) { compare = true; }
+							else { compare = false; }
+						}
+					}
+					else
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_LR) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{
+							if (portA_ret >= joy1_LR) { compare = true; }
+							else { compare = false; }
 						}
 					}
 
@@ -220,8 +258,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						if (sel0)
 						{
-							if (sel1) {/* sound samples direct to output */ audio.pcm_sample = (short)(portA_ret << 6); }
-							else { ppu.vec_scale = portA_ret; if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); } }
+							if (sel1)
+							{
+								/* sound samples direct to output */
+								audio.pcm_sample = (short)(portA_ret << 6);
+							}
+							else
+							{
+								ppu.vec_scale = portA_ret;
+								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+							}
 						}
 						else
 						{
@@ -234,7 +280,37 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 								ppu.bright = (byte)(portA_ret & 0x3F);
 								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
 							}
-							else { ppu.y_vel = (byte)(portA_ret ^ 0x80); }
+							else
+							{
+								ppu.y_vel = (byte)(portA_ret ^ 0x80);
+							}
+						}
+					}
+
+					if (sel0)
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_UD) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{								
+							if (portA_ret >= joy1_UD) { compare = true; }
+							else { compare = false; }
+						}
+					}
+					else
+					{
+						if (sel1)
+						{
+							if (portA_ret >= joy2_LR) { compare = true; }
+							else { compare = false; }
+						}
+						else
+						{
+							if (portA_ret >= joy1_LR) { compare = true; }
+							else { compare = false; }
 						}
 					}
 
@@ -341,6 +417,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_en &= (byte)((~value) & 0x7F);
 					}
+
 					update_int_fl();
 					break;
 				case 0xF:
@@ -392,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 					int_fl |= 0x40;
 					update_int_fl();
-					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+					if (int_en.Bit(6)) { cpu.IRQPending = true; }
 
 					if (t1_ctrl.Bit(7)) { PB7 = !PB7; ppu.ramp_sig = !PB7; }
 				}
@@ -404,7 +481,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_fl |= 0x40;
 						update_int_fl();
-						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+						if (int_en.Bit(6)) { cpu.IRQPending = true; }
 						if (t1_ctrl.Bit(7)) { PB7 = true; ppu.ramp_sig = false; }
 
 						t1_shot_go = false;
@@ -420,10 +497,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				if (t2_ctrl.Bit(5))
 				{
 					t2_counter = (t2_high << 8) | t2_low;
-
 					int_fl |= 0x20;
 					update_int_fl();
-					//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+					if (int_en.Bit(5)) { cpu.IRQPending = true; }
 				}
 				else
 				{
@@ -433,7 +509,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					{
 						int_fl |= 0x20;
 						update_int_fl();
-						//if (int_en.Bit(6)) { cpu.IRQPending = true; }
+						if (int_en.Bit(5)) { cpu.IRQPending = true; }
 
 						t2_shot_go = false;
 					}
@@ -488,6 +564,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				test |= int_en.Bit(i) & int_fl.Bit(i);
 			}
 
+			if (!test) { cpu.IRQPending = false; }
 			int_fl |= (byte)(test ? 0x80 : 0);
 		}
 
