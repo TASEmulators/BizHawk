@@ -472,8 +472,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 							RD_INC, ALU, SP,
 							RD_INC_OP, ALU2, SP, SET_ADDR, US, ALU, ALU2,
 							RD_INC, ALU, SP,
-							RD_INC_OP, ALU2, SP,
-							SET_ADDR, PC, ALU, ALU2);
+							RD_INC_OP, ALU2, SP, SET_ADDR, PC, ALU, ALU2);
 
 			IRQS = 14;
 		}

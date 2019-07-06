@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort LD_8 = 67;
 		public const ushort LD_16 = 68;
 		public const ushort LEA = 69;
+		public const ushort CLR_E = 70;
 
 		public MC6809()
 		{
@@ -359,6 +360,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case SET_E:
 					FlagE = true;
+					break;
+				case CLR_E:
+					FlagE = false;
 					break;
 				case ANDCC:
 					Regs[CC] &= Regs[instr_pntr++];
