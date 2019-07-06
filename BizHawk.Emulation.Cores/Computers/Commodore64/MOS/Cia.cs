@@ -144,34 +144,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _lastCnt = true;
         }
 
-        private void CheckIrqs()
-        {
-            if (_taIrqNextCycle)
-            {
-                _taIrqNextCycle = false;
-                TriggerInterrupt(1);
-            }
-            if (_tbIrqNextCycle)
-            {
-                _tbIrqNextCycle = false;
-                TriggerInterrupt(2);
-            }
-        }
-
         public void ExecutePhase()
         {
             _thisCnt = ReadCnt();
             _taUnderflow = false;
-            if (DelayedInterrupts)
-            {
-                CheckIrqs();
-            }
+
+			if (_taIrqNextCycle)
+			{
+				_taIrqNextCycle = false;
+				TriggerInterrupt(1);
+			}
+			
+			if (_tbIrqNextCycle)
+			{
+				_tbIrqNextCycle = false;
+				TriggerInterrupt(2);
+			}
 
             if (_taPrb6NegativeNextCycle)
             {
                 _prb &= 0xBF;
                 _taPrb6NegativeNextCycle = false;
             }
+
             if (_tbPrb7NegativeNextCycle)
             {
                 _prb &= 0x7F;
@@ -277,11 +272,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
             _flagLatch = _flagInput;
 
-            if (!DelayedInterrupts)
-            {
-                CheckIrqs();
-            }
-
             if ((_cra & 0x02) != 0)
                 _ddra |= 0x40;
             if ((_crb & 0x02) != 0)
@@ -309,7 +299,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private void Ta_Interrupt()
         {
             _ta = _latcha;
-            _taIrqNextCycle = true;
+
+			if (DelayedInterrupts)
+				_taIrqNextCycle = true;
+			else
+				TriggerInterrupt(1);
+
             _icr |= 1;
 
             if ((_cra & 0x08) != 0)
@@ -418,7 +413,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private void Tb_Interrupt()
         {
             _tb = _latchb;
-            _tbIrqNextCycle = true;
+			if (DelayedInterrupts)
+				_tbIrqNextCycle = true;
+			else
+				TriggerInterrupt(2);
+
             _icr |= 2;
 
             if ((_crb & 0x08) != 0)
