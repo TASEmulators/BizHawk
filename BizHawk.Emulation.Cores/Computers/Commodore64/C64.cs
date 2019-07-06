@@ -207,7 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				_board.InputRead = false;
 				_board.PollInput();
-				_board.Cpu.LagCycles = 0;
 			}
 
 			_board.Execute();

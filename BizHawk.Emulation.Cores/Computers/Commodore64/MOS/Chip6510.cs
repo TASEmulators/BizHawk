@@ -117,13 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_cpu.NMI |= _pinNmiLast && !_thisNmi;
 				_cpu.ExecuteOne();
 			}
-			else
-			{
-				LagCycles++;
-			}
 		}
-
-		public int LagCycles;
 
 		internal bool AtInstructionStart()
 		{
@@ -233,7 +227,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.EndSection();
 
 			ser.Sync(nameof(_thisNmi), ref _thisNmi);
-			ser.Sync(nameof(LagCycles), ref LagCycles);
 		}
 
 		public void Write(int addr, int val)
