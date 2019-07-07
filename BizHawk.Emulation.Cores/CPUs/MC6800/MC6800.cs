@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort RD = 2;
 		public const ushort WR = 3;
 		public const ushort TR = 4;
-		public const ushort ADD16BR = 5;
 		public const ushort ADD8 = 6;
 		public const ushort SUB8 = 7;
 		public const ushort ADC8 = 8;
@@ -58,13 +57,9 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort SET_E = 57;
 		public const ushort ANDCC = 58;
 		public const ushort CMP8 = 59;
-		public const ushort SUB16 = 60;
-		public const ushort ADD16 = 61;
 		public const ushort CMP16 = 62;
-		public const ushort CMP16D = 63;
 		public const ushort LD_8 = 64;
 		public const ushort LD_16 = 65;
-		public const ushort LEA = 66;
 		public const ushort CLR_E = 67;
 		public const ushort TAP = 68;
 		public const ushort TPA = 69;
@@ -247,9 +242,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 						case LD_16:
 							LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
-						case LEA:
-							LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-							break;
 						case ANDCC:
 							Regs[CC] &= Regs[instr_pntr++];
 							break;
@@ -287,9 +279,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case LD_16:
 					LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case LEA:
-					LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case IDX_OP_BLD:
 					Index_Op_Builder();
 					break;
@@ -317,7 +306,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					CLR_Func(cur_instr[instr_pntr++]);
 					break;
 				case SET_F_I:
-					FlagI = true; FlagF = true;
+					FlagI = true;
 					break;
 				case SET_I:
 					FlagI = true;
@@ -330,9 +319,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					break;
 				case ANDCC:
 					Regs[CC] &= Regs[instr_pntr++];
-					break;
-				case ADD16BR:
-					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case ADD8BR:
 					ADD8BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -361,17 +347,8 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case DEC16:
 					DEC16_Func(cur_instr[instr_pntr++]);
 					break;
-				case SUB16:
-					SUB16_Func(cur_instr[instr_pntr++]);
-					break;
-				case ADD16:
-					ADD16_Func(cur_instr[instr_pntr++]);
-					break;
 				case CMP16:
 					CMP16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-				case CMP16D:
-					CMP16D_Func(cur_instr[instr_pntr++]);
 					break;
 				case DEC8:
 					DEC8_Func(cur_instr[instr_pntr++]);
@@ -501,19 +478,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" }); }
 					}
-					else if (FIRQPending && !FlagF)
-					{
-						FIRQPending = false;
-
-						Regs[ADDR] = 0xFFF6;
-						PopulateCURINSTR(RD_INC, ALU, ADDR,
-										RD_INC, ALU2, ADDR,
-										SET_ADDR, PC, ALU, ALU2);
-						irq_pntr = -1;
-						IRQS = 3;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" }); }
-					}
 					else if (IRQPending && !FlagI)
 					{
 						IRQPending = false;
@@ -556,32 +520,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					NMI_();
 					NMICallback();
 					instr_pntr = irq_pntr = 0;
-				}
-				// fast IRQ has next priority
-				else if (FIRQPending)
-				{
-					if (!FlagF)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						FIRQ_();
-						FIRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
 				}
 				// then regular IRQ				
 				else if (IRQPending && !FlagI)
@@ -627,7 +565,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 		public string TraceHeader
 		{
-			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)"; }
+			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, SP, CC), Cy, flags (EHINZVC)"; }
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -638,16 +576,14 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} DP:{4:X2} CC:{5:X2} Cy:{6} {7}{8}{9}{10}{11}{12}{13}{14}",
+					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} CC:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}",
 					Regs[A],
 					Regs[B],
 					Regs[X],
 					Regs[SP],
-					Regs[DP],
 					Regs[CC],
 					TotalExecutedCycles,
 					FlagE ? "E" : "e",
-					FlagF ? "F" : "f",
 					FlagH ? "H" : "h",
 					FlagI ? "I" : "i",
 					FlagN ? "N" : "n",
@@ -697,13 +633,11 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 			ser.Sync(nameof(IN_SYNC), ref IN_SYNC);
 			ser.Sync(nameof(NMIPending), ref NMIPending);
-			ser.Sync(nameof(FIRQPending), ref FIRQPending);
 			ser.Sync(nameof(IRQPending), ref IRQPending);
 
 			ser.Sync(nameof(indexed_op), ref indexed_op);
 			ser.Sync(nameof(indexed_reg), ref indexed_reg);
 			ser.Sync(nameof(indexed_op_reg), ref indexed_op_reg);
-			ser.Sync(nameof(temp), ref temp);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);

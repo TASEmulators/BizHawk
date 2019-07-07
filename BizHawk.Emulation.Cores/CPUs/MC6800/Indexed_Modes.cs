@@ -4,48 +4,37 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 {
 	public partial class MC6800
 	{
-		public const ushort LEAX = 0;
-		public const ushort LEAY = 1;
-		public const ushort LEAS = 2;
-		public const ushort LEAU = 3;
-		public const ushort I_NEG = 4;
-		public const ushort I_COM = 5;
-		public const ushort I_LSR = 6;
-		public const ushort I_ROR = 7;
-		public const ushort I_ASR = 8;
-		public const ushort I_ASL = 9;
-		public const ushort I_ROL = 10;
-		public const ushort I_DEC = 11;
-		public const ushort I_INC = 12;
-		public const ushort I_TST = 13;
-		public const ushort I_JMP = 14;
-		public const ushort I_CLR = 15;
-		public const ushort I_SUB = 16;
-		public const ushort I_CMP = 17;
-		public const ushort I_SBC = 18;
-		public const ushort I_AND = 19;
-		public const ushort I_BIT = 20;
-		public const ushort I_LD = 21;
-		public const ushort I_ST = 22;
-		public const ushort I_XOR = 23;
-		public const ushort I_ADC = 24;
-		public const ushort I_OR = 25;
-		public const ushort I_ADD = 26;
-		public const ushort I_SUBD = 27;
-		public const ushort I_ADDD = 28;
-		public const ushort I_CMP16 = 29;
-		public const ushort I_JSR = 30;
-		public const ushort I_LD16 = 31;
-		public const ushort I_ST16 = 32;
-		public const ushort I_LD16D = 33;
-		public const ushort I_ST16D = 34;
-		public const ushort I_CMP16D = 35;
+		public const ushort I_NEG = 0;
+		public const ushort I_COM = 1;
+		public const ushort I_LSR = 2;
+		public const ushort I_ROR = 3;
+		public const ushort I_ASR = 4;
+		public const ushort I_ASL = 5;
+		public const ushort I_ROL = 6;
+		public const ushort I_DEC = 7;
+		public const ushort I_INC = 8;
+		public const ushort I_TST = 9;
+		public const ushort I_JMP = 10;
+		public const ushort I_CLR = 11;
+		public const ushort I_SUB = 12;
+		public const ushort I_CMP = 13;
+		public const ushort I_SBC = 14;
+		public const ushort I_AND = 15;
+		public const ushort I_BIT = 16;
+		public const ushort I_LD = 17;
+		public const ushort I_ST = 18;
+		public const ushort I_XOR = 19;
+		public const ushort I_ADC = 20;
+		public const ushort I_OR = 21;
+		public const ushort I_ADD = 22;
+		public const ushort I_CMP16 = 23;
+		public const ushort I_JSR = 24;
+		public const ushort I_LD16 = 25;
+		public const ushort I_ST16 = 26;
 
 		public ushort indexed_op;
 		public ushort indexed_reg;
 		public ushort indexed_op_reg;
-
-		public ushort temp;
 
 		private void INDEX_OP(ushort oper)
 		{
@@ -82,14 +71,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 							WR_HI, SP, ADDR);
 
 			IRQS = 5;
-		}
-
-		private void INDEX_OP_LEA(ushort dest)
-		{
-			PopulateCURINSTR(LEA, dest, IDX_EA,
-							IDLE);
-
-			IRQS = 2;
 		}
 
 		private void INDEX_OP_LD()
@@ -177,227 +158,9 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		// ALU holds the post byte
 		public void Index_decode()
 		{
-			switch ((Regs[ALU] >> 5) & 3)
-			{
-				case 0: indexed_reg = X; break;
-				case 1: indexed_reg = SP; break;
-			}
+			Regs[IDX_EA] = (ushort)(Regs[X] + Regs[ALU]);
 
-			if ((Regs[ALU] & 0x80) == 0)
-			{
-				temp = (ushort)(Regs[ALU] & 0x1F);
-				if ((Regs[ALU] & 0x10) == 0x10)
-				{
-					temp |= 0xFFE0;
-				}
-
-				Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + temp);
-
-				PopulateCURINSTR(IDX_OP_BLD);
-			}
-			else
-			{
-				if ((Regs[ALU] & 0x10) == 0x10)
-				{
-					switch (Regs[ALU] & 0xF)
-					{
-						case 0x0:
-							// Illegal
-							break;
-						case 0x1:
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(INC16, indexed_reg,
-											INC16, indexed_reg,
-											RD_INC, ALU, ADDR,
-											RD_INC, ALU2, ADDR,
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x2:
-							// Illegal
-							break;
-						case 0x3:
-							Regs[ADDR] = (ushort)(Regs[indexed_reg] - 2);
-							PopulateCURINSTR(DEC16, indexed_reg,
-											DEC16, indexed_reg,
-											RD_INC, ALU, ADDR,
-											RD_INC, ALU2, ADDR,
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x4:
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x5:
-							Regs[ADDR]  = (ushort)(Regs[indexed_reg] + (((Regs[B] & 0x80) == 0x80) ? (Regs[B] | 0xFF00) : Regs[B]));
-							PopulateCURINSTR(RD_INC, ALU, ADDR,
-											RD_INC, ALU2, ADDR, 
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x6:
-							Regs[ADDR] = (ushort)(Regs[indexed_reg] + (((Regs[A] & 0x80) == 0x80) ? (Regs[A] | 0xFF00) : Regs[A]));
-							PopulateCURINSTR(RD_INC, ALU, ADDR,
-											RD_INC, ALU2, ADDR,
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x7:
-							// Illegal
-							break;
-						case 0x8:
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(RD_INC_OP, ALU2, PC, ADD8BR, ADDR, ALU2,
-											RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0x9:
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(RD_INC, ALU, PC,
-											RD_INC, ALU2, PC,
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											ADD16BR, ADDR, IDX_EA,
-											RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0xA:
-							// Illegal
-							break;
-						case 0xB:
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(IDLE,
-											IDLE,
-											SET_ADDR, IDX_EA, A, B,
-											ADD16BR, ADDR, IDX_EA,
-											RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0xC:
-							indexed_reg = PC;
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(RD_INC_OP, ALU2, PC, ADD8BR, ADDR, ALU2,
-											RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0xD:
-							indexed_reg = PC;
-							Regs[ADDR] = Regs[indexed_reg];
-							PopulateCURINSTR(IDLE,
-											RD_INC, ALU, PC,
-											RD_INC, ALU2, PC,
-											SET_ADDR, IDX_EA, ALU, ALU2,
-											ADD16BR, ADDR, IDX_EA,
-											RD_INC, ALU, ADDR,
-											RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-											IDX_OP_BLD);
-							break;
-						case 0xE:
-							// Illegal
-							break;
-						case 0xF:
-							if (((Regs[ALU] >> 5) & 3) == 0)
-							{
-								PopulateCURINSTR(RD_INC, ALU, PC,
-												RD_INC_OP, ALU2, PC, SET_ADDR, ADDR, ALU, ALU2,
-												RD_INC, ALU, ADDR,
-												RD_INC_OP, ALU2, ADDR, SET_ADDR, IDX_EA, ALU, ALU2,
-												IDX_OP_BLD);
-							}
-							else 
-							{
-								// illegal
-							}
-							break;
-					}
-				}
-				else
-				{
-					switch (Regs[ALU] & 0xF)
-					{
-						case 0x0:
-							Regs[IDX_EA] = Regs[indexed_reg];
-							PopulateCURINSTR(INC16, indexed_reg,
-											IDX_OP_BLD);
-							break;
-						case 0x1:
-							Regs[IDX_EA] = Regs[indexed_reg];
-							PopulateCURINSTR(INC16, indexed_reg,
-											INC16, indexed_reg,
-											IDX_OP_BLD);
-							break;
-						case 0x2:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] - 1);
-							PopulateCURINSTR(DEC16, indexed_reg,
-											IDX_OP_BLD);
-							break;
-						case 0x3:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] - 2);
-							PopulateCURINSTR(DEC16, indexed_reg,
-											DEC16, indexed_reg,
-											IDX_OP_BLD);
-							break;
-						case 0x4:
-							Regs[IDX_EA] = Regs[indexed_reg];
-							Index_Op_Builder();
-							return; // need to return here or else we run into the code below invalidating irq_pntr
-							break;
-						case 0x5:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[B] & 0x80) == 0x80) ? (Regs[B] | 0xFF00) : Regs[B]));
-							PopulateCURINSTR(IDX_OP_BLD);
-							break;
-						case 0x6:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[A] & 0x80) == 0x80) ? (Regs[A] | 0xFF00) : Regs[A]));
-							PopulateCURINSTR(IDX_OP_BLD);
-							break;
-						case 0x7:
-							// Illegal
-							break;
-						case 0x8:
-							PopulateCURINSTR(RD_INC_OP, ALU2, PC, EA_8);
-							break;
-						case 0x9:
-							PopulateCURINSTR(RD_INC, ALU, PC,
-											RD_INC, ALU2, PC,
-											SET_ADDR, ADDR, ALU, ALU2,
-											EA_16);
-							break;
-						case 0xA:
-							// Illegal
-							break;
-						case 0xB:
-							PopulateCURINSTR(IDLE,
-											IDLE,
-											SET_ADDR, ADDR, A, B,
-											EA_16);
-							break;
-						case 0xC:
-							indexed_reg = PC;
-							PopulateCURINSTR(RD_INC_OP, ALU2, PC, EA_8);
-							break;
-						case 0xD:
-							indexed_reg = PC;
-							PopulateCURINSTR(IDLE,
-											RD_INC, ALU, PC,
-											RD_INC, ALU2, PC,
-											SET_ADDR, ADDR, ALU, ALU2,
-											EA_16);
-							break;
-						case 0xE:
-							// Illegal
-							break;
-						case 0xF:
-							// Illegal
-							break;
-					}
-				}
-			}
+			PopulateCURINSTR(IDX_OP_BLD);
 
 			instr_pntr = 0;
 			irq_pntr = 100;
@@ -407,8 +170,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		{
 			switch(indexed_op)
 			{
-				case LEAX: INDEX_OP_LEA(X);						break; // LEAX
-				case LEAS: INDEX_OP_LEA(SP);					break; // LEAS
 				case I_NEG: INDEX_OP_EX6(NEG);					break; // NEG
 				case I_COM: INDEX_OP_EX6(COM);					break; // COM
 				case I_LSR: INDEX_OP_EX6(LSR);					break; // LSR
@@ -432,15 +193,10 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case I_ADC: INDEX_OP_EX4(ADC8);					break; // ADC A,B
 				case I_OR: INDEX_OP_EX4(OR8);					break; // OR A,B
 				case I_ADD: INDEX_OP_EX4(ADD8);					break; // ADD A,B
-				case I_SUBD: INDEX_OP_EX6D(SUB16);				break; // SUB D
-				case I_ADDD: INDEX_OP_EX6D(ADD16);				break; // ADD D
-				case I_CMP16: INDEX_CMP_EX6(CMP16);				break; // CMP X, Y, SP, US
+				case I_CMP16: INDEX_CMP_EX6(CMP16);				break; // CMP X, SP
 				case I_JSR: INDEX_OP_JSR();						break; // JSR
-				case I_LD16: INDEX_OP_LD();						break; // LD X, Y, SP, US
-				case I_ST16: INDEX_OP_ST();						break; // ST X, Y, SP, US
-				case I_LD16D: INDEX_OP_LDD();					break; // LD D
-				case I_ST16D: INDEX_OP_STD();					break; // ST D
-				case I_CMP16D: INDEX_OP_EX6D(CMP16D);			break; // CMP D
+				case I_LD16: INDEX_OP_LD();						break; // LD X, SP
+				case I_ST16: INDEX_OP_ST();						break; // ST X, SP
 			}
 
 			instr_pntr = 0;

@@ -103,17 +103,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			FlagN = Regs[dest] > 0x7FFF;
 		}
 
-		// for LEAX/Y, zero flag can be effected, but not for U/S
-		public void LEA_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-
-			if (dest == X)
-			{
-				FlagZ = Regs[dest] == 0;
-			}
-		}
-
 		public void TST_Func(ushort src)
 		{
 			FlagZ = Regs[src] == 0;
@@ -129,13 +118,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			FlagV = false;
 			FlagC = false;
 			FlagN = false;
-		}
-
-		// source is considered a 16 bit signed value, used for long relative branch
-		// no flags used
-		public void ADD16BR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 		}
 
 		public void ADD8BR_Func(ushort dest, ushort src)
@@ -259,21 +241,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			FlagZ = Regs[src] == 0;
 			FlagV = false;
 			FlagN = (Regs[src] & 0xFF) > 127;
-		}
-
-		public void SEX_Func(ushort src)
-		{
-			if (Regs[B] > 127)
-			{
-				Regs[A] = 0xFF;
-			}
-			else
-			{
-				Regs[A] = 0;
-			}
-
-			FlagZ = D == 0;
-			FlagN = Regs[A] > 127;
 		}
 
 		public void AND8_Func(ushort dest, ushort src)
@@ -426,61 +393,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 			FlagZ = a == 0; 
 			FlagH = false;
-		}
-
-		// D register implied
-		public void SUB16_Func(ushort src)
-		{
-			int Reg16_d = D;
-			int Reg16_s = Regs[src];
-
-			Reg16_d -= Reg16_s;
-
-			FlagC = Reg16_d.Bit(16);
-			FlagZ = (Reg16_d & 0xFFFF) == 0;
-
-			ushort ans = (ushort)(Reg16_d & 0xFFFF);
-
-			FlagN = ans > 0x7FFF;
-			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
-
-			D = ans;
-		}
-
-		// D register implied
-		public void ADD16_Func(ushort src)
-		{
-			int Reg16_d = D;
-			int Reg16_s = Regs[src];
-
-			Reg16_d += Reg16_s;
-
-			FlagC = Reg16_d.Bit(16);
-			FlagZ = (Reg16_d & 0xFFFF) == 0;
-
-			ushort ans = (ushort)(Reg16_d & 0xFFFF);
-
-			FlagN = ans > 0x7FFF;
-			FlagV = (D.Bit(15) == Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
-
-			D = ans;
-		}
-
-		// D register implied
-		public void CMP16D_Func(ushort src)
-		{
-			int Reg16_d = D;
-			int Reg16_s = Regs[src];
-
-			Reg16_d -= Reg16_s;
-
-			FlagC = Reg16_d.Bit(16);
-			FlagZ = (Reg16_d & 0xFFFF) == 0;
-
-			ushort ans = (ushort)(Reg16_d & 0xFFFF);
-
-			FlagN = ans > 0x7FFF;
-			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 		}
 
 		public void CMP16_Func(ushort dest, ushort src)

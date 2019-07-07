@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 							WR_DEC_HI, SP, PC,
 							WR_DEC_LO, SP, X,
 							WR_DEC_HI, SP, X,
-							WR_DEC_LO, SP, DP,
 							WR_DEC_LO, SP, B,
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
@@ -24,23 +23,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 							SET_ADDR, PC, ALU, ALU2);
 
 			IRQS = 19;
-		}
-
-		private void FIRQ_()
-		{
-			Regs[ADDR] = 0xFFF6;
-			PopulateCURINSTR(IDLE,
-							CLR_E,
-							DEC16, SP,
-							WR_DEC_LO, SP, PC,
-							WR_DEC_HI, SP, PC,
-							WR, SP, CC,
-							SET_F_I,
-							RD_INC, ALU, ADDR,
-							RD_INC, ALU2, ADDR,
-							SET_ADDR, PC, ALU, ALU2);
-
-			IRQS = 10;
 		}
 
 		private void NMI_()
@@ -53,7 +35,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 							WR_DEC_HI, SP, PC,
 							WR_DEC_LO, SP, X,
 							WR_DEC_HI, SP, X,
-							WR_DEC_LO, SP, DP,
 							WR_DEC_LO, SP, B,
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
@@ -66,12 +47,10 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		}
 
 		public bool NMIPending;
-		public bool FIRQPending;
 		public bool IRQPending;
 		public bool IN_SYNC;
 
 		public Action IRQCallback = delegate () { };
-		public Action FIRQCallback = delegate () { };
 		public Action NMICallback = delegate () { };
 
 		private void ResetInterrupts()
