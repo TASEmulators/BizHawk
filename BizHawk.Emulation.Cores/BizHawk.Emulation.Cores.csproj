@@ -1543,6 +1543,14 @@
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
+    <Compile Include="CPUs\MC6800\Disassembler.cs" />
+    <Compile Include="CPUs\MC6800\Execute.cs" />
+    <Compile Include="CPUs\MC6800\Indexed_Modes.cs" />
+    <Compile Include="CPUs\MC6800\Interrupts.cs" />
+    <Compile Include="CPUs\MC6800\MC6800.cs" />
+    <Compile Include="CPUs\MC6800\Operations.cs" />
+    <Compile Include="CPUs\MC6800\OP_Tables.cs" />
+    <Compile Include="CPUs\MC6800\Registers.cs" />
     <Compile Include="CPUs\MC6809\Execute.cs" />
     <Compile Include="CPUs\MC6809\Interrupts.cs" />
     <Compile Include="CPUs\MC6809\MC6809.cs" />
