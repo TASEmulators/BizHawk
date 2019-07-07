@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort RD = 2;
 		public const ushort WR = 3;
 		public const ushort TR = 4;
+		public const ushort SET_ADDR = 5;
 		public const ushort ADD8 = 6;
 		public const ushort SUB8 = 7;
 		public const ushort ADC8 = 8;
@@ -33,53 +34,45 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort LSR = 23;
 		public const ushort BIT = 24;
 		public const ushort WAI = 25;
-		public const ushort SYNC = 26;
-		public const ushort RD_INC = 27;
-		public const ushort RD_INC_OP = 28;
-		public const ushort WR_DEC_LO = 29;
-		public const ushort WR_DEC_HI = 30;
-		public const ushort WR_HI = 31;
-		public const ushort SET_ADDR = 32;
-		public const ushort NEG = 33;
-		public const ushort TST = 34;
-		public const ushort CLR = 35;
-		public const ushort ADD8BR = 41;
-		public const ushort JPE = 44;
-		public const ushort IDX_DCDE = 45;
-		public const ushort IDX_OP_BLD = 46;
-		public const ushort EA_8 = 47;
-		public const ushort EA_16 = 48;
-		public const ushort WR_DEC_LO_OP = 51;
-		public const ushort WR_DEC_HI_OP = 52;
-		public const ushort WR_HI_INC = 53;
-		public const ushort SET_F_I = 55;
-		public const ushort SET_I = 56;
-		public const ushort SET_E = 57;
-		public const ushort ANDCC = 58;
-		public const ushort CMP8 = 59;
-		public const ushort CMP16 = 62;
-		public const ushort LD_8 = 64;
-		public const ushort LD_16 = 65;
-		public const ushort CLR_E = 67;
-		public const ushort TAP = 68;
-		public const ushort TPA = 69;
-		public const ushort INX = 70;
-		public const ushort DEX = 71;
-		public const ushort CLV = 72;
-		public const ushort SEV = 73;
-		public const ushort CLC = 74;
-		public const ushort SEC = 75;
-		public const ushort CLI = 76;
-		public const ushort SEI = 77;
-		public const ushort SBA = 78;
-		public const ushort CBA = 79;
-		public const ushort TAB = 80;
-		public const ushort TBA = 81;
-		public const ushort ABA = 82;
-		public const ushort TSX = 83;
-		public const ushort INS = 84;
-		public const ushort DES = 85;
-		public const ushort TXS = 86;
+		public const ushort RD_INC = 26;
+		public const ushort RD_INC_OP = 27;
+		public const ushort WR_DEC_LO = 28;
+		public const ushort WR_DEC_HI = 29;
+		public const ushort WR_HI = 31;	
+		public const ushort NEG = 32;
+		public const ushort TST = 33;
+		public const ushort CLR = 34;
+		public const ushort ADD8BR = 35;
+		public const ushort JPE = 36;
+		public const ushort IDX_DCDE = 37;
+		public const ushort IDX_OP_BLD = 38;
+		public const ushort EA_8 = 39;
+		public const ushort EA_16 = 40;
+		public const ushort WR_HI_INC = 41;
+		public const ushort SET_I = 42;
+		public const ushort CMP8 = 43;
+		public const ushort CMP16 = 44;
+		public const ushort LD_8 = 45;
+		public const ushort LD_16 = 46;
+		public const ushort TAP = 47;
+		public const ushort TPA = 48;
+		public const ushort INX = 49;
+		public const ushort DEX = 50;
+		public const ushort CLV = 51;
+		public const ushort SEV = 52;
+		public const ushort CLC = 53;
+		public const ushort SEC = 54;
+		public const ushort CLI = 55;
+		public const ushort SEI = 56;
+		public const ushort SBA = 57;
+		public const ushort CBA = 58;
+		public const ushort TAB = 59;
+		public const ushort TBA = 60;
+		public const ushort ABA = 61;
+		public const ushort TSX = 62;
+		public const ushort INS = 63;
+		public const ushort DES = 64;
+		public const ushort TXS = 65;
 
 		public MC6800()
 		{
@@ -242,9 +235,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 						case LD_16:
 							LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
-						case ANDCC:
-							Regs[CC] &= Regs[instr_pntr++];
-							break;
 					}
 					break;
 				case WR:
@@ -255,14 +245,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					break;
 				case WR_DEC_HI:
 					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-				case WR_DEC_LO_OP:
-					Write_Dec_Lo_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					instr_pntr++;
-					break;
-				case WR_DEC_HI_OP:
-					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					instr_pntr++;
 					break;
 				case WR_HI:
 					Write_Hi_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -305,20 +287,8 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case CLR:
 					CLR_Func(cur_instr[instr_pntr++]);
 					break;
-				case SET_F_I:
-					FlagI = true;
-					break;
 				case SET_I:
 					FlagI = true;
-					break;
-				case SET_E:
-					FlagE = true;
-					break;
-				case CLR_E:
-					FlagE = false;
-					break;
-				case ANDCC:
-					Regs[CC] &= Regs[instr_pntr++];
 					break;
 				case ADD8BR:
 					ADD8BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -499,12 +469,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					}
 					instr_pntr = 0;
 					break;
-				case SYNC:
-					IN_SYNC = true;
-					IRQS = 1;				
-					instr_pntr = irq_pntr = 0;
-					PopulateCURINSTR(SYNC);
-					break;
 			}
 
 			if (++irq_pntr == IRQS)
@@ -516,7 +480,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
 
-					IN_SYNC = false;
 					NMI_();
 					NMICallback();
 					instr_pntr = irq_pntr = 0;
@@ -530,21 +493,9 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
 
-						IN_SYNC = false;
 						IRQ_();
 						IRQCallback();
 						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						IRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
 					}
 				}				
 				// otherwise start the next instruction
@@ -631,7 +582,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		{
 			ser.BeginSection("MC6809");
 
-			ser.Sync(nameof(IN_SYNC), ref IN_SYNC);
 			ser.Sync(nameof(NMIPending), ref NMIPending);
 			ser.Sync(nameof(IRQPending), ref IRQPending);
 

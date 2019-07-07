@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case 0x13: ILLEGAL();								break; // ILLEGAL
 				case 0x14: ILLEGAL();								break; // ILLEGAL
 				case 0x15: ILLEGAL();								break; // ILLEGAL
-				case 0x16: REG_OP(TAB, A);							break; // LBRA				(Relative)
-				case 0x17: REG_OP(TBA, A);							break; // LBSR				(Relative)
+				case 0x16: REG_OP(TAB, A);							break; // TAB				(Inherent)
+				case 0x17: REG_OP(TBA, A);							break; // TBA				(Inherent)
 				case 0x18: ILLEGAL();								break; // ILLEGAL
 				case 0x19: REG_OP(DA, A);							break; // DAA				(Inherent)
 				case 0x1A: ILLEGAL();								break; // ILLEGAL

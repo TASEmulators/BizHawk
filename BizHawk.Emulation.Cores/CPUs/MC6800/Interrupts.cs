@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		{
 			Regs[ADDR] = 0xFFF8;
 			PopulateCURINSTR(IDLE,
-							SET_E,
+							IDLE,
 							DEC16, SP,
 							WR_DEC_LO, SP, PC,
 							WR_DEC_HI, SP, PC,
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		{
 			Regs[ADDR] = 0xFFFC;
 			PopulateCURINSTR(IDLE,
-							SET_E,
+							IDLE,
 							DEC16, SP,
 							WR_DEC_LO, SP, PC,
 							WR_DEC_HI, SP, PC,
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 							WR_DEC_LO, SP, B,
 							WR_DEC_LO, SP, A,
 							WR, SP, CC,
-							SET_F_I,
+							SET_I,
 							RD_INC, ALU, ADDR,
 							RD_INC, ALU2, ADDR,
 							SET_ADDR, PC, ALU, ALU2);
@@ -48,14 +48,13 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 		public bool NMIPending;
 		public bool IRQPending;
-		public bool IN_SYNC;
 
 		public Action IRQCallback = delegate () { };
 		public Action NMICallback = delegate () { };
 
 		private void ResetInterrupts()
 		{
-			IN_SYNC = false;
+
 		}
 	}
 }

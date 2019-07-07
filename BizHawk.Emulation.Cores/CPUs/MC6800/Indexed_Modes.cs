@@ -65,12 +65,13 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		private void INDEX_OP_JSR()
 		{
 			PopulateCURINSTR(TR, ADDR, PC,
-							DEC16, SP,
+							IDLE,
+							IDLE,
 							TR, PC, IDX_EA,
 							WR_DEC_LO, SP, ADDR,
-							WR_HI, SP, ADDR);
+							WR_DEC_HI, SP, ADDR);
 
-			IRQS = 5;
+			IRQS = 6;
 		}
 
 		private void INDEX_OP_LD()

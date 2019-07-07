@@ -8,40 +8,40 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 	{
 		static string[] table =
 		{
-			"NEG   DP+i8", // 00
-			"???", // 01
+			"???", // 00
+			"NOP", // 01
 			"???", // 02
-			"COM   DP+i8", // 03
-			"LSR   DP+i8", // 04
+			"???", // 03
+			"???", // 04
 			"???", // 05
-			"ROR   DP+i8", // 06
-			"ASR   DP+i8", // 07
-			"ASL   DP+i8", // 08
-			"ROL   DP+i8", // 09
-			"DEC   DP+i8", // 0a
-			"???", // 0b
-			"INC   DP+i8", // 0c
-			"TST   DP+i8", // 0d
-			"JMP   DP+i8", // 0e
-			"CLR   DP+i8", // 0f
-			"PAGE 2", // 10
-			"PAGE 3", // 11
-			"NOP", // 12
-			"SYNC", // 13
+			"TAP", // 06
+			"TPA", // 07
+			"INX", // 08
+			"DEX", // 09
+			"CLV", // 0a
+			"SEV", // 0b
+			"CLC", // 0c
+			"SEC", // 0d
+			"CLI", // 0e
+			"SEI", // 0f
+			"SBA", // 10
+			"CBA", // 11
+			"???", // 12
+			"???", // 13
 			"???", // 14
 			"???", // 15
-			"LBRA  i16", // 16
-			"LBSR  i16", // 17
+			"TAB", // 16
+			"TBA", // 17
 			"???", // 18
 			"DAA", // 19
-			"ORCC  i8", // 1a
-			"???", // 1b
-			"ANDCC i8", // 1c
-			"SEX", // 1d
-			"EXG   i8", // 1e
-			"TFR   i8", // 1f
+			"???", // 1a
+			"ABA", // 1b
+			"???", // 1c
+			"???", // 1d
+			"???", // 1e
+			"???", // 1f
 			"BRA   i8", // 20
-			"BRN   i8", // 21
+			"???", // 21
 			"BHI   i8", // 22
 			"BLS   i8", // 23
 			"BHS   i8", // 24
@@ -56,22 +56,22 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"BLT   i8", // 2d
 			"BGT   i8", // 2e
 			"BLE   i8", // 2f
-			"LEAX  ix16", // 30
-			"LEAY  ix16", // 31
-			"LEAS  ix16", // 32
-			"LEAU  ix16", // 33
-			"PSHS  i8", // 34
-			"PULS  i8", // 35
-			"PSHU  i8", // 36
-			"PULU  i8", // 37
+			"TSX", // 30
+			"INS", // 31
+			"PULA", // 32
+			"PULB", // 33
+			"DES", // 34
+			"TXS", // 35
+			"PSHA", // 36
+			"PSHB", // 37
 			"???", // 38
 			"RTS", // 39
-			"ABX", // 3a
+			"???", // 3a
 			"RTI", // 3b
-			"CWAI  i8", // 3c
-			"MUL", // 3d
-			"???", // 3e
-			"SWI1", // 3f
+			"???", // 3c
+			"???", // 3d
+			"WAI", // 3e
+			"SWI", // 3f
 			"NEG   A", // 40
 			"???", // 41
 			"???", // 42
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"SUB   A,i8", // 80
 			"CMP   A,i8", // 81
 			"SBC   A,i8", // 82
-			"SUB   D,i16", // 83
+			"???", // 83
 			"AND   A,i8", // 84
 			"BIT   A,i8", // 85
 			"LD    A,i8", // 86
@@ -150,12 +150,12 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADD   A,i8", // 8b
 			"CMP   X,i16", // 8c
 			"BSR   i8", // 8d
-			"LD    X,i16", // 8e
+			"LD    SP,i16", // 8e
 			"???", // 8f
 			"SUB   A,DP+i8", // 90
 			"CMP   A,DP+i8", // 91
 			"SBC   A,DP+i8", // 92
-			"SUB   D,DP+i8", // 93
+			"???", // 93
 			"AND   A,DP+i8", // 94
 			"BIT   A,DP+i8", // 95
 			"LD    A,DP+i8", // 96
@@ -165,13 +165,13 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"OR    A,DP+i8", // 9a
 			"ADD   A,DP+i8", // 9b
 			"CMP   X,DP+i8", // 9c
-			"JSR   DP+i8", // 9d
-			"LD    X,DP+i8", // 9e
-			"ST    X,DP+i8", // 9f
+			"???", // 9d
+			"LD    SP,DP+i8", // 9e
+			"ST    SP,DP+i8", // 9f
 			"SUB   A,ix16", // a0
 			"CMP   A,ix16", // a1
 			"SBC   A,ix16", // a2
-			"SUB   D,ix16", // a3
+			"???", // a3
 			"AND   A,ix16", // a4
 			"BIT   A,ix16", // a5
 			"LD    A,ix16", // a6
@@ -182,12 +182,12 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADD   A,ix16", // ab
 			"CMP   X,ix16", // ac
 			"JSR   ix16", // ad
-			"LD    X,ix16", // ae
-			"ST    X,ix16", // af
+			"LD    SP,ix16", // ae
+			"ST    SP,ix16", // af
 			"SUB   A,ex16", // b0
 			"CMP   A,ex16", // b1
 			"SBC   A,ex16", // b2
-			"SUB   D,ex16", // b3
+			"???", // b3
 			"AND   A,ex16", // b4
 			"BIT   A,ex16", // b5
 			"LD    A,ex16", // b6
@@ -198,12 +198,12 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADD   A,ex16", // bb
 			"CMP   X,ex16", // bc
 			"JSR   ex16", // bd
-			"LD    X,ex16", // be
-			"ST    X,ex16", // bf
+			"LD    SP,ex16", // be
+			"ST    SP,ex16", // bf
 			"SUB   B,i8", // c0
 			"CMP   B,i8", // c1
 			"SBC   B,i8", // c2
-			"ADD   D,i16", // c3
+			"???", // c3
 			"AND   B,i8", // c4
 			"BIT   B,i8", // c5
 			"LD    B,i8", // c6
@@ -212,14 +212,14 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADC   B,i8", // c9
 			"OR    B,i8", // ca
 			"ADD   B,i8", // cb
-			"LD    D,i16", // cc
+			"???", // cc
 			"???", // cd
-			"LD    U,i16", // ce
+			"LD    X,i16", // ce
 			"???", // cf
 			"SUB   B,DP+i8", // d0
 			"CMP   B,DP+i8", // d1
 			"SBC   B,DP+i8", // d2
-			"ADD   D,DP+i8", // d3
+			"???", // d3
 			"AND   B,DP+i8", // d4
 			"BIT   B,DP+i8", // d5
 			"LD    B,DP+i8", // d6
@@ -228,14 +228,14 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADC   B,DP+i8", // d9
 			"OR    B,DP+i8", // da
 			"ADD   B,DP+i8", // db
-			"LD    D,DP+i8", // dc
-			"ST    D,DP+i8", // dd
-			"LD    U,DP+i8", // de
-			"ST    U,DP+i8", // df
+			"???", // dc
+			"???", // dd
+			"LD    X,DP+i8", // de
+			"ST    X,DP+i8", // df
 			"SUB   B,ix16", // e0
 			"CMP   B,ix16", // e1
 			"SBC   B,ix16", // e2
-			"ADD   D,ix16", // e3
+			"???", // e3
 			"AND   B,ix16", // e4
 			"BIT   B,ix16", // e5
 			"LD    B,ix16", // e6
@@ -244,14 +244,14 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADC   B,ix16", // e9
 			"OR    B,ix16", // ea
 			"ADD   B,ix16", // eb
-			"LD    D,ix16", // ec
-			"ST    D,ix16", // ed
-			"LD    U,ix16", // ee
-			"ST    U,ix16", // ef
+			"???", // ec
+			"???", // ed
+			"LD    X,ix16", // ee
+			"ST    X,ix16", // ef
 			"SUB   B,ex16", // f0
 			"CMP   B,ex16", // f1
 			"SBC   B,ex16", // f2
-			"ADD   D,ex16", // f3
+			"???", // f3
 			"AND   B,ex16", // f4
 			"BIT   B,ex16", // f5
 			"LD    B,ex16", // f6
@@ -260,10 +260,10 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			"ADC   B,ex16", // f9
 			"OR    B,ex16", // fa
 			"ADD   B,ex16", // fb
-			"LD    D,ex16", // fc
-			"ST    D,ex16", // fd
-			"LD    U,ex16", // fe
-			"ST    U,ex16", // ff
+			"???", // fc
+			"???", // fd
+			"LD    X,ex16", // fe
+			"ST    X,ex16", // ff
 		};
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
