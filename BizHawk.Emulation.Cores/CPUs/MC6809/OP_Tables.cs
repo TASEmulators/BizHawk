@@ -322,12 +322,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void JSR_()
 		{
-			PopulateCURINSTR(RD_INC, ALU, PC,
-							SET_ADDR, ADDR, DP, ALU,
+			PopulateCURINSTR(RD_INC_OP, ALU, PC, SET_ADDR, ADDR, DP, ALU,
+							TR, ALU, PC,
 							DEC16, SP,
 							TR, PC, ADDR,
-							WR_DEC_LO, SP, ADDR,
-							WR_HI, SP, ADDR);
+							WR_DEC_LO, SP, ALU,
+							WR_HI, SP, ALU);
 
 			IRQS = 6;
 		}

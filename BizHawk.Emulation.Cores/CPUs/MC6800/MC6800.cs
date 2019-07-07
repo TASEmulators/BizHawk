@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort ASR = 22;
 		public const ushort LSR = 23;
 		public const ushort BIT = 24;
-		public const ushort CWAI = 25;
+		public const ushort WAI = 25;
 		public const ushort SYNC = 26;
 		public const ushort RD_INC = 27;
 		public const ushort RD_INC_OP = 28;
@@ -44,12 +44,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort NEG = 33;
 		public const ushort TST = 34;
 		public const ushort CLR = 35;
-		public const ushort SEX = 38;	
-		public const ushort EXG = 39;
-		public const ushort TFR = 40;
 		public const ushort ADD8BR = 41;
-		public const ushort ABX = 42;
-		public const ushort MUL = 43;
 		public const ushort JPE = 44;
 		public const ushort IDX_DCDE = 45;
 		public const ushort IDX_OP_BLD = 46;
@@ -81,6 +76,15 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort SEC = 75;
 		public const ushort CLI = 76;
 		public const ushort SEI = 77;
+		public const ushort SBA = 78;
+		public const ushort CBA = 79;
+		public const ushort TAB = 80;
+		public const ushort TBA = 81;
+		public const ushort ABA = 82;
+		public const ushort TSX = 83;
+		public const ushort INS = 84;
+		public const ushort DES = 85;
+		public const ushort TXS = 86;
 
 		public MC6800()
 		{
@@ -286,18 +290,12 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				case LEA:
 					LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case EXG:
-					EXG_Func(cur_instr[instr_pntr++]);
-					break;
 				case IDX_OP_BLD:
 					Index_Op_Builder();
 					break;
 				case EA_16:
 					Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + Regs[ADDR]);
 					Index_Op_Builder();
-					break;
-				case TFR:
-					TFR_Func(cur_instr[instr_pntr++]);
 					break;
 				case SET_ADDR:
 					reg_d_ad = cur_instr[instr_pntr++];
@@ -317,15 +315,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					break;
 				case CLR:
 					CLR_Func(cur_instr[instr_pntr++]);
-					break;
-				case SEX:
-					SEX_Func(cur_instr[instr_pntr++]);
-					break;
-				case ABX:
-					Regs[X] += Regs[B];
-					break;
-				case MUL:
-					Mul_Func();
 					break;
 				case SET_F_I:
 					FlagI = true; FlagF = true;
@@ -459,10 +448,46 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					instr_pntr++;
 					FlagI = true;
 					break;
+				case SBA:
+					instr_pntr++;
+					SBC8_Func(A, B);
+					break;
+				case CBA:
+					instr_pntr++;
+					CMP8_Func(A, B);
+					break;
+				case TAB:
+					instr_pntr++;
+					Regs[B] = Regs[A];
+					break;
+				case TBA:
+					instr_pntr++;
+					Regs[A] = Regs[B];
+					break;
+				case ABA:
+					instr_pntr++;
+					ADD8_Func(A, B);
+					break;
+				case TSX:
+					instr_pntr++;
+					Regs[X] = (ushort)(Regs[SP] + 1);
+					break;
+				case INS:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[SP] + 1);
+					break;
+				case DES:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[SP] - 1);
+					break;
+				case TXS:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[X] - 1);
+					break;
 				case BIT:
 					BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case CWAI:
+				case WAI:
 					if (NMIPending)
 					{
 						NMIPending = false;
@@ -504,7 +529,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					}
 					else
 					{
-						PopulateCURINSTR(CWAI);
+						PopulateCURINSTR(WAI);
 						irq_pntr = 0;
 						IRQS = -1;
 					}
