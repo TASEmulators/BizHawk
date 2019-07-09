@@ -46,6 +46,8 @@
 		private int _parsePixelDataIndex;
 		private int _parseSrData0;
 		private int _parseSrData1;
+		private int _parseSrShift;
+		private bool _parseSrColorEnable;
 
 		private void ParseCycle()
 		{
@@ -106,8 +108,9 @@
 					}
 
 					// graphics data shift register
-					_srData1 &= ~(0xFF << (7 - _xScroll));
-					_srActive |= 0xFF << (7 - _xScroll);
+					_parseSrShift = 7 - _xScroll;
+					_srData1 &= ~(0xFF << _parseSrShift);
+					_srActive |= 0xFF << _parseSrShift;
 
 					if (_multicolorMode && (_bitmapMode || (_dataC & 0x800) != 0))
 					{
@@ -119,13 +122,13 @@
 						_parseSrData0 = _bitmapMode ? 0 : _dataG;
 						_parseSrData1 = _dataG;
 					}
-					_srData1 |= _parseSrData1 << (7 - _xScroll);
-					
+					_srData1 |= _parseSrData1 << _parseSrShift;
+
 					// graphics color shift register
-					_srColor0 &= ~(0xFF << (7 - _xScroll));
-					_srColor1 &= ~(0xFF << (7 - _xScroll));
-					_srColor2 &= ~(0xFF << (7 - _xScroll));
-					_srColor3 &= ~(0xFF << (7 - _xScroll));
+					_srColor0 &= ~(0xFF << _parseSrShift);
+					_srColor1 &= ~(0xFF << _parseSrShift);
+					_srColor2 &= ~(0xFF << _parseSrShift);
+					_srColor3 &= ~(0xFF << _parseSrShift);
 					for (_parsePixelDataIndex = 7; _parsePixelDataIndex >= 0; _parsePixelDataIndex--)
 					{
 						_parsePixelData = ((_parseSrData0 & 0x80) >> 7) | ((_parseSrData1 & 0x80) >> 6);
@@ -133,24 +136,20 @@
 						{
 							case VideoMode000:
 							case VideoMode001:
-								switch (_parsePixelData)
+								if (_parsePixelData == 3)
 								{
-									case 0:
-										_pixel = _backgroundColor0;
-										break;
-									case 1:
-										_pixel = _idle ? 0 : _backgroundColor1;
-										break;
-									case 2:
-										_pixel = _idle ? 0 :_backgroundColor2;
-										break;
-									default:
-										_pixel = _idle ? 0 : (_multicolorMode ? _dataC & 0x700 : _dataC) >> 8;
-										break;
+									_pixel = _idle ? 0 : (_multicolorMode ? _dataC & 0x700 : _dataC) >> 8;
+									_parseSrColorEnable = true;
+								}
+								else
+								{
+									_pixel = _parsePixelData;
+									_parseSrColorEnable = false;
 								}
 								break;
 							case VideoMode010:
 							case VideoMode011:
+								_parseSrColorEnable = _parsePixelData != 0;
 								switch (_parsePixelData)
 								{
 									case 0:
@@ -171,25 +170,12 @@
 								if (_parsePixelData != 0)
 								{
 									_pixel = _idle ? 0 : _dataC >> 8;
+									_parseSrColorEnable = true;
 								}
 								else
 								{
 									_pixel = (_dataC & 0xC0) >> 6;
-									switch (_pixel)
-									{
-										case 0:
-											_pixel = _backgroundColor0;
-											break;
-										case 1:
-											_pixel = _idle ? 0 : _backgroundColor1;
-											break;
-										case 2:
-											_pixel = _idle ? 0 : _backgroundColor2;
-											break;
-										default:
-											_pixel = _idle ? 0 : _backgroundColor3;
-											break;
-									}
+									_parseSrColorEnable = false;
 								}
 								break;
 							default:
@@ -200,10 +186,11 @@
 
 						_parseSrData0 <<= 1;
 						_parseSrData1 <<= 1;
-						_srColor0 |= (_pixel & 1) << (7 - _xScroll + _parsePixelDataIndex);
-						_srColor1 |= ((_pixel >> 1) & 1) << (7 - _xScroll + _parsePixelDataIndex);
-						_srColor2 |= ((_pixel >> 2) & 1) << (7 - _xScroll + _parsePixelDataIndex);
-						_srColor3 |= ((_pixel >> 3) & 1) << (7 - _xScroll + _parsePixelDataIndex);
+						_srColor0 |= (_pixel & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor1 |= ((_pixel >> 1) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor2 |= ((_pixel >> 2) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor3 |= ((_pixel >> 3) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColorEnable |= (_parseSrColorEnable ? 1 : 0) << (_parseSrShift + _parsePixelDataIndex);
 					}
 					
 					break;

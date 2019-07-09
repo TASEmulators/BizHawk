@@ -17,6 +17,7 @@
 		private int _srColor3;
 		private int _srData1;
 		private int _srActive;
+		private int _srColorEnable;
 		private int _videoMode;
 		private int _borderOnShiftReg;
 
@@ -65,12 +66,31 @@
 				#endregion
 
 				// render graphics
-				_pixel = (_srActive & SrMask1) != 0
-					? ((_srColor0 & SrMask1) >> 18) |
-					((_srColor1 & SrMask1) >> 17) |
-					((_srColor2 & SrMask1) >> 16) |
-					((_srColor3 & SrMask1) >> 15)
-					: _backgroundColor0;
+				if ((_srColorEnable & SrMask1) != 0)
+				{
+					_pixel = ((_srColor0 & SrMask1) >> 18) |
+						((_srColor1 & SrMask1) >> 17) |
+						((_srColor2 & SrMask1) >> 16) |
+						((_srColor3 & SrMask1) >> 15);
+				}
+				else
+				{
+					switch (((_srColor0 & SrMask1) >> 18) | ((_srColor1 & SrMask1) >> 17))
+					{
+						case 1:
+							_pixel = _backgroundColor1;
+							break;
+						case 2:
+							_pixel = _backgroundColor2;
+							break;
+						case 3:
+							_pixel = _backgroundColor3;
+							break;
+						default:
+							_pixel = _backgroundColor0;
+							break;
+					}
+				}
 
 				// render sprites
 				_pixelOwner = -1;
@@ -203,6 +223,7 @@
 				_srColor3 <<= 1;
 				_srData1 <<= 1;
 				_srActive <<= 1;
+				_srColorEnable <<= 1;
 			}
 
 			if (_pixBufferBorderIndex >= PixBorderBufferSize)

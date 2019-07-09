@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _rasterInterruptLine;
 		private bool _rasterInterruptTriggered;
 		private int _rasterLine;
+		private int _rasterLineInterruptCompare;
 		private int _rasterX;
 		private bool _rasterXHold;
 		private int _rc;
