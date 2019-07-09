@@ -78,13 +78,13 @@
 					switch (((_srColor0 & SrMask1) >> 18) | ((_srColor1 & SrMask1) >> 17))
 					{
 						case 1:
-							_pixel = _backgroundColor1;
+							_pixel = _idle ? 0 : _backgroundColor1;
 							break;
 						case 2:
-							_pixel = _backgroundColor2;
+							_pixel = _idle ? 0 : _backgroundColor2;
 							break;
 						case 3:
-							_pixel = _backgroundColor3;
+							_pixel = _idle ? 0 : _backgroundColor3;
 							break;
 						default:
 							_pixel = _backgroundColor0;

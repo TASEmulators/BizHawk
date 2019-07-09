@@ -181,6 +181,7 @@
 							default:
 								_parsePixelData = 0;
 								_pixel = 0;
+								_parseSrColorEnable = true;
 								break;
 						}
 
