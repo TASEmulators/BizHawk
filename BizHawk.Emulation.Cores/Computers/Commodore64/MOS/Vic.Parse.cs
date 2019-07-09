@@ -119,10 +119,12 @@
 					}
 					else
 					{
-						_parseSrData0 = _bitmapMode ? 0 : _dataG;
-						_parseSrData1 = _dataG;
+						_parseSrData0 = _parseSrData1 = _dataG;
 					}
 					_srData1 |= _parseSrData1 << _parseSrShift;
+
+					if (_bitmapMode && !_multicolorMode)
+						_parseSrData1 ^= 0xFF;
 
 					// graphics color shift register
 					_srColor0 &= ~(0xFF << _parseSrShift);
