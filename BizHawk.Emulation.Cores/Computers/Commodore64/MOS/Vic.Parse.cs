@@ -42,6 +42,10 @@
 		private int _parseBa;
 		private int _parseAct;
 		private bool _parseIsSprCrunch;
+		private int _parsePixelData;
+		private int _parsePixelDataIndex;
+		private int _parseSrData0;
+		private int _parseSrData1;
 
 		private void ParseCycle()
 		{
@@ -80,8 +84,6 @@
 						_dataC = 0;
 						_bufferC[_vmli] = _dataC;
 					}
-
-					_srColorSync |= 0x01 << (7 - _xScroll);
 					break;
 				case FetchTypeGraphics:
 					// fetch G
@@ -96,14 +98,114 @@
 					if (_extraColorModeBuffer)
 						_parseAddr &= AddressMaskEc;
 					_dataG = ReadMemory(_parseAddr);
-					_sr |= _dataG << (7 - _xScroll);
-					_srSync |= 0xAA << (7 - _xScroll);
+
 					if (!_idle)
 					{
-						_bufferG[_vmli] = _dataG;
 						_vmli = (_vmli + 1) & 0x3F;
 						_vc = (_vc + 1) & 0x3FF;
 					}
+
+					// graphics data shift register
+					_srData1 &= ~(0xFF << (7 - _xScroll));
+					_srActive |= 0xFF << (7 - _xScroll);
+
+					if (_multicolorMode && (_bitmapMode || (_dataC & 0x800) != 0))
+					{
+						_parseSrData0 = (_dataG & 0x55) | ((_dataG & 0x55) << 1);
+						_parseSrData1 = (_dataG & 0xAA) | ((_dataG & 0xAA) >> 1);
+					}
+					else
+					{
+						_parseSrData0 = _bitmapMode ? 0 : _dataG;
+						_parseSrData1 = _dataG;
+					}
+					_srData1 |= _parseSrData1 << (7 - _xScroll);
+					
+					// graphics color shift register
+					_srColor0 &= ~(0xFF << (7 - _xScroll));
+					_srColor1 &= ~(0xFF << (7 - _xScroll));
+					_srColor2 &= ~(0xFF << (7 - _xScroll));
+					_srColor3 &= ~(0xFF << (7 - _xScroll));
+					for (_parsePixelDataIndex = 7; _parsePixelDataIndex >= 0; _parsePixelDataIndex--)
+					{
+						_parsePixelData = ((_parseSrData0 & 0x80) >> 7) | ((_parseSrData1 & 0x80) >> 6);
+						switch (_videoMode)
+						{
+							case VideoMode000:
+							case VideoMode001:
+								switch (_parsePixelData)
+								{
+									case 0:
+										_pixel = _backgroundColor0;
+										break;
+									case 1:
+										_pixel = _idle ? 0 : _backgroundColor1;
+										break;
+									case 2:
+										_pixel = _idle ? 0 :_backgroundColor2;
+										break;
+									default:
+										_pixel = _idle ? 0 : (_multicolorMode ? _dataC & 0x700 : _dataC) >> 8;
+										break;
+								}
+								break;
+							case VideoMode010:
+							case VideoMode011:
+								switch (_parsePixelData)
+								{
+									case 0:
+										_pixel = _backgroundColor0;
+										break;
+									case 1:
+										_pixel = _idle ? 0 : _dataC >> 4;
+										break;
+									case 2:
+										_pixel = _idle ? 0 : _dataC;
+										break;
+									default:
+										_pixel = _idle ? 0 : _dataC >> 8;
+										break;
+								}
+								break;
+							case VideoMode100:
+								if (_parsePixelData != 0)
+								{
+									_pixel = _idle ? 0 : _dataC >> 8;
+								}
+								else
+								{
+									_pixel = (_dataC & 0xC0) >> 6;
+									switch (_pixel)
+									{
+										case 0:
+											_pixel = _backgroundColor0;
+											break;
+										case 1:
+											_pixel = _idle ? 0 : _backgroundColor1;
+											break;
+										case 2:
+											_pixel = _idle ? 0 : _backgroundColor2;
+											break;
+										default:
+											_pixel = _idle ? 0 : _backgroundColor3;
+											break;
+									}
+								}
+								break;
+							default:
+								_parsePixelData = 0;
+								_pixel = 0;
+								break;
+						}
+
+						_parseSrData0 <<= 1;
+						_parseSrData1 <<= 1;
+						_srColor0 |= (_pixel & 1) << (7 - _xScroll + _parsePixelDataIndex);
+						_srColor1 |= ((_pixel >> 1) & 1) << (7 - _xScroll + _parsePixelDataIndex);
+						_srColor2 |= ((_pixel >> 2) & 1) << (7 - _xScroll + _parsePixelDataIndex);
+						_srColor3 |= ((_pixel >> 3) & 1) << (7 - _xScroll + _parsePixelDataIndex);
+					}
+					
 					break;
 				case FetchTypeNone:
 					// fetch none
@@ -221,7 +323,6 @@
 			if ((_parseAct & PipelineUpdateVc) != 0) // VC/RC rule 2
 			{
 				_vc = _vcbase;
-				_srColorIndexLatch = 0;
 				_vmli = 0;
 				if (_badline)
 				{

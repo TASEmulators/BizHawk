@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private readonly int _totalCycles;
 		private readonly int _totalLines;
 
-		private int _cyclesExecuted;
 		private int _hblankStartCheckXRaster;
 		private int _hblankEndCheckXRaster;
 
@@ -81,7 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite7 = _sprites[7];
 
 			_bufferC = new int[40];
-			_bufferG = new int[40];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
@@ -228,7 +226,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_vc = 0;
 					_badlineEnable = false;
 					_refreshCounter = 0xFF;
-					_cyclesExecuted = 0;
 				}
 			}
 
@@ -327,8 +324,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// must always come last
 			UpdatePins();
-
-			_cyclesExecuted++;
 		}
 
 		private void UpdateBorder()
