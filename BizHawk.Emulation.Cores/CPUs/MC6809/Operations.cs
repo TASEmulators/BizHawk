@@ -438,28 +438,34 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest] = ans;
 		}
 
-		// DA code courtesy of AWJ: http://forums.nesdev.com/viewtopic.php?f=20&t=15944
 		public void DA_Func(ushort src)
 		{
-			byte a = (byte)Regs[src];
+			int a = Regs[src];
 
-			if (!FlagN)
-			{  // after an addition, adjust if (half-)carry occurred or if result is out of bounds
-				if (FlagC || a > 0x99) { a += 0x60; FlagC = true; }
-				if (FlagH || (a & 0x0f) > 0x09) { a += 0x6; }
+			byte CF = 0;
+			if (FlagC || ((a & 0xF) > 9))
+			{
+				CF = 6;
+			}
+			if (FlagC || (((a >> 4) & 0xF) > 9) || ((((a >> 4) & 0xF) > 8) && ((a & 0xF) > 9)))
+			{
+				CF |= (byte)(6 << 4);
+			}
+
+			a += CF;
+
+			if ((a > 0xFF) || FlagC)
+			{
+				FlagC = true;
 			}
 			else
-			{  // after a subtraction, only adjust if (half-)carry occurred
-				if (FlagC) { a -= 0x60; }
-				if (FlagH) { a -= 0x6; }
+			{
+				FlagC = false;
 			}
-
-			a &= 0xFF;
-
-			Regs[src] = a;
-
-			FlagZ = a == 0; 
-			FlagH = false;
+			Regs[src] = (byte)a;
+			FlagN = a > 127;
+			FlagZ = a == 0;
+			// FlagV is listed as undefined in the documentation
 		}
 
 		// D register implied
