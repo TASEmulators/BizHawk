@@ -2,7 +2,7 @@
 {
 	public sealed partial class Vic
 	{
-		private const int BaResetCounter = 4;
+		private const int BaResetCounter = 6;
 		private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
 		private const int PipelineSpriteCrunch = 0x00000002;
 		private const int PipelineUpdateMcBase = 0x00000004;
@@ -336,13 +336,13 @@
 			}
 
 			// perform BA flag manipulation
-			_pinBa = true;
+			_ba = true;
 			switch (_parseBa)
 			{
 				case BaTypeNone:
 					break;
 				case BaTypeCharacter:
-					_pinBa = !_badline;
+					_ba = !_badline;
 					break;
 				default:
 					_parseCycleBaSprite0 = _parseBa & BaTypeMaskSprite0;
@@ -351,7 +351,7 @@
 					if ((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma) ||
 						(_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma) ||
 						(_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma))
-						_pinBa = false;
+						_ba = false;
 					break;
 			}
 

@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _backgroundColor1;
 		private int _backgroundColor2;
 		private int _backgroundColor3;
+		private bool _ba;
 		private int _baCount;
 		private bool _badline;
 		private bool _badlineEnable;
@@ -85,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_pinAec = true;
 			_pinBa = true;
 			_pinIrq = true;
+			_ba = true;
 
 			_bufOffset = 0;
 
@@ -160,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_parseIsSprCrunch), ref _parseIsSprCrunch);
 			ser.Sync(nameof(_videoMode), ref _videoMode);
 			ser.Sync(nameof(_borderOnShiftReg), ref _borderOnShiftReg);
+			ser.Sync(nameof(_ba), ref _ba);
 			ser.Sync(nameof(_backgroundColor0), ref _backgroundColor0);
 			ser.Sync(nameof(_backgroundColor1), ref _backgroundColor1);
 			ser.Sync(nameof(_backgroundColor2), ref _backgroundColor2);

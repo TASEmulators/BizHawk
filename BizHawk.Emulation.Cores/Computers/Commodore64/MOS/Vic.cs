@@ -310,20 +310,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// render
 			ParseCycle();
+			UpdateBa();
 			Render();
 			ParseCycle();
+			UpdateBa();
+			UpdatePins();
 			Render();
 			_extraColorModeBuffer = _extraColorMode;
+		}
 
-			// if the BA counter is nonzero, allow CPU bus access
-			if (_pinBa)
+		private void UpdateBa()
+		{
+			if (_ba)
 				_baCount = BaResetCounter;
-			else if (_baCount > 0)
+			else if (_baCount >= 0)
 				_baCount--;
-			_pinAec = _pinBa || _baCount > 0;
-
-			// must always come last
-			UpdatePins();
 		}
 
 		private void UpdateBorder()
@@ -343,6 +344,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				(_enableIntLightPen & _intLightPen));
 
 			_pinIrq = irqTemp;
+			_pinAec = _ba || _baCount >= 0;
+			_pinBa = _ba;
 		}
 
 		private void UpdateVideoMode()
