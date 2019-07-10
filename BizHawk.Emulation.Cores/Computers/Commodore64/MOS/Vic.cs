@@ -262,13 +262,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				// IRQ compares are done here
 				if (_rasterLine == _rasterInterruptLine)
 				{
-					_rasterInterruptTriggered = true;
-					
-					// interrupt needs to be enabled to be set to true
-					if (_enableIntRaster)
-					{
-						_intRaster = true;
-					}
+					_intRaster = true;
 				}
 			}
 

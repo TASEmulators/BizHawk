@@ -207,7 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_pointerCb), ref _pointerCb);
 			ser.Sync(nameof(_pointerVm), ref _pointerVm);
 			ser.Sync(nameof(_rasterInterruptLine), ref _rasterInterruptLine);
-			ser.Sync(nameof(_rasterInterruptTriggered), ref _rasterInterruptTriggered);
 			ser.Sync(nameof(_rasterLine), ref _rasterLine);
 			ser.Sync(nameof(_rasterX), ref _rasterX);
 			ser.Sync(nameof(_rasterXHold), ref _rasterXHold);
