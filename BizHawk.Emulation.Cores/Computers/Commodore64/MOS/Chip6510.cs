@@ -67,25 +67,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			set { _cpu.TraceCallback = value; }
 		}
 
-		public void SetOverflow()
-		{
-		}
-
-		private byte CpuPeek(ushort addr)
-		{
-			return unchecked((byte)Peek(addr));
-		}
-
-		private byte CpuRead(ushort addr)
-		{
-			return unchecked((byte)Read(addr));
-		}
-
-		private void CpuWrite(ushort addr, byte val)
-		{
-			Write(addr, val);
-		}
-
 		public void HardReset()
 		{
 			_cpu.NESSoftReset();
@@ -109,21 +90,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			_cpu.RDY = ReadRdy();
 
-			if (ReadAec())
-			{
-				_cpu.IRQ = !ReadIrq();
-				_pinNmiLast = _thisNmi;
-				_thisNmi = ReadNmi();
-				_cpu.NMI |= _pinNmiLast && !_thisNmi;
-				_cpu.ExecuteOne();
-			}
-			else
-			{
-				LagCycles++;
-			}
+//			if (!ReadAec()) 
+//				return;
+			_cpu.IRQ = !ReadIrq();
+			_pinNmiLast = _thisNmi;
+			_thisNmi = ReadNmi();
+			_cpu.NMI |= _pinNmiLast && !_thisNmi;
+			_cpu.ExecuteOne();
 		}
-
-		public int LagCycles;
 
 		internal bool AtInstructionStart()
 		{
@@ -216,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0001:
 					return PortData;
 				default:
-					return ReadMemory(addr);
+					return ReadAec() ? ReadMemory(addr) : 0xFF;
 			}
 		}
 
@@ -233,7 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.EndSection();
 
 			ser.Sync(nameof(_thisNmi), ref _thisNmi);
-			ser.Sync(nameof(LagCycles), ref LagCycles);
 		}
 
 		public void Write(int addr, int val)
@@ -249,7 +222,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					WriteMemoryPort(addr, val);
 					break;
 				default:
-					WriteMemory(addr, val);
+					if (ReadAec())
+						WriteMemory(addr, val);
 					break;
 			}
 		}

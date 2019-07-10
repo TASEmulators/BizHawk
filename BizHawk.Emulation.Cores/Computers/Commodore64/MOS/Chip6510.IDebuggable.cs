@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private void StepOver()
 		{
-			var instruction = CpuPeek(_cpu.PC);
+			var instruction = Peek(_cpu.PC);
 
 			if (instruction == Jsr)
 			{
@@ -116,13 +116,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private void StepOut()
 		{
 			var instructionsBeforeBailout = 1000000;
-			var instr = CpuPeek(_cpu.PC);
+			var instr = Peek(_cpu.PC);
 			_jsrCount = instr == Jsr ? 1 : 0;
 
 			while (--instructionsBeforeBailout > 0)
 			{
 				StepInto();
-				instr = CpuPeek(_cpu.PC);
+				instr = Peek(_cpu.PC);
 				if (instr == Jsr)
 				{
 					_jsrCount++;
