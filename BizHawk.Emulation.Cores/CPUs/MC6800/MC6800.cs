@@ -38,41 +38,38 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		public const ushort RD_INC_OP = 27;
 		public const ushort WR_DEC_LO = 28;
 		public const ushort WR_DEC_HI = 29;
-		public const ushort WR_HI = 31;	
-		public const ushort NEG = 32;
-		public const ushort TST = 33;
-		public const ushort CLR = 34;
-		public const ushort ADD8BR = 35;
-		public const ushort JPE = 36;
+		public const ushort WR_HI = 30;
+		public const ushort LD_8 = 31;
+		public const ushort LD_16 = 32;
+		public const ushort NEG = 33;
+		public const ushort TST = 34;
+		public const ushort CLR = 35;
+		public const ushort ADD8BR = 36;
 		public const ushort IDX_DCDE = 37;
 		public const ushort IDX_OP_BLD = 38;
-		public const ushort EA_8 = 39;
-		public const ushort EA_16 = 40;
-		public const ushort WR_HI_INC = 41;
-		public const ushort SET_I = 42;
-		public const ushort CMP8 = 43;
-		public const ushort CMP16 = 44;
-		public const ushort LD_8 = 45;
-		public const ushort LD_16 = 46;
-		public const ushort TAP = 47;
-		public const ushort TPA = 48;
-		public const ushort INX = 49;
-		public const ushort DEX = 50;
-		public const ushort CLV = 51;
-		public const ushort SEV = 52;
-		public const ushort CLC = 53;
-		public const ushort SEC = 54;
-		public const ushort CLI = 55;
-		public const ushort SEI = 56;
-		public const ushort SBA = 57;
-		public const ushort CBA = 58;
-		public const ushort TAB = 59;
-		public const ushort TBA = 60;
-		public const ushort ABA = 61;
-		public const ushort TSX = 62;
-		public const ushort INS = 63;
-		public const ushort DES = 64;
-		public const ushort TXS = 65;
+		public const ushort WR_HI_INC = 39;
+		public const ushort SET_I = 40;
+		public const ushort CMP8 = 41;
+		public const ushort CMP16 = 42;
+		public const ushort TAP = 43;
+		public const ushort TPA = 44;
+		public const ushort INX = 45;
+		public const ushort DEX = 46;
+		public const ushort CLV = 47;
+		public const ushort SEV = 48;
+		public const ushort CLC = 49;
+		public const ushort SEC = 50;
+		public const ushort CLI = 51;
+		public const ushort SEI = 52;
+		public const ushort SBA = 53;
+		public const ushort CBA = 54;
+		public const ushort TAB = 55;
+		public const ushort TBA = 56;
+		public const ushort ABA = 57;
+		public const ushort TSX = 58;
+		public const ushort INS = 59;
+		public const ushort DES = 60;
+		public const ushort TXS = 61;
 
 		public MC6800()
 		{
@@ -216,17 +213,10 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 
 							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
-						case JPE:
-							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; };
-							break;
 						case IDX_DCDE:
 							Index_decode();
 							break;
 						case IDX_OP_BLD:
-							Index_Op_Builder();
-							break;
-						case EA_8:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[ALU2] & 0x80) == 0x80) ? (Regs[ALU2] | 0xFF00) : Regs[ALU2]));
 							Index_Op_Builder();
 							break;
 						case LD_8:
@@ -262,10 +252,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 					LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IDX_OP_BLD:
-					Index_Op_Builder();
-					break;
-				case EA_16:
-					Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + Regs[ADDR]);
 					Index_Op_Builder();
 					break;
 				case SET_ADDR:
@@ -527,14 +513,13 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} CC:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}",
+					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} CC:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}",
 					Regs[A],
 					Regs[B],
 					Regs[X],
 					Regs[SP],
 					Regs[CC],
 					TotalExecutedCycles,
-					FlagE ? "E" : "e",
 					FlagH ? "H" : "h",
 					FlagI ? "I" : "i",
 					FlagN ? "N" : "n",

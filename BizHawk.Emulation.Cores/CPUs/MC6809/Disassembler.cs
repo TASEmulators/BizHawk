@@ -1010,15 +1010,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 				}				
 			}
-			else if (result.Contains("r8"))
-			{
-				byte d = reader(addr++);
-				bytes.Add(d);
-				int offs = d;
-				if (offs >= 128)
-					offs -= 256;
-				result = result.Replace("r8", string.Format("{0:X4}h", (ushort)(addr + offs)));
-			}
+
 			StringBuilder ret = new StringBuilder();
 			ret.Append(string.Format("{0:X4}:  ", origaddr));
 			foreach (var b in bytes)

@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 		private void RTI()
 		{
 			PopulateCURINSTR(INC16, SP,
-							RD_INC_OP, CC, SP, JPE,
+							RD_INC, CC, SP,
 							RD_INC, B, SP,
 							RD_INC, A, SP,
 							RD_INC, ALU, SP,

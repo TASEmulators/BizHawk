@@ -55,12 +55,6 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 			set { Regs[CC] = (byte)((Regs[CC] & ~0x20) | (value ? 0x20 : 0x00)); }
 		}
 
-		public bool FlagE
-		{
-			get { return (Regs[CC] & 0x80) != 0; }
-			set { Regs[CC] = (byte)((Regs[CC] & ~0x80) | (value ? 0x80 : 0x00)); }
-		}
-
 		private void ResetRegisters()
 		{
 			for (int i = 0; i < 14; i++)
