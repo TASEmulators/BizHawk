@@ -254,12 +254,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
-				//_rasterInterruptTriggered = false;
-
 				if (_rasterLine == LastDmaLine)
 					_badlineEnable = false;
 
-				// IRQ compares are done here
+				// raster compares are done here
 				if (_rasterLine == _rasterInterruptLine)
 				{
 					_intRaster = true;
