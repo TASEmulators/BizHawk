@@ -524,13 +524,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		bool interrupt_pending;
 		bool branch_irq_hack; //see Uop.RelBranch_Stage3 for more details
 
-		bool Interrupted
-		{
-			get
-			{
-				return RDY && (NMI || (IRQ && !FlagI));
-			}
-		}
+		bool Interrupted => RDY && (NMI || (IRQ && !FlagI));
 
 		void FetchDummy()
 		{
@@ -560,10 +554,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		void Fetch1()
 		{
-			rdy_freeze = !RDY;
-			if (!RDY)
-				return;
-
 			my_iflag = FlagI;
 			FlagI = iflag_pending;
 			if (!branch_irq_hack)
@@ -672,15 +662,21 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void PushP_Reset()
 		{
-			ea = ResetVector;
-			S--;
-			FlagI = true;
-
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ea = ResetVector;
+				_link.DummyReadMemory((ushort)(S-- + 0x100));
+				FlagI = true;
+			}
 		}
 		void PushDummy()
 		{
-			S--;
-
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				_link.DummyReadMemory((ushort)(S-- + 0x100));
+			}
 		}
 		void FetchPCLVector()
 		{
@@ -2702,7 +2698,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			mi = 0;
 			iflag_pending = FlagI;
 			ExecuteOneRetry();
-			return;
 		}
 		void End_BranchSpecial()
 		{
@@ -2973,7 +2968,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public void ExecuteOne()
 		{
-			// total cycles now incraments every time a cycle is called to accurately count during RDY
+			// total cycles now increments every time a cycle is called to accurately count during RDY
 			TotalExecutedCycles++;
 			if (!rdy_freeze)
 			{
