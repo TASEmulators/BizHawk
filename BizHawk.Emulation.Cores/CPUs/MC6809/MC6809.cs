@@ -62,20 +62,23 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort WR_DEC_LO_OP = 51;
 		public const ushort WR_DEC_HI_OP = 52;
 		public const ushort WR_HI_INC = 53;
-		public const ushort SET_ADDR_PUL = 54;
-		public const ushort SET_F_I = 55;
-		public const ushort SET_I = 56;
-		public const ushort SET_E = 57;
-		public const ushort ANDCC = 58;
-		public const ushort CMP8 = 59;
-		public const ushort SUB16 = 60;
-		public const ushort ADD16 = 61;
-		public const ushort CMP16 = 62;
-		public const ushort CMP16D = 63;
-		public const ushort LD_8 = 64;
-		public const ushort LD_16 = 65;
-		public const ushort LEA = 66;
-		public const ushort CLR_E = 67;
+		public const ushort WR_LO_INC = 54;
+		public const ushort SET_ADDR_PUL = 55;
+		public const ushort SET_F_I = 56;
+		public const ushort SET_I = 57;
+		public const ushort SET_E = 58;
+		public const ushort ANDCC = 59;
+		public const ushort CMP8 = 60;
+		public const ushort SUB16 = 61;
+		public const ushort ADD16 = 62;
+		public const ushort CMP16 = 63;
+		public const ushort CMP16D = 64;
+		public const ushort LD_8 = 65;
+		public const ushort LD_16 = 66;
+		public const ushort ST_8 = 67;
+		public const ushort ST_16 = 68;
+		public const ushort LEA = 69;
+		public const ushort CLR_E = 70;
 
 		public MC6809()
 		{
@@ -296,6 +299,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case WR_HI_INC:
 					Write_Hi_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
+				case WR_LO_INC:
+					Write_Lo_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -304,6 +310,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					break;
 				case LD_16:
 					LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case ST_8:
+					ST_8_Func(cur_instr[instr_pntr++]);
+					break;
+				case ST_16:
+					ST_16_Func(cur_instr[instr_pntr++]);
 					break;
 				case LEA:
 					LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

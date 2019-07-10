@@ -62,6 +62,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest]++;
 		}
 
+		public void Write_Lo_Inc_Func(ushort dest, ushort src)
+		{
+			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			WriteMemory(Regs[dest], (byte)Regs[src]);
+			Regs[dest]++;
+		}
+
 		public void NEG_8_Func(ushort src)
 		{
 			int Reg16_d = 0;
@@ -94,6 +101,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = (Regs[dest] & 0xFF) > 127;
 		}
 
+		public void ST_8_Func(ushort dest)
+		{
+			FlagZ = (Regs[dest] & 0xFF) == 0;
+			FlagV = false;
+			FlagN = (Regs[dest] & 0xFF) > 127;
+		}
+
 		public void LD_16_Func(ushort dest, ushort src_h, ushort src_l)
 		{
 			Regs[dest] = (ushort)(Regs[src_h] << 8 | Regs[src_l]);
@@ -101,6 +115,18 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagZ = Regs[dest] == 0;
 			FlagV = false;
 			FlagN = Regs[dest] > 0x7FFF;
+		}
+
+		public void ST_16_Func(ushort dest)
+		{
+			if (dest == Dr)
+			{
+				Regs[dest] = D;
+			}
+
+			FlagZ = Regs[dest] == 0;
+			FlagV = false;
+			FlagN = Regs[dest] > 0x7FFF;		
 		}
 
 		// for LEAX/Y, zero flag can be effected, but not for U/S

@@ -32,7 +32,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							.Concat(Port2.Definition.BoolButtons)
 							.Concat(new[]
 							{
-								"Power"
+								"Power",
+								"Reset"
 							})
 							.ToList()
 			};

@@ -20,9 +20,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte[] _bios, minestorm;
 		public readonly byte[] _rom;	
-		
-		public byte[] cart_RAM;
-		public bool has_bat;
 
 		private int _frame = 0;
 
@@ -138,6 +135,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu.Reset();
 			audio.Reset();
 			serialport.Reset();
+			cpu.Reset();
+
+			RAM = new byte[0x400];
+
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			_framebuffer = new int[VirtualWidth * VirtualHeight];
+		}
+
+		public void SoftReset()
+		{
+			Register_Reset();
+			ppu.Reset();
+			audio.Reset();
+			serialport.Reset();
+			cpu.Reset();
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 			_framebuffer = new int[VirtualWidth * VirtualHeight];

@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void INDEX_OP_ST()
 		{
-			PopulateCURINSTR(IDLE,
+			PopulateCURINSTR(ST_16, indexed_op_reg,
 							WR_HI_INC, IDX_EA, indexed_op_reg,
 							WR_DEC_LO, IDX_EA, indexed_op_reg);
 
@@ -121,8 +121,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void INDEX_OP_STD()
 		{
-			PopulateCURINSTR(SET_ADDR, ADDR, A, A,
-							WR_HI_INC, IDX_EA, ADDR,
+			PopulateCURINSTR(ST_16, Dr,
+							WR_LO_INC, IDX_EA, A,
 							WR_DEC_LO, IDX_EA, B);
 
 			IRQS = 3;
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		private void INDEX_OP_EX4_ST()
 		{
-			PopulateCURINSTR(IDLE,
+			PopulateCURINSTR(ST_8, indexed_op_reg,
 							WR, IDX_EA, indexed_op_reg);
 
 			IRQS = 2;

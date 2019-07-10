@@ -91,11 +91,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				}
 			}
 
-			[DisplayName("Use Existing SaveRAM")]
-			[Description("When true, existing SaveRAM will be loaded at boot up")]
-			[DefaultValue(false)]
-			public bool Use_SRAM { get; set; }
-
 			public VectrexSyncSettings Clone()
 			{
 				return (VectrexSyncSettings)MemberwiseClone();

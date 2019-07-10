@@ -29,6 +29,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				HardReset();
 			}
 
+			if (controller.IsPressed("Reset"))
+			{
+				SoftReset();
+			}
+
 			_islag = true;
 
 			// button inputs go to port 14 in the audio registers

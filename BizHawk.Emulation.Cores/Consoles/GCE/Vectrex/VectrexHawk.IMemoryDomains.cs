@@ -36,12 +36,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					1),
 			};
 
-			if (cart_RAM != null)
-			{
-				var CartRam = new MemoryDomainByteArray("Cart RAM", MemoryDomain.Endian.Little, cart_RAM, true, 1);
-				domains.Add(CartRam);
-			}
-
 			MemoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
