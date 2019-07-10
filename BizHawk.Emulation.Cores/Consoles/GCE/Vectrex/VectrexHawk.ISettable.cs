@@ -53,7 +53,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			public enum ControllerType
 			{
-				Default,
+				Digital,
+				Analog
 			}
 
 			[JsonIgnore]
@@ -62,14 +63,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			[DisplayName("Controller 1")]
 			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Default)]
+			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController1
 			{
 				get { return _VectrexController1; }
 				set
 				{
-					if (value == ControllerType.Default) { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
-					else { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
+					if (value == ControllerType.Digital) { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
+					else { Port1 = "Vectrex Analog Controller"; }
 
 					_VectrexController1 = value;
 				}
@@ -77,14 +78,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 			[DisplayName("Controller 2")]
 			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Default)]
+			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController2
 			{
 				get { return _VectrexController2; }
 				set
 				{
-					if (value == ControllerType.Default) { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }
-					else { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }
+					if (value == ControllerType.Digital) { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }
+					else { Port2 = "Vectrex Analog Controller"; }
 
 					_VectrexController2 = value;
 				}

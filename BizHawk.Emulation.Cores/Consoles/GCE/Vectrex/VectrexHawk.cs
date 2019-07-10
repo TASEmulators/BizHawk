@@ -140,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			serialport.Reset();
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			_framebuffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)

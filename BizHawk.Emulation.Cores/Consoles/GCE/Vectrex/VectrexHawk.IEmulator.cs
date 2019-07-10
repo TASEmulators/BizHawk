@@ -35,25 +35,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			audio.Register[14] = (byte)(_controllerDeck.ReadPort1(controller) & 0xF);
 			audio.Register[14] |= (byte)(_controllerDeck.ReadPort2(controller) << 4);
 
-			// joystick position is based on pot reading
-			joy1_LR = (byte)(Math.Floor(controller.GetFloat("P1 Stick X")) + 128);
-			joy1_UD = (byte)(Math.Floor(controller.GetFloat("P1 Stick Y")) + 128);
-			joy2_LR = (byte)(Math.Floor(controller.GetFloat("P2 Stick X")) + 128);
-			joy2_UD = (byte)(Math.Floor(controller.GetFloat("P2 Stick Y")) + 128);
+			if (ControllerDefinition.Name == "Vectrex Analog Controller")
+			{
+				// joystick position is based on pot reading
+				joy1_LR = (byte)(Math.Floor(controller.GetFloat("P1 Stick X")) + 128);
+				joy1_UD = (byte)(Math.Floor(controller.GetFloat("P1 Stick Y")) + 128);
+				joy2_LR = (byte)(Math.Floor(controller.GetFloat("P2 Stick X")) + 128);
+				joy2_UD = (byte)(Math.Floor(controller.GetFloat("P2 Stick Y")) + 128);
+			}
+			else
+			{
+				// most games just use digital reading, so have a digital option for simplicity
+				// On vectrex there is no such thing as pressing left + right or up + down
+				// so convention will be up and right dominate
+				joy1_UD = joy1_LR = joy2_UD = joy2_LR = 128;
 
-			// override stick reading with digital input if supplied
-			// On vectrex there is no such thing as pressing left + right or up + down
-			// so convention will be up and right dominate
-			if (controller.IsPressed("P1 Down")) { joy1_UD = 0xFF; }
-			if (controller.IsPressed("P1 Up")) { joy1_UD = 0; }
-			if (controller.IsPressed("P1 Left")) { joy1_LR = 0xFF; }
-			if (controller.IsPressed("P1 Right")) { joy1_LR = 0; }
+				if (controller.IsPressed("P1 Down")) { joy1_UD = 0xFF; }
+				if (controller.IsPressed("P1 Up")) { joy1_UD = 0; }
+				if (controller.IsPressed("P1 Left")) { joy1_LR = 0xFF; }
+				if (controller.IsPressed("P1 Right")) { joy1_LR = 0; }
 
-			if (controller.IsPressed("P2 Down")) { joy2_UD = 0xFF; }
-			if (controller.IsPressed("P2 Up")) { joy2_UD = 0; }
-			if (controller.IsPressed("P2 Left")) { joy2_LR = 0xFF; }
-			if (controller.IsPressed("P2 Right")) { joy2_LR = 0; }
-
+				if (controller.IsPressed("P2 Down")) { joy2_UD = 0xFF; }
+				if (controller.IsPressed("P2 Up")) { joy2_UD = 0; }
+				if (controller.IsPressed("P2 Left")) { joy2_LR = 0xFF; }
+				if (controller.IsPressed("P2 Right")) { joy2_LR = 0; }
+			}
 
 			frame_end = false;
 
@@ -69,15 +75,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void do_frame()
 		{
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-
-			//for (int i = 0; i < 100; i++)
-			while (!frame_end)
+			for (int i = 0; i < 30000; i++)
+			//while (!frame_end)
 			{
 				internal_state_tick();
 				audio.tick();
 				ppu.tick();
-				cpu.ExecuteOne();				
+				cpu.ExecuteOne();
+
+				if (frame_end)
+				{
+					get_video_frame();
+					frame_end = false;
+				}
 			}
 		}
 
@@ -106,10 +116,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		public int _frameHz = 50;
 
 		public int[] _vidbuffer;
+		public int[] _framebuffer;
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;		
+			return _framebuffer;		
+		}
+
+		public void get_video_frame()
+		{
+			for (int i = 0; i < _vidbuffer.Length; i++)
+			{
+				_framebuffer[i] = _vidbuffer[i];
+				_vidbuffer[i] = 0;
+			}
+			
 		}
 
 		public int VirtualWidth => 256 + 4;
