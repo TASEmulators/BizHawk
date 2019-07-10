@@ -292,6 +292,27 @@
 					_extraColorMode = (val & 0x40) != 0;
 					_rasterInterruptLine &= 0xFF;
 					_rasterInterruptLine |= (val & 0x80) << 1;
+
+					if (_rasterLine == FirstDmaLine)
+						_badlineEnable |= _displayEnable;
+
+					if (_badlineEnable)
+					{
+						if ((_rasterLine & 0x7) == _yScroll)
+						{
+							_badline = true;
+							_idle = false;
+						}
+						else
+						{
+							_badline = false;
+						}
+					}
+					else
+					{
+						_badline = false;
+					}
+
 					UpdateBorder();
 					UpdateVideoMode();
 					break;
