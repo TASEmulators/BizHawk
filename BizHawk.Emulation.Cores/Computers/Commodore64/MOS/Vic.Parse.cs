@@ -111,6 +111,7 @@
 					_parseSrShift = 7 - _xScroll;
 					_srData1 &= ~(0xFF << _parseSrShift);
 					_srActive |= 0xFF << _parseSrShift;
+					_srColorEnable &= ~(0xFF << _parseSrShift);
 
 					if (_multicolorMode && (_bitmapMode || (_dataC & 0x800) != 0))
 					{
@@ -155,7 +156,7 @@
 								switch (_parsePixelData)
 								{
 									case 0:
-										_pixel = _backgroundColor0;
+										_pixel = 0;
 										break;
 									case 1:
 										_pixel = _idle ? 0 : _dataC >> 4;
