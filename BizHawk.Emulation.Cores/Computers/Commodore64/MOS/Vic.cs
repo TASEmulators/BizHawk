@@ -249,17 +249,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_spriteSpriteCollisionClearPending = false;
 			}
 			
-			// render
-			ParseCycle();
-			UpdateBa();
-			UpdatePins();
-			Render();
-		}
-
-		public void ExecutePhase2()
-		{
-			// phi2
-
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
@@ -272,6 +261,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_intRaster = true;
 				}
 			}
+
+			// render
+			ParseCycle();
+			UpdateBa();
+			UpdatePins();
+			Render();
+		}
+
+		public void ExecutePhase2()
+		{
+			// phi2
 
 			// check top and bottom border
 			if (_rasterLine == _borderB)
