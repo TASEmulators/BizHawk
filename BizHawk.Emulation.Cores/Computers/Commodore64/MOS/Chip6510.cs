@@ -89,9 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void ExecutePhase()
 		{
 			_cpu.RDY = ReadRdy();
-
-//			if (!ReadAec()) 
-//				return;
 			_cpu.IRQ = !ReadIrq();
 			_pinNmiLast = _thisNmi;
 			_thisNmi = ReadNmi();

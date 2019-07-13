@@ -803,18 +803,24 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void Imp_SEI()
 		{
+			// not affected by RDY
+			iflag_pending = true;
+
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); iflag_pending = true;
+				FetchDummy();
 			}
 		}
 		void Imp_CLI()
 		{
+			// not affected by RDY
+			iflag_pending = false;
+
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				FetchDummy(); iflag_pending = false;
+				FetchDummy();
 			}
 		}
 		void Imp_SEC()
@@ -2970,10 +2976,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			// total cycles now increments every time a cycle is called to accurately count during RDY
 			TotalExecutedCycles++;
-			if (!rdy_freeze)
-			{
-				interrupt_pending |= Interrupted;
-			}
+			interrupt_pending |= Interrupted;
 			rdy_freeze = false;
 
 			//i tried making ExecuteOneRetry not re-entrant by having it set a flag instead, then exit from the call below, check the flag, and GOTO if it was flagged, but it wasnt faster
