@@ -69,6 +69,10 @@ namespace BizHawk.Client.Common
 			{
 				ioa = new OpenAdvanced_LibretroNoGame();
 			}
+			else if (type == OpenAdvancedTypes.MAME)
+			{
+				ioa = new OpenAdvanced_MAME();
+			}
 			else
 			{
 				ioa = null;
