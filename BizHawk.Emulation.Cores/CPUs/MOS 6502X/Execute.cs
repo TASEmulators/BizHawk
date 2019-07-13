@@ -1852,7 +1852,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				_link.ReadMemory(opcode2); //dummy?
+				_link.DummyReadMemory(opcode2);
 				alu_temp = (opcode2 + X) & 0xFF;
 			}
 
