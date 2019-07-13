@@ -79,6 +79,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla = new Chip90611401();
 			Ram = new Chip4864();
 			Serial = new SerialPort();
+			
+			Cpu.DebuggerStep = Execute;
+			DiskDrive.DebuggerStep = Execute;
 
 			switch (sidType)
 			{
