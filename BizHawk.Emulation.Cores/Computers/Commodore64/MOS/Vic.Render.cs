@@ -4,18 +4,20 @@
 	{
 		private int _borderPixel;
 		private int _bufferPixel;
-		private int _ecmPixel;
 		private int _pixel;
 		private int _pixelCounter;
-		private int _pixelData;
 		private int _pixelOwner;
 		private Sprite _spr;
 		private int _sprData;
 		private int _sprIndex;
 		private int _sprPixel;
-		private int _srSync;
-		private int _srColorSync;
-		private int _srColorIndexLatch;
+		private int _srColor0;
+		private int _srColor1;
+		private int _srColor2;
+		private int _srColor3;
+		private int _srData1;
+		private int _srActive;
+		private int _srColorEnable;
 		private int _videoMode;
 		private int _borderOnShiftReg;
 
@@ -26,10 +28,7 @@
 		private const int VideoMode100 = 4;
 		private const int VideoModeInvalid = -1;
 
-		private const int SrMask1 = 0x20000;
-		private const int SrMask2 = SrMask1 << 1;
-		private const int SrMask3 = SrMask1 | SrMask2;
-		private const int SrColorMask = 0x8000;
+		private const int SrMask1 = 0x40000;
 		private const int SrSpriteMask = SrSpriteMask2;
 		private const int SrSpriteMask1 = 0x400000;
 		private const int SrSpriteMask2 = SrSpriteMask1 << 1;
@@ -47,13 +46,6 @@
 			_pixelCounter = 4;
 			while (--_pixelCounter >= 0)
 			{
-
-				if ((_srColorSync & SrColorMask) != 0)
-				{
-					_displayC = _bufferC[_srColorIndexLatch];
-					_srColorIndexLatch = (_srColorIndexLatch + 1) & 0x3F;
-				}
-
 				#region PRE-RENDER BORDER
 
 				// check left border
@@ -73,105 +65,33 @@
 
 				#endregion
 
-				#region CHARACTER GRAPHICS
-				switch (_videoMode)
+				// render graphics
+				if ((_srColorEnable & SrMask1) != 0)
 				{
-					case VideoMode000:
-						_pixelData = _sr & SrMask2;
-						_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
-						break;
-					case VideoMode001:
-						if ((_displayC & 0x800) != 0)
-						{
-							// multicolor 001
-							if ((_srSync & SrMask2) != 0)
-								_pixelData = _sr & SrMask3;
-
-							switch (_pixelData)
-							{
-								case 0:
-									_pixel = _backgroundColor0;
-									break;
-								case SrMask1:
-									_pixel = _idle ? 0 : _backgroundColor1;
-									break;
-								case SrMask2:
-									_pixel = _idle ? 0 :_backgroundColor2;
-									break;
-								default:
-									_pixel = _idle ? 0 : (_displayC & 0x700) >> 8;
-									break;
-							}
-						}
-						else
-						{
-							// standard 001
-							_pixelData = _sr & SrMask2;
-							_pixel = _pixelData != 0 ? (_idle ? 0 : _displayC >> 8) : _backgroundColor0;
-						}
-						break;
-					case VideoMode010:
-						_pixelData = _sr & SrMask2;
-						_pixel = _idle ? 0 : _pixelData != 0 ? _displayC >> 4 : _displayC;
-						break;
-					case VideoMode011:
-						if ((_srSync & SrMask2) != 0)
-							_pixelData = _sr & SrMask3;
-
-						switch (_pixelData)
-						{
-							case 0:
-								_pixel = _backgroundColor0;
-								break;
-							case SrMask1:
-								_pixel = _idle ? 0 : _displayC >> 4;
-								break;
-							case SrMask2:
-								_pixel = _idle ? 0 : _displayC;
-								break;
-							default:
-								_pixel = _idle ? 0 : _displayC >> 8;
-								break;
-						}
-						break;
-					case VideoMode100:
-						_pixelData = _sr & SrMask2;
-						if (_pixelData != 0)
-						{
-							_pixel = _idle ? 0 : _displayC >> 8;
-						}
-						else
-						{
-							_ecmPixel = (_displayC & 0xC0) >> 6;
-							switch (_ecmPixel)
-							{
-								case 0:
-									_pixel = _backgroundColor0;
-									break;
-								case 1:
-									_pixel = _idle ? 0 : _backgroundColor1;
-									break;
-								case 2:
-									_pixel = _idle ? 0 : _backgroundColor2;
-									break;
-								default:
-									_pixel = _idle ? 0 : _backgroundColor3;
-									break;
-							}
-						}
-						break;
-					default:
-						_pixelData = 0;
-						_pixel = 0;
-						break;
+					_pixel = ((_srColor0 & SrMask1) >> 18) |
+						((_srColor1 & SrMask1) >> 17) |
+						((_srColor2 & SrMask1) >> 16) |
+						((_srColor3 & SrMask1) >> 15);
 				}
-				_pixel &= 0xF;
-				_sr <<= 1;
-				_srSync <<= 1;
-				_srColorSync <<= 1;
-				#endregion
+				else
+				{
+					switch (((_srColor0 & SrMask1) >> 18) | ((_srColor1 & SrMask1) >> 17))
+					{
+						case 1:
+							_pixel = _idle ? 0 : _backgroundColor1;
+							break;
+						case 2:
+							_pixel = _idle ? 0 : _backgroundColor2;
+							break;
+						case 3:
+							_pixel = _idle ? 0 : _backgroundColor3;
+							break;
+						default:
+							_pixel = _backgroundColor0;
+							break;
+					}
+				}
 
-				#region SPRITES
 				// render sprites
 				_pixelOwner = -1;
 				for (_sprIndex = 0; _sprIndex < 8; _sprIndex++)
@@ -252,7 +172,7 @@
 							}
 
 							// sprite-data collision
-							if (!_borderOnVertical && (_pixelData >= SrMask2))
+							if (!_borderOnVertical && (_srData1 & SrMask1) != 0)
 							{
 								_spr.CollideData = true;
 								_intSpriteDataCollision = true;
@@ -261,7 +181,7 @@
 							// sprite priority logic
 							if (_spr.Priority)
 							{
-								_pixel = _pixelData >= SrMask2 ? _pixel : _sprPixel;
+								_pixel = (_srData1 & SrMask1) != 0 ? _pixel : _sprPixel;
 							}
 							else
 							{
@@ -270,8 +190,6 @@
 						}
 					}
 				}
-
-				#endregion
 
 				#region POST-RENDER BORDER
 
@@ -298,6 +216,14 @@
 
 				if (!_rasterXHold)
 					_rasterX++;
+				
+				_srColor0 <<= 1;
+				_srColor1 <<= 1;
+				_srColor2 <<= 1;
+				_srColor3 <<= 1;
+				_srData1 <<= 1;
+				_srActive <<= 1;
+				_srColorEnable <<= 1;
 			}
 
 			if (_pixBufferBorderIndex >= PixBorderBufferSize)

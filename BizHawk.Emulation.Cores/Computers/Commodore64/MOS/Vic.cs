@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private readonly int _totalCycles;
 		private readonly int _totalLines;
 
-		private int _cyclesExecuted;
 		private int _hblankStartCheckXRaster;
 		private int _hblankEndCheckXRaster;
 
@@ -81,7 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite7 = _sprites[7];
 
 			_bufferC = new int[40];
-			_bufferG = new int[40];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
@@ -228,7 +226,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_vc = 0;
 					_badlineEnable = false;
 					_refreshCounter = 0xFF;
-					_cyclesExecuted = 0;
 				}
 			}
 
@@ -257,21 +254,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
-				//_rasterInterruptTriggered = false;
-
 				if (_rasterLine == LastDmaLine)
 					_badlineEnable = false;
 
-				// IRQ compares are done here
+				// raster compares are done here
 				if (_rasterLine == _rasterInterruptLine)
 				{
-					_rasterInterruptTriggered = true;
-					
-					// interrupt needs to be enabled to be set to true
-					if (_enableIntRaster)
-					{
-						_intRaster = true;
-					}
+					_intRaster = true;
 				}
 			}
 
@@ -313,22 +302,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// render
 			ParseCycle();
+			UpdateBa();
 			Render();
 			ParseCycle();
+			UpdateBa();
+			UpdatePins();
 			Render();
 			_extraColorModeBuffer = _extraColorMode;
+		}
 
-			// if the BA counter is nonzero, allow CPU bus access
-			if (_pinBa)
+		private void UpdateBa()
+		{
+			if (_ba)
 				_baCount = BaResetCounter;
-			else if (_baCount > 0)
+			else if (_baCount >= 0)
 				_baCount--;
-			_pinAec = _pinBa || _baCount > 0;
-
-			// must always come last
-			UpdatePins();
-
-			_cyclesExecuted++;
 		}
 
 		private void UpdateBorder()
@@ -348,6 +336,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				(_enableIntLightPen & _intLightPen));
 
 			_pinIrq = irqTemp;
+			_pinAec = _ba || _baCount >= 0;
+			_pinBa = _ba;
 		}
 
 		private void UpdateVideoMode()

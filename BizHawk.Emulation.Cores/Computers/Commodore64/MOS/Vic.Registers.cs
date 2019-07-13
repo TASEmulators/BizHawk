@@ -99,7 +99,7 @@
 					return 0x01 | ((_pointerVm & 0x3C00) >> 6) |
 							  ((_pointerCb & 0x7) << 1);
 				case 0x19:
-					return 0x70 | (_rasterInterruptTriggered ? 0x01 : 0x00) |
+					return 0x70 | (_intRaster ? 0x01 : 0x00) |
 							  (_intSpriteDataCollision ? 0x02 : 0x00) |
 							  (_intSpriteCollision ? 0x04 : 0x00) |
 							  (_intLightPen ? 0x08 : 0x00) |
@@ -207,11 +207,7 @@
 				case 0x19:
 					// interrupts are cleared by writing a 1
 					if ((val & 0x01) != 0)
-					{
 						_intRaster = false;
-						_rasterInterruptTriggered = false;
-					}
-						
 					if ((val & 0x02) != 0)
 						_intSpriteDataCollision = false;
 					if ((val & 0x04) != 0)
@@ -292,6 +288,27 @@
 					_extraColorMode = (val & 0x40) != 0;
 					_rasterInterruptLine &= 0xFF;
 					_rasterInterruptLine |= (val & 0x80) << 1;
+
+					if (_rasterLine == FirstDmaLine)
+						_badlineEnable |= _displayEnable;
+
+					if (_badlineEnable)
+					{
+						if ((_rasterLine & 0x7) == _yScroll)
+						{
+							_badline = true;
+							_idle = false;
+						}
+						else
+						{
+							_badline = false;
+						}
+					}
+					else
+					{
+						_badline = false;
+					}
+
 					UpdateBorder();
 					UpdateVideoMode();
 					break;

@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _backgroundColor1;
 		private int _backgroundColor2;
 		private int _backgroundColor3;
+		private bool _ba;
 		private int _baCount;
 		private bool _badline;
 		private bool _badlineEnable;
@@ -22,14 +23,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _borderR;
 		private int _borderT;
 		private int[] _bufferC;
-		private int[] _bufferG;
 		private int _cycle;
 		private int _cycleIndex;
 		private bool _columnSelect;
 		private int _dataC;
 		private int _dataG;
 		private bool _displayEnable;
-		private int _displayC;
 		private bool _enableIntLightPen;
 		private bool _enableIntRaster;
 		private bool _enableIntSpriteCollision;
@@ -53,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _rasterInterruptLine;
 		private bool _rasterInterruptTriggered;
 		private int _rasterLine;
+		private int _rasterLineInterruptCompare;
 		private int _rasterX;
 		private bool _rasterXHold;
 		private int _rc;
@@ -72,7 +72,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private readonly Sprite _sprite6;
 		private readonly Sprite _sprite7;
 		private readonly Sprite[] _sprites;
-		private int _sr;
 		private bool _vblank;
 		private int _vblankEnd;
 		private int _vblankStart;
@@ -87,6 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_pinAec = true;
 			_pinBa = true;
 			_pinIrq = true;
+			_ba = true;
 
 			_bufOffset = 0;
 
@@ -130,7 +130,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_spriteSpriteCollisionClearPending = false;
 			_spriteMulticolor0 = 0;
 			_spriteMulticolor1 = 0;
-			_sr = 0;
 			_vc = 0;
 			_vcbase = 0;
 			_vmli = 0;
@@ -149,7 +148,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			for (var i = 0; i < 40; i++)
 			{
 				_bufferC[i] = 0;
-				_bufferG[i] = 0;
 			}
 
 			_pixBuffer = new int[PixBufferSize];
@@ -161,13 +159,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(_cyclesExecuted), ref _cyclesExecuted);
 			ser.Sync(nameof(_parseIsSprCrunch), ref _parseIsSprCrunch);
-			ser.Sync(nameof(_srSync), ref _srSync);
-			ser.Sync(nameof(_srColorSync), ref _srColorSync);
-			ser.Sync(nameof(_srColorIndexLatch), ref _srColorIndexLatch);
 			ser.Sync(nameof(_videoMode), ref _videoMode);
 			ser.Sync(nameof(_borderOnShiftReg), ref _borderOnShiftReg);
+			ser.Sync(nameof(_ba), ref _ba);
 			ser.Sync(nameof(_backgroundColor0), ref _backgroundColor0);
 			ser.Sync(nameof(_backgroundColor1), ref _backgroundColor1);
 			ser.Sync(nameof(_backgroundColor2), ref _backgroundColor2);
@@ -186,14 +181,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_borderR), ref _borderR);
 			ser.Sync(nameof(_borderT), ref _borderT);
 			ser.Sync(nameof(_bufferC), ref _bufferC, useNull: false);
-			ser.Sync(nameof(_bufferG), ref _bufferG, useNull: false);
 			ser.Sync(nameof(_cycle), ref _cycle);
 			ser.Sync(nameof(_cycleIndex), ref _cycleIndex);
 			ser.Sync(nameof(_columnSelect), ref _columnSelect);
 			ser.Sync(nameof(_dataC), ref _dataC);
 			ser.Sync(nameof(_dataG), ref _dataG);
 			ser.Sync(nameof(_displayEnable), ref _displayEnable);
-			ser.Sync(nameof(_displayC), ref _displayC);
 			ser.Sync(nameof(_enableIntLightPen), ref _enableIntLightPen);
 			ser.Sync(nameof(_enableIntRaster), ref _enableIntRaster);
 			ser.Sync(nameof(_enableIntSpriteCollision), ref _enableIntSpriteCollision);
@@ -214,7 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_pointerCb), ref _pointerCb);
 			ser.Sync(nameof(_pointerVm), ref _pointerVm);
 			ser.Sync(nameof(_rasterInterruptLine), ref _rasterInterruptLine);
-			ser.Sync(nameof(_rasterInterruptTriggered), ref _rasterInterruptTriggered);
 			ser.Sync(nameof(_rasterLine), ref _rasterLine);
 			ser.Sync(nameof(_rasterX), ref _rasterX);
 			ser.Sync(nameof(_rasterXHold), ref _rasterXHold);
@@ -234,7 +226,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ser.EndSection();
 			}
 
-			ser.Sync(nameof(_sr), ref _sr);
 			ser.Sync(nameof(_vc), ref _vc);
 			ser.Sync(nameof(_vcbase), ref _vcbase);
 			ser.Sync(nameof(_vmli), ref _vmli);
@@ -245,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_pixBufferIndex), ref _pixBufferIndex);
 			ser.Sync(nameof(_pixBorderBuffer), ref _pixBorderBuffer, useNull: false);
 			ser.Sync(nameof(_pixBufferBorderIndex), ref _pixBufferBorderIndex);
-
+			
 			if (ser.IsReader)
 			{
 				UpdateBorder();
