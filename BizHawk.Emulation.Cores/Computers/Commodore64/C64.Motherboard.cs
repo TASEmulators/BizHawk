@@ -38,8 +38,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public readonly Drive1541 DiskDrive;
 
 		// state
-		//public int address;
-		public int Bus;
 		public bool InputRead;
 		public bool Irq;
 		public bool Nmi;
@@ -79,9 +77,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla = new Chip90611401();
 			Ram = new Chip4864();
 			Serial = new SerialPort();
-			
-			Cpu.DebuggerStep = Execute;
-			DiskDrive.DebuggerStep = Execute;
 
 			switch (sidType)
 			{
@@ -149,6 +144,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			BasicRom = new Chip23128();
 			CharRom = new Chip23128();
 			KernalRom = new Chip23128();
+			
+			if (Cpu != null)
+				Cpu.DebuggerStep = Execute;
+			if (DiskDrive != null)
+				DiskDrive.DebuggerStep = Execute;
 		}
 
 		public int ClockNumerator { get; }
@@ -178,7 +178,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// -----------------------------------------
 		public void HardReset()
 		{
-			Bus = 0xFF;
+			_lastReadVicAddress = 0x3FFF;
+			_lastReadVicData = 0xFF;
 			InputRead = false;
 
 			Cia0.HardReset();
@@ -198,7 +199,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void SoftReset()
 		{
 			// equivalent to a hard reset EXCEPT cpu, color ram, memory
-			Bus = 0xFF;
+			_lastReadVicAddress = 0x3FFF;
+			_lastReadVicData = 0xFF;
 			InputRead = false;
 
 			Cia0.HardReset();
@@ -365,7 +367,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				ser.EndSection();
 			}
 
-			ser.Sync(nameof(Bus), ref Bus);
 			ser.Sync(nameof(InputRead), ref InputRead);
 			ser.Sync(nameof(Irq), ref Irq);
 			ser.Sync(nameof(Nmi), ref Nmi);

@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int, int> ReadMemory;
 		public Func<int> ReadPort;
 		public Action<int, int> WriteMemory;
-		public Action<int, int> WriteMemoryPort;
+		public Action<int> WriteMemoryPort;
 
 		public Action DebuggerStep;
 
@@ -161,11 +161,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				case 0x0000:
 					_port.Direction = val;
-					WriteMemoryPort(addr, val);
+					WriteMemoryPort(addr);
 					break;
 				case 0x0001:
 					_port.Latch = val;
-					WriteMemoryPort(addr, val);
+					WriteMemoryPort(addr);
 					break;
 				default:
 					if (ReadAec())

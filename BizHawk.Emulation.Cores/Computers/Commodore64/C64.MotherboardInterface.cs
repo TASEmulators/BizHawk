@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return data;
 		}
 
-		private void Cpu_WriteMemoryPort(int addr, int val)
+		private void Cpu_WriteMemoryPort(int addr)
 		{
-			Pla.WriteMemory(addr, Bus);
+			Pla.WriteMemory(addr, ReadOpenBus());
 		}
 
 		private bool Glue_ReadIRQ()
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int Pla_ReadColorRam(int addr)
 		{
-			var result = Bus;
+			var result = ReadOpenBus();
 			result &= 0xF0;
 			result |= ColorRam.Read(addr);
 			return result;
