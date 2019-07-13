@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public bool ReadAec() { return _pinAec; }
 		public bool ReadBa() { return _pinBa; }
-		public bool ReadIrq() { return _pinIrq; }
+		public bool ReadIrq() { return (_irqBuffer & 1) != 0; }
 
 		private readonly int _cyclesPerSec;
 		private readonly int[] _rasterXPipeline;
@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private readonly int[] _actPipeline;
 		private readonly int _totalCycles;
 		private readonly int _totalLines;
+		private int _irqBuffer;
 
 		private int _hblankStartCheckXRaster;
 		private int _hblankEndCheckXRaster;
@@ -224,7 +225,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_rasterLine = 0;
 					_vcbase = 0;
 					_vc = 0;
-					_badlineEnable = false;
 					_refreshCounter = 0xFF;
 				}
 			}
@@ -340,7 +340,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				(_enableIntSpriteCollision & _intSpriteCollision) |
 				(_enableIntLightPen & _intLightPen));
 
-			_pinIrq = irqTemp;
+			// IRQ buffer is treated as a delay line
+			_irqBuffer >>= 1;
+			_irqBuffer |= irqTemp ? 0x1 : 0;
 			_pinAec = _ba || _baCount >= 0;
 			_pinBa = _ba;
 		}

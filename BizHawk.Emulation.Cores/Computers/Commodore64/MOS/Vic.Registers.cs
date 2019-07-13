@@ -103,7 +103,7 @@
 							  (_intSpriteDataCollision ? 0x02 : 0x00) |
 							  (_intSpriteCollision ? 0x04 : 0x00) |
 							  (_intLightPen ? 0x08 : 0x00) |
-							  (_pinIrq ? 0x00 : 0x80);
+							  ((_irqBuffer & 1) << 7);
 				case 0x1A:
 					return 0xF0 | (_enableIntRaster ? 0x01 : 0x00) |
 							  (_enableIntSpriteDataCollision ? 0x02 : 0x00) |

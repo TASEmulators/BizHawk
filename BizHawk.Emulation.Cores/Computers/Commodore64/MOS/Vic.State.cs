@@ -46,7 +46,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _multicolorMode;
 		private bool _pinAec = true;
 		private bool _pinBa = true;
-		private bool _pinIrq = true;
 		private int _pointerCb;
 		private int _pointerVm;
 		private int _rasterInterruptLine;
@@ -85,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			_pinAec = true;
 			_pinBa = true;
-			_pinIrq = true;
+			_irqBuffer = 0;
 			_ba = true;
 
 			_bufOffset = 0;
@@ -203,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_multicolorMode), ref _multicolorMode);
 			ser.Sync(nameof(_pinAec), ref _pinAec);
 			ser.Sync(nameof(_pinBa), ref _pinBa);
-			ser.Sync(nameof(_pinIrq), ref _pinIrq);
+			ser.Sync(nameof(_irqBuffer), ref _irqBuffer);
 			ser.Sync(nameof(_pointerCb), ref _pointerCb);
 			ser.Sync(nameof(_pointerVm), ref _pointerVm);
 			ser.Sync(nameof(_rasterInterruptLine), ref _rasterInterruptLine);
