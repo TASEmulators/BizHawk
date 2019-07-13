@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public bool ReadAec() { return _pinAec; }
 		public bool ReadBa() { return _pinBa; }
-		public bool ReadIrq() { return (_irqBuffer & 1) != 0; }
+		public bool ReadIrq() { return (_irqBuffer & 1) == 0; }
 
 		private readonly int _cyclesPerSec;
 		private readonly int[] _rasterXPipeline;
@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			if (_ba)
 				_baCount = BaResetCounter;
-			else if (_baCount >= 0)
+			else if (_baCount > 0)
 				_baCount--;
 		}
 
@@ -334,16 +334,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private void UpdatePins()
 		{
-			var irqTemp = !(
+			var irqTemp = 
 				(_enableIntRaster & _intRaster) |
 				(_enableIntSpriteDataCollision & _intSpriteDataCollision) |
 				(_enableIntSpriteCollision & _intSpriteCollision) |
-				(_enableIntLightPen & _intLightPen));
+				(_enableIntLightPen & _intLightPen);
 
 			// IRQ buffer is treated as a delay line
 			_irqBuffer >>= 1;
-			_irqBuffer |= irqTemp ? 0x1 : 0;
-			_pinAec = _ba || _baCount >= 0;
+			_irqBuffer |= irqTemp ? 0x8 : 0;
+			_pinAec = _ba || _baCount > 0;
 			_pinBa = _ba;
 		}
 

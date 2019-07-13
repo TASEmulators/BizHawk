@@ -214,7 +214,6 @@
 						_intSpriteCollision = false;
 					if ((val & 0x08) != 0)
 						_intLightPen = false;
-					UpdatePins();
 					break;
 				case 0x1E:
 				case 0x1F:
@@ -358,14 +357,12 @@
 					_intSpriteDataCollision = (val & 0x02) != 0;
 					_intSpriteCollision = (val & 0x04) != 0;
 					_intLightPen = (val & 0x08) != 0;
-					UpdatePins();
 					break;
 				case 0x1A:
 					_enableIntRaster = (val & 0x01) != 0;
 					_enableIntSpriteDataCollision = (val & 0x02) != 0;
 					_enableIntSpriteCollision = (val & 0x04) != 0;
 					_enableIntLightPen = (val & 0x08) != 0;
-					UpdatePins();
 					break;
 				case 0x1B:
 					_sprite0.Priority = (val & 0x01) != 0;
