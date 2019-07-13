@@ -96,57 +96,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_cpu.ExecuteOne();
 		}
 
-		internal bool AtInstructionStart()
-		{
-			return _cpu.AtInstructionStart();
-		}
-
-		// ------------------------------------
-		public ushort Pc
-		{
-			get
-			{
-				return _cpu.PC;
-			}
-			set
-			{
-				_cpu.PC = value;
-			}
-		}
-
-		public int A
-		{
-			get { return _cpu.A; }
-			set { _cpu.A = unchecked((byte)value); }
-		}
-
-		public int X
-		{
-			get { return _cpu.X; }
-			set { _cpu.X = unchecked((byte)value); }
-		}
-
-		public int Y
-		{
-			get { return _cpu.Y; }
-			set { _cpu.Y = unchecked((byte)value); }
-		}
-
-		public int S
-		{
-			get { return _cpu.S; }
-			set { _cpu.S = unchecked((byte)value); }
-		}
-
-		public bool FlagC => _cpu.FlagC;
-		public bool FlagZ => _cpu.FlagZ;
-		public bool FlagI => _cpu.FlagI;
-		public bool FlagD => _cpu.FlagD;
-		public bool FlagB => _cpu.FlagB;
-		public bool FlagV => _cpu.FlagV;
-		public bool FlagN => _cpu.FlagN;
-		public bool FlagT => _cpu.FlagT;
-
 		public int Peek(int addr)
 		{
 			switch (addr)
