@@ -289,7 +289,7 @@
 					_rasterInterruptLine &= 0xFF;
 					_rasterInterruptLine |= (val & 0x80) << 1;
 
-					if (_rasterLine == FirstDmaLine)
+					if (_rasterLine == BadLineEnableRaster)
 						_badlineEnable |= _displayEnable;
 
 					if (_badlineEnable)

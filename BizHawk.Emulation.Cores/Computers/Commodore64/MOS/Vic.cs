@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
-				if (_rasterLine == LastDmaLine)
+				if (_rasterLine == BadLineDisableRaster)
 					_badlineEnable = false;
 
 				// raster compares are done here
@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// display enable compare
-			if (_rasterLine == FirstDmaLine)
+			if (_rasterLine == BadLineEnableRaster)
 			{
 				_badlineEnable |= _displayEnable;
 			}
