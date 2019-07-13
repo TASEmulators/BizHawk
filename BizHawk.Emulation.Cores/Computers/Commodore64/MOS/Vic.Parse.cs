@@ -110,7 +110,6 @@
 					// graphics data shift register
 					_parseSrShift = 7 - _xScroll;
 					_srData1 &= ~(0xFF << _parseSrShift);
-					_srActive |= 0xFF << _parseSrShift;
 					_srColorEnable &= ~(0xFF << _parseSrShift);
 
 					if (_multicolorMode && (_bitmapMode || (_dataC & 0x800) != 0))

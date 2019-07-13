@@ -16,7 +16,6 @@
 		private int _srColor2;
 		private int _srColor3;
 		private int _srData1;
-		private int _srActive;
 		private int _srColorEnable;
 		private int _videoMode;
 		private int _borderOnShiftReg;
@@ -222,7 +221,6 @@
 				_srColor2 <<= 1;
 				_srColor3 <<= 1;
 				_srData1 <<= 1;
-				_srActive <<= 1;
 				_srColorEnable <<= 1;
 			}
 
