@@ -234,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cpu.ReadMemory = Pla.Read;
 			Cpu.WriteMemory = Pla.Write;
 			Cpu.WriteMemoryPort = Cpu_WriteMemoryPort;
+			Cpu.ReadBus = ReadOpenBus;
 
 			Pla.PeekBasicRom = BasicRom.Peek;
 			Pla.PeekCartridgeHi = CartPort.PeekHiRom;

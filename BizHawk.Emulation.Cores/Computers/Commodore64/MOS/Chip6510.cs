@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<bool> ReadIrq;
 		public Func<bool> ReadNmi;
 		public Func<bool> ReadRdy;
+		public Func<int> ReadBus;
 		public Func<int, int> ReadMemory;
 		public Func<int> ReadPort;
 		public Action<int, int> WriteMemory;
@@ -136,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0001:
 					return PortData;
 				default:
-					return ReadAec() ? ReadMemory(addr) : 0xFF;
+					return ReadAec() ? ReadMemory(addr) : ReadBus();
 			}
 		}
 
