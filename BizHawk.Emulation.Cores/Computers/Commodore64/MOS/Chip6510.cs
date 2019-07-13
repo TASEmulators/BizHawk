@@ -137,7 +137,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0001:
 					return PortData;
 				default:
-					return ReadAec() ? ReadMemory(addr) : ReadBus();
+					if (ReadAec())
+						return ReadMemory(addr);
+					else
+						return ReadBus();
 			}
 		}
 

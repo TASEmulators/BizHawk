@@ -72,7 +72,7 @@
 						if (_badline)
 						{
 							_parseAddr = _pointerVm | _vc;
-							_dataC = ReadMemory(_parseAddr);
+							_dataC = _baCount >= 0 ? 0xFF : ReadMemory(_parseAddr);
 							_dataC |= (ReadColorRam(_parseAddr) & 0xF) << 8;
 							_bufferC[_vmli] = _dataC;
 						}

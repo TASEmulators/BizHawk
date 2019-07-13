@@ -320,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			if (_ba)
 				_baCount = BaResetCounter;
-			else if (_baCount > 0)
+			else if (_baCount >= 0)
 				_baCount--;
 		}
 
@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// IRQ buffer is treated as a delay line
 			_irqBuffer >>= 1;
 			_irqBuffer |= irqTemp ? 0x8 : 0;
-			_pinAec = _ba || _baCount > 0;
+			_pinAec = _ba || _baCount >= 0;
 			_pinBa = _ba;
 		}
 
