@@ -12,7 +12,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BasicBot : ToolFormBase , IToolFormAutoConfig
+	public partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
 		private const string DialogTitle = "Basic Bot";
 
@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return StartFromSlotBox.SelectedItem != null 
+				return StartFromSlotBox.SelectedItem != null
 					? StartFromSlotBox.SelectedItem.ToString()
 					: "";
 			}
@@ -365,8 +365,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
+		//Upon Load State, TASStudio uses GlobalWin.Tools.UpdateBefore(); as well as GlobalWin.Tools.UpdateAfter(); 
+		//Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.  
+		//By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
+		//However this also causes a problem with ramwatch not being up to date since that TOO gets called.
+		//Need to find out if having RamWatch open while TasStudio is open causes issues.
+		//there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the ramwatch is ahead too much..
+		
+		public int LastFrameAdvanced { get; set; }
 		#endregion
 
+		public bool HasFrameAdvanced()
+		{
+			//If the emulator frame is different from the last time it tried calling
+			//the function then we can continue, otherwise we need to stop.
+			return LastFrameAdvanced != Emulator.Frame;
+		}
 		#region IToolForm Implementation
 
 		public bool UpdateBefore { get { return true; } }
@@ -377,6 +392,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Update(fast: false);
 		}
+
 
 		public void FastUpdate()
 		{
@@ -893,6 +909,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!HasFrameAdvanced())
+			{
+				return;
+			}
+
+
 			if (_replayMode)
 			{
 				int index = Emulator.Frame - _startFrame;
@@ -916,6 +938,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
+
 				if (Emulator.Frame >= _targetFrame)
 				{
 					Attempts++;
@@ -936,8 +959,15 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
+				
+				//Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
+				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test!
+				{
+					PressButtons();
+					LastFrameAdvanced = Emulator.Frame;
 
-				PressButtons();
+				}
+
 			}
 		}
 
@@ -1175,7 +1205,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateComparisonBotAttempt()
 		{
-			if(_bestBotAttempt == null)
+			if (_bestBotAttempt == null)
 			{
 				if (MainBestRadio.Checked)
 				{
@@ -1189,7 +1219,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (TieBreak2BestRadio.Checked)
 				{
-					_comparisonBotAttempt.TieBreak2= 0;
+					_comparisonBotAttempt.TieBreak2 = 0;
 				}
 
 				if (TieBreak3BestRadio.Checked)
