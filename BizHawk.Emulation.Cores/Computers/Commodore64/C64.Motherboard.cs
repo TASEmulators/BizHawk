@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			_vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
 
-			Vic.ExecutePhase();
+			Vic.ExecutePhase1();
 			CartPort.ExecutePhase();
 			Cassette.ExecutePhase();
 			Serial.ExecutePhase();
@@ -164,6 +164,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cia0.ExecutePhase();
 			Cia1.ExecutePhase();
 			Cpu.ExecutePhase();
+			Vic.ExecutePhase2();
 		}
 
 		public void Flush()

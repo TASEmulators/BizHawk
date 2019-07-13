@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int CyclesPerSecond => _cyclesPerSec;
 
-		public void ExecutePhase()
+		public void ExecutePhase1()
 		{
 			// phi1
 
@@ -248,7 +248,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				_spriteSpriteCollisionClearPending = false;
 			}
+			
+			// render
+			ParseCycle();
+			UpdateBa();
+			UpdatePins();
+			Render();
+		}
 
+		public void ExecutePhase2()
+		{
 			// phi2
 
 			// start of rasterline
@@ -302,15 +311,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// render
 			ParseCycle();
-			UpdateBa();
-			Render();
-			ParseCycle();
-			UpdateBa();
 			UpdatePins();
 			Render();
 			_extraColorModeBuffer = _extraColorMode;
 		}
-
+		
 		private void UpdateBa()
 		{
 			if (_ba)

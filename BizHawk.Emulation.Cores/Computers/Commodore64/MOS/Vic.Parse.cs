@@ -2,7 +2,7 @@
 {
 	public sealed partial class Vic
 	{
-		private const int BaResetCounter = 6;
+		private const int BaResetCounter = 3;
 		private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
 		private const int PipelineSpriteCrunch = 0x00000002;
 		private const int PipelineUpdateMcBase = 0x00000004;
@@ -227,7 +227,7 @@
 						{
 							_parseAddr = spr.Mc | (spr.Pointer << 6);
 							spr.Sr |= ReadMemory(_parseAddr) << ((0x30 - (_parseFetch & 0x30)) >> 1);
-							spr.Mc++;
+							spr.Mc = (spr.Mc + 1) & 0x3F;
 							spr.Loaded |= 0x800000;
 						}
 						else if ((_parseFetch & 0xF0) == 0x20)
