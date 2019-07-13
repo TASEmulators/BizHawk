@@ -104,6 +104,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _hmbDelay;
 		private byte _hmbVal;
 
+		private int _hmClrDelay;
+
 		private int _prg0Delay;
 		private int _prg1Delay;
 		private byte _prg0Val;
@@ -384,6 +386,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_hmbDelay = 0;
 					_ball.HM = _hmbVal;
+				}
+			}
+
+			if (_hmClrDelay > 0)
+			{
+				_hmClrDelay++;
+				if (_hmClrDelay == 5)
+				{
+					_hmClrDelay = 0;
+
+					_player0.HM = 0;
+					_player0.Missile.Hm = 0;
+					_player1.HM = 0;
+					_player1.Missile.Hm = 0;
+					_ball.HM = 0;
 				}
 			}
 
@@ -799,7 +816,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_hmove.BallLatch = true;
 					_hmove.BallCnt = 0;
 
-					_hmove.LateHBlankReset = true;
+					if (_hsyncCnt < 67) { _hmove.LateHBlankReset = true; }			
 				}
 			}
 
@@ -1357,11 +1374,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x2B) // HMCLR
 			{
-				_player0.HM = 0;
-				_player0.Missile.Hm = 0;
-				_player1.HM = 0;
-				_player1.Missile.Hm = 0;
-				_ball.HM = 0;
+				_hmClrDelay = 1;
+
+				
 			}
 			else if (maskedAddr == 0x2C) // CXCLR
 			{
