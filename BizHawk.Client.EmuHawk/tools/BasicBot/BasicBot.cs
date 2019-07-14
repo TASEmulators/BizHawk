@@ -1361,5 +1361,10 @@ namespace BizHawk.Client.EmuHawk
 			Clipboard.SetText(BestAttemptLogLabel.Text);			
 		}
 
+		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
+
+		}
 	}
 }

@@ -120,6 +120,7 @@
             this.StatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ClearStatsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BotMenu.SuspendLayout();
             this.BotStatusStrip.SuspendLayout();
             this.ControlsBox.SuspendLayout();
@@ -145,7 +146,8 @@
             this.BotMenu.ClickThrough = true;
             this.BotMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
-            this.OptionsSubMenu});
+            this.OptionsSubMenu,
+            this.helpToolStripMenuItem});
             this.BotMenu.Location = new System.Drawing.Point(0, 0);
             this.BotMenu.Name = "BotMenu";
             this.BotMenu.Size = new System.Drawing.Size(687, 24);
@@ -465,9 +467,9 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.BestAttemptLogLabel);
             this.panel1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel1.Location = new System.Drawing.Point(12, 129);
+            this.panel1.Location = new System.Drawing.Point(12, 128);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(212, 234);
+            this.panel1.Size = new System.Drawing.Size(212, 235);
             this.panel1.TabIndex = 21;
             // 
             // BestAttemptLogLabel
@@ -1136,6 +1138,13 @@
             this.ClearStatsContextMenuItem.Text = "&Clear";
             this.ClearStatsContextMenuItem.Click += new System.EventHandler(this.ClearStatsContextMenuItem_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
+            // 
             // BasicBot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1281,5 +1290,6 @@
 		private System.Windows.Forms.Label maximizeLabeltext;
 		private System.Windows.Forms.Button btnCopyBestInput;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 	}
 }
