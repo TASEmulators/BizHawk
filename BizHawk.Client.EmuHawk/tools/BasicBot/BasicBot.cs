@@ -1355,5 +1355,11 @@ namespace BizHawk.Client.EmuHawk
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
 		}
 
+		//Copy to Clipboard
+		private void btnCopyBestInput_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(BestAttemptLogLabel.Text);			
+		}
+
 	}
 }
