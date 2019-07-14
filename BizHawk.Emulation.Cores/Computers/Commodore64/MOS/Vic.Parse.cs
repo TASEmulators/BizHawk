@@ -97,7 +97,7 @@
 							_parseAddr = _rc | ((_dataC & 0xFF) << 3) | (_pointerCb << 11);
 					}
 
-					if (_extraColorModeBuffer)
+					if (_extraColorMode)
 						_parseAddr &= AddressMaskEc;
 					_dataG = ReadMemory(_parseAddr);
 

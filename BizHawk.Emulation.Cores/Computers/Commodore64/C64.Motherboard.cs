@@ -259,8 +259,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla.PokeMemory = Ram.Poke;
 			Pla.PokeSid = Sid.Poke;
 			Pla.PokeVic = Vic.Poke;
-			Pla.ReadAec = Vic.ReadAec;
-			Pla.ReadBa = Vic.ReadBa;
 			Pla.ReadBasicRom = BasicRom.Read;
 			Pla.ReadCartridgeHi = CartPort.ReadHiRom;
 			Pla.ReadCartridgeLo = CartPort.ReadLoRom;

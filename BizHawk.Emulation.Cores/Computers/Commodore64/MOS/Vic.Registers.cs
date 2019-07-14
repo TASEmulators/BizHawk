@@ -181,17 +181,22 @@
 					return 0xFF;
 			}
 		}
-
+		
 		public void Write(int addr, int val)
 		{
-			addr &= 0x3F;
-			switch (addr)
+			_writtenData = val & 0xFF;
+			_writtenRegister = addr & 0x3F;
+		}
+
+		private void DoWrite()
+		{
+			switch (_writtenRegister)
 			{
 				case 0x17:
 					// vic-ii addendum rule 7
 					foreach (var spr in _sprites)
 					{
-						if ((val & 1) == 0 && !spr.YCrunch)
+						if ((_writtenData & 1) == 0 && !spr.YCrunch)
 						{
 							if (_parseIsSprCrunch)
 							{
@@ -202,17 +207,17 @@
 						}
 					}
 
-					WriteRegister(addr, val);
+					WriteRegister(_writtenRegister, _writtenData);
 					break;
 				case 0x19:
 					// interrupts are cleared by writing a 1
-					if ((val & 0x01) != 0)
+					if ((_writtenData & 0x01) != 0)
 						_intRaster = false;
-					if ((val & 0x02) != 0)
+					if ((_writtenData & 0x02) != 0)
 						_intSpriteDataCollision = false;
-					if ((val & 0x04) != 0)
+					if ((_writtenData & 0x04) != 0)
 						_intSpriteCollision = false;
-					if ((val & 0x08) != 0)
+					if ((_writtenData & 0x08) != 0)
 						_intLightPen = false;
 					break;
 				case 0x1E:
@@ -239,7 +244,7 @@
 					// not connected
 					break;
 				default:
-					WriteRegister(addr, val);
+					WriteRegister(_writtenRegister, _writtenData);
 					break;
 			}
 		}
@@ -280,9 +285,9 @@
 					_sprite7.X = (_sprite7.X & 0xFF) | ((val & 0x80) << 1);
 					break;
 				case 0x11:
-					_yScrollNext = val & 0x07;
+					_yScroll = val & 0x07;
 					_rowSelect = (val & 0x08) != 0;
-					_displayEnableNext = (val & 0x10) != 0;
+					_displayEnable = (val & 0x10) != 0;
 					_bitmapMode = (val & 0x20) != 0;
 					_extraColorMode = (val & 0x40) != 0;
 					_rasterInterruptLine &= 0xFF;

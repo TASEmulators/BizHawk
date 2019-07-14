@@ -49,8 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public Action DebuggerStep;
 
-		// ------------------------------------
-
 		public Chip6510()
 		{
 			// configure cpu r/w
@@ -85,7 +83,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_port.Latch = 0xFF;
 		}
 
-		// ------------------------------------
 		public void ExecutePhase()
 		{
 			_irqDelay >>= 1;

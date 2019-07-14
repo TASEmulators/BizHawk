@@ -67,9 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_sprites = new Sprite[8];
 			for (var i = 0; i < 8; i++)
-			{
-				_sprites[i] = new Sprite();
-			}
+				_sprites[i] = new Sprite(i);
 
 			_sprite0 = _sprites[0];
 			_sprite1 = _sprites[1];
@@ -79,8 +77,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite5 = _sprites[5];
 			_sprite6 = _sprites[6];
 			_sprite7 = _sprites[7];
-
 			_bufferC = new int[40];
+			_pixBuffer = new int[PixBufferSize];
+			_pixBorderBuffer = new int[PixBorderBufferSize];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
@@ -313,9 +312,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ParseCycle();
 			UpdatePins();
 			Render();
-			_extraColorModeBuffer = _extraColorMode;
-			_yScroll = _yScrollNext;
-			_displayEnable = _displayEnableNext;
+
+			if (_writtenRegister >= 0)
+			{
+				DoWrite();
+				_writtenRegister = -1;
+			}
 		}
 		
 		private void UpdateBa()

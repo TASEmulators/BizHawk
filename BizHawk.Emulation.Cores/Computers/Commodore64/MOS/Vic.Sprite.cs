@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public bool Display;
 			public bool Dma;
 			public bool Enable;
+			public int Index;
 			public int Loaded;
 			public int Mc;
 			public int Mcbase;
@@ -27,6 +28,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public int Y;
 			public bool YCrunch;
 			public bool YExpand;
+
+			public Sprite(int index)
+			{
+				Index = index;
+			}
 
 			public void HardReset()
 			{

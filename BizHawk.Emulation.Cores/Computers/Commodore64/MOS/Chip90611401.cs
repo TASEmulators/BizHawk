@@ -31,8 +31,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Action<int, int> PokeMemory;
 		public Action<int, int> PokeSid;
 		public Action<int, int> PokeVic;
-		public Func<bool> ReadAec;
-		public Func<bool> ReadBa;
 		public Func<int, int> ReadBasicRom;
 		public Func<int, int> ReadCartridgeLo;
 		public Func<int, int> ReadCartridgeHi;
