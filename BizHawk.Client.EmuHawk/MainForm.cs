@@ -1741,6 +1741,7 @@ namespace BizHawk.Client.EmuHawk
 			pCFXToolStripMenuItem.Visible = false;
             zXSpectrumToolStripMenuItem.Visible = false;
             amstradCPCToolStripMenuItem.Visible = false;
+			VectrexSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1855,6 +1856,9 @@ namespace BizHawk.Client.EmuHawk
                     break;
 				case "GGL":
 					GGLSubMenu.Visible = true;
+					break;
+				case "VEC":
+					VectrexSubMenu.Visible = true;
 					break;
 			}
 		}

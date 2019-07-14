@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_1);
-
+				
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * Math.Round(y_pos))] |= (int)(br & bright_int_2);
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_2);
@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				Core._vidbuffer[(int)(Math.Round(x_pos) + 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) + 1))] |= (int)(br & bright_int_3);
 				Core._vidbuffer[(int)(Math.Round(x_pos) - 1 + 260 * (Math.Round(y_pos) - 1))] |= (int)(br & bright_int_3);
-				
 			}
 		}
 

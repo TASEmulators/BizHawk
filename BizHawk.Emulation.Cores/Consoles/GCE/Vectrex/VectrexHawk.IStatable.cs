@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				ms.Close();
 				core = ms.ToArray();
 			}
+
 			cpu.SyncState(ser);
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
@@ -109,12 +110,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ser.Sync(nameof(joy2_LR), ref joy2_LR);
 			ser.Sync(nameof(joy2_UD), ref joy2_UD);
 
-
-			// probably a better way to do this
-			if (cart_RAM != null)
-			{
-				ser.Sync(nameof(cart_RAM), ref cart_RAM, false);
-			}
+			ser.Sync(nameof(_framebuffer), ref _framebuffer, false);
+			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
 
 			ser.EndSection();
 		}

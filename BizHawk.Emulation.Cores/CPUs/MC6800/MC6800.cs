@@ -2,10 +2,10 @@ using System;
 
 using BizHawk.Common;
 
-// Motorola Corp 6809
-namespace BizHawk.Emulation.Common.Components.MC6809
+// Motorola Corp 6800
+namespace BizHawk.Emulation.Common.Components.MC6800
 {
-	public sealed partial class MC6809
+	public sealed partial class MC6800
 	{
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort RD = 2;
 		public const ushort WR = 3;
 		public const ushort TR = 4;
-		public const ushort ADD16BR = 5;
+		public const ushort SET_ADDR = 5;
 		public const ushort ADD8 = 6;
 		public const ushort SUB8 = 7;
 		public const ushort ADC8 = 8;
@@ -33,54 +33,45 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		public const ushort ASR = 22;
 		public const ushort LSR = 23;
 		public const ushort BIT = 24;
-		public const ushort CWAI = 25;
-		public const ushort SYNC = 26;
-		public const ushort RD_INC = 27;
-		public const ushort RD_INC_OP = 28;
-		public const ushort WR_DEC_LO = 29;
-		public const ushort WR_DEC_HI = 30;
-		public const ushort WR_HI = 31;
-		public const ushort SET_ADDR = 32;
+		public const ushort WAI = 25;
+		public const ushort RD_INC = 26;
+		public const ushort RD_INC_OP = 27;
+		public const ushort WR_DEC_LO = 28;
+		public const ushort WR_DEC_HI = 29;
+		public const ushort WR_HI = 30;
+		public const ushort LD_8 = 31;
+		public const ushort LD_16 = 32;
 		public const ushort NEG = 33;
 		public const ushort TST = 34;
 		public const ushort CLR = 35;
-		public const ushort OP_PG_2 = 36;
-		public const ushort OP_PG_3 = 37;
-		public const ushort SEX = 38;	
-		public const ushort EXG = 39;
-		public const ushort TFR = 40;
-		public const ushort ADD8BR = 41;
-		public const ushort ABX = 42;
-		public const ushort MUL = 43;
-		public const ushort JPE = 44;
-		public const ushort IDX_DCDE = 45;
-		public const ushort IDX_OP_BLD = 46;
-		public const ushort EA_8 = 47;
-		public const ushort EA_16 = 48;
-		public const ushort PSH_n = 49;
-		public const ushort PUL_n = 50;
-		public const ushort WR_DEC_LO_OP = 51;
-		public const ushort WR_DEC_HI_OP = 52;
-		public const ushort WR_HI_INC = 53;
-		public const ushort WR_LO_INC = 54;
-		public const ushort SET_ADDR_PUL = 55;
-		public const ushort SET_F_I = 56;
-		public const ushort SET_I = 57;
-		public const ushort SET_E = 58;
-		public const ushort ANDCC = 59;
-		public const ushort CMP8 = 60;
-		public const ushort SUB16 = 61;
-		public const ushort ADD16 = 62;
-		public const ushort CMP16 = 63;
-		public const ushort CMP16D = 64;
-		public const ushort LD_8 = 65;
-		public const ushort LD_16 = 66;
-		public const ushort ST_8 = 67;
-		public const ushort ST_16 = 68;
-		public const ushort LEA = 69;
-		public const ushort CLR_E = 70;
+		public const ushort ADD8BR = 36;
+		public const ushort IDX_DCDE = 37;
+		public const ushort IDX_OP_BLD = 38;
+		public const ushort WR_HI_INC = 39;
+		public const ushort SET_I = 40;
+		public const ushort CMP8 = 41;
+		public const ushort CMP16 = 42;
+		public const ushort TAP = 43;
+		public const ushort TPA = 44;
+		public const ushort INX = 45;
+		public const ushort DEX = 46;
+		public const ushort CLV = 47;
+		public const ushort SEV = 48;
+		public const ushort CLC = 49;
+		public const ushort SEC = 50;
+		public const ushort CLI = 51;
+		public const ushort SEI = 52;
+		public const ushort SBA = 53;
+		public const ushort CBA = 54;
+		public const ushort TAB = 55;
+		public const ushort TBA = 56;
+		public const ushort ABA = 57;
+		public const ushort TSX = 58;
+		public const ushort INS = 59;
+		public const ushort DES = 60;
+		public const ushort TXS = 61;
 
-		public MC6809()
+		public MC6800()
 		{
 			Reset();
 		}
@@ -138,7 +129,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		}
 
 		//a little CDL related stuff
-		public delegate void DoCDLCallbackType(ushort addr, MC6809.eCDLogMemFlags flags);
+		public delegate void DoCDLCallbackType(ushort addr, MC6800.eCDLogMemFlags flags);
 
 		public DoCDLCallbackType CDLCallback;
 
@@ -166,16 +157,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					if (TraceCallback != null) TraceCallback(State());
 					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
 					FetchInstruction(ReadMemory(Regs[PC]++));
-					instr_pntr = 0;
-					irq_pntr = -1;
-					break;
-				case OP_PG_2:
-					FetchInstruction2(ReadMemory(Regs[PC]++));
-					instr_pntr = 0;
-					irq_pntr = -1;
-					break;
-				case OP_PG_3:
-					FetchInstruction3(ReadMemory(Regs[PC]++));
 					instr_pntr = 0;
 					irq_pntr = -1;
 					break;
@@ -232,37 +213,17 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
-						case JPE:
-							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; };
-							break;
 						case IDX_DCDE:
 							Index_decode();
 							break;
 						case IDX_OP_BLD:
 							Index_Op_Builder();
 							break;
-						case EA_8:
-							Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + (((Regs[ALU2] & 0x80) == 0x80) ? (Regs[ALU2] | 0xFF00) : Regs[ALU2]));
-							Index_Op_Builder();
-							break;
-						case PUL_n:
-							PUL_n_BLD(cur_instr[instr_pntr++]);
-							break;
-						case SET_ADDR_PUL:
-							Regs[cur_instr[instr_pntr++]] = (ushort)((Regs[ALU2] << 8) + Regs[ADDR]);
-							PUL_n_BLD(cur_instr[instr_pntr++]);
-							break;
 						case LD_8:
 							LD_8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 							break;
 						case LD_16:
 							LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-							break;
-						case LEA:
-							LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-							break;
-						case ANDCC:
-							Regs[CC] &= Regs[instr_pntr++];
 							break;
 					}
 					break;
@@ -275,32 +236,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case WR_DEC_HI:
 					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case WR_DEC_LO_OP:
-					Write_Dec_Lo_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					switch (cur_instr[instr_pntr++])
-					{
-						case PSH_n:
-							PSH_n_BLD(cur_instr[instr_pntr++]);
-							break;
-					}
-					break;
-				case WR_DEC_HI_OP:
-					Write_Dec_HI_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					switch (cur_instr[instr_pntr++])
-					{
-						case PSH_n:
-							PSH_n_BLD(cur_instr[instr_pntr++]);
-							break;
-					}
-					break;
 				case WR_HI:
 					Write_Hi_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case WR_HI_INC:
 					Write_Hi_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-				case WR_LO_INC:
-					Write_Lo_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -311,27 +251,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case LD_16:
 					LD_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case ST_8:
-					ST_8_Func(cur_instr[instr_pntr++]);
-					break;
-				case ST_16:
-					ST_16_Func(cur_instr[instr_pntr++]);
-					break;
-				case LEA:
-					LEA_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-				case EXG:
-					EXG_Func(cur_instr[instr_pntr++]);
-					break;
 				case IDX_OP_BLD:
 					Index_Op_Builder();
-					break;
-				case EA_16:
-					Regs[IDX_EA] = (ushort)(Regs[indexed_reg] + Regs[ADDR]);
-					Index_Op_Builder();
-					break;
-				case TFR:
-					TFR_Func(cur_instr[instr_pntr++]);
 					break;
 				case SET_ADDR:
 					reg_d_ad = cur_instr[instr_pntr++];
@@ -352,38 +273,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case CLR:
 					CLR_Func(cur_instr[instr_pntr++]);
 					break;
-				case SEX:
-					SEX_Func(cur_instr[instr_pntr++]);
-					break;
-				case ABX:
-					Regs[X] += Regs[B];
-					break;
-				case MUL:
-					Mul_Func();
-					break;
-				case SET_F_I:
-					FlagI = true; FlagF = true;
-					break;
 				case SET_I:
 					FlagI = true;
-					break;
-				case SET_E:
-					FlagE = true;
-					break;
-				case CLR_E:
-					FlagE = false;
-					break;
-				case ANDCC:
-					Regs[CC] &= Regs[instr_pntr++];
-					break;
-				case PSH_n:
-					PSH_n_BLD(cur_instr[instr_pntr++]);
-					break;
-				case PUL_n:
-					PUL_n_BLD(cur_instr[instr_pntr++]);
-					break;
-				case ADD16BR:
-					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case ADD8BR:
 					ADD8BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -412,17 +303,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case DEC16:
 					DEC16_Func(cur_instr[instr_pntr++]);
 					break;
-				case SUB16:
-					SUB16_Func(cur_instr[instr_pntr++]);
-					break;
-				case ADD16:
-					ADD16_Func(cur_instr[instr_pntr++]);
-					break;
 				case CMP16:
 					CMP16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
-				case CMP16D:
-					CMP16D_Func(cur_instr[instr_pntr++]);
 					break;
 				case DEC8:
 					DEC8_Func(cur_instr[instr_pntr++]);
@@ -457,10 +339,88 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case LSR:
 					LSR_Func(cur_instr[instr_pntr++]);
 					break;
+				case TAP:
+					instr_pntr++;
+					Regs[CC] = (ushort)((Regs[A] & 0x3F) | 0xC0); // last 2 bits always 1
+					break;
+				case TPA:
+					instr_pntr++;
+					Regs[A] = Regs[CC];
+					break;
+				case INX:
+					instr_pntr++;
+					Regs[X] = (ushort)(Regs[X]  + 1);
+					FlagZ = Regs[X] == 0;
+					break;
+				case DEX:
+					instr_pntr++;
+					Regs[X] = (ushort)(Regs[X] - 1);
+					FlagZ = Regs[X] == 0;
+					break;
+				case CLV:
+					instr_pntr++;
+					FlagV = false;
+					break;
+				case SEV:
+					instr_pntr++;
+					FlagV = true;
+					break;
+				case CLC:
+					instr_pntr++;
+					FlagC = false;
+					break;
+				case SEC:
+					instr_pntr++;
+					FlagC = true;
+					break;
+				case CLI:
+					instr_pntr++;
+					FlagI = false;
+					break;
+				case SEI:
+					instr_pntr++;
+					FlagI = true;
+					break;
+				case SBA:
+					instr_pntr++;
+					SBC8_Func(A, B);
+					break;
+				case CBA:
+					instr_pntr++;
+					CMP8_Func(A, B);
+					break;
+				case TAB:
+					instr_pntr++;
+					Regs[B] = Regs[A];
+					break;
+				case TBA:
+					instr_pntr++;
+					Regs[A] = Regs[B];
+					break;
+				case ABA:
+					instr_pntr++;
+					ADD8_Func(A, B);
+					break;
+				case TSX:
+					instr_pntr++;
+					Regs[X] = (ushort)(Regs[SP] + 1);
+					break;
+				case INS:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[SP] + 1);
+					break;
+				case DES:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[SP] - 1);
+					break;
+				case TXS:
+					instr_pntr++;
+					Regs[SP] = (ushort)(Regs[X] - 1);
+					break;
 				case BIT:
 					BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case CWAI:
+				case WAI:
 					if (NMIPending)
 					{
 						NMIPending = false;
@@ -473,19 +433,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 						IRQS = 3;
 
 						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI NMI====", RegisterInfo = "" }); }
-					}
-					else if (FIRQPending && !FlagF)
-					{
-						FIRQPending = false;
-
-						Regs[ADDR] = 0xFFF6;
-						PopulateCURINSTR(RD_INC, ALU, ADDR,
-										RD_INC, ALU2, ADDR,
-										SET_ADDR, PC, ALU, ALU2);
-						irq_pntr = -1;
-						IRQS = 3;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====CWAI FIRQ====", RegisterInfo = "" }); }
 					}
 					else if (IRQPending && !FlagI)
 					{
@@ -502,17 +449,11 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 					else
 					{
-						PopulateCURINSTR(CWAI);
+						PopulateCURINSTR(WAI);
 						irq_pntr = 0;
 						IRQS = -1;
 					}
 					instr_pntr = 0;
-					break;
-				case SYNC:
-					IN_SYNC = true;
-					IRQS = 1;				
-					instr_pntr = irq_pntr = 0;
-					PopulateCURINSTR(SYNC);
 					break;
 			}
 
@@ -525,36 +466,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
 
-					IN_SYNC = false;
 					NMI_();
 					NMICallback();
 					instr_pntr = irq_pntr = 0;
-				}
-				// fast IRQ has next priority
-				else if (FIRQPending)
-				{
-					if (!FlagF)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						FIRQ_();
-						FIRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
 				}
 				// then regular IRQ				
 				else if (IRQPending && !FlagI)
@@ -565,21 +479,9 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
 
-						IN_SYNC = false;
 						IRQ_();
 						IRQCallback();
 						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						IRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
 					}
 				}				
 				// otherwise start the next instruction
@@ -600,7 +502,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 		public string TraceHeader
 		{
-			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)"; }
+			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, SP, CC), Cy, flags (EHINZVC)"; }
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -611,18 +513,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} B:{1:X2} X:{2:X4} Y:{3:X4} US:{4:X4} SP:{5:X4} DP:{6:X2} CC:{7:X2} Cy:{8} {9}{10}{11}{12}{13}{14}{15}{16}",
+					"A:{0:X2} B:{1:X2} X:{2:X4} SP:{3:X4} CC:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}",
 					Regs[A],
 					Regs[B],
 					Regs[X],
-					Regs[Y],
-					Regs[US],
 					Regs[SP],
-					Regs[DP],
 					Regs[CC],
 					TotalExecutedCycles,
-					FlagE ? "E" : "e",
-					FlagF ? "F" : "f",
 					FlagH ? "H" : "h",
 					FlagI ? "I" : "i",
 					FlagN ? "N" : "n",
@@ -670,15 +567,12 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 		{
 			ser.BeginSection("MC6809");
 
-			ser.Sync(nameof(IN_SYNC), ref IN_SYNC);
 			ser.Sync(nameof(NMIPending), ref NMIPending);
-			ser.Sync(nameof(FIRQPending), ref FIRQPending);
 			ser.Sync(nameof(IRQPending), ref IRQPending);
 
 			ser.Sync(nameof(indexed_op), ref indexed_op);
 			ser.Sync(nameof(indexed_reg), ref indexed_reg);
 			ser.Sync(nameof(indexed_op_reg), ref indexed_op_reg);
-			ser.Sync(nameof(temp), ref temp);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);

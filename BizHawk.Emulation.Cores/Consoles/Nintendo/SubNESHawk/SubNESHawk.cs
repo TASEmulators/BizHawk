@@ -69,6 +69,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int _frame = 0;
 
+		public bool IsFDS
+		{
+			get { return subnes.Board is FDS; }
+		}
+
 		private readonly ITraceable _tracer;
 
 		#region ISettable

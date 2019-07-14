@@ -4,15 +4,13 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.MC6809;
 
-using System.Runtime.InteropServices;
-
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	[Core(
 		"VectrexHawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class VectrexHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, 
 	ISettable<VectrexHawk.VectrexSettings, VectrexHawk.VectrexSyncSettings>
@@ -22,9 +20,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public byte[] _bios, minestorm;
 		public readonly byte[] _rom;	
-		
-		public byte[] cart_RAM;
-		public bool has_bat;
 
 		private int _frame = 0;
 
@@ -140,8 +135,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			ppu.Reset();
 			audio.Reset();
 			serialport.Reset();
+			cpu.Reset();
+
+			RAM = new byte[0x400];
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			_framebuffer = new int[VirtualWidth * VirtualHeight];
+		}
+
+		public void SoftReset()
+		{
+			Register_Reset();
+			ppu.Reset();
+			audio.Reset();
+			serialport.Reset();
+			cpu.Reset();
+
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			_framebuffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)
