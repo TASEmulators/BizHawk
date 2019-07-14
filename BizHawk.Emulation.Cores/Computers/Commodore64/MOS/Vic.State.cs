@@ -49,9 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _pointerCb;
 		private int _pointerVm;
 		private int _rasterInterruptLine;
-		private bool _rasterInterruptTriggered;
 		private int _rasterLine;
-		private int _rasterLineInterruptCompare;
 		private int _rasterX;
 		private bool _rasterXHold;
 		private int _rc;
@@ -79,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _vmli;
 		private int _xScroll;
 		private int _yScroll;
+		private int _yScrollNext;
+		private bool _displayEnableNext;
 
 		public void HardReset()
 		{
@@ -104,6 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_borderOnVertical = true;
 			_columnSelect = false;
 			_displayEnable = false;
+			_displayEnableNext = false;
 			_enableIntLightPen = false;
 			_enableIntRaster = false;
 			_enableIntSpriteCollision = false;
@@ -134,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_vmli = 0;
 			_xScroll = 0;
 			_yScroll = 0;
+			_yScrollNext = 0;
 			_cycle = 0;
 			_cycleIndex = 0;
 
@@ -186,6 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_dataC), ref _dataC);
 			ser.Sync(nameof(_dataG), ref _dataG);
 			ser.Sync(nameof(_displayEnable), ref _displayEnable);
+			ser.Sync(nameof(_displayEnableNext), ref _displayEnableNext);
 			ser.Sync(nameof(_enableIntLightPen), ref _enableIntLightPen);
 			ser.Sync(nameof(_enableIntRaster), ref _enableIntRaster);
 			ser.Sync(nameof(_enableIntSpriteCollision), ref _enableIntSpriteCollision);
@@ -230,6 +233,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_vmli), ref _vmli);
 			ser.Sync(nameof(_xScroll), ref _xScroll);
 			ser.Sync(nameof(_yScroll), ref _yScroll);
+			ser.Sync(nameof(_yScrollNext), ref _yScrollNext);
 			ser.Sync(nameof(_bufOffset), ref _bufOffset);
 			ser.Sync(nameof(_pixBuffer), ref _pixBuffer, useNull: false);
 			ser.Sync(nameof(_pixBufferIndex), ref _pixBufferIndex);

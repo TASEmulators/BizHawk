@@ -280,34 +280,13 @@
 					_sprite7.X = (_sprite7.X & 0xFF) | ((val & 0x80) << 1);
 					break;
 				case 0x11:
-					_yScroll = val & 0x07;
+					_yScrollNext = val & 0x07;
 					_rowSelect = (val & 0x08) != 0;
-					_displayEnable = (val & 0x10) != 0;
+					_displayEnableNext = (val & 0x10) != 0;
 					_bitmapMode = (val & 0x20) != 0;
 					_extraColorMode = (val & 0x40) != 0;
 					_rasterInterruptLine &= 0xFF;
 					_rasterInterruptLine |= (val & 0x80) << 1;
-
-					if (_rasterLine == BadLineEnableRaster)
-						_badlineEnable |= _displayEnable;
-
-					if (_badlineEnable)
-					{
-						if ((_rasterLine & 0x7) == _yScroll)
-						{
-							_badline = true;
-							_idle = false;
-						}
-						else
-						{
-							_badline = false;
-						}
-					}
-					else
-					{
-						_badline = false;
-					}
-
 					UpdateBorder();
 					UpdateVideoMode();
 					break;
