@@ -334,15 +334,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private void UpdatePins()
 		{
-			var irqTemp = 
-				(_enableIntRaster & _intRaster) |
-				(_enableIntSpriteDataCollision & _intSpriteDataCollision) |
-				(_enableIntSpriteCollision & _intSpriteCollision) |
-				(_enableIntLightPen & _intLightPen);
+			// IRQ is treated as a delay line
 
-			// IRQ buffer is treated as a delay line
+			var intIrq = (_enableIntRaster && _intRaster) ? 0x0008 : 0x0000;
+			var sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
+			var ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
+			var lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;
+
 			_irqBuffer >>= 1;
-			_irqBuffer |= irqTemp ? 0x8 : 0;
+			_irqBuffer |= intIrq | sdIrq | ssIrq | lpIrq;
 			_pinAec = _ba || _baCount >= 0;
 			_pinBa = _ba;
 		}
