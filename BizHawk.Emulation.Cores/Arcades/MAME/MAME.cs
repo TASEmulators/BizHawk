@@ -41,8 +41,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int VirtualHeight => 320;
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
-		public int VsyncNumerator => 60;
-		public int VsyncDenominator => 1;
+		public int VsyncNumerator => vsyncNum;
+		public int VsyncDenominator => vsyncDen;
 		public int BackgroundColor => unchecked((int)0xFF0000FF);
 
 		private Thread MAMEThread;
@@ -54,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string GameDirectory;
 		private string GameFilename;
 		private int[] frameBuffer = new int[0];
+		private int vsyncNum = 60;
+		private int vsyncDen = 1;
 
 		private void AsyncLaunchMAME()
 		{
@@ -72,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			string[] args = MakeCommandline(GameDirectory, GameFilename);
 			LibMAME.mame_launch(args.Length, args);
 		}
-		
+
 		// https://docs.mamedev.org/commandline/commandline-index.html
 		private string[] MakeCommandline(string directory, string rom)
 		{
@@ -94,6 +96,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-lightgunprovider", "none"
 				, "-joystickprovider", "none"
 			};
+		}
+
+		private void UpdateFramerate()
+		{
+			vsyncNum = 1000000000;
+			vsyncDen = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh) / 1000000000;
 		}
 
 		private void UpdateVideo()
@@ -143,6 +151,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void MAMEFrameCallback()
 		{
 			LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+			UpdateFramerate();
 			UpdateVideo();
 			FrameDone = true;
 			MAMEFrameComplete.Set();
@@ -236,10 +245,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
-			public const string GetWidth = "return manager:machine():render():ui_target():width()";
-			public const string GetHeight = "return manager:machine():render():ui_target():height()";
-			public const string GetPixels = "return manager:machine().screens[\":screen\"]:pixels()";
-			public const string GetFrame = "return manager:machine().screens[\":screen\"]:frame_number()";
+			public const string GetPixels = "return manager:machine():video():pixels()";
+			public const string GetWidth = "local w,h = manager:machine():video():size() return w";
+			public const string GetHeight = "local w,h = manager:machine():video():size() return h";
+			public const string GetFrame = "for k,v in pairs(manager:machine().screens) do return v:frame_number() end";
+			public const string GetRefresh = "for k,v in pairs(manager:machine().screens) do return v:refresh_attoseconds() end";
 		}
 
 	}
