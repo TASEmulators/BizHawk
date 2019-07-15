@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Bizware.BizwareGL;
@@ -56,13 +57,15 @@ namespace BizHawk.Client.EmuHawk
 				ShaderChainFrugalizers[i] = new RenderTargetFrugalizer(GL);
 			}
 
-			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
-			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
+			var resourcePrefix = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows ? "BizHawk.Client.EmuHawk.Resources." : "BizHawk.Client.EmuHawk."; // Mono update broke this somehow? There may be a way to explicitly name the "path" to whatever we want, fixing the issue properly. --yoshi
+
+			using (var xml = typeof(Program).Assembly.GetManifestResourceStream($"{resourcePrefix}courier16px.fnt"))
+			using (var tex = typeof(Program).Assembly.GetManifestResourceStream($"{resourcePrefix}courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			using (var gens = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
+			using (var gens = typeof(Program).Assembly.GetManifestResourceStream($"{resourcePrefix}gens.ttf"))
 				LoadCustomFont(gens);
-			using (var fceux = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
+			using (var fceux = typeof(Program).Assembly.GetManifestResourceStream($"{resourcePrefix}fceux.ttf"))
 				LoadCustomFont(fceux);
 
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
