@@ -289,6 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// badline compare
+			_vcEnable = !_idle;
 			if (_badlineEnable)
 			{
 				if ((_rasterLine & 0x7) == _yScroll)
@@ -312,12 +313,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ParseCycle();
 			UpdatePins();
 			Render();
-
-			if (_writtenRegister >= 0)
-			{
-				DoWrite();
-				_writtenRegister = -1;
-			}
 		}
 		
 		private void UpdateBa()

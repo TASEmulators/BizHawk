@@ -101,7 +101,7 @@
 						_parseAddr &= AddressMaskEc;
 					_dataG = ReadMemory(_parseAddr);
 
-					if (!_idle)
+					if (!_idle && _vcEnable)
 					{
 						_vmli = (_vmli + 1) & 0x3F;
 						_vc = (_vc + 1) & 0x3FF;

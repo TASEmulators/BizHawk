@@ -184,19 +184,16 @@
 		
 		public void Write(int addr, int val)
 		{
-			_writtenData = val & 0xFF;
-			_writtenRegister = addr & 0x3F;
-		}
+			addr &= 0x3F;
+			val &= 0xFF;
 
-		private void DoWrite()
-		{
-			switch (_writtenRegister)
+			switch (addr)
 			{
 				case 0x17:
 					// vic-ii addendum rule 7
 					foreach (var spr in _sprites)
 					{
-						if ((_writtenData & 1) == 0 && !spr.YCrunch)
+						if ((val & 1) == 0 && !spr.YCrunch)
 						{
 							if (_parseIsSprCrunch)
 							{
@@ -207,17 +204,17 @@
 						}
 					}
 
-					WriteRegister(_writtenRegister, _writtenData);
+					WriteRegister(addr, val);
 					break;
 				case 0x19:
 					// interrupts are cleared by writing a 1
-					if ((_writtenData & 0x01) != 0)
+					if ((val & 0x01) != 0)
 						_intRaster = false;
-					if ((_writtenData & 0x02) != 0)
+					if ((val & 0x02) != 0)
 						_intSpriteDataCollision = false;
-					if ((_writtenData & 0x04) != 0)
+					if ((val & 0x04) != 0)
 						_intSpriteCollision = false;
-					if ((_writtenData & 0x08) != 0)
+					if ((val & 0x08) != 0)
 						_intLightPen = false;
 					break;
 				case 0x1E:
@@ -244,7 +241,7 @@
 					// not connected
 					break;
 				default:
-					WriteRegister(_writtenRegister, _writtenData);
+					WriteRegister(addr, val);
 					break;
 			}
 		}

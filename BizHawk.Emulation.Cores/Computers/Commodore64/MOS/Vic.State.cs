@@ -73,12 +73,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _vblankStart;
 		private int _vc;
 		private int _vcbase;
+		private bool _vcEnable;
 		private int _vmli;
 		private int _xScroll;
 		private int _yScroll;
-
-		private int _writtenRegister;
-		private int _writtenData;
 
 		public void HardReset()
 		{
@@ -134,12 +132,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_spriteMulticolor1 = 0;
 			_vc = 0;
 			_vcbase = 0;
+			_vcEnable = false;
 			_vmli = 0;
 			_xScroll = 0;
 			_yScroll = 0;
-
-			_writtenRegister = -1;
-			_writtenData = 0;
 
 			// reset sprites
 			for (var i = 0; i < 8; i++)
@@ -232,10 +228,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			ser.Sync(nameof(_vc), ref _vc);
 			ser.Sync(nameof(_vcbase), ref _vcbase);
+			ser.Sync(nameof(_vcEnable), ref _vcEnable);
 			ser.Sync(nameof(_videoMode), ref _videoMode);
 			ser.Sync(nameof(_vmli), ref _vmli);
-			ser.Sync(nameof(_writtenData), ref _writtenData);
-			ser.Sync(nameof(_writtenRegister), ref _writtenRegister);
 			ser.Sync(nameof(_xScroll), ref _xScroll);
 			ser.Sync(nameof(_yScroll), ref _yScroll);
 			
