@@ -37,8 +37,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int[] GetVideoBuffer() { return frameBuffer; }
 		public int Frame { get; private set; }
 		public bool DeterministicEmulation => true;
-		public int VirtualWidth => 240;
-		public int VirtualHeight => 320;
+		public int VirtualWidth => aspectWidth;
+		public int VirtualHeight => aspectHeight;
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int VsyncNumerator => vsyncNum;
@@ -56,6 +56,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int[] frameBuffer = new int[0];
 		private int vsyncNum = 60;
 		private int vsyncDen = 1;
+		private int aspectWidth = 320;
+		private int aspectHeight = 240;
 
 		private void AsyncLaunchMAME()
 		{
@@ -102,6 +104,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			vsyncNum = 1000000000;
 			vsyncDen = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh) / 1000000000;
+		}
+
+		private void UpdateAspect()
+		{
+			double x = LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
+			double y = LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
+			double ratio = x / y;
+			if (ratio <= 1)
+			{
+				//taller. expand height.
+				aspectWidth = BufferWidth;
+				aspectHeight = (int)(BufferWidth / ratio);
+			}
+			else
+			{
+				//wider. expand width.
+				aspectWidth = (int)(BufferHeight * ratio);
+				aspectHeight = BufferHeight;
+			}
 		}
 
 		private void UpdateVideo()
@@ -153,6 +174,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_lua_execute(MAMELuaCommand.Step);
 			UpdateFramerate();
 			UpdateVideo();
+			UpdateAspect();
 			FrameDone = true;
 			MAMEFrameComplete.Set();
 		}
@@ -250,6 +272,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetHeight = "local w,h = manager:machine():video():size() return h";
 			public const string GetFrame = "for k,v in pairs(manager:machine().screens) do return v:frame_number() end";
 			public const string GetRefresh = "for k,v in pairs(manager:machine().screens) do return v:refresh_attoseconds() end";
+			public const string GetBoundX = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return x1-x0";
+			public const string GetBoundY = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return y1-y0";
 		}
 
 	}
