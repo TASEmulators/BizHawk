@@ -34,16 +34,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
 		public string SystemId => "MAME";
-		public int[] GetVideoBuffer() { return frameBuffer; }
-		public int Frame { get; private set; }
+		public int[] GetVideoBuffer() => frameBuffer;
 		public bool DeterministicEmulation => true;
-		public int VirtualWidth => aspectWidth;
-		public int VirtualHeight => aspectHeight;
-		public int BufferWidth { get; private set; }
-		public int BufferHeight { get; private set; }
-		public int VsyncNumerator => vsyncNum;
-		public int VsyncDenominator => vsyncDen;
 		public int BackgroundColor => unchecked((int)0xFF0000FF);
+		public int Frame { get; private set; }
+		public int VirtualWidth { get; private set; } = 320;
+		public int VirtualHeight { get; private set; } = 240;
+		public int BufferWidth { get; private set; } = 320;
+		public int BufferHeight { get; private set; } = 240;
+		public int VsyncNumerator { get; private set; } = 60;
+		public int VsyncDenominator { get; private set; } = 1;
 
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
@@ -51,13 +51,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
 		private bool FrameDone = false;
 		private bool CommandDone = false;
+		private int[] frameBuffer = new int[0];
 		private string GameDirectory;
 		private string GameFilename;
-		private int[] frameBuffer = new int[0];
-		private int vsyncNum = 60;
-		private int vsyncDen = 1;
-		private int aspectWidth = 320;
-		private int aspectHeight = 240;
 
 		private void AsyncLaunchMAME()
 		{
@@ -102,8 +98,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateFramerate()
 		{
-			vsyncNum = 1000000000;
-			vsyncDen = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh) / 1000000000;
+			VsyncNumerator = 1000000000;
+			VsyncDenominator = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh) / 1000000000;
 		}
 
 		private void UpdateAspect()
@@ -114,14 +110,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (ratio <= 1)
 			{
 				//taller. expand height.
-				aspectWidth = BufferWidth;
-				aspectHeight = (int)(BufferWidth / ratio);
+				VirtualWidth = BufferWidth;
+				VirtualHeight = (int)(BufferWidth / ratio);
 			}
 			else
 			{
 				//wider. expand width.
-				aspectWidth = (int)(BufferHeight * ratio);
-				aspectHeight = BufferHeight;
+				VirtualWidth = (int)(BufferHeight * ratio);
+				VirtualHeight = BufferHeight;
 			}
 		}
 
@@ -129,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			int lengthInBytes;
 
-			int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrame);
+			//int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrame);
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
 			int expectedSize = BufferWidth * BufferHeight;
