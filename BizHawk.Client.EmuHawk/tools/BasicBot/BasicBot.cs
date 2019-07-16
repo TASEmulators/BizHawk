@@ -377,12 +377,6 @@ namespace BizHawk.Client.EmuHawk
 		public int LastFrameAdvanced { get; set; }
 		#endregion
 
-		public bool HasFrameAdvanced()
-		{
-			//If the emulator frame is different from the last time it tried calling
-			//the function then we can continue, otherwise we need to stop.
-			return LastFrameAdvanced != Emulator.Frame;
-		}
 		#region IToolForm Implementation
 
 		public bool UpdateBefore { get { return true; } }
@@ -1362,11 +1356,6 @@ namespace BizHawk.Client.EmuHawk
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
 		}		
-
-		private void btnCopyBestInput_Click(object sender, EventArgs e)
-		{
-			Clipboard.SetText(BestAttemptLogLabel.Text);
-		}
 
 		//Copy to Clipboard
 		private void btnCopyBestInput_Click(object sender, EventArgs e)
