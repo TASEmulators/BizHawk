@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _replayMode = false;
 		private int _startFrame = 0;
 		private string _lastRom = "";
+		private int _lastFrameAdvanced { get; set; }
 
 		private bool _dontUpdateValues = false;
 
@@ -57,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
-
+		
 		#region Services and Settings
 
 		[RequiredService]
@@ -819,6 +820,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public bool HasFrameAdvanced()
+		{
+			//If the emulator frame is different from the last time it tried calling
+			//the function then we can continue, otherwise we need to stop.
+			return _lastFrameAdvanced != Emulator.Frame;
+		}
 		private void SetupControlsAndProperties()
 		{
 			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
@@ -898,6 +905,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!HasFrameAdvanced())
+			{
+				return;
+			}
+
 			if (_replayMode)
 			{
 				int index = Emulator.Frame - _startFrame;
@@ -941,8 +953,12 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
-
-				PressButtons();
+				//Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
+				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test
+				{
+					PressButtons();
+					_lastFrameAdvanced = Emulator.Frame;
+				}
 			}
 		}
 
@@ -1328,7 +1344,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
+		}		
+
+		private void btnCopyBestInput_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(BestAttemptLogLabel.Text);
 		}
 
+		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
