@@ -5,22 +5,22 @@ using BizHawk.Emulation.Common;
 
 
 /*
-	$FFFF 			Interrupt Enable Flag
-	$FF80-$FFFE 	Zero Page - 127 bytes
-	$FF00-$FF7F 	Hardware I/O Registers
-	$FEA0-$FEFF 	Unusable Memory
-	$FE00-$FE9F 	OAM - Object Attribute Memory
-	$E000-$FDFF 	Echo RAM - Reserved, Do Not Use
-	$D000-$DFFF 	Internal RAM - Bank 1-7 (switchable - CGB only)
-	$C000-$CFFF 	Internal RAM - Bank 0 (fixed)
-	$A000-$BFFF 	Cartridge RAM (If Available)
-	$9C00-$9FFF 	BG Map Data 2
-	$9800-$9BFF 	BG Map Data 1
-	$8000-$97FF 	Character RAM
-	$4000-$7FFF 	Cartridge ROM - Switchable Banks 1-xx
-	$0150-$3FFF 	Cartridge ROM - Bank 0 (fixed)
-	$0100-$014F 	Cartridge Header Area
-	$0000-$00FF 	Restart and Interrupt Vectors
+	$FFFF          Interrupt Enable Flag
+	$FF80-$FFFE    Zero Page - 127 bytes
+	$FF00-$FF7F    Hardware I/O Registers
+	$FEA0-$FEFF    Unusable Memory
+	$FE00-$FE9F    OAM - Object Attribute Memory
+	$E000-$FDFF    Echo RAM - Reserved, Do Not Use
+	$D000-$DFFF    Internal RAM - Bank 1-7 (switchable - CGB only)
+	$C000-$CFFF    Internal RAM - Bank 0 (fixed)
+	$A000-$BFFF    Cartridge RAM (If Available)
+	$9C00-$9FFF    BG Map Data 2
+	$9800-$9BFF    BG Map Data 1
+	$8000-$97FF    Character RAM
+	$4000-$7FFF    Cartridge ROM - Switchable Banks 1-xx
+	$0150-$3FFF    Cartridge ROM - Bank 0 (fixed)
+	$0100-$014F    Cartridge Header Area
+	$0000-$00FF    Restart and Interrupt Vectors
 */
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
@@ -29,17 +29,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			addr_access = addr;
 			
 			if (ppu.DMA_start)
 			{
-				if (addr < 0x4000)
+				// some of gekkio's tests require these to be accessible during DMA
+				if (addr < 0x8000)
 				{
-					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
-				else if ((addr >= 0xE000) && (addr < 0xFE00))
+				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
-					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
+					return RAM[addr - 0xE000]; 
+				}
+				else if ((addr >= 0xF000) && (addr < 0xFE00))
+				{
+					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
@@ -57,12 +71,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return 0xFF;
 			}
 			
-			if (addr < 0x100)
+			if (addr < 0x900)
 			{
-				// return Either BIOS ROM or Game ROM
-				if ((GB_bios_register & 0x1) == 0)
+				if (addr < 0x100)
 				{
-					return _bios[addr]; // Return BIOS
+					// return Either BIOS ROM or Game ROM
+					if ((GB_bios_register & 0x1) == 0)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
+				}
+				else if (addr >= 0x200)
+				{
+					// return Either BIOS ROM or Game ROM
+					if (((GB_bios_register & 0x1) == 0) && is_GBC)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else
 				{
@@ -73,37 +106,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return mapper.ReadMemory(addr);
 			}
-			else if (addr < 0x9800)
-			{
-				if (ppu.VRAM_access_read) { return CHR_RAM[addr - 0x8000]; }
-				else { return 0xFF; }			
-			}
-			else if (addr < 0x9C00)
-			{
-				if (ppu.VRAM_access_read) { return BG_map_1[addr - 0x9800]; }
-				else { return 0xFF; }
-			}
 			else if (addr < 0xA000)
 			{
-				if (ppu.VRAM_access_read) { return BG_map_2[addr - 0x9C00]; }
+				if (ppu.VRAM_access_read) { return VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)]; }
 				else { return 0xFF; }
 			}
 			else if (addr < 0xC000)
 			{
 				return mapper.ReadMemory(addr);
 			}
-			else if (addr < 0xE000)
+			else if (addr < 0xD000)
 			{
 				return RAM[addr - 0xC000];
 			}
-			else if (addr < 0xFE00)
+			else if (addr < 0xE000)
+			{
+				return RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)];
+			}
+			else if (addr < 0xF000)
 			{
 				return RAM[addr - 0xE000];
+			}
+			else if (addr < 0xFE00)
+			{
+				return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 			}
 			else if (addr < 0xFEA0)
 			{
 				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
-				else { return 0xFF; }		
+				else { return 0xFF; }
 			}
 			else if (addr < 0xFF00)
 			{
@@ -127,13 +158,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			MemoryCallbacks.CallWrites(addr, "System Bus");
-			
+			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
+			MemoryCallbacks.CallMemoryCallbacks(addr, value, flags, "System Bus");
+			addr_access = addr;
+
 			if (ppu.DMA_start)
 			{
-				if ((addr >= 0xE000) && (addr < 0xFE00))
+				// some of gekkio's tests require this to be accessible during DMA
+				if ((addr >= 0xE000) && (addr < 0xF000))
 				{
-					RAM[addr - 0xE000] = value; // some of gekkio's tests require this to be accessible during DMA
+					RAM[addr - 0xE000] = value;
+				}
+				else if ((addr >= 0xF000) && (addr < 0xFE00))
+				{
+					RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)] = value;
 				}
 				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
@@ -150,12 +188,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return;
 			}
 
-			if (addr < 0x100)
+			if (addr < 0x900)
 			{
-				// return Either BIOS ROM or Game ROM
-				if ((GB_bios_register & 0x1) == 0)
+				if (addr < 0x100)
 				{
-					// Can't write to BIOS region
+					if ((GB_bios_register & 0x1) == 0)
+					{
+						// No Writing to BIOS
+					}
+					else
+					{
+						mapper.WriteMemory(addr, value);
+					}
+				}
+				else if (addr >= 0x200)
+				{
+					if (((GB_bios_register & 0x1) == 0) && is_GBC)
+					{
+						// No Writing to BIOS
+					}
+					else
+					{
+						mapper.WriteMemory(addr, value);
+					}
 				}
 				else
 				{
@@ -166,29 +221,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				mapper.WriteMemory(addr, value);
 			}
-			else if (addr < 0x9800)
-			{
-				if (ppu.VRAM_access_write) { CHR_RAM[addr - 0x8000] = value; }
-			}
-			else if (addr < 0x9C00)
-			{
-				if (ppu.VRAM_access_write) { BG_map_1[addr - 0x9800] = value; }
-			}
 			else if (addr < 0xA000)
 			{
-				if (ppu.VRAM_access_write) { BG_map_2[addr - 0x9C00] = value; }
+				if (ppu.VRAM_access_write) { VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)] = value; }
 			}
 			else if (addr < 0xC000)
 			{
 				mapper.WriteMemory(addr, value);
 			}
-			else if (addr < 0xE000)
+			else if (addr < 0xD000)
 			{
 				RAM[addr - 0xC000] = value;
 			}
-			else if (addr < 0xFE00)
+			else if (addr < 0xE000)
+			{
+				RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)] = value;
+			}
+			else if (addr < 0xF000)
 			{
 				RAM[addr - 0xE000] = value;
+			}
+			else if (addr < 0xFE00)
+			{
+				RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)] = value;
 			}
 			else if (addr < 0xFEA0)
 			{
@@ -216,13 +271,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (ppu.DMA_start)
 			{
-				if (addr < 0x4000)
+				// some of gekkio's tests require these to be accessible during DMA
+				if (addr < 0x8000)
 				{
-					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
-				else if ((addr >= 0xE000) && (addr < 0xFE00))
+				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
-					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
+					return RAM[addr - 0xE000];
+				}
+				else if ((addr >= 0xF000) && (addr < 0xFE00))
+				{
+					return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 				}
 				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
@@ -240,48 +307,65 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				return 0xFF;
 			}
 
-			if (addr < 0x100)
+			if (addr < 0x900)
 			{
-				// return Either BIOS ROM or Game ROM
-				if ((GB_bios_register & 0x1) == 0)
+				if (addr < 0x100)
 				{
-					return _bios[addr]; // Return BIOS
+					// return Either BIOS ROM or Game ROM
+					if ((GB_bios_register & 0x1) == 0)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
+				}
+				else if (addr >= 0x200)
+				{
+					// return Either BIOS ROM or Game ROM
+					if (((GB_bios_register & 0x1) == 0) && is_GBC)
+					{
+						return _bios[addr]; // Return BIOS
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else
 				{
-					return mapper.PeekMemory(addr);
+					return mapper.ReadMemory(addr);
 				}
 			}
 			else if (addr < 0x8000)
 			{
 				return mapper.PeekMemory(addr);
 			}
-			else if (addr < 0x9800)
-			{
-				if (ppu.VRAM_access_read) { return CHR_RAM[addr - 0x8000]; }
-				else { return 0xFF; }
-			}
-			else if (addr < 0x9C00)
-			{
-				if (ppu.VRAM_access_read) { return BG_map_1[addr - 0x9800]; }
-				else { return 0xFF; }
-			}
 			else if (addr < 0xA000)
 			{
-				if (ppu.VRAM_access_read) { return BG_map_2[addr - 0x9C00]; }
+				if (ppu.VRAM_access_read) { return VRAM[(VRAM_Bank * 0x2000) + (addr - 0x8000)]; }
 				else { return 0xFF; }
 			}
 			else if (addr < 0xC000)
 			{
 				return mapper.PeekMemory(addr);
 			}
-			else if (addr < 0xE000)
+			else if (addr < 0xD000)
 			{
 				return RAM[addr - 0xC000];
 			}
-			else if (addr < 0xFE00)
+			else if (addr < 0xE000)
+			{
+				return RAM[(RAM_Bank * 0x1000) + (addr - 0xD000)];
+			}
+			else if (addr < 0xF000)
 			{
 				return RAM[addr - 0xE000];
+			}
+			else if (addr < 0xFE00)
+			{
+				return RAM[(RAM_Bank * 0x1000) + (addr - 0xF000)];
 			}
 			else if (addr < 0xFEA0)
 			{

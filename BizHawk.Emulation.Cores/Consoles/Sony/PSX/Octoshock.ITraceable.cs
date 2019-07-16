@@ -24,15 +24,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			foreach (var r in regs)
 			{
 				if (r.Key != "pc")
-					sb.Append(
-						string.Format("{0}:{1} ",
-						r.Key,
-						r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+					sb.Append($"{r.Key}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 			}
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = string.Format("{0:X8}:  {1:X8}  {2}", PC, inst, dis.PadRight(30)),
+				Disassembly = $"{PC:X8}:  {inst:X8}  {dis.PadRight(30)}",
 				RegisterInfo = sb.ToString().Trim()
 			});
 		}

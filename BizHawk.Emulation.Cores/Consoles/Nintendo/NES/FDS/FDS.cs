@@ -53,29 +53,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.BeginSection("FDS");
-			ser.BeginSection("RamAdapter");
+			ser.BeginSection(nameof(FDS));
+			ser.BeginSection(nameof(RamAdapter));
 			diskdrive.SyncState(ser);
 			ser.EndSection();
-			ser.BeginSection("audio");
+			ser.BeginSection(nameof(audio));
 			audio.SyncState(ser);
 			ser.EndSection();
 			{
 				// silly little hack
 				int tmp = currentside != null ? (int)currentside : 1234567;
-				ser.Sync("currentside", ref tmp);
+				ser.Sync(nameof(currentside), ref tmp);
 				currentside = tmp == 1234567 ? null : (int?)tmp;
 			}
 			for (int i = 0; i < NumSides; i++)
 				ser.Sync("diskdiffs" + i, ref diskdiffs[i], true);
-			ser.Sync("_timerirq", ref _timerirq);
-			ser.Sync("_diskirq", ref _diskirq);
-			ser.Sync("diskenable", ref diskenable);
-			ser.Sync("soundenable", ref soundenable);
-			ser.Sync("reg4026", ref reg4026);
-			ser.Sync("timerlatch", ref timerlatch);
-			ser.Sync("timervalue", ref timervalue);
-			ser.Sync("timerreg", ref timerreg);
+			ser.Sync(nameof(_timerirq), ref _timerirq);
+			ser.Sync(nameof(timer_irq_active), ref timer_irq_active);
+			ser.Sync(nameof(timerirq_cd), ref timerirq_cd);
+			ser.Sync(nameof(_diskirq), ref _diskirq);
+			ser.Sync(nameof(diskenable), ref diskenable);
+			ser.Sync(nameof(soundenable), ref soundenable);
+			ser.Sync(nameof(reg4026), ref reg4026);
+			ser.Sync(nameof(timerlatch), ref timerlatch);
+			ser.Sync(nameof(timervalue), ref timervalue);
+			ser.Sync(nameof(timerreg), ref timerreg);
 			ser.EndSection();
 
 			SetIRQ();
@@ -89,7 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// should only be called once, before emulation begins
 		/// </summary>
-		/// <param name="diskimage"></param>
 		public void SetDiskImage(byte[] diskimage)
 		{
 			// each FDS format is worse than the last
@@ -114,7 +115,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns the currently set disk image.  no effect on emulation (provided the image is not modified).
 		/// </summary>
-		/// <returns></returns>
 		public byte[] GetDiskImage()
 		{
 			return diskimage;
@@ -237,7 +237,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool diskirq { get { return _diskirq; } set { _diskirq = value; SetIRQ(); } }
 		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
-
+		int timerirq_cd;
+		bool timer_irq_active;
 
 		public override void WriteEXP(int addr, byte value)
 		{
@@ -270,14 +271,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						else
 						{
-							_timerirq = false;
+							timerirq = false;
+							timer_irq_active = false;
 						}
 					}
 					
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;
-					if (!diskenable) { _timerirq = false; }
+					if (!diskenable)
+					{
+						timerirq = false;
+						timer_irq_active = false;
+					}
 					soundenable = (value & 2) != 0;
 					break;
 				case 0x0024:
@@ -315,6 +321,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							ret |= 1;
 						ret |= (byte)tmp;
 						timerirq = false;
+						timer_irq_active = false;
 					}
 					break;
 				case 0x0031:
@@ -360,16 +367,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					timervalue--;
 				}
-				if (timervalue == 0)
+				else
 				{
 					timervalue = timerlatch;
-					timerirq = true;
+					//timerirq = true;
 					if ((timerreg & 1) == 0)
 					{
 						timerreg -= 2;
 					}
+
+					if (!timer_irq_active)
+					{
+						timer_irq_active = true;
+						timerirq_cd = 3;
+					}
+
 				}
 			}
+
+			if (timerirq_cd > 0)
+			{
+				timerirq_cd--;
+			}
+
+			if ((timerirq_cd == 0) && (timer_irq_active))
+			{
+				timerirq = true;
+			}
+
 			audio.Clock();
 		}
 

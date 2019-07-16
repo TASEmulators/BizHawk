@@ -55,6 +55,7 @@
 			this.tbbClose = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tbbCloseReload = new System.Windows.Forms.ToolStripButton();
+			this.tbbOpenFolder = new System.Windows.Forms.ToolStripButton();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.linkBasePath = new System.Windows.Forms.LinkLabel();
@@ -201,7 +202,8 @@
             this.tbbImport,
             this.tbbClose,
             this.toolStripSeparator1,
-            this.tbbCloseReload});
+            this.tbbCloseReload,
+            this.tbbOpenFolder});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(824, 25);
@@ -289,6 +291,16 @@
 			this.tbbCloseReload.Visible = false;
 			this.tbbCloseReload.Click += new System.EventHandler(this.tbbCloseReload_Click);
 			// 
+			// tbbOpenFolder
+			// 
+			this.tbbOpenFolder.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tbbOpenFolder.Image = ((System.Drawing.Image)(resources.GetObject("tbbOpenFolder.Image")));
+			this.tbbOpenFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tbbOpenFolder.Name = "tbbOpenFolder";
+			this.tbbOpenFolder.Size = new System.Drawing.Size(128, 22);
+			this.tbbOpenFolder.Text = "Open Firmware Folder";
+			this.tbbOpenFolder.Click += new System.EventHandler(this.tbbOpenFolder_Click);
+			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
@@ -345,7 +357,7 @@
 			this.label2.Location = new System.Drawing.Point(5, 5);
 			this.label2.Margin = new System.Windows.Forms.Padding(5, 5, 3, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(383, 13);
+			this.label2.Size = new System.Drawing.Size(395, 13);
 			this.label2.TabIndex = 27;
 			this.label2.Text = "Firmware such as BIOS files are copyrighted material and not provided by BizHawk";
 			// 
@@ -407,5 +419,6 @@
 				private System.Windows.Forms.ToolStripButton tbbCloseReload;
 				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.Label label2;
-	}
+        private System.Windows.Forms.ToolStripButton tbbOpenFolder;
+    }
 }

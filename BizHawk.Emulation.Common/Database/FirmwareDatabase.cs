@@ -27,9 +27,15 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "st018.rom", "ST018 Rom");
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "pcecd-3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+			FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
+
+			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "Vectrex", "Bios", "VectrexBios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "Vectrex", "Minestorm", "Minestorm.vec", "Game");
+			FirmwareAndOption("1FDCC6E54AE5177BC9CDC79CE616AE3401E5C229", 8192, "Vectrex", "Minestorm", "MinestormII.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
@@ -49,6 +55,20 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("ADC7C31E18C7C7413D54802EF2F4193DA14711AA", 4096, "C64", "Chargen", "c64-chargen.bin", "Chargen Rom");
 			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "drive-1541.bin", "1541 Disk Drive Rom");
 			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "drive-1541ii.bin", "1541-II Disk Drive Rom");
+
+			// ZX Spectrum
+			/* These are now shipped with bizhawk
+            FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
+            FirmwareAndOption("16375D42EA109B47EDDED7A16028DE7FDB3013A1", 32768, "ZXSpectrum", "128ROM", "128.ROM", "Spectrum 128K ROM");
+            FirmwareAndOption("8CAFB292AF58617907B9E6B9093D3588A75849B8", 32768, "ZXSpectrum", "PLUS2ROM", "PLUS2.ROM", "Spectrum 128K +2 ROM");
+            FirmwareAndOption("929BF1A5E5687EBD8D7245F9B513A596C0EC21A4", 65536, "ZXSpectrum", "PLUS3ROM", "PLUS3.ROM", "Spectrum 128K +3 ROM");
+            */
+			FirmwareAndOption("A584272F21DC82C14B7D4F1ED440E23A976E71F0", 32768, "ZXSpectrum", "PentagonROM", "pentagon.rom", "Russian Pentagon Clone ROM");
+			FirmwareAndOption("282EB7BC819AAD2A12FD954E76F7838A4E1A7929", 16384, "ZXSpectrum", "TRDOSROM", "trdos.rom", "TRDOS ROM");
+
+			// Channel F
+			FirmwareAndOption("81193965A374D77B99B4743D317824B53C3E3C78", 1024, "ChannelF", "ChannelF_sl131253", "ChannelF-SL31253.rom", "Channel F Rom0");
+			FirmwareAndOption("8F70D1B74483BA3A37E86CF16C849D601A8C3D2C", 1024, "ChannelF", "ChannelF_sl131254", "ChannelF-SL31254.rom", "Channel F Rom1");
 
 			// for saturn, we think any bios region can pretty much run any iso
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
@@ -124,13 +144,16 @@ namespace BizHawk.Emulation.Common
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
 			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "sms_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // ?? is this size correct?
 			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // ?? is this size correct?
+			var sms_kr = File("2FEAFD8F1C40FDF1BD5668F8C5C02E5560945B17", 131072, "sms_kr.sms", "SMS BIOS (Kr)"); // ?? is this size correct?
 
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
+			Firmware("SMS", "Korea", "SMS Bios (Korea)");
 			Option("SMS", "Export", sms_us_13);
 			Option("SMS", "Export", sms_us_1b);
 			Option("SMS", "Export", sms_m404);
 			Option("SMS", "Japan", sms_jp_21);
+			Option("SMS", "Korea", sms_kr);
 
 			// PSX
 			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]

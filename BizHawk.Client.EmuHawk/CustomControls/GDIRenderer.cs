@@ -125,7 +125,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		/// <param name="maxWidth">the max width to render the string  in</param>
 		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>      
-		/// <param name="charFitWidth"></param>      
 		public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
 		{
 			SetFont(font);

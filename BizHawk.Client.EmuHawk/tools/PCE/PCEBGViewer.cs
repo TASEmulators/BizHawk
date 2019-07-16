@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			int tileNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] & 0x07FF;
 			int paletteNo = vdc.VRAM[(ushort)((yTile * vdc.BatWidth) + xTile)] >> 12;
 			TileIDLabel.Text = tileNo.ToString();
-			XYLabel.Text = xTile + ":" + yTile;
+			XYLabel.Text = $"{xTile}:{yTile}";
 			PaletteLabel.Text = paletteNo.ToString();
 		}
 

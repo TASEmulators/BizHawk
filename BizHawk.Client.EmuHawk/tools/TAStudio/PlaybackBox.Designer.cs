@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.PlaybackGroupBox = new System.Windows.Forms.GroupBox();
 			this.RecordingModeCheckbox = new System.Windows.Forms.CheckBox();
 			this.AutoRestoreCheckbox = new System.Windows.Forms.CheckBox();
@@ -38,6 +39,7 @@
 			this.PauseButton = new System.Windows.Forms.Button();
 			this.RewindButton = new BizHawk.Client.EmuHawk.RepeatButton();
 			this.PreviousMarkerButton = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.PlaybackGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -125,6 +127,7 @@
 			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
 			this.FrameAdvanceButton.TabIndex = 3;
 			this.FrameAdvanceButton.Text = ">";
+			this.toolTip1.SetToolTip(this.FrameAdvanceButton, "Right Mouse Button + Wheel Down");
 			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
 			this.FrameAdvanceButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseDown);
 			this.FrameAdvanceButton.MouseLeave += new System.EventHandler(this.FrameAdvanceButton_MouseLeave);
@@ -137,6 +140,7 @@
 			this.PauseButton.Size = new System.Drawing.Size(38, 23);
 			this.PauseButton.TabIndex = 2;
 			this.PauseButton.Text = "| |";
+			this.toolTip1.SetToolTip(this.PauseButton, "Middle Mouse Button");
 			this.PauseButton.UseVisualStyleBackColor = true;
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
 			// 
@@ -149,6 +153,7 @@
 			this.RewindButton.Size = new System.Drawing.Size(38, 23);
 			this.RewindButton.TabIndex = 1;
 			this.RewindButton.Text = "<";
+			this.toolTip1.SetToolTip(this.RewindButton, "Right Mouse Button + Wheel Up");
 			this.RewindButton.UseVisualStyleBackColor = true;
 			this.RewindButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseDown);
 			this.RewindButton.MouseLeave += new System.EventHandler(this.RewindButton_MouseLeave);
@@ -188,5 +193,6 @@
 		private System.Windows.Forms.CheckBox TurboSeekCheckbox;
 		private System.Windows.Forms.CheckBox FollowCursorCheckbox;
 		private System.Windows.Forms.CheckBox RecordingModeCheckbox;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

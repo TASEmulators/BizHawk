@@ -58,6 +58,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetPalette(IntPtr ctx, int[] palette);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
 		{
@@ -84,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		/// <summary>
 		/// start a savestate operation
 		/// </summary>
-		/// <param name="ctx"></param>
 		/// <param name="p">private parameter to be passed to BizFinishGetState</param>
 		/// <param name="size">size of buffer to be allocated for BizFinishGetState</param>
 		/// <returns>if false, operation failed and BizFinishGetState should not be called</returns>

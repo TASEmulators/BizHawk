@@ -229,14 +229,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public virtual void SyncState(Serializer ser)
 		{
-			ser.Sync("pinExRom", ref pinExRom);
-			ser.Sync("pinGame", ref pinGame);
-			ser.Sync("pinIRQ", ref pinIRQ);
-			ser.Sync("pinNMI", ref pinNMI);
-			ser.Sync("pinReset", ref pinReset);
+			ser.Sync(nameof(pinExRom), ref pinExRom);
+			ser.Sync(nameof(pinGame), ref pinGame);
+			ser.Sync(nameof(pinIRQ), ref pinIRQ);
+			ser.Sync(nameof(pinNMI), ref pinNMI);
+			ser.Sync(nameof(pinReset), ref pinReset);
 
-			ser.Sync("_driveLightEnabled", ref _driveLightEnabled);
-			ser.Sync("_driveLightOn", ref _driveLightOn);
+			ser.Sync(nameof(_driveLightEnabled), ref _driveLightEnabled);
+			ser.Sync(nameof(_driveLightOn), ref _driveLightOn);
 		}
 
 		public bool Valid => validCartridge;

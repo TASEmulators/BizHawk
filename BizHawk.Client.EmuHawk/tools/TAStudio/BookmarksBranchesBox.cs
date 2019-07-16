@@ -28,6 +28,27 @@ namespace BizHawk.Client.EmuHawk
 			Load, Update, Text, Remove, None
 		}
 
+		public Action<int> LoadedCallback { get; set; }
+
+		private void CallLoadedCallback(int index)
+		{
+			LoadedCallback?.Invoke(index);
+		}
+
+		public Action<int> SavedCallback { get; set; }
+
+		private void CallSavedCallback(int index)
+		{
+			SavedCallback?.Invoke(index);
+		}
+
+		public Action<int> RemovedCallback { get; set; }
+
+		private void CallRemovedCallback(int index)
+		{
+			RemovedCallback?.Invoke(index);
+		}
+
 		public TAStudio Tastudio { get; set; }
 
 		public int HoverInterval
@@ -96,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 			TasBranch branch = GetBranch(index);
 			if (branch != null)
 			{
-				var record = Tastudio.CurrentTasMovie[branch.Frame];
+				var record = Movie[branch.Frame];
 				if (index == Movie.CurrentBranch)
 				{
 					color = TAStudio.CurrentFrame_InputLog;
@@ -125,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private TasBranch GetBranch(int index)
 		{
-			return Tastudio.CurrentTasMovie.GetBranch(index);
+			return Movie.GetBranch(index);
 		}
 
 		public void Branch()
@@ -135,6 +156,8 @@ namespace BizHawk.Client.EmuHawk
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.BranchCount;
 			Movie.CurrentBranch = Movie.BranchCount - 1;
+			BranchView.ScrollToIndex(Movie.CurrentBranch);
+			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
@@ -159,8 +182,8 @@ namespace BizHawk.Client.EmuHawk
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.InputLog.Clone(),
+				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				LagLog = Movie.TasLagLog.Clone(),
 				ChangeLog = new TasMovieChangeLog(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
@@ -170,10 +193,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadBranch(TasBranch branch)
 		{
-			Tastudio.CurrentTasMovie.LoadBranch(branch);
+			if (Tastudio.Settings.OldControlSchemeForBranches && !Tastudio.TasPlaybackBox.RecordingMode)
+			{
+				JumpToBranchToolStripMenuItem_Click(null, null);
+				return;
+			}
+
+			Movie.LoadBranch(branch);
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
+			Movie.TasStateManager.Capture(true);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.CoreFrameBuffer), Tastudio.VideoProvider);
+
+			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
+				Movie.Truncate(branch.Frame);
+
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
@@ -192,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
-				GlobalWin.OSD.AddMessage("Loaded branch " + Movie.CurrentBranch.ToString());
+				GlobalWin.OSD.AddMessage($"Loaded branch {Movie.CurrentBranch}");
 			}
 		}
 
@@ -209,14 +243,16 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
-			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
+			CallSavedCallback(Movie.BranchCount - 1);
+			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
-			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
+			CallSavedCallback(Movie.BranchCount - 1);
+			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,7 +271,11 @@ namespace BizHawk.Client.EmuHawk
 			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Load");
 			_branchUndo = BranchUndo.Load;
 
-			LoadSelectedBranch();
+			if (BranchView.AnyRowsSelected)
+			{
+				LoadSelectedBranch();
+				CallLoadedCallback(BranchView.SelectedRows.First());
+			}
 		}
 
 		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -251,7 +291,8 @@ namespace BizHawk.Client.EmuHawk
 				_branchUndo = BranchUndo.Update;
 
 				UpdateBranch(SelectedBranch);
-				GlobalWin.OSD.AddMessage("Saved branch " + Movie.CurrentBranch);
+				CallSavedCallback(Movie.CurrentBranch);
+				GlobalWin.OSD.AddMessage($"Saved branch {Movie.CurrentBranch}");
 			}
 		}
 
@@ -271,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 					toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
 					_branchUndo = BranchUndo.Text;
 
-					GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+					GlobalWin.OSD.AddMessage($"Edited branch {index}");
 				}
 			}
 		}
@@ -312,11 +353,12 @@ namespace BizHawk.Client.EmuHawk
 				if (index == Movie.BranchCount)
 				{
 					BranchView.ClearSelectedRows();
-					BranchView.SelectRow(Movie.BranchCount - 1, true);
+					Select(Movie.BranchCount - 1, true);
 				}
 
+				CallRemovedCallback(index);
 				Tastudio.RefreshDialog();
-				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
+				GlobalWin.OSD.AddMessage($"Removed branch {index}");
 			}
 		}
 
@@ -325,11 +367,13 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				LoadBranch(_backupBranch);
+				CallLoadedCallback(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
 			{
 				Movie.UpdateBranch(Movie.GetBranch(_backupBranch.UniqueIdentifier), _backupBranch);
+				CallSavedCallback(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Update canceled");
 			}
 			else if (_branchUndo == BranchUndo.Text)
@@ -341,6 +385,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.AddBranch(_backupBranch);
 				BranchView.RowCount = Movie.BranchCount;
+				CallSavedCallback(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Removal canceled");
 			}
 
@@ -352,7 +397,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddBranchExternal()
 		{
 			AddBranchToolStripMenuItem_Click(null, null);
-			BranchView.SelectRow(Movie.CurrentBranch, true);
+			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 		}
 
@@ -367,7 +412,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GetBranch(slot) != null)
 				{
-					BranchView.SelectRow(slot, true);
+					Select(slot, true);
 				}
 				else
 				{
@@ -390,11 +435,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GetBranch(slot) != null)
 				{
-					BranchView.SelectRow(slot, true);
+					Select(slot, true);
 				}
 				else
 				{
-					NonExistentBranchMessage(slot);
+					//NonExistentBranchMessage(slot); // some people can't get used to creating branches explicitly with unusual hotkeys
+					AddBranchExternal(); // so just make a new branch, even though the index may be wrong
 					return;
 				}
 			}
@@ -402,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBranchToolStripMenuItem_Click(null, null);
 		}
 
-		public void RemoveBranchExtrenal()
+		public void RemoveBranchExternal()
 		{
 			RemoveBranchToolStripMenuItem_Click(null, null);
 		}
@@ -416,7 +462,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GetBranch(slot) != null)
 			{
-				BranchView.SelectRow(slot, true);
+				Select(slot, true);
 				BranchView.Refresh();
 			}
 			else
@@ -429,7 +475,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch == null)
 			{
-				BranchView.SelectRow(Movie.CurrentBranch, true);
+				Select(Movie.CurrentBranch, true);
 				BranchView.Refresh();
 				return;
 			}
@@ -439,20 +485,34 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GetBranch(sel + 1) != null)
 				{
-					BranchView.SelectRow(sel, false);
-					BranchView.SelectRow(sel + 1, true);
+					Select(sel, false);
+					Select(sel + 1, true);
 				}
 			}
 			else // previous
 			{
 				if (GetBranch(sel - 1) != null)
 				{
-					BranchView.SelectRow(sel, false);
-					BranchView.SelectRow(sel - 1, true);
+					Select(sel, false);
+					Select(sel - 1, true);
 				}
 			}
 
 			BranchView.Refresh();
+		}
+
+		private void UpdateButtons()
+		{
+			UpdateBranchButton.Enabled =
+			LoadBranchButton.Enabled =
+			JumpToBranchButton.Enabled =
+				SelectedBranch != null;
+		}
+
+		private void Select(int index, bool value)
+		{
+			BranchView.SelectRow(index, value);
+			UpdateButtons();
 		}
 
 		public void NonExistentBranchMessage(int slot)
@@ -518,7 +578,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var i = new InputPrompt
 			{
-				Text = "Text for branch " + index,
+				Text = $"Text for branch {index}",
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
 				InitialValue = branch.UserText
@@ -545,12 +605,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
-			UpdateBranchButton.Enabled =
-			LoadBranchButton.Enabled =
-			JumpToBranchButton.Enabled = 
-				SelectedBranch != null;
-
 			BranchesContextMenu.Close();
+			UpdateButtons();
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -572,7 +628,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			LoadBranchToolStripMenuItem_Click(null, null);
+			if (Tastudio.Settings.LoadBranchOnDoubleClick)
+			{
+				LoadBranchToolStripMenuItem_Click(null, null);
+			}
 		}
 
 		private void BranchView_MouseMove(object sender, MouseEventArgs e)
@@ -596,7 +655,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
+				int currenthash = Movie.BranchHashByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				int newindex = Movie.BranchIndexByHash(currenthash);
+				Movie.CurrentBranch = newindex;
+				Select(newindex, true);
 			}
 		}
 
@@ -609,12 +672,17 @@ namespace BizHawk.Client.EmuHawk
 					BranchView.CurrentCell.RowIndex < Movie.BranchCount)
 				{
 					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
-					Point location = Location;
+					Point location = PointToScreen(Location);
 					int width = branch.OSDFrameBuffer.Width;
 					int height = branch.OSDFrameBuffer.Height;
 					location.Offset(-width, 0);
 
-					Screenshot.UpdateValues(branch, PointToScreen(location), width, height,
+					if (location.X < 0)
+					{
+						location.Offset(width + Width, 0);
+					}
+
+					Screenshot.UpdateValues(branch, location, width, height,
 						(int)Graphics.FromHwnd(this.Handle).MeasureString(
 							branch.UserText, Screenshot.Font, width).Height);
 

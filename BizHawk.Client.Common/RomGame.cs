@@ -66,6 +66,14 @@ namespace BizHawk.Client.Common
 			{
 				RomData = FileData;
 			}
+            else if (file.Extension == ".DSK" || file.Extension == ".TAP" || file.Extension == ".TZX" || 
+                file.Extension == ".PZX" || file.Extension == ".CSW" || file.Extension == ".WAV" || file.Extension == ".CDT")
+            {
+                // these are not roms. unforunately if treated as such there are certain edge-cases
+                // where a header offset is detected. This should mitigate this issue until a cleaner solution is found 
+                // (-Asnivor)
+                RomData = FileData;
+            }
 			else
 			{
 				// if there was a header offset, read the whole file into FileData and then copy it into RomData (this is unfortunate, in case RomData isnt needed)

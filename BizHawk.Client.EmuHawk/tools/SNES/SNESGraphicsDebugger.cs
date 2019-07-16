@@ -130,8 +130,8 @@ namespace BizHawk.Client.EmuHawk
 		string FormatVramAddress(int address)
 		{
 			int excess = address & 1023;
-			if (excess != 0) return "@" + address.ToHexString(4);
-			else return string.Format("@{0} ({1}K)", address.ToHexString(4), address / 1024);
+			if (excess != 0) return $"@{address:X4}";
+			else return $"@{address:X4} ({address / 1024}K)";
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 				txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
 				txtOBSELBaseBits.Text = si.OBSEL_NameBase.ToString();
 				txtOBSELT1OfsBits.Text = si.OBSEL_NameSel.ToString();
-				txtOBSELSizeDescr.Text = string.Format("{0}, {1}", SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1]);
+				txtOBSELSizeDescr.Text = $"{SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0]}, {SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1]}";
 				txtOBSELBaseDescr.Text = FormatVramAddress(si.OBJTable0Addr);
 				txtOBSELT1OfsDescr.Text = FormatVramAddress(si.OBJTable1Addr);
 
@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 				txtBG1SizeBits.Text = bg.SCSIZE.ToString();
 				txtBG1SizeInTiles.Text = bg.ScreenSizeInTiles.ToString();
 				int size = bg.ScreenSizeInTiles.Width * bg.ScreenSizeInTiles.Height * 2 / 1024;
-				txtBG1MapSizeBytes.Text = string.Format("({0}K)", size);
+				txtBG1MapSizeBytes.Text = $"({size}K)";
 				txtBG1SCAddrBits.Text = bg.SCADDR.ToString();
 				txtBG1SCAddrDescr.Text = FormatVramAddress(bg.ScreenAddr);
 				txtBG1Colors.Text = (1 << bg.Bpp).ToString();
@@ -290,17 +290,17 @@ namespace BizHawk.Client.EmuHawk
 				txtBG1TDAddrBits.Text = bg.TDADDR.ToString();
 				txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TiledataAddr);
 
-				txtBG1Scroll.Text = string.Format("({0},{1})", bg.HOFS, bg.VOFS);
+				txtBG1Scroll.Text = $"({bg.HOFS},{bg.VOFS})";
 
 				if (bg.Bpp != 0)
 				{
 					var pi = bg.PaletteSelection;
-					txtBGPaletteInfo.Text = string.Format("{0} colors from ${1:X2} - ${2:X2}", pi.size, pi.start, pi.start + pi.size - 1);
+					txtBGPaletteInfo.Text = $"{pi.size} colors from ${pi.start:X2} - ${pi.start + pi.size - 1:X2}";
 				}
 				else txtBGPaletteInfo.Text = "";
 
 				var sizeInPixels = bg.ScreenSizeInPixels;
-				txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
+				txtBG1SizeInPixels.Text = $"{sizeInPixels.Width}x{sizeInPixels.Height}";
 
 				checkTMOBJ.Checked = si.OBJ_MainEnabled;
 				checkTMBG1.Checked = si.BG.BG1.MainEnabled;
@@ -724,8 +724,8 @@ namespace BizHawk.Client.EmuHawk
 		static string BGModeShortName(SNESGraphicsDecoder.BGMode mode, int bpp)
 		{
 			if (mode == SNESGraphicsDecoder.BGMode.Unavailable) return "Unavailable";
-			if (mode == SNESGraphicsDecoder.BGMode.Text) return string.Format("Text{0}bpp", bpp);
-			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return string.Format("OBJ", bpp);
+			if (mode == SNESGraphicsDecoder.BGMode.Text) return $"Text{bpp}bpp";
+			if (mode == SNESGraphicsDecoder.BGMode.OBJ) return "OBJ";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7) return "Mode7";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7Ext) return "Mode7Ext";
 			if (mode == SNESGraphicsDecoder.BGMode.Mode7DC) return "Mode7DC";
@@ -736,17 +736,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (currObjDataState == null) return;
 			var oam = new SNESGraphicsDecoder.OAMInfo(gd, si, currObjDataState.Number);
-			txtObjNumber.Text = string.Format("#${0:X2}", currObjDataState.Number);
-			txtObjCoord.Text = string.Format("({0}, {1})",oam.X,oam.Y);
+			txtObjNumber.Text = $"#${currObjDataState.Number:X2}";
+			txtObjCoord.Text = $"({oam.X}, {oam.Y})";
 			cbObjHFlip.Checked = oam.HFlip;
 			cbObjVFlip.Checked = oam.VFlip;
 			cbObjLarge.Checked = oam.Size == 1;
 			txtObjSize.Text = SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, oam.Size].ToString();
 			txtObjPriority.Text = oam.Priority.ToString();
 			txtObjPalette.Text = oam.Palette.ToString();
-			txtObjPaletteMemo.Text = string.Format("${0:X2}", oam.Palette * 16 + 128);
-			txtObjName.Text = string.Format("#${0:X3}", oam.Tile);
-			txtObjNameAddr.Text = string.Format("@{0:X4}", oam.Address);
+			txtObjPaletteMemo.Text = $"${oam.Palette * 16 + 128:X2}";
+			txtObjName.Text = $"#${oam.Tile:X3}";
+			txtObjNameAddr.Text = $"@{oam.Address:X4}";
 		}
 
 		void UpdateTileDetails()
@@ -757,18 +757,18 @@ namespace BizHawk.Client.EmuHawk
 			txtTileMode.Text = BGModeShortName(mode, bpp);
 			txtTileBpp.Text = currTileDataState.Bpp.ToString();
 			txtTileColors.Text = (1 << currTileDataState.Bpp).ToString();
-			txtTileNumber.Text = string.Format("#${0:X3}", currTileDataState.Tile);
-			txtTileAddress.Text = string.Format("@{0:X4}", currTileDataState.Address);
-			txtTilePalette.Text = string.Format("#{0:X2}", currTileDataState.Palette);
+			txtTileNumber.Text = $"#${currTileDataState.Tile:X3}";
+			txtTileAddress.Text = $"@{currTileDataState.Address:X4}";
+			txtTilePalette.Text = $"#{currTileDataState.Palette:X2}";
 		}
 
 		void UpdateMapEntryDetails()
 		{
 			if (currMapEntryState == null) return;
-			txtMapEntryLocation.Text = string.Format("({0},{1}), @{2:X4}", currMapEntryState.Location.X, currMapEntryState.Location.Y, currMapEntryState.entry.address);
-			txtMapEntryTileNum.Text = string.Format("${0:X3}", currMapEntryState.entry.tilenum);
-			txtMapEntryPrio.Text = string.Format("{0}", (currMapEntryState.entry.flags & SNESGraphicsDecoder.TileEntryFlags.Priority)!=0?1:0);
-			txtMapEntryPalette.Text = string.Format("{0}", currMapEntryState.entry.palette);
+			txtMapEntryLocation.Text = $"({currMapEntryState.Location.X},{currMapEntryState.Location.Y}), @{currMapEntryState.entry.address:X4}";
+			txtMapEntryTileNum.Text = $"${currMapEntryState.entry.tilenum:X3}";
+			txtMapEntryPrio.Text = $"{((currMapEntryState.entry.flags & SNESGraphicsDecoder.TileEntryFlags.Priority) != 0 ? 1 : 0)}";
+			txtMapEntryPalette.Text = $"{currMapEntryState.entry.palette}";
 			checkMapEntryHFlip.Checked = (currMapEntryState.entry.flags & SNESGraphicsDecoder.TileEntryFlags.Horz) != 0;
 			checkMapEntryVFlip.Checked = (currMapEntryState.entry.flags & SNESGraphicsDecoder.TileEntryFlags.Vert) != 0;
 
@@ -786,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 				addr *= 2;
 
 			addr &= 0xFFFF;
-			txtMapEntryTileAddr.Text = "@" + addr.ToHexString(4);
+			txtMapEntryTileAddr.Text = $"@{addr:X4}";
 		}
 
 		void UpdateColorDetails()
@@ -798,19 +798,19 @@ namespace BizHawk.Client.EmuHawk
 			int color = gd.Colorize(rgb555);
 			pnDetailsPaletteColor.BackColor = Color.FromArgb(color);
 
-			txtDetailsPaletteColor.Text = string.Format("${0:X4}", rgb555);
-			txtDetailsPaletteColorHex.Text = string.Format("#{0:X6}", color & 0xFFFFFF);
-			txtDetailsPaletteColorRGB.Text = string.Format("({0},{1},{2})", (color >> 16) & 0xFF, (color >> 8) & 0xFF, (color & 0xFF));
+			txtDetailsPaletteColor.Text = $"${rgb555:X4}";
+			txtDetailsPaletteColorHex.Text = $"#{color & 0xFFFFFF:X6}";
+			txtDetailsPaletteColorRGB.Text = $"({(color >> 16) & 0xFF},{(color >> 8) & 0xFF},{(color & 0xFF)})";
 
-			txtPaletteDetailsIndexHex.Text = string.Format("${0:X2}", lastColorNum);
-			txtPaletteDetailsIndex.Text = string.Format("{0}", lastColorNum);
+			txtPaletteDetailsIndexHex.Text = $"${lastColorNum:X2}";
+			txtPaletteDetailsIndex.Text = $"{lastColorNum}";
 
 			//not being used anymore
 			//if (lastColorNum < 128) lblDetailsOBJOrBG.Text = "(BG:)"; else lblDetailsOBJOrBG.Text = "(OBJ:)";
-			//txtPaletteDetailsIndexHexSpecific.Text = string.Format("${0:X2}", lastColorNum & 0x7F);
-			//txtPaletteDetailsIndexSpecific.Text = string.Format("{0}", lastColorNum & 0x7F);
+			//txtPaletteDetailsIndexHexSpecific.Text = $"${lastColorNum & 0x7F:X2}";
+			//txtPaletteDetailsIndexSpecific.Text = $"{lastColorNum & 0x7F}";
 
-			txtPaletteDetailsAddress.Text = string.Format("${0:X3}", lastColorNum * 2);
+			txtPaletteDetailsAddress.Text = $"${lastColorNum * 2:X3}";
 		}
 
 
@@ -1313,7 +1313,7 @@ namespace BizHawk.Client.EmuHawk
 						label = "Map Entry";
 					if (found.Name == "paletteViewer")
 						label = "Palette";
-					labelClipboard.Text = label + " copied to clipboard.";
+					labelClipboard.Text = $"{label} copied to clipboard.";
 					messagetimer.Stop();
 					messagetimer.Start();
 

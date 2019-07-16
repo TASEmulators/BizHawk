@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 				var key = button.Replace("Key ", "");
 				if (key.StartsWith("P"))
 				{
-					if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[1] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
+					if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[2] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
 					{
 						key = key.Substring(4);
 					}
@@ -81,6 +81,8 @@ namespace BizHawk.Client.Common
 			["Button"] = 'B',
 			["Button 1"] = '1',
 			["Button 2"] = '2',
+			["Button 3"] = '3',
+			["Button 4"] = '4',
 			["B1"] = '1',
 			["B2"] = '2',
 
@@ -280,7 +282,42 @@ namespace BizHawk.Client.Common
 				["Cursor Left/Right"] = 'l',
 				["Space"] = '_'
 			},
-			["N64"] = new Dictionary<string, char>
+            ["ZXSpectrum"] = new Dictionary<string, char>
+			{
+				["Caps Shift"] = '^',
+				["Caps Lock"] = 'L',
+				["Period"] = '_',
+				["Symbol Shift"] = 'v',
+				["Semi-Colon"] = ';',
+				["Quote"] = '"',
+				["Comma"] = ',',
+				["True Video"] = 'T',
+				["Inv Video"] = 'I',
+				["Break"] = 'B',
+				["Delete"] = 'D',
+				["Graph"] = 'G',
+				["Extend Mode"] = 'M',
+				["Edit"] = 'E',
+				["Play Tape"] = 'P',
+				["Stop Tape"] = 'S',
+				["RTZ Tape"] = 'r',
+				["Record Tape"] = 'R',
+				["Insert Next Tape"] = '>',
+				["Insert Previous Tape"] = '<',
+				["Next Tape Block"] = ']',
+				["Prev Tape Block"] = '[',
+				["Get Tape Status"] = 'S',
+				["Insert Next Disk"] = '}',
+				["Insert Previous Disk"] = '{',
+				["Get Disk Status"] = 's',
+				["Return"] = 'e',
+                ["Space"] = '-',
+                ["Up Cursor"] = 'u',
+                ["Down Cursor"] = 'd',
+                ["Left Cursor"] = 'l',
+                ["Right Cursor"] = 'r'
+            },
+            ["N64"] = new Dictionary<string, char>
 			{
 				["C Up"] = 'u',
 				["C Down"] = 'd',

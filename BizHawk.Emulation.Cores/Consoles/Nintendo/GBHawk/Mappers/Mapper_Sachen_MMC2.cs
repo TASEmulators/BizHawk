@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Sachen Bootleg Mapper
@@ -12,11 +14,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	class MapperSachen2 : MapperBase
 	{
 		public int ROM_bank;
-		public bool locked;
+		public bool locked, locked_GBC, finished;
 		public int ROM_mask;
 		public int ROM_bank_mask;
 		public int BASE_ROM_Bank;
 		public bool reg_access;
+		public ushort addr_last;
+		public int counter;
 
 		public override void Initialize()
 		{
@@ -24,16 +28,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ROM_mask = Core._rom.Length / 0x4000 - 1;
 			BASE_ROM_Bank = 0;
 			ROM_bank_mask = 0;
-			locked = false;
+			locked = true;
+			locked_GBC = false;
+			finished = false;
 			reg_access = false;
+			addr_last = 0;
+			counter = 0;
 		}
 
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
-				ushort t_addr = addr;
-
 				// header is scrambled
 				if ((addr >= 0x100) && (addr < 0x200))
 				{
@@ -51,12 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					addr |= (ushort)(temp0 | temp1 | temp4 | temp6);
 				}
 
-				if (locked) { addr |= 0x80; }
-
-				if (t_addr == 0x133)
-				{
-					if ((Core.GB_bios_register & 0x1) == 0) { locked ^= true; }
-				}
+				if (locked_GBC) { addr |= 0x80; }
 
 				return Core._rom[addr + BASE_ROM_Bank * 0x4000];
 			}
@@ -73,12 +74,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override byte PeekMemory(ushort addr)
-		{
+	public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+	{
 			if (addr < 0x4000)
 			{
-				ushort t_addr = addr;
-
 				// header is scrambled
 				if ((addr >= 0x100) && (addr < 0x200))
 				{
@@ -96,18 +95,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					addr |= (ushort)(temp0 | temp1 | temp4 | temp6);
 				}
 
-				if (locked) { addr |= 0x80; }
+				if (locked_GBC) { addr |= 0x80; }
 
-				return Core._rom[addr + BASE_ROM_Bank * 0x4000];
+				SetCDLROM(flags, addr + BASE_ROM_Bank * 0x4000);
 			}
 			else if (addr < 0x8000)
 			{
-				return Core._rom[(addr - 0x4000) + ROM_bank * 0x4000];
+				int temp_bank = (ROM_bank & ~ROM_bank_mask) | (ROM_bank_mask & BASE_ROM_Bank);
+				temp_bank &= ROM_mask;
+
+				SetCDLROM(flags, (addr - 0x4000) + temp_bank * 0x4000);
 			}
 			else
 			{
-				return 0xFF;
+				return;
 			}
+		}
+
+		public override byte PeekMemory(ushort addr)
+		{
+			return ReadMemory(addr);
 		}
 
 		public override void WriteMemory(ushort addr, byte value)
@@ -146,14 +153,71 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			WriteMemory(addr, value);
 		}
 
+		public override void Mapper_Tick()
+		{
+			if (locked)
+			{
+				if (((Core.addr_access & 0x8000) == 0) && ((addr_last & 0x8000) > 0) && (Core.addr_access >= 0x100))
+				{
+					counter++;
+				}
+
+				if (Core.addr_access >= 0x100)
+				{
+					addr_last = Core.addr_access;
+				}
+
+				if (counter == 0x30)
+				{
+					locked = false;
+					locked_GBC = true;
+					counter = 0;
+				}
+			}
+			else if (locked_GBC)
+			{
+				if (((Core.addr_access & 0x8000) == 0) && ((addr_last & 0x8000) > 0) && (Core.addr_access >= 0x100))
+				{
+					counter++;
+				}
+
+				if (Core.addr_access >= 0x100)
+				{
+					addr_last = Core.addr_access;
+				}
+
+				if (counter == 0x30)
+				{
+					locked_GBC = false;
+					finished = true;
+					Console.WriteLine("Finished");
+					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+				}
+
+				// The above condition seems to never be reached as described in the mapper notes
+				// so for now add this one
+
+				if ((Core.addr_access == 0x133) && (counter == 1))
+				{
+					locked_GBC = false;
+					finished = true;
+					Console.WriteLine("Unlocked");
+				}
+			}
+		}
+
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("locked", ref locked);
-			ser.Sync("ROM_bank_mask", ref ROM_bank_mask);
-			ser.Sync("BASE_ROM_Bank", ref BASE_ROM_Bank);
-			ser.Sync("reg_access", ref reg_access);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(locked), ref locked);
+			ser.Sync(nameof(locked_GBC), ref locked_GBC);
+			ser.Sync(nameof(finished), ref finished);
+			ser.Sync(nameof(ROM_bank_mask), ref ROM_bank_mask);
+			ser.Sync(nameof(BASE_ROM_Bank), ref BASE_ROM_Bank);
+			ser.Sync(nameof(reg_access), ref reg_access);
+			ser.Sync(nameof(addr_last), ref addr_last);
+			ser.Sync(nameof(counter), ref counter);
 		}
 	}
 }

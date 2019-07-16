@@ -48,9 +48,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public string[] Options;
 		public string DefaultOption { get { return Options[0]; } }
 
-		public override string ToString()
-		{
-			return string.Format("{0} ({1}) = ({2})", Name, Description, string.Join("|", Options));
-		}
+		public override string ToString() => $"{Name} ({Description}) = ({string.Join("|", Options)})";
 	}
 }

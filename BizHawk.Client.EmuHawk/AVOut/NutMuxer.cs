@@ -24,9 +24,6 @@ namespace BizHawk.Client.EmuHawk
 
 			private readonly int _capacity;
 
-			/// <summary>
-			/// 
-			/// </summary>
 			/// <param name="capacity">total number of buffers to keep around</param>
 			public ReusableBufferPool(int capacity)
 			{
@@ -153,8 +150,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// big endian 64 bit unsigned
 		/// </summary>
-		/// <param name="v"></param>
-		/// <param name="stream"></param>
 		static void WriteBE64(ulong v, Stream stream)
 		{
 			byte[] b = new byte[8];
@@ -169,8 +164,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// big endian 32 bit unsigned
 		/// </summary>
-		/// <param name="v"></param>
-		/// <param name="stream"></param>
 		static void WriteBE32(uint v, Stream stream)
 		{
 			byte[] b = new byte[4];
@@ -185,8 +178,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// big endian 32 bit unsigned
 		/// </summary>
-		/// <param name="v"></param>
-		/// <param name="stream"></param>
 		static void WriteBE32(int v, Stream stream)
 		{
 			byte[] b = new byte[4];
@@ -213,7 +204,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// seems to be different than standard CRC32?????
 		/// </summary>
-		/// <param name="buf"></param>
 		/// <returns>crc32, nut variant</returns>
 		static uint NutCRC32(byte[] buf)
 		{
@@ -510,8 +500,6 @@ namespace BizHawk.Client.EmuHawk
 
 			ReusableBufferPool<byte> _pool;
 
-			/// <summary>
-			/// </summary>
 			/// <param name="payload">frame data</param>
 			/// <param name="payloadlen">actual length of frame data</param>
 			/// <param name="pts">presentation timestamp</param>
@@ -562,9 +550,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// compare two NutFrames by pts
 			/// </summary>
-			/// <param name="lhs"></param>
-			/// <param name="rhs"></param>
-			/// <returns></returns>
 			public static bool operator <=(NutFrame lhs, NutFrame rhs)
 			{
 				BigInteger left = new BigInteger(lhs.pts);
@@ -587,12 +572,11 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write out frame, with syncpoint and all headers
 			/// </summary>
-			/// <param name="dest"></param>
 			public void WriteData(Stream dest)
 			{
 				dest.Write(data, 0, actual_length);
 				_pool.ReleaseBuffer(data);
-				//dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
+				//dbg.WriteLine($"{pts},{ptsnum},{ptsden}");
 			}
 		}
 

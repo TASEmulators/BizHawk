@@ -409,7 +409,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (CommandBuffer[4] == 0)
 				SectorsLeftToRead = 256;
 
-			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 5000; // figure out proper read delay later
+			// figure out proper read delay later
+			// 10000 fixes Mugen Senshi Valis, which runs code in a timed loop, expecting a certain number of VBlanks
+			// to happen before reading is complete
+			// 175000 fixes 4 in 1 CD, loading Gate of Thunder
+			// which expects a certain number of timer interrupts to happen before loading is complete
+			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 175000; 
 			pce.CDAudio.Stop();
 		}
 
@@ -681,19 +686,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Sync("ACK", ref ack);
 			ser.Sync("ATN", ref atn);
 			ser.Sync("RST", ref rst);
-			ser.Sync("DataBits", ref DataBits);
-			ser.Sync("Phase", ref Phase);
+			ser.Sync(nameof(DataBits), ref DataBits);
+			ser.Sync(nameof(Phase), ref Phase);
 
-			ser.Sync("MessageCompleted", ref MessageCompleted);
-			ser.Sync("StatusCompleted", ref StatusCompleted);
-			ser.Sync("MessageValue", ref MessageValue);
+			ser.Sync(nameof(MessageCompleted), ref MessageCompleted);
+			ser.Sync(nameof(StatusCompleted), ref StatusCompleted);
+			ser.Sync(nameof(MessageValue), ref MessageValue);
 
-			ser.Sync("DataReadWaitTimer", ref DataReadWaitTimer);
-			ser.Sync("DataReadInProgress", ref DataReadInProgress);
-			ser.Sync("DataTransferWasDone", ref DataTransferWasDone);
-			ser.Sync("DataTransferInProgress", ref DataTransferInProgress);
-			ser.Sync("CurrentReadingSector", ref CurrentReadingSector);
-			ser.Sync("SectorsLeftToRead", ref SectorsLeftToRead);
+			ser.Sync(nameof(DataReadWaitTimer), ref DataReadWaitTimer);
+			ser.Sync(nameof(DataReadInProgress), ref DataReadInProgress);
+			ser.Sync(nameof(DataTransferWasDone), ref DataTransferWasDone);
+			ser.Sync(nameof(DataTransferInProgress), ref DataTransferInProgress);
+			ser.Sync(nameof(CurrentReadingSector), ref CurrentReadingSector);
+			ser.Sync(nameof(SectorsLeftToRead), ref SectorsLeftToRead);
 
 			ser.Sync("CommandBuffer", ref CommandBuffer.buffer, false);
 			ser.Sync("CommandBufferPosition", ref CommandBuffer.Position);

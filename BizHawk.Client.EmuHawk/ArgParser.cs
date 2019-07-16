@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
 	class ArgParser
-		//parses command line arguments and adds the values to a class attribute
-		//default values are null for strings and false for boolean
-		//the last value will overwrite previously set values
-		//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
+	//parses command line arguments and adds the values to a class attribute
+	//default values are null for strings and false for boolean
+	//the last value will overwrite previously set values
+	//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
 	{
 		public string cmdRom = null;
 		public string cmdLoadSlot = null;
 		public string cmdLoadState = null;
+		public string cmdConfigPath = null;
+		public string cmdConfigFile = null;
 		public string cmdMovie = null;
 		public string cmdDumpType = null;
 		public string cmdDumpName = null;
@@ -25,13 +28,16 @@ namespace BizHawk.Client.EmuHawk
 		public bool startFullscreen = false;
 		public string luaScript = null;
 		public bool luaConsole = false;
-		public int socket_port = 9999;
+		public int socket_port = 0;
 		public string socket_ip = null;
+		public string mmf_filename = null;
+		public string URL_get = null;
+		public string URL_post = null;
+		public bool? audiosync = null;
 
-		public void parseArguments(string[] args)
-			
+		public void ParseArguments(string[] args)
 		{
-			for (int i = 0; i<args.Length; i++)
+			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
 				if (args[i] == ">")
@@ -50,11 +56,15 @@ namespace BizHawk.Client.EmuHawk
 
 				if (arg.StartsWith("--load-state="))
 				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+					cmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				if (arg.StartsWith("--config="))
+				{
+					cmdConfigFile = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--movie="))
 				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+					cmdMovie = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-type="))
 				{
@@ -62,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--dump-frames="))
 				{
-					var list = arg.Substring(arg.IndexOf('=') + 1);
-					var items = list.Split(',');
+					string list = arg.Substring(arg.IndexOf('=') + 1);
+					string[] items = list.Split(',');
 					_currAviWriterFrameList = new HashSet<int>();
 					foreach (string item in items)
 					{
@@ -75,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--dump-name="))
 				{
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+					cmdDumpName = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-length="))
 				{
@@ -95,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--lua="))
 				{
-					luaScript = arg.Substring(arg.IndexOf('=') + 1);
+					luaScript = args[i].Substring(args[i].IndexOf('=') + 1);
 					luaConsole = true;
 				}
 				else if (arg.StartsWith("--luaconsole"))
@@ -110,11 +120,75 @@ namespace BizHawk.Client.EmuHawk
 				{
 					socket_ip = arg.Substring(arg.IndexOf('=') + 1);
 				}
+				else if (arg.StartsWith("--mmf="))
+				{
+					mmf_filename = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--url_get="))
+				{
+					URL_get = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--url_post="))
+				{
+					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--audiosync="))
+				{
+					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
+				}
 				else
 				{
 					cmdRom = args[i];
 				}
 			}
+
+			//initialize HTTP communication
+			if (URL_get != null || URL_post != null)
+			{
+				GlobalWin.httpCommunication = new Communication.HttpCommunication();
+				if (URL_get != null)
+				{
+					GlobalWin.httpCommunication.GetUrl = URL_get;
+				}
+				if (URL_post != null)
+				{
+					GlobalWin.httpCommunication.PostUrl = URL_post;
+				}
+			}
+
+			//inititalize socket server
+			if (socket_ip != null && socket_port > 0)
+			{
+				GlobalWin.socketServer = new Communication.SocketServer();
+				GlobalWin.socketServer.SetIp(socket_ip, socket_port);
+			}
+			else if (socket_ip == null ^ socket_port == 0)
+			{
+				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
+			}
+
+			//initialize mapped memory files
+			if (mmf_filename != null)
+			{
+				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
+				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
+			}
+		}
+
+		public static string GetCmdConfigFile(string[] args)
+		{
+			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
+		}
+	}
+
+	class ArgParserException : Exception
+	{
+		public ArgParserException()
+		{
+		}
+
+		public ArgParserException(string message) : base(message)
+		{
 		}
 	}
 }

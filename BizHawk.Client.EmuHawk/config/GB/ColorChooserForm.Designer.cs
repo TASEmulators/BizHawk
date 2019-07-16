@@ -194,7 +194,7 @@
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.OK.Location = new System.Drawing.Point(143, 221);
+			this.OK.Location = new System.Drawing.Point(183, 221);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 22;
@@ -206,7 +206,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(224, 221);
+			this.Cancel.Location = new System.Drawing.Point(264, 221);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 23;
@@ -267,19 +267,19 @@
 			// 
 			this.DefaultButton.Location = new System.Drawing.Point(149, 137);
 			this.DefaultButton.Name = "DefaultButton";
-			this.DefaultButton.Size = new System.Drawing.Size(60, 23);
+			this.DefaultButton.Size = new System.Drawing.Size(90, 23);
 			this.DefaultButton.TabIndex = 32;
-			this.DefaultButton.Text = "&Default";
+			this.DefaultButton.Text = "&Default Green";
 			this.DefaultButton.UseVisualStyleBackColor = true;
 			this.DefaultButton.Click += new System.EventHandler(this.DefaultButton_Click);
 			// 
 			// DefaultButtonCGB
 			// 
-			this.DefaultButtonCGB.Location = new System.Drawing.Point(215, 137);
+			this.DefaultButtonCGB.Location = new System.Drawing.Point(245, 137);
 			this.DefaultButtonCGB.Name = "DefaultButtonCGB";
-			this.DefaultButtonCGB.Size = new System.Drawing.Size(75, 23);
+			this.DefaultButtonCGB.Size = new System.Drawing.Size(94, 23);
 			this.DefaultButtonCGB.TabIndex = 33;
-			this.DefaultButtonCGB.Text = "Default &CGB";
+			this.DefaultButtonCGB.Text = "Default &Grey";
 			this.DefaultButtonCGB.UseVisualStyleBackColor = true;
 			this.DefaultButtonCGB.Click += new System.EventHandler(this.DefaultButtonCGB_Click);
 			// 
@@ -290,7 +290,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(313, 254);
+			this.ClientSize = new System.Drawing.Size(353, 254);
 			this.Controls.Add(this.DefaultButtonCGB);
 			this.Controls.Add(this.DefaultButton);
 			this.Controls.Add(this.buttonSave);

@@ -18,9 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		private int rangeAverageX; //for coordinate transformation when non orthogonal (like PSX for example)
 		private int rangeAverageY;
 
-		private EventHandler manualXYValueChangedEventHandler;
-		private EventHandler polarNumericChangedEventHandler;
-
 		#endregion
 
 		public VirtualPadAnalogStick()
@@ -28,17 +25,16 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
 
-			manualXYValueChangedEventHandler = new EventHandler(ManualXY_ValueChanged);
-			polarNumericChangedEventHandler = new EventHandler(PolarNumeric_Changed);
-
-			ManualX.ValueChanged += manualXYValueChangedEventHandler;
-			ManualY.ValueChanged += manualXYValueChangedEventHandler;
-			manualR.ValueChanged += polarNumericChangedEventHandler;
-			manualTheta.ValueChanged += polarNumericChangedEventHandler;
+			ManualX.ValueChanged += ManualXY_ValueChanged;
+			ManualY.ValueChanged += ManualXY_ValueChanged;
+			manualR.ValueChanged += PolarNumeric_Changed;
+			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
 		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
 		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
+		private bool ReverseX;
+		private bool ReverseY;
 
 		public string SecondaryName { get; set; }
 
@@ -50,7 +46,17 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName)
 				? SecondaryName
 				: Name.Replace("X", "Y"); // Fallback
+			if (RangeX[0] > RangeX[2])
+			{
+				RangeX = new[] { RangeX[2], RangeX[1], RangeX[0] };
+				ReverseX = true;
+			}
 			AnalogStick.SetRangeX(RangeX);
+			if (RangeY[0] > RangeY[2])
+			{
+				RangeY = new[] { RangeY[2], RangeY[1], RangeY[0] };
+				ReverseY = true;
+			}
 			AnalogStick.SetRangeY(RangeY);
 
 			ManualX.Minimum = (decimal)RangeX[0];
@@ -172,20 +178,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
-			ManualX.ValueChanged -= manualXYValueChangedEventHandler;
-			ManualY.ValueChanged -= manualXYValueChangedEventHandler;
+			ManualX.ValueChanged -= ManualXY_ValueChanged; //TODO is setting and checking a bool faster than subscription?
+			ManualY.ValueChanged -= ManualXY_ValueChanged;
 
-			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageX;
-			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageY;
-
-			AnalogStick.X = (int)ManualX.Value;
-			AnalogStick.Y = (int)ManualY.Value;
-
+			var rect = PolarRectConversion.PolarDegToRect((double) manualR.Value, (double) manualTheta.Value);
+			rect = new Tuple<double, double>(
+				rangeAverageX + Math.Ceiling(rect.Item1).Clamp(-127, 127),
+				rangeAverageY + Math.Ceiling(rect.Item2).Clamp(-127, 127));
+			ManualX.Value = (decimal) rect.Item1;
+			ManualY.Value = (decimal) rect.Item2;
+			AnalogStick.X = (int) rect.Item1;
+			AnalogStick.Y = (int) rect.Item2;
 			AnalogStick.HasValue = true;
 			AnalogStick.Refresh();
 
-			ManualX.ValueChanged += manualXYValueChangedEventHandler;
-			ManualY.ValueChanged += manualXYValueChangedEventHandler;
+			ManualX.ValueChanged += ManualXY_ValueChanged;
+			ManualY.ValueChanged += ManualXY_ValueChanged;
 		}
 
 		private void SetAnalogControlFromNumerics()
@@ -229,14 +237,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			manualR.ValueChanged -= polarNumericChangedEventHandler;
-			manualTheta.ValueChanged -= polarNumericChangedEventHandler;
+			manualR.ValueChanged -= PolarNumeric_Changed;
+			manualTheta.ValueChanged -= PolarNumeric_Changed;
 
-			manualR.Value =  Math.Min(manualR.Value, (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2)));
-			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y - rangeAverageY, AnalogStick.X - rangeAverageX) * (180 / Math.PI));
+			var polar = PolarRectConversion.RectToPolarDeg(AnalogStick.X - rangeAverageX, AnalogStick.Y - rangeAverageY);
+			manualR.Value = (decimal) polar.Item1;
+			manualTheta.Value = (decimal) polar.Item2;
 
-			manualR.ValueChanged += polarNumericChangedEventHandler;
-			manualTheta.ValueChanged += polarNumericChangedEventHandler;
+			manualR.ValueChanged += PolarNumeric_Changed;
+			manualTheta.ValueChanged += PolarNumeric_Changed;
 
 			_programmaticallyUpdatingNumerics = false;
 		}
@@ -264,10 +273,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetAnalogMaxFromNumerics()
 		{
 			if (!_programmaticallyUpdatingNumerics)
-			{
-				//blehh,... this damn feature
-				AnalogStick.SetUserRange((float)MaxXNumeric.Value, (float)MaxYNumeric.Value);
-			}
+				AnalogStick.SetUserRange(ReverseX ? -MaxXNumeric.Value : MaxXNumeric.Value, ReverseY ? -MaxYNumeric.Value : MaxYNumeric.Value);
 		}
 	}
 }

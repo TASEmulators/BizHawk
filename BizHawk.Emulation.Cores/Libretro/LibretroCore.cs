@@ -150,15 +150,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value) { throw new NotImplementedException(); }
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles { get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles { get { throw new NotImplementedException(); } }
 
 		private IController _controller;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
 			api.CMD_Run();
 			timeFrameCounter++;
+
+			return true;
 		}
 
 		GCHandle vidBufferHandle;

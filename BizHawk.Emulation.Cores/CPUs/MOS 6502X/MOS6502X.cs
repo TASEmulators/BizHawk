@@ -6,10 +6,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.M6502
 {
-	public sealed partial class MOS6502X
+	public sealed partial class MOS6502X<TLink> where TLink : IMOS6502XLink
 	{
-		public MOS6502X()
+		private readonly TLink _link;
+
+		public MOS6502X(TLink link)
 		{
+			_link = link;
 			InitOpcodeHandlers();
 			Reset();
 		}
@@ -48,32 +51,45 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public TraceInfo State(bool disassemble = true)
 		{
-			int notused;
+			if (!disassemble)
+			{
+				return new TraceInfo {
+					Disassembly = "",
+					RegisterInfo = ""
+				};
+			}
+
+			int length;
+			string rawbytes = "";
+			string disasm = Disassemble(PC, out length);
+
+			for (int i = 0; i < length; i++)
+			{
+				rawbytes += $" {_link.PeekMemory((ushort)(PC + i)):X2}";
+			}
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0:X4}:  {1:X2}  {2} ",
-					PC,
-					PeekMemory(PC),
-					disassemble ? Disassemble(PC, out notused) : "---").PadRight(26),
-				RegisterInfo = string.Format(
-					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}{13}",
-					A,
-					X,
-					Y,
-					P,
-					S,
-					TotalExecutedCycles,
-					FlagN ? "N" : "n",
-					FlagV ? "V" : "v",
-					FlagT ? "T" : "t",
-					FlagB ? "B" : "b",
-					FlagD ? "D" : "d",
-					FlagI ? "I" : "i",
-					FlagZ ? "Z" : "z",
-					FlagC ? "C" : "c",
-					!RDY ? "R" : "r")
+				Disassembly = $"{PC:X4}: {rawbytes,-9}  {disasm} ".PadRight(32),
+				RegisterInfo = string.Join("  ",
+					$"A:{A:X2}",
+					$"X:{X:X2}",
+					$"Y:{Y:X2}",
+					$"SP:{S:X2}",
+					$"P:{P:X2}",
+					string.Concat(
+						FlagN ? "N" : "n",
+						FlagV ? "V" : "v",
+						FlagT ? "T" : "t",
+						FlagB ? "B" : "b",
+						FlagD ? "D" : "d",
+						FlagI ? "I" : "i",
+						FlagZ ? "Z" : "z",
+						FlagC ? "C" : "c"
+//						!RDY ? "R" : "r"
+						),
+					$"Cy:{TotalExecutedCycles}",
+					$"PPU-Cy:{ext_ppu_cycle}")
 			};
 		}
 
@@ -109,29 +125,33 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		public bool NMI;
 		public bool RDY;
 
+		// ppu cycle (used with SubNESHawk)
+		public int ext_ppu_cycle = 0;
+
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("MOS6502X");
-			ser.Sync("A", ref A);
-			ser.Sync("X", ref X);
-			ser.Sync("Y", ref Y);
-			ser.Sync("P", ref P);
-			ser.Sync("PC", ref PC);
-			ser.Sync("S", ref S);
-			ser.Sync("NMI", ref NMI);
-			ser.Sync("IRQ", ref IRQ);
-			ser.Sync("RDY", ref RDY);
-			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync("opcode", ref opcode);
-			ser.Sync("opcode2", ref opcode2);
-			ser.Sync("opcode3", ref opcode3);
-			ser.Sync("ea", ref ea);
-			ser.Sync("alu_temp", ref alu_temp);
-			ser.Sync("mi", ref mi);
-			ser.Sync("iflag_pending", ref iflag_pending);
-			ser.Sync("interrupt_pending", ref interrupt_pending);
-			ser.Sync("branch_irq_hack", ref branch_irq_hack);
-			ser.Sync("rdy_freeze", ref rdy_freeze);
+			ser.BeginSection(nameof(MOS6502X));
+			ser.Sync(nameof(A), ref A);
+			ser.Sync(nameof(X), ref X);
+			ser.Sync(nameof(Y), ref Y);
+			ser.Sync(nameof(P), ref P);
+			ser.Sync(nameof(PC), ref PC);
+			ser.Sync(nameof(S), ref S);
+			ser.Sync(nameof(NMI), ref NMI);
+			ser.Sync(nameof(IRQ), ref IRQ);
+			ser.Sync(nameof(RDY), ref RDY);
+			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
+			ser.Sync(nameof(opcode), ref opcode);
+			ser.Sync(nameof(opcode2), ref opcode2);
+			ser.Sync(nameof(opcode3), ref opcode3);
+			ser.Sync(nameof(ea), ref ea);
+			ser.Sync(nameof(alu_temp), ref alu_temp);
+			ser.Sync(nameof(mi), ref mi);
+			ser.Sync(nameof(iflag_pending), ref iflag_pending);
+			ser.Sync(nameof(interrupt_pending), ref interrupt_pending);
+			ser.Sync(nameof(branch_irq_hack), ref branch_irq_hack);
+			ser.Sync(nameof(rdy_freeze), ref rdy_freeze);
+			ser.Sync(nameof(ext_ppu_cycle), ref ext_ppu_cycle);
 			ser.EndSection();
 		}
 
@@ -196,41 +216,19 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			private set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
 		}
 
-		public int TotalExecutedCycles;
-
-		public Func<ushort, byte> ReadMemory;
-		public Func<ushort, byte> DummyReadMemory;
-		public Func<ushort, byte> PeekMemory;
-		public Action<ushort, byte> WriteMemory;
-
-		//this only calls when the first byte of an instruction is fetched.
-		public Action<ushort> OnExecFetch;
-
-		public void SetCallbacks
-		(
-			Func<ushort, byte> ReadMemory,
-			Func<ushort, byte> DummyReadMemory,
-			Func<ushort, byte> PeekMemory,
-			Action<ushort, byte> WriteMemory
-		)
-		{
-			this.ReadMemory = ReadMemory;
-			this.DummyReadMemory = DummyReadMemory;
-			this.PeekMemory = PeekMemory;
-			this.WriteMemory = WriteMemory;
-		}
+		public long TotalExecutedCycles;
 
 		public ushort ReadWord(ushort address)
 		{
-			byte l = ReadMemory(address);
-			byte h = ReadMemory(++address);
+			byte l = _link.ReadMemory(address);
+			byte h = _link.ReadMemory(++address);
 			return (ushort)((h << 8) | l);
 		}
 
 		public ushort PeekWord(ushort address)
 		{
-			byte l = PeekMemory(address);
-			byte h = PeekMemory(++address);
+			byte l = _link.PeekMemory(address);
+			byte h = _link.PeekMemory(++address);
 			return (ushort)((h << 8) | l);
 		}
 
@@ -238,14 +236,14 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		{
 			byte l = (byte)(value & 0xFF);
 			byte h = (byte)(value >> 8);
-			WriteMemory(address, l);
-			WriteMemory(++address, h);
+			_link.WriteMemory(address, l);
+			_link.WriteMemory(++address, h);
 		}
 
 		private ushort ReadWordPageWrap(ushort address)
 		{
 			ushort highAddress = (ushort)((address & 0xFF00) + ((address + 1) & 0xFF));
-			return (ushort)(ReadMemory(address) | (ReadMemory(highAddress) << 8));
+			return (ushort)(_link.ReadMemory(address) | (_link.ReadMemory(highAddress) << 8));
 		}
 
 		// SO pin

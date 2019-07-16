@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "joypad";
 
+		[LuaMethodExample("local nljoyget = joypad.get( 1 );")]
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
 		public LuaTable Get(int? controller = null)
 		{
@@ -24,9 +25,9 @@ namespace BizHawk.Client.Common
 				{
 					buttons[button] = adaptor.IsPressed(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.IsPressed("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.IsPressed($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -36,9 +37,9 @@ namespace BizHawk.Client.Common
 				{
 					buttons[button] = adaptor.GetFloat(button);
 				}
-				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
+				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.GetFloat("P" + controller + " " + button.Substring(3));
+					buttons[button.Substring(3)] = adaptor.GetFloat($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -50,6 +51,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: what about float controls?
+		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
 		public LuaTable GetImmediate()
 		{
@@ -62,6 +64,7 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
+		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
 		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be")]
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
@@ -82,10 +85,11 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception)
 			{
-				Log("invalid mnemonic string: " + inputLogEntry);
+				Log($"invalid mnemonic string: {inputLogEntry}");
 			}
 		}
 
+		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
 		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
 		public void Set(LuaTable buttons, int? controller = null)
 		{
@@ -121,7 +125,7 @@ namespace BizHawk.Client.Common
 					var toPress = button.ToString();
 					if (controller.HasValue)
 					{
-						toPress = "P" + controller + " " + button;
+						toPress = $"P{controller} {button}";
 					}
 
 					if (!invert)
@@ -146,10 +150,11 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				 /*Eat it*/
+				/*Eat it*/
 			}
 		}
 
+		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{
@@ -175,7 +180,7 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+						Global.StickyXORAdapter.SetFloat($"P{controller} {name}", theValue);
 					}
 				}
 			}

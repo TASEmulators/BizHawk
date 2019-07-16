@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort RLC = 14;
 		public const ushort RL = 15;
 		public const ushort RRC = 16;
-		public const ushort RR = 17;	
+		public const ushort RR = 17;
 		public const ushort CPL = 18;
 		public const ushort DA = 19;
 		public const ushort SCF = 20;
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort SWAP = 29;
 		public const ushort BIT = 30;
 		public const ushort RES = 31;
-		public const ushort SET = 32;		
+		public const ushort SET = 32;
 		public const ushort EI = 33;
 		public const ushort DI = 34;
 		public const ushort HALT = 35;
@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort RD_F = 42; // special read case to pop value into F
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
 		public const ushort INT_GET = 44;
+		public const ushort HALT_CHK = 45; // when in halt mode, actually check I Flag here
 
 		public LR35902()
 		{
@@ -67,8 +68,9 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		{
 			ResetRegisters();
 			ResetInterrupts();
-			TotalExecutedCycles = 0;
-			cur_instr = new ushort[] { OP };
+			TotalExecutedCycles = 8;
+			stop_check = false;
+			cur_instr = new ushort[] { IDLE, IDLE, HALT_CHK, OP };
 		}
 
 		// Memory Access 
@@ -77,6 +79,9 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
 		public Func<ushort, byte> DummyReadMemory;
+
+		// Special Function for Speed switching executed on a STOP
+		public Func<int, int> SpeedFunc;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -103,6 +108,19 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			this.WriteMemory = WriteMemory;
 		}
 
+		//a little CDL related stuff
+		public delegate void DoCDLCallbackType(ushort addr, LR35902.eCDLogMemFlags flags);
+
+		public DoCDLCallbackType CDLCallback;
+
+		public enum eCDLogMemFlags
+		{
+			FetchFirst = 1,
+			FetchOperand = 2,
+			Data = 4,
+			Write = 8
+		};
+
 		// Execute instructions
 		public void ExecuteOne(ref byte interrupt_src, byte interrupt_enable)
 		{
@@ -112,7 +130,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					// do nothing
 					break;
 				case OP:
-					// Read the opcode of the next instruction				
+					// Read the opcode of the next instruction
 					if (EI_pending > 0 && !CB_prefix)
 					{
 						EI_pending--;
@@ -122,7 +140,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 					}
 
-					if (FlagI && interrupts_enabled && !CB_prefix && !jammed)
+					if (I_use && interrupts_enabled && !CB_prefix && !jammed)
 					{
 						interrupts_enabled = false;
 
@@ -137,26 +155,17 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 						// call interrupt processor 
 						// lowest bit set is highest priority
-						
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
-						else { /*Console.WriteLine("No source"); }*/ throw new Exception("Interrupt without Source"); }
-						
-
-						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
-
 						INTERRUPT_();
 					}
 					else
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
+					I_use = false;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -252,7 +261,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					SET_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case EI:
-					EI_pending = 2;
+					if (EI_pending == 0) { EI_pending = 2; }
 					break;
 				case DI:
 					interrupts_enabled = false;
@@ -260,6 +269,17 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					break;
 				case HALT:
 					halted = true;
+
+					bool temp = false;
+
+					if (cur_instr[instr_pntr++] == 1)
+					{
+						temp = FlagI;
+					}
+					else
+					{
+						temp = I_use;
+					}
 
 					if (EI_pending > 0 && !CB_prefix)
 					{
@@ -271,8 +291,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					}
 
 					// if the I flag is asserted at the time of halt, don't halt
-
-					if (FlagI && interrupts_enabled && !CB_prefix && !jammed)
+					if (temp && interrupts_enabled && !CB_prefix && !jammed)
 					{
 						interrupts_enabled = false;
 
@@ -285,22 +304,30 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						// call interrupt processor 
-						instr_pntr = 0;
-						// lowest bit set is highest priority
 						
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
-						else { /*Console.WriteLine("No source"); } */throw new Exception("Interrupt without Source"); }
-						
-						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
-
-						INTERRUPT_();
+						if (is_GBC)
+						{
+							// call the interrupt processor after 4 extra cycles
+							if (!Halt_bug_3)
+							{
+								INTERRUPT_GBC_NOP();
+								//INTERRUPT_();
+							}
+							else
+							{
+								INTERRUPT_();
+								Halt_bug_3 = false;
+								Console.WriteLine("Hit INT");
+							}
+						}
+						else
+						{					
+							// call interrupt processor
+							INTERRUPT_();
+							Halt_bug_3 = false;
+						}					
 					}
-					else if (FlagI)
+					else if (temp)
 					{
 						// even if interrupt servicing is disabled, any interrupt flag raised still resumes execution
 						if (TraceCallback != null)
@@ -312,25 +339,127 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						if (OnExecFetch != null) OnExecFetch(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						FetchInstruction(ReadMemory(RegPC++));
-						instr_pntr = 0;
+
+						if (is_GBC)
+						{
+							// extra 4 cycles for GBC
+							if (Halt_bug_3)
+							{
+								if (OnExecFetch != null) OnExecFetch(RegPC);
+								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+								if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+
+								RegPC++;
+								FetchInstruction(ReadMemory(RegPC));
+								Halt_bug_3 = false;
+								Console.WriteLine("Hit un");
+							}
+							else
+							{
+								cur_instr = new ushort[]
+										{IDLE,
+										IDLE,
+										IDLE,
+										OP };
+							}
+						}
+						else
+						{
+							if (OnExecFetch != null) OnExecFetch(RegPC);
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+
+							if (Halt_bug_3)
+							{
+								//special variant of halt bug where RegPC also isn't incremented post fetch
+								RegPC++;
+								FetchInstruction(ReadMemory(RegPC));
+								Halt_bug_3 = false;
+							}
+							else
+							{
+								FetchInstruction(ReadMemory(RegPC++));
+							}							
+						}					
 					}
 					else
 					{
-						instr_pntr = 0;
-						cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
+						if (skip_once)
+						{
+							cur_instr = new ushort[]
+										{IDLE,
+										IDLE,
+										IDLE,
+										HALT, 0 };
+
+							skip_once = false;
+						}
+						else
+						{
+							if (is_GBC)
+							{
+								cur_instr = new ushort[]
+										{IDLE,
+										IDLE,
+										HALT_CHK,
+										HALT, 0 };
+							}
+							else
+							{
+								cur_instr = new ushort[]
+										{HALT_CHK,
+										IDLE,
+										IDLE,
+										HALT, 0 };
+							}
+						}
+						
 					}
+					I_use = false;
+					instr_pntr = 0;
 					break;
 				case STOP:
 					stopped = true;
+					if (!stop_check)
+					{
+						stop_time = SpeedFunc(0);
+						stop_check = true;
+					}
+					
+					if (stop_time > 0)
+					{
+						stop_time--;
+						if (stop_time == 0)
+						{
+							if (TraceCallback != null)
+							{
+								TraceCallback(new TraceInfo
+								{
+									Disassembly = "====un-stop====",
+									RegisterInfo = ""
+								});
+							}
 
-					if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
+							stopped = false;
+							if (OnExecFetch != null) OnExecFetch(RegPC);
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
+							FetchInstruction(ReadMemory(RegPC++));
+							instr_pntr = 0;
+
+							stop_check = false;
+						}
+						else
+						{
+							instr_pntr = 0;
+							cur_instr = new ushort[]
+							{IDLE,
+							IDLE,
+							IDLE,
+							STOP };
+						}
+					}
+					else if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
 					{
 						if (TraceCallback != null)
 						{
@@ -344,8 +473,11 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						stopped = false;
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 						instr_pntr = 0;
+
+						stop_check = false;
 					}
 					else
 					{
@@ -369,6 +501,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case OP_G:
 					if (OnExecFetch != null) OnExecFetch(RegPC);
 					if (TraceCallback != null) TraceCallback(State());
+					if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
 
@@ -387,46 +520,29 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case INT_GET:
 					// check if any interrupts got cancelled along the way
 					// interrupt src = 5 sets the PC to zero as observed
-					if (int_src == 0) 
-					{
-						if (interrupt_enable.Bit(0)) { interrupt_src -= 1; }
-						else { int_src = 5; }
-					}
-					if (int_src == 1)
-					{
-						if (interrupt_enable.Bit(1)) { interrupt_src -= 2; }
-						else { int_src = 5; }
-					}
-					if (int_src == 2)
-					{
-						if (interrupt_enable.Bit(2)) { interrupt_src -= 4; }
-						else { int_src = 5; }
-					}
-					if (int_src == 3)
-					{
-						if (interrupt_enable.Bit(3)) { interrupt_src -= 8; }
-						else { int_src = 5; }
-					}
-					if (int_src == 4)
-					{
-						if (interrupt_enable.Bit(4)) { interrupt_src -= 16; }
-						else { int_src = 5; }
-					}
 
-					// if we lost the interrupt, find the next highest interrupt, if any
-					if (int_src == 5)
-					{
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
-						else { int_src = 5; }
-					}
-
+					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
+					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
+					else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
+					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
+					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
+					else { int_src = 5; }
+						
 					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
 					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];
+					break;
+				case HALT_CHK:
+					I_use = FlagI;
+					if (Halt_bug_2 && I_use)
+					{
+						RegPC--;
+						Halt_bug_3 = true;
+						Console.WriteLine("Halt_bug_3");
+						Console.WriteLine(totalExecutedCycles);
+					}
+					
+					Halt_bug_2 = false;
 					break;
 			}
 			totalExecutedCycles++;
@@ -447,55 +563,55 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{0} ",
-					disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---").PadRight(40),
-				RegisterInfo = string.Format(
-					"A:{0:X2} F:{1:X2} B:{2:X2} C:{3:X2} D:{4:X2} E:{5:X2} H:{6:X2} L:{7:X2} SP:{8:X2} Cy:{9} LY:{10} {11}{12}{13}{14}{15}{16}",
-					Regs[A],
-					Regs[F],
-					Regs[B],
-					Regs[C],
-					Regs[D],
-					Regs[E],
-					Regs[H],
-					Regs[L],
-					Regs[SPl] | (Regs[SPh] << 8),
-					TotalExecutedCycles,
-					LY,
-					FlagZ ? "Z" : "z",
-					FlagN ? "N" : "n",
-					FlagH ? "H" : "h",
-					FlagC ? "C" : "c",			
-					FlagI ? "I" : "i",
-					interrupts_enabled ? "E" : "e")
+				Disassembly = $"{(disassemble ? Disassemble(RegPC, ReadMemory, out notused) : "---")} ".PadRight(40),
+				RegisterInfo = string.Join(" ",
+					$"A:{Regs[A]:X2}",
+					$"F:{Regs[F]:X2}",
+					$"B:{Regs[B]:X2}",
+					$"C:{Regs[C]:X2}",
+					$"D:{Regs[D]:X2}",
+					$"E:{Regs[E]:X2}",
+					$"H:{Regs[H]:X2}",
+					$"L:{Regs[L]:X2}",
+					$"SP:{Regs[SPl] | (Regs[SPh] << 8):X2}",
+					$"Cy:{TotalExecutedCycles}",
+					$"LY:{LY}",
+					string.Concat(
+						FlagZ ? "Z" : "z",
+						FlagN ? "N" : "n",
+						FlagH ? "H" : "h",
+						FlagC ? "C" : "c",
+						FlagI ? "I" : "i",
+						interrupts_enabled ? "E" : "e"))
 			};
 		}
 		// State Save/Load
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("LR35902");
-			ser.Sync("Regs", ref Regs, false);
+			ser.BeginSection(nameof(LR35902));
+			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync("IRQ", ref interrupts_enabled);
-			ser.Sync("NMI", ref nonMaskableInterrupt);
-			ser.Sync("NMIPending", ref nonMaskableInterruptPending);
-			ser.Sync("IM", ref interruptMode);
-			ser.Sync("IFF1", ref iff1);
-			ser.Sync("IFF2", ref iff2);
+			ser.Sync(nameof(I_use), ref I_use);
+			ser.Sync(nameof(skip_once), ref skip_once);
+			ser.Sync(nameof(Halt_bug_2), ref Halt_bug_2);
+			ser.Sync(nameof(Halt_bug_3), ref Halt_bug_3);
 			ser.Sync("Halted", ref halted);
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
-			ser.Sync("EI_pending", ref EI_pending);
-			ser.Sync("int_src", ref int_src);
+			ser.Sync(nameof(EI_pending), ref EI_pending);
+			ser.Sync(nameof(int_src), ref int_src);
+			ser.Sync(nameof(stop_time), ref stop_time);
+			ser.Sync(nameof(stop_check), ref stop_check);
+			ser.Sync(nameof(is_GBC), ref is_GBC);
 
-			ser.Sync("instruction_pointer", ref instr_pntr);
-			ser.Sync("current instruction", ref cur_instr, false);
-			ser.Sync("CB Preifx", ref CB_prefix);
+			ser.Sync(nameof(instr_pntr), ref instr_pntr);
+			ser.Sync(nameof(cur_instr), ref cur_instr, false);
+			ser.Sync("CB Prefix", ref CB_prefix);
 			ser.Sync("Stopped", ref stopped);
-			ser.Sync("opcode", ref opcode);
-			ser.Sync("jammped", ref jammed);
-			ser.Sync("LY", ref LY);
-			ser.Sync("FlagI", ref FlagI);
+			ser.Sync(nameof(opcode), ref opcode);
+			ser.Sync(nameof(jammed), ref jammed);
+			ser.Sync(nameof(LY), ref LY);
+			ser.Sync(nameof(FlagI), ref FlagI);
 
 			ser.EndSection();
 		}

@@ -180,7 +180,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public void End()
 		{
 			if (!IsActive)
-				throw new InvalidOperationException("GuiRenderer is not active!");
+				throw new InvalidOperationException($"{nameof(GuiRenderer)} is not active!");
 			IsActive = false;
 		}
 
@@ -224,7 +224,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			Art art = new Art(null);
+			Art art = new Art((ArtManager)null);
 			art.Width = w;
 			art.Height = h;
 			art.u0 = art.v0 = 0;

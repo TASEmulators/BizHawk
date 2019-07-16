@@ -38,15 +38,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			if (fm != null)
 				fm.SyncState(ser);
-			ser.Sync("prg_banks_8k", ref prg_banks_8k);
-			ser.Sync("chr_banks_1k", ref chr_banks_1k);
-			ser.Sync("irq_mode", ref irq_mode);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_autoen", ref irq_autoen);
-			ser.Sync("irq_reload", ref irq_reload);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_prescaler", ref irq_prescaler);
+			ser.Sync(nameof(prg_banks_8k), ref prg_banks_8k);
+			ser.Sync(nameof(chr_banks_1k), ref chr_banks_1k);
+			ser.Sync(nameof(irq_mode), ref irq_mode);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_autoen), ref irq_autoen);
+			ser.Sync(nameof(irq_reload), ref irq_reload);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_prescaler), ref irq_prescaler);
 			SyncIRQ();
 		}
 
@@ -247,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//enabled
 						irq_enabled = true;
 						irq_counter = irq_reload;
-						irq_prescaler = 341;
+						irq_prescaler = 341 + 3;
 					}
 					else
 					{
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				irq_pending = true;
 				irq_counter = irq_reload;
-				SyncIRQ();
+				//SyncIRQ();
 			}
 			else
 				irq_counter++;
@@ -302,6 +302,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
+			if (irq_pending)
+			{
+				SyncIRQ();
+			}
+
 			if (!irq_enabled) return;
 
 			if (irq_mode)

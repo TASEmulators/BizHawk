@@ -26,10 +26,10 @@ __Types and notation__
 * ? (question mark)
 ** A question mark next to a value indicates that it is a Nullable type (only applies to types that are not normally nullable)
 * [[]] (brackets)
-** Brackets around a parameter indicate that the parameter is optional. optional parameters have an equals sign followed by the value that will be used if no value is supplied.
+** Brackets around a parameter indicate that the parameter is optional. Optional parameters have an equals sign followed by the value that will be used if no value is supplied.
 ** Brackets after a parameter type indicate it is an array
 * null
-** null is equivalent to the lua nil
+** null is equivalent to the lua nil. Lua doesn't support named arguments, it checks the arguments by position. So if you're sending an optional argument that goes ''after'' other optional arguments you don't want to send, replace those with lua nil.
 * Color
 ** This is a .NET System.Drawing.Color struct. The value passed from lua is any value acceptable in the Color constructor. This means either a string with the color name such as ""red"", or a 0xAARRGGBB integer value.  Unless specified, this is not a nullable value
 * object
@@ -59,7 +59,7 @@ __Types and notation__
 					sb
 						.AppendFormat("__{0}.{1}__%%%", func.Library, func.Name)
 						.AppendLine().AppendLine()
-						.AppendFormat("* {0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList)
+						.AppendFormat("* {0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList.Replace("[", "[[").Replace("]", "]]"))
 						.AppendLine().AppendLine()
 						.AppendFormat("* {0}", func.Description)
 						.AppendLine().AppendLine();
@@ -102,7 +102,7 @@ __Types and notation__
 			{
 				var completion = new SublimeCompletions.Completion
 				{
-					Trigger = f.Library + "." + f.Name
+					Trigger = $"{f.Library}.{f.Name}"
 				};
 
 				var sb = new StringBuilder();
@@ -162,12 +162,13 @@ __Types and notation__
 	public class LibraryFunction
 	{
 		private readonly LuaMethodAttribute _luaAttributes;
+		private readonly LuaMethodExampleAttribute _luaExampleAttribute;
 		private readonly MethodInfo _method;
 
 		public LibraryFunction(string library, string libraryDescription, MethodInfo method)
 		{
-			_luaAttributes = method.GetCustomAttributes(typeof(LuaMethodAttribute), false)
-				.First() as LuaMethodAttribute;
+			_luaAttributes = method.GetCustomAttribute<LuaMethodAttribute>(false);
+			_luaExampleAttribute = method.GetCustomAttribute<LuaMethodExampleAttribute>(false);
 			_method = method;
 
 			Library = library;
@@ -182,6 +183,8 @@ __Types and notation__
 		public string Name => _luaAttributes.Name;
 
 		public string Description => _luaAttributes.Description;
+
+		public string Example => _luaExampleAttribute?.Example;
 
 		private string _paramterList = null;
 

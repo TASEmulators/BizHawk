@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,7 +15,15 @@ namespace BizHawk.Client.EmuHawk
 		public NesControllerSettings()
 		{
 			InitializeComponent();
-			_syncSettings = ((NES)Global.Emulator).GetSyncSettings();
+			if (Global.Emulator is NES)
+			{
+				_syncSettings = ((NES)Global.Emulator).GetSyncSettings();
+			}
+			else
+			{
+				_syncSettings = ((SubNESHawk)Global.Emulator).GetSyncSettings();
+			}
+			
 
 			// TODO: use combobox extension and add descriptions to enum values
 			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().ToArray());

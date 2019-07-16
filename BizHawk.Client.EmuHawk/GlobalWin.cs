@@ -1,4 +1,5 @@
 ﻿using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.ApiHawk;
 
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.EmuHawk
@@ -7,6 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static MainForm MainForm;
 		public static ToolManager Tools;
+		public static BasicApiProvider ApiProvider;
 
 		/// <summary>
 		/// the IGL to be used for rendering
@@ -24,5 +26,8 @@ namespace BizHawk.Client.EmuHawk
 		public static GLManager GLManager;
 
 		public static int ExitCode;
+		public static Communication.HttpCommunication httpCommunication = null;
+		public static Communication.SocketServer socketServer = null;
+		public static Communication.MemoryMappedFiles memoryMappedFiles = null;
 	}
 }

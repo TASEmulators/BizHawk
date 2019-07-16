@@ -97,21 +97,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			for (int i = 0; i < 2; i++) ser.Sync("prg_bank_reg_8k_" + i, ref prg_bank_reg_8k[i]);
 			for (int i = 0; i < 16; i++) ser.Sync("chr_bank_reg_1k_" + i, ref chr_bank_reg_1k[i]);
-			ser.Sync("irq_mode", ref irq_mode);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_pending", ref irq_pending);
-			ser.Sync("irq_autoen", ref irq_autoen);
-			ser.Sync("irq_reload", ref irq_reload);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_prescaler", ref irq_prescaler);
-			ser.Sync("extra_vrom", ref extra_vrom);
+			ser.Sync(nameof(irq_mode), ref irq_mode);
+			ser.Sync(nameof(irq_enabled), ref irq_enabled);
+			ser.Sync(nameof(irq_pending), ref irq_pending);
+			ser.Sync(nameof(irq_autoen), ref irq_autoen);
+			ser.Sync(nameof(irq_reload), ref irq_reload);
+			ser.Sync(nameof(irq_counter), ref irq_counter);
+			ser.Sync(nameof(irq_prescaler), ref irq_prescaler);
+			ser.Sync(nameof(extra_vrom), ref extra_vrom);
 			if (latch6k_exists)
-				ser.Sync("latch6k_value", ref latch6k_value);
+				ser.Sync(nameof(latch6k_value), ref latch6k_value);
 			//SyncPRG();
 			ser.Sync("prg_banks", ref prg_banks_8k, false);
 			SyncCHR();
 			SyncIRQ();
-			ser.Sync("isPirate", ref isPirate);
+			ser.Sync(nameof(isPirate), ref isPirate);
 			ser.Sync("isBMC", ref _isBMC);
 		}
 
@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							remap = AddrA1A0;
 							break;
 						default:
-							throw new Exception(string.Format("Unknown PCB type for VRC2: \"{0}\"", Cart.pcb));
+							throw new Exception($"Unknown PCB type for VRC2: \"{Cart.pcb}\"");
 					}
 					break;
 				default:
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//enabled
 						irq_enabled = true;
 						irq_counter = irq_reload;
-						irq_prescaler = 341;
+						irq_prescaler = 341 + 3;
 					}
 					else
 					{
@@ -466,7 +466,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				irq_pending = true;
 				irq_counter = irq_reload;
-				SyncIRQ();
+				//SyncIRQ();
 			}
 			else
 				irq_counter++;
@@ -474,6 +474,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
+			if (irq_pending)
+			{
+				SyncIRQ();
+			}
+
 			if (type == 2) return;
 			if (!irq_enabled) return;
 

@@ -51,14 +51,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_regs", ref prg_regs);
-			ser.Sync("chr_regs", ref chr_regs);
-			ser.Sync("IRQCount", ref IRQCount);
-			ser.Sync("IRQa", ref IRQa);
-			ser.Sync("bank", ref bank);
-			ser.Sync("mode", ref mode);
-			ser.Sync("is_2k_bank", ref is_2k_bank);
-			ser.Sync("is_not_2k_bank", ref is_not_2k_bank);
+			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(IRQCount), ref IRQCount);
+			ser.Sync(nameof(IRQa), ref IRQa);
+			ser.Sync(nameof(bank), ref bank);
+			ser.Sync(nameof(mode), ref mode);
+			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
+			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
 		}
 
 		public void Mirroring()
@@ -242,14 +242,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_regs", ref prg_regs);
-			ser.Sync("chr_regs", ref chr_regs);
-			ser.Sync("IRQCount", ref IRQCount);
-			ser.Sync("IRQa", ref IRQa);
-			ser.Sync("bank", ref bank);
-			ser.Sync("mode", ref mode);
-			ser.Sync("is_2k_bank", ref is_2k_bank);
-			ser.Sync("is_not_2k_bank", ref is_not_2k_bank);
+			ser.Sync(nameof(prg_regs), ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(IRQCount), ref IRQCount);
+			ser.Sync(nameof(IRQa), ref IRQa);
+			ser.Sync(nameof(bank), ref bank);
+			ser.Sync(nameof(mode), ref mode);
+			ser.Sync(nameof(is_2k_bank), ref is_2k_bank);
+			ser.Sync(nameof(is_not_2k_bank), ref is_not_2k_bank);
 		}
 
 		public void Mirroring()
@@ -433,8 +433,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr_regs", ref chr_regs);
-			ser.Sync("prg_regs", ref prg_regs);
+			ser.Sync(nameof(chr_regs), ref chr_regs);
+			ser.Sync(nameof(prg_regs), ref prg_regs);
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -451,7 +451,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			else if (addr == 0x200)
 			{
-				IRQCount &= 0xFF00; IRQCount |= value; ;
+				IRQCount &= 0xFF00; IRQCount |= value;
 				IRQSignal = false;
 			}
 

@@ -7,6 +7,7 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 
 //TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
   //perhaps missing domains shouldnt fail a check
@@ -30,11 +31,6 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_recent_fld = value;
-				if (_recent_fld.AutoLoad)
-				{
-					LoadFile(_recent.MostRecent);
-					SetCurrentFilename(_recent.MostRecent);
-				}
 			}
 		}
 
@@ -43,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentFilename = fname;
 			if (_currentFilename == null)
 				Text = "Code Data Logger";
-			else Text = string.Format("Code Data Logger - {0}", fname);
+			else Text = $"Code Data Logger - {fname}";
 		}
 
 		[RequiredService]
@@ -103,7 +99,16 @@ namespace BizHawk.Client.EmuHawk
 			if (_cdl == null)
 			{
 				lvCDL.BeginUpdate();
-				lvCDL.Items.Clear();
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				{
+					lvCDL.Items.Clear();
+				}
+				else
+				{
+					// this is a winforms implementation problem for mono
+					// see https://github.com/mono/mono/issues/11070
+					// until this is resolved in mono we should just skip this call
+				}
 				lvCDL.EndUpdate();
 				return;
 			}
@@ -152,29 +157,29 @@ namespace BizHawk.Client.EmuHawk
 				long addr = bm[kvp.Key];
 
 				var lvi = listContents[idx++] = new string[13];
-				lvi[0] = string.Format("{0:X8}", addr);
+				lvi[0] = $"{addr:X8}";
 				lvi[1] = kvp.Key;
-				lvi[2] = string.Format("{0:0.00}%", total / (float)kvp.Value.Length * 100f);
+				lvi[2] = $"{total / (float)kvp.Value.Length * 100f:0.00}%";
 				if (tsbViewStyle.SelectedIndex == 2)
-					lvi[3] = string.Format("{0:0.00}", total / 1024.0f);
+					lvi[3] = $"{total / 1024.0f:0.00}";
 				else
-					lvi[3] = string.Format("{0}", total);
+					lvi[3] = $"{total}";
 				if (tsbViewStyle.SelectedIndex == 2)
 				{
 					int n = (int)(kvp.Value.Length / 1024.0f);
 					float ncheck = kvp.Value.Length / 1024.0f;
-					lvi[4] = string.Format("of {0}{1} KBytes", n == ncheck ? "" : "~", n);
+					lvi[4] = $"of {(n == ncheck ? "" : "~")}{n} KBytes";
 				}
 				else
-					lvi[4] = string.Format("of {0} Bytes", kvp.Value.Length);
+					lvi[4] = $"of {kvp.Value.Length} Bytes";
 				for (int i = 0; i < 8; i++)
 				{
 					if (tsbViewStyle.SelectedIndex == 0)
-						lvi[5 + i] = string.Format("{0:0.00}%", totals[i] / (float)kvp.Value.Length * 100f);
+						lvi[5 + i] = $"{totals[i] / (float)kvp.Value.Length * 100f:0.00}%";
 					if (tsbViewStyle.SelectedIndex == 1)
-						lvi[5 + i] = string.Format("{0}", totals[i]);
+						lvi[5 + i] = $"{totals[i]}";
 					if (tsbViewStyle.SelectedIndex == 2)
-						lvi[5 + i] = string.Format("{0:0.00}", totals[i] / 1024.0f);
+						lvi[5 + i] = $"{totals[i] / 1024.0f:0.00}";
 				}
 
 			}
@@ -191,24 +196,41 @@ namespace BizHawk.Client.EmuHawk
 			//try auto-saving if appropriate
 			if (Global.Config.CDLAutoSave)
 			{
-				//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-				var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (result == DialogResult.No)
-					return true;
-
-				if (string.IsNullOrWhiteSpace(_currentFilename))
-				{
-					if (!RunSaveAs())
-						return false;
-				}
-				else
+				if (_currentFilename != null)
 				{
 					RunSave();
+					ShutdownCDL();
 					return true;
 				}
 			}
 
-			return true;
+			//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
+			var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.No)
+			{
+				ShutdownCDL();
+				return true;
+			}
+
+			if (string.IsNullOrWhiteSpace(_currentFilename))
+			{
+				if (RunSaveAs())
+				{
+					ShutdownCDL();
+					return true;
+				}
+				else
+				{
+					ShutdownCDL();
+					return false;
+				}
+			}
+			else
+			{
+				RunSave();
+				ShutdownCDL();
+				return true;
+			}
 		}
 
 		public bool UpdateBefore
@@ -216,6 +238,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return false; }
 		}
 
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+		}
+
+		bool autoloading = false;
 		public void LoadFile(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -228,7 +256,8 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.NewCDL(testCDL);
 				if (!newCDL.Check(testCDL))
 				{
-					MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+					if(!autoloading)
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
 					return;
 				}
 
@@ -236,7 +265,10 @@ namespace BizHawk.Client.EmuHawk
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
 				if (tsbLoggingActive.Checked || Global.Config.CDLAutoStart)
+				{
+					tsbLoggingActive.Checked = true;
 					CodeDataLogger.SetCDL(_cdl);
+				}
 
 				SetCurrentFilename(path);
 			}
@@ -255,6 +287,7 @@ namespace BizHawk.Client.EmuHawk
 
 			miAutoSave.Checked = Global.Config.CDLAutoSave;
 			miAutoStart.Checked = Global.Config.CDLAutoStart;
+			miAutoResume.Checked = Global.Config.CDLAutoResume;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -432,7 +465,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
+			ShutdownCDL();
 			Close();
+		}
+
+		void ShutdownCDL()
+		{
+			_cdl = null;
+			CodeDataLogger.SetCDL(null);
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -445,7 +485,10 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnShown(EventArgs e)
 		{
 			if (Global.Config.CDLAutoStart)
-				NewFileLogic();
+			{
+				if (_cdl == null)
+					NewFileLogic();
+			}
 			base.OnShown(e);
 		}
 
@@ -456,16 +499,49 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void PCECDL_Load(object sender, EventArgs e)
+		private void CDL_Load(object sender, EventArgs e)
 		{
+			if (Global.Config.CDLAutoResume)
+			{
+				try
+				{
+					autoloading = true;
+					var autoresume_file = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
+					var autoresume_dir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+					var autoresume_path = Path.Combine(autoresume_dir, autoresume_file);
+					if (File.Exists(autoresume_path))
+						LoadFile(autoresume_path);
+				}
+				finally
+				{
+					autoloading = false;
+				}
+			}
+
+			if (_recent_fld.AutoLoad && !_recent_fld.Empty)
+			{
+				if (File.Exists(_recent.MostRecent))
+				{
+					try
+					{
+						autoloading = true;
+						LoadFile(_recent.MostRecent);
+					}
+					finally
+					{
+						autoloading = false;
+					}
+					SetCurrentFilename(_recent.MostRecent);
+				}
+			}
 		}
 
-		private void PCECDL_DragEnter(object sender, DragEventArgs e)
+		private void CDL_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void PCECDL_DragDrop(object sender, DragEventArgs e)
+		private void CDL_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".cdl")
@@ -522,6 +598,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.CDLAutoStart ^= true;
 		}
 
-
+		private void miAutoResume_Click(object sender, EventArgs e)
+		{
+			Global.Config.CDLAutoResume ^= true;
+		}
 	}
 }

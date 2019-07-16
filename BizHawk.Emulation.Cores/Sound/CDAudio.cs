@@ -229,17 +229,17 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("CDAudio");
-			ser.Sync("Mode", ref Mode);
-			ser.Sync("PlayMode", ref PlayMode);
-			ser.Sync("LogicalVolume", ref LogicalVolume);
-			ser.Sync("StartLBA", ref StartLBA);
-			ser.Sync("EndLBA", ref EndLBA);
-			ser.Sync("PlayingTrack", ref PlayingTrack);
-			ser.Sync("CurrentSector", ref CurrentSector);
-			ser.Sync("SectorOffset", ref SectorOffset);
-			ser.Sync("FadeOutOverFrames", ref FadeOutOverFrames);
-			ser.Sync("FadeOutFramesRemaining", ref FadeOutFramesRemaining);
+			ser.BeginSection(nameof(CDAudio));
+			ser.Sync(nameof(Mode), ref Mode);
+			ser.Sync(nameof(PlayMode), ref PlayMode);
+			ser.Sync(nameof(LogicalVolume), ref LogicalVolume);
+			ser.Sync(nameof(StartLBA), ref StartLBA);
+			ser.Sync(nameof(EndLBA), ref EndLBA);
+			ser.Sync(nameof(PlayingTrack), ref PlayingTrack);
+			ser.Sync(nameof(CurrentSector), ref CurrentSector);
+			ser.Sync(nameof(SectorOffset), ref SectorOffset);
+			ser.Sync(nameof(FadeOutOverFrames), ref FadeOutOverFrames);
+			ser.Sync(nameof(FadeOutFramesRemaining), ref FadeOutFramesRemaining);
 			ser.EndSection();
 
 			if (ser.IsReader)

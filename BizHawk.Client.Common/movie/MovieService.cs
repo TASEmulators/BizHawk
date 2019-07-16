@@ -37,13 +37,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the file extension for the default movie implementation used in the client
 		/// </summary>
-		public static string DefaultExtension
-		{
-			get
-			{
-				return "bk2";
-			}
-		}
+		public static string DefaultExtension => "bk2";
 
 		/// <summary>
 		/// Gets a list of extensions for all <seealso cref="IMovie"/> implementations

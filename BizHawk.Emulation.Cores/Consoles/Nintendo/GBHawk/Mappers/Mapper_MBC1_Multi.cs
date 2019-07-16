@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC1 with bank switching and RAM
@@ -68,6 +70,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
+		{
+			if (addr < 0x4000)
+			{
+				// lowest bank is fixed, but is still effected by mode
+				if (sel_mode)
+				{
+					SetCDLROM(flags, ((ROM_bank & 0x60) >> 1) * 0x4000 + addr);
+				}
+				else
+				{
+					SetCDLROM(flags, addr);
+				}
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + (((ROM_bank & 0x60) >> 1) | (ROM_bank & 0xF)) * 0x4000);
+			}
+			else
+			{
+				if (Core.cart_RAM != null)
+				{
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
+					{
+						SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+					}
+					else
+					{
+						return;
+					}
+
+				}
+				else
+				{
+					return;
+				}
+			}
+		}
+
 		public override byte PeekMemory(ushort addr)
 		{
 			return ReadMemory(addr);
@@ -79,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr < 0x2000)
 				{
-					RAM_enable = ((value & 0xA) == 0xA) ? true : false;
+					RAM_enable = ((value & 0xA) == 0xA);
 				}
 				else if (addr < 0x4000)
 				{
@@ -140,12 +181,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("ROM_Bank", ref ROM_bank);
-			ser.Sync("ROM_Mask", ref ROM_mask);
-			ser.Sync("RAM_Bank", ref RAM_bank);
-			ser.Sync("RAM_Mask", ref RAM_mask);
-			ser.Sync("RAM_enable", ref RAM_enable);
-			ser.Sync("sel_mode", ref sel_mode);
+			ser.Sync(nameof(ROM_bank), ref ROM_bank);
+			ser.Sync(nameof(ROM_mask), ref ROM_mask);
+			ser.Sync(nameof(RAM_bank), ref RAM_bank);
+			ser.Sync(nameof(RAM_mask), ref RAM_mask);
+			ser.Sync(nameof(RAM_enable), ref RAM_enable);
+			ser.Sync(nameof(sel_mode), ref sel_mode);
 		}
 	}
 }

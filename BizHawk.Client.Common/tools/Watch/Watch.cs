@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				throw new ArgumentException($"DisplayType {type} is invalid for this type of Watch", nameof(type));
+				throw new ArgumentException($"{nameof(DisplayType)} {type} is invalid for this type of {nameof(Watch)}", nameof(type));
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common
 			{
 				default:
 				case WatchSize.Separator:
-					return SeparatorWatch.Instance;
+					return SeparatorWatch.NewSeparatorWatch(note);
 				case WatchSize.Byte:
 					return new ByteWatch(domain, address, type, bigEndian, note, (byte)value, (byte)prev, changeCount);
 				case WatchSize.Word:
@@ -573,7 +573,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_domain != null)
 				{
-					return "X" + (_domain.Size - 1).NumHexDigits();
+					return $"X{(_domain.Size - 1).NumHexDigits()}";
 				}
 
 				return "";

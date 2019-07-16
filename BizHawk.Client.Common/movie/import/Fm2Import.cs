@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Result.Movie.Comments.Add(Movieorigin + " .fm2 version 3");
+							Result.Movie.Comments.Add($"{Movieorigin} .fm2 version 3");
 						}
 					}
 					else if (line.ToLower().StartsWith("romfilename"))
@@ -139,7 +139,7 @@ namespace BizHawk.Client.Common
 				string length = line.Substring(first + 1, second - first - 1);
 				string message = line.Substring(second + 1).Trim();
 
-				return "subtitle " + frame + " 0 0 " + length + " FFFFFFFF " + message;
+				return $"subtitle {frame} 0 0 {length} FFFFFFFF {message}";
 			}
 
 			return null;

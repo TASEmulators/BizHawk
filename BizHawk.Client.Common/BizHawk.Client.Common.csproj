@@ -23,7 +23,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -35,7 +36,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -62,6 +64,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -139,6 +142,7 @@
     <Compile Include="inputAdapters\OverrideAdaptor.cs" />
     <Compile Include="inputAdapters\SimpleController.cs" />
     <Compile Include="inputAdapters\UDLRController.cs" />
+    <Compile Include="input\PolarRectConversion.cs" />
     <Compile Include="IonicZipWriter.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="IZipWriter.cs" />
@@ -182,7 +186,8 @@
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
     <Compile Include="movie\import\PXMImport.cs" />
-    <Compile Include="movie\tasproj\StateManagerState.cs" />
+    <Compile Include="movie\tasproj\IStateManager.cs" />
+    <Compile Include="movie\tasproj\StateManagerDecay.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
     <Compile Include="movie\tasproj\TasMovie.History.cs" />
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
@@ -241,6 +246,7 @@
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
+    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickBmpFile.cs" />
@@ -315,7 +321,6 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

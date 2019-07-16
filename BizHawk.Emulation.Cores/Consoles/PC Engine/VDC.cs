@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
+using System;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -49,6 +50,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int RequestedFrameWidth => ((Registers[HDR] & 0x3F) + 1) * 8;
 		public int RequestedFrameHeight => (Registers[VDW] & 0x1FF) + 1;
 		public int DisplayStartLine => (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F);
+		public int ViewStartLine => (Registers[VPR] >> 8) + 2;
 
 		private const int MAWR = 0;  // Memory Address Write Register
 		private const int MARR = 1;  // Memory Address Read Register
@@ -158,18 +160,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case HDR: // Horizontal Display Register - update framebuffer size
 					FrameWidth = RequestedFrameWidth;
 					FramePitch = MultiResHack == 0 ? FrameWidth : MultiResHack;
-					if (FrameBuffer.Length != FramePitch * FrameHeight)
-						FrameBuffer = new int[FramePitch * FrameHeight];
+					//if (FrameBuffer.Length != FramePitch * FrameHeight)
+						//FrameBuffer = new int[FramePitch * FrameHeight];
 					break;
 				case VDW: // Vertical Display Word? - update framebuffer size
-					FrameHeight = RequestedFrameHeight;
+					//FrameHeight = RequestedFrameHeight;
 					FrameWidth = RequestedFrameWidth;
-					if (FrameHeight > 242)
-						FrameHeight = 242;
+					//if (FrameHeight > 242)
+						//FrameHeight = 242;
 					if (MultiResHack != 0)
 						FramePitch = MultiResHack;
-					if (FrameBuffer.Length != FramePitch * FrameHeight)
-						FrameBuffer = new int[FramePitch * FrameHeight];
+					//if (FrameBuffer.Length != FramePitch * FrameHeight)
+						//FrameBuffer = new int[FramePitch * FrameHeight];
 					break;
 				case LENR: // Initiate DMA transfer
 					if (!msbComplete) break;
@@ -265,8 +267,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int tileNo = addr >> 4;
 			int tileLineOffset = addr & 0x7;
 
-			int bitplane01 = VRAM[(tileNo * 16) + tileLineOffset];
-			int bitplane23 = VRAM[(tileNo * 16) + tileLineOffset + 8];
+			int bitplane01 = VRAM[((tileNo * 16) + tileLineOffset) & 0x7FFF];
+			int bitplane23 = VRAM[((tileNo * 16) + tileLineOffset + 8) & 0x7FFF];
 
 			int patternBufferBase = (tileNo * 64) + (tileLineOffset * 8);
 
@@ -288,7 +290,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int line = addr & 0x0F;
 
 			int ofs = (tileNo * 256) + (line * 16) + 15;
-			ushort value = VRAM[addr];
+			ushort value = VRAM[addr & 0x7FFF];
 			byte bitAnd = (byte)(~(1 << bitplane));
 			byte bitOr = (byte)(1 << bitplane);
 
@@ -307,21 +309,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void SyncState(Serializer ser, int vdcNo)
 		{
 			ser.BeginSection("VDC"+vdcNo);
-			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.Sync("SAT", ref SpriteAttributeTable, false);
-			ser.Sync("Registers", ref Registers, false);
-			ser.Sync("RegisterLatch", ref RegisterLatch);
-			ser.Sync("ReadBuffer", ref ReadBuffer);
-			ser.Sync("StatusByte", ref StatusByte);
+			ser.Sync(nameof(Registers), ref Registers, false);
+			ser.Sync(nameof(RegisterLatch), ref RegisterLatch);
+			ser.Sync(nameof(ReadBuffer), ref ReadBuffer);
+			ser.Sync(nameof(StatusByte), ref StatusByte);
 
-			ser.Sync("DmaRequested", ref DmaRequested);
-			ser.Sync("SatDmaRequested", ref SatDmaRequested);
-			ser.Sync("SatDmaPerformed", ref SatDmaPerformed);
+			ser.Sync(nameof(DmaRequested), ref DmaRequested);
+			ser.Sync(nameof(SatDmaRequested), ref SatDmaRequested);
+			ser.Sync(nameof(SatDmaPerformed), ref SatDmaPerformed);
 
-			ser.Sync("ScanLine", ref ScanLine);
-			ser.Sync("BackgroundY", ref BackgroundY);
-			ser.Sync("RCRCounter", ref RCRCounter);
-			ser.Sync("ActiveLine", ref ActiveLine);
+			ser.Sync(nameof(ScanLine), ref ScanLine);
+			ser.Sync(nameof(BackgroundY), ref BackgroundY);
+			ser.Sync(nameof(RCRCounter), ref RCRCounter);
+			ser.Sync(nameof(ActiveLine), ref ActiveLine);
 			ser.EndSection();
 
 			if (ser.IsReader)

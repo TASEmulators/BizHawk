@@ -13,6 +13,11 @@ namespace BizHawk.Client.Common
 {
 	public static class PathManager
 	{
+		static PathManager()
+		{
+			SetDefaultIniPath(MakeProgramRelativePath("config.ini"));
+		}
+
 		public static string GetExeDirectoryAbsolute()
 		{
 			var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -29,7 +34,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string MakeProgramRelativePath(string path)
 		{
-			return MakeAbsolutePath("%exe%/" + path, null);
+			return MakeAbsolutePath($"%exe%/{path}", null);
 		}
 
 		public static string GetDllDirectory()
@@ -40,7 +45,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
-		public static string DefaultIniPath => MakeProgramRelativePath("config.ini");
+		public static string DefaultIniPath { get; private set; }
+
+		public static void SetDefaultIniPath(string newDefaultIniPath)
+		{
+			DefaultIniPath = newDefaultIniPath;
+		}
 
 		/// <summary>
 		/// Gets absolute base as derived from EXE
@@ -100,17 +110,10 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			if (path.Length >= 5 && path.Substring(0, 5) == "%exe%")
-			{
-				if (path.Length == 5)
-				{
-					return GetExeDirectoryAbsolute();
-				}
-
-				var tmp = path.Remove(0, 5);
-				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-				return tmp;
-			}
+			if (path.StartsWith("%exe%"))
+				return GetExeDirectoryAbsolute() + path.Substring(5);
+			if (path.StartsWith("%rom%"))
+				return Global.Config.LastRomPath + path.Substring(5);
 
 			if (path[0] == '.')
 			{
@@ -140,7 +143,7 @@ namespace BizHawk.Client.Common
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
-			// all pad paths default to EXE
+			// all bad paths default to EXE
 			return GetExeDirectoryAbsolute();
 		}
 
@@ -231,7 +234,8 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
 				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", ""); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("\"", "")  // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("/", "+"); // Narry - Mario Bros / Duck hunt has a slash in the name which GetDirectoryName and GetFileName treat as if it were a folder
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
@@ -258,13 +262,13 @@ namespace BizHawk.Client.Common
 			var name = FilesystemSafeName(game);
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
 							Global.Config.PathEntries[game.System, "Base"];
 
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
+			return $"{Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name)}.SaveRAM";
 		}
 		
 		public static string AutoSaveRamPath(GameInfo game)
@@ -285,7 +289,7 @@ namespace BizHawk.Client.Common
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name = Path.Combine(name, "movie-" + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename));
+				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}");
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
@@ -333,28 +337,34 @@ namespace BizHawk.Client.Common
 			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Global.Emulator.SystemId == "NES")
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
+			}
+
+			// Gambatte and GBHawk have incompatible savestates, store the name to keep them separate
+			if (Global.Emulator.SystemId == "GB")
+			{
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			if (Global.Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			// Bsnes profiles have incompatible savestates so save the profile name
 			if (Global.Emulator is LibsnesCore)
 			{
-				name += "." + (Global.Emulator as LibsnesCore).CurrentProfile;
+				name += $".{((LibsnesCore)Global.Emulator).CurrentProfile}";
 			}
 
 			if (Global.Emulator.SystemId == "GBA")
 			{
-				name += "." + Global.Emulator.Attributes().CoreName;
+				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
@@ -454,5 +464,19 @@ namespace BizHawk.Client.Common
 
 			return entry;
 		}
+
+		/// <summary>
+		/// Puts the currently configured temp path into the environment for use as actual temp directory
+		/// </summary>
+		public static void RefreshTempPath()
+		{
+			if (Global.Config.PathEntries.TempFilesFragment != "")
+			{
+				//TODO - BUG - needs to route through PathManager.MakeAbsolutePath or something similar, but how?
+				string target = Global.Config.PathEntries.TempFilesFragment;
+				BizHawk.Common.TempFileManager.HelperSetTempPath(target);
+			}
+		}
 	}
+
 }

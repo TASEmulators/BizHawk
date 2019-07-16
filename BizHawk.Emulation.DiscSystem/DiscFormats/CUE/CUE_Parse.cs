@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				else switch (key)
 				{
 					default:
-						job.Warn("Unknown command: " + key);
+						job.Warn($"Unknown command: {key}");
 						break;
 
 					case "CATALOG":
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								switch (strType)
 								{
 									default:
-										job.Error("Unknown FILE type: " + strType);
+										job.Error($"Unknown FILE type: {strType}");
 										ft = CueFileType.Unspecified;
 										break;
 									case "BINARY": ft = CueFileType.BINARY; break;
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 								{
 									case "DATA":
 									default:
-										job.Warn("Unknown FLAG: " + flag);
+										job.Warn($"Unknown FLAG: {flag}");
 										break;
 									case "DCP": cmd.Flags |= CueTrackFlags.DCP; break;
 									case "4CH": cmd.Flags |= CueTrackFlags._4CH; break;
@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							int indexnum;
 							if (!int.TryParse(strindexnum, out indexnum) || indexnum < 0 || indexnum > 99)
 							{
-								job.Error("Invalid INDEX number: " + strindexnum);
+								job.Error($"Invalid INDEX number: {strindexnum}");
 								break;
 							}
 							string str_timestamp = clp.ReadToken();
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							if (!ts.Valid)
 							{
 								if (IN_Strict)
-									job.Error("Invalid INDEX timestamp: " + str_timestamp);
+									job.Error($"Invalid INDEX timestamp: {str_timestamp}");
 								break;
 							}
 							OUT_CueFile.Commands.Add(new CUE_File.Command.INDEX() { Number = indexnum, Timestamp = ts });
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						{
 							var isrc = clp.ReadToken();
 							if (isrc.Length != 12)
-								job.Warn("Invalid ISRC code ignored: " + isrc);
+								job.Warn($"Invalid ISRC code ignored: {isrc}");
 							else
 							{
 								OUT_CueFile.Commands.Add(OUT_CueFile.GlobalDiscInfo.ISRC = new CUE_File.Command.ISRC() { Value = isrc });
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							var str_msf = clp.ReadToken();
 							var msf = new Timestamp(str_msf);
 							if (!msf.Valid)
-								job.Error("Ignoring {0} with invalid length MSF: " + str_msf, key);
+								job.Error($"Ignoring {{0}} with invalid length MSF: {str_msf}", key);
 							else
 							{
 								if (key == "POSTGAP")
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							int tracknum;
 							if (!int.TryParse(str_tracknum, out tracknum) || tracknum < 1 || tracknum > 99)
 							{
-								job.Error("Invalid TRACK number: " + str_tracknum);
+								job.Error($"Invalid TRACK number: {str_tracknum}");
 								break;
 							}
 
@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 							switch (str_trackType.ToUpperInvariant())
 							{
 								default:
-									job.Error("Unknown TRACK type: " + str_trackType);
+									job.Error($"Unknown TRACK type: {str_trackType}");
 									tt = CueTrackType.Unknown;
 									break;
 								case "AUDIO": tt = CueTrackType.Audio; break;
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 						//add a comment
 						OUT_CueFile.Commands.Add(new CUE_File.Command.COMMENT() { Value = remainder });
 					}
-					else job.Warn("Unknown text at end of line after processing command: " + key);
+					else job.Warn($"Unknown text at end of line after processing command: {key}");
 				}
 
 			} //end cue parsing loop

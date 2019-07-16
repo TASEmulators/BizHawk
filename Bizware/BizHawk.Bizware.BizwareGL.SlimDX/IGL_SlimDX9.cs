@@ -210,7 +210,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				}
 				catch (Exception ex)
 				{
-					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+					throw new InvalidOperationException($"Error compiling shader: {errors}", ex);
 				}
 
 				sw.ps = new PixelShader(dev, bytecode);
@@ -266,7 +266,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				}
 				catch (Exception ex)
 				{
-					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+					throw new InvalidOperationException($"Error compiling shader: {errors}", ex);
 				}
 
 				sw.vs = new VertexShader(dev, bytecode);
@@ -311,18 +311,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if(glmode == gl.BlendingFactorSrc.DstColor) return Blend.DestinationColor;
 			if(glmode == gl.BlendingFactorSrc.OneMinusDstColor) return Blend.InverseDestinationColor;
 			if(glmode == gl.BlendingFactorSrc.SrcAlphaSaturate) return Blend.SourceAlphaSaturated;
-			if(glmode == gl.BlendingFactorSrc.ConstantColorExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.ConstantColor) return Blend.BlendFactor;
 			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColor) return Blend.InverseBlendFactor;
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColorExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.ConstantAlpha) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.ConstantAlphaExt) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlphaExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlpha) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.Src1Alpha) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.Src1Color) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.OneMinusSrc1Color) throw new NotSupportedException();
 			if (glmode == gl.BlendingFactorSrc.OneMinusSrc1Alpha) throw new NotSupportedException();
+			/* Compiles when commented
+			if(glmode == gl.BlendingFactorSrc.ConstantColorExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColorExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.ConstantAlphaExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlphaExt) throw new NotSupportedException();
+			*/
 			throw new ArgumentOutOfRangeException();
 		}
 
@@ -379,9 +381,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		{
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
-				string errors = string.Format("Vertex Shader:\r\n {0} \r\n-------\r\nFragment Shader:\r\n{1}", vertexShader.Errors, fragmentShader.Errors);
+				string errors = $"Vertex Shader:\r\n {vertexShader.Errors} \r\n-------\r\nFragment Shader:\r\n{fragmentShader.Errors}";
 				if (required)
-					throw new InvalidOperationException("Couldn't build required GL pipeline:\r\n" + errors);
+					throw new InvalidOperationException($"Couldn't build required GL pipeline:\r\n{errors}");
 				var pipeline = new Pipeline(this, null, false, null, null, null);
 				pipeline.Errors = errors;
 				return pipeline;
@@ -464,11 +466,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					var handle = tuple.Item2;
 					var descr = ct.GetConstantDescription(handle);
 
-					//Console.WriteLine("D3D UNIFORM: " + descr.Name);
+					//Console.WriteLine($"D3D UNIFORM: {descr.Name}");
 
 					if (descr.StructMembers != 0)
 					{
-						string newprefix = prefix + descr.Name + ".";
+						string newprefix = $"{prefix}{descr.Name}.";
 						for (int j = 0; j < descr.StructMembers; j++)
 						{
 							var subhandle = ct.GetConstant(handle, j);
@@ -488,7 +490,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					{
 						string key = name.TrimStart('$');
 						if (descr.Rows != 1)
-							key = key + "[0]";
+							key += "[0]";
 						if (fs.MapCodeToNative != null && ct == fsct) if (fs.MapCodeToNative.ContainsKey(key)) name = fs.MapCodeToNative[key];
 						if (vs.MapCodeToNative != null && ct == vsct) if (vs.MapCodeToNative.ContainsKey(key)) name = vs.MapCodeToNative[key];
 					}
@@ -517,6 +519,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void FreePipeline(Pipeline pipeline)
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
+
+			//unavailable pipelines will have no opaque
+			if (pw == null)
+				return;
 
 			pw.VertexDeclaration.Dispose();
 			pw.FragmentShader.IGLShader.Release();

@@ -59,19 +59,9 @@ namespace BizHawk.Client.Common
 			int startTime = (int)(start * 1000 / fps);
 			int endTime = (int)(end * 1000 / fps);
 
-			var startString = string.Format(
-				"{0:d2}:{1:d2}:{2:d2},{3:d3}",
-				startTime / 3600000,
-				(startTime / 60000) % 60,
-				(startTime / 1000) % 60,
-				startTime % 1000);
+			var startString = $"{startTime / 3600000:d2}:{(startTime / 60000) % 60:d2}:{(startTime / 1000) % 60:d2},{startTime % 1000:d3}";
 
-			var endString = string.Format(
-				"{0:d2}:{1:d2}:{2:d2},{3:d3}",
-				endTime / 3600000,
-				(endTime / 60000) % 60,
-				(endTime / 1000) % 60,
-				endTime % 1000);
+			var endString = $"{endTime / 3600000:d2}:{(endTime / 60000) % 60:d2}:{(endTime / 1000) % 60:d2},{endTime % 1000:d3}";
 
 			sb.Append(startString);
 			sb.Append(" --> ");

@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnExport_Click(object sender, EventArgs e)
 		{
-			string tmpf = Path.GetTempFileName() + ".zip";
+			string tmpf = $"{Path.GetTempFileName()}.zip";
 			using (var stream = new FileStream(tmpf, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				var zip = new ZipOutputStream(stream)
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var entry in PSGEntries)
 				{
-					var ze = new ZipEntry(entry.name + ".wav") { CompressionMethod = CompressionMethod.Deflated };
+					var ze = new ZipEntry($"{entry.name}.wav") { CompressionMethod = CompressionMethod.Deflated };
 					zip.PutNextEntry(ze);
 					var ms = new MemoryStream();
 					var bw = new BinaryWriter(ms);

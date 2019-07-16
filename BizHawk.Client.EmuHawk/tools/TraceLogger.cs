@@ -133,7 +133,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ToWindowRadio.Checked)
 				{
-					TraceView.VirtualListSize = _instructions.Count;
+					// setting to zero first fixes an exception when scrolling the view
+					// how or why I don't know
+					// it's hidden behind an internal class ListViewNativeItemCollection
+					TraceView.VirtualListSize = 0;
+					TraceView.VirtualListSize = _instructions.Count;		
 				}
 				else
 				{
@@ -148,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 					//connect tracer to sink for next frame
 					if (ToWindowRadio.Checked)
 					{
-						//update listview with most recentr results
+						//update listview with most recent results
 						TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
 
 						Tracer.Sink = new CallbackSink()
@@ -174,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 							putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
-								var data = string.Format("{0} {1}", info.Disassembly, info.RegisterInfo);
+								var data = $"{info.Disassembly} {info.RegisterInfo}";
 								_streamWriter.WriteLine(data);
 								_currentSize += (ulong)data.Length;
 								if (_splitFile)
@@ -215,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var instruction in _instructions)
 			{
 				//no padding supported. core should be doing this!
-				var data = string.Format("{0} {1}", instruction.Disassembly, instruction.RegisterInfo);
+				var data = $"{instruction.Disassembly} {instruction.RegisterInfo}";
 				_streamWriter.WriteLine(data);
 				_currentSize += (ulong)data.Length;
 				if (_splitFile)
@@ -242,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (_instructions.Any())
 				{
-					TracerBox.Text = "Trace log - logging - " + _instructions.Count + " instructions";
+					TracerBox.Text = $"Trace log - logging - {_instructions.Count} instructions";
 				}
 				else
 				{
@@ -253,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_instructions.Any())
 				{
-					TracerBox.Text = "Trace log - " + _instructions.Count + " instructions";
+					TracerBox.Text = $"Trace log - {_instructions.Count} instructions";
 				}
 				else
 				{
@@ -315,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StartLogFile();
 				DumpToDisk();
-				GlobalWin.OSD.AddMessage("Log dumped to " + LogFile.FullName);
+				GlobalWin.OSD.AddMessage($"Log dumped to {LogFile.FullName}");
 				CloseFile();
 			}
 		}
@@ -334,9 +338,7 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					blob.Append(string.Format("{0} {1}\n",
-						_instructions[index].Disassembly,
-						_instructions[index].RegisterInfo));
+					blob.Append($"{_instructions[index].Disassembly} {_instructions[index].RegisterInfo}\n");
 				}
 				Clipboard.SetDataObject(blob.ToString());
 			}
@@ -415,8 +417,9 @@ namespace BizHawk.Client.EmuHawk
 		private void StartLogFile(bool append = false)
 		{
 			var data = Tracer.Header;
-			var segment = _segmentCount > 0 ? "_" + _segmentCount.ToString() : "";
-			_streamWriter = new StreamWriter(_baseName + segment + _extension, append);
+			_streamWriter = new StreamWriter(
+				string.Concat(_baseName, _segmentCount == 0 ? string.Empty : $"_{_segmentCount}", _extension),
+				append);
 			_streamWriter.WriteLine(data);
 			if (append)
 			{

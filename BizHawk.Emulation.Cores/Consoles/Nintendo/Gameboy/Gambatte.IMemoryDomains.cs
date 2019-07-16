@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, which, ref data, ref length))
 			{
-				throw new Exception("gambatte_getmemoryarea() failed!");
+				throw new Exception($"{nameof(LibGambatte.gambatte_getmemoryarea)}() failed!");
 			}
 
 			// if length == 0, it's an empty block; (usually rambank on some carts); that's ok

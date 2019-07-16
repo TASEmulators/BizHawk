@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			if (!BizSwan.bizswan_binstatesave(Core, savebuff, savebuff.Length))
-				throw new InvalidOperationException("bizswan_binstatesave() returned false!");
+				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_binstatesave)}() returned false!");
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw new InvalidOperationException("Save buffer size mismatch!");
 			reader.Read(savebuff, 0, length);
 			if (!BizSwan.bizswan_binstateload(Core, savebuff, savebuff.Length))
-				throw new InvalidOperationException("bizswan_binstateload() returned false!");
+				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_binstateload)}() returned false!");
 
 			var d = BinaryQuickSerializer.Create<TextStateData>(reader);
 			LoadTextStateData(d);

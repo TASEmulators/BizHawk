@@ -131,11 +131,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				timer_old = timer;
 				timer++;
 
-				// if overflow, set the interrupt flag and reload the timer (4 clocks later)
+				// if overflow happens, set the interrupt flag and reload the timer (if applicable)
 				if (timer < timer_old)
 				{
-					pending_reload = 4;
-					reload_block = false;
+					if (timer_control.Bit(2))
+					{
+						pending_reload = 4;
+						reload_block = false;
+					}
+					else
+					{
+						//TODO: Check if timer still gets reloaded if TAC diabled causes overflow
+						if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
+						Core.REG_FF0F |= 0x04;
+					}				
 				}
 			}
 
@@ -144,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			divider_reg = 0;
+			divider_reg = Core._syncSettings._DivInitialTime;
 			timer_reload = 0;
 			timer = 0;
 			timer_old = 0;
@@ -159,17 +168,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("divider_reg", ref divider_reg);
-			ser.Sync("timer_reload", ref timer_reload);
-			ser.Sync("timer", ref timer);
-			ser.Sync("timer_old", ref timer_old);
-			ser.Sync("timer_control", ref timer_control);
-			ser.Sync("pending_reload", ref pending_reload);
-			ser.Sync("write_ignore", ref write_ignore);
-			ser.Sync("old_state", ref old_state);
-			ser.Sync("state", ref state);
-			ser.Sync("reload_block", ref reload_block);
-			ser.Sync("TMA_coincidence", ref TMA_coincidence);
+			ser.Sync(nameof(divider_reg), ref divider_reg);
+			ser.Sync(nameof(timer_reload), ref timer_reload);
+			ser.Sync(nameof(timer), ref timer);
+			ser.Sync(nameof(timer_old), ref timer_old);
+			ser.Sync(nameof(timer_control), ref timer_control);
+			ser.Sync(nameof(pending_reload), ref pending_reload);
+			ser.Sync(nameof(write_ignore), ref write_ignore);
+			ser.Sync(nameof(old_state), ref old_state);
+			ser.Sync(nameof(state), ref state);
+			ser.Sync(nameof(reload_block), ref reload_block);
+			ser.Sync(nameof(TMA_coincidence), ref TMA_coincidence);
 		}
 	}
 }

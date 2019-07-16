@@ -324,9 +324,8 @@ namespace BizHawk.Client.MultiHawk
 							.Append(_movieList[index].GameName).Append('\t')
 							.Append(PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff"))
 							.AppendLine();
-
-						Clipboard.SetDataObject(copyStr.ToString());
 					}
+					Clipboard.SetDataObject(copyStr.ToString());
 				}
 			}
 		}
@@ -340,97 +339,48 @@ namespace BizHawk.Client.MultiHawk
 		private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			var columnName = MovieView.Columns[e.Column].Text;
-			if (_sortedCol != columnName)
-			{
-				_sortReverse = false;
-			}
-
 			switch (columnName)
 			{
 				case "File":
-					if (_sortReverse)
-					{
-						_movieList = _movieList
-							.OrderByDescending(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
-					else
-					{
-						_movieList = _movieList
-							.OrderBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
+				default:
+					_movieList = _movieList.OrderBy(x => Path.GetFileName(x.Filename))
+						.ThenBy(x => x.SystemID)
+						.ThenBy(x => x.GameName)
+						.ThenBy(x => x.FrameCount)
+						.ToList();
 					break;
 				case "SysID":
-					if (_sortReverse)
-					{
-						_movieList = _movieList
-							.OrderByDescending(x => x.SystemID)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
-					else
-					{
-						_movieList = _movieList
-							.OrderBy(x => x.SystemID)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.GameName)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
+					_movieList = _movieList.OrderBy(x => x.SystemID)
+						.ThenBy(x => Path.GetFileName(x.Filename))
+						.ThenBy(x => x.GameName)
+						.ThenBy(x => x.FrameCount)
+						.ToList();
 					break;
 				case "Game":
-					if (_sortReverse)
-					{
-						_movieList = _movieList
-							.OrderByDescending(x => x.GameName)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
-					else
-					{
-						_movieList = _movieList
-							.OrderBy(x => x.GameName)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
+					_movieList = _movieList.OrderBy(x => x.GameName)
+						.ThenBy(x => Path.GetFileName(x.Filename))
+						.ThenBy(x => x.SystemID)
+						.ThenBy(x => x.FrameCount)
+						.ToList();
 					break;
 				case "Length (est.)":
-					if (_sortReverse)
-					{
-						_movieList = _movieList
-							.OrderByDescending(x => x.FrameCount)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.FrameCount)
-							.ToList();
-					}
-					else
-					{
-						_movieList = _movieList
-							.OrderBy(x => x.FrameCount)
-							.ThenBy(x => Path.GetFileName(x.Filename))
-							.ThenBy(x => x.SystemID)
-							.ThenBy(x => x.GameName)
-							.ToList();
-					}
+					_movieList = _movieList.OrderBy(x => x.FrameCount)
+						.ThenBy(x => Path.GetFileName(x.Filename))
+						.ThenBy(x => x.SystemID)
+						.ThenBy(x => x.GameName)
+						.ToList();
 					break;
 			}
-
-			_sortedCol = columnName;
-			_sortReverse = !_sortReverse;
+			if (_sortedCol == columnName && _sortReverse)
+			{
+				_movieList.Reverse();
+				_sortReverse = false;
+			}
+			else
+			{
+				_sortReverse = true;
+				_sortedCol = columnName;
+			}
 			MovieView.Refresh();
 		}
 
@@ -485,7 +435,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			var FpsItem = new ListViewItem("Fps");
-			FpsItem.SubItems.Add(string.Format("{0:0.#######}", Fps(_movieList[firstIndex])));
+			FpsItem.SubItems.Add($"{Fps(_movieList[firstIndex]):0.#######}");
 			DetailsView.Items.Add(FpsItem);
 
 			var FramesItem = new ListViewItem("Frames");

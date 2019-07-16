@@ -96,11 +96,11 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
-		/// <summary>
-		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
-		/// NOT SURE WE NEED THIS
-		/// </summary>
-		//public DiscMountPolicy DiscMountPolicy;
+//		/// <summary>
+//		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
+//		/// NOT SURE WE NEED THIS
+//		/// </summary>
+//		public DiscMountPolicy DiscMountPolicy;
 
 
 

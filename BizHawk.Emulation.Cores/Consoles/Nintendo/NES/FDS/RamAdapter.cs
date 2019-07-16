@@ -98,9 +98,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 1 new input bit.  x.25 standard
 		/// </summary>
-		/// <param name="crc"></param>
-		/// <param name="bit"></param>
-		/// <returns></returns>
 		static ushort CCITT(ushort crc, int bit)
 		{
 			int bitc = crc & 1;
@@ -113,9 +110,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// advance a 16 bit CRC register with 8 new input bits.  x.25 standard
 		/// </summary>
-		/// <param name="crc"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
 		static ushort CCITT_8(ushort crc, byte b)
 		{
 			for (int i = 0; i < 8; i++)
@@ -130,34 +124,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("originaldisk", ref originaldisk, true);
-			ser.Sync("disk", ref disk, true);
-			ser.Sync("diskpos", ref diskpos);
-			ser.Sync("disksize", ref disksize);
-			ser.Sync("writeprotect", ref writeprotect);
+			ser.Sync(nameof(originaldisk), ref originaldisk, true);
+			ser.Sync(nameof(disk), ref disk, true);
+			ser.Sync(nameof(diskpos), ref diskpos);
+			ser.Sync(nameof(disksize), ref disksize);
+			ser.Sync(nameof(writeprotect), ref writeprotect);
 
-			ser.Sync("cycleswaiting", ref cycleswaiting);
+			ser.Sync(nameof(cycleswaiting), ref cycleswaiting);
 			{
 				int tmp = (int)state;
-				ser.Sync("state", ref tmp);
+				ser.Sync(nameof(state), ref tmp);
 				state = (RamAdapterState)tmp;
 			}
-			ser.Sync("cached4025", ref cached4025);
-			ser.Sync("irq", ref irq);
-			ser.Sync("transferreset", ref transferreset);
+			ser.Sync(nameof(cached4025), ref cached4025);
+			ser.Sync(nameof(irq), ref irq);
+			ser.Sync(nameof(transferreset), ref transferreset);
 
-			ser.Sync("crc", ref crc);
-			ser.Sync("writecomputecrc", ref writecomputecrc);
+			ser.Sync(nameof(crc), ref crc);
+			ser.Sync(nameof(writecomputecrc), ref writecomputecrc);
 
-			ser.Sync("readreg", ref readreg);
-			ser.Sync("writereg", ref writereg);
-			ser.Sync("readregpos", ref readregpos);
-			ser.Sync("writeregpos", ref writeregpos);
-			ser.Sync("readreglatch", ref readreglatch);
-			ser.Sync("writereglatch", ref writereglatch);
+			ser.Sync(nameof(readreg), ref readreg);
+			ser.Sync(nameof(writereg), ref writereg);
+			ser.Sync(nameof(readregpos), ref readregpos);
+			ser.Sync(nameof(writeregpos), ref writeregpos);
+			ser.Sync(nameof(readreglatch), ref readreglatch);
+			ser.Sync(nameof(writereglatch), ref writereglatch);
 
-			ser.Sync("bytetransferflag", ref bytetransferflag);
-			ser.Sync("lookingforendofgap", ref lookingforendofgap);
+			ser.Sync(nameof(bytetransferflag), ref bytetransferflag);
+			ser.Sync(nameof(lookingforendofgap), ref lookingforendofgap);
 		}
 
 		#region state
@@ -214,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			disk = null;
 			state = RamAdapterState.IDLE;
 			SetCycles();
-			Console.WriteLine("FDS: Disk ejected");
+			//Console.WriteLine("FDS: Disk ejected");
 			DriveLightCallback?.Invoke(false);
 		}
 
@@ -234,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.writeprotect = writeprotect;
 			state = RamAdapterState.INSERTING;
 			SetCycles();
-			Console.WriteLine("FDS: Disk Inserted");
+			//Console.WriteLine("FDS: Disk Inserted");
 			originaldisk = (byte[])disk.Clone();
 			DriveLightCallback?.Invoke(false);
 		}
@@ -289,8 +283,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// memorydomain debugging
 		/// </summary>
-		/// <param name="addr"></param>
-		/// <returns></returns>
 		public byte PeekData(long addr)
 		{
 			if (disk != null && disk.Length > addr)
@@ -357,7 +349,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// data write reg
 		/// </summary>
-		/// <param name="value"></param>
 		public void Write4024(byte value)
 		{
 			bytetransferflag = false;
@@ -369,7 +360,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// control reg
 		/// </summary>
-		/// <param name="value"></param>
 		public void Write4025(byte value)
 		{
 			if ((value & 1) != 0) // start motor
@@ -388,7 +378,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			if ((value & 2) != 0)
+			{
 				transferreset = true;
+			}
+			else
+			{
+				transferreset = false;
+			}
+				
 			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
 			{
 				lookingforendofgap = true;
@@ -418,7 +415,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// general status reg, some bits are from outside the RamAdapter class
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4030()
 		{
 			byte ret = 0;
@@ -441,7 +437,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// more status stuff
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4031()
 		{
 			bytetransferflag = false;
@@ -458,7 +453,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// more status stuff
 		/// </summary>
-		/// <returns></returns>
 		public byte Read4032()
 		{
 			byte ret = 0xff;
@@ -468,6 +462,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret &= unchecked((byte)~0x02);
 			if (disk != null && state != RamAdapterState.INSERTING && !writeprotect)
 				ret &= unchecked((byte)~0x04);
+
+			//Console.Write(state);
 
 			return ret;
 		}
@@ -491,9 +487,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							Write();
 						if (diskpos >= disksize)
 						{
-							// Console.WriteLine("FDS: End of Disk");
+							//Console.WriteLine("FDS: End of Disk");
 							state = RamAdapterState.RESET;
-							transferreset = false;
+							//transferreset = false;
 							//numcrc = 0;
 							DriveLightCallback?.Invoke(false);
 						}
@@ -505,9 +501,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						state = RamAdapterState.IDLE;
 						diskpos = 0;
 						SetCycles();
-						transferreset = false;
+						//transferreset = false;
 						//numcrc = 0;
-						// Console.WriteLine("FDS: Return or Insert Complete");
+						//Console.WriteLine("FDS: Return or Insert Complete");
 						DriveLightCallback?.Invoke(false);
 						break;
 					case RamAdapterState.SPINUP:

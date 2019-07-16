@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class BreakpointList : List<Breakpoint>
 	{
-		public Action Callback { get; set; }
+		public MemoryCallbackDelegate Callback { get; set; }
 
 		public void Add(IDebuggable core, string scope, uint address, uint mask, MemoryCallbackType type)
 		{
@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _active;
 		private readonly IDebuggable _core;
 
-		public Breakpoint(bool readOnly, IDebuggable core, string scope, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(bool readOnly, IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
 			_core = core;
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			ReadOnly = readOnly;
 		}
 
-		public Breakpoint(IDebuggable core, string scope, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
 			_core = core;
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			Active = enabled;
 		}
 
-		public Breakpoint(string name, bool readOnly, IDebuggable core, string scope, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(string name, bool readOnly, IDebuggable core, string scope, MemoryCallbackDelegate callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			Scope = scope;
 			_core = core;
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string Scope { get; }
-		public Action Callback { get; }
+		public MemoryCallbackDelegate Callback { get; }
 		public uint? Address { get; set; }
 		public uint? AddressMask { get; set; }
 		public MemoryCallbackType Type { get; set; }

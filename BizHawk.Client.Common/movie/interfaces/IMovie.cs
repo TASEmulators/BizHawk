@@ -35,6 +35,11 @@ namespace BizHawk.Client.Common
 		int InputLogLength { get; }
 
 		/// <summary>
+		/// Gets the actual length of time a movie lasts for. For subframe cores, this will be different then the above two options
+		/// </summary>
+		int TimeLength { get; }
+
+		/// <summary>
 		/// Gets the file extension for the current <see cref="IMovie"/> implementation
 		/// </summary>
 		string PreferredExtension { get; }

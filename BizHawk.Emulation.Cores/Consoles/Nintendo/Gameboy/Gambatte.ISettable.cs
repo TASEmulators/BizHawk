@@ -47,11 +47,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSettings
 		{
+			/* Green Palette
 			private static readonly int[] DefaultPalette =
 			{
 				10798341, 8956165, 1922333, 337157,
 				10798341, 8956165, 1922333, 337157,
 				10798341, 8956165, 1922333, 337157
+			};
+			*/
+			// Grey Scale Palette
+			private static readonly int[] DefaultPalette =
+			{
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0,
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0,
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0
 			};
 
 			public int[] GBPalette;
@@ -107,21 +116,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool RealTimeRTC { get; set; }
 
-			[DisplayName("RTC Initial Time")]
-			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
+			[DisplayName("RTC Divisor Offset")]
+			[Description("CPU clock frequency relative to real time clock. Base value is 2^22 Hz. Used in cycle-based RTC to sync on real hardware to account for RTC imperfections.")]
 			[DefaultValue(0)]
-			public int RTCInitialTime
-			{
-				get { return _RTCInitialTime; }
-				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
-			}
-
-			[JsonIgnore]
-			private int _RTCInitialTime;
+			public int RTCDivisorOffset { get; set; }
 
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool EqualLengthFrames
 			{
 				get { return _equalLengthFrames; }

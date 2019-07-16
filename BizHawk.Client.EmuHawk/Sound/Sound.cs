@@ -4,6 +4,7 @@ using System.Threading;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		public const int BlockAlign = BytesPerSample * ChannelCount;
 
 		private bool _disposed;
+		private bool _unjamSoundThrottle;
+
 		private readonly ISoundOutput _outputDevice;
 		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
@@ -22,16 +25,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-#if WINDOWS
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
-				_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
-
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
-				_outputDevice = new XAudio2SoundOutput(this);
-#endif
-
-			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
-				_outputDevice = new OpenALSoundOutput(this);
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			{
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
+					_outputDevice = new OpenALSoundOutput(this);
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+					_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
+					_outputDevice = new XAudio2SoundOutput(this);
+			}
+			else _outputDevice = new OpenALSoundOutput(this); // at the moment unix/mono can only support OpenAL (so ignore whatever is set in the config)
 
 			if (_outputDevice == null)
 				_outputDevice = new DummySoundOutput(this);
@@ -117,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
 			_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
 			samplesNeeded -= silenceSamples;
+			_unjamSoundThrottle = isUnderrun;
 
 			if (isUnderrun)
 			{
@@ -163,7 +167,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
 						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
+						if (_unjamSoundThrottle)
+						{
+							//may be garbage, but what can we do?
+							samplesProvided = samplesNeeded;
+							break;
+						}
 					}
+					_unjamSoundThrottle = false;
 				}
 				else
 				{

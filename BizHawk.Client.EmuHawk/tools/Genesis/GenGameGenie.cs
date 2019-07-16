@@ -187,8 +187,8 @@ namespace BizHawk.Client.EmuHawk
 					int val = 0;
 					int add = 0;
 					GenGGDecode(GGCodeMaskBox.Text, ref val, ref add);
-					AddressBox.Text = string.Format("{0:X6}", add);
-					ValueBox.Text = string.Format("{0:X4}", val);
+					AddressBox.Text = $"{add:X6}";
+					ValueBox.Text = $"{val:X4}";
 					AddCheatButton.Enabled = true;
 				}
 				else

@@ -394,7 +394,6 @@ static void prefetch(void)
    else
    {
       DebugMessage(M64MSG_ERROR, "prefetch() execute address :%x", PC->addr);
-      stop=1;
    }
 }
 

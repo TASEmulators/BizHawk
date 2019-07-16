@@ -45,6 +45,8 @@ namespace BizHawk.Client.Common
 		
 		public int InputLogLength => _log.Count;
 
+		public int TimeLength => _log.Count;
+
 		public double FrameCount
 		{
 			get

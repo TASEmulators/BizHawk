@@ -57,13 +57,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				PickVSPalette(cart);
 			}
 
-
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
-			ser.Register<ISoundProvider>(magicSoundProvider);
+			ser.Register<ISoundProvider>(this);
 
 			if (Board is BANDAI_FCG_1)
 			{
@@ -123,101 +122,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			get { return Board is FDS; }
 		}
 
-		NESWatch GetWatch(NESWatch.EDomain domain, int address)
-		{
-			if (domain == NESWatch.EDomain.Sysbus)
-			{
-				NESWatch ret = sysbus_watch[address] ?? new NESWatch(this, domain, address);
-				sysbus_watch[address] = ret;
-				return ret;
-			}
-			return null;
-		}
-
-		class NESWatch
-		{
-			public enum EDomain
-			{
-				Sysbus
-			}
-
-			public NESWatch(NES nes, EDomain domain, int address)
-			{
-				Address = address;
-				Domain = domain;
-				if (domain == EDomain.Sysbus)
-				{
-					watches = nes.sysbus_watch;
-				}
-			}
-			public int Address;
-			public EDomain Domain;
-
-			public enum EFlags
-			{
-				None = 0,
-				GameGenie = 1,
-				ReadPrint = 2
-			}
-			EFlags flags;
-
-			public void Sync()
-			{
-				if (flags == EFlags.None)
-					watches[Address] = null;
-				else watches[Address] = this;
-			}
-
-			public void SetGameGenie(byte? compare, byte value)
-			{
-				flags |= EFlags.GameGenie;
-				Compare = compare;
-				Value = value;
-				Sync();
-			}
-
-			public bool HasGameGenie
-			{
-				get
-				{
-					return (flags & EFlags.GameGenie) != 0;
-				}
-			}
-
-			public byte ApplyGameGenie(byte curr)
-			{
-				if (!HasGameGenie)
-				{
-					return curr;
-				}
-				else if (curr == Compare || Compare == null)
-				{
-					Console.WriteLine("applied game genie");
-					return (byte)Value;
-				}
-				else
-				{
-					return curr;
-				}
-			}
-
-			public void RemoveGameGenie()
-			{
-				flags &= ~EFlags.GameGenie;
-				Sync();
-			}
-
-			byte? Compare;
-			byte Value;
-
-			NESWatch[] watches;
-		}
-
 		public CoreComm CoreComm { get; private set; }
 
 		public DisplayType Region { get { return _display_type; } }
 
-		class MyVideoProvider : IVideoProvider
+		public class MyVideoProvider : IVideoProvider
 		{
 			//public int ntsc_top = 8;
 			//public int ntsc_bottom = 231;
@@ -337,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int VsyncDenominator => emu.VsyncDen;
 		}
 
-		MyVideoProvider videoProvider;
+		public MyVideoProvider videoProvider;
 
 		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =

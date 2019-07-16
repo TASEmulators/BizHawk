@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			_mCapacity = capacity;
 			if (onDisk)
 			{
-				var path = TempFileCleaner.GetTempFilename("rewindbuf");
+				var path = TempFileManager.GetTempFilename("rewindbuf");
 
 				// I checked the DeleteOnClose operation to make sure it cleans up when the process is aborted, and it seems to.
 				// Otherwise we would have a more complex tempfile management problem here.
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mHead == null)
 			{
-				throw new InvalidOperationException("Attempted to pop from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Pop)} from an empty data structure");
 			}
 
 			var ret = _mHead.Value;
@@ -213,7 +213,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mHead == null)
 			{
-				throw new InvalidOperationException("Attempted to peek from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Peek)} from an empty data structure");
 			}
 
 			return _mHead.Value;
@@ -223,7 +223,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_mTail == null)
 			{
-				throw new InvalidOperationException("Attempted to dequeue from an empty data structure");
+				throw new InvalidOperationException($"Attempted to {nameof(Dequeue)} from an empty data structure");
 			}
 
 			var ret = _mTail.Value;

@@ -44,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
@@ -78,6 +77,9 @@ namespace BizHawk.Client.EmuHawk
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
 		private HexFind _hexFind = new HexFind();
+
+		[ConfigPersist]
+		private string LastDomain { get; set; }
 
 		[ConfigPersist]
 		private bool SwapBytes { get; set; }
@@ -235,6 +237,28 @@ namespace BizHawk.Client.EmuHawk
 			return str.Select(Convert.ToByte).ToArray();
 		}
 
+		public byte[] ConvertHexStringToByteArray(string str)
+		{
+			if (string.IsNullOrWhiteSpace(str)) {
+				return new byte[0];
+			}
+
+			// TODO: Better method of handling this?
+			if (str.Length % 2 == 1)
+			{
+				str += "0";
+			}
+
+			byte[] bytes = new byte[str.Length / 2];
+			
+			for (int i = 0; i < str.Length; i += 2)
+			{
+				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+			}
+			
+			return bytes;
+		}
+
 		public void FindNext(string value, bool wrap)
 		{
 			long found = -1;
@@ -261,16 +285,20 @@ namespace BizHawk.Client.EmuHawk
 				startByte = _addressHighlighted + DataSize;
 			}
 
+			byte[] searchBytes = ConvertHexStringToByteArray(search);
 			for (var i = startByte; i < (_domain.Size - numByte); i++)
 			{
-				var ramblock = new StringBuilder();
+				bool differenceFound = false;
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					if (_domain.PeekByte(i + j) != searchBytes[j])
+					{
+						differenceFound = true;
+						break;
+					}
 				}
 
-				var block = ramblock.ToString().ToUpper();
-				if (search == block)
+				if (!differenceFound)
 				{
 					found = i;
 					break;
@@ -313,16 +341,19 @@ namespace BizHawk.Client.EmuHawk
 				startByte = _addressHighlighted - 1;
 			}
 
+			byte[] searchBytes = ConvertHexStringToByteArray(search);
 			for (var i = startByte; i >= 0; i--)
 			{
-				var ramblock = new StringBuilder();
+				bool differenceFound = false;
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					if (_domain.PeekByte(i + j) != searchBytes[j]) {
+						differenceFound = true;
+						break;
+					}
 				}
 
-				var block = ramblock.ToString().ToUpper();
-				if (search == block)
+				if (!differenceFound)
 				{
 					found = i;
 					break;
@@ -363,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 					return '.';
 				}
 
-				if (val >= 0x80)
+				if (val >= 0x7F)
 				{
 					return '.';
 				}
@@ -460,6 +491,12 @@ namespace BizHawk.Client.EmuHawk
 			DataSize = _domain.WordSize;
 			SetDataSize(DataSize);
 
+			if (!string.IsNullOrWhiteSpace(LastDomain)
+				&& MemoryDomains.Any(m => m.Name == LastDomain))
+			{
+				SetMemoryDomain(LastDomain);
+			}
+
 			if (RecentTables.AutoLoad)
 			{
 				LoadFileFromRecent(RecentTables[0]);
@@ -508,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 					addrStr.Append("  ");
 				}
 
-				addrStr.AppendLine(_addr.ToHexString(_numDigits) + " |");
+				addrStr.AppendLine($"{_addr.ToHexString(_numDigits)} |");
 			}
 
 			return addrStr.ToString();
@@ -540,12 +577,12 @@ namespace BizHawk.Client.EmuHawk
 
 							if (SwapBytes)
 							{
-								t_val += (t_next << (k * 8));															
+								t_val += (t_next << (k * 8));
 							}
 							else
 							{
 								t_val += (t_next << ((DataSize - k - 1) * 8));
-							}							
+							}
 						}
 
 						rowStr.AppendFormat(_digitFormatString, t_val);
@@ -653,6 +690,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateGroupBoxTitle();
 			SetHeader();
 			UpdateValues();
+			LastDomain = _domain.Name;
 		}
 
 		private void SetDomain(MemoryDomain domain)
@@ -662,9 +700,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateGroupBoxTitle()
 		{
-			var addressesString = "0x" + string.Format("{0:X8}", _domain.Size / DataSize).TrimStart('0');
-			MemoryViewerBox.Text = Emulator.SystemId + " " + _domain + (_domain.CanPoke() ? "" : " (READ-ONLY)") +
-				"  -  " + addressesString + " addresses";
+			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
+			MemoryViewerBox.Text = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
 		}
 
 		private void ClearNibbles()
@@ -731,8 +768,7 @@ namespace BizHawk.Client.EmuHawk
 				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
 				if (_secondaryHighlightedAddresses.Any())
 				{
-					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count() +
-						(_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1));
+					Text += $" (Selected 0x{_secondaryHighlightedAddresses.Count() + (_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1):X})";
 				}
 			}
 		}
@@ -759,7 +795,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_numDigits = GetNumDigits(_domain.Size);
-			_numDigitsStr = "{0:X" + _numDigits + "}  ";
+			_numDigitsStr = $"{{0:X{_numDigits}}}  ";
 		}
 
 		private void SetDataSize(int size)
@@ -767,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			if (size == 1 || size == 2 || size == 4)
 			{
 				DataSize = size;
-				_digitFormatString = "{0:X" + (DataSize * 2) + "} ";
+				_digitFormatString = $"{{0:X{DataSize * 2}}} ";
 				SetHeader();
 				UpdateGroupBoxTitle();
 				UpdateValues();
@@ -780,7 +816,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				default:
-				case 1:										
+				case 1:
 					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, "");
 				case 2:
 					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, "");
@@ -869,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var extension = Path.GetExtension(RomName);
 
-				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
+				return $"Binary (*{extension})|*{extension}|All Files|*.*";
 			}
 			
 			return "Binary (*.bin)|*.bin|All Files|*.*";
@@ -950,7 +986,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(RomName) + ".txt";
+				sfd.FileName = $"{Path.GetFileNameWithoutExtension(RomName)}.txt";
 			}
 			else
 			{
@@ -1242,6 +1278,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadTable(string path)
 		{
+			if (string.IsNullOrWhiteSpace(path))
+			{
+				return false;
+			}
+
 			var file = new FileInfo(path);
 			if (!file.Exists)
 			{
@@ -1343,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (var j = 0; j < 16; j++)
 						{
-							sb.Append(string.Format("{0:X2} ", _domain.PeekByte((i * 16) + j)));
+							sb.Append($"{_domain.PeekByte((i * 16) + j):X2} ");
 						}
 
 						sb.AppendLine();
@@ -1369,7 +1410,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var ofd = new OpenFileDialog
 			{
-				FileName = Path.GetFileNameWithoutExtension(romName) + ".tbl",
+				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
 				InitialDirectory = intialDirectory,
 				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
 				RestoreDirectory = false
@@ -1605,7 +1646,6 @@ namespace BizHawk.Client.EmuHawk
 			MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
 
 			romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
-
 		}
 
 		private void DataSizeByteMenuItem_Click(object sender, EventArgs e)
@@ -2290,7 +2330,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
+				//e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
 			}
 		}
 

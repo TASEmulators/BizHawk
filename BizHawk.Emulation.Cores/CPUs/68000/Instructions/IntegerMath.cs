@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
-			int reg = (op >> 0) & 3;
+			int reg = (op >> 0) & 7;
 
 			switch (size)
 			{
@@ -516,7 +516,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int pc = info.PC + 2;
 			int size = (op >> 6) & 3;
 			int mode = (op >> 3) & 7;
-			int reg = (op >> 0) & 3;
+			int reg = (op >> 0) & 7;
 
 			switch (size)
 			{
@@ -934,7 +934,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 1: info.Mnemonic = "cmpm.w"; break;
 				case 2: info.Mnemonic = "cmpm.l"; break;
 			}
-			info.Args = string.Format("(A{0})+, (A{1})+", ayReg, axReg);
+			info.Args = $"(A{ayReg})+, (A{axReg})+";
 			info.Length = pc - info.PC;
 		}
 
@@ -1001,17 +1001,17 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 0:
 					immediate = (byte)ReadWord(pc); pc += 2;
 					info.Mnemonic = "cmpi.b";
-					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 1, ref pc));
+					info.Args = $"#${immediate:X}, {DisassembleValue(mode, reg, 1, ref pc)}";
 					break;
 				case 1:
 					immediate = ReadWord(pc); pc += 2;
 					info.Mnemonic = "cmpi.w";
-					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 2, ref pc));
+					info.Args = $"#${immediate:X}, {DisassembleValue(mode, reg, 2, ref pc)}";
 					break;
 				case 2:
 					immediate = ReadLong(pc); pc += 4;
 					info.Mnemonic = "cmpi.l";
-					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 4, ref pc));
+					info.Args = $"#${immediate:X}, {DisassembleValue(mode, reg, 4, ref pc)}";
 					break;
 			}
 			info.Length = pc - info.PC;
@@ -1042,7 +1042,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			int pc = info.PC + 2;
 			info.Mnemonic = "mulu";
-			info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+			info.Args = $"{DisassembleValue(mode, reg, 2, ref pc)}, D{dreg}";
 			info.Length = pc - info.PC;
 		}
 
@@ -1071,7 +1071,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			int pc = info.PC + 2;
 			info.Mnemonic = "muls";
-			info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+			info.Args = $"{DisassembleValue(mode, reg, 2, ref pc)}, D{dreg}";
 			info.Length = pc - info.PC;
 		}
 
@@ -1107,7 +1107,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			int pc = info.PC + 2;
 			info.Mnemonic = "divu";
-			info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+			info.Args = $"{DisassembleValue(mode, reg, 2, ref pc)}, D{dreg}";
 			info.Length = pc - info.PC;
 		}
 
@@ -1143,7 +1143,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			int pc = info.PC + 2;
 			info.Mnemonic = "divs";
-			info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+			info.Args = $"{DisassembleValue(mode, reg, 2, ref pc)}, D{dreg}";
 			info.Length = pc - info.PC;
 		}
 	}

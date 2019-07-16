@@ -1,5 +1,4 @@
-﻿#if WINDOWS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -117,6 +116,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
+			if (_deviceBuffer.Status == BufferStatus.BufferLost) return 0;
+
 			long currentWriteTime = Stopwatch.GetTimestamp();
 			int playCursor = _deviceBuffer.CurrentPlayPosition;
 			int writeCursor = _deviceBuffer.CurrentWritePosition;
@@ -154,10 +155,11 @@ namespace BizHawk.Client.EmuHawk
 		public void WriteSamples(short[] samples, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			_deviceBuffer.Write(samples, 0, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
+			int total = sampleCount * Sound.ChannelCount;
+			if (total > samples.Length) { total = samples.Length; }
+			_deviceBuffer.Write(samples, 0, total, _actualWriteOffsetBytes, LockFlags.None);
 			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
 			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
 		}
 	}
 }
-#endif

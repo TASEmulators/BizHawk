@@ -25,25 +25,20 @@ namespace BizHawk.Client.EmuHawk
 			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
 			MemCapacityNumeric.Maximum = 1024 * 8;
-
-			MemCapacityNumeric.Value = _settings.Capacitymb < MemCapacityNumeric.Maximum ?
-				_settings.Capacitymb : MemCapacityNumeric.Maximum;
-			DiskCapacityNumeric.Value = _settings.DiskCapacitymb < MemCapacityNumeric.Maximum ?
-				_settings.DiskCapacitymb : MemCapacityNumeric.Maximum;
-			FileCapacityNumeric.Value = _settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
-				_settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
+			MemCapacityNumeric.Minimum = _stateSizeMb + 1;
 
 			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
-			MemStateGapDividerNumeric.Minimum = Statable.SaveStateBinary().Length / 1024 / 16;
-			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider,
-				MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
+			MemStateGapDividerNumeric.Minimum = Math.Max(Statable.SaveStateBinary().Length / 1024 / 16, 1);
+
+			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.Capacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
-			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " MB";
+			SavestateSizeLabel.Text = $"{Math.Round(_stateSizeMb, 2)} MB";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
-			BranchStatesInTasproj.Checked = _settings.BranchStatesInTasproj;
-			EraseBranchStatesFirst.Checked = _settings.EraseBranchStatesFirst;
 		}
 
 		private int MaxStatesInCapacity => (int)Math.Floor(MemCapacityNumeric.Value / _stateSizeMb)
@@ -76,16 +71,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveCapacityNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumSaveStatesLabel.Text = ((int)Math.Floor(FileCapacityNumeric.Value / _stateSizeMb)).ToString();
-		}
-
-		private void BranchStatesInTasproj_CheckedChanged(object sender, EventArgs e)
-		{
-			_settings.BranchStatesInTasproj = BranchStatesInTasproj.Checked;
-		}
-
-		private void EraseBranchStatesFIrst_CheckedChanged(object sender, EventArgs e)
-		{
-			_settings.EraseBranchStatesFirst = EraseBranchStatesFirst.Checked;
 		}
 
 		private void FileStateGap_ValueChanged(object sender, EventArgs e)

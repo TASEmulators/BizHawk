@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var ptr = imports.Resolve(e);
 					if (ptr == IntPtr.Zero)
 					{
-						var s = string.Format("Trapped on unimplemented function {0}:{1}", moduleName, e);
+						var s = $"Trapped on unimplemented function {moduleName}:{e}";
 						Action del = () =>
 						{
 							Console.WriteLine(s);
@@ -1154,7 +1154,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Adds a file that will appear to the waterbox core's libc.  the file will be read only.
 		/// All savestates must have the same file list, so either leave it up forever or remove it during init!
 		/// </summary>
-		/// <param name="data"></param>
 		/// <param name="name">the filename that the unmanaged core will access the file by</param>
 		public void AddReadonlyFile(byte[] data, string name)
 		{
@@ -1165,7 +1164,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// Remove a file previously added by AddReadonlyFile.  Frees the internal copy of the filedata, saving memory.
 		/// All savestates must have the same file list, so either leave it up forever or remove it during init!
 		/// </summary>
-		/// <param name="name"></param>
 		public void RemoveReadonlyFile(string name)
 		{
 			_syscalls.RemoveReadonlyFile(name);
@@ -1217,7 +1215,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					// if a different runtime instance than this one saved the state,
 					// Exvoker imports need to be reconnected
-					Console.WriteLine("Restoring PeRunner state from a different core...");
+					Console.WriteLine($"Restoring {nameof(PeRunner)} state from a different core...");
 					ConnectAllImports();
 					_psx.ReloadVtables();
 				}

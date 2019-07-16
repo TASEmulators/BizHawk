@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void SyncState(Serializer ser)
 		{
-			ser.BeginSection("PCEngine");
+			ser.BeginSection(nameof(PCEngine));
 			Cpu.SyncState(ser);
 			VCE.SyncState(ser);
 			VDC1.SyncState(ser, 1);
@@ -87,26 +87,26 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			ser.Sync("RAM", ref Ram, false);
-			ser.Sync("IOBuffer", ref IOBuffer);
-			ser.Sync("CdIoPorts", ref CdIoPorts, false);
-			ser.Sync("BramLocked", ref BramLocked);
+			ser.Sync(nameof(IOBuffer), ref IOBuffer);
+			ser.Sync(nameof(CdIoPorts), ref CdIoPorts, false);
+			ser.Sync(nameof(BramLocked), ref BramLocked);
 
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 			if (Cpu.ReadMemory21 == ReadMemorySF2)
 			{
-				ser.Sync("SF2MapperLatch", ref SF2MapperLatch);
+				ser.Sync(nameof(SF2MapperLatch), ref SF2MapperLatch);
 			}
 
 			if (PopulousRAM != null)
 			{
-				ser.Sync("PopulousRAM", ref PopulousRAM, false);
+				ser.Sync(nameof(PopulousRAM), ref PopulousRAM, false);
 			}
 
 			if (BRAM != null)
 			{
-				ser.Sync("BRAM", ref BRAM, false);
+				ser.Sync(nameof(BRAM), ref BRAM, false);
 			}
 
 			ser.EndSection();

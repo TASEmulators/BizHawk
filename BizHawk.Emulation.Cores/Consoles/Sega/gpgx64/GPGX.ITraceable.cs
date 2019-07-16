@@ -19,16 +19,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Header = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
 			}
 
-			protected override void TraceFromCallback()
+			protected override void TraceFromCallback(uint addr, uint value, uint flags)
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				uint pc = (uint)regs["M68K PC"].Value;
-				var length = 0;
-				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc, out length);
+				int length;
+				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out length);
 
 				var traceInfo = new TraceInfo
 				{
-					Disassembly = string.Format("{0:X6}:  {1}", pc, disasm)
+					Disassembly = $"{pc:X6}:  {disasm}".PadRight(50)
 				};
 
 				var sb = new StringBuilder();
@@ -41,16 +41,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							r.Key != "M68K PC" && // already present in every line start
 							r.Key != "M68K IR") // copy of last opcode, already shown in raw bytes
 						{
-							sb.Append(
-								string.Format("{0}:{1} ",
-								r.Key.Replace("M68K", "").Trim(),
-								r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+							sb.Append($"{r.Key.Replace("M68K", "").Trim()}:{r.Value.Value.ToHexString(r.Value.BitSize / 4)} ");
 						}
 					}
 				}
 				var sr = regs["M68K SR"].Value;
-				sb.Append(
-					string.Format("{0}{1}{2}{3}{4}",
+				sb.Append(string.Concat(
 					(sr & 16) > 0 ? "X" : "x",
 					(sr &  8) > 0 ? "N" : "n",
 					(sr &  4) > 0 ? "Z" : "z",

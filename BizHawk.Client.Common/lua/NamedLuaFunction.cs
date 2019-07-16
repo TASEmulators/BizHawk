@@ -1,6 +1,8 @@
 ﻿using System;
 using NLua;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class NamedLuaFunction
@@ -23,12 +25,13 @@ namespace BizHawk.Client.Common
 				}
 				catch (Exception ex)
 				{
-					logCallback(
-						"error running function attached by the event " +
-						Event +
-						"\nError message: " +
-						ex.Message);
+					logCallback($"error running function attached by the event {Event}\nError message: {ex.Message}");
 				}
+			};
+
+			MemCallback = delegate
+			{
+				Callback();
 			};
 		}
 
@@ -41,6 +44,8 @@ namespace BizHawk.Client.Common
 		public string Event { get; }
 
 		public Action Callback { get; }
+
+		public MemoryCallbackDelegate MemCallback { get; }
 
 		public void Call(string name = null)
 		{

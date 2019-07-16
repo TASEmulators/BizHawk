@@ -289,7 +289,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Returns all columns including those that are not visible
 		/// </summary>
-		/// <returns></returns>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns => _columns;
@@ -1106,7 +1105,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// do marker drag here
 					}
-					else if (ModifierKeys == Keys.Shift)
+					else if (ModifierKeys == Keys.Shift && (CurrentCell.Column.Name == "FrameColumn" || CurrentCell.Column.Type == RollColumn.InputType.Text))
 					{
 						if (_selectedItems.Any())
 						{
@@ -1175,11 +1174,11 @@ namespace BizHawk.Client.EmuHawk
 							SelectCell(CurrentCell);
 						}
 					}
-					else if (ModifierKeys == Keys.Control)
+					else if (ModifierKeys == Keys.Control && (CurrentCell.Column.Name == "FrameColumn" || CurrentCell.Column.Type == RollColumn.InputType.Text))
 					{
 						SelectCell(CurrentCell, toggle: true);
 					}
-					else
+					else if (ModifierKeys != Keys.Shift)
 					{
 						var hadIndex = _selectedItems.Any();
 						_selectedItems.Clear();
@@ -1196,7 +1195,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (AllowRightClickSelecton && e.Button == MouseButtons.Right)
 			{
-				if (!IsHoveringOnColumnCell)
+				if (!IsHoveringOnColumnCell && CurrentCell != null)
 				{
 					_currentX = e.X;
 					_currentY = e.Y;
@@ -1319,6 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					HorizontalOrientation ^= true;
 				}
+				// Scroll
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
 				{
 					if (FirstVisibleRow > 0)
@@ -1352,9 +1352,26 @@ namespace BizHawk.Client.EmuHawk
 					LastVisibleRow = RowCount;
 					Refresh();
 				}
+				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
+				{
+					if (FirstVisibleRow > 0)
+					{
+						FirstVisibleRow--;
+						Refresh();
+					}
+				}
+				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
+				{
+					if (FirstVisibleRow < RowCount - 1)
+					{
+						FirstVisibleRow++;
+						Refresh();
+					}
+				}
+				// Selection courser
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
 						foreach (var row in SelectedRows.ToList())
 						{
@@ -1374,36 +1391,70 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
-						SelectRow(SelectedRows.First() - 1, true);
+						SelectRow(SelectedRows.Last(), false);
 					}
 				}
-				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
 					}
 				}
-				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
+				else if (e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Shift + Left
 				{
-					if (FirstVisibleRow > 0)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
-						FirstVisibleRow--;
-						Refresh();
+						SelectRow(SelectedRows.First() - 1, true);
 					}
 				}
-				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
+				else if (e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Shift + Right
 				{
-					if (FirstVisibleRow < RowCount - 1)
+					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
-						FirstVisibleRow++;
-						Refresh();
+						SelectRow(SelectedRows.First(), false);
 					}
 				}
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Ctrl + Page Up
+				{
+					//jump to above marker with selection courser
+					if (LetKeysModifySelection)
+					{
+						
+					}
+				}
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Ctrl + Page Down
+				{
+					//jump to below marker with selection courser
+					if (LetKeysModifySelection)
+					{
+
+					}
+
+				}
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Ctrl + Home
+				{
+					//move selection courser to frame 0
+					if (LetKeysModifySelection)
+					{
+						DeselectAll();
+						SelectRow(0, true);
+					}
+				}
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.End) // Ctrl + End
+				{
+					//move selection courser to end of movie
+					if (LetKeysModifySelection)
+					{
+						DeselectAll();
+						SelectRow(RowCount-1, true);
+					}
+				}
+
 			}
 
 			base.OnKeyDown(e);
@@ -1556,7 +1607,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_vBar.Maximum = Math.Max((VisibleRows - 1) * CellHeight, _vBar.Maximum); // ScrollBar.Maximum is dumb
 					_vBar.LargeChange = (VisibleRows - 1) * CellHeight;
-					_hBar.LargeChange = DrawWidth / 2;
+					// DrawWidth can be negative if the TAStudio window is small enough
+					// Clamp LargeChange to 0 here to prevent exceptions
+					_hBar.LargeChange = Math.Max(0, DrawWidth / 2);
 				}
 			}
 
@@ -1988,7 +2041,7 @@ namespace BizHawk.Client.EmuHawk
 				// no check will make it crash for user too, not sure which way of alarm we prefer. no alarm at all will cause all sorts of subtle bugs
 				if (ChangedCallback == null)
 				{
-					System.Diagnostics.Debug.Fail("ColumnChangedCallback has died!");
+					System.Diagnostics.Debug.Fail($"{nameof(ColumnChangedCallback)} has died!");
 				}
 				else
 				{

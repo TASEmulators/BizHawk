@@ -67,8 +67,7 @@ namespace BizHawk.Common.BizInvoke
 				.Where(a => a.Attr != null)
 				.ToList();
 
-				var typeBuilder = ImplModuleBuilder.DefineType(
-					"Bizhawk.BizExvokeHolder" + type.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
+				var typeBuilder = ImplModuleBuilder.DefineType($"Bizhawk.BizExvokeHolder{type.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
 
 				foreach (var a in methods)
 				{

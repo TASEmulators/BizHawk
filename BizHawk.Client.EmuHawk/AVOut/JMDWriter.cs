@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!f.CanWrite)
 				{
-					throw new ArgumentException("Stream must be writable!");
+					throw new ArgumentException($"{nameof(Stream)} must be writable!");
 				}
 
 				this.f = f;
@@ -267,7 +267,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write big endian 16 bit unsigned
 			/// </summary>
-			/// <param name="v"></param>
 			void writeBE16(UInt16 v)
 			{
 				byte[] b = new byte[2];
@@ -279,7 +278,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write big endian 32 bit unsigned
 			/// </summary>
-			/// <param name="v"></param>
 			void writeBE32(UInt32 v)
 			{
 				byte[] b = new byte[4];
@@ -293,7 +291,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// write big endian 64 bit unsigned
 			/// </summary>
-			/// <param name="v"></param>
 			void writeBE64(UInt64 v)
 			{
 				byte[] b = new byte[8];
@@ -309,7 +306,6 @@ namespace BizHawk.Client.EmuHawk
 			/// write variable length value
 			/// encoding is similar to MIDI
 			/// </summary>
-			/// <param name="v"></param>
 			void writeVar(UInt64 v)
 			{
 				byte[] b = new byte[10];
@@ -333,7 +329,6 @@ namespace BizHawk.Client.EmuHawk
 			/// write variable length value
 			/// encoding is similar to MIDI
 			/// </summary>
-			/// <param name="v"></param>
 			private void writeVar(int v)
 			{
 				if (v < 0)
@@ -365,7 +360,6 @@ namespace BizHawk.Client.EmuHawk
 			/// actually write a packet to file
 			/// timestamp sequence must be nondecreasing
 			/// </summary>
-			/// <param name="j"></param>
 			void writeActual(JMDPacket j)
 			{
 				if (j.timestamp < timestampoff)
@@ -408,7 +402,6 @@ namespace BizHawk.Client.EmuHawk
 			/// assemble JMDPacket and send to packetqueue
 			/// one audio packet is split up into many many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
 			/// </summary>
-			/// <param name="samples"></param>
 			public void AddSamples(short[] samples)
 			{
 				if (!stereo)
@@ -459,7 +452,6 @@ namespace BizHawk.Client.EmuHawk
 			/// will be written when order-appropriate wrt video
 			/// the sound packets added must be internally ordered (but need not match video order)
 			/// </summary>
-			/// <param name="j"></param>
 			void writesound(JMDPacket j)
 			{
 				while (vstorage.Count > 0)
@@ -479,7 +471,6 @@ namespace BizHawk.Client.EmuHawk
 			/// will be written when order-appropriate wrt audio
 			/// the video packets added must be internally ordered (but need not match audio order)
 			/// </summary>
-			/// <param name="j"></param>
 			void writevideo(JMDPacket j)
 			{
 				while (astorage.Count > 0)
@@ -593,8 +584,6 @@ namespace BizHawk.Client.EmuHawk
 		/// can be changed in future
 		/// should always match IVideoProvider
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
 		public void SetVideoParameters(int width, int height)
 		{
 			// each frame is dumped independently with its own resolution tag, so we don't care to store this
@@ -671,7 +660,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e);
+				System.Windows.Forms.MessageBox.Show($"JMD Worker Thread died:\n\n{e}");
 				return;
 			}
 		}

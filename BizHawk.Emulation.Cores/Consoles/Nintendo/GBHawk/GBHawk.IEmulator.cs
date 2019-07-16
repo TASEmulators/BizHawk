@@ -13,11 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
+		public ushort Acc_X_state;
+		public ushort Acc_Y_state;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 
@@ -37,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				color_palette[3] = color_palette_Gr[3];
 			}
 
-
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -51,8 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (controller.IsPressed("Power"))
 			{
-				// it seems that theMachine.Reset() doesn't clear ram, etc
-				// this should leave hsram intact but clear most other things
 				HardReset();
 			}
 
@@ -64,14 +63,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (_scanlineCallback != null)
 			{
-				GetGPU();
-				_scanlineCallback(ppu.LCDC);
+				if (_scanlineCallbackLine == -1)
+				{
+					GetGPU();
+					_scanlineCallback(ppu.LCDC);
+				}
 			}
 
 			if (_islag)
 			{
 				_lagcount++;
 			}
+
+			return true;
 		}
 
 		public void do_frame()
@@ -103,9 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts
-
-			
+			// check for interrupts			
 			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
 				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
 				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
@@ -115,40 +117,171 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				REG_FF0F |= 0x10;
 			}
 			
-
-			while (!vblank_rise && (ticker < 100000))
+			while (!vblank_rise)
 			{
+				// These things do not change speed in GBC double spped mode
 				audio.tick();
-				timer.tick_1();
 				ppu.tick();
-				serialport.serial_transfer_tick();
+				if (Use_MT) { mapper.Mapper_Tick(); }
 
-				if (Use_RTC) { mapper.RTC_Tick(); }
+				if (!HDMA_transfer)
+				{
+					// These things all tick twice as fast in GBC double speed mode
+					ppu.DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();					
+					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					timer.tick_2();
 
-				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-
-				timer.tick_2();
+					if (double_speed)
+					{
+						ppu.DMA_tick();
+						timer.tick_1();
+						serialport.serial_transfer_tick();
+						cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+						timer.tick_2();
+					}
+				}
+				else
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+					if (double_speed)
+					{
+						timer.tick_1();
+						timer.tick_2();
+						cpu.TotalExecutedCycles++;
+					}
+				}
 
 				if (in_vblank && !in_vblank_old)
 				{
 					vblank_rise = true;
 				}
+
 				ticker++;
+				if (ticker > 42134400) { throw new Exception("ERROR: Unable to Resolve Frame"); }
+
 				in_vblank_old = in_vblank;
+				REG_FF0F_OLD = REG_FF0F;
 			}
 
-			vblank_rise = false;
+			vblank_rise = false;			
 		}
 
-		public void RunCPUCycle()
+		public void do_single_step()
 		{
-			
+			// These things do not change speed in GBC double spped mode
+			audio.tick();
+			ppu.tick();
+			if (Use_MT) { mapper.Mapper_Tick(); }
+
+			if (!HDMA_transfer)
+			{
+				// These things all tick twice as fast in GBC double speed mode
+				ppu.DMA_tick();
+				timer.tick_1();
+				serialport.serial_transfer_tick();
+				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+				timer.tick_2();
+
+				if (double_speed)
+				{
+					ppu.DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					timer.tick_2();
+				}
+			}
+			else
+			{
+				timer.tick_1();
+				timer.tick_2();
+				cpu.TotalExecutedCycles++;
+				if (double_speed)
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+				}
+			}
+
+			if (in_vblank && !in_vblank_old)
+			{
+				vblank_rise = true;
+			}
+
+			in_vblank_old = in_vblank;
+			REG_FF0F_OLD = REG_FF0F;
+		}
+
+		public void do_controller_check()
+		{
+			// check if new input changed the input register and triggered IRQ
+			byte contr_prev = input_register;
+
+			input_register &= 0xF0;
+			if ((input_register & 0x30) == 0x20)
+			{
+				input_register |= (byte)(controller_state & 0xF);
+			}
+			else if ((input_register & 0x30) == 0x10)
+			{
+				input_register |= (byte)((controller_state & 0xF0) >> 4);
+			}
+			else if ((input_register & 0x30) == 0x00)
+			{
+				// if both polls are set, then a bit is zero if either or both pins are zero
+				byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+				input_register |= temp;
+			}
+			else
+			{
+				input_register |= 0xF;
+			}
+
+			// check for interrupts			
+			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+			{
+				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+				REG_FF0F |= 0x10;
+			}
+		}
+
+		// Switch Speed (GBC only)
+		public int SpeedFunc(int temp)
+		{
+			if (is_GBC)
+			{
+				if (speed_switch)
+				{
+					speed_switch = false;
+
+					int ret = double_speed ? 50000 : 25000; // actual time needs checking
+					double_speed = !double_speed;
+					return ret;
+				}
+
+				// if we are not switching speed, return 0
+				return 0;
+			}
+
+			// if we are in GB mode, return 0 indicating not switching speed
+			return 0;
 		}
 
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
+
+			Acc_X_state = _controllerDeck.ReadAccX1(controller);
+			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
 		public int Frame => _frame;
@@ -172,8 +305,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Marshal.FreeHGlobal(iptr1);
 			Marshal.FreeHGlobal(iptr2);
 			Marshal.FreeHGlobal(iptr3);
-		}
 
+			audio.DisposeSound();
+		}
 
 		#region Video provider
 
@@ -183,7 +317,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;
+			if (ppu.blank_frame)
+			{
+				for (int i = 0; i < _vidbuffer.Length; i++)
+				{
+					_vidbuffer[i] = (int)color_palette[0];
+				}
+				ppu.blank_frame = false;
+			}
+			return _vidbuffer;		
 		}
 
 		public int VirtualWidth => 160;

@@ -30,10 +30,10 @@ namespace BizHawk.Client.EmuHawk
 					HardReset();
 					break;
 				case "Quick Load": 
-					LoadQuickSave("QuickSave" + Global.Config.SaveSlot); 
+					LoadQuickSave($"QuickSave{Global.Config.SaveSlot}");
 					break;
 				case "Quick Save": 
-					SaveQuickSave("QuickSave" + Global.Config.SaveSlot);
+					SaveQuickSave($"QuickSave{Global.Config.SaveSlot}");
 					break;
 				case "Clear Autohold":
 					ClearAutohold();
@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle Skip Lag Frame":
 					Global.Config.SkipLagFrame ^= true;
-					GlobalWin.OSD.AddMessage("Skip Lag Frames toggled " + (Global.Config.SkipLagFrame ? "On" : "Off"));
+					GlobalWin.OSD.AddMessage($"Skip Lag Frames toggled {(Global.Config.SkipLagFrame ? "On" : "Off")}");
 					break;
 				case "Toggle Key Priority":
 					ToggleKeyPriority();
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						Global.CheatList.ToList().ForEach(x => x.Toggle());
-						GlobalWin.OSD.AddMessage("Cheats toggled" + type);
+						GlobalWin.OSD.AddMessage($"Cheats toggled{type}");
 					}
 
 					break;
@@ -445,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Delete Branch":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 					{
-						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
+						GlobalWin.Tools.TAStudio.RemoveBranchExternal();
 					}
 					else
 					{
@@ -642,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 						var s = ((Gameboy)Emulator).GetSettings();
 						s.DisplayBG ^= true;
 						((Gameboy)Emulator).PutSettings(s);
-						GlobalWin.OSD.AddMessage("BG toggled " + (s.DisplayBG ? "on" : "off"));
+						GlobalWin.OSD.AddMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
 					}
 
 					break;
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 						var s = ((Gameboy)Emulator).GetSettings();
 						s.DisplayOBJ ^= true;
 						((Gameboy)Emulator).PutSettings(s);
-						GlobalWin.OSD.AddMessage("OBJ toggled " + (s.DisplayBG ? "on" : "off"));
+						GlobalWin.OSD.AddMessage($"OBJ toggled {(s.DisplayBG ? "on" : "off")}");
 					}
 
 					break;

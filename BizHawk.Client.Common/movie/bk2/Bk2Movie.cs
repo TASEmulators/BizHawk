@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
@@ -69,12 +70,27 @@ namespace BizHawk.Client.Common
 				{
 					return double.PositiveInfinity;
 				}
-
+				
 				return Log.Count;
 			}
 		}
 
-		public int InputLogLength => Log.Count;
+		public int InputLogLength
+		{
+			get
+			{
+				return Log.Count;
+			}
+		}
+
+		public int TimeLength
+		{
+			get
+			{
+				if (Header.ContainsKey("VBlankCount")) { return Convert.ToInt32(Header["VBlankCount"]); }
+				return Log.Count;
+			}
+		}
 
 		#region Log Editing
 

@@ -25,6 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			SaveTASMenuItem.Enabled =
 				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
 				(CurrentTasMovie.Filename != DefaultTasProjName());
+
+			saveSelectionToMacroToolStripMenuItem.Enabled =
+				placeMacroAtSelectionToolStripMenuItem.Enabled =
+				TasView.AnyRowsSelected;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -53,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// need to be fancy here, so call the ofd constructor directly instead of helper
-				var all = "*." + string.Join(";*.", MovieService.MovieExtensions.Reverse());
+				var all = $"*.{string.Join(";*.", MovieService.MovieExtensions.Reverse())}";
 				var ofd = new OpenFileDialog
 				{
 					FileName = filename,
@@ -112,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 					_autosaveTimer.Start();
 				}
 
-				MessageStatusLabel.Text = CurrentTasMovie.Name + " saved.";
+				MessageStatusLabel.Text = $"{CurrentTasMovie.Name} saved.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				Cursor = Cursors.Default;
 				GlobalWin.Sound.StartSound();
@@ -155,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
-				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+				MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} saved.";
 				Cursor = Cursors.Default;
 			}
 
@@ -165,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
+			Mainform.SetWindowText();
 			GlobalWin.Sound.StartSound();
 		}
 
@@ -263,17 +268,41 @@ namespace BizHawk.Client.EmuHawk
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
-			var bk2 = CurrentTasMovie.ToBk2(true);
+			var bk2 = CurrentTasMovie.ToBk2(true, true);
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
 			Update();
-			bk2.Save();
+			string d_exp = " not exported.";
+			var file = new FileInfo(bk2.Filename);
+			if (file.Exists)
+			{
+				GlobalWin.Sound.StopSound();
+				var result = MessageBox.Show(
+					"Overwrite Existing File?",
+					"Tastudio",
+					MessageBoxButtons.YesNoCancel,
+					MessageBoxIcon.Question,
+					MessageBoxDefaultButton.Button3);
+
+				GlobalWin.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					bk2.Save();
+					d_exp = " exported.";
+				}
+			}
+			else
+			{
+				bk2.Save();
+				d_exp = " exported.";
+			}
+
 			if (Settings.AutosaveInterval > 0)
 			{
 				_autosaveTimer.Start();
 			}
 
-			MessageStatusLabel.Text = bk2.Name + " exported.";
+			MessageStatusLabel.Text = bk2.Name + d_exp;
 			Cursor = Cursors.Default;
 		}
 
@@ -289,18 +318,21 @@ namespace BizHawk.Client.EmuHawk
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =
-			SelectBetweenMarkersMenuItem.Enabled =
-			CopyMenuItem.Enabled =
-			CutMenuItem.Enabled =
-			ClearFramesMenuItem.Enabled =
-			DeleteFramesMenuItem.Enabled =
-			CloneFramesMenuItem.Enabled =
-			TruncateMenuItem.Enabled =
+				SelectBetweenMarkersMenuItem.Enabled =
+				CopyMenuItem.Enabled =
+				CutMenuItem.Enabled =
+				ClearFramesMenuItem.Enabled =
+				DeleteFramesMenuItem.Enabled =
+				CloneFramesMenuItem.Enabled =
+				TruncateMenuItem.Enabled =
+				InsertFrameMenuItem.Enabled =
+				InsertNumFramesMenuItem.Enabled = 
 				TasView.AnyRowsSelected;
+
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
-				_tasClipboard.Any();
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			ClearGreenzoneMenuItem.Enabled =
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
@@ -447,44 +479,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
-			// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-			// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
-			var wasPaused = Mainform.EmulatorPaused;
-
-			// copypaste from PasteInsertMenuItem_Click!
-			IDataObject data = Clipboard.GetDataObject();
-			if (data.GetDataPresent(DataFormats.StringFormat))
+			if (TasView.AnyRowsSelected)
 			{
-				string input = (string)data.GetData(DataFormats.StringFormat);
-				if (!string.IsNullOrWhiteSpace(input))
+				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
+				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
+				var wasPaused = Mainform.EmulatorPaused;
+
+				// copy paste from PasteInsertMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data.GetDataPresent(DataFormats.StringFormat))
 				{
-					string[] lines = input.Split('\n');
-					if (lines.Length > 0)
+					string input = (string)data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
 					{
-						_tasClipboard.Clear();
-						for (int i = 0; i < lines.Length - 1; i++)
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
 						{
-							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
-							if (line == null)
+							_tasClipboard.Clear();
+							for (int i = 0; i < lines.Length - 1; i++)
 							{
-								return;
+								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								if (line == null)
+								{
+									return;
+								}
+								else
+								{
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
+								}
+							}
+
+							var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+							CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+							if (needsToRollback)
+							{
+								GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+								DoAutoRestore();
 							}
 							else
 							{
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
+								RefreshDialog();
 							}
-						}
-
-						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-						CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-						if (needsToRollback)
-						{
-							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							DoAutoRestore();
-						}
-						else
-						{
-							RefreshDialog();
 						}
 					}
 				}
@@ -493,42 +528,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
 		{
-			var wasPaused = Mainform.EmulatorPaused;
-
-			// copypaste from PasteMenuItem_Click!
-			IDataObject data = Clipboard.GetDataObject();
-			if (data.GetDataPresent(DataFormats.StringFormat))
+			if (TasView.AnyRowsSelected)
 			{
-				string input = (string)data.GetData(DataFormats.StringFormat);
-				if (!string.IsNullOrWhiteSpace(input))
+				var wasPaused = Mainform.EmulatorPaused;
+
+				// copy paste from PasteMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data.GetDataPresent(DataFormats.StringFormat))
 				{
-					string[] lines = input.Split('\n');
-					if (lines.Length > 0)
+					string input = (string)data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
 					{
-						_tasClipboard.Clear();
-						for (int i = 0; i < lines.Length - 1; i++)
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
 						{
-							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
-							if (line == null)
+							_tasClipboard.Clear();
+							for (int i = 0; i < lines.Length - 1; i++)
 							{
-								return;
+								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								if (line == null)
+								{
+									return;
+								}
+								else
+								{
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
+								}
+							}
+
+							var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+							CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+							if (needsToRollback)
+							{
+								GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+								DoAutoRestore();
 							}
 							else
 							{
-								_tasClipboard.Add(new TasClipboardEntry(i, line));
+								RefreshDialog();
 							}
-						}
-
-						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-						CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-						if (needsToRollback)
-						{
-							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							DoAutoRestore();
-						}
-						else
-						{
-							RefreshDialog();
 						}
 					}
 				}
@@ -586,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 				bool needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
 				int rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				CurrentTasMovie.ChangeLog.BeginNewBatch("Clear frames " + TasView.SelectedRows.Min() + "-" + TasView.SelectedRows.Max());
+				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectedRows.Min()}-{TasView.SelectedRows.Max()}");
 				foreach (int frame in TasView.SelectedRows)
 				{
 					CurrentTasMovie.ClearFrame(frame);
@@ -614,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
-					// Cannot delete non-existant frames
+					// Cannot delete non-existent frames
 					RefreshDialog();
 					return;
 				}
@@ -663,32 +701,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			var wasPaused = Mainform.EmulatorPaused;
-			var insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-
-			CurrentTasMovie.InsertEmptyFrame(insertionFrame);
-
-			if (needsToRollback)
+			if (TasView.AnyRowsSelected)
 			{
-				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				DoAutoRestore();
-			}
-			else
-			{
-				RefreshDialog();
+				var wasPaused = Mainform.EmulatorPaused;
+				var insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+
+				CurrentTasMovie.InsertEmptyFrame(insertionFrame);
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(insertionFrame);
+					DoAutoRestore();
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			int insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
-
-			var framesPrompt = new FramesPrompt();
-			DialogResult result = framesPrompt.ShowDialog();
-			if (result == DialogResult.OK)
+			if (TasView.AnyRowsSelected)
 			{
-				InsertNumFrames(insertionFrame, framesPrompt.Frames);
+				int insertionFrame = TasView.FirstSelectedIndex.Value;
+				var framesPrompt = new FramesPrompt();
+				DialogResult result = framesPrompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					InsertNumFrames(insertionFrame, framesPrompt.Frames);
+				}
 			}
 		}
 
@@ -742,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Markers.Remove(m);
 			}
-
+			MarkerControl.ShrinkSelection();
 			RefreshDialog();
 		}
 
@@ -764,19 +807,19 @@ namespace BizHawk.Client.EmuHawk
 
 			GoToFrame(0);
 			int lastState = 0;
-			int goToFrame = CurrentTasMovie.TasStateManager.LastEmulatedFrame;
+			int goToFrame = CurrentTasMovie.LastStatedFrame;
 			do
 			{
 				Mainform.FrameAdvance();
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone(); // Why is this cloning it?
-					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
+					byte[] state = StatableEmulator.SaveStateBinary();
+					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
-					if (!state.SequenceEqual(greenzone))
+					if (!state.SequenceEqual(greenZone))
 					{
-						MessageBox.Show("Bad data between frames " + lastState + " and " + Emulator.Frame);
+						MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}");
 						return;
 					}
 
@@ -802,6 +845,9 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
 			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
+			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
+			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
+			BindMarkersToInputMenuItem.Checked = CurrentTasMovie.BindMarkersToInput;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -816,7 +862,16 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult result = prompt.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					int val = int.Parse(prompt.PromptText);
+					int val = 0;
+					try
+					{
+						val = int.Parse(prompt.PromptText);
+					}
+					catch
+					{
+						MessageBox.Show("Invalid Entry.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+
 					if (val > 0)
 					{
 						CurrentTasMovie.ChangeLog.MaxSteps = val;
@@ -992,6 +1047,16 @@ namespace BizHawk.Client.EmuHawk
 			pForm.Show();
 		}
 
+		private void OldControlSchemeForBranchesMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.OldControlSchemeForBranches ^= true;
+		}
+
+		private void LoadBranchOnDoubleclickMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.LoadBranchOnDoubleClick ^= true;
+		}
+
 		#endregion
 
 		#region Metadata
@@ -1014,7 +1079,7 @@ namespace BizHawk.Client.EmuHawk
 				Location = this.ChildPointToScreen(TasView),
 				Statable = this.StatableEmulator
 			}.ShowDialog();
-			CurrentTasMovie.TasStateManager.LimitStateCount();
+			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
 		}
 
@@ -1100,7 +1165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideLagFramesX_Click(object sender, EventArgs e)
 		{
-			TasView.LagFramesToHide = (int)(sender as ToolStripMenuItem).Tag;
+			TasView.LagFramesToHide = (int)((ToolStripMenuItem)sender).Tag;
 			MaybeFollowCursor();
 			RefreshDialog();
 		}
@@ -1161,15 +1226,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputpromt = new InputPrompt
+			var inputPrompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			if (inputpromt.ShowDialog() == DialogResult.OK)
+			if (inputPrompt.ShowDialog() == DialogResult.OK)
 			{
-				TasView.ScrollSpeed = int.Parse(inputpromt.PromptText);
+				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
 				Settings.ScrollSpeed = TasView.ScrollSpeed;
 			}
 		}
@@ -1186,18 +1251,32 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
+			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
+			int rowHeight = ColumnsSubMenu.Height + 4;
+			int maxRows = workingHeight / rowHeight;
+			int keyCount = columns.Count(c => c.Name.StartsWith("Key "));
+			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
+
+			ToolStripMenuItem[] keysMenus = new ToolStripMenuItem[keysMenusCount];
+
+			for (int i = 0; i < keysMenus.Length; i++)
+			{
+				keysMenus[i] = new ToolStripMenuItem();
+			}
+
 			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
+
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
-				playerMenus[i] = new ToolStripMenuItem("Player " + i);
+				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
 			}
 
 			foreach (InputRoll.RollColumn column in columns)
 			{
 				ToolStripMenuItem menuItem = new ToolStripMenuItem
 				{
-					Text = column.Text + " (" + column.Name + ")",
+					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
 					Tag = column.Name
@@ -1214,49 +1293,108 @@ namespace BizHawk.Client.EmuHawk
 					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
 				};
 
-				int player;
-				if (column.Name.StartsWith("P") && column.Name.Length > 1 && char.IsNumber(column.Name, 1))
+				if (column.Name.StartsWith("Key "))
 				{
-					player = int.Parse(column.Name[1].ToString());
+					keysMenus
+						.First(m => m.DropDownItems.Count < maxRows)
+						.DropDownItems
+						.Add(menuItem);
 				}
 				else
 				{
-					player = 0;
-				}
+					int player;
 
-				playerMenus[player].DropDownItems.Add(menuItem);
-			}
-
-			for (int i = 1; i < playerMenus.Length; i++)
-			{
-				ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
-			}
-
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
-			for (int i = 1; i < playerMenus.Length; i++)
-			{
-				var item = new ToolStripMenuItem("Show Player " + i)
-				{
-					CheckOnClick = true,
-					Checked = true
-				};
-
-				int dummyInt = i;
-				ToolStripMenuItem dummyObject = playerMenus[i];
-				item.CheckedChanged += (o, ev) =>
-				{
-					ToolStripMenuItem sender = o as ToolStripMenuItem;
-					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+					if (column.Name.StartsWith("P") && column.Name.Length > 1 && char.IsNumber(column.Name, 1))
 					{
-						TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
+						player = int.Parse(column.Name[1].ToString());
+					}
+					else
+					{
+						player = 0;
 					}
 
-					CurrentTasMovie.FlagChanges();
-					TasView.AllColumns.ColumnsChanged();
-					RefreshTasView();
+					playerMenus[player].DropDownItems.Add(menuItem);
+				}
+			}
+
+			for (int i = 0; i < keysMenus.Length; i++)
+			{
+				string text = $"Keys ({keysMenus[i].DropDownItems[0].Tag} - {keysMenus[i].DropDownItems[keysMenus[i].DropDownItems.Count - 1].Tag})";
+				keysMenus[i].Text = text.Replace("Key ", "");
+				ColumnsSubMenu.DropDownItems.Add(keysMenus[i]);
+			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
+				}
+			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+					break;
+				}
+			}
+
+			if (keysMenus.Length > 0)
+			{
+				var item = new ToolStripMenuItem("Show Keys")
+				{
+					CheckOnClick = true,
+					Checked = false
 				};
 
-				ColumnsSubMenu.DropDownItems.Add(item);
+				for (int i = 0; i < keysMenus.Length; i++)
+				{
+					ToolStripMenuItem dummyObject = keysMenus[i];
+					item.CheckedChanged += (o, ev) =>
+					{
+						ToolStripMenuItem sender = o as ToolStripMenuItem;
+						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+						{
+							menuItem.Checked ^= true;
+						}
+
+						CurrentTasMovie.FlagChanges();
+						TasView.AllColumns.ColumnsChanged();
+						RefreshTasView();
+					};
+
+					ColumnsSubMenu.DropDownItems.Add(item);
+				}
+			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].HasDropDownItems)
+				{
+					var item = new ToolStripMenuItem($"Show Player {i}")
+					{
+						CheckOnClick = true,
+						Checked = true
+					};
+
+					ToolStripMenuItem dummyObject = playerMenus[i];
+					item.CheckedChanged += (o, ev) =>
+					{
+						ToolStripMenuItem sender = o as ToolStripMenuItem;
+						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+						{
+							menuItem.Checked ^= true;
+						}
+
+						CurrentTasMovie.FlagChanges();
+						TasView.AllColumns.ColumnsChanged();
+						RefreshTasView();
+					};
+
+					ColumnsSubMenu.DropDownItems.Add(item);
+				}
 			}
 
 			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
@@ -1295,6 +1433,10 @@ namespace BizHawk.Client.EmuHawk
 				InsertNumFramesContextMenuItem.Enabled =
 				TruncateContextMenuItem.Enabled =
 				TasView.AnyRowsSelected;
+
+			pasteToolStripMenuItem.Enabled =
+				pasteInsertToolStripMenuItem.Enabled =
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			StartNewProjectFromNowMenuItem.Visible =
 				TasView.SelectedRows.Count() == 1
@@ -1341,14 +1483,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				int index = TasView.SelectedRows.First();
-				GoToFrame(index);
+				if (SaveRamEmulator.CloneSaveRam() != null)
+				{
+					int index = 0;
+					if (TasView.SelectedRows.Any())
+					{
+						index = TasView.SelectedRows.First();
+					}
 
-				TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-					SaveRamEmulator.CloneSaveRam());
-
-				Mainform.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename), true);
+					GoToFrame(index);
+					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+						SaveRamEmulator.CloneSaveRam());
+					Mainform.PauseEmulator();
+					LoadFile(new FileInfo(newProject.Filename), true);
+				}
+				else
+				{
+					throw new Exception("No SaveRam");
+				}
 			}
 		}
 

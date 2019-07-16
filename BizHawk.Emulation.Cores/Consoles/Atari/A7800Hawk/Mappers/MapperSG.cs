@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// cartridge and other OPSYS
 				if (addr>=0x8000)
 				{
-					bank = (byte)(value & (Core.small_flag ? 0x3 : 0x7));
+					bank = (byte)(value & (Core.small_flag ? 0x3 : mask));
 				}
 				else if (Core.is_pokey)
 				{
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("Bank", ref bank);
-			ser.Sync("RAM", ref RAM, false);
+			ser.Sync(nameof(RAM), ref RAM, false);
 		}
 	}
 }

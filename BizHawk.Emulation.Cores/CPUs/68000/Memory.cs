@@ -329,21 +329,21 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 2: return "(A" + reg + ")";  // (An)
 				case 3: return "(A" + reg + ")+"; // (An)+
 				case 4: return "-(A" + reg + ")"; // -(An)
-				case 5: value = string.Format("(${0:X},A{1})", ReadWord(pc), reg); pc += 2; return value; // (d16,An)
+				case 5: value = $"(${ReadWord(pc):X},A{reg})"; pc += 2; return value; // (d16,An)
 				case 6: addr = ReadWord(pc); pc += 2; return DisassembleIndex("A" + reg, (short)addr); // (d8,An,Xn)
 				case 7:
 					switch (reg)
 					{
-						case 0: value = String.Format("(${0:X})", ReadWord(pc)); pc += 2; return value; // (imm).W
-						case 1: value = String.Format("(${0:X})", ReadLong(pc)); pc += 4; return value; // (imm).L
-						case 2: value = String.Format("(${0:X})", pc + ReadWord(pc)); pc += 2; return value; // (d16,PC)
+						case 0: value = $"(${ReadWord(pc):X})"; pc += 2; return value; // (imm).W
+						case 1: value = $"(${ReadLong(pc):X})"; pc += 4; return value; // (imm).L
+						case 2: value = $"(${pc + ReadWord(pc):X})"; pc += 2; return value; // (d16,PC)
 						case 3: addr = ReadWord(pc); pc += 2; return DisassembleIndex("PC", (short)addr); // (d8,PC,Xn)
 						case 4:
 							switch (size)
 							{
-								case 1: value = String.Format("${0:X}", (byte)ReadWord(pc)); pc += 2; return value;
-								case 2: value = String.Format("${0:X}", ReadWord(pc)); pc += 2; return value;
-								case 4: value = String.Format("${0:X}", ReadLong(pc)); pc += 4; return value;
+								case 1: value = $"${(byte)ReadWord(pc):X}"; pc += 2; return value;
+								case 2: value = $"${ReadWord(pc):X}"; pc += 2; return value;
+								case 4: value = $"${ReadLong(pc):X}"; pc += 4; return value;
 							}
 							break;
 					}
@@ -359,13 +359,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 1:
 					immed = (byte)ReadWord(pc); pc += 2;
-					return String.Format("#${0:X}", immed);
+					return $"#${immed:X}";
 				case 2:
 					immed = (ushort)ReadWord(pc); pc += 2;
-					return String.Format("#${0:X}", immed);
+					return $"#${immed:X}";
 				case 4:
 					immed = ReadLong(pc); pc += 4;
-					return String.Format("#${0:X}", immed);
+					return $"#${immed:X}";
 			}
 			throw new ArgumentException("Invalid size");
 		}
@@ -380,14 +380,14 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 2: return "(A" + reg + ")"; // (An)
 				case 3: return "(A" + reg + ")+"; // (An)+
 				case 4: return "-(A" + reg + ")"; // -(An)
-				case 5: addr = ReadWord(pc); pc += 2; return String.Format("(${0:X},A{1})", addr, reg); // (d16,An)
+				case 5: addr = ReadWord(pc); pc += 2; return $"(${addr:X},A{reg})"; // (d16,An)
 				case 6: addr = ReadWord(pc); pc += 2; return DisassembleIndex("A" + reg, (short)addr); // (d8,An,Xn)
 				case 7:
 					switch (reg)
 					{
-						case 0: addr = ReadWord(pc); pc += 2; return String.Format("${0:X}.w", addr); // (imm).w
-						case 1: addr = ReadLong(pc); pc += 4; return String.Format("${0:X}.l", addr); // (imm).l
-						case 2: addr = ReadWord(pc); pc += 2; return String.Format("(${0:X},PC)", addr); // (d16,PC)
+						case 0: addr = ReadWord(pc); pc += 2; return $"${addr:X}.w"; // (imm).w
+						case 1: addr = ReadLong(pc); pc += 4; return $"${addr:X}.l"; // (imm).l
+						case 2: addr = ReadWord(pc); pc += 2; return $"(${addr:X},PC)"; // (d16,PC)
 						case 3: addr = ReadWord(pc); pc += 2; return DisassembleIndex("PC", (short)addr); // (d8,PC,Xn)
 						case 4: return "INVALID"; // immediate
 					}
@@ -620,7 +620,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			string offsetRegister = (d_a == 0) ? "D" : "A";
 			string sizeStr = size == 0 ? ".w" : ".l";
 			string displacementStr = displacement == 0 ? "" : ("," + displacement);
-			return string.Format("({0},{1}{2}{3}{4}{5})", baseRegister, scaleFactor, offsetRegister, reg, sizeStr, displacementStr);
+			return $"({baseRegister},{scaleFactor}{offsetRegister}{reg}{sizeStr}{displacementStr})";
 		}
 	}
 }

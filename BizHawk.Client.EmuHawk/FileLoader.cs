@@ -50,12 +50,19 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return new[]
 					{
-						".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF",
-						".EXE", ".PRG", ".D64", "*G64", ".CRT", ".TAP", ".32X", ".MDS"
-				};
+						".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC",
+						".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML",
+						".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF", ".EXE", ".PRG", ".D64", ".G64", ".CRT", ".TAP", ".32X", ".MDS", ".TZX",
+						".PZX", ".CSW", ".WAV", ".CDT"
+					};
 				}
 
-				return new[] { ".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF", ".32X", ".MDS" };
+				return new[] 
+				{
+					".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC",
+					".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML",
+					".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF", ".PRG", ".D64", ".G64", ".CRT", ".TAP", ".32X", ".MDS", ".TZX", ".PZX", ".CSW", ".WAV"
+				};
 			}
 		}
 

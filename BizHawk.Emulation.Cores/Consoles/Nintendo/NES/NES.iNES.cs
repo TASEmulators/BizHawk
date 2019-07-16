@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				int mapper = data[6] >> 4 | data[7] & 0xf0 | data[8] << 8 & 0xf00;
 				int submapper = data[8] >> 4;
-				CartV2.board_type = string.Format("MAPPER{0:d4}-{1:d2}", mapper, submapper);
+				CartV2.board_type = $"MAPPER{mapper:d4}-{submapper:d2}";
 
 				int vrambat = iNES2Wram(data[11] >> 4);
 				int vramnon = iNES2Wram(data[11] & 15);
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			{
 				int mapper = data[6] >> 4 | data[7] & 0xf0;
-				Cart.board_type = string.Format("MAPPER{0:d3}", mapper);
+				Cart.board_type = $"MAPPER{mapper:d3}";
 			}
 
 			Cart.vram_size = Cart.chr_size > 0 ? 0 : 8;

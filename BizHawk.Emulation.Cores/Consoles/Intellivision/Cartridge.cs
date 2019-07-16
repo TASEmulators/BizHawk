@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.BeginSection("Cart");
 
 			ser.Sync("mapper", ref _mapper);
-			ser.Sync("Cart_Ram", ref Cart_Ram, false);
+			ser.Sync(nameof(Cart_Ram), ref Cart_Ram, false);
 
 			ser.EndSection();
 		}

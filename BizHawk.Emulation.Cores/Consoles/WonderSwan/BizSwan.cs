@@ -15,28 +15,24 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <summary>
 		/// create new instance
 		/// </summary>
-		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern IntPtr bizswan_new();
 
 		/// <summary>
 		/// delete instance, freeing all associated memory
 		/// </summary>
-		/// <param name="core"></param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_delete(IntPtr core);
 
 		/// <summary>
 		/// hard reset
 		/// </summary>
-		/// <param name="core"></param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_reset(IntPtr core);
 
 		/// <summary>
 		/// frame advance
 		/// </summary>
-		/// <param name="core"></param>
 		/// <param name="buttons">input to use on this frame</param>
 		/// <param name="novideo">true to skip all video rendering</param>
 		/// <param name="surface">uint32 video output buffer</param>
@@ -50,28 +46,19 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <summary>
 		/// load rom
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="data"></param>
-		/// <param name="length"></param>
-		/// <param name="settings"></param>
 		/// <param name="IsRotated">(out) true if screen is rotated left 90</param>
-		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern bool bizswan_load(IntPtr core, byte[] data, int length, [In] ref SyncSettings settings, ref bool IsRotated);
 
 		/// <summary>
 		/// get size of saveram
 		/// </summary>
-		/// <param name="core"></param>
-		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int bizswan_saveramsize(IntPtr core);
 
 		/// <summary>
 		/// load saveram into core
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="data"></param>
 		/// <param name="size">should be same as bizswan_saveramsize()</param>
 		/// <returns>false if size mismatch</returns>
 		[DllImport(dd, CallingConvention = cc)]
@@ -80,8 +67,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <summary>
 		/// save saveram from core
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="data"></param>
 		/// <param name="maxsize">should be same as bizswan_saveramsize()</param>
 		/// <returns>false if size mismatch</returns>
 		[DllImport(dd, CallingConvention = cc)]
@@ -90,20 +75,13 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <summary>
 		/// put non-sync settings, can be done at any time
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="settings"></param>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern void bizswan_putsettings(IntPtr core, [In] ref Settings settings);
 
 		/// <summary>
 		/// get a memory area
 		/// </summary>
-		/// <param name="core"></param>
 		/// <param name="index">start at 0, increment until return is false</param>
-		/// <param name="name"></param>
-		/// <param name="size"></param>
-		/// <param name="data"></param>
-		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern bool bizswan_getmemoryarea(IntPtr core, int index, out IntPtr name, out int size, out IntPtr data);
 
@@ -134,9 +112,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		/// <summary>
 		/// return a CPU register
 		/// </summary>
-		/// <param name="core"></param>
-		/// <param name="which"></param>
-		/// <returns></returns>
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern uint bizswan_getnecreg(IntPtr core, NecRegs which);
 

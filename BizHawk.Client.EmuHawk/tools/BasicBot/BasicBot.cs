@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!string.IsNullOrWhiteSpace(_currentFileName))
 				{
-					Text = DialogTitle + " - " + Path.GetFileNameWithoutExtension(_currentFileName);
+					Text = $"{DialogTitle} - {Path.GetFileNameWithoutExtension(_currentFileName)}";
 				}
 				else
 				{
@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _replayMode = false;
 		private int _startFrame = 0;
 		private string _lastRom = "";
+		private int _lastFrameAdvanced { get; set; }
 
 		private bool _dontUpdateValues = false;
 
@@ -57,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
-
+		
 		#region Services and Settings
 
 		[RequiredService]
@@ -125,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					.ToString()
 					.Last();
 
-				return "QuickSave" + num;
+				return $"QuickSave{num}";
 			}
 		}
 
@@ -350,8 +351,8 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				var item = StartFromSlotBox.Items.
-					OfType<object>()
+				var item = StartFromSlotBox.Items
+					.OfType<object>()
 					.FirstOrDefault(o => o.ToString() == value);
 
 				if (item != null)
@@ -788,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CurrentFileName = path;
 			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileNameWithoutExtension(path) + " loaded";
+			MessageLabel.Text = $"{Path.GetFileNameWithoutExtension(path)} loaded";
 
 			AssessRunButtonStatus();
 			return true;
@@ -830,17 +831,23 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllText(path, json);
 			CurrentFileName = path;
 			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
+			MessageLabel.Text = $"{Path.GetFileName(CurrentFileName)} saved";
 		}
 
 		#endregion
 
+		public bool HasFrameAdvanced()
+		{
+			//If the emulator frame is different from the last time it tried calling
+			//the function then we can continue, otherwise we need to stop.
+			return _lastFrameAdvanced != Emulator.Frame;
+		}
 		private void SetupControlsAndProperties()
 		{
-			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
+			TieBreaker1Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker2Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 
 			StartFromSlotBox.SelectedIndex = 0;
 
@@ -880,6 +887,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currentDomain = MemoryDomains[name];
 			_bigEndian = MemoryDomains[name].EndianType == MemoryDomain.Endian.Big;
+
+			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
+			TieBreaker1Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker2Box.SetHexProperties(_currentDomain.Size);
+			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 		}
 
 		private int GetRamvalue(int addr)
@@ -913,7 +925,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-
 
 			if (_replayMode)
 			{
@@ -959,15 +970,12 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
-				
 				//Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
-				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test!
+				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test
 				{
 					PressButtons();
-					LastFrameAdvanced = Emulator.Frame;
-
+					_lastFrameAdvanced = Emulator.Frame;
 				}
-
 			}
 		}
 
@@ -1353,6 +1361,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
+		}		
+
+		private void btnCopyBestInput_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(BestAttemptLogLabel.Text);
 		}
 
 		//Copy to Clipboard

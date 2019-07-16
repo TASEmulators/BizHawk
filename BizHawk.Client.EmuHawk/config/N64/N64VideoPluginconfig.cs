@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		private N64Settings _s;
 		private N64SyncSettings _ss;
 
+		private static string _customResItemName = "Custom";
 		private static readonly string[] ValidResolutions =
 		{
 			"320 x 240",
@@ -30,7 +31,8 @@ namespace BizHawk.Client.EmuHawk
 			"1600 x 1200",
 			"1920 x 1440",
 			"2048 x 1536",
-			"Custom"
+			"2880 x 2160",
+			_customResItemName
 		};
 
 		private bool _programmaticallyChangingPluginComboBox = false;
@@ -104,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			// Global
-			if (VideoResolutionComboBox.Text != "Custom")
+			if (VideoResolutionComboBox.Text != _customResItemName)
 			{
 				var videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
 				var strArr = videoSettings.Split('x');
@@ -404,10 +406,14 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.bilinearMode = GLideN64_bilinearMode.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>();
+			_ss.GLideN64Plugin.enableHalosRemoval = GLideN64_enableHalosRemoval.Checked;
 			_ss.GLideN64Plugin.MaxAnisotropy = GLideN64_MaxAnisotropy.Checked;
 			_ss.GLideN64Plugin.CacheSize = GLideN64_CacheSize.Text.IsSigned()
 				? int.Parse(GLideN64_CacheSize.Text)
 				: 500;
+			_ss.GLideN64Plugin.ShowInternalResolution = GLideN64_ShowInternalResolution.Checked;
+			_ss.GLideN64Plugin.ShowRenderingResolution = GLideN64_ShowRenderingResolution.Checked;
+			_ss.GLideN64Plugin.FXAA = GLideN64_FXAA.Checked;
 			_ss.GLideN64Plugin.EnableNoise = GLideN64_EnableNoise.Checked;
 			_ss.GLideN64Plugin.EnableLOD = GLideN64_EnableLOD.Checked;
 			_ss.GLideN64Plugin.EnableHWLighting = GLideN64_HWLighting.Checked;
@@ -452,6 +458,32 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.GammaCorrectionLevel = GLideN64_GammaCorrectionLevel.Text.IsFloat()
 				? float.Parse(GLideN64_GammaCorrectionLevel.Text)
 				: 2.0f;
+
+			_ss.GLideN64Plugin.EnableOverscan = GLideN64_EnableOverscan.Checked;
+			_ss.GLideN64Plugin.OverscanNtscTop = GLideN64_OverscanNtscTop.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscTop.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscBottom = GLideN64_OverscanNtscBottom.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscBottom.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscLeft = GLideN64_OverscanNtscLeft.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscLeft.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscRight = GLideN64_OverscanNtscRight.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscRight.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalTop = GLideN64_OverscanPalTop.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalTop.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalBottom = GLideN64_OverscanPalBottom.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalBottom.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalLeft = GLideN64_OverscanPalLeft.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalLeft.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalRight = GLideN64_OverscanPalRight.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalRight.Text)
+				: 0;
 
 			_ss.GLideN64Plugin.EnableN64DepthCompare = GLideN64_EnableN64DepthCompare.Checked;
 			_ss.GLideN64Plugin.EnableCopyColorToRDRAM = GLideN64_EnableCopyColorToRDRAM.SelectedItem
@@ -502,18 +534,17 @@ namespace BizHawk.Client.EmuHawk
 			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
 			VideoResolutionYTextBox.Text = _s.VideoSizeY.ToString();
 
-			var videoSetting = _s.VideoSizeX
-						+ " x "
-						+ _s.VideoSizeY;
+			var videoSetting = $"{_s.VideoSizeX} x {_s.VideoSizeY}";
 
 			var index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
 			}
-			else if (PluginComboBox.SelectedIndex != 4)
+			else if (PluginComboBox.SelectedIndex != 4) // wtf
 			{
-				VideoResolutionComboBox.SelectedIndex = 13;
+				VideoResolutionComboBox.SelectedIndex =
+					VideoResolutionComboBox.Items.IndexOf(_customResItemName);
 				ShowCustomVideoResolutionControls();
 			}
 
@@ -574,7 +605,7 @@ namespace BizHawk.Client.EmuHawk
 			RiceColorQuality_Combo.SelectedIndex = _ss.RicePlugin.ColorQuality;
 			RiceOpenGLRenderSetting_Combo.SelectedIndex = _ss.RicePlugin.OpenGLRenderSetting;
 			RiceAnisotropicFiltering_TB.Value = _ss.RicePlugin.AnisotropicFiltering;
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 
 			RiceUseDefaultHacks_CB.Checked = _ss.RicePlugin.UseDefaultHacks;
 
@@ -746,8 +777,12 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_UseNativeResolutionFactor.Text = _ss.GLideN64Plugin.UseNativeResolutionFactor.ToString();
 			GLideN64_bilinearMode
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(_ss.GLideN64Plugin.bilinearMode);
+			GLideN64_enableHalosRemoval.Checked = _ss.GLideN64Plugin.enableHalosRemoval;
 			GLideN64_MaxAnisotropy.Checked = _ss.GLideN64Plugin.MaxAnisotropy;
 			GLideN64_CacheSize.Text = _ss.GLideN64Plugin.CacheSize.ToString();
+			GLideN64_ShowInternalResolution.Checked = _ss.GLideN64Plugin.ShowInternalResolution;
+			GLideN64_ShowRenderingResolution.Checked = _ss.GLideN64Plugin.ShowRenderingResolution;
+			GLideN64_FXAA.Checked = _ss.GLideN64Plugin.FXAA;
 			GLideN64_EnableNoise.Checked = _ss.GLideN64Plugin.EnableNoise;
 			GLideN64_EnableLOD.Checked = _ss.GLideN64Plugin.EnableLOD;
 			GLideN64_HWLighting.Checked = _ss.GLideN64Plugin.EnableHWLighting;
@@ -785,6 +820,25 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_ForceGammaCorrection.Checked = _ss.GLideN64Plugin.ForceGammaCorrection;
 			GLideN64_GammaCorrectionLevel.Text = _ss.GLideN64Plugin.GammaCorrectionLevel.ToString();
 
+			GLideN64_OverscanNtscTop.Enabled =
+			GLideN64_OverscanNtscBottom.Enabled =
+			GLideN64_OverscanNtscLeft.Enabled =
+			GLideN64_OverscanNtscRight.Enabled =
+			GLideN64_OverscanPalTop.Enabled =
+			GLideN64_OverscanPalBottom.Enabled =
+			GLideN64_OverscanPalLeft.Enabled =
+			GLideN64_OverscanPalRight.Enabled =
+			GLideN64_EnableOverscan.Checked =
+				_ss.GLideN64Plugin.EnableOverscan;
+			GLideN64_OverscanNtscTop.Text = _ss.GLideN64Plugin.OverscanNtscTop.ToString();
+			GLideN64_OverscanNtscBottom.Text = _ss.GLideN64Plugin.OverscanNtscBottom.ToString();
+			GLideN64_OverscanNtscLeft.Text = _ss.GLideN64Plugin.OverscanNtscLeft.ToString();
+			GLideN64_OverscanNtscRight.Text = _ss.GLideN64Plugin.OverscanNtscRight.ToString();
+			GLideN64_OverscanPalTop.Text = _ss.GLideN64Plugin.OverscanPalTop.ToString();
+			GLideN64_OverscanPalBottom.Text = _ss.GLideN64Plugin.OverscanPalBottom.ToString();
+			GLideN64_OverscanPalLeft.Text = _ss.GLideN64Plugin.OverscanPalLeft.ToString();
+			GLideN64_OverscanPalRight.Text = _ss.GLideN64Plugin.OverscanPalRight.ToString();
+
 			UpdateGLideN64HacksSection();
 			if (!_ss.GLideN64Plugin.UseDefaultHacks)
 			{
@@ -800,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void RiceAnisotropicFiltering_Tb_Scroll_1(object sender, EventArgs e)
 		{
-			AnisotropicFiltering_LB.Text = "Anisotropic Filtering: " + RiceAnisotropicFiltering_TB.Value;
+			AnisotropicFiltering_LB.Text = $"Anisotropic Filtering: {RiceAnisotropicFiltering_TB.Value}";
 		}
 
 		private void RiceUseDefaultHacks_Cb_CheckedChanged(object sender, EventArgs e)
@@ -1094,6 +1148,19 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_EnableCopyAuxiliaryToRDRAM.Enabled = val;
 		}
 
+		private void GLideN64_EnableOverscan_CheckedChanged(object sender, EventArgs e)
+		{
+			GLideN64_OverscanNtscTop.Enabled =
+			GLideN64_OverscanNtscBottom.Enabled =
+			GLideN64_OverscanNtscLeft.Enabled =
+			GLideN64_OverscanNtscRight.Enabled =
+			GLideN64_OverscanPalTop.Enabled =
+			GLideN64_OverscanPalBottom.Enabled =
+			GLideN64_OverscanPalLeft.Enabled =
+			GLideN64_OverscanPalRight.Enabled =
+				GLideN64_EnableOverscan.Checked;
+		}
+
 		private void GlideUseDefaultHacks1_CheckedChanged(object sender, EventArgs e)
 		{
 			GlideUseDefaultHacks2.Checked = GlideUseDefaultHacks1.Checked;
@@ -1139,7 +1206,7 @@ namespace BizHawk.Client.EmuHawk
 			int oldSizeX, oldSizeY;
 
 			var oldResolution = VideoResolutionComboBox.SelectedItem.ToString();
-			if (oldResolution != "Custom")
+			if (oldResolution != _customResItemName)
 			{
 				strArr = oldResolution.Split('x');
 				oldSizeX = int.Parse(strArr[0].Trim());
@@ -1168,7 +1235,7 @@ namespace BizHawk.Client.EmuHawk
 				int bestFit = -1;
 				for (int i = 0; i < VideoResolutionComboBox.Items.Count; i++)
 				{
-					if ((string)VideoResolutionComboBox.Items[i] != "Custom")
+					if ((string)VideoResolutionComboBox.Items[i] != _customResItemName)
 					{
 						string option = (string)VideoResolutionComboBox.Items[i];
 						strArr = option.Split('x');
@@ -1203,7 +1270,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VideoResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (VideoResolutionComboBox.Text == "Custom")
+			if (VideoResolutionComboBox.Text == _customResItemName)
 			{
 				ShowCustomVideoResolutionControls();
 			}

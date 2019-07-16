@@ -54,14 +54,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SyncState(Serializer ser)
 		{
 			scnt.SyncState(ser);
-			ser.Sync("chr_mode", ref chr_mode);
-			ser.Sync("prg_mode", ref prg_mode);
-			ser.Sync("prg_slot", ref prg_slot);
-			ser.Sync("chr_0", ref chr_0);
-			ser.Sync("chr_1", ref chr_1);
-			ser.Sync("wram_disable", ref wram_disable);
-			ser.Sync("prg", ref prg);
-			ser.SyncEnum("mirror", ref mirror);
+			ser.Sync(nameof(chr_mode), ref chr_mode);
+			ser.Sync(nameof(prg_mode), ref prg_mode);
+			ser.Sync(nameof(prg_slot), ref prg_slot);
+			ser.Sync(nameof(chr_0), ref chr_0);
+			ser.Sync(nameof(chr_1), ref chr_1);
+			ser.Sync(nameof(wram_disable), ref wram_disable);
+			ser.Sync(nameof(prg), ref prg);
+			ser.SyncEnum(nameof(mirror), ref mirror);
 
 			SyncCHR();
 			SyncPRG();
@@ -75,9 +75,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//register 0:
 		public int chr_mode;
 		public int prg_mode;
-		public int prg_slot; //complicated
+		public int prg_slot; // complicated
 		public NES.NESBoardBase.EMirrorType mirror;
-		static NES.NESBoardBase.EMirrorType[] _mirrorTypes = new NES.NESBoardBase.EMirrorType[] { NES.NESBoardBase.EMirrorType.OneScreenA, NES.NESBoardBase.EMirrorType.OneScreenB, NES.NESBoardBase.EMirrorType.Vertical, NES.NESBoardBase.EMirrorType.Horizontal };
+		static readonly NES.NESBoardBase.EMirrorType[] _mirrorTypes =
+		{
+			NES.NESBoardBase.EMirrorType.OneScreenA,
+			NES.NESBoardBase.EMirrorType.OneScreenB,
+			NES.NESBoardBase.EMirrorType.Vertical,
+			NES.NESBoardBase.EMirrorType.Horizontal
+		};
 
 		//register 1,2:
 		int chr_0, chr_1;
@@ -87,8 +93,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg;
 
 		//regenerable state
-		IntBuffer chr_banks_4k = new IntBuffer(2);
-		IntBuffer prg_banks_16k = new IntBuffer(2);
+		readonly IntBuffer chr_banks_4k = new IntBuffer(2);
+		readonly IntBuffer prg_banks_16k = new IntBuffer(2);
 
 		public class MMC1_SerialController
 		{
@@ -97,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void SyncState(Serializer ser)
 			{
-				ser.Sync("shift_count", ref shift_count);
-				ser.Sync("shift_val", ref shift_val);
+				ser.Sync(nameof(shift_count), ref shift_count);
+				ser.Sync(nameof(shift_val), ref shift_val);
 			}
 
 			public Action Reset;
@@ -117,8 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					shift_count = 0;
 					shift_val = 0;
-					if (Reset != null)
-						Reset();
+					Reset?.Invoke();
 				}
 				else
 				{
@@ -178,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 3: //E000-FFFF
 					prg = value & 0xF;
-					wram_disable = value.Bit(4) ? true : false;
+					wram_disable = value.Bit(4);
 					break;
 			}
 			//board.NES.LogLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
@@ -227,16 +232,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public int Get_PRGBank(int addr)
 		{
-			int bank_16k = addr >> 14;
-			bank_16k = prg_banks_16k[bank_16k];
-			return bank_16k;
+			return prg_banks_16k[addr >> 14];
 		}
 
 		public int Get_CHRBank_4K(int addr)
 		{
-			int bank_4k = addr >> 12;
-			bank_4k = chr_banks_4k[bank_4k];
-			return bank_4k;
+			return chr_banks_4k[addr >> 12];
 		}
 	}
 
@@ -279,8 +280,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!disablemirror)
 					SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
 			}
-
-			
 		}
 
 		public override byte ReadWRAM(int addr)
@@ -314,8 +313,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
-			
-
 			if (addr < 0x2000)
 			{
 				if (_is_snrom)
@@ -355,8 +352,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePPU(int addr, byte value)
 		{
-			
-
 			if (NES._isVS)
 			{
 				if (addr < 0x2000)
@@ -398,8 +393,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
-			ser.Sync("ppuclock", ref ppuclock);
-			ser.Sync("chr_wram_enable", ref chr_wram_enable);
+			ser.Sync(nameof(ppuclock), ref ppuclock);
+			ser.Sync(nameof(chr_wram_enable), ref chr_wram_enable);
 			if (NES._isVS)
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}
@@ -555,7 +550,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	} //class SxROM
 
-
 	class SoROM : SuROM
 	{
 		//this uses a CHR bit to select WRAM banks
@@ -639,7 +633,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-
 	class SuROM : SxROM
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -681,5 +674,4 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[addr];
 		}
 	}
-
 }

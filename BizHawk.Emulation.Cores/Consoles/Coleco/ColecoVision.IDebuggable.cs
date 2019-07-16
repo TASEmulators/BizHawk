@@ -142,6 +142,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			throw new NotImplementedException();
 		}
 
-		public int TotalExecutedCycles => _cpu.TotalExecutedCycles;
+		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
 }

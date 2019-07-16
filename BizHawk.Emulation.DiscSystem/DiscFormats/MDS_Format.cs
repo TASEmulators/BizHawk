@@ -109,8 +109,6 @@ namespace BizHawk.Emulation.DiscSystem
             /// <summary>
             /// Parse mds stream for the header
             /// </summary>
-            /// <param name="stream"></param>
-            /// <returns></returns>
             public AHeader Parse(Stream stream)
             {
                 EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
@@ -250,10 +248,10 @@ namespace BizHawk.Emulation.DiscSystem
             /// </summary>
             public int Session;
 
-            /// <summary>
-            /// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
-            /// </summary>
-            //public int ALBA;
+//          /// <summary>
+//          /// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
+//          /// </summary>
+//          public int ALBA;
 
             /// <summary>
             /// this seems just to be the LBA corresponding to PMIN:PSEC:PFRAME (give or take 150).
@@ -314,7 +312,7 @@ namespace BizHawk.Emulation.DiscSystem
 
             if (aFile.Header.Version[0] > 1)
             {
-                throw new MDSParseException("MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: " + aFile.Header.Version[0] + "." + aFile.Header.Version[1]);
+                throw new MDSParseException($"MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: {aFile.Header.Version[0]}.{aFile.Header.Version[1]}");
             }
 
             // parse sessions
@@ -477,11 +475,11 @@ namespace BizHawk.Emulation.DiscSystem
                         if (f.FilenameOffset == 0 ||
                             string.Compare(fileName, "*.mdf", StringComparison.InvariantCultureIgnoreCase) == 0)
                         {
-                            fileName = dir + @"\" + Path.GetFileNameWithoutExtension(aFile.MDSPath) + ".mdf";
+                            fileName = $@"{dir}\{Path.GetFileNameWithoutExtension(aFile.MDSPath)}.mdf";
                         }
                         else
                         {
-                            fileName = dir + @"\" + fileName;
+                            fileName = $@"{dir}\{fileName}";
                         }
 
                         track.ImageFileNamePaths.Add(fileName);
@@ -527,44 +525,33 @@ namespace BizHawk.Emulation.DiscSystem
                 aFile.ParsedSession.Add(session);
             }
 
-            // now build the TOC object
-            foreach (var se in aFile.ParsedSession)
-            {
-                // get the first and last tracks
-                int sTrack = se.StartTrack;
-                int eTrack = se.EndTrack;
-
-                // get list of all tracks from aTracks for this session
-                var tracks = (from a in aTracks.Values
-                              where a.TrackNo >= sTrack || a.TrackNo <= eTrack
-                              orderby a.TrackNo
-                              select a).ToList();
-
-                // create the TOC entries
-                foreach (var t in tracks)
-                {
-                    ATOCEntry toc = new ATOCEntry(t.Point);
-                    toc.ADR_Control = t.ADR_Control;
-                    toc.AFrame = t.AFrame;
-                    toc.AMin = t.AMin;
-                    toc.ASec = t.ASec;
-                    toc.EntryNum = t.TrackNo;
-                    toc.PFrame = t.PFrame;
-                    toc.PLBA = Convert.ToInt32(t.PLBA);
-                    toc.PMin = t.PMin;
-                    toc.Point = t.Point;
-                    toc.PSec = t.PSec;
-                    toc.SectorSize = t.SectorSize;
-                    toc.Zero = t.Zero;
-                    toc.TrackOffset = Convert.ToInt64(t.StartOffset);
-                    toc.Session = se.SessionSequence;
-                    toc.ImageFileNamePaths = t.ImageFileNamePaths;
-                    toc.ExtraBlock = t.ExtraBlock;
-                    toc.BlobIndex = t.BlobIndex;
-                    aFile.TOCEntries.Add(toc);
-                }
-                
-            }
+			// now build the TOC object
+			foreach (var se in aFile.ParsedSession)
+				foreach (var t in aTracks.Values
+					.Where(a => se.StartTrack <= a.TrackNo && a.TrackNo <= se.EndTrack)
+					.OrderBy(a => a.TrackNo))
+				{
+					aFile.TOCEntries.Add(new ATOCEntry(t.Point)
+					{
+						ADR_Control = t.ADR_Control,
+						AFrame = t.AFrame,
+						AMin = t.AMin,
+						ASec = t.ASec,
+						BlobIndex = t.BlobIndex,
+						EntryNum = t.TrackNo,
+						ExtraBlock = t.ExtraBlock,
+						ImageFileNamePaths = t.ImageFileNamePaths,
+						PFrame = t.PFrame,
+						PLBA = Convert.ToInt32(t.PLBA),
+						PMin = t.PMin,
+						Point = t.Point,
+						PSec = t.PSec,
+						SectorSize = t.SectorSize,
+						Session = se.SessionSequence,
+						TrackOffset = Convert.ToInt64(t.StartOffset),
+						Zero = t.Zero
+					});
+				}
 
             return aFile;
         }
@@ -632,7 +619,7 @@ namespace BizHawk.Emulation.DiscSystem
                 foreach (var file in track.ImageFileNamePaths.Distinct())
                 {
                     if (!File.Exists(file))
-                        throw new MDSParseException("Malformed MDS format: nonexistent image file: " + file);
+                        throw new MDSParseException($"Malformed MDS format: nonexistent image file: {file}");
 
                     IBlob mdfBlob = null;
                     long mdfLen = -1;
@@ -656,7 +643,7 @@ namespace BizHawk.Emulation.DiscSystem
                     {
                         // wrap in zeropadadapter
                         disc.DisposableResources.Add(mdfBlob);
-                        BlobIndex[count] = mdfBlob;
+                        BlobIndex[count++] = mdfBlob;
                     }
                 }
             }
@@ -840,7 +827,7 @@ namespace BizHawk.Emulation.DiscSystem
                             currBlobIndex++;
                         mdfBlob = disc.DisposableResources[currBlobIndex] as Disc.Blob_RawFile;
 
-                        int userSector = 2048;
+                        //int userSector = 2048;
                         switch (track.SectorSize)
                         {
                             case 2448:
@@ -848,7 +835,7 @@ namespace BizHawk.Emulation.DiscSystem
                                 {
                                     Policy = IN_DiscMountPolicy                                 
                                 };
-                                userSector = 2352;                          
+                                //userSector = 2352;                          
                                 break;
                             case 2048:
                             default:
@@ -856,10 +843,10 @@ namespace BizHawk.Emulation.DiscSystem
                                 {
                                     Policy = IN_DiscMountPolicy
                                 };
-                                userSector = 2048;
+                                //userSector = 2048;
                                 break;
                             
-                                //throw new Exception("Not supported: Sector Size " + track.SectorSize);
+                                //throw new Exception($"Not supported: Sector Size {track.SectorSize}");
                         }
 
                         // configure blob

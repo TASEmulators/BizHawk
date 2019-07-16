@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!searchset.Contains(button.Name))
 					{
 						MessageBox.Show(this,
-							string.Format("Schema warning: Schema entry '{0}':'{1}' will not correspond to any control in definition '{2}'", schema.DisplayName, button.Name, def.Name),
+							$"Schema warning: Schema entry '{schema.DisplayName}':'{button.Name}' will not correspond to any control in definition '{def.Name}'",
 							"Dev Warning");
 					}
 				}
@@ -182,7 +182,10 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 			{
 				Readonly = true;
-				Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+				if (Global.MovieSession.CurrentInput != null)
+				{
+					Pads.ForEach(p => p.Set(Global.MovieSession.CurrentInput));
+				}
 			}
 			else
 			{

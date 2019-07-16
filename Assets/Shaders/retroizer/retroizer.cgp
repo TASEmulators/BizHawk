@@ -1,0 +1,4 @@
+shaders = 1
+
+shader0 = retroizer.cg
+scale0 = 6

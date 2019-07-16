@@ -7,9 +7,13 @@ using System.Reflection;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
+using BizHawk.Client.EmuHawk;
+using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
-				throw new ArgumentException($"Type {toolType.Name} does not implement IToolForm.");
+				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
 			
 			// The type[] in parameter is used to avoid an ambigous name exception
@@ -120,6 +124,11 @@ namespace BizHawk.Client.EmuHawk
 				(newTool as Form).Owner = GlobalWin.MainForm;
 			}
 
+			if (isExternal)
+			{
+				ApiInjector.UpdateApis(GlobalWin.ApiProvider, newTool);
+			}
+
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 			string toolType = typeof(T).ToString();
 
@@ -150,7 +159,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
-			newTool.Show();
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows
+			   && newTool is RamSearch)
+			{
+				// the mono winforms implementation is buggy, skip to the return statement and call Show in MainForm instead
+			}
+			else
+			{
+				newTool.Show();
+			}
 			return (T)newTool;
 		}
 
@@ -227,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (dest == null)
 			{
-				throw new InvalidOperationException("IToolFormAutoConfig must have menu to bind to!");
+				throw new InvalidOperationException($"{nameof(IToolFormAutoConfig)} must have menu to bind to!");
 			}
 
 			int idx = dest.Count;
@@ -490,6 +507,8 @@ namespace BizHawk.Client.EmuHawk
 					
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
+						if (tool is IExternalToolForm)
+							ApiInjector.UpdateApis(GlobalWin.ApiProvider, tool);
 						tool.Restart();
 					}
 				}
@@ -620,7 +639,7 @@ namespace BizHawk.Client.EmuHawk
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 						if (tool == null)
 						{
-							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+							MessageBox.Show($"It seems that the object CustomMainForm does not implement {nameof(IExternalToolForm)}. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;
 						}
 					}
@@ -694,9 +713,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdateAfter()
+		public void FastUpdateAfter(bool fromLua = false)
 		{
-			if (Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
+			if (!fromLua && Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
 			{
 				LuaConsole.ResumeScripts(true);
 			}
@@ -729,6 +748,8 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			if (t == typeof(LuaConsole) && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows) return false;
+
 			var tool = Assembly
 					.GetExecutingAssembly()
 					.GetTypes()
@@ -743,13 +764,30 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<ToolAttribute>()
 				.FirstOrDefault();
 
-			// If no supported systems mentioned assume all
-			if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
+            // start with the assumption that if no supported systems are mentioned and no unsupported cores are mentioned
+            // then this is available for all
+            bool supported = true;
+            
+            if (attr?.SupportedSystems != null && attr.SupportedSystems.Any())
 			{
-				return attr.SupportedSystems.Contains(Global.Emulator.SystemId);
-			}
+                // supported systems are available
+                supported = attr.SupportedSystems.Contains(Global.Emulator.SystemId);
 
-			return true;
+                if (supported)
+                {
+                    // check for a core not supported override
+                    if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                        supported = false; 
+                }
+			}
+            else if (attr?.UnsupportedCores != null && attr.UnsupportedCores.Any())
+            {
+                // no supported system specified, but unsupported cores are
+                if (attr.UnsupportedCores.Contains(Global.Emulator.DisplayName()))
+                    supported = false;
+            }
+
+			return supported;
 		}
 
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
@@ -993,7 +1031,7 @@ namespace BizHawk.Client.EmuHawk
 				f.Directory.Create();
 			}
 
-			return Path.Combine(path, PathManager.FilesystemSafeName(Global.Game) + ".cht");
+			return Path.Combine(path, $"{PathManager.FilesystemSafeName(Global.Game)}.cht");
 		}
 	}
 }

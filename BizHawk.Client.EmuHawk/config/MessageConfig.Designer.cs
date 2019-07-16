@@ -395,7 +395,7 @@
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(86, 13);
 			this.label7.TabIndex = 18;
-			this.label7.Text = "Last Frame Input";
+			this.label7.Text = "Previous Frame Input";
 			// 
 			// label8
 			// 

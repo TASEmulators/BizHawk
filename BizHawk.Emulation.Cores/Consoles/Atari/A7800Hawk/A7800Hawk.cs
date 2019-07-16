@@ -44,12 +44,32 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private readonly ITraceable _tracer;
 
-		public MOS6502X cpu;
+		public MOS6502X<CpuLink> cpu;
 		public Maria maria;
 		public bool _isPAL;
 		public M6532 m6532;
 		public TIA tia;
 		public Pokey pokey;
+
+		public struct CpuLink : IMOS6502XLink
+		{
+			private readonly A7800Hawk _a7800;
+
+			public CpuLink(A7800Hawk a7800)
+			{
+				_a7800 = a7800;
+			}
+
+			public byte DummyReadMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public void OnExecFetch(ushort address) => _a7800.ExecFetch(address);
+
+			public byte PeekMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public byte ReadMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
+		}
 
 		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn, object settings, object syncSettings)
 		{
@@ -60,14 +80,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			m6532 = new M6532();
 			pokey = new Pokey();
 
-			cpu = new MOS6502X
-			{
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				PeekMemory = ReadMemory,
-				DummyReadMemory = ReadMemory,
-				OnExecFetch = ExecFetch
-			};
+			cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			maria = new Maria
 			{
@@ -75,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			};
 
 			CoreComm = comm;
+
+			_blip.SetRates(1789773, 44100);
 
 			_settings = (A7800Settings)settings ?? new A7800Settings();
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
@@ -157,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				byte cart_1 = header[0x35];
 				byte cart_2 = header[0x36];
 
-				_isPAL = (header[0x39] > 0) ? true : false;
+				_isPAL = (header[0x39] > 0);
 
 				if (cart_2.Bit(1))
 				{
@@ -168,12 +183,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else
 					{
 						s_mapper = "1";
+					}
+					
+					if (cart_2.Bit(2))
+					{
+						cart_RAM = 8;
 					}					
 				}
 				else
 				{
 					s_mapper = "0";
 				}
+
+				if (cart_2.Bit(0)) { is_pokey = true; }
 			}
 			else
 			{
@@ -192,9 +214,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 			}
 
-			Reset_Mapper(s_mapper);
-
 			_rom = rom;
+
+			Reset_Mapper(s_mapper);
+			
 			_hsbios = highscoreBios;
 			_bios = _isPAL ? palBios : ntscBios;
 
@@ -250,7 +273,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			tia.Reset();
 			cpu.Reset();
-			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
 
 			maria.Reset();
 			m6532.Reset();
@@ -263,12 +285,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 
-			_spf = (_frameHz > 55) ? 740 : 880;
+			master_audio_clock = 0;
+			samp_c = samp_l = 0;
 		}
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
+			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
 		}
 
 		private void Reset_Mapper(string m)
@@ -303,6 +327,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			mapper.Core = this;
+			mapper.mask = _rom.Length / 0x4000 - 1;
 		}
 
 		/*

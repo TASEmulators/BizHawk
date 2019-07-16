@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 					return "Recording None";
 				}
 
-				return "Recording Player " + CurrentPlayer;
+				return $"Recording Player {CurrentPlayer}";
 			}
 		}
 

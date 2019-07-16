@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

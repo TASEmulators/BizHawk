@@ -10,10 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		public string RawBytes;
 		public int Length;
 
-		public override string ToString()
-		{
-			return string.Format("{0:X6}:  {1,-20}  {2,-8}  {3}", PC, RawBytes, Mnemonic, Args);			
-		}
+		public override string ToString() => $"{PC:X6}:  {RawBytes,-20}  {Mnemonic,-8}  {Args}";
 	}
 
 	partial class MC68000

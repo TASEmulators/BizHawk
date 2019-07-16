@@ -70,28 +70,28 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("HuC6280");
-			ser.Sync("A", ref A);
-			ser.Sync("X", ref X);
-			ser.Sync("Y", ref Y);
-			ser.Sync("P", ref P);
-			ser.Sync("PC", ref PC);
-			ser.Sync("S", ref S);
-			ser.Sync("MPR", ref MPR, false);
-			ser.Sync("LagIFlag", ref LagIFlag);
-			ser.Sync("IRQ1Assert", ref IRQ1Assert);
-			ser.Sync("IRQ2Assert", ref IRQ2Assert);
-			ser.Sync("TimerAssert", ref TimerAssert);
-			ser.Sync("IRQControlByte", ref IRQControlByte);
-			ser.Sync("IRQNextControlByte", ref IRQNextControlByte);
+			ser.BeginSection(nameof(HuC6280));
+			ser.Sync(nameof(A), ref A);
+			ser.Sync(nameof(X), ref X);
+			ser.Sync(nameof(Y), ref Y);
+			ser.Sync(nameof(P), ref P);
+			ser.Sync(nameof(PC), ref PC);
+			ser.Sync(nameof(S), ref S);
+			ser.Sync(nameof(MPR), ref MPR, false);
+			ser.Sync(nameof(LagIFlag), ref LagIFlag);
+			ser.Sync(nameof(IRQ1Assert), ref IRQ1Assert);
+			ser.Sync(nameof(IRQ2Assert), ref IRQ2Assert);
+			ser.Sync(nameof(TimerAssert), ref TimerAssert);
+			ser.Sync(nameof(IRQControlByte), ref IRQControlByte);
+			ser.Sync(nameof(IRQNextControlByte), ref IRQNextControlByte);
 			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync("PendingCycles", ref PendingCycles);
-			ser.Sync("LowSpeed", ref LowSpeed);
-			ser.Sync("TimerTickCounter", ref TimerTickCounter);
-			ser.Sync("TimerReloadValue", ref TimerReloadValue);
-			ser.Sync("TimerValue", ref TimerValue);
-			ser.Sync("TimerEnabled", ref TimerEnabled);
-			ser.Sync("InBlockTransfer", ref InBlockTransfer);
+			ser.Sync(nameof(PendingCycles), ref PendingCycles);
+			ser.Sync(nameof(LowSpeed), ref LowSpeed);
+			ser.Sync(nameof(TimerTickCounter), ref TimerTickCounter);
+			ser.Sync(nameof(TimerReloadValue), ref TimerReloadValue);
+			ser.Sync(nameof(TimerValue), ref TimerValue);
+			ser.Sync(nameof(TimerEnabled), ref TimerEnabled);
+			ser.Sync(nameof(InBlockTransfer), ref InBlockTransfer);
 			ser.Sync("BTFrom", ref btFrom);
 			ser.Sync("BTTo", ref btTo);
 			ser.Sync("BTLen", ref btLen);
@@ -230,7 +230,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			byte page = MPR[address >> 13];
 			var result = ReadMemory21((page << 13) | (address & 0x1FFF));
-			MemoryCallbacks.CallReads(address, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessRead);
+			MemoryCallbacks.CallMemoryCallbacks(address, result, flags, "System Bus");
 			return result;
 		}
 
@@ -238,7 +239,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			byte page = MPR[address >> 13];
 			WriteMemory21((page << 13) | (address & 0x1FFF), value);
-			MemoryCallbacks.CallWrites(address, "System Bus");
+			uint flags = (uint)(MemoryCallbackFlags.AccessWrite);
+			MemoryCallbacks.CallMemoryCallbacks(address, value, flags, "System Bus");
 		}
 
 		private ushort ReadWord(ushort address)
@@ -273,28 +275,23 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 			return new TraceInfo
 			{
-				Disassembly = string.Format(
-					"{3:X2}:{0:X4}:  {1:X2}  {2} ",
-					PC,
-					ReadMemory(PC),
-					Disassemble(PC, out notused), MPR[PC >> 13]).PadRight(30),
-				RegisterInfo = string.Format(
-					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}{13}",
-					A,
-					X,
-					Y,
-					P,
-					S,
-					TotalExecutedCycles,
-					FlagN ? "N" : "n",
-					FlagV ? "V" : "v",
-					FlagT ? "T" : "t",
-					FlagB ? "B" : "b",
-					FlagD ? "D" : "d",
-					FlagI ? "I" : "i",
-					FlagZ ? "Z" : "z",
-					FlagC ? "C" : "c"
-				)
+				Disassembly = $"{MPR[PC >> 13]:X2}:{PC:X4}:  {ReadMemory(PC):X2}  {Disassemble(PC, out notused)} ".PadRight(30),
+				RegisterInfo = string.Join(" ",
+					$"A:{A:X2}",
+					$"X:{X:X2}",
+					$"Y:{Y:X2}",
+					$"P:{P:X2}",
+					$"SP:{S:X2}",
+					$"Cy:{TotalExecutedCycles}",
+					string.Concat(
+						FlagN ? "N" : "n",
+						FlagV ? "V" : "v",
+						FlagT ? "T" : "t",
+						FlagB ? "B" : "b",
+						FlagD ? "D" : "d",
+						FlagI ? "I" : "i",
+						FlagZ ? "Z" : "z",
+						FlagC ? "C" : "c"))
 			};
 		}
 

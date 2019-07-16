@@ -38,27 +38,39 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// Gets the default file extension
 			/// </summary>
-			public string Defaultext { get; }
+			public string Extension { get; set; }
 
 			/// <summary>
 			/// get a list of canned presets
 			/// </summary>
-			/// <returns></returns>
 			public static FormatPreset[] GetPresets()
 			{
 				return new[]
 				{
-					new FormatPreset("Uncompressed AVI", "AVI file with uncompressed audio and video.  Very large.", "-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
-					new FormatPreset("Xvid", "AVI file with xvid video and mp3 audio.", "-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),
-					//new FormatPreset("Lossless Compressed AVI", "AVI file with zlib video and uncompressed audio.", "-c:a pcm_s16le -c:v zlib -f avi", false, "avi"),
-					new FormatPreset("FLV", "avc+aac in flash container.", "-c:a libvo_aacenc -c:v libx264 -f flv", false, "flv"),
-					new FormatPreset("Matroska Lossless", "MKV file with lossless video and audio", "-c:a pcm_s16le -c:v libx264rgb -crf 0 -f matroska", false, "mkv"),
-					new FormatPreset("Matroska", "MKV file with h264 + vorbis", "-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),
-					new FormatPreset("QuickTime", "MOV file with avc+aac", "-c:a libvo_aacenc -c:v libx264 -f mov", false, "mov"),
-					new FormatPreset("Ogg", "Theora + Vorbis in OGG", "-c:a libvorbis -c:v libtheora -f ogg", false, "ogg"),
-					new FormatPreset("WebM", "Vp8 + Vorbis in WebM", "-c:a libvorbis -c:v libvpx -f webm", false, "webm"),
-					new FormatPreset("mp4", "ISO mp4 with AVC+AAC", "-c:a libvo_aacenc -c:v libx264 -f mp4", false, "mp4"),
-					new FormatPreset("[Custom]", "Write your own ffmpeg command.  For advanced users only", "-c:a foo -c:v bar -f baz", true, "foobar"),
+					new FormatPreset("AVI Lossless AVC", "Lossless AVC video and uncompressed audio in an AVI container. High speed and compression, compatible with AVISource().",
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -preset ultrafast -g 10 -pix_fmt rgb24 -f avi", false, "avi"),
+					new FormatPreset("AVI Lossless FFV1", "Lossless FFV1 video and uncompressed audio in an AVI container. Compatible with AVISource(), if ffmpeg based decoder is installed.",
+						"-c:a pcm_s16le -c:v ffv1 -pix_fmt bgr0 -level 1 -g 1 -coder 1 -context 1 -f avi", false, "avi"),
+					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large, don't use!",
+						"-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
+					new FormatPreset("Matroska Lossless", "Lossless AVC video and uncompressed audio in a Matroska container.",
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -pix_fmt rgb24 -f matroska", false, "mkv"),
+					new FormatPreset("Matroska", "AVC video and Vorbis audio in a Matroska container.",
+						"-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),
+					new FormatPreset("MP4", "AVC video and AAC audio in an MP4 container.",
+						"-c:a aac -c:v libx264 -f mp4", false, "mp4"),
+					new FormatPreset("WebM", "VP8 video and Vorbis audio in a WebM container.",
+						"-c:a libvorbis -c:v libvpx -auto-alt-ref 0 -f webm", false, "webm"),
+					new FormatPreset("Ogg", "Theora video and Vorbis audio in an Ogg contrainer.",
+						"-c:a libvorbis -c:v libtheora -f ogg", false, "ogg"),
+					new FormatPreset("Xvid", "Xvid video and MP3 audio in an AVI container.",
+						"-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),
+					new FormatPreset("QuickTime", "AVC video and AAC audio in a QuickTime container.",
+						"-c:a aac -c:v libx264 -f mov", false, "mov"),
+					new FormatPreset("FLV", "AVC video and AAC audio in a Flash Video container.",
+						"-c:a aac -c:v libx264 -f flv", false, "flv"),
+					new FormatPreset("[Custom]", "Write your own ffmpeg command. For advanced users only.",
+						"-c:a foo -c:v bar -f baz", true, "foobar"),
 				};
 			}
 
@@ -93,7 +105,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			private FormatPreset(string name, string desc, string commandline, bool custom, string defaultext)
+			public void DeduceFormat(string commandline)
+			{
+				string formatkey = "-f ";
+				Extension = commandline.Substring(commandline.IndexOf(formatkey) + formatkey.Length);
+
+				// are there other formats that don't match their file extensions?
+				if (Extension == "matroska")
+				{
+					Extension = "mkv";
+				}
+			}
+
+			private FormatPreset(string name, string desc, string commandline, bool custom, string ext)
 			{
 				Name = name;
 				Desc = desc;
@@ -103,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 					? Global.Config.FFmpegCustomCommand
 					: commandline;
 
-				Defaultext = defaultext;
+				DeduceFormat(Commandline);
 			}
 		}
 
@@ -117,11 +141,9 @@ namespace BizHawk.Client.EmuHawk
 			if (listBox1.SelectedIndex != -1)
 			{
 				var f = (FormatPreset)listBox1.SelectedItem;
-
-				label5.Text = "Extension: " + f.Defaultext;
+				label5.Text = $"Extension: {f.Extension}";
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
-				textBox1.ReadOnly = !f.Custom;
 			}
 		}
 
@@ -152,8 +174,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.FFmpegFormat = ret.ToString();
 				if (ret.Custom)
 				{
-					ret.Commandline = dlg.textBox1.Text;
-					Global.Config.FFmpegCustomCommand = dlg.textBox1.Text;
+					ret.Commandline = 
+						Global.Config.FFmpegCustomCommand =
+						dlg.textBox1.Text;
+
+					ret.DeduceFormat(ret.Commandline);
 				}
 			}
 

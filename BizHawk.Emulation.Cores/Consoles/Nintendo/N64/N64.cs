@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RunThreadAction(() => { _pendingThreadTerminate = true; });
 		}
 
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_inputProvider.Controller = controller;
 
@@ -256,7 +256,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				LagCount++;
 			}
 
-			Frame++;
+			if(!api.IsCrashed)
+				Frame++;
+
+			return true;
 		}
 
 		public string SystemId { get { return "N64"; } }

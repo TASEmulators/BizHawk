@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (!string.IsNullOrEmpty(attributes.Author))
 			{ 
-				CoreAuthorLabel.Text = "authors: " + attributes.Author;
+				CoreAuthorLabel.Text = $"authors: {attributes.Author}";
 			}
 			else
 			{

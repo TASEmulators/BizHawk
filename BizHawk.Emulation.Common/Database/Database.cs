@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common.BufferExtensions;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -35,7 +36,7 @@ namespace BizHawk.Emulation.Common
 			DB.TryGetValue(hashNotype, out cgi);
 			if (cgi == null)
 			{
-				Console.WriteLine("DB: hash " + hash + " not in game database.");
+				Console.WriteLine($"DB: hash {hash} not in game database.");
 				return null;
 			}
 
@@ -186,7 +187,7 @@ namespace BizHawk.Emulation.Common
 					}
 					catch
 					{
-						Console.WriteLine("Error parsing database entry: " + line);
+						Console.WriteLine($"Error parsing database entry: {line}");
 					}
 				}
 			}
@@ -298,12 +299,30 @@ namespace BizHawk.Emulation.Common
 				case ".D64":
 				case ".T64":
 				case ".G64":
-				case ".CRT":
-				case ".TAP":
+				case ".CRT":				
 					game.System = "C64";
 					break;
 
-				case ".Z64":
+                case ".TZX":
+                case ".PZX":
+                case ".CSW":
+                case ".WAV":
+                    game.System = "ZXSpectrum";
+                    break;
+
+                case ".CDT":
+                    game.System = "AmstradCPC";
+                    break;
+
+                case ".TAP":
+                    byte[] head = romData.Take(8).ToArray();
+                    if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
+                        game.System = "C64";
+                    else
+                        game.System = "ZXSpectrum";
+                    break;
+
+                case ".Z64":
 				case ".V64":
 				case ".N64":
 					game.System = "N64";
@@ -327,6 +346,10 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
+                    var dId = new DSKIdentifier(romData);
+                    game.System = dId.IdentifiedSystem;
+                    break;                    
+
 				case ".PO":
 				case ".DO":
 					game.System = "AppleII";
@@ -351,6 +374,11 @@ namespace BizHawk.Emulation.Common
 				case ".32X":
 					game.System = "32X";
 					game.AddOption("32X", "true");
+					break;
+
+				case ".VEC":
+					game.System = "VEC";
+					game.AddOption("VEC", "true");
 					break;
 			}
 

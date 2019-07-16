@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			Init(game, rom);
 
 			// the default RomStatusDetails don't do anything with Disc
-			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, new DiscSystem.DiscHasher(disc).OldHash());
+			CoreComm.RomStatusDetails = $"{game.Name}\r\nDisk partial hash:{new DiscSystem.DiscHasher(disc).OldHash()}";
 
 			_controllerDeck = new PceControllerDeck(
 				_syncSettings.Port1,
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private VPC VPC;
 		private ScsiCDBus SCSI;
 		private ADPCM ADPCM;
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		public HuC6280PSG PSG;
 		internal CDAudio CDAudio;

@@ -7,6 +7,9 @@
 ;5 = Rescue on Fractulus
 ;6 = Dev Cart
 
+md5:03DAA19B7AAE2D27E61F2A4DBE3B9B79		MUSIC	A78		PAL=true;board=0;Pokey=true
+md5:F5150C0FC1948832211E57852ABB0C6E		Utility Cart	A78		NTSC=true;board=0;Pokey=true
+md5:F9FA5107ED213E709858D8876359309E		Pokey Test	A78		NTSC=true;board=0;Pokey=true
 md5:0D9452D4DB4D1E1CF843F4F10605EB7D		Dev Cart	A78		NTSC=true;board=0
 md5:31FBCF03946E804FC2D77CCA5D61C928		Mode Test	A78		NTSC=true;board=0
 md5:91041AADD1700A7A4076F4005F2C362F		Diagnostics	A78		NTSC=true;board=0
@@ -31,7 +34,11 @@ md5:fba002089fcfa176454ab507e0eb76cb		Basketbrawl	A78		PAL=true;board=1
 md5:6010a398070dfacb4c0173d75d73c50a		Beef Drop	A78		NTSC=true;board=0		
 md5:c534db0a062225b17cfb8ecce0fb9090		Beef Drop	A78		NTSC=true;board=0		
 md5:CE25D34071B2C798ACE4C8792EAE8E84		Beef Drop	A78		NTSC=true;board=0
-md5:6da5b1b9fa0001e3517f6084ff651b07		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2		
+md5:707E98991390A4E8874508E5ED4EDEEF		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:AD35A98040A2FACB10ECB120BF83BCC3		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:6da5b1b9fa0001e3517f6084ff651b07		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:4D0B5BF95E4CB366990DBAEECB7F706D		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:34483432B92F565F4CED82A141119164		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true		
 md5:5a09946e57dbe30408a8f253a28d07db		Centipede	A78		NTSC=true;board=0		
 md5:38c056a48472d9a9e16ebda5ed91dae7		Centipede	A78		PAL=true;board=0		
 md5:93e4387864b014c155d7c17877990d1e		Choplifter!	A78		NTSC=true;board=0		
@@ -115,7 +122,8 @@ md5:220121f771fc4b98cef97dc040e8d378		Ninja Golf	A78		NTSC=true;board=1
 md5:ea0c859aa54fe5eaf4c1f327fab06221		Ninja Golf	A78		PAL=true;board=1		
 md5:74569571a208f8b0b1ccfb22d7c914e1		One on One Basketball	A78		NTSC=true;board=0		
 md5:8dba0425f0262e5704581d8757a1a6e3		One on One Basketball	A78		PAL=true;board=0		
-md5:5d7bc7092de69095137456733e7b685d		Pac-Man Collection	A78		NTSC=true;board=0		
+md5:5d7bc7092de69095137456733e7b685d		Pac-Man Collection	A78		NTSC=true;board=0
+md5:5013B69CB05B21A1194CE48517DF7BFC		Pac-Man Collection (Pokey)	A78		NTSC=true;board=0;Pokey=true		
 md5:90223a8a363bdf643a19d0f97e63b1b2		PacArcade	A78		NTSC=true;board=0		
 md5:386bded4a944bae455fedf56206dd1dd		Pete Rose Baseball	A78		PAL=true;board=0		
 md5:1a5207870dec6fae9111cb747e20d8e3		Pete Rose Baseball	A78		NTSC=true;board=0		
@@ -142,11 +150,15 @@ md5:980c35ae9625773a450aa7ef51751c04		Scrapyard Dog	A78		NTSC=true;board=1
 md5:53db322c201323fe2ca8f074c0a2bf86		Scrapyard Dog	A78		PAL=true;board=1		
 md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1
 md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1
-md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1;RAM=8		
+md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1;RAM=16		
 md5:a84c1b2300fbfbf21b1c02387f613dad		Space Duel	A78		PAL=true;board=0		
 md5:771cb4609347657f63e6f0eb26036e35		Space Duel	A78		NTSC=true;board=0		
 md5:6adf79558a3d7f5beca1bb8d34337417		Space Invaders	A78		NTSC=true;board=0		
-md5:cbb0746192540a13b4c7775c7ce2021f		Summer Games	A78		NTSC=true;board=1;RAM=16		
+md5:cbb0746192540a13b4c7775c7ce2021f		Summer Games	A78		NTSC=true;board=1;RAM=16
+md5:02508E6DF5E173B4063A7E6E63295817		Super Circus Atari Age (NTSC) (Joystick) (POKEY 0450) (20170611)	A78		NTSC=true;board=0;Pokey=true
+md5:81CEE326B99D6831DE10A566E338BD25		Super Circus Atari Age (NTSC) (Joystick) (POKEY 4000) (20170611)	A78		NTSC=true;board=0;Pokey=true
+md5:37E60CAC38E78A5562590CB1B8BC0578		Super Circus	A78		NTSC=true;board=0;Pokey=true
+md5:57B6D9380A188A32D5C3814B8AF2EA9A		Super Circus	A78		PAL=true;board=0;Pokey=true		
 md5:cc18e3b37a507c4217eb6cb1de8c8538		Super Huey UH-IX	A78		NTSC=true;board=0		
 md5:162f9c953f0657689cc74ab20b40280f		Super Huey UH-IX	A78		PAL=true;board=0					
 md5:59b5793bece1c80f77b55d60fb39cb94		Super Skateboardin'	A78		NTSC=true;board=0		

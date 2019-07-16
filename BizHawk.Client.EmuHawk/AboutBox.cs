@@ -163,23 +163,15 @@ namespace BizHawk.Client.EmuHawk
 		private void AboutBox_Load(object sender, EventArgs e)
 		{
 #if DEBUG
-					Text = "BizHawk Developer Build (DEBUG MODE) GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH;
+			Text = $"BizHawk Developer Build (DEBUG MODE) GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH}";
 #else
-			Text = "BizHawk Developer Build (RELEASE MODE) GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH;
+			Text = $"BizHawk Developer Build (RELEASE MODE) GIT {SubWCRev.GIT_BRANCH}#{SubWCRev.GIT_SHORTHASH}";
 #endif
-					if (DateTime.Now.Month == 12)
+			if (DateTime.Now.Month == 12)
+			{
 				if (DateTime.Now.Day > 17 && DateTime.Now.Day <= 25)
 				{
 					pictureBox1.Image = Properties.Resources.alt_about_image;
-				}
-
-			if (DateTime.Now.Month == 2)
-			{
-				if (DateTime.Now.Day >= 7 && DateTime.Now.Day <= 14)
-				{
-					pictureBox1.Image = Properties.Resources.HawkInLove;
-					pictureBox1.Location = new Point(pictureBox1.Location.X - 40, pictureBox1.Location.Y);
-					pictureBox1.Width = pictureBox1.Width + 80;
 				}
 			}
 		}

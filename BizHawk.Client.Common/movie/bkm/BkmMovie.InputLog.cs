@@ -254,10 +254,7 @@ namespace BizHawk.Client.Common
 					return true;
 				}
 
-				errorMessage = "The savestate is from frame "
-					+ log.Count
-					+ " which is greater than the current movie length of "
-					+ _log.Count;
+				errorMessage = $"The savestate is from frame {log.Count} which is greater than the current movie length of {_log.Count}";
 
 				return false;
 			}
@@ -266,9 +263,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_log[i] != log[i])
 				{
-					errorMessage = "The savestate input does not match the movie input at frame "
-						+ (i + 1)
-						+ ".";
+					errorMessage = $"The savestate input does not match the movie input at frame {(i + 1)}.";
 
 					return false;
 				}

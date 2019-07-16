@@ -16,6 +16,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int serial_bits;
 		public bool clk_internal;
 		public int clk_rate;
+		public byte going_out;
+		public byte coming_in;
 
 		public byte ReadReg(int addr)
 		{
@@ -47,7 +49,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((value & 1) > 0)
 						{
 							clk_internal = true;
-							clk_rate = 512;
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 256;
+							}
+							else
+							{
+								clk_rate = 512;
+							}						
 							serial_clock = clk_rate;
 						}
 						else
@@ -62,7 +71,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((value & 1) > 0)
 						{
 							clk_internal = true;
-							clk_rate = 512;
+							if (((value & 2) > 0) && Core.GBC_compat)
+							{
+								clk_rate = 256;
+							}
+							else
+							{
+								clk_rate = 512;
+							}
 							serial_clock = clk_rate;
 						}
 						else
@@ -73,7 +89,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					if (Core.GBC_compat)
+					{
+						serial_control = (byte)(0x7C | (value & 0x83)); // extra CGB bit
+					}
+					else
+					{
+						serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					}
+					
 					break;
 			}
 		}
@@ -84,16 +108,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (serial_start)
 			{
 				if (serial_clock > 0) { serial_clock--; }
+
 				if (serial_clock == 0)
 				{
 					if (serial_bits > 0)
 					{
-						send_external_bit((byte)(serial_data & 0x80));
-
 						byte temp = get_external_bit();
 						serial_data = (byte)((serial_data << 1) | temp);
 
 						serial_bits--;
+
 						if (serial_bits == 0)
 						{
 							serial_control &= 0x7F;
@@ -122,12 +146,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// no device connected returns 0xFF
 		public byte get_external_bit()
 		{
-			return 1;
+			return coming_in;
 		}
 
+		// calling this function buts an external bit on the cable line
 		public void send_external_bit(byte bit_send)
 		{
-
+			going_out = (byte)(bit_send >> 7);
 		}
 
 		public void Reset()
@@ -135,17 +160,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			serial_control = 0x7E;
 			serial_start = false;
 			serial_data = 0x00;
+			going_out = 0;
+			coming_in = 1;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("serial_control", ref serial_control);
-			ser.Sync("serial_data", ref serial_data);
-			ser.Sync("serial_start", ref serial_start);
-			ser.Sync("serial_clock", ref serial_clock);
-			ser.Sync("serial_bits", ref serial_bits);
-			ser.Sync("clk_internal", ref clk_internal);
-			ser.Sync("clk_rate", ref clk_rate);
+			ser.Sync(nameof(serial_control), ref serial_control);
+			ser.Sync(nameof(serial_data), ref serial_data);
+			ser.Sync(nameof(serial_start), ref serial_start);
+			ser.Sync(nameof(serial_clock), ref serial_clock);
+			ser.Sync(nameof(serial_bits), ref serial_bits);
+			ser.Sync(nameof(clk_internal), ref clk_internal);
+			ser.Sync(nameof(clk_rate), ref clk_rate);
+			ser.Sync(nameof(going_out), ref going_out);
+			ser.Sync(nameof(coming_in), ref coming_in);
 		}
 	}
 }

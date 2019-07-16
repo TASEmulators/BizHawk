@@ -8,7 +8,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -20,7 +21,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -77,6 +79,7 @@
     <Compile Include="CoreComms.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="DSKIdentifier.cs" />
     <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="EmulationExceptions.cs" />
@@ -118,6 +121,10 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
     <Compile Include="SystemLookup.cs" />
     <Compile Include="TextState.cs" />
+    <Compile Include="WorkingTypes\wshort.cs" />
+    <Compile Include="WorkingTypes\wushort.cs" />
+    <Compile Include="WorkingTypes\wsbyte.cs" />
+    <Compile Include="WorkingTypes\wbyte.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">

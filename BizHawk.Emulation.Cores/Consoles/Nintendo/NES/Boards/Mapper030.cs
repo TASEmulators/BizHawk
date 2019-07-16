@@ -55,13 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg", ref prg);
-			ser.Sync("chr", ref chr);
-			ser.Sync("flash_state", ref flash_state);
+			ser.Sync(nameof(prg), ref prg);
+			ser.Sync(nameof(chr), ref chr);
+			ser.Sync(nameof(flash_state), ref flash_state);
 			int tmp = (int)flash_mode;
-			ser.Sync("flash_mode", ref tmp);
+			ser.Sync(nameof(flash_mode), ref tmp);
 			flash_mode = (flashmode)tmp;
-			ser.Sync("flash_rom", ref flash_rom, true);
+			ser.Sync(nameof(flash_rom), ref flash_rom, true);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)

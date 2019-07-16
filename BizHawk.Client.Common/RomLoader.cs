@@ -14,16 +14,22 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.GGHawkLink;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
+using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+using BizHawk.Emulation.Cores.Consoles.Vectrex;
+using BizHawk.Emulation.Cores.Consoles.ChannelF;
 
 namespace BizHawk.Client.Common
 {
@@ -167,7 +173,7 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X" };
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X", "VEC" };
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -215,7 +221,7 @@ namespace BizHawk.Client.Common
 
 				else if (discMountJob.OUT_ErrorLevel)
 				{
-					throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+					throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 				}
 
 				else if (disc == null)
@@ -424,7 +430,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_ErrorLevel)
 							{
-								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+								throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 							}
 
 							if (disc == null)
@@ -492,7 +498,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_ErrorLevel)
 						{
-							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+							throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 						}
 
 						var disc = discMountJob.OUT_Disc;                        
@@ -628,7 +634,20 @@ namespace BizHawk.Client.Common
 
 									var left = Database.GetGameInfo(leftBytes, "left.gb");
 									var right = Database.GetGameInfo(rightBytes, "right.gb");
-									nextEmulator = new GambatteLink(
+									if (Global.Config.GB_UseGBHawk)
+									{
+										nextEmulator = new GBHawkLink(
+										nextComm,
+										left,
+										leftBytes,
+										right,
+										rightBytes,
+										GetCoreSettings<GBHawkLink>(),
+										GetCoreSyncSettings<GBHawkLink>());
+									}
+									else
+									{
+										nextEmulator = new GambatteLink(
 										nextComm,
 										left,
 										leftBytes,
@@ -637,7 +656,8 @@ namespace BizHawk.Client.Common
 										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>(),
 										Deterministic);
-
+									}
+										
 									// other stuff todo
 									break;
 								case "AppleII":
@@ -657,7 +677,38 @@ namespace BizHawk.Client.Common
 										(C64.C64Settings)GetCoreSettings<C64>(),
 										(C64.C64SyncSettings)GetCoreSyncSettings<C64>());
 									break;
-								case "PSX":
+                                case "ZXSpectrum":
+
+                                    List<GameInfo> zxGI = new List<GameInfo>();
+                                    foreach (var a in xmlGame.Assets)
+                                    {
+                                        zxGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
+                                    }
+
+                                    nextEmulator = new ZXSpectrum(
+                                        nextComm,
+                                        xmlGame.Assets.Select(a => a.Value), //.First(),
+                                        zxGI, // GameInfo.NullInstance,
+                                        (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
+                                        (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>(),
+                                        Deterministic);
+                                    break;
+                                case "AmstradCPC":
+
+                                    List<GameInfo> cpcGI = new List<GameInfo>();
+                                    foreach (var a in xmlGame.Assets)
+                                    {
+                                        cpcGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
+                                    }
+
+                                    nextEmulator = new AmstradCPC(
+                                        nextComm,
+                                        xmlGame.Assets.Select(a => a.Value), //.First(),
+                                        cpcGI, // GameInfo.NullInstance,
+                                        (AmstradCPC.AmstradCPCSettings)GetCoreSettings<AmstradCPC>(),
+                                        (AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<AmstradCPC>());
+                                    break;
+                                case "PSX":
 									var entries = xmlGame.AssetFullPaths;
 									var discs = new List<Disc>();
 									var discNames = new List<string>();
@@ -680,7 +731,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_ErrorLevel)
 										{
-											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+											throw new InvalidOperationException($"\r\n{discMountJob.OUT_Log}");
 										}
 
 										if (disc == null)
@@ -757,6 +808,22 @@ namespace BizHawk.Client.Common
 									}
 									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 									break;
+								case "Game Gear":
+									var leftBytesGG = xmlGame.Assets.First().Value;
+									var rightBytesGG = xmlGame.Assets.Skip(1).First().Value;
+
+									var leftGG = Database.GetGameInfo(leftBytesGG, "left.gg");
+									var rightGG = Database.GetGameInfo(rightBytesGG, "right.gg");
+
+									nextEmulator = new GGHawkLink(
+									nextComm,
+									leftGG,
+									leftBytesGG,
+									rightGG,
+									rightBytesGG,
+									GetCoreSettings<GGHawkLink>(),
+									GetCoreSyncSettings<GGHawkLink>());
+									break;
 								default:
 									return false;
 							}
@@ -816,6 +883,8 @@ namespace BizHawk.Client.Common
 						{
 							rom.GameInfo.System = "NES";
 						}
+
+						Console.WriteLine(rom.GameInfo.System);
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
@@ -925,7 +994,14 @@ namespace BizHawk.Client.Common
 
 									if (preference == "neshawk")
 									{
-										core = CoreInventory.Instance["NES", "NesHawk"];
+										if (Global.Config.UseSubNESHawk)
+										{
+											core = CoreInventory.Instance["NES", "SubNESHawk"];
+										}
+										else
+										{
+											core = CoreInventory.Instance["NES", "NesHawk"];
+										}										
 									}
 									else
 									{
@@ -964,8 +1040,15 @@ namespace BizHawk.Client.Common
 								break;
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
-								{	
-									core = CoreInventory.Instance["GBC", "Gambatte"];
+								{
+									if (Global.Config.GB_UseGBHawk)
+									{
+										core = CoreInventory.Instance["GBC", "GBHawk"];
+									}
+									else
+									{
+										core = CoreInventory.Instance["GBC", "Gambatte"];
+									}
 								}
 								else
 								{
@@ -987,10 +1070,26 @@ namespace BizHawk.Client.Common
 								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
-								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
+								var c64 = new C64(nextComm, Enumerable.Repeat(rom.FileData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
-							case "GBA":
+                            case "ZXSpectrum":
+                                var zx = new ZXSpectrum(nextComm, 
+                                    Enumerable.Repeat(rom.RomData, 1), 
+                                    Enumerable.Repeat(rom.GameInfo, 1).ToList(), 
+                                    GetCoreSettings<ZXSpectrum>(), 
+                                    GetCoreSyncSettings<ZXSpectrum>(),
+                                    Deterministic);
+                                nextEmulator = zx;
+                                break;
+							case "ChannelF":
+								nextEmulator = new ChannelF(nextComm, game, rom.FileData, GetCoreSettings<ChannelF>(), GetCoreSyncSettings<ChannelF>());
+								break;
+                            case "AmstradCPC":
+                                var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
+                                nextEmulator = cpc;
+                                break;
+                            case "GBA":
 								if (Global.Config.GBA_UsemGBA)
 								{
 									core = CoreInventory.Instance["GBA", "mGBA"];
@@ -1018,6 +1117,9 @@ namespace BizHawk.Client.Common
 								break;
 							case "32X":
 								core = CoreInventory.Instance["GEN", "PicoDrive"];
+								break;
+							case "VEC":
+								core = CoreInventory.Instance["VEC", "VectrexHawk"];
 								break;
 						}
 
@@ -1079,12 +1181,12 @@ namespace BizHawk.Client.Common
                     // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
                     else if (ex is NoAvailableCoreException)
                     {
-                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                        DoLoadErrorCallback($"{ex.Message}\n\n{ex}", system);
                     }
 
                     else
 					{
-						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
+						DoLoadErrorCallback($"A core accepted the rom, but threw an exception while loading it:\n\n{ex}", system);
 					}
 
 					return false;

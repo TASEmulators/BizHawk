@@ -94,7 +94,7 @@ namespace BizHawk.Client.ApiHawk
 					item.ToolTipText = attribute.Description;
 					if (attribute.IconResourceName != "")
 					{
-						Stream s = externalToolFile.GetManifestResourceStream(string.Format("{0}.{1}", externalToolFile.GetName().Name, attribute.IconResourceName));
+						Stream s = externalToolFile.GetManifestResourceStream($"{externalToolFile.GetName().Name}.{attribute.IconResourceName}");
 						if (s != null)
 						{
 							item.Image = new Bitmap(s);

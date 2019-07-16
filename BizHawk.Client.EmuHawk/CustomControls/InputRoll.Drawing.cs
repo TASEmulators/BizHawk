@@ -140,6 +140,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawData(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
+			// Prevent exceptions with small TAStudio windows
+			if (visibleColumns.Count == 0)
+			{
+				return;
+			}
 			if (QueryItemText != null)
 			{
 				if (HorizontalOrientation)
@@ -525,13 +530,17 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		/// </summary>
-		/// <param name="e"></param>
 		private void DoBackGroundCallback(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
 			int lastVisible = LastVisibleColumnIndex;
 			int firstVisibleColumn = FirstVisibleColumn;
+			// Prevent exceptions with small TAStudio windows
+			if (firstVisibleColumn < 0)
+			{
+				return;
+			}
 			if (HorizontalOrientation)
 			{
 				for (int i = 0, f = 0; f < range; i++, f++)

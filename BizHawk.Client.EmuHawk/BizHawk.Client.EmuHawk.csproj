@@ -37,6 +37,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -44,24 +45,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\output\</OutputPath>
-    <DefineConstants>WINDOWS;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;WINDOWS;EXE_PROJECT</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\output\</OutputPath>
-    <DefineConstants>WINDOWS</DefineConstants>
+    <DefineConstants>WINDOWS;EXE_PROJECT</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GongShell">
@@ -71,7 +74,8 @@
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
+    <!--<Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />-->
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -92,6 +96,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
@@ -108,6 +113,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\BizHawk.Common\OSTailoredCode.cs">
+      <Link>OSTailoredCode.cs</Link>
+    </Compile>
     <Compile Include="..\Version\svnrev.cs">
       <Link>svnrev.cs</Link>
     </Compile>
@@ -192,6 +200,31 @@
     </Compile>
     <Compile Include="BizBoxInfoControl.Designer.cs">
       <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Communication.cs" />
+    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.Designer.cs">
+      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.Designer.cs">
+      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.Designer.cs">
+      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.Designer.cs">
+      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="config\AnalogRangeConfig.cs">
       <SubType>Component</SubType>
@@ -497,6 +530,36 @@
     <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.Designer.cs">
+      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumCoreEmulationSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoreFeatureAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -598,9 +661,19 @@
     </Compile>
     <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
-    <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Api\ApiContainer.cs" />
+    <Compile Include="Api\Libraries\ToolApi.cs" />
+    <Compile Include="Api\Libraries\GuiApi.cs" />
+    <Compile Include="Api\Libraries\InputApi.cs" />
+    <Compile Include="Api\Libraries\SaveStateAPI.cs" />
+    <Compile Include="Api\ApiManager.cs" />
+    <Compile Include="Api\Libraries\CommApi.cs" />
+    <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
+    <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\OTK_Gamepad.cs" />
+    <Compile Include="Input\OTK_Keyboard.cs" />
     <Compile Include="IControlMainform.cs" />
     <Compile Include="Input\IPCKeyInput.cs" />
     <Compile Include="JumpLists.cs" />
@@ -625,7 +698,8 @@
     <Compile Include="movie\EditCommentsForm.Designer.cs">
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <!--<Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
+    <Compile Include="Input\Keyboard.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -667,7 +741,6 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenAdvanced.cs" />
     <Compile Include="OpenAdvancedChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -871,6 +944,7 @@
       <DependentUpon>NewHexEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
+    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Communication.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Forms.cs" />
@@ -878,6 +952,8 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
+    <Compile Include="tools\Lua\Libraries\NotReallyLuaLibrary.cs" />
+    <Compile Include="tools\Lua\Libraries\PlatformEmuLuaLibrary.cs" />
     <Compile Include="tools\Lua\LuaAutocompleteInstaller.cs" />
     <Compile Include="tools\Lua\LuaCanvas.cs">
       <SubType>Form</SubType>
@@ -1140,7 +1216,7 @@
     <Compile Include="tools\TraceLogger.Designer.cs">
       <DependentUpon>TraceLogger.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\VirtualPads\controls\components\AnalogSticklPanel.cs">
+    <Compile Include="tools\VirtualPads\controls\components\AnalogStickPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
@@ -1176,6 +1252,8 @@
     <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\VECSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\GGLSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
@@ -1197,6 +1275,7 @@
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
     <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\ZXSpectrumSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1257,6 +1336,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BizBoxInfoControl.resx">
       <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.resx">
+      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCAudioSettings.resx">
+      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCPokeMemory.resx">
+      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCNonSyncSettings.resx">
+      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
       <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
@@ -1393,6 +1484,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumAudioSettings.resx">
+      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumPokeMemory.resx">
+      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.resx">
+      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.resx">
+      <DependentUpon>ZXSpectrumCoreEmulationSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.resx">
+      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CoreFeatureAnalysis.resx">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
@@ -1785,6 +1891,10 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\MoveTop.png" />
+    <None Include="Resources\MoveBottom.png" />
+    <None Include="Resources\MoveTop.bmp" />
+    <None Include="Resources\ZXSpectrumKeyboard.bmp" />
     <None Include="images\WSW.png" />
     <None Include="images\WNW.png" />
     <None Include="images\SW.png" />
@@ -2109,6 +2219,7 @@
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
     <None Include="images\ControllerImages\NGPController.png" />
+    <Content Include="config\ControllerImages\ZXSpectrumKeyboards.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

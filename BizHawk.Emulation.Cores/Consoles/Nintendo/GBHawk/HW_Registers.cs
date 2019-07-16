@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Interrupt flags
 				case 0xFF0F:
-					ret = REG_FF0F;
+					ret = REG_FF0F_OLD;
 					break;
 
 				// audio regs
@@ -99,9 +99,99 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ret = ppu.ReadReg(addr);
 					break;
 
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (GBC_compat)
+					{
+						ret = (byte)(((double_speed ? 1 : 0) << 7) + ((speed_switch ? 1 : 0)));
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF4F: // VBK
+					if (GBC_compat)
+					{
+						ret = VRAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
 				// Bios control register. Not sure if it is readable
 				case 0xFF50:
 					ret = 0xFF;
+					break;
+
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (GBC_compat)
+					{
+						ret = ppu.ReadReg(addr);
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				// Speed Control for GBC
+				case 0xFF70:
+					if (GBC_compat)
+					{
+						ret = (byte)RAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF6C:
+					if (GBC_compat) { ret = undoc_6C; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF72:
+					if (is_GBC) { ret = undoc_72; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF73:
+					if (is_GBC) { ret = undoc_73; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF74:
+					if (GBC_compat) { ret = undoc_74; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF75:
+					if (is_GBC) { ret = undoc_75; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF76:
+					if (is_GBC) { ret = undoc_76; }
+					else { ret = 0xFF; }
+					break;
+
+				case 0xFF77:
+					if (is_GBC) { ret = undoc_77; }
+					else { ret = 0xFF; }
 					break;
 
 				// interrupt control register
@@ -254,6 +344,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu.WriteReg(addr, value);
 					break;
 
+				// GBC compatibility register (I think)
+				case 0xFF4C:
+					if ((value != 0xC0) && (value != 0x80))
+					{
+						Console.Write("GBC Compatibility? ");
+						Console.WriteLine(value);
+						GBC_compat = false;
+						// cpu operation is a function of hardware only
+						//cpu.is_GBC = GBC_compat;
+					}
+					break;
+
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (GBC_compat)
+					{
+						speed_switch = (value & 1) > 0;
+					}
+					break;
+
+				// VBK
+				case 0xFF4F:
+					if (GBC_compat && !ppu.HDMA_active)
+					{
+						VRAM_Bank = (byte)(value & 1);
+					}
+					break;
+
 				// Bios control register. Writing 1 permanently disables BIOS until a power cycle occurs
 				case 0xFF50:
 					//Console.WriteLine(value);
@@ -263,14 +381,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}			
 					break;
 
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (GBC_compat)
+					{
+						ppu.WriteReg(addr, value);
+					}
+					break;
+
+				// RAM Bank in GBC mode
+				case 0xFF70:
+					//Console.WriteLine(value);
+					if (GBC_compat)
+					{
+						RAM_Bank = value & 7;
+						if (RAM_Bank == 0) { RAM_Bank = 1; }
+					}
+					break;
+
+				case 0xFF6C:
+					if (GBC_compat) { undoc_6C |= (byte)(value & 1); }
+					break;
+
+				case 0xFF72:
+					if (is_GBC) { undoc_72 = value; }
+					break;
+
+				case 0xFF73:
+					if (is_GBC) { undoc_73 = value; }
+					break;
+
+				case 0xFF74:
+					if (GBC_compat) { undoc_74 = value; }
+					break;
+
+				case 0xFF75:
+					if (is_GBC) { undoc_75 |= (byte)(value & 0x70); }
+					break;
+
+				case 0xFF76:
+					// read only
+					break;
+
+				case 0xFF77:
+					// read only
+					break;
+
 				// interrupt control register
 				case 0xFFFF:
 					REG_FFFF = value;
-					enable_VBL = REG_FFFF.Bit(0);
-					enable_STAT = REG_FFFF.Bit(1);
-					enable_TIMO = REG_FFFF.Bit(2);
-					enable_SER = REG_FFFF.Bit(3);
-					enable_PRS = REG_FFFF.Bit(4);
 
 					// check if enabling any of the bits triggered an IRQ
 					for (int i = 0; i < 5; i++)
@@ -285,12 +452,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
 
 					break;
+
+				default:
+					Console.Write(addr);
+					Console.Write(" ");
+					Console.WriteLine(value);
+					break;
 			}
 		}
 
 		public void Register_Reset()
 		{
 			input_register = 0xCF; // not reading any input
+
+			//undocumented registers
+			undoc_6C = 0xFE;
+			undoc_72 = 0;
+			undoc_73 = 0;
+			undoc_74 = 0;
+			undoc_75 = 0x8F;
+			undoc_76 = 0;
+			undoc_77 = 0;
 		}
 	}
 }

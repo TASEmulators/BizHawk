@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
@@ -8,9 +10,32 @@
 
 		byte ReadMemoryKR(ushort address)
 		{
-			if (address < 0x8000) return RomData[address & 0x7FFF];
-			if (address < 0xC000) return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];
-			return SystemRam[address & RamSizeMask];
+			if (address < 0xC000)
+			{
+				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
+					return 0xFF;
+				if (BiosMapped && BiosRom != null)
+				{
+					// korean BIOS (and a couple of rarer BIOses) use memory slot 2 mechanics as needed
+					if (address < 0x8000)
+					{
+						return BiosRom[address];
+					}
+					else
+					{
+						return BiosRom[(Bios_bank * BankSize) + (address & BankSizeMask)];
+					}
+				}
+				else
+				{
+					if (address < 0x8000) return RomData[address & 0x7FFF];
+					else return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];					
+				}
+			}
+			else
+			{
+				return SystemRam[address & RamSizeMask];
+			}
 		}
 
 		CDLog_MapResults MapMemoryKR(ushort address, bool write)
@@ -26,6 +51,11 @@
 				SystemRam[address & RamSizeMask] = value;
 			else if (address == 0xA000)
 				RomBank2 = (byte)(value % RomBanks);
+
+			if ((address == 0xFFFF) && BiosMapped)
+			{
+				Bios_bank = value;
+			}
 		}
 
 		void InitKoreaMapper()
@@ -36,6 +66,7 @@
 			RomBank0 = 0;
 			RomBank1 = 1;
 			RomBank2 = 2;
+			Bios_bank = 2;
 		}
 
 		// ======================================================================

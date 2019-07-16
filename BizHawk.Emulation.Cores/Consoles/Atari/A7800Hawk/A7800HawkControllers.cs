@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -38,7 +37,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				BoolButtons = new List<string>()
+				Name = "Unplugged Controller",
+				BoolButtons = BaseDefinition
+				.Select(b => "P" + PortNum + " " + b)
+				.ToList()
 			};
 		}
 
@@ -70,6 +72,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		public ControllerDefinition Definition { get; }
+
+		private static readonly string[] BaseDefinition =
+		{
+			""
+		};
 
 		public void SyncState(Serializer ser)
 		{
@@ -151,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Up", "Down", "Left", "Right", "Trigger"
+			"Up", "Down", "Left", "Right", "Button"
 		};
 
 		private static byte[] HandControllerButtons =

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
@@ -149,6 +150,12 @@ namespace BizHawk.Client.Common
 						return SystemInfo.VirtualBoy;
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
+                    case "ZXSpectrum":
+                        return SystemInfo.ZXSpectrum;
+                    case "AmstradCPC":
+                        return SystemInfo.AmstradCPC;
+					case "ChannelF":
+						return SystemInfo.ChannelF;
 				}
 			}
 		}

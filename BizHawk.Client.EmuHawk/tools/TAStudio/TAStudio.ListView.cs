@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startSelectionDrag;
 		private bool _selectionDragState;
 		private bool _supressContextMenu;
+		private int _startrow;
 
 		// Editing analog input
 		private string _floatEditColumn = "";
@@ -43,31 +44,31 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<int> _extraFloatRows = new List<int>();
 
 		// Right-click dragging
-		private string[] _rightClickInput = null;
-		private string[] _rightClickOverInput = null;
+		private string[] _rightClickInput;
+		private string[] _rightClickOverInput;
 		private int _rightClickFrame = -1;
 		private int _rightClickLastFrame = -1;
 		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
-		private bool _leftButtonHeld = false;
+		private bool _leftButtonHeld;
 
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private bool? _autoRestorePaused = null;
-		private int? _seekStartFrame = null;
-		private bool _unpauseAfterSeeking = false;
+		private bool? _autoRestorePaused;
+		private int? _seekStartFrame;
+		private bool _unpauseAfterSeeking;
 
 		private ControllerDefinition ControllerType => Global.MovieSession.MovieControllerAdapter.Definition;
 
-		public bool WasRecording;
+		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
-		private void JumpToGreenzone()
+		public void JumpToGreenzone()
 		{
-			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
+			if (Emulator.Frame > CurrentTasMovie.LastEditedFrame)
 			{
-				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
+				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame);
 			}
 			else
 			{
@@ -75,19 +76,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void StartSeeking(int? frame)
+		private void StartSeeking(int? frame, bool fromMiddleClick = false)
 		{
 			if (!frame.HasValue)
 			{
 				return;
 			}
 
-			if (Mainform.PauseOnFrame != null)
+			if (!fromMiddleClick)
 			{
-				StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
+				if (Mainform.PauseOnFrame != null)
+				{
+					StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
+				}
+				_seekStartFrame = Emulator.Frame;
 			}
 
-			_seekStartFrame = Emulator.Frame;
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
@@ -221,10 +225,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-			
+
 			if (columnName == CursorColumnName)
+			{
 				color = Color.FromArgb(0xFEFFFF);
-			
+			}
+
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
@@ -343,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				text = "";
-				MessageBox.Show("oops\n" + ex);
+				MessageBox.Show($"oops\n{ex}");
 			}
 		}
 
@@ -367,7 +373,6 @@ namespace BizHawk.Client.EmuHawk
 				if (columnName == FrameColumnName)
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
-					RefreshDialog();
 				}
 				else if (columnName != CursorColumnName)
 				{
@@ -376,18 +381,29 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						// nifty taseditor logic
-						bool allPressed = true;
-						foreach (var index in TasView.SelectedRows)
+						if (ModifierKeys != Keys.Alt)
 						{
-							if ((index == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
-								|| (!CurrentTasMovie.BoolIsPressed(index, buttonName)))
+							// nifty taseditor logic
+							bool allPressed = true;
+							foreach (var index in TasView.SelectedRows)
 							{
-								allPressed = false;
-								break;
+								if (index == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+									|| !CurrentTasMovie.BoolIsPressed(index, buttonName))
+								{
+									allPressed = false;
+									break;
+								}
+							}
+							CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
+						}
+						else
+						{
+							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
+							foreach (var index in TasView.SelectedRows)
+							{
+								CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
 							}
 						}
-						CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
 					}
 					else
 					{
@@ -397,8 +413,9 @@ namespace BizHawk.Client.EmuHawk
 
 					_triggerAutoRestore = true;
 					JumpToGreenzone();
-					RefreshDialog();
 				}
+
+				RefreshDialog();
 			}
 		}
 
@@ -410,6 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshTasView();
 		}
+
 		private void UpdateAutoFire()
 		{
 			for (int i = 2; i < TasView.AllColumns.Count; i++)
@@ -417,6 +435,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateAutoFire(TasView.AllColumns[i].Name, TasView.AllColumns[i].Emphasis);
 			}
 		}
+
 		public void UpdateAutoFire(string button, bool? isOn)
 		{
 			if (!isOn.HasValue) // No value means don't change whether it's on or off.
@@ -499,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
 					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 					{
-						StartSeeking(LastPositionFrame);
+						StartSeeking(LastPositionFrame, true);
 					}
 					else
 					{
@@ -532,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
 				if (FloatEditingMode)
 				{
-					if (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift)
+					if (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift)
 					{
 						_extraFloatRows.Clear();
 						_extraFloatRows.AddRange(TasView.SelectedRows);
@@ -571,7 +590,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
-					if (Control.ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
+					if (ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
 					{
 						// TODO
 						TasView.DragCurrentCell();
@@ -582,32 +601,63 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
-				else // User changed input
+				else if (TasView.CurrentCell.Column.Type != InputRoll.RollColumn.InputType.Text) // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
-
-						CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
-						_triggerAutoRestore = true;
-						JumpToGreenzone();
-						RefreshDialog();
-
+						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
 
-						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
-							|| TasView.CurrentCell.Column.Emphasis))
+						if ((Control.ModifierKeys == Keys.Alt && Control.ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
+							|| TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
-							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
+							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
+							_startrow = TasView.CurrentCell.RowIndex.Value;
+							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
+						}
+						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt)
+						{
+							int firstSel = TasView.SelectedRows.First();
+
+							if (frame <= firstSel)
+							{
+								firstSel = frame;
+								frame = TasView.SelectedRows.First();
+							}
+
+							bool allPressed = true;
+							for (int i = firstSel; i <= frame; i++)
+							{
+								if (i == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+									|| !CurrentTasMovie.BoolIsPressed(i, buttonName))
+								{
+									allPressed = false;
+									break;
+								}
+							}
+							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							_triggerAutoRestore = true;
+							JumpToGreenzone();
+							RefreshDialog();
+						}
+						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
+						{
+							// TODO: Pattern drawing from selection to current cell
 						}
 						else
 						{
-							_patternPaint = false;
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Bool {buttonName} from frame {frame}");
+
+							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							_triggerAutoRestore = true;
+							JumpToGreenzone();
+							RefreshDialog();
 						}
 
 						if (!Settings.AutoRestoreOnMouseUpOnly)
@@ -641,7 +691,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (e.Clicks != 2 && !Settings.SingleClickFloatEdit)
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float " + buttonName + " from frame " + frame);
+							CurrentTasMovie.ChangeLog.BeginNewBatch($"Paint Float {buttonName} from frame {frame}");
 							_startFloatDrawColumn = buttonName;
 						}
 						else // Double-click enters float editing mode
@@ -652,7 +702,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								CurrentTasMovie.ChangeLog.BeginNewBatch("Float Edit: " + frame);
+								CurrentTasMovie.ChangeLog.BeginNewBatch($"Float Edit: {frame}");
 								_floatEditColumn = buttonName;
 								floatEditRow = frame;
 								_floatTypedValue = "";
@@ -675,9 +725,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (TasView.CurrentCell.Column.Name == FrameColumnName && frame < CurrentTasMovie.InputLogLength)
 				{
-					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
-					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
-					_rightClickAlt = (Control.ModifierKeys | Keys.Alt) == Control.ModifierKeys;
+					_rightClickControl = (ModifierKeys | Keys.Control) == ModifierKeys;
+					_rightClickShift = (ModifierKeys | Keys.Shift) == ModifierKeys;
+					_rightClickAlt = (ModifierKeys | Keys.Alt) == ModifierKeys;
 					if (TasView.SelectedRows.Contains(frame))
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
@@ -780,7 +830,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (FloatEditingMode && (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift))
+				if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 				{
 					_leftButtonHeld = false;
 					_startSelectionDrag = false;
@@ -888,6 +938,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!MouseButtonHeld)
+			{
+				return;
+			}
+
 			// skip rerecord counting on drawing entirely, mouse down is enough
 			// avoid introducing another global
 			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
@@ -899,11 +954,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				startVal = e.OldCell.RowIndex.Value;
 				endVal = e.NewCell.RowIndex.Value;
+				if (_patternPaint)
+				{
+					endVal--;
+				}
 			}
 			else
 			{
 				startVal = e.NewCell.RowIndex.Value;
 				endVal = e.OldCell.RowIndex.Value;
+				if(_patternPaint)
+				{
+					endVal = _startrow;
+				}
 			}
 
 			if (_startCursorDrag && !Mainform.IsSeeking)
@@ -920,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i <= endVal; i++)
 					{
 						TasView.SelectRow(i, _selectionDragState);
-						if (FloatEditingMode && (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift))
+						if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 						{
 							if (_selectionDragState)
 							{
@@ -956,7 +1019,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						if (startVal < _rightClickLastFrame)
+						{
 							shouldInsert = false;
+						}
 
 						if (shouldInsert)
 						{
@@ -1050,9 +1115,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
+					
+
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
 						bool setVal = _boolPaintState;
+
 						if (_patternPaint && _boolPaintState)
 						{
 							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
@@ -1065,13 +1133,13 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column		
 						JumpToGreenzone();
 					}
 
 					if (!Settings.AutoRestoreOnMouseUpOnly)
 					{
-						_triggerAutoRestore = true;
+						_triggerAutoRestore = startVal < Emulator.Frame && endVal < Emulator.Frame;
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
@@ -1123,39 +1191,43 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
 		{
 			// For float editing
-			int increment = (_floatEditYPos - e.Y) / 4;
-			if (_floatEditYPos == -1)
-				return;
-
-			float value = _floatPaintState + increment;
-			ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
-
-			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
-			// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
-			float rMax = range.Max;
-			float rMin = range.Min;
-			if (rMax < rMin)
+			if (FloatEditingMode)
 			{
-				rMax = range.Min;
-				rMin = range.Max;
-			}
+				int increment = (_floatEditYPos - e.Y) / 4;
+				if (_floatEditYPos == -1)
+					return;
 
-			if (value > rMax)
-			{
-				value = rMax;
-			}
-			else if (value < rMin)
-			{
-				value = rMin;
-			}
+				float value = _floatPaintState + increment;
+				ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+					[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 
-			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
-			_floatTypedValue = value.ToString();
+				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
+				// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
+				float rMax = range.Max;
+				float rMin = range.Min;
+				if (rMax < rMin)
+				{
+					rMax = range.Min;
+					rMin = range.Max;
+				}
 
-			_triggerAutoRestore = true;
-			JumpToGreenzone();
-			DoTriggeredAutoRestoreIfNeeded();
+				if (value > rMax)
+				{
+					value = rMax;
+				}
+				else if (value < rMin)
+				{
+					value = rMin;
+				}
+
+				CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+				_floatTypedValue = value.ToString();
+
+				_triggerAutoRestore = true;
+				JumpToGreenzone();
+				DoTriggeredAutoRestoreIfNeeded();
+
+			}
 			RefreshDialog();
 		}
 
@@ -1288,7 +1360,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_floatTypedValue = "-" + _floatTypedValue;
+					_floatTypedValue = $"-{_floatTypedValue}";
 				}
 			}
 			else if (e.KeyCode == Keys.Back)
@@ -1310,19 +1382,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
-				if (_floatEditYPos != -1)
-				{
-					_floatEditYPos = -1;
-				}
-
+				_floatEditYPos = -1;
 				floatEditRow = -1;
 			}
 			else if (e.KeyCode == Keys.Escape)
 			{
-				if (_floatEditYPos != -1)
-				{
-					_floatEditYPos = -1;
-				}
+				_floatEditYPos = -1;
 
 				if (_floatBackupState != _floatPaintState)
 				{
@@ -1346,7 +1411,7 @@ namespace BizHawk.Client.EmuHawk
 					changeBy = -1;
 				}
 
-				if (Control.ModifierKeys == Keys.Shift)
+				if (ModifierKeys == Keys.Shift)
 				{
 					changeBy *= 10;
 				}
@@ -1411,16 +1476,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
+			// taseditor uses Ctrl for selection and Shift for framecourser
+			if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Shift + Page Up
 			{
 				GoToPreviousMarker();
 			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Shift + Page Down
 			{
 				GoToNextMarker();
 			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Shift + Home
+			{
+				GoToFrame(0);
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.End) // Shift + End
+			{
+				GoToFrame(CurrentTasMovie.InputLogLength-1);
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
+			{
+				//GoToPreviousFrame();
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
+			{
+				//GoToNextFrame();
+			}
 
-			if (FloatEditingMode && e.KeyCode != Keys.Right
+			if (FloatEditingMode
+				&& e.KeyCode != Keys.Right
 				&& e.KeyCode != Keys.Left
 				&& e.KeyCode != Keys.Up
 				&& e.KeyCode != Keys.Down)

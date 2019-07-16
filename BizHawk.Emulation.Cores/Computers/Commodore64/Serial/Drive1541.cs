@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private bool _motorEnabled;
 		private bool _ledEnabled;
 		private int _motorStep;
-		private readonly MOS6502X _cpu;
+		private readonly MOS6502X<CpuLink> _cpu;
 		private int[] _ram;
 		public readonly Via Via0;
 		public readonly Via Via1;
@@ -31,15 +31,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public Action DebuggerStep;
 		public readonly Chip23128 DriveRom;
 
+		private struct CpuLink : IMOS6502XLink
+		{
+			private readonly Drive1541 _drive;
+
+			public CpuLink(Drive1541 drive)
+			{
+				_drive = drive;
+			}
+
+			public byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+
+			public void OnExecFetch(ushort address) { }
+
+			public byte PeekMemory(ushort address) => unchecked((byte)_drive.Peek(address));
+
+			public byte ReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
+
+			public void WriteMemory(ushort address, byte value) => _drive.Write(address, value);
+		}
+
 		public Drive1541(int clockNum, int clockDen)
 		{
 			DriveRom = new Chip23128();
-			_cpu = new MOS6502X
+			_cpu = new MOS6502X<CpuLink>(new CpuLink(this))
 			{
-				ReadMemory = CpuRead,
-				WriteMemory = CpuWrite,
-				DummyReadMemory = CpuRead,
-				PeekMemory = CpuPeek,
 				NMI = false
 			};
 
@@ -54,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public override void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Disk");
-			_disk.SyncState(ser);
+			if (_disk != null) { _disk.SyncState(ser); }
 			ser.EndSection();
 
 			ser.Sync("BitHistory", ref _bitHistory);
@@ -84,7 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
-			ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
+			// feos: drop 400KB of ROM data from savestates
+			//ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
 
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);

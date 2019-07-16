@@ -1359,6 +1359,7 @@ static void MountCPUAddressSpace()
 static MDFN_Surface *VTBuffer[2] = { NULL, NULL };
 static int *VTLineWidths[2] = { NULL, NULL };
 static bool s_FramebufferNormalized;
+static bool s_Created;
 static int s_FramebufferCurrent;
 static int s_FramebufferCurrentWidth;
 
@@ -1368,7 +1369,10 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
  //psx_dbg_level = MDFN_GetSettingUI("psx.dbg_level");
  //DBG_Init();
 	
+	//yeah, we only support a static instance.
+	//we'll flag whether it's created though
 	*psx = NULL;
+	s_Created = true;
 
 	//PIO Mem: why wouldn't we want this?
 	static const bool WantPIOMem = true;
@@ -1410,7 +1414,68 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 
 EW_EXPORT s32 shock_Destroy(void* psx)
 {
-	//TODO
+	if(!s_Created)
+		return SHOCK_NOCANDO;
+
+	s_Created = false;
+
+	for(int i=0;i<2;i++)
+	{
+		delete VTBuffer[i];
+		VTLineWidths[i] = nullptr;
+
+		free(VTLineWidths[i]);
+		VTBuffer[i] = nullptr;
+	}
+
+	TextMem.resize(0);
+
+	if(CDC)
+	{
+		delete CDC;
+		CDC = NULL;
+	}
+
+	if(SPU)
+	{
+		delete SPU;
+		SPU = NULL;
+	}
+
+	if(GPU)
+	{
+		delete GPU;
+		GPU = NULL;
+	}
+
+	if(CPU)
+	{
+		delete CPU;
+		CPU = NULL;
+	}
+
+	if(FIO)
+	{
+		delete FIO;
+		FIO = NULL;
+	}
+
+	DMA_Kill();
+
+	if(BIOSROM)
+	{
+		delete BIOSROM;
+		BIOSROM = NULL;
+	}
+
+	if(PIOMem)
+	{
+		delete PIOMem;
+		PIOMem = NULL;
+	}
+
+	cdifs = NULL;
+
 	return SHOCK_OK;
 }
 
@@ -2015,62 +2080,6 @@ EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size, s32 ignore_pcsp)
 {
 	LoadEXE((uint8*)exebuf, (uint32)size, !!ignore_pcsp);
 	return SHOCK_OK;
-}
-
-static void Cleanup(void)
-{
- TextMem.resize(0);
-
- if(CDC)
- {
-  delete CDC;
-  CDC = NULL;
- }
-
- if(SPU)
- {
-  delete SPU;
-  SPU = NULL;
- }
-
- if(GPU)
- {
-  delete GPU;
-  GPU = NULL;
- }
-
- if(CPU)
- {
-  delete CPU;
-  CPU = NULL;
- }
-
- if(FIO)
- {
-  delete FIO;
-  FIO = NULL;
- }
-
- DMA_Kill();
-
- if(BIOSROM)
- {
-  delete BIOSROM;
-  BIOSROM = NULL;
- }
-
- if(PIOMem)
- {
-  delete PIOMem;
-  PIOMem = NULL;
- }
-
- cdifs = NULL;
-}
-
-static void CloseGame(void)
-{
- Cleanup();
 }
 
 EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCount, ShockDisc_ReadTOC ReadTOC, ShockDisc_ReadLBA ReadLBA2448, bool suppliesDeinterleavedSubcode)

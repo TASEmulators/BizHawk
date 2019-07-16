@@ -14,7 +14,7 @@ namespace BizHawk.Client.DiscoHawk
 		public About()
 		{
 			InitializeComponent();
-			lblVersion.Text = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			lblVersion.Text = $"v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}";
 		}
 
 		private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)

@@ -1,6 +1,6 @@
 #/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 # *   mupen64plus-rsp-hle - Makefile                                        *
-# *   Mupen64Plus homepage: http://code.google.com/p/mupen64plus/           *
+# *   Mupen64Plus homepage: https://mupen64plus.org/                        *
 # *   Copyright (C) 2008-2009 Richard Goedeken                              *
 # *   Copyright (C) 2007-2008 DarkJeztr Tillin9                             *
 # *                                                                         *
@@ -53,7 +53,6 @@ ifeq ("$(UNAME)","OpenBSD")
   OS = FREEBSD
   SO_EXTENSION = so
   SHARED = -shared
-  $(warning OS type "$(UNAME)" not officially supported.')
 endif
 ifneq ("$(filter GNU/kFreeBSD kfreebsd,$(UNAME))","")
   OS = LINUX
@@ -67,7 +66,7 @@ ifeq ("$(patsubst MINGW%,MINGW,$(UNAME))","MINGW")
   PIC = 0
 endif
 ifeq ("$(OS)","NONE")
-  $(error OS type "$(UNAME)" not supported.  Please file bug report at 'http://code.google.com/p/mupen64plus/issues')
+  $(error OS type "$(UNAME)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
 endif
 
 # detect system architecture
@@ -111,15 +110,20 @@ ifneq ("$(filter arm%,$(HOST_CPU))","")
     $(warning Architecture "$(HOST_CPU)" not officially supported.')
   endif
 endif
+ifneq ("$(filter mips,$(HOST_CPU))","")
+  CPU := MIPS
+  ARCH_DETECTED := 32BITS
+  PIC ?= 1
+  $(warning Architecture "$(HOST_CPU)" not officially supported.')
+endif
 ifeq ("$(CPU)","NONE")
-  $(error CPU type "$(HOST_CPU)" not supported.  Please file bug report at 'http://code.google.com/p/mupen64plus/issues')
+  $(error CPU type "$(HOST_CPU)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
 endif
 
 # base CFLAGS, LDLIBS, and LDFLAGS
 OPTFLAGS ?= -O3 -flto
 WARNFLAGS ?= -Wall
 CFLAGS += $(OPTFLAGS) $(WARNFLAGS) -ffast-math -fno-strict-aliasing -fvisibility=hidden -I../../src
-CXXFLAGS += -fvisibility-inlines-hidden
 LDFLAGS += $(SHARED)
 
 # Since we are building a shared library, we must compile with -fPIC on some architectures
@@ -147,11 +151,10 @@ endif
 ifeq ($(OS), LINUX)
   # only export api symbols
   LDFLAGS += -Wl,-version-script,$(SRCDIR)/rsp_api_export.ver
+  LDLIBS += -ldl
 endif
 ifeq ($(OS), OSX)
-  #xcode-select has been around since XCode 3.0, i.e. OS X 10.5
-  OSX_SDK_ROOT = $(shell xcode-select -print-path)/Platforms/MacOSX.platform/Developer/SDKs
-  OSX_SDK_PATH = $(OSX_SDK_ROOT)/$(shell ls $(OSX_SDK_ROOT) | tail -1)
+  OSX_SDK_PATH = $(shell xcrun --sdk macosx --show-sdk-path)
 
   ifeq ($(CPU), X86)
     ifeq ($(ARCH_DETECTED), 64BITS)
@@ -189,26 +192,24 @@ endif
 ifneq ($(findstring $(MAKEFLAGS),s),s)
 ifndef V
 	Q_CC  = @echo '    CC  '$@;
-	Q_CXX = @echo '    CXX '$@;
 	Q_LD  = @echo '    LD  '$@;
 endif
 endif
 
 # set base program pointers and flags
 CC        = $(CROSS_COMPILE)gcc
-CXX       = $(CROSS_COMPILE)g++
 RM       ?= rm -f
 INSTALL  ?= install
 MKDIR ?= mkdir -p
 COMPILE.c = $(Q_CC)$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
-COMPILE.cc = $(Q_CXX)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
-LINK.o = $(Q_LD)$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+LINK.o = $(Q_LD)$(CC) $(CFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 
 # set special flags for given Makefile parameters
 ifeq ($(DEBUG),1)
   CFLAGS += -g
   INSTALL_STRIP_FLAG ?= 
 else
+  CFLAGS += -DNDEBUG
   ifneq ($(OS),OSX)
     INSTALL_STRIP_FLAG ?= -s
   endif
@@ -225,23 +226,41 @@ ifeq ($(PLUGINDIR),)
   PLUGINDIR := $(LIBDIR)/mupen64plus
 endif
 
+# enable/disable task dumping support
+ifeq ($(DUMP), 1)
+	CFLAGS += -DENABLE_TASK_DUMP
+endif
+
+
 SRCDIR = ../../src
 OBJDIR = _obj$(POSTFIX)
 
 # list of source files to compile
 SOURCE = \
-	$(SRCDIR)/main.c \
 	$(SRCDIR)/alist.c \
+	$(SRCDIR)/alist_audio.c \
+	$(SRCDIR)/alist_naudio.c \
+	$(SRCDIR)/alist_nead.c \
+	$(SRCDIR)/audio.c \
 	$(SRCDIR)/cicx105.c \
+	$(SRCDIR)/hle.c \
 	$(SRCDIR)/jpeg.c \
-	$(SRCDIR)/ucode3.cpp \
-	$(SRCDIR)/ucode2.cpp \
-	$(SRCDIR)/ucode1.cpp \
-	$(SRCDIR)/ucode3mp3.cpp
+	$(SRCDIR)/memory.c \
+	$(SRCDIR)/mp3.c \
+	$(SRCDIR)/musyx.c \
+	$(SRCDIR)/re2.c \
+	$(SRCDIR)/plugin.c
+
+ifeq ($(OS), MINGW)
+SOURCE += \
+	$(SRCDIR)/osal_dynamiclib_win32.c
+else
+SOURCE += \
+	$(SRCDIR)/osal_dynamiclib_unix.c
+endif
 
 # generate a list of object files build, make a temporary directory for them
 OBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(filter %.c, $(SOURCE)))
-OBJECTS += $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(filter %.cpp, $(SOURCE)))
 OBJDIRS = $(dir $(OBJECTS))
 $(shell $(MKDIR) $(OBJDIRS))
 
@@ -263,6 +282,7 @@ targets:
 	@echo "    WARNFLAGS=flag == compiler warning levels (default: -Wall)"
 	@echo "    PIC=(1|0)     == Force enable/disable of position independent code"
 	@echo "    POSTFIX=name  == String added to the name of the the build (default: '')"
+	@echo "    DUMP=(1|0)    == Enable/Disable unknown task dumping (default: 0)"
 	@echo "  Install Options:"
 	@echo "    PREFIX=path   == install/uninstall prefix (default: /usr/local)"
 	@echo "    LIBDIR=path   == library prefix (default: PREFIX/lib)"
@@ -287,17 +307,12 @@ clean:
 rebuild: clean all
 
 # build dependency files
-CFLAGS += -MD
+CFLAGS += -MD -MP
 -include $(OBJECTS:.o=.d)
-
-CXXFLAGS += $(CFLAGS)
 
 # standard build rules
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(COMPILE.c) -o $@ $<
-
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(COMPILE.cc) -o $@ $<
 
 $(TARGET): $(OBJECTS)
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
