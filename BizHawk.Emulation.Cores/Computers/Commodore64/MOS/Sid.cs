@@ -61,7 +61,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int> ReadPotX;
 		public Func<int> ReadPotY;
 
-		public RealFFT fft;
+		private RealFFT _fft;
+		private double[] _fftBuffer = new double[0];
 
 		private readonly int _cpuCyclesNum;
 		private int _sampleCyclesNum;
@@ -260,18 +261,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			fft = new RealFFT(nsamp_2);
+			_fft = new RealFFT(nsamp_2);
 
-			double[] temp_buffer = new double[nsamp_2];
+			// eventually this will settle on a single buffer size and stop reallocating
+			if (_fftBuffer.Length < nsamp_2)
+				Array.Resize(ref _fftBuffer, nsamp_2);
 
 			// linearly interpolate the original sample set into the new denser sample set
 			for (double i = 0; i < nsamp_2; i++)
 			{
-				temp_buffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
+				_fftBuffer[(int)i] = _outputBufferFiltered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + _filterIndex];
 			}
 
 			// now we have everything we need to perform the FFT
-			fft.ComputeForward(temp_buffer);
+			_fft.ComputeForward(_fftBuffer);
 
 			// for each element in the frequency list, attenuate it according to the specs
 			for (int i = 1; i < nsamp_2; i++)
@@ -282,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				// let's assume that frequencies near the peak are doubled in strength at max resonance
 				if ((1.2 > freq / loc_filterFrequency) && (freq / loc_filterFrequency > 0.8 ))
 				{
-					temp_buffer[i] = temp_buffer[i] * (1 + (double)_filterResonance/15);
+					_fftBuffer[i] = _fftBuffer[i] * (1 + (double)_filterResonance/15);
 				}
 
 				// low pass filter
@@ -291,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					//attenuated at 12db per octave
 					attenuation = Math.Log(freq / loc_filterFrequency, 2);
 					attenuation = 12 * attenuation;
-					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
+					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -attenuation / 10);
 				}
 
 				// High pass filter
@@ -300,7 +303,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					//attenuated at 12db per octave
 					attenuation = Math.Log(loc_filterFrequency / freq, 2);
 					attenuation = 12 * attenuation;
-					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
+					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -attenuation / 10);
 				}
 				
 				// Band pass filter
@@ -309,19 +312,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					//attenuated at 6db per octave
 					attenuation = Math.Log(freq / loc_filterFrequency, 2);
 					attenuation = 6 * attenuation;
-					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
+					_fftBuffer[i] = _fftBuffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
 				
 			}
 
 			// now transform back into time space and reassemble the attenuated frequency components
-			fft.ComputeReverse(temp_buffer);
+			_fft.ComputeReverse(_fftBuffer);
 
 			int temp = nsamp - 1;
 			//re-sample back down to the original number of samples
 			for (double i = 0; i < nsamp; i++)
 			{
-				_outputBufferFiltered[(int)i + _filterIndex] = (int)(temp_buffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
+				_outputBufferFiltered[(int)i + _filterIndex] = (int)(_fftBuffer[(int)Math.Ceiling((i / (nsamp - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
 
 				if (_outputBufferFiltered[(int)i + _filterIndex] < 0)
 				{
