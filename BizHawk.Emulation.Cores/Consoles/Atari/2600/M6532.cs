@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -75,6 +76,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					Timer.InterruptFlag = false;
 				}
 
+				if (Timer.Overflowed)
+				{
+					Timer.Overflowed = false;
+				}
+
 				return Timer.Value;
 			}
 
@@ -105,6 +111,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// If bit 0x0010 is set, and bit 0x0004 is set, this is a timer write
 				if ((addr & 0x0014) == 0x0014)
 				{
+					Timer.Overflowed = false;
+
 					var registerAddr = (ushort)(addr & 0x0007);
 
 					// Bit 0x0080 contains interrupt enable/disable
@@ -117,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/1
 						Timer.PrescalerShift = 0;
 						Timer.Value = value;
-						Timer.PrescalerCount = 0; // 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 1;// << Timer.PrescalerShift;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x05)
@@ -125,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/8
 						Timer.PrescalerShift = 3;
 						Timer.Value = value;
-						Timer.PrescalerCount = 0; // 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 1;// << Timer.PrescalerShift;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x06)
@@ -133,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/64
 						Timer.PrescalerShift = 6;
 						Timer.Value = value;
-						Timer.PrescalerCount = 0; // 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 1;// << Timer.PrescalerShift;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x07)
@@ -141,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/1024
 						Timer.PrescalerShift = 10;
 						Timer.Value = value;
-						Timer.PrescalerCount = 0; // 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 1;// << Timer.PrescalerShift;
 						Timer.InterruptFlag = false;
 					}
 				}
@@ -195,22 +203,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			public bool InterruptEnabled;
 			public bool InterruptFlag;
+			public bool Overflowed;
 
 			public void Tick()
 			{
-				if (PrescalerCount == 0)
+				PrescalerCount--;
+
+				if ((PrescalerCount == 0) || Overflowed)
 				{
 					Value--;
-					PrescalerCount = 1 << PrescalerShift;
-				}
 
-				PrescalerCount--;
-				if (PrescalerCount == 0)
-				{
-					if (Value == 0)
+					if (Value == 0xFF)
 					{
+						Overflowed = true;
 						InterruptFlag = true;
-						PrescalerShift = 0;
+					}
+
+					if (PrescalerCount == 0)
+					{
+						PrescalerCount = 1 << PrescalerShift;
 					}
 				}
 			}
@@ -222,6 +233,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("value", ref Value);
 				ser.Sync("interruptEnabled", ref InterruptEnabled);
 				ser.Sync("interruptFlag", ref InterruptFlag);
+				ser.Sync("Overflowed", ref Overflowed);
 			}
 		}
 	}

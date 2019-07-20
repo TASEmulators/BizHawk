@@ -21,8 +21,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Collisions;
 
 			// Resp commands do not trigger start signals for main copies. We need to model this
-			private int _startSignal;
+			public int _startSignal;
 			private int _signalReached;
+			public bool _draw_signaled;
 
 			public bool Tick()
 			{
@@ -134,18 +135,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					ScanCnt = 0;
 					_startSignal++;
+					_draw_signaled = false;
 				}
 
 				if (_startSignal == 32 && ((Nusiz & 0x07) == 0x02 || ((Nusiz & 0x07) == 0x03) || ((Nusiz & 0x07) == 0x06)))
 				{
 					ScanCnt = 0;
 					_startSignal++;
+					_draw_signaled = false;
 				}
 
 				if (_startSignal == 64 && ((Nusiz & 0x07) == 0x04 || ((Nusiz & 0x07) == 0x06)))
 				{
 					ScanCnt = 0;
 					_startSignal++;
+					_draw_signaled = false;
 				}
 
 				// Increment the counter
@@ -160,6 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_startSignal = HPosCnt - 1;
 					_signalReached = HPosCnt + 5;
+					if (HPosCnt != 156) { _draw_signaled = true; }
 				}
 
 				if (_startSignal < _signalReached)
@@ -168,6 +173,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 
 				return result;
+			}
+
+			public void Resp_check()
+			{
+				if (_draw_signaled)
+				{
+					if (_startSignal < 17)
+					{
+						_startSignal -= _startSignal - 12;
+					}
+
+					else if (_startSignal < 33)
+					{
+						_startSignal -= _startSignal - 28;
+					}
+
+					else if (_startSignal < 65)
+					{
+						_startSignal -= _startSignal - 60;
+					}
+				}
 			}
 
 			public void SyncState(Serializer ser)
@@ -186,6 +212,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("collisions", ref Collisions);
 				ser.Sync("start_signal", ref _startSignal);
 				ser.Sync("signal_reached", ref _signalReached);
+				ser.Sync("_draw_signaled", ref _draw_signaled);
 			}
 		}
 	}
