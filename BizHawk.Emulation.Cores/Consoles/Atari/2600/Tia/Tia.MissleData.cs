@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_startSignal = HPosCnt;
 					_signalReached = HPosCnt + 5;
-					if (HPosCnt != 156) { _draw_signaled = true; }
+					_draw_signaled = true;
 				}
 
 				if (_startSignal < _signalReached)
@@ -110,6 +110,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else if (_startSignal < 65)
 					{
 						_startSignal -= _startSignal - 60;
+					}
+					else if (_startSignal < 161)
+					{
+						_startSignal -= _startSignal - 156;
 					}
 				}
 			}

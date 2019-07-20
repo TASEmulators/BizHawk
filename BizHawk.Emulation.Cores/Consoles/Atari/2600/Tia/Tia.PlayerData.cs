@@ -1,5 +1,9 @@
 ﻿using BizHawk.Common;
 
+// TODO: Some of the values that are being latched (like Nusiz) are being latched based on the internal player ticks, not the external hsync ticks.
+// This can be seen for example in the player32_hblank test ROM. 
+// Which values these are exactly needs to be more carefully studied.
+
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class TIA
@@ -104,9 +108,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							}
 						}
 					}
-					else
+					else if (ScanCntInit)
 					{
 						ScanCntInit = false;
+						//ScanCnt++;
+					}
+					else
+					{
 						ScanCnt++;
 					}
 				}
@@ -164,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_startSignal = HPosCnt - 1;
 					_signalReached = HPosCnt + 5;
-					if (HPosCnt != 156) { _draw_signaled = true; }
+					_draw_signaled = true;
 				}
 
 				if (_startSignal < _signalReached)
@@ -192,6 +200,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else if (_startSignal < 65)
 					{
 						_startSignal -= _startSignal - 60;
+					}
+
+					else if (_startSignal < 161)
+					{
+						_startSignal -= _startSignal - 156;
 					}
 				}
 			}
