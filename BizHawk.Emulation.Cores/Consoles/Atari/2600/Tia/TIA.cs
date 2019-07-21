@@ -602,7 +602,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// if extended HBLank is active, the screen area still needs a color
-			if (_hsyncCnt >= 68 && _hsyncCnt < 76 && _hmove.LateHBlankReset)
+			if (_hmove.LateHBlankReset && _hsyncCnt >= 68 && _hsyncCnt < 76)
 			{
 				int pixelColor = 0;
 
@@ -1154,8 +1154,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_pf0MaxDelay = 3;
 				}
-
-				////_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
 			}
 			else if (maskedAddr == 0x0E) // PF1
 			{
@@ -1181,7 +1179,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_pf1MaxDelay = 3;
 				}
-				////_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
 			}
 			else if (maskedAddr == 0x0F) // PF2
 			{
@@ -1207,7 +1204,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_pf2MaxDelay = 3;
 				}
-				////_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
