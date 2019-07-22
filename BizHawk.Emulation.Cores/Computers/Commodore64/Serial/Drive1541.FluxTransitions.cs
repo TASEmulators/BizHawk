@@ -19,6 +19,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private int _rngCurrent;
 		private int _clocks;
 		private int _cpuClocks;
+		private int _diskWriteBitsRemaining;
+		private bool _diskWriteEnabled;
+		private int _diskWriteLatch;
+		private int _diskOutputBits;
+		private bool _diskWriteProtected;
 
 		// Lehmer RNG
 		private void AdvanceRng()
@@ -28,130 +33,170 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_rngCurrent = 1;
 			}
 
-			_rngCurrent = (int)(_rngCurrent * LEHMER_RNG_PRIME % int.MaxValue);
+			_rngCurrent = unchecked((int) ((_rngCurrent * LEHMER_RNG_PRIME) & int.MaxValue));
 		}
 
-		private void ExecuteFlux()
-		{
-			// This actually executes the main 16mhz clock
-			while (_clocks > 0)
-			{
-				_clocks--;
+        private void ExecuteFlux()
+        {
+            // This actually executes the main 16mhz clock
+            while (_clocks > 0)
+            {
+                _clocks--;
 
-				// rotate disk
-				if (_motorEnabled)
-				{
-					if (_disk == null)
-					{
-						_diskBitsLeft = 1;
-						_diskBits = 0;
-					}
-					else
-					{
-						if (_diskBitsLeft <= 0)
-						{
-							_diskByteOffset++;
-							if (_diskByteOffset == Disk.FluxEntriesPerTrack)
-							{
-								_diskByteOffset = 0;
-							}
+                // rotate disk
+                if (_motorEnabled)
+                {
+                    if (_disk == null)
+                    {
+                        _diskBitsLeft = 1;
+                        _diskBits = 0;
+                    }
+                    else
+                    {
+                        if (_diskBitsLeft <= 0)
+                        {
+                            if (_diskWriteEnabled)
+                                _trackImageData[_diskByteOffset] = _diskOutputBits;
 
-							_diskBits = _trackImageData[_diskByteOffset];
-							_diskBitsLeft = Disk.FluxBitsPerEntry;
-						}
-					}
+                            _diskByteOffset++;
 
-					if ((_diskBits & 1) != 0)
-					{
-						_countsBeforeRandomTransition = 0;
-						_diskFluxReversalDetected = true;
-					}
+                            if (_diskByteOffset == Disk.FluxEntriesPerTrack)
+                                _diskByteOffset = 0;
 
-					_diskBits >>= 1;
-					_diskBitsLeft--;
-				}
+                            if (!_diskWriteEnabled)
+                                _diskBits = _trackImageData[_diskByteOffset];
 
-				// random flux transition readings for unformatted data
-				if (_countsBeforeRandomTransition > 0)
-				{
-					_countsBeforeRandomTransition--;
-					if (_countsBeforeRandomTransition == 0)
-					{
-						_diskFluxReversalDetected = true;
-						AdvanceRng();
+                            _diskOutputBits = 0;
+                            _diskBitsLeft = Disk.FluxBitsPerEntry;
+                        }
+                    }
+                    _diskOutputBits >>= 1;
 
-						// This constant is what VICE uses. TODO: Determine accuracy.
-						_countsBeforeRandomTransition = (_rngCurrent % 367) + 33;
-					}
-				}
+                    if (_diskWriteEnabled && !_diskWriteProtected)
+                        _countsBeforeRandomTransition = 0;
 
-				// flux transition circuitry
-				if (_diskFluxReversalDetected)
-				{
-					_diskDensityCounter = _diskDensity;
-					_diskSupplementaryCounter = 0;
-					_diskFluxReversalDetected = false;
-					if (_countsBeforeRandomTransition == 0)
-					{
-						AdvanceRng();
+                    if ((_diskBits & 1) != 0)
+                    {
+                        _countsBeforeRandomTransition = 0;
+                        _diskFluxReversalDetected = true;
+                        _diskOutputBits |= int.MinValue; // set bit 31
+                    }
+                    else
+                    {
+                        _diskOutputBits &= int.MaxValue; // clear bit 31
+                    }
 
-						// This constant is what VICE uses. TODO: Determine accuracy.
-						_countsBeforeRandomTransition = (_rngCurrent & 0x1F) + 289;
-					}
-				}
+                    _diskBits >>= 1;
+                    _diskBitsLeft--;
+                }
 
-				// counter circuitry
-				if (_diskDensityCounter >= 16)
-				{
-					_diskDensityCounter = _diskDensity;
-					_diskSupplementaryCounter++;
-					if ((_diskSupplementaryCounter & 0x3) == 0x2)
-					{
-						_bitsRemainingInLatchedByte--;
-						_byteReady = false;
-						_bitHistory = (_bitHistory << 1) | ((_diskSupplementaryCounter & 0xC) == 0x0 ? 1 : 0);
-						_sync = false;
-						if (Via1.Cb2 && (_bitHistory & 0x3FF) == 0x3FF)
-						{
-							_sync = true;
-							_bitsRemainingInLatchedByte = 8;
-							_byteReady = false;
-						}
+                // random flux transition readings for unformatted data
+                if (_countsBeforeRandomTransition > 0)
+                {
+                    _countsBeforeRandomTransition--;
+                    if (_countsBeforeRandomTransition == 0)
+                    {
+                        _diskFluxReversalDetected = true;
+                        AdvanceRng();
+                        // This constant is what VICE uses. TODO: Determine accuracy.
+                        _countsBeforeRandomTransition = (_rngCurrent % 367) + 33;
+                    }
+                }
 
-						if (_bitsRemainingInLatchedByte <= 0)
-						{
-							_bitsRemainingInLatchedByte = 8;
+                // flux transition circuitry
+                if (_diskFluxReversalDetected)
+                {
+                    if (!_diskWriteEnabled)
+                    {
+                        _diskDensityCounter = _diskDensity;
+                        _diskSupplementaryCounter = 0;
+                    }
+                    _diskFluxReversalDetected = false;
+                    if (_countsBeforeRandomTransition == 0)
+                    {
+                        AdvanceRng();
+                        // This constant is what VICE uses. TODO: Determine accuracy.
+                        _countsBeforeRandomTransition = (_rngCurrent & 0x1F) + 289;
+                    }
+                }
 
-							// SOE (sync output enabled)
-							_byteReady = Via1.Ca2;
-						}
+                // counter circuitry
+                if (_diskDensityCounter >= 16)
+                {
+                    _diskDensityCounter = _diskDensity;
+                    _diskSupplementaryCounter++;
 
-						// negative transition activates SO pin on CPU
-						_previousCa1 = Via1.Ca1;
-						Via1.Ca1 = !_byteReady;
-						if (_previousCa1 && !Via1.Ca1)
-						{
-							// cycle 6 is roughly 400ns
-							_overflowFlagDelaySr |= _diskCycle > 6 ? 4 : 2;
-						}
-					}
-				}
+                    if ((_diskSupplementaryCounter & 0x3) == 0x2)
+                    {
+                        if (!_diskWriteEnabled)
+                            _diskWriteBitsRemaining = 0;
+                        _diskWriteEnabled = !Via1.Cb2;
 
-				if (_diskSupplementaryCounter >= 16)
-				{
-					_diskSupplementaryCounter = 0;
-				}
+                        _diskWriteBitsRemaining--;
+                        if (_diskWriteEnabled)
+                        {
+                            _countsBeforeRandomTransition = 0;
+                            _byteReady = false;
+                            if (_diskWriteBitsRemaining <= 0)
+                            {
+                                _diskWriteLatch = Via1.EffectivePrA;
+                                _diskWriteBitsRemaining = 8;
+                                _byteReady = Via1.Ca2;
+                            }
+                            if ((_diskWriteLatch & 0x80) != 0)
+                            {
+                                _diskOutputBits |= int.MinValue; // set bit 31
+                            }
+                            _diskWriteLatch <<= 1;
+                        }
+                        else
+                        {
+                            _bitsRemainingInLatchedByte--;
+                            _byteReady = false;
+                            _bitHistory = (_bitHistory << 1) | ((_diskSupplementaryCounter & 0xC) == 0x0 ? 1 : 0);
+                            _sync = false;
+                            if (!_diskWriteEnabled && (_bitHistory & 0x3FF) == 0x3FF)
+                            {
+                                _sync = true;
+                                _bitsRemainingInLatchedByte = 8;
+                                _byteReady = false;
+                            }
 
-				_cpuClocks--;
-				if (_cpuClocks <= 0)
-				{
-					ExecuteSystem();
-					_cpuClocks = 16;
-				}
+                            if (_bitsRemainingInLatchedByte <= 0)
+                            {
+                                _bitsRemainingInLatchedByte = 8;
 
-				_diskDensityCounter++;
-				_diskCycle = (_diskCycle + 1) & 0xF;
-			}
-		}
+                                // SOE (SO/Byte Ready enabled)
+                                _byteReady = Via1.Ca2;
+                            }
+                        }
+                    }
+
+                    // negative transition activates SO pin on CPU
+                    _previousCa1 = Via1.Ca1;
+                    Via1.Ca1 = !_byteReady;
+                    if (_previousCa1 && !Via1.Ca1)
+                    {
+                        // cycle 6 is roughly 400ns
+                        _overflowFlagDelaySr |= _diskCycle > 6 ? 4 : 2;
+                    }
+                }
+
+                if (_diskSupplementaryCounter >= 16)
+                {
+                    _diskSupplementaryCounter = 0;
+                }
+
+                _cpuClocks--;
+                if (_cpuClocks <= 0)
+                {
+                    ExecuteSystem();
+                    _cpuClocks = 16;
+                }
+
+                _diskDensityCounter++;
+                _diskCycle = (_diskCycle + 1) & 0xF;
+            }
+        }
 	}
 }

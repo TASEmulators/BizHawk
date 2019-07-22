@@ -18,18 +18,16 @@
 			switch (addr)
 			{
 				case 0x0:
-					_ifr &= 0xE7;
+					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xE7;
 					if (_acrPbLatchEnable)
-					{
 						return _pbLatch;
-					}
 					break;
 				case 0x1:
-					_ifr &= 0xFC;
+					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xFC;
 					if (_acrPaLatchEnable)
-					{
 						return _paLatch;
-					}
 					break;
 				case 0x4:
 					_ifr &= 0xBF;
@@ -39,6 +37,7 @@
 					break;
 				case 0xA:
 					_ifr &= 0xFB;
+					_srCount = 8;
 					break;
 				case 0xF:
 					if (_acrPaLatchEnable)
@@ -58,7 +57,8 @@
 				case 0x0:
 					return _port.ReadPrb(_prb, _ddrb);
 				case 0x1:
-					return _port.ReadPra(_pra, _ddra);
+				case 0xF:
+					return _port.ReadExternalPra();
 				case 0x2:
 					return _ddrb;
 				case 0x3:
@@ -85,8 +85,6 @@
 					return _ifr;
 				case 0xE:
 					return _ier | 0x80;
-				case 0xF:
-					return _port.ReadPra(_pra, _ddra);
 			}
 
 			return 0xFF;
@@ -98,20 +96,17 @@
 			switch (addr)
 			{
 				case 0x0:
-					_ifr &= 0xE7;
-					if (_pcrCb2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
-					{
+					if (_pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCb2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xE7;
+					if (_pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCb2NextClock = true;
-					}
 					WriteRegister(addr, val);
 					break;
 				case 0x1:
-					_ifr &= 0xFC;
-					if (_pcrCa2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
-					{
+					if (_pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE && _pcrCa2Control != PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE)
+						_ifr &= 0xFC;
+					if (_pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
 						_handshakeCa2NextClock = true;
-					}
-
 					WriteRegister(addr, val);
 					break;
 				case 0x4:
@@ -124,6 +119,7 @@
 					_t1C = _t1L;
 					_t1CLoaded = true;
 					_t1Delayed = 1;
+					_resetPb7NextClock = _acrT1Control == ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7;
 					break;
 				case 0x7:
 					_t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);
@@ -145,6 +141,7 @@
 					break;
 				case 0xA:
 					_ifr &= 0xFB;
+					_srCount = 8;
 					WriteRegister(addr, val);
 					break;
 				case 0xD:

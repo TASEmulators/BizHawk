@@ -2,7 +2,7 @@
 {
 	public sealed partial class Vic
 	{
-		private const int BaResetCounter = 4;
+		private const int BaResetCounter = 3;
 		private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
 		private const int PipelineSpriteCrunch = 0x00000002;
 		private const int PipelineUpdateMcBase = 0x00000004;
@@ -42,6 +42,12 @@
 		private int _parseBa;
 		private int _parseAct;
 		private bool _parseIsSprCrunch;
+		private int _parsePixelData;
+		private int _parsePixelDataIndex;
+		private int _parseSrData0;
+		private int _parseSrData1;
+		private int _parseSrShift;
+		private bool _parseSrColorEnable;
 
 		private void ParseCycle()
 		{
@@ -66,7 +72,7 @@
 						if (_badline)
 						{
 							_parseAddr = _pointerVm | _vc;
-							_dataC = ReadMemory(_parseAddr);
+							_dataC = _baCount >= 0 ? 0xFF : ReadMemory(_parseAddr);
 							_dataC |= (ReadColorRam(_parseAddr) & 0xF) << 8;
 							_bufferC[_vmli] = _dataC;
 						}
@@ -80,8 +86,6 @@
 						_dataC = 0;
 						_bufferC[_vmli] = _dataC;
 					}
-
-					_srColorSync |= 0x01 << (7 - _xScroll);
 					break;
 				case FetchTypeGraphics:
 					// fetch G
@@ -93,17 +97,105 @@
 							_parseAddr = _rc | ((_dataC & 0xFF) << 3) | (_pointerCb << 11);
 					}
 
-					if (_extraColorModeBuffer)
+					if (_extraColorMode)
 						_parseAddr &= AddressMaskEc;
 					_dataG = ReadMemory(_parseAddr);
-					_sr |= _dataG << (7 - _xScroll);
-					_srSync |= 0xAA << (7 - _xScroll);
-					if (!_idle)
+
+					if (!_idle && _vcEnable)
 					{
-						_bufferG[_vmli] = _dataG;
 						_vmli = (_vmli + 1) & 0x3F;
 						_vc = (_vc + 1) & 0x3FF;
 					}
+
+					// graphics data shift register
+					_parseSrShift = 7 - _xScroll;
+					_srData1 &= ~(0xFF << _parseSrShift);
+					_srColorEnable &= ~(0xFF << _parseSrShift);
+
+					if (_multicolorMode && (_bitmapMode || (_dataC & 0x800) != 0))
+					{
+						_parseSrData0 = (_dataG & 0x55) | ((_dataG & 0x55) << 1);
+						_parseSrData1 = (_dataG & 0xAA) | ((_dataG & 0xAA) >> 1);
+					}
+					else
+					{
+						_parseSrData0 = _parseSrData1 = _dataG;
+					}
+					_srData1 |= _parseSrData1 << _parseSrShift;
+
+					if (_bitmapMode && !_multicolorMode)
+						_parseSrData1 ^= 0xFF;
+
+					// graphics color shift register
+					_srColor0 &= ~(0xFF << _parseSrShift);
+					_srColor1 &= ~(0xFF << _parseSrShift);
+					_srColor2 &= ~(0xFF << _parseSrShift);
+					_srColor3 &= ~(0xFF << _parseSrShift);
+					for (_parsePixelDataIndex = 7; _parsePixelDataIndex >= 0; _parsePixelDataIndex--)
+					{
+						_parsePixelData = ((_parseSrData0 & 0x80) >> 7) | ((_parseSrData1 & 0x80) >> 6);
+						switch (_videoMode)
+						{
+							case VideoMode000:
+							case VideoMode001:
+								if (_parsePixelData == 3)
+								{
+									_pixel = _idle ? 0 : (_multicolorMode ? _dataC & 0x700 : _dataC) >> 8;
+									_parseSrColorEnable = true;
+								}
+								else
+								{
+									_pixel = _parsePixelData;
+									_parseSrColorEnable = false;
+								}
+								break;
+							case VideoMode010:
+							case VideoMode011:
+								_parseSrColorEnable = _parsePixelData != 0;
+								switch (_parsePixelData)
+								{
+									case 0:
+										_pixel = 0;
+										break;
+									case 1:
+										_pixel = _idle ? 0 : _dataC >> 4;
+										break;
+									case 2:
+										_pixel = _idle ? 0 : _dataC;
+										break;
+									default:
+										_pixel = _idle ? 0 : _dataC >> 8;
+										break;
+								}
+								break;
+							case VideoMode100:
+								if (_parsePixelData != 0)
+								{
+									_pixel = _idle ? 0 : _dataC >> 8;
+									_parseSrColorEnable = true;
+								}
+								else
+								{
+									_pixel = (_dataC & 0xC0) >> 6;
+									_parseSrColorEnable = false;
+								}
+								break;
+							default:
+								_parsePixelData = 0;
+								_pixel = 0;
+								_parseSrColorEnable = true;
+								break;
+						}
+
+						_parseSrData0 <<= 1;
+						_parseSrData1 <<= 1;
+						_srColor0 |= (_pixel & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor1 |= ((_pixel >> 1) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor2 |= ((_pixel >> 2) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColor3 |= ((_pixel >> 3) & 1) << (_parseSrShift + _parsePixelDataIndex);
+						_srColorEnable |= (_parseSrColorEnable ? 1 : 0) << (_parseSrShift + _parsePixelDataIndex);
+					}
+					
 					break;
 				case FetchTypeNone:
 					// fetch none
@@ -135,7 +227,7 @@
 						{
 							_parseAddr = spr.Mc | (spr.Pointer << 6);
 							spr.Sr |= ReadMemory(_parseAddr) << ((0x30 - (_parseFetch & 0x30)) >> 1);
-							spr.Mc++;
+							spr.Mc = (spr.Mc + 1) & 0x3F;
 							spr.Loaded |= 0x800000;
 						}
 						else if ((_parseFetch & 0xF0) == 0x20)
@@ -181,7 +273,7 @@
 					{
 						spr.Dma = true;
 						spr.Mcbase = 0;
-						spr.YCrunch = true;
+						spr.YCrunch = spr.YExpand;
 					}
 				}
 			}
@@ -221,7 +313,6 @@
 			if ((_parseAct & PipelineUpdateVc) != 0) // VC/RC rule 2
 			{
 				_vc = _vcbase;
-				_srColorIndexLatch = 0;
 				_vmli = 0;
 				if (_badline)
 				{
@@ -245,22 +336,21 @@
 			}
 
 			// perform BA flag manipulation
-			_pinBa = true;
 			switch (_parseBa)
 			{
 				case BaTypeNone:
+					_ba = true;
 					break;
 				case BaTypeCharacter:
-					_pinBa = !_badline;
+					_ba = !_badline;
 					break;
 				default:
 					_parseCycleBaSprite0 = _parseBa & BaTypeMaskSprite0;
 					_parseCycleBaSprite1 = (_parseBa & BaTypeMaskSprite1) >> 4;
 					_parseCycleBaSprite2 = (_parseBa & BaTypeMaskSprite2) >> 8;
-					if ((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma) ||
+					_ba = !((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma) ||
 						(_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma) ||
-						(_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma))
-						_pinBa = false;
+						(_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma));
 					break;
 			}
 

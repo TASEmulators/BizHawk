@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
+			InitMedia(_roms[_currentDisk]);
 			HardReset();
 
 			switch (SyncSettings.VicType)
@@ -137,7 +138,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Key Commodore", "Key Left Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key Right Shift", "Key Cursor Up/Down", "Key Cursor Left/Right",
 				"Key Space",
 				"Key F1", "Key F3", "Key F5", "Key F7",
-				"Previous Disk", "Next Disk"
+				"Previous Disk", "Next Disk",
+				"Power", "Reset"
 			}
 		};
 
@@ -147,6 +149,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int _frame;
 		private readonly ITraceable _tracer;
+		
+		// Power stuff
+		private bool _powerPressed;
+		private bool _resetPressed;
 
 		// Disk stuff
 		private bool _nextPressed;
@@ -201,7 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				_board.InputRead = false;
 				_board.PollInput();
-				_board.Cpu.LagCycles = 0;
 			}
 
 			_board.Execute();
@@ -358,8 +363,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void HardReset()
 		{
-			InitMedia(_roms[_currentDisk]);
 			_board.HardReset();
+		}
+
+		private void SoftReset()
+		{
+			_board.SoftReset();
 		}
 	}
 }

@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS = 0x40;
 		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
 		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
+		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7 = 0x80;
 
 		private int _pra;
 		private int _ddra;
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _acrSrControl;
 		private int _acrT1Control;
 		private int _acrT2Control;
+		private int _srCount;
 
 		private bool _ca1L;
 		private bool _ca2L;
@@ -66,6 +68,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private bool _resetCa2NextClock;
 		private bool _resetCb2NextClock;
+		private bool _resetPb7NextClock;
+		private bool _setPb7NextClock;
 
 		private bool _handshakeCa2NextClock;
 		private bool _handshakeCb2NextClock;
@@ -106,11 +110,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_prb = 0;
 			_ddra = 0;
 			_ddrb = 0;
-			_t1C = 0;
-			_t1L = 0;
-			_t2C = 0;
-			_t2L = 0;
-			_sr = 0;
+			_t1C = 0xFFFF;
+			_t1L = 0xFFFF;
+			_t2C = 0xFFFF;
+			_t2L = 0xFFFF;
+			_sr = 0xFF;
 			_acr = 0;
 			_pcr = 0;
 			_ifr = 0;
@@ -126,15 +130,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_acrSrControl = 0;
 			_acrT1Control = 0;
 			_acrT2Control = 0;
-			_ca1L = false;
-			_cb1L = false;
-			Ca1 = false;
-			Ca2 = false;
-			Cb1 = false;
-			Cb2 = false;
+			_ca1L = true;
+			_cb1L = true;
+			Ca1 = true;
+			Ca2 = true;
+			Cb1 = true;
+			Cb2 = true;
+			_srCount = 0;
 
-			_pb6L = false;
-			_pb6 = false;
+			_pb6L = true;
+			_pb6 = true;
 			_resetCa2NextClock = false;
 			_resetCb2NextClock = false;
 			_handshakeCa2NextClock = false;
@@ -142,15 +147,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_interruptNextClock = 0;
 			_t1CLoaded = false;
 			_t2CLoaded = false;
+			_resetPb7NextClock = false;
+			_setPb7NextClock = false;
 		}
 
 		public void ExecutePhase()
 		{
+			var _shiftIn = false;
+			var _shiftOut = false;
+
 			// Process delayed interrupts
 			_ifr |= _interruptNextClock;
 			_interruptNextClock = 0;
 
-			// Process 'pulse' and 'handshake' outputs on CA2 and CB2
+			// Process 'pulse' and 'handshake' outputs on PB7, CA2 and CB2
 			if (_resetCa2NextClock)
 			{
 				Ca2 = true;
@@ -174,6 +184,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_resetCb2NextClock = _pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT;
 				_handshakeCb2NextClock = false;
 			}
+			
+			if (_resetPb7NextClock)
+			{
+				_prb &= 0x7F;
+				_resetPb7NextClock = false;
+			}
+			else if (_setPb7NextClock)
+			{
+				_prb |= 0x80;
+				_setPb7NextClock = false;
+			}			
 
 			// Count timers
 			if (_t1Delayed > 0)
@@ -183,7 +204,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			else
 			{
 				_t1C--;
-				if (_t1C < 0)
+                if (_t1C == 0)
+				{
+					switch (_acrT1Control)
+					{
+						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7:
+							_prb ^= 0x80;
+							break;
+						case ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_PULSE_PB7:
+							_prb |= 0x80;
+							break;
+					}
+				}
+                else if (_t1C < 0)
 				{
 					if (_t1CLoaded)
 					{
@@ -194,12 +227,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					switch (_acrT1Control)
 					{
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
-							_t1C = _t1L;
-							_t1CLoaded = true;
-							break;
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7:
 							_t1C = _t1L;
-							_prb ^= 0x80;
 							_t1CLoaded = true;
 							break;
 					}
@@ -234,11 +263,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						if (!_pb6 && _pb6L)
 						{
 							_t2C--;
-							if (_t2C < 0)
-							{
+							if (_t2C == 0)
 								_ifr |= 0x20;
-								_t2C = 0xFFFF;
-							}
+							_t2C &= 0xFFFF;
 						}
 						break;
 				}
@@ -304,44 +331,60 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 			}
 
-			// interrupt generation
-			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
-				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
+            // interrupt generation
+
+			if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
 			{
-				_ifr |= 0x10;
-				if (_acrPbLatchEnable)
-				{
-					_pbLatch = _port.ReadExternalPrb();
-				}
+				_ifr &= 0xFB;
+				_srCount = 0;
 			}
 
-			if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
-				(_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
-			{
-				_ifr |= 0x02;
-				if (_acrPaLatchEnable)
-				{
+			/*
+				As long as the CA1 interrupt flag is set, the data on the peripheral pins can change
+				without affecting the data in the latches. This input latching can be used with any of the CA2
+				input or output modes.
+				It is important to note that on the PA port, the processor always reads the data on the
+				peripheral pins (as reflected in the latches). For output pins, the processor still reads the
+				latches. This may or may not reflect the data currently in the ORA. Proper system operation
+				requires careful planning on the part of the system designer if input latching is combined
+				with output pins on the peripheral ports.
+			*/
+
+            if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
+                (_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
+            {
+                if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
 					_paLatch = _port.ReadExternalPra();
-				}
-			}
+                _ifr |= 0x02;
+            }
 
-			switch (_acrSrControl)
+            /*
+                Input latching on the PB port is controlled in the same manner as that described for the PA port.
+                However, with the peripheral B port the input latch will store either the voltage on the pin or the contents
+                of the Output Register (ORB) depending on whether the pin is programmed to act as an input or an
+                output. As with the PA port, the processor always reads the input latches.
+            */
+
+            if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
+                (_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
+            {
+                if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
+					_pbLatch = _port.ReadPrb(_prb, _ddrb);
+				if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
+					_shiftIn = true;
+                _ifr |= 0x10;
+            }
+
+			if (_shiftIn)
 			{
-				case ACR_SR_CONTROL_DISABLED:
-					_ifr &= 0xFB;
-					break;
-				default:
-					break;
+				_sr <<= 1;
+				_sr |= Cb2 ? 1 : 0;
 			}
 
 			if ((_ifr & _ier & 0x7F) != 0)
-			{
 				_ifr |= 0x80;
-			}
 			else
-			{
 				_ifr &= 0x7F;
-			}
 
 			_ca1L = Ca1;
 			_ca2L = Ca2;
@@ -399,6 +442,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("T2Loaded", ref _t2CLoaded);
 			ser.Sync("T1Delayed", ref _t1Delayed);
 			ser.Sync("T2Delayed", ref _t2Delayed);
+			ser.Sync("ResetPb7NextClock", ref _resetPb7NextClock);
+			ser.Sync("SetPb7NextClock", ref _setPb7NextClock);
+			ser.Sync("ShiftRegisterCount", ref _srCount);
 		}
 	}
 }

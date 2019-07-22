@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					return C64Format.G64;
 				}
 
-				if (header.StartsWith("C64S tape image "))
+				if (header.StartsWith("C64S tape image ") || header.StartsWith("C64 tape image f"))
 				{
 					return C64Format.T64;
 				}

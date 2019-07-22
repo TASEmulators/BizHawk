@@ -38,8 +38,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public readonly Drive1541 DiskDrive;
 
 		// state
-		//public int address;
-		public int Bus;
 		public bool InputRead;
 		public bool Irq;
 		public bool Nmi;
@@ -100,23 +98,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				case C64.VicType.Ntsc:
 					Vic = Chip6567R8.Create(borderType);
-					Cia0 = Chip6526.Create(C64.CiaType.Ntsc, Input_ReadKeyboard, Input_ReadJoysticks);
-					Cia1 = Chip6526.Create(C64.CiaType.Ntsc, Cia1_ReadPortA);
+					Cia0 = Chip6526.CreateCia0(C64.CiaType.Ntsc, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.CreateCia1(C64.CiaType.Ntsc, Cia1_ReadPortA, () => 0xFF);
 					break;
 				case C64.VicType.Pal:
 					Vic = Chip6569.Create(borderType);
-					Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
-					Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+					Cia0 = Chip6526.CreateCia0(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.CreateCia1(C64.CiaType.Pal, Cia1_ReadPortA, () => 0xFF);
 					break;
 				case C64.VicType.NtscOld:
 					Vic = Chip6567R56A.Create(borderType);
-					Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, Input_ReadKeyboard, Input_ReadJoysticks);
-					Cia1 = Chip6526.Create(C64.CiaType.NtscRevA, Cia1_ReadPortA);
+					Cia0 = Chip6526.CreateCia0(C64.CiaType.NtscRevA, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.CreateCia1(C64.CiaType.NtscRevA, Cia1_ReadPortA, () => 0xFF);
 					break;
 				case C64.VicType.Drean:
 					Vic = Chip6572.Create(borderType);
-					Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
-					Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+					Cia0 = Chip6526.CreateCia0(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.CreateCia1(C64.CiaType.Pal, Cia1_ReadPortA, () => 0xFF);
 					break;
 			}
 			User = new UserPort();
@@ -146,6 +144,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			BasicRom = new Chip23128();
 			CharRom = new Chip23128();
 			KernalRom = new Chip23128();
+			
+			if (Cpu != null)
+				Cpu.DebuggerStep = Execute;
+			if (DiskDrive != null)
+				DiskDrive.DebuggerStep = Execute;
 		}
 
 		public int ClockNumerator { get; }
@@ -156,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			_vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
 
-			Vic.ExecutePhase();
+			Vic.ExecutePhase1();
 			CartPort.ExecutePhase();
 			Cassette.ExecutePhase();
 			Serial.ExecutePhase();
@@ -164,6 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cia0.ExecutePhase();
 			Cia1.ExecutePhase();
 			Cpu.ExecutePhase();
+			Vic.ExecutePhase2();
 		}
 
 		public void Flush()
@@ -174,7 +178,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// -----------------------------------------
 		public void HardReset()
 		{
-			Bus = 0xFF;
+			_lastReadVicAddress = 0x3FFF;
+			_lastReadVicData = 0xFF;
 			InputRead = false;
 
 			Cia0.HardReset();
@@ -188,6 +193,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cassette.HardReset();
 			Serial.HardReset();
 			Cpu.HardReset();
+			CartPort.HardReset();
+		}
+
+		public void SoftReset()
+		{
+			// equivalent to a hard reset EXCEPT cpu, color ram, memory
+			_lastReadVicAddress = 0x3FFF;
+			_lastReadVicData = 0xFF;
+			InputRead = false;
+
+			Cia0.HardReset();
+			Cia1.HardReset();
+			Serial.HardReset();
+			Sid.HardReset();
+			Vic.HardReset();
+			User.HardReset();
+			Cassette.HardReset();
+			Serial.HardReset();
+			Cpu.SoftReset();
 			CartPort.HardReset();
 		}
 
@@ -210,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cpu.ReadMemory = Pla.Read;
 			Cpu.WriteMemory = Pla.Write;
 			Cpu.WriteMemoryPort = Cpu_WriteMemoryPort;
+			Cpu.ReadBus = ReadOpenBus;
 
 			Pla.PeekBasicRom = BasicRom.Peek;
 			Pla.PeekCartridgeHi = CartPort.PeekHiRom;
@@ -234,8 +259,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla.PokeMemory = Ram.Poke;
 			Pla.PokeSid = Sid.Poke;
 			Pla.PokeVic = Vic.Poke;
-			Pla.ReadAec = Vic.ReadAec;
-			Pla.ReadBa = Vic.ReadBa;
 			Pla.ReadBasicRom = BasicRom.Read;
 			Pla.ReadCartridgeHi = CartPort.ReadHiRom;
 			Pla.ReadCartridgeLo = CartPort.ReadLoRom;
@@ -343,7 +366,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				ser.EndSection();
 			}
 
-			ser.Sync(nameof(Bus), ref Bus);
 			ser.Sync(nameof(InputRead), ref InputRead);
 			ser.Sync(nameof(Irq), ref Irq);
 			ser.Sync(nameof(Nmi), ref Nmi);

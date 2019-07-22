@@ -252,15 +252,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0xE:
 					_hasNewCra = true;
 					_newCra = val;
-					_taCntPhi2 = ((val & 0x20) == 0);
-					_taCntCnt = ((val & 0x20) == 0x20);
+					_taCntPhi2 = (val & 0x20) == 0;
+					_taCntCnt = (val & 0x20) == 0x20;
 					break;
 				case 0xF:
 					_hasNewCrb = true;
 					_newCrb = val;
-					_tbCntPhi2 = ((val & 0x60) == 0);
-					_tbCntTa = ((val & 0x40) == 0x40);
-					_tbCntCnt = ((val & 0x20) == 0x20);
+					_tbCntPhi2 = (val & 0x60) == 0;
+					_tbCntCnt = (val & 0x60) == 0x20;
+					_tbCntTa = (val & 0x60) == 0x40;
+					_tbCntTaCnt = (val & 0x60) == 0x60;
 					break;
 			}
 		}

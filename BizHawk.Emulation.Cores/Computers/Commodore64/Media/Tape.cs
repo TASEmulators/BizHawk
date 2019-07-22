@@ -97,6 +97,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				result = new Tape(version, tapeFile, 20, tapeFile.Length);
 			}
 
+			else if (Encoding.ASCII.GetString(tapeFile, 0, 0x12) == "C64 tape image file")
+			{
+				throw new Exception("The T64 format is not yet supported.");
+			}
+
 			return result;
 		}
 

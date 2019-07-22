@@ -18,48 +18,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (Cpu.PortData & 0x20) != 0;
 		}
 
-		/*
-		private bool Cia0_ReadCnt()
-		{
-			return User.ReadCounter1() && Cia0.ReadCntBuffer();
-		}
-
-		private int Cia0_ReadPortA()
-		{
-			return cia0InputLatchA;
-		}
-
-	    private int Cia0_ReadPortB()
-		{
-			return cia0InputLatchB;
-		}
-
-		private bool Cia0_ReadSP()
-		{
-			return User.ReadSerial1() && Cia0.ReadSpBuffer();
-		}
-
-		private bool Cia1_ReadSP()
-		{
-			return User.ReadSerial2() && Cia1.ReadSpBuffer();
-		}
-
-	    private bool Cia1_ReadCnt()
-		{
-			return User.ReadCounter2() && Cia1.ReadCntBuffer();
-		}
-		*/
-
 		private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
 			return (SerPort_ReadDataOut() && Serial.ReadDeviceData() ? 0x80 : 0x00) |
-				   (SerPort_ReadClockOut() && Serial.ReadDeviceClock() ? 0x40 : 0x00);
+				   (SerPort_ReadClockOut() && Serial.ReadDeviceClock() ? 0x40 : 0x00) |
+					0x3F;
 		}
 
 		private int Cia1_ReadPortB()
 		{
-			return 0xFF;
+			// Ordinarily these are connected to the userport.
+			return 0x00;
 		}
 
 		private int Cpu_ReadPort()
@@ -73,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return data;
 		}
 
-		private void Cpu_WriteMemoryPort(int addr, int val)
+		private void Cpu_WriteMemoryPort(int addr)
 		{
-			Pla.WriteMemory(addr, Bus);
+			Pla.WriteMemory(addr, ReadOpenBus());
 		}
 
 		private bool Glue_ReadIRQ()
@@ -114,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int Pla_ReadColorRam(int addr)
 		{
-			var result = Bus;
+			var result = ReadOpenBus();
 			result &= 0xF0;
 			result |= ColorRam.Read(addr);
 			return result;
@@ -142,16 +112,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private bool SerPort_ReadAtnOut()
 		{
+			// inverted PA3 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x08) != 0 && (Cia1.PrA & 0x08) != 0);
 		}
 
 		private bool SerPort_ReadClockOut()
 		{
+			// inverted PA4 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x10) != 0 && (Cia1.PrA & 0x10) != 0);
 		}
 
 		private bool SerPort_ReadDataOut()
 		{
+			// inverted PA5 (input NOT pulled up)
 			return !((Cia1.DdrA & 0x20) != 0 && (Cia1.PrA & 0x20) != 0);
 		}
 
