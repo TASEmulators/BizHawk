@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			private bool _scanCntInit;
 			private int _startSignal;
 			private int _signalReached;
+			public bool _draw_signaled;
 
 			public bool Tick()
 			{
@@ -38,53 +39,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 				}
 
-				/*
-				// At hPosCnt == 0, start drawing the missile, if enabled
-				if (HPosCnt < (1 << Size))
-				{
-					if (Enabled && !ResetToPlayer)
-					{
-						// Draw the missile
-						result = true;
-					}
-				}
-
-				if ((Number & 0x07) == 0x01 || ((Number & 0x07) == 0x03))
-				{
-					if (HPosCnt >= 16 && HPosCnt <= (16 + (1 << Size) - 1))
-					{
-						if (Enabled && !ResetToPlayer)
-						{
-							// Draw the missile
-							result = true;
-						}
-					}
-				}
-
-				if ((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06))
-				{
-					if (HPosCnt >= 32 && HPosCnt <= (32 + (1 << Size) - 1))
-					{
-						if (Enabled && !ResetToPlayer)
-						{
-							// Draw the missile
-							result = true;
-						}
-					}
-				}
-
-				if ((Number & 0x07) == 0x04 || (Number & 0x07) == 0x06)
-				{
-					if (HPosCnt >= 64 && HPosCnt <= (64 + (1 << Size) - 1))
-					{
-						if (Enabled && !ResetToPlayer)
-						{
-							// Draw the missile
-							result = true;
-						}
-					}
-				}*/
-
 				if (_startSignal == 160)
 				{
 					_scanCnt = 0;
@@ -97,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_scanCnt = 0;
 					_startSignal++;
 					_scanCntInit = true;
+					_draw_signaled = false;
 				}
 
 				if (_startSignal == 32 && ((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06)))
@@ -104,6 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_scanCnt = 0;
 					_startSignal++;
 					_scanCntInit = true;
+					_draw_signaled = false;
 				}
 
 				if (_startSignal == 64 && ((Number & 0x07) == 0x04 || ((Number & 0x07) == 0x06)))
@@ -111,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_scanCnt = 0;
 					_startSignal++;
 					_scanCntInit = true;
+					_draw_signaled = false;
 				}
 
 				// Increment the counter
@@ -125,6 +82,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_startSignal = HPosCnt;
 					_signalReached = HPosCnt + 5;
+					_draw_signaled = true;
 				}
 
 				if (_startSignal < _signalReached)
@@ -133,6 +91,31 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 
 				return result;
+			}
+
+			public void Resp_check()
+			{
+				if (_draw_signaled)
+				{
+					if (_startSignal < 17)
+					{
+						_startSignal -= _startSignal - 12;
+					}
+
+					else if (_startSignal < 33)
+					{
+						_startSignal -= _startSignal - 28;
+					}
+
+					else if (_startSignal < 65)
+					{
+						_startSignal -= _startSignal - 60;
+					}
+					else if (_startSignal < 161)
+					{
+						_startSignal -= _startSignal - 156;
+					}
+				}
 			}
 
 			public void SyncState(Serializer ser)
@@ -150,6 +133,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("draw_to", ref _drawTo);
 				ser.Sync("scanCnt", ref _scanCnt);
 				ser.Sync("scanCntInit", ref _scanCntInit);
+				ser.Sync("_draw_signaled", ref _draw_signaled);
 				ser.EndSection();
 			}
 		}

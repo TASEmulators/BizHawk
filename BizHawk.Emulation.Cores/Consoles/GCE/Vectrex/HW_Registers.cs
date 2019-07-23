@@ -196,11 +196,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							if (sel1)
 							{
 								ppu.bright = (byte)((portA_ret & 0x7F) << 1);
-								ppu.bright_int_1 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_1 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 								ppu.bright = (byte)(portA_ret & 0x7F);
-								ppu.bright_int_2 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_2 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 								ppu.bright = (byte)(portA_ret & 0x3F);
-								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_3 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 							}
 							else
 							{
@@ -273,11 +273,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							if (sel1)
 							{
 								ppu.bright = (byte)((portA_ret & 0x7F) << 1);
-								ppu.bright_int_1 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_1 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 								ppu.bright = (byte)(portA_ret & 0x7F);
-								ppu.bright_int_2 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_2 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 								ppu.bright = (byte)(portA_ret & 0x3F);
-								ppu.bright_int_3 = (uint)(0xFF000000 | (ppu.bright << 16) | (ppu.bright << 8) | ppu.bright);
+								ppu.bright_int_3 = (0xFF000000 | (uint)(ppu.bright << 16) | (uint)(ppu.bright << 8) | ppu.bright);
 							}
 							else
 							{
