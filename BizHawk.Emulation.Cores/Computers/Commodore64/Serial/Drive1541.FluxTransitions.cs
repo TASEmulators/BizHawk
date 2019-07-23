@@ -154,17 +154,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                             _bitsRemainingInLatchedByte--;
                             _byteReady = false;
                             _bitHistory = (_bitHistory << 1) | ((_diskSupplementaryCounter & 0xC) == 0x0 ? 1 : 0);
-                            _sync = false;
                             if (!_diskWriteEnabled && (_bitHistory & 0x3FF) == 0x3FF)
                             {
                                 _sync = true;
                                 _bitsRemainingInLatchedByte = 8;
-                                _byteReady = false;
                             }
 
                             if (_bitsRemainingInLatchedByte <= 0)
                             {
                                 _bitsRemainingInLatchedByte = 8;
+								_sync = false;
 
                                 // SOE (SO/Byte Ready enabled)
                                 _byteReady = Via1.Ca2;
