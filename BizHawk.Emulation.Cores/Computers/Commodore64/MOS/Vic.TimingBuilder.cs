@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private static readonly int[] TimingBuilderCycle14Act =
 		{
 			PipelineUpdateVc, 0,
-			PipelineSpriteCrunch, 0,
+			PipelineSpriteCrunch, PipelineSpriteCrunch,
 			PipelineUpdateMcBase, 0,
 		};
 

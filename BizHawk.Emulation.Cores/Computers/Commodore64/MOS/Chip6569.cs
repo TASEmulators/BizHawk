@@ -30,7 +30,8 @@
 			return new Vic(
 				Cycles, Lines,
 				Pipeline,
-				17734472 / 18,
+				17734472,
+				18,
 				HblankStart, HblankEnd,
 				VblankStart, VblankEnd,
 				borderType,

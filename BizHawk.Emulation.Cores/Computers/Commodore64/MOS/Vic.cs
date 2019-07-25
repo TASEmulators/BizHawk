@@ -28,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool ReadBa() { return _pinBa; }
 		public bool ReadIrq() { return (_irqBuffer & 1) == 0; }
 
-		private readonly int _cyclesPerSec;
 		private readonly int[] _rasterXPipeline;
 		private readonly int[] _fetchPipeline;
 		private readonly int[] _baPipeline;
@@ -42,8 +41,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private readonly int _pixelRatioNum;
 		private readonly int _pixelRatioDen;
+		private readonly int _cyclesPerSecNum;
+		private readonly int _cyclesPerSecDen;
 
-		public Vic(int newCycles, int newLines, IList<int[]> newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd, C64.BorderType borderType, int pixelRatioNum, int pixelRatioDen)
+		public Vic(int newCycles, int newLines, IList<int[]> newPipeline, int cyclesPerSecNum, int cyclesPerSecDen, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd, C64.BorderType borderType, int pixelRatioNum, int pixelRatioDen)
 		{
 			Debug.WriteLine("C64 VIC timings:");
 			Debug.WriteLine("RX   FTCH BA   ACT");
@@ -61,7 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_actPipeline = newPipeline[3];
 			_totalCycles = newCycles;
 			_totalLines = newLines;
-			_cyclesPerSec = newCyclesPerSec;
+			_cyclesPerSecNum = cyclesPerSecNum;
+			_cyclesPerSecDen = cyclesPerSecDen;
 
 			ConfigureBlanking(newLines, hblankStart, hblankEnd, vblankStart, vblankEnd, borderType);
 
@@ -183,8 +185,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		public int CyclesPerFrame => _totalCycles * _totalLines;
-
-		public int CyclesPerSecond => _cyclesPerSec;
 
 		public void ExecutePhase1()
 		{

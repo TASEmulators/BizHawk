@@ -267,6 +267,20 @@
 			_borderCheckLEnable = (_parseAct & (PipelineBorderLeft0 | PipelineBorderLeft1)) != 0;
 			_borderCheckREnable = (_parseAct & (PipelineBorderRight0 | PipelineBorderRight1)) != 0;
 
+			if ((_parseAct & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
+			{
+				foreach (var spr in _sprites)
+				{
+					if (spr.YCrunch)
+						spr.Mcbase = spr.Mc;
+					else if (!spr.YExpand)
+						spr.Mcbase = SpriteCrunchTable[spr.Mcbase];
+
+					if (spr.Mcbase == 63)
+						spr.Dma = false;
+				}
+			}
+
 			foreach (var spr in _sprites) // sprite rule 1
 			{
 				if (!spr.YExpand)
@@ -274,22 +288,7 @@
 					spr.YCrunch = true;
 				}
 			}
-
-			if ((_parseAct & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
-			{
-				foreach (var spr in _sprites)
-				{
-					if (spr.YCrunch)
-					{
-						spr.Mcbase = spr.Mc;
-						if (spr.Mcbase == 63)
-						{
-							spr.Dma = false;
-						}
-					}
-				}
-			}
-
+			
 			if ((_parseAct & PipelineSpriteDma) != 0) // sprite rule 3
 			{
 				foreach (var spr in _sprites)
