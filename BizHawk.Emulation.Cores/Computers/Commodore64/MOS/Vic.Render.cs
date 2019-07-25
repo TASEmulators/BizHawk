@@ -27,7 +27,7 @@
 		private const int VideoMode100 = 4;
 		private const int VideoModeInvalid = -1;
 
-		private const int SrMask1 = 0x40000;
+		private const int SrMask0 = 0x40000;
 		private const int SrSpriteMask = SrSpriteMask2;
 		private const int SrSpriteMask1 = 0x400000;
 		private const int SrSpriteMask2 = SrSpriteMask1 << 1;
@@ -65,16 +65,16 @@
 				#endregion
 
 				// render graphics
-				if ((_srColorEnable & SrMask1) != 0)
+				if ((_srColorEnable & SrMask0) != 0)
 				{
-					_pixel = ((_srColor0 & SrMask1) >> 18) |
-						((_srColor1 & SrMask1) >> 17) |
-						((_srColor2 & SrMask1) >> 16) |
-						((_srColor3 & SrMask1) >> 15);
+					_pixel = ((_srColor0 & SrMask0) >> 18) |
+						((_srColor1 & SrMask0) >> 17) |
+						((_srColor2 & SrMask0) >> 16) |
+						((_srColor3 & SrMask0) >> 15);
 				}
 				else
 				{
-					switch (((_srColor0 & SrMask1) >> 18) | ((_srColor1 & SrMask1) >> 17))
+					switch (((_srColor0 & SrMask0) >> 18) | ((_srColor1 & SrMask0) >> 17))
 					{
 						case 1:
 							_pixel = _idle ? 0 : _backgroundColor1;
@@ -171,7 +171,7 @@
 							}
 
 							// sprite-data collision
-							if (!_borderOnVertical && (_srData1 & SrMask1) != 0)
+							if (!_borderOnVertical && (_srData1 & SrMask0) != 0)
 							{
 								_spr.CollideData = true;
 								_intSpriteDataCollision = true;
@@ -180,7 +180,7 @@
 							// sprite priority logic
 							if (_spr.Priority)
 							{
-								_pixel = (_srData1 & SrMask1) != 0 ? _pixel : _sprPixel;
+								_pixel = (_srData1 & SrMask0) != 0 ? _pixel : _sprPixel;
 							}
 							else
 							{
@@ -190,28 +190,15 @@
 					}
 				}
 
-				#region POST-RENDER BORDER
-
-				// border doesn't work with the background buffer
-				_borderPixel = _pixBorderBuffer[_pixBufferBorderIndex];
-				_pixBorderBuffer[_pixBufferBorderIndex] = _borderColor;
-				#endregion
-
 				// plot pixel if within viewing area
 				if (_renderEnabled)
 				{
-					_bufferPixel = (_borderOnShiftReg & 0x80000) != 0 ? _borderPixel : _pixBuffer[_pixBufferIndex];
-					_buf[_bufOffset] = Palette[_bufferPixel];
-					_bufOffset++;
+					_bufferPixel = (_borderOnVertical || _borderOnMain) ? _borderColor : _pixel;
+					//_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
+					_buf[_bufOffset++] = Palette[_bufferPixel & 0xF];
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;
 				}
-
-				_borderOnShiftReg <<= 1;
-				_borderOnShiftReg |= (_borderOnVertical || _borderOnMain) ? 1 : 0;
-				_pixBuffer[_pixBufferIndex] = _pixel;
-				_pixBufferIndex++;
-				_pixBufferBorderIndex++;
 
 				if (!_rasterXHold)
 					_rasterX++;
@@ -222,16 +209,6 @@
 				_srColor3 <<= 1;
 				_srData1 <<= 1;
 				_srColorEnable <<= 1;
-			}
-
-			if (_pixBufferBorderIndex >= PixBorderBufferSize)
-			{
-				_pixBufferBorderIndex = 0;
-			}
-
-			if (_pixBufferIndex >= PixBufferSize)
-			{
-				_pixBufferIndex = 0;
 			}
 		}
 	}

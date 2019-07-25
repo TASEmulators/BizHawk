@@ -149,8 +149,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_bufferC[i] = 0;
 			}
 
-			_pixBufferIndex = 0;
-			_pixBufferBorderIndex = 0;
 			UpdateBorder();
 		}
 
@@ -200,10 +198,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_pinAec), ref _pinAec);
 			ser.Sync(nameof(_pinBa), ref _pinBa);
 			ser.Sync(nameof(_parseIsSprCrunch), ref _parseIsSprCrunch);
-			ser.Sync(nameof(_pixBorderBuffer), ref _pixBorderBuffer, useNull: false);
-			ser.Sync(nameof(_pixBufferBorderIndex), ref _pixBufferBorderIndex);
-			ser.Sync(nameof(_pixBuffer), ref _pixBuffer, useNull: false);
-			ser.Sync(nameof(_pixBufferIndex), ref _pixBufferIndex);
 			ser.Sync(nameof(_pointerCb), ref _pointerCb);
 			ser.Sync(nameof(_pointerVm), ref _pointerVm);
 			ser.Sync(nameof(_rasterInterruptLine), ref _rasterInterruptLine);

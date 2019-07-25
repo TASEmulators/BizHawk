@@ -78,8 +78,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite6 = _sprites[6];
 			_sprite7 = _sprites[7];
 			_bufferC = new int[40];
-			_pixBuffer = new int[PixBufferSize];
-			_pixBorderBuffer = new int[PixBorderBufferSize];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
@@ -115,22 +113,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case C64.BorderType.SmallProportional:
 					_vblank = true;
 					_hblank = true;
-					newHblankStart = 0x158 + PixBufferSize + hBorderSize;
-					newHblankEnd = 0x018 + PixBufferSize - hBorderSize;
+					newHblankStart = 0x158 + hBorderSize;
+					newHblankEnd = 0x018 - hBorderSize;
 					newVblankStart = 0xFA + vBorderSize;
 					newVblankEnd = 0x32 - vBorderSize;
 					break;
 				case C64.BorderType.SmallFixed:
 					_vblank = true;
 					_hblank = true;
-					newHblankStart = 0x158 + PixBufferSize + hBorderSize;
-					newHblankEnd = 0x018 + PixBufferSize - hBorderSize;
+					newHblankStart = 0x158 + hBorderSize;
+					newHblankEnd = 0x018 - hBorderSize;
 					newVblankStart = 0xFA + hBorderSize;
 					newVblankEnd = 0x32 - hBorderSize;
 					break;
                 case C64.BorderType.None:
-                    newHblankStart = 0x158 + PixBufferSize;
-                    newHblankEnd = 0x018 + PixBufferSize;
+                    newHblankStart = 0x158;
+                    newHblankEnd = 0x018;
                     newVblankStart = 0xFA;
                     newVblankEnd = 0x32;
                     _vblank = true;
@@ -155,12 +153,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_hblankEndCheckXRaster = newHblankEnd & 0xFFC;
 			_vblankStart = newVblankStart;
 			_vblankEnd = newVblankEnd;
-			_bufWidth = TimingBuilder_ScreenWidth(_rasterXPipeline, newHblankStart, newHblankEnd);
-			_bufHeight = TimingBuilder_ScreenHeight(newVblankStart, newVblankEnd, lines);
-			_buf = new int[_bufWidth * _bufHeight];
+			BufferWidth = TimingBuilder_ScreenWidth(_rasterXPipeline, newHblankStart, newHblankEnd);
+			BufferHeight = TimingBuilder_ScreenHeight(newVblankStart, newVblankEnd, lines);
+			_buf = new int[BufferWidth * BufferHeight];
 			_bufLength = _buf.Length;
-			VirtualWidth = _bufWidth * _pixelRatioNum / _pixelRatioDen;
-			VirtualHeight = _bufHeight;
+			VirtualWidth = BufferWidth * _pixelRatioNum / _pixelRatioDen;
+			VirtualHeight = BufferHeight;
 		}
 
 		private int WrapValue(int min, int max, int val)

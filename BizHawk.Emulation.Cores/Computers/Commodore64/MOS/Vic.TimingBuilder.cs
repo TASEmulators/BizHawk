@@ -5,10 +5,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
-		private const int BorderLeft38 = 0x023;
-		private const int BorderLeft40 = 0x01C;
-		private const int BorderRight38 = 0x153;
-		private const int BorderRight40 = 0x15C;
+		private const int BorderLeft38 = 0x01F;
+		private const int BorderLeft40 = 0x018;
+		private const int BorderRight38 = 0x14F;
+		private const int BorderRight40 = 0x158;
 		private const int BorderTop25 = 0x033;
 		private const int BorderTop24 = 0x037;
 		private const int BorderBottom25 = 0x0FB;
