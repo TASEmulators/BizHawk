@@ -229,7 +229,6 @@
 							spr.Sr &= ~(0xFF << ((0x30 - (_parseFetch & 0x30)) >> 1));
 							spr.Sr |= ReadMemory(_parseAddr) << ((0x30 - (_parseFetch & 0x30)) >> 1);
 							spr.Mc = (spr.Mc + 1) & 0x3F;
-							spr.Loaded |= 0x800000;
 						}
 						else if ((_parseFetch & 0xF0) == 0x20)
 						{

@@ -27,9 +27,9 @@
 		private const int VideoMode100 = 4;
 		private const int VideoModeInvalid = -1;
 
-		private const int SrMask0 = 0x40000;
+		private const int SrMask0 = 0x4000000;
 		private const int SrSpriteMask = SrSpriteMask2;
-		private const int SrSpriteMask1 = 0x400000;
+		private const int SrSpriteMask1 = 0x40000000;
 		private const int SrSpriteMask2 = SrSpriteMask1 << 1;
 		private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
 		private const int SrSpriteMaskMc = SrSpriteMask3;
@@ -67,14 +67,14 @@
 				// render graphics
 				if ((_srColorEnable & SrMask0) != 0)
 				{
-					_pixel = ((_srColor0 & SrMask0) >> 18) |
-						((_srColor1 & SrMask0) >> 17) |
-						((_srColor2 & SrMask0) >> 16) |
-						((_srColor3 & SrMask0) >> 15);
+					_pixel = ((_srColor0 & SrMask0) >> 26) |
+						((_srColor1 & SrMask0) >> 25) |
+						((_srColor2 & SrMask0) >> 24) |
+						((_srColor3 & SrMask0) >> 23);
 				}
 				else
 				{
-					switch (((_srColor0 & SrMask0) >> 18) | ((_srColor1 & SrMask0) >> 17))
+					switch (((_srColor0 & SrMask0) >> 26) | ((_srColor1 & SrMask0) >> 25))
 					{
 						case 1:
 							_pixel = _idle ? 0 : _backgroundColor1;
@@ -117,12 +117,11 @@
 							_sprData = _spr.Sr & SrSpriteMaskMc;
 							if (_spr.MulticolorCrunch && _spr.XCrunch && !_rasterXHold)
 							{
-								if (_spr.Loaded == 0)
+								if (_spr.Sr == 0)
 								{
 									_spr.ShiftEnable = false;
 								}
 								_spr.Sr <<= 2;
-								_spr.Loaded >>= 2;
 							}
 							_spr.MulticolorCrunch ^= _spr.XCrunch;
 						}
@@ -131,12 +130,11 @@
 							_sprData = _spr.Sr & SrSpriteMask;
 							if (_spr.XCrunch && !_rasterXHold)
 							{
-								if (_spr.Loaded == 0)
+								if (_spr.Sr == 0)
 								{
 									_spr.ShiftEnable = false;
 								}
 								_spr.Sr <<= 1;
-								_spr.Loaded >>= 1;
 							}
 						}
 						_spr.XCrunch ^= _spr.XExpand;
@@ -191,10 +189,12 @@
 				}
 
 				// plot pixel if within viewing area
+				_borderOnShiftReg >>= 1;
+				_borderOnShiftReg |= (_borderOnVertical || _borderOnMain) ? 0x100 : 0x00;
 				if (_renderEnabled)
 				{
-					_bufferPixel = (_borderOnVertical || _borderOnMain) ? _borderColor : _pixel;
-					//_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
+					_bufferPixel = (_borderOnShiftReg & 1) != 0 ? _borderColor : _pixel;
+					_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
 					_buf[_bufOffset++] = Palette[_bufferPixel & 0xF];
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;

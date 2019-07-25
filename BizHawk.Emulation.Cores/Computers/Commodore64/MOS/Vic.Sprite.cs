@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public bool Dma;
 			public bool Enable;
 			public int Index;
-			public int Loaded;
 			public int Mc;
 			public int Mcbase;
 			public bool Multicolor;
@@ -66,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ser.Sync(nameof(Display), ref Display);
 				ser.Sync(nameof(Dma), ref Dma);
 				ser.Sync(nameof(Enable), ref Enable);
-				ser.Sync(nameof(Loaded), ref Loaded);
 				ser.Sync(nameof(Mc), ref Mc);
 				ser.Sync(nameof(Mcbase), ref Mcbase);
 				ser.Sync(nameof(Multicolor), ref Multicolor);
