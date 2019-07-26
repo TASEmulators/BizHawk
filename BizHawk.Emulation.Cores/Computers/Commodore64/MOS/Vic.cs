@@ -189,6 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void ExecutePhase1()
 		{
 			// phi1
+			_dataCPrev |= (_dataC & 0xFFF) << 12;
 
 			// advance cycle and optionally raster line
 			_cycle++;
@@ -269,6 +270,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void ExecutePhase2()
 		{
 			// phi2
+			_dataCPrev >>= 12;
 
 			// check top and bottom border
 			if (_rasterLine == _borderB)

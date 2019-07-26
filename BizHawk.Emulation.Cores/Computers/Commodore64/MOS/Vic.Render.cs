@@ -4,19 +4,20 @@
 	{
 		private int _borderPixel;
 		private int _bufferPixel;
+		private int _gfxData;
+		private bool _gfxSense;
+		private int _gfxJitter;
+		private bool _gfxMc;
 		private int _pixel;
 		private int _pixelCounter;
-		private int _pixelOwner;
+		private int _sprOwner;
 		private Sprite _spr;
 		private int _sprData;
 		private int _sprIndex;
 		private int _sprPixel;
-		private int _srColor0;
-		private int _srColor1;
-		private int _srColor2;
-		private int _srColor3;
+		private bool _sprSense;
+		private bool _sprPriority;
 		private int _srData1;
-		private int _srColorEnable;
 		private int _videoMode;
 		private int _borderOnShiftReg;
 
@@ -29,7 +30,7 @@
 
 		private const int SrMask0 = 0x4000000;
 		private const int SrSpriteMask = SrSpriteMask2;
-		private const int SrSpriteMask1 = 0x40000000;
+		private const int SrSpriteMask1 = 0x400000;
 		private const int SrSpriteMask2 = SrSpriteMask1 << 1;
 		private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
 		private const int SrSpriteMaskMc = SrSpriteMask3;
@@ -65,39 +66,116 @@
 				#endregion
 
 				// render graphics
-				if ((_srColorEnable & SrMask0) != 0)
+				
+				#region Graphics Sequencer
+
+				if (_xScroll == (_rasterX & 0x7))
 				{
-					_pixel = ((_srColor0 & SrMask0) >> 26) |
-						((_srColor1 & SrMask0) >> 25) |
-						((_srColor2 & SrMask0) >> 24) |
-						((_srColor3 & SrMask0) >> 23);
-				}
-				else
-				{
-					switch (((_srColor0 & SrMask0) >> 26) | ((_srColor1 & SrMask0) >> 25))
-					{
-						case 1:
-							_pixel = _idle ? 0 : _backgroundColor1;
-							break;
-						case 2:
-							_pixel = _idle ? 0 : _backgroundColor2;
-							break;
-						case 3:
-							_pixel = _idle ? 0 : _backgroundColor3;
-							break;
-						default:
-							_pixel = _backgroundColor0;
-							break;
-					}
+					_displayC = _dataCPrev & 0xFFF;
+					_gfxMc = _multicolorMode && (_bitmapMode || (_displayC & 0x800) != 0);
 				}
 
+				_pixel = _backgroundColor0;
+				_gfxJitter = _gfxMc ? (_xScroll ^ _rasterX) & 1 : 0;
+				_srData1 <<= 1;
+				_gfxData = _srData1 >> (18 + _gfxJitter); // bit 1-0 has the histogram
+				_gfxSense = (_gfxData & 2) != 0; // bit 1 is used for foreground data purposes too
+
+				switch (_videoMode)
+				{
+					case VideoMode000:
+					{
+						if (_gfxSense)
+							_pixel = _displayC >> 8;
+						break;
+					}
+					case VideoMode001:
+					{
+						if (_gfxMc)
+						{
+							switch (_gfxData & 0x3)
+							{
+								case 0x1:
+									_pixel = _backgroundColor1;
+									break;
+								case 0x2:
+									_pixel = _backgroundColor2;
+									break;
+								case 0x3:
+									_pixel = (_displayC >> 8) & 7;
+									break;
+							}
+						}
+						else if (_gfxSense)
+						{
+							_pixel = _displayC >> 8;
+						}
+						break;
+					}
+					case VideoMode010:
+					{
+						_pixel = (_gfxSense ? _displayC >> 4 : _displayC) & 0xF;
+						break;
+					}
+					case VideoMode011:
+					{
+						switch (_gfxData & 0x3)
+						{
+							case 0x1:
+								_pixel = (_displayC >> 4) & 0xF;
+								break;
+							case 0x2:
+								_pixel = _displayC & 0xF;
+								break;
+							case 0x3:
+								_pixel = (_displayC >> 8) & 0xF;
+								break;
+						}
+						break;
+					}
+					case VideoMode100:
+					{
+						if (_gfxSense)
+						{
+							_pixel = (_displayC >> 8) & 0xF;
+						}
+						else
+						{
+							switch (_displayC & 0xC0)
+							{
+								case 0x40:
+								{
+									_pixel = _backgroundColor1;
+									break;
+								}
+								case 0x80:
+								{
+									_pixel = _backgroundColor2;
+									break;
+								}
+								case 0xC0:
+								{
+									_pixel = _backgroundColor3;
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+				
+				#endregion Graphics Sequencer
+				
 				// render sprites
-				_pixelOwner = -1;
+				
+				#region Sprite Sequencer + Mux Collision
+				
+				_sprOwner = -1;
+				_sprSense = false;
 				for (_sprIndex = 0; _sprIndex < 8; _sprIndex++)
 				{
 					_spr = _sprites[_sprIndex];
 					_sprData = 0;
-					_sprPixel = _pixel;
 
 					if (_spr.X == _rasterX)
 					{
@@ -142,8 +220,20 @@
 						if (_sprData != 0)
 						{
 							// sprite-sprite collision
-							if (_pixelOwner < 0)
+							if (_sprSense)
 							{
+								if (!_borderOnVertical)
+								{
+									_spr.CollideSprite = true;
+									_sprites[_sprOwner].CollideSprite = true;
+									_intSpriteCollision = true;
+								}
+							}
+							else
+							{
+								_sprSense = true;
+								_sprOwner = _sprIndex;
+								_sprPriority = _spr.Priority;
 								switch (_sprData)
 								{
 									case SrSpriteMask1:
@@ -156,45 +246,33 @@
 										_sprPixel = _spriteMulticolor1;
 										break;
 								}
-								_pixelOwner = _sprIndex;
-							}
-							else
-							{
-								if (!_borderOnVertical)
-								{
-									_spr.CollideSprite = true;
-									_sprites[_pixelOwner].CollideSprite = true;
-									_intSpriteCollision = true;
-								}
 							}
 
 							// sprite-data collision
-							if (!_borderOnVertical && (_srData1 & SrMask0) != 0)
+							if (!_borderOnVertical && _gfxSense)
 							{
 								_spr.CollideData = true;
 								_intSpriteDataCollision = true;
 							}
-
-							// sprite priority logic
-							if (_spr.Priority)
-							{
-								_pixel = (_srData1 & SrMask0) != 0 ? _pixel : _sprPixel;
-							}
-							else
-							{
-								_pixel = _sprPixel;
-							}
 						}
 					}
 				}
+				
+				#endregion Sprite Sequencer + Mux Collision
 
+				#region Mux Color
+				
+				// sprite priority logic
+				if (_sprSense && (!_sprPriority || !_gfxSense))
+					_pixel = _sprPixel;
+
+				#endregion Mux Color
+				
 				// plot pixel if within viewing area
-				_borderOnShiftReg >>= 1;
-				_borderOnShiftReg |= (_borderOnVertical || _borderOnMain) ? 0x100 : 0x00;
 				if (_renderEnabled)
 				{
-					_bufferPixel = (_borderOnShiftReg & 1) != 0 ? _borderColor : _pixel;
-					_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
+					_bufferPixel = (_borderOnVertical || _borderOnMain) ? _borderColor : _pixel;
+					//_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
 					_buf[_bufOffset++] = Palette[_bufferPixel & 0xF];
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;
@@ -202,13 +280,6 @@
 
 				if (!_rasterXHold)
 					_rasterX++;
-				
-				_srColor0 <<= 1;
-				_srColor1 <<= 1;
-				_srColor2 <<= 1;
-				_srColor3 <<= 1;
-				_srData1 <<= 1;
-				_srColorEnable <<= 1;
 			}
 		}
 	}

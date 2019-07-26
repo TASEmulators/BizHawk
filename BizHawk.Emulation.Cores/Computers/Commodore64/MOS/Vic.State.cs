@@ -27,7 +27,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _cycleIndex;
 		private bool _columnSelect;
 		private int _dataC;
+		private int _dataCPrev;
 		private int _dataG;
+		private int _displayC;
 		private bool _displayEnable;
 		private bool _enableIntLightPen;
 		private bool _enableIntRaster;
