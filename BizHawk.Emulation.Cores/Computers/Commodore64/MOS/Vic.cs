@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// IRQ is treated as a delay line
 
-			var intIrq = (_enableIntRaster && _intRaster) ? 0x0008 : 0x0000;
+			var intIrq = (_enableIntRaster && _intRaster) ? 0x0002 : 0x0000;
 			var sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
 			var ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
 			var lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;

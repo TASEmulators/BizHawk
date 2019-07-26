@@ -227,12 +227,9 @@
 							// sprite-sprite collision
 							if (_sprSense)
 							{
-								if (!_borderOnVertical)
-								{
-									_spr.CollideSprite = true;
-									_sprites[_sprOwner].CollideSprite = true;
-									_intSpriteCollision = true;
-								}
+								_spr.CollideSprite = true;
+								_sprites[_sprOwner].CollideSprite = true;
+								_intSpriteCollision = true;
 							}
 							else
 							{
@@ -254,7 +251,7 @@
 							}
 
 							// sprite-data collision
-							if (!_borderOnVertical && _gfxSense)
+							if (_gfxSense)
 							{
 								_spr.CollideData = true;
 								_intSpriteDataCollision = true;
