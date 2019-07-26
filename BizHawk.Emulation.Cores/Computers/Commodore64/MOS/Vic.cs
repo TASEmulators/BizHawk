@@ -19,6 +19,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				http://www.classiccmp.org/cini/pdf/Commodore/ds_6567.pdf
 			- Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
 				http://mail.lipsia.de/~enigma/neu/6581.html
+			- US Patent US4561659, inventors: James W. Redfield; Albert J. Charpentier
+				https://patents.google.com/patent/US4561659
 		*/
 
 		public Func<int, int> ReadColorRam;
@@ -194,20 +196,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// advance cycle and optionally raster line
 			_cycle++;
 
-			if (_cycle == _totalCycles)
-			{
-				// border check
-				if (_rasterLine == _borderB)
-				{
-					_borderOnVertical = true;
-				}
-
-				if (_rasterLine == _borderT && _displayEnable)
-				{
-					_borderOnVertical = false;
-				}
-			}
-			
 			if (_cycle > _totalCycles)
 			{
 				// vblank check
@@ -276,6 +264,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			// phi2
 			_dataCPrev >>= 12;
 
+			// border check
+			if (_cycle == _totalCycles)
+			{
+				if (_rasterLine == _borderB)
+					_borderOnVertical = true;
+				else if (_rasterLine == _borderT - 1 && _displayEnable)
+					_borderOnVertical = false;
+			}
+			
 			// display enable compare
 			if (_rasterLine == BadLineEnableRaster)
 			{

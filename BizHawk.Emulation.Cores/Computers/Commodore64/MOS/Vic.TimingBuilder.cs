@@ -9,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private const int BorderLeft40 = 0x018;
 		private const int BorderRight38 = 0x14F;
 		private const int BorderRight40 = 0x158;
-		private const int BorderTop25 = 0x033 - 1;
-		private const int BorderTop24 = 0x037 - 1;
+		private const int BorderTop25 = 0x033;
+		private const int BorderTop24 = 0x037;
 		private const int BorderBottom25 = 0x0FB;
 		private const int BorderBottom24 = 0x0F7;
 		private const int BadLineEnableRaster = 0x030;
