@@ -2,7 +2,6 @@
 {
 	public sealed partial class Vic
 	{
-		private int _borderPixel;
 		private int _bufferPixel;
 		private int _gfxData;
 		private bool _gfxSense;
@@ -19,7 +18,6 @@
 		private bool _sprPriority;
 		private int _srData1;
 		private int _videoMode;
-		private int _borderOnShiftReg;
 
 		private const int VideoMode000 = 0;
 		private const int VideoMode001 = 1;
@@ -274,7 +272,6 @@
 				if (_renderEnabled)
 				{
 					_bufferPixel = (_borderOnVertical || _borderOnMain) ? _borderColor : _pixel;
-					//_bufferPixel = ((_rasterX & 0xF) == 0) ? _rasterX >> 4 : _bufferPixel;
 					_buf[_bufOffset++] = Palette[_bufferPixel & 0xF];
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;

@@ -40,8 +40,6 @@
 		private const int PipelineSpriteDisplay = 0x00000200; // sprite rule 4
 		private const int PipelineUpdateRc = 0x00000400; // vc/rc rule 5
 		private const int PipelineHoldX = 0x40000000;
-		private const int RasterIrqLine0Cycle = 2;
-		private const int RasterIrqLineXCycle = 1;
 		private const int FetchTypeSprite = 0x0000;
 		private const int FetchTypeRefresh = 0x0100;
 		private const int FetchTypeColor = 0x0200;
@@ -174,8 +172,6 @@
 			}
 
 			// perform actions
-			_borderCheckLEnable = (_parseAct & (PipelineBorderLeft0 | PipelineBorderLeft1)) != 0;
-			_borderCheckREnable = (_parseAct & (PipelineBorderRight0 | PipelineBorderRight1)) != 0;
 
 			if ((_parseAct & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
 			{
