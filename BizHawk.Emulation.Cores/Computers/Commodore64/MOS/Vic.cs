@@ -238,19 +238,35 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				_spriteSpriteCollisionClearPending = false;
 			}
-			
-			// start of rasterline
-			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
+
+			if (_rasterLine > 0 && _cycle == _totalCycles)
 			{
-				if (_rasterLine == BadLineDisableRaster)
+				if (_rasterLine == BadLineDisableRaster - 1)
 					_badlineEnable = false;
 
 				// raster compares are done here
-				if (_rasterLine == _rasterInterruptLine)
-				{
+				if (_rasterLine == _rasterInterruptLine - 1)
 					_intRaster = true;
-				}
 			}
+
+			if (_rasterLine == 0 && _cycle == 1)
+			{
+				if (_rasterLine == _rasterInterruptLine)
+					_intRaster = true;
+			}
+			
+//			// start of rasterline
+//			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
+//			{
+//				if (_rasterLine == BadLineDisableRaster)
+//					_badlineEnable = false;
+//
+//				// raster compares are done here
+//				if (_rasterLine == _rasterInterruptLine)
+//				{
+//					_intRaster = true;
+//				}
+//			}
 
 			// render
 			ParseCycle();
@@ -326,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// IRQ is treated as a delay line
 
-			var intIrq = (_enableIntRaster && _intRaster) ? 0x0002 : 0x0000;
+			var intIrq = (_enableIntRaster && _intRaster) ? 0x0008 : 0x0000;
 			var sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
 			var ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
 			var lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;
