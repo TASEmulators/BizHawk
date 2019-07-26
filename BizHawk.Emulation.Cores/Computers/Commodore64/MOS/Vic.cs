@@ -193,7 +193,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// advance cycle and optionally raster line
 			_cycle++;
-			if (_cycle > _totalCycles)
+
+			if (_cycle == _totalCycles)
 			{
 				// border check
 				if (_rasterLine == _borderB)
@@ -205,7 +206,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					_borderOnVertical = false;
 				}
-
+			}
+			
+			if (_cycle > _totalCycles)
+			{
 				// vblank check
 				if (_rasterLine == _vblankStart)
 					_vblank = true;
@@ -271,16 +275,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// phi2
 			_dataCPrev >>= 12;
-
-			// check top and bottom border
-			if (_rasterLine == _borderB)
-			{
-				_borderOnVertical = true;
-			}
-			if (_displayEnable && _rasterLine == _borderT)
-			{
-				_borderOnVertical = false;
-			}
 
 			// display enable compare
 			if (_rasterLine == BadLineEnableRaster)

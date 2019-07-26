@@ -49,7 +49,7 @@
 				#region PRE-RENDER BORDER
 
 				// check left border
-				if (_borderCheckLEnable && (_rasterX == _borderL))
+				if (_rasterX == _borderL)
 				{
 					if (_rasterLine == _borderB)
 						_borderOnVertical = true;
@@ -60,7 +60,7 @@
 				}
 
 				// check right border
-				if (_borderCheckREnable && (_rasterX == _borderR))
+				if (_rasterX == _borderR)
 					_borderOnMain = true;
 
 				#endregion
@@ -72,8 +72,8 @@
 				if (_xScroll == (_rasterX & 0x7))
 				{
 					_displayC = _dataCPrev & 0xFFF;
-					_gfxMc = _multicolorMode && (_bitmapMode || (_displayC & 0x800) != 0);
 				}
+				_gfxMc = _multicolorMode && (_bitmapMode || (_displayC & 0x800) != 0);
 
 				_pixel = _backgroundColor0;
 				_gfxJitter = _gfxMc ? (_xScroll ^ _rasterX) & 1 : 0;
@@ -160,6 +160,11 @@
 								}
 							}
 						}
+						break;
+					}
+					default:
+					{
+						_pixel = 0;
 						break;
 					}
 				}
