@@ -220,6 +220,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_vc = 0;
 					_refreshCounter = 0xFF;
 				}
+				
+				if (_rasterLine == BadLineDisableRaster)
+					_badlineEnable = false;
 			}
 
 			// bg collision clear
@@ -242,17 +245,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_spriteSpriteCollisionClearPending = false;
 			}
 
-			// start of rasterline
-			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
+			// raster IRQ is edge triggered
+			if (_rasterInterruptLine != _rasterLine)
 			{
-				if (_rasterLine == BadLineDisableRaster)
-					_badlineEnable = false;
-
-				// raster compares are done here
-				if (_rasterLine == _rasterInterruptLine)
-				{
-					_intRaster = true;
-				}
+				_rasterInterruptTriggered = false;
+			}
+			else if (!_rasterInterruptTriggered)
+			{
+				_intRaster = true;
+				_rasterInterruptTriggered = true;
 			}
 
 			// render

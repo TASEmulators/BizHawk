@@ -85,11 +85,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
+			_cpu.RDY = ReadRdy();
 			_irqDelay >>= 1;
 			_nmiDelay >>= 1;
 			_irqDelay |= ReadIrq() ? 0x0 : 0x2;
 			_nmiDelay |= ReadNmi() ? 0x0 : 0x2;
-			_cpu.RDY = ReadRdy();
 			_cpu.IRQ = (_irqDelay & 1) != 0;
 			_cpu.NMI |= (_nmiDelay & 3) == 2;
 			_cpu.ExecuteOne();
