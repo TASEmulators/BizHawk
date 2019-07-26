@@ -60,7 +60,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_rasterXPipeline = newPipeline[0];
 			_fetchPipeline = newPipeline[1];
-			_baPipeline = newPipeline[2];
+			_baPipeline = new int[newPipeline[2].Length];
+			Array.Copy(newPipeline[2], 1, _baPipeline, 0, _baPipeline.Length - 1);
+			_baPipeline[_baPipeline.Length - 1] = newPipeline[2][0];
+			//_baPipeline = newPipeline[2];
 			_actPipeline = newPipeline[3];
 			_totalCycles = newCycles;
 			_totalLines = newLines;
@@ -239,34 +242,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_spriteSpriteCollisionClearPending = false;
 			}
 
-			if (_rasterLine > 0 && _cycle == _totalCycles)
+			// start of rasterline
+			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
-				if (_rasterLine == BadLineDisableRaster - 1)
+				if (_rasterLine == BadLineDisableRaster)
 					_badlineEnable = false;
 
 				// raster compares are done here
-				if (_rasterLine == _rasterInterruptLine - 1)
-					_intRaster = true;
-			}
-
-			if (_rasterLine == 0 && _cycle == 1)
-			{
 				if (_rasterLine == _rasterInterruptLine)
+				{
 					_intRaster = true;
+				}
 			}
-			
-//			// start of rasterline
-//			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
-//			{
-//				if (_rasterLine == BadLineDisableRaster)
-//					_badlineEnable = false;
-//
-//				// raster compares are done here
-//				if (_rasterLine == _rasterInterruptLine)
-//				{
-//					_intRaster = true;
-//				}
-//			}
 
 			// render
 			ParseCycle();
