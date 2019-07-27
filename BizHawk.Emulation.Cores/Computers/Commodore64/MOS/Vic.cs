@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_baPipeline = new int[newPipeline[2].Length];
 			Array.Copy(newPipeline[2], 1, _baPipeline, 0, _baPipeline.Length - 1);
 			_baPipeline[_baPipeline.Length - 1] = newPipeline[2][0];
-			//_baPipeline = newPipeline[2];
 			_actPipeline = newPipeline[3];
 			_totalCycles = newCycles;
 			_totalLines = newLines;
@@ -85,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite6 = _sprites[6];
 			_sprite7 = _sprites[7];
 			_bufferC = new int[40];
+			_pixelDecodeBuffer = new int[8];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,

@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _lightPenX;
 		private int _lightPenY;
 		private bool _multicolorMode;
+		private bool _multicolorModeLatch;
 		private bool _pinAec = true;
 		private bool _pinBa = true;
 		private int _pointerCb;
@@ -116,6 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_lightPenX = 0;
 			_lightPenY = 0;
 			_multicolorMode = false;
+			_multicolorModeLatch = false;
 			_pinAec = true;
 			_pinBa = true;
 			_pointerCb = 0;
@@ -192,9 +194,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_lightPenX), ref _lightPenX);
 			ser.Sync(nameof(_lightPenY), ref _lightPenY);
 			ser.Sync(nameof(_multicolorMode), ref _multicolorMode);
+			ser.Sync(nameof(_multicolorModeLatch), ref _multicolorModeLatch);
 			ser.Sync(nameof(_parseIsSprCrunch), ref _parseIsSprCrunch);
 			ser.Sync(nameof(_pinAec), ref _pinAec);
 			ser.Sync(nameof(_pinBa), ref _pinBa);
+			ser.Sync(nameof(_pixelDecodeBuffer), ref _pixelDecodeBuffer, useNull: false);
+			ser.Sync(nameof(_pixelDecodeBufferIndex), ref _pixelDecodeBufferIndex);
 			ser.Sync(nameof(_pointerCb), ref _pointerCb);
 			ser.Sync(nameof(_pointerVm), ref _pointerVm);
 			ser.Sync(nameof(_rasterInterruptLine), ref _rasterInterruptLine);

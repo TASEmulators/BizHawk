@@ -2,18 +2,21 @@
 {
 	public sealed partial class Vic
 	{
-		private int _bufferPixel;
 		private int _gfxData;
 		private bool _gfxSense;
 		private int _gfxJitter;
 		private bool _gfxMc;
 		private int _pixel;
 		private int _pixelCounter;
+		private ColorRegisterSelect _pixelDecode;
+		private int[] _pixelDecodeBuffer;
+		private ColorRegisterSelect _pixelDecodeTemp;
+		private int _pixelDecodeBufferIndex;
 		private int _sprOwner;
 		private Sprite _spr;
 		private int _sprData;
+		private ColorRegisterSelect _sprDecode;
 		private int _sprIndex;
-		private int _sprPixel;
 		private bool _sprSense;
 		private bool _sprPriority;
 		private int _srData1;
@@ -33,6 +36,42 @@
 		private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
 		private const int SrSpriteMaskMc = SrSpriteMask3;
 
+		// the first 16 members of this must correspond directly to the 16 color palette
+		private enum ColorRegisterSelect
+		{
+			Color0,
+			Color1,
+			Color2,
+			Color3,
+			Color4,
+			Color5,
+			Color6,
+			Color7,
+			Color8,
+			Color9,
+			ColorA,
+			ColorB,
+			ColorC,
+			ColorD,
+			ColorE,
+			ColorF,
+			Exterior,
+			Background0,
+			Background1,
+			Background2,
+			Background3,
+			SpriteMc0,
+			SpriteMc1,
+			Sprite0,
+			Sprite1,
+			Sprite2,
+			Sprite3,
+			Sprite4,
+			Sprite5,
+			Sprite6,
+			Sprite7
+		}
+
 		private void Render()
 		{
 			if (_rasterX == _hblankEndCheckXRaster)
@@ -42,6 +81,7 @@
 
 			_renderEnabled = !_hblank && !_vblank;
 			_pixelCounter = 4;
+			
 			while (--_pixelCounter >= 0)
 			{
 				#region PRE-RENDER BORDER
@@ -70,49 +110,47 @@
 				if (_xScroll == (_rasterX & 0x7))
 				{
 					_displayC = _dataCPrev & 0xFFF;
+					_gfxMc = _multicolorMode && (_bitmapMode || (_displayC & 0x800) != 0);
 				}
-				_gfxMc = _multicolorMode && (_bitmapMode || (_displayC & 0x800) != 0);
 
-				_pixel = _backgroundColor0;
-				_gfxJitter = _gfxMc ? (_xScroll ^ _rasterX) & 1 : 0;
+				_pixelDecode = ColorRegisterSelect.Background0;
+				_gfxJitter = _gfxMc && _multicolorModeLatch ? (_xScroll ^ _rasterX) & 1 : 0;
 				_srData1 <<= 1;
-				_gfxData = _srData1 >> (18 + _gfxJitter); // bit 1-0 has the histogram
-				_gfxSense = (_gfxData & 2) != 0; // bit 1 is used for foreground data purposes too
+				_gfxData = (_srData1 >> (18 + _gfxJitter)) & (_gfxMc && _multicolorModeLatch ? 0x3 : 0x2); // data bits
+				_gfxSense = (_gfxData & 2) != 0; // foreground bit
 
 				switch (_videoMode)
 				{
 					case VideoMode000:
 					{
 						if (_gfxSense)
-							_pixel = _displayC >> 8;
+							_pixelDecode = (ColorRegisterSelect) (_displayC >> 8);
 						break;
 					}
 					case VideoMode001:
 					{
-						if (_gfxMc)
+						if ((_displayC & 0x800) != 0)
 						{
 							switch (_gfxData & 0x3)
 							{
 								case 0x1:
-									_pixel = _backgroundColor1;
-									break;
 								case 0x2:
-									_pixel = _backgroundColor2;
+									_pixelDecode = ColorRegisterSelect.Background0 + _gfxData;
 									break;
 								case 0x3:
-									_pixel = (_displayC >> 8) & 7;
+									_pixelDecode = (ColorRegisterSelect) ((_displayC >> 8) & 7);
 									break;
 							}
 						}
 						else if (_gfxSense)
 						{
-							_pixel = _displayC >> 8;
+							_pixelDecode = (ColorRegisterSelect) (_displayC >> 8);
 						}
 						break;
 					}
 					case VideoMode010:
 					{
-						_pixel = (_gfxSense ? _displayC >> 4 : _displayC) & 0xF;
+						_pixelDecode = (ColorRegisterSelect) ((_gfxSense ? _displayC >> 4 : _displayC) & 0xF);
 						break;
 					}
 					case VideoMode011:
@@ -120,13 +158,13 @@
 						switch (_gfxData & 0x3)
 						{
 							case 0x1:
-								_pixel = (_displayC >> 4) & 0xF;
+								_pixelDecode = (ColorRegisterSelect) ((_displayC >> 4) & 0xF);
 								break;
 							case 0x2:
-								_pixel = _displayC & 0xF;
+								_pixelDecode = (ColorRegisterSelect) (_displayC & 0xF);
 								break;
 							case 0x3:
-								_pixel = (_displayC >> 8) & 0xF;
+								_pixelDecode = (ColorRegisterSelect) ((_displayC >> 8) & 0xF);
 								break;
 						}
 						break;
@@ -135,34 +173,17 @@
 					{
 						if (_gfxSense)
 						{
-							_pixel = (_displayC >> 8) & 0xF;
+							_pixelDecode = (ColorRegisterSelect) ((_displayC >> 8) & 0xF);
 						}
 						else
 						{
-							switch (_displayC & 0xC0)
-							{
-								case 0x40:
-								{
-									_pixel = _backgroundColor1;
-									break;
-								}
-								case 0x80:
-								{
-									_pixel = _backgroundColor2;
-									break;
-								}
-								case 0xC0:
-								{
-									_pixel = _backgroundColor3;
-									break;
-								}
-							}
+							_pixelDecode = ColorRegisterSelect.Background0 + ((_displayC >> 6) & 0x3);
 						}
 						break;
 					}
 					default:
 					{
-						_pixel = 0;
+						_pixelDecode = ColorRegisterSelect.Color0;
 						break;
 					}
 				}
@@ -237,13 +258,13 @@
 								switch (_sprData)
 								{
 									case SrSpriteMask1:
-										_sprPixel = _spriteMulticolor0;
+										_sprDecode = ColorRegisterSelect.SpriteMc0;
 										break;
 									case SrSpriteMask2:
-										_sprPixel = _spr.Color;
+										_sprDecode = ColorRegisterSelect.Sprite0 + _sprOwner;
 										break;
 									case SrSpriteMask3:
-										_sprPixel = _spriteMulticolor1;
+										_sprDecode = ColorRegisterSelect.SpriteMc1;
 										break;
 								}
 							}
@@ -264,15 +285,49 @@
 				
 				// sprite priority logic
 				if (_sprSense && (!_sprPriority || !_gfxSense))
-					_pixel = _sprPixel;
+					_pixelDecode = _sprDecode;
 
 				#endregion Mux Color
+				
+				#region Border Unit
+
+				if (_borderOnVertical || _borderOnMain)
+					_pixelDecode = ColorRegisterSelect.Exterior;
+				
+				#endregion Border Unit
+				
+				// internal delay
+				_pixelDecodeTemp = _pixelDecode;
+				_pixelDecode = (ColorRegisterSelect) _pixelDecodeBuffer[_pixelDecodeBufferIndex];
+				_pixelDecodeBuffer[_pixelDecodeBufferIndex] = (int) _pixelDecodeTemp;
+				_pixelDecodeBufferIndex = (_pixelDecodeBufferIndex + 1) & 7;
+				
+				// color register select decoder
+				switch (_pixelDecode)
+				{
+					case ColorRegisterSelect.Background0: _pixel = _backgroundColor0; break;
+					case ColorRegisterSelect.Background1: _pixel = _backgroundColor1; break;
+					case ColorRegisterSelect.Background2: _pixel = _backgroundColor2; break;
+					case ColorRegisterSelect.Background3: _pixel = _backgroundColor3; break;
+					case ColorRegisterSelect.Exterior: _pixel = _borderColor; break;
+					case ColorRegisterSelect.Sprite0: _pixel = _sprite0.Color; break;
+					case ColorRegisterSelect.Sprite1: _pixel = _sprite1.Color; break;
+					case ColorRegisterSelect.Sprite2: _pixel = _sprite2.Color; break;
+					case ColorRegisterSelect.Sprite3: _pixel = _sprite3.Color; break;
+					case ColorRegisterSelect.Sprite4: _pixel = _sprite4.Color; break;
+					case ColorRegisterSelect.Sprite5: _pixel = _sprite5.Color; break;
+					case ColorRegisterSelect.Sprite6: _pixel = _sprite6.Color; break;
+					case ColorRegisterSelect.Sprite7: _pixel = _sprite7.Color; break;
+					case ColorRegisterSelect.SpriteMc0: _pixel = _spriteMulticolor0; break;
+					case ColorRegisterSelect.SpriteMc1: _pixel = _spriteMulticolor1; break;
+					default: _pixel = (int) _pixelDecode; break;
+				}
+				
 				
 				// plot pixel if within viewing area
 				if (_renderEnabled)
 				{
-					_bufferPixel = (_borderOnVertical || _borderOnMain) ? _borderColor : _pixel;
-					_buf[_bufOffset++] = Palette[_bufferPixel & 0xF];
+					_buf[_bufOffset++] = Palette[_pixel & 0xF];
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;
 				}
@@ -280,6 +335,8 @@
 				if (!_rasterXHold)
 					_rasterX++;
 			}
+			
+			_multicolorModeLatch = _multicolorMode;
 		}
 	}
 }
