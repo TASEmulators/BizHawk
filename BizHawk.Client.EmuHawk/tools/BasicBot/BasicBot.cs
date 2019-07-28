@@ -12,7 +12,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BasicBot : ToolFormBase , IToolFormAutoConfig
+	public partial class BasicBot : ToolFormBase, IToolFormAutoConfig
 	{
 		private const string DialogTitle = "Basic Bot";
 
@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _replayMode = false;
 		private int _startFrame = 0;
 		private string _lastRom = "";
+		private int _lastFrameAdvanced { get; set; }
 
 		private bool _dontUpdateValues = false;
 
@@ -57,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
-
+		
 		#region Services and Settings
 
 		[RequiredService]
@@ -343,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return StartFromSlotBox.SelectedItem != null 
+				return StartFromSlotBox.SelectedItem != null
 					? StartFromSlotBox.SelectedItem.ToString()
 					: "";
 			}
@@ -365,6 +366,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
+		//Upon Load State, TASStudio uses GlobalWin.Tools.UpdateBefore(); as well as GlobalWin.Tools.UpdateAfter(); 
+		//Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.  
+		//By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
+		//However this also causes a problem with ramwatch not being up to date since that TOO gets called.
+		//Need to find out if having RamWatch open while TasStudio is open causes issues.
+		//there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the ramwatch is ahead too much..
+		
+		public int LastFrameAdvanced { get; set; }
 		#endregion
 
 		#region IToolForm Implementation
@@ -377,6 +387,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Update(fast: false);
 		}
+
 
 		public void FastUpdate()
 		{
@@ -819,6 +830,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		public bool HasFrameAdvanced()
+		{
+			//If the emulator frame is different from the last time it tried calling
+			//the function then we can continue, otherwise we need to stop.
+			return _lastFrameAdvanced != Emulator.Frame;
+		}
 		private void SetupControlsAndProperties()
 		{
 			MaximizeAddressBox.SetHexProperties(_currentDomain.Size);
@@ -898,6 +915,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!HasFrameAdvanced())
+			{
+				return;
+			}
+
 			if (_replayMode)
 			{
 				int index = Emulator.Frame - _startFrame;
@@ -921,6 +943,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
+
 				if (Emulator.Frame >= _targetFrame)
 				{
 					Attempts++;
@@ -941,8 +964,12 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
-
-				PressButtons();
+				//Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
+				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test
+				{
+					PressButtons();
+					_lastFrameAdvanced = Emulator.Frame;
+				}
 			}
 		}
 
@@ -1180,7 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateComparisonBotAttempt()
 		{
-			if(_bestBotAttempt == null)
+			if (_bestBotAttempt == null)
 			{
 				if (MainBestRadio.Checked)
 				{
@@ -1194,7 +1221,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (TieBreak2BestRadio.Checked)
 				{
-					_comparisonBotAttempt.TieBreak2= 0;
+					_comparisonBotAttempt.TieBreak2 = 0;
 				}
 
 				if (TieBreak3BestRadio.Checked)
@@ -1328,7 +1355,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
+		}		
+
+		//Copy to Clipboard
+		private void btnCopyBestInput_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(BestAttemptLogLabel.Text);			
 		}
 
+		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
+
+		}
 	}
 }
