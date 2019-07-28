@@ -39,7 +39,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _intLightPen;
 		private bool _intRaster;
 		private bool _intSpriteCollision;
+		private bool _intSpriteCollisionTriggered;
 		private bool _intSpriteDataCollision;
+		private bool _intSpriteDataCollisionTriggered;
 		private int _lightPenX;
 		private int _lightPenY;
 		private bool _multicolorMode;
@@ -112,7 +114,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_intLightPen = false;
 			_intRaster = false;
 			_intSpriteCollision = false;
+			_intSpriteCollisionTriggered = false;
 			_intSpriteDataCollision = false;
+			_intSpriteDataCollisionTriggered = false;
 			_irqBuffer = 0;
 			_lightPenX = 0;
 			_lightPenY = 0;
@@ -189,7 +193,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync(nameof(_intLightPen), ref _intLightPen);
 			ser.Sync(nameof(_intRaster), ref _intRaster);
 			ser.Sync(nameof(_intSpriteCollision), ref _intSpriteCollision);
+			ser.Sync(nameof(_intSpriteCollisionTriggered), ref _intSpriteCollision);
 			ser.Sync(nameof(_intSpriteDataCollision), ref _intSpriteDataCollision);
+			ser.Sync(nameof(_intSpriteDataCollisionTriggered), ref _intSpriteDataCollision);
 			ser.Sync(nameof(_irqBuffer), ref _irqBuffer);
 			ser.Sync(nameof(_lightPenX), ref _lightPenX);
 			ser.Sync(nameof(_lightPenY), ref _lightPenY);

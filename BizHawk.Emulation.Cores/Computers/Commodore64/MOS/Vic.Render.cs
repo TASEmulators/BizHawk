@@ -196,7 +196,7 @@
 				
 				_sprOwner = -1;
 				_sprSense = false;
-				for (_sprIndex = 0; _sprIndex < 8; _sprIndex++)
+				for (_sprIndex = 7; _sprIndex >= 0; _sprIndex--)
 				{
 					_spr = _sprites[_sprIndex];
 					_sprData = 0;
@@ -246,34 +246,35 @@
 							// sprite-sprite collision
 							if (_sprSense)
 							{
+								// "One any collision bit within a register is set high, subsequent
+								// collisions will not set the interrupt latch until that collision register
+								// has been cleared to all "0"s by a read."
+								_intSpriteCollision |= !_intSpriteCollisionTriggered;
 								_spr.CollideSprite = true;
 								_sprites[_sprOwner].CollideSprite = true;
-								_intSpriteCollision = true;
 							}
-							else
+
+							_sprSense = true;
+							_sprOwner = _sprIndex;
+							_sprPriority = _spr.Priority;
+							switch (_sprData)
 							{
-								_sprSense = true;
-								_sprOwner = _sprIndex;
-								_sprPriority = _spr.Priority;
-								switch (_sprData)
-								{
-									case SrSpriteMask1:
-										_sprDecode = ColorRegisterSelect.SpriteMc0;
-										break;
-									case SrSpriteMask2:
-										_sprDecode = ColorRegisterSelect.Sprite0 + _sprOwner;
-										break;
-									case SrSpriteMask3:
-										_sprDecode = ColorRegisterSelect.SpriteMc1;
-										break;
-								}
+								case SrSpriteMask1:
+									_sprDecode = ColorRegisterSelect.SpriteMc0;
+									break;
+								case SrSpriteMask2:
+									_sprDecode = ColorRegisterSelect.Sprite0 + _sprOwner;
+									break;
+								case SrSpriteMask3:
+									_sprDecode = ColorRegisterSelect.SpriteMc1;
+									break;
 							}
 
 							// sprite-data collision
 							if (_gfxSense)
 							{
 								_spr.CollideData = true;
-								_intSpriteDataCollision = true;
+								_intSpriteDataCollision = !_intSpriteDataCollisionTriggered;
 							}
 						}
 					}

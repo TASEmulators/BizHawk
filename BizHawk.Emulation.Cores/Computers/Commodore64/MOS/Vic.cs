@@ -233,16 +233,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					spr.CollideData = false;
 				}
 				_spriteBackgroundCollisionClearPending = false;
+				_intSpriteDataCollisionTriggered = false;
 			}
 
 			// sprite collision clear
 			if (_spriteSpriteCollisionClearPending)
 			{
 				foreach (var spr in _sprites)
-				{
 					spr.CollideSprite = false;
-				}
 				_spriteSpriteCollisionClearPending = false;
+				_intSpriteCollisionTriggered = false;
 			}
 
 			// raster IRQ is edge triggered
