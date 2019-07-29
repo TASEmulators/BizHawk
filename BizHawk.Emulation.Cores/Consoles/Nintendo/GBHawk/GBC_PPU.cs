@@ -535,9 +535,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 							else if (cycle == 4)
 							{
-								// apparently, writes can make it to OAM one cycle longer then reads
-								OAM_access_write = false;
-								
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
@@ -1414,6 +1411,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (OAM_cycle == 0)
 			{
 				OAM_access_read = false;
+				OAM_access_write = false;
 
 				OAM_scan_index = 0;
 				SL_sprites_index = 0;
@@ -1572,10 +1570,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			scroll_x = 0;
 			LY = 0;
 			LYC = 0;
-			DMA_addr = 0xFF;
+			DMA_addr = 0;
 			BGP = 0xFF;
-			obj_pal_0 = 0xFF;
-			obj_pal_1 = 0xFF;
+			obj_pal_0 = 0;
+			obj_pal_1 = 0;
 			window_y = 0x0;
 			window_x = 0x0;
 			window_x_latch = 0xFF;

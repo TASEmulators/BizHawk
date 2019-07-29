@@ -387,14 +387,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF53:
 				case 0xFF54:
 				case 0xFF55:
+					if (GBC_compat)
+					{
+					ppu.WriteReg(addr, value);
+					}
+					break;
 				case 0xFF68:
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					if (GBC_compat)
-					{
+					//if (GBC_compat)
+					//{
 						ppu.WriteReg(addr, value);
-					}
+					//}
 					break;
 
 				// RAM Bank in GBC mode
