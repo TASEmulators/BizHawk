@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public override void HardReset()
 		{
 			_toggle = 0;
-			_ram = new ByteBuffer(128);
+			_ram = new ByteBuffer(256);
 			base.HardReset();
 		}
 
