@@ -70,8 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			_rom = rom;
 
 			// If the game is minstorm, then no cartridge is inserted, retun 0xFF
-			if ((rom.HashSHA1(0, rom.Length) == "65D07426B520DDD3115D40F255511E0FD2E20AE7") ||
-				(rom.HashSHA1(0, rom.Length) == "1FDCC6E54AE5177BC9CDC79CE616AE3401E5C229"))
+			if (rom.HashSHA1(0, rom.Length) == "65D07426B520DDD3115D40F255511E0FD2E20AE7")
 			{
 				_rom  = new byte[0x8000];
 

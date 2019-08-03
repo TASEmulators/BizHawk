@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "Vectrex", "Bios", "VectrexBios.bin", "Bios");
 			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "Vectrex", "Minestorm", "Minestorm.vec", "Game");
-			FirmwareAndOption("1FDCC6E54AE5177BC9CDC79CE616AE3401E5C229", 8192, "Vectrex", "Minestorm", "MinestormII.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
