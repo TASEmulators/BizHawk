@@ -1297,6 +1297,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
+				_ball.Resp_check();
+
 				if (!_hmove.LateHBlankReset)
 				{
 					_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);

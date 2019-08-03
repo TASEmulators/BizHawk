@@ -14,20 +14,33 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte HPosCnt;
 			public byte Collisions;
 
+			// Resp commands do not trigger start signals for main copies. We need to model this
+			private int _drawTo;
+			private byte _scanCnt;
+			private bool _scanCntInit;
+			private int _startSignal;
+			private int _signalReached;
+			public bool _draw_signaled;
+
 			public bool Tick()
 			{
 				bool result = false;
-				if (HPosCnt < (1 << Size))
+
+
+				if (_scanCntInit)
 				{
-					if (!Delay && Enabled)
+					if (HPosCnt < (1 << Size))
 					{
-						// Draw the ball!
-						result = true;
-					}
-					else if (Delay && Denabled)
-					{
-						// Draw the ball!
-						result = true;
+						if (!Delay && Enabled)
+						{
+							// Draw the ball!
+							result = true;
+						}
+						else if (Delay && Denabled)
+						{
+							// Draw the ball!
+							result = true;
+						}
 					}
 				}
 
@@ -37,7 +50,39 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Counter loops at 160 
 				HPosCnt %= 160;
 
+				if (_startSignal == 160)
+				{
+					_scanCnt = 0;
+					_startSignal++;
+					_scanCntInit = true;
+				}
+
+				// our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates
+				// drawing on a real TIA
+				if (HPosCnt == 156)
+				{
+					_startSignal = HPosCnt;
+					_signalReached = HPosCnt + 5;
+					_draw_signaled = true;
+				}
+
+				if (_startSignal < _signalReached)
+				{
+					_startSignal++;
+				}
+
 				return result;
+			}
+
+			public void Resp_check()
+			{
+				if (_draw_signaled)
+				{
+					if (_startSignal < 161)
+					{
+						_startSignal -= _startSignal - 156;
+					}
+				}
 			}
 
 			public void SyncState(Serializer ser)
@@ -50,6 +95,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync(nameof(HM), ref HM);
 				ser.Sync("hPosCnt", ref HPosCnt);
 				ser.Sync("collisions", ref Collisions);
+
+				ser.Sync("start_signal", ref _startSignal);
+				ser.Sync("signal_reached", ref _signalReached);
+				ser.Sync("draw_to", ref _drawTo);
+				ser.Sync("scanCnt", ref _scanCnt);
+				ser.Sync("scanCntInit", ref _scanCntInit);
+				ser.Sync("_draw_signaled", ref _draw_signaled);
 				ser.EndSection();
 			}
 		}
