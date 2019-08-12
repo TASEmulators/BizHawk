@@ -85,17 +85,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				_ffmpeg = new Process();
-				_ffmpeg.StartInfo.FileName = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-					? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
-					: "ffmpeg";
-				_ffmpeg.StartInfo.Arguments = $"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"";
-				_ffmpeg.StartInfo.CreateNoWindow = true;
-
-				// ffmpeg sends informative display to stderr, and nothing to stdout
-				_ffmpeg.StartInfo.RedirectStandardError = true;
-				_ffmpeg.StartInfo.RedirectStandardInput = true;
-				_ffmpeg.StartInfo.UseShellExecute = false;
+				_ffmpeg = OSTailoredCode.ConstructSubshell(
+					OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+						? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
+						: "ffmpeg",
+					$"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"",
+					checkStdout: false,
+					checkStderr: true // ffmpeg sends informative display to stderr, and nothing to stdout
+				);
 
 				_commandline = $"ffmpeg {_ffmpeg.StartInfo.Arguments}";
 

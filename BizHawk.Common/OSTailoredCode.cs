@@ -33,21 +33,7 @@ namespace BizHawk.Common
 
 		public static ILinkedLibManager LinkedLibManager => lazy.Value;
 
-		private static bool currentIsMacOS()
-		{
-			var proc = new Process {
-				StartInfo = new ProcessStartInfo {
-					Arguments = "-s",
-					CreateNoWindow = true,
-					FileName = "uname",
-					RedirectStandardOutput = true,
-					UseShellExecute = false
-				}
-			};
-			proc.Start();
-			if (proc.StandardOutput.EndOfStream) throw new Exception("Can't determine OS (uname wrote nothing to stdout)!");
-			return proc.StandardOutput.ReadLine() == "Darwin";
-		}
+		private static bool currentIsMacOS() => SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin";
 
 		private OSTailoredCode() {}
 
@@ -124,6 +110,40 @@ namespace BizHawk.Common
 			Linux,
 			macOS,
 			Windows
+		}
+
+		/// <param name="cmd">POSIX <c>$0</c></param>
+		/// <param name="args">POSIX <c>$*</c> (space-delimited)</param>
+		/// <param name="checkStdout">stdout is discarded if false</param>
+		/// <param name="checkStderr">stderr is discarded if false</param>
+		/// <remarks>OS is implicit and needs to be checked at callsite, returned <see cref="Process"/> has not been started</remarks>
+		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false) =>
+			new Process {
+				StartInfo = new ProcessStartInfo {
+					Arguments = args,
+					CreateNoWindow = true,
+					FileName = cmd,
+					RedirectStandardError = checkStderr,
+					RedirectStandardOutput = checkStdout,
+					UseShellExecute = false
+				}
+			};
+
+		/// <param name="cmd">POSIX <c>$0</c></param>
+		/// <param name="args">POSIX <c>$*</c> (space-delimited)</param>
+		/// <param name="noOutputMsg">used in exception</param>
+		/// <returns>first line of stdout</returns>
+		/// <exception cref="Exception">thrown if stdout is empty</exception>
+		/// <remarks>OS is implicit and needs to be checked at callsite</remarks>
+		public static string SimpleSubshell(string cmd, string args, string noOutputMsg)
+		{
+			using (var proc = ConstructSubshell(cmd, args))
+			{
+				proc.Start();
+				var stdout = proc.StandardOutput;
+				if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
+				return stdout.ReadLine();
+			}
 		}
 	}
 }
