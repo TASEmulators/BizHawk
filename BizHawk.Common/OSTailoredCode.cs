@@ -2,22 +2,20 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-//put in a different namespace for EXE so we can have an instance of this type (by linking to this file rather than copying it) built-in to the exe
-//so the exe doesnt implicitly depend on the dll
 #if EXE_PROJECT
-namespace EXE_PROJECT
+namespace EXE_PROJECT // Use a different namespace so the executable can still use this class' members without an implicit dependency on the BizHawk.Common library, and without resorting to code duplication.
 #else
 namespace BizHawk.Common
 #endif
 {
-	public sealed class OSTailoredCode
+	public static class OSTailoredCode
 	{
-		/// <remarks>macOS doesn't use PlatformID.MacOSX</remarks>
+		/// <remarks>macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see></remarks>
 		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
-			? currentIsMacOS() ? DistinctOS.macOS : DistinctOS.Linux
+			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
 
-		private static readonly Lazy<ILinkedLibManager> lazy = new Lazy<ILinkedLibManager>(() =>
+		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() =>
 		{
 			switch (CurrentOS)
 			{
@@ -31,11 +29,7 @@ namespace BizHawk.Common
 			}
 		});
 
-		public static ILinkedLibManager LinkedLibManager => lazy.Value;
-
-		private static bool currentIsMacOS() => SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin";
-
-		private OSTailoredCode() {}
+		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
 
 		public interface ILinkedLibManager
 		{
@@ -56,10 +50,8 @@ namespace BizHawk.Common
 			private static extern IntPtr dlsym(IntPtr handle, string symbol);
 			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				return dlopen(dllToLoad, RTLD_NOW);
-			}
+
+			public IntPtr LoadPlatformSpecific(string dllToLoad) => dlopen(dllToLoad, RTLD_NOW);
 			public IntPtr GetProcAddr(IntPtr hModule, string procName)
 			{
 				dlerror();
@@ -68,41 +60,29 @@ namespace BizHawk.Common
 				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in dlsym: {Marshal.PtrToStringAnsi(errPtr)}");
 				return res;
 			}
-			public int FreePlatformSpecific(IntPtr hModule)
-			{
-				return dlclose(hModule);
-			}
+			public int FreePlatformSpecific(IntPtr hModule) => dlclose(hModule);
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
+			// comments reference extern functions removed from SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
 			private static extern uint GetLastError();
-			// was annotated `[DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]` in SevenZip.NativeMethods
-			// param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]` in SevenZip.NativeMethods
+			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
+			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
+			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
+			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
 			[DllImport("kernel32.dll")]
-			private static extern IntPtr LoadLibrary(string dllToLoad);
-			// was annotated `[DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]` in SevenZip.NativeMethods
-			// param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]` in SevenZip.NativeMethods
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-			// was annotated `[return: MarshalAs(UnmanagedType.Bool)]` in SevenZip.NativeMethods
-			[DllImport("kernel32.dll")]
-			private static extern bool FreeLibrary(IntPtr hModule);
+			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
+
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
 			{
 				var p = LoadLibrary(dllToLoad);
 				if (p == IntPtr.Zero) throw new InvalidOperationException($"got null pointer, error code {GetLastError()}");
 				return p;
 			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
-			{
-				return GetProcAddress(hModule, procName);
-			}
-			public int FreePlatformSpecific(IntPtr hModule)
-			{
-				return FreeLibrary(hModule) ? 1 : 0;
-			}
+			public IntPtr GetProcAddr(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
+			public int FreePlatformSpecific(IntPtr hModule) => FreeLibrary(hModule) ? 1 : 0;
 		}
 
 		public enum DistinctOS : byte
