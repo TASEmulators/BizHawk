@@ -110,6 +110,30 @@
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.flpDispFeatures = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpCropBottomLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpCropRightLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpDispMethodTab = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpScalingTab = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpPrescaleLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpDispMethodRadios = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpD3DSuboptions = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpD3DAltVSyncLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpMiscTab = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpCropOptions = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpCropTopLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpCropLeftLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpScanlinesSliderLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpFinalFilterRadios = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpARSelection = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpWindowTab = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpWindowGroups = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpWindowed = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpWindowFrameLabel = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpFullscreen = new System.Windows.Forms.FlowLayoutPanel();
+			this.flpFullscreenCheckboxes = new System.Windows.Forms.FlowLayoutPanel();
+			this.tlpScalingFilter = new System.Windows.Forms.TableLayoutPanel();
+			this.tlpNonSquareAR = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -126,13 +150,37 @@
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
+			this.flpCropOptions.SuspendLayout();
+			this.flpCropTopLabel.SuspendLayout();
+			this.flpCropLeftLabel.SuspendLayout();
+			this.flpScalingTab.SuspendLayout();
+			this.flpPrescaleLabel.SuspendLayout();
+			this.flpCropBottomLabel.SuspendLayout();
+			this.flpCropRightLabel.SuspendLayout();
+			this.flpScanlinesSliderLabel.SuspendLayout();
+			this.flpDispMethodTab.SuspendLayout();
+			this.flpDispMethodRadios.SuspendLayout();
+			this.flpD3DSuboptions.SuspendLayout();
+			this.flpD3DAltVSyncLabel.SuspendLayout();
+			this.flpFinalFilterRadios.SuspendLayout();
+			this.flpMiscTab.SuspendLayout();
+			this.flpDispFeatures.SuspendLayout();
+			this.flpWindowTab.SuspendLayout();
+			this.flpWindowGroups.SuspendLayout();
+			this.flpWindowed.SuspendLayout();
+			this.flpWindowFrameLabel.SuspendLayout();
+			this.flpFullscreen.SuspendLayout();
+			this.flpFullscreenCheckboxes.SuspendLayout();
+			this.flpARSelection.SuspendLayout();
+			this.tlpScalingFilter.SuspendLayout();
+			this.tlpNonSquareAR.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(473, 339);
+			this.btnCancel.Location = new System.Drawing.Point(489, 399);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 5;
@@ -142,7 +190,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(392, 339);
+			this.btnOk.Location = new System.Drawing.Point(408, 399);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 4;
@@ -152,26 +200,20 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.lblScanlines);
-			this.groupBox1.Controls.Add(this.lblUserFilterName);
-			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
-			this.groupBox1.Controls.Add(this.rbUser);
-			this.groupBox1.Controls.Add(this.tbScanlineIntensity);
-			this.groupBox1.Controls.Add(this.rbNone);
-			this.groupBox1.Controls.Add(this.rbScanlines);
-			this.groupBox1.Controls.Add(this.rbHq2x);
-			this.groupBox1.Location = new System.Drawing.Point(6, 33);
+			this.groupBox1.AutoSize = true;
+			this.groupBox1.Controls.Add(this.tlpScalingFilter);
+			this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(193, 132);
+			this.groupBox1.Size = new System.Drawing.Size(218, 179);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
 			// 
 			// lblScanlines
 			// 
+			this.lblScanlines.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.lblScanlines.AutoSize = true;
 			this.lblScanlines.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblScanlines.Location = new System.Drawing.Point(104, 39);
 			this.lblScanlines.Name = "lblScanlines";
 			this.lblScanlines.Size = new System.Drawing.Size(15, 13);
 			this.lblScanlines.TabIndex = 11;
@@ -179,15 +221,16 @@
 			// 
 			// lblUserFilterName
 			// 
-			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
+			this.lblUserFilterName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.tlpScalingFilter.SetColumnSpan(this.lblUserFilterName, 2);
+			this.lblUserFilterName.Location = new System.Drawing.Point(3, 29);
 			this.lblUserFilterName.Name = "lblUserFilterName";
-			this.lblUserFilterName.Size = new System.Drawing.Size(161, 15);
+			this.lblUserFilterName.Size = new System.Drawing.Size(120, 15);
 			this.lblUserFilterName.TabIndex = 10;
 			this.lblUserFilterName.Text = "Will contain user filter name";
 			// 
 			// btnSelectUserFilter
 			// 
-			this.btnSelectUserFilter.Location = new System.Drawing.Point(83, 88);
 			this.btnSelectUserFilter.Name = "btnSelectUserFilter";
 			this.btnSelectUserFilter.Size = new System.Drawing.Size(75, 23);
 			this.btnSelectUserFilter.TabIndex = 5;
@@ -198,7 +241,6 @@
 			// rbUser
 			// 
 			this.rbUser.AutoSize = true;
-			this.rbUser.Location = new System.Drawing.Point(6, 88);
 			this.rbUser.Name = "rbUser";
 			this.rbUser.Size = new System.Drawing.Size(47, 17);
 			this.rbUser.TabIndex = 4;
@@ -209,10 +251,9 @@
 			// tbScanlineIntensity
 			// 
 			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
 			this.tbScanlineIntensity.Maximum = 256;
 			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 30);
 			this.tbScanlineIntensity.TabIndex = 3;
 			this.tbScanlineIntensity.TickFrequency = 32;
 			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -222,7 +263,6 @@
 			// rbNone
 			// 
 			this.rbNone.AutoSize = true;
-			this.rbNone.Location = new System.Drawing.Point(6, 19);
 			this.rbNone.Name = "rbNone";
 			this.rbNone.Size = new System.Drawing.Size(51, 17);
 			this.rbNone.TabIndex = 2;
@@ -233,7 +273,6 @@
 			// rbScanlines
 			// 
 			this.rbScanlines.AutoSize = true;
-			this.rbScanlines.Location = new System.Drawing.Point(6, 65);
 			this.rbScanlines.Name = "rbScanlines";
 			this.rbScanlines.Size = new System.Drawing.Size(71, 17);
 			this.rbScanlines.TabIndex = 1;
@@ -244,7 +283,6 @@
 			// rbHq2x
 			// 
 			this.rbHq2x.AutoSize = true;
-			this.rbHq2x.Location = new System.Drawing.Point(6, 42);
 			this.rbHq2x.Name = "rbHq2x";
 			this.rbHq2x.Size = new System.Drawing.Size(50, 17);
 			this.rbHq2x.TabIndex = 0;
@@ -255,7 +293,6 @@
 			// checkLetterbox
 			// 
 			this.checkLetterbox.AutoSize = true;
-			this.checkLetterbox.Location = new System.Drawing.Point(209, 12);
 			this.checkLetterbox.Name = "checkLetterbox";
 			this.checkLetterbox.Size = new System.Drawing.Size(173, 17);
 			this.checkLetterbox.TabIndex = 8;
@@ -266,7 +303,6 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(218, 171);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(250, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -276,12 +312,10 @@
 			// 
 			// grpFinalFilter
 			// 
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBicubic);
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterNone);
-			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
-			this.grpFinalFilter.Location = new System.Drawing.Point(6, 194);
+			this.grpFinalFilter.AutoSize = true;
+			this.grpFinalFilter.Controls.Add(this.flpFinalFilterRadios);
+			this.grpFinalFilter.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.grpFinalFilter.Name = "grpFinalFilter";
-			this.grpFinalFilter.Size = new System.Drawing.Size(187, 90);
 			this.grpFinalFilter.TabIndex = 8;
 			this.grpFinalFilter.TabStop = false;
 			this.grpFinalFilter.Text = "Final Filter";
@@ -289,7 +323,6 @@
 			// rbFinalFilterBicubic
 			// 
 			this.rbFinalFilterBicubic.AutoSize = true;
-			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(6, 64);
 			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
 			this.rbFinalFilterBicubic.Size = new System.Drawing.Size(142, 17);
 			this.rbFinalFilterBicubic.TabIndex = 3;
@@ -300,7 +333,6 @@
 			// rbFinalFilterNone
 			// 
 			this.rbFinalFilterNone.AutoSize = true;
-			this.rbFinalFilterNone.Location = new System.Drawing.Point(6, 18);
 			this.rbFinalFilterNone.Name = "rbFinalFilterNone";
 			this.rbFinalFilterNone.Size = new System.Drawing.Size(51, 17);
 			this.rbFinalFilterNone.TabIndex = 2;
@@ -311,7 +343,6 @@
 			// rbFinalFilterBilinear
 			// 
 			this.rbFinalFilterBilinear.AutoSize = true;
-			this.rbFinalFilterBilinear.Location = new System.Drawing.Point(6, 41);
 			this.rbFinalFilterBilinear.Name = "rbFinalFilterBilinear";
 			this.rbFinalFilterBilinear.Size = new System.Drawing.Size(59, 17);
 			this.rbFinalFilterBilinear.TabIndex = 0;
@@ -322,7 +353,6 @@
 			// rbUseRaw
 			// 
 			this.rbUseRaw.AutoSize = true;
-			this.rbUseRaw.Location = new System.Drawing.Point(6, 19);
 			this.rbUseRaw.Name = "rbUseRaw";
 			this.rbUseRaw.Size = new System.Drawing.Size(240, 17);
 			this.rbUseRaw.TabIndex = 11;
@@ -334,7 +364,7 @@
 			// rbUseSystem
 			// 
 			this.rbUseSystem.AutoSize = true;
-			this.rbUseSystem.Location = new System.Drawing.Point(16, 58);
+			this.tlpNonSquareAR.SetColumnSpan(this.rbUseSystem, 4);
 			this.rbUseSystem.Name = "rbUseSystem";
 			this.rbUseSystem.Size = new System.Drawing.Size(167, 17);
 			this.rbUseSystem.TabIndex = 12;
@@ -345,35 +375,24 @@
 			// 
 			// grpARSelection
 			// 
-			this.grpARSelection.Controls.Add(this.txtCustomARY);
-			this.grpARSelection.Controls.Add(this.label12);
-			this.grpARSelection.Controls.Add(this.txtCustomARX);
-			this.grpARSelection.Controls.Add(this.rbUseCustomRatio);
-			this.grpARSelection.Controls.Add(this.label4);
-			this.grpARSelection.Controls.Add(this.txtCustomARHeight);
-			this.grpARSelection.Controls.Add(this.label3);
-			this.grpARSelection.Controls.Add(this.txtCustomARWidth);
-			this.grpARSelection.Controls.Add(this.rbUseCustom);
-			this.grpARSelection.Controls.Add(this.rbUseRaw);
-			this.grpARSelection.Controls.Add(this.rbUseSystem);
-			this.grpARSelection.Location = new System.Drawing.Point(218, 35);
+			this.grpARSelection.AutoSize = true;
+			this.grpARSelection.Controls.Add(this.flpARSelection);
 			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(302, 130);
+			this.grpARSelection.Size = new System.Drawing.Size(64, 64);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
 			// 
 			// txtCustomARY
 			// 
-			this.txtCustomARY.Location = new System.Drawing.Point(220, 102);
 			this.txtCustomARY.Name = "txtCustomARY";
 			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARY.TabIndex = 19;
 			// 
 			// label12
 			// 
+			this.label12.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(202, 107);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(10, 13);
 			this.label12.TabIndex = 17;
@@ -381,7 +400,6 @@
 			// 
 			// txtCustomARX
 			// 
-			this.txtCustomARX.Location = new System.Drawing.Point(124, 102);
 			this.txtCustomARX.Name = "txtCustomARX";
 			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARX.TabIndex = 18;
@@ -389,7 +407,6 @@
 			// rbUseCustomRatio
 			// 
 			this.rbUseCustomRatio.AutoSize = true;
-			this.rbUseCustomRatio.Location = new System.Drawing.Point(16, 103);
 			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
 			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
 			this.rbUseCustomRatio.TabIndex = 16;
@@ -400,7 +417,6 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(13, 41);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(257, 13);
 			this.label4.TabIndex = 12;
@@ -408,15 +424,14 @@
 			// 
 			// txtCustomARHeight
 			// 
-			this.txtCustomARHeight.Location = new System.Drawing.Point(220, 79);
 			this.txtCustomARHeight.Name = "txtCustomARHeight";
 			this.txtCustomARHeight.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARHeight.TabIndex = 15;
 			// 
 			// label3
 			// 
+			this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(202, 84);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(12, 13);
 			this.label3.TabIndex = 12;
@@ -424,7 +439,6 @@
 			// 
 			// txtCustomARWidth
 			// 
-			this.txtCustomARWidth.Location = new System.Drawing.Point(124, 79);
 			this.txtCustomARWidth.Name = "txtCustomARWidth";
 			this.txtCustomARWidth.Size = new System.Drawing.Size(72, 20);
 			this.txtCustomARWidth.TabIndex = 14;
@@ -432,7 +446,6 @@
 			// rbUseCustom
 			// 
 			this.rbUseCustom.AutoSize = true;
-			this.rbUseCustom.Location = new System.Drawing.Point(16, 80);
 			this.rbUseCustom.Name = "rbUseCustom";
 			this.rbUseCustom.Size = new System.Drawing.Size(105, 17);
 			this.rbUseCustom.TabIndex = 13;
@@ -442,7 +455,6 @@
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(6, 128);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(398, 27);
 			this.label2.TabIndex = 17;
@@ -452,7 +464,6 @@
 			// checkSnowyNullEmulator
 			// 
 			this.checkSnowyNullEmulator.AutoSize = true;
-			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 108);
 			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
 			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
 			this.checkSnowyNullEmulator.TabIndex = 16;
@@ -463,7 +474,7 @@
 			// 
 			this.rbOpenGL.AutoSize = true;
 			this.rbOpenGL.Checked = true;
-			this.rbOpenGL.Location = new System.Drawing.Point(6, 103);
+			this.rbOpenGL.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.rbOpenGL.Name = "rbOpenGL";
 			this.rbOpenGL.Size = new System.Drawing.Size(65, 17);
 			this.rbOpenGL.TabIndex = 3;
@@ -473,7 +484,7 @@
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(21, 123);
+			this.label5.Margin = new System.Windows.Forms.Padding(24, 0, 0, 0);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(359, 47);
 			this.label5.TabIndex = 16;
@@ -492,51 +503,33 @@
 			this.tabControl1.Location = new System.Drawing.Point(12, 12);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(536, 317);
+			this.tabControl1.Size = new System.Drawing.Size(552, 377);
 			this.tabControl1.TabIndex = 17;
 			// 
 			// tpAR
 			// 
-			this.tpAR.Controls.Add(this.groupBox6);
-			this.tpAR.Controls.Add(this.btnDefaults);
-			this.tpAR.Controls.Add(this.cbAutoPrescale);
-			this.tpAR.Controls.Add(this.label11);
-			this.tpAR.Controls.Add(this.groupBox1);
-			this.tpAR.Controls.Add(this.label10);
-			this.tpAR.Controls.Add(this.checkLetterbox);
-			this.tpAR.Controls.Add(this.nudPrescale);
-			this.tpAR.Controls.Add(this.checkPadInteger);
-			this.tpAR.Controls.Add(this.grpARSelection);
-			this.tpAR.Controls.Add(this.grpFinalFilter);
-			this.tpAR.Location = new System.Drawing.Point(4, 22);
+			this.tpAR.Controls.Add(this.flpScalingTab);
+			this.tpAR.Controls.Add(this.linkLabel1);
 			this.tpAR.Name = "tpAR";
 			this.tpAR.Padding = new System.Windows.Forms.Padding(3);
-			this.tpAR.Size = new System.Drawing.Size(528, 291);
+			this.tpAR.Size = new System.Drawing.Size(542, 351);
 			this.tpAR.TabIndex = 0;
-			this.tpAR.Text = "Scaling & Filtering";
+			this.tpAR.Text = "Scaling && Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
 			// 
 			// groupBox6
 			// 
-			this.groupBox6.Controls.Add(this.label16);
-			this.groupBox6.Controls.Add(this.label15);
-			this.groupBox6.Controls.Add(this.txtCropBottom);
-			this.groupBox6.Controls.Add(this.label17);
-			this.groupBox6.Controls.Add(this.txtCropRight);
-			this.groupBox6.Controls.Add(this.txtCropTop);
-			this.groupBox6.Controls.Add(this.label14);
-			this.groupBox6.Controls.Add(this.txtCropLeft);
-			this.groupBox6.Location = new System.Drawing.Point(218, 195);
+			this.groupBox6.AutoSize = true;
+			this.groupBox6.Controls.Add(this.flpCropOptions);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(302, 61);
 			this.groupBox6.TabIndex = 9;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Cropping";
 			// 
 			// label16
 			// 
+			this.label16.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(217, 25);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(43, 13);
 			this.label16.TabIndex = 30;
@@ -544,8 +537,8 @@
 			// 
 			// label15
 			// 
+			this.label15.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(74, 25);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(29, 13);
 			this.label15.TabIndex = 29;
@@ -553,7 +546,7 @@
 			// 
 			// txtCropBottom
 			// 
-			this.txtCropBottom.Location = new System.Drawing.Point(261, 22);
+			this.txtCropBottom.Margin = new System.Windows.Forms.Padding(0);
 			this.txtCropBottom.Name = "txtCropBottom";
 			this.txtCropBottom.Size = new System.Drawing.Size(34, 20);
 			this.txtCropBottom.TabIndex = 28;
@@ -561,8 +554,8 @@
 			// 
 			// label17
 			// 
+			this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(144, 25);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(35, 13);
 			this.label17.TabIndex = 26;
@@ -570,7 +563,7 @@
 			// 
 			// txtCropRight
 			// 
-			this.txtCropRight.Location = new System.Drawing.Point(180, 22);
+			this.txtCropRight.Margin = new System.Windows.Forms.Padding(0);
 			this.txtCropRight.Name = "txtCropRight";
 			this.txtCropRight.Size = new System.Drawing.Size(34, 20);
 			this.txtCropRight.TabIndex = 25;
@@ -578,7 +571,7 @@
 			// 
 			// txtCropTop
 			// 
-			this.txtCropTop.Location = new System.Drawing.Point(104, 22);
+			this.txtCropTop.Margin = new System.Windows.Forms.Padding(0);
 			this.txtCropTop.Name = "txtCropTop";
 			this.txtCropTop.Size = new System.Drawing.Size(34, 20);
 			this.txtCropTop.TabIndex = 24;
@@ -586,8 +579,8 @@
 			// 
 			// label14
 			// 
+			this.label14.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(6, 25);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(28, 13);
 			this.label14.TabIndex = 16;
@@ -595,7 +588,7 @@
 			// 
 			// txtCropLeft
 			// 
-			this.txtCropLeft.Location = new System.Drawing.Point(34, 22);
+			this.txtCropLeft.Margin = new System.Windows.Forms.Padding(0);
 			this.txtCropLeft.Name = "txtCropLeft";
 			this.txtCropLeft.Size = new System.Drawing.Size(34, 20);
 			this.txtCropLeft.TabIndex = 15;
@@ -603,7 +596,7 @@
 			// 
 			// btnDefaults
 			// 
-			this.btnDefaults.Location = new System.Drawing.Point(447, 262);
+			this.btnDefaults.Location = new System.Drawing.Point(454, 275);
 			this.btnDefaults.Name = "btnDefaults";
 			this.btnDefaults.Size = new System.Drawing.Size(75, 23);
 			this.btnDefaults.TabIndex = 18;
@@ -615,7 +608,7 @@
 			// cbAutoPrescale
 			// 
 			this.cbAutoPrescale.AutoSize = true;
-			this.cbAutoPrescale.Location = new System.Drawing.Point(6, 171);
+			this.cbAutoPrescale.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.cbAutoPrescale.Name = "cbAutoPrescale";
 			this.cbAutoPrescale.Size = new System.Drawing.Size(92, 17);
 			this.cbAutoPrescale.TabIndex = 17;
@@ -624,8 +617,8 @@
 			// 
 			// label11
 			// 
+			this.label11.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(140, 11);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(14, 13);
 			this.label11.TabIndex = 16;
@@ -633,8 +626,8 @@
 			// 
 			// label10
 			// 
+			this.label10.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(7, 11);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(76, 13);
 			this.label10.TabIndex = 15;
@@ -642,7 +635,6 @@
 			// 
 			// nudPrescale
 			// 
-			this.nudPrescale.Location = new System.Drawing.Point(93, 7);
 			this.nudPrescale.Maximum = new decimal(new int[] {
             16,
             0,
@@ -664,18 +656,15 @@
 			// 
 			// tpDispMethod
 			// 
-			this.tpDispMethod.Controls.Add(this.label6);
-			this.tpDispMethod.Controls.Add(this.groupBox3);
-			this.tpDispMethod.Location = new System.Drawing.Point(4, 22);
+			this.tpDispMethod.Controls.Add(this.flpDispMethodTab);
 			this.tpDispMethod.Name = "tpDispMethod";
-			this.tpDispMethod.Size = new System.Drawing.Size(528, 291);
+			this.tpDispMethod.Size = new System.Drawing.Size(542, 351);
 			this.tpDispMethod.TabIndex = 2;
 			this.tpDispMethod.Text = "Display Method";
 			this.tpDispMethod.UseVisualStyleBackColor = true;
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(3, 258);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(359, 23);
 			this.label6.TabIndex = 18;
@@ -683,23 +672,15 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.label13);
-			this.groupBox3.Controls.Add(this.cbAlternateVsync);
-			this.groupBox3.Controls.Add(this.label8);
-			this.groupBox3.Controls.Add(this.rbD3D9);
-			this.groupBox3.Controls.Add(this.label7);
-			this.groupBox3.Controls.Add(this.rbGDIPlus);
-			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Controls.Add(this.rbOpenGL);
-			this.groupBox3.Location = new System.Drawing.Point(6, 5);
+			this.groupBox3.AutoSize = true;
+			this.groupBox3.Controls.Add(this.flpDispMethodRadios);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(415, 241);
+			this.groupBox3.Size = new System.Drawing.Size(410, 260);
 			this.groupBox3.TabIndex = 16;
 			this.groupBox3.TabStop = false;
 			// 
 			// label13
 			// 
-			this.label13.Location = new System.Drawing.Point(45, 60);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(359, 43);
 			this.label13.TabIndex = 22;
@@ -710,7 +691,6 @@
 			// cbAlternateVsync
 			// 
 			this.cbAlternateVsync.AutoSize = true;
-			this.cbAlternateVsync.Location = new System.Drawing.Point(28, 60);
 			this.cbAlternateVsync.Name = "cbAlternateVsync";
 			this.cbAlternateVsync.Size = new System.Drawing.Size(15, 14);
 			this.cbAlternateVsync.TabIndex = 21;
@@ -718,7 +698,6 @@
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(359, 27);
 			this.label8.TabIndex = 20;
@@ -728,7 +707,7 @@
 			// 
 			this.rbD3D9.AutoSize = true;
 			this.rbD3D9.Checked = true;
-			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
+			this.rbD3D9.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.rbD3D9.Name = "rbD3D9";
 			this.rbD3D9.Size = new System.Drawing.Size(73, 17);
 			this.rbD3D9.TabIndex = 19;
@@ -738,7 +717,7 @@
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(21, 191);
+			this.label7.Margin = new System.Windows.Forms.Padding(24, 0, 0, 0);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(359, 47);
 			this.label7.TabIndex = 18;
@@ -749,7 +728,7 @@
 			// 
 			this.rbGDIPlus.AutoSize = true;
 			this.rbGDIPlus.Checked = true;
-			this.rbGDIPlus.Location = new System.Drawing.Point(6, 171);
+			this.rbGDIPlus.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.rbGDIPlus.Name = "rbGDIPlus";
 			this.rbGDIPlus.Size = new System.Drawing.Size(50, 17);
 			this.rbGDIPlus.TabIndex = 17;
@@ -759,22 +738,16 @@
 			// 
 			// tpMisc
 			// 
-			this.tpMisc.Controls.Add(this.groupBox5);
-			this.tpMisc.Controls.Add(this.label2);
-			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
-			this.tpMisc.Location = new System.Drawing.Point(4, 22);
+			this.tpMisc.Controls.Add(this.flpMiscTab);
 			this.tpMisc.Name = "tpMisc";
-			this.tpMisc.Size = new System.Drawing.Size(528, 291);
+			this.tpMisc.Size = new System.Drawing.Size(542, 351);
 			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
 			// 
 			// groupBox5
 			// 
-			this.groupBox5.Controls.Add(this.rbDisplayAbsoluteZero);
-			this.groupBox5.Controls.Add(this.rbDisplayMinimal);
-			this.groupBox5.Controls.Add(this.rbDisplayFull);
-			this.groupBox5.Location = new System.Drawing.Point(6, 6);
+			this.groupBox5.Controls.Add(this.flpDispFeatures);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(371, 96);
 			this.groupBox5.TabIndex = 20;
@@ -784,7 +757,6 @@
 			// rbDisplayAbsoluteZero
 			// 
 			this.rbDisplayAbsoluteZero.AutoSize = true;
-			this.rbDisplayAbsoluteZero.Location = new System.Drawing.Point(7, 66);
 			this.rbDisplayAbsoluteZero.Name = "rbDisplayAbsoluteZero";
 			this.rbDisplayAbsoluteZero.Size = new System.Drawing.Size(174, 17);
 			this.rbDisplayAbsoluteZero.TabIndex = 2;
@@ -796,7 +768,6 @@
 			// 
 			this.rbDisplayMinimal.AutoSize = true;
 			this.rbDisplayMinimal.Enabled = false;
-			this.rbDisplayMinimal.Location = new System.Drawing.Point(7, 43);
 			this.rbDisplayMinimal.Name = "rbDisplayMinimal";
 			this.rbDisplayMinimal.Size = new System.Drawing.Size(185, 17);
 			this.rbDisplayMinimal.TabIndex = 1;
@@ -807,7 +778,6 @@
 			// rbDisplayFull
 			// 
 			this.rbDisplayFull.AutoSize = true;
-			this.rbDisplayFull.Location = new System.Drawing.Point(7, 20);
 			this.rbDisplayFull.Name = "rbDisplayFull";
 			this.rbDisplayFull.Size = new System.Drawing.Size(137, 17);
 			this.rbDisplayFull.TabIndex = 0;
@@ -817,13 +787,10 @@
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.cbAllowDoubleclickFullscreen);
-			this.tabPage1.Controls.Add(this.groupBox4);
-			this.tabPage1.Controls.Add(this.groupBox2);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Controls.Add(this.flpWindowTab);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(528, 291);
+			this.tabPage1.Size = new System.Drawing.Size(542, 351);
 			this.tabPage1.TabIndex = 4;
 			this.tabPage1.Text = "Window";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -831,7 +798,6 @@
 			// cbAllowDoubleclickFullscreen
 			// 
 			this.cbAllowDoubleclickFullscreen.AutoSize = true;
-			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 223);
 			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
 			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(471, 17);
 			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
@@ -841,12 +807,7 @@
 			// 
 			// groupBox4
 			// 
-			this.groupBox4.Controls.Add(this.cbFSAutohideMouse);
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
-			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
-			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
-			this.groupBox4.Location = new System.Drawing.Point(143, 6);
+			this.groupBox4.Controls.Add(this.flpFullscreen);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(266, 211);
 			this.groupBox4.TabIndex = 27;
@@ -856,7 +817,6 @@
 			// cbFSAutohideMouse
 			// 
 			this.cbFSAutohideMouse.AutoSize = true;
-			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
 			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
 			this.cbFSAutohideMouse.Size = new System.Drawing.Size(141, 17);
 			this.cbFSAutohideMouse.TabIndex = 28;
@@ -865,7 +825,6 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(7, 88);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(240, 115);
 			this.label1.TabIndex = 27;
@@ -874,7 +833,6 @@
 			// cbFullscreenHacks
 			// 
 			this.cbFullscreenHacks.AutoSize = true;
-			this.cbFullscreenHacks.Location = new System.Drawing.Point(6, 65);
 			this.cbFullscreenHacks.Name = "cbFullscreenHacks";
 			this.cbFullscreenHacks.Size = new System.Drawing.Size(191, 17);
 			this.cbFullscreenHacks.TabIndex = 26;
@@ -884,7 +842,6 @@
 			// cbStatusBarFullscreen
 			// 
 			this.cbStatusBarFullscreen.AutoSize = true;
-			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
 			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
 			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(75, 17);
 			this.cbStatusBarFullscreen.TabIndex = 23;
@@ -894,7 +851,6 @@
 			// cbMenuFullscreen
 			// 
 			this.cbMenuFullscreen.AutoSize = true;
-			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
 			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
 			this.cbMenuFullscreen.Size = new System.Drawing.Size(53, 17);
 			this.cbMenuFullscreen.TabIndex = 25;
@@ -903,13 +859,7 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.lblFrameTypeWindowed);
-			this.groupBox2.Controls.Add(this.cbStatusBarWindowed);
-			this.groupBox2.Controls.Add(this.label9);
-			this.groupBox2.Controls.Add(this.cbMenuWindowed);
-			this.groupBox2.Controls.Add(this.trackbarFrameSizeWindowed);
-			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
-			this.groupBox2.Location = new System.Drawing.Point(6, 6);
+			this.groupBox2.Controls.Add(this.flpWindowed);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(131, 211);
 			this.groupBox2.TabIndex = 26;
@@ -919,7 +869,6 @@
 			// lblFrameTypeWindowed
 			// 
 			this.lblFrameTypeWindowed.AutoSize = true;
-			this.lblFrameTypeWindowed.Location = new System.Drawing.Point(51, 17);
 			this.lblFrameTypeWindowed.Name = "lblFrameTypeWindowed";
 			this.lblFrameTypeWindowed.Size = new System.Drawing.Size(62, 13);
 			this.lblFrameTypeWindowed.TabIndex = 26;
@@ -928,7 +877,6 @@
 			// cbStatusBarWindowed
 			// 
 			this.cbStatusBarWindowed.AutoSize = true;
-			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
 			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
 			this.cbStatusBarWindowed.Size = new System.Drawing.Size(75, 17);
 			this.cbStatusBarWindowed.TabIndex = 23;
@@ -938,7 +886,6 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(6, 17);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(39, 13);
 			this.label9.TabIndex = 22;
@@ -947,7 +894,6 @@
 			// cbMenuWindowed
 			// 
 			this.cbMenuWindowed.AutoSize = true;
-			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
 			this.cbMenuWindowed.Name = "cbMenuWindowed";
 			this.cbMenuWindowed.Size = new System.Drawing.Size(53, 17);
 			this.cbMenuWindowed.TabIndex = 25;
@@ -957,10 +903,9 @@
 			// trackbarFrameSizeWindowed
 			// 
 			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
 			this.trackbarFrameSizeWindowed.Maximum = 2;
 			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(113, 45);
 			this.trackbarFrameSizeWindowed.TabIndex = 21;
 			this.trackbarFrameSizeWindowed.Value = 1;
 			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
@@ -968,7 +913,6 @@
 			// cbCaptionWindowed
 			// 
 			this.cbCaptionWindowed.AutoSize = true;
-			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
 			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
 			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
 			this.cbCaptionWindowed.TabIndex = 24;
@@ -986,14 +930,307 @@
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
+			// flpScanlinesSliderLabel
+			// 
+			this.flpScanlinesSliderLabel.AutoSize = true;
+			this.flpScanlinesSliderLabel.Controls.Add(this.lblScanlines);
+			this.flpScanlinesSliderLabel.Controls.Add(this.tbScanlineIntensity);
+			this.flpScanlinesSliderLabel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpScanlinesSliderLabel.Location = new System.Drawing.Point(80, 49);
+			this.flpScanlinesSliderLabel.Name = "flpScanlinesSliderLabel";
+			this.tlpScalingFilter.SetRowSpan(this.flpScanlinesSliderLabel, 2);
+			this.flpScanlinesSliderLabel.Size = new System.Drawing.Size(76, 64);
+			this.flpScanlinesSliderLabel.WrapContents = false;
+			// 
+			// flpFinalFilterRadios
+			// 
+			this.flpFinalFilterRadios.AutoSize = true;
+			this.flpFinalFilterRadios.Controls.Add(this.rbFinalFilterNone);
+			this.flpFinalFilterRadios.Controls.Add(this.rbFinalFilterBilinear);
+			this.flpFinalFilterRadios.Controls.Add(this.rbFinalFilterBicubic);
+			this.flpFinalFilterRadios.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpFinalFilterRadios.Location = new System.Drawing.Point(3, 17);
+			this.flpFinalFilterRadios.Name = "flpFinalFilterRadios";
+			this.flpFinalFilterRadios.Size = new System.Drawing.Size(50, 50);
+			this.flpFinalFilterRadios.WrapContents = false;
+			// 
+			// flpARSelection
+			// 
+			this.flpARSelection.AutoSize = true;
+			this.flpARSelection.Controls.Add(this.rbUseRaw);
+			this.flpARSelection.Controls.Add(this.label4);
+			this.flpARSelection.Controls.Add(this.tlpNonSquareAR);
+			this.flpARSelection.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpARSelection.Location = new System.Drawing.Point(3, 17);
+			this.flpARSelection.Name = "flpARSelection";
+			this.flpARSelection.Size = new System.Drawing.Size(291, 117);
+			this.flpARSelection.WrapContents = false;
+			// 
+			// flpCropOptions
+			// 
+			this.flpCropOptions.AutoSize = true;
+			this.flpCropOptions.Controls.Add(this.flpCropLeftLabel);
+			this.flpCropOptions.Controls.Add(this.flpCropTopLabel);
+			this.flpCropOptions.Controls.Add(this.flpCropRightLabel);
+			this.flpCropOptions.Controls.Add(this.flpCropBottomLabel);
+			this.flpCropOptions.Location = new System.Drawing.Point(3, 17);
+			this.flpCropOptions.Name = "flpCropOptions";
+			this.flpCropOptions.Size = new System.Drawing.Size(295, 20);
+			// 
+			// flpCropTopLabel
+			// 
+			this.flpCropTopLabel.AutoSize = true;
+			this.flpCropTopLabel.Controls.Add(this.label15);
+			this.flpCropTopLabel.Controls.Add(this.txtCropTop);
+			this.flpCropTopLabel.Margin = new System.Windows.Forms.Padding(0);
+			this.flpCropTopLabel.Name = "flpCropTopLabel";
+			this.flpCropTopLabel.Size = new System.Drawing.Size(69, 20);
+			// 
+			// flpScalingTab
+			// 
+			this.flpScalingTab.Controls.Add(this.flpPrescaleLabel);
+			this.flpScalingTab.Controls.Add(this.groupBox1);
+			this.flpScalingTab.Controls.Add(this.cbAutoPrescale);
+			this.flpScalingTab.Controls.Add(this.grpFinalFilter);
+			this.flpScalingTab.Controls.Add(this.checkLetterbox);
+			this.flpScalingTab.Controls.Add(this.grpARSelection);
+			this.flpScalingTab.Controls.Add(this.checkPadInteger);
+			this.flpScalingTab.Controls.Add(this.groupBox6);
+			this.flpScalingTab.Controls.Add(this.btnDefaults);
+			this.flpScalingTab.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpScalingTab.Name = "flpScalingTab";
+			this.flpScalingTab.SetFlowBreak(this.grpFinalFilter, true);
+			this.flpScalingTab.Size = new System.Drawing.Size(535, 370);
+			// 
+			// flpPrescaleLabel
+			// 
+			this.flpPrescaleLabel.AutoSize = true;
+			this.flpPrescaleLabel.Controls.Add(this.label10);
+			this.flpPrescaleLabel.Controls.Add(this.nudPrescale);
+			this.flpPrescaleLabel.Controls.Add(this.label11);
+			this.flpPrescaleLabel.Location = new System.Drawing.Point(3, 3);
+			this.flpPrescaleLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.flpPrescaleLabel.Name = "flpPrescaleLabel";
+			this.flpPrescaleLabel.Size = new System.Drawing.Size(153, 26);
+			this.flpPrescaleLabel.WrapContents = false;
+			// 
+			// flpD3DSuboptions
+			// 
+			this.flpD3DSuboptions.AutoSize = true;
+			this.flpD3DSuboptions.Controls.Add(this.label8);
+			this.flpD3DSuboptions.Controls.Add(this.flpD3DAltVSyncLabel);
+			this.flpD3DSuboptions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpD3DSuboptions.Location = new System.Drawing.Point(3, 20);
+			this.flpD3DSuboptions.Margin = new System.Windows.Forms.Padding(24, 0, 0, 0);
+			this.flpD3DSuboptions.Name = "flpD3DSuboptions";
+			this.flpD3DSuboptions.Size = new System.Drawing.Size(392, 76);
+			this.flpD3DSuboptions.WrapContents = false;
+			// 
+			// flpDispMethodRadios
+			// 
+			this.flpDispMethodRadios.AutoSize = true;
+			this.flpDispMethodRadios.Controls.Add(this.rbD3D9);
+			this.flpDispMethodRadios.Controls.Add(this.flpD3DSuboptions);
+			this.flpDispMethodRadios.Controls.Add(this.rbOpenGL);
+			this.flpDispMethodRadios.Controls.Add(this.label5);
+			this.flpDispMethodRadios.Controls.Add(this.rbGDIPlus);
+			this.flpDispMethodRadios.Controls.Add(this.label7);
+			this.flpDispMethodRadios.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpDispMethodRadios.Location = new System.Drawing.Point(6, 13);
+			this.flpDispMethodRadios.Name = "flpDispMethodRadios";
+			this.flpDispMethodRadios.Size = new System.Drawing.Size(398, 228);
+			// 
+			// flpDispMethodTab
+			// 
+			this.flpDispMethodTab.AutoSize = true;
+			this.flpDispMethodTab.Controls.Add(this.groupBox3);
+			this.flpDispMethodTab.Controls.Add(this.label6);
+			this.flpDispMethodTab.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpDispMethodTab.Name = "flpDispMethodTab";
+			this.flpDispMethodTab.Size = new System.Drawing.Size(416, 306);
+			// 
+			// flpCropBottomLabel
+			// 
+			this.flpCropBottomLabel.AutoSize = true;
+			this.flpCropBottomLabel.Controls.Add(this.label16);
+			this.flpCropBottomLabel.Controls.Add(this.txtCropBottom);
+			this.flpCropBottomLabel.Location = new System.Drawing.Point(137, 0);
+			this.flpCropBottomLabel.Margin = new System.Windows.Forms.Padding(0);
+			this.flpCropBottomLabel.Name = "flpCropBottomLabel";
+			this.flpCropBottomLabel.Size = new System.Drawing.Size(83, 20);
+			// 
+			// flpCropRightLabel
+			// 
+			this.flpCropRightLabel.AutoSize = true;
+			this.flpCropRightLabel.Controls.Add(this.label17);
+			this.flpCropRightLabel.Controls.Add(this.txtCropRight);
+			this.flpCropRightLabel.Location = new System.Drawing.Point(220, 0);
+			this.flpCropRightLabel.Margin = new System.Windows.Forms.Padding(0);
+			this.flpCropRightLabel.Name = "flpCropRightLabel";
+			this.flpCropRightLabel.Size = new System.Drawing.Size(75, 20);
+			// 
+			// flpCropLeftLabel
+			// 
+			this.flpCropLeftLabel.AutoSize = true;
+			this.flpCropLeftLabel.Controls.Add(this.label14);
+			this.flpCropLeftLabel.Controls.Add(this.txtCropLeft);
+			this.flpCropLeftLabel.Location = new System.Drawing.Point(69, 0);
+			this.flpCropLeftLabel.Margin = new System.Windows.Forms.Padding(0);
+			this.flpCropLeftLabel.Name = "flpCropLeftLabel";
+			this.flpCropLeftLabel.Size = new System.Drawing.Size(68, 20);
+			// 
+			// flpD3DAltVSyncLabel
+			// 
+			this.flpD3DAltVSyncLabel.AutoSize = true;
+			this.flpD3DAltVSyncLabel.Controls.Add(this.cbAlternateVsync);
+			this.flpD3DAltVSyncLabel.Controls.Add(this.label13);
+			this.flpD3DAltVSyncLabel.Location = new System.Drawing.Point(3, 30);
+			this.flpD3DAltVSyncLabel.Name = "flpD3DAltVSyncLabel";
+			this.flpD3DAltVSyncLabel.Size = new System.Drawing.Size(386, 43);
+			this.flpD3DAltVSyncLabel.WrapContents = false;
+			// 
+			// flpWindowed
+			// 
+			this.flpWindowed.Controls.Add(this.flpWindowFrameLabel);
+			this.flpWindowed.Controls.Add(this.trackbarFrameSizeWindowed);
+			this.flpWindowed.Controls.Add(this.cbStatusBarWindowed);
+			this.flpWindowed.Controls.Add(this.cbCaptionWindowed);
+			this.flpWindowed.Controls.Add(this.cbMenuWindowed);
+			this.flpWindowed.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flpWindowed.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpWindowed.Location = new System.Drawing.Point(3, 16);
+			this.flpWindowed.Name = "flpWindowed";
+			this.flpWindowed.Size = new System.Drawing.Size(125, 192);
+			// 
+			// flpWindowFrameLabel
+			// 
+			this.flpWindowFrameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpWindowFrameLabel.AutoSize = true;
+			this.flpWindowFrameLabel.Controls.Add(this.label9);
+			this.flpWindowFrameLabel.Controls.Add(this.lblFrameTypeWindowed);
+			this.flpWindowFrameLabel.Location = new System.Drawing.Point(3, 3);
+			this.flpWindowFrameLabel.Name = "flpWindowFrameLabel";
+			this.flpWindowFrameLabel.Size = new System.Drawing.Size(113, 13);
+			// 
+			// flpMiscTab
+			// 
+			this.flpMiscTab.AutoSize = true;
+			this.flpMiscTab.Controls.Add(this.groupBox5);
+			this.flpMiscTab.Controls.Add(this.checkSnowyNullEmulator);
+			this.flpMiscTab.Controls.Add(this.label2);
+			this.flpMiscTab.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpMiscTab.Location = new System.Drawing.Point(3, 3);
+			this.flpMiscTab.Name = "flpMiscTab";
+			this.flpMiscTab.Size = new System.Drawing.Size(404, 168);
+			// 
+			// flpDispFeatures
+			// 
+			this.flpDispFeatures.Controls.Add(this.rbDisplayFull);
+			this.flpDispFeatures.Controls.Add(this.rbDisplayMinimal);
+			this.flpDispFeatures.Controls.Add(this.rbDisplayAbsoluteZero);
+			this.flpDispFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flpDispFeatures.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpDispFeatures.Location = new System.Drawing.Point(3, 16);
+			this.flpDispFeatures.Name = "flpDispFeatures";
+			this.flpDispFeatures.Size = new System.Drawing.Size(365, 77);
+			this.flpDispFeatures.WrapContents = false;
+			// 
+			// flpWindowTab
+			// 
+			this.flpWindowTab.Controls.Add(this.flpWindowGroups);
+			this.flpWindowTab.Controls.Add(this.cbAllowDoubleclickFullscreen);
+			this.flpWindowTab.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flpWindowTab.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flpWindowTab.Location = new System.Drawing.Point(3, 3);
+			this.flpWindowTab.Name = "flpWindowTab";
+			this.flpWindowTab.Size = new System.Drawing.Size(536, 375);
+			// 
+			// flpWindowGroups
+			// 
+			this.flpWindowGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpWindowGroups.AutoSize = true;
+			this.flpWindowGroups.Controls.Add(this.groupBox2);
+			this.flpWindowGroups.Controls.Add(this.groupBox4);
+			this.flpWindowGroups.Location = new System.Drawing.Point(3, 3);
+			this.flpWindowGroups.Name = "flpWindowGroups";
+			this.flpWindowGroups.Size = new System.Drawing.Size(471, 217);
+			// 
+			// flpFullscreen
+			// 
+			this.flpFullscreen.Controls.Add(this.flpFullscreenCheckboxes);
+			this.flpFullscreen.Controls.Add(this.label1);
+			this.flpFullscreen.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flpFullscreen.Location = new System.Drawing.Point(3, 16);
+			this.flpFullscreen.Name = "flpFullscreen";
+			this.flpFullscreen.Size = new System.Drawing.Size(260, 192);
+			// 
+			// flpFullscreenCheckboxes
+			// 
+			this.flpFullscreenCheckboxes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+			this.flpFullscreenCheckboxes.AutoSize = true;
+			this.flpFullscreenCheckboxes.Controls.Add(this.cbStatusBarFullscreen);
+			this.flpFullscreenCheckboxes.Controls.Add(this.cbFSAutohideMouse);
+			this.flpFullscreenCheckboxes.Controls.Add(this.cbMenuFullscreen);
+			this.flpFullscreenCheckboxes.Controls.Add(this.cbFullscreenHacks);
+			this.flpFullscreenCheckboxes.Location = new System.Drawing.Point(3, 3);
+			this.flpFullscreenCheckboxes.Name = "flpFullscreenCheckboxes";
+			this.flpFullscreenCheckboxes.Size = new System.Drawing.Size(228, 69);
+			// 
+			// tlpScalingFilter
+			// 
+			this.tlpScalingFilter.AutoSize = true;
+			this.tlpScalingFilter.ColumnCount = 2;
+			this.tlpScalingFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpScalingFilter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpScalingFilter.Controls.Add(this.rbNone, 0, 0);
+			this.tlpScalingFilter.Controls.Add(this.rbHq2x, 0, 1);
+			this.tlpScalingFilter.Controls.Add(this.flpScanlinesSliderLabel, 1, 1);
+			this.tlpScalingFilter.Controls.Add(this.rbScanlines, 0, 2);
+			this.tlpScalingFilter.Controls.Add(this.rbUser, 0, 3);
+			this.tlpScalingFilter.Controls.Add(this.btnSelectUserFilter, 1, 3);
+			this.tlpScalingFilter.Controls.Add(this.lblUserFilterName, 0, 4);
+			this.tlpScalingFilter.Location = new System.Drawing.Point(3, 17);
+			this.tlpScalingFilter.Name = "tlpScalingFilter";
+			this.tlpScalingFilter.RowCount = 4;
+			this.tlpScalingFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpScalingFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpScalingFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpScalingFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpScalingFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpScalingFilter.Size = new System.Drawing.Size(209, 143);
+			// 
+			// tlpNonSquareAR
+			// 
+			this.tlpNonSquareAR.AutoSize = true;
+			this.tlpNonSquareAR.ColumnCount = 4;
+			this.tlpNonSquareAR.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpNonSquareAR.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpNonSquareAR.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpNonSquareAR.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tlpNonSquareAR.Controls.Add(this.rbUseCustomRatio, 0, 2);
+			this.tlpNonSquareAR.Controls.Add(this.rbUseSystem, 0, 0);
+			this.tlpNonSquareAR.Controls.Add(this.txtCustomARX, 1, 2);
+			this.tlpNonSquareAR.Controls.Add(this.label12, 2, 2);
+			this.tlpNonSquareAR.Controls.Add(this.rbUseCustom, 0, 1);
+			this.tlpNonSquareAR.Controls.Add(this.txtCustomARWidth, 1, 1);
+			this.tlpNonSquareAR.Controls.Add(this.label3, 2, 1);
+			this.tlpNonSquareAR.Controls.Add(this.txtCustomARY, 3, 2);
+			this.tlpNonSquareAR.Controls.Add(this.txtCustomARHeight, 3, 1);
+			this.tlpNonSquareAR.Location = new System.Drawing.Point(3, 39);
+			this.tlpNonSquareAR.Name = "tlpNonSquareAR";
+			this.tlpNonSquareAR.RowCount = 3;
+			this.tlpNonSquareAR.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpNonSquareAR.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpNonSquareAR.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpNonSquareAR.Size = new System.Drawing.Size(285, 75);
+			// 
 			// DisplayConfigLite
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(564, 374);
-			this.Controls.Add(this.linkLabel1);
+			this.ClientSize = new System.Drawing.Size(580, 434);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -1028,8 +1265,54 @@
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
+			this.flpScalingTab.ResumeLayout(false);
+			this.flpScalingTab.PerformLayout();
+			this.flpPrescaleLabel.ResumeLayout(false);
+			this.flpPrescaleLabel.PerformLayout();
+			this.flpCropOptions.ResumeLayout(false);
+			this.flpCropOptions.PerformLayout();
+			this.flpCropTopLabel.ResumeLayout(false);
+			this.flpCropTopLabel.PerformLayout();
+			this.flpCropLeftLabel.ResumeLayout(false);
+			this.flpCropLeftLabel.PerformLayout();
+			this.flpCropBottomLabel.ResumeLayout(false);
+			this.flpCropBottomLabel.PerformLayout();
+			this.flpCropRightLabel.ResumeLayout(false);
+			this.flpCropRightLabel.PerformLayout();
+			this.flpDispMethodTab.ResumeLayout(false);
+			this.flpDispMethodTab.PerformLayout();
+			this.flpDispMethodRadios.ResumeLayout(false);
+			this.flpDispMethodRadios.PerformLayout();
+			this.flpD3DSuboptions.ResumeLayout(false);
+			this.flpD3DSuboptions.PerformLayout();
+			this.flpD3DAltVSyncLabel.ResumeLayout(false);
+			this.flpD3DAltVSyncLabel.PerformLayout();
+			this.flpMiscTab.ResumeLayout(false);
+			this.flpMiscTab.PerformLayout();
+			this.flpDispFeatures.ResumeLayout(false);
+			this.flpDispFeatures.PerformLayout();
+			this.flpWindowTab.ResumeLayout(false);
+			this.flpWindowTab.PerformLayout();
+			this.flpWindowGroups.ResumeLayout(false);
+			this.flpWindowed.ResumeLayout(false);
+			this.flpWindowed.PerformLayout();
+			this.flpWindowFrameLabel.ResumeLayout(false);
+			this.flpWindowFrameLabel.PerformLayout();
+			this.flpFullscreen.ResumeLayout(false);
+			this.flpFullscreen.PerformLayout();
+			this.flpFullscreenCheckboxes.ResumeLayout(false);
+			this.flpFullscreenCheckboxes.PerformLayout();
+			this.flpScanlinesSliderLabel.ResumeLayout(false);
+			this.flpScanlinesSliderLabel.PerformLayout();
+			this.flpFinalFilterRadios.ResumeLayout(false);
+			this.flpFinalFilterRadios.PerformLayout();
+			this.flpARSelection.ResumeLayout(false);
+			this.flpARSelection.PerformLayout();
+			this.tlpNonSquareAR.ResumeLayout(false);
+			this.tlpNonSquareAR.PerformLayout();
+			this.tlpScalingFilter.ResumeLayout(false);
+			this.tlpScalingFilter.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -1115,5 +1398,29 @@
 		private System.Windows.Forms.TextBox txtCropTop;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.TextBox txtCropLeft;
+		private System.Windows.Forms.FlowLayoutPanel flpDispMethodTab;
+		private System.Windows.Forms.FlowLayoutPanel flpDispMethodRadios;
+		private System.Windows.Forms.FlowLayoutPanel flpFinalFilterRadios;
+		private System.Windows.Forms.FlowLayoutPanel flpPrescaleLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpFullscreen;
+		private System.Windows.Forms.FlowLayoutPanel flpFullscreenCheckboxes;
+		private System.Windows.Forms.FlowLayoutPanel flpMiscTab;
+		private System.Windows.Forms.FlowLayoutPanel flpDispFeatures;
+		private System.Windows.Forms.FlowLayoutPanel flpCropOptions;
+		private System.Windows.Forms.FlowLayoutPanel flpWindowed;
+		private System.Windows.Forms.FlowLayoutPanel flpWindowFrameLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpCropTopLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpCropLeftLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpD3DSuboptions;
+		private System.Windows.Forms.FlowLayoutPanel flpD3DAltVSyncLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpWindowTab;
+		private System.Windows.Forms.FlowLayoutPanel flpWindowGroups;
+		private System.Windows.Forms.FlowLayoutPanel flpCropBottomLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpCropRightLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpScanlinesSliderLabel;
+		private System.Windows.Forms.FlowLayoutPanel flpARSelection;
+		private System.Windows.Forms.FlowLayoutPanel flpScalingTab;
+		private System.Windows.Forms.TableLayoutPanel tlpScalingFilter;
+		private System.Windows.Forms.TableLayoutPanel tlpNonSquareAR;
 	}
 }
