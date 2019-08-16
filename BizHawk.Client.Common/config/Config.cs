@@ -350,7 +350,9 @@ namespace BizHawk.Client.Common
 			? EDispMethod.SlimDX9
 			: EDispMethod.GdiPlus;
 
-		public int DispChrome_FrameWindowed = 2;
+		public enum FrameWindowThickness { None, Thin, Thick }
+
+		public int DispChrome_FrameWindowed = (int) FrameWindowThickness.Thick; //TODO propagate enum usage?
 		public bool DispChrome_StatusBarWindowed = true;
 		public bool DispChrome_CaptionWindowed = true;
 		public bool DispChrome_MenuWindowed = true;

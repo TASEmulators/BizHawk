@@ -268,9 +268,6 @@
     <Compile Include="config\DisplayConfigLite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\DisplayConfigLite.Designer.cs">
-      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\FileExtensionPreferences.cs">
       <SubType>Form</SubType>
     </Compile>
