@@ -16,15 +16,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		portedVersion: "0.209",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
-	public partial class MAME : IEmulator, IVideoProvider
+	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public MAME(CoreComm comm, string dir, string file)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
 			CoreComm = comm;
-			GameDirectory = dir;
-			GameFilename = file;
+			gameDirectory = dir;
+			gameFilename = file;
 
 			MAMEThread = new Thread(ExecuteMAMEThread);
 			AsyncLaunchMAME();
@@ -36,6 +36,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public string SystemId => "MAME";
 		public int[] GetVideoBuffer() => frameBuffer;
 		public bool DeterministicEmulation => true;
+		public bool CanProvideAsync => false;
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 		public int BackgroundColor => unchecked((int)0xFF0000FF);
 		public int Frame { get; private set; }
 		public int VirtualWidth { get; private set; } = 320;
@@ -49,11 +51,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
-		private bool FrameDone = false;
-		private bool CommandDone = false;
+		private bool frameDone = false;
+		private bool commandDone = false;
 		private int[] frameBuffer = new int[0];
-		private string GameDirectory;
-		private string GameFilename;
+		private short[] audioBuffer = new short[0];
+		private int numSamples = 0;
+		private string gameDirectory;
+		private string gameFilename;
 
 		private void AsyncLaunchMAME()
 		{
@@ -69,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_set_boot_callback(MAMEBootCallback);
 			LibMAME.mame_set_log_callback(MAMELogCallback);
 
-			string[] args = MakeCommandline(GameDirectory, GameFilename);
+			string[] args = MakeCommandline(gameDirectory, gameFilename);
 			LibMAME.mame_launch(args.Length, args);
 		}
 
@@ -77,18 +81,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private string[] MakeCommandline(string directory, string rom)
 		{
 			return new string[] {
-				 "mame"                  // dummy, internally discarded by index, so has to go first
-				, rom                    // no dash for rom names (internally called "unadorned" option)
-				, "-rompath", directory  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-window"              // forbid fullscreen
-				, "-nokeepaspect"        // forbid window stretching
-				, "-nomaximize"          // forbid windowed fullscreen
-				, "-noreadconfig"        // forbid reading any config files
-				, "-norewind"            // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"       // forbid this blocking screen that requires user input
-				, "-video", "none"       // forbid mame window altogether
-				, "-sound", "none"
-				, "-output", "console"
+				 "mame"                           // dummy, internally discarded by index, so has to go first
+				, rom                             // no dash for rom names (internally called "unadorned" option)
+			//	, "-window"                       // forbid fullscreen
+			//	, "-nokeepaspect"                 // forbid window stretching
+			//	, "-nomaximize"                   // forbid windowed fullscreen
+				, "-noreadconfig"                 // forbid reading any config files
+				, "-norewind"                     // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"                // forbid this blocking screen that requires user input
+				, "-rompath",          directory  // mame doesn't load roms from full paths, only from dirs to scan
+				, "-volume",           "-32"
+				, "-output",           "console"
+				, "-samplerate",       "44100"
+				, "-video",            "none"     // forbid mame window altogether
+			//	, "-sound",            "none"     // "no sound" mode forces low samplerate, useless
 				, "-keyboardprovider", "none"
 				, "-mouseprovider",    "none"
 				, "-lightgunprovider", "none"
@@ -99,7 +105,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			VsyncDenominator = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh) / 1000000000;
+			UInt64 ok = (UInt64)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
+			VsyncDenominator = (int)(ok / 1000000000);
 		}
 
 		private void UpdateAspect()
@@ -125,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			int lengthInBytes;
 
-			//int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrame);
+			//int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
 			int expectedSize = BufferWidth * BufferHeight;
@@ -156,6 +163,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			bool test = LibMAME.mame_lua_free_string(ptr);
 		}
 
+		private void UpdateAudio()
+		{
+			if (Frame == 0)
+			{
+				return;
+			}
+			int lengthInBytes;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
+			numSamples = lengthInBytes / 4;
+			audioBuffer = new short[numSamples * 2];
+			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
+			bool test = LibMAME.mame_lua_free_string(ptr);
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
@@ -171,13 +192,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateFramerate();
 			UpdateVideo();
 			UpdateAspect();
-			FrameDone = true;
+			UpdateAudio();
+			frameDone = true;
 			MAMEFrameComplete.Set();
 		}
 		
 		private void MAMEPeriodicCallback()
 		{
-			CommandDone = true;
+			commandDone = true;
 			MAMECommandComplete.Set();
 		}
 		
@@ -194,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void FrameWait()
 		{
-			for (FrameDone = false; FrameDone == false;)
+			for (frameDone = false; frameDone == false;)
 			{
 				MAMEFrameComplete.WaitOne();
 			}
@@ -202,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void CommandWait()
 		{
-			for (CommandDone = false; CommandDone == false;)
+			for (commandDone = false; commandDone == false;)
 			{
 				MAMECommandComplete.WaitOne();
 			}
@@ -258,15 +280,40 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#endregion
 
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			samples = audioBuffer;
+			nsamp = numSamples;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+			numSamples = 0;
+		}
+
 		private class MAMELuaCommand
 		{
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
 			public const string GetPixels = "return manager:machine():video():pixels()";
+			public const string GetSamples = "return manager:machine():sound():samples()";
 			public const string GetWidth = "local w,h = manager:machine():video():size() return w";
 			public const string GetHeight = "local w,h = manager:machine():video():size() return h";
-			public const string GetFrame = "for k,v in pairs(manager:machine().screens) do return v:frame_number() end";
+			public const string GetFrameNumber = "for k,v in pairs(manager:machine().screens) do return v:frame_number() end";
 			public const string GetRefresh = "for k,v in pairs(manager:machine().screens) do return v:refresh_attoseconds() end";
 			public const string GetBoundX = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return x1-x0";
 			public const string GetBoundY = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return y1-y0";
