@@ -407,11 +407,25 @@ namespace BizHawk.Client.Common
 			var parentPath = string.IsNullOrWhiteSpace(system)
 				? GetGlobalBasePathAbsolute()
 				: MakeAbsolutePath(GetPlatformBase(system), system);
+#if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 
 			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
 				? absolutePath.Replace(parentPath, ".")
 				: "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary");
+#else // written for Unix port but may be useful for .NET Core
+			if (!IsSubfolder(parentPath, absolutePath))
+			{
+				return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					|| parentPath.TrimEnd('.') != $"{absolutePath}/"
+						? absolutePath
+						: ".";
+			}
+
+			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				? absolutePath.Replace(parentPath, ".")
+				: absolutePath.Replace(parentPath.TrimEnd('.'), "./");
+#endif
 		}
 
 		public static string MakeRelativeTo(string absolutePath, string basePath)
@@ -431,7 +445,7 @@ namespace BizHawk.Client.Common
 			{
 				var parentUri = new Uri(parentPath);
 
-				for (var childUri = new DirectoryInfo(childPath); childUri != null; childUri = childUri?.Parent)
+				for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
 				{
 					if (new Uri(childUri.FullName) == parentUri) return true;
 				}
@@ -439,8 +453,28 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
+#if true
 			return OSTailoredCode.SimpleSubshell("realpath", $"-L \"{childPath}\"", $"invalid path {childPath} or missing realpath binary")
 				.StartsWith(OSTailoredCode.SimpleSubshell("realpath", $"-L \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary"));
+#else // written for Unix port but may be useful for .NET Core
+			{
+				var parentUri = new Uri(parentPath.TrimEnd('.'));
+
+				try
+				{
+					for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
+					{
+						if (new Uri(childUri.FullName).AbsolutePath.TrimEnd('/') == parentUri.AbsolutePath.TrimEnd('/')) return true;
+					}
+				}
+				catch
+				{
+					// ignored
+				}
+
+				return false;
+			}
+#endif
 		}
 
 		/// <summary>
