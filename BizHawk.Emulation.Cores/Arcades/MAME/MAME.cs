@@ -105,8 +105,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			UInt64 ok = (UInt64)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
-			VsyncDenominator = (int)(ok / 1000000000);
+			UInt64 refresh = (UInt64)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
+			VsyncDenominator = (int)(refresh / 1000000000);
 		}
 
 		private void UpdateAspect()
