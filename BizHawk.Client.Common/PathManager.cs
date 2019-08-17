@@ -439,7 +439,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
-		private static bool IsSubfolder(string parentPath, string childPath)
+		public static bool IsSubfolder(string parentPath, string childPath)
 		{
 			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
