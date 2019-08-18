@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
+		private Dictionary<string, string> fieldsPorts = new Dictionary<string, string>();
 		private bool frameDone = false;
 		private bool commandDone = false;
 		private int[] frameBuffer = new int[0];
@@ -63,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			MAMEThread.Start();
 			MAMEStartupComplete.WaitOne();
-			//UpdateVideo();
 		}
 
 		private void ExecuteMAMEThread()
@@ -82,19 +82,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			return new string[] {
 				 "mame"                           // dummy, internally discarded by index, so has to go first
-				, rom                             // no dash for rom names (internally called "unadorned" option)
-			//	, "-window"                       // forbid fullscreen
-			//	, "-nokeepaspect"                 // forbid window stretching
-			//	, "-nomaximize"                   // forbid windowed fullscreen
+				, rom                             // no dash for rom names
 				, "-noreadconfig"                 // forbid reading any config files
 				, "-norewind"                     // forbid rewind savestates (captured upon frame advance)
 				, "-skip_gameinfo"                // forbid this blocking screen that requires user input
 				, "-rompath",          directory  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-volume",           "-32"
+				, "-volume",           "-32"      // lowest attenuation means mame osd remains silent
 				, "-output",           "console"
 				, "-samplerate",       "44100"
 				, "-video",            "none"     // forbid mame window altogether
-			//	, "-sound",            "none"     // "no sound" mode forces low samplerate, useless
 				, "-keyboardprovider", "none"
 				, "-mouseprovider",    "none"
 				, "-lightgunprovider", "none"
@@ -130,26 +126,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateVideo()
 		{
-			int lengthInBytes;
-
-			//int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+		//	int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
 			int expectedSize = BufferWidth * BufferHeight;
 			int bytesPerPixel = 4;
+			int lengthInBytes;
 
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out lengthInBytes);
 
 			if (ptr == null)
 			{
-				Console.WriteLine("LibMAME ERROR: framebuffer pointer is null");
+				Console.WriteLine("LibMAME ERROR: frame buffer pointer is null");
 				return;
 			}
 
 			if (expectedSize * bytesPerPixel != lengthInBytes)
 			{
 				Console.WriteLine(
-					"LibMAME ERROR: framebuffer has wrong size\n" +
+					"LibMAME ERROR: frame buffer has wrong size\n" +
 					$"width:    {BufferWidth} pixels\n" +
 					$"height:   {BufferHeight} pixels\n" +
 					$"expected: {expectedSize * bytesPerPixel} bytes\n" +
@@ -159,8 +154,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			frameBuffer = new int[expectedSize];
 			Marshal.Copy(ptr, frameBuffer, 0, expectedSize);
-		//	string see = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
-			bool test = LibMAME.mame_lua_free_string(ptr);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: frame buffer wasn't freed");
+			}
 		}
 
 		private void UpdateAudio()
@@ -169,16 +167,68 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				return;
 			}
+
 			int lengthInBytes;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
+
+			if (ptr == null)
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
+				return;
+			}
+
 			numSamples = lengthInBytes / 4;
 			audioBuffer = new short[numSamples * 2];
 			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
-			bool test = LibMAME.mame_lua_free_string(ptr);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
+			}
+		}
+
+		private void GetInputFields()
+		{
+			int lengthInBytes;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
+
+			if (ptr == null)
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
+				return;
+			}
+
+			string inputFields = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			string[] portFields = inputFields.Split(';');
+
+			foreach (string portField in portFields)
+			{
+				if (portField != string.Empty)
+				{
+					string[] substrings = portField.Split(',');
+					string tag = substrings.First();
+					string field = substrings.Last();
+
+					fieldsPorts.Add(field, tag);
+					MAMEController.BoolButtons.Add(field);
+				}
+			}
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
+			}
+		}
+
+		private void UpdateInput(IController controller)
+		{
+
+
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			UpdateInput(controller);
 			LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
 			FrameWait();
 			Frame++;
@@ -202,9 +252,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			commandDone = true;
 			MAMECommandComplete.Set();
 		}
-		
+
 		private void MAMEBootCallback()
 		{
+			GetInputFields();
 			MAMEStartupComplete.Set();
 		}
 		
@@ -230,18 +281,82 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		public static readonly ControllerDefinition MAMEController = new ControllerDefinition
+		public static ControllerDefinition MAMEController = new ControllerDefinition
 		{
 			Name = "MAME Controller",
-			BoolButtons =
-			{
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
-			}
+			BoolButtons = new List<string>()
 		};
 
 		public void ResetCounters()
 		{
 			Frame = 0;
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			samples = audioBuffer;
+			nsamp = numSamples;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+			numSamples = 0;
+		}
+
+		private class MAMELuaCommand
+		{
+			public const string Step = "emu.step()";
+			public const string Pause = "emu.pause()";
+			public const string Unpause = "emu.unpause()";
+			public const string GetPixels = "return manager:machine():video():pixels()";
+			public const string GetSamples = "return manager:machine():sound():samples()";
+
+			public const string GetFrameNumber =
+				"for k,v in pairs(manager:machine().screens) " +
+					"do return v:frame_number() " +
+				"end";
+
+			public const string GetRefresh =
+				"for k,v in pairs(manager:machine().screens) " +
+					"do return v:refresh_attoseconds() " +
+				"end";
+
+			public const string GetWidth =
+				"local w,h = manager:machine():video():size() " +
+				"return w";
+			public const string GetHeight =
+				"local w,h = manager:machine():video():size() " +
+				"return h";
+
+			public const string GetBoundX =
+				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
+				"return x1-x0";
+			public const string GetBoundY =
+				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
+				"return y1-y0";
+
+			public const string GetInputFields =
+				"final = {} " +
+					"for tag, _ in pairs(manager:machine():ioport().ports) do " +
+						"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
+							"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
+						"end " +
+					"end " +
+					"table.sort(final) " +
+					"return table.concat(final)";
 		}
 
 		#region IDisposable Support
@@ -279,45 +394,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		}
 
 		#endregion
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = audioBuffer;
-			nsamp = numSamples;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-			numSamples = 0;
-		}
-
-		private class MAMELuaCommand
-		{
-			public const string Step = "emu.step()";
-			public const string Pause = "emu.pause()";
-			public const string Unpause = "emu.unpause()";
-			public const string GetPixels = "return manager:machine():video():pixels()";
-			public const string GetSamples = "return manager:machine():sound():samples()";
-			public const string GetWidth = "local w,h = manager:machine():video():size() return w";
-			public const string GetHeight = "local w,h = manager:machine():video():size() return h";
-			public const string GetFrameNumber = "for k,v in pairs(manager:machine().screens) do return v:frame_number() end";
-			public const string GetRefresh = "for k,v in pairs(manager:machine().screens) do return v:refresh_attoseconds() end";
-			public const string GetBoundX = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return x1-x0";
-			public const string GetBoundY = "local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() return y1-y0";
-		}
 
 	}
 }
