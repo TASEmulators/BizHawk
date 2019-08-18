@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
 		private Dictionary<string, string> fieldsPorts = new Dictionary<string, string>();
+		private IController Controller = NullController.Instance;
 		private bool frameDone = false;
 		private bool commandDone = false;
 		private int[] frameBuffer = new int[0];
@@ -220,15 +221,24 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void UpdateInput(IController controller)
+		private void UpdateInput()
 		{
-
-
+			foreach (var fieldPort in fieldsPorts)
+			{
+				LibMAME.mame_lua_execute(
+					"manager:machine():ioport().ports[\"" +
+					fieldPort.Value +
+					"\"].fields[\"" +
+					fieldPort.Key +
+					"\"]:set_value(" +
+					(Controller.IsPressed(fieldPort.Key) ? 1 : 0) +
+					")");
+			}
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			UpdateInput(controller);
+			Controller = controller;
 			LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
 			FrameWait();
 			Frame++;
@@ -243,6 +253,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateVideo();
 			UpdateAspect();
 			UpdateAudio();
+			UpdateInput();
 			frameDone = true;
 			MAMEFrameComplete.Set();
 		}
@@ -352,7 +363,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"final = {} " +
 					"for tag, _ in pairs(manager:machine():ioport().ports) do " +
 						"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
-							"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
+							"if field.type_class ~= \"dipswitch\" then " +
+								"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
+							"end " +
 						"end " +
 					"end " +
 					"table.sort(final) " +
