@@ -75,6 +75,9 @@ namespace BizHawk.Client.EmuHawk
 
 				//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 			}
+
+			// Assembly.ReflectionOnlyLoadFrom doesn't automatically load deps, this stops it from throwing when called
+			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) => Assembly.ReflectionOnlyLoad(args.Name);
 		}
 
 		[STAThread]
