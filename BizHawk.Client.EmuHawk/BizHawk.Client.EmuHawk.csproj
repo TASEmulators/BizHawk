@@ -1895,6 +1895,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="images\StopButton.png" />
+    <None Include="images\mame.png" />
     <None Include="Resources\MoveTop.png" />
     <None Include="Resources\MoveBottom.png" />
     <None Include="Resources\MoveTop.bmp" />
@@ -2224,6 +2225,7 @@
     <None Include="images\ESE.png" />
     <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="config\ControllerImages\ZXSpectrumKeyboards.png" />
+    <None Include="images\ControllerImages\ArcadeController.jpg" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

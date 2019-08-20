@@ -123,6 +123,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ArcadeController {
+            get {
+                object obj = ResourceManager.GetObject("ArcadeController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap atari_controller {
             get {
                 object obj = ResourceManager.GetObject("atari_controller", resourceCulture);
@@ -866,6 +876,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap Lynx {
             get {
                 object obj = ResourceManager.GetObject("Lynx", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mame {
+            get {
+                object obj = ResourceManager.GetObject("mame", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

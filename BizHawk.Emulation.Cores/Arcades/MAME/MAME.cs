@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
-		private Dictionary<string, string> fieldsPorts = new Dictionary<string, string>();
+		private SortedDictionary<string, string> fieldsPorts = new SortedDictionary<string, string>();
 		private IController Controller = NullController.Instance;
 		private bool frameDone = false;
 		private bool commandDone = false;
@@ -361,15 +361,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			public const string GetInputFields =
 				"final = {} " +
-					"for tag, _ in pairs(manager:machine():ioport().ports) do " +
-						"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
-							"if field.type_class ~= \"dipswitch\" then " +
-								"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
-							"end " +
+				"for tag, _ in pairs(manager:machine():ioport().ports) do " +
+					"for name, field in pairs(manager:machine():ioport().ports[tag].fields) do " +
+						"if field.type_class ~= \"dipswitch\" then " +
+							"table.insert(final, string.format(\"%s,%s;\", tag, name)) " +
 						"end " +
 					"end " +
-					"table.sort(final) " +
-					"return table.concat(final)";
+				"end " +
+				"table.sort(final) " +
+				"return table.concat(final)";
 		}
 
 		#region IDisposable Support

@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
+			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);			
 		}
 
 		private ControllerConfig()
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
-		{
+			{
 			Input.Instance.ClearEvents();
 		}
 
