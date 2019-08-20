@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
@@ -28,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			MAMEThread = new Thread(ExecuteMAMEThread);
 			AsyncLaunchMAME();
+
+		//	this.Attributes().PortedVersion = "";
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -266,14 +269,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBootCallback()
 		{
+			double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
 			GetInputFields();
 			MAMEStartupComplete.Set();
 		}
 		
-		// mame sends osd_output_channel casted to int, we implicitly cast is back
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
-			Console.WriteLine($"[MAME { channel.ToString() }] { data.Replace('\n', ' ') }");
+			// mame sends osd_output_channel casted to int, we implicitly cast is back
+			if (!data.Contains("pause = "))
+			{
+				Console.WriteLine($"[MAME { channel.ToString() }] { data.Replace('\n', ' ') }");
+			}
 		}
 
 		private void FrameWait()
@@ -327,11 +334,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			numSamples = 0;
 		}
 
+		public void Dispose()
+		{
+			LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
+		}
+
 		private class MAMELuaCommand
 		{
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
+			public const string Exit = "manager:machine():exit()";
+
+			public const string GetVersion = "return tonumber(emu.app_version())";
 			public const string GetPixels = "return manager:machine():video():pixels()";
 			public const string GetSamples = "return manager:machine():sound():samples()";
 
@@ -371,42 +386,5 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"table.sort(final) " +
 				"return table.concat(final)";
 		}
-
-		#region IDisposable Support
-		private bool disposedValue = false; // To detect redundant calls
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!disposedValue)
-			{
-				if (disposing)
-				{
-					// TODO: dispose managed state (managed objects).
-				}
-
-				// TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-				// TODO: set large fields to null.
-
-				disposedValue = true;
-			}
-		}
-
-		// TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-		// ~MAME() {
-		//   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-		//   Dispose(false);
-		// }
-
-		// This code added to correctly implement the disposable pattern.
-		public void Dispose()
-		{
-			// Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-			Dispose(true);
-			// TODO: uncomment the following line if the finalizer is overridden above.
-			// GC.SuppressFinalize(this);
-		}
-
-		#endregion
-
 	}
 }
