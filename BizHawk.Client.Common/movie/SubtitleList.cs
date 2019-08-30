@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 			{
-				subs.Add(subtitle);
+				subs.Add(new Subtitle(subtitle));
 			}
 
 			// absense of line wrap forces miltiline subtitle macros
