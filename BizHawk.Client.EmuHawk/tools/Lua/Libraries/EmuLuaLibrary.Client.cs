@@ -106,10 +106,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("client.frameskip( 8 );")]
-		[LuaMethod("frameskip", "Sets the frame skip value of the client UI")]
+		[LuaMethod("frameskip", "Sets the frame skip value of the client UI (use 0 to disable)")]
 		public void FrameSkip(int numFrames)
 		{
-			if (numFrames > 0)
+			if (numFrames >= 0)
 			{
 				Global.Config.FrameSkip = numFrames;
 				GlobalWin.MainForm.FrameSkipMessage();
