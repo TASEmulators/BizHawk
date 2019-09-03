@@ -1087,13 +1087,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			_blip_L.EndFrame(master_audio_clock);
 			_blip_R.EndFrame(master_audio_clock);
-			
+
 			nsamp = _blip_L.SamplesAvailable();
 
 			samples = new short[nsamp * 2];
 
-			_blip_L.ReadSamplesLeft(samples, nsamp);
-			_blip_R.ReadSamplesRight(samples, nsamp);
+			if (nsamp != 0)
+			{
+				_blip_L.ReadSamplesLeft(samples, nsamp);
+				_blip_R.ReadSamplesRight(samples, nsamp);
+			}
 
 			master_audio_clock = 0;
 		}
