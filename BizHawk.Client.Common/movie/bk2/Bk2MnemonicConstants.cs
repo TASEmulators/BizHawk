@@ -338,6 +338,12 @@ namespace BizHawk.Client.Common
 			{
 				["Toggle Cable"] = 'L'
 			},
+			["GB3x"] = new Dictionary<string, char>
+			{
+				["Toggle Cable LC"] = 'L',
+				["Toggle Cable CR"] = 'C',
+				["Toggle Cable RL"] = 'R'
+			},
 			["Lynx"] = new Dictionary<string, char>
 			{
 				["Option 1"] = '1',

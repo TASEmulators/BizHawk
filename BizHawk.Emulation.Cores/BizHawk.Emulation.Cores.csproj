@@ -839,6 +839,31 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IDebuggable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IEmulator.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IInputPollable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IMemoryDomains.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ISaveRam.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ISettable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IStatable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3xControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3xControllers.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.ICodeDataLog.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IDebuggable.cs">

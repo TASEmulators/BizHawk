@@ -76,6 +76,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Dual Gameboy
 		/// </summary>
+		public static SystemInfo GB3x { get; } = new SystemInfo("Game Boy Link 3x", CoreSystem.GB3x, 3, StandardButtons);
+
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Dual Gameboy
+		/// </summary>
 		public static SystemInfo DualGB { get; } = new SystemInfo("Game Boy Link", CoreSystem.DualGameBoy, 2, StandardButtons);
 
 		/// <summary>

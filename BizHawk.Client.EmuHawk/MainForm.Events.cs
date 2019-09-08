@@ -2386,6 +2386,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region GB3x
+
+		private void GB3xSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+		}
+
+		#endregion
+
 		#region GGL
 
 		private void GGLSettingsMenuItem_Click(object sender, EventArgs e)

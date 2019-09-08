@@ -15,6 +15,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
@@ -659,6 +660,27 @@ namespace BizHawk.Client.Common
 									}
 										
 									// other stuff todo
+									break;
+								case "GB3x":
+									var leftBytes3x = xmlGame.Assets.First().Value;
+									var centerBytes3x = xmlGame.Assets.Skip(1).First().Value;
+									var rightBytes3x = xmlGame.Assets.Skip(2).First().Value;
+
+									var left3x = Database.GetGameInfo(leftBytes3x, "left.gb");
+									var center3x = Database.GetGameInfo(centerBytes3x, "center.gb");
+									var right3x = Database.GetGameInfo(rightBytes3x, "right.gb");
+
+									nextEmulator = new GBHawkLink3x(
+									nextComm,
+									left3x,
+									leftBytes3x,
+									center3x,
+									centerBytes3x,
+									right3x,
+									rightBytes3x,
+									GetCoreSettings<GBHawkLink3x>(),
+									GetCoreSyncSettings<GBHawkLink3x>());
+
 									break;
 								case "AppleII":
 									var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));

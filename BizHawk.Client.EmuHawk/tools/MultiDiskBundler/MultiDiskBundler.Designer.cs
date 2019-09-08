@@ -141,6 +141,7 @@
             "AppleII",
             "C64",
             "GB",
+			"GB3x",
             "PCFX",
             "PSX",
             "SAT",

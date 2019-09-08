@@ -34,6 +34,7 @@
         ZXSpectrum,
         AmstradCPC,
 		GGL,
-		ChannelF
+		ChannelF,
+		GB3x
 	}
 }
