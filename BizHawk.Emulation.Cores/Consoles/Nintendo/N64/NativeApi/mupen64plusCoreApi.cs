@@ -151,6 +151,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			AI_REG,
 
 			EEPROM = 100,
+			SRAM,
+			FLASHRAM,
 			MEMPAK1,
 			MEMPAK2,
 			MEMPAK3,
