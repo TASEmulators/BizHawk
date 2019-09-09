@@ -76,14 +76,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				HardReset();
 			}
 
-			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
-			if (cablediscosignalNew && !_cablediscosignal)
+			if (controller.IsPressed("Toggle Cable LC") | controller.IsPressed("Toggle Cable CR") | controller.IsPressed("Toggle Cable RL"))
 			{
-				_cableconnected ^= true;
-				Console.WriteLine("Cable connect status to {0}", _cableconnected);
-			}
+				// if any connection exists, disconnect it
+				// otherwise connect in order of precedence
+				// only one event can happen per frame, either a connection or disconnection
+				if (_cableconnected_LC | _cableconnected_CR | _cableconnected_RL)
+				{
+					_cableconnected_LC = _cableconnected_CR = _cableconnected_RL = false;
+					do_2_next = false;
+				}
+				else if (controller.IsPressed("Toggle Cable LC"))
+				{
+					_cableconnected_LC = true;
+				}
+				else if (controller.IsPressed("Toggle Cable CR"))
+				{
+					_cableconnected_CR = true;
+				}
+				else if (controller.IsPressed("Toggle Cable RL"))
+				{
+					_cableconnected_RL = true;
+				}
 
-			_cablediscosignal = cablediscosignalNew;
+				Console.WriteLine("Cable connect status:");
+				Console.WriteLine("LC: " + _cableconnected_LC);
+				Console.WriteLine("CR: " + _cableconnected_CR);
+				Console.WriteLine("RL: " + _cableconnected_RL);
+			}
 
 			_islag = true;
 
@@ -114,28 +134,86 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				C.do_single_step();
 				R.do_single_step();
 
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
+				if (_cableconnected_LC)
 				{
-					if (_cableconnected)
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_2_next)
 					{
 						L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
 
-						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
+						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
 						{
-							R.serialport.serial_clock = L.serialport.serial_clock;
-							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
-							R.serialport.coming_in = L.serialport.going_out;
+							C.serialport.serial_clock = L.serialport.serial_clock;
+							C.serialport.send_external_bit((byte)(C.serialport.serial_data & 0x80));
+							C.serialport.coming_in = L.serialport.going_out;
 						}
 
-						L.serialport.coming_in = R.serialport.going_out;
+						L.serialport.coming_in = C.serialport.going_out;
+					}
+					else if ((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2))
+					{
+						do_2_next = false;
+
+						C.serialport.send_external_bit((byte)(C.serialport.serial_data & 0x80));
+
+						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start)
+						{
+							L.serialport.serial_clock = C.serialport.serial_clock;
+							L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
+							L.serialport.coming_in = C.serialport.going_out;
+						}
+
+						C.serialport.coming_in = L.serialport.going_out;
+
+						if (C.serialport.serial_clock == 2) { do_2_next = true; }
+					}
+					else
+					{
+						do_2_next = false;
 					}
 				}
-				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
+				else if (_cableconnected_CR)
 				{
-					do_r_next = false;
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && !do_2_next)
+					{
+						C.serialport.send_external_bit((byte)(C.serialport.serial_data & 0x80));
 
-					if (_cableconnected)
+						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
+						{
+							R.serialport.serial_clock = C.serialport.serial_clock;
+							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
+							R.serialport.coming_in = C.serialport.going_out;
+						}
+
+						C.serialport.coming_in = R.serialport.going_out;
+					}
+					else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
+					{
+						do_2_next = false;
+
+						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
+
+						if ((C.serialport.clk_rate == -1) && C.serialport.serial_start)
+						{
+							C.serialport.serial_clock = R.serialport.serial_clock;
+							C.serialport.send_external_bit((byte)(C.serialport.serial_data & 0x80));
+							C.serialport.coming_in = R.serialport.going_out;
+						}
+
+						R.serialport.coming_in = C.serialport.going_out;
+
+						if (R.serialport.serial_clock == 2) { do_2_next = true; }
+					}
+					else
+					{
+						do_2_next = false;
+					}
+				}
+				else if (_cableconnected_RL)
+				{
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2)) && !do_2_next)
 					{
 						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
 
@@ -148,13 +226,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 						R.serialport.coming_in = L.serialport.going_out;
 					}
+					else if ((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2))
+					{
+						do_2_next = false;
 
-					if (R.serialport.serial_clock == 2) { do_r_next = true; }
+						L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
+
+						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
+						{
+							R.serialport.serial_clock = L.serialport.serial_clock;
+							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
+							R.serialport.coming_in = L.serialport.going_out;
+						}
+
+						L.serialport.coming_in = R.serialport.going_out;
+
+						if (L.serialport.serial_clock == 2) { do_2_next = true; }
+					}
+					else
+					{
+						do_2_next = false;
+					}
 				}
-				else
-				{
-					do_r_next = false;
-				}
+
 
 				// if we hit a frame boundary, update video
 				if (L.vblank_rise)

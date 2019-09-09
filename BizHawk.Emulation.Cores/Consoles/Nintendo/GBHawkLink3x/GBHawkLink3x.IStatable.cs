@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public void SaveStateText(TextWriter writer)
 		{
 			L.SaveStateText(writer);
+			C.SaveStateText(writer);
 			R.SaveStateText(writer);
 			SyncState(new Serializer(writer));
 		}
@@ -21,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public void LoadStateText(TextReader reader)
 		{
 			L.LoadStateText(reader);
+			C.LoadStateText(reader);
 			R.LoadStateText(reader);
 			SyncState(new Serializer(reader));
 		}
@@ -28,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public void SaveStateBinary(BinaryWriter bw)
 		{
 			L.SaveStateBinary(bw);
+			C.SaveStateBinary(bw);
 			R.SaveStateBinary(bw);
 			// other variables
 			SyncState(new Serializer(bw));
@@ -36,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public void LoadStateBinary(BinaryReader br)
 		{
 			L.LoadStateBinary(br);
+			C.LoadStateBinary(br);
 			R.LoadStateBinary(br);
 			// other variables
 			SyncState(new Serializer(br));
@@ -57,9 +61,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
-			ser.Sync(nameof(_cableconnected), ref _cableconnected);
-			ser.Sync(nameof(_cablediscosignal), ref _cablediscosignal);
-			ser.Sync(nameof(do_r_next), ref do_r_next);
+			ser.Sync(nameof(_cableconnected_LC), ref _cableconnected_LC);
+			ser.Sync(nameof(_cableconnected_CR), ref _cableconnected_CR);
+			ser.Sync(nameof(_cableconnected_RL), ref _cableconnected_RL);
+			ser.Sync(nameof(do_2_next), ref do_2_next);
 			_controllerDeck.SyncState(ser);
 		}
 	}

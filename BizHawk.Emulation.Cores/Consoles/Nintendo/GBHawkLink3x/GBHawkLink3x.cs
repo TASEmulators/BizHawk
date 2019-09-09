@@ -22,12 +22,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public GBHawk.GBHawk R;
 
 		// if true, the link cable is currently connected
-		private bool _cableconnected = true;
+		private bool _cableconnected_LC = false;
+		private bool _cableconnected_CR = false;
+		private bool _cableconnected_RL = false;
 
-		// if true, the link cable toggle signal is currently asserted
-		private bool _cablediscosignal = false;
-
-		private bool do_r_next = false;
+		private bool do_2_next = false;
 
 		//[CoreConstructor("GB", "GBC")]
 		public GBHawkLink3x(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_C, byte[] rom_C, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
