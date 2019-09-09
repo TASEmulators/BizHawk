@@ -90,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			MakeMemoryDomain("AI Register", mupen64plusApi.N64_MEMORY.AI_REG, MemoryDomain.Endian.Little);
 
 			MakeMemoryDomain("EEPROM", mupen64plusApi.N64_MEMORY.EEPROM, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("SRAM", mupen64plusApi.N64_MEMORY.SRAM, MemoryDomain.Endian.Little);
+			MakeMemoryDomain("FlashRAM", mupen64plusApi.N64_MEMORY.FLASHRAM, MemoryDomain.Endian.Little);
 
 			if (_syncSettings.Controllers[0].IsConnected &&
 				_syncSettings.Controllers[0].PakType == N64SyncSettings.N64ControllerSettings.N64ControllerPakType.MEMORY_CARD)
