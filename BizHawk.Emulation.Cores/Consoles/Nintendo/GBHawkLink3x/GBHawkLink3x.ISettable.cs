@@ -57,8 +57,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			public enum AudioSrc
 			{
 				Left,
+				Center,
 				Right,
-				Both
+				None
 			}
 
 			[DisplayName("Audio Selection")]

@@ -378,6 +378,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				samples = temp_samp_L;
 				nsamp = nsamp_L;
 			}
+			else if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Center)
+			{
+				samples = temp_samp_C;
+				nsamp = nsamp_C;
+			}
 			else if (Link3xSettings.AudioSet == GBLink3xSettings.AudioSrc.Right)
 			{
 				samples = temp_samp_R;
