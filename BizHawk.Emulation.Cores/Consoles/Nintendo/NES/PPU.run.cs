@@ -991,7 +991,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void TickPPU_preVBL()
 		{
-			if (ppur.status.cycle == 340)
+			if ((ppur.status.cycle == 340) && (ppur.status.sl == 241 + preNMIlines - 1))
 			{
 				Reg2002_vblank_active_pending = true;
 			}
@@ -1000,16 +1000,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (ppur.status.cycle == 341)
 			{
-				if (Reg2002_vblank_active_pending)
-				{
-					Reg2002_vblank_active = 1;
-					Reg2002_vblank_active_pending = false;
-				}
-
 				ppur.status.cycle = 0;
 				ppur.status.sl++;
+
 				if (ppur.status.sl == 241 + preNMIlines)
 				{
+					if (Reg2002_vblank_active_pending)
+					{
+						Reg2002_vblank_active = 1;
+						Reg2002_vblank_active_pending = false;
+					}
+
 					do_pre_vbl = false;
 					do_vbl = true;
 
