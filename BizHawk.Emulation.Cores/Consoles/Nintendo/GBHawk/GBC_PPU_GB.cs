@@ -2,10 +2,12 @@
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
-// GBC ppu, closer to the GB ppu in timing and quirks
+// Gameboy compatibility mode for GBC console
+// only entered from writing to register 0xFF4C
+// has several quirks not present in GB ppu
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	public class GBC_PPU : PPU
+	public class GBC_PPU_GB : PPU
 	{
 		// individual byte used in palette colors
 		public byte[] BG_bytes = new byte[64];

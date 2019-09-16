@@ -152,6 +152,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		}
 
+		public virtual void Reg_Copy(GBC_PPU ppu2)
+		{
+
+		}
+
 		// order sprites according to x coordinate
 		// note that for sprites of equal x coordinate, priority goes to first on the list
 		public virtual void reorder_and_assemble_sprites()

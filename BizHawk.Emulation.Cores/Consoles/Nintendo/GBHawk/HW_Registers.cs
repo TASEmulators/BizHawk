@@ -346,11 +346,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// GBC compatibility register (I think)
 				case 0xFF4C:
-					if ((value != 0xC0) && (value != 0x80))
+					if ((value != 0xC0) && (value != 0x80))// && (value != 0xFF) && (value != 0x04))
 					{
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
 						GBC_compat = false;
+
+						if (GB_bios_register == 0)
+						{
+							var ppu2 = new GBC_PPU();
+
+							ppu2.Reg_Copy(ppu as GBC_PPU);
+
+							ppu = new GBC_PPU_GB();
+							ppu.Core = this;
+							ppu.Reg_Copy(ppu2);
+						}
+
 						// cpu operation is a function of hardware only
 						//cpu.is_GBC = GBC_compat;
 					}
@@ -374,8 +386,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Bios control register. Writing 1 permanently disables BIOS until a power cycle occurs
 				case 0xFF50:
-					//Console.WriteLine(value);
-					if (GB_bios_register != 1)
+					// Console.WriteLine(value);
+					if (GB_bios_register == 0)
 					{
 						GB_bios_register = value;
 					}			

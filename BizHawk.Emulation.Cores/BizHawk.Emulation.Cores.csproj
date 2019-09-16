@@ -940,6 +940,9 @@
     <Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU.cs">
       <DependentUpon>PPU.cs</DependentUpon>
     </Compile>
+	<Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU_GB.cs">
+      <DependentUpon>PPU.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBHawk\GB_PPU.cs">
       <DependentUpon>PPU.cs</DependentUpon>
     </Compile>
