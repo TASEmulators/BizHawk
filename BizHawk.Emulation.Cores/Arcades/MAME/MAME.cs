@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		name: "MAME",
 		author: "MAMEDev",
 		isPorted: true,
-		portedVersion: "0.209",
+		portedVersion: "0.211",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider
@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			MAMEThread = new Thread(ExecuteMAMEThread);
 			AsyncLaunchMAME();
-
-		//	this.Attributes().PortedVersion = "";
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -91,6 +89,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-norewind"                     // forbid rewind savestates (captured upon frame advance)
 				, "-skip_gameinfo"                // forbid this blocking screen that requires user input
 				, "-rompath",          directory  // mame doesn't load roms from full paths, only from dirs to scan
+				, "-nothrottle"                   // forbid throttling to "real" speed of the device
+				, "-update_in_pause"              // ^ including frame-advancing
 				, "-volume",           "-32"      // lowest attenuation means mame osd remains silent
 				, "-output",           "console"
 				, "-samplerate",       "44100"
@@ -111,26 +111,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateAspect()
 		{
-			double x = LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
-			double y = LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
-			double ratio = x / y;
-			if (ratio <= 1)
-			{
-				//taller. expand height.
-				VirtualWidth = BufferWidth;
-				VirtualHeight = (int)(BufferWidth / ratio);
-			}
-			else
-			{
-				//wider. expand width.
-				VirtualWidth = (int)(BufferHeight * ratio);
-				VirtualHeight = BufferHeight;
-			}
+			int x = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
+			int y = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
+
+			VirtualHeight = BufferWidth > BufferHeight * x / y
+				? BufferWidth * y / x
+				: BufferHeight;
+			VirtualWidth = VirtualHeight * x / y;
 		}
 
 		private void UpdateVideo()
 		{
-		//	int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+			int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
 			int expectedSize = BufferWidth * BufferHeight;
@@ -139,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out lengthInBytes);
 
-			if (ptr == null)
+			if (ptr == IntPtr.Zero)
 			{
 				Console.WriteLine("LibMAME ERROR: frame buffer pointer is null");
 				return;
@@ -175,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			int lengthInBytes;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
 
-			if (ptr == null)
+			if (ptr == IntPtr.Zero)
 			{
 				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
 				return;
@@ -196,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			int lengthInBytes;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
 
-			if (ptr == null)
+			if (ptr == IntPtr.Zero)
 			{
 				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
 				return;
@@ -242,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Controller = controller;
-			LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
+		//	LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
 			FrameWait();
 			Frame++;
 			CommandWait();
@@ -255,7 +247,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateFramerate();
 			UpdateVideo();
 			UpdateAspect();
-			UpdateAudio();
+		//	UpdateAudio();
 			UpdateInput();
 			frameDone = true;
 			MAMEFrameComplete.Set();
@@ -269,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBootCallback()
 		{
-			double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
+		//	double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
 			GetInputFields();
 			MAMEStartupComplete.Set();
 		}
@@ -337,6 +329,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public void Dispose()
 		{
 			LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
+			CommandWait();
 		}
 
 		private class MAMELuaCommand
