@@ -28,6 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		private bool do_2_next = false;
 
+		public byte L_controller, C_controller, R_controller;
+
+		public bool do_frame_fill;
+
 		//[CoreConstructor("GB", "GBC")]
 		public GBHawkLink3x(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_C, byte[] rom_C, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{

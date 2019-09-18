@@ -290,6 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)

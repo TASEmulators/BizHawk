@@ -65,7 +65,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			ser.Sync(nameof(_cableconnected_CR), ref _cableconnected_CR);
 			ser.Sync(nameof(_cableconnected_RL), ref _cableconnected_RL);
 			ser.Sync(nameof(do_2_next), ref do_2_next);
+			ser.Sync(nameof(L_controller), ref L_controller);
+			ser.Sync(nameof(C_controller), ref C_controller);
+			ser.Sync(nameof(R_controller), ref R_controller);
 			_controllerDeck.SyncState(ser);
+
+			if (ser.IsReader)
+			{
+				FillVideoBuffer();
+			}
 		}
 	}
 }

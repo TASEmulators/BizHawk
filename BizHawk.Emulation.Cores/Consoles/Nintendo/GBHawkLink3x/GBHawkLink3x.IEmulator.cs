@@ -109,9 +109,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 			GetControllerState(controller);
 
+			do_frame_fill = false;
 			do_frame();
+			if (do_frame_fill)
+			{
+				FillVideoBuffer();
+			}
 
-			_islag = L._islag;
+			_islag = L._islag & C._islag & R._islag;
 
 			if (_islag)
 			{
@@ -123,10 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public void do_frame()
 		{
-			L.do_controller_check();
-			C.do_controller_check();
-			R.do_controller_check();
-			
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
 			{
@@ -253,21 +254,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 				// if we hit a frame boundary, update video
 				if (L.vblank_rise)
 				{
-					buff_L = L.GetVideoBuffer();
+					// update the controller state on VBlank
+					L.controller_state = L_controller;
+
+					// check if controller state caused interrupt
+					L.do_controller_check();
+
+					// send the image on VBlank
+					L.SendVideoBuffer();
+					for (int j = 0; j < L._vidbuffer.Length; j++) { L.frame_buffer[j] = L._vidbuffer[j]; }
+
 					L.vblank_rise = false;
-					FillVideoBuffer();
+					do_frame_fill = true;
 				}
 				if (C.vblank_rise)
 				{
-					buff_C = C.GetVideoBuffer();
+					// update the controller state on VBlank
+					C.controller_state = C_controller;
+
+					// check if controller state caused interrupt
+					C.do_controller_check();
+
+					// send the image on VBlank
+					C.SendVideoBuffer();
+					for (int j = 0; j < C._vidbuffer.Length; j++) { C.frame_buffer[j] = C._vidbuffer[j]; }
+
 					C.vblank_rise = false;
-					FillVideoBuffer();
+					do_frame_fill = true;
 				}
 				if (R.vblank_rise)
 				{
-					buff_R = R.GetVideoBuffer();
+					// update the controller state on VBlank
+					R.controller_state = R_controller;
+
+					// check if controller state caused interrupt
+					R.do_controller_check();
+
+					// send the image on VBlank
+					R.SendVideoBuffer();
+					for (int j = 0; j < R._vidbuffer.Length; j++) { R.frame_buffer[j] = R._vidbuffer[j]; }
+
 					R.vblank_rise = false;
-					FillVideoBuffer();
+					do_frame_fill = true;
 				}
 			}			
 		}
@@ -275,9 +303,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
-			L.controller_state = _controllerDeck.ReadPort1(controller);
-			C.controller_state = _controllerDeck.ReadPort2(controller);
-			R.controller_state = _controllerDeck.ReadPort3(controller);
+			L_controller = _controllerDeck.ReadPort1(controller);
+			C_controller = _controllerDeck.ReadPort2(controller);
+			R_controller = _controllerDeck.ReadPort3(controller);
 		}
 
 		public int Frame => _frame;
@@ -307,9 +335,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 		public int _frameHz = 60;
 
 		public int[] _vidbuffer = new int[160 * 2 * 144 * 2];
-		public int[] buff_L = new int[160 * 144];
-		public int[] buff_C = new int[160 * 144];
-		public int[] buff_R = new int[160 * 144];
 
 		public int[] GetVideoBuffer()
 		{
@@ -323,9 +348,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			{
 				for (int j = 0; j < 160; j++)
 				{
-					_vidbuffer[i * 320 + j] = buff_L[i * 160 + j];
-					_vidbuffer[(i + 144) * 320 + j + 80] = buff_C[i * 160 + j];
-					_vidbuffer[i * 320 + j + 160] = buff_R[i * 160 + j];
+					_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
+					_vidbuffer[(i + 144) * 320 + j + 80] = C.frame_buffer[i * 160 + j];
+					_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
 				}
 			}
 		}
