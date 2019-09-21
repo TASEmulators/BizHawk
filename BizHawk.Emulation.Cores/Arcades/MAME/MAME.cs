@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			AsyncLaunchMAME();
 		}
 
+		#region Properties
+
 		public CoreComm CoreComm { get; private set; }
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 		public ControllerDefinition ControllerDefinition => MAMEController;
@@ -48,10 +50,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int VsyncNumerator { get; private set; } = 60;
 		public int VsyncDenominator { get; private set; } = 1;
 
+		#endregion
+
+		#region Fields
+
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
-		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
 		private SortedDictionary<string, string> fieldsPorts = new SortedDictionary<string, string>();
 		private IController Controller = NullController.Instance;
 		private int[] frameBuffer = new int[0];
@@ -62,6 +67,76 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
+
+		#endregion
+
+		#region IEmulator
+
+		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
+		{
+			if (exiting)
+			{
+				return false;
+			}
+
+			Controller = controller;
+			paused = false;
+
+			FrameWait();
+
+			return true;
+		}
+
+		private void FrameWait()
+		{
+			for (frameDone = false; frameDone == false;)
+			{
+				MAMEFrameComplete.WaitOne();
+			}
+		}
+
+		public void ResetCounters()
+		{
+			Frame = 0;
+		}
+
+		public void Dispose()
+		{
+			exiting = true;
+			MAMEThread.Join();
+		}
+
+		#endregion
+
+		#region ISoundProvider
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			samples = audioBuffer;
+			nsamp = numSamples;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+			numSamples = 0;
+		}
+
+		#endregion
+
+		#region Launchers
 
 		private void AsyncLaunchMAME()
 		{
@@ -98,6 +173,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			LibMAME.mame_launch(args.Length, args);
 		}
+
+		#endregion
+
+		#region Updaters
 
 		private void UpdateFramerate()
 		{
@@ -178,6 +257,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		private void UpdateInput()
+		{
+			foreach (var fieldPort in fieldsPorts)
+			{
+				LibMAME.mame_lua_execute(string.Concat(
+					"manager:machine():ioport().ports[\"",
+					fieldPort.Value,
+					"\"].fields[\"",
+					fieldPort.Key,
+					"\"]:set_value(",
+					(Controller.IsPressed(fieldPort.Key) ? 1 : 0),
+					")"));
+			}
+		}
+
 		private void CheckVersions()
 		{
 			int lengthInBytes;
@@ -197,69 +291,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"MAMEHawk is ", version));
 		}
 
-		private void GetInputFields()
-		{
-			int lengthInBytes;
+		#endregion
 
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
-
-			if (ptr == IntPtr.Zero)
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
-				return;
-			}
-
-			string inputFields = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
-			string[] portFields = inputFields.Split(';');
-
-			foreach (string portField in portFields)
-			{
-				if (portField != string.Empty)
-				{
-					string[] substrings = portField.Split(',');
-					string tag = substrings.First();
-					string field = substrings.Last();
-
-					fieldsPorts.Add(field, tag);
-					MAMEController.BoolButtons.Add(field);
-				}
-			}
-
-			if (!LibMAME.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
-			}
-		}
-
-		private void UpdateInput()
-		{
-			foreach (var fieldPort in fieldsPorts)
-			{
-				LibMAME.mame_lua_execute(string.Concat(
-					"manager:machine():ioport().ports[\"",
-					fieldPort.Value,
-					"\"].fields[\"",
-					fieldPort.Key,
-					"\"]:set_value(",
-					(Controller.IsPressed(fieldPort.Key) ? 1 : 0),
-					")"));
-			}
-		}
-
-		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
-		{
-			if (exiting)
-			{
-				return false;
-			}
-
-			Controller = controller;
-			paused = false;
-
-			FrameWait();
-
-			return true;
-		}
+		#region Callbacks
 
 		private void MAMEFrameCallback()
 		{
@@ -319,13 +353,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void FrameWait()
-		{
-			for (frameDone = false; frameDone == false;)
-			{
-				MAMEFrameComplete.WaitOne();
-			}
-		}
+		#endregion
+
+		#region Input
 
 		public static ControllerDefinition MAMEController = new ControllerDefinition
 		{
@@ -333,40 +363,43 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			BoolButtons = new List<string>()
 		};
 
-		public void ResetCounters()
+		private void GetInputFields()
 		{
-			Frame = 0;
-		}
+			int lengthInBytes;
 
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
+
+			if (ptr == IntPtr.Zero)
 			{
-				throw new NotSupportedException("Async mode is not supported.");
+				Console.WriteLine("LibMAME ERROR: string buffer pointer is null");
+				return;
+			}
+
+			string inputFields = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			string[] portFields = inputFields.Split(';');
+
+			foreach (string portField in portFields)
+			{
+				if (portField != string.Empty)
+				{
+					string[] substrings = portField.Split(',');
+					string tag = substrings.First();
+					string field = substrings.Last();
+
+					fieldsPorts.Add(field, tag);
+					MAMEController.BoolButtons.Add(field);
+				}
+			}
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
 			}
 		}
 
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = audioBuffer;
-			nsamp = numSamples;
-		}
+		#endregion
 
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-			numSamples = 0;
-		}
-
-		public void Dispose()
-		{
-			exiting = true;
-			MAMEThread.Join();
-		}
+		#region Lua Commands
 
 		private class MAMELuaCommand
 		{
@@ -415,5 +448,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				"table.sort(final) " +
 				"return table.concat(final)";
 		}
+
+		#endregion
 	}
 }
