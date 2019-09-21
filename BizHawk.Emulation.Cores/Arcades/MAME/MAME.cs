@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Diagnostics;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -26,8 +26,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			CoreComm = comm;
 			gameDirectory = dir;
 			gameFilename = file;
-
 			MAMEThread = new Thread(ExecuteMAMEThread);
+
 			AsyncLaunchMAME();
 		}
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public bool DeterministicEmulation => true;
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-		public int BackgroundColor => unchecked((int)0x00000000);
+		public int BackgroundColor => 0;
 		public int Frame { get; private set; }
 		public int VirtualWidth { get; private set; } = 320;
 		public int VirtualHeight { get; private set; } = 240;
@@ -76,32 +76,27 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_set_boot_callback(MAMEBootCallback);
 			LibMAME.mame_set_log_callback(MAMELogCallback);
 
-			string[] args = MakeCommandline(gameDirectory, gameFilename);
-
-			LibMAME.mame_launch(args.Length, args);
-		}
-
-		// https://docs.mamedev.org/commandline/commandline-index.html
-		private string[] MakeCommandline(string directory, string rom)
-		{
-			return new string[] {
-				 "mame"                           // dummy, internally discarded by index, so has to go first
-				, rom                             // no dash for rom names
-				, "-noreadconfig"                 // forbid reading any config files
-				, "-norewind"                     // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                // forbid this blocking screen that requires user input
-				, "-rompath",          directory  // mame doesn't load roms from full paths, only from dirs to scan
-				, "-nothrottle"                   // forbid throttling to "real" speed of the device
-				, "-update_in_pause"              // ^ including frame-advancing
-				, "-volume",           "-32"      // lowest attenuation means mame osd remains silent
-				, "-output",           "console"
-				, "-samplerate",       "44100"
-				, "-video",            "none"     // forbid mame window altogether
+			// https://docs.mamedev.org/commandline/commandline-index.html
+			string[] args = new string[] {
+				 "mame"                       // dummy, internally discarded by index, so has to go first
+				, gameFilename                // no dash for rom names
+				, "-noreadconfig"             // forbid reading any config files
+				, "-norewind"                 // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"            // forbid this blocking screen that requires user input
+				, "-nothrottle"               // forbid throttling to "real" speed of the device
+				, "-update_in_pause"          // ^ including frame-advancing
+				, "-rompath",   gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
+				, "-volume",            "-32" // lowest attenuation means mame osd remains silent
+				, "-output",        "console" // print everyting to hawk console
+				, "-samplerate",      "44100" // match hawk samplerate
+				, "-video",            "none" // forbid mame window altogether
 				, "-keyboardprovider", "none"
 				, "-mouseprovider",    "none"
 				, "-lightgunprovider", "none"
 				, "-joystickprovider", "none"
 			};
+
+			LibMAME.mame_launch(args.Length, args);
 		}
 
 		private void UpdateFramerate()
@@ -115,7 +110,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			int x = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundX);
 			int y = (int)LibMAME.mame_lua_get_double(MAMELuaCommand.GetBoundY);
-
 			VirtualHeight = BufferWidth > BufferHeight * x / y
 				? BufferWidth * y / x
 				: BufferHeight;
@@ -126,11 +120,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
-
 			int expectedSize = BufferWidth * BufferHeight;
 			int bytesPerPixel = 4;
 			int lengthInBytes;
-
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -151,7 +143,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			frameBuffer = new int[expectedSize];
-
 			Marshal.Copy(ptr, frameBuffer, 0, expectedSize);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
@@ -168,7 +159,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			int lengthInBytes;
-
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -186,6 +176,25 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
 			}
+		}
+
+		private void CheckVersions()
+		{
+			int lengthInBytes;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetVersion, out lengthInBytes);
+			string MAMEVersion = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
+			}
+
+			string version = this.Attributes().PortedVersion;
+
+			Debug.Assert(version == MAMEVersion, string.Concat(
+				"MAME versions desync!\n\n",
+				"MAME is ", MAMEVersion, "\n",
+				"MAMEHawk is ", version));
 		}
 
 		private void GetInputFields()
@@ -226,14 +235,14 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			foreach (var fieldPort in fieldsPorts)
 			{
-				LibMAME.mame_lua_execute(
-					"manager:machine():ioport().ports[\"" +
-					fieldPort.Value +
-					"\"].fields[\"" +
-					fieldPort.Key +
-					"\"]:set_value(" +
-					(Controller.IsPressed(fieldPort.Key) ? 1 : 0) +
-					")");
+				LibMAME.mame_lua_execute(string.Concat(
+					"manager:machine():ioport().ports[\"",
+					fieldPort.Value,
+					"\"].fields[\"",
+					fieldPort.Key,
+					"\"]:set_value(",
+					(Controller.IsPressed(fieldPort.Key) ? 1 : 0),
+					")"));
 			}
 		}
 
@@ -259,9 +268,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			int MAMEframe = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+			int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 
-			if (MAMEframe == Frame && Frame > 0)
+			if (MAMEFrame == Frame && Frame > 0)
 			{
 				return;
 			}
@@ -272,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateAudio();
 			UpdateInput();
 
-			Frame = MAMEframe;
+			Frame = MAMEFrame;
 			frameDone = true;
 
 			MAMEFrameComplete.Set();
@@ -295,9 +304,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMEBootCallback()
 		{
-			double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
 			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
-
+			CheckVersions();
 			GetInputFields();
 			MAMEStartupComplete.Set();
 		}
@@ -367,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Unpause = "emu.unpause()";
 			public const string Exit = "manager:machine():exit()";
 
-			public const string GetVersion = "return tonumber(emu.app_version())";
+			public const string GetVersion = "return emu.app_version()";
 			public const string GetPixels = "return manager:machine():video():pixels()";
 			public const string GetSamples = "return manager:machine():sound():samples()";
 
