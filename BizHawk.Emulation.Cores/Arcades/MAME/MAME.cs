@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public bool DeterministicEmulation => true;
 		public bool CanProvideAsync => false;
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-		public int BackgroundColor => unchecked((int)0xFF0000FF);
+		public int BackgroundColor => unchecked((int)0x00000000);
 		public int Frame { get; private set; }
 		public int VirtualWidth { get; private set; } = 320;
 		public int VirtualHeight { get; private set; } = 240;
@@ -54,10 +54,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private ManualResetEvent MAMECommandComplete = new ManualResetEvent(false);
 		private SortedDictionary<string, string> fieldsPorts = new SortedDictionary<string, string>();
 		private IController Controller = NullController.Instance;
-		private bool frameDone = false;
-		private bool commandDone = false;
 		private int[] frameBuffer = new int[0];
 		private short[] audioBuffer = new short[0];
+		private bool paused = true;
+		private bool exiting = false;
+		private bool frameDone = false;
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
@@ -76,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_set_log_callback(MAMELogCallback);
 
 			string[] args = MakeCommandline(gameDirectory, gameFilename);
+
 			LibMAME.mame_launch(args.Length, args);
 		}
 
@@ -122,9 +124,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateVideo()
 		{
-			int frame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 			BufferWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetWidth);
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
+
 			int expectedSize = BufferWidth * BufferHeight;
 			int bytesPerPixel = 4;
 			int lengthInBytes;
@@ -149,6 +151,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			frameBuffer = new int[expectedSize];
+
 			Marshal.Copy(ptr, frameBuffer, 0, expectedSize);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
@@ -165,6 +168,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			int lengthInBytes;
+
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -175,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			numSamples = lengthInBytes / 4;
 			audioBuffer = new short[numSamples * 2];
+
 			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
@@ -186,6 +191,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void GetInputFields()
 		{
 			int lengthInBytes;
+
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
@@ -233,35 +239,65 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			if (exiting)
+			{
+				return false;
+			}
+
 			Controller = controller;
-		//	LibMAME.mame_lua_execute(MAMELuaCommand.Unpause);
+			paused = false;
+
 			FrameWait();
-			Frame++;
-			CommandWait();
+
 			return true;
 		}
 
 		private void MAMEFrameCallback()
 		{
-			LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+			if (exiting)
+			{
+				return;
+			}
+
+			int MAMEframe = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+
+			if (MAMEframe == Frame && Frame > 0)
+			{
+				return;
+			}
+
 			UpdateFramerate();
 			UpdateVideo();
 			UpdateAspect();
-		//	UpdateAudio();
+			UpdateAudio();
 			UpdateInput();
+
+			Frame = MAMEframe;
 			frameDone = true;
+
 			MAMEFrameComplete.Set();
 		}
 		
 		private void MAMEPeriodicCallback()
 		{
-			commandDone = true;
-			MAMECommandComplete.Set();
+			if (exiting)
+			{
+				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
+				exiting = false;
+			}
+
+			if (!paused)
+			{
+				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+				paused = true;
+			}
 		}
 
 		private void MAMEBootCallback()
 		{
-		//	double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
+			double version = LibMAME.mame_lua_get_double(MAMELuaCommand.GetVersion);
+			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
+
 			GetInputFields();
 			MAMEStartupComplete.Set();
 		}
@@ -280,14 +316,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			for (frameDone = false; frameDone == false;)
 			{
 				MAMEFrameComplete.WaitOne();
-			}
-		}
-
-		private void CommandWait()
-		{
-			for (commandDone = false; commandDone == false;)
-			{
-				MAMECommandComplete.WaitOne();
 			}
 		}
 
@@ -328,8 +356,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void Dispose()
 		{
-			LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
-			CommandWait();
+			exiting = true;
+			MAMEThread.Join();
 		}
 
 		private class MAMELuaCommand
