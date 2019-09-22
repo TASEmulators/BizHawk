@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private short[] audioBuffer = new short[0];
 		private bool paused = true;
 		private bool exiting = false;
-		private bool frameDone = false;
+		private bool frameDone = true;
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
@@ -81,18 +81,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			Controller = controller;
 			paused = false;
+			frameDone = false;
 
-			FrameWait();
-
-			return true;
-		}
-
-		private void FrameWait()
-		{
-			for (frameDone = false; frameDone == false;)
+			for (; frameDone == false;)
 			{
 				MAMEFrameComplete.WaitOne();
 			}
+
+			Frame++;
+
+			return true;
 		}
 
 		public void ResetCounters()
@@ -146,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void ExecuteMAMEThread()
 		{
-			LibMAME.mame_set_frame_callback(MAMEFrameCallback);
 			LibMAME.mame_set_periodic_callback(MAMEPeriodicCallback);
 			LibMAME.mame_set_boot_callback(MAMEBootCallback);
 			LibMAME.mame_set_log_callback(MAMELogCallback);
@@ -214,10 +211,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			{
 				Console.WriteLine(
 					"LibMAME ERROR: frame buffer has wrong size\n" +
-					$"width:    {BufferWidth} pixels\n" +
-					$"height:   {BufferHeight} pixels\n" +
-					$"expected: {expectedSize * bytesPerPixel} bytes\n" +
-					$"received: {lengthInBytes} bytes\n");
+					$"width:    { BufferWidth                  } pixels\n" +
+					$"height:   { BufferHeight                 } pixels\n" +
+					$"expected: { expectedSize * bytesPerPixel } bytes\n" +
+					$"received: { lengthInBytes                } bytes\n");
 				return;
 			}
 
@@ -232,11 +229,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void UpdateAudio()
 		{
-			if (Frame == 0)
-			{
-				return;
-			}
-
 			int lengthInBytes;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
 
@@ -248,7 +240,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			numSamples = lengthInBytes / 4;
 			audioBuffer = new short[numSamples * 2];
-
 			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
@@ -261,15 +252,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			foreach (var fieldPort in fieldsPorts)
 			{
-				LibMAME.mame_lua_execute(string.Concat(
-					"manager:machine():ioport().ports[\"",
-					fieldPort.Value,
-					"\"].fields[\"",
-					fieldPort.Key,
-					"\"]:set_value(",
-					(Controller.IsPressed(fieldPort.Key) ? 1 : 0),
-					")"));
+				LibMAME.mame_lua_execute(
+					"manager:machine():ioport()" +
+					$".ports  [\"{ fieldPort.Value }\"]" +
+					$".fields [\"{ fieldPort.Key   }\"]" +
+					$":set_value({ (Controller.IsPressed(fieldPort.Key) ? 1 : 0) })");
 			}
+		}
+
+		private void Update()
+		{
+			UpdateFramerate();
+			UpdateVideo();
+			UpdateAspect();
+			UpdateAudio();
+			UpdateInput();
 		}
 
 		private void CheckVersions()
@@ -284,43 +281,46 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			string version = this.Attributes().PortedVersion;
-
-			Debug.Assert(version == MAMEVersion, string.Concat(
-				"MAME versions desync!\n\n",
-				"MAME is ", MAMEVersion, "\n",
-				"MAMEHawk is ", version));
+			Debug.Assert(version == MAMEVersion,
+				"MAME versions desync!\n\n" +
+				$"MAME is { MAMEVersion }\n" +
+				$"MAMEHawk is { version }");
 		}
 
 		#endregion
 
 		#region Callbacks
 
-		private void MAMEFrameCallback()
-		{
-			if (exiting)
-			{
-				return;
-			}
-
-			int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
-
-			if (MAMEFrame == Frame && Frame > 0)
-			{
-				return;
-			}
-
-			UpdateFramerate();
-			UpdateVideo();
-			UpdateAspect();
-			UpdateAudio();
-			UpdateInput();
-
-			Frame = MAMEFrame;
-			frameDone = true;
-
-			MAMEFrameComplete.Set();
-		}
-		
+		/*
+		 * FrameAdvance() and MAME
+		 * 
+		 * MAME fires the periodic callback on every video and debugger update,
+		 * which happens every VBlank and also repeatedly at certain time
+		 * intervals while paused. Since MAME's luaengine runs in a separate
+		 * thread, it's only safe to update everything we need per frame during
+		 * this callback, when it's explicitly waiting for further lua commands.
+		 * 
+		 * If we disable throttling and pass -update_in_pause, there will be no
+		 * delay between video updates. This allows to run at full speed while
+		 * frame-stepping.
+		 * 
+		 * MAME only captures new frame data once per VBlank, while unpaused.
+		 * But it doesn't have an exclusive VBlank callback we could attach to.
+		 * It has a LUA_ON_FRAME_DONE callback, but that fires even more
+		 * frequently and updates all sorts of other non-video stuff, and we
+		 * need none of that here.
+		 * 
+		 * So we filter out all the calls that happen while paused (non-VBlank
+		 * updates). Then, when Hawk asks us to advance a frame, we virtually
+		 * unpause and declare the new frame unfinished. This informs MAME that
+		 * it should advance one frame internally. Hawk starts waiting for the
+		 * MAME thread to complete the request.
+		 * 
+		 * After MAME's done advancing, it fires the periodic callback again.
+		 * That's when we update everything and declare the new frame finished,
+		 * filtering out any further updates again. Then we allow Hawk to
+		 * complete frame-advancing.
+		 */
 		private void MAMEPeriodicCallback()
 		{
 			if (exiting)
@@ -329,10 +329,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				exiting = false;
 			}
 
+			int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+
 			if (!paused)
 			{
 				LibMAME.mame_lua_execute(MAMELuaCommand.Step);
+				frameDone = false;
 				paused = true;
+			}
+			else if (!frameDone)
+			{
+				Update();
+				frameDone = true;
+				MAMEFrameComplete.Set();
 			}
 		}
 
@@ -341,6 +350,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
 			CheckVersions();
 			GetInputFields();
+			Update();
 			MAMEStartupComplete.Set();
 		}
 		
@@ -349,7 +359,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// mame sends osd_output_channel casted to int, we implicitly cast is back
 			if (!data.Contains("pause = "))
 			{
-				Console.WriteLine($"[MAME { channel.ToString() }] { data.Replace('\n', ' ') }");
+				Console.WriteLine(
+					$"[MAME { channel.ToString() }] " +
+					$"{ data.Replace('\n', ' ') }");
 			}
 		}
 
@@ -377,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			string inputFields = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
 			string[] portFields = inputFields.Split(';');
+			MAMEController.BoolButtons.Clear();
 
 			foreach (string portField in portFields)
 			{

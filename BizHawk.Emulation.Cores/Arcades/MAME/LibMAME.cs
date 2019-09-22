@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
     public static class LibMAME
     {
-        const string dll = "libpacmansh64d.dll"; // libmamearcade64.dll libpacmansh64d.dll
+        const string dll = "libmamearcade64.dll"; // libmamearcade64.dll libpacmansh64d.dll
 		const CallingConvention cc = CallingConvention.Cdecl;
 
 		public enum OutputChannel
@@ -47,17 +47,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Callbacks
 
-		// frame
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void FrameCallback();
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_frame_callback(BootCallback cb);
-
 		// periodic
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void PeriodicCallback();
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_periodic_callback(BootCallback cb);
+		public static extern void mame_set_periodic_callback(PeriodicCallback cb);
 
 		// boot
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
