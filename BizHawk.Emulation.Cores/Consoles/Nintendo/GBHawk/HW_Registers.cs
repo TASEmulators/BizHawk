@@ -284,7 +284,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
-
 					break;
 
 				// audio regs
@@ -351,17 +350,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
 						GBC_compat = false;
-
-						if (GB_bios_register == 0)
-						{
-							var ppu2 = new GBC_PPU();
-
-							ppu2.Reg_Copy(ppu as GBC_PPU);
-
-							ppu = new GBC_PPU_GB();
-							ppu.Core = this;
-							ppu.Reg_Copy(ppu2);
-						}
 
 						// cpu operation is a function of hardware only
 						//cpu.is_GBC = GBC_compat;
@@ -467,7 +455,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
-
 					break;
 
 				default:

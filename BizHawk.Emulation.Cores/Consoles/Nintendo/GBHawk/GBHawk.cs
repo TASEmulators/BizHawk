@@ -158,6 +158,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
+			if (is_GBC && (header[0x43] == 0))
+			{
+				ppu = new GBC_PPU_GB();
+			}
+
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
 			_rom = rom;

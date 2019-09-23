@@ -539,13 +539,13 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						RegPC--;
 						Halt_bug_3 = true;
 						Console.WriteLine("Halt_bug_3");
-						Console.WriteLine(totalExecutedCycles);
+						Console.WriteLine(TotalExecutedCycles);
 					}
 					
 					Halt_bug_2 = false;
 					break;
 			}
-			totalExecutedCycles++;
+			TotalExecutedCycles++;
 		}
 
 		// tracer stuff
@@ -597,7 +597,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync(nameof(Halt_bug_2), ref Halt_bug_2);
 			ser.Sync(nameof(Halt_bug_3), ref Halt_bug_3);
 			ser.Sync("Halted", ref halted);
-			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
+			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 			ser.Sync(nameof(EI_pending), ref EI_pending);
 			ser.Sync(nameof(int_src), ref int_src);
 			ser.Sync(nameof(stop_time), ref stop_time);

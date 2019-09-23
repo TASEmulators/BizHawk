@@ -226,8 +226,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (speed_switch)
 				{
 					speed_switch = false;
-
-					int ret = double_speed ? 50000 : 25000; // actual time needs checking
+					Console.WriteLine(cpu.TotalExecutedCycles);
+					int ret = double_speed ? 70224 * 2 : 70224 * 2; // actual time needs checking
 					double_speed = !double_speed;
 					return ret;
 				}
