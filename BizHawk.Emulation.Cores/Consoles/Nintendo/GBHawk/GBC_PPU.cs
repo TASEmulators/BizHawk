@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int HDMA_tick;
 		public byte HDMA_byte;
 
-		public int hbl_countdown;
-
 		// accessors for derived values
 		public byte BG_pal_ret
 		{
@@ -35,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte OBJ_pal_ret
 		{
-			get { return (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F)); }
+			get { return(byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F)); }
 		}
 
 		public byte HDMA_ctrl
@@ -127,28 +125,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
-					// note that their is no stat interrupt bug in GBC
-					// writing to STAT during mode 0 or 1 causes a STAT IRQ
-					if (LCDC.Bit(7))
-					{
-						if (!Core.GBC_compat)
-						{
-							if (((STAT & 3) == 0) || ((STAT & 3) == 1))
-							{
-								LYC_INT = true;
-							}
-						}
-
-						if (value.Bit(6))
-						{
-							if (LY == LYC) { LYC_INT = true; }
-							else { LYC_INT = false; }
-						}
-					}
+							 // note that their is no stat interrupt bug in GBC
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
-					if (!STAT.Bit(6)) { LYC_INT = false; }
-					if (!STAT.Bit(4)) { VBL_INT = false; }
+
+					if (((STAT & 3) == 0) && STAT.Bit(3)) { HBL_INT = true; } else { HBL_INT = false; }
+					if (((STAT & 3) == 1) && STAT.Bit(4)) { VBL_INT = true; } else { VBL_INT = false; }
+					// OAM not triggered?
+					// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
+
+					if (value.Bit(6))
+					{
+						if (LY == LYC) { LYC_INT = true; }
+						else { LYC_INT = false; }
+					}
 					break; 
 				case 0xFF42: // SCY
 					scroll_y = value;
@@ -218,16 +208,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							HDMA_active = true;
 							HBL_HDMA_count = 0x10;
 
-							// TODO: DOES HDMA start if triggered in mode 0 immediately? (for now assume no)
-							if ((STAT & 3) == 0)
-							{
-								last_HBL = LY;
-							}
-							else
-							{
-								last_HBL = LY - 1;
-							}
-							
+							last_HBL = LY - 1;
+
 							HBL_test = true;
 							HBL_HDMA_go = false;
 						}
@@ -310,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else
 						{
 							// only transfer during mode 0, and only 16 bytes at a time
-							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1))
+							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 4))
 							{
 								HBL_HDMA_go = true;
 								HBL_test = false;
@@ -335,6 +317,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
 								{
+
 									HBL_test = true;
 									last_HBL = LY;
 									HBL_HDMA_count = 0x10;

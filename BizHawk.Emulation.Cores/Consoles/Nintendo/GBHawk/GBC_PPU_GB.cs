@@ -128,27 +128,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break; 
 				case 0xFF41: // STAT
 					// note that their is no stat interrupt bug in GBC
-					// writing to STAT during mode 0 or 1 causes a STAT IRQ
-					if (LCDC.Bit(7))
-					{
-						if (!Core.GBC_compat)
-						{
-							if (((STAT & 3) == 0) || ((STAT & 3) == 1))
-							{
-								LYC_INT = true;
-							}
-						}
-
-						if (value.Bit(6))
-						{
-							if (LY == LYC) { LYC_INT = true; }
-							else { LYC_INT = false; }
-						}
-					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 
-					if (!STAT.Bit(6)) { LYC_INT = false; }
-					if (!STAT.Bit(4)) { VBL_INT = false; }
+
+					if (((STAT & 3) == 0) && STAT.Bit(3)) { HBL_INT = true; } else { HBL_INT = false; }
+					if (((STAT & 3) == 1) && STAT.Bit(4)) { VBL_INT = true; } else { VBL_INT = false; }
+					// OAM not triggered?
+					// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
+					
+					if (value.Bit(6))
+					{
+						if (LY == LYC) { LYC_INT = true; }
+						else { LYC_INT = false; }
+					}
 					break; 
 				case 0xFF42: // SCY
 					scroll_y = value;
@@ -887,6 +879,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
+						hbl_countdown = 2;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -1133,15 +1126,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 8: // done reading, we are now in phase 0
 						pre_render = true;
 
-						STAT &= 0xFC;
-						STAT |= 0x00;
+						if (hbl_countdown > 0)
+						{
+							hbl_countdown--;
+							if (hbl_countdown == 0)
+							{								
 
-						if (STAT.Bit(3)) { HBL_INT = true; }
 
-						OAM_access_read = true;
-						OAM_access_write = true;
-						VRAM_access_read = true;
-						VRAM_access_write = true;
+								OAM_access_read = true;
+								OAM_access_write = true;
+								VRAM_access_read = true;
+								VRAM_access_write = true;
+							}
+							else
+							{
+								STAT &= 0xFC;
+								STAT |= 0x00;
+
+								if (STAT.Bit(3)) { HBL_INT = true; }
+							}
+						}
 						break;
 
 					case 9:

@@ -178,6 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void WriteReg(int addr, byte value)
 		{
 			// while power is on, everything is writable
+			//Console.WriteLine((addr & 0xFF) + " " + value);
 			if (AUD_CTRL_power)
 			{
 				switch (addr)
@@ -276,6 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
+							if ((SQ1_vol_state == 0) && (SQ1_per == 0) && SQ1_env_add) { SQ1_vol_state = 16; }
 						}
 
 						SQ1_len_en = (value & 0x40) > 0;
@@ -335,6 +337,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
 							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; SQ2_output = 0; }
+							if ((SQ2_vol_state == 0) && (SQ2_per == 0) && SQ2_env_add) { SQ2_vol_state = 16; }
 						}
 
 						SQ2_len_en = (value & 0x40) > 0;
@@ -602,7 +605,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ1_output *= SQ1_vol_state;
 
 					// avoid aliasing at high frequenices
-					if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
+					//if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
 				}
 			}
 
@@ -620,7 +623,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ2_output *= SQ2_vol_state;
 
 					// avoid aliasing at high frequenices
-					if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
+					//if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
 				}
 			}
 
