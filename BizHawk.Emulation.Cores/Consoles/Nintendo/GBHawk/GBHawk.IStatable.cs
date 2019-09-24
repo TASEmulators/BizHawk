@@ -90,6 +90,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(speed_switch), ref speed_switch);
 			ser.Sync(nameof(HDMA_transfer), ref HDMA_transfer);
 
+			ser.Sync(nameof(IR_reg), ref IR_reg);
+			ser.Sync(nameof(IR_mask), ref IR_mask);
+			ser.Sync(nameof(IR_signal), ref IR_signal);
+			ser.Sync(nameof(IR_receive), ref IR_receive);
+			ser.Sync(nameof(IR_self), ref IR_self);
+
 			ser.Sync(nameof(undoc_6C), ref undoc_6C);
 			ser.Sync(nameof(undoc_72), ref undoc_72);
 			ser.Sync(nameof(undoc_73), ref undoc_73);

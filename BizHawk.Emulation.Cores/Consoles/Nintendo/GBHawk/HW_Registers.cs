@@ -133,6 +133,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF53:
 				case 0xFF54:
 				case 0xFF55:
+					if (GBC_compat)
+					{
+						ret = ppu.ReadReg(addr);
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF56:
+					if (is_GBC)
+					{
+						// can receive data
+						if ((IR_reg & 0xC0) == 0xC0)
+						{
+							ret = (byte)(IR_reg | (IR_self | IR_receive | IR_mask));
+						}
+						else
+						{
+							ret = (byte)(IR_reg | 2);
+						}
+							
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
 				case 0xFF68:
 				case 0xFF69:
 				case 0xFF6A:
@@ -392,6 +422,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu.WriteReg(addr, value);
 					}
 					break;
+
+				case 0xFF56:
+					if (is_GBC)
+					{
+						IR_reg = (byte)((value & 0xC1) | (IR_reg & 0x3E));
+
+						// send IR signal out
+						if ((IR_reg & 0x1) == 0x1) { IR_signal = (byte)(0 | IR_mask); } else { IR_signal = 2; }
+						
+						// receive own signal if IR on and receive on
+						if ((IR_reg & 0xC1) == 0xC1) { IR_self = 0; } else { IR_self = 2; }
+					}
+					break;
+
 				case 0xFF68:
 				case 0xFF69:
 				case 0xFF6A:

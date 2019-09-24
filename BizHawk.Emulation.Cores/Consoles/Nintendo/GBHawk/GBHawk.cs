@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool double_speed;
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
+		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
 
 		// several undocumented GBC Registers
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
@@ -144,6 +145,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_bios = Bios;
 
+			// set up IR register to off state
+			if (is_GBC) { IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2; }
+
 			// Here we modify the BIOS if GBA mode is set (credit to ExtraTricky)
 			if (is_GBC && _syncSettings.GBACGB)
 			{
@@ -151,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					_bios[i + 0xF3] = (byte)((GBA_override[i] + _bios[i + 0xF3]) & 0xFF);
 				}
+				IR_mask = 2;
 			}
 
 			// CPU needs to know about GBC status too

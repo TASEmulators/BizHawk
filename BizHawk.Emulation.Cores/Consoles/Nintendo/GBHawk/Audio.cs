@@ -277,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
-							if ((SQ1_vol_state == 0) && (SQ1_per == 0) && SQ1_env_add) { SQ1_vol_state = 16; }
+							//if ((SQ1_vol_state == 0) && (SQ1_per == 0) && SQ1_env_add) { SQ1_vol_state = 16; }
 						}
 
 						SQ1_len_en = (value & 0x40) > 0;
@@ -337,7 +337,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
 							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; SQ2_output = 0; }
-							if ((SQ2_vol_state == 0) && (SQ2_per == 0) && SQ2_env_add) { SQ2_vol_state = 16; }
+							//if ((SQ2_vol_state == 0) && (SQ2_per == 0) && SQ2_env_add) { SQ2_vol_state = 16; }
 						}
 
 						SQ2_len_en = (value & 0x40) > 0;

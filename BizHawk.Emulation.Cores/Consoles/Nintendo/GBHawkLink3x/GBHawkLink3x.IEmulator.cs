@@ -172,6 +172,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					{
 						do_2_next = false;
 					}
+
+					// do IR transfer
+					L.IR_receive = C.IR_signal;
+					C.IR_receive = L.IR_signal;
 				}
 				else if (_cableconnected_CR)
 				{
@@ -210,6 +214,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					{
 						do_2_next = false;
 					}
+
+					// do IR transfer
+					C.IR_receive = R.IR_signal;
+					R.IR_receive = C.IR_signal;
 				}
 				else if (_cableconnected_RL)
 				{
@@ -248,6 +256,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					{
 						do_2_next = false;
 					}
+
+					// do IR transfer
+					R.IR_receive = L.IR_signal;
+					L.IR_receive = R.IR_signal;					
 				}
 
 
