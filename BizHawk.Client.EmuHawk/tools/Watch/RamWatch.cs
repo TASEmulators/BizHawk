@@ -423,6 +423,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_watches.AddRange(we.Watches);
 						WatchListView.ItemCount = _watches.Count;
+						UpdateWatchCount();
 					}
 					else
 					{
