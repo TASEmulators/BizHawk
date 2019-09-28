@@ -11,7 +11,7 @@ assignees: ''
 [//]: # "You can leave these comments here or delete them. Also, please remember to search for similar issues before writing anything, including in closed issues!"
 
 ## Summary
-[//]: # "Briefly describe what's broken. You can embed a screenshot if it's easier to show the bug, but if you need more than one please put them at the end."
+[//]: # "Briefly describe what's broken. Include relevant details: loaded core, loaded rom's hash, open tools, running scripts... You can embed a screenshot if it's easier to show the bug, but if you need more than one please put them at the end."
 Games run faster than I can push buttons whenever my cat sits on the left side of my keyboard.
 
 ## Repro
