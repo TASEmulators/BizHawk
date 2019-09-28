@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ComputeDisplayType(Watch w)
 		{
-			String s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
+			string s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
 			switch (w.Type)
 			{
 				case Common.DisplayType.Binary:
@@ -494,32 +494,8 @@ namespace BizHawk.Client.EmuHawk
 					s += "u";
 					break;
 			}
-			return s + (w.BigEndian ? "B" : "L");
-		}
 
-		private string GetColumnValue(string name, int index)
-		{
-			switch (name)
-			{
-				default:
-					return "";
-				case WatchList.ADDRESS:
-					return _watches[index].AddressString;
-				case WatchList.VALUE:
-					return _watches[index].ValueString;
-				case WatchList.PREV:
-					return _watches[index].PreviousStr;
-				case WatchList.CHANGES:
-					return _watches[index].ChangeCount.ToString();
-				case WatchList.DIFF:
-					return _watches[index].Diff;
-				case WatchList.TYPE:
-					return ComputeDisplayType(_watches[index]);
-				case WatchList.DOMAIN:
-					return _watches[index].Domain.Name;
-				case WatchList.NOTES:
-					return _watches[index].Notes;
-			}
+			return s + (w.BigEndian ? "B" : "L");
 		}
 
 		private void LoadConfigSettings()
@@ -624,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => (watch.Address) >= watch.Domain.Size);
+			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => watch.Address >= watch.Domain.Size);
 
 			MessageLabel.Text = message;
 		}
@@ -948,10 +924,10 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Insert(indices[i] + 1, watch);
 			}
 
-			var newindices = indices.Select(t => t + 1).ToList();
+			var newIndices = indices.Select(t => t + 1).ToList();
 
 			WatchListView.SelectedIndices.Clear();
-			foreach (var t in newindices)
+			foreach (var t in newIndices)
 			{
 				WatchListView.SelectItem(t, true);
 			}
@@ -990,7 +966,7 @@ namespace BizHawk.Client.EmuHawk
 		private void MoveBottomMenuItem_Click(object sender, EventArgs e)
 		{
 			var indices = SelectedIndices.ToList();
-			if (indices.Count == 0) // || indices.Last() == _watches.Count - 1)
+			if (indices.Count == 0)
 			{
 				return;
 			}
@@ -1000,8 +976,6 @@ namespace BizHawk.Client.EmuHawk
 				var watch = _watches[indices[i] - i];
 				_watches.RemoveAt(indices[i] - i);
 				_watches.Insert(_watches.Count, watch);
-				//_watches.Add(watch);
-				//indices[i] = (_watches.Count - 1 - indices.Count) + i;
 			}
 
 			var newInd = new List<int>();
@@ -1326,7 +1300,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 		#endregion
 
-
 		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
 		{
 			PokeAddressToolBarItem.Enabled =
@@ -1338,7 +1311,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
-			base.GenericDragEnter(sender, e);
+			GenericDragEnter(sender, e);
 		}
 	}
 }
