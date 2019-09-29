@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VRAM_sel;
 		public bool BG_V_flip;
 		public bool HDMA_mode;
+		public bool HDMA_run_once;
 		public ushort cur_DMA_src;
 		public ushort cur_DMA_dest;
 		public int HDMA_length;
@@ -204,7 +205,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						HDMA_tick = 0;
 						if (value.Bit(7))
 						{
-							// HDMA during HBlank only
+							// HDMA during HBlank only, but only if screen is on, otherwise DMA immediately one block of data
+							// worms armaggedon requires HDMA to fire in hblank mode even if the screen is off.
 							HDMA_active = true;
 							HBL_HDMA_count = 0x10;
 
@@ -212,6 +214,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							HBL_test = true;
 							HBL_HDMA_go = false;
+
+							if (!LCDC.Bit(7))
+							{
+								HDMA_run_once =true;
+							}
 						}
 						else
 						{
@@ -296,6 +303,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								HBL_HDMA_go = true;
 								HBL_test = false;
+							}
+							else if (HDMA_run_once)
+							{
+								HBL_HDMA_go = true;
+								HBL_test = false;
+								HDMA_run_once = false;
 							}
 
 							if (HBL_HDMA_go && (HBL_HDMA_count > 0))
@@ -630,6 +643,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
 				Core.REG_FF0F |= 0x02;
+
+				/*
+				if (Core.cpu.cur_instr[Core.cpu.instr_pntr] == 46)
+				{
+					Console.Write(VBL_INT + " " + LYC_INT + " " + HBL_INT + " " + OAM_INT + " ");
+					//Core.last_rise = Core.cpu.TotalExecutedCycles;
+					Console.WriteLine(STAT + " " + cycle + " " + Core.cpu.TotalExecutedCycles);
+				}
+				*/
 			}
 
 			stat_line_old = stat_line;
@@ -1472,6 +1494,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
 			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
 			ser.Sync(nameof(HDMA_mode), ref HDMA_mode);
+			ser.Sync(nameof(HDMA_run_once), ref HDMA_run_once);
 			ser.Sync(nameof(cur_DMA_src), ref cur_DMA_src);
 			ser.Sync(nameof(cur_DMA_dest), ref cur_DMA_dest);
 			ser.Sync(nameof(HDMA_length), ref HDMA_length);
