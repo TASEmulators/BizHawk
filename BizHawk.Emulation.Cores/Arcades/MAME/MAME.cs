@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int BufferHeight { get; private set; } = 240;
 		public int VsyncNumerator { get; private set; } = 60;
 		public int VsyncDenominator { get; private set; } = 1;
+		private int samplesPerFrame => (int)Math.Round(sampleRate / this.VsyncRate());
 
 		#endregion
 
@@ -61,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private IController Controller = NullController.Instance;
 		private int[] frameBuffer = new int[0];
 		private short[] audioBuffer = new short[0];
+		private Queue<short> audioSamples = new Queue<short>();
+		private int sampleRate = 44100;
 		private bool paused = true;
 		private bool exiting = false;
 		private bool frameDone = true;
@@ -118,8 +121,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			samples = audioBuffer;
-			nsamp = numSamples;
+			nsamp = samplesPerFrame;
+			samples = new short[samplesPerFrame * 2];
+
+			for (int i = 0; i < samplesPerFrame * 2; i++)
+			{
+				if (audioSamples.Any())
+				{
+					samples[i] = audioSamples.Dequeue();
+				}
+				else
+				{
+					samples[i] = 0;
+				}
+			}
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -129,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public void DiscardSamples()
 		{
-			numSamples = 0;
+			audioSamples.Clear();
 		}
 
 		#endregion
@@ -151,22 +166,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			string[] args = new string[] {
-				 "mame"                       // dummy, internally discarded by index, so has to go first
-				, gameFilename                // no dash for rom names
-				, "-noreadconfig"             // forbid reading any config files
-				, "-norewind"                 // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"            // forbid this blocking screen that requires user input
-				, "-nothrottle"               // forbid throttling to "real" speed of the device
-				, "-update_in_pause"          // ^ including frame-advancing
-				, "-rompath",   gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
-				, "-volume",            "-32" // lowest attenuation means mame osd remains silent
-				, "-output",        "console" // print everyting to hawk console
-				, "-samplerate",      "36750" // match hawk samplerate
-				, "-video",            "none" // forbid mame window altogether
-				, "-keyboardprovider", "none"
-				, "-mouseprovider",    "none"
-				, "-lightgunprovider", "none"
-				, "-joystickprovider", "none"
+				 "mame"                                // dummy, internally discarded by index, so has to go first
+				, gameFilename                         // no dash for rom names
+				, "-noreadconfig"                      // forbid reading any config files
+				, "-norewind"                          // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"                     // forbid this blocking screen that requires user input
+				, "-nothrottle"                        // forbid throttling to "real" speed of the device
+				, "-update_in_pause"                   // ^ including frame-advancing
+				, "-rompath",            gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
+				, "-volume",                     "-32" // lowest attenuation means mame osd remains silent
+				, "-output",                 "console" // print everyting to hawk console
+				, "-samplerate", sampleRate.ToString() // match hawk samplerate
+				, "-video",                     "none" // forbid mame window altogether
+				, "-keyboardprovider",          "none"
+				, "-mouseprovider",             "none"
+				, "-lightgunprovider",          "none"
+				, "-joystickprovider",          "none"
 			};
 
 			LibMAME.mame_launch(args.Length, args);
@@ -326,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void MAMESoundCallback()
 		{
+			int bytesPerSample = 2;
 			int lengthInBytes;
 			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
 
@@ -335,13 +351,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				return;
 			}
 
-			numSamples = lengthInBytes / 4;
-			audioBuffer = new short[numSamples * 2];
-			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
+			numSamples = lengthInBytes / bytesPerSample;
+			short[] buffer = new short[numSamples];
+			Marshal.Copy(ptr, buffer, 0, numSamples);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
 			{
 				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
+			}
+
+			for (int sampleIndex = 0; sampleIndex < numSamples; sampleIndex++)
+			{
+				audioSamples.Enqueue(buffer[sampleIndex]);
 			}
 		}
 
