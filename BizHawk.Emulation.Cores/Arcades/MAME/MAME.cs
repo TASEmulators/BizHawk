@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		name: "MAME",
 		author: "MAMEDev",
 		isPorted: true,
-		portedVersion: "0.211",
+		portedVersion: "0.214",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider
@@ -145,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void ExecuteMAMEThread()
 		{
 			LibMAME.mame_set_periodic_callback(MAMEPeriodicCallback);
+			LibMAME.mame_set_sound_callback(MAMESoundCallback);
 			LibMAME.mame_set_boot_callback(MAMEBootCallback);
 			LibMAME.mame_set_log_callback(MAMELogCallback);
 
@@ -160,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-rompath",   gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
 				, "-volume",            "-32" // lowest attenuation means mame osd remains silent
 				, "-output",        "console" // print everyting to hawk console
-				, "-samplerate",      "44100" // match hawk samplerate
+				, "-samplerate",      "36750" // match hawk samplerate
 				, "-video",            "none" // forbid mame window altogether
 				, "-keyboardprovider", "none"
 				, "-mouseprovider",    "none"
@@ -227,27 +228,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
-		private void UpdateAudio()
-		{
-			int lengthInBytes;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
-
-			if (ptr == IntPtr.Zero)
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
-				return;
-			}
-
-			numSamples = lengthInBytes / 4;
-			audioBuffer = new short[numSamples * 2];
-			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
-
-			if (!LibMAME.mame_lua_free_string(ptr))
-			{
-				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
-			}
-		}
-
 		private void UpdateInput()
 		{
 			foreach (var fieldPort in fieldsPorts)
@@ -265,7 +245,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			UpdateFramerate();
 			UpdateVideo();
 			UpdateAspect();
-			UpdateAudio();
 			UpdateInput();
 		}
 
@@ -342,6 +321,27 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				Update();
 				frameDone = true;
 				MAMEFrameComplete.Set();
+			}
+		}
+
+		private void MAMESoundCallback()
+		{
+			int lengthInBytes;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
+
+			if (ptr == IntPtr.Zero)
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
+				return;
+			}
+
+			numSamples = lengthInBytes / 4;
+			audioBuffer = new short[numSamples * 2];
+			Marshal.Copy(ptr, audioBuffer, 0, numSamples * 2);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
 			}
 		}
 

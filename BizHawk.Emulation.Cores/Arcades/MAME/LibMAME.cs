@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
     public static class LibMAME
     {
-        const string dll = "libmamearcade64.dll"; // libmamearcade64.dll libpacmansh64d.dll
+        const string dll = "libpacmansh64d.dll"; // libmamearcade64.dll libpacmansh64d.dll
 		const CallingConvention cc = CallingConvention.Cdecl;
 
 		public enum OutputChannel
@@ -52,6 +52,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public delegate void PeriodicCallback();
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void mame_set_periodic_callback(PeriodicCallback cb);
+
+		// sound
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SoundCallback();
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void mame_set_sound_callback(SoundCallback cb);
 
 		// boot
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
