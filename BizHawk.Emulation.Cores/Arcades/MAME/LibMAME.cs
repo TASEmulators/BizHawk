@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 {
     public static class LibMAME
     {
-        const string dll = "libpacmansh64d.dll"; // libmamearcade64.dll libpacmansh64d.dll
+        const string dll = "libmamearcade64.dll"; // libmamearcade64.dll libpacmansh64d.dll
 		const CallingConvention cc = CallingConvention.Cdecl;
 
 		public enum OutputChannel
