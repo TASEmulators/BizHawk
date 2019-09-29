@@ -49,27 +49,27 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		// periodic
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void PeriodicCallback();
+		public delegate void PeriodicCallbackDelegate();
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_periodic_callback(PeriodicCallback cb);
+		public static extern void mame_set_periodic_callback(PeriodicCallbackDelegate cb);
 
 		// sound
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SoundCallback();
+		public delegate void SoundCallbackDelegate();
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_sound_callback(SoundCallback cb);
+		public static extern void mame_set_sound_callback(SoundCallbackDelegate cb);
 
 		// boot
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void BootCallback();
+		public delegate void BootCallbackDelegate();
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_boot_callback(BootCallback cb);
+		public static extern void mame_set_boot_callback(BootCallbackDelegate cb);
 
 		// log
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void LogCallback(OutputChannel channel, int size, string data);
+		public delegate void LogCallbackDelegate(OutputChannel channel, int size, string data);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void mame_set_log_callback(LogCallback cb);
+		public static extern void mame_set_log_callback(LogCallbackDelegate cb);
 
 		#endregion
 	}

@@ -70,6 +70,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
+		private LibMAME.PeriodicCallbackDelegate periodicCallback;
+		private LibMAME.SoundCallbackDelegate soundCallback;
+		private LibMAME.BootCallbackDelegate bootCallback;
+		private LibMAME.LogCallbackDelegate logCallback;
 
 		#endregion
 
@@ -159,10 +163,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void ExecuteMAMEThread()
 		{
-			LibMAME.mame_set_periodic_callback(MAMEPeriodicCallback);
-			LibMAME.mame_set_sound_callback(MAMESoundCallback);
-			LibMAME.mame_set_boot_callback(MAMEBootCallback);
-			LibMAME.mame_set_log_callback(MAMELogCallback);
+			// dodge GC
+			periodicCallback = MAMEPeriodicCallback;
+			soundCallback = MAMESoundCallback;
+			bootCallback = MAMEBootCallback;
+			logCallback = MAMELogCallback;
+
+			LibMAME.mame_set_periodic_callback(periodicCallback);
+			LibMAME.mame_set_sound_callback(soundCallback);
+			LibMAME.mame_set_boot_callback(bootCallback);
+			LibMAME.mame_set_log_callback(logCallback);
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			string[] args = new string[] {
