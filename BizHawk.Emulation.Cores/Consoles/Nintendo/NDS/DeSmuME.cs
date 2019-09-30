@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public void Dispose()
 		{
 			DeInit_NDS();
+			inited = false;
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -55,26 +56,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		//const string dllPath = "DesHawk.dll";
 
 		[DllImport(dllPath)]
-		public static extern void Init_NDS();
+		private static extern void Init_NDS();
 		[DllImport(dllPath)]
-		public static extern void DeInit_NDS();
+		private static extern void DeInit_NDS();
 
 		[DllImport(dllPath)]
-		public static extern int GetFrameCount();
+		private static extern int GetFrameCount();
 		[DllImport(dllPath)]
-		public static extern void ResetFrameCounters();
+		private static extern void ResetFrameCounters();
 
 		[DllImport(dllPath)]
-		public static extern bool LoadROM(byte* file, int fileSize);
+		private static extern bool LoadROM(byte* file, int fileSize);
 
 		[DllImport(dllPath)]
-		public static extern void SetInput(short buttons, byte touchX, byte touchY);
+		private static extern void SetInput(short buttons, byte touchX, byte touchY);
 		[DllImport(dllPath)]
-		public static extern void FrameAdvance();
+		private static extern void FrameAdvance();
+
+		private static bool inited = false;
 
 		[CoreConstructor("NDS")]
 		public DeSmuME(byte[] file)
 		{
+			if (inited)
+				throw new InvalidOperationException("Only one instance of DeSmuME can exist.");
+			inited = true;
+
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition();
 			ControllerDefinition.Name = "NDS";
