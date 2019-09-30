@@ -32,7 +32,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			throw new NotImplementedException();
+			int buttons = (controller.IsPressed("Left") ? 1 : 0) | (controller.IsPressed("Right") ? 2 : 0)
+				| (controller.IsPressed("Up") ? 4 : 0) | (controller.IsPressed("Down") ? 8 : 0)
+				| (controller.IsPressed("A") ? 0x10 : 0) | (controller.IsPressed("B") ? 0x20 : 0)
+				| (controller.IsPressed("X") ? 0x40 : 0) | (controller.IsPressed("Y") ? 0x80 : 0)
+				| (controller.IsPressed("L") ? 0x100 : 0) | (controller.IsPressed("R") ? 0x200 : 0)
+				| (controller.IsPressed("Start") ? 0x400 : 0) | (controller.IsPressed("Select") ? 0x800 : 0)
+				| (controller.IsPressed("Debug") ? 0x1000 : 0) | (controller.IsPressed("Lid") ? 0x2000 : 0)
+				| (controller.IsPressed("Touch") ? 0x4000 : 0);
+			SetInput((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
+			FrameAdvance();
+			return true;
 		}
 
 		public void ResetCounters()
@@ -54,6 +64,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		public static extern bool LoadROM(byte* file, int fileSize);
+
+		[DllImport(dllPath)]
+		public static extern void SetInput(short buttons, byte touchX, byte touchY);
+		[DllImport(dllPath)]
+		public static extern void FrameAdvance();
 
 		[CoreConstructor("NDS")]
 		public DeSmuME(byte[] file)
