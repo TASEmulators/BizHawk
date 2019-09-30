@@ -17,6 +17,7 @@
 		GameBoy,
 		DualGameBoy,
 		GameBoyAdvance,
+		NDS,
 		Nintendo64,
 		NES,
 		SNES,

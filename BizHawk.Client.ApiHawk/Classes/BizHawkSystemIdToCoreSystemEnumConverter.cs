@@ -49,6 +49,9 @@ namespace BizHawk.Client.ApiHawk
 				case "GBA":
 					return CoreSystem.GameBoyAdvance;
 
+				case "NDS":
+					return CoreSystem.NDS;
+
 				case "GEN":
 					return CoreSystem.Genesis;
 
