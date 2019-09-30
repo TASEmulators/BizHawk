@@ -274,7 +274,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 					// send the image on VBlank
 					L.SendVideoBuffer();
-					for (int j = 0; j < L._vidbuffer.Length; j++) { L.frame_buffer[j] = L._vidbuffer[j]; }
 
 					L.vblank_rise = false;
 					do_frame_fill = true;
@@ -289,7 +288,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 					// send the image on VBlank
 					C.SendVideoBuffer();
-					for (int j = 0; j < C._vidbuffer.Length; j++) { C.frame_buffer[j] = C._vidbuffer[j]; }
 
 					C.vblank_rise = false;
 					do_frame_fill = true;
@@ -304,7 +302,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 					// send the image on VBlank
 					R.SendVideoBuffer();
-					for (int j = 0; j < R._vidbuffer.Length; j++) { R.frame_buffer[j] = R._vidbuffer[j]; }
 
 					R.vblank_rise = false;
 					do_frame_fill = true;

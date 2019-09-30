@@ -126,7 +126,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// send the image on VBlank
 					SendVideoBuffer();
-					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
 				}
 
 				REG_FF0F_OLD = REG_FF0F;
@@ -287,18 +286,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return frame_buffer;
 		}
 
-		public int[] SendVideoBuffer()
+		public void SendVideoBuffer()
 		{
-			if (ppu.blank_frame)
+			if (GBC_compat)
 			{
-				for (int i = 0; i < _vidbuffer.Length; i++)
+				if (!ppu.blank_frame)
 				{
-					_vidbuffer[i] = (int)color_palette[0];
+					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
 				}
+
 				ppu.blank_frame = false;
 			}
+			else
+			{
+				if (ppu.blank_frame)
+				{
+					for (int i = 0; i < _vidbuffer.Length; i++)
+					{
+						_vidbuffer[i] = (int)color_palette[0];
+					}
+				}
 
-			return _vidbuffer;
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
+
+				ppu.blank_frame = false;
+			}
 		}
 
 		public int VirtualWidth => 160;
