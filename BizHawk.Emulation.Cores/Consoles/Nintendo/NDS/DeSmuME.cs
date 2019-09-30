@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void ResetCounters()
 		{
-			throw new NotImplementedException();
+			ResetCounters();
 		}
 
 		// debug path/build for easier testing
@@ -61,6 +61,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		public static extern int GetFrameCount();
+		[DllImport(dllPath)]
+		public static extern void ResetFrameCounters();
 
 		[DllImport(dllPath)]
 		public static extern bool LoadROM(byte* file, int fileSize);
