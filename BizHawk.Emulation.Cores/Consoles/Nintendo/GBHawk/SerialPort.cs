@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte serial_control;
 		public byte serial_data;
 		public bool serial_start;
+		public bool can_pulse;
 		public int serial_clock;
 		public int serial_bits;
 		public int clk_rate;
@@ -48,18 +49,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
-								clk_rate = 256;
+								clk_rate = 16;
 							}
 							else
 							{
 								clk_rate = 512;
 							}						
 							serial_clock = clk_rate;
+							can_pulse = true;
 						}
 						else
 						{
 							clk_rate = -1;
 							serial_clock = clk_rate;
+							can_pulse = false;
 						}
 					}
 					else if (serial_start)
@@ -68,18 +71,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
-								clk_rate = 256;
+								clk_rate = 16;
 							}
 							else
 							{
 								clk_rate = 512;
 							}
 							serial_clock = clk_rate;
+							can_pulse = true;
 						}
 						else
 						{
 							clk_rate = -1;
 							serial_clock = clk_rate;
+							can_pulse = false;
 						}
 					}
 
@@ -123,6 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else
 						{
 							serial_clock = clk_rate;
+							if (clk_rate > 0) { can_pulse = true; }
 						}
 					}
 				}
@@ -148,6 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(clk_rate), ref clk_rate);
 			ser.Sync(nameof(going_out), ref going_out);
 			ser.Sync(nameof(coming_in), ref coming_in);
+			ser.Sync(nameof(can_pulse), ref can_pulse);
 		}
 	}
 }
