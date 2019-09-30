@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("DeSmuME", "DeSmuME Team")]
-	unsafe class DeSmuME : IEmulator
+	unsafe partial class DeSmuME : IEmulator
 	{
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
