@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("DeSmuME", "DeSmuME Team")]
-	class DeSmuME : IEmulator
+	unsafe class DeSmuME : IEmulator
 	{
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
@@ -52,8 +52,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		public static extern int GetFrameCount();
 
+		[DllImport(dllPath)]
+		public static extern bool LoadROM(byte* file, int fileSize);
+
 		[CoreConstructor("NDS")]
-		public DeSmuME()
+		public DeSmuME(byte[] file)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition();
@@ -85,6 +88,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			CoreComm.NominalHeight = 192;
 
 			Init_NDS();
+
+			fixed (byte* f = file)
+			{
+				LoadROM(f, file.Length);
+			}
 		}
 	}
 }
