@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		// debug path/build for easier testing
-		const string dllPath = "../../desmume/desmume/src/frontend/windows/__bins/DesHawk-VS2017-x64-Debug.dll";
-		//const string dllPath = "DesHawk.dll";
+		//const string dllPath = "../../desmume/desmume/src/frontend/windows/__bins/DesHawk-VS2017-x64-Debug.dll";
+		const string dllPath = "DesHawk.dll";
 
 		[DllImport(dllPath)]
 		private static extern void Init_NDS();
