@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool serial_start;
 		public int serial_clock;
 		public int serial_bits;
-		public bool clk_internal;
 		public int clk_rate;
 		public byte going_out;
 		public byte coming_in;
@@ -30,7 +29,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			return 0xFF;
-
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -48,7 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						serial_bits = 8;
 						if ((value & 1) > 0)
 						{
-							clk_internal = true;
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 256;
@@ -61,8 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							clk_internal = false;
-							clk_rate = get_external_clock();
+							clk_rate = -1;
 							serial_clock = clk_rate;
 						}
 					}
@@ -70,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if ((value & 1) > 0)
 						{
-							clk_internal = true;
 							if (((value & 2) > 0) && Core.GBC_compat)
 							{
 								clk_rate = 256;
@@ -83,8 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							clk_internal = false;
-							clk_rate = get_external_clock();
+							clk_rate = -1;
 							serial_clock = clk_rate;
 						}
 					}
@@ -113,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (serial_bits > 0)
 					{
-						byte temp = get_external_bit();
+						byte temp = coming_in;
 						serial_data = (byte)((serial_data << 1) | temp);
 
 						serial_bits--;
@@ -135,26 +129,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		// call this function to get the clock rate of a connected device
-		// if no external device, the clocking doesn't occur
-		public int get_external_clock()
-		{
-			return -1;
-		}
-
-		// call this function to get the next bit from the connected device
-		// no device connected returns 0xFF
-		public byte get_external_bit()
-		{
-			return coming_in;
-		}
-
-		// calling this function buts an external bit on the cable line
-		public void send_external_bit(byte bit_send)
-		{
-			going_out = (byte)(bit_send >> 7);
-		}
-
 		public void Reset()
 		{
 			serial_control = 0x7E;
@@ -171,7 +145,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(serial_start), ref serial_start);
 			ser.Sync(nameof(serial_clock), ref serial_clock);
 			ser.Sync(nameof(serial_bits), ref serial_bits);
-			ser.Sync(nameof(clk_internal), ref clk_internal);
 			ser.Sync(nameof(clk_rate), ref clk_rate);
 			ser.Sync(nameof(going_out), ref going_out);
 			ser.Sync(nameof(coming_in), ref coming_in);
