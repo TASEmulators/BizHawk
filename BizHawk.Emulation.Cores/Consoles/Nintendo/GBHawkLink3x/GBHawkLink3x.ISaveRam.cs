@@ -68,26 +68,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 		public void StoreSaveRam(byte[] data)
 		{
-			int temp = 0;
-
-			if (L.cart_RAM != null)
+			if (Link3xSyncSettings.Use_SRAM)
 			{
-				Buffer.BlockCopy(data, temp, L.cart_RAM, 0, L.cart_RAM.Length);
-				temp += L.cart_RAM.Length;
-			}
+				int temp = 0;
 
-			if (C.cart_RAM != null)
-			{
-				Buffer.BlockCopy(data, temp, C.cart_RAM, 0, C.cart_RAM.Length);
-				temp += C.cart_RAM.Length;
-			}
+				if (L.cart_RAM != null)
+				{
+					Buffer.BlockCopy(data, temp, L.cart_RAM, 0, L.cart_RAM.Length);
+					temp += L.cart_RAM.Length;
+				}
 
-			if (R.cart_RAM != null)
-			{
-				Buffer.BlockCopy(data, temp, R.cart_RAM, 0, R.cart_RAM.Length);
-			}
+				if (C.cart_RAM != null)
+				{
+					Buffer.BlockCopy(data, temp, C.cart_RAM, 0, C.cart_RAM.Length);
+					temp += C.cart_RAM.Length;
+				}
 
-			Console.WriteLine("loading SRAM here");
+				if (R.cart_RAM != null)
+				{
+					Buffer.BlockCopy(data, temp, R.cart_RAM, 0, R.cart_RAM.Length);
+				}
+
+				Console.WriteLine("loading SRAM here");
+			}
 		}
 
 		public bool SaveRamModified

@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 
-			if (is_GBC && (header[0x43] == 0))
+			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
 			{
 				ppu = new GBC_PPU_GB();
 			}
