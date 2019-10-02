@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
 		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
+		public int IR_write;
 
 		// several undocumented GBC Registers
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;

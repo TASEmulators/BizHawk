@@ -149,13 +149,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// can receive data
 						if ((IR_reg & 0xC0) == 0xC0)
 						{
-							ret = (byte)(IR_reg | (IR_self | IR_receive | IR_mask));
+							ret = IR_reg;
 						}
 						else
 						{
 							ret = (byte)(IR_reg | 2);
 						}
-							
 					}
 					else
 					{
@@ -432,7 +431,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((IR_reg & 0x1) == 0x1) { IR_signal = (byte)(0 | IR_mask); } else { IR_signal = 2; }
 						
 						// receive own signal if IR on and receive on
-						if ((IR_reg & 0xC1) == 0xC1) { IR_self = 0; } else { IR_self = 2; }
+						if ((IR_reg & 0xC1) == 0xC1) { IR_self = (byte)(0 | IR_mask); } else { IR_self = 2; }
+
+						IR_write = 8;
 					}
 					break;
 

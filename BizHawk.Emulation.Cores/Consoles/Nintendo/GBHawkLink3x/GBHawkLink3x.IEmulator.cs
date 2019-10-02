@@ -176,8 +176,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					}
 
 					// do IR transfer
-					L.IR_receive = C.IR_signal;
-					C.IR_receive = L.IR_signal;
+					if (L.IR_write > 0)
+					{
+						L.IR_write--;
+						if (L.IR_write == 0)
+						{
+							C.IR_receive = L.IR_signal;
+							if ((C.IR_self & C.IR_receive) == 2) { C.IR_reg |= 2; }
+							else { C.IR_reg &= 0xFD; }
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (C.IR_write > 0)
+					{
+						C.IR_write--;
+						if (C.IR_write == 0)
+						{
+							L.IR_receive = C.IR_signal;
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+							if ((C.IR_self & C.IR_receive) == 2) { C.IR_reg |= 2; }
+							else { C.IR_reg &= 0xFD; }
+						}
+					}
 				}
 				else if (_cableconnected_CR)
 				{
@@ -220,8 +243,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					}
 
 					// do IR transfer
-					C.IR_receive = R.IR_signal;
-					R.IR_receive = C.IR_signal;
+					if (C.IR_write > 0)
+					{
+						C.IR_write--;
+						if (C.IR_write == 0)
+						{
+							R.IR_receive = C.IR_signal;
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+							if ((C.IR_self & C.IR_receive) == 2) { C.IR_reg |= 2; }
+							else { C.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (R.IR_write > 0)
+					{
+						R.IR_write--;
+						if (R.IR_write == 0)
+						{
+							C.IR_receive = R.IR_signal;
+							if ((C.IR_self & C.IR_receive) == 2) { C.IR_reg |= 2; }
+							else { C.IR_reg &= 0xFD; }
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+						}
+					}
 				}
 				else if (_cableconnected_RL)
 				{
@@ -264,8 +310,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 					}
 
 					// do IR transfer
-					R.IR_receive = L.IR_signal;
-					L.IR_receive = R.IR_signal;					
+					if (R.IR_write > 0)
+					{
+						R.IR_write--;
+						if (R.IR_write == 0)
+						{
+							L.IR_receive = R.IR_signal;
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (L.IR_write > 0)
+					{
+						L.IR_write--;
+						if (L.IR_write == 0)
+						{
+							R.IR_receive = L.IR_signal;
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+						}
+					}
 				}
 
 

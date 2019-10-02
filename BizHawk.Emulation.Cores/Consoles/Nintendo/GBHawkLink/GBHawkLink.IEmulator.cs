@@ -141,8 +141,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 					}
 
 					// do IR transfer
-					L.IR_receive = R.IR_signal;
-					R.IR_receive = L.IR_signal;
+					if (L.IR_write > 0)
+					{
+						L.IR_write--;
+						if (L.IR_write ==0)
+						{
+							R.IR_receive = L.IR_signal;
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD;}
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (R.IR_write > 0)
+					{
+						R.IR_write--;
+						if (R.IR_write == 0)
+						{
+							L.IR_receive = R.IR_signal;
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+						}
+					}					
 				}
 
 				// if we hit a frame boundary, update video
