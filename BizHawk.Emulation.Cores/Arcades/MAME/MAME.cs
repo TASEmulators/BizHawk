@@ -457,14 +457,10 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetSamples = "return manager:machine():sound():samples()";
 
 			public const string GetFrameNumber =
-				"for k,v in pairs(manager:machine().screens) " +
-					"do return v:frame_number() " +
-				"end";
+				"return select(2, next(manager:machine().screens)):frame_number()";
 
 			public const string GetRefresh =
-				"for k,v in pairs(manager:machine().screens) " +
-					"do return v:refresh_attoseconds() " +
-				"end";
+				"return select(2, next(manager:machine().screens)):refresh_attoseconds()";
 
 			public const string GetWidth =
 				"local w,h = manager:machine():video():size() " +
