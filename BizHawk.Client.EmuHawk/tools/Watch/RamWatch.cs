@@ -27,13 +27,13 @@ namespace BizHawk.Client.EmuHawk
 		private bool _paused;
 
 		[RequiredService]
-		private IMemoryDomains _memoryDomains { get; set; }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		[RequiredService]
-		private IEmulator _emu { get; set; }
+		private IEmulator Emu { get; set; }
 
 		[OptionalService]
-		private IDebuggable _debuggable { get; set; }
+		private IDebuggable Debuggable { get; set; }
 
 		public RamWatch()
 		{
@@ -217,16 +217,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null
 				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
-				&& _watches.All(w => w.Domain == null || _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
+				&& _watches.All(w => w.Domain == null || MemoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
 				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed)))
 			{
-				_watches.RefreshDomains(_memoryDomains);
+				_watches.RefreshDomains(MemoryDomains);
 				_watches.Reload();
 				UpdateStatusBar();
 			}
 			else
 			{
-				_watches = new WatchList(_memoryDomains, _emu.SystemId);
+				_watches = new WatchList(MemoryDomains, Emu.SystemId);
 				NewWatchList(true);
 			}
 		}
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var row in clipboardRows)
 				{
-					var watch = Watch.FromString(row, _memoryDomains);
+					var watch = Watch.FromString(row, MemoryDomains);
 					if ((object)watch != null)
 					{
 						_watches.Add(watch);
@@ -410,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
-					MemoryDomains = _memoryDomains
+					MemoryDomains = MemoryDomains
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -581,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			CurrentDomain = _memoryDomains[name];
+			CurrentDomain = MemoryDomains[name];
 			Update();
 		}
 
@@ -770,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain CurrentDomain
 		{
-			get { return _currentDomain ?? _memoryDomains.MainMemory; }
+			get { return _currentDomain ?? MemoryDomains.MainMemory; }
 			set { _currentDomain = value; }
 		}
 
@@ -778,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				_memoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
+				MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
 				.ToArray());
 		}
 
@@ -787,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 			var we = new WatchEditor
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
-				MemoryDomains = _memoryDomains
+				MemoryDomains = MemoryDomains
 			};
 			we.SetWatch(CurrentDomain);
 			we.ShowHawkDialog(this);
@@ -1093,7 +1093,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			TopMost = Settings.TopMost;
-			_watches = new WatchList(_memoryDomains, _emu.SystemId);
+			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
@@ -1155,9 +1155,9 @@ namespace BizHawk.Client.EmuHawk
 			WriteBreakpointContextMenuItem.Visible =
 			Separator6.Visible =
 				SelectedWatches.Any() &&
-				_debuggable != null &&
-				_debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : ""));
+				Debuggable != null &&
+				Debuggable.MemoryCallbacksAvailable() &&
+				SelectedWatches.All(w => w.Domain.Name == (MemoryDomains != null ? MemoryDomains.SystemBus.Name : ""));
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
