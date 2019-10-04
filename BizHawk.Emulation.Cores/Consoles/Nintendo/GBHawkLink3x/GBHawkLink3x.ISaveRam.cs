@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 
 				if (R.cart_RAM != null)
 				{
-					for (int i = 0; i < L.cart_RAM.Length; i++)
+					for (int i = 0; i < R.cart_RAM.Length; i++)
 					{
 						temp[index] = R.cart_RAM[i];
 						index++;

@@ -839,6 +839,31 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IDebuggable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IEmulator.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IInputPollable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IMemoryDomains.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ISaveRam.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ISettable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IStatable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4xControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4xControllers.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ICodeDataLog.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IDebuggable.cs">
@@ -940,7 +965,7 @@
     <Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU.cs">
       <DependentUpon>PPU.cs</DependentUpon>
     </Compile>
-	<Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU_GB.cs">
+    <Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU_GB.cs">
       <DependentUpon>PPU.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBHawk\GB_PPU.cs">
