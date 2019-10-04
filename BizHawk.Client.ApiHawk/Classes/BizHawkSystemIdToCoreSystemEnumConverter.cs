@@ -114,6 +114,9 @@ namespace BizHawk.Client.ApiHawk
 				case "GB3x":
 					return CoreSystem.GB3x;
 
+				case "GB4x":
+					return CoreSystem.GB3x;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":

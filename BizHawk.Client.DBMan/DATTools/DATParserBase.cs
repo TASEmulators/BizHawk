@@ -217,6 +217,7 @@ namespace BizHawk.Client.DBMan
 		NGP,
 		ChannelF,
 		VEC,
-		GB3x
+		GB3x,
+		GB4x
 	}
 }

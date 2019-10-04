@@ -357,6 +357,8 @@
 			this.DGBHawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GB3xSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GB3xsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GB4xSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GB4xsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -515,6 +517,7 @@
             this.DGBSubMenu,
             this.DGBHawkSubMenu,
 			this.GB3xSubMenu,
+			this.GB4xSubMenu,
 			this.GGLSubMenu,
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
@@ -3236,6 +3239,21 @@
 			this.GB3xsettingsToolStripMenuItem.Text = "Settings...";
 			this.GB3xsettingsToolStripMenuItem.Click += new System.EventHandler(this.GB3xSettingsMenuItem_Click);
 			// 
+			// GB4xSubMenu
+			// 
+			this.GB4xSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GB4xsettingsToolStripMenuItem});
+			this.GB4xSubMenu.Name = "GB4xSubMenu";
+			this.GB4xSubMenu.Size = new System.Drawing.Size(59, 19);
+			this.GB4xSubMenu.Text = "&GB Link 4x";
+			// 
+			// GB4xsettingsToolStripMenuItem
+			// 
+			this.GB4xsettingsToolStripMenuItem.Name = "GB4xsettingsToolStripMenuItem";
+			this.GB4xsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.GB4xsettingsToolStripMenuItem.Text = "Settings...";
+			this.GB4xsettingsToolStripMenuItem.Click += new System.EventHandler(this.GB4xSettingsMenuItem_Click);
+			// 
 			// GGLSubMenu
 			// 
 			this.GGLSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -4597,6 +4615,8 @@
 		private System.Windows.Forms.ToolStripMenuItem DGBHawksettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GB3xSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GB3xsettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GB4xSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GB4xsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GGLSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VectrexSubMenu;

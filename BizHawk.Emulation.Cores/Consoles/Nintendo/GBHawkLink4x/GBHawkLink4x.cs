@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		"GBHawkLink4x",
 		"",
 		isPorted: false,
-		isReleased: true)]
+		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawkLink4x : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 	ISettable<GBHawkLink4x.GBLink4xSettings, GBHawkLink4x.GBLink4xSyncSettings>
@@ -22,9 +22,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public GBHawk.GBHawk D;
 
 		// if true, the link cable is currently connected
-		private bool _cableconnected_LC = false;
-		private bool _cableconnected_CR = false;
-		private bool _cableconnected_RL = false;
+		private bool _cableconnected_LR = false;
+		private bool _cableconnected_UD = false;
+		private bool _cableconnected_X = false;
+		private bool _cableconnected_4x = true;
 
 		private bool do_2_next = false;
 

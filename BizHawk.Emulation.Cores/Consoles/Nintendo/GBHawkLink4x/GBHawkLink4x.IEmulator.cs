@@ -91,33 +91,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				HardReset();
 			}
 
-			if (controller.IsPressed("Toggle Cable LC") | controller.IsPressed("Toggle Cable CR") | controller.IsPressed("Toggle Cable RL"))
+			if (controller.IsPressed("Toggle Cable UD") | controller.IsPressed("Toggle Cable LR") | controller.IsPressed("Toggle Cable X") | controller.IsPressed("Toggle Cable 4x"))
 			{
 				// if any connection exists, disconnect it
 				// otherwise connect in order of precedence
 				// only one event can happen per frame, either a connection or disconnection
-				if (_cableconnected_LC | _cableconnected_CR | _cableconnected_RL)
+				if (_cableconnected_UD | _cableconnected_LR | _cableconnected_X | _cableconnected_4x)
 				{
-					_cableconnected_LC = _cableconnected_CR = _cableconnected_RL = false;
+					_cableconnected_UD = _cableconnected_LR = _cableconnected_X = _cableconnected_4x = false;
 					do_2_next = false;
 				}
-				else if (controller.IsPressed("Toggle Cable LC"))
+				else if (controller.IsPressed("Toggle Cable UD"))
 				{
-					_cableconnected_LC = true;
+					_cableconnected_UD = true;
 				}
-				else if (controller.IsPressed("Toggle Cable CR"))
+				else if (controller.IsPressed("Toggle Cable LR"))
 				{
-					_cableconnected_CR = true;
+					_cableconnected_LR = true;
 				}
-				else if (controller.IsPressed("Toggle Cable RL"))
+				else if (controller.IsPressed("Toggle Cable X"))
 				{
-					_cableconnected_RL = true;
+					_cableconnected_X = true;
+				}
+				else if (controller.IsPressed("Toggle Cable 4x"))
+				{
+					_cableconnected_4x = true;
 				}
 
 				Console.WriteLine("Cable connect status:");
-				Console.WriteLine("LC: " + _cableconnected_LC);
-				Console.WriteLine("CR: " + _cableconnected_CR);
-				Console.WriteLine("RL: " + _cableconnected_RL);
+				Console.WriteLine("UD: " + _cableconnected_UD);
+				Console.WriteLine("LR: " + _cableconnected_LR);
+				Console.WriteLine("X: " + _cableconnected_X);
+				Console.WriteLine("4x: " + _cableconnected_4x);
 			}
 
 			_islag = true;
@@ -125,7 +130,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			GetControllerState(controller);
 
 			do_frame_fill = false;
-			do_frame();
+
+			if (_cableconnected_4x)
+			{
+				do_frame_4x();
+			}
+			else
+			{
+				do_frame_2x2();
+			}
+			
 			if (do_frame_fill)
 			{
 				FillVideoBuffer();
@@ -141,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			return true;
 		}
 
-		public void do_frame()
+		public void do_frame_4x()
 		{
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
@@ -151,7 +165,193 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				C.do_single_step();
 				D.do_single_step();
 
-				if (_cableconnected_LC)
+				/*
+				// the signal to shift out a bit is when serial_clock = 1
+				if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next)
+				{
+					A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+
+					if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && A.serialport.can_pulse)
+					{
+						C.serialport.serial_clock = A.serialport.serial_clock;
+						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+						C.serialport.coming_in = A.serialport.going_out;
+					}
+
+					A.serialport.coming_in = C.serialport.going_out;
+					A.serialport.can_pulse = false;
+				}
+				else if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0))
+				{
+					do_2_next = false;
+
+					C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+
+					if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && C.serialport.can_pulse)
+					{
+						A.serialport.serial_clock = C.serialport.serial_clock;
+						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+						A.serialport.coming_in = C.serialport.going_out;
+					}
+
+					C.serialport.coming_in = A.serialport.going_out;
+					C.serialport.can_pulse = false;
+
+					if (C.serialport.serial_clock == 2) { do_2_next = true; }
+				}
+				else
+				{
+					do_2_next = false;
+				}
+
+				// the signal to shift out a bit is when serial_clock = 1
+				if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next)
+				{
+					C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+
+					if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && C.serialport.can_pulse)
+					{
+						D.serialport.serial_clock = C.serialport.serial_clock;
+						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+						D.serialport.coming_in = C.serialport.going_out;
+					}
+
+					C.serialport.coming_in = D.serialport.going_out;
+					C.serialport.can_pulse = false;
+				}
+				else if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0))
+				{
+					do_2_next = false;
+
+					D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+
+					if ((C.serialport.clk_rate == -1) && C.serialport.serial_start && D.serialport.can_pulse)
+					{
+						C.serialport.serial_clock = D.serialport.serial_clock;
+						C.serialport.going_out = (byte)(C.serialport.serial_data >> 7);
+						C.serialport.coming_in = D.serialport.going_out;
+					}
+
+					D.serialport.coming_in = C.serialport.going_out;
+					D.serialport.can_pulse = false;
+
+					if (D.serialport.serial_clock == 2) { do_2_next = true; }
+				}
+				else
+				{
+					do_2_next = false;
+				}
+
+				// the signal to shift out a bit is when serial_clock = 1
+				if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0) && !do_2_next)
+				{
+					D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+
+					if ((A.serialport.clk_rate == -1) && A.serialport.serial_start && D.serialport.can_pulse)
+					{
+						A.serialport.serial_clock = D.serialport.serial_clock;
+						A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+						A.serialport.coming_in = D.serialport.going_out;
+					}
+
+					D.serialport.coming_in = A.serialport.going_out;
+					D.serialport.can_pulse = false;
+				}
+				else if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0))
+				{
+					do_2_next = false;
+
+					A.serialport.going_out = (byte)(A.serialport.serial_data >> 7);
+
+					if ((D.serialport.clk_rate == -1) && D.serialport.serial_start && A.serialport.can_pulse)
+					{
+						D.serialport.serial_clock = A.serialport.serial_clock;
+						D.serialport.going_out = (byte)(D.serialport.serial_data >> 7);
+						D.serialport.coming_in = A.serialport.going_out;
+					}
+
+					A.serialport.coming_in = D.serialport.going_out;
+					A.serialport.can_pulse = false;
+
+					if (A.serialport.serial_clock == 2) { do_2_next = true; }
+				}
+				else
+				{
+					do_2_next = false;
+				}
+				*/
+
+				// if we hit a frame boundary, update video
+				if (A.vblank_rise)
+				{
+					// update the controller state on VBlank
+					A.controller_state = A_controller;
+
+					// check if controller state caused interrupt
+					A.do_controller_check();
+
+					// send the image on VBlank
+					A.SendVideoBuffer();
+
+					A.vblank_rise = false;
+					do_frame_fill = true;
+				}
+				if (B.vblank_rise)
+				{
+					// update the controller state on VBlank
+					B.controller_state = B_controller;
+
+					// check if controller state caused interrupt
+					B.do_controller_check();
+
+					// send the image on VBlank
+					B.SendVideoBuffer();
+
+					B.vblank_rise = false;
+					do_frame_fill = true;
+				}
+				if (C.vblank_rise)
+				{
+					// update the controller state on VBlank
+					C.controller_state = C_controller;
+
+					// check if controller state caused interrupt
+					C.do_controller_check();
+
+					// send the image on VBlank
+					C.SendVideoBuffer();
+
+					C.vblank_rise = false;
+					do_frame_fill = true;
+				}
+				if (D.vblank_rise)
+				{
+					// update the controller state on VBlank
+					D.controller_state = D_controller;
+
+					// check if controller state caused interrupt
+					D.do_controller_check();
+
+					// send the image on VBlank
+					D.SendVideoBuffer();
+
+					D.vblank_rise = false;
+					do_frame_fill = true;
+				}
+			}
+		}
+
+		public void do_frame_2x2()
+		{
+			// advance one full frame
+			for (int i = 0; i < 70224; i++)
+			{
+				A.do_single_step();
+				B.do_single_step();
+				C.do_single_step();
+				D.do_single_step();
+
+				if (_cableconnected_UD)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
 					if (((A.serialport.serial_clock == 1) || (A.serialport.serial_clock == 2)) && (A.serialport.clk_rate > 0) && !do_2_next)
@@ -191,7 +391,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						do_2_next = false;
 					}
 				}
-				else if (_cableconnected_CR)
+				else if (_cableconnected_LR)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
 					if (((C.serialport.serial_clock == 1) || (C.serialport.serial_clock == 2)) && (C.serialport.clk_rate > 0) && !do_2_next)
@@ -231,7 +431,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 						do_2_next = false;
 					}
 				}
-				else if (_cableconnected_RL)
+				else if (_cableconnected_X)
 				{
 					// the signal to shift out a bit is when serial_clock = 1
 					if (((D.serialport.serial_clock == 1) || (D.serialport.serial_clock == 2)) && (D.serialport.clk_rate > 0) && !do_2_next)

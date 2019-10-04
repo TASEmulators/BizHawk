@@ -44,9 +44,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(Port3.Definition.BoolButtons)
 					.Concat(Port4.Definition.BoolButtons)
-					.Concat(new[] { "Toggle Cable LC" } )
-					.Concat(new[] { "Toggle Cable CR" } )
-					.Concat(new[] { "Toggle Cable RL" } )
+					.Concat(new[] { "Toggle Cable UD" } )
+					.Concat(new[] { "Toggle Cable LR" } )
+					.Concat(new[] { "Toggle Cable X" } )
+					.Concat(new[] { "Toggle Cable 4x" })
 					.ToList()
 			};
 		}

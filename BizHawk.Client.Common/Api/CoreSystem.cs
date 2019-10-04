@@ -35,6 +35,7 @@
         AmstradCPC,
 		GGL,
 		ChannelF,
-		GB3x
+		GB3x,
+		GB4x
 	}
 }

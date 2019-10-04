@@ -1730,6 +1730,7 @@ namespace BizHawk.Client.EmuHawk
 			DGBSubMenu.Visible = false;
 			DGBHawkSubMenu.Visible = false;
 			GB3xSubMenu.Visible = false;
+			GB4xSubMenu.Visible = false;
 			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
@@ -1863,6 +1864,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GB3x":
 					GB3xSubMenu.Visible = true;
+					break;
+				case "GB4x":
+					GB4xSubMenu.Visible = true;
 					break;
 			}
 		}

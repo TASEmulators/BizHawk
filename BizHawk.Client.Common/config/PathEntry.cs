@@ -396,6 +396,13 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "GB3x", SystemDisplayName = "GB3x", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "GB3x", SystemDisplayName = "GB3x", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "Base", Path = Path.Combine(".", "GB4x"), Ordinal = 0 },
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry { System = "GB4x", SystemDisplayName = "GB4x", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
 			new PathEntry { System = "VEC", SystemDisplayName = "VEC", Type = "Base", Path = Path.Combine(".", "VEC"), Ordinal = 0 },
 			new PathEntry { System = "VEC", SystemDisplayName = "VEC", Type = "ROM", Path = ".", Ordinal = 1 },
 			new PathEntry { System = "VEC", SystemDisplayName = "VEC", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },

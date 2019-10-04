@@ -16,6 +16,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
@@ -680,6 +681,31 @@ namespace BizHawk.Client.Common
 									rightBytes3x,
 									GetCoreSettings<GBHawkLink3x>(),
 									GetCoreSyncSettings<GBHawkLink3x>());
+
+									break;
+								case "GB4x":
+									var A_Bytes4x = xmlGame.Assets.First().Value;
+									var B_Bytes4x = xmlGame.Assets.Skip(1).First().Value;
+									var C_Bytes4x = xmlGame.Assets.Skip(2).First().Value;
+									var D_Bytes4x = xmlGame.Assets.Skip(3).First().Value;
+
+									var A_4x = Database.GetGameInfo(A_Bytes4x, "A.gb");
+									var B_4x = Database.GetGameInfo(B_Bytes4x, "B.gb");
+									var C_4x = Database.GetGameInfo(C_Bytes4x, "C.gb");
+									var D_4x = Database.GetGameInfo(D_Bytes4x, "D.gb");
+
+									nextEmulator = new GBHawkLink4x(
+									nextComm,
+									A_4x,
+									B_Bytes4x,
+									B_4x,
+									B_Bytes4x,
+									C_4x,
+									C_Bytes4x,
+									D_4x,
+									D_Bytes4x,
+									GetCoreSettings<GBHawkLink4x>(),
+									GetCoreSyncSettings<GBHawkLink4x>());
 
 									break;
 								case "AppleII":

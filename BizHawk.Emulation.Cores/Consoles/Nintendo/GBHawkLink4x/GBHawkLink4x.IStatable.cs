@@ -65,9 +65,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
-			ser.Sync(nameof(_cableconnected_LC), ref _cableconnected_LC);
-			ser.Sync(nameof(_cableconnected_CR), ref _cableconnected_CR);
-			ser.Sync(nameof(_cableconnected_RL), ref _cableconnected_RL);
+			ser.Sync(nameof(_cableconnected_UD), ref _cableconnected_UD);
+			ser.Sync(nameof(_cableconnected_LR), ref _cableconnected_LR);
+			ser.Sync(nameof(_cableconnected_X), ref _cableconnected_X);
+			ser.Sync(nameof(_cableconnected_4x), ref _cableconnected_4x);
 			ser.Sync(nameof(do_2_next), ref do_2_next);
 			ser.Sync(nameof(A_controller), ref A_controller);
 			ser.Sync(nameof(B_controller), ref B_controller);

@@ -138,6 +138,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.DualGB;
 					case "GB3x":
 						return SystemInfo.GB3x;
+					case "GB4x":
+						return SystemInfo.GB4x;
 					case "WSWAN":
 						return SystemInfo.WonderSwan;
 					case "Lynx":
