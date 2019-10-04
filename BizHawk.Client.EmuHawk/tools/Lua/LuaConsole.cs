@@ -817,7 +817,11 @@ namespace BizHawk.Client.EmuHawk
 				File.WriteAllText(sfd.FileName, defaultTemplate);
 				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
 				UpdateDialog();
-				Process.Start(sfd.FileName);
+				Process.Start(new ProcessStartInfo
+				{
+					Verb = "Open",
+					FileName = sfd.FileName
+				});
 			}
 		}
 
@@ -975,7 +979,11 @@ namespace BizHawk.Client.EmuHawk
 					File.WriteAllText(sfd.FileName, text);
 					LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
 					UpdateDialog();
-					Process.Start(sfd.FileName);
+					Process.Start(new ProcessStartInfo
+					{
+						Verb = "Open",
+						FileName = sfd.FileName
+					});
 				}
 			}
 		}
