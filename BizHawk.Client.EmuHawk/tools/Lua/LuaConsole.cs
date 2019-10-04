@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -936,8 +937,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SelectedFiles.ToList().ForEach(file =>
 			{
-				string pathToLoad = ProcessPath(file.Path);
-				System.Diagnostics.Process.Start(pathToLoad);
+				Process.Start(new ProcessStartInfo
+				{
+					Verb = "Open",
+					FileName = ProcessPath(file.Path)
+				});
 			});
 		}
 
