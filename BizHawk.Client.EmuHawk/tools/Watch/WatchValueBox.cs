@@ -619,7 +619,10 @@ namespace BizHawk.Client.EmuHawk
 					if (Text.IsSigned())
 					{
 						if (Text == "-")
+						{
 							return 0;
+						}
+
 						return int.Parse(Text);
 					}
 

@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class WatchEditor : Form
 	{
-		public enum Mode { New, Duplicate, Edit };
+		public enum Mode { New, Duplicate, Edit }
 
 		private readonly List<Watch> _watchList = new List<Watch>();
 
@@ -23,9 +23,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _changedSize;
 		private bool _changedDisplayType;
 
-		public Mode EditorMode { get { return _mode; } }
-		public List<Watch> Watches { get { return _watchList; } }
-		public Point InitialLocation = new Point(0, 0);
+		public List<Watch> Watches => _watchList;
+
+		public Point InitialLocation { get; set;  } = new Point(0, 0);
 
 		public WatchEditor()
 		{
@@ -39,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Location = InitialLocation;
 			}
+
 			_loading = false;
 			SetAddressBoxProperties();
 
@@ -117,6 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			DomainDropDown.Items.Clear();
 			DomainDropDown.Items.AddRange(MemoryDomains
 				.Select(d => d.ToString())
+				.Cast<object>()
 				.ToArray());
 			DomainDropDown.SelectedItem = domain.ToString();
 
@@ -160,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach(DisplayType t in ByteWatch.ValidTypes)
+					foreach (DisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
@@ -240,17 +242,17 @@ namespace BizHawk.Client.EmuHawk
 					var address = AddressBox.ToLong() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
-					var bigendian = BigEndianCheckBox.Checked;
+					var bigEndian = BigEndianCheckBox.Checked;
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigEndian, notes));
 							break;
 						case 1:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigEndian, notes));
 							break;
 						case 2:
-							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigEndian, notes));
 							break;
 					}
 
