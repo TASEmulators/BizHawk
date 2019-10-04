@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				["Flag I"] = fi,
 				["Flag Z"] = fz,
 				["Flag C"] = fc,
+				["V"] = regs.vcounter,
+				["H"] = regs.hcounter,
 			};
 		}
 

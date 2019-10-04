@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public N64SyncSettings()
 		{
-			VideoPlugin = PluginType.Jabo;
+			VideoPlugin = PluginType.GLideN64; // works on win xp 32bit, just needs something like opengl 3.3+
 			Core = CoreType.Dynarec;
 			Rsp = RspType.Rsp_Hle;
 			DisableExpansionSlot = true;

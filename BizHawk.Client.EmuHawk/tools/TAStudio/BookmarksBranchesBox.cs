@@ -135,6 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.BranchCount;
 			Movie.CurrentBranch = Movie.BranchCount - 1;
+			BranchView.ScrollToIndex(Movie.CurrentBranch);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
@@ -610,9 +611,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
 					Point location = Location;
-					location.Offset(-Screenshot.Width, 0);
-					int width = Tastudio.VideoProvider.BufferWidth;
-					int height = Tastudio.VideoProvider.BufferHeight;
+					int width = branch.OSDFrameBuffer.Width;
+					int height = branch.OSDFrameBuffer.Height;
+					location.Offset(-width, 0);
 
 					Screenshot.UpdateValues(branch, PointToScreen(location), width, height,
 						(int)Graphics.FromHwnd(this.Handle).MeasureString(

@@ -4,9 +4,7 @@
 //sig: core->frontend: "core signal" a synchronous operation called from the emulation process which the frontend should handle immediately without issuing any calls into the core
 //brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 
-#if WINDOWS
 #include <Windows.h>
-#endif
 
 #define LIBSNES_IMPORT
 #include "snes/snes.hpp"
@@ -110,6 +108,7 @@ struct CPURegsComm {
 	u8 p, nothing;
 	u32 aa, rd;
 	u8 sp, dp, db, mdr;
+	u16 vcounter, hdot;
 }
 #ifndef _MSC_VER
 __attribute__((__packed__))
@@ -281,10 +280,6 @@ void snes_scanlineStart(int line)
 	BREAK(eMessage_BRK_scanlineStart);
 }
 
-#if WINDOWS
-#else
-    int handle;
-#endif
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
 {
 	//its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
@@ -509,6 +504,8 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.mdr = SNES::cpu.regs.mdr;
 	comm.cpuregs.vector = SNES::cpu.regs.vector;
 	comm.cpuregs.p = SNES::cpu.regs.p;
+	comm.cpuregs.vcounter = SNES::cpu.vcounter();
+	comm.cpuregs.hdot = SNES::cpu.hdot();
 	comm.cpuregs.nothing = 0;
 }
 void QUERY_peek_set_cdl() {
@@ -576,12 +573,10 @@ void new_emuthread()
 //------------------------------------------------
 //DLL INTERFACE
 
-#if WINDOWS
 BOOL WINAPI DllMain(_In_ HINSTANCE hinstDLL, _In_ DWORD     fdwReason, _In_ LPVOID    lpvReserved)
 {
 	return TRUE;
 }
-#endif
 
 extern "C" dllexport void* __cdecl DllInit()
 {
@@ -642,4 +637,5 @@ extern "C" dllexport void __cdecl CopyBuffer(int id, void* ptr, int32 size)
 extern "C" dllexport void __cdecl SetBuffer(int id, void* ptr, int32 size)
 {
 	comm.SetBuffer(id, ptr, size);
+}
 }

@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				UseNativeResolutionFactor = 0;
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
-				CacheSize = 500;
+				CacheSize = 8000; // the plugin ignores it, but we display it to inform what number it uses internally
 				EnableNoise = true;
 				EnableLOD = true;
 				EnableHWLighting = false;

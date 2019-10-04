@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			var regs = GetCpuFlagsAndRegisters();
 			uint pc = (uint)regs["M68K PC"].Value;
 			var length = 0;
-			var disasm = Disassemble(MemoryDomains.SystemBus, pc, out length).PadRight(40);
+			var disasm = Disassemble(MemoryDomains.SystemBus, pc & 0xFFFFFF, out length).PadRight(40);
 
 			var traceInfo = new TraceInfo
 			{

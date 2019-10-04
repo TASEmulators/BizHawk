@@ -35,14 +35,8 @@ namespace BizHawk.Client.Common
 
 		public int BackgroundColor => 0;
 
-		public int VsyncNumerator
-		{
-			get { throw new InvalidOperationException(); }
-		}
+		public int VsyncNumerator => 0;
 
-		public int VsyncDenominator
-		{
-			get { throw new InvalidOperationException(); }
-		}
+		public int VsyncDenominator => 0;
 	}
 }

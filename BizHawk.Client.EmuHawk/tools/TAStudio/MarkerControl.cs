@@ -150,10 +150,26 @@ namespace BizHawk.Client.EmuHawk
 			if (MarkerView.AnyRowsSelected)
 			{
 				SelectedMarkers.ForEach(i => Markers.Remove(i));
-				MarkerInputRoll.DeselectAll();
+				ShrinkSelection();
 				Tastudio.RefreshDialog();
 				MarkerView_SelectedIndexChanged(null, null);
 			}
+		}
+
+		// feos: not the same as InputRoll.TruncateSelection(), since multiple selection of markers is forbidden
+		// moreover, when the last marker is removed, we need its selection to move to the previous marker
+		// still iterate, so things don't break if multiple selection is allowed someday
+		public void ShrinkSelection()
+		{
+			if (MarkerView.AnyRowsSelected)
+			{
+				while (MarkerView.SelectedRows.Last() > Markers.Count() - 1)
+				{
+					MarkerView.SelectRow(Markers.Count(), false);
+					MarkerView.SelectRow(Markers.Count() - 1, true);
+				}
+			}
+
 		}
 
 		public void AddMarker(bool editText = false, int? frame = null)
@@ -190,6 +206,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateValues();
 			}
 
+			MarkerView.ScrollToIndex(Markers.Count() - 1);
 			Tastudio.RefreshDialog();
 		}
 
@@ -252,7 +269,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return MarkerView.SelectedRows
+				return MarkerView
+					.SelectedRows
 					.Select(index => Markers[index])
 					.ToList();
 			}

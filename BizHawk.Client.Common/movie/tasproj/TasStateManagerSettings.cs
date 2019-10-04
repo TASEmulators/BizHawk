@@ -11,8 +11,9 @@ namespace BizHawk.Client.Common
 		{
 			DiskSaveCapacitymb = 512;
 			Capacitymb = 512;
-			DiskCapacitymb = 512;
-			StateGap = 4;
+			DiskCapacitymb = 1; // not working yet
+			MemStateGapDivider = 64;
+			FileStateGap = 4;
 			BranchStatesInTasproj = false;
 			EraseBranchStatesFirst = true;
 		}
@@ -22,7 +23,8 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacitymb = settings.DiskSaveCapacitymb;
 			Capacitymb = settings.Capacitymb;
 			DiskCapacitymb = settings.DiskCapacitymb;
-			StateGap = settings.StateGap;
+			MemStateGapDivider = settings.MemStateGapDivider;
+			FileStateGap = settings.FileStateGap;
 			BranchStatesInTasproj = settings.BranchStatesInTasproj;
 			EraseBranchStatesFirst = settings.EraseBranchStatesFirst;
 		}
@@ -56,11 +58,18 @@ namespace BizHawk.Client.Common
 		public int DiskCapacitymb { get; set; }
 
 		/// <summary>
+		/// Gets or sets the divider that determines memory state gap
+		/// </summary>
+		[DisplayName("Divider for memory state interval")]
+		[Description("The actual state gap in frames is calculated as ExpectedStateSize / div / 1024")]
+		public int MemStateGapDivider { get; set; }
+
+		/// <summary>
 		/// Gets or sets the amount of states to skip during project saving
 		/// </summary>
 		[DisplayName("State interval for .tasproj")]
 		[Description("The actual state gap in frames is calculated as Nth power on 2")]
-		public int StateGap { get; set; }
+		public int FileStateGap { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether or not to save branch states into the movie file
@@ -99,7 +108,8 @@ namespace BizHawk.Client.Common
 			sb.AppendLine(DiskCapacitymb.ToString());
 			sb.AppendLine(BranchStatesInTasproj.ToString());
 			sb.AppendLine(EraseBranchStatesFirst.ToString());
-			sb.AppendLine(StateGap.ToString());
+			sb.AppendLine(FileStateGap.ToString());
+			sb.AppendLine(MemStateGapDivider.ToString());
 
 			return sb.ToString();
 		}
@@ -123,13 +133,13 @@ namespace BizHawk.Client.Common
 						DiskSaveCapacitymb = refCapacity;
 					}
 
-					DiskCapacitymb = lines.Length > 2 ? int.Parse(lines[2]) : 512;
+					int i = 2;
 
-					BranchStatesInTasproj = lines.Length > 3 && bool.Parse(lines[3]);
-
-					EraseBranchStatesFirst = lines.Length <= 4 || bool.Parse(lines[4]);
-
-					StateGap = lines.Length > 5 ? int.Parse(lines[5]) : 4;
+					DiskCapacitymb = lines.Length > i ? int.Parse(lines[i++]) : 1;
+					BranchStatesInTasproj = lines.Length > i && bool.Parse(lines[i++]);
+					EraseBranchStatesFirst = lines.Length <= i || bool.Parse(lines[i++]);
+					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 4;
+					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 64;
 				}
 				catch (Exception) // TODO: this is bad
 				{

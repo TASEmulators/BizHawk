@@ -695,8 +695,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsSeeking => PauseOnFrame.HasValue;
 
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Global.Config.TurboSeek;
-		
-		private bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
+
+		public bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
 
@@ -3042,11 +3042,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.CheatList.Pulse();
 
-				if (!PauseAvi)
-				{
-					AvFrameAdvance();
-				}
-
 				if (IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -3068,6 +3063,11 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					UpdateToolsAfter(SuppressLua);
+				}
+
+				if (!PauseAvi)
+				{
+					AvFrameAdvance();
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&

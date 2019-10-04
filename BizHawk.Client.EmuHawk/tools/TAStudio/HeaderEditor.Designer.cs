@@ -44,8 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			this.MakeDefaultCheckbox = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.EmulatorVersionTextBox = new System.Windows.Forms.TextBox();
-			this.PlatformTextBox = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.CoreTextBox = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.BoardNameTextBox = new System.Windows.Forms.TextBox();
@@ -134,29 +132,11 @@ namespace BizHawk.Client.EmuHawk
 			this.EmulatorVersionTextBox.Size = new System.Drawing.Size(162, 20);
 			this.EmulatorVersionTextBox.TabIndex = 7;
 			// 
-			// PlatformTextBox
-			// 
-			this.PlatformTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PlatformTextBox.Location = new System.Drawing.Point(90, 106);
-			this.PlatformTextBox.Name = "PlatformTextBox";
-			this.PlatformTextBox.Size = new System.Drawing.Size(162, 20);
-			this.PlatformTextBox.TabIndex = 8;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 110);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(45, 13);
-			this.label3.TabIndex = 9;
-			this.label3.Text = "Platform";
-			// 
 			// CoreTextBox
 			// 
 			this.CoreTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.CoreTextBox.Location = new System.Drawing.Point(90, 136);
+			this.CoreTextBox.Location = new System.Drawing.Point(90, 106);
 			this.CoreTextBox.Name = "CoreTextBox";
 			this.CoreTextBox.Size = new System.Drawing.Size(162, 20);
 			this.CoreTextBox.TabIndex = 10;
@@ -164,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 140);
+			this.label4.Location = new System.Drawing.Point(12, 110);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(29, 13);
 			this.label4.TabIndex = 11;
@@ -174,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.BoardNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.BoardNameTextBox.Location = new System.Drawing.Point(90, 166);
+			this.BoardNameTextBox.Location = new System.Drawing.Point(90, 136);
 			this.BoardNameTextBox.Name = "BoardNameTextBox";
 			this.BoardNameTextBox.Size = new System.Drawing.Size(162, 20);
 			this.BoardNameTextBox.TabIndex = 12;
@@ -182,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 170);
+			this.label5.Location = new System.Drawing.Point(12, 140);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(64, 13);
 			this.label5.TabIndex = 13;
@@ -192,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.GameNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.GameNameTextBox.Location = new System.Drawing.Point(90, 196);
+			this.GameNameTextBox.Location = new System.Drawing.Point(90, 166);
 			this.GameNameTextBox.Name = "GameNameTextBox";
 			this.GameNameTextBox.Size = new System.Drawing.Size(162, 20);
 			this.GameNameTextBox.TabIndex = 14;
@@ -200,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 200);
+			this.label6.Location = new System.Drawing.Point(12, 170);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(64, 13);
 			this.label6.TabIndex = 15;
@@ -219,8 +199,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.BoardNameTextBox);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.CoreTextBox);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.PlatformTextBox);
 			this.Controls.Add(this.EmulatorVersionTextBox);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.MakeDefaultCheckbox);
@@ -248,8 +226,6 @@ namespace BizHawk.Client.EmuHawk
 		private CheckBox MakeDefaultCheckbox;
 		private Label label2;
 		private TextBox EmulatorVersionTextBox;
-		private TextBox PlatformTextBox;
-		private Label label3;
 		private TextBox CoreTextBox;
 		private Label label4;
 		private TextBox BoardNameTextBox;

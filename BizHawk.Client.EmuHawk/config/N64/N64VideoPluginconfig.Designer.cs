@@ -277,6 +277,8 @@
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
 			this.JaboTab = new System.Windows.Forms.TabPage();
 			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
+			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.label71 = new System.Windows.Forms.Label();
 			this.label70 = new System.Windows.Forms.Label();
 			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
@@ -355,6 +357,8 @@
 			this.GLideN64_bilinearMode = new System.Windows.Forms.ComboBox();
 			this.GLideN64_MaxAnisotropy = new System.Windows.Forms.CheckBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.label89 = new System.Windows.Forms.Label();
+			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.TextBox();
 			this.GLideN64_DisableFBInfo = new System.Windows.Forms.CheckBox();
 			this.GLideN64_FBInfoReadDepthChunk = new System.Windows.Forms.CheckBox();
 			this.GLideN64_FBInfoReadColorChunk = new System.Windows.Forms.CheckBox();
@@ -374,10 +378,6 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.label89 = new System.Windows.Forms.Label();
-			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.TextBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -537,9 +537,9 @@
 			this.label47.AutoSize = true;
 			this.label47.Location = new System.Drawing.Point(10, 115);
 			this.label47.Name = "label47";
-			this.label47.Size = new System.Drawing.Size(275, 13);
+			this.label47.Size = new System.Drawing.Size(319, 13);
 			this.label47.TabIndex = 14;
-			this.label47.Text = "(Glide64mk2 is newer and is recommended over Glide64)";
+			this.label47.Text = "GLideN64 is the newest plugin and has the highest compatibility.";
 			// 
 			// label2
 			// 
@@ -581,9 +581,9 @@
 			this.PluginComboBox.FormattingEnabled = true;
 			this.PluginComboBox.Items.AddRange(new object[] {
             "Rice",
+            "Jabo 1.6.1",
             "Glide64",
             "Glide64mk2",
-            "Jabo 1.6.1",
             "GLideN64"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
@@ -3419,6 +3419,32 @@
 			this.JaboPerGameHacksGroupBox.TabStop = false;
 			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
+			// JaboResolutionHeightBox
+			// 
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			this.JaboResolutionHeightBox.MaxLength = 4;
+			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			this.JaboResolutionHeightBox.Nullable = false;
+			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionHeightBox.TabIndex = 34;
+			this.JaboResolutionHeightBox.Text = "0";
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			// 
+			// JaboResolutionWidthBox
+			// 
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			this.JaboResolutionWidthBox.MaxLength = 4;
+			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			this.JaboResolutionWidthBox.Nullable = false;
+			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionWidthBox.TabIndex = 33;
+			this.JaboResolutionWidthBox.Text = "0";
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			// 
 			// label71
 			// 
 			this.label71.AutoSize = true;
@@ -4298,6 +4324,7 @@
 			// label83
 			// 
 			this.label83.AutoSize = true;
+			this.label83.Enabled = false;
 			this.label83.Location = new System.Drawing.Point(3, 72);
 			this.label83.Name = "label83";
 			this.label83.Size = new System.Drawing.Size(62, 13);
@@ -4306,6 +4333,7 @@
 			// 
 			// GLideN64_CacheSize
 			// 
+			this.GLideN64_CacheSize.Enabled = false;
 			this.GLideN64_CacheSize.Location = new System.Drawing.Point(123, 69);
 			this.GLideN64_CacheSize.Name = "GLideN64_CacheSize";
 			this.GLideN64_CacheSize.Size = new System.Drawing.Size(78, 20);
@@ -4368,6 +4396,22 @@
 			this.tabPage7.TabIndex = 2;
 			this.tabPage7.Text = "Frame buffer settings";
 			this.tabPage7.UseVisualStyleBackColor = true;
+			// 
+			// label89
+			// 
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(3, 45);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(146, 13);
+			this.label89.TabIndex = 78;
+			this.label89.Text = "Use Native Resolution Factor";
+			// 
+			// GLideN64_UseNativeResolutionFactor
+			// 
+			this.GLideN64_UseNativeResolutionFactor.Location = new System.Drawing.Point(155, 42);
+			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
+			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(32, 20);
+			this.GLideN64_UseNativeResolutionFactor.TabIndex = 77;
 			// 
 			// GLideN64_DisableFBInfo
 			// 
@@ -4569,48 +4613,6 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			// 
-			// label89
-			// 
-			this.label89.AutoSize = true;
-			this.label89.Location = new System.Drawing.Point(3, 45);
-			this.label89.Name = "label89";
-			this.label89.Size = new System.Drawing.Size(146, 13);
-			this.label89.TabIndex = 78;
-			this.label89.Text = "Use Native Resolution Factor";
-			// 
-			// GLideN64_UseNativeResolutionFactor
-			// 
-			this.GLideN64_UseNativeResolutionFactor.Location = new System.Drawing.Point(155, 42);
-			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
-			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(32, 20);
-			this.GLideN64_UseNativeResolutionFactor.TabIndex = 77;
-			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
