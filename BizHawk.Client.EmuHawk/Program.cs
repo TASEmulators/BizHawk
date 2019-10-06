@@ -75,6 +75,11 @@ namespace BizHawk.Client.EmuHawk
 
 				//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 			}
+			else
+			{
+				// for Unix, skip everything else and just wire up the event handler
+				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+			}
 		}
 
 		[STAThread]
