@@ -56,6 +56,10 @@
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96">
+      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
@@ -260,6 +264,7 @@
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />
     <Compile Include="SevenZipWriter.cs" />
+    <Compile Include="SharpCompressArchiveHandler.cs" />
     <Compile Include="SharpZipWriter.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
@@ -320,6 +325,9 @@
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

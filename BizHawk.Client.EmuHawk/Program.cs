@@ -117,7 +117,20 @@ namespace BizHawk.Client.EmuHawk
 
 			BizHawk.Common.TempFileManager.Start();
 
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+#if true // switch to if false for system-agnostic glory!
+			switch (EXE_PROJECT.OSTailoredCode.CurrentOS)
+			{
+				case EXE_PROJECT.OSTailoredCode.DistinctOS.Linux:
+				case EXE_PROJECT.OSTailoredCode.DistinctOS.macOS:
+					HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+					break;
+				case EXE_PROJECT.OSTailoredCode.DistinctOS.Windows:
+					HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+					break;
+			}
+#else
+			HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
+#endif
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
