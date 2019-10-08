@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						TR, PCl, W,
 						ASGN, PCh, 0,
-						IDLE,
+						IRQ_CLEAR,
 						OP };
 		}
 
@@ -54,13 +54,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						IRQ_CLEAR,
 						OP };
 		}
 
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
 
 		public ushort int_src;
+		public byte int_clear;
 		public int stop_time;
 		public bool stop_check;
 		public bool is_GBC; // GBC automatically adds a NOP to avoid the HALT bug (according to Sinimas)
