@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (RAM_enable)
 				{
-					if ((Core.cart_RAM != null) && (RAM_bank < 3))
+					if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
 					{
 						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
 						{
@@ -73,18 +73,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((RAM_bank >= 8) && (RAM_bank < 0xC))
+					if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
 					{
 						return RTC_regs_latch[RAM_bank - 8];
 					}
 					else
 					{
-						return 0xFF;
+						return 0x0;
 					}
 				}
 				else
 				{
-					return 0xFF;
+					return 0x0;
 				}
 			}
 		}
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (RAM_enable)
 				{
-					if ((Core.cart_RAM != null) && (RAM_bank < 3))
+					if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
 					{
 						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
 						{
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((RAM_bank >= 8) && (RAM_bank < 0xC))
+					if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
 					{
 						return;
 					}
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (addr < 0x8000)
 			{
 				if (addr < 0x2000)
-				{
+				{					
 					RAM_enable = ((value & 0xA) == 0xA);
 				}
 				else if (addr < 0x4000)
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0x6000)
 				{
-					RAM_bank = value & 3;
+					RAM_bank = value;
 				}
 				else
 				{
@@ -175,16 +175,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (RAM_enable)
 				{
-					if ((Core.cart_RAM != null) && (RAM_bank <= 3))
+					if ((Core.cart_RAM != null) && (RAM_bank <= RAM_mask))
 					{
 						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
 						{
 							Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 						}
 					}
-					else if ((RAM_bank >= 8) && (RAM_bank < 0xC))
+					else if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
 					{
 						RTC_regs[RAM_bank - 8] = value;
+
+						RTC_low_clock = RTC_timer = 0;
 
 						halt = (RTC_regs[4] & 0x40) > 0;
 					}
@@ -219,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						RTC_low_clock = 0;
 
 						RTC_regs[0]++;
+
 						if (RTC_regs[0] > 59)
 						{
 							RTC_regs[0] = 0;
@@ -254,7 +257,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 		}
-
 
 		public override void SyncState(Serializer ser)
 		{
