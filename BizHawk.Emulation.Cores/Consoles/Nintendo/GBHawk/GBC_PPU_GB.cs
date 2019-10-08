@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VRAM_sel;
 		public bool BG_V_flip;
 		public bool HDMA_mode;
+		public bool HDMA_run_once;
 		public ushort cur_DMA_src;
 		public ushort cur_DMA_dest;
 		public int HDMA_length;
@@ -211,17 +212,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							HBL_HDMA_count = 0x10;
 
 							// TODO: DOES HDMA start if triggered in mode 0 immediately? (for now assume no)
-							if ((STAT & 3) == 0)
-							{
-								last_HBL = LY;
-							}
-							else
-							{
-								last_HBL = LY - 1;
-							}
-							
+							last_HBL = LY - 1;
+
 							HBL_test = true;
 							HBL_HDMA_go = false;
+
+							if (!LCDC.Bit(7))
+							{
+								HDMA_run_once = true;
+							}
 						}
 						else
 						{
@@ -278,11 +277,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// Do HDMA ticks
 			if (HDMA_active)
 			{
-				if (HDMA_countdown == 0)
+				if (HDMA_length > 0)
 				{
-					if (HDMA_length > 0)
+					if (!HDMA_mode)
 					{
-						if (!HDMA_mode)
+						if (HDMA_countdown > 0)
+						{
+							HDMA_countdown--;
+						}
+						else
 						{
 							// immediately transfer bytes, 2 bytes per cycles
 							if ((HDMA_tick % 2) == 0)
@@ -299,19 +302,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							HDMA_tick++;
 						}
-						else
+					}
+					else
+					{
+						// only transfer during mode 0, and only 16 bytes at a time
+						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1) && (cycle > 4))
 						{
-							// only transfer during mode 0, and only 16 bytes at a time
-							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1))
+							HBL_HDMA_go = true;
+							HBL_test = false;
+						}
+						else if (HDMA_run_once)
+						{
+							HBL_HDMA_go = true;
+							HBL_test = false;
+							HDMA_run_once = false;
+						}
+
+						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
+						{
+							Core.HDMA_transfer = true;
+
+							if (HDMA_countdown > 0)
 							{
-								HBL_HDMA_go = true;
-								HBL_test = false;
+								HDMA_countdown--;
 							}
-
-							if (HBL_HDMA_go && (HBL_HDMA_count > 0))
+							else
 							{
-								Core.HDMA_transfer = true;
-
 								if ((HDMA_tick % 2) == 0)
 								{
 									HDMA_byte = Core.ReadMemory(cur_DMA_src);
@@ -327,6 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
 								{
+
 									HBL_test = true;
 									last_HBL = LY;
 									HBL_HDMA_count = 0x10;
@@ -335,25 +352,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 								HDMA_tick++;
 							}
-							else
-							{
-								Core.HDMA_transfer = false;
-							}
-						}					
-					}
-					else
-					{
-						HDMA_active = false;
-						Core.HDMA_transfer = false;
+						}
+						else
+						{
+							Core.HDMA_transfer = false;
+						}
 					}
 				}
 				else
 				{
-					HDMA_countdown--;
+					HDMA_active = false;
+					Core.HDMA_transfer = false;
 				}
 			}
-			
-			
+
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (LCDC.Bit(7))
 			{
@@ -1535,8 +1547,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("pal_transfer_byte", ref BG_transfer_byte);
-			ser.Sync("spr_transfer_byte", ref OBJ_transfer_byte);
+			ser.Sync(nameof(BG_transfer_byte), ref BG_transfer_byte);
+			ser.Sync(nameof(OBJ_transfer_byte), ref OBJ_transfer_byte);
 			ser.Sync(nameof(HDMA_src_hi), ref HDMA_src_hi);
 			ser.Sync(nameof(HDMA_src_lo), ref HDMA_src_lo);
 			ser.Sync(nameof(HDMA_dest_hi), ref HDMA_dest_hi);
@@ -1547,6 +1559,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(VRAM_sel), ref VRAM_sel);
 			ser.Sync(nameof(BG_V_flip), ref BG_V_flip);
 			ser.Sync(nameof(HDMA_mode), ref HDMA_mode);
+			ser.Sync(nameof(HDMA_run_once), ref HDMA_run_once);
 			ser.Sync(nameof(cur_DMA_src), ref cur_DMA_src);
 			ser.Sync(nameof(cur_DMA_dest), ref cur_DMA_dest);
 			ser.Sync(nameof(HDMA_length), ref HDMA_length);
