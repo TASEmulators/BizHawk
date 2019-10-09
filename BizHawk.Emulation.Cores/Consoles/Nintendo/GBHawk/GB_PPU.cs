@@ -495,11 +495,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
-				if (window_x_latch <= 7)
+				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					read_case = 9;
+					if ((render_offset % 7) <= 6)
+					{
+						read_case = 9;
+					}
+					else
+					{
+						read_case = 9;
+					}
 				}
 				else
 				{

@@ -651,10 +651,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
 				Core.REG_FF0F |= 0x02;
 				
-				//if (Core.cpu.cur_instr[Core.cpu.instr_pntr] == 46)
+				//if (LY == 46)
 				//{
-					//Console.Write(VBL_INT + " " + LYC_INT + " " + HBL_INT + " " + OAM_INT + " ");
-					//Core.last_rise = Core.cpu.TotalExecutedCycles;
+					//Console.Write(VBL_INT + " " + LYC_INT + " " + HBL_INT + " " + OAM_INT + " " + LY + " ");
+					//Console.Write(render_offset + " " + scroll_x +  " " + total_counter + " ");
 					//Console.WriteLine(STAT + " " + cycle + " " + Core.cpu.TotalExecutedCycles);
 				//}				
 			}
@@ -718,6 +718,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_pre_render = false;
 				window_latch = LCDC.Bit(5);
 
+				total_counter = 0;
+
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
 				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY >= window_y)))
 				{
@@ -750,17 +752,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
-				if (window_x_latch <= 7)
+				if (window_x_latch == 0)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					read_case = 9;
+					if ((render_offset % 7) <= 6)
+					{
+						read_case = 9;
+					}
+					else
+					{
+						read_case = 9;
+					}
 				}
 				else
 				{
 					// otherwise, just restart the whole process as if starting BG again
 					read_case = 4;
 				}
+
 				window_pre_render = true;
 
 				window_counter = 0;
