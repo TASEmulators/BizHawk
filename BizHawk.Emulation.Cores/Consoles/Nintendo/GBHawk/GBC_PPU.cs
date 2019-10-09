@@ -1108,18 +1108,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (hbl_countdown > 0)
 						{
 							hbl_countdown--;
-							
+
 							if (hbl_countdown == 0)
 							{
 								STAT &= 0xFC;
 								STAT |= 0x00;
 
-								if (STAT.Bit(3)) { HBL_INT = true; }
-
 								OAM_access_read = true;
 								OAM_access_write = true;
 								VRAM_access_read = true;
 								VRAM_access_write = true;
+							}
+							else
+							{
+								if (STAT.Bit(3)) { HBL_INT = true; }
 							}
 						}
 						break;

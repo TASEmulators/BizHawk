@@ -1144,12 +1144,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							hbl_countdown--;
 							if (hbl_countdown == 0)
 							{								
-
-
 								OAM_access_read = true;
 								OAM_access_write = true;
 								VRAM_access_read = true;
-								VRAM_access_write = true;
+								VRAM_access_write = true;								
 							}
 							else
 							{

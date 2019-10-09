@@ -91,7 +91,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ushort SQ1_len_cntr,		SQ2_len_cntr,			WAVE_len_cntr,				NOISE_len_cntr;
 		// computed
 		public int SQ1_output, SQ2_output, WAVE_output, NOISE_output;
-		public float WAVE_output_decay, WAVE_output_decay_L, WAVE_output_decay_R;
 
 		// Contol Variables
 		public bool AUD_CTRL_vin_L_en;
@@ -665,7 +664,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					WAVE_output = sample;
-					WAVE_output_decay = WAVE_output;
 
 					// NOTE: The sample buffer is only reloaded after the current sample is played, even if just triggered
 					WAVE_wave_cntr++;
@@ -673,13 +671,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					sample = Wave_RAM[WAVE_wave_cntr >> 1];
 				}
 			}
-			else
-			{
-				// there is a considerable decay time involved in turning off a channel
-				WAVE_output_decay = (float)(WAVE_output_decay * 0.999958);
-				WAVE_output = (int)Math.Round(WAVE_output_decay);
-			}
-			
 
 			// calculate noise output
 			if (NOISE_enable)
@@ -710,14 +701,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (AUD_CTRL_sq1_L_en) { L_final += SQ1_output; }
 			if (AUD_CTRL_sq2_L_en) { L_final += SQ2_output; }
-			if (AUD_CTRL_wave_L_en) { L_final += WAVE_output; WAVE_output_decay_L = WAVE_output; }
-			else { L_final += (int)Math.Round(WAVE_output_decay_L); WAVE_output_decay_L = (float)(WAVE_output_decay_L * 0.999985); }
+			if (AUD_CTRL_wave_L_en) { L_final += WAVE_output;}
 			if (AUD_CTRL_noise_L_en) { L_final += NOISE_output; }
 
 			if (AUD_CTRL_sq1_R_en) { R_final += SQ1_output; }
 			if (AUD_CTRL_sq2_R_en) { R_final += SQ2_output; }
-			if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; WAVE_output_decay_R = WAVE_output; }
-			else { R_final += (int)Math.Round(WAVE_output_decay_R); WAVE_output_decay_R = (float)(WAVE_output_decay_R * 0.999985); }
+			if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; }
 			if (AUD_CTRL_noise_R_en) { R_final += NOISE_output; }
 
 			L_final *= (AUD_CTRL_vol_L + 1) * 40;
@@ -957,12 +946,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(Audio_Regs), ref Audio_Regs, false);
-			ser.Sync("Wave_Ram", ref Wave_RAM, false);
+			ser.Sync(nameof(Wave_RAM), ref Wave_RAM, false);
 	
 			ser.Sync(nameof(SQ1_vol_done), ref SQ1_vol_done);
 			ser.Sync(nameof(SQ1_calc_done), ref SQ1_calc_done);
 			ser.Sync(nameof(SQ1_swp_enable), ref SQ1_swp_enable);
-			ser.Sync("SQ1_length_counter", ref SQ1_len_cntr);
+			ser.Sync(nameof(SQ1_len_cntr), ref SQ1_len_cntr);
 			ser.Sync(nameof(SQ1_enable), ref SQ1_enable);
 			ser.Sync(nameof(SQ1_vol_state), ref SQ1_vol_state);
 			ser.Sync(nameof(SQ1_duty_cntr), ref SQ1_duty_cntr);
@@ -985,7 +974,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(SQ1_output), ref SQ1_output);
 
 			ser.Sync(nameof(SQ2_vol_done), ref SQ2_vol_done);
-			ser.Sync("SQ2_length_counter", ref SQ2_len_cntr);
+			ser.Sync(nameof(SQ2_len_cntr), ref SQ2_len_cntr);
 			ser.Sync(nameof(SQ2_enable), ref SQ2_enable);
 			ser.Sync(nameof(SQ2_vol_state), ref SQ2_vol_state);
 			ser.Sync(nameof(SQ2_duty_cntr), ref SQ2_duty_cntr);
@@ -1003,7 +992,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(SQ2_output), ref SQ2_output);
 
 			ser.Sync(nameof(WAVE_can_get), ref WAVE_can_get);
-			ser.Sync("WAVE_length_counter", ref WAVE_len_cntr);
+			ser.Sync(nameof(WAVE_len_cntr), ref WAVE_len_cntr);
 			ser.Sync(nameof(WAVE_enable), ref WAVE_enable);
 			ser.Sync(nameof(WAVE_wave_cntr), ref WAVE_wave_cntr);
 			ser.Sync(nameof(WAVE_intl_cntr), ref WAVE_intl_cntr);
@@ -1017,7 +1006,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(WAVE_output), ref WAVE_output);
 
 			ser.Sync(nameof(NOISE_vol_done), ref NOISE_vol_done);
-			ser.Sync("NOISE_length_counter", ref NOISE_len_cntr);
+			ser.Sync(nameof(NOISE_len_cntr), ref NOISE_len_cntr);
 			ser.Sync(nameof(NOISE_enable), ref NOISE_enable);
 			ser.Sync(nameof(NOISE_vol_state), ref NOISE_vol_state);
 			ser.Sync(nameof(NOISE_intl_cntr), ref NOISE_intl_cntr);
@@ -1059,17 +1048,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(AUD_CTRL_power), ref AUD_CTRL_power);
 			ser.Sync(nameof(AUD_CTRL_vol_L), ref AUD_CTRL_vol_L);
 			ser.Sync(nameof(AUD_CTRL_vol_R), ref AUD_CTRL_vol_R);
-
-			ser.Sync(nameof(WAVE_output_decay), ref WAVE_output_decay);
-			ser.Sync(nameof(WAVE_output_decay_L), ref WAVE_output_decay_L);
-			ser.Sync(nameof(WAVE_output_decay_R), ref WAVE_output_decay_R);
 		}
 
 		public byte Read_NR52()
 		{
 			return (byte)(
 				((AUD_CTRL_power ? 1 : 0) << 7) |
-				((SQ1_enable ? 1 : 0)) |
+				(SQ1_enable ? 1 : 0) |
 				((SQ2_enable ? 1 : 0) << 1) |
 				((WAVE_enable ? 1 : 0) << 2) |
 				((NOISE_enable ? 1 : 0) << 3));

@@ -19,13 +19,13 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						IDLE,
-						IDLE,
-						IDLE,
-						TR, PCl, W,
 						ASGN, PCh, 0,
+						IDLE,
+						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						TR, PCl, W,
 						IRQ_CLEAR,
+						IDLE,
 						OP };
 		}
 
@@ -45,16 +45,16 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
 						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						IDLE,
 						TR, PCl, W,
 						IDLE,
 						ASGN, PCh, 0,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
 						IRQ_CLEAR,
+						IDLE,				
 						OP };
 		}
 
