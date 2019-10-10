@@ -103,6 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int window_x_tile;
 		public int window_y_tile_inc;
 		public int window_x_latch;
+		public int window_y_latch;
 
 		public int hbl_countdown;
 
@@ -259,6 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(window_x_tile), ref window_x_tile);
 			ser.Sync(nameof(window_y_tile_inc), ref window_y_tile_inc);
 			ser.Sync(nameof(window_x_latch), ref window_x_latch);
+			ser.Sync(nameof(window_y_latch), ref window_y_latch);
 
 			ser.Sync(nameof(hbl_countdown), ref hbl_countdown);
 		}
