@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					if ((RAM_bank >= 8) && (RAM_bank <= 0xC))
 					{
+						//Console.WriteLine("reg: " + (RAM_bank - 8) + " value: " + RTC_regs_latch[RAM_bank - 8] + " cpu: " + Core.cpu.TotalExecutedCycles);
 						return RTC_regs_latch[RAM_bank - 8];
 					}
 					else
@@ -216,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					RTC_low_clock++;
 
-					if (RTC_low_clock == 32768)
+					if (RTC_low_clock == 32767) // the RTC appears to be off by one cycle (would be 32768)
 					{
 						RTC_low_clock = 0;
 
@@ -228,6 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							RTC_regs[1]++;
 							if (RTC_regs[1] > 59)
 							{
+								RTC_regs[1] = 0;
 								RTC_regs[2]++;
 								if (RTC_regs[2] > 23)
 								{
