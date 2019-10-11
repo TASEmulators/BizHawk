@@ -61,6 +61,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			temp_sync_L.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_L;
 			temp_sync_C.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_C;
 			temp_sync_R.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_R;
+			temp_sync_L.RTCOffset = Link3xSyncSettings.RTCOffset_L;
+			temp_sync_C.RTCOffset = Link3xSyncSettings.RTCOffset_C;
+			temp_sync_R.RTCOffset = Link3xSyncSettings.RTCOffset_R;
 
 			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
 				game_L, rom_L, temp_set_L, temp_sync_L);

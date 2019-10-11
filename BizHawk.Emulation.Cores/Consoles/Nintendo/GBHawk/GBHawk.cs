@@ -470,28 +470,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (mppr == "MBC3")
 			{
 				Use_MT = true;
+
+				mapper.RTC_Get(_syncSettings.RTCOffset, 5);
+
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);
 
-				mapper.RTC_Get((byte)days_upper, 4);
-				mapper.RTC_Get((byte)(days & 0xFF), 3);
+				mapper.RTC_Get(days_upper, 4);
+				mapper.RTC_Get(days & 0xFF, 3);
 
 				int remaining = _syncSettings.RTCInitialTime - (days * 86400);
 
 				int hours = (int)Math.Floor(remaining / 3600.0);
 
-				mapper.RTC_Get((byte)(hours & 0xFF), 2);
+				mapper.RTC_Get(hours & 0xFF, 2);
 
 				remaining = remaining - (hours * 3600);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 
-				mapper.RTC_Get((byte)(minutes & 0xFF), 1);
+				mapper.RTC_Get(minutes & 0xFF, 1);
 
 				remaining = remaining - (minutes * 60);
 
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 
 			if (mppr == "HuC3")
@@ -500,23 +503,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				int years = (int)Math.Floor(_syncSettings.RTCInitialTime / 31536000.0);
 
-				mapper.RTC_Get((byte)years, 24);
+				mapper.RTC_Get(years, 24);
 
 				int remaining = _syncSettings.RTCInitialTime - (years * 31536000);
 
 				int days = (int)Math.Floor(remaining / 86400.0);
 				int days_upper = (days >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)days_upper, 20);
-				mapper.RTC_Get((byte)(days & 0xFF), 12);
+				mapper.RTC_Get(days_upper, 20);
+				mapper.RTC_Get(days & 0xFF, 12);
 
 				remaining = remaining - (days * 86400);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 				int minutes_upper = (minutes >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)(minutes_upper), 8);
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(minutes_upper, 8);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 		}
 	}

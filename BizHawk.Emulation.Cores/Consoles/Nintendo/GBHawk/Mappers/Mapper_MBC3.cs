@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RTC_timer;
 		public int RTC_low_clock;
 		public bool halt;
+		public int RTC_offset;
 
 		public override void Initialize()
 		{
@@ -200,9 +201,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			WriteMemory(addr, value);
 		}
 
-		public override void RTC_Get(byte value, int index)
+		public override void RTC_Get(int value, int index)
 		{
-			RTC_regs[index] = value;
+			if (index < 5)
+			{
+				RTC_regs[index] = (byte)value;
+			}		
+			else
+			{
+				RTC_offset = value;
+
+				Console.WriteLine("RTC: " + RTC_offset);
+			}
 		}
 
 		public override void Mapper_Tick()
@@ -217,9 +227,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					RTC_low_clock++;
 
-					if (RTC_low_clock == 32767) // the RTC appears to be off by one cycle (would be 32768)
+					if (RTC_low_clock == 32768)
 					{
 						RTC_low_clock = 0;
+
+						// adjust for slight RTC error
+						RTC_timer = RTC_offset;
 
 						RTC_regs[0]++;
 
@@ -273,6 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(RTC_regs_latch_wr), ref RTC_regs_latch_wr);
 			ser.Sync(nameof(RTC_timer), ref RTC_timer);
 			ser.Sync(nameof(RTC_low_clock), ref RTC_low_clock);
+			ser.Sync(nameof(RTC_offset), ref RTC_offset);
 		}
 	}
 }
