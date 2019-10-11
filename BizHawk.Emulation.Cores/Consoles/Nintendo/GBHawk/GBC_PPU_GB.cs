@@ -117,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = true;
 						OAM_access_read = true;
 						OAM_access_write = true;
+
+						clear_screen = true;
 					}
 
 					if (!LCDC.Bit(7) && value.Bit(7))

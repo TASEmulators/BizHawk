@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4F: // VBK
 					if (GBC_compat)
 					{
-						ret = VRAM_Bank;
+						ret = (byte)(0xFE | VRAM_Bank);
 					}
 					else
 					{
