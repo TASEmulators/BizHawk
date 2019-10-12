@@ -75,12 +75,7 @@ namespace BizHawk.Common
 			[DllImport("kernel32.dll")]
 			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
 
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				var p = LoadLibrary(dllToLoad);
-				if (p == IntPtr.Zero) throw new InvalidOperationException($"got null pointer, error code {GetLastError()}");
-				return p;
-			}
+			public IntPtr LoadPlatformSpecific(string dllToLoad) => LoadLibrary(dllToLoad);
 			public IntPtr GetProcAddr(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
 			public int FreePlatformSpecific(IntPtr hModule) => FreeLibrary(hModule) ? 1 : 0;
 		}

@@ -935,6 +935,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			AttachedPlugin plugin;
 			plugin.dllHandle = libLoader.LoadPlatformSpecific(PluginName);
+			if (plugin.dllHandle == IntPtr.Zero)
+				throw new InvalidOperationException($"Failed to load plugin {PluginName}");
 
 			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
 			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));

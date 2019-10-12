@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 					};
 					var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail)
 					{
-						textBox1 = { Text = string.Concat("\n", alertLines) }
+						textBox1 = { Text = string.Join(Environment.NewLine, alertLines) }
 					};
 					box.ShowDialog();
 					if (fail) System.Diagnostics.Process.GetCurrentProcess().Kill();
