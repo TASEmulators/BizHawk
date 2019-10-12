@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						RTC_regs[RAM_bank - 8] = value;
 
-						RTC_low_clock = RTC_timer = 0;
+						if ((RAM_bank - 8) == 0) { RTC_low_clock = RTC_timer = 0; }
 
 						halt = (RTC_regs[4] & 0x40) > 0;
 					}
@@ -210,8 +210,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				RTC_offset = value;
-
-				Console.WriteLine("RTC: " + RTC_offset);
 			}
 		}
 
@@ -230,8 +228,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (RTC_low_clock == 32768)
 					{
 						RTC_low_clock = 0;
-
-						// adjust for slight RTC error
 						RTC_timer = RTC_offset;
 
 						RTC_regs[0]++;
