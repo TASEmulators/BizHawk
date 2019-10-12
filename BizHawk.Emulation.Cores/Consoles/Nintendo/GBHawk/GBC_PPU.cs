@@ -151,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LY = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC
-
 					// tests indicate that latching writes to LYC should take place 4 cycles after the write
 					// otherwise tests around LY boundaries will fail
 					LYC_t = value;
@@ -1144,13 +1143,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								OAM_access_read = true;
 								OAM_access_write = true;
 								VRAM_access_read = true;
-								VRAM_access_write = true;
-
-								STAT &= 0xFC;
-								STAT |= 0x00;
+								VRAM_access_write = true;						
 							}
 							else
-							{	
+							{
+								STAT &= 0xFC;
+								STAT |= 0x00;
+
 								if (STAT.Bit(3)) { HBL_INT = true; }
 							}
 						}

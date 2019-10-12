@@ -312,13 +312,12 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							if (!Halt_bug_3)
 							{
 								INTERRUPT_GBC_NOP();
-								//INTERRUPT_();
 							}
 							else
 							{
 								INTERRUPT_();
 								Halt_bug_3 = false;
-								Console.WriteLine("Hit INT");
+								//Console.WriteLine("Hit INT");
 							}
 						}
 						else
@@ -353,7 +352,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
 								Halt_bug_3 = false;
-								Console.WriteLine("Hit un");
+								//Console.WriteLine("Hit un");
 							}
 							else
 							{
@@ -538,8 +537,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					{
 						RegPC--;
 						Halt_bug_3 = true;
-						Console.WriteLine("Halt_bug_3");
-						Console.WriteLine(TotalExecutedCycles);
+						//Console.WriteLine("Halt_bug_3");
+						//Console.WriteLine(TotalExecutedCycles);
 					}
 					
 					Halt_bug_2 = false;

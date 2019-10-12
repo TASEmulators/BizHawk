@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
 // Gameboy compatibility mode for GBC console
-// only entered from writing to register 0xFF4C
+// seperated out so the GBC ppu can focus on double speed mode
 // has several quirks not present in GB ppu
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -155,7 +155,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LY = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC
-
 					// tests indicate that latching writes to LYC should take place 4 cycles after the write
 					// otherwise tests around LY boundaries will fail
 					LYC_t = value;
