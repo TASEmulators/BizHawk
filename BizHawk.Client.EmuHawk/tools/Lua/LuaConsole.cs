@@ -923,7 +923,7 @@ namespace BizHawk.Client.EmuHawk
 					Verb = "Open",
 					FileName = ProcessPath(file.Path)
 				});
-			});
+			}
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
