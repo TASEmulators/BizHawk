@@ -70,6 +70,13 @@ namespace BizHawk.Client.EmuHawk
 			Pad = 4
 		}
 
+		public enum AllowInput
+		{
+			None = 0,
+			All = 1,
+			OnlyController = 2
+		}
+
 		/// <summary>
 		/// If your form needs this kind of input focus, be sure to say so.
 		/// Really, this only makes sense for mouse, but I've started building it out for other things
@@ -196,6 +203,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public LogicalButton LogicalButton;
 			public InputEventType EventType;
+			public InputFocus Source;
 			public override string ToString()
 			{
 				return $"{EventType.ToString()}:{LogicalButton.ToString()}";
@@ -210,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
 
-		void HandleButton(string button, bool newState)
+		void HandleButton(string button, bool newState, InputFocus source)
 		{
 			bool isModifier = IgnoreKeys.Contains(button);
 			if (EnableIgnoreModifiers && isModifier) return;
@@ -253,7 +261,8 @@ namespace BizHawk.Client.EmuHawk
 			var ie = new InputEvent
 				{
 					EventType = newState ? InputEventType.Press : InputEventType.Release,
-					LogicalButton = new LogicalButton(button, mods)
+					LogicalButton = new LogicalButton(button, mods),
+					Source = source
 				};
 			LastState[button] = newState;
 
@@ -276,7 +285,8 @@ namespace BizHawk.Client.EmuHawk
 					var ieModified = new InputEvent
 						{
 							LogicalButton = (LogicalButton)ModifierState[button],
-							EventType = InputEventType.Release
+							EventType = InputEventType.Release,
+							Source = source
 						};
 					if (ieModified.LogicalButton != alreadyReleased)
 						_NewEvents.Add(ieModified);
@@ -351,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 
 					//analyze keys
 					foreach (var ke in keyEvents)
-						HandleButton(ke.Key.ToString(), ke.Pressed);
+						HandleButton(ke.Key.ToString(), ke.Pressed, InputFocus.Keyboard);
 
 					lock (FloatValues)
 					{
@@ -362,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							string xname = $"X{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
-								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
+								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
 							foreach (var sv in pad.GetFloats())
 							{
 								string n = xname + sv.Item1;
@@ -378,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							string jname = $"J{pad.PlayerNumber} ";
 							for (int b = 0; b < pad.NumButtons; b++)
-								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b), InputFocus.Pad);
 							foreach (var sv in pad.GetFloats())
 							{
 								string n = jname + sv.Item1;
@@ -407,11 +417,11 @@ namespace BizHawk.Client.EmuHawk
 							FloatValues["WMouse Y"] = P.Y;
 
 							var B = System.Windows.Forms.Control.MouseButtons;
-							HandleButton("WMouse L", (B & System.Windows.Forms.MouseButtons.Left) != 0);
-							HandleButton("WMouse C", (B & System.Windows.Forms.MouseButtons.Middle) != 0);
-							HandleButton("WMouse R", (B & System.Windows.Forms.MouseButtons.Right) != 0);
-							HandleButton("WMouse 1", (B & System.Windows.Forms.MouseButtons.XButton1) != 0);
-							HandleButton("WMouse 2", (B & System.Windows.Forms.MouseButtons.XButton2) != 0);
+							HandleButton("WMouse L", (B & System.Windows.Forms.MouseButtons.Left) != 0, InputFocus.Mouse);
+							HandleButton("WMouse C", (B & System.Windows.Forms.MouseButtons.Middle) != 0, InputFocus.Mouse);
+							HandleButton("WMouse R", (B & System.Windows.Forms.MouseButtons.Right) != 0, InputFocus.Mouse);
+							HandleButton("WMouse 1", (B & System.Windows.Forms.MouseButtons.XButton1) != 0, InputFocus.Mouse);
+							HandleButton("WMouse 2", (B & System.Windows.Forms.MouseButtons.XButton2) != 0, InputFocus.Mouse);
 						}
 						else
 						{
@@ -427,14 +437,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
-					bool swallow = !GlobalWin.MainForm.AllowInput(false);
+					AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
 
 					foreach (var ie in _NewEvents)
 					{
 						//events are swallowed in some cases:
-						if (ie.LogicalButton.Alt && !GlobalWin.MainForm.AllowInput(true))
+						if (ie.LogicalButton.Alt && ShouldSwallow(GlobalWin.MainForm.AllowInput(true), ie))
 						{ }
-						else if (ie.EventType == InputEventType.Press && swallow)
+						else if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
 						{ }
 						else
 							EnqueueEvent(ie);
@@ -444,6 +454,11 @@ namespace BizHawk.Client.EmuHawk
 				//arbitrary selection of polling frequency:
 				Thread.Sleep(10);
 			}
+		}
+
+		private static bool ShouldSwallow(AllowInput allowInput, InputEvent inputEvent)
+		{
+			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputEvent.Source != InputFocus.Pad);
 		}
 
 		public void StartListeningForFloatEvents()
@@ -490,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				if (InputEvents.Count == 0) return null;
-				if (!GlobalWin.MainForm.AllowInput(false)) return null;
+				AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
 
 				//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
@@ -500,6 +515,8 @@ namespace BizHawk.Client.EmuHawk
 				while (InputEvents.Count != 0)
 				{
 					var ie = DequeueEvent();
+
+					if (ShouldSwallow(allowInput, ie)) continue;
 
 					//as a special perk, we'll accept escape immediately
 					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button == "Escape")

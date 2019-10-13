@@ -650,12 +650,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether the app generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public bool AllowInput(bool yieldAlt)
+		public Input.AllowInput AllowInput(bool yieldAlt)
 		{
 			// the main form gets input
 			if (ActiveForm == this)
 			{
-				return true;
+				return Input.AllowInput.All;
 			}
 
 			// even more special logic for TAStudio:
@@ -663,14 +663,9 @@ namespace BizHawk.Client.EmuHawk
 			var maybeTAStudio = ActiveForm as TAStudio;
 			if (maybeTAStudio != null)
 			{
-				if (yieldAlt)
+				if (yieldAlt || maybeTAStudio.IsInMenuLoop)
 				{
-					return false;
-				}
-
-				if (maybeTAStudio.IsInMenuLoop)
-				{
-					return false;
+					return Input.AllowInput.None;
 				}
 			}
 
@@ -680,16 +675,16 @@ namespace BizHawk.Client.EmuHawk
 				|| ActiveForm is TAStudio
 				|| ActiveForm is VirtualpadTool)
 			{
-				return true;
+				return Input.AllowInput.All;
 			}
 
 			// if no form is active on this process, then the background input setting applies
 			if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
 			{
-				return true;
+				return Global.Config.AcceptBackgroundInputControllerOnly ? Input.AllowInput.OnlyController : Input.AllowInput.All;
 			}
 
-			return false;
+			return Input.AllowInput.None;
 		}
 
 		// TODO: make this an actual property, set it when loading a Rom, and pass it dialogs, etc

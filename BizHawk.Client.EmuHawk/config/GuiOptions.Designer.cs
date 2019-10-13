@@ -42,6 +42,7 @@
             this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
+            this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
             this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
@@ -124,6 +125,7 @@
             this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.AcceptBackgroundInputCheckbox);
+            this.tabPage1.Controls.Add(this.AcceptBackgroundInputControllerOnlyCheckBox);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
             this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
@@ -227,6 +229,18 @@
             this.AcceptBackgroundInputCheckbox.TabIndex = 8;
             this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
             this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
+            this.AcceptBackgroundInputCheckbox.CheckedChanged += new System.EventHandler(this.AcceptBackgroundInputCheckbox_CheckedChanged);
+            // 
+            // AcceptBackgroundInputControllerOnlyCheckBox
+            // 
+            this.AcceptBackgroundInputControllerOnlyCheckBox.AutoSize = true;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Enabled = false;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 135);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 14;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -593,6 +607,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox AcceptBackgroundInputCheckbox;
+		private System.Windows.Forms.CheckBox AcceptBackgroundInputControllerOnlyCheckBox;
 		private System.Windows.Forms.CheckBox NeverAskSaveCheckbox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
