@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void RTC_Get(byte value, int index)
+		public virtual void RTC_Get(int value, int index)
 		{
 		}
 

@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		private Timer _autosaveTimer;
 
 		/// <summary>
-		/// Gets or sets a value that separates "restore last position" logic from seeking caused by navigation.
+		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
 		public int LastPositionFrame { get; private set; }
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
@@ -357,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// Start Scenario 3: No movie, but user wants to autload their last project
+			// Start Scenario 3: No movie, but user wants to autoload their last project
 			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
 			{
 				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
@@ -642,7 +642,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
 				
-				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
 				BookMarkControl.LoadedCallback = BranchLoaded;
@@ -740,7 +739,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone loadZone = new MovieZone(path)
+			var loadZone = new MovieZone(path)
 			{
 				Start = TasView.FirstSelectedIndex.Value
 			};
@@ -865,7 +864,6 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
-			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
@@ -896,12 +894,14 @@ namespace BizHawk.Client.EmuHawk
 		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
+			{
 				return;
+			}
 
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
-			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
+			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
+			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
 			}
@@ -974,9 +974,9 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.AddBranchExternal();
 		}
 
-		public void RemoveBranchExtrenal()
+		public void RemoveBranchExternal()
 		{
-			BookMarkControl.RemoveBranchExtrenal();
+			BookMarkControl.RemoveBranchExternal();
 		}
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSplicer()
 		{
 			// TODO: columns selected?
-			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.StateCount}";
+			var temp = $"Selected: {TasView.SelectedRows.Count()} {(TasView.SelectedRows.Count() == 1 ? "frame" : "frames")}, States: {CurrentTasMovie.TasStateManager.Count}";
 			if (_tasClipboard.Any()) temp += $", Clipboard: {_tasClipboard.Count} {(_tasClipboard.Count == 1 ? "frame" : "frames")}";
 			SplicerStatusLabel.Text = temp;
 		}
@@ -1036,11 +1036,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DeleteFrames(int beginningFrame, int numberofFrames)
+		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
 			if (beginningFrame < CurrentTasMovie.InputLogLength)
 			{
-				int[] framesToRemove = Enumerable.Range(beginningFrame, numberofFrames).ToArray();
+				int[] framesToRemove = Enumerable.Range(beginningFrame, numberOfFrames).ToArray();
 				CurrentTasMovie.RemoveFrames(framesToRemove);
 				SetSplicer();
 

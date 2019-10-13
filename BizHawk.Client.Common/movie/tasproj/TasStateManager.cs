@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -15,42 +13,25 @@ namespace BizHawk.Client.Common
 	/// Captures savestates and manages the logic of adding, retrieving, 
 	/// invalidating/clearing of states.  Also does memory management and limiting of states
 	/// </summary>
-	public class TasStateManager : IDisposable
+	public class TasStateManager : IStateManager
 	{
+		private const int MinFrequency = 1;
+		private const int MaxFrequency = 16;
+
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
-
-		public Action<int> InvalidateCallback { get; set; }
-
-		private void CallInvalidateCallback(int index)
-		{
-			InvalidateCallback?.Invoke(index);
-		}
-
-		internal NDBDatabase NdbDatabase { get; set; }
-		private Guid _guid = Guid.NewGuid();
-		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
-
-		private string StatePath
-		{
-			get
-			{
-				var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
-				return Path.Combine(basePath, _guid.ToString());
-			}
-		}
-
-		private bool _isMountedForWrite;
+		private readonly StateManagerDecay _decay;
 		private readonly TasMovie _movie;
 
-		private StateManagerDecay _decay;
-		private ulong _expectedStateSize;
+		private readonly SortedList<int, byte[]> _states;
+		private readonly ulong _expectedStateSize;
+
+		private ulong _used;
 		private int _stateFrequency;
-		private readonly int _minFrequency = 1;
-		private readonly int _maxFrequency = 16;
-		private int _maxStates => (int)(Settings.Cap / _expectedStateSize) +
+		
+		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
 			(int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
-		private int _fileStateGap => 1 << Settings.FileStateGap;
+		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -62,80 +43,48 @@ namespace BizHawk.Client.Common
 				SetState(0, _movie.BinarySavestate);
 			}
 
-			_decay = new StateManagerDecay(this);
-		}
+			_decay = new StateManagerDecay(_movie, this);
 
-		public void Dispose()
-		{
-			// States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the below
-			NdbDatabase?.Dispose();
-		}
-
-		public void UpdateStateFrequency()
-		{
-			_stateFrequency = NumberExtensions.Clamp(
-					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
-					_minFrequency, _maxFrequency);
-
-			_decay.UpdateSettings(_maxStates, _stateFrequency, 4);
-		}
-
-		/// <summary>
-		/// Mounts this instance for write access. Prior to that it's read-only
-		/// </summary>
-		public void MountWriteAccess()
-		{
-			if (_isMountedForWrite)
-			{
-				return;
-			}
-
-			int limit = 0;
-			_isMountedForWrite = true;
 			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
+			if (_expectedStateSize == 0)
+			{
+				throw new InvalidOperationException("Savestate size can not be zero!");
+			}
+
+			_states = new SortedList<int, byte[]>(MaxStates);
+
 			UpdateStateFrequency();
-
-			if (_expectedStateSize > 0)
-			{
-				limit = _maxStates;
-			}
-
-			_states = new SortedList<int, StateManagerState>(limit);
-
-			if (_expectedStateSize > int.MaxValue)
-			{
-				throw new InvalidOperationException();
-			}
-
-			NdbDatabase = new NDBDatabase(StatePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
-		
+
+		public Action<int> InvalidateCallback { get; set; }
+
 		public TasStateManagerSettings Settings { get; set; }
 
-		/// <summary>
-		/// Retrieves the savestate for the given frame,
-		/// If this frame does not have a state currently, will return an empty array
-		/// </summary>
-		/// <returns>A savestate for the given frame or an empty array if there isn't one</returns>
-		public KeyValuePair<int, byte[]> this[int frame]
+		public byte[] this[int frame]
 		{
 			get
 			{
 				if (frame == 0)
 				{
-					return new KeyValuePair<int, byte[]>(0, InitialState);
+					return InitialState;
 				}
 
 				if (_states.ContainsKey(frame))
 				{
-					return new KeyValuePair<int, byte[]>(frame, _states[frame].State);
+					return _states[frame];
 				}
 
-				return new KeyValuePair<int, byte[]>(-1, new byte[0]);
+				return new byte[0];
 			}
 		}
 
-		public byte[] InitialState
+		public int Count => _states.Count;
+
+		public int Last => _states.Count > 0
+			? _states.Last().Key
+			: 0;
+
+		private byte[] InitialState
 		{
 			get
 			{
@@ -144,14 +93,29 @@ namespace BizHawk.Client.Common
 					return _movie.BinarySavestate;
 				}
 
-				return _states[0].State;
+				return _states[0];
 			}
 		}
 
-		/// <summary>
-		/// Requests that the current emulator state be captured 
-		/// Unless force is true, the state may or may not be captured depending on the logic employed by "greenzone" management
-		/// </summary>
+		public bool Any()
+		{
+			if (_movie.StartsFromSavestate)
+			{
+				return _states.Count > 0;
+			}
+
+			return _states.Count > 1;
+		}
+
+		public void UpdateStateFrequency()
+		{
+			_stateFrequency = ((int)_expectedStateSize / Settings.MemStateGapDivider / 1024)
+				.Clamp(MinFrequency, MaxFrequency);
+
+			_decay.UpdateSettings(MaxStates, _stateFrequency, 4);
+			LimitStateCount();
+		}
+
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture;
@@ -163,15 +127,15 @@ namespace BizHawk.Client.Common
 			}
 			else if (force)
 			{
-				shouldCapture = force;
+				shouldCapture = true;
 			}
-			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a tasproj file for the start state in non-savestate anchored movies
+			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a .tasproj file for the start state in non-savestate anchored movies
 			{
 				shouldCapture = true;
 			}
-			else if (StateIsMarker(frame))
+			else if (IsMarkerState(frame))
 			{
-				shouldCapture = true; // Markers shoudl always get priority
+				shouldCapture = true; // Markers should always get priority
 			}
 			else
 			{
@@ -184,33 +148,24 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void MoveStateToDisk(int index)
+		public void Clear()
 		{
-			Used -= (ulong)_states[index].Length;
-			_states[index].MoveToDisk();
-		}
-
-		private void MoveStateToMemory(int index)
-		{
-			_states[index].MoveToRAM();
-			Used += (ulong)_states[index].Length;
-		}
-
-		internal void SetState(int frame, byte[] state, bool skipRemoval = true)
-		{
-			if (!skipRemoval) // skipRemoval: false only when capturing new states
+			if (_states.Any())
 			{
-				LimitStateCount(); // Remove before adding so this state won't be removed.
-			}
+				// For power-on movies, we can't lose frame 0;
+				byte[] power = null;
+				if (!_movie.StartsFromSavestate)
+				{
+					power = _states[0];
+				}
 
-			if (_states.ContainsKey(frame))
-			{
-				_states[frame].State = state;
-			}
-			else
-			{
-				Used += (ulong)state.Length;
-				_states.Add(frame, new StateManagerState(this, state, frame));
+				_states.Clear();
+
+				if (power != null)
+				{
+					SetState(0, power);
+					_used = (ulong)power.Length;
+				}
 			}
 		}
 
@@ -224,9 +179,6 @@ namespace BizHawk.Client.Common
 			return _states.ContainsKey(frame);
 		}
 
-		/// <summary>
-		/// Clears out all savestates after the given frame number
-		/// </summary>
 		public bool Invalidate(int frame)
 		{
 			bool anyInvalidated = false;
@@ -238,31 +190,21 @@ namespace BizHawk.Client.Common
 					frame = 1;
 				}
 
-				List<KeyValuePair<int, StateManagerState>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
+				List<KeyValuePair<int, byte[]>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
 				anyInvalidated = statesToRemove.Any();
 
 				foreach (var state in statesToRemove)
 				{
-					RemoveState(state.Key);
+					Remove(state.Key);
 				}
 
-				CallInvalidateCallback(frame);
+				InvalidateCallback?.Invoke(frame);
 			}
 
 			return anyInvalidated;
 		}
 
-		public bool StateIsMarker(int frame)
-		{
-			if (frame == -1)
-			{
-				return false;
-			}
-
-			return _movie.Markers.IsMarker(frame + 1);
-		}
-
-		public bool RemoveState(int frame)
+		public bool Remove(int frame)
 		{
 			int index = _states.IndexOfKey(frame);
 
@@ -271,135 +213,13 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			StateManagerState state = _states.Values[index];
+			var state = _states[frame];
 
-			if (state.IsOnDisk)
-			{
-				state.Dispose();
-			}
-			else
-			{
-				Used -= (ulong)state.Length;
-			}
+			_used -= (ulong)state.Length;
 
 			_states.RemoveAt(index);
 
 			return true;
-		}
-
-		/// <summary>
-		/// Deletes states to follow the state storage size limits.
-		/// Used after changing the settings too.
-		/// </summary>
-		public void LimitStateCount()
-		{
-			if (StateCount + 1 > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
-			{
-				_decay.Trigger(StateCount + 1 - _maxStates);
-			}
-		}
-
-		private List<int> ExcludeStates()
-		{
-			List<int> ret = new List<int>();
-			ulong saveUsed = Used + DiskUsed;
-
-			// respect state gap no matter how small the resulting size will be
-			// still leave marker states
-			for (int i = 1; i < _states.Count; i++)
-			{
-				int frame = GetStateFrameByIndex(i);
-
-				if (StateIsMarker(frame) || frame % _fileStateGap < _stateFrequency)
-				{
-					continue;
-				}
-
-				ret.Add(i);
-
-				if (_states.Values[i].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[i].Length;
-				}
-			}
-
-			// if the size is still too big, exclude states form the beginning
-			// still leave marker states
-			int index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
-			{
-				do
-				{
-					if (++index >= _states.Count)
-					{
-						break;
-					}
-				}
-				while (StateIsMarker(GetStateFrameByIndex(index)));
-
-				if (index >= _states.Count)
-				{
-					break;
-				}
-
-				ret.Add(index);
-
-				if (_states.Values[index].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[index].Length;
-				}
-			}
-
-			// if there are enough markers to still be over the limit, remove marker frames
-			index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
-			{
-				if (!ret.Contains(++index))
-				{
-					ret.Add(index);
-				}
-
-				if (_states.Values[index].IsOnDisk)
-				{
-					saveUsed -= _expectedStateSize;
-				}
-				else
-				{
-					saveUsed -= (ulong)_states.Values[index].Length;
-				}
-			}
-
-			return ret;
-		}
-
-		public void ClearStateHistory()
-		{
-			if (_states.Any())
-			{
-				var temp_state = _states.Values;
-				StateManagerState power = null;
-				if (temp_state[0].Frame==0)
-				{
-					power = _states.Values.First(s => s.Frame == 0);
-				}
-				else
-				{
-					power = _states.Values[0];
-				}
-				
-				_states.Clear();
-				SetState(0, power.State);
-				Used = (ulong)power.State.Length;
-				NdbDatabase?.Clear();
-			}
 		}
 
 		// Map:
@@ -422,7 +242,7 @@ namespace BizHawk.Client.Common
 				
 				bw.Write(_states.Keys[i]);
 				bw.Write(_states.Values[i].Length);
-				bw.Write(_states.Values[i].State);
+				bw.Write(_states.Values[i]);
 			}
 		}
 
@@ -453,110 +273,114 @@ namespace BizHawk.Client.Common
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
 			var s = _states.LastOrDefault(state => state.Key < frame);
+			if (s.Key > 0)
+			{
+				return s;
+			}
 
-			return this[s.Key];
+			return new KeyValuePair<int, byte[]>(0, InitialState);
 		}
 
-		/// <summary>
-		/// Returns index of the state right above the given frame
-		/// </summary>
 		public int GetStateIndexByFrame(int frame)
 		{
 			return _states.IndexOfKey(GetStateClosestToFrame(frame).Key);
 		}
 
-		/// <summary>
-		/// Returns frame of the state at the given index
-		/// </summary>
 		public int GetStateFrameByIndex(int index)
 		{
-			// feos: this is called super often by decay
-			// this method is hundred times faster than _states.ElementAt(index).Key
 			return _states.Keys[index];
 		}
 
-		private ulong _used;
-		private ulong Used
+		private bool IsMarkerState(int frame)
 		{
-			get
+			return _movie.Markers.IsMarker(frame + 1);
+		}
+
+		private void SetState(int frame, byte[] state, bool skipRemoval = true)
+		{
+			if (!skipRemoval) // skipRemoval: false only when capturing new states
 			{
-				return _used;
+				LimitStateCount(); // Remove before adding so this state won't be removed.
 			}
 
-			set
+			if (_states.ContainsKey(frame))
 			{
-				// TODO: Shouldn't we throw an exception? Debug.Fail only runs in debug mode?
-				if (value > 0xf000000000000000)
-				{
-					System.Diagnostics.Debug.Fail("ulong Used underfow!");
-				}
-				else
-				{
-					_used = value;
-				}
+				_states[frame] = state;
+			}
+			else
+			{
+				_used += (ulong)state.Length;
+				_states.Add(frame, state);
 			}
 		}
 
-		private ulong DiskUsed
+		// Deletes states to follow the state storage size limits.
+		// Used after changing the settings too.
+		private void LimitStateCount()
 		{
-			get
+			if (Count + 1 > MaxStates)
 			{
-				if (NdbDatabase == null)
+				_decay.Trigger(Count + 1 - MaxStates);
+			}
+		}
+
+		private List<int> ExcludeStates()
+		{
+			List<int> ret = new List<int>();
+			ulong saveUsed = _used;
+
+			// respect state gap no matter how small the resulting size will be
+			// still leave marker states
+			for (int i = 1; i < _states.Count; i++)
+			{
+				int frame = GetStateFrameByIndex(i);
+
+				if (IsMarkerState(frame) || frame % FileStateGap < _stateFrequency)
 				{
-					return 0;
+					continue;
 				}
 
-				return (ulong)NdbDatabase.Consumed;
-			}
-		}
+				ret.Add(i);
 
-		public int StateCount => _states.Count;
-		public int LastEditedFrame => _movie.LastEditedFrame;
-
-		public bool Any()
-		{
-			if (_movie.StartsFromSavestate)
-			{
-				return _states.Count > 0;
+				saveUsed -= (ulong)_states.Values[i].Length;
 			}
 
-			return _states.Count > 1;
-		}
-
-		public int LastKey
-		{
-			get
+			// if the size is still too big, exclude states form the beginning
+			// still leave marker states
+			int index = 0;
+			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
-				if (_states.Count == 0)
+				do
 				{
-					return 0;
+					if (++index >= _states.Count)
+					{
+						break;
+					}
+				}
+				while (IsMarkerState(GetStateFrameByIndex(index)));
+
+				if (index >= _states.Count)
+				{
+					break;
 				}
 
-				return _states.Last().Key;
+				ret.Add(index);
+				saveUsed -= (ulong)_states.Values[index].Length;
 			}
-		}
 
-		public int LastStatedFrame
-		{
-			get
+			// if there are enough markers to still be over the limit, remove marker frames
+			index = 0;
+			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
-				if (StateCount > 0)
+				if (!ret.Contains(++index))
 				{
-					return LastKey;
+					ret.Add(index);
 				}
 
-				return 0;
-			}
-		}
-
-		private int FindState(StateManagerState s)
-		{
-			if (!_states.ContainsValue(s))
-			{
-				return -1;
+				saveUsed -= (ulong)_states.Values[index].Length;
 			}
 
-			return s.Frame;
+			return ret;
 		}
 	}
 }

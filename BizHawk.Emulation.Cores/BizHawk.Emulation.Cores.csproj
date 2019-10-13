@@ -839,6 +839,56 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IDebuggable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IEmulator.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IInputPollable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IMemoryDomains.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ISaveRam.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.ISettable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4x.IStatable.cs">
+      <DependentUpon>GBHawkLink4x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4xControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink4x\GBHawkLink4xControllers.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IDebuggable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IEmulator.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IInputPollable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IMemoryDomains.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ISaveRam.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.ISettable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3x.IStatable.cs">
+      <DependentUpon>GBHawkLink3x.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3xControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawkLink3x\GBHawkLink3xControllers.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.ICodeDataLog.cs" />
     <Compile Include="Consoles\Nintendo\GBHawkLink\GBHawkLink.IDebuggable.cs">
@@ -913,6 +963,9 @@
     <Compile Include="Consoles\Nintendo\GBHawk\MemoryMap.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\PPU.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU.cs">
+      <DependentUpon>PPU.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU_GB.cs">
       <DependentUpon>PPU.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBHawk\GB_PPU.cs">
@@ -1543,6 +1596,14 @@
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
+    <Compile Include="CPUs\MC6800\Disassembler.cs" />
+    <Compile Include="CPUs\MC6800\Execute.cs" />
+    <Compile Include="CPUs\MC6800\Indexed_Modes.cs" />
+    <Compile Include="CPUs\MC6800\Interrupts.cs" />
+    <Compile Include="CPUs\MC6800\MC6800.cs" />
+    <Compile Include="CPUs\MC6800\Operations.cs" />
+    <Compile Include="CPUs\MC6800\OP_Tables.cs" />
+    <Compile Include="CPUs\MC6800\Registers.cs" />
     <Compile Include="CPUs\MC6809\Execute.cs" />
     <Compile Include="CPUs\MC6809\Interrupts.cs" />
     <Compile Include="CPUs\MC6809\MC6809.cs" />

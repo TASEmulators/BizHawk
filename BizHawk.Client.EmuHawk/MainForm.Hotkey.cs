@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Delete Branch":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 					{
-						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
+						GlobalWin.Tools.TAStudio.RemoveBranchExternal();
 					}
 					else
 					{

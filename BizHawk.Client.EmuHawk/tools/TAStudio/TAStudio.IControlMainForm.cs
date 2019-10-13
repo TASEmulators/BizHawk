@@ -69,10 +69,10 @@
 
 		public bool WantsToControlStopMovie { get; private set; }
 
-		public void StopMovie(bool supressSave)
+		public void StopMovie(bool suppressSave)
 		{
 			Focus();
-			_suppressAskSave = supressSave;
+			_suppressAskSave = suppressSave;
 			NewTasMenuItem_Click(null, null);
 			_suppressAskSave = false;
 		}
@@ -86,7 +86,7 @@
 
 		public bool Rewind()
 		{
-			// copypasted from TasView_MouseWheel(), just without notch logic
+			// copy pasted from TasView_MouseWheel(), just without notch logic
 			if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
 			{
 				Mainform.PauseOnFrame--;
@@ -104,7 +104,7 @@
 			}
 			else
 			{
-				StopSeeking(); // late breaking memo: dont know whether this is needed
+				StopSeeking(); // late breaking memo: don't know whether this is needed
 				GoToPreviousFrame();
 			}
 

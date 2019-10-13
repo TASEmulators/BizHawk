@@ -27,10 +27,14 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("91383B92745CC7CC4F15409AC5BC2C2F699A43F1", 163840, "SNES", "ST018", "st018.rom", "ST018 Rom");
 			FirmwareAndOption("79F5FF55DD10187C7FD7B8DAAB0B3FFBD1F56A2C", 262144, "PCECD", "Bios", "pcecd-3.0-(J).pce", "Super CD Bios (J)");
 			FirmwareAndOption("D9D134BB6B36907C615A594CC7688F7BFCEF5B43", 4096, "A78", "Bios_NTSC", "7800NTSCBIOS.bin", "NTSC Bios");
+			//FirmwareAndOption("CE236581AB7921B59DB95BA12837C22F160896CB", 4096, "A78", "Bios_NTSC", "speed_bios.bin", "NTSC Bios speed");
+
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
+
 			FirmwareAndOption("B9BBF5BB0EAC52D039A4A993A2D8064B862C9E28", 4096, "Vectrex", "Bios", "VectrexBios.bin", "Bios");
+			FirmwareAndOption("65D07426B520DDD3115D40F255511E0FD2E20AE7", 8192, "Vectrex", "Minestorm", "Minestorm.vec", "Game");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
@@ -245,6 +249,8 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+
+			//FirmwareAndOption("A4A9208B798621D28327138DA024722DF03598C6", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
 
 			Firmware("PCFX", "BIOS", "PCFX bios");
 			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "pcfxbios.bin", "PCFX BIOS 1.00");

@@ -375,6 +375,11 @@ namespace BizHawk.Emulation.Common
 					game.System = "32X";
 					game.AddOption("32X", "true");
 					break;
+
+				case ".VEC":
+					game.System = "VEC";
+					game.AddOption("VEC", "true");
+					break;
 			}
 
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');

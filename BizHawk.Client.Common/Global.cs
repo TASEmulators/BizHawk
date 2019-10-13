@@ -136,6 +136,10 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Saturn;
 					case "DGB":
 						return SystemInfo.DualGB;
+					case "GB3x":
+						return SystemInfo.GB3x;
+					case "GB4x":
+						return SystemInfo.GB4x;
 					case "WSWAN":
 						return SystemInfo.WonderSwan;
 					case "Lynx":
@@ -148,6 +152,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Libretro;
 					case "VB":
 						return SystemInfo.VirtualBoy;
+					case "VEC":
+						return SystemInfo.Vectrex;
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
                     case "ZXSpectrum":

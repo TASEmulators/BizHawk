@@ -1729,6 +1729,8 @@ namespace BizHawk.Client.EmuHawk
 			SaturnSubMenu.Visible = false;
 			DGBSubMenu.Visible = false;
 			DGBHawkSubMenu.Visible = false;
+			GB3xSubMenu.Visible = false;
+			GB4xSubMenu.Visible = false;
 			GGLSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
@@ -1741,6 +1743,7 @@ namespace BizHawk.Client.EmuHawk
 			pCFXToolStripMenuItem.Visible = false;
             zXSpectrumToolStripMenuItem.Visible = false;
             amstradCPCToolStripMenuItem.Visible = false;
+			VectrexSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1855,6 +1858,15 @@ namespace BizHawk.Client.EmuHawk
                     break;
 				case "GGL":
 					GGLSubMenu.Visible = true;
+					break;
+				case "VEC":
+					VectrexSubMenu.Visible = true;
+					break;
+				case "GB3x":
+					GB3xSubMenu.Visible = true;
+					break;
+				case "GB4x":
+					GB4xSubMenu.Visible = true;
 					break;
 			}
 		}
@@ -4440,7 +4452,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
-        private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
+		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 

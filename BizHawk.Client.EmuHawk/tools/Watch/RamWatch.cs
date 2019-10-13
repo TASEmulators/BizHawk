@@ -22,18 +22,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = "";
+		private string _sortedColumn;
 		private bool _sortReverse;
 		private bool _paused;
 
 		[RequiredService]
-		private IMemoryDomains _memoryDomains { get; set; }
+		private IMemoryDomains MemoryDomains { get; set; }
 
 		[RequiredService]
-		private IEmulator _emu { get; set; }
+		private IEmulator Emu { get; set; }
 
 		[OptionalService]
-		private IDebuggable _debuggable { get; set; }
+		private IDebuggable Debuggable { get; set; }
 
 		public RamWatch()
 		{
@@ -94,13 +94,13 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
-        private IEnumerable<Watch> SelectedSeparators
-        {
-            get
-            {
-                return SelectedItems.Where(x => x.IsSeparator);
-            }
-        }
+		private IEnumerable<Watch> SelectedSeparators
+		{
+			get
+			{
+				return SelectedItems.Where(x => x.IsSeparator);
+			}
+		}
 
 		public IEnumerable<Watch> Watches
 		{
@@ -217,16 +217,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null
 				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
-				&& _watches.All(w => w.Domain == null || _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
+				&& _watches.All(w => w.Domain == null || MemoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
 				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed)))
 			{
-				_watches.RefreshDomains(_memoryDomains);
+				_watches.RefreshDomains(MemoryDomains);
 				_watches.Reload();
 				UpdateStatusBar();
 			}
 			else
 			{
-				_watches = new WatchList(_memoryDomains, _emu.SystemId);
+				_watches = new WatchList(MemoryDomains, Emu.SystemId);
 				NewWatchList(true);
 			}
 		}
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var row in clipboardRows)
 				{
-					var watch = Watch.FromString(row, _memoryDomains);
+					var watch = Watch.FromString(row, MemoryDomains);
 					if ((object)watch != null)
 					{
 						_watches.Add(watch);
@@ -403,14 +403,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (sw.Domain != SelectedWatches.First().Domain)
 					{
-						throw new InvalidOperationException("Can't edit multiple watches on varying memorydomains");
+						throw new InvalidOperationException("Can't edit multiple watches on varying memory domains");
 					}
 				}
 
 				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
-					MemoryDomains = _memoryDomains
+					MemoryDomains = MemoryDomains
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
@@ -423,6 +423,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_watches.AddRange(we.Watches);
 						WatchListView.ItemCount = _watches.Count;
+						UpdateWatchCount();
 					}
 					else
 					{
@@ -435,37 +436,37 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateValues();
 			}
-            else if (SelectedSeparators.Any() && !duplicate)
-            {
-                var inputPrompt = new InputPrompt
-                {
-                    Text = "Edit Separator",
-                    StartLocation = this.ChildPointToScreen(WatchListView),
-                    Message = "Separator Text:",
-                    TextInputType = InputPrompt.InputType.Text
-                };
+			else if (SelectedSeparators.Any() && !duplicate)
+			{
+				var inputPrompt = new InputPrompt
+				{
+					Text = "Edit Separator",
+					StartLocation = this.ChildPointToScreen(WatchListView),
+					Message = "Separator Text:",
+					TextInputType = InputPrompt.InputType.Text
+				};
 
-                var result = inputPrompt.ShowHawkDialog();
+				var result = inputPrompt.ShowHawkDialog();
 
-                if (result == DialogResult.OK)
-                {
-                    Changes();
+				if (result == DialogResult.OK)
+				{
+					Changes();
 
-                    for (int i = 0; i < SelectedSeparators.Count(); i++)
-                    {
-                        var sep = SelectedSeparators.ToList()[i];
-                        sep.Notes = inputPrompt.PromptText;
-                        _watches[indexes[i]] = sep;
-                    }
-                }
+					for (int i = 0; i < SelectedSeparators.Count(); i++)
+					{
+						var sep = SelectedSeparators.ToList()[i];
+						sep.Notes = inputPrompt.PromptText;
+						_watches[indexes[i]] = sep;
+					}
+				}
 
-                UpdateValues();
-            }
+				UpdateValues();
+			}
 		}
 
 		private string ComputeDisplayType(Watch w)
 		{
-			String s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
+			string s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
 			switch (w.Type)
 			{
 				case Common.DisplayType.Binary:
@@ -493,32 +494,8 @@ namespace BizHawk.Client.EmuHawk
 					s += "u";
 					break;
 			}
-			return s + (w.BigEndian ? "B" : "L");
-		}
 
-		private string GetColumnValue(string name, int index)
-		{
-			switch (name)
-			{
-				default:
-					return "";
-				case WatchList.ADDRESS:
-					return _watches[index].AddressString;
-				case WatchList.VALUE:
-					return _watches[index].ValueString;
-				case WatchList.PREV:
-					return _watches[index].PreviousStr;
-				case WatchList.CHANGES:
-					return _watches[index].ChangeCount.ToString();
-				case WatchList.DIFF:
-					return _watches[index].Diff;
-				case WatchList.TYPE:
-					return ComputeDisplayType(_watches[index]);
-				case WatchList.DOMAIN:
-					return _watches[index].Domain.Name;
-				case WatchList.NOTES:
-					return _watches[index].Notes;
-			}
+			return s + (w.BigEndian ? "B" : "L");
 		}
 
 		private void LoadConfigSettings()
@@ -604,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			CurrentDomain = _memoryDomains[name];
+			CurrentDomain = MemoryDomains[name];
 			Update();
 		}
 
@@ -623,7 +600,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => (watch.Address) >= watch.Domain.Size);
+			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => watch.Address >= watch.Domain.Size);
 
 			MessageLabel.Text = message;
 		}
@@ -666,15 +643,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-            if (_watches[index].IsSeparator)
-            {
-                if (WatchListView.Columns[column].Name == WatchList.ADDRESS)
-                {
-                    text = _watches[index].Notes;
-                }
+			if (_watches[index].IsSeparator)
+			{
+				if (WatchListView.Columns[column].Name == WatchList.ADDRESS)
+				{
+					text = _watches[index].Notes;
+				}
 
-                return;
-            }
+				return;
+			}
 
 			var columnName = WatchListView.Columns[column].Name;
 
@@ -777,8 +754,8 @@ namespace BizHawk.Client.EmuHawk
 				RemoveWatchMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-                MoveTopMenuItem.Enabled = 
-                MoveBottomMenuItem.Enabled =
+				MoveTopMenuItem.Enabled =
+				MoveBottomMenuItem.Enabled =
 				SelectedIndices.Any();
 
 			PokeAddressMenuItem.Enabled =
@@ -793,7 +770,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain CurrentDomain
 		{
-			get { return _currentDomain ?? _memoryDomains.MainMemory; }
+			get { return _currentDomain ?? MemoryDomains.MainMemory; }
 			set { _currentDomain = value; }
 		}
 
@@ -801,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				_memoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
+				MemoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
 				.ToArray());
 		}
 
@@ -810,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 			var we = new WatchEditor
 			{
 				InitialLocation = this.ChildPointToScreen(WatchListView),
-				MemoryDomains = _memoryDomains
+				MemoryDomains = MemoryDomains
 			};
 			we.SetWatch(CurrentDomain);
 			we.ShowHawkDialog(this);
@@ -947,10 +924,10 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Insert(indices[i] + 1, watch);
 			}
 
-			var newindices = indices.Select(t => t + 1);
+			var newIndices = indices.Select(t => t + 1);
 
 			WatchListView.SelectedIndices.Clear();
-			foreach (var t in newindices)
+			foreach (var t in newIndices)
 			{
 				WatchListView.SelectItem(t, true);
 			}
@@ -959,67 +936,65 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.ItemCount = _watches.Count;
 		}
 
-        private void MoveTopMenuItem_Click(object sender, EventArgs e)
-        {
-            var indexes = SelectedIndices.ToList();
-            if (!indexes.Any())
-            {
-                return;
-            }
+		private void MoveTopMenuItem_Click(object sender, EventArgs e)
+		{
+			var indexes = SelectedIndices.ToList();
+			if (!indexes.Any())
+			{
+				return;
+			}
 
-            for (int i = 0; i < indexes.Count; i++)
-            {
-                var watch = _watches[indexes[i]];
-                _watches.RemoveAt(indexes[i]);
-                _watches.Insert(i, watch);
-                indexes[i] = i;
-            }
+			for (int i = 0; i < indexes.Count; i++)
+			{
+				var watch = _watches[indexes[i]];
+				_watches.RemoveAt(indexes[i]);
+				_watches.Insert(i, watch);
+				indexes[i] = i;
+			}
 
-            Changes();
+			Changes();
 
-            WatchListView.SelectedIndices.Clear();
-            foreach (var t in indexes)
-            {
-                WatchListView.SelectItem(t, true);
-            }
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in indexes)
+			{
+				WatchListView.SelectItem(t, true);
+			}
 
-            WatchListView.ItemCount = _watches.Count;
-        }
+			WatchListView.ItemCount = _watches.Count;
+		}
 
-        private void MoveBottomMenuItem_Click(object sender, EventArgs e)
-        {
-            var indices = SelectedIndices.ToList();
-            if (indices.Count == 0) // || indices.Last() == _watches.Count - 1)
-            {
-                return;
-            }
+		private void MoveBottomMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = SelectedIndices.ToList();
+			if (indices.Count == 0)
+			{
+				return;
+			}
 
-            for (var i = 0; i < indices.Count; i++)
-            {
-                var watch = _watches[indices[i] - i];
-                _watches.RemoveAt(indices[i] - i);
-                _watches.Insert(_watches.Count, watch);
-                //_watches.Add(watch);
-                //indices[i] = (_watches.Count - 1 - indices.Count) + i;
-            }
+			for (var i = 0; i < indices.Count; i++)
+			{
+				var watch = _watches[indices[i] - i];
+				_watches.RemoveAt(indices[i] - i);
+				_watches.Insert(_watches.Count, watch);
+			}
 
-            var newInd = new List<int>();
-            for (int i = 0, x = _watches.Count - indices.Count; i < indices.Count; i++, x++)
-            {
-                newInd.Add(x);
-            }
+			var newInd = new List<int>();
+			for (int i = 0, x = _watches.Count - indices.Count; i < indices.Count; i++, x++)
+			{
+				newInd.Add(x);
+			}
 
-            WatchListView.SelectedIndices.Clear();
-            foreach (var t in newInd)
-            {
-                WatchListView.SelectItem(t, true);
-            }
-            
-            Changes();
-            WatchListView.ItemCount = _watches.Count;
-        }
+			WatchListView.SelectedIndices.Clear();
+			foreach (var t in newInd)
+			{
+				WatchListView.SelectItem(t, true);
+			}
 
-        private void SelectAllMenuItem_Click(object sender, EventArgs e)
+			Changes();
+			WatchListView.ItemCount = _watches.Count;
+		}
+
+		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			WatchListView.SelectAll();
 		}
@@ -1118,7 +1093,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			TopMost = Settings.TopMost;
-			_watches = new WatchList(_memoryDomains, _emu.SystemId);
+			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
@@ -1172,17 +1147,17 @@ namespace BizHawk.Client.EmuHawk
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
-                MoveTopContextMenuItem.Visible = 
-                MoveBottomContextMenuItem.Visible =
+				MoveTopContextMenuItem.Visible =
+				MoveBottomContextMenuItem.Visible =
 				indexes.Count > 0;
 
 			ReadBreakpointContextMenuItem.Visible =
 			WriteBreakpointContextMenuItem.Visible =
 			Separator6.Visible =
 				SelectedWatches.Any() &&
-				_debuggable != null &&
-				_debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : ""));
+				Debuggable != null &&
+				Debuggable.MemoryCallbacksAvailable() &&
+				SelectedWatches.All(w => w.Domain.Name == (MemoryDomains != null ? MemoryDomains.SystemBus.Name : ""));
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
@@ -1325,7 +1300,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 		#endregion
 
-
 		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
 		{
 			PokeAddressToolBarItem.Enabled =
@@ -1337,7 +1311,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
-			base.GenericDragEnter(sender, e);
+			GenericDragEnter(sender, e);
 		}
-    }
+	}
 }

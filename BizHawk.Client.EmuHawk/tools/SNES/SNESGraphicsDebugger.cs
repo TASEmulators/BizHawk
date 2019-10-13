@@ -307,12 +307,11 @@ namespace BizHawk.Client.EmuHawk
 				checkTMBG2.Checked = si.BG.BG2.MainEnabled;
 				checkTMBG3.Checked = si.BG.BG3.MainEnabled;
 				checkTMBG4.Checked = si.BG.BG4.MainEnabled;
-				checkTMOBJ.Checked = si.OBJ_SubEnabled;
+				checkTSOBJ.Checked = si.OBJ_SubEnabled;
 				checkTSBG1.Checked = si.BG.BG1.SubEnabled;
 				checkTSBG2.Checked = si.BG.BG2.SubEnabled;
 				checkTSBG3.Checked = si.BG.BG3.SubEnabled;
 				checkTSBG4.Checked = si.BG.BG4.SubEnabled;
-				checkTSOBJ.Checked = si.OBJ_MainEnabled;
 				checkMathOBJ.Checked = si.OBJ_MathEnabled;
 				checkMathBK.Checked = si.BK_MathEnabled;
 				checkMathBG1.Checked = si.BG.BG1.MathEnabled;

@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
@@ -1217,22 +1217,33 @@ namespace BizHawk.Client.EmuHawk
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			SubNESHawkMenuItem.Checked = Global.Config.UseSubNESHawk;
-			
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
 		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			QuicknesCoreMenuItem.Checked = Global.Config.NES_InQuickNES;
-			NesCoreMenuItem.Checked = !Global.Config.NES_InQuickNES;
+			NesCoreMenuItem.Checked = !Global.Config.NES_InQuickNES && !Global.Config.UseSubNESHawk;
+			SubNesHawkMenuItem.Checked = Global.Config.UseSubNESHawk;
 		}
 
 		private void NesCorePick_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
+			Global.Config.UseSubNESHawk = false;
 
 			if (Emulator.SystemId == "NES")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void SubNesCorePick_Click(object sender, EventArgs e)
+		{
+			Global.Config.UseSubNESHawk = true;
+			Global.Config.NES_InQuickNES = false;
+
+			if (!Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
@@ -1304,16 +1315,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
-
-			if (!Emulator.IsNull())
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void SubNESHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.UseSubNESHawk ^= true;
 
 			if (!Emulator.IsNull())
 			{
@@ -2385,11 +2386,38 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region GB3x
+
+		private void GB3xSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+		}
+
+		#endregion
+
+		#region GB4x
+
+		private void GB4xSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+		}
+
+		#endregion
+
 		#region GGL
 
 		private void GGLSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
+		}
+
+		#endregion
+
+		#region Vectrex
+
+		private void VectrexSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Vectrex Settings");
 		}
 
 		#endregion

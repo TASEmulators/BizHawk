@@ -44,23 +44,23 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<int> _extraFloatRows = new List<int>();
 
 		// Right-click dragging
-		private string[] _rightClickInput = null;
-		private string[] _rightClickOverInput = null;
+		private string[] _rightClickInput;
+		private string[] _rightClickOverInput;
 		private int _rightClickFrame = -1;
 		private int _rightClickLastFrame = -1;
 		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
-		private bool _leftButtonHeld = false;
+		private bool _leftButtonHeld;
 
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private bool? _autoRestorePaused = null;
-		private int? _seekStartFrame = null;
-		private bool _unpauseAfterSeeking = false;
+		private bool? _autoRestorePaused;
+		private int? _seekStartFrame;
+		private bool _unpauseAfterSeeking;
 
 		private ControllerDefinition ControllerType => Global.MovieSession.MovieControllerAdapter.Definition;
 
-		public bool WasRecording;
+		public bool WasRecording { get; set; }
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
@@ -225,10 +225,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-			
+
 			if (columnName == CursorColumnName)
+			{
 				color = Color.FromArgb(0xFEFFFF);
-			
+			}
+
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
@@ -379,14 +381,14 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						if (Control.ModifierKeys != Keys.Alt)
+						if (ModifierKeys != Keys.Alt)
 						{
 							// nifty taseditor logic
 							bool allPressed = true;
 							foreach (var index in TasView.SelectedRows)
 							{
-								if ((index == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
-									|| (!CurrentTasMovie.BoolIsPressed(index, buttonName)))
+								if (index == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+									|| !CurrentTasMovie.BoolIsPressed(index, buttonName))
 								{
 									allPressed = false;
 									break;
@@ -412,6 +414,7 @@ namespace BizHawk.Client.EmuHawk
 					_triggerAutoRestore = true;
 					JumpToGreenzone();
 				}
+
 				RefreshDialog();
 			}
 		}
@@ -424,6 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshTasView();
 		}
+
 		private void UpdateAutoFire()
 		{
 			for (int i = 2; i < TasView.AllColumns.Count; i++)
@@ -431,6 +435,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateAutoFire(TasView.AllColumns[i].Name, TasView.AllColumns[i].Emphasis);
 			}
 		}
+
 		public void UpdateAutoFire(string button, bool? isOn)
 		{
 			if (!isOn.HasValue) // No value means don't change whether it's on or off.
@@ -546,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
 				if (FloatEditingMode)
 				{
-					if (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift)
+					if (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift)
 					{
 						_extraFloatRows.Clear();
 						_extraFloatRows.AddRange(TasView.SelectedRows);
@@ -585,7 +590,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
-					if (Control.ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
+					if (ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
 					{
 						// TODO
 						TasView.DragCurrentCell();
@@ -596,7 +601,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
-				else if (TasView.CurrentCell.Column.Type != InputRoll.RollColumn.InputType.Text)// User changed input
+				else if (TasView.CurrentCell.Column.Type != InputRoll.RollColumn.InputType.Text) // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
@@ -627,8 +632,8 @@ namespace BizHawk.Client.EmuHawk
 							bool allPressed = true;
 							for (int i = firstSel; i <= frame; i++)
 							{
-								if ((i == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
-									|| (!CurrentTasMovie.BoolIsPressed(i, buttonName)))
+								if (i == CurrentTasMovie.FrameCount // last movie frame can't have input, but can be selected
+									|| !CurrentTasMovie.BoolIsPressed(i, buttonName))
 								{
 									allPressed = false;
 									break;
@@ -640,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 							JumpToGreenzone();
 							RefreshDialog();
 						}
-						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys == Keys.Alt) //Does not work?
+						else if (ModifierKeys == Keys.Shift && ModifierKeys == Keys.Alt) // Does not work?
 						{
 							// TODO: Pattern drawing from selection to current cell
 						}
@@ -720,9 +725,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (TasView.CurrentCell.Column.Name == FrameColumnName && frame < CurrentTasMovie.InputLogLength)
 				{
-					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
-					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
-					_rightClickAlt = (Control.ModifierKeys | Keys.Alt) == Control.ModifierKeys;
+					_rightClickControl = (ModifierKeys | Keys.Control) == ModifierKeys;
+					_rightClickShift = (ModifierKeys | Keys.Shift) == ModifierKeys;
+					_rightClickAlt = (ModifierKeys | Keys.Alt) == ModifierKeys;
 					if (TasView.SelectedRows.Contains(frame))
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
@@ -825,7 +830,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (FloatEditingMode && (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift))
+				if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 				{
 					_leftButtonHeld = false;
 					_startSelectionDrag = false;
@@ -978,7 +983,7 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i <= endVal; i++)
 					{
 						TasView.SelectRow(i, _selectionDragState);
-						if (FloatEditingMode && (Control.ModifierKeys == Keys.Control || Control.ModifierKeys == Keys.Shift))
+						if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 						{
 							if (_selectionDragState)
 							{
@@ -1014,7 +1019,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						if (startVal < _rightClickLastFrame)
+						{
 							shouldInsert = false;
+						}
 
 						if (shouldInsert)
 						{
@@ -1375,19 +1382,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.Enter)
 			{
-				if (_floatEditYPos != -1)
-				{
-					_floatEditYPos = -1;
-				}
-
+				_floatEditYPos = -1;
 				floatEditRow = -1;
 			}
 			else if (e.KeyCode == Keys.Escape)
 			{
-				if (_floatEditYPos != -1)
-				{
-					_floatEditYPos = -1;
-				}
+				_floatEditYPos = -1;
 
 				if (_floatBackupState != _floatPaintState)
 				{
@@ -1411,7 +1411,7 @@ namespace BizHawk.Client.EmuHawk
 					changeBy = -1;
 				}
 
-				if (Control.ModifierKeys == Keys.Shift)
+				if (ModifierKeys == Keys.Shift)
 				{
 					changeBy *= 10;
 				}
@@ -1476,7 +1476,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
-			//taseditor uses Ctrl for selection and Shift for framecourser
+			// taseditor uses Ctrl for selection and Shift for framecourser
 			if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Shift + Page Up
 			{
 				GoToPreviousMarker();

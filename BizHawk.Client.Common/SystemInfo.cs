@@ -74,6 +74,16 @@ namespace BizHawk.Client.Common
 		public static SystemInfo Coleco { get; } = new SystemInfo("ColecoVision", CoreSystem.ColecoVision, 1);
 
 		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Triple Gameboy
+		/// </summary>
+		public static SystemInfo GB3x { get; } = new SystemInfo("Game Boy Link 3x", CoreSystem.GB3x, 3, StandardButtons);
+
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Quad Gameboy
+		/// </summary>
+		public static SystemInfo GB4x { get; } = new SystemInfo("Game Boy Link 4x", CoreSystem.GB4x, 4, StandardButtons);
+
+		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Dual Gameboy
 		/// </summary>
 		public static SystemInfo DualGB { get; } = new SystemInfo("Game Boy Link", CoreSystem.DualGameBoy, 2, StandardButtons);

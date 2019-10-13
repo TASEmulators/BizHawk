@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -403,16 +404,28 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
-			var parentPath = string.IsNullOrWhiteSpace(system) ?
-				GetGlobalBasePathAbsolute() :
-				MakeAbsolutePath(GetPlatformBase(system), system);
+			var parentPath = string.IsNullOrWhiteSpace(system)
+				? GetGlobalBasePathAbsolute()
+				: MakeAbsolutePath(GetPlatformBase(system), system);
+#if true
+			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 
-			if (IsSubfolder(parentPath, absolutePath))
+			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				? absolutePath.Replace(parentPath, ".")
+				: "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary");
+#else // written for Unix port but may be useful for .NET Core
+			if (!IsSubfolder(parentPath, absolutePath))
 			{
-				return absolutePath.Replace(parentPath, ".");
+				return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					|| parentPath.TrimEnd('.') != $"{absolutePath}/"
+						? absolutePath
+						: ".";
 			}
 
-			return absolutePath;
+			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				? absolutePath.Replace(parentPath, ".")
+				: absolutePath.Replace(parentPath.TrimEnd('.'), "./");
+#endif
 		}
 
 		public static string MakeRelativeTo(string absolutePath, string basePath)
@@ -425,24 +438,43 @@ namespace BizHawk.Client.Common
 			return absolutePath;
 		}
 
-		// http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
-		private static bool IsSubfolder(string parentPath, string childPath)
+		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
+		public static bool IsSubfolder(string parentPath, string childPath)
 		{
-			var parentUri = new Uri(parentPath);
-
-			var childUri = new DirectoryInfo(childPath).Parent;
-
-			while (childUri != null)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
-				if (new Uri(childUri.FullName) == parentUri)
+				var parentUri = new Uri(parentPath);
+
+				for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
 				{
-					return true;
+					if (new Uri(childUri.FullName) == parentUri) return true;
 				}
 
-				childUri = childUri.Parent;
+				return false;
 			}
 
-			return false;
+#if true
+			return OSTailoredCode.SimpleSubshell("realpath", $"-L \"{childPath}\"", $"invalid path {childPath} or missing realpath binary")
+				.StartsWith(OSTailoredCode.SimpleSubshell("realpath", $"-L \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary"));
+#else // written for Unix port but may be useful for .NET Core
+			{
+				var parentUri = new Uri(parentPath.TrimEnd('.'));
+
+				try
+				{
+					for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
+					{
+						if (new Uri(childUri.FullName).AbsolutePath.TrimEnd('/') == parentUri.AbsolutePath.TrimEnd('/')) return true;
+					}
+				}
+				catch
+				{
+					// ignored
+				}
+
+				return false;
+			}
+#endif
 		}
 
 		/// <summary>

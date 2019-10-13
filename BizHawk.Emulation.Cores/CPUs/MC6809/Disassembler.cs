@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"RTS", // 39
 			"ABX", // 3a
 			"RTI", // 3b
-			"CWAI", // 3c
+			"CWAI  i8", // 3c
 			"MUL", // 3d
 			"???", // 3e
 			"SWI1", // 3f
@@ -166,8 +166,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"ADD   A,DP+i8", // 9b
 			"CMP   X,DP+i8", // 9c
 			"JSR   DP+i8", // 9d
-			"LD    X,ix16", // 9e
-			"ST    X,ix16", // 9f
+			"LD    X,DP+i8", // 9e
+			"ST    X,DP+i8", // 9f
 			"SUB   A,ix16", // a0
 			"CMP   A,ix16", // a1
 			"SBC   A,ix16", // a2
@@ -182,8 +182,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			"ADD   A,ix16", // ab
 			"CMP   X,ix16", // ac
 			"JSR   ix16", // ad
-			"LD    X,ex16", // ae
-			"ST    X,ex16", // af
+			"LD    X,ix16", // ae
+			"ST    X,ix16", // af
 			"SUB   A,ex16", // b0
 			"CMP   A,ex16", // b1
 			"SBC   A,ex16", // b2
@@ -1010,15 +1010,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					}
 				}				
 			}
-			else if (result.Contains("r8"))
-			{
-				byte d = reader(addr++);
-				bytes.Add(d);
-				int offs = d;
-				if (offs >= 128)
-					offs -= 256;
-				result = result.Replace("r8", string.Format("{0:X4}h", (ushort)(addr + offs)));
-			}
+
 			StringBuilder ret = new StringBuilder();
 			ret.Append(string.Format("{0:X4}:  ", origaddr));
 			foreach (var b in bytes)

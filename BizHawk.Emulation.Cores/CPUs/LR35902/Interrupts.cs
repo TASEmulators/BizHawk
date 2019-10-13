@@ -13,18 +13,18 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						WR, SPl, SPh, PCh,
 						IDLE,
 						DEC16, SPl, SPh,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						IDLE,
 						WR, SPl, SPh, PCl,
 						IDLE,
 						IDLE,
 						IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						TR, PCl, W,
 						ASGN, PCh, 0,
+						IDLE,
+						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						TR, PCl, W,
+						IRQ_CLEAR,
 						IDLE,
 						OP };
 		}
@@ -37,30 +37,31 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						WR, SPl, SPh, PCh,
 						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						DEC16, SPl, SPh,
+						IDLE,
 						WR, SPl, SPh, PCl,
 						IDLE,
 						IDLE,
 						IDLE,
 						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						IDLE,
 						TR, PCl, W,
+						IDLE,
 						ASGN, PCh, 0,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
+						IRQ_CLEAR,
+						IDLE,				
 						OP };
 		}
 
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
 
 		public ushort int_src;
+		public byte int_clear;
 		public int stop_time;
 		public bool stop_check;
 		public bool is_GBC; // GBC automatically adds a NOP to avoid the HALT bug (according to Sinimas)

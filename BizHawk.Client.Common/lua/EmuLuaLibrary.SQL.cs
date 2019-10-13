@@ -81,14 +81,14 @@ namespace BizHawk.Client.Common
 				return "Command ran successfully";
 
 			}
-			catch (NullReferenceException nullEX)
+			catch (NullReferenceException)
 			{
 				return "Database not open.";
 			}
-			catch (SQLiteException sqlEX)
+			catch (SQLiteException sqlEx)
 			{
 				m_dbConnection.Close();
-				return sqlEX.Message;
+				return sqlEx.Message;
 			}
 		}
 

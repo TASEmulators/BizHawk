@@ -81,6 +81,8 @@ namespace BizHawk.Client.Common
 			["Button"] = 'B',
 			["Button 1"] = '1',
 			["Button 2"] = '2',
+			["Button 3"] = '3',
+			["Button 4"] = '4',
 			["B1"] = '1',
 			["B2"] = '2',
 
@@ -335,6 +337,19 @@ namespace BizHawk.Client.Common
 			["DGB"] = new Dictionary<string, char>
 			{
 				["Toggle Cable"] = 'L'
+			},
+			["GB3x"] = new Dictionary<string, char>
+			{
+				["Toggle Cable LC"] = 'L',
+				["Toggle Cable CR"] = 'C',
+				["Toggle Cable RL"] = 'R'
+			},
+			["GB4x"] = new Dictionary<string, char>
+			{
+				["Toggle Cable UD"] = 'U',
+				["Toggle Cable LR"] = 'L',
+				["Toggle Cable X"] = 'X',
+				["Toggle Cable 4x"] = '4'
 			},
 			["Lynx"] = new Dictionary<string, char>
 			{

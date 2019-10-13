@@ -448,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBranchToolStripMenuItem_Click(null, null);
 		}
 
-		public void RemoveBranchExtrenal()
+		public void RemoveBranchExternal()
 		{
 			RemoveBranchToolStripMenuItem_Click(null, null);
 		}

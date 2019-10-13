@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 			ControllerState = controllerState;
 		}
 
-		public int Frame { get; private set; }
-		public IController ControllerState { get; private set; }
+		public int Frame { get; }
+		public IController ControllerState { get; }
 
 		public override string ToString()
 		{

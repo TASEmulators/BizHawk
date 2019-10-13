@@ -54,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool double_speed;
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
+		public byte IR_reg, IR_mask, IR_signal, IR_receive, IR_self;
+		public int IR_write;
 
 		// several undocumented GBC Registers
 		public byte undoc_6C, undoc_72, undoc_73, undoc_74, undoc_75, undoc_76, undoc_77;
@@ -144,6 +146,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_bios = Bios;
 
+			// set up IR register to off state
+			if (is_GBC) { IR_mask = 0; IR_reg = 0x3E; IR_receive = 2; IR_self = 2; IR_signal = 2; }
+
 			// Here we modify the BIOS if GBA mode is set (credit to ExtraTricky)
 			if (is_GBC && _syncSettings.GBACGB)
 			{
@@ -151,12 +156,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					_bios[i + 0xF3] = (byte)((GBA_override[i] + _bios[i + 0xF3]) & 0xFF);
 				}
+				IR_mask = 2;
 			}
 
 			// CPU needs to know about GBC status too
 			cpu.is_GBC = is_GBC;
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
+
+			if (is_GBC && ((header[0x43] != 0x80) && (header[0x43] != 0xC0)))
+			{
+				ppu = new GBC_PPU_GB();
+			}
 
 			Console.WriteLine("MD5: " + rom.HashMD5(0, rom.Length));
 			Console.WriteLine("SHA1: " + rom.HashSHA1(0, rom.Length));
@@ -290,6 +301,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+			frame_buffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)
@@ -458,28 +470,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (mppr == "MBC3")
 			{
 				Use_MT = true;
+
+				mapper.RTC_Get(_syncSettings.RTCOffset, 5);
+
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);
 
-				mapper.RTC_Get((byte)days_upper, 4);
-				mapper.RTC_Get((byte)(days & 0xFF), 3);
+				mapper.RTC_Get(days_upper, 4);
+				mapper.RTC_Get(days & 0xFF, 3);
 
 				int remaining = _syncSettings.RTCInitialTime - (days * 86400);
 
 				int hours = (int)Math.Floor(remaining / 3600.0);
 
-				mapper.RTC_Get((byte)(hours & 0xFF), 2);
+				mapper.RTC_Get(hours & 0xFF, 2);
 
 				remaining = remaining - (hours * 3600);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 
-				mapper.RTC_Get((byte)(minutes & 0xFF), 1);
+				mapper.RTC_Get(minutes & 0xFF, 1);
 
 				remaining = remaining - (minutes * 60);
 
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 
 			if (mppr == "HuC3")
@@ -488,23 +503,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				int years = (int)Math.Floor(_syncSettings.RTCInitialTime / 31536000.0);
 
-				mapper.RTC_Get((byte)years, 24);
+				mapper.RTC_Get(years, 24);
 
 				int remaining = _syncSettings.RTCInitialTime - (years * 31536000);
 
 				int days = (int)Math.Floor(remaining / 86400.0);
 				int days_upper = (days >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)days_upper, 20);
-				mapper.RTC_Get((byte)(days & 0xFF), 12);
+				mapper.RTC_Get(days_upper, 20);
+				mapper.RTC_Get(days & 0xFF, 12);
 
 				remaining = remaining - (days * 86400);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 				int minutes_upper = (minutes >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)(minutes_upper), 8);
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(minutes_upper, 8);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 		}
 	}

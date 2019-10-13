@@ -62,6 +62,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest]++;
 		}
 
+		public void Write_Lo_Inc_Func(ushort dest, ushort src)
+		{
+			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
+			WriteMemory(Regs[dest], (byte)Regs[src]);
+			Regs[dest]++;
+		}
+
 		public void NEG_8_Func(ushort src)
 		{
 			int Reg16_d = 0;
@@ -94,6 +101,13 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = (Regs[dest] & 0xFF) > 127;
 		}
 
+		public void ST_8_Func(ushort dest)
+		{
+			FlagZ = (Regs[dest] & 0xFF) == 0;
+			FlagV = false;
+			FlagN = (Regs[dest] & 0xFF) > 127;
+		}
+
 		public void LD_16_Func(ushort dest, ushort src_h, ushort src_l)
 		{
 			Regs[dest] = (ushort)(Regs[src_h] << 8 | Regs[src_l]);
@@ -101,6 +115,18 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagZ = Regs[dest] == 0;
 			FlagV = false;
 			FlagN = Regs[dest] > 0x7FFF;
+		}
+
+		public void ST_16_Func(ushort dest)
+		{
+			if (dest == Dr)
+			{
+				Regs[dest] = D;
+			}
+
+			FlagZ = Regs[dest] == 0;
+			FlagV = false;
+			FlagN = Regs[dest] > 0x7FFF;		
 		}
 
 		// for LEAX/Y, zero flag can be effected, but not for U/S
@@ -167,8 +193,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += (Regs[src] & 0xF);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
-			FlagN = false;
+			FlagV = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
+			FlagN = ans > 127;
 
 			Regs[dest] = ans;
 		}
@@ -311,23 +337,6 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			FlagN = Regs[dest] > 127;
 		}
 
-		public void CP8_Func(ushort dest, ushort src)
-		{
-			int Reg16_d = Regs[dest];
-			Reg16_d -= Regs[src];
-
-			FlagC = Reg16_d.Bit(8);
-			FlagZ = (Reg16_d & 0xFF) == 0;
-
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d -= (Regs[src] & 0xF);
-
-			FlagH = Reg16_d.Bit(4);
-
-			FlagN = true;
-		}
-
 		public void ROR_Func(ushort src)
 		{
 			ushort c = (ushort)(FlagC ? 0x80 : 0);
@@ -400,7 +409,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Reg16_d += ((Regs[src] & 0xF) + c);
 
 			FlagH = Reg16_d.Bit(4);
-			FlagV = (Regs[dest].Bit(7) != Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
+			FlagV = (Regs[dest].Bit(7) == Regs[src].Bit(7)) && (Regs[dest].Bit(7) != ans.Bit(7));
 			FlagN = false;
 
 			Regs[dest] = ans;
@@ -429,77 +438,34 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			Regs[dest] = ans;
 		}
 
-		// DA code courtesy of AWJ: http://forums.nesdev.com/viewtopic.php?f=20&t=15944
 		public void DA_Func(ushort src)
 		{
-			byte a = (byte)Regs[src];
+			int a = Regs[src];
 
-			if (!FlagN)
-			{  // after an addition, adjust if (half-)carry occurred or if result is out of bounds
-				if (FlagC || a > 0x99) { a += 0x60; FlagC = true; }
-				if (FlagH || (a & 0x0f) > 0x09) { a += 0x6; }
-			}
-			else
-			{  // after a subtraction, only adjust if (half-)carry occurred
-				if (FlagC) { a -= 0x60; }
-				if (FlagH) { a -= 0x6; }
-			}
-
-			a &= 0xFF;
-
-			Regs[src] = a;
-
-			FlagZ = a == 0; 
-			FlagH = false;
-		}
-
-		// used for signed operations
-		public void ADDS_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
-		{
-			int Reg16_d = Regs[dest_l];
-			int Reg16_s = Regs[src_l];
-
-			Reg16_d += Reg16_s;
-
-			ushort temp = 0;
-
-			// since this is signed addition, calculate the high byte carry appropriately
-			if (Reg16_s.Bit(7))
+			byte CF = 0;
+			if (FlagC || ((a & 0xF) > 9))
 			{
-				if (((Reg16_d & 0xFF) >= Regs[dest_l]))
-				{
-					temp = 0xFF;
-				}
-				else
-				{
-					temp = 0;
-				}
+				CF = 6;
+			}
+			if (FlagC || (((a >> 4) & 0xF) > 9) || ((((a >> 4) & 0xF) > 8) && ((a & 0xF) > 9)))
+			{
+				CF |= (byte)(6 << 4);
+			}
+
+			a += CF;
+
+			if ((a > 0xFF) || FlagC)
+			{
+				FlagC = true;
 			}
 			else
 			{
-				temp = (ushort)(Reg16_d.Bit(8) ? 1 : 0);
+				FlagC = false;
 			}
-
-			ushort ans_l = (ushort)(Reg16_d & 0xFF);
-
-			// JR operations do not effect flags
-			if (dest_l != PC)
-			{
-				FlagC = Reg16_d.Bit(8);
-
-				// redo for half carry flag
-				Reg16_d = Regs[dest_l] & 0xF;
-				Reg16_d += Regs[src_l] & 0xF;
-
-				FlagH = Reg16_d.Bit(4);
-				FlagN = false;
-				FlagZ = false; 			
-			}
-
-			Regs[dest_l] = ans_l;
-			Regs[dest_h] += temp;
-			Regs[dest_h] &= 0xFF;
-
+			Regs[src] = (byte)a;
+			FlagN = a > 127;
+			FlagZ = a == 0;
+			// FlagV is listed as undefined in the documentation
 		}
 
 		// D register implied
@@ -535,7 +501,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			ushort ans = (ushort)(Reg16_d & 0xFFFF);
 
 			FlagN = ans > 0x7FFF;
-			FlagV = (D.Bit(15) != Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
+			FlagV = (D.Bit(15) == Regs[src].Bit(15)) && (D.Bit(15) != ans.Bit(15));
 
 			D = ans;
 		}

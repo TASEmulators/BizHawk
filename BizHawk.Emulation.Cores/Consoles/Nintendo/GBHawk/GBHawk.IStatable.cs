@@ -90,6 +90,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(speed_switch), ref speed_switch);
 			ser.Sync(nameof(HDMA_transfer), ref HDMA_transfer);
 
+			ser.Sync(nameof(IR_reg), ref IR_reg);
+			ser.Sync(nameof(IR_mask), ref IR_mask);
+			ser.Sync(nameof(IR_signal), ref IR_signal);
+			ser.Sync(nameof(IR_receive), ref IR_receive);
+			ser.Sync(nameof(IR_self), ref IR_self);
+			ser.Sync(nameof(IR_write), ref IR_write);
+
 			ser.Sync(nameof(undoc_6C), ref undoc_6C);
 			ser.Sync(nameof(undoc_72), ref undoc_72);
 			ser.Sync(nameof(undoc_73), ref undoc_73);
@@ -100,6 +107,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync(nameof(Use_MT), ref Use_MT);
 			ser.Sync(nameof(addr_access), ref addr_access);
+
+			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
+			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
 
 			// probably a better way to do this
 			if (cart_RAM != null)

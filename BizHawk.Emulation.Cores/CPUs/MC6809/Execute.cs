@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 				case 0x9A: DIRECT_MEM_4(OR8, A);					break; // ORA				(Direct)
 				case 0x9B: DIRECT_MEM_4(ADD8, A);					break; // ADDA				(Direct)
 				case 0x9C: DIR_CMP_16(CMP16, X);					break; // CMPX				(Direct)
-				case 0x9D: REG_OP(ADC8, A);							break; // JSR				(Direct)
+				case 0x9D: JSR_();									break; // JSR				(Direct)
 				case 0x9E: DIR_OP_LD_16(X);							break; // LDX				(Direct)
 				case 0x9F: DIR_OP_ST_16(X);							break; // STX				(Direct)
 				case 0xA0: INDEX_OP_REG(I_SUB, A);					break; // SUBA				(Indexed)

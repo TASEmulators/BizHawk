@@ -57,6 +57,7 @@
 			this.ControlsBox = new System.Windows.Forms.GroupBox();
 			this.ControlProbabilityPanel = new System.Windows.Forms.Panel();
 			this.BestGroupBox = new System.Windows.Forms.GroupBox();
+			this.btnCopyBestInput = new System.Windows.Forms.Button();
 			this.PlayBestButton = new System.Windows.Forms.Button();
 			this.ClearBestButton = new System.Windows.Forms.Button();
 			this.BestAttemptNumberLabel = new System.Windows.Forms.Label();
@@ -118,6 +119,8 @@
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.StatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ClearStatsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu.SuspendLayout();
 			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
@@ -142,8 +145,9 @@
 			// 
 			this.BotMenu.ClickThrough = true;
 			this.BotMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu,
-            this.OptionsSubMenu});
+			this.FileSubMenu,
+			this.OptionsSubMenu,
+			this.helpToolStripMenuItem});
 			this.BotMenu.Location = new System.Drawing.Point(0, 0);
 			this.BotMenu.Name = "BotMenu";
 			this.BotMenu.Size = new System.Drawing.Size(707, 24);
@@ -153,15 +157,15 @@
 			// FileSubMenu
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NewMenuItem,
-            this.OpenMenuItem,
-            this.SaveMenuItem,
-            this.SaveAsMenuItem,
-            this.RecentSubMenu,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
+			this.NewMenuItem,
+			this.OpenMenuItem,
+			this.SaveMenuItem,
+			this.SaveAsMenuItem,
+			this.RecentSubMenu,
+			this.toolStripSeparator1,
+			this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
@@ -170,7 +174,7 @@
 			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewMenuItem.Name = "NewMenuItem";
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.NewMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.NewMenuItem.Text = "&New";
 			this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
@@ -179,7 +183,7 @@
 			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenMenuItem.Name = "OpenMenuItem";
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
 			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
@@ -188,7 +192,7 @@
 			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
 			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
@@ -196,18 +200,18 @@
 			// 
 			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
 			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Size = new System.Drawing.Size(193, 22);
+			| System.Windows.Forms.Keys.S)));
+			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
 			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator2});
+			this.toolStripSeparator2});
 			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
-			this.RecentSubMenu.Size = new System.Drawing.Size(193, 22);
+			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
 			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
@@ -219,91 +223,91 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MemoryDomainsMenuItem,
-            this.DataSizeMenuItem,
-            this.BigEndianMenuItem,
-            this.toolStripSeparator4,
-            this.TurboWhileBottingMenuItem});
+			this.MemoryDomainsMenuItem,
+			this.DataSizeMenuItem,
+			this.BigEndianMenuItem,
+			this.toolStripSeparator4,
+			this.TurboWhileBottingMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(56, 20);
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// MemoryDomainsMenuItem
 			// 
 			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator3});
+			this.toolStripSeparator3});
 			this.MemoryDomainsMenuItem.Name = "MemoryDomainsMenuItem";
-			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.MemoryDomainsMenuItem.Text = "Memory Domains";
 			this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// DataSizeMenuItem
 			// 
 			this.DataSizeMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._1ByteMenuItem,
-            this._2ByteMenuItem,
-            this._4ByteMenuItem});
+			this._1ByteMenuItem,
+			this._2ByteMenuItem,
+			this._4ByteMenuItem});
 			this.DataSizeMenuItem.Name = "DataSizeMenuItem";
-			this.DataSizeMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.DataSizeMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.DataSizeMenuItem.Text = "Data Size";
 			this.DataSizeMenuItem.DropDownOpened += new System.EventHandler(this.DataSizeMenuItem_DropDownOpened);
 			// 
 			// _1ByteMenuItem
 			// 
 			this._1ByteMenuItem.Name = "_1ByteMenuItem";
-			this._1ByteMenuItem.Size = new System.Drawing.Size(110, 22);
+			this._1ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._1ByteMenuItem.Text = "1 Byte";
 			this._1ByteMenuItem.Click += new System.EventHandler(this._1ByteMenuItem_Click);
 			// 
 			// _2ByteMenuItem
 			// 
 			this._2ByteMenuItem.Name = "_2ByteMenuItem";
-			this._2ByteMenuItem.Size = new System.Drawing.Size(110, 22);
+			this._2ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._2ByteMenuItem.Text = "2 Bytes";
 			this._2ByteMenuItem.Click += new System.EventHandler(this._2ByteMenuItem_Click);
 			// 
 			// _4ByteMenuItem
 			// 
 			this._4ByteMenuItem.Name = "_4ByteMenuItem";
-			this._4ByteMenuItem.Size = new System.Drawing.Size(110, 22);
+			this._4ByteMenuItem.Size = new System.Drawing.Size(111, 22);
 			this._4ByteMenuItem.Text = "4 Bytes";
 			this._4ByteMenuItem.Click += new System.EventHandler(this._4ByteMenuItem_Click);
 			// 
 			// BigEndianMenuItem
 			// 
 			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.BigEndianMenuItem.Text = "Big Endian";
 			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(178, 6);
 			// 
 			// TurboWhileBottingMenuItem
 			// 
 			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
-			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
 			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
 			// 
@@ -322,8 +326,8 @@
 			// BotStatusStrip
 			// 
 			this.BotStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.BotStatusButton,
-            this.MessageLabel});
+			this.BotStatusButton,
+			this.MessageLabel});
 			this.BotStatusStrip.Location = new System.Drawing.Point(0, 565);
 			this.BotStatusStrip.Name = "BotStatusStrip";
 			this.BotStatusStrip.Size = new System.Drawing.Size(707, 22);
@@ -345,13 +349,13 @@
 			// 
 			this.MessageLabel.Name = "MessageLabel";
 			this.MessageLabel.Size = new System.Drawing.Size(109, 17);
-			this.MessageLabel.Text = "                                  ";
+			this.MessageLabel.Text = "          ";
 			// 
 			// ControlsBox
 			// 
 			this.ControlsBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControlsBox.Controls.Add(this.ControlProbabilityPanel);
 			this.ControlsBox.Location = new System.Drawing.Point(12, 183);
 			this.ControlsBox.Name = "ControlsBox";
@@ -363,8 +367,8 @@
 			// ControlProbabilityPanel
 			// 
 			this.ControlProbabilityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControlProbabilityPanel.AutoScroll = true;
 			this.ControlProbabilityPanel.Location = new System.Drawing.Point(6, 19);
 			this.ControlProbabilityPanel.Name = "ControlProbabilityPanel";
@@ -374,7 +378,8 @@
 			// BestGroupBox
 			// 
 			this.BestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.BestGroupBox.Controls.Add(this.btnCopyBestInput);
 			this.BestGroupBox.Controls.Add(this.PlayBestButton);
 			this.BestGroupBox.Controls.Add(this.ClearBestButton);
 			this.BestGroupBox.Controls.Add(this.BestAttemptNumberLabel);
@@ -394,6 +399,20 @@
 			this.BestGroupBox.TabIndex = 4;
 			this.BestGroupBox.TabStop = false;
 			this.BestGroupBox.Text = "Best";
+			// 
+			// btnCopyBestInput
+			// 
+			this.btnCopyBestInput.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
+			this.btnCopyBestInput.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.btnCopyBestInput.Location = new System.Drawing.Point(12, 94);
+			this.btnCopyBestInput.Name = "btnCopyBestInput";
+			this.btnCopyBestInput.Size = new System.Drawing.Size(75, 23);
+			this.btnCopyBestInput.TabIndex = 2005;
+			this.btnCopyBestInput.Text = "&Copy";
+			this.toolTip1.SetToolTip(this.btnCopyBestInput, "\"Copy to Clipboard.  Then possible to paste to text file or directly into TasStud" +
+					"io.");
+			this.btnCopyBestInput.UseVisualStyleBackColor = true;
+			this.btnCopyBestInput.Click += new System.EventHandler(this.btnCopyBestInput_Click);
 			// 
 			// PlayBestButton
 			// 
@@ -442,15 +461,15 @@
 			// panel1
 			// 
 			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoScroll = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Controls.Add(this.BestAttemptLogLabel);
 			this.panel1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.panel1.Location = new System.Drawing.Point(12, 112);
+			this.panel1.Location = new System.Drawing.Point(12, 125);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(212, 251);
+			this.panel1.Size = new System.Drawing.Size(212, 238);
 			this.panel1.TabIndex = 21;
 			// 
 			// BestAttemptLogLabel
@@ -460,7 +479,7 @@
 			this.BestAttemptLogLabel.Name = "BestAttemptLogLabel";
 			this.BestAttemptLogLabel.Size = new System.Drawing.Size(294, 14);
 			this.BestAttemptLogLabel.TabIndex = 0;
-			this.BestAttemptLogLabel.Text = "                                         ";
+			this.BestAttemptLogLabel.Text = "     ";
 			// 
 			// BestTieBreak3Box
 			// 
@@ -581,7 +600,7 @@
 			// GoalGroupBox
 			// 
 			this.GoalGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.GoalGroupBox.Controls.Add(this.label4);
 			this.GoalGroupBox.Controls.Add(this.FrameLengthNumeric);
 			this.GoalGroupBox.Controls.Add(this.label3);
@@ -609,18 +628,18 @@
 			// 
 			this.FrameLengthNumeric.Location = new System.Drawing.Point(60, 25);
 			this.FrameLengthNumeric.Maximum = new decimal(new int[] {
-            999,
-            0,
-            0,
-            0});
+			999,
+			0,
+			0,
+			0});
 			this.FrameLengthNumeric.Name = "FrameLengthNumeric";
 			this.FrameLengthNumeric.Size = new System.Drawing.Size(46, 20);
 			this.FrameLengthNumeric.TabIndex = 1000;
 			this.FrameLengthNumeric.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			100,
+			0,
+			0,
+			0});
 			this.FrameLengthNumeric.ValueChanged += new System.EventHandler(this.FrameLengthNumeric_ValueChanged);
 			// 
 			// label3
@@ -651,15 +670,15 @@
 			this.MainValueNumeric.Enabled = false;
 			this.MainValueNumeric.Location = new System.Drawing.Point(357, 4);
 			this.MainValueNumeric.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.MainValueNumeric.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
+			100000,
+			0,
+			0,
+			-2147483648});
 			this.MainValueNumeric.Name = "MainValueNumeric";
 			this.MainValueNumeric.Size = new System.Drawing.Size(61, 20);
 			this.MainValueNumeric.TabIndex = 1013;
@@ -694,11 +713,11 @@
 			this.MainOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.MainOperator.FormattingEnabled = true;
 			this.MainOperator.Items.AddRange(new object[] {
-            ">",
-            ">=",
-            "=",
-            "<=",
-            "<"});
+			">",
+			">=",
+			"=",
+			"<=",
+			"<"});
 			this.MainOperator.Location = new System.Drawing.Point(208, 3);
 			this.MainOperator.Name = "MainOperator";
 			this.MainOperator.Size = new System.Drawing.Size(40, 21);
@@ -716,7 +735,7 @@
 			// MaximizeAddressBox
 			// 
 			this.MaximizeAddressBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.MaximizeAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.MaximizeAddressBox.Location = new System.Drawing.Point(133, 4);
 			this.MaximizeAddressBox.Name = "MaximizeAddressBox";
@@ -752,15 +771,15 @@
 			this.TieBreak1Numeric.Enabled = false;
 			this.TieBreak1Numeric.Location = new System.Drawing.Point(357, 4);
 			this.TieBreak1Numeric.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.TieBreak1Numeric.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
+			100000,
+			0,
+			0,
+			-2147483648});
 			this.TieBreak1Numeric.Name = "TieBreak1Numeric";
 			this.TieBreak1Numeric.Size = new System.Drawing.Size(61, 20);
 			this.TieBreak1Numeric.TabIndex = 1013;
@@ -782,11 +801,11 @@
 			this.Tiebreak1Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak1Operator.FormattingEnabled = true;
 			this.Tiebreak1Operator.Items.AddRange(new object[] {
-            ">",
-            ">=",
-            "=",
-            "<=",
-            "<"});
+			">",
+			">=",
+			"=",
+			"<=",
+			"<"});
 			this.Tiebreak1Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak1Operator.Name = "Tiebreak1Operator";
 			this.Tiebreak1Operator.Size = new System.Drawing.Size(40, 21);
@@ -817,7 +836,7 @@
 			// TieBreaker1Box
 			// 
 			this.TieBreaker1Box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.TieBreaker1Box.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.TieBreaker1Box.Location = new System.Drawing.Point(133, 4);
 			this.TieBreaker1Box.Name = "TieBreaker1Box";
@@ -853,15 +872,15 @@
 			this.TieBreak2Numeric.Enabled = false;
 			this.TieBreak2Numeric.Location = new System.Drawing.Point(357, 4);
 			this.TieBreak2Numeric.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.TieBreak2Numeric.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
+			100000,
+			0,
+			0,
+			-2147483648});
 			this.TieBreak2Numeric.Name = "TieBreak2Numeric";
 			this.TieBreak2Numeric.Size = new System.Drawing.Size(61, 20);
 			this.TieBreak2Numeric.TabIndex = 1013;
@@ -872,11 +891,11 @@
 			this.Tiebreak2Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak2Operator.FormattingEnabled = true;
 			this.Tiebreak2Operator.Items.AddRange(new object[] {
-            ">",
-            ">=",
-            "=",
-            "<=",
-            "<"});
+			">",
+			">=",
+			"=",
+			"<=",
+			"<"});
 			this.Tiebreak2Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak2Operator.Name = "Tiebreak2Operator";
 			this.Tiebreak2Operator.Size = new System.Drawing.Size(40, 21);
@@ -927,7 +946,7 @@
 			// TieBreaker2Box
 			// 
 			this.TieBreaker2Box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.TieBreaker2Box.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.TieBreaker2Box.Location = new System.Drawing.Point(133, 4);
 			this.TieBreaker2Box.Name = "TieBreaker2Box";
@@ -970,7 +989,7 @@
 			// TieBreaker3Box
 			// 
 			this.TieBreaker3Box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.TieBreaker3Box.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.TieBreaker3Box.Location = new System.Drawing.Point(133, 4);
 			this.TieBreaker3Box.Name = "TieBreaker3Box";
@@ -983,15 +1002,15 @@
 			this.TieBreak3Numeric.Enabled = false;
 			this.TieBreak3Numeric.Location = new System.Drawing.Point(357, 4);
 			this.TieBreak3Numeric.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
+			100000,
+			0,
+			0,
+			0});
 			this.TieBreak3Numeric.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
+			100000,
+			0,
+			0,
+			-2147483648});
 			this.TieBreak3Numeric.Name = "TieBreak3Numeric";
 			this.TieBreak3Numeric.Size = new System.Drawing.Size(61, 20);
 			this.TieBreak3Numeric.TabIndex = 1013;
@@ -1026,11 +1045,11 @@
 			this.Tiebreak3Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak3Operator.FormattingEnabled = true;
 			this.Tiebreak3Operator.Items.AddRange(new object[] {
-            ">",
-            ">=",
-            "=",
-            "<=",
-            "<"});
+			">",
+			">=",
+			"=",
+			"<=",
+			"<"});
 			this.Tiebreak3Operator.Location = new System.Drawing.Point(208, 3);
 			this.Tiebreak3Operator.Name = "Tiebreak3Operator";
 			this.Tiebreak3Operator.Size = new System.Drawing.Size(40, 21);
@@ -1063,16 +1082,16 @@
 			this.StartFromSlotBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.StartFromSlotBox.FormattingEnabled = true;
 			this.StartFromSlotBox.Items.AddRange(new object[] {
-            "Slot 0",
-            "Slot 1",
-            "Slot 2",
-            "Slot 3",
-            "Slot 4",
-            "Slot 5",
-            "Slot 6",
-            "Slot 7",
-            "Slot 8",
-            "Slot 9"});
+			"Slot 0",
+			"Slot 1",
+			"Slot 2",
+			"Slot 3",
+			"Slot 4",
+			"Slot 5",
+			"Slot 6",
+			"Slot 7",
+			"Slot 8",
+			"Slot 9"});
 			this.StartFromSlotBox.Location = new System.Drawing.Point(71, 25);
 			this.StartFromSlotBox.Name = "StartFromSlotBox";
 			this.StartFromSlotBox.Size = new System.Drawing.Size(75, 21);
@@ -1108,16 +1127,23 @@
 			// StatsContextMenu
 			// 
 			this.StatsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearStatsContextMenuItem});
+			this.ClearStatsContextMenuItem});
 			this.StatsContextMenu.Name = "StatsContextMenu";
-			this.StatsContextMenu.Size = new System.Drawing.Size(100, 26);
+			this.StatsContextMenu.Size = new System.Drawing.Size(102, 26);
 			// 
 			// ClearStatsContextMenuItem
 			// 
 			this.ClearStatsContextMenuItem.Name = "ClearStatsContextMenuItem";
-			this.ClearStatsContextMenuItem.Size = new System.Drawing.Size(99, 22);
+			this.ClearStatsContextMenuItem.Size = new System.Drawing.Size(101, 22);
 			this.ClearStatsContextMenuItem.Text = "&Clear";
 			this.ClearStatsContextMenuItem.Click += new System.EventHandler(this.ClearStatsContextMenuItem_Click);
+			// 
+			// helpToolStripMenuItem
+			// 
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Text = "Help";
+			this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
 			// 
 			// BasicBot
 			// 
@@ -1169,7 +1195,6 @@
 			this.StatsContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
 		}
 
 		#endregion
@@ -1262,5 +1287,8 @@
 		private System.Windows.Forms.Label label9;
 		private HexTextBox MaximizeAddressBox;
 		private System.Windows.Forms.Label maximizeLabeltext;
+		private System.Windows.Forms.Button btnCopyBestInput;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 	}
 }

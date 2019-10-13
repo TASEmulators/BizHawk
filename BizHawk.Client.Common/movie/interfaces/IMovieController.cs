@@ -10,6 +10,11 @@ namespace BizHawk.Client.Common
 
 		void LatchFromSource(IController source);
 
+		/// <summary>
+		/// Used by tastudio when it appends new frames in HandleMovieAfterFrameLoop() and ExtendMovieForEdit().
+		/// For buttons it latches autohold state, for analogs it latches mid value.
+		/// All real user input latched by LatchFromPhysical() is ignored.
+		/// </summary>
 		void LatchSticky();
 
 		void SetControllersAsMnemonic(string mnemonic);

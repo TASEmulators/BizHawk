@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private const int BorderTop24 = 0x037;
 		private const int BorderBottom25 = 0x0FB;
 		private const int BorderBottom24 = 0x0F7;
-		private const int FirstDmaLine = 0x030;
-		private const int LastDmaLine = 0x0F7;
+		private const int BadLineEnableRaster = 0x030;
+		private const int BadLineDisableRaster = 0x0F8;
 
 		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
 		private static readonly int[] TimingBuilderCycle14Act =

@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-		private readonly TasStateManager _stateManager;
+		private readonly IStateManager _stateManager;
 		private readonly TasLagLog _lagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
 		private BackgroundWorker _progressReportWorker;
@@ -35,13 +35,12 @@ namespace BizHawk.Client.Common
 		public TasLagLog TasLagLog => _lagLog;
 		public IStringLog InputLog => Log;
 		public int BranchCount => Branches.Count;
-		public int LastStatedFrame => _stateManager.LastStatedFrame;
+		public int LastStatedFrame => _stateManager.Last;
 		public override string PreferredExtension => Extension;
-		public TasStateManager TasStateManager => _stateManager;
+		public IStateManager TasStateManager => _stateManager;
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
-			// State = StateManager[index],
 			HasState = _stateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),
 			Lagged = _lagLog[index + 1],
@@ -218,7 +217,7 @@ namespace BizHawk.Client.Common
 		{
 			if (_stateManager.Any())
 			{
-				_stateManager.ClearStateHistory();
+				_stateManager.Clear();
 				Changes = true;
 			}
 		}
@@ -246,14 +245,6 @@ namespace BizHawk.Client.Common
 			_lagLog.Clear();
 		}
 
-		public void DeleteLogBefore(int frame)
-		{
-			if (frame < Log.Count)
-			{
-				Log.RemoveRange(0, frame);
-			}
-		}
-
 		public void CopyLog(IEnumerable<string> log)
 		{
 			Log.Clear();
@@ -276,7 +267,7 @@ namespace BizHawk.Client.Common
 			return Log;
 		}
 
-		private int? _timelineBranchFrame = null;
+		private int? _timelineBranchFrame;
 
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)

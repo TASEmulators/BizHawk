@@ -11,21 +11,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				/*
-				["A"] = cpu.A,
-				["X"] = cpu.X,
-				["Y"] = cpu.Y,
-				["S"] = cpu.S,
-				["PC"] = cpu.PC,
-				["Flag C"] = cpu.FlagC,
-				["Flag Z"] = cpu.FlagZ,
-				["Flag I"] = cpu.FlagI,
-				["Flag D"] = cpu.FlagD,
-				["Flag B"] = cpu.FlagB,
-				["Flag V"] = cpu.FlagV,
-				["Flag N"] = cpu.FlagN,
-				["Flag T"] = cpu.FlagT
-				*/
+				["A"] = subnes.cpu.A,
+				["X"] = subnes.cpu.X,
+				["Y"] = subnes.cpu.Y,
+				["S"] = subnes.cpu.S,
+				["PC"] = subnes.cpu.PC,
+				["Flag C"] = subnes.cpu.FlagC,
+				["Flag Z"] = subnes.cpu.FlagZ,
+				["Flag I"] = subnes.cpu.FlagI,
+				["Flag D"] = subnes.cpu.FlagD,
+				["Flag B"] = subnes.cpu.FlagB,
+				["Flag V"] = subnes.cpu.FlagV,
+				["Flag N"] = subnes.cpu.FlagN,
+				["Flag T"] = subnes.cpu.FlagT
 			};
 		}
 
@@ -36,22 +34,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					//cpu.A = (byte)value;
+					subnes.cpu.A = (byte)value;
 					break;
 				case "X":
-					//cpu.X = (byte)value;
+					subnes.cpu.X = (byte)value;
 					break;
 				case "Y":
-					//cpu.Y = (byte)value;
+					subnes.cpu.Y = (byte)value;
 					break;
 				case "S":
-					//cpu.S = (byte)value;
+					subnes.cpu.S = (byte)value;
 					break;
 				case "PC":
-					//cpu.PC = (ushort)value;
+					subnes.cpu.PC = (ushort)value;
 					break;
 				case "Flag I":
-					//cpu.FlagI = value > 0;
+					subnes.cpu.FlagI = value > 0;
 					break;
 			}
 		}
@@ -61,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			return false;
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks => subnes.MemoryCallbacks;
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }

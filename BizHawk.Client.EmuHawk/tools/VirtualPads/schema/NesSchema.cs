@@ -5,6 +5,7 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -17,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			if (core is NES)
 			{
 				var nes = (NES)core;
+
 				var ss = nes.GetSyncSettings();
 
 				var isFds = nes.IsFDS;
@@ -120,6 +122,117 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					yield return NesConsoleButtons();
+				}
+			}
+			else if (core is SubNESHawk)
+			{
+				{
+					var nes = (SubNESHawk)core;
+
+					var ss = nes.GetSyncSettings();
+
+					var isFds = nes.IsFDS;
+					if (ss.Controls.Famicom)
+					{
+						yield return StandardController(1);
+						yield return Famicom2ndController();
+
+						switch (ss.Controls.FamicomExpPort)
+						{
+							default:
+							case "UnpluggedFam":
+								break;
+							case "Zapper":
+								yield return Zapper(3);
+								break;
+							case "ArkanoidFam":
+								yield return ArkanoidPaddle(3);
+								break;
+							case "Famicom4P":
+								yield return StandardController(3);
+								yield return StandardController(4);
+								break;
+							case "FamilyBasicKeyboard":
+								yield return FamicomFamilyKeyboard(3);
+								break;
+							case "OekaKids":
+								yield return OekaKidsTablet(3);
+								break;
+						}
+					}
+					else
+					{
+						var currentControlerNo = 1;
+						switch (ss.Controls.NesLeftPort)
+						{
+							default:
+							case "UnpluggedNES":
+								break;
+							case "ControllerNES":
+								yield return StandardController(1);
+								currentControlerNo++;
+								break;
+							case "Zapper":
+								yield return Zapper(1);
+								currentControlerNo++;
+								break;
+							case "ArkanoidNES":
+								yield return ArkanoidPaddle(1);
+								currentControlerNo++;
+								break;
+							case "FourScore":
+								yield return StandardController(1);
+								yield return StandardController(2);
+								currentControlerNo += 2;
+								break;
+							case "PowerPad":
+								yield return PowerPad(1);
+								currentControlerNo++;
+								break;
+							case "ControllerSNES":
+								throw new Exception("TODO");
+						}
+
+						switch (ss.Controls.NesRightPort)
+						{
+							default:
+							case "UnpluggedNES":
+								break;
+							case "ControllerNES":
+								yield return StandardController(currentControlerNo);
+								break;
+							case "Zapper":
+								yield return Zapper(currentControlerNo);
+								break;
+							case "ArkanoidNES":
+								yield return ArkanoidPaddle(currentControlerNo);
+								break;
+							case "FourScore":
+								yield return StandardController(currentControlerNo);
+								yield return StandardController(currentControlerNo + 1);
+								currentControlerNo += 2;
+								break;
+							case "PowerPad":
+								yield return PowerPad(currentControlerNo);
+								break;
+							case "ControllerSNES":
+								throw new Exception("TODO");
+						}
+
+						if (currentControlerNo == 0)
+						{
+							yield return null;
+						}
+					}
+
+					if (isFds)
+					{
+						yield return FdsConsoleButtons(core.ControllerDefinition.BoolButtons.Count(b => b.StartsWith("FDS Insert ")));
+					}
+					else
+					{
+						yield return NesConsoleButtons();
+					}
 				}
 			}
 			else

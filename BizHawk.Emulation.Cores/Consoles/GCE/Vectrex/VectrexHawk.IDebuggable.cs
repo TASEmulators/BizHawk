@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
@@ -11,21 +12,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				/*
-				["A"] = cpu.A,
-				["X"] = cpu.X,
-				["Y"] = cpu.Y,
-				["S"] = cpu.S,
-				["PC"] = cpu.PC,
-				["Flag C"] = cpu.FlagC,
-				["Flag Z"] = cpu.FlagZ,
+				
+				["A"] = cpu.Regs[MC6809.A],
+				["B"] = cpu.Regs[MC6809.B],
+				["X"] = cpu.Regs[MC6809.X],
+				["Y"] = cpu.Regs[MC6809.Y],
+				["US"] = cpu.Regs[MC6809.US],
+				["SP"] = cpu.Regs[MC6809.SP],
+				["PC"] = cpu.Regs[MC6809.PC],
+				["Flag E"] = cpu.FlagE,
+				["Flag F"] = cpu.FlagF,
+				["Flag H"] = cpu.FlagH,
 				["Flag I"] = cpu.FlagI,
-				["Flag D"] = cpu.FlagD,
-				["Flag B"] = cpu.FlagB,
-				["Flag V"] = cpu.FlagV,
 				["Flag N"] = cpu.FlagN,
-				["Flag T"] = cpu.FlagT
-				*/
+				["Flag Z"] = cpu.FlagZ,
+				["Flag V"] = cpu.FlagV,
+				["Flag C"] = cpu.FlagC
 			};
 		}
 
@@ -36,22 +38,49 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					//cpu.A = (byte)value;
+					cpu.Regs[MC6809.A] = (byte)value;
+					break;
+				case "B":
+					cpu.Regs[MC6809.B] = (byte)value;
 					break;
 				case "X":
-					//cpu.X = (byte)value;
+					cpu.Regs[MC6809.X] = (byte)value;
 					break;
 				case "Y":
-					//cpu.Y = (byte)value;
+					cpu.Regs[MC6809.Y] = (ushort)value;
 					break;
-				case "S":
-					//cpu.S = (byte)value;
+				case "US":
+					cpu.Regs[MC6809.US] = (ushort)value;
+					break;
+				case "SP":
+					cpu.Regs[MC6809.SP] = (ushort)value;
 					break;
 				case "PC":
-					//cpu.PC = (ushort)value;
+					cpu.Regs[MC6809.PC] = (ushort)value;
+					break;
+				case "Flag E":
+					cpu.FlagE = value > 0;
+					break;
+				case "Flag F":
+					cpu.FlagF = value > 0;
+					break;
+				case "Flag H":
+					cpu.FlagH = value > 0;
 					break;
 				case "Flag I":
-					//cpu.FlagI = value > 0;
+					cpu.FlagI = value > 0;
+					break;
+				case "Flag N":
+					cpu.FlagN = value > 0;
+					break;
+				case "Flag Z":
+					cpu.FlagZ = value > 0;
+					break;
+				case "Flag V":
+					cpu.FlagV = value > 0;
+					break;
+				case "Flag C":
+					cpu.FlagC = value > 0;
 					break;
 			}
 		}

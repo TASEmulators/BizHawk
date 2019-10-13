@@ -1,9 +1,7 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
@@ -16,24 +14,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 
 		public void NewCDL(ICodeDataLog cdl)
 		{
-			cdl["RAM"] = new byte[MemoryDomains["RAM"].Size];
+			cdl["RAM"] = new byte[MemoryDomains["Main RAM"].Size];
+			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
 
-			if (MemoryDomains.Has("Save RAM"))
-			{
-				cdl["Save RAM"] = new byte[MemoryDomains["Save RAM"].Size];
-			}
-
-			if (MemoryDomains.Has("Battery RAM"))
-			{
-				cdl["Battery RAM"] = new byte[MemoryDomains["Battery RAM"].Size];
-			}
-
-			if (MemoryDomains.Has("Battery RAM"))
-			{
-				cdl["Battery RAM"] = new byte[MemoryDomains["Battery RAM"].Size];
-			}
-
-			cdl.SubType = "VIC20";
+			cdl.SubType = "VEC";
 			cdl.SubVer = 0;
 		}
 
@@ -46,9 +30,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 		private enum CDLog_AddrType
 		{
 			None,
-			ROM,
-			MainRAM,
-			SaveRAM,
+			RAM,
+			ROM,			
 		}
 
 		[Flags]
@@ -77,8 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 				switch (results.Type)
 				{
 					case CDLog_AddrType.None: break;
-					case CDLog_AddrType.MainRAM: CDL["Main RAM"][results.Address] |= (byte)flags; break;
-					case CDLog_AddrType.SaveRAM: CDL["Save RAM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.RAM: CDL["RAM"][results.Address] |= (byte)flags; break;
+					case CDLog_AddrType.ROM: CDL["ROM"][results.Address] |= (byte)flags; break;
 				}
 			}
 		}

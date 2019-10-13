@@ -54,8 +54,9 @@ namespace BizHawk.Client.EmuHawk
 			{ "32X", "32X" },
             { "ZXSpectrum", "ZX Spectrum" },
             { "AmstradCPC", "Amstrad CPC" },
-			{ "ChannelF", "Channel F" }
-        };
+			{ "ChannelF", "Channel F" },
+			{ "Vectrex", "Vectrex" }
+		};
 
 		public string TargetSystem = null;
 

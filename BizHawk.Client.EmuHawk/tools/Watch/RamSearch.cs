@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 
 using BizHawk.Emulation.Common;
@@ -26,6 +25,9 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class RamSearch : ToolFormBase, IToolForm
 	{
+		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbitrary decision, sets the size to check for and automatically switch to fast mode for the user
+		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbitrary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
+
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
 		private string _currentFileName = "";
 
@@ -34,15 +36,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = "";
+		private string _sortedColumn;
 		private bool _sortReverse;
 		private bool _forcePreviewClear;
 		private bool _autoSearch;
 
-		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
-
-		private const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
-		private const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
+		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the SelectedIndexChanged event!
 
 		#region Initialize, Load, and Save
 
@@ -82,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		private void HardSetDisplayTypeDropDown(BizHawk.Client.Common.DisplayType type)
+		private void HardSetDisplayTypeDropDown(Common.DisplayType type)
 		{
 			foreach (var item in DisplayTypeDropdown.Items)
 			{
@@ -379,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { new EventArgs() });
 		}
 
 		public void NextOperator(bool reverse = false)
@@ -415,7 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 			radios[index].Checked = true;
 			var mi = radios[index].GetType().GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic);
-			mi.Invoke(radios[index], new object[] { new EventArgs() });
+			mi?.Invoke(radios[index], new object[] { new EventArgs() });
 		}
 
 		#endregion
@@ -612,7 +611,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DoDisplayTypeClick(Client.Common.DisplayType type)
+		private void DoDisplayTypeClick(Common.DisplayType type)
 		{
 			if (_settings.Type != type)
 			{
@@ -643,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		private void SetPreviousStype(PreviousType type)
+		private void SetPreviousType(PreviousType type)
 		{
 			_settings.PreviousType = type;
 			_searches.SetPreviousType(type);
@@ -684,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!isTypeCompatible)
 			{
-				_settings.Type = Client.Common.DisplayType.Unsigned;
+				_settings.Type = Common.DisplayType.Unsigned;
 			}
 
 			_dropdownDontfire = true;
@@ -703,7 +702,7 @@ namespace BizHawk.Client.EmuHawk
 
 			DisplayTypeDropdown.Items.Clear();
 
-			IEnumerable<Client.Common.DisplayType> types = null;
+			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
 			switch (_settings.Size)
 			{
 				case WatchSize.Byte:
@@ -782,7 +781,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_settings.PreviousType == PreviousType.LastFrame || _settings.PreviousType == PreviousType.LastChange)
 			{
-				SetPreviousStype(PreviousType.LastSearch);
+				SetPreviousType(PreviousType.LastSearch);
 			}
 
 			NumberOfChangesRadio.Enabled = false;
@@ -827,7 +826,7 @@ namespace BizHawk.Client.EmuHawk
 				watches.Load(file.FullName, append);
 				Settings.RecentSearches.Add(watches.CurrentFileName);
 
-				var watchList = watches.Where(x => !x.IsSeparator);
+				var watchList = watches.Where(x => !x.IsSeparator).ToList();
 				var addresses = watchList.Select(x => x.Address).ToList();
 
 				if (truncate)
@@ -898,25 +897,6 @@ namespace BizHawk.Client.EmuHawk
 			RedoToolBarItem.Enabled = _searches.CanRedo;
 		}
 
-		private string GetColumnValue(string name, int index)
-		{
-			switch (name)
-			{
-				default:
-					return "";
-				case WatchList.ADDRESS:
-					return _searches[index].AddressString;
-				case WatchList.VALUE:
-					return _searches[index].ValueString;
-				case WatchList.PREV:
-					return _searches[index].PreviousStr;
-				case WatchList.CHANGES:
-					return _searches[index].ChangeCount.ToString();
-				case WatchList.DIFF:
-					return _searches[index].Diff;
-			}
-		}
-
 		private void GoToSpecifiedAddress()
 		{
 			WatchListView.SelectedIndices.Clear();
@@ -941,16 +921,17 @@ namespace BizHawk.Client.EmuHawk
 							return; // Don't re-show dialog on success
 						}
 					}
-					//TODO add error text to dialog?
+
+					// TODO add error text to dialog?
 					// Re-show dialog if the address isn't found
 				}
-				catch (FormatException e)
+				catch (FormatException)
 				{
 					// Re-show dialog if given invalid text (shouldn't happen)
 				}
-				catch (OverflowException e)
+				catch (OverflowException)
 				{
-					//TODO add error text to dialog?
+					// TODO add error text to dialog?
 					// Re-show dialog if the address isn't valid
 				}
 			}
@@ -1095,7 +1076,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisplayTypeSubMenu.DropDownItems.Clear();
 
-			IEnumerable<Client.Common.DisplayType> types = null;
+			IEnumerable<Common.DisplayType> types = new List<Common.DisplayType>();
 			switch (_settings.Size)
 			{
 				case WatchSize.Byte:
@@ -1187,22 +1168,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Previous_LastFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			SetPreviousStype(PreviousType.LastFrame);
+			SetPreviousType(PreviousType.LastFrame);
 		}
 
 		private void Previous_LastSearchMenuItem_Click(object sender, EventArgs e)
 		{
-			SetPreviousStype(PreviousType.LastSearch);
+			SetPreviousType(PreviousType.LastSearch);
 		}
 
 		private void Previous_OriginalMenuItem_Click(object sender, EventArgs e)
 		{
-			SetPreviousStype(PreviousType.Original);
+			SetPreviousType(PreviousType.Original);
 		}
 
 		private void Previous_LastChangeMenuItem_Click(object sender, EventArgs e)
 		{
-			SetPreviousStype(PreviousType.LastChange);
+			SetPreviousType(PreviousType.LastChange);
 		}
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
@@ -1407,7 +1388,6 @@ namespace BizHawk.Client.EmuHawk
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			RamSearchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
-
 
 			_settings = new RamSearchEngine.Settings(MemoryDomains);
 			if (_settings.Mode == RamSearchEngine.Settings.SearchMode.Fast)
@@ -1644,7 +1624,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CompareToValue_TextChanged(object sender, EventArgs e)
 		{
-			SetCompareValue((sender as INumberBox).ToRawInt());
+			SetCompareValue(((INumberBox)sender).ToRawInt());
 		}
 
 		#endregion
@@ -1813,7 +1793,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
-			base.GenericDragEnter(sender, e);
+			GenericDragEnter(sender, e);
 		}
 
 		#endregion

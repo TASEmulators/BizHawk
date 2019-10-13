@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					else
 					{
 						separator_counter = 15;
-						irq_countdown = 6;
+						irq_countdown = 5;
 					}
 				}
 

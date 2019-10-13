@@ -82,6 +82,8 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 			{
 				Regs[i] = 0;
 			}
+
+			FlagI = true;
 		}
 	}
 }

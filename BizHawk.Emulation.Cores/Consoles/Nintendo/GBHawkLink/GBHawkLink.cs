@@ -28,6 +28,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		private bool do_r_next = false;
 
+		public byte L_controller, R_controller;
+
+		public bool do_frame_fill;
+
 		//[CoreConstructor("GB", "GBC")]
 		public GBHawkLink(CoreComm comm, GameInfo game_L, byte[] rom_L, GameInfo game_R, byte[] rom_R, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
@@ -52,6 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			temp_sync_R.DivInitialTime = linkSyncSettings.DivInitialTime_R;
 			temp_sync_L.RTCInitialTime = linkSyncSettings.RTCInitialTime_L;
 			temp_sync_R.RTCInitialTime = linkSyncSettings.RTCInitialTime_R;
+			temp_sync_L.RTCOffset = linkSyncSettings.RTCOffset_L;
+			temp_sync_R.RTCOffset = linkSyncSettings.RTCOffset_R;
 
 			L = new GBHawk.GBHawk(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
 				game_L, rom_L, temp_set_L, temp_sync_L);

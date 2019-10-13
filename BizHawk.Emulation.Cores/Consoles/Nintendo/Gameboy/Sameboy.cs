@@ -3,12 +3,10 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {

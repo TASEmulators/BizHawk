@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 
 		private double GetSeconds(IMovie movie)
 		{
-			double frames = movie.InputLogLength;
+			double frames = movie.TimeLength;
 
 			if (frames < 1)
 			{

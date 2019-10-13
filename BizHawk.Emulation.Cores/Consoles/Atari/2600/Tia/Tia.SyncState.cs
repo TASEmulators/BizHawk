@@ -51,6 +51,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("hmb_delay", ref _hmbDelay);
 			ser.Sync("hmb_val", ref _hmbVal);
 
+			ser.Sync("_nusiz0Delay", ref _nusiz0Delay);
+			ser.Sync("_nusiz0Val", ref _nusiz0Val);
+			ser.Sync("_nusiz1Delay", ref _nusiz1Delay);
+			ser.Sync("_nusiz1Val", ref _nusiz1Val);
+
+			ser.Sync("_hmClrDelay", ref _hmClrDelay);
+
 			ser.Sync("PRG0_delay", ref _prg0Delay);
 			ser.Sync("PRG1_delay", ref _prg1Delay);
 			ser.Sync("PRG0_val", ref _prg0Val);

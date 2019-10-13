@@ -74,9 +74,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			GetControllerState(controller);
 
+			do_frame_fill = false;
 			do_frame();
+			if (do_frame_fill)
+			{
+				FillVideoBuffer();
+			}
 
-			_islag = L._islag;
+
+			_islag = L._islag & R._islag;
 
 			if (_islag)
 			{
@@ -87,70 +93,110 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		}
 
 		public void do_frame()
-		{
-			L.do_controller_check();
-			R.do_controller_check();
-			
+		{			
 			// advance one full frame
 			for (int i = 0; i < 70224; i++)
 			{
 				L.do_single_step();
 				R.do_single_step();
 
-				// the signal to shift out a bit is when serial_clock = 1
-				if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && !do_r_next)
+				if (_cableconnected)
 				{
-					if (_cableconnected)
+					// the signal to shift out a bit is when serial_clock = 1
+					if (((L.serialport.serial_clock == 1) || (L.serialport.serial_clock == 2)) && (L.serialport.clk_rate > 0) && !do_r_next)
 					{
-						L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
+						L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);
 
-						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start)
+						if ((R.serialport.clk_rate == -1) && R.serialport.serial_start && L.serialport.can_pulse)
 						{
 							R.serialport.serial_clock = L.serialport.serial_clock;
-							R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
+							R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
 							R.serialport.coming_in = L.serialport.going_out;
 						}
 
 						L.serialport.coming_in = R.serialport.going_out;
+						L.serialport.can_pulse = false;
 					}
-				}
-				else if ((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2))
-				{
-					do_r_next = false;
-
-					if (_cableconnected)
+					else if (((R.serialport.serial_clock == 1) || (R.serialport.serial_clock == 2)) && (R.serialport.clk_rate > 0))
 					{
-						R.serialport.send_external_bit((byte)(R.serialport.serial_data & 0x80));
+						do_r_next = false;
 
-						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start)
+						R.serialport.going_out = (byte)(R.serialport.serial_data >> 7);
+
+						if ((L.serialport.clk_rate == -1) && L.serialport.serial_start && R.serialport.can_pulse)
 						{
 							L.serialport.serial_clock = R.serialport.serial_clock;
-							L.serialport.send_external_bit((byte)(L.serialport.serial_data & 0x80));
+							L.serialport.going_out = (byte)(L.serialport.serial_data >> 7);
 							L.serialport.coming_in = R.serialport.going_out;
 						}
 
 						R.serialport.coming_in = L.serialport.going_out;
+						R.serialport.can_pulse = false;
+
+						if (R.serialport.serial_clock == 2) { do_r_next = true; }
+					}
+					else
+					{
+						do_r_next = false;
 					}
 
-					if (R.serialport.serial_clock == 2) { do_r_next = true; }
-				}
-				else
-				{
-					do_r_next = false;
+					// do IR transfer
+					if (L.IR_write > 0)
+					{
+						L.IR_write--;
+						if (L.IR_write ==0)
+						{
+							R.IR_receive = L.IR_signal;
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD;}
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+						}
+					}
+
+					if (R.IR_write > 0)
+					{
+						R.IR_write--;
+						if (R.IR_write == 0)
+						{
+							L.IR_receive = R.IR_signal;
+							if ((L.IR_self & L.IR_receive) == 2) { L.IR_reg |= 2; }
+							else { L.IR_reg &= 0xFD; }
+							if ((R.IR_self & R.IR_receive) == 2) { R.IR_reg |= 2; }
+							else { R.IR_reg &= 0xFD; }
+						}
+					}					
 				}
 
 				// if we hit a frame boundary, update video
 				if (L.vblank_rise)
 				{
-					buff_L = L.GetVideoBuffer();
+					// update the controller state on VBlank
+					L.controller_state = L_controller;
+
+					// check if controller state caused interrupt
+					L.do_controller_check();
+
+					// send the image on VBlank
+					L.SendVideoBuffer();
+
 					L.vblank_rise = false;
-					FillVideoBuffer();
+					do_frame_fill = true;
 				}
+
 				if (R.vblank_rise)
 				{
-					buff_R = R.GetVideoBuffer();
+					// update the controller state on VBlank
+					R.controller_state = R_controller;
+
+					// check if controller state caused interrupt
+					R.do_controller_check();
+
+					// send the image on VBlank
+					R.SendVideoBuffer();
+
 					R.vblank_rise = false;
-					FillVideoBuffer();
+					do_frame_fill = true;
 				}
 			}			
 		}
@@ -158,8 +204,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
-			L.controller_state = _controllerDeck.ReadPort1(controller);
-			R.controller_state = _controllerDeck.ReadPort2(controller);
+			L_controller = _controllerDeck.ReadPort1(controller);
+			R_controller = _controllerDeck.ReadPort2(controller);
 		}
 
 		public int Frame => _frame;
@@ -188,8 +234,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public int _frameHz = 60;
 
 		public int[] _vidbuffer = new int[160 * 2 * 144];
-		public int[] buff_L = new int[160 * 144];
-		public int[] buff_R = new int[160 * 144];
 
 		public int[] GetVideoBuffer()
 		{
@@ -203,8 +247,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 			{
 				for (int j = 0; j < 160; j++)
 				{
-					_vidbuffer[i * 320 + j] = buff_L[i * 160 + j];
-					_vidbuffer[i * 320 + j + 160] = buff_R[i * 160 + j];
+					_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
+					_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
 				}
 			}
 		}

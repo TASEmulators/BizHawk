@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -148,11 +149,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			List<LuaFile> runningScripts = new List<LuaFile>();
+			var runningScripts = new List<LuaFile>();
 
 			if (LuaImp != null) // Things we need to do with the existing LuaImp before we can make a new one
 			{
-				if (LuaImp.IsRebootingCore == true)
+				if (LuaImp.IsRebootingCore)
 				{
 					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
 					LuaImp.Restart(Emulator.ServiceProvider);
@@ -180,8 +181,8 @@ namespace BizHawk.Client.EmuHawk
 
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
 			LuaImp = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-				? (PlatformEmuLuaLibrary) new EmuLuaLibrary(Emulator.ServiceProvider)
-				: (PlatformEmuLuaLibrary) new NotReallyLuaLibrary();
+				? (PlatformEmuLuaLibrary)new EmuLuaLibrary(Emulator.ServiceProvider)
+				: (PlatformEmuLuaLibrary)new NotReallyLuaLibrary();
 			if (currentScripts != null)
 			{
 				LuaImp.ScriptList.AddRange(currentScripts);
@@ -247,7 +248,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
-			string message = $"File: {e.FullPath} {e.ChangeType}";
 			Invoke(new MethodInvoker(delegate
 			{
 				RefreshScriptMenuItem_Click(null, null);
@@ -257,7 +257,6 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadLuaFile(string path)
 		{
 			var processedPath = PathManager.TryMakeRelative(path);
-			string pathToLoad = ProcessPath(processedPath);
 
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
@@ -583,16 +582,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool WaitOne(int timeout)
-		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return true;
-			}
-
-			return LuaImp.LuaWait.WaitOne(timeout);
-		}
-
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -635,13 +624,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadSessionFromRecent(string path)
 		{
-			var doload = true;
+			var load = true;
 			if (LuaImp.ScriptList.Changes)
 			{
-				doload = AskSaveChanges();
+				load = AskSaveChanges();
 			}
 
-			if (doload)
+			if (load)
 			{
 				if (!LuaImp.ScriptList.LoadLuaSession(path))
 				{
@@ -821,7 +810,11 @@ namespace BizHawk.Client.EmuHawk
 				File.WriteAllText(sfd.FileName, defaultTemplate);
 				LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
 				UpdateDialog();
-				System.Diagnostics.Process.Start(sfd.FileName);
+				Process.Start(new ProcessStartInfo
+				{
+					Verb = "Open",
+					FileName = sfd.FileName
+				});
 			}
 		}
 
@@ -846,16 +839,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					EnableLuaFile(file);
 				}
-
 				else if (!file.Enabled && file.Thread != null)
 				{
 					LuaImp.CallExitEvent(file);
 
-					foreach (var sitem in SelectedItems)
+					foreach (var selectedItem in SelectedItems)
 					{
-						var temp = sitem;
+						var temp = selectedItem;
 						LuaImp.GetRegisteredFunctions().RemoveAll(lf => lf.Lua == temp.Thread);
-
 						UpdateRegisteredFunctionsDialog();
 					}
 
@@ -927,9 +918,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in SelectedFiles)
 			{
-				string pathToLoad = ProcessPath(file.Path);
-				System.Diagnostics.Process.Start(pathToLoad);
-			}
+				Process.Start(new ProcessStartInfo
+				{
+					Verb = "Open",
+					FileName = ProcessPath(file.Path)
+				});
+			});
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
@@ -971,7 +965,11 @@ namespace BizHawk.Client.EmuHawk
 					File.WriteAllText(sfd.FileName, text);
 					LuaImp.ScriptList.Add(new LuaFile(Path.GetFileNameWithoutExtension(sfd.FileName), sfd.FileName));
 					UpdateDialog();
-					System.Diagnostics.Process.Start(sfd.FileName);
+					Process.Start(new ProcessStartInfo
+					{
+						Verb = "Open",
+						FileName = sfd.FileName
+					});
 				}
 			}
 		}
@@ -1006,12 +1004,12 @@ namespace BizHawk.Client.EmuHawk
 				LuaImp.ScriptList.Insert(index - 1, file);
 			}
 
-			var newindices = indices.Select(t => t - 1);
+			var newIndices = indices.Select(t => t - 1);
 
 			LuaListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			foreach (var i in newIndices)
 			{
-				LuaListView.SelectItem(newi, true);
+				LuaListView.SelectItem(i, true);
 			}
 
 			UpdateDialog();
@@ -1032,12 +1030,12 @@ namespace BizHawk.Client.EmuHawk
 				LuaImp.ScriptList.Insert(indices[i] + 1, file);
 			}
 
-			var newindices = indices.Select(t => t + 1);
+			var newIndices = indices.Select(t => t + 1);
 
 			LuaListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			foreach (var i in newIndices)
 			{
-				LuaListView.SelectItem(newi, true);
+				LuaListView.SelectItem(i, true);
 			}
 
 			UpdateDialog();
@@ -1191,7 +1189,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
+			Process.Start("http://tasvideos.org/BizHawk/LuaFunctions.html");
 		}
 
 		#endregion
@@ -1245,12 +1243,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var path in filePaths)
 				{
-					if (Path.GetExtension(path).ToLower() == ".lua" || Path.GetExtension(path).ToLower() == ".txt")
+					if (Path.GetExtension(path)?.ToLower() == ".lua" || Path.GetExtension(path)?.ToLower() == ".txt")
 					{
 						LoadLuaFile(path);
 						UpdateDialog();
 					}
-					else if (Path.GetExtension(path).ToLower() == ".luases")
+					else if (Path.GetExtension(path)?.ToLower() == ".luases")
 					{
 						LuaImp.ScriptList.LoadLuaSession(path);
 						RunLuaScripts();
@@ -1436,7 +1434,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
-			base.GenericDragEnter(sender, e);
+			GenericDragEnter(sender, e);
 		}
 
 		#endregion

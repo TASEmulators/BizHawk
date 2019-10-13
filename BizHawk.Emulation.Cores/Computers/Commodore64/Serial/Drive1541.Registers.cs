@@ -46,7 +46,7 @@
 
 		private int ReadVia1PrB()
 		{
-			return (_motorStep & 0x03) | (_motorEnabled ? 0x04 : 0x00) | (_sync ? 0x00 : 0x80);
+			return (_motorStep & 0x03) | (_motorEnabled ? 0x04 : 0x00) | (_sync ? 0x00 : 0x80) | (_diskWriteProtected ? 0x00 : 0x10);
 		}
 
 		public int Peek(int addr)
@@ -163,8 +163,11 @@
 
 		public override bool ReadDeviceData()
 		{
+			// PB1 (input not pulled up)
 			var viaOutputData = (Via0.DdrB & 0x02) != 0 && (Via0.PrB & 0x02) != 0;
+			// inverted from c64, input, not pulled up to PB7/CA1
 			var viaInputAtn = ViaReadAtn();
+			// PB4 (input not pulled up)
 			var viaOutputAtna = (Via0.DdrB & 0x10) != 0 && (Via0.PrB & 0x10) != 0;
 
 			return !(viaOutputAtna ^ viaInputAtn) && !viaOutputData;

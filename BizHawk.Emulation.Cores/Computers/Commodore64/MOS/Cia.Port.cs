@@ -131,10 +131,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private sealed class IecPort : IPort
 		{
 			private readonly Func<int> _readIec;
+			private readonly Func<int> _readUserPort;
 
-			public IecPort(Func<int> readIec)
+			public IecPort(Func<int> readIec, Func<int> readUserPort)
 			{
 				_readIec = readIec;
+				_readUserPort = readUserPort;
 			}
 
 			public int ReadPra(int pra, int ddra, int prb, int ddrb)
@@ -144,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
 			{
-				return (prb | ~ddrb) & 0xFF;
+				return (prb | ~ddrb) | (~ddrb & _readUserPort());
 			}
 		}
 	}

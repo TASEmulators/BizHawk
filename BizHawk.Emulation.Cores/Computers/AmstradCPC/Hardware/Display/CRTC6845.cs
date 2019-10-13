@@ -13,27 +13,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 	/// the CPC, CPC+ and GX4000 ranges. The CPC community have assigned them type numbers.
 	/// If different implementations share the same type number it indicates that they are functionally identical:
 	/// 
-	///		Part No.	Manufacturer	Type No.	Info.
-	///		------------------------------------------------------------------------------------------------------
-	///		HD6845S		Hitachi			0	
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		UM6845		UMC				0
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/1/13/Um6845.umc.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		UM6845R		UMC				1
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		MC6845		Motorola		2
-	///		Datasheet:	http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf & http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
-	///		------------------------------------------------------------------------------------------------------
-	///		AMS40489	Amstrad			3			Only exists in the CPC464+, CPC6128+ and GX4000 and is integrated into a single CPC+ ASIC chip (along with the gatearray)
-	///		Datasheet:	{none}
-	///		------------------------------------------------------------------------------------------------------
-	///		AMS40041	Amstrad			4			'Pre-ASIC' IC. The CRTC is integrated into a aingle ASIC IC with functionality being almost identical to the AMS40489
-	///		(or 40226)								Used in the 'Cost-Down' range of CPC464 and CPC6128 systems
-	///		Datasheet:	{none}
-	/// 
+	/// Part No.      Manufacturer    Type No.    Info.
+	/// ------------------------------------------------------------------------------------------------------
+	/// HD6845S       Hitachi         0
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/c/c0/Hd6845.hitachi.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// UM6845        UMC             0
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/1/13/Um6845.umc.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// UM6845R       UMC             1
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/b/b5/Um6845r.umc.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// MC6845        Motorola        2
+	/// Datasheet:    http://www.cpcwiki.eu/imgs/d/da/Mc6845.motorola.pdf & http://bitsavers.trailing-edge.com/components/motorola/_dataSheets/6845.pdf
+	/// ------------------------------------------------------------------------------------------------------
+	/// AMS40489      Amstrad         3           Only exists in the CPC464+, CPC6128+ and GX4000 and is integrated into a single CPC+ ASIC chip (along with the gatearray)
+	/// Datasheet:    {none}
+	/// ------------------------------------------------------------------------------------------------------
+	/// AMS40041      Amstrad         4           'Pre-ASIC' IC. The CRTC is integrated into a aingle ASIC IC with functionality being almost identical to the AMS40489
+	/// (or 40226)                                Used in the 'Cost-Down' range of CPC464 and CPC6128 systems
+	/// Datasheet:    {none}
+	///
 	/// </summary>
 	public class CRTC6845
 	{
@@ -148,23 +148,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// Built from R12, R13 and CLK
 		/// </summary>
 		/*
-            Memory Address Signal	Signal source	Signal name
-            A15	                    6845	        MA13
-            A14	                    6845	        MA12
-            A13	                    6845	        RA2
-            A12	                    6845	        RA1
-            A11	                    6845	        RA0
-            A10	                    6845	        MA9
-            A9	                    6845	        MA8
-            A8	                    6845	        MA7
-            A7	                    6845	        MA6
-            A6	                    6845	        MA5
-            A5	                    6845	        MA4
-            A4	                    6845	        MA3
-            A3	                    6845	        MA2
-            A2	                    6845	        MA1
-            A1	                    6845	        MA0
-            A0	                    Gate-Array	    CLK
+            Memory Address Signal    Signal source    Signal name
+            A15                      6845             MA13
+            A14                      6845             MA12
+            A13                      6845             RA2
+            A12                      6845             RA1
+            A11                      6845             RA0
+            A10                      6845             MA9
+            A9                       6845             MA8
+            A8                       6845             MA7
+            A7                       6845             MA6
+            A6                       6845             MA5
+            A5                       6845             MA4
+            A4                       6845             MA3
+            A3                       6845             MA2
+            A2                       6845             MA1
+            A1                       6845             MA0
+            A0                       Gate-Array       CLK
          */
 		public ushort AddressLineCPC
 		{
@@ -323,26 +323,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		#region Databus Interface
 
 		/*
-                RegIdx	Register Name	            Type
-                                                    0	        1	        2	        3	                4
-                0	    Horizontal Total	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                1	    Horizontal Displayed	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                2	    Horizontal Sync Position	Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                3	    H and V Sync Widths	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                4	    Vertical Total	            Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                5	    Vertical Total Adjust	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                6	    Vertical Displayed	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                7	    Vertical Sync position	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                8	    Interlace and Skew	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                9	    Maximum Raster Address	    Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                10	    Cursor Start Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                11	    Cursor End Raster	        Write Only	Write Only	Write Only	(note 2)	        (note 3)
-                12	    Disp. Start Address (High)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                13	    Disp. Start Address (Low)	Read/Write	Write Only	Write Only	Read/Write (note 2)	(note 3)
-                14	    Cursor Address (High)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                15	    Cursor Address (Low)	    Read/Write	Read/Write	Read/Write	Read/Write (note 2)	(note 3)
-                16	    Light Pen Address (High)	Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
-                17	    Light Pen Address (Low)	    Read Only	Read Only	Read Only	Read Only (note 2)	(note 3)
+                RegIdx    Register Name                 Type
+                                                        0             1             2             3                      4
+                0         Horizontal Total              Write Only    Write Only    Write Only    (note 2)               (note 3)
+                1         Horizontal Displayed          Write Only    Write Only    Write Only    (note 2)               (note 3)
+                2         Horizontal Sync Position      Write Only    Write Only    Write Only    (note 2)               (note 3)
+                3         H and V Sync Widths           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                4         Vertical Total                Write Only    Write Only    Write Only    (note 2)               (note 3)
+                5         Vertical Total Adjust         Write Only    Write Only    Write Only    (note 2)               (note 3)
+                6         Vertical Displayed            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                7         Vertical Sync position        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                8         Interlace and Skew            Write Only    Write Only    Write Only    (note 2)               (note 3)
+                9         Maximum Raster Address        Write Only    Write Only    Write Only    (note 2)               (note 3)
+                10        Cursor Start Raster           Write Only    Write Only    Write Only    (note 2)               (note 3)
+                11        Cursor End Raster             Write Only    Write Only    Write Only    (note 2)               (note 3)
+                12        Disp. Start Address (High)    Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                13        Disp. Start Address (Low)     Read/Write    Write Only    Write Only    Read/Write (note 2)    (note 3)
+                14        Cursor Address (High)         Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                15        Cursor Address (Low)          Read/Write    Read/Write    Read/Write    Read/Write (note 2)    (note 3)
+                16        Light Pen Address (High)      Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
+                17        Light Pen Address (Low)       Read Only     Read Only     Read Only     Read Only (note 2)     (note 3)
 
                 1. On type 0 and 1, if a Write Only register is read from, "0" is returned.
                 2. See the document "Extra CPC Plus Hardware Information" for more details.
@@ -350,10 +350,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         */
 
 		/* CPC:
-        #BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index	                        -	    Write
-        #BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out	                    -	    Write
-        #BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported)	Read	-
-        #BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
+        #BCXX    %x0xxxx00 xxxxxxxx    6845 CRTC Index                            -       Write
+        #BDXX    %x0xxxx01 xxxxxxxx    6845 CRTC Data Out                         -       Write
+        #BEXX    %x0xxxx10 xxxxxxxx    6845 CRTC Status (as far as supported)     Read    -
+        #BFXX    %x0xxxx11 xxxxxxxx    6845 CRTC Data In (as far as supported)    Read    -
 
 			The Read/Write functions below are geared toward Amstrad CPC only
 			They could be overridden for a different implementation if needs be

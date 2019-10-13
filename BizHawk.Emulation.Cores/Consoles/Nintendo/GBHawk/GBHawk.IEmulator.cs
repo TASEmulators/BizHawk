@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 
 			//Update the color palette if a setting changed
-			if(_settings.Palette == GBSettings.PaletteType.BW)
+			if (_settings.Palette == GBSettings.PaletteType.BW)
 			{
 				color_palette[0] = color_palette_BW[0];
 				color_palette[1] = color_palette_BW[1];
@@ -57,9 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			_islag = true;
 
-			GetControllerState(controller);
-
-			do_frame();
+			do_frame(controller);
 
 			if (_scanlineCallback != null)
 			{
@@ -78,46 +76,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return true;
 		}
 
-		public void do_frame()
+		public void do_frame(IController controller)
 		{
-			// gameboy frames can be variable lengths
-			// we want to end a frame when VBlank turns from false to true
-			int ticker = 0;
-
-			// check if new input changed the input register and triggered IRQ
-			byte contr_prev = input_register;
-
-			input_register &= 0xF0;
-			if ((input_register & 0x30) == 0x20)
-			{
-				input_register |= (byte)(controller_state & 0xF);
-			}
-			else if ((input_register & 0x30) == 0x10)
-			{
-				input_register |= (byte)((controller_state & 0xF0) >> 4);
-			}
-			else if ((input_register & 0x30) == 0x00)
-			{
-				// if both polls are set, then a bit is zero if either or both pins are zero
-				byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
-				input_register |= temp;
-			}
-			else
-			{
-				input_register |= 0xF;
-			}
-
-			// check for interrupts			
-			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
-				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
-				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
-				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
-			{
-				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
-				REG_FF0F |= 0x10;
-			}
-			
-			while (!vblank_rise)
+			for (int i = 0; i < 70224; i++)
 			{
 				// These things do not change speed in GBC double spped mode
 				audio.tick();
@@ -129,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// These things all tick twice as fast in GBC double speed mode
 					ppu.DMA_tick();
 					timer.tick_1();
-					serialport.serial_transfer_tick();					
+					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 					timer.tick_2();
 
@@ -157,17 +118,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (in_vblank && !in_vblank_old)
 				{
-					vblank_rise = true;
+					// update the controller state on VBlank
+					GetControllerState(controller);
+
+					// check if controller state caused interrupt
+					do_controller_check();
+
+					// send the image on VBlank
+					SendVideoBuffer();
 				}
 
-				ticker++;
-				if (ticker > 42134400) { throw new Exception("ERROR: Unable to Resolve Frame"); }
+				REG_FF0F_OLD = REG_FF0F;
 
 				in_vblank_old = in_vblank;
-				REG_FF0F_OLD = REG_FF0F;
 			}
 
-			vblank_rise = false;			
+			// turn off the screen so the image doesnt persist
+			// but dont turn off blank_frame yet, it still needs to be true until the next VBL
+			// this doesn't run for GBC, some games, ex MIB the series 2, rely on the screens persistence while off to make video look smooth.
+			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
+			if (ppu.clear_screen)
+			{
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)color_palette[0]; }
+				ppu.clear_screen = false;
+			}
 		}
 
 		public void do_single_step()
@@ -261,8 +235,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (speed_switch)
 				{
 					speed_switch = false;
-
-					int ret = double_speed ? 50000 : 25000; // actual time needs checking
+					Console.WriteLine("Speed Switch: " + cpu.TotalExecutedCycles);
+					int ret = double_speed ? 70224 * 2 : 70224 * 2; // actual time needs checking
 					double_speed = !double_speed;
 					return ret;
 				}
@@ -286,7 +260,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "GB"; 
+		public string SystemId => "GB";
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -315,17 +289,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int[] _vidbuffer;
 
+		public int[] frame_buffer;
+
 		public int[] GetVideoBuffer()
 		{
-			if (ppu.blank_frame)
+			return frame_buffer;
+		}
+
+		public void SendVideoBuffer()
+		{
+			if (GBC_compat)
 			{
-				for (int i = 0; i < _vidbuffer.Length; i++)
+				if (!ppu.blank_frame)
 				{
-					_vidbuffer[i] = (int)color_palette[0];
+					for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
 				}
+
 				ppu.blank_frame = false;
 			}
-			return _vidbuffer;		
+			else
+			{
+				if (ppu.blank_frame)
+				{
+					for (int i = 0; i < _vidbuffer.Length; i++)
+					{
+						_vidbuffer[i] = (int)color_palette[0];
+					}
+				}
+
+				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
+
+				ppu.blank_frame = false;
+			}
 		}
 
 		public int VirtualWidth => 160;

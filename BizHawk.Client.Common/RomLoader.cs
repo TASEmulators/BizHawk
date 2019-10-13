@@ -15,6 +15,8 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.GBHawkLink;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x;
+using BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.GGHawkLink;
@@ -173,7 +175,7 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X" };
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X", "VEC" };
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -660,6 +662,52 @@ namespace BizHawk.Client.Common
 										
 									// other stuff todo
 									break;
+								case "GB3x":
+									var leftBytes3x = xmlGame.Assets.First().Value;
+									var centerBytes3x = xmlGame.Assets.Skip(1).First().Value;
+									var rightBytes3x = xmlGame.Assets.Skip(2).First().Value;
+
+									var left3x = Database.GetGameInfo(leftBytes3x, "left.gb");
+									var center3x = Database.GetGameInfo(centerBytes3x, "center.gb");
+									var right3x = Database.GetGameInfo(rightBytes3x, "right.gb");
+
+									nextEmulator = new GBHawkLink3x(
+									nextComm,
+									left3x,
+									leftBytes3x,
+									center3x,
+									centerBytes3x,
+									right3x,
+									rightBytes3x,
+									GetCoreSettings<GBHawkLink3x>(),
+									GetCoreSyncSettings<GBHawkLink3x>());
+
+									break;
+								case "GB4x":
+									var A_Bytes4x = xmlGame.Assets.First().Value;
+									var B_Bytes4x = xmlGame.Assets.Skip(1).First().Value;
+									var C_Bytes4x = xmlGame.Assets.Skip(2).First().Value;
+									var D_Bytes4x = xmlGame.Assets.Skip(3).First().Value;
+
+									var A_4x = Database.GetGameInfo(A_Bytes4x, "A.gb");
+									var B_4x = Database.GetGameInfo(B_Bytes4x, "B.gb");
+									var C_4x = Database.GetGameInfo(C_Bytes4x, "C.gb");
+									var D_4x = Database.GetGameInfo(D_Bytes4x, "D.gb");
+
+									nextEmulator = new GBHawkLink4x(
+									nextComm,
+									A_4x,
+									B_Bytes4x,
+									B_4x,
+									B_Bytes4x,
+									C_4x,
+									C_Bytes4x,
+									D_4x,
+									D_Bytes4x,
+									GetCoreSettings<GBHawkLink4x>(),
+									GetCoreSyncSettings<GBHawkLink4x>());
+
+									break;
 								case "AppleII":
 									var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
 									var roms = xmlGame.Assets.Select(a => a.Value);
@@ -883,6 +931,8 @@ namespace BizHawk.Client.Common
 						{
 							rom.GameInfo.System = "NES";
 						}
+
+						Console.WriteLine(rom.GameInfo.System);
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
@@ -1115,6 +1165,9 @@ namespace BizHawk.Client.Common
 								break;
 							case "32X":
 								core = CoreInventory.Instance["GEN", "PicoDrive"];
+								break;
+							case "VEC":
+								core = CoreInventory.Instance["VEC", "VectrexHawk"];
 								break;
 						}
 

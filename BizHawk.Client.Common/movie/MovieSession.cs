@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 					Movie.SwitchToRecord();
 					break;
 				case MovieEndAction.Pause:
-					Movie.Stop();
+					Movie.FinishedMode();
 					PauseCallback();
 					break;
 				default:

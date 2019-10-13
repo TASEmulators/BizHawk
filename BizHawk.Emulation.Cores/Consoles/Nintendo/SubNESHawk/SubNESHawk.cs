@@ -69,13 +69,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int _frame = 0;
 
-		private readonly ITraceable _tracer;
-
-		private void ExecFetch(ushort addr)
+		public bool IsFDS
 		{
-			uint flags = (uint)(MemoryCallbackFlags.AccessExecute);
-			MemoryCallbacks.CallMemoryCallbacks(addr, 0, flags, "System Bus");
+			get { return subnes.Board is FDS; }
 		}
+
+		private readonly ITraceable _tracer;
 
 		#region ISettable
 		private NES.NES.NESSettings subnesSettings = new NES.NES.NESSettings();

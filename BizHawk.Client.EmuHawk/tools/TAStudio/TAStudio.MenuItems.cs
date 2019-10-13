@@ -482,10 +482,10 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.AnyRowsSelected)
 			{
 				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
-				// FCEUX Taseditor does't do this, but I think it is the expected behavior in editor programs
+				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
 				var wasPaused = Mainform.EmulatorPaused;
 
-				// copypaste from PasteInsertMenuItem_Click!
+				// copy paste from PasteInsertMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
 				if (data.GetDataPresent(DataFormats.StringFormat))
 				{
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var wasPaused = Mainform.EmulatorPaused;
 
-				// copypaste from PasteMenuItem_Click!
+				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
 				if (data.GetDataPresent(DataFormats.StringFormat))
 				{
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{
-					// Cannot delete non-existant frames
+					// Cannot delete non-existent frames
 					RefreshDialog();
 					return;
 				}
@@ -809,10 +809,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone(); // Why is this cloning it?
-					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
+					byte[] state = StatableEmulator.SaveStateBinary();
+					byte[] greenZone = CurrentTasMovie.TasStateManager[Emulator.Frame];
 
-					if (!state.SequenceEqual(greenzone))
+					if (!state.SequenceEqual(greenZone))
 					{
 						MessageBox.Show($"Bad data between frames {lastState} and {Emulator.Frame}");
 						return;
@@ -1075,7 +1075,6 @@ namespace BizHawk.Client.EmuHawk
 				Statable = this.StatableEmulator
 			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
-			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
 
@@ -1161,7 +1160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideLagFramesX_Click(object sender, EventArgs e)
 		{
-			TasView.LagFramesToHide = (int)(sender as ToolStripMenuItem).Tag;
+			TasView.LagFramesToHide = (int)((ToolStripMenuItem)sender).Tag;
 			MaybeFollowCursor();
 			RefreshDialog();
 		}
@@ -1222,15 +1221,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WheelScrollSpeedMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputpromt = new InputPrompt
+			var inputPrompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Frames per tick:",
 				InitialValue = TasView.ScrollSpeed.ToString()
 			};
-			if (inputpromt.ShowDialog() == DialogResult.OK)
+			if (inputPrompt.ShowDialog() == DialogResult.OK)
 			{
-				TasView.ScrollSpeed = int.Parse(inputpromt.PromptText);
+				TasView.ScrollSpeed = int.Parse(inputPrompt.PromptText);
 				Settings.ScrollSpeed = TasView.ScrollSpeed;
 			}
 		}
@@ -1250,7 +1249,7 @@ namespace BizHawk.Client.EmuHawk
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
 			int rowHeight = ColumnsSubMenu.Height + 4;
 			int maxRows = workingHeight / rowHeight;
-			int keyCount = columns.Where(c => c.Name.StartsWith("Key ")).Count();
+			int keyCount = columns.Count(c => c.Name.StartsWith("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
 
 			ToolStripMenuItem[] keysMenus = new ToolStripMenuItem[keysMenusCount];
@@ -1292,8 +1291,7 @@ namespace BizHawk.Client.EmuHawk
 				if (column.Name.StartsWith("Key "))
 				{
 					keysMenus
-						.Where(m => m.DropDownItems.Count < maxRows)
-						.FirstOrDefault()
+						.First(m => m.DropDownItems.Count < maxRows)
 						.DropDownItems
 						.Add(menuItem);
 				}
@@ -1483,7 +1481,11 @@ namespace BizHawk.Client.EmuHawk
 				if (SaveRamEmulator.CloneSaveRam() != null)
 				{
 					int index = 0;
-					if (TasView.SelectedRows.Count() > 0) { index = TasView.SelectedRows.First(); }
+					if (TasView.SelectedRows.Any())
+					{
+						index = TasView.SelectedRows.First();
+					}
+
 					GoToFrame(index);
 					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());

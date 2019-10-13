@@ -11,8 +11,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
-				int restoreFrame = Emulator.Frame;
-
 				if (frame <= Emulator.Frame)
 				{
 					if ((Mainform.EmulatorPaused || !Mainform.IsSeeking)
@@ -32,7 +30,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
-
 			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			if (frame <= CurrentTasMovie.InputLogLength)
@@ -57,10 +54,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TastudioPlayMode();
 
-					int lastState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame).Key; // Simply getting the last state doesn't work if that state is the frame. [dispaly isn't saved in the state, need to emulate to frame]
-					if (lastState > Emulator.Frame)
+					// Simply getting the last state doesn't work if that state is the frame.
+					// display isn't saved in the state, need to emulate to frame
+					var lastState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
+					if (lastState.Key > Emulator.Frame)
 					{
-						LoadState(CurrentTasMovie.TasStateManager[lastState]); // STATE ACCESS
+						LoadState(lastState);
 					}
 
 					StartSeeking(frame);

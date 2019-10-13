@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4F: // VBK
 					if (GBC_compat)
 					{
-						ret = VRAM_Bank;
+						ret = (byte)(0xFE | VRAM_Bank);
 					}
 					else
 					{
@@ -133,6 +133,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF53:
 				case 0xFF54:
 				case 0xFF55:
+					if (GBC_compat)
+					{
+						ret = ppu.ReadReg(addr);
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF56:
+					if (is_GBC)
+					{
+						// can receive data
+						if ((IR_reg & 0xC0) == 0xC0)
+						{
+							ret = IR_reg;
+						}
+						else
+						{
+							ret = (byte)(IR_reg | 2);
+						}
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
 				case 0xFF68:
 				case 0xFF69:
 				case 0xFF6A:
@@ -284,7 +313,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
-
 					break;
 
 				// audio regs
@@ -346,11 +374,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// GBC compatibility register (I think)
 				case 0xFF4C:
-					if ((value != 0xC0) && (value != 0x80))
+					if ((value != 0xC0) && (value != 0x80))// && (value != 0xFF) && (value != 0x04))
 					{
 						Console.Write("GBC Compatibility? ");
 						Console.WriteLine(value);
 						GBC_compat = false;
+
 						// cpu operation is a function of hardware only
 						//cpu.is_GBC = GBC_compat;
 					}
@@ -374,8 +403,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// Bios control register. Writing 1 permanently disables BIOS until a power cycle occurs
 				case 0xFF50:
-					//Console.WriteLine(value);
-					if (GB_bios_register != 1)
+					// Console.WriteLine(value);
+					if (GB_bios_register == 0)
 					{
 						GB_bios_register = value;
 					}			
@@ -387,14 +416,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF53:
 				case 0xFF54:
 				case 0xFF55:
+					if (GBC_compat)
+					{
+					ppu.WriteReg(addr, value);
+					}
+					break;
+
+				case 0xFF56:
+					if (is_GBC)
+					{
+						IR_reg = (byte)((value & 0xC1) | (IR_reg & 0x3E));
+
+						// send IR signal out
+						if ((IR_reg & 0x1) == 0x1) { IR_signal = (byte)(0 | IR_mask); } else { IR_signal = 2; }
+						
+						// receive own signal if IR on and receive on
+						if ((IR_reg & 0xC1) == 0xC1) { IR_self = (byte)(0 | IR_mask); } else { IR_self = 2; }
+
+						IR_write = 8;
+					}
+					break;
+
 				case 0xFF68:
 				case 0xFF69:
 				case 0xFF6A:
 				case 0xFF6B:
-					if (GBC_compat)
-					{
+					//if (GBC_compat)
+					//{
 						ppu.WriteReg(addr, value);
-					}
+					//}
 					break;
 
 				// RAM Bank in GBC mode
@@ -450,7 +500,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
-
 					break;
 
 				default:

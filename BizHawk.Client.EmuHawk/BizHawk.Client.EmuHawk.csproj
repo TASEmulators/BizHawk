@@ -40,7 +40,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -1252,6 +1252,7 @@
     <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\VECSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GGLSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
@@ -1863,6 +1864,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>

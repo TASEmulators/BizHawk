@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -275,26 +276,62 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// http://stackoverflow.com/questions/275689/how-to-get-relative-path-from-absolute-path
+		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
-			Win32.FileAttributes toAttr = GetPathAttribute(toPath);
-
-			var path = new StringBuilder(260); // MAX_PATH
-			if (Win32.PathRelativePathTo(
-				path,
-				fromPath,
-				fromAttr,
-				toPath,
-				toAttr) == false)
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
-				throw new ArgumentException("Paths must have a common prefix");
+				Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
+				Win32.FileAttributes toAttr = GetPathAttribute(toPath);
+
+				var path = new StringBuilder(260); // MAX_PATH
+				if (Win32.PathRelativePathTo(
+					path,
+					fromPath,
+					fromAttr,
+					toPath,
+					toAttr) == false)
+				{
+					throw new ArgumentException("Paths must have a common prefix");
+				}
+
+				return path.ToString();
+			}
+#if true
+			return PathManager.IsSubfolder(toPath, fromPath)
+				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{toPath}\" \"{fromPath}\"", $"invalid path {fromPath} or missing realpath binary")
+				: fromPath;
+#else // written for Unix port but may be useful for .NET Core
+			// algorithm taken from https://stackoverflow.com/a/340454/7467292
+			var dirSepChar = Path.DirectorySeparatorChar;
+			string from = !fromPath.EndsWith(dirSepChar.ToString())
+				? fromPath + dirSepChar
+				: fromPath;
+			string to = !toPath.EndsWith(dirSepChar.ToString())
+				? toPath + dirSepChar
+				: toPath;
+
+			Uri fromUri = new Uri(from);
+			Uri toUri = new Uri(to);
+
+			if (fromUri.Scheme != toUri.Scheme)
+			{
+				return toPath;
 			}
 
-			return path.ToString();
+			Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+			string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+			if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
+			{
+				relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			}
+
+			return relativePath.TrimEnd(dirSepChar);
+#endif
 		}
 
+		/// <seealso cref="GetRelativePath"/>
 		private static Win32.FileAttributes GetPathAttribute(string path)
 		{
 			var di = new DirectoryInfo(path.Split('|').First());

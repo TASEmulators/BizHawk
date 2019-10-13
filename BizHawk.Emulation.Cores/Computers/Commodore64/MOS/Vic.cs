@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public bool ReadAec() { return _pinAec; }
 		public bool ReadBa() { return _pinBa; }
-		public bool ReadIrq() { return _pinIrq; }
+		public bool ReadIrq() { return (_irqBuffer & 1) == 0; }
 
 		private readonly int _cyclesPerSec;
 		private readonly int[] _rasterXPipeline;
@@ -35,8 +35,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private readonly int[] _actPipeline;
 		private readonly int _totalCycles;
 		private readonly int _totalLines;
+		private int _irqBuffer;
 
-		private int _cyclesExecuted;
 		private int _hblankStartCheckXRaster;
 		private int _hblankEndCheckXRaster;
 
@@ -67,9 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_sprites = new Sprite[8];
 			for (var i = 0; i < 8; i++)
-			{
-				_sprites[i] = new Sprite();
-			}
+				_sprites[i] = new Sprite(i);
 
 			_sprite0 = _sprites[0];
 			_sprite1 = _sprites[1];
@@ -79,9 +77,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_sprite5 = _sprites[5];
 			_sprite6 = _sprites[6];
 			_sprite7 = _sprites[7];
-
 			_bufferC = new int[40];
-			_bufferG = new int[40];
+			_pixBuffer = new int[PixBufferSize];
+			_pixBorderBuffer = new int[PixBorderBufferSize];
 		}
 
 		private void ConfigureBlanking(int lines, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd,
@@ -190,7 +188,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int CyclesPerSecond => _cyclesPerSec;
 
-		public void ExecutePhase()
+		public void ExecutePhase1()
 		{
 			// phi1
 
@@ -226,9 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_rasterLine = 0;
 					_vcbase = 0;
 					_vc = 0;
-					_badlineEnable = false;
 					_refreshCounter = 0xFF;
-					_cyclesExecuted = 0;
 				}
 			}
 
@@ -251,29 +247,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				_spriteSpriteCollisionClearPending = false;
 			}
-
-			// phi2
-
+			
 			// start of rasterline
 			if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 			{
-				//_rasterInterruptTriggered = false;
-
-				if (_rasterLine == LastDmaLine)
+				if (_rasterLine == BadLineDisableRaster)
 					_badlineEnable = false;
 
-				// IRQ compares are done here
+				// raster compares are done here
 				if (_rasterLine == _rasterInterruptLine)
 				{
-					_rasterInterruptTriggered = true;
-					
-					// interrupt needs to be enabled to be set to true
-					if (_enableIntRaster)
-					{
-						_intRaster = true;
-					}
+					_intRaster = true;
 				}
 			}
+
+			// render
+			ParseCycle();
+			UpdateBa();
+			UpdatePins();
+			Render();
+		}
+
+		public void ExecutePhase2()
+		{
+			// phi2
 
 			// check top and bottom border
 			if (_rasterLine == _borderB)
@@ -286,12 +283,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// display enable compare
-			if (_rasterLine == FirstDmaLine)
+			if (_rasterLine == BadLineEnableRaster)
 			{
 				_badlineEnable |= _displayEnable;
 			}
 
 			// badline compare
+			_vcEnable = !_idle;
 			if (_badlineEnable)
 			{
 				if ((_rasterLine & 0x7) == _yScroll)
@@ -313,22 +311,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// render
 			ParseCycle();
-			Render();
-			ParseCycle();
-			Render();
-			_extraColorModeBuffer = _extraColorMode;
-
-			// if the BA counter is nonzero, allow CPU bus access
-			if (_pinBa)
-				_baCount = BaResetCounter;
-			else if (_baCount > 0)
-				_baCount--;
-			_pinAec = _pinBa || _baCount > 0;
-
-			// must always come last
 			UpdatePins();
-
-			_cyclesExecuted++;
+			Render();
+		}
+		
+		private void UpdateBa()
+		{
+			if (_ba)
+				_baCount = BaResetCounter;
+			else if (_baCount >= 0)
+				_baCount--;
 		}
 
 		private void UpdateBorder()
@@ -341,13 +333,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private void UpdatePins()
 		{
-			var irqTemp = !(
-				(_enableIntRaster & _intRaster) |
-				(_enableIntSpriteDataCollision & _intSpriteDataCollision) |
-				(_enableIntSpriteCollision & _intSpriteCollision) |
-				(_enableIntLightPen & _intLightPen));
+			// IRQ is treated as a delay line
 
-			_pinIrq = irqTemp;
+			var intIrq = (_enableIntRaster && _intRaster) ? 0x0002 : 0x0000;
+			var sdIrq = (_enableIntSpriteDataCollision & _intSpriteDataCollision) ? 0x0001 : 0x0000;
+			var ssIrq = (_enableIntSpriteCollision & _intSpriteCollision) ? 0x0001 : 0x0000;
+			var lpIrq = (_enableIntLightPen & _intLightPen) ? 0x0001 : 0x0000;
+
+			_irqBuffer >>= 1;
+			_irqBuffer |= intIrq | sdIrq | ssIrq | lpIrq;
+			_pinAec = _ba || _baCount >= 0;
+			_pinBa = _ba;
 		}
 
 		private void UpdateVideoMode()

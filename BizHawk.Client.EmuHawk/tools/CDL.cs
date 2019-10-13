@@ -231,8 +231,6 @@ namespace BizHawk.Client.EmuHawk
 				ShutdownCDL();
 				return true;
 			}
-
-			return true;
 		}
 
 		public bool UpdateBefore

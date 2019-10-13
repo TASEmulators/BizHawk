@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -36,12 +35,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 					(addr, value) => _rom[addr] = value,
 					1),
 			};
-
-			if (cart_RAM != null)
-			{
-				var CartRam = new MemoryDomainByteArray("Cart RAM", MemoryDomain.Endian.Little, cart_RAM, true, 1);
-				domains.Add(CartRam);
-			}
 
 			MemoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
