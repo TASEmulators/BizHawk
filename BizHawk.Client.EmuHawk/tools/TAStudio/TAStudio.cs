@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
@@ -357,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
-				box.MaximumSize = new Size(475, 350);
+				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
 				box.SetMessageToAutoSize();
 				var result = box.ShowDialog();
 
