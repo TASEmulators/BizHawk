@@ -93,7 +93,7 @@ namespace BizHawk.Client.MultiHawk
 			{
 				Global.MovieSession.Movie.Stop();
 
-				foreach (var ew in EmulatorWindows.ToList())
+				foreach (var ew in EmulatorWindows)
 				{
 					ew.ShutDown();
 				}
@@ -1421,7 +1421,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void CloseAllWindows()
 		{
-			foreach (var ew in EmulatorWindows.ToList())
+			foreach (var ew in EmulatorWindows)
 			{
 				ew.Close();
 			}
@@ -1431,7 +1431,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var ew in EmulatorWindows.ToList())
+			foreach (var ew in EmulatorWindows)
 			{
 				ew.Close();
 			}

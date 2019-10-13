@@ -182,9 +182,7 @@ namespace BizHawk.Emulation.DiscSystem
                 return fileNodes;
 
             // get all folders
-            List<KeyValuePair<string, ISONode>> dirs = (from a in Root.Children
-                                                       where a.Value.GetType() == typeof(ISODirectoryNode)
-                                                        select a).ToList();
+            var dirs = (from a in Root.Children where a.Value.GetType() == typeof(ISODirectoryNode) select a);
             // iterate through each folder
             foreach (var d in dirs)
             {

@@ -1373,7 +1373,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
-						foreach (var row in SelectedRows.ToList())
+						foreach (var row in SelectedRows.ToList()) // clones SelectedRows
 						{
 							SelectRow(row - 1, true);
 							SelectRow(row, false);
@@ -1384,7 +1384,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection)
 					{
-						foreach (var row in SelectedRows.Reverse().ToList())
+						foreach (var row in SelectedRows.Reverse()) // clones SelectedRows
 						{
 							SelectRow(row + 1, true);
 							SelectRow(row, false);
@@ -1695,14 +1695,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (toggle && _selectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
 					{
-						var items = _selectedItems
-							.Where(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex)
-							.ToList();
-
-						foreach (var item in items)
-						{
-							_selectedItems.Remove(item);
-						}
+						_selectedItems.RemoveWhere(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex);
 					}
 					else
 					{
@@ -2054,13 +2047,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int pos = 0;
 
-				var columns = VisibleColumns.ToList();
-
-				for (int i = 0; i < columns.Count; i++)
+				foreach (var col in VisibleColumns)
 				{
-					columns[i].Left = pos;
-					pos += columns[i].Width.Value;
-					columns[i].Right = pos;
+					col.Left = pos;
+					pos += col.Width.Value;
+					col.Right = pos;
 				}
 
 				DoChangeCallback();

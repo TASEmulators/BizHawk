@@ -677,13 +677,12 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.AnyRowsSelected)
 			{
 				var wasPaused = Mainform.EmulatorPaused;
-				var framesToInsert = TasView.SelectedRows.ToList();
+				var framesToInsert = TasView.SelectedRows;
 				var insertionFrame = Math.Min(TasView.LastSelectedIndex.Value + 1, CurrentTasMovie.InputLogLength);
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				var inputLog = framesToInsert
-					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
-					.ToList();
+					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame));
 
 				CurrentTasMovie.InsertInput(insertionFrame, inputLog);
 
@@ -780,11 +779,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
-			foreach (TasMovieMarker m in markers.ToList())
-			{
-				CurrentTasMovie.Markers.Remove(m);
-			}
+			CurrentTasMovie.Markers.RemoveAll(m => TasView.SelectedRows.Contains(m.Frame));
 			MarkerControl.ShrinkSelection();
 			RefreshDialog();
 		}

@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			return DirectSound.GetDevices().Select(d => d.Description).ToList();
+			return DirectSound.GetDevices().Select(d => d.Description);
 		}
 
 		private int BufferSizeSamples { get; set; }

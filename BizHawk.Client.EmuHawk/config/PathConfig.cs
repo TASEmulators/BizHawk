@@ -114,8 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				var paths = pathCollection
 					.Where(p => p.System == systemId)
 					.OrderBy(p => p.Ordinal)
-					.ThenBy(p => p.Type)
-					.ToList();
+					.ThenBy(p => p.Type);
 
 				var y = UIHelper.ScaleY(14);
 				foreach (var path in paths)
@@ -243,10 +242,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoRomToggle()
 		{
-			AllPathControls
-				.Where(c => c.Name == "ROM")
-				.ToList()
-				.ForEach(control => control.Enabled = !RecentForROMs.Checked);
+			foreach (var control in AllPathControls.Where(c => c.Name == "ROM"))
+			{
+				control.Enabled = !RecentForROMs.Checked;
+			}
 		}
 
 		private IEnumerable<TextBox> AllPathBoxes

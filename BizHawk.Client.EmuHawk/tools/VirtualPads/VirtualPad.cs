@@ -136,10 +136,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearBoolean()
 		{
-			PadControls
-				.OfType<VirtualPadButton>()
-				.ToList()
-				.ForEach(p => p.Clear());
+			foreach (var p in PadControls.OfType<VirtualPadButton>())
+			{
+				p.Clear();
+			}
 		}
 
 		public void Set(IController controller)
@@ -149,28 +149,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetPrevious(IController previous)
 		{
-			PadControls
-				.OfType<VirtualPadAnalogStick>()
-				.ToList()
-				.ForEach(c => c.SetPrevious(previous));
+			foreach (var c in PadControls.OfType<VirtualPadAnalogStick>())
+			{
+				c.SetPrevious(previous);
+			}
 		}
 
 		public void BumpAnalog(int? x, int? y)
 		{
-			PadControls
-				.OfType<VirtualPadAnalogStick>()
-				.ToList()
-				.ForEach(a => a.Bump(x, y));
+			foreach (var a in PadControls.OfType<VirtualPadAnalogStick>())
+			{
+				a.Bump(x, y);
+			}
 
-			PadControls
-				.OfType<VirtualPadAnalogButton>()
-				.ToList()
-				.ForEach(a => a.Bump(x));
+			foreach (var a in PadControls.OfType<VirtualPadAnalogButton>())
+			{
+				a.Bump(x);
+			}
 
-			PadControls
-				.OfType<VirtualPadTargetScreen>()
-				.ToList()
-				.ForEach(a => a.Bump(x, y));
+			foreach (var a in PadControls.OfType<VirtualPadTargetScreen>())
+			{
+				a.Bump(x, y);
+			}
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			var right = R.GetCpuFlagsAndRegisters()
 				.Select(reg => new KeyValuePair<string, RegisterValue>("Right " + reg.Key, reg.Value));
 
-			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
+			return left.Union(right).ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
 		public void SetCpuRegister(string register, int value)

@@ -171,14 +171,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.CallExitEvent(file);
 
-					var functions = LuaImp.GetRegisteredFunctions()
-						.Where(lf => lf.Lua == file.Thread)
-						.ToList();
-
-					foreach (var function in functions)
-					{
-						LuaImp.GetRegisteredFunctions().Remove(function);
-					}
+					LuaImp.GetRegisteredFunctions().RemoveAll(lf => lf.Lua == file.Thread);
 
 					UpdateRegisteredFunctionsDialog();
 
@@ -692,7 +685,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void UpdateRegisteredFunctionsDialog()
 		{
-			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
+			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
 			{
 				form.UpdateValues();
 			}
@@ -850,16 +843,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.CallExitEvent(file);
 
-					var items = SelectedItems.ToList();
-					foreach (var selectedItem in items)
+					foreach (var selectedItem in SelectedItems)
 					{
 						var temp = selectedItem;
-						var functions = LuaImp.GetRegisteredFunctions().Where(lf => lf.Lua == temp.Thread).ToList();
-						foreach (var function in functions)
-						{
-							LuaImp.GetRegisteredFunctions().Remove(function);
-						}
-
+						LuaImp.GetRegisteredFunctions().RemoveAll(lf => lf.Lua == temp.Thread);
 						UpdateRegisteredFunctionsDialog();
 					}
 
@@ -913,7 +900,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(x => x.TogglePause());
+			foreach (var x in SelectedFiles)
+			{
+				x.TogglePause();
+			}
 			UpdateDialog();
 		}
 
@@ -926,14 +916,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(file =>
+			foreach (var file in SelectedFiles)
 			{
 				Process.Start(new ProcessStartInfo
 				{
 					Verb = "Open",
 					FileName = ProcessPath(file.Path)
 				});
-			});
+			}
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
@@ -944,11 +934,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var item in items)
 				{
 					var temp = item;
-					var functions = LuaImp.GetRegisteredFunctions().Where(x => x.Lua == temp.Thread).ToList();
-					foreach (var function in functions)
-					{
-						LuaImp.GetRegisteredFunctions().Remove(function);
-					}
+					LuaImp.GetRegisteredFunctions().RemoveAll(x => x.Lua == temp.Thread);
 
 					LuaImp.ScriptList.Remove(item);
 				}
@@ -1018,7 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 				LuaImp.ScriptList.Insert(index - 1, file);
 			}
 
-			var newIndices = indices.Select(t => t - 1).ToList();
+			var newIndices = indices.Select(t => t - 1);
 
 			LuaListView.SelectedIndices.Clear();
 			foreach (var i in newIndices)
@@ -1044,7 +1030,7 @@ namespace BizHawk.Client.EmuHawk
 				LuaImp.ScriptList.Insert(indices[i] + 1, file);
 			}
 
-			var newIndices = indices.Select(t => t + 1).ToList();
+			var newIndices = indices.Select(t => t + 1);
 
 			LuaListView.SelectedIndices.Clear();
 			foreach (var i in newIndices)
