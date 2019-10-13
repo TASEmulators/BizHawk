@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					}
 
 					//TODO - do TSMI and TSDD need disposing? yuck
-					var item = new ToolStripMenuItem { Text = caption };
+					var item = new ToolStripMenuItem { Text = caption.Replace("&", "&&") };
 					items.Add(item);
 
 					item.Click += (o, ev) =>
