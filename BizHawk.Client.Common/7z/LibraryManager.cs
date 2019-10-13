@@ -152,16 +152,16 @@ namespace SevenZip
 								//{
 								//    throw new SevenZipLibraryException("DLL file does not exist.");
 								//}
-                if ((_modulePtr = libLoader.LoadPlatformSpecific(_libraryFileName)) == IntPtr.Zero)
+                if ((_modulePtr = libLoader.LoadOrNull(_libraryFileName).Value) == IntPtr.Zero)
                 {
 									//try a different directory
 									string alternateFilename = Path.Combine(Path.Combine(Path.GetDirectoryName(_libraryFileName),"dll"),"7z.dll");
-									if ((_modulePtr = libLoader.LoadPlatformSpecific(alternateFilename)) == IntPtr.Zero)
+									if ((_modulePtr = libLoader.LoadOrNull(_libraryFileName).Value) == IntPtr.Zero)
                     throw new SevenZipLibraryException("failed to load library.");
                 }
                 if (libLoader.GetProcAddr(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
                 {
-                    libLoader.FreePlatformSpecific(_modulePtr);
+                    libLoader.FreeByPtr(_modulePtr);
                     throw new SevenZipLibraryException("library is invalid.");
                 }
             }
@@ -435,7 +435,7 @@ namespace SevenZip
                     if (_totalUsers == 0)
                     {
 #if !WINCE && !MONO
-                        libLoader.FreePlatformSpecific(_modulePtr);
+                        libLoader.FreeByPtr(_modulePtr);
 
 #endif
                         _modulePtr = IntPtr.Zero;
