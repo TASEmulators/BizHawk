@@ -752,12 +752,8 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			ToolAttribute attr;
-			try
-			{
-				attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().Single();
-			}
-			catch (InvalidOperationException e)
+			ToolAttribute attr = tool.GetCustomAttributes(false).OfType<ToolAttribute>().SingleOrDefault();
+			if (attr == null)
 			{
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
