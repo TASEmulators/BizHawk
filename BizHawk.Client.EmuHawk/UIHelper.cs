@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public static float AutoScaleFactorY { get; } = AutoScaleCurrentSize.Height / AutoScaleBaseSize.Height;
 
+		public static SizeF AutoScaleFactor { get; } = new SizeF(AutoScaleFactorX, AutoScaleFactorY);
+
 		public static int ScaleX(int size)
 		{
 			return (int)Math.Round(size * AutoScaleFactorX);
