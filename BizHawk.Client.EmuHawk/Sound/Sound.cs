@@ -16,8 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		public const int BlockAlign = BytesPerSample * ChannelCount;
 
 		private bool _disposed;
-		private bool _unjamSoundThrottle;
-
 		private readonly ISoundOutput _outputDevice;
 		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
 		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
@@ -118,9 +116,8 @@ namespace BizHawk.Client.EmuHawk
 			// Fill device buffer with silence but leave enough room for one frame
 			int samplesPerFrame = (int)Math.Round(SampleRate / (double)Global.Emulator.VsyncRate());
 			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
-			_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+			_outputDevice.WriteSamples(new short[silenceSamples * 2], 0, silenceSamples);
 			samplesNeeded -= silenceSamples;
-			_unjamSoundThrottle = isUnderrun;
 
 			if (isUnderrun)
 			{
@@ -141,14 +138,16 @@ namespace BizHawk.Client.EmuHawk
 			if (atten > 1) atten = 1;
 			_outputDevice.ApplyVolumeSettings(atten);
 
-			short[] samples;
 			int samplesNeeded = _outputDevice.CalculateSamplesNeeded();
-			int samplesProvided;
+			short[] samples;
+			int sampleOffset;
+			int sampleCount;
 
 			if (atten == 0)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
-				samplesProvided = samplesNeeded;
+				sampleOffset = 0;
+				sampleCount = samplesNeeded;
 
 				_bufferedProvider.DiscardSamples();
 			}
@@ -156,25 +155,34 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Config.SoundThrottle)
 				{
-					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out samplesProvided);
+					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out sampleCount);
+					sampleOffset = 0;
 
-					if (Global.DisableSecondaryThrottling && samplesProvided > samplesNeeded)
+					if (Global.DisableSecondaryThrottling && sampleCount > samplesNeeded)
 					{
 						return;
 					}
 
-					while (samplesProvided > samplesNeeded)
+					int samplesPerMs = SampleRate / 1000;
+					int outputThresholdMs = 20;
+					while (sampleCount > samplesNeeded)
 					{
-						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
-						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
-						if (_unjamSoundThrottle)
+						if (samplesNeeded >= outputThresholdMs * samplesPerMs)
 						{
-							//may be garbage, but what can we do?
-							samplesProvided = samplesNeeded;
-							break;
+							// If we were given a large enough number of samples (e.g. larger than the device's
+							// buffer), the device will never need that many samples no matter how long we
+							// wait, so we have to start splitting up the output
+							_outputDevice.WriteSamples(samples, sampleOffset, samplesNeeded);
+							sampleOffset += samplesNeeded;
+							sampleCount -= samplesNeeded;
 						}
+						else
+						{
+							// Let the audio clock control sleep time
+							Thread.Sleep(Math.Min((sampleCount - samplesNeeded) / samplesPerMs, outputThresholdMs));
+						}
+						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 					}
-					_unjamSoundThrottle = false;
 				}
 				else
 				{
@@ -182,7 +190,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_outputProvider.OnVolatility();
 					}
-					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
+					_outputProvider.GetSamples(samplesNeeded, out samples, out sampleCount);
+					sampleOffset = 0;
 				}
 			}
 			else if (_bufferedProvider == _bufferedAsync)
@@ -191,14 +200,15 @@ namespace BizHawk.Client.EmuHawk
 
 				_bufferedAsync.GetSamplesAsync(samples);
 
-				samplesProvided = samplesNeeded;
+				sampleOffset = 0;
+				sampleCount = samplesNeeded;
 			}
 			else
 			{
 				return;
 			}
 
-			_outputDevice.WriteSamples(samples, samplesProvided);
+			_outputDevice.WriteSamples(samples, sampleOffset, sampleCount);
 		}
 
 		public static int MillisecondsToSamples(int milliseconds)

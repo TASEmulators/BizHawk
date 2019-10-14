@@ -112,14 +112,13 @@ namespace BizHawk.Client.EmuHawk
 			return samplesNeeded;
 		}
 
-		public void WriteSamples(short[] samples, int sampleCount)
+		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
 			_bufferPool.Release(_sourceVoice.State.BuffersQueued);
 			int byteCount = sampleCount * Sound.BlockAlign;
 			var buffer = _bufferPool.Obtain(byteCount);
-			if (byteCount > (samples.Length * 2)) { byteCount = samples.Length * 2; }
-			Buffer.BlockCopy(samples, 0, buffer.Bytes, 0, byteCount);
+			Buffer.BlockCopy(samples, sampleOffset * Sound.BlockAlign, buffer.Bytes, 0, byteCount);
 			_sourceVoice.SubmitSourceBuffer(new AudioBuffer
 				{
 					AudioBytes = byteCount,

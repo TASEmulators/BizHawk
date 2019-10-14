@@ -9,6 +9,6 @@ namespace BizHawk.Client.EmuHawk
 		void ApplyVolumeSettings(double volume);
 		int MaxSamplesDeficit { get; }
 		int CalculateSamplesNeeded();
-		void WriteSamples(short[] samples, int sampleCount);
+		void WriteSamples(short[] samples, int sampleOffset, int sampleCount);
 	}
 }
