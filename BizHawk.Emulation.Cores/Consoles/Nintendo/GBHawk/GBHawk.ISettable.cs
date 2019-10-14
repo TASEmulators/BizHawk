@@ -137,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			[JsonIgnore]
 			private int _RTCInitialTime;
+			[JsonIgnore]
 			private int _RTCOffset;
 			[JsonIgnore]
 			public ushort _DivInitialTime = 8;
