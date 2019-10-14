@@ -217,7 +217,7 @@
             this.label2.Location = new System.Drawing.Point(26, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(349, 13);
-            this.label2.TabIndex = 9;
+            this.label2.TabIndex = 10;
             this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
             // 
             // AcceptBackgroundInputCheckbox
@@ -238,7 +238,7 @@
             this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 135);
             this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
             this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
-            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 14;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 9;
             this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
             this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -327,7 +327,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(265, 60);
-            this.groupBox2.TabIndex = 27;
+            this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "AutoSaveRAM";
             // 
@@ -341,7 +341,7 @@
             0});
             this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
             this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
-            this.AutosaveSRAMtextBox.TabIndex = 27;
+            this.AutosaveSRAMtextBox.TabIndex = 5;
             // 
             // AutosaveSRAMradioButton1
             // 
@@ -349,7 +349,7 @@
             this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(48, 33);
             this.AutosaveSRAMradioButton1.Name = "AutosaveSRAMradioButton1";
             this.AutosaveSRAMradioButton1.Size = new System.Drawing.Size(36, 17);
-            this.AutosaveSRAMradioButton1.TabIndex = 22;
+            this.AutosaveSRAMradioButton1.TabIndex = 2;
             this.AutosaveSRAMradioButton1.TabStop = true;
             this.AutosaveSRAMradioButton1.Text = "5s";
             this.AutosaveSRAMradioButton1.UseVisualStyleBackColor = true;
@@ -360,7 +360,7 @@
             this.label8.Location = new System.Drawing.Point(202, 35);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(12, 13);
-            this.label8.TabIndex = 26;
+            this.label8.TabIndex = 6;
             this.label8.Text = "s";
             // 
             // AutosaveSRAMradioButton2
@@ -369,7 +369,7 @@
             this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(90, 34);
             this.AutosaveSRAMradioButton2.Name = "AutosaveSRAMradioButton2";
             this.AutosaveSRAMradioButton2.Size = new System.Drawing.Size(39, 17);
-            this.AutosaveSRAMradioButton2.TabIndex = 23;
+            this.AutosaveSRAMradioButton2.TabIndex = 3;
             this.AutosaveSRAMradioButton2.TabStop = true;
             this.AutosaveSRAMradioButton2.Text = "5m";
             this.AutosaveSRAMradioButton2.UseVisualStyleBackColor = true;
@@ -380,7 +380,7 @@
             this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(131, 35);
             this.AutosaveSRAMradioButton3.Name = "AutosaveSRAMradioButton3";
             this.AutosaveSRAMradioButton3.Size = new System.Drawing.Size(14, 13);
-            this.AutosaveSRAMradioButton3.TabIndex = 24;
+            this.AutosaveSRAMradioButton3.TabIndex = 4;
             this.AutosaveSRAMradioButton3.TabStop = true;
             this.AutosaveSRAMradioButton3.UseVisualStyleBackColor = true;
             this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMradioButton3_CheckedChanged);
@@ -391,7 +391,7 @@
             this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 62);
             this.AutosaveSRAMCheckbox.Name = "AutosaveSRAMCheckbox";
             this.AutosaveSRAMCheckbox.Size = new System.Drawing.Size(15, 14);
-            this.AutosaveSRAMCheckbox.TabIndex = 21;
+            this.AutosaveSRAMCheckbox.TabIndex = 4;
             this.AutosaveSRAMCheckbox.UseVisualStyleBackColor = true;
             this.AutosaveSRAMCheckbox.CheckedChanged += new System.EventHandler(this.AutosaveSRAMCheckbox_CheckedChanged);
             // 
@@ -411,7 +411,7 @@
             this.label7.Location = new System.Drawing.Point(3, 1);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(50, 13);
-            this.label7.TabIndex = 2;
+            this.label7.TabIndex = 0;
             this.label7.Text = "Lua Core";
             // 
             // LuaInterfaceRadio
@@ -420,7 +420,7 @@
             this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
             this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
             this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
-            this.LuaInterfaceRadio.TabIndex = 1;
+            this.LuaInterfaceRadio.TabIndex = 2;
             this.LuaInterfaceRadio.TabStop = true;
             this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
             this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
@@ -431,7 +431,7 @@
             this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
             this.NLuaRadio.Name = "NLuaRadio";
             this.NLuaRadio.Size = new System.Drawing.Size(194, 17);
-            this.NLuaRadio.TabIndex = 0;
+            this.NLuaRadio.TabIndex = 1;
             this.NLuaRadio.TabStop = true;
             this.NLuaRadio.Text = "NLua+KopiLua - Reliable but slower";
             this.NLuaRadio.UseVisualStyleBackColor = true;
@@ -521,7 +521,7 @@
             this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 39);
             this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
             this.BackupSRamCheckbox.Size = new System.Drawing.Size(203, 17);
-            this.BackupSRamCheckbox.TabIndex = 9;
+            this.BackupSRamCheckbox.TabIndex = 3;
             this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
@@ -550,7 +550,7 @@
             this.label9.Location = new System.Drawing.Point(6, 16);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(225, 13);
-            this.label9.TabIndex = 28;
+            this.label9.TabIndex = 0;
             this.label9.Text = "Save SaveRAM to .AutoSaveRAM.SaveRAM";
             // 
             // label10
@@ -559,7 +559,7 @@
             this.label10.Location = new System.Drawing.Point(9, 34);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(33, 13);
-            this.label10.TabIndex = 29;
+            this.label10.TabIndex = 1;
             this.label10.Text = "every";
             // 
             // EmuHawkOptions

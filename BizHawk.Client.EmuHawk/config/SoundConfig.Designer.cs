@@ -89,7 +89,7 @@
 			this.cbEnableNormal.Location = new System.Drawing.Point(6, 20);
 			this.cbEnableNormal.Name = "cbEnableNormal";
 			this.cbEnableNormal.Size = new System.Drawing.Size(48, 17);
-			this.cbEnableNormal.TabIndex = 3;
+			this.cbEnableNormal.TabIndex = 0;
 			this.cbEnableNormal.Text = "Ena.";
 			this.cbEnableNormal.UseVisualStyleBackColor = true;
 			this.cbEnableNormal.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
@@ -116,7 +116,7 @@
 			this.nudRWFF.Location = new System.Drawing.Point(58, 223);
 			this.nudRWFF.Name = "nudRWFF";
 			this.nudRWFF.Size = new System.Drawing.Size(45, 20);
-			this.nudRWFF.TabIndex = 15;
+			this.nudRWFF.TabIndex = 7;
 			this.nudRWFF.Value = new decimal(new int[] {
             100,
             0,
@@ -129,7 +129,7 @@
 			this.cbEnableRWFF.Location = new System.Drawing.Point(58, 20);
 			this.cbEnableRWFF.Name = "cbEnableRWFF";
 			this.cbEnableRWFF.Size = new System.Drawing.Size(48, 17);
-			this.cbEnableRWFF.TabIndex = 14;
+			this.cbEnableRWFF.TabIndex = 4;
 			this.cbEnableRWFF.Text = "Ena.";
 			this.cbEnableRWFF.UseVisualStyleBackColor = true;
 			// 
@@ -141,7 +141,7 @@
 			this.tbRWFF.Name = "tbRWFF";
 			this.tbRWFF.Orientation = System.Windows.Forms.Orientation.Vertical;
 			this.tbRWFF.Size = new System.Drawing.Size(42, 164);
-			this.tbRWFF.TabIndex = 13;
+			this.tbRWFF.TabIndex = 6;
 			this.tbRWFF.TickFrequency = 10;
 			this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
 			// 
@@ -152,7 +152,7 @@
 			this.label2.Location = new System.Drawing.Point(56, 42);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(50, 13);
-			this.label2.TabIndex = 12;
+			this.label2.TabIndex = 5;
 			this.label2.Text = "RW && FF";
 			// 
 			// label1
@@ -162,7 +162,7 @@
 			this.label1.Location = new System.Drawing.Point(6, 42);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(40, 13);
-			this.label1.TabIndex = 11;
+			this.label1.TabIndex = 1;
 			this.label1.Text = "Normal";
 			// 
 			// tbNormal
@@ -173,7 +173,7 @@
 			this.tbNormal.Name = "tbNormal";
 			this.tbNormal.Orientation = System.Windows.Forms.Orientation.Vertical;
 			this.tbNormal.Size = new System.Drawing.Size(42, 164);
-			this.tbNormal.TabIndex = 0;
+			this.tbNormal.TabIndex = 2;
 			this.tbNormal.TickFrequency = 10;
 			this.tbNormal.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
 			// 
@@ -182,7 +182,7 @@
 			this.nudNormal.Location = new System.Drawing.Point(5, 223);
 			this.nudNormal.Name = "nudNormal";
 			this.nudNormal.Size = new System.Drawing.Size(45, 20);
-			this.nudNormal.TabIndex = 1;
+			this.nudNormal.TabIndex = 3;
 			this.nudNormal.Value = new decimal(new int[] {
             100,
             0,
@@ -199,7 +199,7 @@
 			this.listBoxSoundDevices.Location = new System.Drawing.Point(138, 110);
 			this.listBoxSoundDevices.Name = "listBoxSoundDevices";
 			this.listBoxSoundDevices.Size = new System.Drawing.Size(254, 95);
-			this.listBoxSoundDevices.TabIndex = 7;
+			this.listBoxSoundDevices.TabIndex = 8;
 			// 
 			// SoundDeviceLabel
 			// 
@@ -207,7 +207,7 @@
 			this.SoundDeviceLabel.Location = new System.Drawing.Point(135, 89);
 			this.SoundDeviceLabel.Name = "SoundDeviceLabel";
 			this.SoundDeviceLabel.Size = new System.Drawing.Size(78, 13);
-			this.SoundDeviceLabel.TabIndex = 6;
+			this.SoundDeviceLabel.TabIndex = 7;
 			this.SoundDeviceLabel.Text = "Sound Device:";
 			// 
 			// BufferSizeLabel
@@ -217,7 +217,7 @@
 			this.BufferSizeLabel.Location = new System.Drawing.Point(135, 210);
 			this.BufferSizeLabel.Name = "BufferSizeLabel";
 			this.BufferSizeLabel.Size = new System.Drawing.Size(61, 13);
-			this.BufferSizeLabel.TabIndex = 8;
+			this.BufferSizeLabel.TabIndex = 9;
 			this.BufferSizeLabel.Text = "Buffer Size:";
 			// 
 			// BufferSizeNumeric
@@ -236,7 +236,7 @@
             0});
 			this.BufferSizeNumeric.Name = "BufferSizeNumeric";
 			this.BufferSizeNumeric.Size = new System.Drawing.Size(59, 20);
-			this.BufferSizeNumeric.TabIndex = 9;
+			this.BufferSizeNumeric.TabIndex = 10;
 			this.BufferSizeNumeric.Value = new decimal(new int[] {
             100,
             0,
@@ -250,7 +250,7 @@
 			this.BufferSizeUnitsLabel.Location = new System.Drawing.Point(267, 210);
 			this.BufferSizeUnitsLabel.Name = "BufferSizeUnitsLabel";
 			this.BufferSizeUnitsLabel.Size = new System.Drawing.Size(63, 13);
-			this.BufferSizeUnitsLabel.TabIndex = 10;
+			this.BufferSizeUnitsLabel.TabIndex = 11;
 			this.BufferSizeUnitsLabel.Text = "milliseconds";
 			// 
 			// grpOutputMethod
@@ -261,7 +261,7 @@
 			this.grpOutputMethod.Location = new System.Drawing.Point(292, 12);
 			this.grpOutputMethod.Name = "grpOutputMethod";
 			this.grpOutputMethod.Size = new System.Drawing.Size(100, 90);
-			this.grpOutputMethod.TabIndex = 5;
+			this.grpOutputMethod.TabIndex = 12;
 			this.grpOutputMethod.TabStop = false;
 			this.grpOutputMethod.Text = "Output Method";
 			// 
@@ -307,7 +307,7 @@
 			this.cbMuteFrameAdvance.Location = new System.Drawing.Point(139, 68);
 			this.cbMuteFrameAdvance.Name = "cbMuteFrameAdvance";
 			this.cbMuteFrameAdvance.Size = new System.Drawing.Size(128, 17);
-			this.cbMuteFrameAdvance.TabIndex = 17;
+			this.cbMuteFrameAdvance.TabIndex = 6;
 			this.cbMuteFrameAdvance.Text = "Mute Frame Advance";
 			this.cbMuteFrameAdvance.UseVisualStyleBackColor = true;
 			// 
@@ -317,7 +317,7 @@
 			this.cbEnableMaster.Location = new System.Drawing.Point(139, 16);
 			this.cbEnableMaster.Name = "cbEnableMaster";
 			this.cbEnableMaster.Size = new System.Drawing.Size(128, 17);
-			this.cbEnableMaster.TabIndex = 18;
+			this.cbEnableMaster.TabIndex = 4;
 			this.cbEnableMaster.Text = "Sound Master Enable";
 			this.cbEnableMaster.UseVisualStyleBackColor = true;
 			this.cbEnableMaster.CheckedChanged += new System.EventHandler(this.UpdateSoundDialog);
@@ -328,7 +328,7 @@
 			this.label3.Location = new System.Drawing.Point(161, 35);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(126, 26);
-			this.label3.TabIndex = 19;
+			this.label3.TabIndex = 5;
 			this.label3.Text = "Controls whether cores even generate audio.";
 			// 
 			// SoundConfig
