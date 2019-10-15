@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		public int Frame => 0;
+		public int Frame => GetFrameCount();
 
 		public string SystemId => "NDS";
 
@@ -32,12 +32,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			throw new NotImplementedException();
+			int buttons = (controller.IsPressed("A") ? 1 : 0) | (controller.IsPressed("B") ? 2 : 0)
+				| (controller.IsPressed("Select") ? 4 : 0) | (controller.IsPressed("Start") ? 8 : 0)
+				| (controller.IsPressed("Right") ? 0x10 : 0) | (controller.IsPressed("Left") ? 0x20 : 0)
+				| (controller.IsPressed("Up") ? 0x40 : 0) | (controller.IsPressed("Down") ? 0x80 : 0)
+				| (controller.IsPressed("R") ? 0x100 : 0) | (controller.IsPressed("L") ? 0x200 : 0)
+				| (controller.IsPressed("X") ? 0x400 : 0) | (controller.IsPressed("Y") ? 0x800 : 0)
+				| (controller.IsPressed("Touch") ? 0x2000 : 0)
+				| (controller.IsPressed("Lid") ? 0x4000 : 0);
+			FrameAdvance((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
+			return true;
 		}
 
 		public void ResetCounters()
 		{
-			throw new NotImplementedException();
+			_ResetCounters();
 		}
 
 		// debug path/build for easier testing
@@ -51,6 +60,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		[DllImport(dllPath)]
 		private static extern void LoadROM(byte* file, int fileSize);
+
+		[DllImport(dllPath, EntryPoint = "ResetCounters")]
+		private static extern void _ResetCounters();
+		[DllImport(dllPath)]
+		private static extern int GetFrameCount();
+
+		[DllImport(dllPath)]
+		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
 		public MelonDS(byte[] file)
