@@ -892,7 +892,7 @@
             this.WatchListView.GridLines = true;
             this.WatchListView.Location = new System.Drawing.Point(16, 76);
             this.WatchListView.Name = "WatchListView";
-            this.WatchListView.Size = new System.Drawing.Size(332, 281);
+            this.WatchListView.Size = new System.Drawing.Size(363, 281);
             this.WatchListView.TabIndex = 2;
             this.WatchListView.UseCustomBackground = true;
             this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
@@ -906,7 +906,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 378);
+            this.ClientSize = new System.Drawing.Size(395, 378);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
