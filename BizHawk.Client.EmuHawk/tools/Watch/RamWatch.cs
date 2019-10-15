@@ -1303,14 +1303,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 		#endregion
 
-		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
-		{
-			PokeAddressToolBarItem.Enabled =
-				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
-		}
-
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
