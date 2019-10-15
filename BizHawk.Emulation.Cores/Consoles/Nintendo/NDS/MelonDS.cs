@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura")]
-	class MelonDS : IEmulator
+	unsafe class MelonDS : IEmulator
 	{
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
@@ -45,12 +45,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		//const string dllPath = "libmelonDS.dll";
 
 		[DllImport(dllPath)]
-		public static extern bool Init();
+		private static extern bool Init();
 		[DllImport(dllPath)]
-		public static extern void Deinit();
+		private static extern void Deinit();
+
+		[DllImport(dllPath)]
+		private static extern void LoadROM(byte* file, int fileSize);
 
 		[CoreConstructor("NDS")]
-		public MelonDS()
+		public MelonDS(byte[] file)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition();
@@ -82,6 +85,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			if (!Init())
 				throw new Exception("Failed to init NDS.");
+
+			fixed (byte* f = file)
+			{
+				LoadROM(f, file.Length);
+			}
 		}
 	}
 }
