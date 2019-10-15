@@ -58,14 +58,19 @@ namespace BizHawk.Client.EmuHawk
 			_sortedColumn = "";
 			_sortReverse = false;
 
-			AddColumn(WatchList.ADDRESS, "Address", 100, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.VALUE, "Value", 100, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.PREV, "Prev", 59, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.CHANGES, "Changes", 54, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.DIFF, "Diff", 59, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.TYPE, "Type", 55, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.DOMAIN, "Domain", 55, InputRoll.RollColumn.InputType.Text);
-			AddColumn(WatchList.NOTES, "Notes", 128, InputRoll.RollColumn.InputType.Text);
+
+			SetColumns();
+		}
+
+		private void SetColumns()
+		{
+			foreach (var column in Settings.Columns)
+			{
+				if (WatchListView.AllColumns[column.Name] == null)
+				{
+					WatchListView.AllColumns.Add(column);
+				}
+			}
 		}
 
 		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
@@ -91,20 +96,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RamWatchSettings()
 			{
-				Columns = new ColumnList
+				Columns = new List<InputRoll.RollColumn>
 				{
-					new Column { Name = WatchList.ADDRESS, Visible = true, Index = 0, Width = 60 },
-					new Column { Name = WatchList.VALUE, Visible = true, Index = 1, Width = 59 },
-					new Column { Name = WatchList.PREV, Visible = false, Index = 2, Width = 59 },
-					new Column { Name = WatchList.CHANGES, Visible = true, Index = 3, Width = 55 },
-					new Column { Name = WatchList.DIFF, Visible = false, Index = 4, Width = 59 },
-					new Column { Name = WatchList.TYPE, Visible = false, Index = 5, Width = 55 },
-					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = WatchList.NOTES, Visible = true, Index = 7, Width = 128 },
+					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60 },
+					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59 },
+					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59 },
+					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 55 },
+					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59 },
+					new InputRoll.RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55 },
+					new InputRoll.RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55 },
+					new InputRoll.RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128 },
 				};
 			}
 
-			public ColumnList Columns { get; set; }
+			public List<InputRoll.RollColumn> Columns { get; set; }
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
@@ -537,8 +542,8 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			// InputRoll TODO
-			//LoadColumnInfo(WatchListView, Settings.Columns);
+			WatchListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -593,10 +598,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			// Inputroll TODO
-			////WatchListView.UserSettingsSerialized()
-
-			////SaveColumnInfo(WatchListView, Settings.Columns);
+			Settings.Columns = WatchListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -1100,13 +1102,14 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<ToolStripMenuItem>()
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
-			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu());
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			Global.Config.DisplayRamWatch = false;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			// InputRoll TODO
-			//LoadColumnInfo(WatchListView, Settings.Columns);
+
+			WatchListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		#endregion
@@ -1118,7 +1121,7 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Settings.TopMost;
 			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
-			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu());
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
 
 			PokeAddressToolBarItem.Enabled =
@@ -1129,9 +1132,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			//Input Roll TODO
-			//SaveColumnInfo(WatchListView, Settings.Columns);
-			//LoadColumnInfo(WatchListView, Settings.Columns);
+			Settings.Columns = WatchListView.AllColumns;
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)

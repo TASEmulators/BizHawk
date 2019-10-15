@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			}
 		}
 
-		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll)
+		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 					var sender = (ToolStripMenuItem)o;
 					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					columns.ColumnsChanged();
-
+					changeCallback();
 					inputRoll.Refresh();
 				};
 
