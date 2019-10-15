@@ -42,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
-
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -82,14 +81,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new List<InputRoll.RollColumn>
 				{
-					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60 },
-					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59 },
-					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59 },
-					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 55 },
-					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59 },
-					new InputRoll.RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55 },
-					new InputRoll.RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55 },
-					new InputRoll.RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128 },
+					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128, Type = InputRoll.RollColumn.InputType.Text }
 				};
 			}
 
