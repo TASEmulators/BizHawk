@@ -553,9 +553,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OrderColumn(int index)
+		private void OrderColumn(InputRoll.RollColumn column)
 		{
-			var column = WatchListView.AllColumns[index];
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -1278,7 +1277,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// InputRoll TODO
-		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
 		}
