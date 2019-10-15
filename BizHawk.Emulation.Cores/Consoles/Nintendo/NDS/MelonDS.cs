@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		public int Frame => throw new NotImplementedException();
+		public int Frame => 0;
 
 		public string SystemId => "NDS";
 
@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			Deinit();
 		}
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -45,7 +45,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		//const string dllPath = "libmelonDS.dll";
 
 		[DllImport(dllPath)]
-		public static extern int test();
+		public static extern bool Init();
+		[DllImport(dllPath)]
+		public static extern void Deinit();
 
 		[CoreConstructor("NDS")]
 		public MelonDS()
@@ -78,7 +80,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			CoreComm.NominalWidth = 256;
 			CoreComm.NominalHeight = 192;
 
-			Console.WriteLine("Melon returned " + test());
+			if (!Init())
+				throw new Exception("Failed to init NDS.");
 		}
 	}
 }
