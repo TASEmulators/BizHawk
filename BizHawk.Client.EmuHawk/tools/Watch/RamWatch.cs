@@ -73,22 +73,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
-		{
-			if (WatchListView.AllColumns[columnName] == null)
-			{
-				var column = new InputRoll.RollColumn
-				{
-					Name = columnName,
-					Text = columnText,
-					Width = columnWidth,
-					Type = columnType
-				};
-
-				WatchListView.AllColumns.Add(column);
-			}
-		}
-
 		[ConfigPersist]
 		public RamWatchSettings Settings { get; set; }
 
@@ -572,18 +556,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OrderColumn(int index)
 		{
-			// InputRoll TODO
-			////var column = WatchListView.Columns[index];
-			////if (column.Name != _sortedColumn)
-			////{
-			////	_sortReverse = false;
-			////}
+			var column = WatchListView.AllColumns[index];
+			if (column.Name != _sortedColumn)
+			{
+				_sortReverse = false;
+			}
 
-			////_watches.OrderWatches(column.Name, _sortReverse);
+			_watches.OrderWatches(column.Name, _sortReverse);
 
-			////_sortedColumn = column.Name;
-			////_sortReverse ^= true;
-			////WatchListView.Refresh();
+			_sortedColumn = column.Name;
+			_sortReverse ^= true;
+			WatchListView.Refresh();
 		}
 
 		private void SaveAs()
@@ -1295,6 +1278,7 @@ namespace BizHawk.Client.EmuHawk
 			EditWatch();
 		}
 
+		// InputRoll TODO
 		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
