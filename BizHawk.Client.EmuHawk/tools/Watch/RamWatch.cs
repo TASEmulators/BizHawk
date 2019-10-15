@@ -1100,7 +1100,7 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<ToolStripMenuItem>()
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
-			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu());
 
 			Global.Config.DisplayRamWatch = false;
 
@@ -1118,7 +1118,7 @@ namespace BizHawk.Client.EmuHawk
 			TopMost = Settings.TopMost;
 			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
-			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu());
 			UpdateStatusBar();
 
 			PokeAddressToolBarItem.Enabled =
