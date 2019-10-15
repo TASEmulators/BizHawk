@@ -10,7 +10,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura")]
-	unsafe class MelonDS : IEmulator
+	unsafe partial class MelonDS : IEmulator
 	{
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
