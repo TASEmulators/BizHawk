@@ -878,8 +878,10 @@
             // 
             // WatchListView
             // 
-			this.WatchListView.FullRowSelect = true;
-			this.WatchListView.MultiSelect = true;
+            this.WatchListView.AllowColumnResize = true;
+            this.WatchListView.AllowColumnReorder = true;
+            this.WatchListView.FullRowSelect = true;
+            this.WatchListView.MultiSelect = true;
             this.WatchListView.AllowColumnReorder = true;
             this.WatchListView.AllowDrop = true;
             this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
