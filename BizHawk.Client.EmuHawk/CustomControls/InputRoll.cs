@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		private Size _charSize;
 
 		private RollColumn _columnDown;
+		private RollColumn _columnResizing;
 
 		private int? _currentX;
 		private int? _currentY;
@@ -971,18 +972,30 @@ namespace BizHawk.Client.EmuHawk
 		#region Mouse and Key Events
 
 		private bool _columnDownMoved;
+		private int _previousX = 0; // TODO: move me
+
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			_previousX = _currentX ?? 0;
 			_currentX = e.X;
 			_currentY = e.Y;
 
-			if (_columnDown != null)
+			if (_columnResizing != null)
+			{
+				if (_currentX != _previousX)
+				{
+					_columnResizing.Width += _currentX - _previousX;
+					_columns.ColumnsChanged();
+					Refresh();
+				}
+			}
+			else if (_columnDown != null)
 			{
 				_columnDownMoved = true;
 			}
 
 			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-
+			
 			// SuuperW: Hide lag frames
 			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 			{
@@ -1014,6 +1027,10 @@ namespace BizHawk.Client.EmuHawk
 				Refresh();
 			}
 
+			Cursor = IsHoveringOnColumnEdge || _columnResizing != null
+				? Cursors.VSplit
+				: Cursors.Default;
+
 			base.OnMouseMove(e);
 		}
 
@@ -1034,6 +1051,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentY = null;
 			CurrentCell = null;
 			IsPaintDown = false;
+			_columnResizing = null;
 			_hoverTimer.Stop();
 			Refresh();
 			base.OnMouseLeave(e);
@@ -1079,6 +1097,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
+				if (IsHoveringOnColumnEdge)
+				{
+					_columnResizing = CurrentCell.Column;
+				}
 				if (IsHoveringOnColumnCell)
 				{
 					_columnDown = CurrentCell.Column;
@@ -1209,7 +1231,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			if (IsHoveringOnColumnCell)
+			if (_columnResizing == null && IsHoveringOnColumnCell)
 			{
 				if (_columnDown != null && _columnDownMoved)
 				{
@@ -1227,6 +1249,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			_columnResizing = null;
 			_columnDown = null;
 			_columnDownMoved = false;
 			RightButtonHeld = false;
@@ -1590,7 +1613,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				NeedsVScrollbar = RowCount > 1;
+				//NeedsVScrollbar = RowCount > 1;
+				NeedsVScrollbar = false;
 				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - DrawWidth + 1 > 0;
 			}
 
@@ -1731,11 +1755,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsHoveringOnColumnCell => CurrentCell?.Column != null && !CurrentCell.RowIndex.HasValue;
 
+		private bool IsHoveringOnColumnEdge => AllowColumnResize && IsHoveringOnColumnCell && IsPointingOnCellEdge(_currentX);
+
 		private bool IsHoveringOnDataCell => CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue;
 
 		private bool WasHoveringOnColumnCell => LastCell?.Column != null && !LastCell.RowIndex.HasValue;
 
 		private bool WasHoveringOnDataCell => LastCell?.Column != null && LastCell.RowIndex.HasValue;
+
+		private bool IsPointingOnCellEdge(int? x)
+		{
+			if (x.HasValue)
+			{
+				if (HorizontalOrientation)
+				{
+					return false; // TODO: support column resize in horizontal orientation
+				}
+
+				foreach (RollColumn column in _columns.VisibleColumns)
+				{
+					if (column.Left - _hBar.Value + (column.Width - column.Width / 6) <= x.Value && column.Right - _hBar.Value >= x.Value)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Finds the specific cell that contains the (x, y) coordinate.
@@ -1782,18 +1829,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// A boolean that indicates if the InputRoll is too large horizontally and requires a horizontal scrollbar.
 		private bool NeedsHScrollbar { get; set; }
-
-		/// <summary>
-		/// Updates the width of the supplied column.
-		/// <remarks>Call when changing the ColumnCell text, CellPadding, or text font.</remarks>
-		/// </summary>
-		/// <param name="col">The RollColumn object to update.</param>
-		/// <returns>The new width of the RollColumn object.</returns>
-		private int UpdateWidth(RollColumn col)
-		{
-			col.Width = (col.Text.Length * _charSize.Width) + (CellWidthPadding * 4);
-			return col.Width.Value;
-		}
 
 		/// <summary>
 		/// Gets the total width of all the columns by using the last column's Right property.
