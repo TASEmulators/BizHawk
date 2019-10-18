@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = "NDS";
+			ControllerDefinition.Name = "NDS Controller";
 			ControllerDefinition.BoolButtons.Add("Left");
 			ControllerDefinition.BoolButtons.Add("Right");
 			ControllerDefinition.BoolButtons.Add("Up");
