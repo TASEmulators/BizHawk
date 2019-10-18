@@ -94,6 +94,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			{
 				var menuItem = new ToolStripMenuItem
 				{
+					Name = column.Name,
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
 					CheckOnClick = true,
