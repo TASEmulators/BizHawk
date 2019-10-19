@@ -44,6 +44,38 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private string Cap(string text, int? width)
+		{
+			if (string.IsNullOrEmpty(text) || width == null)
+			{
+				return text;
+			}
+
+			var max = width.Value / (_charSize.Width - CellWidthPadding);
+			return text.Length < max
+				? text
+				: text.Substring(0, max);
+		}
+
+		private void DrawString(string text, int? width, Point point)
+		{
+			if (string.IsNullOrWhiteSpace(text))
+			{
+				return;
+			}
+
+			if (width.HasValue)
+			{
+				var max = (width.Value - CellWidthPadding) / _charSize.Width;
+				if (text.Length >= max)
+				{
+					text = text.Substring(0, max);
+				}
+			}
+
+			_gdi.DrawString(text, point);
+		}
+
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
 			// Do nothing, and this should never be called
@@ -105,12 +137,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_gdi.PrepDrawString(_normalFont, SystemColors.HighlightText);
-						_gdi.DrawString(column.Text, point);
+						DrawString(column.Text, column.Width, point);
 						_gdi.PrepDrawString(_normalFont, _foreColor);
 					}
 					else
 					{
-						_gdi.DrawString(column.Text, point);
+						DrawString(column.Text, column.Width, point);
 					}
 
 					start += CellHeight;
@@ -127,12 +159,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_gdi.PrepDrawString(_normalFont, SystemColors.HighlightText);
-						_gdi.DrawString(column.Text, point);
+						DrawString(column.Text, column.Width, point);
 						_gdi.PrepDrawString(_normalFont, _foreColor);
 					}
 					else
 					{
-						_gdi.DrawString(column.Text, point);
+						DrawString(column.Text, column.Width, point);
 					}
 				}
 			}
@@ -198,10 +230,7 @@ namespace BizHawk.Client.EmuHawk
 								_gdi.PrepDrawString(_rotatedFont, _foreColor);
 							}
 
-							if (!string.IsNullOrWhiteSpace(text))
-							{
-								_gdi.DrawString(text, point);
-							}
+							DrawString(text, ColumnWidth, point);
 
 							if (rePrep)
 							{
@@ -250,10 +279,7 @@ namespace BizHawk.Client.EmuHawk
 								rePrep = true;
 							}
 
-							if (!string.IsNullOrWhiteSpace(text))
-							{
-								_gdi.DrawString(text, new Point(point.X + strOffsetX, point.Y + strOffsetY));
-							}
+							DrawString(text, col.Width, new Point(point.X + strOffsetX, point.Y + strOffsetY));
 
 							if (rePrep)
 							{
