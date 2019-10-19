@@ -3,8 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 
-using SlimDX.DirectInput;
-
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
@@ -213,31 +211,25 @@ namespace BizHawk.Client.EmuHawk
 		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
-		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
 
 		void HandleButton(string button, bool newState, InputFocus source)
 		{
-			bool isModifier = IgnoreKeys.Contains(button);
-			if (EnableIgnoreModifiers && isModifier) return;
-			if (LastState[button] && newState) return;
-			if (!LastState[button] && !newState) return;
+			ModifierKey currentModifier = ButtonToModifierKey(button);
+			if (EnableIgnoreModifiers && currentModifier != ModifierKey.None) return;
+			if (LastState[button] == newState) return;
 
 			//apply 
 			//NOTE: this is not quite right. if someone held leftshift+rightshift it would be broken. seems unlikely, though.
-			if (button == "LeftShift")
+			if (currentModifier != ModifierKey.None)
 			{
-				_Modifiers &= ~ModifierKey.Shift;
 				if (newState)
-					_Modifiers |= ModifierKey.Shift;
+					_Modifiers |= currentModifier;
+				else
+					_Modifiers &= ~currentModifier;
 			}
-			if (button == "RightShift") { _Modifiers &= ~ModifierKey.Shift; if (newState) _Modifiers |= ModifierKey.Shift; }
-			if (button == "LeftControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
-			if (button == "RightControl") { _Modifiers &= ~ModifierKey.Control; if (newState) _Modifiers |= ModifierKey.Control; }
-			if (button == "LeftAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
-			if (button == "RightAlt") { _Modifiers &= ~ModifierKey.Alt; if (newState) _Modifiers |= ModifierKey.Alt; }
 
 			if (UnpressState.ContainsKey(button))
 			{
@@ -248,15 +240,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
-			if (button == "LeftShift") mods &= ~ModifierKey.Shift;
-			if (button == "RightShift") mods &= ~ModifierKey.Shift;
-			if (button == "LeftControl") mods &= ~ModifierKey.Control;
-			if (button == "RightControl") mods &= ~ModifierKey.Control;
-			if (button == "LeftAlt") mods &= ~ModifierKey.Alt;
-			if (button == "RightAlt") mods &= ~ModifierKey.Alt;
+			if (currentModifier != ModifierKey.None)
+				mods &= ~currentModifier;
 
 			var ie = new InputEvent
 				{
@@ -297,7 +284,21 @@ namespace BizHawk.Client.EmuHawk
 			_NewEvents.Add(ie);
 		}
 
-		ModifierKey _Modifiers;
+		private static ModifierKey ButtonToModifierKey(string button)
+		{
+			switch (button)
+			{
+				case "LeftShift":  return ModifierKey.Shift;
+				case "RightShift": return ModifierKey.Shift;
+				case "LeftControl":  return ModifierKey.Control;
+				case "RightControl": return ModifierKey.Control;
+				case "LeftAlt":  return ModifierKey.Alt;
+				case "RightAlt": return ModifierKey.Alt;
+			}
+			return ModifierKey.None;
+		}
+
+		private ModifierKey _Modifiers;
 		private readonly List<InputEvent> _NewEvents = new List<InputEvent>();
 
 		//do we need this?
@@ -433,21 +434,23 @@ namespace BizHawk.Client.EmuHawk
 							//HandleButton("WMouse 1", false);
 							//HandleButton("WMouse 2", false);
 						}
-
 					}
 
-					//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
-					AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
-
-					foreach (var ie in _NewEvents)
+					if (_NewEvents.Count != 0)
 					{
-						//events are swallowed in some cases:
-						if (ie.LogicalButton.Alt && ShouldSwallow(GlobalWin.MainForm.AllowInput(true), ie))
-						{ }
-						else if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
-						{ }
-						else
+						//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
+						AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
+
+						foreach (var ie in _NewEvents)
+						{
+							//events are swallowed in some cases:
+							if (ie.LogicalButton.Alt && ShouldSwallow(GlobalWin.MainForm.AllowInput(true), ie))
+								continue;
+							if (ie.EventType == InputEventType.Press && ShouldSwallow(allowInput, ie))
+								continue;
+
 							EnqueueEvent(ie);
+						}
 					}
 				} //lock(this)
 
@@ -518,13 +521,10 @@ namespace BizHawk.Client.EmuHawk
 
 					if (ShouldSwallow(allowInput, ie)) continue;
 
-					//as a special perk, we'll accept escape immediately
-					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button == "Escape")
-						goto ACCEPT;
+					//ignore presses, but as a special perk, we'll accept escape immediately
+					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button != "Escape")
+						continue;
 
-					if (ie.EventType == InputEventType.Press) continue;
-
-				ACCEPT:
 					Console.WriteLine("Bind Event: {0} ", ie);
 
 					foreach (var kvp in LastState)
@@ -556,6 +556,5 @@ namespace BizHawk.Client.EmuHawk
 			UnpressState[keystr] = true;
 			LastState[keystr] = true;
 		}
-
 	}
 }
