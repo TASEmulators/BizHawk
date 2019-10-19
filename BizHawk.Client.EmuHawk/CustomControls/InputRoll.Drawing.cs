@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Color cellColor = rowColor;
-				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref cellColor);
+				QueryItemBkColor?.Invoke(cell.RowIndex.Value, cell.Column, ref cellColor);
 
 				// Alpha layering for cell before selection
 				float alpha = (float)cellColor.A / 255;
@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int j = firstVisibleColumn; j <= lastVisible; j++)
 					{
 						Color itemColor = Color.White;
-						QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);
+						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
 						if (itemColor == Color.White)
 						{
 							itemColor = rowColor;
@@ -603,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						Color itemColor = Color.White;
-						QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);
+						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
 						if (itemColor == Color.White)
 						{
 							itemColor = rowColor;
