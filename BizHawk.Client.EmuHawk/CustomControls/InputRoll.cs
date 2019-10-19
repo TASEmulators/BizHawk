@@ -1613,8 +1613,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				//NeedsVScrollbar = RowCount > 1;
-				NeedsVScrollbar = false;
+				NeedsVScrollbar = RowCount > 1;
 				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - DrawWidth + 1 > 0;
 			}
 
