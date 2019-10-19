@@ -44,19 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string Cap(string text, int? width)
-		{
-			if (string.IsNullOrEmpty(text) || width == null)
-			{
-				return text;
-			}
-
-			var max = width.Value / (_charSize.Width - CellWidthPadding);
-			return text.Length < max
-				? text
-				: text.Substring(0, max);
-		}
-
 		private void DrawString(string text, int? width, Point point)
 		{
 			if (string.IsNullOrWhiteSpace(text))
