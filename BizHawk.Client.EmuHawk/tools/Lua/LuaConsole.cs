@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
 			// Hack for previous config settings
-			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
+			if (Settings.Columns.Any(c => c.Text == null))
 			{
 				Settings = new LuaConsoleSettings();
 			}
@@ -154,6 +154,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			LuaListView.AllColumns.Clear();
 			SetColumns();
 		}
 
@@ -1467,6 +1468,15 @@ namespace BizHawk.Client.EmuHawk
 					UpdateDialog();
 				}
 			}
+		}
+
+		[RestoreDefaults]
+		private void RestoreDefaults()
+		{
+			Settings = new LuaConsoleSettings();
+			LuaListView.AllColumns.Clear();
+			SetColumns();
+			UpdateDialog();
 		}
 	}
 }

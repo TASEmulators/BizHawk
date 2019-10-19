@@ -323,6 +323,11 @@ namespace BizHawk.Client.EmuHawk
 				settings.RestoreDefaults();
 				RefreshSettings(form, dest, settings, idx);
 				form.Size = oldsize;
+
+				form.GetType()
+					.GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
+					.FirstOrDefault()
+					?.Invoke(form, new object[0]);
 			};
 		}
 
