@@ -59,19 +59,22 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					SaveColumnInfo(LuaListView, Settings.Columns);
-					
-					GlobalWin.DisplayManager.ClearLuaSurfaces();
 
-					if (GlobalWin.DisplayManager.ClientExtraPadding != Padding.Empty)
+					if (GlobalWin.DisplayManager != null)
 					{
-						GlobalWin.DisplayManager.ClientExtraPadding = new Padding(0);
-						GlobalWin.MainForm.FrameBufferResized();
-					}
+						GlobalWin.DisplayManager.ClearLuaSurfaces();
 
-					if (GlobalWin.DisplayManager.GameExtraPadding != Padding.Empty)
-					{
-						GlobalWin.DisplayManager.GameExtraPadding = new Padding(0);
-						GlobalWin.MainForm.FrameBufferResized();
+						if (GlobalWin.DisplayManager.ClientExtraPadding != Padding.Empty)
+						{
+							GlobalWin.DisplayManager.ClientExtraPadding = new Padding(0);
+							GlobalWin.MainForm.FrameBufferResized();
+						}
+
+						if (GlobalWin.DisplayManager.GameExtraPadding != Padding.Empty)
+						{
+							GlobalWin.DisplayManager.GameExtraPadding = new Padding(0);
+							GlobalWin.MainForm.FrameBufferResized();
+						}
 					}
 
 					LuaImp.GuiLibrary.DrawFinish();
@@ -187,9 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
-			LuaImp = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-				? (PlatformEmuLuaLibrary)new EmuLuaLibrary(Emulator.ServiceProvider)
-				: (PlatformEmuLuaLibrary)new NotReallyLuaLibrary();
+			LuaImp = new EmuLuaLibrary(Emulator.ServiceProvider);
 			if (currentScripts != null)
 			{
 				LuaImp.ScriptList.AddRange(currentScripts);
