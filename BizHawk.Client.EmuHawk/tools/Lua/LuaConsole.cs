@@ -13,6 +13,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1453,5 +1454,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void LuaListView_DoubleClick(object sender, EventArgs e)
+		{
+			var index = LuaListView.CurrentCell?.RowIndex;
+			if (index < LuaImp.ScriptList.Count)
+			{
+				var file = LuaImp.ScriptList[index.Value];
+				if (!file.IsSeparator)
+				{
+					file.Toggle();
+					UpdateDialog();
+				}
+			}
+		}
 	}
 }
