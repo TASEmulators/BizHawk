@@ -19,6 +19,12 @@ namespace BizHawk.Common.ReflectionExtensions
 				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
 		}
 
+		public static IEnumerable<MethodInfo> GetMethodsWithAttrib(this Type type, Type attributeType)
+		{
+			return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
+		}
+
 		/// <summary>
 		/// Gets the description attribute from an object
 		/// </summary>

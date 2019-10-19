@@ -34,7 +34,7 @@
 			this.FilterBox = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.ToWikiMarkupButton = new System.Windows.Forms.Button();
-			this.FunctionView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.FunctionView = new System.Windows.Forms.ListView();
 			this.LibraryReturn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.LibraryHead = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.LibraryName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -96,7 +96,6 @@
 			this.FunctionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.FunctionView.BlazingFast = false;
 			this.FunctionView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.LibraryReturn,
             this.LibraryHead,
@@ -105,11 +104,9 @@
             this.LibraryDescription});
 			this.FunctionView.FullRowSelect = true;
 			this.FunctionView.GridLines = true;
-			this.FunctionView.ItemCount = 0;
+			this.FunctionView.VirtualListSize = 0;
 			this.FunctionView.Location = new System.Drawing.Point(12, 12);
 			this.FunctionView.Name = "FunctionView";
-			this.FunctionView.SelectAllInProgress = false;
-			this.FunctionView.selectedItem = -1;
 			this.FunctionView.Size = new System.Drawing.Size(710, 291);
 			this.FunctionView.TabIndex = 1;
 			this.FunctionView.UseCompatibleStateImageBehavior = false;
@@ -170,7 +167,7 @@
 
 		private System.Windows.Forms.Button OK;
 		private System.DirectoryServices.DirectoryEntry directoryEntry1;
-		private VirtualListView FunctionView;
+		private System.Windows.Forms.ListView FunctionView;
 		private System.Windows.Forms.ColumnHeader LibraryHead;
 		private System.Windows.Forms.ColumnHeader LibraryReturn;
 		private System.Windows.Forms.ColumnHeader LibraryName;

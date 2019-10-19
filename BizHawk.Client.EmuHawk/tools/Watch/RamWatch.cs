@@ -42,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
-			WatchListView.VirtualMode = true;
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -57,6 +56,20 @@ namespace BizHawk.Client.EmuHawk
 
 			_sortedColumn = "";
 			_sortReverse = false;
+
+
+			SetColumns();
+		}
+
+		private void SetColumns()
+		{
+			foreach (var column in Settings.Columns)
+			{
+				if (WatchListView.AllColumns[column.Name] == null)
+				{
+					WatchListView.AllColumns.Add(column);
+				}
+			}
 		}
 
 		[ConfigPersist]
@@ -66,23 +79,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RamWatchSettings()
 			{
-				Columns = new ColumnList
+				Columns = new List<InputRoll.RollColumn>
 				{
-					new Column { Name = WatchList.ADDRESS, Visible = true, Index = 0, Width = 60 },
-					new Column { Name = WatchList.VALUE, Visible = true, Index = 1, Width = 59 },
-					new Column { Name = WatchList.PREV, Visible = false, Index = 2, Width = 59 },
-					new Column { Name = WatchList.CHANGES, Visible = true, Index = 3, Width = 55 },
-					new Column { Name = WatchList.DIFF, Visible = false, Index = 4, Width = 59 },
-					new Column { Name = WatchList.TYPE, Visible = false, Index = 5, Width = 55 },
-					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = WatchList.NOTES, Visible = true, Index = 7, Width = 128 },
+					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128, Type = InputRoll.RollColumn.InputType.Text }
 				};
 			}
 
-			public ColumnList Columns { get; set; }
+			public List<InputRoll.RollColumn> Columns { get; set; }
 		}
 
-		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
+		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
 
 		private IEnumerable<Watch> SelectedItems
 		{
@@ -117,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddWatch(Watch watch)
 		{
 			_watches.Add(watch);
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 			UpdateValues();
 			UpdateWatchCount();
 			Changes();
@@ -174,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Global.Config.RecentWatches.Add(path);
-					WatchListView.ItemCount = _watches.Count;
+					WatchListView.RowCount = _watches.Count;
 					UpdateWatchCount();
 					UpdateStatusBar();
 					_watches.Changes = false;
@@ -195,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					_watches.Load(file.FullName, append);
-					WatchListView.ItemCount = _watches.Count;
+					WatchListView.RowCount = _watches.Count;
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					UpdateStatusBar();
@@ -271,10 +284,8 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				WatchListView.BlazingFast = true;
 				WatchListView.UseCustomBackground = NeedsBackground;
 				WatchListView.Invalidate();
-				WatchListView.BlazingFast = false;
 			}
 		}
 
@@ -387,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FullyUpdateWatchList()
 		{
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 			UpdateWatchCount();
 			UpdateStatusBar();
 			UpdateValues();
@@ -422,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 					if (duplicate)
 					{
 						_watches.AddRange(we.Watches);
-						WatchListView.ItemCount = _watches.Count;
+						WatchListView.RowCount = _watches.Count;
 						UpdateWatchCount();
 					}
 					else
@@ -514,7 +525,8 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo(WatchListView, Settings.Columns);
+			WatchListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -528,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result || suppressAsk)
 			{
 				_watches.Clear();
-				WatchListView.ItemCount = _watches.Count;
+				WatchListView.RowCount = _watches.Count;
 				UpdateWatchCount();
 				UpdateStatusBar();
 				_sortReverse = false;
@@ -541,9 +553,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OrderColumn(int index)
+		private void OrderColumn(InputRoll.RollColumn column)
 		{
-			var column = WatchListView.Columns[index];
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -568,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			SaveColumnInfo(WatchListView, Settings.Columns);
+			Settings.Columns = WatchListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -610,34 +621,8 @@ namespace BizHawk.Client.EmuHawk
 			WatchCountLabel.Text = _watches.WatchCount + (_watches.WatchCount == 1 ? " watch" : " watches");
 		}
 
-		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
+		private void WatchListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			if (index >= _watches.Count)
-			{
-				return;
-			}
-
-			if (column == 0)
-			{
-				if (_watches[index].IsSeparator)
-				{
-					color = BackColor;
-				}
-				else if (_watches[index].Address >= _watches[index].Domain.Size)
-				{
-					color = Color.PeachPuff;
-				}
-				else if (Global.CheatList.IsActive(_watches[index].Domain, _watches[index].Address))
-				{
-					color = Color.LightCyan;
-				}
-			}
-		}
-
-		private void WatchListView_QueryItemText(int index, int column, out string text)
-		{
-			text = "";
-
 			if (index >= _watches.Count)
 			{
 				return;
@@ -645,7 +630,29 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches[index].IsSeparator)
 			{
-				if (WatchListView.Columns[column].Name == WatchList.ADDRESS)
+				color = BackColor;
+			}
+			else if (_watches[index].Address >= _watches[index].Domain.Size)
+			{
+				color = Color.PeachPuff;
+			}
+			else if (Global.CheatList.IsActive(_watches[index].Domain, _watches[index].Address))
+			{
+				color = Color.LightCyan;
+			}
+		}
+
+		private void WatchListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		{
+			text = "";
+			if (index >= _watches.Count)
+			{
+				return;
+			}
+
+			if (_watches[index].IsSeparator)
+			{
+				if (column.Name == WatchList.ADDRESS)
 				{
 					text = _watches[index].Notes;
 				}
@@ -653,9 +660,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = WatchListView.Columns[column].Name;
-
-			switch (columnName)
+			switch (column.Name)
 			{
 				case WatchList.ADDRESS:
 					text = _watches[index].AddressString;
@@ -796,7 +801,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Add(we.Watches[0]);
 				Changes();
 				UpdateWatchCount();
-				WatchListView.ItemCount = _watches.Count;
+				WatchListView.RowCount = _watches.Count;
 				UpdateValues();
 			}
 		}
@@ -816,7 +821,7 @@ namespace BizHawk.Client.EmuHawk
 					_watches.Remove(item);
 				}
 
-				WatchListView.ItemCount = _watches.Count;
+				WatchListView.RowCount = _watches.Count;
 				UpdateValues();
 				UpdateWatchCount();
 			}
@@ -870,7 +875,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Add(SeparatorWatch.Instance);
 			}
 
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 			Changes();
 			UpdateWatchCount();
 		}
@@ -900,13 +905,13 @@ namespace BizHawk.Client.EmuHawk
 
 			var indices = indexes.Select(t => t - 1);
 
-			WatchListView.SelectedIndices.Clear();
+			WatchListView.DeselectAll();
 			foreach (var t in indices)
 			{
-				WatchListView.SelectItem(t, true);
+				WatchListView.SelectRow(t, true);
 			}
 
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 		}
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
@@ -926,14 +931,14 @@ namespace BizHawk.Client.EmuHawk
 
 			var newIndices = indices.Select(t => t + 1);
 
-			WatchListView.SelectedIndices.Clear();
+			WatchListView.DeselectAll();
 			foreach (var t in newIndices)
 			{
-				WatchListView.SelectItem(t, true);
+				WatchListView.SelectRow(t, true);
 			}
 
 			Changes();
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 		}
 
 		private void MoveTopMenuItem_Click(object sender, EventArgs e)
@@ -954,13 +959,13 @@ namespace BizHawk.Client.EmuHawk
 
 			Changes();
 
-			WatchListView.SelectedIndices.Clear();
+			WatchListView.DeselectAll();
 			foreach (var t in indexes)
 			{
-				WatchListView.SelectItem(t, true);
+				WatchListView.SelectRow(t, true);
 			}
 
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 		}
 
 		private void MoveBottomMenuItem_Click(object sender, EventArgs e)
@@ -984,14 +989,14 @@ namespace BizHawk.Client.EmuHawk
 				newInd.Add(x);
 			}
 
-			WatchListView.SelectedIndices.Clear();
+			WatchListView.DeselectAll();
 			foreach (var t in newInd)
 			{
-				WatchListView.SelectItem(t, true);
+				WatchListView.SelectRow(t, true);
 			}
 
 			Changes();
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
@@ -1078,12 +1083,14 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<ToolStripMenuItem>()
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
-			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
 			Global.Config.DisplayRamWatch = false;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			LoadColumnInfo(WatchListView, Settings.Columns);
+
+			WatchListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		#endregion
@@ -1092,10 +1099,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
+			// Hack for previous config settings
+			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
+			{
+				Settings = new RamWatchSettings();
+			}
+
 			TopMost = Settings.TopMost;
 			_watches = new WatchList(MemoryDomains, Emu.SystemId);
 			LoadConfigSettings();
-			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
 
 			PokeAddressToolBarItem.Enabled =
@@ -1106,8 +1119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo(WatchListView, Settings.Columns);
-			LoadColumnInfo(WatchListView, Settings.Columns);
+			Settings.Columns = WatchListView.AllColumns;
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)
@@ -1122,7 +1134,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.Load(filePaths[0], append: false);
 				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
-				WatchListView.ItemCount = _watches.Count;
+				WatchListView.RowCount = _watches.Count;
 			}
 		}
 
@@ -1133,7 +1145,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			var indexes = WatchListView.SelectedIndices;
+			var indexes = WatchListView.SelectedRows.ToList();
 
 			EditContextMenuItem.Visible =
 				RemoveContextMenuItem.Visible =
@@ -1259,11 +1271,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (WatchListView.SelectAllInProgress)
-			{
-				return;
-			}
-
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any() &&
@@ -1275,7 +1282,8 @@ namespace BizHawk.Client.EmuHawk
 			EditWatch();
 		}
 
-		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		// InputRoll TODO
+		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
 		}
@@ -1291,7 +1299,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Remove(item);
 			}
 
-			WatchListView.ItemCount = _watches.Count;
+			WatchListView.RowCount = _watches.Count;
 			UpdateValues();
 			UpdateWatchCount();
 			UpdateStatusBar();
@@ -1299,14 +1307,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 		#endregion
-
-		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
-		{
-			PokeAddressToolBarItem.Enabled =
-				FreezeAddressToolBarItem.Enabled =
-				SelectedIndices.Any() &&
-				SelectedWatches.All(w => w.Domain.CanPoke());
-		}
 
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)

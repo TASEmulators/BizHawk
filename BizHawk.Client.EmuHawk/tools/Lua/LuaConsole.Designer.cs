@@ -104,10 +104,7 @@
 			this.InsertSeparatorToolbarItem = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.EraseToolbarItem = new System.Windows.Forms.ToolStripButton();
-			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.LuaListView = new InputRoll();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.CopyContextItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScriptListContextMenu.SuspendLayout();
@@ -805,46 +802,20 @@
 			this.LuaListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.LuaListView.BlazingFast = false;
-			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script,
-            this.PathName});
+			this.LuaListView.AllowColumnResize = true;
+			this.LuaListView.AllowColumnReorder = false;
 			this.LuaListView.ContextMenuStrip = this.ScriptListContextMenu;
 			this.LuaListView.FullRowSelect = true;
 			this.LuaListView.GridLines = true;
-			this.LuaListView.HideSelection = false;
-			this.LuaListView.ItemCount = 0;
+			this.LuaListView.RowCount = 0;
 			this.LuaListView.Location = new System.Drawing.Point(4, 21);
 			this.LuaListView.Name = "LuaListView";
-			this.LuaListView.SelectAllInProgress = false;
-			this.LuaListView.selectedItem = -1;
 			this.LuaListView.Size = new System.Drawing.Size(273, 271);
-			this.LuaListView.SmallImageList = this.imageList1;
 			this.LuaListView.TabIndex = 0;
-			this.LuaListView.UseCompatibleStateImageBehavior = false;
 			this.LuaListView.UseCustomBackground = true;
-			this.LuaListView.View = System.Windows.Forms.View.Details;
-			this.LuaListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LuaListView_ColumnClick);
-			this.LuaListView.ItemActivate += new System.EventHandler(this.LuaListView_ItemActivate);
+			this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
 			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
-			// 
-			// Script
-			// 
-			this.Script.Text = "Script";
-			this.Script.Width = 92;
-			// 
-			// PathName
-			// 
-			this.PathName.Text = "Path";
-			this.PathName.Width = 195;
-			// 
-			// imageList1
-			// 
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			this.imageList1.Images.SetKeyName(0, "StopButton.png");
-			this.imageList1.Images.SetKeyName(1, "PlayButton.png");
-			this.imageList1.Images.SetKeyName(2, "Pause.png");
+			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
 			// 
 			// splitContainer1
 			// 
@@ -910,8 +881,7 @@
 
 		#endregion
 
-		private VirtualListView LuaListView;
-		private System.Windows.Forms.ColumnHeader PathName;
+		private InputRoll LuaListView;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SaveSessionMenuItem;
@@ -921,7 +891,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ScriptSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem EditScriptMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ToggleScriptMenuItem;
-		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem NewSessionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
@@ -980,7 +949,6 @@
 		private System.Windows.Forms.ToolStripMenuItem DuplicateScriptMenuItem;
         private System.Windows.Forms.TextBox InputBox;
 				private System.Windows.Forms.SplitContainer splitContainer1;
-				private System.Windows.Forms.ImageList imageList1;
 				private System.Windows.Forms.ToolStripMenuItem ReturnAllIfNoneSelectedMenuItem;
 				private System.Windows.Forms.ToolStripMenuItem RemoveRegisteredFunctionsOnToggleMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ReloadWhenScriptFileChangesMenuItem;

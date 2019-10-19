@@ -112,15 +112,7 @@
             this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WatchListView = new BizHawk.Client.EmuHawk.VirtualListView();
-            this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.PrevColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.TypeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.WatchListView = new InputRoll();
             this.ListViewContextMenu.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -886,100 +878,35 @@
             // 
             // WatchListView
             // 
+            this.WatchListView.AllowColumnResize = true;
+            this.WatchListView.AllowColumnReorder = true;
+            this.WatchListView.FullRowSelect = true;
+            this.WatchListView.MultiSelect = true;
             this.WatchListView.AllowColumnReorder = true;
             this.WatchListView.AllowDrop = true;
             this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.WatchListView.AutoArrange = false;
-            this.WatchListView.BlazingFast = false;
-            this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.AddressColumn,
-            this.ValueColumn,
-            this.PrevColumn,
-            this.ChangesColumn,
-            this.DiffColumn,
-            this.TypeColumn,
-            this.DomainColumn,
-            this.NotesColumn});
             this.WatchListView.ContextMenuStrip = this.ListViewContextMenu;
             this.WatchListView.FullRowSelect = true;
             this.WatchListView.GridLines = true;
-            this.WatchListView.HideSelection = false;
-            this.WatchListView.ItemCount = 0;
             this.WatchListView.Location = new System.Drawing.Point(16, 76);
             this.WatchListView.Name = "WatchListView";
-            this.WatchListView.SelectAllInProgress = false;
-            this.WatchListView.selectedItem = -1;
-            this.WatchListView.Size = new System.Drawing.Size(332, 281);
+            this.WatchListView.Size = new System.Drawing.Size(363, 281);
             this.WatchListView.TabIndex = 2;
-            this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.UseCustomBackground = true;
-            this.WatchListView.View = System.Windows.Forms.View.Details;
-            this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+            this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
             this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
-            this.WatchListView.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.WatchListView_VirtualItemsSelectionRangeChanged);
             this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
             this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
             this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
             this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
             // 
-            // AddressColumn
-            // 
-            this.AddressColumn.Name = "AddressColumn";
-            this.AddressColumn.Text = "Address";
-            // 
-            // ValueColumn
-            // 
-            this.ValueColumn.Name = "ValueColumn";
-            this.ValueColumn.Text = "Value";
-            this.ValueColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ValueColumn.Width = 59;
-            // 
-            // PrevColumn
-            // 
-            this.PrevColumn.Name = "PrevColumn";
-            this.PrevColumn.Text = "Prev";
-            this.PrevColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.PrevColumn.Width = 59;
-            // 
-            // ChangesColumn
-            // 
-            this.ChangesColumn.Name = "ChangesColumn";
-            this.ChangesColumn.Text = "Changes";
-            this.ChangesColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.ChangesColumn.Width = 54;
-            // 
-            // DiffColumn
-            // 
-            this.DiffColumn.Name = "DiffColumn";
-            this.DiffColumn.Text = "Diff";
-            this.DiffColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.DiffColumn.Width = 59;
-            // 
-            // TypeColumn
-            // 
-            this.TypeColumn.Name = "TypeColumn";
-            this.TypeColumn.Text = "Type";
-            this.TypeColumn.Width = 55;
-            // 
-            // DomainColumn
-            // 
-            this.DomainColumn.Name = "DomainColumn";
-            this.DomainColumn.Text = "Domain";
-            this.DomainColumn.Width = 55;
-            // 
-            // NotesColumn
-            // 
-            this.NotesColumn.Name = "NotesColumn";
-            this.NotesColumn.Text = "Notes";
-            this.NotesColumn.Width = 128;
-            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 378);
+            this.ClientSize = new System.Drawing.Size(395, 378);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
@@ -1009,15 +936,7 @@
 
 		#endregion
 
-		private VirtualListView WatchListView;
-		private System.Windows.Forms.ColumnHeader AddressColumn;
-		private System.Windows.Forms.ColumnHeader ValueColumn;
-		private System.Windows.Forms.ColumnHeader PrevColumn;
-		private System.Windows.Forms.ColumnHeader ChangesColumn;
-		private System.Windows.Forms.ColumnHeader DiffColumn;
-		private System.Windows.Forms.ColumnHeader TypeColumn;
-		private System.Windows.Forms.ColumnHeader DomainColumn;
-		private System.Windows.Forms.ColumnHeader NotesColumn;
+		private InputRoll WatchListView;
 		private MenuStripEx RamWatchMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewListMenuItem;

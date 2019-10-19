@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -103,29 +101,6 @@ namespace BizHawk.Client.EmuHawk
 		protected void GenericDragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
-		protected void LoadColumnInfo(VirtualListView listView, ToolDialogSettings.ColumnList columns)
-		{
-			listView.Columns.Clear();
-
-			var cl = columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in cl)
-			{
-				listView.AddColumn(column);
-			}
-		}
-
-		protected void SaveColumnInfo(VirtualListView listview, ToolDialogSettings.ColumnList columns)
-		{
-			foreach (ColumnHeader column in listview.Columns)
-			{
-				columns[column.Name].Index = column.DisplayIndex;
-				columns[column.Name].Width = column.Width;
-			}
 		}
 
 		protected void RefreshFloatingWindowControl(bool floatingWindow)

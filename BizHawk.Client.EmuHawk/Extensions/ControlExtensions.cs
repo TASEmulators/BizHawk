@@ -80,6 +80,42 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			}
 		}
 
+		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
+		{
+			var menu = new ToolStripMenuItem
+			{
+				Name = "GeneratedColumnsSubMenu",
+				Text = "Columns"
+			};
+
+			var columns = inputRoll.AllColumns;
+
+			foreach (var column in columns)
+			{
+				var menuItem = new ToolStripMenuItem
+				{
+					Name = column.Name,
+					Text = $"{column.Text} ({column.Name})",
+					Checked = column.Visible,
+					CheckOnClick = true,
+					Tag = column.Name
+				};
+
+				menuItem.CheckedChanged += (o, ev) =>
+				{
+					var sender = (ToolStripMenuItem)o;
+					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					columns.ColumnsChanged();
+					changeCallback();
+					inputRoll.Refresh();
+				};
+
+				menu.DropDownItems.Add(menuItem);
+			}
+
+			return menu;
+		}
+
 		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem

@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System.Windows.Forms;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class LogWindow
 	{
@@ -34,7 +36,7 @@
 			this.buttonCopy = new System.Windows.Forms.Button();
 			this.buttonCopyAll = new System.Windows.Forms.Button();
 			this.AddToGameDbBtn = new System.Windows.Forms.Button();
-			this.virtualListView1 = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.virtualListView1 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
@@ -118,23 +120,20 @@
 			// 
 			// virtualListView1
 			// 
-			this.virtualListView1.BlazingFast = false;
 			this.virtualListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
 			this.virtualListView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.virtualListView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.virtualListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.virtualListView1.ItemCount = 0;
+			this.virtualListView1.VirtualListSize = 0;
 			this.virtualListView1.Location = new System.Drawing.Point(0, 0);
 			this.virtualListView1.Name = "virtualListView1";
-			this.virtualListView1.SelectAllInProgress = false;
-			this.virtualListView1.selectedItem = -1;
 			this.virtualListView1.Size = new System.Drawing.Size(675, 367);
 			this.virtualListView1.TabIndex = 8;
 			this.virtualListView1.UseCompatibleStateImageBehavior = false;
 			this.virtualListView1.View = System.Windows.Forms.View.Details;
 			this.virtualListView1.VirtualMode = true;
-			this.virtualListView1.QueryItemText += new BizHawk.Client.EmuHawk.QueryItemTextHandler(this.virtualListView1_QueryItemText);
+			this.virtualListView1.RetrieveVirtualItem += new RetrieveVirtualItemEventHandler(this.virtualListView1_QueryItemText);
 			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.virtualListView1_ClientSizeChanged);
 			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.virtualListView1_KeyDown);
 			// 
@@ -163,7 +162,7 @@
 		private System.Windows.Forms.Button btnClose;
 		private System.Windows.Forms.Button btnClear;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private VirtualListView virtualListView1;
+		private System.Windows.Forms.ListView virtualListView1;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Button buttonCopy;
 		private System.Windows.Forms.Button buttonCopyAll;

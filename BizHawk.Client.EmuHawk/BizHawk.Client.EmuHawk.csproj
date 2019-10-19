@@ -628,9 +628,6 @@
     <Compile Include="CustomControls\SmartTextBoxControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\TasListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomControls\TextDebugView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1518,9 +1515,6 @@
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\TasListView.resx">
-      <DependentUpon>TasListView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1892,6 +1886,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\StopButton.png" />
     <None Include="Resources\MoveTop.png" />
     <None Include="Resources\MoveBottom.png" />
     <None Include="Resources\MoveTop.bmp" />

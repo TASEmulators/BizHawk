@@ -13,11 +13,16 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
 	{
+		private const string IconColumnName = "Icon";
+		private const string ScriptColumnName = "Script";
+		private const string PathColumnName = "PathName";
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -33,14 +38,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public LuaConsoleSettings()
 			{
-				Columns = new ToolDialogSettings.ColumnList
+				Columns = new List<InputRoll.RollColumn>
 				{
-					new ToolDialogSettings.Column { Name = "Script", Visible = true, Index = 0, Width = 92 },
-					new ToolDialogSettings.Column { Name = "PathName", Visible = true, Index = 0, Width = 195 }
+					new InputRoll.RollColumn { Name = IconColumnName, Text = " ", Visible = true, Width = 22, Type = InputRoll.RollColumn.InputType.Image },
+					new InputRoll.RollColumn { Name = ScriptColumnName, Text = "Script", Visible = true, Width = 92, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Name = PathColumnName, Text = "Path", Visible = true, Width = 300, Type = InputRoll.RollColumn.InputType.Text }
 				};
 			}
 
-			public ToolDialogSettings.ColumnList Columns { get; set; }
+			public List<InputRoll.RollColumn> Columns { get; set; }
 		}
 
 		[ConfigPersist]
@@ -58,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AskSaveChanges())
 				{
-					SaveColumnInfo(LuaListView, Settings.Columns);
+					Settings.Columns = LuaListView.AllColumns;
 					
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 
@@ -85,9 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
-			LuaListView.QueryItemImage += LuaListView_QueryItemImage;
-			LuaListView.QueryItemIndent += LuaListView_QueryItemIndent;
-			LuaListView.VirtualMode = true;
+			LuaListView.QueryItemIcon += LuaListView_QueryItemImage;
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
 			LuaSandbox.DefaultLogger = ConsoleLog;
@@ -99,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<LuaFile> SelectedItems
 		{
-			get { return LuaListView.SelectedIndices().Select(index => LuaImp.ScriptList[index]); }
+			get { return LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]); }
 		}
 
 		private IEnumerable<LuaFile> SelectedFiles
@@ -129,6 +133,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
+			// Hack for previous config settings
+			if (Settings.Columns.Any(c => c.Text == null))
+			{
+				Settings = new LuaConsoleSettings();
+			}
+
 			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
 			LuaImp.ScriptList.LoadCallback = ClearOutputWindow;
 
@@ -144,7 +154,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LoadColumnInfo(LuaListView, Settings.Columns);
+			LuaListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		public void Restart()
@@ -217,10 +228,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
 
+		private void SetColumns()
+		{
+			foreach (var column in Settings.Columns)
+			{
+				if (LuaListView.AllColumns[column.Name] == null)
+				{
+					LuaListView.AllColumns.Add(column);
+				}
+			}
+		}
+
 		private void AddFileWatches()
 		{
 			_watches.Clear();
-			foreach (var item in LuaImp.ScriptList)
+			foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 			{
 				var processedPath = PathManager.TryMakeRelative(item.Path);
 				string pathToLoad = ProcessPath(processedPath);
@@ -263,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				var luaFile = new LuaFile("", processedPath);
 
 				LuaImp.ScriptList.Add(luaFile);
-				LuaListView.ItemCount = LuaImp.ScriptList.Count;
+				LuaListView.RowCount = LuaImp.ScriptList.Count;
 				Global.Config.RecentLua.Add(processedPath);
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
@@ -297,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateDialog()
 		{
-			LuaListView.ItemCount = LuaImp.ScriptList.Count;
+			LuaListView.RowCount = LuaImp.ScriptList.Count;
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
 			UpdateRegisteredFunctionsDialog();
@@ -305,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RunLuaScripts()
 		{
-			foreach (var file in LuaImp.ScriptList)
+			foreach (var file in LuaImp.ScriptList.Where(s => !s.IsSeparator))
 			{
 				if (!file.Enabled && file.Thread == null)
 				{
@@ -340,62 +362,62 @@ namespace BizHawk.Client.EmuHawk
 				Path.GetFileName(LuaImp.ScriptList.Filename);
 		}
 
-		private void LuaListView_QueryItemImage(int item, int subItem, out int imageIndex)
+		private void LuaListView_QueryItemImage(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
-			imageIndex = -1;
-			if (subItem != 0)
+			if (column.Name != IconColumnName)
 			{
 				return;
 			}
 
-			if (LuaImp.ScriptList[item].Paused)
+			if (LuaImp.ScriptList[index].IsSeparator)
 			{
-				imageIndex = 2;
+				return;
 			}
-			else if (LuaImp.ScriptList[item].Enabled)
+
+			if (LuaImp.ScriptList[index].Paused)
 			{
-				imageIndex = 1;
+				bitmap = Properties.Resources.Pause;
+			}
+			else if (LuaImp.ScriptList[index].Enabled)
+			{
+				bitmap = Properties.Resources.ts_h_arrow_green;
 			}
 			else
 			{
-				imageIndex = 0;
+				bitmap = Properties.Resources.StopButton;
 			}
 		}
 
-		private void LuaListView_QueryItemIndent(int item, out int itemIndent)
+		private void LuaListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			itemIndent = 0;
-		}
-
-		private void LuaListView_QueryItemBkColor(int index, int column, ref Color color)
-		{
-			if (column == 0)
+			if (LuaImp.ScriptList[index].IsSeparator)
 			{
-				if (LuaImp.ScriptList[index].IsSeparator)
-				{
-					color = BackColor;
-				}
-				else if (LuaImp.ScriptList[index].Enabled && !LuaImp.ScriptList[index].Paused)
-				{
-					color = Color.LightCyan;
-				}
-				else if (LuaImp.ScriptList[index].Enabled && LuaImp.ScriptList[index].Paused)
-				{
-					color = Color.LightPink;
-				}
+				color = BackColor;
 			}
-
-			UpdateNumberOfScripts();
+			else if (LuaImp.ScriptList[index].Enabled && !LuaImp.ScriptList[index].Paused)
+			{
+				color = Color.LightCyan;
+			}
+			else if (LuaImp.ScriptList[index].Enabled && LuaImp.ScriptList[index].Paused)
+			{
+				color = Color.LightPink;
+			}
 		}
 
-		private void LuaListView_QueryItemText(int index, int column, out string text)
+		private void LuaListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
-			if (column == 0)
+
+			if (LuaImp.ScriptList[index].IsSeparator)
+			{
+				return;
+			}
+
+			if (column.Name == ScriptColumnName)
 			{
 				text = Path.GetFileNameWithoutExtension(LuaImp.ScriptList[index].Path); // TODO: how about allow the user to name scripts?
 			}
-			else if (column == 1)
+			else if (column.Name == PathColumnName)
 			{
 				text = DressUpRelative(LuaImp.ScriptList[index].Path);
 			}
@@ -437,9 +459,9 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateNumberOfScripts()
 		{
 			var message = "";
-			var total = SelectedFiles.Count();
-			var active = LuaImp.ScriptList.Count(file => file.Enabled);
-			var paused = LuaImp.ScriptList.Count(file => file.Enabled && file.Paused);
+			var total = LuaImp.ScriptList.Count(file => !file.IsSeparator);
+			var active = LuaImp.ScriptList.Count(file => !file.IsSeparator && file.Enabled);
+			var paused = LuaImp.ScriptList.Count(file => !file.IsSeparator && file.Enabled && file.Paused);
 
 			if (total == 1)
 			{
@@ -780,7 +802,7 @@ namespace BizHawk.Client.EmuHawk
 				DuplicateScriptMenuItem.Enabled =
 				MoveUpMenuItem.Enabled =
 				MoveDownMenuItem.Enabled =
-				LuaListView.SelectedIndices().Any();
+				LuaListView.SelectedRows.Any();
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
@@ -946,7 +968,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DuplicateScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			if (LuaListView.SelectedIndices().Any())
+			if (LuaListView.SelectedRows.Any())
 			{
 				var script = SelectedFiles.First();
 
@@ -976,7 +998,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertSeparatorMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = LuaListView.SelectedIndices().ToList();
+			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Any() && indices.Last() < LuaImp.ScriptList.Count)
 			{
 				LuaImp.ScriptList.Insert(indices.Last(), LuaFile.SeparatorInstance);
@@ -991,7 +1013,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = LuaListView.SelectedIndices().ToList();
+			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Count == 0 || indices[0] == 0)
 			{
 				return;
@@ -1006,10 +1028,10 @@ namespace BizHawk.Client.EmuHawk
 
 			var newIndices = indices.Select(t => t - 1);
 
-			LuaListView.SelectedIndices.Clear();
+			LuaListView.DeselectAll();
 			foreach (var i in newIndices)
 			{
-				LuaListView.SelectItem(i, true);
+				LuaListView.SelectRow(i, true);
 			}
 
 			UpdateDialog();
@@ -1017,7 +1039,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = LuaListView.SelectedIndices().ToList();
+			var indices = LuaListView.SelectedRows.ToList();
 			if (indices.Count == 0 || indices.Last() == LuaImp.ScriptList.Count - 1)
 			{
 				return;
@@ -1032,10 +1054,10 @@ namespace BizHawk.Client.EmuHawk
 
 			var newIndices = indices.Select(t => t + 1);
 
-			LuaListView.SelectedIndices.Clear();
+			LuaListView.DeselectAll();
 			foreach (var i in newIndices)
 			{
-				LuaListView.SelectItem(i, true);
+				LuaListView.SelectRow(i, true);
 			}
 
 			UpdateDialog();
@@ -1280,11 +1302,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LuaListView_ItemActivate(object sender, EventArgs e)
-		{
-			ToggleScriptMenuItem_Click(sender, e);
-		}
-
 		private void OutputBox_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.F12 && !e.Control && !e.Alt && !e.Shift) // F12
@@ -1296,9 +1313,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Sorts the column Ascending on the first click and Descending on the second click.
 		/// </summary>
-		private void LuaListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void LuaListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var columnToSort = LuaListView.Columns[e.Column].Text;
+			var columnToSort = e.Column.Name;
 			var luaListTemp = new List<LuaFile>();
 			if (columnToSort != _lastColumnSorted)
 			{
@@ -1438,5 +1455,28 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void LuaListView_DoubleClick(object sender, EventArgs e)
+		{
+			var index = LuaListView.CurrentCell?.RowIndex;
+			if (index < LuaImp.ScriptList.Count)
+			{
+				var file = LuaImp.ScriptList[index.Value];
+				if (!file.IsSeparator)
+				{
+					file.Toggle();
+					UpdateDialog();
+				}
+			}
+		}
+
+		[RestoreDefaults]
+		private void RestoreDefaults()
+		{
+			Settings = new LuaConsoleSettings();
+			LuaListView.AllColumns.Clear();
+			SetColumns();
+			UpdateDialog();
+		}
 	}
 }
