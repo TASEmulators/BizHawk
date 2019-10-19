@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var subMenu = (ToolStripMenuItem)RamSearchMenu.Items
 					.Cast<ToolStripItem>()
-					.Single(t => t.Name == "GeneratedColumnsSubMenu"); // InputRoll TODO - make name a constant
+					.Single(t => t.Name == "GeneratedColumnsSubMenu"); // TODO - make name a constant
 				return subMenu.DropDownItems
 					.Cast<ToolStripMenuItem>()
 					.Single(t => t.Name == WatchList.CHANGES);
@@ -948,8 +948,7 @@ namespace BizHawk.Client.EmuHawk
 						if (_searches[index].Address == addr)
 						{
 							WatchListView.SelectRow(index, true);
-							// InputRoll TODO:
-							//WatchListView.ensureVisible();
+							WatchListView.ScrollToIndex(index);
 							return; // Don't re-show dialog on success
 						}
 					}
