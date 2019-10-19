@@ -135,6 +135,41 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
+		protected override void OnDoubleClick(EventArgs e)
+		{
+			if (IsHoveringOnColumnEdge)
+			{
+				if (HorizontalOrientation)
+				{
+					// TODO
+				}
+				else
+				{
+					var maxLength = CurrentCell.Column.Text?.Length ?? 0;
+					
+
+					for (int i = 0; i < RowCount; i++)
+					{
+						string text = "";
+						int offSetX = 0, offSetY = 0;
+						QueryItemText?.Invoke(i, CurrentCell.Column, out text, ref offSetX, ref offSetY);
+						if (text.Length > maxLength)
+						{
+							maxLength = text.Length;
+						}
+					}
+
+					var newWidth = (maxLength * _charSize.Width) + (CellWidthPadding * 2);
+					CurrentCell.Column.Width = newWidth;
+					_columns.ColumnsChanged();
+					Refresh();
+				}
+				
+			}
+
+			base.OnDoubleClick(e);
+		}
+
 		#region Properties
 
 		/// <summary>
