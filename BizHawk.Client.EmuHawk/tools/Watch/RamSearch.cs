@@ -978,7 +978,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
 					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
 					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
 					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
 				};
@@ -1416,7 +1416,7 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenu.Items.Remove(
 				RamSearchMenu.Items
 					.OfType<ToolStripMenuItem>()
-					.First(x => x.Name == "GeneratedColumnsSubMenu"));
+					.Single(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			RamSearchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 
