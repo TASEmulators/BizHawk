@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// executable is loaded here
 		/// </summary>
-		private MemoryBlock _base;
+		private MemoryBlockBase _base;
 		/// <summary>
 		/// standard malloc() heap
 		/// </summary>
@@ -77,14 +77,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			long orig_end = loadsegs.Max(s => s.Address + s.Size);
 			if (HasRelocations())
 			{
-				_base = new MemoryBlock((ulong)(orig_end - orig_start));
+				_base = MemoryBlockBase.CallPlatformCtor((ulong)(orig_end - orig_start));
 				_loadoffset = (long)_base.Start - orig_start;
 				Initialize(0);
 			}
 			else
 			{
 				Initialize((ulong)orig_start);
-				_base = new MemoryBlock((ulong)orig_start, (ulong)(orig_end - orig_start));
+				_base = MemoryBlockBase.CallPlatformCtor((ulong)orig_start, (ulong)(orig_end - orig_start));
 				_loadoffset = 0;
 				Enter();
 			}
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_disposeList.Add(_base);
 				AddMemoryBlock(_base, "elf");
 				_base.Activate();
-				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.RW);
+				_base.Protect(_base.Start, _base.Size, MemoryBlockBase.Protection.RW);
 
 				foreach (var seg in loadsegs)
 				{
@@ -104,14 +104,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				RegisterSymbols();
 				ProcessRelocations();
 
-				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.R);
+				_base.Protect(_base.Start, _base.Size, MemoryBlockBase.Protection.R);
 
 				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 				{
 					if ((sec.Flags & SectionFlags.Executable) != 0)
-						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RX);
+						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlockBase.Protection.RX);
 					else if ((sec.Flags & SectionFlags.Writable) != 0)
-						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
+						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlockBase.Protection.RW);
 				}
 
 				ulong end = _base.End;
