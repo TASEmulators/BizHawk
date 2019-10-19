@@ -1747,12 +1747,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// InputRoll todo - do we need this?
-			//if (WatchListView.SelectAllInProgress)
-			//{
-			//	return;
-			//}
-
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
 				SelectedIndices.Any();
