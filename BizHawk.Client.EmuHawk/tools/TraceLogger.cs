@@ -24,16 +24,19 @@ namespace BizHawk.Client.EmuHawk
 		private int FileSizeCap { get; set; }
 
 		[ConfigPersist]
-		private int DisasmColumnWidth { 
-			get { return this.Disasm.Width; }
-			set { this.Disasm.Width = value; }
-		}
-
-		[ConfigPersist]
-		private int RegistersColumnWidth
+		private List<InputRoll.RollColumn> Columns
 		{
-			get { return this.Registers.Width; }
-			set { this.Registers.Width = value; }
+			get { return TraceView.AllColumns; }
+			set
+			{
+				TraceView.AllColumns.Clear();
+				foreach (var column in value)
+				{
+					TraceView.AllColumns.Add(column);
+				}
+
+				TraceView.AllColumns.ColumnsChanged();
+			}
 		}
 
 		private FileInfo _logFile;
@@ -47,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private List<TraceInfo> _instructions = new List<TraceInfo>();
+		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
 		private StreamWriter _streamWriter;
 		private bool _splitFile;
 		private string _baseName;
@@ -55,12 +58,13 @@ namespace BizHawk.Client.EmuHawk
 		private int _segmentCount;
 		private ulong _currentSize;
 
+		private const string DisasmColumnName = "Disasm";
+		private const string RegistersColumnName = "Registers";
 		public TraceLogger()
 		{
 			InitializeComponent();
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
-			TraceView.VirtualMode = true;
 
 			Closing += (o, e) =>
 			{
@@ -72,6 +76,22 @@ namespace BizHawk.Client.EmuHawk
 			MaxLines = 10000;
 			FileSizeCap = 150; // make 1 frame of tracelog for n64/psx fit in
 			_splitFile = FileSizeCap != 0;
+
+			TraceView.AllColumns.Clear();
+			TraceView.AllColumns.Add(new InputRoll.RollColumn
+			{
+				Name = DisasmColumnName,
+				Text = DisasmColumnName,
+				Width = 239,
+				Type = InputRoll.RollColumn.InputType.Text
+			});
+			TraceView.AllColumns.Add(new InputRoll.RollColumn
+			{
+				Name = RegistersColumnName,
+				Text = RegistersColumnName,
+				Width = 357,
+				Type = InputRoll.RollColumn.InputType.Text
+			});
 		}
 
 		public bool UpdateBefore
@@ -89,17 +109,17 @@ namespace BizHawk.Client.EmuHawk
 			//Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
-		private void TraceView_QueryItemText(int index, int column, out string text)
+		private void TraceView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index < _instructions.Count)
 			{
-				switch (column)
+				switch (column.Name)
 				{
-					case 0:
+					case DisasmColumnName:
 						text = _instructions[index].Disassembly.TrimEnd();
 						break;
-					case 1:
+					case RegistersColumnName:
 						text = _instructions[index].RegisterInfo;
 						break;
 				}
@@ -133,11 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ToWindowRadio.Checked)
 				{
-					// setting to zero first fixes an exception when scrolling the view
-					// how or why I don't know
-					// it's hidden behind an internal class ListViewNativeItemCollection
-					TraceView.VirtualListSize = 0;
-					TraceView.VirtualListSize = _instructions.Count;		
+					TraceView.RowCount = _instructions.Count;
 				}
 				else
 				{
@@ -152,12 +168,9 @@ namespace BizHawk.Client.EmuHawk
 					//connect tracer to sink for next frame
 					if (ToWindowRadio.Checked)
 					{
-						//update listview with most recent results
-						TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
-
-						Tracer.Sink = new CallbackSink()
+						Tracer.Sink = new CallbackSink
 						{
-							putter = (info) =>
+							putter = info =>
 							{
 								if (_instructions.Count >= MaxLines)
 								{
@@ -210,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearList()
 		{
 			_instructions.Clear();
-			TraceView.ItemCount = 0;
+			TraceView.RowCount = 0;
 			SetTracerBoxTitle();
 		}
 
@@ -233,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
 			}
-			TraceView.ItemCount = _instructions.Count;
+			TraceView.RowCount = _instructions.Count;
 		}
 
 		private void SetTracerBoxTitle()
@@ -331,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = TraceView.SelectedIndices;
+			var indices = TraceView.SelectedRows.ToList();
 
 			if (indices.Count > 0)
 			{
@@ -348,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (var i = 0; i < _instructions.Count; i++)
 			{
-				TraceView.SelectItem(i, true);
+				TraceView.SelectRow(i, true);
 			}
 		}
 
