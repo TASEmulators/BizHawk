@@ -763,10 +763,10 @@ namespace BizHawk.Client.EmuHawk
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
 
-			var sysName = Global.Emulator.DisplayName();
-			var sysId = Global.Emulator.SystemId;
-			return !attr.UnsupportedCores.Contains(sysName) // not unsupported
-				&& (attr.SupportedSystems.Contains(sysId) || attr.SupportedSystems.Contains(sysName)); // supported (no supported list -> assumed all supported)
+			var displayName = Global.Emulator.DisplayName();
+			var systemId = Global.Emulator.SystemId;
+			return !attr.UnsupportedCores.Contains(displayName) // not unsupported
+				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(systemId)); // supported (no supported list -> assumed all supported)
 		}
 
 		public bool IsAvailable<T>() => IsAvailable(typeof(T));
