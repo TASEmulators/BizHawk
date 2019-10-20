@@ -220,7 +220,6 @@ namespace BizHawk.Client.EmuHawk
 					if (w != null)
 					{
 						HotkeyTabControl.SelectTab((TabPage)w.Parent);
-						Input.Instance.BindUnpress(e.KeyCode);
 						w.Focus();
 					}
 				}

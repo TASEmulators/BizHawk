@@ -208,9 +208,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
+		private readonly Dictionary<string, LogicalButton> ModifierState = new Dictionary<string, LogicalButton>();
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
@@ -231,15 +230,6 @@ namespace BizHawk.Client.EmuHawk
 					_Modifiers &= ~currentModifier;
 			}
 
-			if (UnpressState.ContainsKey(button))
-			{
-				if (newState) return;
-				Console.WriteLine($"Removing Unpress {button} with {nameof(newState)} {newState}");
-				UnpressState.Remove(button);
-				LastState[button] = false;
-				return;
-			}
-
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
 			if (currentModifier != ModifierKey.None)
@@ -256,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 			//track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
 			//this is an interesting idea, which we may need later, but not yet.
 			//for example, you may see this series of events: press:ctrl+c, release:ctrl, release:c
-			//but you might would rather have press:ctr+c, release:ctrl+c
+			//but you might would rather have press:ctrl+c, release:ctrl+c
 			//this code relates the releases to the original presses.
 			//UPDATE - this is necessary for the frame advance key, which has a special meaning when it gets stuck down
 			//so, i am adding it as of 11-sep-2011
@@ -264,21 +254,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ModifierState[button] = ie.LogicalButton;
 			}
-			else
+			else if (ModifierState.TryGetValue(button, out LogicalButton buttonModifierState))
 			{
-				if (ModifierState[button] != null)
-				{
-					LogicalButton alreadyReleased = ie.LogicalButton;
-					var ieModified = new InputEvent
-						{
-							LogicalButton = (LogicalButton)ModifierState[button],
-							EventType = InputEventType.Release,
-							Source = source
-						};
-					if (ieModified.LogicalButton != alreadyReleased)
-						_NewEvents.Add(ieModified);
-				}
-				ModifierState[button] = null;
+				var ieModified = new InputEvent
+					{
+						LogicalButton = buttonModifierState,
+						EventType = InputEventType.Release,
+						Source = source
+					};
+				if (ieModified.LogicalButton != ie.LogicalButton)
+					_NewEvents.Add(ieModified);
+				ModifierState.Remove(button);
 			}
 
 			_NewEvents.Add(ie);
@@ -502,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//returns the next Press event, if available. should be useful
-		public string GetNextBindEvent()
+		public string GetNextBindEvent(ref InputEvent lastPress)
 		{
 			//this whole process is intimately involved with the data structures, which can conflict with the input thread.
 			lock (this)
@@ -510,33 +496,31 @@ namespace BizHawk.Client.EmuHawk
 				if (InputEvents.Count == 0) return null;
 				AllowInput allowInput = GlobalWin.MainForm.AllowInput(false);
 
-				//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
+				//wait for the first release after a press to complete input binding, because we need to distinguish pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl
 				//if you just pressed ctrl+c, wanting to bind ctrl+c, we'd see: pressed:ctrl, pressed:ctrl+c, unpressed:ctrl+c, unpressed:ctrl
-				//so its the first unpress we need to listen for
+				//but in the 2nd example the unpresses will be swapped if ctrl is released first, so we'll take the last press before the release
 
 				while (InputEvents.Count != 0)
 				{
-					var ie = DequeueEvent();
+					InputEvent ie = DequeueEvent();
 
 					if (ShouldSwallow(allowInput, ie)) continue;
 
-					//ignore presses, but as a special perk, we'll accept escape immediately
-					if (ie.EventType == InputEventType.Press && ie.LogicalButton.Button != "Escape")
-						continue;
+					if (ie.EventType == InputEventType.Press)
+					{
+						lastPress = ie;
+						//don't allow presses to directly complete binding except escape which we'll accept as a special perk
+						if (ie.LogicalButton.Button != "Escape")
+							continue;
+					}
+					else if (lastPress == null) continue;
 
-					Console.WriteLine("Bind Event: {0} ", ie);
-
-					foreach (var kvp in LastState)
-						if (kvp.Value)
-						{
-							Console.WriteLine($"Unpressing {kvp.Key}");
-							UnpressState[kvp.Key] = true;
-						}
+					Console.WriteLine("Bind Event: {0} ", lastPress);
 
 					InputEvents.Clear();
 
-					return ie.LogicalButton.ToString();
+					return lastPress.LogicalButton.ToString();
 				}
 
 				return null;
@@ -547,14 +531,5 @@ namespace BizHawk.Client.EmuHawk
 		//this should be used by hotkey binders, but we may want modifier key events
 		//to get triggered in the main form
 		public bool EnableIgnoreModifiers = false;
-
-		//sets a key as unpressed for the binding system
-		public void BindUnpress(System.Windows.Forms.Keys key)
-		{
-			//only validated for Return
-			string keystr = key.ToString();
-			UnpressState[keystr] = true;
-			LastState[keystr] = true;
-		}
 	}
 }
