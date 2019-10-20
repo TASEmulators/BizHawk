@@ -11,7 +11,7 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 build_script:
-  - cmd: >-
+- cmd: >-
     SET TS=%APPVEYOR_REPO_COMMIT_TIMESTAMP%
 
     SET BUILDCODE=%TS:~0,10%-%TS:~11,2%%TS:~14,2%%TS:~17,2%-#%APPVEYOR_REPO_COMMIT%
