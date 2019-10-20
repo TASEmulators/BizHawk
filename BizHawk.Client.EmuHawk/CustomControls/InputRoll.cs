@@ -106,7 +106,6 @@ namespace BizHawk.Client.EmuHawk
 			_vBar.ValueChanged += VerticalBar_ValueChanged;
 			_hBar.ValueChanged += HorizontalBar_ValueChanged;
 
-			HorizontalOrientation = false;
 			RecalculateScrollBars();
 			_columns.ChangedCallback = ColumnChangedCallback;
 
