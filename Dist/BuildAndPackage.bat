@@ -9,7 +9,7 @@ if "%1"=="" (
 git --version > NUL
 @if errorlevel 1 goto MISSINGGIT
 
-for /f "usebackq tokens=*" %%A in (`vswhere -version "[16.0,17.0)" -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do SET MSBUILDPATH=%%A
+for /f "usebackq tokens=*" %%A in (`vswhere -version "[15.0,16.0)" -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do SET MSBUILDPATH=%%A
 
 IF "%MSBUILDPATH%"=="" GOTO MISSINGMSBUILD
 
