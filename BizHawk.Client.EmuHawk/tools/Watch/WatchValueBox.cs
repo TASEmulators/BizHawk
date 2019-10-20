@@ -72,8 +72,8 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				_type = value;
 				var val = ToRawInt();
+				_type = value;				
 				SetMaxLength();
 				SetFromRawInt(val);
 			}

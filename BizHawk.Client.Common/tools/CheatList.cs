@@ -384,7 +384,9 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							// Set to hex for saving 
+							// Set to hex for saving
+							var temp_cheat_type = cheat.Type;
+
 							cheat.SetType(DisplayType.Hex);
 
 							sb
@@ -399,6 +401,9 @@ namespace BizHawk.Client.Common
 								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
 								.Append(cheat.ComparisonType).Append('\t')
 								.AppendLine();
+
+							cheat.SetType(temp_cheat_type);
+
 						}
 					}
 
