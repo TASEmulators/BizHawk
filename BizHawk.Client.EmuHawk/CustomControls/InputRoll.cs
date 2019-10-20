@@ -24,8 +24,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _hoverTimer = new Timer();
 		private readonly byte[] _lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
-		private readonly IntPtr _rotatedFont;
-		private readonly IntPtr _normalFont;
 		private readonly Color _foreColor;
 		private readonly Color _backColor;
 
@@ -51,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool LetKeysModifySelection { get; set; }
 		public bool SuspendHotkeys { get; set; }
 
+		private Font _font = new Font("Arial", 8, FontStyle.Bold);
+
 		public InputRoll()
 		{
 			UseCustomBackground = true;
@@ -59,13 +59,6 @@ namespace BizHawk.Client.EmuHawk
 			CellHeightPadding = 0;
 			CurrentCell = null;
 			ScrollMethod = "near";
-
-			var commonFont = new Font("Arial", 8, FontStyle.Bold);
-			_normalFont = GdiRenderer.CreateNormalHFont(commonFont, 6);
-
-			// PrepDrawString doesn't actually set the font, so this is rather useless.
-			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			_rotatedFont = GdiRenderer.CreateRotatedHFont(commonFont, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -77,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
 			{
-				_charSize = _renderer.MeasureString("A", commonFont); // TODO make this a property so changing it updates other values.
+				_charSize = _renderer.MeasureString("A", _font); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -127,10 +120,6 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			_renderer.Dispose();
-
-			GdiRenderer.DestroyHFont(_normalFont);
-			GdiRenderer.DestroyHFont(_rotatedFont);
-
 			base.Dispose(disposing);
 		}
 

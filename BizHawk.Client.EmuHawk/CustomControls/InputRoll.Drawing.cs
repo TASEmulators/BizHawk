@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_renderer.SetSolidPen(_backColor);
 				_renderer.DrawRectangle(x1, y1, x2, y2);
-				_renderer.PrepDrawString(_normalFont, _foreColor);
+				_renderer.PrepDrawString(_font, _foreColor);
 				_renderer.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
 			}
 		}
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_renderer.SetBrush(bgColor);
 				_renderer.FillRectangle(x1, y1, x2 - x1, y2 - y1);
-				_renderer.PrepDrawString(_normalFont, _foreColor);
+				_renderer.PrepDrawString(_font, _foreColor);
 				_renderer.DrawString(text, new Point(x1 + CellWidthPadding + offsetX, y1 + CellHeightPadding + offsetY));
 			}
 		}
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int start = -_vBar.Value;
 
-				_renderer.PrepDrawString(_normalFont, _foreColor);
+				_renderer.PrepDrawString(_font, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -118,9 +118,9 @@ namespace BizHawk.Client.EmuHawk
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
-						_renderer.PrepDrawString(_normalFont, SystemColors.HighlightText);
+						_renderer.PrepDrawString(_font, SystemColors.HighlightText);
 						DrawString(column.Text, column.Width, point);
-						_renderer.PrepDrawString(_normalFont, _foreColor);
+						_renderer.PrepDrawString(_font, _foreColor);
 					}
 					else
 					{
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_renderer.PrepDrawString(_normalFont, _foreColor);
+				_renderer.PrepDrawString(_font, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -140,9 +140,9 @@ namespace BizHawk.Client.EmuHawk
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
-						_renderer.PrepDrawString(_normalFont, SystemColors.HighlightText);
+						_renderer.PrepDrawString(_font, SystemColors.HighlightText);
 						DrawString(column.Text, column.Width, point);
-						_renderer.PrepDrawString(_normalFont, _foreColor);
+						_renderer.PrepDrawString(_font, _foreColor);
 					}
 					else
 					{
@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					_renderer.PrepDrawString(_normalFont, _foreColor);
+					_renderer.PrepDrawString(_font, _foreColor);
 					for (int i = 0, f = 0; f < range; i++, f++)
 					{
 						f += _lagFrames[i];
@@ -202,21 +202,21 @@ namespace BizHawk.Client.EmuHawk
 							if (j == 1)
 							if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = i + startRow }))
 							{
-								_renderer.PrepDrawString(_rotatedFont, SystemColors.HighlightText);
+								_renderer.PrepDrawString(_font, SystemColors.HighlightText, rotate: true);
 								rePrep = true;
 							}
 							else if (j == 1)
 							{
 								// 1. not sure about this; 2. repreps may be excess, but if we render one column at a time, we do need to change back after rendering the header
 								rePrep = true;
-								_renderer.PrepDrawString(_rotatedFont, _foreColor);
+								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
 							}
 
 							DrawString(text, ColumnWidth, point);
 
 							if (rePrep)
 							{
-								_renderer.PrepDrawString(_normalFont, _foreColor);
+								_renderer.PrepDrawString(_font, _foreColor);
 							}
 						}
 					}
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					_renderer.PrepDrawString(_normalFont, _foreColor);
+					_renderer.PrepDrawString(_font, _foreColor);
 					int xPadding = CellWidthPadding + 1 - _hBar.Value;
 					for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 					{
@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 							bool rePrep = false;
 							if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = f + startRow }))
 							{
-								_renderer.PrepDrawString(_normalFont, SystemColors.HighlightText);
+								_renderer.PrepDrawString(_font, SystemColors.HighlightText);
 								rePrep = true;
 							}
 
@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (rePrep)
 							{
-								_renderer.PrepDrawString(_normalFont, _foreColor);
+								_renderer.PrepDrawString(_font, _foreColor);
 							}
 						}
 					}

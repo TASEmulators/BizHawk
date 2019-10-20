@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private class FontCacheEntry
 		{
 			public IntPtr HFont;
+			public IntPtr RotatedHFont;
 		}
 
 		// Cache of all the brushes used, rather than create them again and again
@@ -41,6 +42,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			foreach (var fc in _fontsCache)
 			{
 				DeleteObject(fc.Value.HFont);
+				DeleteObject(fc.Value.RotatedHFont);
 			}
 
 			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a GDIRenderer while it held an HDC");
@@ -123,10 +125,22 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			DeleteObject(hFont);
 		}
 
-		public void PrepDrawString(IntPtr hFont, Color color)
+		public void PrepDrawString(Font font, Color color, bool rotate = false)
 		{
+			FontCacheEntry fontEntry;
+			var result = _fontsCache.TryGetValue(font, out fontEntry);
+			if (!result)
+			{
+				// Hack! The 6 is hardcoded to make tastudio look like taseditor, because taseditor is so perfect and wonderful
+				_fontsCache.Add(font, new FontCacheEntry
+				{
+					HFont = CreateNormalHFont(font, 6),
+					RotatedHFont = CreateRotatedHFont(font, true)
+				});
+			}
+
 			SetGraphicsMode(CurrentHdc, 2); // shouldn't be necessary.. cant hurt
-			SelectObject(CurrentHdc, hFont);
+			SelectObject(CurrentHdc, rotate ? fontEntry.RotatedHFont : fontEntry.HFont);
 			SetTextColor(color);
 		}
 

@@ -19,8 +19,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		void SetBrush(Color color);
 		void SetSolidPen(Color color);
 
-		// TODO: use the Font version
-		void PrepDrawString(IntPtr hFont, Color color);
+		void PrepDrawString(Font font, Color color, bool rotate = false);
 
 		/// <summary>
 		/// Draw the given string using the given  font and foreground color at given location
