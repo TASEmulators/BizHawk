@@ -774,166 +774,35 @@ namespace BizHawk.Client.EmuHawk
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
-		public RamWatch RamWatch
+		private T GetTool<T>() where T : class, IToolForm, new()
 		{
-			get
+			T tool = _tools.OfType<T>().FirstOrDefault();
+			if (tool != null)
 			{
-				var tool = _tools.FirstOrDefault(t => t is RamWatch);
-				if (tool != null)
+				if (!tool.IsDisposed)
 				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as RamWatch;
-					}
+					return tool;
 				}
-
-				var newTool = new RamWatch();
-				_tools.Add(newTool);
-				return newTool;
+				_tools.Remove(tool);
 			}
+			tool = new T();
+			_tools.Add(tool);
+			return tool;
 		}
 
-		public RamSearch RamSearch
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is RamSearch);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as RamSearch;
-					}
-				}
+		public RamWatch RamWatch => GetTool<RamWatch>();
 
-				var newTool = new RamSearch();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
+		public RamSearch RamSearch => GetTool<RamSearch>();
 
-		public Cheats Cheats
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is Cheats);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as Cheats;
-					}
-				}
+		public Cheats Cheats => GetTool<Cheats>();
 
-				var newTool = new Cheats();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
+		public HexEditor HexEditor => GetTool<HexEditor>();
 
-		public HexEditor HexEditor
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is HexEditor);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as HexEditor;
-					}
-				}
+		public VirtualpadTool VirtualPad => GetTool<VirtualpadTool>();
 
-				var newTool = new HexEditor();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
+		public SNESGraphicsDebugger SNESGraphicsDebugger => GetTool<SNESGraphicsDebugger>();
 
-		public VirtualpadTool VirtualPad
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is VirtualpadTool);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as VirtualpadTool;
-					}
-				}
-
-				var newTool = new VirtualpadTool();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
-
-		public SNESGraphicsDebugger SNESGraphicsDebugger
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is SNESGraphicsDebugger);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as SNESGraphicsDebugger;
-					}
-				}
-
-				var newTool = new SNESGraphicsDebugger();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
-
-		public LuaConsole LuaConsole
-		{
-			get
-			{
-				var tool = _tools.FirstOrDefault(t => t is LuaConsole);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as LuaConsole;
-					}
-				}
-
-				var newTool = new LuaConsole();
-				_tools.Add(newTool);
-				return newTool;
-			}
-		}
+		public LuaConsole LuaConsole => GetTool<LuaConsole>();
 
 		public TAStudio TAStudio
 		{
@@ -945,22 +814,7 @@ namespace BizHawk.Client.EmuHawk
 					System.Diagnostics.Debug.Fail("TAStudio does not exist!");
 				}
 
-				var tool = _tools.FirstOrDefault(t => t is TAStudio);
-				if (tool != null)
-				{
-					if (tool.IsDisposed)
-					{
-						_tools.Remove(tool);
-					}
-					else
-					{
-						return tool as TAStudio;
-					}
-				}
-
-				var newTool = new TAStudio();
-				_tools.Add(newTool);
-				return newTool;
+				return GetTool<TAStudio>();
 			}
 		}
 
