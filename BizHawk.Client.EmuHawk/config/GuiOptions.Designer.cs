@@ -74,6 +74,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -121,6 +122,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
             this.tabPage1.Controls.Add(this.label2);
@@ -146,7 +148,7 @@
             this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-            this.groupBox1.Location = new System.Drawing.Point(6, 182);
+            this.groupBox1.Location = new System.Drawing.Point(6, 205);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(369, 140);
             this.groupBox1.TabIndex = 13;
@@ -562,6 +564,16 @@
             this.label10.TabIndex = 1;
             this.label10.Text = "every";
             // 
+            // HandleAlternateKeyboardLayoutsCheckBox
+            // 
+            this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(6, 175);
+            this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
+            this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(255, 17);
+            this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 11;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
+            this.HandleAlternateKeyboardLayoutsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // EmuHawkOptions
             // 
             this.AcceptButton = this.OkBtn;
@@ -640,5 +652,6 @@
 		private System.Windows.Forms.NumericUpDown AutosaveSRAMtextBox;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.CheckBox HandleAlternateKeyboardLayoutsCheckBox;
 	}
 }

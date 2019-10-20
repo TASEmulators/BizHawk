@@ -60,9 +60,9 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var e in events)
 					{
 						foreach (var k in e.PressedKeys)
-							_eventList.Add(new KeyEvent { Key = k, Pressed = true });
+							_eventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = true });
 						foreach (var k in e.ReleasedKeys)
-							_eventList.Add(new KeyEvent { Key = k, Pressed = false });
+							_eventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = false });
 					}
 				}
 
