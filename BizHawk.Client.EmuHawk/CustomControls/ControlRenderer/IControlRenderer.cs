@@ -8,11 +8,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Required to use before calling drawing methods
 		/// </summary>
-		IDisposable LockGraphics(Graphics g);
-
-		void StartOffScreenBitmap(int width, int height);
-		void EndOffScreenBitmap();
-		void CopyToScreen();
+		IDisposable LockGraphics(Graphics g, int width, int height);
 
 		/// <summary>
 		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC

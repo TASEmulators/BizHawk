@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			_renderer = new GdiRenderer();
 
 			using (var g = CreateGraphics())
-			using (_renderer.LockGraphics(g))
+			using (_renderer.LockGraphics(g, Width, Height))
 			{
 				_charSize = _renderer.MeasureString("A", commonFont); // TODO make this a property so changing it updates other values.
 			}

@@ -43,8 +43,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				DeleteObject(fc.Value.HFont);
 			}
 
-			EndOffScreenBitmap();
-
 			System.Diagnostics.Debug.Assert(_hdc == IntPtr.Zero, "Disposed a GDIRenderer while it held an HDC");
 			System.Diagnostics.Debug.Assert(_g == null, "Disposed a GDIRenderer while it held a Graphics");
 		}
@@ -71,12 +69,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			DeleteObject(hBmp);
 		}
 
-		public IDisposable LockGraphics(Graphics g)
+		public IDisposable LockGraphics(Graphics g, int width, int height)
 		{
 			_g = g;
 			_hdc = g.GetHdc();
 			SetBkMode(_hdc, BkModes.TRANSPARENT);
-			return new GdiGraphicsLock(this);
+			var l = new GdiGraphicsLock(this);
+			StartOffScreenBitmap(width, height);
+			return l;
 		}
 		
 		public Size MeasureString(string str, Font font)
@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private int _bitW;
 		private int _bitH;
 
-		public void StartOffScreenBitmap(int width, int height)
+		private void StartOffScreenBitmap(int width, int height)
 		{
 			_bitW = width;
 			_bitH = height;
@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetBkMode(_bitHdc, BkModes.TRANSPARENT);
 		}
 
-		public void EndOffScreenBitmap()
+		private void EndOffScreenBitmap()
 		{
 			_bitW = 0;
 			_bitH = 0;
@@ -206,7 +206,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitMap = IntPtr.Zero;
 		}
 
-		public void CopyToScreen()
+		private  void CopyToScreen()
 		{
 			BitBlt(_hdc, 0, 0, _bitW, _bitH, _bitHdc, 0, 0, 0x00CC0020);
 		}
@@ -448,6 +448,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 			public void Dispose()
 			{
+				_gdi.CopyToScreen();
+				_gdi.EndOffScreenBitmap();
 				_gdi._g.ReleaseHdc(_gdi._hdc);
 				_gdi._hdc = IntPtr.Zero;
 				_gdi._g = null;

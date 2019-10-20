@@ -10,10 +10,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (_renderer.LockGraphics(e.Graphics))
+			using (_renderer.LockGraphics(e.Graphics, Width, Height))
 			{
-				_renderer.StartOffScreenBitmap(Width, Height);
-
 				// White Background
 				_renderer.SetBrush(Color.White);
 				_renderer.SetSolidPen(Color.White);
@@ -38,9 +36,6 @@ namespace BizHawk.Client.EmuHawk
 
 				DrawColumnDrag(e);
 				DrawCellDrag(e);
-
-				_renderer.CopyToScreen();
-				_renderer.EndOffScreenBitmap();
 			}
 		}
 
