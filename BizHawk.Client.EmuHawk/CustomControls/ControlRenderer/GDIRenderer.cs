@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -10,32 +9,18 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 	/// Wrapper for GDI rendering functions
 	/// This class is not thread-safe as GDI functions should be called from the UI thread
 	/// </summary>
-	public sealed class GDIRenderer : IControlRenderer
+	public sealed class GdiRenderer : IControlRenderer
 	{
-		/// <summary>
-		/// used for <see cref="MeasureString(string, System.Drawing.Font, float, out int, out int)"/> calculation.
-		/// </summary>
-		private static readonly int[] CharFit = new int[1];
+		// Cache of all the Fonts used, rather than create them again and again
+		private readonly Dictionary<Font, FontCacheEntry> _fontsCache = new Dictionary<Font, FontCacheEntry>();
 
-		/// <summary>
-		/// used for <see cref="MeasureString(string, System.Drawing.Font,float, out int, out int)"/> calculation
-		/// </summary>
-		private static readonly int[] CharFitWidth = new int[1000];
-
-		/// <summary>
-		/// Cache of all the HFONTs used, rather than create them again and again
-		/// </summary>
-		private readonly Dictionary<Font, FontCacheEntry> FontsCache = new Dictionary<Font, FontCacheEntry>();
-
-		class FontCacheEntry
+		private class FontCacheEntry
 		{
 			public IntPtr HFont;
 		}
 
-		/// <summary>
-		/// Cache of all the brushes used, rather than create them again and again
-		/// </summary>
-		private readonly Dictionary<Color, IntPtr> BrushCache = new Dictionary<Color, IntPtr>();
+		// Cache of all the brushes used, rather than create them again and again
+		private readonly Dictionary<Color, IntPtr> _brushCache = new Dictionary<Color, IntPtr>();
 
 		private Graphics _g;
 		private IntPtr _hdc;
@@ -43,15 +28,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Construct and Destroy
 
-		public GDIRenderer()
-		{
-			//zero 04-16-2016 : this can't be legal, theres no HDC yet
-			//SetBkMode(_hdc, BkModes.OPAQUE);
-		}
-
 		public void Dispose()
 		{
-			foreach (var brush in BrushCache)
+			foreach (var brush in _brushCache)
 			{
 				if (brush.Value != IntPtr.Zero)
 				{
@@ -59,8 +38,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				}
 			}
 
-			foreach (var fc in FontsCache)
+			foreach (var fc in _fontsCache)
+			{
 				DeleteObject(fc.Value.HFont);
+			}
 
 			EndOffScreenBitmap();
 
@@ -72,30 +53,24 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Api
 
-		/// <summary>
-		/// Draw a bitmap object at the given position
-		/// </summary>
 		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
 		{
-			IntPtr hbmp = bitmap.GetHbitmap();
-			var bitHDC = CreateCompatibleDC(CurrentHDC);
-			IntPtr old = SelectObject(bitHDC, hbmp);
+			IntPtr hBmp = bitmap.GetHbitmap();
+			var bitHdc = CreateCompatibleDC(CurrentHdc);
+			IntPtr old = SelectObject(bitHdc, hBmp);
 			if (blend)
 			{
-				AlphaBlend(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
+				AlphaBlend(CurrentHdc, point.X, point.Y, bitmap.Width, bitmap.Height, bitHdc, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
 			}
 			else
 			{
-				BitBlt(CurrentHDC, point.X, point.Y, bitmap.Width, bitmap.Height, bitHDC, 0, 0, 0xCC0020);
+				BitBlt(CurrentHdc, point.X, point.Y, bitmap.Width, bitmap.Height, bitHdc, 0, 0, 0xCC0020);
 			}
-			SelectObject(bitHDC, old);
-			DeleteDC(bitHDC);
-			DeleteObject(hbmp);
+			SelectObject(bitHdc, old);
+			DeleteDC(bitHdc);
+			DeleteObject(hBmp);
 		}
 
-		/// <summary>
-		/// Required to use before calling drawing methods
-		/// </summary>
 		public IDisposable LockGraphics(Graphics g)
 		{
 			_g = g;
@@ -103,135 +78,81 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SetBkMode(_hdc, BkModes.TRANSPARENT);
 			return new GdiGraphicsLock(this);
 		}
-
-		/// <summary>
-		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-		/// using the given font <paramref  name="font"/>
-		/// </summary>
+		
 		public Size MeasureString(string str, Font font)
 		{
 			SetFont(font);
 
 			var size = new Size();
-			GetTextExtentPoint32(CurrentHDC, str, str.Length, ref size);
-			return size;
-		}
-
-		/// <summary>      
-		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
-		/// using the given font <paramref  name="font"/>
-		/// Restrict the width of the string and get the number of characters able to fit in the restriction and
-		/// the width those characters take
-		/// </summary>
-		/// <param name="maxWidth">the max width to render the string  in</param>
-		/// <param name="charFit">the number of characters that will fit under  <see cref="maxWidth"/> restriction</param>      
-		public Size MeasureString(string str, Font font, float maxWidth, out int charFit, out int charFitWidth)
-		{
-			SetFont(font);
-
-			var size = new Size();
-			GetTextExtentExPoint(CurrentHDC, str, str.Length, (int)Math.Round(maxWidth), CharFit, CharFitWidth, ref size);
-			charFit = CharFit[0];
-			charFitWidth = charFit > 0 ? CharFitWidth[charFit - 1] : 0;
+			GetTextExtentPoint32(CurrentHdc, str, str.Length, ref size);
 			return size;
 		}
 
 		public void DrawString(string str, Point point)
 		{
-			TextOut(CurrentHDC, point.X, point.Y, str, str.Length);
+			TextOut(CurrentHdc, point.X, point.Y, str, str.Length);
 		}
 
 		public static IntPtr CreateNormalHFont(Font font, int width)
 		{
-			LOGFONT logf = new LOGFONT();
-			font.ToLogFont(logf);
-			logf.lfWidth = width;
-			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
-			var ret = CreateFontIndirect(logf);
+			var logFont = new LOGFONT();
+			font.ToLogFont(logFont);
+			logFont.lfWidth = width;
+			logFont.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
+			var ret = CreateFontIndirect(logFont);
 			return ret;
 		}
 
-		//this returns an IntPtr HFONT because .net's Font class will erase the relevant properties when using its Font.FromLogFont()
+		//this returns an IntPtr font because .net's Font class will erase the relevant properties when using its Font.FromLogFont()
 		//note that whether this is rotated clockwise or CCW might affect how you have to position the text (right-aligned sometimes?, up or down by the height of the font?)
-		public static IntPtr CreateRotatedHFont(Font font, bool CW)
+		public static IntPtr CreateRotatedHFont(Font font, bool cw)
 		{
-			LOGFONT logf = new LOGFONT();
-			font.ToLogFont(logf);
-			logf.lfEscapement = CW ? 2700 : 900;
-			logf.lfOrientation = logf.lfEscapement;
-			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
+			LOGFONT logF = new LOGFONT();
+			font.ToLogFont(logF);
+			logF.lfEscapement = cw ? 2700 : 900;
+			logF.lfOrientation = logF.lfEscapement;
+			logF.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
 
-			//this doesnt work! .net erases the relevant propreties.. it seems?
-			//return Font.FromLogFont(logf);
-
-			var ret = CreateFontIndirect(logf);
+			var ret = CreateFontIndirect(logF);
 			return ret;
 		}
 
-		public static void DestroyHFont(IntPtr hfont)
+		// TODO: this should go away and be abstracted internally
+		public static void DestroyHFont(IntPtr hFont)
 		{
-			DeleteObject(hfont);
+			DeleteObject(hFont);
 		}
 
-		public void PrepDrawString(IntPtr hfont, Color color)
+		public void PrepDrawString(IntPtr hFont, Color color)
 		{
-			SetGraphicsMode(CurrentHDC, 2); //shouldnt be necessary.. cant hurt
-			SelectObject(CurrentHDC, hfont);
+			SetGraphicsMode(CurrentHdc, 2); // shouldn't be necessary.. cant hurt
+			SelectObject(CurrentHdc, hFont);
 			SetTextColor(color);
 		}
 
-		public void PrepDrawString(Font font, Color color)
-		{
-			SetFont(font);
-			SetTextColor(color);
-		}
-
-
-		/// <summary>
-		/// Draw the given string using the given  font and foreground color at given location
-		/// See [http://msdn.microsoft.com/en-us/library/windows/desktop/dd162498(v=vs.85).aspx][15]
-		/// </summary>
-		public void DrawString(string str, Font font, Color color, Rectangle rect, TextFormatFlags flags)
-		{
-			SetFont(font);
-			SetTextColor(color);
-
-			var rect2 = new Rect(rect);
-			DrawText(CurrentHDC, str, str.Length, ref  rect2, (uint)flags);
-		}
-
-
-		/// <summary>
-		/// Set the text color of the device  context
-		/// </summary>
-		public void SetTextColor(Color color)
+		// Set the text color of the device  context
+		private void SetTextColor(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SetTextColor(CurrentHDC, rgb);
-		}
-
-		public void SetBackgroundColor(Color color)
-		{
-			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SetBkColor(CurrentHDC, rgb);
+			SetTextColor(CurrentHdc, rgb);
 		}
 
 		public void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect)
 		{
-			Rectangle(CurrentHDC, nLeftRect, nTopRect, nRightRect, nBottomRect);
+			Rectangle(CurrentHdc, nLeftRect, nTopRect, nRightRect, nBottomRect);
 		}
 
 		public void SetBrush(Color color)
 		{
-			if (BrushCache.ContainsKey(color))
+			if (_brushCache.ContainsKey(color))
 			{
-				_currentBrush = BrushCache[color];
+				_currentBrush = _brushCache[color];
 			}
 			else
 			{
 				int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
 				var newBrush = CreateSolidBrush(rgb);
-				BrushCache.Add(color, newBrush);
+				_brushCache.Add(color, newBrush);
 				_currentBrush = newBrush;
 			}
 		}
@@ -239,34 +160,26 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void FillRectangle(int x, int y, int w, int h)
 		{
 			var r = new GDIRect(new Rectangle(x, y, w, h));
-			FillRect(CurrentHDC, ref r, _currentBrush);
-		}
-
-		public void SetPenPosition(int x, int y)
-		{
-			MoveToEx(CurrentHDC, x, y, IntPtr.Zero);
+			FillRect(CurrentHdc, ref r, _currentBrush);
 		}
 
 		public void SetSolidPen(Color color)
 		{
 			int rgb = (color.B & 0xFF) << 16 | (color.G & 0xFF) << 8 | color.R;
-			SelectObject(CurrentHDC, GetStockObject((int)PaintObjects.DC_PEN));
-			SetDCPenColor(CurrentHDC, rgb);
+			SelectObject(CurrentHdc, GetStockObject((int)PaintObjects.DC_PEN));
+			SetDCPenColor(CurrentHdc, rgb);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2)
 		{
-			MoveToEx(CurrentHDC, x1, y1, IntPtr.Zero);
-			LineTo(CurrentHDC, x2, y2);
+			MoveToEx(CurrentHdc, x1, y1, IntPtr.Zero);
+			LineTo(CurrentHdc, x2, y2);
 		}
 
-		private IntPtr CurrentHDC
-		{
-			get { return _bitHDC != IntPtr.Zero ? _bitHDC : _hdc; }
-		}
+		private IntPtr CurrentHdc => _bitHdc != IntPtr.Zero ? _bitHdc : _hdc;
 
 		private IntPtr _bitMap = IntPtr.Zero;
-		private IntPtr _bitHDC = IntPtr.Zero;
+		private IntPtr _bitHdc = IntPtr.Zero;
 		private int _bitW;
 		private int _bitH;
 
@@ -275,10 +188,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitW = width;
 			_bitH = height;
 
-			_bitHDC = CreateCompatibleDC(_hdc);
+			_bitHdc = CreateCompatibleDC(_hdc);
 			_bitMap = CreateCompatibleBitmap(_hdc, width, height);
-			SelectObject(_bitHDC, _bitMap);
-			SetBkMode(_bitHDC, BkModes.TRANSPARENT);
+			SelectObject(_bitHdc, _bitMap);
+			SetBkMode(_bitHdc, BkModes.TRANSPARENT);
 		}
 
 		public void EndOffScreenBitmap()
@@ -287,39 +200,37 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_bitH = 0;
 			
 			DeleteObject(_bitMap);
-			DeleteObject(_bitHDC);
+			DeleteObject(_bitHdc);
 
-			_bitHDC = IntPtr.Zero;
+			_bitHdc = IntPtr.Zero;
 			_bitMap = IntPtr.Zero;
 		}
 
 		public void CopyToScreen()
 		{
-			BitBlt(_hdc, 0, 0, _bitW, _bitH, _bitHDC, 0, 0, 0x00CC0020);
+			BitBlt(_hdc, 0, 0, _bitW, _bitH, _bitHdc, 0, 0, 0x00CC0020);
 		}
 
 		#endregion
 
 		#region Helpers
 
-		/// <summary>
-		/// Set a resource (e.g. a font) for the  specified device context.      
-		/// </summary>
+		// Set a resource (e.g. a font) for the current device context.
 		private void SetFont(Font font)
 		{
-			SelectObject(CurrentHDC, GetCachedHFont(font));
+			SelectObject(CurrentHdc, GetCachedHFont(font));
 		}
 
 		private IntPtr GetCachedHFont(Font font)
 		{
-			//the original code struck me as bad. attempting to ID fonts by picking a subset of their fields is not gonna work.
-			//don't call this.Font in InputRoll.cs, it is probably slow.
-			//consider Fonts to be a jealously guarded resource (they need to be disposed, after all) and manage them carefully.
-			//this cache maintains the HFONTs only.
+			// the original code struck me as bad. attempting to ID fonts by picking a subset of their fields is not gonna work.
+			// don't call this.Font in InputRoll.cs, it is probably slow.
+			// consider Fonts to be a jealously guarded resource (they need to be disposed, after all) and manage them carefully.
+			// this cache maintains the hFonts only.
 			FontCacheEntry ce;
-			if (!FontsCache.TryGetValue(font, out ce))
+			if (!_fontsCache.TryGetValue(font, out ce))
 			{
-				FontsCache[font] = ce = new FontCacheEntry();
+				_fontsCache[font] = ce = new FontCacheEntry();
 				ce.HFont = font.ToHfont();
 			}
 			return ce.HFont;
@@ -329,18 +240,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Imports
 
-		[DllImport("user32.dll")]
-		private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetDC(IntPtr hWnd);
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr BeginPaint(IntPtr hWnd, ref IntPtr lpPaint);
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr EndPaint(IntPtr hWnd, IntPtr lpPaint);
-
+		// ReSharper disable IdentifierTypo
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
 		private static extern IntPtr CreateFontIndirect(
 			[In, MarshalAs(UnmanagedType.LPStruct)]LOGFONT lplf
@@ -356,19 +256,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private static extern int SetBkMode(IntPtr hdc, BkModes mode);
 
 		[DllImport("gdi32.dll")]
+
 		private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiObj);
 
 		[DllImport("gdi32.dll")]
 		private static extern int SetTextColor(IntPtr hdc, int color);
 
-		[DllImport("gdi32.dll")]
-		private static extern int SetBkColor(IntPtr hdc, int color);
-
 		[DllImport("gdi32.dll", EntryPoint = "GetTextExtentPoint32W")]
 		private static extern int GetTextExtentPoint32(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Size size);
-
-		[DllImport("gdi32.dll", EntryPoint = "GetTextExtentExPointW")]
-		private static extern bool GetTextExtentExPoint(IntPtr hDc, [MarshalAs(UnmanagedType.LPWStr)]string str, int nLength, int nMaxExtent, int[] lpnFit, int[] alpDx, ref Size size);
 
 		[DllImport("gdi32.dll", EntryPoint = "TextOutW")]
 		private static extern bool TextOut(IntPtr hdc, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string str, int len);
@@ -376,26 +271,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll")]
 		public static extern int SetGraphicsMode(IntPtr hdc, int iMode);
 
-		[DllImport("user32.dll", EntryPoint = "DrawTextW")]
-		private static extern int DrawText(IntPtr hdc, [MarshalAs(UnmanagedType.LPWStr)] string str, int len, ref Rect rect, uint uFormat);
-
-		[DllImport("gdi32.dll", EntryPoint = "ExtTextOutW")]
-		private static extern bool ExtTextOut(IntPtr hdc, int X, int Y, uint fuOptions, uint cbCount, [In] IntPtr lpDx);
-
-		[DllImport("gdi32.dll")]
-		static extern bool SetWorldTransform(IntPtr hdc, [In] ref XFORM lpXform);
-
-		[DllImport("gdi32.dll")]
-		private static extern int SelectClipRgn(IntPtr hdc, IntPtr hrgn);
-
 		[DllImport("gdi32.dll")]
 		private static extern bool DeleteObject(IntPtr hObject);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateSolidBrush(int color);
-
-		[DllImport("gdi32.dll")]
-		private static extern IntPtr CreatePen(int fnPenStyle, int nWidth, int color);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr MoveToEx(IntPtr hdc, int x, int y, IntPtr point);
@@ -425,44 +305,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
 		static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, BLENDFUNCTION blendFunction);
 
-		public enum FontWeight : int
-		{
-			FW_DONTCARE = 0,
-			FW_THIN = 100,
-			FW_EXTRALIGHT = 200,
-			FW_LIGHT = 300,
-			FW_NORMAL = 400,
-			FW_MEDIUM = 500,
-			FW_SEMIBOLD = 600,
-			FW_BOLD = 700,
-			FW_EXTRABOLD = 800,
-			FW_HEAVY = 900,
-		}
-		public enum FontCharSet : byte
-		{
-			ANSI_CHARSET = 0,
-			DEFAULT_CHARSET = 1,
-			SYMBOL_CHARSET = 2,
-			SHIFTJIS_CHARSET = 128,
-			HANGEUL_CHARSET = 129,
-			HANGUL_CHARSET = 129,
-			GB2312_CHARSET = 134,
-			CHINESEBIG5_CHARSET = 136,
-			OEM_CHARSET = 255,
-			JOHAB_CHARSET = 130,
-			HEBREW_CHARSET = 177,
-			ARABIC_CHARSET = 178,
-			GREEK_CHARSET = 161,
-			TURKISH_CHARSET = 162,
-			VIETNAMESE_CHARSET = 163,
-			THAI_CHARSET = 222,
-			EASTEUROPE_CHARSET = 238,
-			RUSSIAN_CHARSET = 204,
-			MAC_CHARSET = 77,
-			BALTIC_CHARSET = 186,
-		}
+		// ReSharper disable InconsistentNaming
+		// ReSharper disable UnusedMember.Global
+		// ReSharper disable UnusedMember.Local
+		// ReSharper disable NotAccessedField.Local
+		// ReSharper disable ArrangeTypeMemberModifiers
 		public enum FontPrecision : byte
 		{
+			
 			OUT_DEFAULT_PRECIS = 0,
 			OUT_STRING_PRECIS = 1,
 			OUT_CHARACTER_PRECIS = 2,
@@ -475,44 +325,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			OUT_SCREEN_OUTLINE_PRECIS = 9,
 			OUT_PS_ONLY_PRECIS = 10,
 		}
-		public enum FontClipPrecision : byte
-		{
-			CLIP_DEFAULT_PRECIS = 0,
-			CLIP_CHARACTER_PRECIS = 1,
-			CLIP_STROKE_PRECIS = 2,
-			CLIP_MASK = 0xf,
-			CLIP_LH_ANGLES = (1 << 4),
-			CLIP_TT_ALWAYS = (2 << 4),
-			CLIP_DFA_DISABLE = (4 << 4),
-			CLIP_EMBEDDED = (8 << 4),
-		}
-		public enum FontQuality : byte
-		{
-			DEFAULT_QUALITY = 0,
-			DRAFT_QUALITY = 1,
-			PROOF_QUALITY = 2,
-			NONANTIALIASED_QUALITY = 3,
-			ANTIALIASED_QUALITY = 4,
-			CLEARTYPE_QUALITY = 5,
-			CLEARTYPE_NATURAL_QUALITY = 6,
-		}
-		[Flags]
-		public enum FontPitchAndFamily : byte
-		{
-			DEFAULT_PITCH = 0,
-			FIXED_PITCH = 1,
-			VARIABLE_PITCH = 2,
-			FF_DONTCARE = (0 << 4),
-			FF_ROMAN = (1 << 4),
-			FF_SWISS = (2 << 4),
-			FF_MODERN = (3 << 4),
-			FF_SCRIPT = (4 << 4),
-			FF_DECORATIVE = (5 << 4),
-		}
 
-		//it is important for this to be the right declaration
-		//see more here http://www.tech-archive.net/Archive/DotNet/microsoft.public.dotnet.framework.drawing/2004-04/0319.html
-		//if it's wrong (I had a wrong one from pinvoke.net) then ToLogFont will fail mysteriously
+		// It is important for this to be the right declaration
+		// See more here http://www.tech-archive.net/Archive/DotNet/microsoft.public.dotnet.framework.drawing/2004-04/0319.html
+		// If it's wrong (I had a wrong one from pinvoke.net) then ToLogFont will fail mysteriously
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		class LOGFONT
 		{
@@ -580,7 +396,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 
 			/// <summary>
-			///   Allows implicit converstion to a managed transformation matrix.
+			///   Allows implicit conversion to a managed transformation matrix.
 			/// </summary>
 			public static implicit operator System.Drawing.Drawing2D.Matrix(XFORM xf)
 			{
@@ -588,7 +404,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 
 			/// <summary>
-			///   Allows implicit converstion from a managed transformation matrix.
+			///   Allows implicit conversion from a managed transformation matrix.
 			/// </summary>
 			public static implicit operator XFORM(System.Drawing.Drawing2D.Matrix m)
 			{
@@ -617,43 +433,24 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		const byte AC_SRC_OVER = 0x00;
 		const byte AC_SRC_ALPHA = 0x01;
 
-		[DllImport("gdi32.dll")]
-		static extern int SetBitmapBits(IntPtr hbmp, uint cBytes, byte[] lpBits);
-
 		#endregion
 
 		#region Classes, Structs, and Enums
 
-		public class GdiGraphicsLock : IDisposable
+		private class GdiGraphicsLock : IDisposable
 		{
-			private readonly GDIRenderer Gdi;
+			private readonly GdiRenderer _gdi;
 
-			public GdiGraphicsLock(GDIRenderer gdi)
+			public GdiGraphicsLock(GdiRenderer gdi)
 			{
-				this.Gdi = gdi;
+				_gdi = gdi;
 			}
 
 			public void Dispose()
 			{
-				Gdi._g.ReleaseHdc(Gdi._hdc);
-				Gdi._hdc = IntPtr.Zero;
-				Gdi._g = null;
-			}
-		}
-
-		private struct Rect
-		{
-			private int _left;
-			private int _top;
-			private int _right;
-			private int _bottom;
-
-			public Rect(Rectangle r)
-			{
-				_left = r.Left;
-				_top = r.Top;
-				_bottom = r.Bottom;
-				_right = r.Right;
+				_gdi._g.ReleaseHdc(_gdi._hdc);
+				_gdi._hdc = IntPtr.Zero;
+				_gdi._g = null;
 			}
 		}
 
@@ -673,70 +470,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 		}
 
-		private struct GDIPoint
-		{
-			private int x;
-			private int y;
-
-			private GDIPoint(int x, int y)
-			{
-				this.x = x;
-				this.y = y;
-			}
-		}
-
-		[Flags]
-		public enum ETOOptions : uint
-		{
-			CLIPPED = 0x4,
-			GLYPH_INDEX = 0x10,
-			IGNORELANGUAGE = 0x1000,
-			NUMERICSLATIN = 0x800,
-			NUMERICSLOCAL = 0x400,
-			OPAQUE = 0x2,
-			PDY = 0x2000,
-			RTLREADING = 0x800,
-		}
-
-		/// <summary>
-		/// See [http://msdn.microsoft.com/en-us/library/windows/desktop/dd162498(v=vs.85).aspx][15]
-		///  </summary>
-		[Flags]
-		public enum TextFormatFlags : uint
-		{
-			Default = 0x00000000,
-			Center = 0x00000001,
-			Right = 0x00000002,
-			VCenter = 0x00000004,
-			Bottom = 0x00000008,
-			WordBreak = 0x00000010,
-			SingleLine = 0x00000020,
-			ExpandTabs = 0x00000040,
-			TabStop = 0x00000080,
-			NoClip = 0x00000100,
-			ExternalLeading = 0x00000200,
-			CalcRect = 0x00000400,
-			NoPrefix = 0x00000800,
-			Internal = 0x00001000,
-			EditControl = 0x00002000,
-			PathEllipsis = 0x00004000,
-			EndEllipsis = 0x00008000,
-			ModifyString = 0x00010000,
-			RtlReading = 0x00020000,
-			WordEllipsis = 0x00040000,
-			NoFullWidthCharBreak = 0x00080000,
-			HidePrefix = 0x00100000,
-			ProfixOnly = 0x00200000,
-		}
-
-		[Flags]
-		public enum PenStyles
-		{
-			PS_SOLID = 0x00000000
-			// TODO
-		}
-
-		public enum PaintObjects
+		private enum PaintObjects
 		{
 			WHITE_BRUSH = 0,
 			LTGRAY_BRUSH = 1,
@@ -758,7 +492,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			DC_PEN = 19,
 		}
 
-		public enum BkModes : int
+		private enum BkModes : int
 		{
 			TRANSPARENT = 1,
 			OPAQUE = 2

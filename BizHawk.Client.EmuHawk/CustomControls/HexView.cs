@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class HexView : Control
 	{
-		private readonly GDIRenderer Gdi;
+		private readonly GdiRenderer Gdi;
 		private readonly Font NormalFont;
 		private Size _charSize;
 
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			Gdi = new GDIRenderer();
+			Gdi = new GdiRenderer();
 
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))

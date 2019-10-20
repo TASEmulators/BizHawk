@@ -61,18 +61,18 @@ namespace BizHawk.Client.EmuHawk
 			ScrollMethod = "near";
 
 			var commonFont = new Font("Arial", 8, FontStyle.Bold);
-			_normalFont = GDIRenderer.CreateNormalHFont(commonFont, 6);
+			_normalFont = GdiRenderer.CreateNormalHFont(commonFont, 6);
 
 			// PrepDrawString doesn't actually set the font, so this is rather useless.
 			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			_rotatedFont = GDIRenderer.CreateRotatedHFont(commonFont, true);
+			_rotatedFont = GdiRenderer.CreateRotatedHFont(commonFont, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			_gdi = new GDIRenderer();
+			_gdi = new GdiRenderer();
 
 			using (var g = CreateGraphics())
 			using (_gdi.LockGraphics(g))
@@ -129,8 +129,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_gdi.Dispose();
 
-			GDIRenderer.DestroyHFont(_normalFont);
-			GDIRenderer.DestroyHFont(_rotatedFont);
+			GdiRenderer.DestroyHFont(_normalFont);
+			GdiRenderer.DestroyHFont(_rotatedFont);
 
 			base.Dispose(disposing);
 		}
