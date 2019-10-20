@@ -213,6 +213,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
+		private bool IgnoreEventsNextPoll = false;
 
 		void HandleButton(string button, bool newState, InputFocus source)
 		{
@@ -259,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 				LogicalButton buttonModifierState;
 				if (ModifierState.TryGetValue(button, out buttonModifierState))
 				{
-					if (buttonModifierState != ie.LogicalButton)
+					if (buttonModifierState != ie.LogicalButton && !IgnoreEventsNextPoll)
 					{
 						_NewEvents.Add(
 							new InputEvent
@@ -273,7 +274,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_NewEvents.Add(ie);
+			if (!IgnoreEventsNextPoll)
+			{
+				_NewEvents.Add(ie);
+			}
 		}
 
 		private static ModifierKey ButtonToModifierKey(string button)
@@ -298,6 +302,8 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				InputEvents.Clear();
+				// To "clear" anything currently in the input device buffers
+				IgnoreEventsNextPoll = true;
 			}
 		}
 
@@ -443,6 +449,8 @@ namespace BizHawk.Client.EmuHawk
 							EnqueueEvent(ie);
 						}
 					}
+
+					IgnoreEventsNextPoll = false;
 				} //lock(this)
 
 				//arbitrary selection of polling frequency:
@@ -535,6 +543,6 @@ namespace BizHawk.Client.EmuHawk
 		//controls whether modifier keys will be ignored as key press events
 		//this should be used by hotkey binders, but we may want modifier key events
 		//to get triggered in the main form
-		public bool EnableIgnoreModifiers = false;
+		public volatile bool EnableIgnoreModifiers = false;
 	}
 }
