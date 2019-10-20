@@ -22,8 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		public BreakpointControl()
 		{
 			InitializeComponent();
-			BreakpointView.QueryItemText += BreakPointView_QueryItemText;
-			BreakpointView.QueryItemBkColor += BreakPointView_QueryItemBkColor;
+			BreakpointView.RetrieveVirtualItem += BreakPointView_QueryItemText;
 			BreakpointView.VirtualMode = true;
 			_breakpoints.Callback = BreakpointCallback;
 		}
@@ -33,30 +32,16 @@ namespace BizHawk.Client.EmuHawk
 			UpdateStatsLabel();
 		}
 
-		private void BreakPointView_QueryItemText(int index, int column, out string text)
+		private void BreakPointView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
-			text = "";
-			switch (column)
-			{
-				case 0:
-					text = $"{_breakpoints[index].Address:X}";
-					break;
-				case 1:
-					text = $"{_breakpoints[index].AddressMask:X}";
-					break;
-				case 2:
-					text = _breakpoints[index].Type.ToString();
-					break;
-				case 3:
-					text = _breakpoints[index].Name;
-					break;
-			}
-		}
+			var entry = _breakpoints[e.ItemIndex];
+			e.Item = new ListViewItem($"{entry.Address:X}");
+			e.Item.SubItems.Add($"{entry.AddressMask:X}");
+			e.Item.SubItems.Add(entry.Type.ToString());
+			e.Item.SubItems.Add(entry.Name);
 
-		private void BreakPointView_QueryItemBkColor(int index, int column, ref Color color)
-		{
-			color = _breakpoints[index].ReadOnly ? SystemColors.Control
-				: _breakpoints[index].Active ? Color.LightCyan
+			e.Item.BackColor = entry.ReadOnly ? SystemColors.Control
+				: entry.Active ? Color.LightCyan
 				: Color.White;
 		}
 
@@ -90,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CheckForNewBreakpoints();
 
-				BreakpointView.ItemCount = _breakpoints.Count;
+				BreakpointView.VirtualListSize = _breakpoints.Count;
 				UpdateStatsLabel();
 			}
 		}
@@ -124,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 					_breakpoints.Add(new Breakpoint(Core, callback));
 				}
 
-				BreakpointView.ItemCount = _breakpoints.Count;
+				BreakpointView.VirtualListSize = _breakpoints.Count;
 				BreakpointView.Refresh();
 				UpdateBreakpointRemoveButton();
 				UpdateStatsLabel();
@@ -146,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, address, mask, type);
 
-			BreakpointView.ItemCount = _breakpoints.Count;
+			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
 		}
@@ -160,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 				_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, b.Address, b.AddressMask, b.BreakType);
 			}
 
-			BreakpointView.ItemCount = _breakpoints.Count;
+			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
 		}
@@ -208,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 						_breakpoints.Remove(item);
 					}
 
-					BreakpointView.ItemCount = _breakpoints.Count;
+					BreakpointView.VirtualListSize = _breakpoints.Count;
 					UpdateBreakpointRemoveButton();
 					UpdateStatsLabel();
 				}
@@ -243,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 						item.Active ^= true;
 					}
 
-					BreakpointView.ItemCount = _breakpoints.Count;
+					BreakpointView.VirtualListSize = _breakpoints.Count;
 					UpdateBreakpointRemoveButton();
 					UpdateStatsLabel();
 				}
@@ -270,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 				item.Active ^= true;
 			}
 
-			BreakpointView.ItemCount = _breakpoints.Count;
+			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateStatsLabel();
 		}
 
@@ -288,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BreakpointView.ItemCount = _breakpoints.Count;
+			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
 		}
@@ -310,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BreakpointView.ItemCount = _breakpoints.Count;
+			BreakpointView.VirtualListSize = _breakpoints.Count;
 			UpdateBreakpointRemoveButton();
 			UpdateStatsLabel();
 		}
