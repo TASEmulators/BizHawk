@@ -566,6 +566,7 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ControlRenderer\IControlRenderer.cs" />
     <Compile Include="CustomControls\ExceptionBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -575,7 +576,7 @@
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\GDIRenderer.cs" />
+    <Compile Include="CustomControls\ControlRenderer\GDIRenderer.cs" />
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
