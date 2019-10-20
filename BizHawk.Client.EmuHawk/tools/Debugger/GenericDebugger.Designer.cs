@@ -46,9 +46,7 @@
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
 			this.ToPCBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.DisassemblerView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Instruction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DisassemblerView = new InputRoll();
 			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StepOutBtn = new System.Windows.Forms.Button();
@@ -239,39 +237,21 @@
 			this.DisassemblerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.DisassemblerView.BlazingFast = false;
-			this.DisassemblerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Address,
-            this.Instruction});
+			this.DisassemblerView.AllowColumnReorder = false;
+			this.DisassemblerView.AllowColumnResize = true;
 			this.DisassemblerView.ContextMenuStrip = this.DisassemblerContextMenu;
 			this.DisassemblerView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
-			this.DisassemblerView.HideSelection = false;
-			this.DisassemblerView.ItemCount = 0;
+			this.DisassemblerView.RowCount = 0;
 			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
 			this.DisassemblerView.Name = "DisassemblerView";
-			this.DisassemblerView.SelectAllInProgress = false;
-			this.DisassemblerView.selectedItem = -1;
 			this.DisassemblerView.Size = new System.Drawing.Size(395, 476);
 			this.DisassemblerView.TabIndex = 1;
-			this.DisassemblerView.UseCompatibleStateImageBehavior = false;
 			this.DisassemblerView.UseCustomBackground = true;
-			this.DisassemblerView.View = System.Windows.Forms.View.Details;
-			this.DisassemblerView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.DisassemblerView_Scroll);
+			this.DisassemblerView.RowScroll += new InputRoll.RowScrollEvent(this.DisassemblerView_Scroll);
 			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
 			this.DisassemblerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisassemblerView_KeyDown);
-			this.DisassemblerView.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.DisassemblerView_Wheel);
-			// 
-			// Address
-			// 
-			this.Address.Text = "Address";
-			this.Address.Width = 94;
-			// 
-			// Instruction
-			// 
-			this.Instruction.Text = "Instruction";
-			this.Instruction.Width = 291;
 			// 
 			// DisassemblerContextMenu
 			// 
@@ -412,9 +392,7 @@
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
 		private BreakpointControl BreakPointControl1;
 		private System.Windows.Forms.GroupBox DisassemblerBox;
-		private VirtualListView DisassemblerView;
-		private System.Windows.Forms.ColumnHeader Address;
-		private System.Windows.Forms.ColumnHeader Instruction;
+		private InputRoll DisassemblerView;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button StepOutBtn;
 		private System.Windows.Forms.Button StepIntoBtn;

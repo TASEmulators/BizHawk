@@ -1573,11 +1573,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_horizontalOrientation)
 			{
-				ColumnScroll?.Invoke(this, e);
+				ColumnScroll?.Invoke(_vBar, e);
 			}
 			else
 			{
-				RowScroll?.Invoke(this, e);
+				RowScroll?.Invoke(_vBar, e);
 			}
 		}
 
@@ -1590,11 +1590,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_horizontalOrientation)
 			{
-				RowScroll?.Invoke(this, e);
+				RowScroll?.Invoke(_hBar, e);
 			}
 			else
 			{
-				ColumnScroll?.Invoke(this, e);
+				ColumnScroll?.Invoke(_vBar, e);
 			}
 		}
 
