@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	// Row width is specified for horizontal orientation
 	public partial class InputRoll : Control
 	{
-		private readonly IControlRenderer _gdi;
+		private readonly IControlRenderer _renderer;
 		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
 
 		private readonly VScrollBar _vBar;
@@ -72,12 +72,12 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			_gdi = new GdiRenderer();
+			_renderer = new GdiRenderer();
 
 			using (var g = CreateGraphics())
-			using (_gdi.LockGraphics(g))
+			using (_renderer.LockGraphics(g))
 			{
-				_charSize = _gdi.MeasureString("A", commonFont); // TODO make this a property so changing it updates other values.
+				_charSize = _renderer.MeasureString("A", commonFont); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void Dispose(bool disposing)
 		{
-			_gdi.Dispose();
+			_renderer.Dispose();
 
 			GdiRenderer.DestroyHFont(_normalFont);
 			GdiRenderer.DestroyHFont(_rotatedFont);
