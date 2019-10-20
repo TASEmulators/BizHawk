@@ -302,7 +302,8 @@
 			this.Name = "ControllerConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Controller Config";
-			this.Load += new System.EventHandler(this.NewControllerConfig_Load);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControllerConfig_FormClosed);
+			this.Load += new System.EventHandler(this.ControllerConfig_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

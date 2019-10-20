@@ -14,11 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			Closing += (o, e) =>
-			{
-				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
-			};
-
 			tabPage1.Focus();
 		}
 
@@ -34,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
 		}
 
-		private void NewHotkeyWindow_Load(object sender, EventArgs e)
+		private void HotkeyConfig_Load(object sender, EventArgs e)
 		{
 			var source = new AutoCompleteStringCollection();
 			source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
@@ -45,6 +40,11 @@ namespace BizHawk.Client.EmuHawk
 			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			DoTabs();
 			DoFocus();
+		}
+
+		private void HotkeyConfig_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Input.Instance.ClearEvents();
 		}
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)

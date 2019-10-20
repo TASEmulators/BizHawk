@@ -293,7 +293,6 @@ namespace BizHawk.Client.EmuHawk
 		private ModifierKey _Modifiers;
 		private readonly List<InputEvent> _NewEvents = new List<InputEvent>();
 
-		//do we need this?
 		public void ClearEvents()
 		{
 			lock (this)

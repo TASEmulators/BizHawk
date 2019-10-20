@@ -88,6 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnEnter(EventArgs e)
 		{
+			Input.Instance.ClearEvents();
 			_lastPress = null;
 			_timer.Start();
 			BackColor = Color.FromArgb(unchecked((int)0xFFC0FFFF)); // Color.LightCyan is too light on Windows 8, this is a bit darker
@@ -99,6 +100,12 @@ namespace BizHawk.Client.EmuHawk
 			UpdateLabel();
 			BackColor = SystemColors.Window;
 			base.OnLeave(e);
+		}
+
+		protected override void OnHandleDestroyed(EventArgs e)
+		{
+			_timer.Stop();
+			base.OnHandleDestroyed(e);
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
