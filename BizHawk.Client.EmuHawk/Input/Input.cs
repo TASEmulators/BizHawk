@@ -254,16 +254,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ModifierState[button] = ie.LogicalButton;
 			}
-			else if (ModifierState.TryGetValue(button, out LogicalButton buttonModifierState))
+			else
 			{
-				if (buttonModifierState != ie.LogicalButton)
-					_NewEvents.Add(
-						new InputEvent
-						{
-							LogicalButton = buttonModifierState,
-							EventType = InputEventType.Release,
-							Source = source
-						});
+				LogicalButton buttonModifierState;
+				if (ModifierState.TryGetValue(button, out buttonModifierState))
+				{
+					if (buttonModifierState != ie.LogicalButton)
+					{
+						_NewEvents.Add(
+							new InputEvent
+							{
+								LogicalButton = buttonModifierState,
+								EventType = InputEventType.Release,
+								Source = source
+							});
+					}
+				}
 				ModifierState.Remove(button);
 			}
 
