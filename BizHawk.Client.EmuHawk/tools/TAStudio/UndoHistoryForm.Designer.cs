@@ -40,9 +40,7 @@
 			this.AutoScrollCheck = new System.Windows.Forms.CheckBox();
 			this.MaxStepsNum = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
-			this.HistoryView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.HistoryView = new InputRoll();
 			this.RightClickMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).BeginInit();
 			this.SuspendLayout();
@@ -168,35 +166,19 @@
 			this.HistoryView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.HistoryView.BlazingFast = false;
-			this.HistoryView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
-			this.HistoryView.HideSelection = false;
-			this.HistoryView.ItemCount = 0;
+			this.HistoryView.RowCount = 0;
 			this.HistoryView.Location = new System.Drawing.Point(10, 10);
 			this.HistoryView.MultiSelect = false;
 			this.HistoryView.Name = "HistoryView";
-			this.HistoryView.SelectAllInProgress = false;
-			this.HistoryView.selectedItem = -1;
 			this.HistoryView.Size = new System.Drawing.Size(369, 213);
 			this.HistoryView.TabIndex = 2;
-			this.HistoryView.UseCompatibleStateImageBehavior = false;
 			this.HistoryView.UseCustomBackground = true;
-			this.HistoryView.View = System.Windows.Forms.View.Details;
 			this.HistoryView.DoubleClick += new System.EventHandler(this.HistoryView_DoubleClick);
 			this.HistoryView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseDown);
 			this.HistoryView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseUp);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "ID";
-			this.columnHeader1.Width = 40;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Undo Step";
-			this.columnHeader2.Width = 322;
+			this.HistoryView.AllowColumnReorder = false;
+			this.HistoryView.AllowColumnResize = false;
+			this.HistoryView.FullRowSelect = true;
 			// 
 			// UndoHistoryForm
 			// 
@@ -225,9 +207,7 @@
 
 		private System.Windows.Forms.Button ClearButton;
 		private System.Windows.Forms.Button UndoButton;
-		private VirtualListView HistoryView;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
+		private InputRoll HistoryView;
 		private System.Windows.Forms.Button RedoButton;
 		private System.Windows.Forms.ContextMenuStrip RightClickMenu;
 		private System.Windows.Forms.ToolStripMenuItem undoHereToolStripMenuItem;
