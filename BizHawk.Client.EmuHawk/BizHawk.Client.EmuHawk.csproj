@@ -566,6 +566,7 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ControlRenderer\GdiPlusRenderer.cs" />
     <Compile Include="CustomControls\ControlRenderer\IControlRenderer.cs" />
     <Compile Include="CustomControls\ExceptionBox.cs">
       <SubType>Form</SubType>

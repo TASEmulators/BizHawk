@@ -65,7 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			_renderer = new GdiRenderer();
+			//_renderer = new GdiRenderer();
+			_renderer = new GdiPlusRenderer();
 
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
