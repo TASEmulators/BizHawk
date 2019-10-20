@@ -269,8 +269,8 @@ namespace BizHawk.Client.EmuHawk
 								Source = source
 							});
 					}
+					ModifierState.Remove(button);
 				}
-				ModifierState.Remove(button);
 			}
 
 			_NewEvents.Add(ie);
