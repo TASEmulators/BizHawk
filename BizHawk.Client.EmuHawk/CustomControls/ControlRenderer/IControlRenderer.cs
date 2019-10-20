@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		IDisposable LockGraphics(Graphics g, int width, int height);
 
 		/// <summary>
-		/// Measure the width and height of string <paramref name="str"/> when drawn on device context HDC
+		/// Measure the width and height of string <paramref name="str"/> when drawn
 		/// using the given font <paramref  name="font"/>
 		/// </summary>
 		Size MeasureString(string str, Font font);
