@@ -259,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 			MediaSelect = 0xED
 		}
 
-		private static ScanCode[] SlimDXScanCodeMap = new ScanCode[]
+		private static readonly ScanCode[] SlimDXScanCodeMap = new ScanCode[]
 		{
 			ScanCode.D0, // 0
 			ScanCode.D1, // 1
@@ -408,7 +408,7 @@ namespace BizHawk.Client.EmuHawk
 			0 // 144
 		};
 
-		private static Dictionary<ScanCode, Key> ScanCodeToSlimDXKey =
+		private static readonly Dictionary<ScanCode, Key> ScanCodeToSlimDXKey =
 			SlimDXScanCodeMap
 				.Select((n, i) => new { Value = n, Index = i })
 				.ToDictionary(n => n.Value, n => (Key)n.Index);
