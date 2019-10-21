@@ -3819,14 +3819,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					SetWindowText();
 					CurrentlyOpenRom = oa_openrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
-					HandlePlatformMenus();
-					_stateSlots.Clear();
-					UpdateCoreStatusBarButton();
-					UpdateDumpIcon();
-					SetMainformMovieInfo();
+					OnRomChanged();
 					GlobalWin.DisplayManager.Blank();
 
 					Global.Rewinder.Initialize();
@@ -3854,26 +3849,17 @@ namespace BizHawk.Client.EmuHawk
 					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
+				else if (!(Emulator is NullEmulator))
+				{
+					// The ROM has been loaded by a recursive invocation of the LoadROM method.
+					ClientApi.OnRomLoaded(Emulator);
+					return true;
+				}
 				else
 				{
 					// This shows up if there's a problem
-					// TODO: put all these in a single method or something
-
-					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					if (!(Emulator is NullEmulator))
-					{
-						ClientApi.OnRomLoaded(Emulator);
-						return true;
-					}
-
 					ClientApi.UpdateEmulatorAndVP(Emulator);
-					HandlePlatformMenus();
-					_stateSlots.Clear();
-					UpdateStatusSlots();
-					UpdateCoreStatusBarButton();
-					UpdateDumpIcon();
-					SetMainformMovieInfo();
-					SetWindowText();
+					OnRomChanged();
 					return false;
 				}
 			}
@@ -3884,6 +3870,17 @@ namespace BizHawk.Client.EmuHawk
 					_currentLoadRomArgs = null;
 				}
 			}
+		}
+
+		private void OnRomChanged()
+		{
+			SetWindowText();
+			HandlePlatformMenus();
+			_stateSlots.ClearRedoList();
+			UpdateStatusSlots();
+			UpdateCoreStatusBarButton();
+			UpdateDumpIcon();
+			SetMainformMovieInfo();
 		}
 
 		private void CommitCoreSettingsToConfig()
@@ -3979,17 +3976,12 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Restart();
 				ApiManager.Restart(Emulator.ServiceProvider);
 				RewireSound();
-				Text = $"BizHawk{(VersionInfo.DeveloperBuild ? " (interim) " : "")}";
-				HandlePlatformMenus();
-				_stateSlots.Clear();
-				UpdateDumpIcon();
-				UpdateCoreStatusBarButton();
 				ClearHolds();
-				PauseOnFrame = null;
 				ToolFormBase.UpdateCheatRelatedTools(null, null);
-				UpdateStatusSlots();
+				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
+				OnRomChanged();
 			}
 		}
 

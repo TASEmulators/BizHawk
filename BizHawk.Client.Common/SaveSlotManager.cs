@@ -97,12 +97,6 @@ namespace BizHawk.Client.Common
 			return _redo[slot];
 		}
 
-		public void Clear()
-		{
-			ClearRedoList();
-			Update();
-		}
-
 		public void SwapBackupSavestate(string path)
 		{
 			// Takes the .state and .bak files and swaps them
