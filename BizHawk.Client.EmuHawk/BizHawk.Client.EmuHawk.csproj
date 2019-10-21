@@ -2263,12 +2263,12 @@
   <ItemGroup>
     <Folder Include="config\Saturn\" />
   </ItemGroup>
-  <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core' Or '$(TargetFrameworkIdentifier)' != '.NETFramework'">
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' And ('$(MSBuildRuntimeType)' == 'Core' Or '$(TargetFrameworkIdentifier)' != '.NETFramework') ">
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <GenerateResourceMSBuildArchitecture Condition=" '$(GenerateResourceMSBuildArchitecture)' == '' ">CurrentArchitecture</GenerateResourceMSBuildArchitecture>
     <GenerateResourceMSBuildRuntime Condition=" '$(GenerateResourceMSBuildRuntime)' == '' ">CurrentRuntime</GenerateResourceMSBuildRuntime>
   </PropertyGroup>
-  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core' Or '$(TargetFrameworkIdentifier)' != '.NETFramework'">
+  <ItemGroup Condition=" '$(MSBuildRuntimeType)' == 'Core' Or '$(TargetFrameworkIdentifier)' != '.NETFramework' ">
     <Reference Include="System.Buffers">
       <HintPath>..\References\System.Buffers.dll</HintPath>
     </Reference>
