@@ -446,7 +446,8 @@ namespace BizHawk.Client.EmuHawk
 				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
-			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
+			// DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -553,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{
+		{	
 			Global.CheatList.DisableAll();
 		}
 
