@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Net;
 
 using BizHawk.Common.BufferExtensions;
 using System.Linq;
@@ -172,7 +173,7 @@ namespace BizHawk.Emulation.Common
 								break;
 						}
 
-						game.Name = items[2];
+						game.Name = WebUtility.HtmlDecode(items[2]);
 						game.System = items[3];
 						game.MetaData = items.Length >= 6 ? items[5] : null;
 						game.Region = items.Length >= 7 ? items[6] : "";
