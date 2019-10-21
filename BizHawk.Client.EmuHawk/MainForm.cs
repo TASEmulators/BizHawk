@@ -587,6 +587,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
+		private string CurrentlyOpenRomOpenAdvancedArgs { get; set; } = "";
 		public bool PauseAvi { get; set; }
 		public bool PressFrameAdvance { get; set; }
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
@@ -852,7 +853,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			var ioa = OpenAdvancedSerializer.ParseWithLegacy(_currentlyOpenRomPoopForAdvancedLoaderPleaseRefactorMe);
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRomOpenAdvancedArgs);
 			if (ioa is OpenAdvanced_LibretroNoGame)
 			{
 				LoadRom("", CurrentlyOpenRomArgs);
@@ -3587,8 +3588,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadRom(string path, LoadRomArgs args)
 		{
-			bool ret = _LoadRom(path, args);
-			if(!ret) return false;
+			if (!LoadRomInternal(path, args))
+				return false;
 
 			//what's the meaning of the last rom path when opening an archive? based on the archive file location
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
@@ -3601,7 +3602,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Still needs a good bit of refactoring
-		public bool _LoadRom(string path, LoadRomArgs args)
+		private bool LoadRomInternal(string path, LoadRomArgs args)
 		{
 			path = HawkFile.Util_ResolveLink(path);
 
@@ -3659,29 +3660,30 @@ namespace BizHawk.Client.EmuHawk
 
 				var nextComm = CreateCoreComm();
 
-				// we need to inform LoadRom which Libretro core to use...
 				IOpenAdvanced ioa = args.OpenAdvanced;
-				if (ioa is IOpenAdvancedLibretro)
-				{
-					var ioaretro = (IOpenAdvancedLibretro)ioa;
+				var oa_openrom = ioa as OpenAdvanced_OpenRom;
+				var oa_retro = ioa as OpenAdvanced_Libretro;
+				var ioa_retro = ioa as IOpenAdvancedLibretro;
 
+				// we need to inform LoadRom which Libretro core to use...
+				if (ioa_retro != null)
+				{
 					// prepare a core specification
 					// if it wasnt already specified, use the current default
-					if (ioaretro.CorePath == null)
+					if (ioa_retro.CorePath == null)
 					{
-						ioaretro.CorePath = Global.Config.LibretroCore;
+						ioa_retro.CorePath = Global.Config.LibretroCore;
 					}
 
-					nextComm.LaunchLibretroCore = ioaretro.CorePath;
+					nextComm.LaunchLibretroCore = ioa_retro.CorePath;
 					if (nextComm.LaunchLibretroCore == null)
 					{
 						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
 					}
 				}
 
-				if (ioa is OpenAdvanced_OpenRom)
+				if (oa_openrom != null)
 				{
-					var ioa_openrom = (OpenAdvanced_OpenRom)ioa;
 					// path already has the right value, while ioa.Path is null (interestingly, these are swapped below)
 					// I doubt null is meant to be assigned here, and it just prevents gameload
 					//path = ioa_openrom.Path;
@@ -3693,61 +3695,54 @@ namespace BizHawk.Client.EmuHawk
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loder.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
-				if (ioa is OpenAdvanced_Libretro)
+				if (oa_retro != null)
 				{
-					var oaretro = ioa as OpenAdvanced_Libretro;
-					oaretro.token.Path = loader.CanonicalFullPath;
+					oa_retro.token.Path = loader.CanonicalFullPath;
 				}
 
-				if (ioa is OpenAdvanced_OpenRom)
+				if (oa_openrom != null)
 				{
-					((OpenAdvanced_OpenRom)ioa).Path = loader.CanonicalFullPath;
+					oa_openrom.Path = loader.CanonicalFullPath;
 				}
 
 				if (result)
 				{
-
-					string loaderName = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
+					string openAdvancedArgs = $"*{OpenAdvancedSerializer.Serialize(ioa)}";
 					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-					if (ioa is OpenAdvanced_OpenRom)
+					if (oa_openrom != null && Path.GetExtension(oa_openrom.Path.Replace("|","")).ToLower() == ".xml")
 					{
-						OpenAdvanced_OpenRom ioa_openRom = ioa as OpenAdvanced_OpenRom;
+						// this is a multi-disk bundler file
+						// determine the xml assets and create RomStatusDetails for all of them
+						var xmlGame = XmlGame.Create(new HawkFile(oa_openrom.Path));
 
-						if (Path.GetExtension(ioa_openRom.Path.Replace("|","")).ToLower() == ".xml")
+						StringWriter xSw = new StringWriter();
+
+						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							// this is a multi-disk bundler file
-							// determine the xml assets and create RomStatusDetails for all of them
-							var xmlGame = XmlGame.Create(new HawkFile(ioa_openRom.Path));
+							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
 
-							StringWriter xSw = new StringWriter();
-
-							for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
+							if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
 							{
-								var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
-
-								if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
-								{
-									xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
-									xSw.WriteLine("SHA1:N/A");
-									xSw.WriteLine("MD5:N/A");
-									xSw.WriteLine();
-								}
-								else
-								{
-									xSw.WriteLine(xmlGame.Assets[xg].Key);
-									xSw.WriteLine($"SHA1:{xmlGame.Assets[xg].Value.HashSHA1()}");
-									xSw.WriteLine($"MD5:{xmlGame.Assets[xg].Value.HashMD5()}");
-									xSw.WriteLine();
-								}
+								xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+								xSw.WriteLine("SHA1:N/A");
+								xSw.WriteLine("MD5:N/A");
+								xSw.WriteLine();
 							}
-
-							Emulator.CoreComm.RomStatusDetails = xSw.ToString();
-							Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+							else
+							{
+								xSw.WriteLine(xmlGame.Assets[xg].Key);
+								xSw.WriteLine($"SHA1:{xmlGame.Assets[xg].Value.HashSHA1()}");
+								xSw.WriteLine($"MD5:{xmlGame.Assets[xg].Value.HashMD5()}");
+								xSw.WriteLine();
+							}
 						}
+
+						Emulator.CoreComm.RomStatusDetails = xSw.ToString();
+						Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
 					}
 
 					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
@@ -3796,13 +3791,13 @@ namespace BizHawk.Client.EmuHawk
 
 					// restarts the lua console if a different rom is loaded.
 					// im not really a fan of how this is done..
-					if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loaderName)
+					if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != openAdvancedArgs)
 					{
 						GlobalWin.Tools.Restart<LuaConsole>();
 					}
 
-					Global.Config.RecentRoms.Add(loaderName);
-					JumpLists.AddRecentItem(loaderName, ioa.DisplayName);
+					Global.Config.RecentRoms.Add(openAdvancedArgs);
+					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
 					if (!Global.MovieSession.MovieIsQueued)
@@ -3834,14 +3829,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					SetWindowText();
-					_currentlyOpenRomPoopForAdvancedLoaderPleaseRefactorMe = loaderName;
-					CurrentlyOpenRom = loaderName.Replace("*OpenRom*", ""); // POOP
+					CurrentlyOpenRom = oa_openrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRomArgs = args;
+					CurrentlyOpenRomOpenAdvancedArgs = openAdvancedArgs;
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateCoreStatusBarButton();
 					UpdateDumpIcon();
 					SetMainformMovieInfo();
-					CurrentlyOpenRomArgs = args;
 					GlobalWin.DisplayManager.Blank();
 
 					Global.Rewinder.Initialize();
@@ -3900,8 +3895,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-
-		private string _currentlyOpenRomPoopForAdvancedLoaderPleaseRefactorMe = "";
 
 		private void CommitCoreSettingsToConfig()
 		{
@@ -4007,7 +4000,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
-				_currentlyOpenRomPoopForAdvancedLoaderPleaseRefactorMe = "";
+				CurrentlyOpenRomOpenAdvancedArgs = "";
 			}
 		}
 
