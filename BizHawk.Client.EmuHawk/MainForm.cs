@@ -587,7 +587,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public string CurrentlyOpenRom { get; private set; } // todo - delete me and use only args instead
 		public LoadRomArgs CurrentlyOpenRomArgs { get; private set; }
-		private string CurrentlyOpenRomOpenAdvancedArgs { get; set; } = "";
 		public bool PauseAvi { get; set; }
 		public bool PressFrameAdvance { get; set; }
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
@@ -853,15 +852,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRomOpenAdvancedArgs);
-			if (ioa is OpenAdvanced_LibretroNoGame)
-			{
-				LoadRom("", CurrentlyOpenRomArgs);
-			}
-			else
-			{
-				LoadRom(ioa.SimplePath, CurrentlyOpenRomArgs);
-			}
+			if (CurrentlyOpenRomArgs == null) return;
+			LoadRom(CurrentlyOpenRomArgs.OpenAdvanced.SimplePath, CurrentlyOpenRomArgs);
 		}
 
 		public void PauseEmulator()
@@ -3604,13 +3596,12 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		private bool LoadRomInternal(string path, LoadRomArgs args)
 		{
-			path = HawkFile.Util_ResolveLink(path);
-
-			// default args
+			if (path == null)
+				throw new ArgumentNullException(nameof(path));
 			if (args == null)
-			{
-				args = new LoadRomArgs();
-			}
+				throw new ArgumentNullException(nameof(args));
+
+			path = HawkFile.Util_ResolveLink(path);
 
 			// if this is the first call to LoadRom (they will come in recursively) then stash the args
 			bool firstCall = false;
@@ -3831,7 +3822,6 @@ namespace BizHawk.Client.EmuHawk
 					SetWindowText();
 					CurrentlyOpenRom = oa_openrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
-					CurrentlyOpenRomOpenAdvancedArgs = openAdvancedArgs;
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateCoreStatusBarButton();
@@ -4000,7 +3990,6 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
-				CurrentlyOpenRomOpenAdvancedArgs = "";
 			}
 		}
 
