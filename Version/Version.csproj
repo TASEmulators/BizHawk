@@ -41,7 +41,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(ProjectDir)../Build/standin.sh"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="dummy.cs" />
