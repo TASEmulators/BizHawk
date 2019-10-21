@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			//_renderer = new GdiRenderer();
 			_renderer = new GdiPlusRenderer();
