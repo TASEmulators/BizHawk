@@ -11,7 +11,6 @@
     <Reference Include="System.Memory">
       <HintPath>..\References\System.Memory.dll</HintPath>
     </Reference>
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors">
       <HintPath>..\References\System.Numerics.Vectors.dll</HintPath>
     </Reference>
