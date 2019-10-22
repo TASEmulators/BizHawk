@@ -3252,119 +3252,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				FormDragDrop_Internal(sender, e);
+				_FormDragDrop_internal(sender, e);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show($"Exception on drag and drop:\n{ex}");
 			}
-		}
-
-		private void FormDragDrop_Internal(object sender, DragEventArgs e)
-		{
-			_FormDragDrop_internal(sender, e);
-/*
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			var isLua = false;
-			foreach (var path in filePaths)
-			{
-				var extension = Path.GetExtension(path);
-				if (extension != null && extension.ToUpper() == ".LUA")
-				{
-					OpenLuaConsole();
-					if (GlobalWin.Tools.Has<LuaConsole>())
-					{
-						GlobalWin.Tools.LuaConsole.LoadLuaFile(path);
-					}
-					isLua = true;
-				}
-			}
-			if (isLua)
-			{
-				return;
-			}
-
-			var ext = Path.GetExtension(filePaths[0]) ?? "";
-			if (ext.ToUpper() == ".LUASES")
-			{
-				OpenLuaConsole();
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
-				}
-			}
-			else if (MovieService.IsValidMovieExtension(ext))
-			{
-				if (Emulator.IsNull())
-				{
-					OpenRom();
-				}
-
-				if (Emulator.IsNull())
-				{
-					return;
-				}
-
-				StartNewMovie(MovieService.Get(filePaths[0]), false);
-			}
-			else if (ext.ToUpper() == ".STATE")
-			{
-				LoadState(filePaths[0], Path.GetFileName(filePaths[0]));
-			}
-			else if (ext.ToUpper() == ".CHT")
-			{
-				Global.CheatList.Load(filePaths[0], false);
-				GlobalWin.Tools.Load<Cheats>();
-			}
-			else if (ext.ToUpper() == ".WCH")
-			{
-				GlobalWin.Tools.LoadRamWatch(true);
-				(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
-			}
-
-			else if (ext.ToUpper() == ".CDL" && Emulator is PCEngine)
-			{
-				GlobalWin.Tools.Load<CDL>();
-				(GlobalWin.Tools.Get<CDL>() as CDL).LoadFile(filePaths[0]);
-			}
-
-			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
-			{
-				if (Emulator.IsNull())
-				{
-					OpenRom();
-				}
-
-				if (Emulator.IsNull())
-				{
-					return;
-				}
-
-				// tries to open a legacy movie format by importing it
-				string errorMsg;
-				string warningMsg;
-				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!string.IsNullOrEmpty(errorMsg))
-				{
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				else
-				{
-					// fix movie extension to something palatable for these purposes. 
-					// for instance, something which doesnt clobber movies you already may have had.
-					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					StartNewMovie(movie, false);
-				}
-
-				GlobalWin.OSD.AddMessage(warningMsg);
-			}
-			else
-			{
-				var args = new LoadRomArgs();
-				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
-				LoadRom(filePaths[0], args);
-			}
- */
 		}
 
 		#endregion
