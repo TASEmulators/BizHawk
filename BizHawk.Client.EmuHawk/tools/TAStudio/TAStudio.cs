@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,14 +7,12 @@ using System.ComponentModel;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -320,56 +317,10 @@ namespace BizHawk.Client.EmuHawk
 			Mainform.PauseOnFrame = null;
 			Mainform.PauseEmulator();
 
-			// Start Scenario 0: snes9x needs a nag (copied from RecordMovieMenuItem_Click())
-			if (Emulator is Snes9x)
+			// Start Scenario 0: core needs a nag
+			if (!EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
 			{
-				var box = new CustomControls.MsgBox(
-					"While the Snes9x core is faster, it is not nearly as accurate as bsnes. \nIt is recommended that you switch to the bsnes core for movie recording\nSwitch to bsnes?",
-					"Accuracy Warning",
-					MessageBoxIcon.Warning);
-
-				box.SetButtons(
-					new[] { "Switch", "Continue" },
-					new[] { DialogResult.Yes, DialogResult.Cancel });
-
-				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
-				box.SetMessageToAutoSize();
-				var result = box.ShowDialog();
-
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.SNES_InSnes9x = false;
-					Mainform.RebootCore();
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					//return false;
-				}
-			}
-			else if (Emulator is QuickNES) // Copy pasta of unsustainable logic, even better
-			{
-				var box = new CustomControls.MsgBox(
-					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
-					"Accuracy Warning",
-					MessageBoxIcon.Warning);
-
-				box.SetButtons(
-					new[] { "Switch", "Continue" },
-					new[] { DialogResult.Yes, DialogResult.Cancel });
-
-				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
-				box.SetMessageToAutoSize();
-				var result = box.ShowDialog();
-
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.NES_InQuickNES = false;
-					Mainform.RebootCore();
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					//return false;
-				}
+				// Inaccurate core but allow the user to continue anyway
 			}
 
 			// Start Scenario 1: A regular movie is active
