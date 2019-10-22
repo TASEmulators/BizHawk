@@ -653,6 +653,7 @@
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Extensions\CoreExtensions.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
+    <Compile Include="FileFilterEntry.cs" />
     <Compile Include="FileLoader.cs">
       <SubType>Form</SubType>
     </Compile>

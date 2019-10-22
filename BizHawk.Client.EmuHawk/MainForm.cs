@@ -2120,79 +2120,67 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z;*.gz");
+			var str = sb.ToString().Replace("%ARCH%", ArchiveFilters);
 			str = str.Replace(";", "; ");
 			return str;
 		}
+
+		public static FileFilterEntry[] RomFilterEntries { get; } =
+		{
+			new FileFilterEntry("Music Files", null, developerFilters: "*.psf;*.minipsf;*.sid;*.nsf"),
+			new FileFilterEntry("Disc Images", "*.cue;*.ccd;*.mds;*.m3u"),
+			new FileFilterEntry("NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%"),
+			new FileFilterEntry("Super NES", "*.smc;*.sfc;*.xml;%ARCH%"),
+			new FileFilterEntry("PlayStation", "*.cue;*.ccd;*.mds;*.m3u"),
+			new FileFilterEntry("PSX Executables (experimental)", null, developerFilters: "*.exe"),
+			new FileFilterEntry("PSF Playstation Sound File", "*.psf;*.minipsf"),
+			new FileFilterEntry("Nintendo 64", "*.z64;*.v64;*.n64"),
+			new FileFilterEntry("Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%"),
+			new FileFilterEntry("Gameboy Advance", "*.gba;%ARCH%"),
+			new FileFilterEntry("Master System", "*.sms;*.gg;*.sg;%ARCH%"),
+			new FileFilterEntry("PC Engine", "*.pce;*.sgx;*.cue;*.ccd;*.mds;%ARCH%"),
+			new FileFilterEntry("Atari 2600", "*.a26;%ARCH%", developerFilters: "*.bin"),
+			new FileFilterEntry("Atari 7800", "*.a78;%ARCH%", developerFilters: "*.bin"),
+			new FileFilterEntry("Atari Lynx", "*.lnx;%ARCH%"),
+			new FileFilterEntry("Colecovision", "*.col;%ARCH%"),
+			new FileFilterEntry("Intellivision", "*.int;*.bin;*.rom;%ARCH%"),
+			new FileFilterEntry("TI-83", "*.rom;%ARCH%"),
+			new FileFilterEntry("Archive Files", "%ARCH%"),
+			new FileFilterEntry("Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%"),
+			new FileFilterEntry("SID Commodore 64 Music File", null, developerFilters: "*.sid;%ARCH%"),
+			new FileFilterEntry("WonderSwan", "*.ws;*.wsc;%ARCH%"),
+			new FileFilterEntry("Apple II", "*.dsk;*.do;*.po;%ARCH%"),
+			new FileFilterEntry("Virtual Boy", "*.vb;%ARCH%"),
+			new FileFilterEntry("Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%"),
+			new FileFilterEntry("Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%"),
+			new FileFilterEntry("Amstrad CPC", null, developerFilters: "*.cdt;*.dsk;%ARCH%"),
+			new FileFilterEntry("Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%")
+		};
+
+		public const string ArchiveFilters = "*.zip;*.rar;*.7z;*.gz";
 
 		public static string RomFilter
 		{
 			get
 			{
-				if (VersionInfo.DeveloperBuild)
+				string GetRomFilterStrings()
 				{
-					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;*.cdt;%ARCH%",
-						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
-						"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
-						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
-						"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-						"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-						"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;*.mds;%ARCH%",
-						"TI-83", "*.rom;%ARCH%",
-						"Archive Files", "%ARCH%",
-						"Savestate", "*.state",
-						"Atari 2600", "*.a26;*.bin;%ARCH%",
-						"Atari 7800", "*.a78;*.bin;%ARCH%",
-						"Atari Lynx", "*.lnx;%ARCH%",
-						"Genesis", "*.gen;*.smd;*.bin;*.md;*.32x;*.cue;*.ccd;%ARCH%",
-						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-						"Gameboy Advance", "*.gba;%ARCH%",
-						"Colecovision", "*.col;%ARCH%",
-						"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
-						"PlayStation", "*.cue;*.ccd;*.mds;*.m3u",
-						"PSX Executables (experimental)", "*.exe",
-						"PSF Playstation Sound File", "*.psf;*.minipsf",
-						"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
-						"SID Commodore 64 Music File", "*.sid;%ARCH%",
-						"Nintendo 64", "*.z64;*.v64;*.n64",
-						"WonderSwan", "*.ws;*.wsc;%ARCH%",
-						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
-						"Virtual Boy", "*.vb;%ARCH%",
-						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-						"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-						"Amstrad CPC", "*.cdt;*.dsk;%ARCH%",
-						"All Files", "*.*");
+					var values = new HashSet<string>(RomFilterEntries.SelectMany(f => f.EffectiveFilters));
+					if (values.Remove("%ARCH%"))
+					{
+						values.UnionWith(ArchiveFilters.Split(';'));
+					}
+					return string.Join(";", values.OrderBy(n => n));
 				}
 
-				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.mds;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;%ARCH%",
-					"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
-					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
-					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-					"PlayStation", "*.cue;*.ccd;*.mds;*.m3u",
-					"PSF Playstation Sound File", "*.psf;*.minipsf",
-					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-					"Gameboy Advance", "*.gba;%ARCH%",
-					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;*.mds;%ARCH%",
-					"Atari 2600", "*.a26;%ARCH%",
-					"Atari 7800", "*.a78;%ARCH%",
-					"Atari Lynx", "*.lnx;%ARCH%",
-					"Colecovision", "*.col;%ARCH%",
-					"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
-					"TI-83", "*.rom;%ARCH%",
-					"Archive Files", "%ARCH%",
-					"Savestate", "*.state",
-					"Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%",
-					"WonderSwan", "*.ws;*.wsc;%ARCH%",
-					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
-					"Virtual Boy", "*.vb;%ARCH%",
-					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-					"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
-					"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-					"All Files", "*.*");
+				var allFilters = new List<FileFilterEntry>();
+
+				allFilters.Add(new FileFilterEntry("Rom Files", GetRomFilterStrings()));
+				allFilters.AddRange(RomFilterEntries.Where(f => f.EffectiveFilters.Any()));
+				allFilters.Add(new FileFilterEntry("Savestate", "*.state"));
+				allFilters.Add(new FileFilterEntry("All Files", "*.*"));
+
+				return FormatFilter(allFilters.SelectMany(f => new[] { f.Description, string.Join(";", f.EffectiveFilters) }).ToArray());
 			}
 		}
 
