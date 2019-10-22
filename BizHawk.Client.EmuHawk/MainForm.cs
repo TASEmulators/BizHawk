@@ -2490,6 +2490,8 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
+		private static readonly int[] _speedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
+
 		private void IncreaseSpeed()
 		{
 			if (!Global.Config.ClockThrottle)
@@ -2501,66 +2503,13 @@ namespace BizHawk.Client.EmuHawk
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
-			if (oldp < 3)
+			int i = 0;
+			do
 			{
-				newp = 3;
+				i++;
+				newp = _speedPercents[i];
 			}
-			else if (oldp < 6)
-			{
-				newp = 6;
-			}
-			else if (oldp < 12)
-			{
-				newp = 12;
-			}
-			else if (oldp < 25)
-			{
-				newp = 25;
-			}
-			else if (oldp < 50)
-			{
-				newp = 50;
-			}
-			else if (oldp < 75)
-			{
-				newp = 75;
-			}
-			else if (oldp < 100)
-			{
-				newp = 100;
-			}
-			else if (oldp < 150)
-			{
-				newp = 150;
-			}
-			else if (oldp < 200)
-			{
-				newp = 200;
-			}
-			else if (oldp < 300)
-			{
-				newp = 300;
-			}
-			else if (oldp < 400)
-			{
-				newp = 400;
-			}
-			else if (oldp < 800)
-			{
-				newp = 800;
-			}
-			else if (oldp < 1600)
-			{
-				newp = 1600;
-			}
-			else if (oldp < 3200)
-			{
-				newp = 3200;
-			}
-			else
-			{
-				newp = 6400;
-			}
+			while (newp <= oldp && i < _speedPercents.Length - 1);
 
 			SetSpeedPercent(newp);
 		}
@@ -2576,66 +2525,13 @@ namespace BizHawk.Client.EmuHawk
 			var oldp = Global.Config.SpeedPercent;
 			int newp;
 
-			if (oldp > 3200)
+			int i = _speedPercents.Length - 1;
+			do
 			{
-				newp = 3200;
+				i--;
+				newp = _speedPercents[i];
 			}
-			else if (oldp > 1600)
-			{
-				newp = 1600;
-			}
-			else if (oldp > 800)
-			{
-				newp = 800;
-			}
-			else if (oldp > 400)
-			{
-				newp = 400;
-			}
-			else if (oldp > 300)
-			{
-				newp = 300;
-			}
-			else if (oldp > 200)
-			{
-				newp = 200;
-			}
-			else if (oldp > 150)
-			{
-				newp = 150;
-			}
-			else if (oldp > 100)
-			{
-				newp = 100;
-			}
-			else if (oldp > 75)
-			{
-				newp = 75;
-			}
-			else if (oldp > 50)
-			{
-				newp = 50;
-			}
-			else if (oldp > 25)
-			{
-				newp = 25;
-			}
-			else if (oldp > 12)
-			{
-				newp = 12;
-			}
-			else if (oldp > 6)
-			{
-				newp = 6;
-			}
-			else if (oldp > 3)
-			{
-				newp = 3;
-			}
-			else
-			{
-				newp = 1;
-			}
+			while (newp >= oldp && i > 0);
 
 			SetSpeedPercent(newp);
 		}
