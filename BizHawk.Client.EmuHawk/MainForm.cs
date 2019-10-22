@@ -3704,7 +3704,7 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-					if (oa_openrom != null && Path.GetExtension(oa_openrom.Path.Replace("|","")).ToLower() == ".xml")
+					if (oa_openrom != null && Path.GetExtension(oa_openrom.Path.Replace("|","")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
@@ -3714,7 +3714,7 @@ namespace BizHawk.Client.EmuHawk
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
+							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLowerInvariant();
 
 							if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
 							{
