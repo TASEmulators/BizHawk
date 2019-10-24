@@ -312,13 +312,16 @@ namespace BizHawk.Client.EmuHawk
 			_initialized = true;
 		}
 
+		private bool CanAutoload => Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent);
+
 		private bool InitializeOnLoad()
 		{
 			Mainform.PauseOnFrame = null;
 			Mainform.PauseEmulator();
 
 			// Start Scenario 0: core needs a nag
-			if (!EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
+			// But do not nag if auto-loading
+			if (!CanAutoload && !EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
 			{
 				// Inaccurate core but allow the user to continue anyway
 			}
@@ -351,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 3: No movie, but user wants to autoload their last project
-			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
+			else if (CanAutoload)
 			{
 				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
 				if (!result)
