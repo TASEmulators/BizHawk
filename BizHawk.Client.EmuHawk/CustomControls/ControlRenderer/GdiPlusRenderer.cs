@@ -11,16 +11,14 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private int _width;
 		private int _height;
 
-		// TODO: see if caching has any benefit
 		private readonly Dictionary<Color, Pen> _penCache = new Dictionary<Color, Pen>();
 		private Pen _currentPen;
 
 		private readonly Dictionary<Color, Brush> _brushCache = new Dictionary<Color, Brush>();
 		private Brush _currentBrush;
+		private Brush _currentStringBrush = new SolidBrush(Color.Black);
 
 		private Font _currentFont = new Font("Arial", 8, FontStyle.Bold);
-		// TODO: cache this?
-		private Brush _currentStringBrush = new SolidBrush(Color.Black);
 
 		public GdiPlusRenderer()
 		{
@@ -104,7 +102,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 			
 			_currentFont = font;
-			_currentStringBrush = new SolidBrush(color);
+
+			var result = _brushCache.TryGetValue(color, out Brush brush);
+			if (!result)
+			{
+				brush = new SolidBrush(color);
+				_brushCache.Add(color, brush);
+			}
+
+			_currentStringBrush = brush;
 		}
 
 		public void SetBrush(Color color)
