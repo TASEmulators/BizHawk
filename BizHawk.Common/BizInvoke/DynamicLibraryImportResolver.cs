@@ -19,7 +19,8 @@ namespace BizHawk.Common.BizInvoke
 		private string[] SearchPaths = new[]
 		{
 			"/",
-			"/dll/"
+			"/dll/",
+			"/usr/lib/"
 		};
 
 		/// <remarks>this is needed to actually find the DLL properly on Unix</remarks>
