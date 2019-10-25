@@ -163,6 +163,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Compatibility method from VirtualListView
+		/// </summary>
+		/// <param name="index"></param>
+		public void ensureVisible()
+		{
+			if (_selectedItems.Count != 0)
+				MakeIndexVisible(_selectedItems.Last().RowIndex.Value);
+		}
+
 		public void ClearSelectedRows()
 		{
 			_selectedItems.Clear();

@@ -34,13 +34,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public PlatformAgnosticVirtualListView()
 		{			
-			ColumnHeaderFont = new Font("Arial", 8, FontStyle.Bold);
+			ColumnHeaderFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
 			ColumnHeaderFontColor = Color.Black;
 			ColumnHeaderBackgroundColor = Color.LightGray;
 			ColumnHeaderBackgroundHighlightColor = SystemColors.HighlightText;
 			ColumnHeaderOutlineColor = Color.Black;
 
-			CellFont = new Font("Arial", 8, FontStyle.Regular);				
+			CellFont = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
 			CellFontColor = Color.Black;
 			CellBackgroundColor = Color.White;
 			CellBackgroundHighlightColor = Color.Blue;

@@ -119,12 +119,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		protected void LoadColumnInfo(PlatformAgnosticVirtualListView listView, ToolDialogSettings.ColumnList columns)
+		{
+			listView.AllColumns.Clear();
+
+			var cl = columns
+				.Where(c => c.Visible)
+				.OrderBy(c => c.Index);
+
+			foreach (var column in cl)
+			{
+				string colText = column.Name.Replace("Column", "");
+				listView.AddColumn(column.Name, colText, column.Width, PlatformAgnosticVirtualListView.ListColumn.InputType.Text);
+			}
+		}
+
 		protected void SaveColumnInfo(VirtualListView listview, ToolDialogSettings.ColumnList columns)
 		{
 			foreach (ColumnHeader column in listview.Columns)
 			{
 				columns[column.Name].Index = column.DisplayIndex;
 				columns[column.Name].Width = column.Width;
+			}
+		}
+
+		protected void SaveColumnInfo(PlatformAgnosticVirtualListView listview, ToolDialogSettings.ColumnList columns)
+		{
+			foreach (var column in listview.AllColumns)
+			{
+				columns[column.Name].Index = listview.AllColumns.IndexOf(column);
+				columns[column.Name].Width = column.Width.Value;
 			}
 		}
 
