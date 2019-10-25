@@ -129,22 +129,22 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
-		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
-		public static Color CurrentFrame_InputLog => Color.FromArgb(0x00B5E7F7);
-		public static Color SeekFrame_InputLog => Color.FromArgb(0x70B5E7F7);
+		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCF, 0xED, 0xFC); Why?
+		public static Color CurrentFrame_InputLog => Color.FromArgb(0xB5, 0xE7, 0xF7);
+		public static Color SeekFrame_InputLog => Color.FromArgb(0x70, 0xB5, 0xE7, 0xF7);
 
-		public static Color GreenZone_FrameCol => Color.FromArgb(0xDDFFDD);
-		public static Color GreenZone_InputLog => Color.FromArgb(0xD2F9D3);
-		public static Color GreenZone_InputLog_Stated => Color.FromArgb(0xC4F7C8);
-		public static Color GreenZone_InputLog_Invalidated => Color.FromArgb(0xE0FBE0);
+		public static Color GreenZone_FrameCol => Color.FromArgb(0xDD, 0xFF, 0xDD);
+		public static Color GreenZone_InputLog => Color.FromArgb(0xD2, 0xF9, 0xD3);
+		public static Color GreenZone_InputLog_Stated => Color.FromArgb(0xC4, 0xF7, 0xC8);
+		public static Color GreenZone_InputLog_Invalidated => Color.FromArgb(0xE0, 0xFB, 0xE0);
 
-		public static Color LagZone_FrameCol => Color.FromArgb(0xFFDCDD);
-		public static Color LagZone_InputLog => Color.FromArgb(0xF4DADA);
-		public static Color LagZone_InputLog_Stated => Color.FromArgb(0xF0D0D2);
-		public static Color LagZone_InputLog_Invalidated => Color.FromArgb(0xF7E5E5);
+		public static Color LagZone_FrameCol => Color.FromArgb(0xFF, 0xDC, 0xDD);
+		public static Color LagZone_InputLog => Color.FromArgb(0xF4, 0xDA, 0xDA);
+		public static Color LagZone_InputLog_Stated => Color.FromArgb(0xF0, 0xD0, 0xD2);
+		public static Color LagZone_InputLog_Invalidated => Color.FromArgb(0xF7, 0xE5, 0xE5);
 
-		public static Color Marker_FrameCol => Color.FromArgb(0xF7FFC9);
-		public static Color AnalogEdit_Col => Color.FromArgb(0x909070); // SuuperW: When editing an analog value, it will be a gray color.
+		public static Color Marker_FrameCol => Color.FromArgb(0xF7, 0xFF, 0xC9);
+		public static Color AnalogEdit_Col => Color.FromArgb(0x90, 0x90, 0x70); // SuuperW: When editing an analog value, it will be a gray color.
 
 		private Bitmap ts_v_arrow_green_blue => Properties.Resources.ts_v_arrow_green_blue;
 		private Bitmap ts_h_arrow_green_blue => Properties.Resources.ts_h_arrow_green_blue;
@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == CursorColumnName)
 			{
-				color = Color.FromArgb(0xFEFFFF);
+				color = Color.FromArgb(0xFE, 0xFF, 0xFF);
 			}
 
 			if (columnName == FrameColumnName)
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					color = Color.FromArgb(0x60FFFFFF);
+					color = Color.FromArgb(0x60, 0xFF, 0xFF, 0xFF);
 				}
 			}
 			else if (FloatEditingMode &&
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
 			{
-				color = Color.FromArgb(0x0D000000);
+				color = Color.FromArgb(0x0D, 0x00, 0x00, 0x00);
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				color = Color.FromArgb(0xFFFEEE);
+				color = Color.FromArgb(0xFF, 0xFE, 0xEE);
 			}
 		}
 
