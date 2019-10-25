@@ -13537,7 +13537,11 @@ void operator delete(void *p)
 	std::free(p);
 }
 
+#ifdef _WIN32
 #define EXPORT extern "C" __declspec(dllexport)
+#elif __linux__
+#define EXPORT extern "C"
+#endif
 
 // public interface follows
 EXPORT Gigazoid *Create()
