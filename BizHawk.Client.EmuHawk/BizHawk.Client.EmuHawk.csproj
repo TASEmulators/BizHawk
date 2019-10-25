@@ -612,6 +612,30 @@
     <Compile Include="CustomControls\MsgBox.designer.cs">
       <DependentUpon>MsgBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.API.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Classes.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Drawing.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.EventHandlers.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Helpers.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Properties.cs">
+      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\PrereqsAlert.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -754,6 +778,9 @@
     </Compile>
     <Compile Include="OpenAdvancedChooser.Designer.cs">
       <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PlatformChooser.cs">
       <SubType>Form</SubType>
