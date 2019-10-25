@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -66,8 +67,14 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			//_renderer = new GdiRenderer();
-			_renderer = new GdiPlusRenderer();
+			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			{
+				_renderer = new GdiRenderer();
+			}
+			else
+			{
+				_renderer = new GdiPlusRenderer();
+			}
 
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
