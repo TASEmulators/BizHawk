@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.BizInvoke;
 
@@ -21,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		static QuickNES()
 		{
-			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
+			Resolver = new DynamicLibraryImportResolver($"libquicknes{(OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows ? ".dll" : ".dll.so")}");
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
 			QN.qn_setup_mappers();
 		}

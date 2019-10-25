@@ -7,8 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public abstract class LibQuickNES
 	{
-		public const string dllname = "libquicknes.dll";
-
 		/// <summary>
 		/// setup extra mappers.  should be done before anything else
 		/// </summary>
