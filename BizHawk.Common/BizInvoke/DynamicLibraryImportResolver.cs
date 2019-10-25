@@ -20,7 +20,8 @@ namespace BizHawk.Common.BizInvoke
 		{
 			"/",
 			"/dll/",
-			"/usr/lib/"
+			"/usr/lib/",
+			"/usr/lib/bizhawk/"
 		};
 
 		/// <remarks>this is needed to actually find the DLL properly on Unix</remarks>
