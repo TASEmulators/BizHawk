@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-
-using BizHawk.Common;
+using System.IO;
+using System.Reflection;
 
 namespace BizHawk.Common.BizInvoke
 {
@@ -12,8 +11,33 @@ namespace BizHawk.Common.BizInvoke
 
 		public DynamicLibraryImportResolver(string dllName)
 		{
+			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows) ResolveFilePath(ref dllName);
 			_p = libLoader.LoadPlatformSpecific(dllName);
 			if (_p == IntPtr.Zero) throw new InvalidOperationException($"null pointer returned by {nameof(libLoader.LoadPlatformSpecific)}");
+		}
+
+		private string[] SearchPaths = new[]
+		{
+			"/",
+			"/dll/"
+		};
+
+		/// <remarks>this is needed to actually find the DLL properly on Unix</remarks>
+		private void ResolveFilePath(ref string dllName)
+		{
+			if (dllName.IndexOf('/') != -1) return; // relative paths shouldn't contain '/'
+
+			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:", "");
+			var dll = dllName;
+			foreach (var p in SearchPaths)
+			{
+				dll = currDir + p + dllName;
+				if (File.Exists(dll))
+				{
+					dllName = dll;
+					return;
+				}
+			}
 		}
 
 		public IntPtr Resolve(string entryPoint)
