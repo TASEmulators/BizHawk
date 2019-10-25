@@ -16,10 +16,12 @@ namespace BizHawk.Common.BizInvoke
 			if (_p == IntPtr.Zero) throw new InvalidOperationException($"null pointer returned by {nameof(libLoader.LoadPlatformSpecific)}");
 		}
 
-		private string[] SearchPaths = new[]
-		{
+		private string[] RelativeSearchPaths = {
 			"/",
-			"/dll/",
+			"/dll/"
+		};
+
+		private string[] AbsoluteSearchPaths = {
 			"/usr/lib/",
 			"/usr/lib/bizhawk/"
 		};
@@ -30,8 +32,17 @@ namespace BizHawk.Common.BizInvoke
 			if (dllName.IndexOf('/') != -1) return; // relative paths shouldn't contain '/'
 
 			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:", "");
-			var dll = dllName;
-			foreach (var p in SearchPaths)
+			string dll;
+			foreach (var p in AbsoluteSearchPaths)
+			{
+				dll = p + dllName;
+				if (File.Exists(dll))
+				{
+					dllName = dll;
+					return;
+				}
+			}
+			foreach (var p in RelativeSearchPaths)
 			{
 				dll = currDir + p + dllName;
 				if (File.Exists(dll))
