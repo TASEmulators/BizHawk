@@ -15,6 +15,7 @@ using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
@@ -24,6 +25,13 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: UI flow that conveniently allows to start from savestate
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
 		private MainForm Mainform => GlobalWin.MainForm;
+
+		/// <summary>
+		/// Static settings so that InputRoll.cs can determine its renderer ahead of instantiation
+		/// 0:	GDI
+		/// 1:	GDI+
+		/// </summary>
+		public static int InputRollRenderer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows ? 0 : 1;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
@@ -113,6 +121,10 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			Settings = new TAStudioSettings();
+
+			// input roll renderer must be set before InputRoll initialisation
+			InputRollRenderer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows ? Global.Config.TasStudioRenderer : 1;
+
 			InitializeComponent();
 			InitializeSeekWorker();
 

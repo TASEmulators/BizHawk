@@ -15,7 +15,10 @@ namespace BizHawk.Client.EmuHawk
 	// Row width is specified for horizontal orientation
 	public partial class InputRoll : Control
 	{
-		private readonly GDIRenderer _gdi;
+		private RollRenderer Renderer = RollRenderer.GDIPlus;
+
+		private Font _commonFont;
+
 		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
 
 		private readonly VScrollBar _vBar;
@@ -24,8 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _hoverTimer = new Timer();
 		private readonly byte[] _lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
-		private readonly IntPtr _rotatedFont;
-		private readonly IntPtr _normalFont;
 		private readonly Color _foreColor;
 		private readonly Color _backColor;
 
@@ -35,7 +36,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _maxCharactersInHorizontal = 1;
 
 		private int _rowCount;
-		private Size _charSize;
 
 		private RollColumn _columnDown;
 
@@ -52,6 +52,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
+			// set renderer once at InputRoll instantiation
+			Renderer = (RollRenderer)TAStudio.InputRollRenderer;
+
 			UseCustomBackground = true;
 			GridLines = true;
 			CellWidthPadding = 3;
@@ -59,24 +62,29 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = null;
 			ScrollMethod = "near";
 
-			var commonFont = new Font("Arial", 8, FontStyle.Bold);
-			_normalFont = GDIRenderer.CreateNormalHFont(commonFont, 6);
-
-			// PrepDrawString doesn't actually set the font, so this is rather useless.
-			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			_rotatedFont = GDIRenderer.CreateRotatedHFont(commonFont, true);
-
-			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-			SetStyle(ControlStyles.Opaque, true);
-
-			_gdi = new GDIRenderer();
-
-			using (var g = CreateGraphics())
-			using (_gdi.LockGraphics(g))
+			switch (Renderer)
 			{
-				_charSize = _gdi.MeasureString("A", commonFont); // TODO make this a property so changing it updates other values.
+				case RollRenderer.GDI:
+					_commonFont = new Font("Arial", 8, FontStyle.Bold);
+					_normalFont = GDIRenderer.CreateNormalHFont(_commonFont, 6);
+
+					// PrepDrawString doesn't actually set the font, so this is rather useless.
+					// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
+					_rotatedFont = GDIRenderer.CreateRotatedHFont(_commonFont, true);
+
+					SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+					SetStyle(ControlStyles.UserPaint, true);
+					SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+					SetStyle(ControlStyles.Opaque, true);
+
+					_gdi = new GDIRenderer();
+					GDIConstruction();
+					break;
+				case RollRenderer.GDIPlus:
+//					_commonFont = new Font("Courier New", 8, FontStyle.Bold);
+					_commonFont = new Font("Arial", 8, FontStyle.Bold);
+					GDIPConstruction();
+					break;
 			}
 
 			UpdateCellSize();
@@ -126,11 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void Dispose(bool disposing)
 		{
-			_gdi.Dispose();
-
-			GDIRenderer.DestroyHFont(_normalFont);
-			GDIRenderer.DestroyHFont(_rotatedFont);
-
+			if (Renderer == RollRenderer.GDI) GDIDispose();
 			base.Dispose(disposing);
 		}
 
@@ -193,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return _hBar.SmallChange / CellWidth;
 				}
-
+				if (CellHeight == 0) CellHeight++;
 				return _vBar.SmallChange / CellHeight;
 			}
 
@@ -643,7 +647,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return _hBar.Value / CellWidth;
 				}
-
+				if (CellHeight == 0) CellHeight++;
 				return _vBar.Value / CellHeight;
 			}
 
@@ -771,6 +775,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (CellHeight == 0) CellHeight++;
 				if (HorizontalOrientation)
 				{
 					return (DrawWidth - ColumnWidth) / CellWidth;
@@ -789,6 +794,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (CellHeight == 0) CellHeight++;
 				if (HorizontalOrientation)
 				{
 					return _vBar.Value / CellHeight;
@@ -805,6 +811,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				if (CellHeight == 0) CellHeight++;
 				List<RollColumn> columnList = VisibleColumns.ToList();
 				int ret;
 				if (HorizontalOrientation)
@@ -1009,7 +1016,7 @@ namespace BizHawk.Client.EmuHawk
 					Refresh();
 				}
 			}
-			else if (_columnDown != null)  // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
+			else if (_columnDown != null) // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
 			{
 				Refresh();
 			}
@@ -1579,10 +1586,13 @@ namespace BizHawk.Client.EmuHawk
 		// See MSDN Page for more information on the dumb ScrollBar.Maximum Property
 		private void RecalculateScrollBars()
 		{
+			if (_vBar == null || _hBar == null) return;
+
 			UpdateDrawSize();
 
 			var columns = _columns.VisibleColumns.ToList();
 
+			if (CellHeight == 0) CellHeight++;
 			if (HorizontalOrientation)
 			{
 				NeedsVScrollbar = columns.Count > DrawHeight / CellHeight;
@@ -1763,6 +1773,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					newCell.RowIndex = PixelsToRows(x);
 
+					if (CellHeight == 0) CellHeight++;
+
 					int colIndex = (y + _vBar.Value) / CellHeight;
 					if (colIndex >= 0 && colIndex < columns.Count)
 					{
@@ -1798,7 +1810,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>The new width of the RollColumn object.</returns>
 		private int UpdateWidth(RollColumn col)
 		{
-			col.Width = (col.Text.Length * _charSize.Width) + (CellWidthPadding * 4);
+			switch (Renderer)
+			{
+				case RollRenderer.GDI:
+					col.Width = (col.Text.Length * _charSize.Width) + (CellWidthPadding * 4);
+					break;
+				case RollRenderer.GDIPlus:
+					col.Width = (int)Math.Round((col.Text.Length * _charSizeF.Width) + (CellWidthPadding * 4));
+					break;
+			}
 			return col.Width.Value;
 		}
 
@@ -1863,6 +1883,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return (int)Math.Floor((float)(pixels - ColumnWidth) / CellWidth);
 			}
+			if (CellHeight == 0) CellHeight++;
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
 
@@ -1889,8 +1910,17 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateCellSize()
 		{
-			CellHeight = _charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			switch (Renderer)
+			{
+				case RollRenderer.GDI:
+					CellHeight = _charSize.Height + (CellHeightPadding * 2);
+					CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+					break;
+				case RollRenderer.GDIPlus:
+					CellHeight = (int)Math.Round(_charSizeF.Height + (CellHeightPadding * 2) + 1);	// needed for GDI+ to match GDI cell height
+					CellWidth = (int)Math.Round((_charSizeF.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4)); // Double the padding for horizontal because it looks better
+					break;
+			}
 		}
 
 		// SuuperW: Count lag frames between FirstDisplayed and given display position
@@ -2258,6 +2288,12 @@ namespace BizHawk.Client.EmuHawk
 
 				return c1.Column.Name.CompareTo(c2.Column.Name);
 			}
+		}
+
+		public enum RollRenderer
+		{
+			GDI = 0,
+			GDIPlus = 1
 		}
 
 		#endregion
