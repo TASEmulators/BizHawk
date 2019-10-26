@@ -199,17 +199,24 @@ namespace BizHawk.Client.EmuHawk
 							var point = new Point(x + strOffsetX, y + strOffsetY);
 
 							var rePrep = false;
-							if (j == 1)
-							if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = i + startRow }))
+							//if (j == 1)
+							//if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = i + startRow }))
+							//{
+							//	_renderer.PrepDrawString(_font, SystemColors.HighlightText, rotate: true);
+							//	rePrep = true;
+							//}
+							//else if (j == 1)
+							//{
+							//	// 1. not sure about this; 2. repreps may be excess, but if we render one column at a time, we do need to change back after rendering the header
+							//	rePrep = true;
+							//	_renderer.PrepDrawString(_font, _foreColor, rotate: true);
+							//}
+
+							//if (visibleColumns[j].Type == RollColumn.InputType.Text)
+							if (visibleColumns[j].Name == "FrameColumn")
 							{
-								_renderer.PrepDrawString(_font, SystemColors.HighlightText, rotate: true);
-								rePrep = true;
-							}
-							else if (j == 1)
-							{
-								// 1. not sure about this; 2. repreps may be excess, but if we render one column at a time, we do need to change back after rendering the header
-								rePrep = true;
 								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
+								rePrep = true;
 							}
 
 							DrawString(text, ColumnWidth, point);
