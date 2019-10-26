@@ -160,6 +160,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
+
 			if (QueryItemText != null)
 			{
 				if (HorizontalOrientation)
@@ -171,12 +172,12 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 0, f = 0; f < range; i++, f++)
 					{
 						f += _lagFrames[i];
-						int LastVisible = LastVisibleColumnIndex;
-						for (int j = FirstVisibleColumn; j <= LastVisible; j++)
+						int lastVisible = LastVisibleColumnIndex;
+						for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 						{
 							Bitmap image = null;
-							int x = 0;
-							int y = 0;
+							int x;
+							int y;
 							int bitmapOffsetX = 0;
 							int bitmapOffsetY = 0;
 
@@ -199,32 +200,15 @@ namespace BizHawk.Client.EmuHawk
 							y = (j * CellHeight) + CellHeightPadding - _vBar.Value;
 							var point = new Point(x + strOffsetX, y + strOffsetY);
 
-							var rePrep = false;
-							//if (j == 1)
-							//if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = i + startRow }))
-							//{
-							//	_renderer.PrepDrawString(_font, SystemColors.HighlightText, rotate: true);
-							//	rePrep = true;
-							//}
-							//else if (j == 1)
-							//{
-							//	// 1. not sure about this; 2. repreps may be excess, but if we render one column at a time, we do need to change back after rendering the header
-							//	rePrep = true;
-							//	_renderer.PrepDrawString(_font, _foreColor, rotate: true);
-							//}
-
-							//if (visibleColumns[j].Type == RollColumn.InputType.Text)
-							if (visibleColumns[j].Name == "FrameColumn")
+							if (visibleColumns[j].Name == "FrameColumn") // TODO: don't do this hack
 							{
 								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
-								rePrep = true;
+								DrawString(text, ColumnWidth, point);
+								_renderer.PrepDrawString(_font, _foreColor, rotate: false);
 							}
-
-							DrawString(text, ColumnWidth, point);
-
-							if (rePrep)
+							else
 							{
-								_renderer.PrepDrawString(_font, _foreColor);
+								DrawString(text, ColumnWidth, point);
 							}
 						}
 					}
@@ -239,8 +223,8 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 					{
 						f += _lagFrames[i];
-						int LastVisible = LastVisibleColumnIndex;
-						for (int j = FirstVisibleColumn; j <= LastVisible; j++) // Horizontal
+						int lastVisible = LastVisibleColumnIndex;
+						for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 						{
 							RollColumn col = visibleColumns[j];
 
