@@ -23,10 +23,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Cell)
+			var cell = obj as Cell;
+			if (cell != null)
 			{
-				var cell = obj as Cell;
-				return this.Column == cell.Column && this.RowIndex == cell.RowIndex;
+				return Column == cell.Column && RowIndex == cell.RowIndex;
 			}
 
 			return base.Equals(obj);
@@ -40,21 +40,31 @@ namespace BizHawk.Client.EmuHawk
 
 	internal class SortCell : IComparer<Cell>
 	{
-		int IComparer<Cell>.Compare(Cell a, Cell b)
+		int IComparer<Cell>.Compare(Cell c1, Cell c2)
 		{
-			Cell c1 = a as Cell;
-			Cell c2 = b as Cell;
+			if (c1 == null && c2 == null)
+			{
+				return 0;
+			}
+
+			if (c2 == null)
+			{
+				return 1;
+			}
+
+			if (c1 == null)
+			{
+				return -1;
+			}
+
 			if (c1.RowIndex.HasValue)
 			{
 				if (c2.RowIndex.HasValue)
 				{
 					int row = c1.RowIndex.Value.CompareTo(c2.RowIndex.Value);
-					if (row == 0)
-					{
-						return c1.Column.Name.CompareTo(c2.Column.Name);
-					}
-
-					return row;
+					return row == 0
+						? c1.Column.Name.CompareTo(c2.Column.Name)
+						: row;
 				}
 					
 				return 1;

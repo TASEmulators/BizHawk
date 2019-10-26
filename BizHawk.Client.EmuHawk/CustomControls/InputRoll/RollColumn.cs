@@ -9,21 +9,11 @@
 		public string Name { get; set; }
 		public string Text { get; set; }
 		public ColumnType Type { get; set; }
-		public bool Visible { get; set; }
+		public bool Visible { get; set; } = true;
 
 		/// <summary>
 		/// Column will be drawn with an emphasized look, if true
 		/// </summary>
-		private bool _emphasis;
-		public bool Emphasis
-		{
-			get { return _emphasis; }
-			set { _emphasis = value; }
-		}
-
-		public RollColumn()
-		{
-			Visible = true;
-		}
+		public bool Emphasis { get; set; }
 	}
 }
