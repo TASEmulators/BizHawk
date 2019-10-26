@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace BizHawk.Client.EmuHawk.CustomControls
 {
 	public class GdiPlusRenderer : IControlRenderer
 	{
-		private Graphics _graphics;
-		private int _width;
-		private int _height;
-
 		private readonly Dictionary<Color, Pen> _penCache = new Dictionary<Color, Pen>();
-		private Pen _currentPen;
-
 		private readonly Dictionary<Color, Brush> _brushCache = new Dictionary<Color, Brush>();
-		private Brush _currentBrush;
-		private Brush _currentStringBrush = new SolidBrush(Color.Black);
+		
+		private Graphics _graphics;
 
+		private Pen _currentPen = new Pen(Color.Black);
+		private Brush _currentBrush = new SolidBrush(Color.Black);
+		private Brush _currentStringBrush = new SolidBrush(Color.Black);
 		private Font _currentFont = new Font("Arial", 8, FontStyle.Bold);
 
 		public GdiPlusRenderer()
@@ -31,16 +27,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		private class GdiPlusGraphicsLock : IDisposable
 		{
-			private readonly GdiPlusRenderer _renderer;
-
-			public GdiPlusGraphicsLock(GdiPlusRenderer renderer)
-			{
-				_renderer = renderer;
-			}
-
 			public void Dispose()
 			{
-				// TODO
+				// Nothing to do
+				// Other drawing methods need a way to dispose on demand, hence the need for 
+				// this dummy class
 			}
 		}
 
@@ -82,9 +73,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public IDisposable LockGraphics(Graphics g, int width, int height)
 		{
 			_graphics = g;
-			_width = width;
-			_height = height;
-			return new GdiPlusGraphicsLock(this);
+			return new GdiPlusGraphicsLock();
 		}
 
 		public Size MeasureString(string str, Font font)
