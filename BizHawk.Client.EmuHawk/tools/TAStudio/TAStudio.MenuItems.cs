@@ -1392,23 +1392,34 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
-			var defaults = new ToolStripMenuItem
-			{
-				Name = "RestoreDefaultColumnConfiguration",
-				Text = "Restore defaults"
-			};
+			TasView.AllColumns.ColumnsChanged();
+		}
 
-			defaults.Click += (o, ev) =>
-			{
-				TasView.AllColumns.Clear();
+		[RestoreDefaults]
+		private void RestoreDefaults()
+		{
+			TasView.AllColumns.Clear();
 				SetUpColumns();
 				RefreshTasView();
 				CurrentTasMovie.FlagChanges();
-			};
 
-			ColumnsSubMenu.DropDownItems.Add(defaults);
-			TasView.AllColumns.ColumnsChanged();
+			try
+			{
+				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+			}
+			catch (Exception)
+			{
+				MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
+			}
+
+			try
+			{
+				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+			}
+			catch (Exception)
+			{
+				BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
+			}
 		}
 
 		#endregion

@@ -33,6 +33,9 @@ namespace BizHawk.Client.EmuHawk
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
 
+		private int _defaultMainSplitDistance;
+		private int _defaultBranchMarkerSplitDistance;
+
 		/// <summary>
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
@@ -112,6 +115,9 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new TAStudioSettings();
 			InitializeComponent();
 			InitializeSeekWorker();
+
+			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
+			_defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 
 			// TODO: show this at all times or hide it when saving is done?
 			SavingProgressBar.Visible = false;
