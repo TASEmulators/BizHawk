@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 							if (visibleColumns[j].Name == "FrameColumn") // TODO: don't do this hack
 							{
 								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
-								DrawString(text, ColumnWidth, point);
+								DrawString(text, ColumnWidth, new Point(point.X + _charSize.Height + CellWidthPadding, point.Y + CellHeightPadding));
 								_renderer.PrepDrawString(_font, _foreColor, rotate: false);
 							}
 							else
