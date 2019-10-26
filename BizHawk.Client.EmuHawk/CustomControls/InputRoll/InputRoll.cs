@@ -44,11 +44,22 @@ namespace BizHawk.Client.EmuHawk
 		private int? _currentY;
 
 		// Hiding lag frames (Mainly intended for < 60fps play.)
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int LagFramesToHide { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool HideWasLagFrames { get; set; }
 
+		[Category("Behavior")]
 		public bool AllowRightClickSelection { get; set; }
+
+		[Category("Behavior")]
 		public bool LetKeysModifySelection { get; set; }
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SuspendHotkeys { get; set; }
 
 		private readonly Font _font = new Font("Arial", 8, FontStyle.Bold);
@@ -598,6 +609,8 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets or sets the width of data cells when in Horizontal orientation.
 		/// </summary>
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int MaxCharactersInHorizontal
 		{
 			get
