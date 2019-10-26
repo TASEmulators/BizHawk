@@ -24,18 +24,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (visibleColumns.Any())
 				{
-					DrawColumnBg(e, visibleColumns);
-					DrawColumnText(e, visibleColumns);
+					DrawColumnBg(visibleColumns);
+					DrawColumnText(visibleColumns);
 				}
 
 				// Background
-				DrawBg(e, visibleColumns);
+				DrawBg(visibleColumns);
 
 				// Foreground
-				DrawData(e, visibleColumns);
+				DrawData(visibleColumns);
 
-				DrawColumnDrag(e);
-				DrawCellDrag(e);
+				DrawColumnDrag();
+				DrawCellDrag();
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing, and this should never be called
 		}
 
-		private void DrawColumnDrag(PaintEventArgs e)
+		private void DrawColumnDrag()
 		{
 			if (_columnDown != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
 			{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawCellDrag(PaintEventArgs e)
+		private void DrawCellDrag()
 		{
 			if (_draggingCell != null)
 			{
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawColumnText(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DrawColumnText(List<RollColumn> visibleColumns)
 		{
 			if (HorizontalOrientation)
 			{
@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawData(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DrawData(List<RollColumn> visibleColumns)
 		{
 			// Prevent exceptions with small TAStudio windows
 			if (visibleColumns.Count == 0)
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawColumnBg(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DrawColumnBg(List<RollColumn> visibleColumns)
 		{
 			_renderer.SetBrush(SystemColors.ControlLight);
 			_renderer.SetSolidPen(Color.Black);
@@ -401,11 +401,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Draw Gridlines and background colors using QueryItemBkColor.
 		/// </summary>
-		private void DrawBg(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DrawBg(List<RollColumn> visibleColumns)
 		{
 			if (UseCustomBackground && QueryItemBkColor != null)
 			{
-				DoBackGroundCallback(e, visibleColumns);
+				DoBackGroundCallback(visibleColumns);
 			}
 
 			if (GridLines)
@@ -452,11 +452,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_selectedItems.Any())
 			{
-				DoSelectionBG(e, visibleColumns);
+				DoSelectionBG(visibleColumns);
 			}
 		}
 
-		private void DoSelectionBG(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DoSelectionBG(List<RollColumn> visibleColumns)
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
 			Color rowColor = Color.White;
@@ -545,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		/// </summary>
-		private void DoBackGroundCallback(PaintEventArgs e, List<RollColumn> visibleColumns)
+		private void DoBackGroundCallback(List<RollColumn> visibleColumns)
 		{
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
