@@ -19,8 +19,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IControlRenderer _renderer;
 		private readonly SortedSet<Cell> _selectedItems = new SortedSet<Cell>(new SortCell());
 
-		private readonly VScrollBar _vBar;
-		private readonly HScrollBar _hBar;
+		// scrollbar location(s) are calculated later (e.g. on resize)
+		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
+		private readonly HScrollBar _hBar = new HScrollBar { Visible = false };
 
 		private readonly Timer _hoverTimer = new Timer();
 		private readonly byte[] _lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
@@ -86,21 +87,11 @@ namespace BizHawk.Client.EmuHawk
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;
 
-			_vBar = new VScrollBar
-			{
-				// Location gets calculated later (e.g. on resize)
-				Visible = false,
-				SmallChange = CellHeight,
-				LargeChange = CellHeight * 20
-			};
+			_vBar.SmallChange = CellHeight;
+			_vBar.LargeChange = CellHeight * 20;
 
-			_hBar = new HScrollBar
-			{
-				// Location gets calculated later (e.g. on resize)
-				Visible = false,
-				SmallChange = CellWidth,
-				LargeChange = 20
-			};
+			_hBar.SmallChange = CellWidth;
+			_hBar.LargeChange = 20;
 
 			Controls.Add(_vBar);
 			Controls.Add(_hBar);
@@ -1941,7 +1932,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets or sets a value indicating the height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
 		/// </summary>
-		private int CellHeight { get; set; }
+		private int CellHeight { get; set; } = 8;
 
 		/// <summary>
 		/// Call when _charSize, MaxCharactersInHorizontal, or CellPadding is changed.
