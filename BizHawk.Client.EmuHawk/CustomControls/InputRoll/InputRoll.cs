@@ -47,11 +47,11 @@ namespace BizHawk.Client.EmuHawk
 		public int LagFramesToHide { get; set; }
 		public bool HideWasLagFrames { get; set; }
 
-		public bool AllowRightClickSelecton { get; set; }
+		public bool AllowRightClickSelection { get; set; }
 		public bool LetKeysModifySelection { get; set; }
 		public bool SuspendHotkeys { get; set; }
 
-		private Font _font = new Font("Arial", 8, FontStyle.Bold);
+		private readonly Font _font = new Font("Arial", 8, FontStyle.Bold);
 
 		public InputRoll()
 		{
@@ -299,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 		public string ScrollMethod { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating how the Intever for the hover event
+		/// Gets or sets a value indicating how the scrolling behavior for the hover event
 		/// </summary>
 		[Category("Behavior")]
 		public bool AlwaysScroll { get; set; }
@@ -453,8 +453,8 @@ namespace BizHawk.Client.EmuHawk
 				NewCell = newCell;
 			}
 
-			public Cell OldCell { get; private set; }
-			public Cell NewCell { get; private set; }
+			public Cell OldCell { get; }
+			public Cell NewCell { get; }
 		}
 
 		public class ColumnClickEventArgs
@@ -464,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 				Column = column;
 			}
 
-			public RollColumn Column { get; private set; }
+			public RollColumn Column { get; }
 		}
 
 		public class ColumnReorderedEventArgs
@@ -476,9 +476,9 @@ namespace BizHawk.Client.EmuHawk
 				NewDisplayIndex = newDisplayIndex;
 			}
 
-			public RollColumn Column { get; private set; }
-			public int OldDisplayIndex { get; private set; }
-			public int NewDisplayIndex { get; private set; }
+			public RollColumn Column { get; }
+			public int OldDisplayIndex { get; }
+			public int NewDisplayIndex { get; }
 		}
 
 		#endregion
@@ -661,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int FirstVisibleRow
 		{
-			get // SuuperW: This was checking if the scroll bars were needed, which is useless because their Value is 0 if they aren't needed.
+			get
 			{
 				if (HorizontalOrientation)
 				{
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 		#region Mouse and Key Events
 
 		private bool _columnDownMoved;
-		private int _previousX = 0; // TODO: move me
+		private int _previousX; // TODO: move me
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -1085,7 +1085,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
 			{
-				// copypaste from OnMouseMove()
+				// TODO: this is copy pasta from OnMouseMove()
 				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 				{
@@ -1225,7 +1225,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ModifierKeys != Keys.Shift)
 					{
-						var hadIndex = _selectedItems.Any();
 						_selectedItems.Clear();
 						SelectCell(CurrentCell);
 					}
@@ -1238,7 +1237,7 @@ namespace BizHawk.Client.EmuHawk
 
 			base.OnMouseDown(e);
 
-			if (AllowRightClickSelecton && e.Button == MouseButtons.Right)
+			if (AllowRightClickSelection && e.Button == MouseButtons.Right)
 			{
 				if (!IsHoveringOnColumnCell && CurrentCell != null)
 				{
@@ -1729,6 +1728,7 @@ namespace BizHawk.Client.EmuHawk
 		/// If FullRowSelect is enabled, selects all cells in the row that contains the given cell. Otherwise only given cell is added.
 		/// </summary>
 		/// <param name="cell">The cell to select.</param>
+		/// <param name="toggle">Specifies whether or not to toggle the current state, rather than force the value to true</param>
 		private void SelectCell(Cell cell, bool toggle = false)
 		{
 			if (cell.RowIndex.HasValue && cell.RowIndex < RowCount)
@@ -1906,7 +1906,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Converts a horizontal or vertical coordinate to a row number.
 		/// </summary>
 		/// <param name="pixels">A vertical coordinate if Vertical Oriented, otherwise a horizontal coordinate.</param>
-		/// <returns>A row number between 0 and VisibleRows if it is a Datarow, otherwise a negative number if above all Datarows.</returns>
+		/// <returns>A row number between 0 and VisibleRows if it is a data row, otherwise a negative number if above all Datarows.</returns>
 		private int PixelsToRows(int pixels)
 		{
 			// Using Math.Floor and float because integer division rounds towards 0 but we want to round down.

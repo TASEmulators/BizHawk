@@ -1230,7 +1230,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
-			this.TasView.AllowRightClickSelecton = false;
+			this.TasView.AllowRightClickSelection = false;
 			this.TasView.AlwaysScroll = false;
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 

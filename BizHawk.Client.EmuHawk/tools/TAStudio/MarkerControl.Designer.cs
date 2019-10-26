@@ -187,7 +187,7 @@
 			// 
 			this.MarkerView.AllowColumnReorder = false;
 			this.MarkerView.AllowColumnResize = false;
-			this.MarkerView.AllowRightClickSelecton = true;
+			this.MarkerView.AllowRightClickSelection = true;
 			this.MarkerView.AlwaysScroll = false;
 			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
