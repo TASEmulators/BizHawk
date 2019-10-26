@@ -1599,14 +1599,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Helpers
 
-		// TODO: Make into an extension method
-		private static Color Add(Color color, int val)
-		{
-			var col = color.ToArgb();
-			col += val;
-			return Color.FromArgb(col);
-		}
-
 		private void DoColumnReorder()
 		{
 			if (_columnDown != CurrentCell.Column)

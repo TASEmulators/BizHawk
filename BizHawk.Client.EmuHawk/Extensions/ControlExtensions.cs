@@ -7,10 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Client.Common;
-
 
 namespace BizHawk.Client.EmuHawk.WinFormExtensions
 {
@@ -82,6 +79,13 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static Point ChildPointToScreen(this Control control, Control child)
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
+		}
+
+		public static Color Add(this Color color, int val)
+		{
+			var col = color.ToArgb();
+			col += val;
+			return Color.FromArgb(col);
 		}
 
 		#region Enumerable to Enumerable<T>

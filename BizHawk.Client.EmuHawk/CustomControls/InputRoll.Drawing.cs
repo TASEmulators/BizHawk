@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			_renderer.DrawString(text, point);
 		}
 
-		protected override void OnPaintBackground(PaintEventArgs pevent)
+		protected override void OnPaintBackground(PaintEventArgs e)
 		{
 			// Do nothing, and this should never be called
 		}
@@ -312,10 +313,10 @@ namespace BizHawk.Client.EmuHawk
 				_renderer.Line(0, 0, TotalColWidth.Value + 1, 0);
 				_renderer.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
 
-				// Vertical black seperators
-				for (int i = 0; i < visibleColumns.Count; i++)
+				// Vertical black separators
+				foreach (var column in visibleColumns)
 				{
-					int pos = visibleColumns[i].Left.Value - _hBar.Value;
+					int pos = column.Left.Value - _hBar.Value;
 					_renderer.Line(pos, 0, pos, bottomEdge);
 				}
 
@@ -353,14 +354,9 @@ namespace BizHawk.Client.EmuHawk
 							continue;
 						}
 
-						if (CurrentCell.Column.Emphasis)
-						{
-							_renderer.SetBrush(Add(SystemColors.Highlight, 0x00222222));
-						}
-						else
-						{
-							_renderer.SetBrush(SystemColors.Highlight);
-						}
+						_renderer.SetBrush(CurrentCell.Column.Emphasis
+							? SystemColors.Highlight.Add(0x00222222)
+							: SystemColors.Highlight);
 
 						_renderer.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
 					}
@@ -368,27 +364,22 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// TODO multiple selected columns
-					for (int i = 0; i < visibleColumns.Count; i++)
+					foreach (var column in visibleColumns)
 					{
-						if (visibleColumns[i] == CurrentCell.Column)
+						if (column == CurrentCell.Column)
 						{
 							// Left of column is to the right of the viewable area or right of column is to the left of the viewable area
-							if (visibleColumns[i].Left.Value - _hBar.Value > Width || visibleColumns[i].Right.Value - _hBar.Value < 0)
+							if (column.Left.Value - _hBar.Value > Width || column.Right.Value - _hBar.Value < 0)
 							{
 								continue;
 							}
 
-							int left = visibleColumns[i].Left.Value - _hBar.Value;
-							int width = visibleColumns[i].Right.Value - _hBar.Value - left;
+							int left = column.Left.Value - _hBar.Value;
+							int width = column.Right.Value - _hBar.Value - left;
 
-							if (CurrentCell.Column.Emphasis)
-							{
-								_renderer.SetBrush(Add(SystemColors.Highlight, 0x00550000));
-							}
-							else
-							{
-								_renderer.SetBrush(SystemColors.Highlight);
-							}
+							_renderer.SetBrush(CurrentCell.Column.Emphasis
+								? SystemColors.Highlight.Add(0x00550000)
+								: SystemColors.Highlight);
 
 							_renderer.FillRectangle(left + 1, 1, width - 1, ColumnHeight - 1);
 						}
@@ -460,11 +451,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
 			Color rowColor = Color.White;
-			int _lastVisibleRow = LastVisibleRow;
+			int lastVisibleRow = LastVisibleRow;
 			int lastRow = -1;
 			foreach (Cell cell in _selectedItems)
 			{
-				if (cell.RowIndex > _lastVisibleRow || cell.RowIndex < FirstVisibleRow || !VisibleColumns.Contains(cell.Column))
+				if (cell.RowIndex > lastVisibleRow || cell.RowIndex < FirstVisibleRow || !VisibleColumns.Contains(cell.Column))
 				{
 					continue;
 				}
