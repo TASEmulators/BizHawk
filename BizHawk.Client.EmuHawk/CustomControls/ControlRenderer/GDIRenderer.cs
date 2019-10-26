@@ -127,18 +127,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)
 		{
-			FontCacheEntry fontEntry;
-			var result = _fontsCache.TryGetValue(font, out fontEntry);
-			if (!result)
-			{
-				// Hack! The 6 is hardcoded to make tastudio look like taseditor, because taseditor is so perfect and wonderful
-				_fontsCache.Add(font, new FontCacheEntry
-				{
-					HFont = CreateNormalHFont(font, 6),
-					RotatedHFont = CreateRotatedHFont(font, true)
-				});
-			}
-
+			var fontEntry = GetCachedHFont(font);
 			SetGraphicsMode(CurrentHdc, 2); // shouldn't be necessary.. cant hurt
 			SelectObject(CurrentHdc, rotate ? fontEntry.RotatedHFont : fontEntry.HFont);
 			SetTextColor(color);
@@ -232,22 +221,26 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		// Set a resource (e.g. a font) for the current device context.
 		private void SetFont(Font font)
 		{
-			SelectObject(CurrentHdc, GetCachedHFont(font));
+			var blah = GetCachedHFont(font);
+			SelectObject(CurrentHdc, blah.HFont);
 		}
 
-		private IntPtr GetCachedHFont(Font font)
+		private FontCacheEntry GetCachedHFont(Font font)
 		{
-			// the original code struck me as bad. attempting to ID fonts by picking a subset of their fields is not gonna work.
-			// don't call this.Font in InputRoll.cs, it is probably slow.
-			// consider Fonts to be a jealously guarded resource (they need to be disposed, after all) and manage them carefully.
-			// this cache maintains the hFonts only.
-			FontCacheEntry ce;
-			if (!_fontsCache.TryGetValue(font, out ce))
+			FontCacheEntry fontEntry;
+			var result = _fontsCache.TryGetValue(font, out fontEntry);
+			if (!result)
 			{
-				_fontsCache[font] = ce = new FontCacheEntry();
-				ce.HFont = font.ToHfont();
+				// Hack! The 6 is hardcoded to make tastudio look like taseditor, because taseditor is so perfect and wonderful
+				fontEntry = new FontCacheEntry
+				{
+					HFont = CreateNormalHFont(font, 6),
+					RotatedHFont = CreateRotatedHFont(font, true)
+				};
+				_fontsCache.Add(font, fontEntry);
 			}
-			return ce.HFont;
+
+			return fontEntry;
 		}
 
 		#endregion
