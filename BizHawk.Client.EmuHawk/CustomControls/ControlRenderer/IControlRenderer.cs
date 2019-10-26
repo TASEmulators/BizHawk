@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Draw a bitmap object at the given position
 		/// </summary>
-		void DrawBitmap(Bitmap bitmap, Point point, bool blend = false);
+		void DrawBitmap(Bitmap bitmap, Point point);
 		void Line(int x1, int y1, int x2, int y2);
 	}
 }

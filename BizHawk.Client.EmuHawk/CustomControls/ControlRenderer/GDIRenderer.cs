@@ -53,19 +53,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		#region Api
 
-		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
+		public void DrawBitmap(Bitmap bitmap, Point point)
 		{
 			IntPtr hBmp = bitmap.GetHbitmap();
 			var bitHdc = CreateCompatibleDC(CurrentHdc);
 			IntPtr old = SelectObject(bitHdc, hBmp);
-			if (blend)
-			{
-				AlphaBlend(CurrentHdc, point.X, point.Y, bitmap.Width, bitmap.Height, bitHdc, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
-			}
-			else
-			{
-				BitBlt(CurrentHdc, point.X, point.Y, bitmap.Width, bitmap.Height, bitHdc, 0, 0, 0xCC0020);
-			}
+			AlphaBlend(CurrentHdc, point.X, point.Y, bitmap.Width, bitmap.Height, bitHdc, 0, 0, bitmap.Width, bitmap.Height, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
 			SelectObject(bitHdc, old);
 			DeleteDC(bitHdc);
 			DeleteObject(hBmp);

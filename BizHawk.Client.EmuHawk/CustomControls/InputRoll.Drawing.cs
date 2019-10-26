@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								x = RowsToPixels(i) + CellWidthPadding + bitmapOffsetX;
 								y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
-								_renderer.DrawBitmap(image, new Point(x, y), true);
+								_renderer.DrawBitmap(image, new Point(x, y));
 							}
 
 							string text;
@@ -249,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (image != null)
 							{
-								_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding), true);
+								_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
 							}
 
 							QueryItemText(f + startRow, visibleColumns[j], out text, ref strOffsetX, ref strOffsetY);

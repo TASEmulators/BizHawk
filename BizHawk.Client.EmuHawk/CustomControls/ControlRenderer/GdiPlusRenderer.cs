@@ -36,9 +36,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_defaultFont.Dispose();
 		}
 
-		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
+		public void DrawBitmap(Bitmap bitmap, Point point)
 		{
-			// TODO: implement blend
 			_graphics.DrawImage(bitmap, point);
 		}
 
