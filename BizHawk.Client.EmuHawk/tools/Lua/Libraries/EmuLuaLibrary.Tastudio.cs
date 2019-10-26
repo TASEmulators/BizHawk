@@ -587,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.AddColumn(name, text, width, InputRoll.RollColumn.InputType.Text);
+				Tastudio.AddColumn(name, text, width, ColumnType.Text);
 			}
 		}
 	}

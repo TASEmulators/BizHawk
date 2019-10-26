@@ -79,20 +79,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RamWatchSettings()
 			{
-				Columns = new List<InputRoll.RollColumn>
+				Columns = new List<RollColumn>
 				{
-					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128, Type = InputRoll.RollColumn.InputType.Text }
+					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = false, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Type", Name = WatchList.TYPE, Visible = false, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Domain", Name = WatchList.DOMAIN, Visible = true, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Notes", Name = WatchList.NOTES, Visible = true, Width = 128, Type = ColumnType.Text }
 				};
 			}
 
-			public List<InputRoll.RollColumn> Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
@@ -553,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void OrderColumn(InputRoll.RollColumn column)
+		private void OrderColumn(RollColumn column)
 		{
 			if (column.Name != _sortedColumn)
 			{
@@ -621,7 +621,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchCountLabel.Text = _watches.WatchCount + (_watches.WatchCount == 1 ? " watch" : " watches");
 		}
 
-		private void WatchListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void WatchListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (index >= _watches.Count)
 			{
@@ -642,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void WatchListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void WatchListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= _watches.Count)

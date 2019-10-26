@@ -1267,7 +1267,7 @@ namespace BizHawk.Client.EmuHawk
 				playerMenus[i] = new ToolStripMenuItem($"Player {i}");
 			}
 
-			foreach (InputRoll.RollColumn column in columns)
+			foreach (var column in columns)
 			{
 				ToolStripMenuItem menuItem = new ToolStripMenuItem
 				{

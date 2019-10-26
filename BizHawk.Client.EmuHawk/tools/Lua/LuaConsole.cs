@@ -38,15 +38,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public LuaConsoleSettings()
 			{
-				Columns = new List<InputRoll.RollColumn>
+				Columns = new List<RollColumn>
 				{
-					new InputRoll.RollColumn { Name = IconColumnName, Text = " ", Visible = true, Width = 22, Type = InputRoll.RollColumn.InputType.Image },
-					new InputRoll.RollColumn { Name = ScriptColumnName, Text = "Script", Visible = true, Width = 92, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Name = PathColumnName, Text = "Path", Visible = true, Width = 300, Type = InputRoll.RollColumn.InputType.Text }
+					new RollColumn { Name = IconColumnName, Text = " ", Visible = true, Width = 22, Type = ColumnType.Image },
+					new RollColumn { Name = ScriptColumnName, Text = "Script", Visible = true, Width = 92, Type = ColumnType.Text },
+					new RollColumn { Name = PathColumnName, Text = "Path", Visible = true, Width = 300, Type = ColumnType.Text }
 				};
 			}
 
-			public List<InputRoll.RollColumn> Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 		}
 
 		[ConfigPersist]
@@ -362,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 				Path.GetFileName(LuaImp.ScriptList.Filename);
 		}
 
-		private void LuaListView_QueryItemImage(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
+		private void LuaListView_QueryItemImage(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			if (column.Name != IconColumnName)
 			{
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LuaListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void LuaListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (LuaImp.ScriptList[index].IsSeparator)
 			{
@@ -404,7 +404,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LuaListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void LuaListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

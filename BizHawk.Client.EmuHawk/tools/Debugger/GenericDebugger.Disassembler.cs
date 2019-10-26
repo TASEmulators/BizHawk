@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DisassemblerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void DisassemblerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DisassemblerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void DisassemblerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (_disassemblyLines.Any() && index < _disassemblyLines.Count)
 			{

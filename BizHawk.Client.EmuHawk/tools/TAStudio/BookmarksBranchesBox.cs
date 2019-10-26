@@ -63,19 +63,19 @@ namespace BizHawk.Client.EmuHawk
 
 			BranchView.AllColumns.AddRange(new[]
 			{
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = BranchNumberColumnName,
 					Text = "#",
 					Width = 30
 				},
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = FrameColumnName,
 					Text = "Frame",
 					Width = 64
 				},
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = UserTextColumnName,
 					Text = "UserText",
@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
-		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			TasBranch branch = GetBranch(index);
 			if (branch != null)

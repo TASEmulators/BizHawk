@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 		private Bitmap icon_anchor_lag => Properties.Resources.icon_anchor_lag;
 		private Bitmap icon_anchor => Properties.Resources.icon_anchor;
 
-		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
+		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			var overrideIcon = GetIconOverride(index, column);
 
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void TasView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			Color? overrideColor = GetColorOverride(index, column);
 
@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var overrideText = GetTextOverride(index, column);
 			if (overrideText != null)
@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 					else if (index < CurrentTasMovie.InputLogLength)
 					{
 						text = CurrentTasMovie.DisplayValue(index, columnName);
-						if (column.Type == InputRoll.RollColumn.InputType.Float)
+						if (column.Type == ColumnType.Float)
 						{
 							// feos: this could be cashed, but I don't notice any slowdown this way either
 							ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
@@ -601,7 +601,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
-				else if (TasView.CurrentCell.Column.Type != InputRoll.RollColumn.InputType.Text) // User changed input
+				else if (TasView.CurrentCell.Column.Type != ColumnType.Text) // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 

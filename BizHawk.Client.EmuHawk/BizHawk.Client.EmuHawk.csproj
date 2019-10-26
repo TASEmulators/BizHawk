@@ -587,13 +587,17 @@
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControls\InputRoll.cs">
+    <Compile Include="CustomControls\InputRoll\Cell.cs" />
+    <Compile Include="CustomControls\InputRoll\ColumnType.cs" />
+    <Compile Include="CustomControls\InputRoll\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\InputRoll.Drawing.cs">
+    <Compile Include="CustomControls\InputRoll\InputRoll.Drawing.cs">
       <DependentUpon>InputRoll.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\InputRoll\RollColumn.cs" />
+    <Compile Include="CustomControls\InputRoll\RollColumns.cs" />
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
     </Compile>

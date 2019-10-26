@@ -21,13 +21,13 @@ namespace BizHawk.Client.EmuHawk
 
 			MarkerView.AllColumns.AddRange(new[]
 			{
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = "FrameColumn",
 					Text = "Frame",
 					Width = 52
 				},
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = "LabelColumn",
 					Text = "",
@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll MarkerInputRoll => MarkerView;
 
-		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 
@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void MarkerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

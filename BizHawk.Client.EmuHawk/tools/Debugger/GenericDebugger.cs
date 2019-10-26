@@ -23,19 +23,19 @@ namespace BizHawk.Client.EmuHawk
 			DisassemblerView.AllColumns.Clear();
 			DisassemblerView.AllColumns.AddRange(new[]
 			{
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = AddressColumnName,
 					Text = AddressColumnName,
 					Width = 94,
-					Type = InputRoll.RollColumn.InputType.Text
+					Type = ColumnType.Text
 				},
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = InstructionColumnName,
 					Text = InstructionColumnName,
 					Width = 291,
-					Type = InputRoll.RollColumn.InputType.Text
+					Type = ColumnType.Text
 				}
 			});
 		}

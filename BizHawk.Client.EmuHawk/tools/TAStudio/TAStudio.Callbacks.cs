@@ -15,17 +15,17 @@ namespace BizHawk.Client.EmuHawk
 		public Action<int> BranchSavedCallback { get; set; }
 		public Action<int> BranchRemovedCallback { get; set; }
 
-		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
+		private Color? GetColorOverride(int index, RollColumn column)
 		{
 			return QueryItemBgColorCallback?.Invoke(index, column.Name);
 		}
 
-		private string GetTextOverride(int index, InputRoll.RollColumn column)
+		private string GetTextOverride(int index, RollColumn column)
 		{
 			return QueryItemTextCallback?.Invoke(index, column.Name);
 		}
 
-		private Bitmap GetIconOverride(int index, InputRoll.RollColumn column)
+		private Bitmap GetIconOverride(int index, RollColumn column)
 		{
 			return QueryItemIconCallback?.Invoke(index, column.Name);
 		}

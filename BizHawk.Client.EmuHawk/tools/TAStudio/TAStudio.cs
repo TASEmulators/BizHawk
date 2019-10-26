@@ -416,18 +416,18 @@ namespace BizHawk.Client.EmuHawk
 			var columnNames = GenerateColumnNames();
 			foreach (var kvp in columnNames)
 			{
-				InputRoll.RollColumn.InputType type;
+				ColumnType type;
 				int digits;
 				if (Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.Contains(kvp.Key))
 				{
 					ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
 						[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(kvp.Key)];
-					type = InputRoll.RollColumn.InputType.Float;
+					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
 				}
 				else
 				{
-					type = InputRoll.RollColumn.InputType.Boolean;
+					type = ColumnType.Boolean;
 					digits = kvp.Value.Length;
 				}
 
@@ -494,11 +494,11 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 		}
 
-		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
+		public void AddColumn(string columnName, string columnText, int columnWidth, ColumnType columnType = ColumnType.Boolean)
 		{
 			if (TasView.AllColumns[columnName] == null)
 			{
-				var column = new InputRoll.RollColumn
+				var column = new RollColumn
 				{
 					Name = columnName,
 					Text = columnText,

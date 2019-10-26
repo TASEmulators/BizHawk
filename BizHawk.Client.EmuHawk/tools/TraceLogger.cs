@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private int FileSizeCap { get; set; }
 
 		[ConfigPersist]
-		private List<InputRoll.RollColumn> Columns
+		private List<RollColumn> Columns
 		{
 			get { return TraceView.AllColumns; }
 			set
@@ -78,19 +78,19 @@ namespace BizHawk.Client.EmuHawk
 			_splitFile = FileSizeCap != 0;
 
 			TraceView.AllColumns.Clear();
-			TraceView.AllColumns.Add(new InputRoll.RollColumn
+			TraceView.AllColumns.Add(new RollColumn
 			{
 				Name = DisasmColumnName,
 				Text = DisasmColumnName,
 				Width = 239,
-				Type = InputRoll.RollColumn.InputType.Text
+				Type = ColumnType.Text
 			});
-			TraceView.AllColumns.Add(new InputRoll.RollColumn
+			TraceView.AllColumns.Add(new RollColumn
 			{
 				Name = RegistersColumnName,
 				Text = RegistersColumnName,
 				Width = 357,
-				Type = InputRoll.RollColumn.InputType.Text
+				Type = ColumnType.Text
 			});
 		}
 
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 			//Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
-		private void TraceView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void TraceView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index < _instructions.Count)

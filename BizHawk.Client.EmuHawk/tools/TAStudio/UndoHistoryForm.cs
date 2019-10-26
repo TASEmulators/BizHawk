@@ -26,21 +26,21 @@ namespace BizHawk.Client.EmuHawk
 			HistoryView.AllColumns.Clear();
 			HistoryView.AllColumns.AddRange(new[]
 			{
-				new InputRoll.RollColumn { Name = IdColumnName, Text = IdColumnName, Width = 40, Type = InputRoll.RollColumn.InputType.Text },
-				new InputRoll.RollColumn { Name = UndoColumnName, Text = UndoColumnName, Width = 280, Type = InputRoll.RollColumn.InputType.Text }
+				new RollColumn { Name = IdColumnName, Text = IdColumnName, Width = 40, Type = ColumnType.Text },
+				new RollColumn { Name = UndoColumnName, Text = UndoColumnName, Width = 280, Type = ColumnType.Text }
 			});
 
 			MaxStepsNum.Value = Log.MaxSteps;
 		}
 
-		private void HistoryView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void HistoryView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = column.Name == UndoColumnName
 				? Log.Names[index]
 				: index.ToString();
 		}
 
-		private void HistoryView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void HistoryView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (index == Log.UndoIndex)
 			{

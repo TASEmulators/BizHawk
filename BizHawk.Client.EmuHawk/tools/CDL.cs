@@ -64,19 +64,19 @@ namespace BizHawk.Client.EmuHawk
 			lvCDL.AllColumns.Clear();
 			lvCDL.AllColumns.AddRange(new []
 			{
-				new InputRoll.RollColumn { Name = "CDLFile", Text = "CDL File @", Width = 107, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "Domain", Text = "Domain", Width = 126, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "Percent", Text = "%", Width = 58, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "Mapped", Text = "Mapped", Width = 64, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "Size", Text = "Size", Width = 112, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x01", Text = "0x01", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x02", Text = "0x02", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x04", Text = "0x04", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x08", Text = "0x08", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x10", Text = "0x10", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x20", Text = "0x20", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x40", Text = "0x40", Width = 56, Type = InputRoll.RollColumn.InputType.Text  },
-				new InputRoll.RollColumn { Name = "0x80", Text = "0x80", Width = 56, Type = InputRoll.RollColumn.InputType.Text  }
+				new RollColumn { Name = "CDLFile", Text = "CDL File @", Width = 107, Type = ColumnType.Text  },
+				new RollColumn { Name = "Domain", Text = "Domain", Width = 126, Type = ColumnType.Text  },
+				new RollColumn { Name = "Percent", Text = "%", Width = 58, Type = ColumnType.Text  },
+				new RollColumn { Name = "Mapped", Text = "Mapped", Width = 64, Type = ColumnType.Text  },
+				new RollColumn { Name = "Size", Text = "Size", Width = 112, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x01", Text = "0x01", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x02", Text = "0x02", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x04", Text = "0x04", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x08", Text = "0x08", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x10", Text = "0x10", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x20", Text = "0x20", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x40", Text = "0x40", Width = 56, Type = ColumnType.Text  },
+				new RollColumn { Name = "0x80", Text = "0x80", Width = 56, Type = ColumnType.Text  }
 			});
 		}
 
@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void lvCDL_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void lvCDL_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var subItem = lvCDL.AllColumns.IndexOf(column);
 			text = listContents[index][subItem];
