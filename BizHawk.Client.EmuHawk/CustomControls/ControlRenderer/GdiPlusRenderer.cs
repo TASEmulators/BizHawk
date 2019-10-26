@@ -84,12 +84,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)
 		{
-			// Implement TODO
 			if (rotate)
 			{
-				throw new NotImplementedException("rotate not implemented yet!");
+				// TODO
 			}
-			
+
 			_currentFont = font;
 
 			var result = _brushCache.TryGetValue(color, out Brush brush);
