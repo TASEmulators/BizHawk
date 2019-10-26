@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
 		private readonly Font _defaultFont = new Font("Arial", 8, FontStyle.Bold);
 		private Font _currentFont;
+		private bool _rotateString;
 
 		public GdiPlusRenderer()
 		{
@@ -51,7 +52,17 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void DrawString(string str, Point point)
 		{
-			_graphics.DrawString(str, _currentFont, _currentStringBrush, point);
+			if (_rotateString)
+			{
+				_graphics.TranslateTransform(point.X, point.Y);
+				_graphics.RotateTransform(90);
+				_graphics.DrawString(str, _currentFont, _currentStringBrush, Point.Empty);
+				_graphics.ResetTransform();
+			}
+			else
+			{
+				_graphics.DrawString(str, _currentFont, _currentStringBrush, point);
+			}
 		}
 
 		public void FillRectangle(int x, int y, int w, int h)
@@ -80,13 +91,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)
 		{
-			if (rotate)
-			{
-				// TODO
-			}
-
 			_currentFont = font;
 			_currentStringBrush.Color = color;
+			_rotateString = rotate;
 		}
 
 		public void SetBrush(Color color)
