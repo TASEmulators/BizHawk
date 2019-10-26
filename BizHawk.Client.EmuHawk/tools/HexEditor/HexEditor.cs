@@ -2250,6 +2250,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private Pen _blackPen = new Pen(Color.Black);
+		private SolidBrush _freezeBrush = new SolidBrush(Global.Config.HexFreezeColor);
+		private SolidBrush _freezeHighlightBrush = new SolidBrush(Global.Config.HexHighlightFreezeColor);
+		private SolidBrush _highlightBrush = new SolidBrush(Global.Config.HexHighlightColor);
+		private SolidBrush _secondaryHighlightBrush = new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor));
+
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			var activeCheats = Global.CheatList.Where(x => x.Enabled);
@@ -2271,8 +2277,9 @@ namespace BizHawk.Client.EmuHawk
 						var width = (fontWidth * 2 * (int)cheat.Size) + (gaps * fontWidth);
 
 						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, fontHeight));
-						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
-						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexFreezeColor), rect);
+						e.Graphics.DrawRectangle(_blackPen, rect);
+						_freezeBrush.Color = Global.Config.HexFreezeColor;
+						e.Graphics.FillRectangle(_freezeBrush, rect);
 					}
 				}
 			}
@@ -2285,19 +2292,21 @@ namespace BizHawk.Client.EmuHawk
 				var textpoint = new Point(textX, point.Y);
 
 				var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + (NeedsExtra(_addressHighlighted) ? fontWidth : 0) + 2, fontHeight));
-				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+				e.Graphics.DrawRectangle(_blackPen, rect);
 
 				var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
 				if (Global.CheatList.IsActive(_domain, _addressHighlighted))
 				{
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
+					_freezeHighlightBrush.Color = Global.Config.HexHighlightFreezeColor;
+					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
+					e.Graphics.FillRectangle(_freezeHighlightBrush, textrect);
 				}
 				else
 				{
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), rect);
-					e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightColor), textrect);
+					_highlightBrush.Color = Global.Config.HexHighlightColor;
+					e.Graphics.FillRectangle(_highlightBrush, rect);
+					e.Graphics.FillRectangle(_highlightBrush, textrect);
 				}
 			}
 
@@ -2310,19 +2319,21 @@ namespace BizHawk.Client.EmuHawk
 					var textpoint = new Point(textX, point.Y);
 
 					var rect = new Rectangle(point, new Size(fontWidth * 2 * DataSize + 2, fontHeight));
-					e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+					e.Graphics.DrawRectangle(_blackPen, rect);
 
 					var textrect = new Rectangle(textpoint, new Size(fontWidth * DataSize, fontHeight));
 
 					if (Global.CheatList.IsActive(_domain, address))
 					{
-						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), rect);
-						e.Graphics.FillRectangle(new SolidBrush(Global.Config.HexHighlightFreezeColor), textrect);
+						_freezeHighlightBrush.Color = Global.Config.HexHighlightFreezeColor;
+						e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
+						e.Graphics.FillRectangle(_freezeHighlightBrush, textrect);
 					}
 					else
 					{
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), rect);
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), textrect);
+						_secondaryHighlightBrush.Color = Color.FromArgb(0x44, Global.Config.HexHighlightColor);
+						e.Graphics.FillRectangle(_secondaryHighlightBrush, rect);
+						e.Graphics.FillRectangle(_secondaryHighlightBrush, textrect);
 					}
 				}
 			}
