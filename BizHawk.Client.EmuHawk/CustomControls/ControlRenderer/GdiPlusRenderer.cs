@@ -1,28 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk.CustomControls
 {
 	public class GdiPlusRenderer : IControlRenderer
 	{
-		private readonly Dictionary<Color, Pen> _penCache = new Dictionary<Color, Pen>();
-		private readonly Dictionary<Color, Brush> _brushCache = new Dictionary<Color, Brush>();
-		
 		private Graphics _graphics;
 
-		private Pen _currentPen = new Pen(Color.Black);
-		private Brush _currentBrush = new SolidBrush(Color.Black);
-		private Brush _currentStringBrush = new SolidBrush(Color.Black);
-		private Font _currentFont = new Font("Arial", 8, FontStyle.Bold);
+		private readonly Pen _currentPen = new Pen(Color.Black);
+		private readonly SolidBrush _currentBrush = new SolidBrush(Color.Black);
+		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
+		private readonly Font _defaultFont = new Font("Arial", 8, FontStyle.Bold);
+		private Font _currentFont;
 
 		public GdiPlusRenderer()
 		{
-			_currentPen = new Pen(Color.Black);
-			_penCache.Add(Color.Black, _currentPen);
-
-			_currentBrush = new SolidBrush(Color.Black);
-			_brushCache.Add(Color.Black, _currentBrush);
+			_currentFont = _defaultFont;
 		}
 
 		private class GdiPlusGraphicsLock : IDisposable
@@ -37,7 +30,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public void Dispose()
 		{
-			// TODO
+			_currentPen.Dispose();
+			_currentBrush.Dispose();
+			_currentStringBrush.Dispose();
+			_defaultFont.Dispose();
 		}
 
 		public void DrawBitmap(Bitmap bitmap, Point point, bool blend = false)
@@ -90,39 +86,17 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 
 			_currentFont = font;
-
-			var result = _brushCache.TryGetValue(color, out Brush brush);
-			if (!result)
-			{
-				brush = new SolidBrush(color);
-				_brushCache.Add(color, brush);
-			}
-
-			_currentStringBrush = brush;
+			_currentStringBrush.Color = color;
 		}
 
 		public void SetBrush(Color color)
 		{
-			var result = _brushCache.TryGetValue(color, out Brush brush);
-			if (!result)
-			{
-				brush = new SolidBrush(color);
-				_brushCache.Add(color, brush);
-			}
-
-			_currentBrush = brush;
+			_currentBrush.Color = color;
 		}
 
 		public void SetSolidPen(Color color)
 		{
-			var result = _penCache.TryGetValue(color, out Pen pen);
-			if (!result)
-			{
-				pen = new Pen(color);
-				_penCache.Add(color, pen);
-			}
-
-			_currentPen = pen;
+			_currentPen.Color = color;
 		}
 	}
 }
