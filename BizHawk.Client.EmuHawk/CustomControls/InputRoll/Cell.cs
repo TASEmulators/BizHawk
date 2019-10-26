@@ -29,12 +29,27 @@ namespace BizHawk.Client.EmuHawk
 				return Column == cell.Column && RowIndex == cell.RowIndex;
 			}
 
-			return base.Equals(obj);
+			return false;
 		}
 
 		public override int GetHashCode()
 		{
 			return Column.GetHashCode() + RowIndex.GetHashCode();
+		}
+
+		public static bool operator ==(Cell a, Cell b)
+		{
+			if (ReferenceEquals(a, null))
+			{
+				return ReferenceEquals(b, null);
+			}
+
+			return a.Equals(b);
+		}
+
+		public static bool operator !=(Cell a, Cell b)
+		{
+			return !(a == b);
 		}
 	}
 
