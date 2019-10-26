@@ -1665,10 +1665,19 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					_vBar.Maximum = ((columns.Count() * CellHeight) - DrawHeight) + _vBar.LargeChange;
+					if (_vBar.Maximum < 0)
+					{
+						_vBar.Maximum = 0;
+					}
 				}
 				else
 				{
 					_vBar.Maximum = RowsToPixels(RowCount + 1) - (CellHeight * 3) + _vBar.LargeChange - 1;
+
+					if (_vBar.Maximum < 0)
+					{
+						_vBar.Maximum = 0;
+					}
 				}
 
 				_vBar.Location = new Point(Width - _vBar.Width, 0);
