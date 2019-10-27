@@ -23,10 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public WatchSize ByteSize
 		{
-			get
-			{
-				return _size;
-			}
+			get => _size;
 
 			set
 			{
@@ -65,15 +62,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public DisplayType Type
 		{
-			get
-			{
-				return _type;
-			}
+			get => _type;
 
 			set
 			{
 				var val = ToRawInt();
-				_type = value;				
+				_type = value;
 				SetMaxLength();
 				SetFromRawInt(val);
 			}

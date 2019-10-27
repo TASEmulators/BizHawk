@@ -565,15 +565,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
 
-		private IEnumerable<Watch> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _searches[index]); }
-		}
+		private IEnumerable<Watch> SelectedItems => SelectedIndices.Select(index => _searches[index]);
 
-		private IEnumerable<Watch> SelectedWatches
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<Watch> SelectedWatches => SelectedItems.Where(x => !x.IsSeparator);
 
 		private void SetRemovedMessage(int val)
 		{
@@ -771,8 +765,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SetReboot(bool rebootNeeded)
 		{
 			RebootToolBarSeparator.Visible =
-					RebootToolbarButton.Visible =
-					rebootNeeded;
+				RebootToolbarButton.Visible =
+				rebootNeeded;
 		}
 
 		private void SetToDetailedMode()

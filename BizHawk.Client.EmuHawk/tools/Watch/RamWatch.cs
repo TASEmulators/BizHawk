@@ -96,32 +96,11 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
+		private IEnumerable<Watch> SelectedItems => SelectedIndices.Select(index => _watches[index]);
+		private IEnumerable<Watch> SelectedWatches => SelectedItems.Where(x => !x.IsSeparator);
+		private IEnumerable<Watch> SelectedSeparators => SelectedItems.Where(x => x.IsSeparator);
 
-		private IEnumerable<Watch> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _watches[index]); }
-		}
-
-		private IEnumerable<Watch> SelectedWatches
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
-
-		private IEnumerable<Watch> SelectedSeparators
-		{
-			get
-			{
-				return SelectedItems.Where(x => x.IsSeparator);
-			}
-		}
-
-		public IEnumerable<Watch> Watches
-		{
-			get
-			{
-				return _watches.Where(x => !x.IsSeparator);
-			}
-		}
+		public IEnumerable<Watch> Watches => _watches.Where(x => !x.IsSeparator);
 
 		public bool UpdateBefore => false;
 
@@ -775,8 +754,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain CurrentDomain
 		{
-			get { return _currentDomain ?? MemoryDomains.MainMemory; }
-			set { _currentDomain = value; }
+			get => _currentDomain ?? MemoryDomains.MainMemory;
+			set => _currentDomain = value;
 		}
 
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -388,15 +388,8 @@ namespace BizHawk.Client.Common
 		/// <returns><see cref="Watch"/> at the specified index</returns>
 		public Watch this[int index]
 		{
-			get
-			{
-				return _watchList[index];
-			}
-
-			set
-			{
-				_watchList[index] = value;
-			}
+			get => _watchList[index];
+			set => _watchList[index] = value;
 		}
 
 		#endregion IList<Watch>
@@ -607,14 +600,7 @@ namespace BizHawk.Client.Common
 				CurrentFileName = path;
 			}
 
-			if (!append)
-			{
-				Changes = false;
-			}
-			else
-			{
-				Changes = true;
-			}
+			Changes = append;
 
 			return true;
 		}
