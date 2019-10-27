@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
-			{
+		{
 			Input.Instance.ClearEvents();
 		}
 
