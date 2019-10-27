@@ -25,8 +25,6 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) => SaveConfigSettings();
 
 			HexViewControl.QueryIndexValue += HexView_QueryIndexValue;
-			HexViewControl.QueryIndexForeColor += HexView_QueryIndexForeColor;
-			HexViewControl.QueryIndexBgColor += HexView_QueryIndexForeColor;
 		}
 
 		private void NewHexEditor_Load(object sender, EventArgs e)
@@ -36,6 +34,9 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		private int DataSize { get; set; } = 1;
+
+		[ConfigPersist]
+		private bool BigEndian { get; set; }
 
 		private void SetDataSize(int value)
 		{
@@ -80,19 +81,21 @@ namespace BizHawk.Client.EmuHawk
 
 		#region HexView Callbacks
 
-		private void HexView_QueryIndexValue(int index, out long value)
+		private void HexView_QueryIndexValue(int index, int dataSize, out long value)
 		{
-			value = MemoryDomains.MainMemory.PeekByte(index);
-		}
-
-		private void HexView_QueryIndexBgColor(int index, ref Color color)
-		{
-			color = Color.White;
-		}
-
-		private void HexView_QueryIndexForeColor(int index, ref Color color)
-		{
-			color = Color.Black;
+			switch (dataSize)
+			{
+				default:
+					value = MemoryDomains.MainMemory.PeekByte(index);
+					break;
+				case 2:
+					value = MemoryDomains.MainMemory.PeekUshort(index, BigEndian);
+					break;
+				case 4:
+					value = MemoryDomains.MainMemory.PeekUint(index, BigEndian);
+					break;
+			}
+			
 		}
 
 		#endregion
