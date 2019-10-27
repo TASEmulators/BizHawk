@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region HexView Callbacks
 
-		private void HexView_QueryIndexValue(int index, int dataSize, out long value)
+		private void HexView_QueryIndexValue(long index, int dataSize, out long value)
 		{
 			switch (dataSize)
 			{

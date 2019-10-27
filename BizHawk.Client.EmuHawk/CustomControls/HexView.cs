@@ -28,7 +28,8 @@ namespace BizHawk.Client.EmuHawk
 		private int NumDigits => DataSize * 2;
 		private int NumAddressDigits => ArrayLength.NumHexDigits();
 		private int AddressBarWidth => (Padding.Left * 2) + (ArrayLength.NumHexDigits() * _charSize.Width) + CellMargin;
-		private int CellWidth => (NumDigits * _charSize.Width) + _cellPadding;
+		private int CharBarStart => AddressBarWidth + ((16 / DataSize) * (NumDigits + 1) * _charSize.Width) + _cellPadding + _charSize.Width - 30; // TODO: why is this hack needed?
+		private int CellWidth => ((NumDigits + 1) * _charSize.Width) + _cellPadding;
 		private int CellHeight => _charSize.Height + Padding.Top + Padding.Bottom;
 		private int VisibleRows => (Height / CellHeight) - 1;
 		private long TotalRows => ArrayLength / 16;
@@ -152,27 +153,77 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i <= VisibleRows; i++)
 				{
-					var x = AddressBarWidth + CellMargin;
-					var y = (i * CellHeight) + CellHeight + Padding.Top;
-
-					var sb = new StringBuilder();
-					
+					var values = new List<long>();
+					long baseAddr = (FirstVisibleRow + i) * 16;
 					for (int j = 0; j < 16; j += DataSize)
 					{
-						var addr = ((FirstVisibleRow + i) * 16) + j;
+						long addr = baseAddr + j;
 					
 						if (addr < ArrayLength)
 						{
+							// ReSharper disable once PossibleNullReferenceException
 							QueryIndexValue(addr, DataSize, out long value);
-							sb
-								.Append(value.ToHexString(NumDigits))
-								.Append(" ");
+							values.Add(value);
 						}
 					}
 
-					_renderer.DrawString(sb.ToString(), new Point(x, y));
+					DrawDataRow(values, i);
+					DrawCharRow(values, i);
 				}
 			}
+		}
+
+		private void DrawDataRow(IList<long> values, int index)
+		{
+			var x = AddressBarWidth + CellMargin;
+			var y = CellHeight + Padding.Top + (CellHeight * index);
+
+			var sb = new StringBuilder();
+				
+			for (int j = 0; j < values.Count; j++)
+			{
+				sb
+					.Append(values[j].ToHexString(NumDigits))
+					.Append(" ");
+			}
+
+			_renderer.DrawString(sb.ToString(), new Point(x, y));
+		}
+
+		private void DrawCharRow(IList<long> values, int index)
+		{
+			if (DataSize != 1)
+			{
+				return; // TODO
+			}
+
+			var x = CharBarStart + CellMargin;
+			var y = CellHeight + Padding.Top + (CellHeight * index);
+
+			var sb = new StringBuilder();
+
+			for (int j = 0; j < values.Count; j++)
+			{
+				sb
+					.Append(ToChar((byte)values[j]));
+			}
+
+			_renderer.DrawString(sb.ToString(), new Point(x, y));
+		}
+
+		private char ToChar(byte val)
+		{
+			if (val < ' ')
+			{
+				return '.';
+			}
+
+			if (val >= 0x7F)
+			{
+				return '.';
+			}
+
+			return (char)val;
 		}
 
 		#endregion
@@ -207,17 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Virtual")]
 		public event QueryIndexValueHandler QueryIndexValue;
 
-		[Category("Virtual")]
-		public event QueryIndexBkColorHandler QueryIndexBgColor;
-
-		[Category("Virtual")]
-		public event QueryIndexForeColorHandler QueryIndexForeColor;
-
-		public delegate void QueryIndexValueHandler(int index, int dataSize, out long value);
-
-		public delegate void QueryIndexBkColorHandler(int index, ref Color color);
-
-		public delegate void QueryIndexForeColorHandler(int index, ref Color color);
+		public delegate void QueryIndexValueHandler(long index, int dataSize, out long value);
 
 		#endregion
 
