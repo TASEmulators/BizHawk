@@ -91,7 +91,13 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
 			{
-				_charSize = _renderer.MeasureString("A", _font); // TODO make this a property so changing it updates other values.
+				// Set font
+				_renderer.PrepDrawString(_font, _foreColor);
+
+				// Measure width change to ignore extra padding at start/end
+				var size1 = _renderer.MeasureString("A", _font);
+				var size2 = _renderer.MeasureString("AA", _font);
+				_charSize = new Size(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
