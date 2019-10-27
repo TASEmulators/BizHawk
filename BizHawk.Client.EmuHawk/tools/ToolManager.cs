@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="toolType">Type of tool you want to load</param>
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
 		/// <returns>An instantiated <see cref="IToolForm"/></returns>
-		/// <exception cref="ArgumentException">Raised if <paramref name="toolType"/> can't be casted into IToolForm </exception>
+		/// <exception cref="ArgumentException">Raised if <paramref name="toolType"/> can't cast into IToolForm </exception>
 		internal IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))

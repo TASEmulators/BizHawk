@@ -33,8 +33,8 @@ namespace BizHawk.Client.EmuHawk
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer;
 
-		private int _defaultMainSplitDistance;
-		private int _defaultBranchMarkerSplitDistance;
+		private readonly int _defaultMainSplitDistance;
+		private readonly int _defaultBranchMarkerSplitDistance;
 
 		/// <summary>
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
@@ -273,22 +273,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Remembering Split container logic
-			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
-			int defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
-
-			ToolStripMenuItem restoreDefaults = TASMenu.Items
-				.OfType<ToolStripMenuItem>()
-				.Single(t => t.Name == "SettingsSubMenu")
-				.DropDownItems
-				.OfType<ToolStripMenuItem>()
-				.Single(t => t.Text == "Restore &Defaults");
-
-			restoreDefaults.Click += (o, ev) =>
-			{
-				MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
-				BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
-			};
-
 			if (Settings.MainVerticalSplitDistance > 0)
 			{
 				try
@@ -297,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception)
 				{
-					MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
+					MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
 				}
 				
 			}
@@ -310,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception)
 				{
-					BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
+					BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
 				}
 			}
 

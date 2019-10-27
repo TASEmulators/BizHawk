@@ -1403,23 +1403,8 @@ namespace BizHawk.Client.EmuHawk
 				RefreshTasView();
 				CurrentTasMovie.FlagChanges();
 
-			try
-			{
-				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
-			}
-			catch (Exception)
-			{
-				MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
-			}
-
-			try
-			{
-				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
-			}
-			catch (Exception)
-			{
-				BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
-			}
+			MainVertialSplit.SplitterDistance = _defaultMainSplitDistance;
+			BranchesMarkersSplit.SplitterDistance = _defaultBranchMarkerSplitDistance;
 		}
 
 		#endregion
