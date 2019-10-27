@@ -395,7 +395,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.AllColumns.Clear();
 			AddColumn(CursorColumnName, "", 18);
-			AddColumn(FrameColumnName, "Frame#", 68);
+			AddColumn(
+				new RollColumn
+				{
+					Name = FrameColumnName,
+					Text = "Frame#",
+					Width = 68,
+					Type = ColumnType.Text,
+					Rotatable = true
+				});
 
 			var columnNames = GenerateColumnNames();
 			foreach (var kvp in columnNames)
@@ -480,18 +488,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddColumn(string columnName, string columnText, int columnWidth, ColumnType columnType = ColumnType.Boolean)
 		{
-			if (TasView.AllColumns[columnName] == null)
-			{
-				var column = new RollColumn
+			AddColumn(
+				new RollColumn
 				{
 					Name = columnName,
 					Text = columnText,
 					Width = columnWidth,
 					Type = columnType
-				};
+				});
+		}
 
+		private void AddColumn(RollColumn column)
+		{
+			if (TasView.AllColumns[column.Name] == null)
 				TasView.AllColumns.Add(column);
-			}
 		}
 
 		private void EngageTastudio()

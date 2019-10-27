@@ -319,7 +319,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName == FrameColumnName)
 				{
-					offsetX = 7;
+					if (!TasView.HorizontalOrientation)
+					{
+						offsetX = 7;
+					}
 					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else

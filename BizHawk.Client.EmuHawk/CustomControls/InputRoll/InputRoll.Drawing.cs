@@ -170,45 +170,72 @@ namespace BizHawk.Client.EmuHawk
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
 					_renderer.PrepDrawString(_font, _foreColor);
-					for (int i = 0, f = 0; f < range; i++, f++)
+					int lastVisible = LastVisibleColumnIndex;
+					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 					{
-						f += _lagFrames[i];
-						int lastVisible = LastVisibleColumnIndex;
-						for (int j = FirstVisibleColumn; j <= lastVisible; j++)
+						RollColumn col = visibleColumns[j];
+
+						// Just a proof of concept to test auto-calculating the column height in horizontal
+						// mode. This would of course need to happen before any drawing because it's also
+						// needed for the column headers and background.
+						int debugColHeight = CellHeight;
+						if (col.Rotatable && col.RotatedHeight != null)
 						{
+							debugColHeight = Math.Max(debugColHeight, col.RotatedHeight.Value);
+						}
+						else if (col.Rotatable)
+						{
+							string text;
+							int strOffsetX = 0;
+							int strOffsetY = 0;
+							QueryItemText(startRow, col, out text, ref strOffsetX, ref strOffsetY);
+							int textWidth = _renderer.MeasureString(text, _font).Width;
+							debugColHeight = Math.Max(debugColHeight, strOffsetX + textWidth + (CellWidthPadding * 2));
+						}
+
+						for (int i = 0, f = 0; f < range; i++, f++)
+						{
+							f += _lagFrames[i];
+
 							Bitmap image = null;
-							int x;
-							int y;
 							int bitmapOffsetX = 0;
 							int bitmapOffsetY = 0;
 
-							QueryItemIcon?.Invoke(f + startRow, visibleColumns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+							QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 
 							if (image != null)
 							{
-								x = RowsToPixels(i) + CellWidthPadding + bitmapOffsetX;
-								y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
+								int x = RowsToPixels(i) + CellWidthPadding + bitmapOffsetX;
+								int y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
 								_renderer.DrawBitmap(image, new Point(x, y));
 							}
 
 							string text;
 							int strOffsetX = 0;
 							int strOffsetY = 0;
-							QueryItemText(f + startRow, visibleColumns[j], out text, ref strOffsetX, ref strOffsetY);
+							QueryItemText(f + startRow, col, out text, ref strOffsetX, ref strOffsetY);
 
-							// Center Text
-							x = RowsToPixels(i) + ((CellWidth - (text.Length * _charSize.Width)) / 2);
-							y = (j * CellHeight) + CellHeightPadding - _vBar.Value;
-							var point = new Point(x + strOffsetX, y + strOffsetY);
-
-							if (visibleColumns[j].Name == "FrameColumn") // TODO: don't do this hack
+							int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
+							int baseY = j * CellHeight - _vBar.Value;
+							int textWidth = text.Length * _charSize.Width;
+							if (col.Rotatable)
 							{
+								// Center Text
+								int textX = Math.Max(((CellHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
+								int textY = CellWidthPadding + strOffsetY;
+								var point = new Point(baseX - textY, baseY + textX);
+
 								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
-								DrawString(text, ColumnWidth, new Point(point.X + _charSize.Height + CellWidthPadding, point.Y + CellHeightPadding));
+								DrawString(text, null /* TODO */, point);
 								_renderer.PrepDrawString(_font, _foreColor, rotate: false);
 							}
 							else
 							{
+								// Center Text
+								int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
+								int textY = CellHeightPadding + strOffsetY;
+								var point = new Point(baseX + textX, baseY + textY);
+
 								DrawString(text, ColumnWidth, point);
 							}
 						}

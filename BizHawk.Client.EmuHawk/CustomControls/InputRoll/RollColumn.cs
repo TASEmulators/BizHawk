@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{
@@ -15,5 +17,15 @@
 		/// Column will be drawn with an emphasized look, if true
 		/// </summary>
 		public bool Emphasis { get; set; }
+
+		/// <summary>
+		/// Column header text will be drawn rotated, if true
+		/// </summary>
+		public bool Rotatable { get; set; }
+
+		/// <summary>
+		/// If drawn rotated, specifies the desired height, or null to auto-size
+		/// </summary>
+		public int? RotatedHeight { get; set; }
 	}
 }
