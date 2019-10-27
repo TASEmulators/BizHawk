@@ -18,12 +18,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _boolPaintState;
 		private float _floatPaintState;
 		private float _floatBackupState;
-		private bool _patternPaint = false;
+		private bool _patternPaint;
 		private bool _startCursorDrag;
 		private bool _startSelectionDrag;
 		private bool _selectionDragState;
-		private bool _supressContextMenu;
-		private int _startrow;
+		private bool _suppressContextMenu;
+		private int _startRow;
 
 		// Editing analog input
 		private string _floatEditColumn = "";
@@ -99,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			Mainform.UnpauseEmulator();
 
-			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.VisibleRows)
+			if (!_seekBackgroundWorker.IsBusy && diff > TasView.VisibleRows)
 			{
 				_seekBackgroundWorker.RunWorkerAsync();
 			}
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
-			var overrideIcon = GetIconOverride(index, column);
+			var overrideIcon = QueryItemIconCallback?.Invoke(index, column.Name);
 
 			if (overrideIcon != null)
 			{
@@ -216,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			Color? overrideColor = GetColorOverride(index, column);
+			Color? overrideColor = QueryItemBgColorCallback?.Invoke(index, column.Name);
 
 			if (overrideColor.HasValue)
 			{
@@ -242,11 +242,10 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.FromArgb(0x60, 0xFF, 0xFF, 0xFF);
 				}
 			}
-			else if (FloatEditingMode &&
-				(index == _floatEditRow || _extraFloatRows.Contains(index)) &&
-				columnName == _floatEditColumn)
+			else if (FloatEditingMode
+				&& (index == _floatEditRow || _extraFloatRows.Contains(index))
+				&& columnName == _floatEditColumn)
 			{
-				// SuuperW: Analog editing is indicated by a color change.
 				color = AnalogEdit_Col;
 			}
 
@@ -298,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
-			var overrideText = GetTextOverride(index, column);
+			var overrideText = QueryItemTextCallback?.Invoke(index, column.Name);
 			if (overrideText != null)
 			{
 				text = overrideText;
@@ -533,7 +532,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// SuuperW: Moved these.
 			if (TasView.CurrentCell?.RowIndex == null || TasView.CurrentCell.Column == null)
 			{
 				return;
@@ -616,7 +614,7 @@ namespace BizHawk.Client.EmuHawk
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
-							_startrow = TasView.CurrentCell.RowIndex.Value;
+							_startRow = TasView.CurrentCell.RowIndex.Value;
 							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt)
@@ -804,16 +802,16 @@ namespace BizHawk.Client.EmuHawk
 			_floatEditYPos = -1;
 			_leftButtonHeld = false;
 
-			if (!FloatEditingMode && CurrentTasMovie.ChangeLog != null)
+			if (!FloatEditingMode)
 			{
-				CurrentTasMovie.ChangeLog.EndBatch();
+				CurrentTasMovie.ChangeLog?.EndBatch();
 			}
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader &&
-				!_supressContextMenu && TasView.SelectedRows.Any() && !_leftButtonHeld)
+				!_suppressContextMenu && TasView.SelectedRows.Any() && !_leftButtonHeld)
 			{
 				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
 				{
@@ -852,7 +850,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			_supressContextMenu = false;
+			_suppressContextMenu = false;
 
 			DoTriggeredAutoRestoreIfNeeded();
 		}
@@ -861,14 +859,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
-				_supressContextMenu = true;
+				_suppressContextMenu = true;
 				int notch = e.Delta / 120;
 				if (notch > 1)
 				{
 					notch *= 2;
 				}
 
-				// warning: tastudio rewind hotkey/button logic is copypasted from here!
+				// warning: tastudio rewind hotkey/button logic is copy pasted from here!
 				if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
 				{
 					Mainform.PauseOnFrame -= notch;
@@ -965,7 +963,7 @@ namespace BizHawk.Client.EmuHawk
 				endVal = e.OldCell.RowIndex.Value;
 				if(_patternPaint)
 				{
-					endVal = _startrow;
+					endVal = _startRow;
 				}
 			}
 
@@ -1104,7 +1102,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					JumpToGreenzone();
 					_triggerAutoRestore = true;
-					_supressContextMenu = true;
+					_suppressContextMenu = true;
 				}
 			}
 
@@ -1115,8 +1113,6 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					
-
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
 						bool setVal = _boolPaintState;
@@ -1354,14 +1350,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 			{
-				if (_floatTypedValue.StartsWith("-"))
-				{
-					_floatTypedValue = _floatTypedValue.Substring(1);
-				}
-				else
-				{
-					_floatTypedValue = $"-{_floatTypedValue}";
-				}
+				_floatTypedValue = _floatTypedValue.StartsWith("-")
+					? _floatTypedValue.Substring(1)
+					: $"-{_floatTypedValue}";
 			}
 			else if (e.KeyCode == Keys.Back)
 			{
@@ -1476,7 +1467,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
-			// taseditor uses Ctrl for selection and Shift for framecourser
+			// taseditor uses Ctrl for selection and Shift for frame cursor
 			if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Shift + Page Up
 			{
 				GoToPreviousMarker();
@@ -1492,14 +1483,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.End) // Shift + End
 			{
 				GoToFrame(CurrentTasMovie.InputLogLength-1);
-			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
-			{
-				//GoToPreviousFrame();
-			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
-			{
-				//GoToNextFrame();
 			}
 
 			if (FloatEditingMode

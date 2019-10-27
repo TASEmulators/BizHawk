@@ -78,11 +78,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void GoToNextFrame()
-		{
-			GoToFrame(Emulator.Frame + 1);
-		}
-
 		public void GoToPreviousMarker()
 		{
 			if (Emulator.Frame > 0)

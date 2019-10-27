@@ -892,8 +892,8 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					// GUI users may want to be protected from clobbering their video when skipping around...
-					// well, users who are rewinding arent. (that gets done through the seeking system in the call above)
-					// users who are clicking around.. I dont know.
+					// well, users who are rewinding aren't. (that gets done through the seeking system in the call above)
+					// users who are clicking around.. I don't know.
 				}
 			}
 		}
@@ -1035,11 +1035,6 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
-		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
 			if (!AskSaveChanges())
@@ -1115,13 +1110,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
-		{
-			//if (e.KeyCode == Keys.F)
-			//	TasPlaybackBox.FollowCursor ^= true;
-		}
-
-		private void MainVertialSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		private void MainVerticalSplit_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
 		}
@@ -1168,12 +1157,7 @@ namespace BizHawk.Client.EmuHawk
 		// Stupid designer
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
-			base.GenericDragEnter(sender, e);
-		}
-
-		private void TasPlaybackBox_Load(object sender, EventArgs e)
-		{
-
+			GenericDragEnter(sender, e);
 		}
 	}
 }

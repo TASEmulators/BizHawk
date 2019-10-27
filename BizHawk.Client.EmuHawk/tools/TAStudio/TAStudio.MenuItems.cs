@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -101,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrEmpty(CurrentTasMovie.Filename)
 				|| CurrentTasMovie.Filename == DefaultTasProjName())
 			{
-				SaveAsTas(sender, e);
+				SaveAsTas();
 			}
 			else
 			{
@@ -133,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveAsTas(object sender, EventArgs e)
+		private void SaveAsTas()
 		{
 			_autosaveTimer.Stop();
 			GlobalWin.Sound.StopSound();
@@ -176,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		// call this one from the menu only
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAsTas(sender, e);
+			SaveAsTas();
 			if (Settings.BackupPerFileSave)
 			{
 				SaveBackupMenuItem_Click(sender, e);
@@ -188,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrEmpty(CurrentTasMovie.Filename)
 				|| CurrentTasMovie.Filename == DefaultTasProjName())
 			{
-				SaveAsTas(sender, e);
+				SaveAsTas();
 			}
 			else
 			{
@@ -331,8 +330,8 @@ namespace BizHawk.Client.EmuHawk
 
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
-				PasteInsertMenuItem.Enabled =
-				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
+				PasteInsertMenuItem.Enabled = TasView.AnyRowsSelected
+				&& Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat);
 
 			ClearGreenzoneMenuItem.Enabled =
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
@@ -483,9 +482,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO: if highlighting 2 rows and pasting 3, only paste 2 of them
 				// FCEUX Taseditor doesn't do this, but I think it is the expected behavior in editor programs
-				var wasPaused = Mainform.EmulatorPaused;
 
-				// copy paste from PasteInsertMenuItem_Click!
+				// TODO: copy paste from PasteInsertMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
 				if (data.GetDataPresent(DataFormats.StringFormat))
 				{
@@ -503,10 +501,8 @@ namespace BizHawk.Client.EmuHawk
 								{
 									return;
 								}
-								else
-								{
-									_tasClipboard.Add(new TasClipboardEntry(i, line));
-								}
+
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
 							var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
@@ -530,8 +526,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				var wasPaused = Mainform.EmulatorPaused;
-
 				// copy paste from PasteMenuItem_Click!
 				IDataObject data = Clipboard.GetDataObject();
 				if (data.GetDataPresent(DataFormats.StringFormat))
@@ -577,7 +571,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				var wasPaused = Mainform.EmulatorPaused;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
@@ -602,7 +595,6 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetDataObject(sb.ToString());
 				CurrentTasMovie.RemoveFrames(list);
 				SetSplicer();
-				////TasView.DeselectAll(); feos: what if I want to continuously cut?
 
 				if (needsToRollback)
 				{
@@ -982,7 +974,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.EmptyMarkers ^= true;
 		}
 
-		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
+		private void AutoPauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.AutoPause ^= true;
 		}
@@ -1047,7 +1039,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.OldControlSchemeForBranches ^= true;
 		}
 
-		private void LoadBranchOnDoubleclickMenuItem_Click(object sender, EventArgs e)
+		private void LoadBranchOnDoubleClickMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.LoadBranchOnDoubleClick ^= true;
 		}
@@ -1243,8 +1235,9 @@ namespace BizHawk.Client.EmuHawk
 			ColumnsSubMenu.DropDownItems.Clear();
 
 			var columns = TasView.AllColumns
-				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
-				.Where(x => x.Name != "FrameColumn");
+				.Where(c => !string.IsNullOrWhiteSpace(c.Text))
+				.Where(c => c.Name != "FrameColumn")
+				.ToList();
 
 			int workingHeight = Screen.FromControl(this).WorkingArea.Height;
 			int rowHeight = ColumnsSubMenu.Height + 4;
@@ -1252,14 +1245,14 @@ namespace BizHawk.Client.EmuHawk
 			int keyCount = columns.Count(c => c.Name.StartsWith("Key "));
 			int keysMenusCount = (int)Math.Ceiling((double)keyCount / maxRows);
 
-			ToolStripMenuItem[] keysMenus = new ToolStripMenuItem[keysMenusCount];
+			var keysMenus = new ToolStripMenuItem[keysMenusCount];
 
 			for (int i = 0; i < keysMenus.Length; i++)
 			{
 				keysMenus[i] = new ToolStripMenuItem();
 			}
 
-			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
+			var playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
 
 			for (int i = 1; i < playerMenus.Length; i++)
@@ -1269,7 +1262,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in columns)
 			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem
+				var menuItem = new ToolStripMenuItem
 				{
 					Text = $"{column.Text} ({column.Name})",
 					Checked = column.Visible,
@@ -1279,13 +1272,13 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					ToolStripMenuItem sender = o as ToolStripMenuItem;
+					ToolStripMenuItem sender = (ToolStripMenuItem)o;
 					TasView.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
 					RefreshTasView();
 					ColumnsSubMenu.ShowDropDown();
-					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
+					((ToolStripMenuItem)sender.OwnerItem).ShowDropDown();
 				};
 
 				if (column.Name.StartsWith("Key "))
@@ -1312,11 +1305,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			for (int i = 0; i < keysMenus.Length; i++)
+			foreach (var menu in keysMenus)
 			{
-				string text = $"Keys ({keysMenus[i].DropDownItems[0].Tag} - {keysMenus[i].DropDownItems[keysMenus[i].DropDownItems.Count - 1].Tag})";
-				keysMenus[i].Text = text.Replace("Key ", "");
-				ColumnsSubMenu.DropDownItems.Add(keysMenus[i]);
+				string text = $"Keys ({menu.DropDownItems[0].Tag} - {menu.DropDownItems[menu.DropDownItems.Count - 1].Tag})";
+				menu.Text = text.Replace("Key ", "");
+				ColumnsSubMenu.DropDownItems.Add(menu);
 			}
 
 			for (int i = 1; i < playerMenus.Length; i++)
@@ -1344,13 +1337,12 @@ namespace BizHawk.Client.EmuHawk
 					Checked = false
 				};
 
-				for (int i = 0; i < keysMenus.Length; i++)
+				foreach (var menu in keysMenus)
 				{
-					ToolStripMenuItem dummyObject = keysMenus[i];
+					var dummyObject1 = menu;
 					item.CheckedChanged += (o, ev) =>
 					{
-						ToolStripMenuItem sender = o as ToolStripMenuItem;
-						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+						foreach (ToolStripMenuItem menuItem in dummyObject1.DropDownItems)
 						{
 							menuItem.Checked ^= true;
 						}
@@ -1377,7 +1369,6 @@ namespace BizHawk.Client.EmuHawk
 					ToolStripMenuItem dummyObject = playerMenus[i];
 					item.CheckedChanged += (o, ev) =>
 					{
-						ToolStripMenuItem sender = o as ToolStripMenuItem;
 						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 						{
 							menuItem.Checked ^= true;
