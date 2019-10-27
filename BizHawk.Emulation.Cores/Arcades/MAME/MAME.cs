@@ -451,31 +451,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
 			public const string Exit = "manager:machine():exit()";
-
 			public const string GetVersion = "return emu.app_version()";
 			public const string GetPixels = "return manager:machine():video():pixels()";
 			public const string GetSamples = "return manager:machine():sound():samples()";
-
-			public const string GetFrameNumber =
-				"return select(2, next(manager:machine().screens)):frame_number()";
-
-			public const string GetRefresh =
-				"return select(2, next(manager:machine().screens)):refresh_attoseconds()";
-
-			public const string GetWidth =
-				"local w,h = manager:machine():video():size() " +
-				"return w";
-			public const string GetHeight =
-				"local w,h = manager:machine():video():size() " +
-				"return h";
-
+			public const string GetFrameNumber = "return select(2, next(manager:machine().screens)):frame_number()";
+			public const string GetRefresh = "return select(2, next(manager:machine().screens)):refresh_attoseconds()";
+			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
+			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
 			public const string GetBoundX =
 				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
 				"return x1-x0";
 			public const string GetBoundY =
 				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
 				"return y1-y0";
-
 			public const string GetInputFields =
 				"final = {} " +
 				"for tag, _ in pairs(manager:machine():ioport().ports) do " +
