@@ -70,14 +70,6 @@ namespace BizHawk.Client.EmuHawk
 						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
 					}
 				}
-				else
-				{
-					color = Color.White;
-				}
-			}
-			else
-			{
-				color = Color.White;
 			}
 		}
 
