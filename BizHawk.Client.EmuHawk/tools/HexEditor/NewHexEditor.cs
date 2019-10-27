@@ -34,6 +34,15 @@ namespace BizHawk.Client.EmuHawk
 			HexViewControl.ArrayLength = MemoryDomains.MainMemory.Size;
 		}
 
+		[ConfigPersist]
+		private int DataSize { get; set; } = 1;
+
+		private void SetDataSize(int value)
+		{
+			HexViewControl.DataSize = DataSize = value;
+			HexViewControl.Refresh();
+		}
+
 		private void SaveConfigSettings()
 		{
 
@@ -47,12 +56,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			// TODO
+			HexViewControl.Refresh();
 		}
 
 		public void FastUpdate()
 		{
-			// TODO
+			// Do nothing
 		}
 
 		public void Restart()
@@ -65,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			return true; // TODO
 		}
 
-		public bool UpdateBefore {  get { return false; } }
+		public bool UpdateBefore => false;
 
 		#endregion
 
@@ -88,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Menu Items
+		#region File
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -98,6 +107,32 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		#endregion
+
+		#region Options
+
+		private void DataSizeMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			OneByteMenuItem.Checked = DataSize == 1;
+			TwoByteMenuItem.Checked = DataSize == 2;
+			FourByteMenuItem.Checked = DataSize == 4;
+		}
+
+		private void OneByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDataSize(1);
+		}
+
+		private void TwoByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDataSize(2);
+		}
+
+		private void FourByteMenuItem_Click(object sender, EventArgs e)
+		{
+			SetDataSize(4);
 		}
 
 		#endregion

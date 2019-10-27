@@ -7,29 +7,37 @@ using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class HexView : Control
 	{
 		private readonly IControlRenderer _renderer;
-		private readonly Font _normalFont;
+		private readonly Font _font;
+		private readonly Color _foreColor = Color.Black;
+
 		private Size _charSize;
 
-		private long _arrayLength;
+		private long _rowSize = 16;
 
+		private int NumDigits => DataSize * 2;
+		private int AddressBarWidth => (Padding.Left * 2) + (ArrayLength.NumHexDigits() * _charSize.Width) + _charSize.Width;
+		private int CellWidth => NumDigits * _charSize.Width;
 		public HexView()
 		{
-			_normalFont = new Font("Courier New", 8);  // Only support fixed width
+			_font = new Font("Courier New", 8);  // Only support fixed width
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
 			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
-				_renderer = new GdiRenderer();
+				//_renderer = new GdiRenderer(); // TODO
+				_renderer = new GdiPlusRenderer();
 			}
 			else
 			{
@@ -37,16 +45,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			using (var g = CreateGraphics())
-			using (var lck = _renderer.LockGraphics(g, Width, Height))
+			using (_renderer.LockGraphics(g, Width, Height))
 			{
-				_charSize = _renderer.MeasureString("A", _normalFont); // TODO make this a property so changing it updates other values.
+				_charSize = _renderer.MeasureString("A", _font); // TODO make this a property so changing it updates other values.
 			}
 		}
 
 		protected override void Dispose(bool disposing)
 		{
 			_renderer.Dispose();
-			_normalFont.Dispose();
+			_font.Dispose();
 
 			base.Dispose(disposing);
 		}
@@ -62,29 +70,38 @@ namespace BizHawk.Client.EmuHawk
 				_renderer.SetSolidPen(Color.White);
 				_renderer.FillRectangle(0, 0, Width, Height);
 
+				DrawHeader();
+			}
+		}
 
-				_renderer.DrawString("Hello World", new Point(10, 10));
+		private void DrawHeader()
+		{
+			_renderer.PrepDrawString(_font, _foreColor);
+			for (int i = 0; i < _rowSize; i += DataSize)
+			{
+				var x = AddressBarWidth + ((i / DataSize) * CellWidth) + _charSize.Width;
+				var y = Padding.Top;
+				var str = i.ToHexString(NumDigits);
+				_renderer.DrawString(str, new Point(x, y));
 			}
 		}
 
 		#endregion
 
 		#region Properties
-
+		
 		/// <summary>
-		/// Gets or sets the sets the virtual number of the length of the array to display
+		/// Gets or sets the total length of the data set to edit
 		/// </summary>
 		[Category("Behavior")]
-		public long ArrayLength
-		{
-			get => _arrayLength;
+		public long ArrayLength { get; set; }
 
-			set
-			{
-				_arrayLength = value;
-				RecalculateScrollBars();
-			}
-		}
+		/// <summary>
+		/// Gets or sets the number of bytes each cell represents
+		/// </summary>
+		[Category("Behavior")]
+		[DefaultValue(1)]
+		public int DataSize { get; set; } = 1;
 
 		#endregion
 
