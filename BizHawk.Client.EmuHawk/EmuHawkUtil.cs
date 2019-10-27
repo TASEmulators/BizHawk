@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static bool EnsureCoreIsAccurate(IEmulator emulator)
 		{
-			bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
+			static bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
 			{
 				var box = new MsgBox(
 					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording. {Environment.NewLine}Switch to {recommendedCore}?",
