@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnDrag()
 		{
-			if (_columnDown != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
+			if (_columnDown?.Width != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
 			{
 				int x1 = _currentX.Value - (_columnDown.Width.Value / 2);
 				int y1 = _currentY.Value - (CellHeight / 2);
@@ -82,7 +82,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawCellDrag()
 		{
-			if (_draggingCell != null)
+			if (_draggingCell != null && _draggingCell.RowIndex.HasValue && _draggingCell.Column.Width.HasValue
+				&& _currentX.HasValue && _currentY.HasValue)
 			{
 				var text = "";
 				int offsetX = 0;
@@ -398,23 +399,24 @@ namespace BizHawk.Client.EmuHawk
 					// Rows
 					for (int i = 0; i < visibleColumns.Count + 1; i++)
 					{
-						_renderer.Line(RowsToPixels(0) + 1, i * CellHeight - _vBar.Value, DrawWidth, i * CellHeight - _vBar.Value);
+						int y = i * CellHeight - _vBar.Value;
+						_renderer.Line(RowsToPixels(0) + 1, y, DrawWidth, y);
 					}
 				}
 				else
 				{
 					// Columns
 					int y = ColumnHeight + 1;
-					int? totalColWidth = TotalColWidth;
 					foreach (var column in visibleColumns)
 					{
-						int x = column.Left.Value - _hBar.Value;
+						int x = (column.Left ?? 0) - _hBar.Value;
 						_renderer.Line(x, y, x, Height - 1);
 					}
 
 					if (visibleColumns.Any())
 					{
-						_renderer.Line(totalColWidth.Value - _hBar.Value, y, totalColWidth.Value - _hBar.Value, Height - 1);
+						int x = (TotalColWidth ?? 0) - _hBar.Value;
+						_renderer.Line(x, y, x, Height - 1);
 					}
 
 					// Rows
@@ -433,7 +435,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectionBG(List<RollColumn> visibleColumns)
 		{
-			// SuuperW: This allows user to see other colors in selected frames.
 			Color rowColor = Color.White;
 			int lastVisibleRow = LastVisibleRow;
 			int lastRow = -1;
@@ -479,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Given a cell with rowindex inbetween 0 and VisibleRows, it draws the background color specified. Do not call with absolute rowindices.
+		/// Given a cell with RowIndex in between 0 and VisibleRows, it draws the background color specified. Do not call with absolute row indices.
 		/// </summary>
 		private void DrawCellBG(Color color, Cell cell, List<RollColumn> visibleColumns)
 		{
@@ -488,30 +489,33 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				x = RowsToPixels(cell.RowIndex.Value) + 1;
-				w = CellWidth - 1;
-				y = (CellHeight * visibleColumns.IndexOf(cell.Column)) + 1 - _vBar.Value; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
-				h = CellHeight - 1;
 				if (x < ColumnWidth)
 				{
 					return;
 				}
+
+				w = CellWidth - 1;
+				y = (CellHeight * visibleColumns.IndexOf(cell.Column)) + 1 - _vBar.Value; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				h = CellHeight - 1;
 			}
 			else
 			{
-				w = cell.Column.Width.Value - 1;
-				x = cell.Column.Left.Value - _hBar.Value + 1;
 				y = RowsToPixels(cell.RowIndex.Value) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
-				h = CellHeight - 1;
 				if (y < ColumnHeight)
 				{
 					return;
 				}
+
+				x = cell.Column.Left.Value - _hBar.Value + 1;
+				w = cell.Column.Width.Value - 1;
+				h = CellHeight - 1;
 			}
 
+			// Don't draw if off screen.
 			if (x > DrawWidth || y > DrawHeight)
 			{
 				return;
-			} // Don't draw if off screen.
+			}
 
 			_renderer.SetBrush(color);
 			_renderer.FillRectangle(x, y, w, h);
@@ -524,13 +528,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
-			int lastVisible = LastVisibleColumnIndex;
+			int lastVisibleColumn = LastVisibleColumnIndex;
 			int firstVisibleColumn = FirstVisibleColumn;
+
 			// Prevent exceptions with small TAStudio windows
 			if (firstVisibleColumn < 0)
 			{
 				return;
 			}
+
 			if (HorizontalOrientation)
 			{
 				for (int i = 0, f = 0; f < range; i++, f++)
@@ -540,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 					Color rowColor = Color.White;
 					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
-					for (int j = firstVisibleColumn; j <= lastVisible; j++)
+					for (int j = firstVisibleColumn; j <= lastVisibleColumn; j++)
 					{
 						Color itemColor = Color.White;
 						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
@@ -577,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 					Color rowColor = Color.White;
 					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
-					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
+					for (int j = FirstVisibleColumn; j <= lastVisibleColumn; j++) // Horizontal
 					{
 						Color itemColor = Color.White;
 						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
