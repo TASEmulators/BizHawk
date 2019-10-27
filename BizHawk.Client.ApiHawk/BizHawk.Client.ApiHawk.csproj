@@ -33,6 +33,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
     <NoWarn>1591</NoWarn><!-- don't bug us with "Missing XML comment [...]" until we have and enforce .stylecop.json i.e. when we care -->
   </PropertyGroup>
   <ItemGroup>
