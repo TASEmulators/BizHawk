@@ -91,9 +91,6 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
 			{
-				// Set font
-				_renderer.PrepDrawString(_font, _foreColor);
-
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", _font);
 				var size2 = _renderer.MeasureString("AA", _font);

@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static bool PromptToSwitchCore(string currentCore, string recommendedCore, Action disableCurrentCore)
 			{
-				var box = new MsgBox(
-					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording. {Environment.NewLine}Switch to {recommendedCore}?",
+				using var box = new MsgBox(
+					$"While the {currentCore} core is faster, it is not nearly as accurate as {recommendedCore}.{Environment.NewLine}It is recommended that you switch to the {recommendedCore} core for movie recording.{Environment.NewLine}Switch to {recommendedCore}?",
 					"Accuracy Warning",
 					MessageBoxIcon.Warning);
 
@@ -27,7 +27,6 @@ namespace BizHawk.Client.EmuHawk
 				box.SetMessageToAutoSize();
 
 				var result = box.ShowDialog();
-				box.Dispose();
 
 				if (result != DialogResult.Yes)
 				{
