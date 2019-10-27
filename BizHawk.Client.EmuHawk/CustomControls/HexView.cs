@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.EmuHawk.CustomControls;
@@ -116,17 +117,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawHeader()
 		{
+			var x = AddressBarWidth + CellMargin;
+			var y = Padding.Top;
+			var sb = new StringBuilder();
 			for (int i = 0; i < _rowSize; i += DataSize)
 			{
-				var x = AddressBarWidth + ((i / DataSize) * CellWidth) + CellMargin;
-				var y = Padding.Top;
-				var str = i.ToHexString(NumDigits);
-				_renderer.DrawString(str, new Point(x, y));
+				
+				sb
+					.Append(i.ToHexString(NumDigits))
+					.Append(" ");
 			}
+
+			_renderer.DrawString(sb.ToString(), new Point(x, y));
 		}
 
 		private void DrawAddressBar()
-		{
+		{ 
 			for (int i = 0; i <= VisibleRows; i++)
 			{
 				var addr = ((FirstVisibleRow + i) * 16);
@@ -146,18 +152,25 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = 0; i <= VisibleRows; i++)
 				{
+					var x = AddressBarWidth + CellMargin;
+					var y = (i * CellHeight) + CellHeight + Padding.Top;
+
+					var sb = new StringBuilder();
+					
 					for (int j = 0; j < 16; j += DataSize)
 					{
 						var addr = ((FirstVisibleRow + i) * 16) + j;
-						QueryIndexValue(addr, DataSize, out long value);
+					
 						if (addr < ArrayLength)
 						{
-							var x = AddressBarWidth + ((j / DataSize) * CellWidth) + CellMargin;
-							var y = (i * CellHeight) + CellHeight + Padding.Top;
-							var str = value.ToHexString(NumDigits);
-							_renderer.DrawString(str, new Point(x, y));
+							QueryIndexValue(addr, DataSize, out long value);
+							sb
+								.Append(value.ToHexString(NumDigits))
+								.Append(" ");
 						}
 					}
+
+					_renderer.DrawString(sb.ToString(), new Point(x, y));
 				}
 			}
 		}
