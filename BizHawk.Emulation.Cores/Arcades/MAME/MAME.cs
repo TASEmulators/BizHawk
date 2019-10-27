@@ -362,17 +362,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			numSamples = lengthInBytes / bytesPerSample;
-			short[] buffer = new short[numSamples];
-			Marshal.Copy(ptr, buffer, 0, numSamples);
+
+			unsafe
+			{
+				short* pSample = (short*)ptr.ToPointer();
+				for (int i = 0; i < numSamples; i++)
+				{
+					audioSamples.Enqueue(*(pSample + i));
+				}
+			}
 
 			if (!LibMAME.mame_lua_free_string(ptr))
 			{
 				Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
-			}
-
-			for (int sampleIndex = 0; sampleIndex < numSamples; sampleIndex++)
-			{
-				audioSamples.Enqueue(buffer[sampleIndex]);
 			}
 		}
 
