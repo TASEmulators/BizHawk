@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewHexEditor));
 			this.HexMenu = new System.Windows.Forms.MenuStrip();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,7 +42,7 @@
             this.FileSubMenu});
 			this.HexMenu.Location = new System.Drawing.Point(0, 0);
 			this.HexMenu.Name = "HexMenu";
-			this.HexMenu.Size = new System.Drawing.Size(448, 24);
+			this.HexMenu.Size = new System.Drawing.Size(584, 24);
 			this.HexMenu.TabIndex = 0;
 			this.HexMenu.Text = "menuStrip1";
 			// 
@@ -58,7 +59,7 @@
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -67,10 +68,10 @@
 			this.HexViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.HexViewControl.ArrayLength = 0;
+			this.HexViewControl.ArrayLength = ((long)(0));
 			this.HexViewControl.Location = new System.Drawing.Point(12, 27);
 			this.HexViewControl.Name = "HexViewControl";
-			this.HexViewControl.Size = new System.Drawing.Size(424, 231);
+			this.HexViewControl.Size = new System.Drawing.Size(560, 262);
 			this.HexViewControl.TabIndex = 1;
 			this.HexViewControl.Text = "hexView1";
 			// 
@@ -78,12 +79,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(448, 270);
+			this.ClientSize = new System.Drawing.Size(584, 301);
 			this.Controls.Add(this.HexViewControl);
 			this.Controls.Add(this.HexMenu);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.HexMenu;
 			this.Name = "NewHexEditor";
-			this.Text = "NewHexEditor";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Hex Editor";
 			this.Load += new System.EventHandler(this.NewHexEditor_Load);
 			this.HexMenu.ResumeLayout(false);
 			this.HexMenu.PerformLayout();
