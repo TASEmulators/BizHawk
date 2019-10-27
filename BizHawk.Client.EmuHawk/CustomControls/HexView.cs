@@ -16,14 +16,20 @@ namespace BizHawk.Client.EmuHawk
 		private readonly IControlRenderer _renderer;
 		private readonly Font _font;
 		private readonly Color _foreColor = Color.Black;
-
+		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
 		private Size _charSize;
 
 		private long _rowSize = 16;
+		private long _arraySize;
 
 		private int NumDigits => DataSize * 2;
 		private int AddressBarWidth => (Padding.Left * 2) + (ArrayLength.NumHexDigits() * _charSize.Width) + _charSize.Width;
 		private int CellWidth => NumDigits * _charSize.Width;
+		private int CellHeight => _charSize.Height + Padding.Top + Padding.Bottom;
+		private int VisibleRows => (Height / CellHeight) - 1;
+		private long TotalRows => ArrayLength / 16;
+		private int FirstVisibleRow => _vBar.Value;
+
 		public HexView()
 		{
 			_font = new Font("Courier New", 8);  // Only support fixed width
@@ -49,6 +55,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_charSize = _renderer.MeasureString("A", _font); // TODO make this a property so changing it updates other values.
 			}
+
+			_vBar.Anchor =  AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+			_vBar.Location = new Point(0 - _vBar.Width, 0);
+			_vBar.Height = Height;
+			_vBar.SmallChange = 1;
+			_vBar.LargeChange = 16;
+			Controls.Add(_vBar);
+			_vBar.ValueChanged += VerticalBar_ValueChanged;
+			RecalculateScrollBars();
 		}
 
 		protected override void Dispose(bool disposing)
@@ -71,6 +86,9 @@ namespace BizHawk.Client.EmuHawk
 				_renderer.FillRectangle(0, 0, Width, Height);
 
 				DrawHeader();
+
+				// Debug;
+				_renderer.DrawString("VBar: " + _vBar.Value, new Point(0, 0));
 			}
 		}
 
@@ -89,12 +107,20 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Properties
-		
+
 		/// <summary>
 		/// Gets or sets the total length of the data set to edit
 		/// </summary>
 		[Category("Behavior")]
-		public long ArrayLength { get; set; }
+		public long ArrayLength
+		{
+			get => _arraySize;
+			set
+			{
+				_arraySize = value;
+				RecalculateScrollBars();
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the number of bytes each cell represents
@@ -126,6 +152,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecalculateScrollBars()
 		{
+			_vBar.Visible = TotalRows > VisibleRows;
+			_vBar.Minimum = 0;
+			_vBar.Maximum = (int)TotalRows;
+			_vBar.Refresh();
+			if (_vBar.Maximum > 0)
+			{
+				int zzz = 0;
+			}
+		}
+
+		private void VerticalBar_ValueChanged(object sender, EventArgs e)
+		{
+			Refresh();
 		}
 	}
 }
