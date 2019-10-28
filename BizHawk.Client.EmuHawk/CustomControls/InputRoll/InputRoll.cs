@@ -1934,7 +1934,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// The width of the largest column cell in Horizontal Orientation
-
 		private int ColumnWidth { get; set; }
 
 		// The height of a column cell in Vertical Orientation.

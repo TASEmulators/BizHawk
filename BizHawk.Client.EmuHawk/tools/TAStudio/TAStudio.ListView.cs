@@ -171,6 +171,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == CursorColumnName)
 			{
+				if (TasView.HorizontalOrientation)
+				{
+					offsetX = 2;
+					offsetY = 5;
+				}
+
 				if (index == Emulator.Frame && index == Mainform.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
@@ -319,10 +325,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName == FrameColumnName)
 				{
-					if (!TasView.HorizontalOrientation)
-					{
-						offsetX = 7;
-					}
+					offsetX = TasView.HorizontalOrientation ? 2 : 7;
 					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else

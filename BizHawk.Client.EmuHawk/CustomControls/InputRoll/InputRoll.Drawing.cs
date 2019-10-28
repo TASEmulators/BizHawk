@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class InputRoll
 	{
+		private int[] _horizontalColumnHeights;
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			using (_renderer.LockGraphics(e.Graphics, Width, Height))
@@ -22,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 				SetLagFramesArray();
 
 				var visibleColumns = _columns.VisibleColumns.ToList();
+
+				CalculateHorizontalColumnHeights(visibleColumns);
 
 				if (visibleColumns.Any())
 				{
@@ -64,6 +68,48 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing, and this should never be called
 		}
 
+		private void CalculateHorizontalColumnHeights(List<RollColumn> visibleColumns)
+		{
+			if (!HorizontalOrientation)
+			{
+				_horizontalColumnHeights = null;
+				return;
+			}
+
+			_horizontalColumnHeights = new int[visibleColumns.Count];
+
+			int startRow = FirstVisibleRow;
+			for (int j = 0; j < visibleColumns.Count; j++)
+			{
+				RollColumn col = visibleColumns[j];
+				int height = CellHeight;
+				if (col.Rotatable && col.RotatedHeight != null)
+				{
+					height = Math.Max(height, col.RotatedHeight.Value);
+				}
+				else if (col.Rotatable)
+				{
+					string text;
+					int strOffsetX = 0;
+					int strOffsetY = 0;
+					QueryItemText(startRow, col, out text, ref strOffsetX, ref strOffsetY);
+					int textWidth = _renderer.MeasureString(text, _font).Width;
+					height = Math.Max(height, textWidth + (CellWidthPadding * 2));
+				}
+				_horizontalColumnHeights[j] = height;
+			}
+		}
+
+		private int HorizontalColumnsToPixels(int index)
+		{
+			int height = 0;
+			for (int j = 0; j < index; j++)
+			{
+				height += _horizontalColumnHeights[j];
+			}
+			return height;
+		}
+
 		private void DrawColumnDrag()
 		{
 			if (_columnDown?.Width != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
@@ -98,7 +144,6 @@ namespace BizHawk.Client.EmuHawk
 				int x2 = x1 + _draggingCell.Column.Width.Value;
 				int y2 = y1 + CellHeight;
 
-
 				_renderer.SetBrush(bgColor);
 				_renderer.FillRectangle(x1, y1, x2 - x1, y2 - y1);
 				_renderer.PrepDrawString(_font, _foreColor);
@@ -110,13 +155,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HorizontalOrientation)
 			{
-				int start = -_vBar.Value;
+				int y = -_vBar.Value;
 
 				_renderer.PrepDrawString(_font, _foreColor);
 
-				foreach (var column in visibleColumns)
+				for(int j = 0; j < visibleColumns.Count; j++)
 				{
-					var point = new Point(CellWidthPadding, start + CellHeightPadding);
+					var column = visibleColumns[j];
+					var columnHeight = _horizontalColumnHeights[j];
+					var textHeight = _renderer.MeasureString(column.Text, _font).Height;
+					var point = new Point(CellWidthPadding, y + ((columnHeight - textHeight) / 2));
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
@@ -129,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 						DrawString(column.Text, column.Width, point);
 					}
 
-					start += CellHeight;
+					y += columnHeight;
 				}
 			}
 			else
@@ -174,40 +222,29 @@ namespace BizHawk.Client.EmuHawk
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 					{
 						RollColumn col = visibleColumns[j];
-
-						// Just a proof of concept to test auto-calculating the column height in horizontal
-						// mode. This would of course need to happen before any drawing because it's also
-						// needed for the column headers and background.
-						int debugColHeight = CellHeight;
-						if (col.Rotatable && col.RotatedHeight != null)
-						{
-							debugColHeight = Math.Max(debugColHeight, col.RotatedHeight.Value);
-						}
-						else if (col.Rotatable)
-						{
-							string text;
-							int strOffsetX = 0;
-							int strOffsetY = 0;
-							QueryItemText(startRow, col, out text, ref strOffsetX, ref strOffsetY);
-							int textWidth = _renderer.MeasureString(text, _font).Width;
-							debugColHeight = Math.Max(debugColHeight, strOffsetX + textWidth + (CellWidthPadding * 2));
-						}
+						int colHeight = _horizontalColumnHeights[j];
 
 						for (int i = 0, f = 0; f < range; i++, f++)
 						{
 							f += _lagFrames[i];
 
-							Bitmap image = null;
-							int bitmapOffsetX = 0;
-							int bitmapOffsetY = 0;
+							int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
+							int baseY = HorizontalColumnsToPixels(j) - _vBar.Value;
 
-							QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
-
-							if (image != null)
+							if (!col.Rotatable)
 							{
-								int x = RowsToPixels(i) + CellWidthPadding + bitmapOffsetX;
-								int y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
-								_renderer.DrawBitmap(image, new Point(x, y));
+								Bitmap image = null;
+								int bitmapOffsetX = 0;
+								int bitmapOffsetY = 0;
+
+								QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+
+								if (image != null)
+								{
+									int x = baseX + CellWidthPadding + bitmapOffsetX;
+									int y = baseY + CellHeightPadding + bitmapOffsetY;
+									_renderer.DrawBitmap(image, new Point(x, y));
+								}
 							}
 
 							string text;
@@ -215,18 +252,16 @@ namespace BizHawk.Client.EmuHawk
 							int strOffsetY = 0;
 							QueryItemText(f + startRow, col, out text, ref strOffsetX, ref strOffsetY);
 
-							int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
-							int baseY = j * CellHeight - _vBar.Value;
-							int textWidth = text.Length * _charSize.Width;
+							int textWidth = _renderer.MeasureString(text, _font).Width;
 							if (col.Rotatable)
 							{
 								// Center Text
-								int textX = Math.Max(((CellHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
+								int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
 								int textY = CellWidthPadding + strOffsetY;
 								var point = new Point(baseX - textY, baseY + textX);
 
 								_renderer.PrepDrawString(_font, _foreColor, rotate: true);
-								DrawString(text, null /* TODO */, point);
+								DrawString(text, null, point);
 								_renderer.PrepDrawString(_font, _foreColor, rotate: false);
 							}
 							else
@@ -301,20 +336,21 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				_renderer.FillRectangle(0, 0, ColumnWidth + 1, DrawHeight + 1);
-				_renderer.Line(0, 0, 0, visibleColumns.Count * CellHeight + 1);
-				_renderer.Line(ColumnWidth, 0, ColumnWidth, visibleColumns.Count * CellHeight + 1);
 
-				int start = -_vBar.Value;
-				foreach (var column in visibleColumns)
+				int y = -_vBar.Value;
+				for (int j = 0; j < visibleColumns.Count; j++)
 				{
-					_renderer.Line(1, start, ColumnWidth, start);
-					start += CellHeight;
+					_renderer.Line(1, y, ColumnWidth, y);
+					y += _horizontalColumnHeights[j];
 				}
 
 				if (visibleColumns.Any())
 				{
-					_renderer.Line(1, start, ColumnWidth, start);
+					_renderer.Line(1, y, ColumnWidth, y);
 				}
+
+				_renderer.Line(0, 0, 0, y + 1);
+				_renderer.Line(ColumnWidth, 0, ColumnWidth, y + 1);
 			}
 			else
 			{
@@ -346,7 +382,8 @@ namespace BizHawk.Client.EmuHawk
 				_renderer.SetBrush(SystemColors.ActiveBorder);
 				if (HorizontalOrientation)
 				{
-					_renderer.FillRectangle(1, visibleColumns.IndexOf(column) * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
+					int columnIndex = visibleColumns.IndexOf(column);
+					_renderer.FillRectangle(1, HorizontalColumnsToPixels(columnIndex) + 1, ColumnWidth - 1, _horizontalColumnHeights[columnIndex] - 1);
 				}
 				else
 				{
@@ -370,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 							? SystemColors.Highlight.Add(0x00222222)
 							: SystemColors.Highlight);
 
-						_renderer.FillRectangle(1, i * CellHeight + 1, ColumnWidth - 1, ColumnHeight - 1);
+						_renderer.FillRectangle(1, HorizontalColumnsToPixels(i) + 1, ColumnWidth - 1, _horizontalColumnHeights[i] - 1);
 					}
 				}
 				else
@@ -426,7 +463,7 @@ namespace BizHawk.Client.EmuHawk
 					// Rows
 					for (int i = 0; i < visibleColumns.Count + 1; i++)
 					{
-						int y = i * CellHeight - _vBar.Value;
+						int y = HorizontalColumnsToPixels(i) - _vBar.Value;
 						_renderer.Line(RowsToPixels(0) + 1, y, DrawWidth, y);
 					}
 				}
@@ -521,9 +558,10 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
+				int columnIndex = visibleColumns.IndexOf(cell.Column);
 				w = CellWidth - 1;
-				y = (CellHeight * visibleColumns.IndexOf(cell.Column)) + 1 - _vBar.Value; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
-				h = CellHeight - 1;
+				y = HorizontalColumnsToPixels(columnIndex) - _vBar.Value + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				h = _horizontalColumnHeights[columnIndex] - 1;
 			}
 			else
 			{
