@@ -37,6 +37,10 @@ namespace BizHawk.Client.EmuHawk
 		private int _rowCount;
 		private Size _charSize;
 
+		// Updated on paint
+		private int[] _horizontalColumnHeights;
+		private int[] _horizontalColumnTops;
+
 		private RollColumn _columnDown;
 		private RollColumn _columnResizing;
 
@@ -148,7 +152,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					var maxLength = CurrentCell.Column.Text?.Length ?? 0;
-					
 
 					for (int i = 0; i < RowCount; i++)
 					{
@@ -829,12 +832,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				var columnList = VisibleColumns.ToList();
+
 				if (HorizontalOrientation)
 				{
-					return _vBar.Value / CellHeight;
+					return Enumerable.Range(0, columnList.Count).First(i => GetHColBottom(i) > _vBar.Value);
 				}
 
-				var columnList = VisibleColumns.ToList();
 				return columnList.FindIndex(c => c.Right > _hBar.Value);
 			}
 		}
@@ -846,21 +850,14 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				List<RollColumn> columnList = VisibleColumns.ToList();
-				int ret;
+
 				if (HorizontalOrientation)
 				{
-					ret = (_vBar.Value + DrawHeight) / CellHeight;
-					if (ret >= columnList.Count)
-					{
-						ret = columnList.Count - 1;
-					}
-				}
-				else
-				{
-					ret = columnList.FindLastIndex(c => c.Left <= DrawWidth + _hBar.Value);
+					int count = columnList.Count;
+					return Enumerable.Range(0, count).Select(i => count - 1 - i).First(i => GetHColTop(i) <= DrawWidth + _hBar.Value);
 				}
 
-				return ret;
+				return columnList.FindLastIndex(c => c.Left <= DrawWidth + _hBar.Value);
 			}
 		}
 
@@ -1279,11 +1276,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.Button == MouseButtons.Left)
 				{
-					ColumnClickEvent(ColumnAtX(e.X));
+					ColumnClickEvent(ColumnAtPixel(e.X));
 				}
 				else if (e.Button == MouseButtons.Right)
 				{
-					ColumnRightClickEvent(ColumnAtX(e.X));
+					ColumnRightClickEvent(ColumnAtPixel(e.X));
 				}
 			}
 
@@ -1635,10 +1632,11 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDrawSize();
 
 			var columns = _columns.VisibleColumns.ToList();
+			int iLastColumn = columns.Count - 1;
 
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = columns.Count > DrawHeight / CellHeight;
+				NeedsVScrollbar = GetHColBottom(iLastColumn) > DrawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
@@ -1652,9 +1650,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.LargeChange = DrawHeight / 2;
-					_hBar.Maximum = Math.Max((VisibleRows - 1) * CellHeight, _hBar.Maximum);
-					_hBar.LargeChange = (VisibleRows - 1) * CellHeight;
+					_hBar.Maximum = Math.Max((VisibleRows - 1) * CellWidth, _hBar.Maximum);
+					_hBar.LargeChange = (VisibleRows - 1) * CellWidth;
+					_vBar.LargeChange = Math.Max(0, DrawHeight / 2);
 				}
 				else
 				{
@@ -1671,7 +1669,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = ((columns.Count() * CellHeight) - DrawHeight) + _vBar.LargeChange;
+					_vBar.Maximum = GetHColBottom(iLastColumn) - DrawHeight + _vBar.LargeChange;
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
@@ -1680,7 +1678,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					_vBar.Maximum = RowsToPixels(RowCount + 1) - (CellHeight * 3) + _vBar.LargeChange - 1;
-
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
@@ -1841,17 +1838,12 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					newCell.RowIndex = PixelsToRows(x);
-
-					int colIndex = (y + _vBar.Value) / CellHeight;
-					if (colIndex >= 0 && colIndex < columns.Count)
-					{
-						newCell.Column = columns[colIndex];
-					}
+					newCell.Column = ColumnAtPixel(y);
 				}
 				else
 				{
 					newCell.RowIndex = PixelsToRows(y);
-					newCell.Column = ColumnAtX(x);
+					newCell.Column = ColumnAtPixel(x);
 				}
 			}
 
@@ -1887,20 +1879,32 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Returns the RollColumn object at the specified visible x coordinate. Coordinate should be between 0 and Width of the InputRoll Control.
+		/// Returns the RollColumn object at the specified visible pixel coordinate.
 		/// </summary>
-		/// <param name="x">The x coordinate.</param>
-		/// <returns>RollColumn object that contains the x coordinate or null if none exists.</returns>
-		private RollColumn ColumnAtX(int x)
+		/// <param name="pixels">The pixel coordinate.</param>
+		/// <returns>RollColumn object that contains the pixel coordinate or null if none exists.</returns>
+		private RollColumn ColumnAtPixel(int pixel)
 		{
-			foreach (RollColumn column in _columns.VisibleColumns)
+			if (_horizontalOrientation)
 			{
-				if (column.Left.Value - _hBar.Value <= x && column.Right.Value - _hBar.Value >= x)
+				foreach (var item in _columns.VisibleColumns.Select((n, i) => new { Column = n, Index = i }))
 				{
-					return column;
+					if (GetHColTop(item.Index) - _vBar.Value <= pixel && GetHColBottom(item.Index) - _vBar.Value >= pixel)
+					{
+						return item.Column;
+					}
 				}
 			}
-
+			else
+			{
+				foreach (RollColumn column in _columns.VisibleColumns)
+				{
+					if (column.Left.Value - _hBar.Value <= pixel && column.Right.Value - _hBar.Value >= pixel)
+					{
+						return column;
+					}
+				}
+			}
 			return null;
 		}
 
@@ -1932,6 +1936,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
+
+		private int GetHColHeight(int index) =>
+			_horizontalColumnHeights != null && index < _horizontalColumnHeights.Length ? _horizontalColumnHeights[index] : CellHeight;
+
+		private int GetHColTop(int index) =>
+			_horizontalColumnTops != null && index < _horizontalColumnTops.Length ? _horizontalColumnTops[index] : (index * CellHeight);
+
+		private int GetHColBottom(int index) =>
+			GetHColTop(index) + GetHColHeight(index);
 
 		// The width of the largest column cell in Horizontal Orientation
 		private int ColumnWidth { get; set; }
