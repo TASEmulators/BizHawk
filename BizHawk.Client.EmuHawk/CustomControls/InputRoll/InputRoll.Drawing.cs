@@ -107,21 +107,29 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_columnDown?.Width != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
 			{
+				int columnWidth = _columnDown.Width.Value;
 				int columnHeight = CellHeight;
 				if (HorizontalOrientation)
 				{
 					int columnIndex = visibleColumns.IndexOf(_columnDown);
+					columnWidth = ColumnWidth;
 					columnHeight = GetHColHeight(columnIndex);
 				}
-				int x1 = _currentX.Value - (_columnDown.Width.Value / 2);
+				int x1 = _currentX.Value - (columnWidth / 2);
 				int y1 = _currentY.Value - (columnHeight / 2);
-				int x2 = x1 + _columnDown.Width.Value;
+				int x2 = x1 + columnWidth;
 				int y2 = y1 + columnHeight;
+				int textOffsetY = CellHeightPadding;
+				if (HorizontalOrientation)
+				{
+					int textHeight = _renderer.MeasureString(_columnDown.Text, _font).Height;
+					textOffsetY = (columnHeight - textHeight) / 2;
+				}
 
 				_renderer.SetSolidPen(_backColor);
 				_renderer.DrawRectangle(x1, y1, x2, y2);
 				_renderer.PrepDrawString(_font, _foreColor);
-				_renderer.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+				_renderer.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + textOffsetY));
 			}
 		}
 
