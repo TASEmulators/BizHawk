@@ -785,12 +785,6 @@
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttribute.cs" />
-    <Compile Include="tools\AutoHawk.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\AutoHawk.Designer.cs">
-      <DependentUpon>AutoHawk.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\BasicBot\BasicBot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1551,9 +1545,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\AutoHawk.resx">
-      <DependentUpon>AutoHawk.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
       <DependentUpon>BasicBot.cs</DependentUpon>

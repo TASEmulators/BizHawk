@@ -234,7 +234,6 @@
 			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
 			this.batchRunnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExperimentalToolsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewHexEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2265,19 +2264,11 @@
 			// ExperimentalToolsSubMenu
 			// 
 			this.ExperimentalToolsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.AutoHawkMenuItem,
 			this.NewHexEditorMenuItem});
 			this.ExperimentalToolsSubMenu.Name = "ExperimentalToolsSubMenu";
 			this.ExperimentalToolsSubMenu.Size = new System.Drawing.Size(191, 22);
 			this.ExperimentalToolsSubMenu.Text = "Experimental Tools";
 			this.ExperimentalToolsSubMenu.DropDownOpened += new System.EventHandler(this.ExperimentalToolsSubMenu_DropDownOpened);
-			// 
-			// AutoHawkMenuItem
-			// 
-			this.AutoHawkMenuItem.Name = "AutoHawkMenuItem";
-			this.AutoHawkMenuItem.Size = new System.Drawing.Size(155, 22);
-			this.AutoHawkMenuItem.Text = "AutoHawk";
-			this.AutoHawkMenuItem.Click += new System.EventHandler(this.AutoHawkMenuItem_Click);
 			// 
 			// NewHexEditorMenuItem
 			// 
@@ -4748,7 +4739,6 @@
 		private System.Windows.Forms.ToolStripMenuItem dummyExternalTool;
 		private System.Windows.Forms.ToolStripMenuItem RecordAVMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ExperimentalToolsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewHexEditorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveConfigAsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadConfigFromMenuItem;

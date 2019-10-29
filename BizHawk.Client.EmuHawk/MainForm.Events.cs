@@ -1414,7 +1414,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExperimentalToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
 			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
@@ -1509,11 +1508,6 @@ namespace BizHawk.Client.EmuHawk
 		private void BatchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
-		}
-
-		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<AutoHawk>();
 		}
 
 		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
