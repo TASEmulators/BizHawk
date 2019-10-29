@@ -147,8 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			// custom settings
 			if (HasCustomConfig(newTool))
 			{
-				Dictionary<string, object> settings;
-				if (!Global.Config.CustomToolSettings.TryGetValue(toolType, out settings))
+				if (!Global.Config.CustomToolSettings.TryGetValue(toolType, out var settings))
 				{
 					settings = new Dictionary<string, object>();
 					Global.Config.CustomToolSettings[toolType] = settings;
@@ -362,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
 					{
-						// numeric constanst are similarly hosed
+						// numeric constants are similarly hosed
 						val = Convert.ChangeType(val, prop.PropertyType, System.Globalization.CultureInfo.InvariantCulture);
 					}
 
@@ -636,7 +635,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (MessageBox.Show(
 					"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no.",
-					"Confirmm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					"Confirm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{
 					try
 					{
