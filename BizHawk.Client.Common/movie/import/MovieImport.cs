@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Attempt to import another type of movie file into a movie object.
-		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg)
+		public static IMovie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
 			warningMsg = "";
