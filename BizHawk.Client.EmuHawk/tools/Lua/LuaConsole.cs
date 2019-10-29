@@ -101,15 +101,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => true;
 
-		private IEnumerable<LuaFile> SelectedItems
-		{
-			get { return LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]); }
-		}
+		private IEnumerable<LuaFile> SelectedItems =>  LuaListView.SelectedRows.Select(index => LuaImp.ScriptList[index]);
 
-		private IEnumerable<LuaFile> SelectedFiles
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<LuaFile> SelectedFiles => SelectedItems.Where(x => !x.IsSeparator);
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 

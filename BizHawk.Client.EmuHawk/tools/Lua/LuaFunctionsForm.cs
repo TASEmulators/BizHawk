@@ -119,31 +119,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private class Sorting
 		{
-			private bool _desc;
 			private int _column = 1;
 
 			public int Column
 			{
-				get
-				{
-					return _column;
-				}
+				get => _column;
 
 				set
 				{
 					if (_column == value)
 					{
-						_desc ^= true;
+						Descending ^= true;
 					}
 
 					_column = value;
 				}
 			}
 
-			public bool Descending
-			{
-				get { return _desc; }
-			}
+			public bool Descending { get; private set; }
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
@@ -189,7 +182,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (sb.Length > 0)
+			{
 				Clipboard.SetText(sb.ToString());
+			}
 		}
 		
 		private void UpdateList()

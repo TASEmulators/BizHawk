@@ -332,8 +332,8 @@ namespace BizHawk.Client.EmuHawk
 			var f = new StringFormat(StringFormat.GenericDefault);
 			var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 			var boxBackground = Graphics.FromImage(Image);
-			
-		Size sizeOfText = boxBackground.MeasureString(message, font, 0, f).ToSize();
+
+			Size sizeOfText = boxBackground.MeasureString(message, font, 0, f).ToSize();
 
 			if (horizalign != null)
 			{
