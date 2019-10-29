@@ -71,10 +71,10 @@ namespace BizHawk.Emulation.Common
 			else
 			{
 				var tt = impl.GetGenericArguments();
-				var settingtype = tt[0];
-				var synctype = tt[1];
-				HasSettings = settingtype != typeof(object); // object is used for a placeholder where an emu doesn't have both s and ss
-				HasSyncSettings = synctype != typeof(object);
+				var settingType = tt[0];
+				var syncType = tt[1];
+				HasSettings = settingType != typeof(object); // object is used for a placeholder where an emu doesn't have both s and ss
+				HasSyncSettings = syncType != typeof(object);
 
 				if (HasSettings)
 				{

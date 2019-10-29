@@ -5,22 +5,13 @@ namespace BizHawk.Emulation.Common
 {
 	public class MemoryDomainDelegate : MemoryDomain
 	{
-		private Func<long, byte> _peek;
 		private Action<long, byte> _poke;
 
-		public Func<long, byte> Peek
-		{
-			get { return _peek; }
-			set { _peek = value; }
-		}
+		public Func<long, byte> Peek { get; set; }
 
 		public Action<long, byte> Poke
 		{
-			get
-			{
-				return _poke;
-			}
-
+			get => _poke;
 			set
 			{
 				_poke = value;
@@ -30,7 +21,7 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
-			return _peek(addr);
+			return Peek(addr);
 		}
 
 		public override void PokeByte(long addr, byte val)
@@ -43,7 +34,7 @@ namespace BizHawk.Emulation.Common
 			Name = name;
 			EndianType = endian;
 			Size = size;
-			_peek = peek;
+			Peek = peek;
 			_poke = poke;
 			Writable = poke != null;
 			WordSize = wordSize;
@@ -56,11 +47,7 @@ namespace BizHawk.Emulation.Common
 
 		public byte[] Data
 		{
-			get
-			{
-				return _data;
-			}
-
+			get => _data;
 			set
 			{
 				_data = value;

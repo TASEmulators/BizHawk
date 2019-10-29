@@ -28,6 +28,6 @@ namespace BizHawk.Emulation.Common
 			NotApplicableTypes = types?.AsEnumerable() ?? Enumerable.Empty<Type>();
 		}
 
-		public IEnumerable<Type> NotApplicableTypes { get; private set; }
+		public IEnumerable<Type> NotApplicableTypes { get; }
 	}
 }

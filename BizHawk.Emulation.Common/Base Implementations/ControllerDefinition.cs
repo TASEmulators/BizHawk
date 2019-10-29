@@ -82,23 +82,23 @@ namespace BizHawk.Emulation.Common
 				{
 					case AxisConstraintType.Circular:
 						{
-							string xaxis = constraint.Params[0] as string;
-							string yaxis = constraint.Params[1] as string;
+							string xAxis = constraint.Params[0] as string ?? "";
+							string yAxis = constraint.Params[1] as string ?? "";
 							float range = (float)constraint.Params[2];
-							if (!floatButtons.ContainsKey(xaxis)) break;
-							if (!floatButtons.ContainsKey(yaxis)) break;
-							double xval = floatButtons[xaxis];
-							double yval = floatButtons[yaxis];
-							double length = Math.Sqrt((xval * xval) + (yval * yval));
+							if (!floatButtons.ContainsKey(xAxis)) break;
+							if (!floatButtons.ContainsKey(yAxis)) break;
+							double xVal = floatButtons[xAxis];
+							double yVal = floatButtons[yAxis];
+							double length = Math.Sqrt((xVal * xVal) + (yVal * yVal));
 							if (length > range)
 							{
 								double ratio = range / length;
-								xval *= ratio;
-								yval *= ratio;
+								xVal *= ratio;
+								yVal *= ratio;
 							}
 
-							floatButtons[xaxis] = (float)xval;
-							floatButtons[yaxis] = (float)yval;
+							floatButtons[xAxis] = (float)xVal;
+							floatButtons[yAxis] = (float)yVal;
 							break;
 						}
 				}
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Common
 				List<string> list = new List<string>(FloatControls);
 				list.AddRange(BoolButtons);
 
-				// starts with console buttons, then each plasyer's buttons individually
+				// starts with console buttons, then each player's buttons individually
 				List<string>[] ret = new List<string>[PlayerCount + 1];
 				for (int i = 0; i < ret.Length; i++)
 				{
