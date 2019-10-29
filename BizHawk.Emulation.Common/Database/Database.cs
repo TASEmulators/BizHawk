@@ -371,6 +371,7 @@ namespace BizHawk.Emulation.Common
 				case ".UZE":
 					game.System = "UZE";
 					break;
+
 				case ".32X":
 					game.System = "32X";
 					game.AddOption("32X", "true");
@@ -379,6 +380,12 @@ namespace BizHawk.Emulation.Common
 				case ".VEC":
 					game.System = "VEC";
 					game.AddOption("VEC", "true");
+					break;
+
+				// refactor to use mame db (output of "mame -listxml" command)
+				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
+				case ".ZIP":
+					game.System = "Arcade";
 					break;
 			}
 

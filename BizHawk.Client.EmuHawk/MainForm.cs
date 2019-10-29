@@ -588,6 +588,8 @@ namespace BizHawk.Client.EmuHawk
 		// runloop won't exec lua
 		public bool SuppressLua { get; set; }
 
+		public AdvancedRomLoaderType AdvancedLoader { get; set; }
+
 		public long MouseWheelTracker { get; private set; }
 
 		private int? _pauseOnFrame;
@@ -610,9 +612,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
-
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Global.Config.TurboSeek;
-
 		public bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
@@ -3488,15 +3488,13 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				bool asLibretro = args.OpenAdvanced is OpenAdvanced_Libretro || args.OpenAdvanced is OpenAdvanced_LibretroNoGame;
-
 				var loader = new RomLoader
 				{
 					ChooseArchive = LoadArchiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
 					MessageCallback = GlobalWin.OSD.AddMessage,
-					AsLibretro = asLibretro
+					AdvancedLoader = AdvancedLoader
 				};
 				Global.FirmwareManager.RecentlyServed.Clear();
 

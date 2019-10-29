@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
+			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);			
 		}
 
 		private ControllerConfig()
@@ -192,7 +193,10 @@ namespace BizHawk.Client.EmuHawk
                     if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
                         return;
 
-                    string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
+                    string tabname =
+						(Global.Emulator.SystemId == "C64") ? "Keyboard" :
+						(Global.Emulator.SystemId == "MAME") ? "Misc" :
+						"Console"; // hack
                     tt.TabPages.Add(tabname);
                     tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
                 }

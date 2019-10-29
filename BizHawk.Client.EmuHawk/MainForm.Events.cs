@@ -306,6 +306,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
+			AdvancedLoader = AdvancedRomLoaderType.None;
 			OpenRom();
 		}
 
@@ -317,7 +318,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
+			AdvancedLoader = oac.Result;
+
+			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
 				var argsNoGame = new LoadRomArgs
 				{
@@ -331,14 +334,19 @@ namespace BizHawk.Client.EmuHawk
 
 			var filter = RomFilter;
 
-			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchGame)
+			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_Libretro();
 				filter = oac.SuggestedExtensionFilter;
 			}
-			else if (oac.Result == OpenAdvancedChooser.Command.ClassicLaunchGame)
+			else if (AdvancedLoader == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+			}
+			else if (AdvancedLoader == AdvancedRomLoaderType.MAMELaunchGame)
+			{
+				args.OpenAdvanced = new OpenAdvanced_MAME();
+				filter = "MAME Arcade ROMs (*.zip)|*.zip";
 			}
 			else
 			{

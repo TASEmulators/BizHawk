@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -171,7 +172,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool AsLibretro { get; set; }
+		public AdvancedRomLoaderType AdvancedLoader { get; set; }
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
@@ -268,8 +269,13 @@ namespace BizHawk.Client.Common
 				// only try mounting a file if a filename was given
 				if (!string.IsNullOrEmpty(path))
 				{
-					// lets not use this unless we need to
-					// file.NonArchiveExtensions = romExtensions;
+					// MAME uses these extensions for arcade ROMs, but also accepts all sorts of variations of archives, folders, and files. if we let archive loader handle this, it won't know where to stop, since it'd require MAME's ROM database (which contains ROM names and blob hashes) to look things up, and even then it might be confused by archive/folder structure
+					// so assume the user provides the proper ROM directly, and handle possible errors later
+					if (AdvancedLoader == AdvancedRomLoaderType.MAMELaunchGame)
+					{
+						file.NonArchiveExtensions = new[] { ".zip", ".7z" };
+					}
+
 					file.Open(path);
 
 					// if the provided file doesnt even exist, give up!
@@ -289,7 +295,7 @@ namespace BizHawk.Client.Common
 				{
 					string ext = null;
 
-					if (AsLibretro)
+					if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchGame)
 					{
 						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
 
@@ -1151,6 +1157,9 @@ namespace BizHawk.Client.Common
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+								break;
+							case "Arcade":
+								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName);
 								break;
 							case "GEN":
 								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
