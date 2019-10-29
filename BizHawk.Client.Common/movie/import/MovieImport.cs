@@ -42,23 +42,16 @@ namespace BizHawk.Client.Common
 		public static void ProcessMovieImport(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
 		{
 			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			string errorMsg;
-			string warningMsg;
-			var m = ImportFile(fn, out errorMsg, out warningMsg);
+			var m = ImportFile(fn, out var errorMsg, out var warningMsg);
 
 			if (!string.IsNullOrWhiteSpace(errorMsg))
 			{
 				conversionErrorCallback(errorMsg);
 			}
 
-			if (!string.IsNullOrWhiteSpace(warningMsg))
-			{
-				messageCallback(warningMsg);
-			}
-			else
-			{
-				messageCallback($"{Path.GetFileName(fn)} imported as {m.Filename}");
-			}
+			messageCallback(!string.IsNullOrWhiteSpace(warningMsg)
+				? warningMsg
+				: $"{Path.GetFileName(fn)} imported as {m.Filename}");
 
 			if (!Directory.Exists(d))
 			{
@@ -118,25 +111,15 @@ namespace BizHawk.Client.Common
 
 		private static IEnumerable<Type> ImportersForExtension(string ext)
 		{
-			var info = typeof(MovieImport).Module;
-			var importers = from t in info.GetTypes()
-			                where typeof(IMovieImport).IsAssignableFrom(t)
-			                   && TypeImportsExtension(t, ext)
-			                select t;
-
-			return importers;
+			return typeof(MovieImport).Module
+				.GetTypes()
+				.Where(t => typeof(IMovieImport).IsAssignableFrom(t));
 		}
 
 		private static bool TypeImportsExtension(Type t, string ext)
 		{
 			var attrs = (ImportExtensionAttribute[])t.GetCustomAttributes(typeof(ImportExtensionAttribute), inherit: false);
-
-			if (attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper()))
-			{
-				return true;
-			}
-
-			return false;
+			return attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper());
 		}
 
 		private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg)
@@ -252,9 +235,12 @@ namespace BizHawk.Client.Common
 
 		private static IController EmptyLmsvFrame(string line)
 		{
-			var emptyController = new SimpleController { Definition = new ControllerDefinition { Name = "SNES Controller" } };
-			emptyController["Reset"] = false;
-			emptyController["Power"] = false;
+			var emptyController = new SimpleController
+			{
+				Definition = new ControllerDefinition { Name = "SNES Controller" }
+				, ["Reset"] = false
+				, ["Power"] = false
+			};
 
 			string[] buttons = { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
 			string[] sections = line.Split('|');
@@ -263,9 +249,9 @@ namespace BizHawk.Client.Common
 				int player = section - 1; // We start with 1
 				string prefix = $"P{player} "; // "P1"
 
-				for (int button = 0; button < buttons.Length; button++)
+				foreach (var b in buttons)
 				{
-					emptyController[prefix + buttons[button]] = false;
+					emptyController[prefix + b] = false;
 				}
 			}
 
