@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -33,15 +30,15 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int RefreshRateConfig
 		{
-			get { return RefreshRate.Value; }
-			set { RefreshRate.Value = value; }
+			get => RefreshRate.Value;
+			set => RefreshRate.Value = value;
 		}
 
-		private bool _chrromview = false;
+		private bool _chrromview;
 		[ConfigPersist]
 		private bool ChrRomView
 		{
-			get { return _chrromview; }
+			get => _chrromview;
 			set { _chrromview = value; CalculateFormSize(); }
 		}
 
@@ -61,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		#region Public API
 
 		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return true; } }
+		public bool UpdateBefore => true;
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 		public void UpdateValues()
@@ -790,16 +787,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_ppu != null)
-			{
-				_ppu.RemoveCallback2();
-			}
+			_ppu?.RemoveCallback2();
 		}
 
 		#endregion
 
 		MemoryDomain CHRROM;
-		byte[] chrromcache = new byte[8192];
+		readonly byte[] chrromcache = new byte[8192];
 
 		private void cHRROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{

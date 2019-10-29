@@ -41,12 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? _value;
 		private int? _compare;
 
-		public int? Address { get { return _address; } }
-		public int? Value { get { return _value; } }
-		public int? Compare { get { return _compare; } }
-
 		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		public bool UpdateBefore => false;
+
 		public void Restart()
 		{
 			if (Emulator.SystemId != "NES")

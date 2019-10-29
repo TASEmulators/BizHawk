@@ -76,10 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
+			get => _readonly;
 
 			set
 			{
@@ -106,14 +103,11 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		// Size of the extra controls to the right / bottom of the target panel at 96 DPI
-		private Size PaddingSize
-		{
-			get { return new Size(0, 30); }
-		}
+		private Size PaddingSize => new Size(0, 30);
 
 		public Size TargetSize
 		{
-			get { return TargetPanel.Size; }
+			get => TargetPanel.Size;
 			set
 			{
 				TargetPanel.Size = value;
@@ -171,11 +165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get
-			{
-				return _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
-			}
-
+			get => _overrideX ?? (int)(Global.StickyXORAdapter.GetFloat(XName) / MultiplierX);
 			set
 			{
 				if (value < 0)
@@ -198,11 +188,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public int Y
 		{
-			get
-			{
-				return _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
-			}
-
+			get => _overrideY ?? (int)(Global.StickyXORAdapter.GetFloat(YName) / MultiplierY);
 			set
 			{
 				if (value < 0)

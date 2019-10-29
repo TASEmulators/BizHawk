@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -16,14 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int RefreshRateConfig
 		{
-			get
-			{
-				return RefreshRate.Value;
-			}
-			set
-			{
-				RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
-			}
+			get => RefreshRate.Value;
+			set => RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
 		}
 
 		private int _vdcType;
@@ -41,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		#region Public API
 
 		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return true; } }
+		public bool UpdateBefore => true;
 
 		public unsafe void Generate()
 		{

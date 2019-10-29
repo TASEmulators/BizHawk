@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
 
@@ -21,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int RefreshRateConfig
 		{
-			get { return RefreshRate.Value; }
-			set { RefreshRate.Value = value; }
+			get => RefreshRate.Value;
+			set => RefreshRate.Value = value;
 		}
 
 		int scanline;
@@ -40,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 		#region Public API
 
 		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return true; } }
+		public bool UpdateBefore => true;
 
 		public void Restart()
 		{
@@ -238,10 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_ppu != null)
-			{
-				_ppu.RemoveCallback1();
-			}
+			_ppu?.RemoveCallback1();
 		}
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)

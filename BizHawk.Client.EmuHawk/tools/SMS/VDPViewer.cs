@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		private SMS sms { get; set; }
-		private VDP vdp { get { return sms.Vdp; } }
+		private VDP vdp => sms.Vdp;
 
 		int palindex = 0;
 
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewBG.ChangeBitmapSize(256, 256);
 		}
 
-		unsafe static void Draw8x8(byte* src, int* dest, int pitch, int* pal)
+		static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 8;
 			dest -= inc;
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe static void Draw8x8hv(byte* src, int* dest, int pitch, int* pal, bool hflip, bool vflip)
+		static unsafe void Draw8x8hv(byte* src, int* dest, int pitch, int* pal, bool hflip, bool vflip)
 		{
 			int incx = hflip ? -1 : 1;
 			int incy = vflip ? -pitch : pitch;
@@ -169,10 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore
-		{
-			get { return true; }
-		}
+		public bool UpdateBefore => true;
 
 		private void bmpViewPalette_MouseClick(object sender, MouseEventArgs e)
 		{
