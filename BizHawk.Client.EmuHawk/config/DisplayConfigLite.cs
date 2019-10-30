@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Controls =
 						{
-							new Label { AutoSize = true, Text = "• Probably the best for older graphics cards\n• May cause issues with OpenGL-based cores (i.e. Mupen64Plus)" },
+							new AutosizedLabel("• Probably the best for older graphics cards\n• May cause issues with OpenGL-based cores (i.e. Mupen64Plus)"),
 							cbAlternateVsync,
 							new Label { Margin = indent, Size = new Size(320, 40), Text = Resources.GetString("lblD3DAltVSync.Text") }
 						},
@@ -125,9 +125,15 @@ namespace BizHawk.Client.EmuHawk
 						Size = new Size(392, 76)
 					},
 					rbOpenGL,
-					new Label { AutoSize = true, Margin = indent, Text = "• May have reduced performance or even malfunction on some systems\n• May have increased performance with OpenGL-based emulation cores (i.e. Mupen64Plus)" },
+					new AutosizedLabel("• May have reduced performance or even malfunction on some systems\n• May have increased performance with OpenGL-based emulation cores (i.e. Mupen64Plus)")
+					{
+						Margin = indent
+					},
 					rbGDIPlus,
-					new Label { AutoSize = true, Margin = indent, Text = "• Slow and missing features, kept in to maximise compatibility\n• Works better over MS' Remote Desktop Protocol" }
+					new AutosizedLabel("• Slow and missing features, kept in to maximise compatibility\n• Works better over MS' Remote Desktop Protocol")
+					{
+						Margin = indent
+					}
 				},
 				InnerFLP = { AutoSize = true, Padding = new Padding(3, 0, 3, 0) },
 				Size = new Size(480, 230)
@@ -151,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 						Controls =
 						{
 							grpDispMethodRadios,
-							new Label { AutoSize = true, Text = "Changes require restart of program to take effect.\n\nPlease note that, for now, Mupen64Plus will use OpenGL regardless of this setting." }
+							new AutosizedLabel("Changes require restart of program to take effect.\n\nPlease note that, for now, Mupen64Plus will use OpenGL regardless of this setting.")
 						},
 						Size = new Size(416, 304)
 					}
@@ -202,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 			return new FLPInGroupBox
 			{
 				Controls = {
-					new SingleRowFLP { Controls = { new Label { AutoSize = true, Text = "Frame:" }, lblFrameTypeWindowed } },
+					new SingleRowFLP { Controls = { new AutosizedLabel("Frame:"), lblFrameTypeWindowed } },
 					tbFrameSizeWindowed,
 					cbStatusBarWindowed,
 					cbCaptionWindowed,
@@ -424,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			rbUseRaw = new RadioButton { AutoSize = true, Text = "Use 1:1 pixel size (for crispness or debugging)", UseVisualStyleBackColor = true };
 
-			var lblNonSquareAR = new Label { AutoSize = true, Text = "Allowing pixel distortion (e.g. 2x1 pixels, for better AR fit):" };
+			var lblNonSquareAR = new AutosizedLabel("Allowing pixel distortion (e.g. 2x1 pixels, for better AR fit):");
 
 			rbUseSystem = new RadioButton { AutoSize = true, Text = "Use system's recommendation", UseVisualStyleBackColor = true };
 
@@ -433,7 +439,8 @@ namespace BizHawk.Client.EmuHawk
 			var textBoxSize = new Size(48, 19);
 			txtCustomARWidth = new TextBox { Size = textBoxSize };
 
-			var lblWHSeparator = new Label { AutoSize = true, Margin = new Padding(0, 5, 0, 0), Text = "x" };
+			var labelAlignment = new Padding(0, 5, 0, 0);
+			var lblWHSeparator = new AutosizedLabel("x") { Margin = labelAlignment };
 
 			txtCustomARHeight = new TextBox { Size = textBoxSize };
 
@@ -441,7 +448,7 @@ namespace BizHawk.Client.EmuHawk
 
 			txtCustomARX = new TextBox { Size = textBoxSize };
 
-			var lblXYSeparator = new Label { AutoSize = true, Margin = new Padding(0, 5, 0, 0), Text = ":" };
+			var lblXYSeparator = new AutosizedLabel(":") { Margin = labelAlignment };
 
 			txtCustomARY = new TextBox { Size = textBoxSize };
 
@@ -494,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SingleRowFLP CreateCropFLP(string labelText, Control textBox) => new SingleRowFLP
 			{
-				Controls = { new Label { Anchor = AnchorStyles.None, AutoSize = true, Text = labelText }, textBox },
+				Controls = { new AutosizedLabel(labelText) { Anchor = AnchorStyles.None }, textBox },
 				Margin = Padding.Empty
 			};
 			return new FLPInGroupBox
@@ -607,9 +614,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Controls =
 						{
-							new Label { Anchor = AnchorStyles.None, AutoSize = true, Text = "User Prescale:" },
+							new AutosizedLabel("User Prescale:") { Anchor = AnchorStyles.None },
 							nudPrescale,
-							new Label { Anchor = AnchorStyles.None, AutoSize = true, Text = "X" }
+							new AutosizedLabel("x") { Anchor = AnchorStyles.None }
 						},
 						Margin = new Padding(3, 0, 3, 0)
 					},
@@ -686,7 +693,10 @@ namespace BizHawk.Client.EmuHawk
 						Controls = {
 							grpDispFeatures,
 							cbNullHawkWhiteNoise,
-							new Label { AutoSize = true, Margin = new Padding(24, 0, 0, 0), Text = "Some people think the white noise is a great idea, and some people don't.\nDisabling this displays black instead." }
+							new AutosizedLabel("Some people think the white noise is a great idea, and some people don't.\nDisabling this displays black instead.")
+							{
+								Margin = new Padding(24, 0, 0, 0)
+							}
 						}
 					}
 				},

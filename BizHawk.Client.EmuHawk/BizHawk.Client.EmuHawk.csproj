@@ -242,9 +242,6 @@
     <Compile Include="config\AutofireConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\AutofireConfig.Designer.cs">
-      <DependentUpon>AutofireConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\ControllerConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -561,6 +558,7 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\AutosizedLabel.cs" />
     <Compile Include="CustomControls\ControlRenderer\GdiPlusRenderer.cs" />
     <Compile Include="CustomControls\ControlRenderer\IControlRenderer.cs" />
     <Compile Include="CustomControls\ExceptionBox.cs">

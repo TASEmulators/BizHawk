@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var flpRWFFW = new SingleColumnFLP
 			{
-				Controls = { new Label { AutoSize = true, Text = "RW/FFW" }, cbEnableRWFFW, tbRWFFW, nudRWFFW },
+				Controls = { new AutosizedLabel("RW/FFW"), cbEnableRWFFW, tbRWFFW, nudRWFFW },
 				Margin = Padding.Empty
 			};
 			cbEnableNormal.CheckedChanged += (sender, e) => flpRWFFW.Enabled = ((CheckBox) sender).Checked;
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				Controls = {
 					new SingleColumnFLP
 					{
-						Controls = { new Label { AutoSize = true, Text = "Normal" }, cbEnableNormal, tbNormal, nudNormal },
+						Controls = { new AutosizedLabel("Normal"), cbEnableNormal, tbNormal, nudNormal },
 						Margin = Padding.Empty
 					},
 					flpRWFFW
@@ -140,12 +140,13 @@ namespace BizHawk.Client.EmuHawk
 			var flpDeviceSelector = new SingleColumnFLP
 			{
 				AutoSize = false,
-				Controls = { new Label { AutoSize = true, Text = "Sound Device:" }, lbSoundDevices },
+				Controls = { new AutosizedLabel("Sound Device:"), lbSoundDevices },
 				Size = new Size(254, 112)
 			};
 
 			nudBufferSize = new NumericUpDown { Maximum = 250.0M, Minimum = 30.0M, Size = nudSize, Value = Global.Config.SoundBufferSizeMs };
 
+			var labelAlignment = new Padding(0, 5, 0, 0);
 			var flpRHS = new FlowLayoutPanel
 			{
 				AutoSize = true,
@@ -156,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 						Controls =
 						{
 							cbEnableMaster,
-							new Label { AutoSize = true, Margin = new Padding(24, 0, 0, 16), Text = "Controls whether cores\neven generate audio." },
+							new AutosizedLabel("Controls whether cores\neven generate audio.") { Margin = new Padding(24, 0, 0, 16) },
 							cbMuteFrameAdvance
 						}
 					},
@@ -166,9 +167,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Controls =
 						{
-							new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 0), Text = "Buffer Size:" },
+							new AutosizedLabel("Buffer Size:") { Margin = labelAlignment },
 							nudBufferSize,
-							new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 0), Text = "milliseconds" }
+							new AutosizedLabel("milliseconds") { Margin = labelAlignment }
 						}
 					}
 				}
