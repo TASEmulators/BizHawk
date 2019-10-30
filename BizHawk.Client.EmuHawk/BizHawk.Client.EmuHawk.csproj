@@ -269,9 +269,6 @@
     <Compile Include="config\DisplayConfigLite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\DisplayConfigLite.Designer.cs">
-      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\FileExtensionPreferences.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -575,6 +572,7 @@
     <Compile Include="CustomControls\ExceptionBox.designer.cs">
       <DependentUpon>ExceptionBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\FLPInGroupBox.cs" />
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -626,6 +624,9 @@
     <Compile Include="CustomControls\RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\SingleColumnFLP.cs" />
+    <Compile Include="CustomControls\SingleRowFLP.cs" />
+    <Compile Include="CustomControls\TLPInGroupBox.cs" />
     <Compile Include="CustomControls\TransparentTrackbar.cs">
       <SubType>Component</SubType>
     </Compile>
