@@ -1,153 +1,246 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SoundConfig : Form
+	public sealed class SoundConfig : Form
 	{
-		private bool _programmaticallyChangingValue;
+		private readonly CheckBox cbEnableNormal;
+		private readonly TrackBar tbNormal;
+		private readonly CheckBox cbEnableRWFFW;
+		private readonly TrackBar tbRWFFW;
+		private readonly CheckBox cbEnableMaster;
+		private readonly CheckBox cbMuteFrameAdvance;
+		private readonly RadioButton rbOutputMethodDirectSound;
+		private readonly RadioButton rbOutputMethodXAudio2;
+		private readonly RadioButton rbOutputMethodOpenAL;
+		private readonly ListBox lbSoundDevices;
+		private readonly NumericUpDown nudBufferSize;
 
 		public SoundConfig()
 		{
-			InitializeComponent();
-		}
-
-		private void SoundConfig_Load(object sender, EventArgs e)
-		{
-			_programmaticallyChangingValue = true;
-
-			cbEnableMaster.Checked = Global.Config.SoundEnabled;
-			cbEnableNormal.Checked = Global.Config.SoundEnabledNormal;
-			cbEnableRWFF.Checked = Global.Config.SoundEnabledRWFF;
-			cbMuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
-
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+			cbEnableNormal = new CheckBox { AutoSize = true, Text = "Enable", UseVisualStyleBackColor = true };
+			var trackBarSize = new Size(32, 160);
+			tbNormal = new TrackBar { LargeChange = 10, Maximum = 100, Orientation = Orientation.Vertical, Size = trackBarSize, TickFrequency = 10 };
+			var nudSize = new Size(48, 19);
+			var nudNormal = new NumericUpDown { Size = nudSize };
+			nudNormal.ValueChanged += (sender, e) =>
 			{
-				// Disable DirectSound and XAudio2 on Mono
-				rbOutputMethodDirectSound.Enabled = false;
-				rbOutputMethodXAudio2.Enabled = false;
-			}
-
-			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
-			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
-			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
-			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
-			tbNormal.Value = Global.Config.SoundVolume;
+				var newValue = (int) ((NumericUpDown) sender).Value;
+				tbNormal.Value = newValue;
+				cbEnableNormal.Checked = newValue != 0; // mute when set to 0% volume
+			};
+			tbNormal.Scroll += (sender, e) => nudNormal.Value = ((TrackBar) sender).Value;
 			nudNormal.Value = Global.Config.SoundVolume;
-			tbRWFF.Value = Global.Config.SoundVolumeRWFF;
-			nudRWFF.Value = Global.Config.SoundVolumeRWFF;
-			UpdateSoundDialog();
 
-			_programmaticallyChangingValue = false;
-		}
-
-		private void Ok_Click(object sender, EventArgs e)
-		{
-			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
+			cbEnableRWFFW = new CheckBox { AutoSize = true, Text = "Enable", UseVisualStyleBackColor = true };
+			tbRWFFW = new TrackBar { LargeChange = 10, Maximum = 100, Orientation = Orientation.Vertical, Size = trackBarSize, TickFrequency = 10 };
+			var nudRWFFW = new NumericUpDown { Size = nudSize };
+			nudRWFFW.ValueChanged += (sender, e) =>
 			{
-				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-			var oldOutputMethod = Global.Config.SoundOutputMethod;
-			var oldDevice = Global.Config.SoundDevice;
-			Global.Config.SoundEnabled = cbEnableMaster.Checked;
-			Global.Config.SoundEnabledNormal = cbEnableNormal.Checked;
-			Global.Config.SoundEnabledRWFF = cbEnableRWFF.Checked;
-			Global.Config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
-			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
-			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
-			if (rbOutputMethodOpenAL.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
-			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
-			Global.Config.SoundVolume = tbNormal.Value;
-			Global.Config.SoundVolumeRWFF = tbRWFF.Value;
-			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWin.Sound.StopSound();
-			if (Global.Config.SoundOutputMethod != oldOutputMethod
-				|| Global.Config.SoundDevice != oldDevice)
+				var newValue = (int) ((NumericUpDown) sender).Value;
+				tbRWFFW.Value = newValue;
+				cbEnableRWFFW.Checked = newValue != 0; // mute when set to 0% volume
+			};
+			tbRWFFW.Scroll += (sender, e) => nudRWFFW.Value = ((TrackBar) sender).Value;
+			nudRWFFW.Value = Global.Config.SoundVolumeRWFF;
+			cbEnableRWFFW.Checked = Global.Config.SoundEnabledRWFF;
+
+			var flpRWFFW = new SingleColumnFLP
 			{
-				GlobalWin.Sound.Dispose();
-				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
-			}
+				Controls = { new Label { AutoSize = true, Text = "RW/FFW" }, cbEnableRWFFW, tbRWFFW, nudRWFFW },
+				Margin = Padding.Empty
+			};
+			cbEnableNormal.CheckedChanged += (sender, e) => flpRWFFW.Enabled = ((CheckBox) sender).Checked;
+			cbEnableNormal.Checked = Global.Config.SoundEnabledNormal;
 
-			GlobalWin.Sound.StartSound();
-			GlobalWin.OSD.AddMessage("Sound settings saved");
-			DialogResult = DialogResult.OK;
-		}
-
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			GlobalWin.OSD.AddMessage("Sound config aborted");
-			Close();
-		}
-
-		private void PopulateDeviceList()
-		{
-			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			var grpSoundVol = new FLPInGroupBox
 			{
-				if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
-				if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
-			}
-			if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
+				Controls = {
+					new SingleColumnFLP
+					{
+						Controls = { new Label { AutoSize = true, Text = "Normal" }, cbEnableNormal, tbNormal, nudNormal },
+						Margin = Padding.Empty
+					},
+					flpRWFFW
+				},
+				InnerFLP = { FlowDirection = FlowDirection.LeftToRight },
+				Size = new Size(124, 248),
+				Text = "Volume"
+			};
 
-			listBoxSoundDevices.Items.Clear();
-			listBoxSoundDevices.Items.Add("<default>");
-			listBoxSoundDevices.SelectedIndex = 0;
-			foreach (var name in deviceNames)
+			cbEnableMaster = new CheckBox { AutoSize = true, Text = "Master sound toggle", UseVisualStyleBackColor = true };
+			cbMuteFrameAdvance = new CheckBox
 			{
-				listBoxSoundDevices.Items.Add(name);
-				if (name == Global.Config.SoundDevice)
+				AutoSize = true,
+				Checked = Global.Config.MuteFrameAdvance,
+				Text = "Mute Frame Advance",
+				UseVisualStyleBackColor = true
+			};
+			cbEnableMaster.CheckedChanged += (sender, e) => grpSoundVol.Enabled = ((CheckBox) sender).Checked;
+			cbEnableMaster.Checked = Global.Config.SoundEnabled;
+
+			var onWindows = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows;
+			rbOutputMethodDirectSound = new RadioButton { AutoSize = true, Enabled = onWindows, Text = "DirectSound", UseVisualStyleBackColor = true };
+			rbOutputMethodXAudio2 = new RadioButton { AutoSize = true, Enabled = onWindows, Text = "XAudio2", UseVisualStyleBackColor = true };
+			rbOutputMethodOpenAL = new RadioButton { AutoSize = true, Text = "OpenAL", UseVisualStyleBackColor = true };
+			lbSoundDevices = new ListBox { FormattingEnabled = true, Size = new Size(224, 96) };
+			void UpdateDeviceList(object sender, EventArgs e)
+			{
+				if ((sender as RadioButton)?.Checked == false) return; // only update for the radio button just clicked, or once in the constructor
+
+				IEnumerable<string> deviceNames;
+				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 				{
-					listBoxSoundDevices.SelectedItem = name;
+					if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
+					else if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+					else if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
+					else deviceNames = Enumerable.Empty<string>(); // never hit
+				}
+				else
+				{
+					deviceNames = OpenALSoundOutput.GetDeviceNames();
+				}
+				lbSoundDevices.Items.Clear();
+				lbSoundDevices.Items.Add("<default>");
+				var i = 1;
+				foreach (var name in deviceNames)
+				{
+					lbSoundDevices.Items.Add(name);
+					if (name == Global.Config.SoundDevice) lbSoundDevices.SelectedIndex = i;
+					i++;
 				}
 			}
-		}
-
-		private void OutputMethodRadioButtons_CheckedChanged(object sender, EventArgs e)
-		{
-			if (!((RadioButton)sender).Checked)
+			rbOutputMethodDirectSound.CheckedChanged += UpdateDeviceList;
+			rbOutputMethodXAudio2.CheckedChanged += UpdateDeviceList;
+			rbOutputMethodOpenAL.CheckedChanged += UpdateDeviceList;
+			var checkedRadio = Global.Config.SoundOutputMethod switch
 			{
-				return;
-			}
+				Config.ESoundOutputMethod.DirectSound => rbOutputMethodDirectSound,
+				Config.ESoundOutputMethod.XAudio2 => rbOutputMethodXAudio2,
+				Config.ESoundOutputMethod.OpenAL => rbOutputMethodOpenAL,
+				_ => null
+			};
+			if (checkedRadio != null) checkedRadio.Checked = true;
 
-			PopulateDeviceList();
-		}
-
-		private void TrackBar1_Scroll(object sender, EventArgs e)
-		{
-			nudNormal.Value = tbNormal.Value;
-		}
-
-		private void TbRwff_Scroll(object sender, EventArgs e)
-		{
-			nudRWFF.Value = tbRWFF.Value;
-		}
-
-		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			tbNormal.Value = (int)nudNormal.Value;
-
-			// If the user is changing the volume, automatically turn on/off sound accordingly
-			if (!_programmaticallyChangingValue)
+			var grpOutputMethod = new FLPInGroupBox
 			{
-				cbEnableNormal.Checked = tbNormal.Value != 0;
-			}
+				Controls = { rbOutputMethodDirectSound, rbOutputMethodXAudio2, rbOutputMethodOpenAL },
+				Size = new Size(88, 84),
+				Text = "Output Method"
+			};
+
+			var flpDeviceSelector = new SingleColumnFLP
+			{
+				AutoSize = false,
+				Controls = { new Label { AutoSize = true, Text = "Sound Device:" }, lbSoundDevices },
+				Size = new Size(254, 112)
+			};
+
+			nudBufferSize = new NumericUpDown { Maximum = 250.0M, Minimum = 30.0M, Size = nudSize, Value = Global.Config.SoundBufferSizeMs };
+
+			var flpRHS = new FlowLayoutPanel
+			{
+				AutoSize = true,
+				Controls =
+				{
+					new SingleColumnFLP
+					{
+						Controls =
+						{
+							cbEnableMaster,
+							new Label { AutoSize = true, Margin = new Padding(24, 0, 0, 16), Text = "Controls whether cores\neven generate audio." },
+							cbMuteFrameAdvance
+						}
+					},
+					grpOutputMethod,
+					flpDeviceSelector,
+					new SingleRowFLP
+					{
+						Controls =
+						{
+							new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 0), Text = "Buffer Size:" },
+							nudBufferSize,
+							new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 0), Text = "milliseconds" }
+						}
+					}
+				}
+			};
+			flpRHS.SetFlowBreak(grpOutputMethod, true);
+			flpRHS.SetFlowBreak(flpDeviceSelector, true);
+
+			var btnOk = new Button { Text = "&OK", UseVisualStyleBackColor = true };
+			btnOk.Click += (sender, e) =>
+			{
+				if (rbOutputMethodDirectSound.Checked && nudBufferSize.Value < 60.0M)
+				{
+					MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+
+				var oldOutputMethod = Global.Config.SoundOutputMethod;
+				var oldDevice = Global.Config.SoundDevice;
+
+				SaveControlsTo(Global.Config);
+
+				GlobalWin.Sound.StopSound();
+				if (Global.Config.SoundOutputMethod != oldOutputMethod || Global.Config.SoundDevice != oldDevice)
+				{
+					GlobalWin.Sound.Dispose();
+					GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
+				}
+				GlobalWin.Sound.StartSound();
+
+				GlobalWin.OSD.AddMessage("Sound settings saved");
+				DialogResult = DialogResult.OK;
+			};
+
+			var btnCancel = new Button { Text = "&Cancel", UseVisualStyleBackColor = true };
+			btnCancel.Click += (sender, e) =>
+			{
+				GlobalWin.OSD.AddMessage("Sound config aborted");
+				Close();
+			};
+
+			SuspendLayout();
+			AcceptButton = btnOk;
+			AutoScaleDimensions = new SizeF(6F, 13F);
+			AutoScaleMode = AutoScaleMode.Font;
+			CancelButton = btnCancel;
+			ClientSize = new Size(372, 276);
+			Controls.AddRange(new Control[]
+			{
+				new SingleRowFLP { Controls = { btnOk, btnCancel }, Location = new Point(208, 244) },
+				new SingleRowFLP { Controls = { grpSoundVol, flpRHS }, Location = new Point(4, 0) }
+			});
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Name = "SoundConfig";
+			ShowIcon = false;
+			StartPosition = FormStartPosition.CenterParent;
+			Text = "Sound Configuration";
+			ResumeLayout();
 		}
 
-		private void UpdateSoundDialog()
+		private void SaveControlsTo(Config config)
 		{
-			cbEnableRWFF.Enabled = cbEnableNormal.Checked;
-			grpSoundVol.Enabled = cbEnableMaster.Checked;
-		}
-
-		private void UpdateSoundDialog(object sender, EventArgs e)
-		{
-			UpdateSoundDialog();
+			config.SoundEnabledNormal = cbEnableNormal.Checked;
+			config.SoundVolume = tbNormal.Value;
+			config.SoundEnabledRWFF = cbEnableRWFFW.Checked;
+			config.SoundVolumeRWFF = tbRWFFW.Value;
+			config.SoundEnabled = cbEnableMaster.Checked;
+			config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
+			if (rbOutputMethodDirectSound.Checked) config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
+			else if (rbOutputMethodXAudio2.Checked) config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
+			else if (rbOutputMethodOpenAL.Checked) config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
+			config.SoundDevice = (string) lbSoundDevices.SelectedItem ?? "<default>";
+			config.SoundBufferSizeMs = (int) nudBufferSize.Value;
 		}
 	}
 }

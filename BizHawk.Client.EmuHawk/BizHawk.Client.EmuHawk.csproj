@@ -519,9 +519,6 @@
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\SoundConfig.Designer.cs">
-      <DependentUpon>SoundConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\TI83\TI83PaletteConfig.cs">
       <SubType>Form</SubType>
     </Compile>
