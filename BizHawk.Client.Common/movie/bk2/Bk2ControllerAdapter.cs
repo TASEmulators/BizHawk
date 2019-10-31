@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			{
 				var def = Global.Emulator.ControllerDefinition;
 				var trimmed = mnemonic.Replace("|", "");
-				var buttons = Definition.ControlsOrdered.SelectMany(c => c).ToList();
+				var buttons = Definition.ControlsOrdered.SelectMany(c => c);
 				var iterator = 0;
 
 				foreach (var key in buttons)

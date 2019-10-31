@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		{
 			InitializeComponent();
 
+			this.ControlBox = false; // Do not set in designer (causes problems with auto scaling)
 			this.messageLbl.Text = message;
 			this.Text = title;
 			this.m_sysIcon = icon;
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetMessageToAutoSize()
 		{
 			this.messageLbl.AutoSize = true;
-			this.messageLbl.MaximumSize = new Size(this.MaximumSize.Width - this.m_sysIcon.Width - 25, this.MaximumSize.Height);
+			this.messageLbl.MaximumSize = new Size(this.MaximumSize.Width - this.m_sysIcon.Width - UIHelper.ScaleX(25), this.MaximumSize.Height);
 		}
 
 		/// <summary>
@@ -220,11 +221,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		}
 
-		const int FORM_Y_MARGIN = 10;
-		const int FORM_X_MARGIN = 16;
-		const int BUTTON_SPACE = 5;
-		const int CHECKBOX_SPACE = 15;
-		const int TEXT_Y_MARGIN = 30;
+		private static readonly int FORM_Y_MARGIN = UIHelper.ScaleY(10);
+		private static readonly int FORM_X_MARGIN = UIHelper.ScaleX(16);
+		private static readonly int BUTTON_SPACE = UIHelper.ScaleX(5);
+		private static readonly int CHECKBOX_SPACE = UIHelper.ScaleX(15);
+		private static readonly int TEXT_Y_MARGIN = UIHelper.ScaleY(30);
 
 		/// <summary>
 		/// Auto fits the dialog box to fit the text and the buttons.

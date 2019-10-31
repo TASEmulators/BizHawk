@@ -253,17 +253,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void RegisterSymbols()
 		{
-			var symbols = ((ISymbolTable)_elf.GetSection(".symtab"))
-			.Entries
-			.Cast<SymbolEntry<long>>();
+			_symlist = ((ISymbolTable) _elf.GetSection(".symtab")).Entries
+				.Cast<SymbolEntry<long>>()
+				.ToList();
 
 			// when there are duplicate names, don't register either in the dictionary
-			_symdict = symbols
-			.GroupBy(e => e.Name)
-			.Where(g => g.Count() == 1)
-			.ToDictionary(g => g.Key, g => g.First());
-
-			_symlist = symbols.ToList();
+			_symdict = _symlist
+				.GroupBy(e => e.Name)
+				.Where(g => g.Count() == 1)
+				.ToDictionary(g => g.Key, g => g.First());
 		}
 
 		public void Seal()

@@ -49,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 			SaveWindowPositionCheckbox.Checked = Global.Config.SaveWindowPosition;
 			RunInBackgroundCheckbox.Checked = Global.Config.RunInBackground;
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
+			AcceptBackgroundInputControllerOnlyCheckBox.Checked = Global.Config.AcceptBackgroundInputControllerOnly;
+			HandleAlternateKeyboardLayoutsCheckBox.Checked = Global.Config.HandleAlternateKeyboardLayouts;
 			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
 			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
 
@@ -83,6 +85,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
 			Global.Config.RunInBackground = RunInBackgroundCheckbox.Checked;
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
+			Global.Config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
+			Global.Config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
 			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
 			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 
@@ -111,6 +115,11 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 			DialogResult = DialogResult.Cancel;
 			GlobalWin.OSD.AddMessage("Customizing aborted.");
+		}
+
+		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
+		{
+			AcceptBackgroundInputControllerOnlyCheckBox.Enabled = AcceptBackgroundInputCheckbox.Checked;
 		}
 
 		private void AutosaveSRAMCheckbox_CheckedChanged(object sender, EventArgs e)

@@ -14,8 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: when binding, make sure that the new key combo is not in one of the other bindings
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
-	
-		private string _wasPressed = "";
+
+		private Input.InputEvent _lastPress;
 
 		public InputCompositeWidget CompositeWidget { get; set; }
 
@@ -88,9 +88,9 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnEnter(EventArgs e)
 		{
+			Input.Instance.ClearEvents();
+			_lastPress = null;
 			_timer.Start();
-
-			_wasPressed = Input.Instance.GetNextBindEvent();
 			BackColor = Color.FromArgb(unchecked((int)0xFFC0FFFF)); // Color.LightCyan is too light on Windows 8, this is a bit darker
 		}
 
@@ -100,6 +100,12 @@ namespace BizHawk.Client.EmuHawk
 			UpdateLabel();
 			BackColor = SystemColors.Window;
 			base.OnLeave(e);
+		}
+
+		protected override void OnHandleDestroyed(EventArgs e)
+		{
+			_timer.Stop();
+			base.OnHandleDestroyed(e);
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
@@ -129,11 +135,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ReadKeys()
 		{
 			Input.Instance.Update();
-			var bindingStr = Input.Instance.GetNextBindEvent();
-			if (!string.IsNullOrEmpty(_wasPressed) && bindingStr == _wasPressed)
-			{
-				return;
-			}
+			var bindingStr = Input.Instance.GetNextBindEvent(ref _lastPress);
 			
 			if (bindingStr != null)
 			{
@@ -171,7 +173,6 @@ namespace BizHawk.Client.EmuHawk
 					_bindings.Add(bindingStr);
 				}
 				
-				_wasPressed = bindingStr;
 				UpdateLabel();
 				Increment();
 			}
@@ -188,8 +189,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				base.OnKeyUp(e);
 			}
-
-			_wasPressed = "";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

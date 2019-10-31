@@ -43,16 +43,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (CanDisassemble)
 			{
-				DisassemblerView.BlazingFast = true;
 				Disassemble();
 				SetDisassemblerItemCount();
-				DisassemblerView.BlazingFast = false;
 			}
 		}
 		
 		private void Disassemble()
 		{
-			int lineCount = DisassemblerView.NumberOfVisibleRows;
+			int lineCount = DisassemblerView.RowCount + 2;
 
 			_disassemblyLines.Clear();
 			uint a = _currentDisassemblerAddress;
@@ -69,24 +67,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DisassemblerView_QueryItemText(int index, int column, out string text)
+		private void DisassemblerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
 			if (index < _disassemblyLines.Count)
 			{
-				if (column == 0)
+				if (column.Name == AddressColumnName)
 				{
 					text = _disassemblyLines[index].Address.ToHexString(_pcRegisterSize);
 				}
-				else if (column == 1)
+				else if (column.Name == InstructionColumnName)
 				{
 					text = _disassemblyLines[index].Mnemonic;
 				}
 			}
 		}
 
-		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
+		private void DisassemblerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (_disassemblyLines.Any() && index < _disassemblyLines.Count)
 			{
@@ -97,9 +95,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
 		private void DecrementCurrentAddress()
 		{
+			if (_currentDisassemblerAddress == 0)
+			{
+				return;
+			}
+
 			uint newaddress = _currentDisassemblerAddress;
+			
 			while (true)
 			{
 				int bytestoadvance;
@@ -137,51 +142,44 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DisassemblerView_Scroll(object sender, ScrollEventArgs e)
+
+		private bool _blockScroll;
+		private void DisassemblerView_Scroll(object sender, EventArgs e)
 		{
-			if (e.Type == ScrollEventType.SmallIncrement)
+			// This is really really gross, but it works
+			if (_blockScroll)
 			{
-				SmallIncrement();
+				return;
 			}
 
-			if (e.Type == ScrollEventType.SmallDecrement)
+			var scrollBar = sender as ScrollBar;
+			if (scrollBar != null)
 			{
-				SmallDecrement();
-			}
-		}
+				if (scrollBar.Value > 0)
+				{
+					SmallIncrement();
 
-		private void DisassemblerView_Wheel(object sender, MouseEventArgs e)
-		{
-			if (e.Delta > 0)
-			{
-				SmallDecrement();
-			}
-			if (e.Delta > 120)
-			{
-				SmallDecrement();
-			}
-			if (e.Delta > 240)
-			{
-				SmallDecrement();
-			}
+					_blockScroll = true;
+					scrollBar.Value = 14;
+					_blockScroll = false;
+				}
+				else
+				{
+					SmallDecrement();
 
-			if (e.Delta < 0)
-			{
-				SmallIncrement();		
-			}
-			if (e.Delta < -120)
-			{
-				SmallIncrement();
-			}
-			if (e.Delta < -240)
-			{
-				SmallIncrement();
+					if (_currentDisassemblerAddress != 0)
+					{
+						_blockScroll = true;
+						scrollBar.Value = 14;
+						_blockScroll = false;
+					}
+				}
 			}
 		}
 
 		private void SetDisassemblerItemCount()
 		{
-			DisassemblerView.ItemCount = DisassemblerView.NumberOfVisibleRows + 1;
+			DisassemblerView.RowCount = DisassemblerView.VisibleRows + 2;
 		}
 
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
@@ -225,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopySelectedDisassembler()
 		{
-			var indices = DisassemblerView.SelectedIndices;
+			var indices = DisassemblerView.SelectedRows.ToList();
 
 			if (indices.Count > 0)
 			{
@@ -256,12 +254,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
 		{
-			AddBreakpointContextMenuItem.Enabled = DisassemblerView.SelectedIndices.Count > 0;
+			AddBreakpointContextMenuItem.Enabled = DisassemblerView.SelectedRows.Any();
 		}
 
 		private void AddBreakpointContextMenuItem_Click(object sender, EventArgs e)
 		{
-			var indices = DisassemblerView.SelectedIndices;
+			var indices = DisassemblerView.SelectedRows.ToList();
 
 			if (indices.Count > 0)
 			{

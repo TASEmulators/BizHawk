@@ -49,7 +49,7 @@
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StopOnFrameCheckbox = new System.Windows.Forms.CheckBox();
 			this.StopOnFrameTextBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.MovieView = new BizHawk.Client.EmuHawk.VirtualListView();
+			this.MovieView = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -269,7 +269,6 @@
 			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.MovieView.BlazingFast = false;
 			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -279,16 +278,13 @@
 			this.MovieView.FullRowSelect = true;
 			this.MovieView.GridLines = true;
 			this.MovieView.HideSelection = false;
-			this.MovieView.ItemCount = 0;
+			this.MovieView.VirtualListSize = 0;
 			this.MovieView.Location = new System.Drawing.Point(12, 28);
 			this.MovieView.MultiSelect = false;
 			this.MovieView.Name = "MovieView";
-			this.MovieView.SelectAllInProgress = false;
-			this.MovieView.selectedItem = -1;
 			this.MovieView.Size = new System.Drawing.Size(480, 322);
 			this.MovieView.TabIndex = 5;
 			this.MovieView.UseCompatibleStateImageBehavior = false;
-			this.MovieView.UseCustomBackground = true;
 			this.MovieView.View = System.Windows.Forms.View.Details;
 			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
 			this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
@@ -381,7 +377,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button BrowseMovies;
-		private VirtualListView MovieView;
+		private  System.Windows.Forms.ListView MovieView;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.ColumnHeader columnHeader3;

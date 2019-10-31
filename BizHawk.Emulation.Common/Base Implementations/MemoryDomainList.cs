@@ -24,13 +24,7 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 
-		public MemoryDomain this[string name]
-		{
-			get
-			{
-				return this.FirstOrDefault(x => x.Name == name);
-			}
-		}
+		public MemoryDomain this[string name] => this.FirstOrDefault(x => x.Name == name);
 
 		public MemoryDomain MainMemory
 		{
@@ -44,24 +38,10 @@ namespace BizHawk.Emulation.Common
 				return this.First();
 			}
 
-			set
-			{
-				_mainMemory = value;
-			}
+			set => _mainMemory = value;
 		}
 
-		public bool HasSystemBus
-		{
-			get
-			{
-				if (_systemBus != null)
-				{
-					return true;
-				}
-
-				return this.Any(x => x.Name == "System Bus");
-			}
-		}
+		public bool HasSystemBus => _systemBus != null || this.Any(x => x.Name == "System Bus");
 
 		public MemoryDomain SystemBus
 		{
@@ -82,10 +62,7 @@ namespace BizHawk.Emulation.Common
 				return MainMemory;
 			}
 
-			set
-			{
-				_systemBus = value;
-			}
+			set => _systemBus = value;
 		}
 
 		/// <summary>
@@ -96,8 +73,7 @@ namespace BizHawk.Emulation.Common
 			var domains = this.ToDictionary(m => m.Name);
 			foreach (var src in other)
 			{
-				MemoryDomain dst;
-				if (domains.TryGetValue(src.Name, out dst))
+				if (domains.TryGetValue(src.Name, out var dst))
 				{
 					TryMerge<MemoryDomainByteArray>(dst, src, (d, s) => d.Data = s.Data);
 					TryMerge<MemoryDomainIntPtr>(dst, src, (d, s) => d.Data = s.Data);

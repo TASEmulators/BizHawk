@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using System.Windows;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -31,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 			manualTheta.ValueChanged += PolarNumeric_Changed;
 		}
 
-		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
-		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
+		public float[] RangeX = { -128f, 0.0f, 127f };
+		public float[] RangeY = { -128f, 0.0f, 127f };
 		private bool ReverseX;
 		private bool ReverseY;
 
@@ -112,10 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
+			get => _readonly;
 
 			set
 			{

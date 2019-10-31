@@ -342,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0x20: mapper = new MapperMBC6();		mppr = "MBC6";							break;
 				case 0x22: mapper = new MapperMBC7();		mppr = "MBC7";		has_bat = true;		break;
 				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";							break;
-				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";							break;
+				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";		has_bat = true;		break;
 				case 0xFE: mapper = new MapperHuC3();		mppr = "HuC3";							break;
 				case 0xFF: mapper = new MapperHuC1();		mppr = "HuC1";							break;
 
@@ -453,6 +453,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				has_bat = true;
 			}
 
+			// TAMA5 has 0x1000 bytes of RAM, regardless of any header info
+			if (mppr == "TAMA5")
+			{
+				cart_RAM = new byte[0x20];
+				has_bat = true;
+			}
+
 			mapper.Core = this;
 			mapper.Initialize();
 
@@ -466,32 +473,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			
-			// Extra RTC initialization for mbc3
+			// Extra RTC initialization for mbc3, HuC3, and TAMA5
 			if (mppr == "MBC3")
 			{
 				Use_MT = true;
+
+				mapper.RTC_Get(_syncSettings.RTCOffset, 5);
+
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);
 
-				mapper.RTC_Get((byte)days_upper, 4);
-				mapper.RTC_Get((byte)(days & 0xFF), 3);
+				mapper.RTC_Get(days_upper, 4);
+				mapper.RTC_Get(days & 0xFF, 3);
 
 				int remaining = _syncSettings.RTCInitialTime - (days * 86400);
 
 				int hours = (int)Math.Floor(remaining / 3600.0);
 
-				mapper.RTC_Get((byte)(hours & 0xFF), 2);
+				mapper.RTC_Get(hours & 0xFF, 2);
 
 				remaining = remaining - (hours * 3600);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 
-				mapper.RTC_Get((byte)(minutes & 0xFF), 1);
+				mapper.RTC_Get(minutes & 0xFF, 1);
 
 				remaining = remaining - (minutes * 60);
 
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(remaining & 0xFF, 0);
 			}
 
 			if (mppr == "HuC3")
@@ -500,23 +510,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				int years = (int)Math.Floor(_syncSettings.RTCInitialTime / 31536000.0);
 
-				mapper.RTC_Get((byte)years, 24);
+				mapper.RTC_Get(years, 24);
 
 				int remaining = _syncSettings.RTCInitialTime - (years * 31536000);
 
 				int days = (int)Math.Floor(remaining / 86400.0);
 				int days_upper = (days >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)days_upper, 20);
-				mapper.RTC_Get((byte)(days & 0xFF), 12);
+				mapper.RTC_Get(days_upper, 20);
+				mapper.RTC_Get(days & 0xFF, 12);
 
 				remaining = remaining - (days * 86400);
 
 				int minutes = (int)Math.Floor(remaining / 60.0);
 				int minutes_upper = (minutes >> 8) & 0xF;
 
-				mapper.RTC_Get((byte)(minutes_upper), 8);
-				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+				mapper.RTC_Get(minutes_upper, 8);
+				mapper.RTC_Get(remaining & 0xFF, 0);
+			}
+
+			if (mppr == "TAMA5")
+			{
+				Use_MT = true;
+
+				// currently no date / time input for TAMA5
 			}
 		}
 	}

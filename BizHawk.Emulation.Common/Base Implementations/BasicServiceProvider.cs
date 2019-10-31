@@ -66,8 +66,7 @@ namespace BizHawk.Emulation.Common
 
 		public object GetService(Type t)
 		{
-			object service;
-			if (_services.TryGetValue(t, out service))
+			if (_services.TryGetValue(t, out var service))
 			{
 				return service;
 			}
@@ -86,12 +85,6 @@ namespace BizHawk.Emulation.Common
 			return _services.ContainsKey(t);
 		}
 
-		public IEnumerable<Type> AvailableServices
-		{
-			get
-			{
-				return _services.Select(d => d.Key);
-			}
-		}
+		public IEnumerable<Type> AvailableServices =>_services.Select(d => d.Key);
 	}
 }

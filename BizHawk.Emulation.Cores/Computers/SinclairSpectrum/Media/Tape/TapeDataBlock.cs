@@ -153,12 +153,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void SetDataPeriodsArray(int[] periodArray)
         {
-            DataPeriods = new List<int>();
-
-            if (periodArray == null)
-                return;
-
-            DataPeriods = periodArray.ToList();
+            DataPeriods = periodArray?.ToList() ?? new List<int>();
         }
 
         /// <summary>

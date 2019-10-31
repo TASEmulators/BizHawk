@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -127,6 +128,7 @@
     <Compile Include="config\ConfigPersistAttribute.cs" />
     <Compile Include="config\ConfigService.cs" />
     <Compile Include="config\PathEntry.cs" />
+    <Compile Include="config\RestoreDefaultsAttribute.cs" />
     <Compile Include="config\ToolDialogSettings.cs" />
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />

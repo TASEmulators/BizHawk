@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
 		public const ushort INT_GET = 44;
 		public const ushort HALT_CHK = 45; // when in halt mode, actually check I Flag here
+		public const ushort IRQ_CLEAR = 46;
 
 		public LR35902()
 		{
@@ -311,13 +312,12 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							if (!Halt_bug_3)
 							{
 								INTERRUPT_GBC_NOP();
-								//INTERRUPT_();
 							}
 							else
 							{
 								INTERRUPT_();
 								Halt_bug_3 = false;
-								Console.WriteLine("Hit INT");
+								//Console.WriteLine("Hit INT");
 							}
 						}
 						else
@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
 								Halt_bug_3 = false;
-								Console.WriteLine("Hit un");
+								//Console.WriteLine("Hit un");
 							}
 							else
 							{
@@ -520,15 +520,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case INT_GET:
 					// check if any interrupts got cancelled along the way
 					// interrupt src = 5 sets the PC to zero as observed
+					// also the triggering interrupt seems like it is held low (i.e. annot trigger I flag) until the interrupt is serviced
 
-					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
-					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
-					else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
-					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
-					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
-					else { int_src = 5; }
-						
-					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; int_clear = 1; }
+					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; int_clear = 2; }
+					else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; int_clear = 4; }
+					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; int_clear = 8; }
+					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; int_clear = 16; }
+					else { int_src = 5; int_clear = 0; }
 
 					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];
 					break;
@@ -538,11 +537,17 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					{
 						RegPC--;
 						Halt_bug_3 = true;
-						Console.WriteLine("Halt_bug_3");
-						Console.WriteLine(TotalExecutedCycles);
+						//Console.WriteLine("Halt_bug_3");
+						//Console.WriteLine(TotalExecutedCycles);
 					}
 					
 					Halt_bug_2 = false;
+					break;
+				case IRQ_CLEAR:
+					if (interrupt_src.Bit(int_src)) { interrupt_src -= int_clear; }
+
+					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+
 					break;
 			}
 			TotalExecutedCycles++;
@@ -591,23 +596,24 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		{
 			ser.BeginSection(nameof(LR35902));
 			ser.Sync(nameof(Regs), ref Regs, false);
-			ser.Sync("IRQ", ref interrupts_enabled);
+			ser.Sync(nameof(interrupts_enabled), ref interrupts_enabled);
 			ser.Sync(nameof(I_use), ref I_use);
 			ser.Sync(nameof(skip_once), ref skip_once);
 			ser.Sync(nameof(Halt_bug_2), ref Halt_bug_2);
 			ser.Sync(nameof(Halt_bug_3), ref Halt_bug_3);
-			ser.Sync("Halted", ref halted);
+			ser.Sync(nameof(halted), ref halted);
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 			ser.Sync(nameof(EI_pending), ref EI_pending);
 			ser.Sync(nameof(int_src), ref int_src);
+			ser.Sync(nameof(int_clear), ref int_clear);
 			ser.Sync(nameof(stop_time), ref stop_time);
 			ser.Sync(nameof(stop_check), ref stop_check);
 			ser.Sync(nameof(is_GBC), ref is_GBC);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
-			ser.Sync("CB Prefix", ref CB_prefix);
-			ser.Sync("Stopped", ref stopped);
+			ser.Sync(nameof(CB_prefix), ref CB_prefix);
+			ser.Sync(nameof(stopped), ref stopped);
 			ser.Sync(nameof(opcode), ref opcode);
 			ser.Sync(nameof(jammed), ref jammed);
 			ser.Sync(nameof(LY), ref LY);

@@ -142,6 +142,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				set { _RTCInitialTime_D = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
 
+			[DisplayName("RTC Offset A")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_A
+			{
+				get { return _RTCOffset_A; }
+				set { _RTCOffset_A = Math.Max(-127, Math.Min(127, value)); }
+			}
+
+			[DisplayName("RTC Offset B")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_B
+			{
+				get { return _RTCOffset_B; }
+				set { _RTCOffset_B = Math.Max(-127, Math.Min(127, value)); }
+			}
+
+			[DisplayName("RTC Offset C")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_C
+			{
+				get { return _RTCOffset_C; }
+				set { _RTCOffset_C = Math.Max(-127, Math.Min(127, value)); }
+			}
+
+			[DisplayName("RTC Offset D")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_D
+			{
+				get { return _RTCOffset_D; }
+				set { _RTCOffset_D = Math.Max(-127, Math.Min(127, value)); }
+			}
+
 			[DisplayName("Timer Div Initial Time A")]
 			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
 			[DefaultValue(8)]
@@ -185,13 +221,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 
 			[JsonIgnore]
 			private int _RTCInitialTime_A;
+			[JsonIgnore]
 			private int _RTCInitialTime_B;
+			[JsonIgnore]
 			private int _RTCInitialTime_C;
+			[JsonIgnore]
 			private int _RTCInitialTime_D;
 			[JsonIgnore]
+			private int _RTCOffset_A;
+			[JsonIgnore]
+			private int _RTCOffset_B;
+			[JsonIgnore]
+			private int _RTCOffset_C;
+			[JsonIgnore]
+			private int _RTCOffset_D;
+			[JsonIgnore]
 			public ushort _DivInitialTime_A = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_B = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_C = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_D = 8;
 
 			public GBLink4xSyncSettings Clone()

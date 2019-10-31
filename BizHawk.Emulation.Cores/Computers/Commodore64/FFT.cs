@@ -6,7 +6,6 @@
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-
 	public class RealFFT
 	{
 		private readonly int _length;
@@ -15,12 +14,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public readonly double ForwardScaleFactor;
 		public readonly double ReverseScaleFactor;
+		public readonly double CorrectionScaleFactor;
 
 		public RealFFT(int length)
 		{
 			if (length < 2 || (length & (length - 1)) != 0)
 			{
-				throw new ArgumentException("length", "FFT length must be at least 2 and a power of 2.");
+				throw new ArgumentException("FFT length must be at least 2 and a power of 2.", nameof(length));
 			}
 
 			_length = length;
@@ -29,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			ForwardScaleFactor = length;
 			ReverseScaleFactor = 0.5;
+			CorrectionScaleFactor = 1.0 / (ForwardScaleFactor * ReverseScaleFactor);
 		}
 
 		public void ComputeForward(double[] buff)
@@ -45,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			if (buff.Length < _length)
 			{
-				throw new ArgumentException("buff", "Buffer length must be greater than or equal to the FFT length.");
+				throw new ArgumentException("Buffer length must be greater than or equal to the FFT length.", nameof(buff));
 			}
 
 			rdft(_length, reverse, buff, _ip, _w);

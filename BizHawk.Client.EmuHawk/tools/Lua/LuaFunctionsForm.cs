@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -35,8 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaFunctionsForm()
 		{
 			InitializeComponent();
-			FunctionView.QueryItemText += FunctionView_QueryItemText;
-			FunctionView.QueryItemBkColor += FunctionView_QueryItemBkColor;
+			FunctionView.RetrieveVirtualItem += FunctionView_QueryItemText;
 		}
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
@@ -51,42 +48,14 @@ namespace BizHawk.Client.EmuHawk
 			ToWikiMarkupButton.Visible = VersionInfo.DeveloperBuild;
 		}
 
-		private void FunctionView_QueryItemBkColor(int index, int column, ref Color color)
+		private void FunctionView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
-		}
-
-		private void FunctionView_QueryItemText(int index, int column, out string text)
-		{
-			text = "";
-
-			try
-			{
-				if (_filteredList.Any() && index < _filteredList.Count)
-				{
-					switch (column)
-					{
-						case 0:
-							text = _filteredList[index].ReturnType;
-							break;
-						case 1:
-							text = _filteredList[index].Library;
-							break;
-						case 2:
-							text = _filteredList[index].Name;
-							break;
-						case 3:
-							text = _filteredList[index].ParameterList;
-							break;
-						case 4:
-							text = _filteredList[index].Description;
-							break;
-					}
-				}
-			}
-			catch
-			{
-				/* Eat it*/
-			}
+			var entry = _filteredList[e.ItemIndex];
+			e.Item = new ListViewItem(entry.ReturnType);
+			e.Item.SubItems.Add(entry.Library);
+			e.Item.SubItems.Add(entry.Name);
+			e.Item.SubItems.Add(entry.ParameterList);
+			e.Item.SubItems.Add(entry.Description);
 		}
 
 		private void OrderColumn(int column)
@@ -150,31 +119,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private class Sorting
 		{
-			private bool _desc;
 			private int _column = 1;
 
 			public int Column
 			{
-				get
-				{
-					return _column;
-				}
+				get => _column;
 
 				set
 				{
 					if (_column == value)
 					{
-						_desc ^= true;
+						Descending ^= true;
 					}
 
 					_column = value;
 				}
 			}
 
-			public bool Descending
-			{
-				get { return _desc; }
-			}
+			public bool Descending { get; private set; }
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
@@ -206,7 +168,12 @@ namespace BizHawk.Client.EmuHawk
 		//FREVBHFYL?
 		private void FunctionView_Copy(object sender, EventArgs e)
 		{
-			var itm = _filteredList[FunctionView.selectedItem];
+			if (FunctionView.SelectedIndices.Count == 0)
+			{
+				return;
+			}
+
+			var itm = _filteredList[FunctionView.SelectedIndices[0]];
 			var sb = new StringBuilder($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); //comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
 			if (itm.Example != null)
 			{
@@ -215,13 +182,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (sb.Length > 0)
+			{
 				Clipboard.SetText(sb.ToString());
+			}
 		}
 		
 		private void UpdateList()
 		{
 			GenerateFilteredList();
-			FunctionView.ItemCount = _filteredList.Count;
+			FunctionView.VirtualListSize = _filteredList.Count;
 		}
 
 		private void FilterBox_KeyUp(object sender, KeyEventArgs e)

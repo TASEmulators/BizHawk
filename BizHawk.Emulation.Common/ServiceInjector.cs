@@ -18,11 +18,11 @@ namespace BizHawk.Emulation.Common
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
 
-			foreach (var propinfo in
+			foreach (var propInfo in
 				targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute))
 				.Concat(targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute))))
 			{
-				propinfo.GetSetMethod(true).Invoke(target, tmp);
+				propInfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 		}
 
@@ -35,21 +35,21 @@ namespace BizHawk.Emulation.Common
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
 
-			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute)))
+			foreach (var propInfo in targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute)))
 			{
-				tmp[0] = source.GetService(propinfo.PropertyType);
+				tmp[0] = source.GetService(propInfo.PropertyType);
 				if (tmp[0] == null)
 				{
 					return false;
 				}
 
-				propinfo.GetSetMethod(true).Invoke(target, tmp);
+				propInfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 
-			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute)))
+			foreach (var propInfo in targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute)))
 			{
-				tmp[0] = source.GetService(propinfo.PropertyType);
-				propinfo.GetSetMethod(true).Invoke(target, tmp);
+				tmp[0] = source.GetService(propInfo.PropertyType);
+				propInfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 
 			return true;

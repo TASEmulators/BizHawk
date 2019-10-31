@@ -75,8 +75,7 @@ namespace BizHawk.Emulation.Common
 					}
 
 					done++;
-					short left, right;
-					_adjustobuf.Dequeue(out left, out right);
+					_adjustobuf.Dequeue(out var left, out var right);
 					buf[ctr++] = left;
 					buf[ctr++] = right;
 				}

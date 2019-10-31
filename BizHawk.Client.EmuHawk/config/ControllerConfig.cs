@@ -49,7 +49,12 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
-			
+			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);			
+		}
+
+		private ControllerConfig()
+		{
+			InitializeComponent();
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -64,13 +69,14 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
 		}
 
-		private ControllerConfig()
+		private void ControllerConfig_Load(object sender, EventArgs e)
 		{
-			InitializeComponent();
-			Closing += (o, e) =>
-			{
-				buttonOK.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
-			};
+			Text = $"{_theDefinition.Name} Configuration";
+		}
+
+		private void ControllerConfig_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Input.Instance.ClearEvents();
 		}
 
 		private delegate Control PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
@@ -187,7 +193,10 @@ namespace BizHawk.Client.EmuHawk
                     if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
                         return;
 
-                    string tabname = (Global.Emulator.SystemId == "C64") ? "Keyboard" : "Console"; // hack
+                    string tabname =
+						(Global.Emulator.SystemId == "C64") ? "Keyboard" :
+						(Global.Emulator.SystemId == "MAME") ? "Misc" :
+						"Console"; // hack
                     tt.TabPages.Add(tabname);
                     tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
                 }
@@ -363,11 +372,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.OSD.AddMessage("Controller config aborted");
 			Close();
-		}
-
-		private void NewControllerConfig_Load(object sender, EventArgs e)
-		{
-			Text = $"{_theDefinition.Name} Configuration";
 		}
 
 		private static TabControl GetTabControl(IEnumerable controls)

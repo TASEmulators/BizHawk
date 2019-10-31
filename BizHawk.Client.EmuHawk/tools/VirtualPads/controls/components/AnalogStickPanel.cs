@@ -16,10 +16,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int X
 		{
-			get
-			{
-				return _x;
-			}
+			get => _x;
 			set
 			{
 				_x = RangeX.Constrain(value);
@@ -29,10 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int Y
 		{
-			get
-			{
-				return _y;
-			}
+			get => _y;
 			set
 			{
 				_y = RangeY.Constrain(value);

@@ -52,20 +52,7 @@
 			this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
-			this.lvCDL = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.colAddress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colDomain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colPct = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colMapped = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag01 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag02 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag04 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag08 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag20 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag40 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colFlag80 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.lvCDL = new InputRoll();
 			this.miAutoResume = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -280,93 +267,18 @@
 			// 
 			// lvCDL
 			// 
-			this.lvCDL.BlazingFast = false;
-			this.lvCDL.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colAddress,
-            this.colDomain,
-            this.colPct,
-            this.colMapped,
-            this.colSize,
-            this.colFlag01,
-            this.colFlag02,
-            this.colFlag04,
-            this.colFlag08,
-            this.colFlag10,
-            this.colFlag20,
-            this.colFlag40,
-            this.colFlag80});
 			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvCDL.FullRowSelect = true;
 			this.lvCDL.GridLines = true;
-			this.lvCDL.ItemCount = 0;
+			this.lvCDL.RowCount = 0;
 			this.lvCDL.Location = new System.Drawing.Point(0, 49);
 			this.lvCDL.Name = "lvCDL";
-			this.lvCDL.SelectAllInProgress = false;
-			this.lvCDL.selectedItem = -1;
 			this.lvCDL.Size = new System.Drawing.Size(992, 323);
 			this.lvCDL.TabIndex = 9;
-			this.lvCDL.UseCompatibleStateImageBehavior = false;
 			this.lvCDL.UseCustomBackground = true;
-			this.lvCDL.View = System.Windows.Forms.View.Details;
-			this.lvCDL.VirtualMode = true;
-			this.lvCDL.QueryItemText += new BizHawk.Client.EmuHawk.QueryItemTextHandler(this.lvCDL_QueryItemText);
-			// 
-			// colAddress
-			// 
-			this.colAddress.Text = "CDL File @";
-			this.colAddress.Width = 107;
-			// 
-			// colDomain
-			// 
-			this.colDomain.Text = "Domain";
-			this.colDomain.Width = 126;
-			// 
-			// colPct
-			// 
-			this.colPct.Text = "%";
-			this.colPct.Width = 58;
-			// 
-			// colMapped
-			// 
-			this.colMapped.Text = "Mapped";
-			this.colMapped.Width = 64;
-			// 
-			// colSize
-			// 
-			this.colSize.Text = "Size";
-			this.colSize.Width = 102;
-			// 
-			// colFlag01
-			// 
-			this.colFlag01.Text = "0x01";
-			// 
-			// colFlag02
-			// 
-			this.colFlag02.Text = "0x02";
-			// 
-			// colFlag04
-			// 
-			this.colFlag04.Text = "0x04";
-			// 
-			// colFlag08
-			// 
-			this.colFlag08.Text = "0x08";
-			// 
-			// colFlag10
-			// 
-			this.colFlag10.Text = "0x10";
-			// 
-			// colFlag20
-			// 
-			this.colFlag20.Text = "0x20";
-			// 
-			// colFlag40
-			// 
-			this.colFlag40.Text = "0x40";
-			// 
-			// colFlag80
-			// 
-			this.colFlag80.Text = "0x80";
+			this.lvCDL.AllowColumnReorder = false;
+			this.lvCDL.AllowColumnResize = true;
+			this.lvCDL.QueryItemText += new InputRoll.QueryItemTextHandler(this.lvCDL_QueryItemText);
 			// 
 			// miAutoResume
 			// 
@@ -422,20 +334,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripButton tsbViewUpdate;
 		private System.Windows.Forms.ToolStripComboBox tsbViewStyle;
-		private VirtualListView lvCDL;
-		private System.Windows.Forms.ColumnHeader colAddress;
-		private System.Windows.Forms.ColumnHeader colDomain;
-		private System.Windows.Forms.ColumnHeader colPct;
-		private System.Windows.Forms.ColumnHeader colMapped;
-		private System.Windows.Forms.ColumnHeader colSize;
-		private System.Windows.Forms.ColumnHeader colFlag01;
-		private System.Windows.Forms.ColumnHeader colFlag02;
-		private System.Windows.Forms.ColumnHeader colFlag04;
-		private System.Windows.Forms.ColumnHeader colFlag08;
-		private System.Windows.Forms.ColumnHeader colFlag10;
-		private System.Windows.Forms.ColumnHeader colFlag20;
-		private System.Windows.Forms.ColumnHeader colFlag40;
-		private System.Windows.Forms.ColumnHeader colFlag80;
+		private InputRoll lvCDL;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripButton tsbExportText;
 		private System.Windows.Forms.ToolStripMenuItem miAutoStart;

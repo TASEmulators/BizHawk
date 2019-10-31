@@ -1,0 +1,150 @@
+﻿using System;
+using BizHawk.Emulation.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common;
+
+namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+{
+	public class SerialPort
+	{
+		public O2Hawk Core { get; set; }
+
+		public byte serial_control;
+		public byte serial_data;
+		public bool serial_start;
+		public bool can_pulse;
+		public int serial_clock;
+		public int serial_bits;
+		public int clk_rate;
+		public byte going_out;
+		public byte coming_in;
+
+		public byte ReadReg(int addr)
+		{
+			switch (addr)
+			{
+				case 0xFF01:
+					return serial_data;
+				case 0xFF02:
+					return serial_control;
+			}
+
+			return 0xFF;
+		}
+
+		public void WriteReg(int addr, byte value)
+		{
+			switch (addr)
+			{
+				case 0xFF01:
+					serial_data = value;
+					break;
+
+				case 0xFF02:
+					if (((value & 0x80) > 0) && !serial_start)
+					{
+						serial_start = true;
+						serial_bits = 8;
+						if ((value & 1) > 0)
+						{
+							if (((value & 2) > 0))
+							{
+								clk_rate = 16;
+							}
+							else
+							{
+								clk_rate = 512;
+							}						
+							serial_clock = clk_rate;
+							can_pulse = true;
+						}
+						else
+						{
+							clk_rate = -1;
+							serial_clock = clk_rate;
+							can_pulse = false;
+						}
+					}
+					else if (serial_start)
+					{
+						if ((value & 1) > 0)
+						{
+							if (((value & 2) > 0))
+							{
+								clk_rate = 16;
+							}
+							else
+							{
+								clk_rate = 512;
+							}
+							serial_clock = clk_rate;
+							can_pulse = true;
+						}
+						else
+						{
+							clk_rate = -1;
+							serial_clock = clk_rate;
+							can_pulse = false;
+						}
+					}
+
+					serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					
+					break;
+			}
+		}
+
+
+		public void serial_transfer_tick()
+		{
+			if (serial_start)
+			{
+				if (serial_clock > 0) { serial_clock--; }
+
+				if (serial_clock == 0)
+				{
+					if (serial_bits > 0)
+					{
+						byte temp = coming_in;
+						serial_data = (byte)((serial_data << 1) | temp);
+
+						serial_bits--;
+
+						if (serial_bits == 0)
+						{
+							serial_control &= 0x7F;
+							serial_start = false;
+						}
+						else
+						{
+							serial_clock = clk_rate;
+							if (clk_rate > 0) { can_pulse = true; }
+						}
+					}
+				}
+			}
+		}
+
+		public void Reset()
+		{
+			serial_control = 0x7E;
+			serial_start = false;
+			serial_data = 0x00;
+			going_out = 0;
+			coming_in = 1;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync(nameof(serial_control), ref serial_control);
+			ser.Sync(nameof(serial_data), ref serial_data);
+			ser.Sync(nameof(serial_start), ref serial_start);
+			ser.Sync(nameof(serial_clock), ref serial_clock);
+			ser.Sync(nameof(serial_bits), ref serial_bits);
+			ser.Sync(nameof(clk_rate), ref clk_rate);
+			ser.Sync(nameof(going_out), ref going_out);
+			ser.Sync(nameof(coming_in), ref coming_in);
+			ser.Sync(nameof(can_pulse), ref can_pulse);
+		}
+	}
+}

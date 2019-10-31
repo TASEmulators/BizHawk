@@ -36,6 +36,7 @@ namespace BizHawk.Client.Common
 		public const string OpenRom = "OpenRom";
 		public const string Libretro = "Libretro";
 		public const string LibretroNoGame = "LibretroNoGame";
+		public const string MAME = "MAME";
 	}
 
 
@@ -55,12 +56,33 @@ namespace BizHawk.Client.Common
 			string type = text.Substring(0, idx);
 			string token = text.Substring(idx + 1);
 			IOpenAdvanced ioa;
-			if (type == OpenAdvancedTypes.OpenRom) ioa = new OpenAdvanced_OpenRom();
-			else if (type == OpenAdvancedTypes.Libretro) ioa = new OpenAdvanced_Libretro();
-			else if (type == OpenAdvancedTypes.LibretroNoGame) ioa = new OpenAdvanced_LibretroNoGame();
-			else ioa = null;
+
+			if (type == OpenAdvancedTypes.OpenRom)
+			{
+				ioa = new OpenAdvanced_OpenRom();
+			}
+			else if (type == OpenAdvancedTypes.Libretro)
+			{
+				ioa = new OpenAdvanced_Libretro();
+			}
+			else if (type == OpenAdvancedTypes.LibretroNoGame)
+			{
+				ioa = new OpenAdvanced_LibretroNoGame();
+			}
+			else if (type == OpenAdvancedTypes.MAME)
+			{
+				ioa = new OpenAdvanced_MAME();
+			}
+			else
+			{
+				ioa = null;
+			}
+
 			if (ioa == null)
+			{
 				throw new InvalidOperationException($"{nameof(IOpenAdvanced)} deserialization error");
+			}
+
 			ioa.Deserialize(token);
 			return ioa;
 		}
@@ -148,6 +170,28 @@ namespace BizHawk.Client.Common
 		public string Path;
 
 		public string TypeName { get { return "OpenRom"; } }
+		public string DisplayName { get { return Path; } }
+		public string SimplePath { get { return Path; } }
+
+		public void Deserialize(string str)
+		{
+			Path = str;
+		}
+
+		public void Serialize(TextWriter tw)
+		{
+			tw.Write(Path);
+		}
+	}
+
+	public class OpenAdvanced_MAME : IOpenAdvanced
+	{
+		public OpenAdvanced_MAME()
+		{ }
+
+		public string Path;
+
+		public string TypeName { get { return "MAME"; } }
 		public string DisplayName { get { return Path; } }
 		public string SimplePath { get { return Path; } }
 

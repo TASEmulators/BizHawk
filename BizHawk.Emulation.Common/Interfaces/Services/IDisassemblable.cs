@@ -42,11 +42,7 @@ namespace BizHawk.Emulation.Common
 
 		public virtual string Cpu
 		{
-			get
-			{
-				return _cpu;
-			}
-
+			get => _cpu;
 			set
 			{
 				if (!AvailableCpus.Contains(value))

@@ -102,6 +102,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				set { _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
 
+			[DisplayName("RTC Offset L")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_L
+			{
+				get { return _RTCOffset_L; }
+				set { _RTCOffset_L = Math.Max(-127, Math.Min(127, value)); }
+			}
+
+			[DisplayName("RTC Offset R")]
+			[Description("Set error in RTC clocking (-127 to 127)")]
+			[DefaultValue(0)]
+			public int RTCOffset_R
+			{
+				get { return _RTCOffset_R; }
+				set { _RTCOffset_R = Math.Max(-127, Math.Min(127, value)); }
+			}
+
 			[DisplayName("Timer Div Initial Time L")]
 			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
 			[DefaultValue(8)]
@@ -127,9 +145,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 			[JsonIgnore]
 			private int _RTCInitialTime_L;
+			[JsonIgnore]
 			private int _RTCInitialTime_R;
 			[JsonIgnore]
+			private int _RTCOffset_L;
+			[JsonIgnore]
+			private int _RTCOffset_R;
+			[JsonIgnore]
 			public ushort _DivInitialTime_L = 8;
+			[JsonIgnore]
 			public ushort _DivInitialTime_R = 8;
 
 			public GBLinkSyncSettings Clone()

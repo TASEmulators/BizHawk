@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void RTC_Get(byte value, int index)
+		public override void RTC_Get(int value, int index)
 		{
 			time |= (uint)((value & 0xFF) << index);
 		}

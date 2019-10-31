@@ -10,6 +10,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
 	{
+		private const string AddressColumnName = "Address";
+		private const string InstructionColumnName = "Instruction";
+
 		public GenericDebugger()
 		{
 			InitializeComponent();
@@ -17,7 +20,24 @@ namespace BizHawk.Client.EmuHawk
 
 			DisassemblerView.QueryItemText += DisassemblerView_QueryItemText;
 			DisassemblerView.QueryItemBkColor += DisassemblerView_QueryItemBkColor;
-			DisassemblerView.VirtualMode = true;
+			DisassemblerView.AllColumns.Clear();
+			DisassemblerView.AllColumns.AddRange(new[]
+			{
+				new RollColumn
+				{
+					Name = AddressColumnName,
+					Text = AddressColumnName,
+					Width = 94,
+					Type = ColumnType.Text
+				},
+				new RollColumn
+				{
+					Name = InstructionColumnName,
+					Text = InstructionColumnName,
+					Width = 291,
+					Type = ColumnType.Text
+				}
+			});
 		}
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
@@ -75,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				DisassemblerBox.Enabled = false;
-				DisassemblerView.ItemCount = 0;
+				DisassemblerView.RowCount = 0;
 				DisassemblerBox.Controls.Add(new Label
 				{
 					Location = new Point(UIHelper.ScaleX(35), UIHelper.ScaleY(23)),

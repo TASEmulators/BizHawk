@@ -43,7 +43,6 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatListView.QueryItemText += CheatListView_QueryItemText;
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
-			CheatListView.VirtualMode = true;
 
 			_sortedColumn = "";
 			_sortReverse = false;
@@ -80,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateDialog()
 		{
-			CheatListView.ItemCount = Global.CheatList.Count;
+			CheatListView.RowCount = Global.CheatList.Count;
 			TotalLabel.Text = $"{Global.CheatList.CheatCount} {(Global.CheatList.CheatCount == 1 ? "cheat" : "cheats")} {Global.CheatList.ActiveCount} active";
 		}
 
@@ -150,21 +149,36 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cheats_Load(object sender, EventArgs e)
 		{
+			// Hack for previous config settings
+			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
+			{
+				Settings = new CheatsSettings();
+			}
+
 			TopMost = Settings.TopMost;
 			CheatEditor.MemoryDomains = Core;
 			LoadConfigSettings();
+			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 			ToggleGameGenieButton();
 			CheatEditor.SetAddEvent(AddCheat);
 			CheatEditor.SetEditEvent(EditCheat);
 			UpdateDialog();
+		}
 
-			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+		private void SetColumns()
+		{
+			foreach (var column in Settings.Columns)
+			{
+				if (CheatListView.AllColumns[column.Name] == null)
+				{
+					CheatListView.AllColumns.Add(column);
+				}
+			}
 		}
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo(CheatListView, Settings.Columns);
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			Settings.Columns = CheatListView.AllColumns;
 		}
 
 		private void ToggleGameGenieButton()
@@ -195,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			SaveColumnInfo(CheatListView, Settings.Columns);
+			Settings.Columns =CheatListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -221,10 +235,11 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			CheatListView.AllColumns.Clear();
+			SetColumns();
 		}
 
-		private void CheatListView_QueryItemText(int index, int column, out string text)
+		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
@@ -232,7 +247,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var columnName = CheatListView.Columns[column].Name;
+			var columnName = column.Name;
 
 			switch (columnName)
 			{
@@ -296,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
+		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (index < Global.CheatList.Count)
 			{
@@ -311,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<int> SelectedIndices => CheatListView.SelectedIndices.Cast<int>();
+		private IEnumerable<int> SelectedIndices => CheatListView.SelectedRows;
 
 		private IEnumerable<Cheat> SelectedItems
 		{
@@ -325,19 +340,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectedIndexChange()
 		{
-			if (!CheatListView.SelectAllInProgress)
+			if (SelectedCheats.Any())
 			{
-				if (SelectedCheats.Any())
-				{
-					var cheat = SelectedCheats.First();
-					CheatEditor.SetCheat(cheat);
-					CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
-				}
-				else
-				{
-					CheatEditor.ClearForm();
-					CheatGroupBox.Text = "New Cheat";
-				}
+				var cheat = SelectedCheats.First();
+				CheatEditor.SetCheat(cheat);
+				CheatGroupBox.Text = $"Editing Cheat {cheat.Name} - {cheat.AddressStr}";
+			}
+			else
+			{
+				CheatEditor.ClearForm();
+				CheatGroupBox.Text = "New Cheat";
 			}
 		}
 
@@ -434,7 +446,8 @@ namespace BizHawk.Client.EmuHawk
 				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
-			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
+			// DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -451,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Remove(item);
 				}
 
-				CheatListView.SelectedIndices.Clear();
+				CheatListView.DeselectAll();
 				UpdateDialog();
 			}
 		}
@@ -486,12 +499,12 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Insert(index - 1, cheat);
 			}
 
-			var newindices = indices.Select(t => t - 1).ToList();
+			var newIndices = indices.Select(t => t - 1);
 
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			CheatListView.DeselectAll();
+			foreach (var index in newIndices)
 			{
-				CheatListView.SelectItem(newi, true);
+				CheatListView.SelectRow(index, true);
 			}
 
 			UpdateMessageLabel();
@@ -515,12 +528,12 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateMessageLabel();
 
-			var newindices = indices.Select(t => t + 1).ToList();
+			var newIndices = indices.Select(t => t + 1);
 
-			CheatListView.SelectedIndices.Clear();
-			foreach (var newi in newindices)
+			CheatListView.DeselectAll();
+			foreach (var index in newIndices)
 			{
-				CheatListView.SelectItem(newi, true);
+				CheatListView.SelectRow(index, true);
 			}
 
 			UpdateDialog();
@@ -533,12 +546,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedCheats.ToList().ForEach(x => x.Toggle());
+			foreach (var x in SelectedCheats)
+			{
+				x.Toggle();
+			}
 			CheatListView.Refresh();
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{
+		{	
 			Global.CheatList.DisableAll();
 		}
 
@@ -608,14 +624,15 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<ToolStripMenuItem>()
 					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
-			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
+			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 
 			Global.Config.DisableCheatsOnLoad = false;
 			Global.Config.LoadCheatFileByGame = true;
 			Global.Config.CheatsAutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
-			LoadColumnInfo(CheatListView, Settings.Columns);
+			CheatListView.AllColumns.Clear();
+			SetColumns();
 		}
 
 		#endregion
@@ -648,9 +665,9 @@ namespace BizHawk.Client.EmuHawk
 			DoSelectedIndexChange();
 		}
 
-		private void CheatListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		private void CheatListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			var column = CheatListView.Columns[e.Column];
+			var column = e.Column;
 			if (column.Name != _sortedColumn)
 			{
 				_sortReverse = false;
@@ -720,22 +737,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public CheatsSettings()
 			{
-				Columns = new ColumnList
+				Columns = new List<RollColumn>
 				{
-					new Column { Name = NameColumn, Visible = true, Index = 0, Width = 128 },
-					new Column { Name = AddressColumn, Visible = true, Index = 1, Width = 60 },
-					new Column { Name = ValueColumn, Visible = true, Index = 2, Width = 59 },
-					new Column { Name = CompareColumn, Visible = true, Index = 3, Width = 59 },
-					new Column { Name = ComparisonTypeColumn, Visible = true, Index = 4, Width = 60 },
-					new Column { Name = OnColumn, Visible = false, Index = 5, Width = 28 },
-					new Column { Name = DomainColumn, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = SizeColumn, Visible = true, Index = 7, Width = 55 },
-					new Column { Name = EndianColumn, Visible = false, Index = 8, Width = 55 },
-					new Column { Name = TypeColumn, Visible = false, Index = 9, Width = 55 }
+					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, Width = 128, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, Width = 63, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, Width = 98, Type = ColumnType.Text },
+					new RollColumn { Text = "On", Name = OnColumn, Visible = false, Width = 28, Type = ColumnType.Text },
+					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, Width = 88, Type = ColumnType.Text }
 				};
 			}
 
-			public ColumnList Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 		}
 	}
 }

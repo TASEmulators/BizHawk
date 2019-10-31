@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Common;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class BarcodeEntry : Form, IToolForm
 	{
 		[RequiredService]
-		private DatachBarcode reader { get; set; }
+		private DatachBarcode Reader { get; set; }
 
 		public BarcodeEntry()
 		{
@@ -45,17 +37,13 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 
 		#endregion
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			string why;
-			if (!DatachBarcode.ValidString(textBox1.Text, out why))
+			if (!DatachBarcode.ValidString(textBox1.Text, out var why))
 			{
 				label3.Text = $"Invalid: {why}";
 				label3.Visible = true;
@@ -70,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			reader.Transfer(textBox1.Text);
+			Reader.Transfer(textBox1.Text);
 		}
 	}
 }

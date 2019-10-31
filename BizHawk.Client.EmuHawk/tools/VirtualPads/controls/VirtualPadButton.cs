@@ -57,10 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readonly;
-			}
+			get => _readonly;
 
 			set
 			{
@@ -123,10 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RightClicked
 		{
-			get
-			{
-				return !ReadOnly && _rightClicked;
-			}
+			get => !ReadOnly && _rightClicked;
 
 			set
 			{

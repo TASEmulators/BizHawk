@@ -35,15 +35,12 @@ namespace BizHawk.Client.EmuHawk
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
 				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
-				.ToList();
-
-			libs.AddRange(
-				Assembly
-				.GetAssembly(typeof(EmuLuaLibrary))
-				.GetTypes()
-				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
+				.Concat(Assembly
+					.GetAssembly(typeof(EmuLuaLibrary))
+					.GetTypes()
+					.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
+					.Where(t => t.IsSealed)
+					.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
 
 			foreach (var lib in libs)
 			{

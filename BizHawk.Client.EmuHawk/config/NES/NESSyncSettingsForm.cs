@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				typeof(NES.NESSyncSettings.Region),
 				(string)RegionComboBox.SelectedItem);
 
-			List<byte> oldRam = _syncSettings.InitialWRamStatePattern?.ToList() ?? new List<byte>();
+			var oldRam = _syncSettings.InitialWRamStatePattern ?? new List<byte>();
 
 			if (!string.IsNullOrWhiteSpace(RamPatternOverrideBox.Text))
 			{

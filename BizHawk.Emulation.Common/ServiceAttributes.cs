@@ -25,9 +25,9 @@ namespace BizHawk.Emulation.Common
 	{
 		public ServiceNotApplicableAttribute(params Type[] types)
 		{
-			NotApplicableTypes = types?.ToList() ?? new List<Type>();
+			NotApplicableTypes = types?.AsEnumerable() ?? Enumerable.Empty<Type>();
 		}
 
-		public IEnumerable<Type> NotApplicableTypes { get; private set; }
+		public IEnumerable<Type> NotApplicableTypes { get; }
 	}
 }

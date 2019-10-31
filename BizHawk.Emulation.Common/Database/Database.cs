@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Common
 					var line = reader.ReadLine() ?? "";
 					try
 					{
-						if (line.StartsWith(";")) 
+						if (line.StartsWith(";"))
 						{
 							continue; // comment
 						}
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Common
 							Hash = RemoveHashType(items[0].ToUpper())
 						};
 
-						// remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
+						// remove a hash type identifier. well don't really need them for indexing (they're just there for human purposes)
 						switch (items[1].Trim())
 						{
 							case "B":
@@ -238,8 +238,8 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".SFC":
-				case ".SMC": 
-					game.System = "SNES"; 
+				case ".SMC":
+					game.System = "SNES";
 					break;
 
 				case ".GB":
@@ -299,30 +299,30 @@ namespace BizHawk.Emulation.Common
 				case ".D64":
 				case ".T64":
 				case ".G64":
-				case ".CRT":				
+				case ".CRT":
 					game.System = "C64";
 					break;
 
-                case ".TZX":
-                case ".PZX":
-                case ".CSW":
-                case ".WAV":
-                    game.System = "ZXSpectrum";
-                    break;
+				case ".TZX":
+				case ".PZX":
+				case ".CSW":
+				case ".WAV":
+					game.System = "ZXSpectrum";
+					break;
 
-                case ".CDT":
-                    game.System = "AmstradCPC";
-                    break;
+				case ".CDT":
+					game.System = "AmstradCPC";
+					break;
 
-                case ".TAP":
-                    byte[] head = romData.Take(8).ToArray();
-                    if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
-                        game.System = "C64";
-                    else
-                        game.System = "ZXSpectrum";
-                    break;
+				case ".TAP":
+					byte[] head = romData.Take(8).ToArray();
+					if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
+						game.System = "C64";
+					else
+						game.System = "ZXSpectrum";
+					break;
 
-                case ".Z64":
+				case ".Z64":
 				case ".V64":
 				case ".N64":
 					game.System = "N64";
@@ -346,9 +346,9 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
-                    var dId = new DSKIdentifier(romData);
-                    game.System = dId.IdentifiedSystem;
-                    break;                    
+					var dId = new DSKIdentifier(romData);
+					game.System = dId.IdentifiedSystem;
+					break;
 
 				case ".PO":
 				case ".DO":
@@ -371,6 +371,7 @@ namespace BizHawk.Emulation.Common
 				case ".UZE":
 					game.System = "UZE";
 					break;
+
 				case ".32X":
 					game.System = "32X";
 					game.AddOption("32X", "true");
@@ -379,6 +380,12 @@ namespace BizHawk.Emulation.Common
 				case ".VEC":
 					game.System = "VEC";
 					game.AddOption("VEC", "true");
+					break;
+
+				// refactor to use mame db (output of "mame -listxml" command)
+				// there's no good definition for Arcade anymore, so we might limit to coin-based machines?
+				case ".ZIP":
+					game.System = "Arcade";
 					break;
 			}
 

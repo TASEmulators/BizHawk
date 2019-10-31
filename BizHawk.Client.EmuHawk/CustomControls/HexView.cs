@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class HexView : Control
 	{
-		private readonly GDIRenderer Gdi;
+		//private readonly IControlRenderer _renderer;
 		private readonly Font NormalFont;
 		private Size _charSize;
 
@@ -27,18 +27,18 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 
-			Gdi = new GDIRenderer();
+			//_renderer = new GdiRenderer();
 
-			using (var g = CreateGraphics())
-			using (var LCK = Gdi.LockGraphics(g))
-			{
-				_charSize = Gdi.MeasureString("A", NormalFont); // TODO make this a property so changing it updates other values.
-			}
+			//using (var g = CreateGraphics())
+			//using (var LCK = _renderer.LockGraphics(g))
+			//{
+			//	_charSize = _renderer.MeasureString("A", NormalFont); // TODO make this a property so changing it updates other values.
+			//}
 		}
 
 		protected override void Dispose(bool disposing)
 		{
-			Gdi.Dispose();
+			//_renderer.Dispose();
 
 			NormalFont.Dispose();
 
@@ -49,21 +49,21 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (var LCK = Gdi.LockGraphics(e.Graphics))
-			{
-				Gdi.StartOffScreenBitmap(Width, Height);
+			//using (var lck = _renderer.LockGraphics(e.Graphics))
+			//{
+			//	_renderer.StartOffScreenBitmap(Width, Height);
 
-				// White Background
-				Gdi.SetBrush(Color.White);
-				Gdi.SetSolidPen(Color.White);
-				Gdi.FillRectangle(0, 0, Width, Height);
+			//	// White Background
+			//	_renderer.SetBrush(Color.White);
+			//	_renderer.SetSolidPen(Color.White);
+			//	_renderer.FillRectangle(0, 0, Width, Height);
 
 
-				Gdi.DrawString("Hello World", new Point(10, 10));
+			//	_renderer.DrawString("Hello World", new Point(10, 10));
 
-				Gdi.CopyToScreen();
-				Gdi.EndOffScreenBitmap();
-			}
+			//	_renderer.CopyToScreen();
+			//	_renderer.EndOffScreenBitmap();
+			//}
 		}
 
 		#endregion

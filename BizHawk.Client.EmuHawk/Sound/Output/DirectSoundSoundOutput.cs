@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			return DirectSound.GetDevices().Select(d => d.Description).ToList();
+			return DirectSound.GetDevices().Select(d => d.Description);
 		}
 
 		private int BufferSizeSamples { get; set; }
@@ -152,12 +152,10 @@ namespace BizHawk.Client.EmuHawk
 			return (end - start + size) % size;
 		}
 
-		public void WriteSamples(short[] samples, int sampleCount)
+		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			int total = sampleCount * Sound.ChannelCount;
-			if (total > samples.Length) { total = samples.Length; }
-			_deviceBuffer.Write(samples, 0, total, _actualWriteOffsetBytes, LockFlags.None);
+			_deviceBuffer.Write(samples, sampleOffset * Sound.ChannelCount, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
 			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
 			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
 		}

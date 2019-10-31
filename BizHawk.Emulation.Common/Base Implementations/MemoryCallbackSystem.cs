@@ -70,11 +70,11 @@ namespace BizHawk.Emulation.Common
 
 		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
 		{
-			for (int i = 0; i < cbs.Count; i++)
+			foreach (var cb in cbs)
 			{
-				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
+				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
 				{
-					cbs[i].Callback(addr, value, flags);
+					cb.Callback(addr, value, flags);
 				}
 			}
 		}
@@ -134,17 +134,17 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasReadsForScope(string scope)
 		{
-			return _reads.Where(e => e.Scope == scope).Any();
+			return _reads.Any(e => e.Scope == scope);
 		}
 
 		public bool HasWritesForScope(string scope)
 		{
-			return _writes.Where(e => e.Scope == scope).Any();
+			return _writes.Any(e => e.Scope == scope);
 		}
 
 		public bool HasExecutesForScope(string scope)
 		{
-			return _execs.Where(e => e.Scope == scope).Any();
+			return _execs.Any(e => e.Scope == scope);
 		}
 
 		private bool UpdateHasVariables()

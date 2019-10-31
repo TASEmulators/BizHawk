@@ -31,11 +31,13 @@ namespace BizHawk.Common
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
 
+		/// <remarks>this interface's inheritors hide OS-specific implementation details</remarks>
 		public interface ILinkedLibManager
 		{
-			IntPtr LoadPlatformSpecific(string dllToLoad);
-			IntPtr GetProcAddr(IntPtr hModule, string procName);
-			int FreePlatformSpecific(IntPtr hModule);
+			IntPtr? LoadOrNull(string dllToLoad);
+			IntPtr LoadOrThrow(string dllToLoad);
+			IntPtr GetProcAddr(IntPtr hModule, string procName); //TODO also split into nullable and throwing?
+			int FreeByPtr(IntPtr hModule);
 		}
 
 		/// <remarks>This class is copied from a tutorial, so don't git blame and then email me expecting insight.</remarks>
@@ -43,46 +45,67 @@ namespace BizHawk.Common
 		{
 			private const int RTLD_NOW = 2;
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlopen(string fileName, int flags);
+			private static extern int dlclose(IntPtr handle);
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlerror();
 			[DllImport("libdl.so.2")]
-			private static extern IntPtr dlsym(IntPtr handle, string symbol);
+			private static extern IntPtr dlopen(string fileName, int flags);
 			[DllImport("libdl.so.2")]
-			private static extern int dlclose(IntPtr handle);
+			private static extern IntPtr dlsym(IntPtr handle, string symbol);
 
-			public IntPtr LoadPlatformSpecific(string dllToLoad) => dlopen(dllToLoad, RTLD_NOW);
 			public IntPtr GetProcAddr(IntPtr hModule, string procName)
 			{
 				dlerror();
 				var res = dlsym(hModule, procName);
 				var errPtr = dlerror();
-				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in dlsym: {Marshal.PtrToStringAnsi(errPtr)}");
+				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in {nameof(dlsym)}: {Marshal.PtrToStringAnsi(errPtr)}");
 				return res;
 			}
-			public int FreePlatformSpecific(IntPtr hModule) => dlclose(hModule);
+
+			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
+
+			public IntPtr? LoadOrNull(string dllToLoad)
+			{
+				var p = dlopen(dllToLoad, RTLD_NOW);
+				return p == IntPtr.Zero ? default(IntPtr?) : p;
+			}
+
+			public IntPtr LoadOrThrow(string dllToLoad)
+			{
+				var p = LoadOrNull(dllToLoad);
+				if (!p.HasValue) throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
+				return p.Value;
+			}
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
 			// comments reference extern functions removed from SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
+			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
+			[DllImport("kernel32.dll")]
 			private static extern uint GetLastError();
 			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
-			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-			[DllImport("kernel32.dll")]
-			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
+			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
+			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
 
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
+			public IntPtr GetProcAddr(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
+
+			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 1 : 0;
+
+			public IntPtr? LoadOrNull(string dllToLoad)
 			{
 				var p = LoadLibrary(dllToLoad);
-				if (p == IntPtr.Zero) throw new InvalidOperationException($"got null pointer, error code {GetLastError()}");
-				return p;
+				return p == IntPtr.Zero ? default(IntPtr?) : p;
 			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
-			public int FreePlatformSpecific(IntPtr hModule) => FreeLibrary(hModule) ? 1 : 0;
+
+			public IntPtr LoadOrThrow(string dllToLoad)
+			{
+				var p = LoadOrNull(dllToLoad);
+				if (!p.HasValue) throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
+				return p.Value;
+			}
 		}
 
 		public enum DistinctOS : byte
@@ -96,7 +119,7 @@ namespace BizHawk.Common
 		/// <param name="args">POSIX <c>$*</c> (space-delimited)</param>
 		/// <param name="checkStdout">stdout is discarded if false</param>
 		/// <param name="checkStderr">stderr is discarded if false</param>
-		/// <remarks>OS is implicit and needs to be checked at callsite, returned <see cref="Process"/> has not been started</remarks>
+		/// <remarks>OS is implicit and needs to be checked at callsite. Returned <see cref="Process"/> has not been started.</remarks>
 		public static Process ConstructSubshell(string cmd, string args, bool checkStdout = true, bool checkStderr = false) =>
 			new Process {
 				StartInfo = new ProcessStartInfo {

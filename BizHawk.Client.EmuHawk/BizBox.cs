@@ -48,8 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
 				.Where(a => a != null)
 				.Where(a => a.Released)
-				.OrderByDescending(a => a.CoreName.ToLower())
-				.ToList();
+				.OrderByDescending(a => a.CoreName.ToLower());
 
 			foreach (var core in cores)
 			{

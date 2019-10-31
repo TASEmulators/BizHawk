@@ -68,14 +68,8 @@ namespace BizHawk.Client.Common
 
 	public class ImportResult
 	{
-		public ImportResult()
-		{
-			Warnings = new List<string>();
-			Errors = new List<string>();
-		}
-
-		public IList<string> Warnings { get; private set; }
-		public IList<string> Errors { get; }
+		public IList<string> Warnings { get; } = new List<string>();
+		public IList<string> Errors { get; } = new List<string>();
 
 		public Bk2Movie Movie { get; set; }
 	}
@@ -88,6 +82,6 @@ namespace BizHawk.Client.Common
 			Extension = extension;
 		}
 
-		public string Extension { get; private set; }
+		public string Extension { get; }
 	}
 }

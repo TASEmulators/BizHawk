@@ -484,9 +484,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			}
 			this.bizhawkCore = bizhawkCore;
 
-			CoreDll = libLoader.LoadPlatformSpecific("mupen64plus");
-			if (CoreDll == IntPtr.Zero)
-				throw new InvalidOperationException("Failed to load mupen64plus.dll");
+			CoreDll = libLoader.LoadOrThrow("mupen64plus");
 
 			connectFunctionPointers();
 
@@ -914,7 +912,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 				m64pCoreDoCommandPtr(m64p_command.M64CMD_ROM_CLOSE, 0, IntPtr.Zero);
 				m64pCoreShutdown();
-				libLoader.FreePlatformSpecific(CoreDll);
+				libLoader.FreeByPtr(CoreDll);
 
 				disposed = true;
 			}
@@ -934,8 +932,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				DetachPlugin(type);
 
 			AttachedPlugin plugin;
-			plugin.dllHandle = libLoader.LoadPlatformSpecific(PluginName);
-
+			plugin.dllHandle = libLoader.LoadOrThrow(PluginName);
 			plugin.dllStartup = (PluginStartup)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginStartup"), typeof(PluginStartup));
 			plugin.dllShutdown = (PluginShutdown)Marshal.GetDelegateForFunctionPointer(libLoader.GetProcAddr(plugin.dllHandle, "PluginShutdown"), typeof(PluginShutdown));
 			plugin.dllStartup(CoreDll, null, null);
@@ -943,7 +940,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64p_error result = m64pCoreAttachPlugin(type, plugin.dllHandle);
 			if (result != m64p_error.M64ERR_SUCCESS)
 			{
-				libLoader.FreePlatformSpecific(plugin.dllHandle);
+				libLoader.FreeByPtr(plugin.dllHandle);
 				throw new InvalidOperationException($"Error during attaching plugin {PluginName}");
 			}
 
@@ -959,7 +956,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				plugins.Remove(type);
 				m64pCoreDetachPlugin(type);
 				plugin.dllShutdown();
-				libLoader.FreePlatformSpecific(plugin.dllHandle);
+				libLoader.FreeByPtr(plugin.dllHandle);
 			}
 		}
 

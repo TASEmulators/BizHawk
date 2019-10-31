@@ -41,46 +41,37 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Controls.OfType<Panel>().Any(p => p.Name == "FlagPanel"))
 					{
-						Controls
-							.OfType<Panel>()
+						foreach (var checkbox in Controls.OfType<Panel>()
 							.First(p => p.Name == "FlagPanel")
 							.Controls
-							.OfType<CheckBox>()
-							.ToList()
-							.ForEach(checkbox =>
+							.OfType<CheckBox>())
+						{
+							if (checkbox.Name == register.Key)
 							{
-								if (checkbox.Name == register.Key)
-								{
-									checkbox.Checked = register.Value.Value == 1;
-								}
-							});
+								checkbox.Checked = register.Value.Value == 1;
+							}
+						}
 					}
 
 					if (_canSetCpuRegisters)
 					{
-						Controls
-							.OfType<TextBox>()
-							.ToList()
-							.ForEach(textbox =>
+						foreach (var textbox in Controls.OfType<TextBox>())
+						{
+							if (textbox.Name == register.Key)
 							{
-								if (textbox.Name == register.Key)
-								{
-									textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
-								}
-							});
+								textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+							}
+						}
 					}
 					else
 					{
-						Controls
-							.OfType<Label>()
-							.ToList()
-							.ForEach(label =>
+						foreach (var label in Controls.OfType<Label>())
+						{
+							if (label.Name == register.Key)
 							{
-								if (label.Name == register.Key)
-								{
-									label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
-								}
-							});
+								label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
+							}
+						}
 					}
 				}
 

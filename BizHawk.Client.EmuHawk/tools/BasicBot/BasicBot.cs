@@ -449,10 +449,10 @@ namespace BizHawk.Client.EmuHawk
 			CurrentFileName = "";
 			_bestBotAttempt = null;
 
-			ControlProbabilityPanel.Controls
-				.OfType<BotControlsRow>()
-				.ToList()
-				.ForEach(cp => cp.Probability = 0);
+			foreach (var cp in ControlProbabilityPanel.Controls.OfType<BotControlsRow>())
+			{
+				cp.Probability = 0;
+			}
 
 			FrameLength = 0;
 			MaximizeAddress = 0;
@@ -845,14 +845,14 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromSlotBox.SelectedIndex = 0;
 
-			int starty = 0;
+			const int starty = 0;
+			const int lineHeight = 30;
+			const int marginLeft = 15;
 			int accumulatedy = 0;
-			int lineHeight = 30;
-			int marginLeft = 15;
 			int count = 0;
 
+			ControlProbabilityPanel.SuspendLayout();
 			ControlProbabilityPanel.Controls.Clear();
-
 			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
 			{
 				var control = new BotControlsRow
@@ -863,11 +863,13 @@ namespace BizHawk.Client.EmuHawk
 					TabIndex = count + 1,
 					ProbabilityChangedCallback = AssessRunButtonStatus
 				};
+				control.Scale(UIHelper.AutoScaleFactor);
 
 				ControlProbabilityPanel.Controls.Add(control);
 				accumulatedy += lineHeight;
 				count++;
 			}
+			ControlProbabilityPanel.ResumeLayout();
 
 			if (Settings.RecentBotFiles.AutoLoad)
 			{

@@ -4,16 +4,15 @@ using System.Reflection;
 
 namespace BizHawk.Common.BizInvoke
 {
+	/// TODO move this and all in IImportResolver.cs to OSTailoredCode.cs and refactor
 	public class DynamicLibraryImportResolver : IImportResolver, IDisposable
 	{
 		private IntPtr _p;
-		private readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager;
+		private readonly OSTailoredCode.ILinkedLibManager libLoader = OSTailoredCode.LinkedLibManager; //TODO inline?
 
 		public DynamicLibraryImportResolver(string dllName)
 		{
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows) ResolveFilePath(ref dllName);
-			_p = libLoader.LoadPlatformSpecific(dllName);
-			if (_p == IntPtr.Zero) throw new InvalidOperationException($"null pointer returned by {nameof(libLoader.LoadPlatformSpecific)}");
+			_p = libLoader.LoadOrThrow(dllName);
 		}
 
 		private string[] RelativeSearchPaths = {
@@ -60,8 +59,8 @@ namespace BizHawk.Common.BizInvoke
 
 		private void Free()
 		{
-			if (_p == IntPtr.Zero) return;
-			libLoader.FreePlatformSpecific(_p);
+			if (_p == IntPtr.Zero) return; // already freed
+			libLoader.FreeByPtr(_p);
 			_p = IntPtr.Zero;
 		}
 

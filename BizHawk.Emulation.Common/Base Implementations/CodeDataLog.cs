@@ -62,9 +62,9 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
 		/// </summary>
-		public bool Has(string blockname)
+		public bool Has(string blockName)
 		{
-			return ContainsKey(blockname);
+			return ContainsKey(blockName);
 		}
 
 		/// <summary>
@@ -121,17 +121,17 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var kvp in other)
 			{
-				byte[] fromdata = kvp.Value;
-				byte[] todata = this[kvp.Key];
+				byte[] fromData = kvp.Value;
+				byte[] toData = this[kvp.Key];
 
-				if (fromdata.Length != todata.Length)
+				if (fromData.Length != toData.Length)
 				{
 					throw new InvalidDataException("Memory regions must be the same size!");
 				}
 
-				for (int i = 0; i < todata.Length; i++)
+				for (int i = 0; i < toData.Length; i++)
 				{
-					todata[i] |= fromdata[i];
+					toData[i] |= fromData[i];
 				}
 			}
 		}
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Common
 			}
 			else
 			{
-				throw new InvalidDataException("File is not a Bizhawk CDL file!");
+				throw new InvalidDataException("File is not a BizHawk CDL file!");
 			}
 
 			int count = br.ReadInt32();

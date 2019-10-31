@@ -1,0 +1,37 @@
+version: 0.0.0.{build}
+branches:
+  only:
+  - master
+  - waterbox2
+image: Visual Studio 2019
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+build_script:
+- cmd: >-
+    SET TS=%APPVEYOR_REPO_COMMIT_TIMESTAMP%
+
+    SET BUILDCODE=%TS:~0,10%-%TS:~11,2%%TS:~14,2%%TS:~17,2%-#%APPVEYOR_REPO_COMMIT%
+
+    SET BUILDFILE=BizHawk_Developer-%BUILDCODE%.zip
+
+    echo %BUILDFILE%
+
+
+    cd dist
+
+    call BuildAndPackage_Developer.bat
+
+
+    move BizHawk-Developer.zip ..\%BUILDFILE%
+
+
+    cd ..
+
+    appveyor PushArtifact %BUILDFILE%
+
+
+    rem appveyor UpdateBuild -Version %BUILDFILE%

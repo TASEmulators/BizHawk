@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FunctionView.Items.Clear();
 			
-			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().OrderBy(x => x.Event).ThenBy(x => x.Name).ToList();
+			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().OrderBy(x => x.Event).ThenBy(x => x.Name);
 			foreach (var nlf in nlfs)
 			{
 				var item = new ListViewItem { Text = nlf.Event };

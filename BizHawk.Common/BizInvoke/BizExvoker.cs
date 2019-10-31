@@ -64,8 +64,7 @@ namespace BizHawk.Common.BizInvoke
 					Info = m,
 					Attr = m.GetCustomAttributes(true).OfType<BizExportAttribute>().FirstOrDefault()
 				})
-				.Where(a => a.Attr != null)
-				.ToList();
+				.Where(a => a.Attr != null);
 
 				var typeBuilder = ImplModuleBuilder.DefineType($"Bizhawk.BizExvokeHolder{type.Name}", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed);
 

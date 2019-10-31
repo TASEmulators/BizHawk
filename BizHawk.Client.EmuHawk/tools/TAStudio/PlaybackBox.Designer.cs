@@ -45,9 +45,6 @@
 			// 
 			// PlaybackGroupBox
 			// 
-			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.PlaybackGroupBox.Controls.Add(this.RecordingModeCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
@@ -57,9 +54,10 @@
 			this.PlaybackGroupBox.Controls.Add(this.PauseButton);
 			this.PlaybackGroupBox.Controls.Add(this.RewindButton);
 			this.PlaybackGroupBox.Controls.Add(this.PreviousMarkerButton);
-			this.PlaybackGroupBox.Location = new System.Drawing.Point(3, 3);
+			this.PlaybackGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.PlaybackGroupBox.Location = new System.Drawing.Point(0, 0);
 			this.PlaybackGroupBox.Name = "PlaybackGroupBox";
-			this.PlaybackGroupBox.Size = new System.Drawing.Size(252, 104);
+			this.PlaybackGroupBox.Size = new System.Drawing.Size(198, 104);
 			this.PlaybackGroupBox.TabIndex = 0;
 			this.PlaybackGroupBox.TabStop = false;
 			this.PlaybackGroupBox.Text = "Playback";
@@ -174,7 +172,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.PlaybackGroupBox);
 			this.Name = "PlaybackBox";
-			this.Size = new System.Drawing.Size(258, 110);
+			this.Size = new System.Drawing.Size(198, 104);
 			this.PlaybackGroupBox.ResumeLayout(false);
 			this.PlaybackGroupBox.PerformLayout();
 			this.ResumeLayout(false);

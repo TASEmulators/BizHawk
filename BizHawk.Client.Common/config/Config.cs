@@ -104,6 +104,8 @@ namespace BizHawk.Client.Common
 		public int MainHeight = -1;
 		public bool RunInBackground = true;
 		public bool AcceptBackgroundInput = false;
+		public bool AcceptBackgroundInputControllerOnly = false;
+		public bool HandleAlternateKeyboardLayouts = false;
 		public bool SingleInstanceMode = false;
 		public bool AllowUD_LR = false;
 		public bool ForbidUD_LR = false;

@@ -7,10 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
-using BizHawk.Client.Common;
-
 
 namespace BizHawk.Client.EmuHawk.WinFormExtensions
 {
@@ -43,44 +40,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return control.BeginInvoke(action);
 		}
 
-		public static void AddColumn(this ListView listView, string columnName, bool enabled, int columnWidth)
-		{
-			if (enabled)
-			{
-				if (listView.Columns[columnName] == null)
-				{
-					var column = new ColumnHeader
-					{
-						Name = columnName,
-						Text = columnName.Replace("Column", ""),
-						Width = columnWidth,
-					};
-
-					listView.Columns.Add(column);
-				}
-			}
-		}
-
-		public static void AddColumn(this ListView listView, ToolDialogSettings.Column column)
-		{
-			if (column.Visible)
-			{
-				if (listView.Columns[column.Name] == null)
-				{
-					var lsstViewColumn = new ColumnHeader
-					{
-						Name = column.Name,
-						Text = column.Name.Replace("Column", ""),
-						Width = column.Width,
-						DisplayIndex = column.Index
-					};
-
-					listView.Columns.Add(lsstViewColumn);
-				}
-			}
-		}
-
-		public static ToolStripMenuItem GenerateColumnsMenu(this ToolDialogSettings.ColumnList list, Action changeCallback)
+		public static ToolStripMenuItem ToColumnsMenu(this InputRoll inputRoll, Action changeCallback)
 		{
 			var menu = new ToolStripMenuItem
 			{
@@ -88,32 +48,30 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				Text = "Columns"
 			};
 
-			var dummyList = list;
+			var columns = inputRoll.AllColumns;
 
-			foreach (var column in dummyList)
+			foreach (var column in columns)
 			{
 				var menuItem = new ToolStripMenuItem
 				{
 					Name = column.Name,
-					Text = column.Name.Replace("Column", "")
+					Text = $"{column.Text} ({column.Name})",
+					Checked = column.Visible,
+					CheckOnClick = true,
+					Tag = column.Name
 				};
 
-				menuItem.Click += (o, ev) =>
+				menuItem.CheckedChanged += (o, ev) =>
 				{
-					dummyList[menuItem.Name].Visible ^= true;
+					var sender = (ToolStripMenuItem)o;
+					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					columns.ColumnsChanged();
 					changeCallback();
+					inputRoll.Refresh();
 				};
 
 				menu.DropDownItems.Add(menuItem);
 			}
-
-			menu.DropDownOpened += (o, e) =>
-			{
-				foreach (var column in dummyList)
-				{
-					(menu.DropDownItems[column.Name] as ToolStripMenuItem).Checked = column.Visible;
-				}
-			};
 
 			return menu;
 		}
@@ -121,6 +79,13 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static Point ChildPointToScreen(this Control control, Control child)
 		{
 			return control.PointToScreen(new Point(child.Location.X, child.Location.Y));
+		}
+
+		public static Color Add(this Color color, int val)
+		{
+			var col = color.ToArgb();
+			col += val;
+			return Color.FromArgb(col);
 		}
 
 		#region Enumerable to Enumerable<T>
@@ -137,16 +102,6 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static IEnumerable<TabPage> TabPages(this TabControl tabControl)
 		{
 			return tabControl.TabPages.Cast<TabPage>();
-		}
-
-		public static IEnumerable<int> SelectedIndices(this ListView listView)
-		{
-			return listView.SelectedIndices.Cast<int>();
-		}
-
-		public static IEnumerable<ColumnHeader> ColumnHeaders(this ListView listView)
-		{
-			return listView.Columns.OfType<ColumnHeader>();
 		}
 
 		#endregion
@@ -251,7 +206,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			{
 				foreach (ListViewItem.ListViewSubItem item in listViewControl.Items[index].SubItems)
 				{
-					if (!String.IsNullOrWhiteSpace(item.Text))
+					if (!string.IsNullOrWhiteSpace(item.Text))
 					{
 						sb.Append(item.Text).Append('\t');
 					}

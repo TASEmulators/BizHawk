@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public uint[] OBJ_palette = new uint[32];
 
 		public bool HDMA_active;
+		public bool clear_screen;
 
 		// register variables
 		public byte LCDC;
@@ -103,6 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int window_x_tile;
 		public int window_y_tile_inc;
 		public int window_x_latch;
+		public int window_y_latch;
 
 		public int hbl_countdown;
 
@@ -171,6 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(BG_palette), ref BG_palette, false);
 			ser.Sync(nameof(OBJ_palette), ref OBJ_palette, false);
 			ser.Sync(nameof(HDMA_active), ref HDMA_active);
+			ser.Sync(nameof(clear_screen), ref clear_screen);
 
 			ser.Sync(nameof(LCDC), ref LCDC);
 			ser.Sync(nameof(STAT), ref STAT);
@@ -259,6 +262,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync(nameof(window_x_tile), ref window_x_tile);
 			ser.Sync(nameof(window_y_tile_inc), ref window_y_tile_inc);
 			ser.Sync(nameof(window_x_latch), ref window_x_latch);
+			ser.Sync(nameof(window_y_latch), ref window_y_latch);
 
 			ser.Sync(nameof(hbl_countdown), ref hbl_countdown);
 		}

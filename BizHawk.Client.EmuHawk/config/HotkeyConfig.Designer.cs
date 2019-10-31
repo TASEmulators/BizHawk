@@ -228,7 +228,8 @@
 			this.Name = "HotkeyConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Configure Hotkeys";
-			this.Load += new System.EventHandler(this.NewHotkeyWindow_Load);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.HotkeyConfig_FormClosed);
+			this.Load += new System.EventHandler(this.HotkeyConfig_Load);
 			this.HotkeyTabControl.ResumeLayout(false);
 			this.clearBtnContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);

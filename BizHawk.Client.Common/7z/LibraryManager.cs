@@ -134,54 +134,54 @@ namespace SevenZip
         /// <param name="format">Archive format</param>
         public static void LoadLibrary(object user, Enum format)
         {
-    lock (_syncRoot)
-                {
-            if (_inArchives == null
-#if COMPRESS
-                || _outArchives == null
-#endif
-                )
+            lock (_syncRoot)
             {
-                Init();
-            }
+                if (_inArchives == null
+#if COMPRESS
+                    || _outArchives == null
+#endif
+                    )
+                {
+                    Init();
+                }
 #if !WINCE && !MONO
-            if (_modulePtr == IntPtr.Zero)
-            {
-							//zero 29-oct-2012 - this check isnt useful since LoadLibrary can pretty much check for the same thing. and it wrecks our dll relocation scheme
-								//if (!File.Exists(_libraryFileName))
-								//{
-								//    throw new SevenZipLibraryException("DLL file does not exist.");
-								//}
-                if ((_modulePtr = libLoader.LoadPlatformSpecific(_libraryFileName)) == IntPtr.Zero)
+                if (_modulePtr == IntPtr.Zero)
                 {
-									//try a different directory
-									string alternateFilename = Path.Combine(Path.Combine(Path.GetDirectoryName(_libraryFileName),"dll"),"7z.dll");
-									if ((_modulePtr = libLoader.LoadPlatformSpecific(alternateFilename)) == IntPtr.Zero)
-                    throw new SevenZipLibraryException("failed to load library.");
-                }
-                if (libLoader.GetProcAddr(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
-                {
-                    libLoader.FreePlatformSpecific(_modulePtr);
-                    throw new SevenZipLibraryException("library is invalid.");
-                }
-            }
-#endif
-            if (format is InArchiveFormat)
-            {
-                InitUserInFormat(user, (InArchiveFormat) format);
-                return;
-            }
-#if COMPRESS
-            if (format is OutArchiveFormat)
-            {
-                InitUserOutFormat(user, (OutArchiveFormat) format);
-                return;
-            }
-#endif
-            throw new ArgumentException(
-                "Enum " + format + " is not a valid archive format attribute!");
-								}
+                    //zero 29-oct-2012 - this check isnt useful since LoadOrNull can pretty much check for the same thing. and it wrecks our dll relocation scheme
+                    //if (!File.Exists(_libraryFileName))
+                    //{
+                    //    throw new SevenZipLibraryException("DLL file does not exist.");
+                    //}
+                    var newPtr = libLoader.LoadOrNull(_libraryFileName);
+                    if (!newPtr.HasValue)
+                    {
+                        //try a different directory
+                        newPtr = libLoader.LoadOrNull(Path.Combine(Path.Combine(Path.GetDirectoryName(_libraryFileName), "dll"), "7z.dll"));
+                        if (!newPtr.HasValue) throw new SevenZipLibraryException("failed to load library.");
+                    }
+                    _modulePtr = newPtr.Value;
 
+                    if (libLoader.GetProcAddr(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
+                    {
+                        libLoader.FreeByPtr(_modulePtr);
+                        throw new SevenZipLibraryException("library is invalid.");
+                    }
+                }
+#endif
+                if (format is InArchiveFormat)
+                {
+                    InitUserInFormat(user, (InArchiveFormat) format);
+                    return;
+                }
+#if COMPRESS
+                if (format is OutArchiveFormat)
+                {
+                    InitUserOutFormat(user, (OutArchiveFormat) format);
+                    return;
+                }
+#endif
+                throw new ArgumentException("Enum " + format + " is not a valid archive format attribute!");
+            }
         }
 
         /*/// <summary>
@@ -435,7 +435,7 @@ namespace SevenZip
                     if (_totalUsers == 0)
                     {
 #if !WINCE && !MONO
-                        libLoader.FreePlatformSpecific(_modulePtr);
+                        libLoader.FreeByPtr(_modulePtr);
 
 #endif
                         _modulePtr = IntPtr.Zero;

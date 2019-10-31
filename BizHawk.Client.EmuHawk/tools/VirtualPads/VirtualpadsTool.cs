@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -23,15 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		
 		private bool _readOnly;
 
-		private List<VirtualPad> Pads
-		{
-			get
-			{
-				return ControllerPanel.Controls
-					.OfType<VirtualPad>()
-					.ToList();
-			}
-		}
+		private List<VirtualPad> Pads =>
+			ControllerPanel.Controls
+				.OfType<VirtualPad>()
+				.ToList();
 
 		public bool Readonly
 		{

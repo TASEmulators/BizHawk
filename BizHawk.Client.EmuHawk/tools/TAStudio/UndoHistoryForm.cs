@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 
@@ -7,6 +8,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class UndoHistoryForm : Form
 	{
+		private const string IdColumnName = "ID";
+		private const string UndoColumnName = "Undo Step";
+		
 		private readonly TAStudio _tastudio;
 		private string _lastUndoAction;
 		private TasMovieChangeLog Log => _tastudio.CurrentTasMovie.ChangeLog;
@@ -19,30 +23,30 @@ namespace BizHawk.Client.EmuHawk
 			HistoryView.QueryItemText += HistoryView_QueryItemText;
 			HistoryView.QueryItemBkColor += HistoryView_QueryItemBkColor;
 
-			HistoryView.Columns[1].Width = 280;
+			HistoryView.AllColumns.Clear();
+			HistoryView.AllColumns.AddRange(new[]
+			{
+				new RollColumn { Name = IdColumnName, Text = IdColumnName, Width = 40, Type = ColumnType.Text },
+				new RollColumn { Name = UndoColumnName, Text = UndoColumnName, Width = 280, Type = ColumnType.Text }
+			});
 
 			MaxStepsNum.Value = Log.MaxSteps;
 		}
 
-		private void HistoryView_QueryItemText(int row, int column, out string text)
+		private void HistoryView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
-			text = column == 1
-				? Log.Names[row]
-				: row.ToString();
+			text = column.Name == UndoColumnName
+				? Log.Names[index]
+				: index.ToString();
 		}
 
-		private void HistoryView_QueryItemBkColor(int row, int column, ref Color color)
+		private void HistoryView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
-			if (column == 0)
-			{
-				return;
-			}
-
-			if (row == Log.UndoIndex)
+			if (index == Log.UndoIndex)
 			{
 				color = TAStudio.GreenZone_InputLog;
 			}
-			else if (row > Log.UndoIndex)
+			else if (index > Log.UndoIndex)
 			{
 				color = TAStudio.LagZone_InputLog;
 			}
@@ -50,12 +54,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			HistoryView.ItemCount = Log.Names.Count;
+			HistoryView.RowCount = Log.Names.Count;
 			if (AutoScrollCheck.Checked && _lastUndoAction != Log.NextUndoStepName)
 			{
-				HistoryView.ensureVisible(Log.UndoIndex);
-				HistoryView.clearSelection();
-				HistoryView.SelectItem(Log.UndoIndex - 1, true);
+				HistoryView.ScrollToIndex(Log.UndoIndex);
+				HistoryView.DeselectAll();
+				HistoryView.SelectRow(Log.UndoIndex - 1, true);
 			}
 
 			_lastUndoAction = Log.NextUndoStepName;
@@ -81,9 +85,13 @@ namespace BizHawk.Client.EmuHawk
 			_tastudio.RefreshDialog();
 		}
 
+		private int SelectedItem => HistoryView.SelectedRows.Any()
+			? HistoryView.SelectedRows.First()
+			: -1;
+
 		private void HistoryView_DoubleClick(object sender, EventArgs e)
 		{
-			if (Log.UndoIndex <= HistoryView.selectedItem)
+			if (Log.UndoIndex <= SelectedItem)
 			{
 				return;
 			}
@@ -92,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Log.Undo();
 			}
-			while (Log.UndoIndex > HistoryView.selectedItem);
+			while (Log.UndoIndex > SelectedItem);
 
 			UpdateValues();
 		}
@@ -105,9 +113,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (HistoryView.selectedItem == -1)
+				if (SelectedItem == -1)
 				{
-					HistoryView.SelectItem(_hackSelect, true);
+					HistoryView.SelectRow(_hackSelect, true);
 				}
 			}
 		}
@@ -117,13 +125,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HistoryView_MouseDown(object sender, MouseEventArgs e)
 		{
-			HistoryView.SelectItem((e.Y / HistoryView.LineHeight) + HistoryView.VScrollPos - 1, true);
-			_hackSelect = HistoryView.selectedItem;
+			_hackSelect = SelectedItem;
 		}
 
 		private void UndoHereMenuItem_Click(object sender, EventArgs e)
 		{
-			if (HistoryView.selectedItem == -1 || Log.UndoIndex < HistoryView.selectedItem)
+			if (SelectedItem == -1 || Log.UndoIndex < SelectedItem)
 			{
 				return;
 			}
@@ -132,14 +139,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Log.Undo();
 			}
-			while (Log.UndoIndex >= HistoryView.selectedItem);
+			while (Log.UndoIndex >= SelectedItem);
 
 			UpdateValues();
 		}
 
 		private void RedoHereMenuItem_Click(object sender, EventArgs e)
 		{
-			if (HistoryView.selectedItem == -1 || Log.UndoIndex >= HistoryView.selectedItem)
+			if (SelectedItem == -1 || Log.UndoIndex >= SelectedItem)
 			{
 				return;
 			}
@@ -148,16 +155,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Log.Redo();
 			}
-			while (Log.UndoIndex < HistoryView.selectedItem);
+			while (Log.UndoIndex < SelectedItem);
 
 			UpdateValues();
 		}
 
 		private void ClearHistoryToHereMenuItem_Click(object sender, EventArgs e)
 		{
-			if (HistoryView.selectedItem != -1)
+			if (SelectedItem != -1)
 			{
-				Log.ClearLog(HistoryView.selectedItem);
+				Log.ClearLog(SelectedItem);
 			}
 
 			UpdateValues();

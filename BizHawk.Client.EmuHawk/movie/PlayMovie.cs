@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public PlayMovie()
 		{
 			InitializeComponent();
-			MovieView.QueryItemText += MovieView_QueryItemText;
+			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;
 			_sortedCol = "";
@@ -45,28 +45,13 @@ namespace BizHawk.Client.EmuHawk
 			TurboCheckbox.Checked = Global.Config.TurboSeek;
 		}
 
-		private void MovieView_QueryItemText(int index, int column, out string text)
+		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
-			text = "";
-			if (column == 0) // File
-			{
-				text = Path.GetFileName(_movieList[index].Filename);
-			}
-
-			if (column == 1) // System
-			{
-				text = _movieList[index].SystemID;
-			}
-
-			if (column == 2) // Game
-			{
-				text = _movieList[index].GameName;
-			}
-
-			if (column == 3) // Time
-			{
-				text = PlatformFrameRates.MovieTime(_movieList[index]).ToString(@"hh\:mm\:ss\.fff");
-			}
+			var entry = _movieList[e.ItemIndex];
+			e.Item = new ListViewItem(entry.Filename);
+			e.Item.SubItems.Add(entry.SystemID);
+			e.Item.SubItems.Add(entry.GameName);
+			e.Item.SubItems.Add(PlatformFrameRates.MovieTime(entry).ToString(@"hh\:mm\:ss\.fff"));
 		}
 
 		private void Run()
@@ -230,14 +215,13 @@ namespace BizHawk.Client.EmuHawk
 		private void HighlightMovie(int index)
 		{
 			MovieView.SelectedIndices.Clear();
-			MovieView.setSelection(index);
-			MovieView.SelectItem(index, true);
+			MovieView.Items[index].Selected = true;
 		}
 
 		private void ScanFiles()
 		{
 			_movieList.Clear();
-			MovieView.ItemCount = 0;
+			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
 			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
@@ -293,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshMovieList()
 		{
-			MovieView.ItemCount = _movieList.Count;
+			MovieView.VirtualListSize = _movieList.Count;
 			UpdateList();
 		}
 
@@ -306,10 +290,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-			filePaths
-				.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path).Replace(".", "")))
-				.ToList()
-				.ForEach(path => AddMovieToList(path, force: true));
+			foreach (var path in filePaths.Where(path => MovieService.MovieExtensions.Contains(Path.GetExtension(path).Replace(".", ""))))
+			{
+				AddMovieToList(path, force: true);
+			}
 
 			RefreshMovieList();
 		}
@@ -403,7 +387,7 @@ namespace BizHawk.Client.EmuHawk
 			OK.Enabled = true;
 
 			var firstIndex = MovieView.SelectedIndices[0];
-			MovieView.ensureVisible(firstIndex);
+			MovieView.EnsureVisible(firstIndex);
 
 			foreach (var kvp in _movieList[firstIndex].HeaderEntries)
 			{
@@ -468,11 +452,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditMenuItem_Click(object sender, EventArgs e)
 		{
-			MovieView.SelectedIndices
-				.Cast<int>()
-				.Select(index => _movieList[index])
-				.ToList()
-				.ForEach(movie => System.Diagnostics.Process.Start(movie.Filename));
+			foreach (var movie in MovieView.SelectedIndices.Cast<int>()
+				.Select(index => _movieList[index]))
+			{
+				System.Diagnostics.Process.Start(movie.Filename);
+			}
 		}
 
 		#endregion
@@ -593,8 +577,7 @@ namespace BizHawk.Client.EmuHawk
 				if (index.HasValue)
 				{
 					MovieView.SelectedIndices.Clear();
-					MovieView.setSelection(index.Value);
-					MovieView.SelectItem(index.Value, true);
+					MovieView.Items[index.Value].Selected = true;
 				}
 			}
 		}

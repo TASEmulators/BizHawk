@@ -42,6 +42,7 @@
             this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.AcceptBackgroundInputCheckbox = new System.Windows.Forms.CheckBox();
+            this.AcceptBackgroundInputControllerOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
             this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
@@ -73,6 +74,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.HandleAlternateKeyboardLayoutsCheckBox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -120,10 +122,12 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.HandleAlternateKeyboardLayoutsCheckBox);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.NeverAskSaveCheckbox);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.AcceptBackgroundInputCheckbox);
+            this.tabPage1.Controls.Add(this.AcceptBackgroundInputControllerOnlyCheckBox);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.RunInBackgroundCheckbox);
             this.tabPage1.Controls.Add(this.SaveWindowPositionCheckbox);
@@ -144,7 +148,7 @@
             this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-            this.groupBox1.Location = new System.Drawing.Point(6, 182);
+            this.groupBox1.Location = new System.Drawing.Point(6, 205);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(369, 140);
             this.groupBox1.TabIndex = 13;
@@ -215,7 +219,7 @@
             this.label2.Location = new System.Drawing.Point(26, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(349, 13);
-            this.label2.TabIndex = 9;
+            this.label2.TabIndex = 10;
             this.label2.Text = "When this is set, the client will receive user input even when focus is lost";
             // 
             // AcceptBackgroundInputCheckbox
@@ -227,6 +231,18 @@
             this.AcceptBackgroundInputCheckbox.TabIndex = 8;
             this.AcceptBackgroundInputCheckbox.Text = "Accept background input";
             this.AcceptBackgroundInputCheckbox.UseVisualStyleBackColor = true;
+            this.AcceptBackgroundInputCheckbox.CheckedChanged += new System.EventHandler(this.AcceptBackgroundInputCheckbox_CheckedChanged);
+            // 
+            // AcceptBackgroundInputControllerOnlyCheckBox
+            // 
+            this.AcceptBackgroundInputControllerOnlyCheckBox.AutoSize = true;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Enabled = false;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Location = new System.Drawing.Point(156, 135);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Name = "AcceptBackgroundInputControllerOnlyCheckBox";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Size = new System.Drawing.Size(117, 17);
+            this.AcceptBackgroundInputControllerOnlyCheckBox.TabIndex = 9;
+            this.AcceptBackgroundInputControllerOnlyCheckBox.Text = "From controller only";
+            this.AcceptBackgroundInputControllerOnlyCheckBox.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -313,7 +329,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(265, 60);
-            this.groupBox2.TabIndex = 27;
+            this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "AutoSaveRAM";
             // 
@@ -327,7 +343,7 @@
             0});
             this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
             this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
-            this.AutosaveSRAMtextBox.TabIndex = 27;
+            this.AutosaveSRAMtextBox.TabIndex = 5;
             // 
             // AutosaveSRAMradioButton1
             // 
@@ -335,7 +351,7 @@
             this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(48, 33);
             this.AutosaveSRAMradioButton1.Name = "AutosaveSRAMradioButton1";
             this.AutosaveSRAMradioButton1.Size = new System.Drawing.Size(36, 17);
-            this.AutosaveSRAMradioButton1.TabIndex = 22;
+            this.AutosaveSRAMradioButton1.TabIndex = 2;
             this.AutosaveSRAMradioButton1.TabStop = true;
             this.AutosaveSRAMradioButton1.Text = "5s";
             this.AutosaveSRAMradioButton1.UseVisualStyleBackColor = true;
@@ -346,7 +362,7 @@
             this.label8.Location = new System.Drawing.Point(202, 35);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(12, 13);
-            this.label8.TabIndex = 26;
+            this.label8.TabIndex = 6;
             this.label8.Text = "s";
             // 
             // AutosaveSRAMradioButton2
@@ -355,7 +371,7 @@
             this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(90, 34);
             this.AutosaveSRAMradioButton2.Name = "AutosaveSRAMradioButton2";
             this.AutosaveSRAMradioButton2.Size = new System.Drawing.Size(39, 17);
-            this.AutosaveSRAMradioButton2.TabIndex = 23;
+            this.AutosaveSRAMradioButton2.TabIndex = 3;
             this.AutosaveSRAMradioButton2.TabStop = true;
             this.AutosaveSRAMradioButton2.Text = "5m";
             this.AutosaveSRAMradioButton2.UseVisualStyleBackColor = true;
@@ -366,7 +382,7 @@
             this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(131, 35);
             this.AutosaveSRAMradioButton3.Name = "AutosaveSRAMradioButton3";
             this.AutosaveSRAMradioButton3.Size = new System.Drawing.Size(14, 13);
-            this.AutosaveSRAMradioButton3.TabIndex = 24;
+            this.AutosaveSRAMradioButton3.TabIndex = 4;
             this.AutosaveSRAMradioButton3.TabStop = true;
             this.AutosaveSRAMradioButton3.UseVisualStyleBackColor = true;
             this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMradioButton3_CheckedChanged);
@@ -377,7 +393,7 @@
             this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 62);
             this.AutosaveSRAMCheckbox.Name = "AutosaveSRAMCheckbox";
             this.AutosaveSRAMCheckbox.Size = new System.Drawing.Size(15, 14);
-            this.AutosaveSRAMCheckbox.TabIndex = 21;
+            this.AutosaveSRAMCheckbox.TabIndex = 4;
             this.AutosaveSRAMCheckbox.UseVisualStyleBackColor = true;
             this.AutosaveSRAMCheckbox.CheckedChanged += new System.EventHandler(this.AutosaveSRAMCheckbox_CheckedChanged);
             // 
@@ -397,7 +413,7 @@
             this.label7.Location = new System.Drawing.Point(3, 1);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(50, 13);
-            this.label7.TabIndex = 2;
+            this.label7.TabIndex = 0;
             this.label7.Text = "Lua Core";
             // 
             // LuaInterfaceRadio
@@ -406,7 +422,7 @@
             this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
             this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
             this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
-            this.LuaInterfaceRadio.TabIndex = 1;
+            this.LuaInterfaceRadio.TabIndex = 2;
             this.LuaInterfaceRadio.TabStop = true;
             this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
             this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
@@ -417,7 +433,7 @@
             this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
             this.NLuaRadio.Name = "NLuaRadio";
             this.NLuaRadio.Size = new System.Drawing.Size(194, 17);
-            this.NLuaRadio.TabIndex = 0;
+            this.NLuaRadio.TabIndex = 1;
             this.NLuaRadio.TabStop = true;
             this.NLuaRadio.Text = "NLua+KopiLua - Reliable but slower";
             this.NLuaRadio.UseVisualStyleBackColor = true;
@@ -507,7 +523,7 @@
             this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 39);
             this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
             this.BackupSRamCheckbox.Size = new System.Drawing.Size(203, 17);
-            this.BackupSRamCheckbox.TabIndex = 9;
+            this.BackupSRamCheckbox.TabIndex = 3;
             this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
@@ -536,7 +552,7 @@
             this.label9.Location = new System.Drawing.Point(6, 16);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(225, 13);
-            this.label9.TabIndex = 28;
+            this.label9.TabIndex = 0;
             this.label9.Text = "Save SaveRAM to .AutoSaveRAM.SaveRAM";
             // 
             // label10
@@ -545,8 +561,18 @@
             this.label10.Location = new System.Drawing.Point(9, 34);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(33, 13);
-            this.label10.TabIndex = 29;
+            this.label10.TabIndex = 1;
             this.label10.Text = "every";
+            // 
+            // HandleAlternateKeyboardLayoutsCheckBox
+            // 
+            this.HandleAlternateKeyboardLayoutsCheckBox.AutoSize = true;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Location = new System.Drawing.Point(6, 175);
+            this.HandleAlternateKeyboardLayoutsCheckBox.Name = "HandleAlternateKeyboardLayoutsCheckBox";
+            this.HandleAlternateKeyboardLayoutsCheckBox.Size = new System.Drawing.Size(255, 17);
+            this.HandleAlternateKeyboardLayoutsCheckBox.TabIndex = 11;
+            this.HandleAlternateKeyboardLayoutsCheckBox.Text = "Handle alternate keyboard layouts (e.g. Dvorak) [experimental]";
+            this.HandleAlternateKeyboardLayoutsCheckBox.UseVisualStyleBackColor = true;
             // 
             // EmuHawkOptions
             // 
@@ -593,6 +619,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox AcceptBackgroundInputCheckbox;
+		private System.Windows.Forms.CheckBox AcceptBackgroundInputControllerOnlyCheckBox;
 		private System.Windows.Forms.CheckBox NeverAskSaveCheckbox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
@@ -625,5 +652,6 @@
 		private System.Windows.Forms.NumericUpDown AutosaveSRAMtextBox;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.CheckBox HandleAlternateKeyboardLayoutsCheckBox;
 	}
 }

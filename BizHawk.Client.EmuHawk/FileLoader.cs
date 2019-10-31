@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -40,31 +39,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// This is the list from MainForm->RomFilter()'s non-developer build.  It needs to be kept up-to-date when new cores are added.
-		// adelikat: This is annoying and bad. Maybe we could generate RomFilter from this property?
-		private string[] KnownRomExtensions
-		{
-			get
-			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return new[]
-					{
-						".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC",
-						".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML",
-						".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF", ".EXE", ".PRG", ".D64", ".G64", ".CRT", ".TAP", ".32X", ".MDS", ".TZX",
-						".PZX", ".CSW", ".WAV", ".CDT"
-					};
-				}
-
-				return new[] 
-				{
-					".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC",
-					".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML",
-					".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF", ".PRG", ".D64", ".G64", ".CRT", ".TAP", ".32X", ".MDS", ".TZX", ".PZX", ".CSW", ".WAV"
-				};
-			}
-		}
+		private IEnumerable<string> KnownRomExtensions =>
+			RomFilterEntries.SelectMany(f => f.EffectiveFilters.Where(s => s.StartsWith("*.", StringComparison.Ordinal)).Select(s => s.Substring(1).ToUpperInvariant()));
 
 		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
 
@@ -173,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file).ToUpper() ?? "";
+				var ext = Path.GetExtension(file).ToUpperInvariant() ?? "";
 				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
 
 				switch (ext)

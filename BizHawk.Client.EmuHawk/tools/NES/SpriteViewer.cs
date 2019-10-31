@@ -29,10 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Display(Graphics g)
 		{
-			unchecked
-			{
-				g.DrawImage(sprites, 1, 1);
-			}
+			g.DrawImage(sprites, 1, 1);
 		}
 
 		private void SpriteViewer_Paint(object sender, PaintEventArgs e)

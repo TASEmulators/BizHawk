@@ -15,44 +15,44 @@ namespace BizHawk.Emulation.Common
 		private int _accumL;
 		private int _accumR;
 
-		private static int DepthFromFilterwidth(int filterwidth)
+		private static int DepthFromFilterWidth(int filterWidth)
 		{
 			int ret = -2;
-			while (filterwidth > 0)
+			while (filterWidth > 0)
 			{
-				filterwidth >>= 1;
+				filterWidth >>= 1;
 				ret++;
 			}
 
 			return ret;
 		}
 
-		public DCFilter(ISoundProvider input, int filterwidth)
+		public DCFilter(ISoundProvider input, int filterWidth)
 		{
 			if (input == null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			if (filterwidth < 8 || filterwidth > 65536)
+			if (filterWidth < 8 || filterWidth > 65536)
 			{
 				throw new ArgumentOutOfRangeException();
 			}
 
-			_depth = DepthFromFilterwidth(filterwidth);
+			_depth = DepthFromFilterWidth(filterWidth);
 
 			_soundProvider = input;
 		}
 
 		// Detached mode
-		public DCFilter(int filterwidth)
+		public DCFilter(int filterWidth)
 		{
-			if (filterwidth < 8 || filterwidth > 65536)
+			if (filterWidth < 8 || filterWidth > 65536)
 			{
 				throw new ArgumentOutOfRangeException();
 			}
 
-			_depth = DepthFromFilterwidth(filterwidth);
+			_depth = DepthFromFilterWidth(filterWidth);
 
 			_soundProvider = null;
 		}
@@ -67,12 +67,12 @@ namespace BizHawk.Emulation.Common
 			PushThroughSamples(samples, samples, length);
 		}
 
-		private void PushThroughSamples(short[] samplesin, short[] samplesout, int length)
+		private void PushThroughSamples(short[] samplesIn, short[] samplesOut, int length)
 		{
 			for (int i = 0; i < length; i += 2)
 			{
-				int l = samplesin[i] << 12;
-				int r = samplesin[i + 1] << 12;
+				int l = samplesIn[i] << 12;
+				int r = samplesIn[i + 1] << 12;
 				_accumL -= _accumL >> _depth;
 				_accumR -= _accumR >> _depth;
 				_accumL += l - _latchL;
@@ -86,28 +86,28 @@ namespace BizHawk.Emulation.Common
 				// check for clipping
 				if (bigL > 32767)
 				{
-					samplesout[i] = 32767;
+					samplesOut[i] = 32767;
 				}
 				else if (bigL < -32768)
 				{
-					samplesout[i] = -32768;
+					samplesOut[i] = -32768;
 				}
 				else
 				{
-					samplesout[i] = (short)bigL;
+					samplesOut[i] = (short)bigL;
 				}
 
 				if (bigR > 32767)
 				{
-					samplesout[i + 1] = 32767;
+					samplesOut[i + 1] = 32767;
 				}
 				else if (bigR < -32768)
 				{
-					samplesout[i + 1] = -32768;
+					samplesOut[i + 1] = -32768;
 				}
 				else
 				{
-					samplesout[i + 1] = (short)bigR;
+					samplesOut[i + 1] = (short)bigR;
 				}
 			}
 		}
@@ -125,15 +125,12 @@ namespace BizHawk.Emulation.Common
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] sampin;
-			int nsampin;
+			_soundProvider.GetSamplesSync(out var sampIn, out var nsampIn);
 
-			_soundProvider.GetSamplesSync(out sampin, out nsampin);
-
-			short[] ret = new short[nsampin * 2];
-			PushThroughSamples(sampin, ret, nsampin * 2);
+			short[] ret = new short[nsampIn * 2];
+			PushThroughSamples(sampIn, ret, nsampIn * 2);
 			samples = ret;
-			nsamp = nsampin;
+			nsamp = nsampIn;
 		}
 
 		public SyncSoundMode SyncMode => _soundProvider.SyncMode;

@@ -1,7 +1,5 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -114,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4F: // VBK
 					if (GBC_compat)
 					{
-						ret = VRAM_Bank;
+						ret = (byte)(0xFE | VRAM_Bank);
 					}
 					else
 					{
@@ -144,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 
 				case 0xFF56:
-					if (is_GBC)
+					if (GBC_compat)
 					{
 						// can receive data
 						if ((IR_reg & 0xC0) == 0xC0)

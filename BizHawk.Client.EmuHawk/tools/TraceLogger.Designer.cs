@@ -31,9 +31,7 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
-			this.TraceView = new BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView();
-			this.Disasm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.Registers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TraceView = new InputRoll();
 			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.CopyContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +55,6 @@
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
 			this.SegmentSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoScrollMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.TraceContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -79,54 +76,22 @@
 			// 
 			// TraceView
 			// 
-			this.TraceView.AllowColumnReorder = false;
-			this.TraceView.AllowColumnResize = false;
-			this.TraceView.AllowRightClickSelecton = false;
 			this.TraceView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.TraceView.BlazingFast = false;
-			this.TraceView.BorderColor = System.Drawing.Color.DarkGray;
-			this.TraceView.BorderSize = 1;
-			this.TraceView.CellBackgroundColor = System.Drawing.Color.White;
-			this.TraceView.CellBackgroundHighlightColor = System.Drawing.Color.Blue;
-			this.TraceView.CellFont = new System.Drawing.Font("Arial", 8F);
-			this.TraceView.CellFontColor = System.Drawing.Color.Black;
-			this.TraceView.CellHeightPadding = 0;
-			this.TraceView.ColumnHeaderBackgroundColor = System.Drawing.Color.LightGray;
-			this.TraceView.ColumnHeaderBackgroundHighlightColor = System.Drawing.SystemColors.HighlightText;
-			this.TraceView.ColumnHeaderFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
-			this.TraceView.ColumnHeaderFontColor = System.Drawing.Color.Black;
-			this.TraceView.ColumnHeaderOutlineColor = System.Drawing.Color.Black;
 			this.TraceView.ContextMenuStrip = this.TraceContextMenu;
 			this.TraceView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.TraceView.FullRowSelect = true;
-			this.TraceView.GridLineColor = System.Drawing.SystemColors.ControlLight;
-			this.TraceView.HideSelection = false;
-			this.TraceView.LetKeysModifySelection = false;
+			this.TraceView.GridLines = true;
+			this.TraceView.RowCount = 0;
 			this.TraceView.Location = new System.Drawing.Point(8, 18);
-			this.TraceView.MultiSelect = false;
 			this.TraceView.Name = "TraceView";
-			this.TraceView.ScrollSpeed = 1;
-			this.TraceView.SeekingCutoffInterval = 0;
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
-			this.TraceView.SuspendHotkeys = false;
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;
-			this.TraceView.UseCompatibleStateImageBehavior = false;
-			this.TraceView.View = System.Windows.Forms.View.Details;
-			this.TraceView.VirtualListSize = 0;
-			this.TraceView.VirtualMode = false;
-			// 
-			// Disasm
-			// 
-			this.Disasm.Text = "Disasm";
-			this.Disasm.Width = 239;
-			// 
-			// Registers
-			// 
-			this.Registers.Text = "Registers";
-			this.Registers.Width = 357;
+			this.TraceView.UseCustomBackground = true;
+			this.TraceView.AllowColumnResize = true;
+			this.TraceView.AllowColumnReorder = false;
 			// 
 			// TraceContextMenu
 			// 
@@ -243,8 +208,7 @@
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MaxLinesMenuItem,
-            this.SegmentSizeMenuItem,
-            this.AutoScrollMenuItem});
+            this.SegmentSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
 			this.OptionsSubMenu.Size = new System.Drawing.Size(58, 20);
 			this.OptionsSubMenu.Text = "&Settings";
@@ -255,14 +219,6 @@
 			this.MaxLinesMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.MaxLinesMenuItem.Text = "&Set Max Lines...";
 			this.MaxLinesMenuItem.Click += new System.EventHandler(this.MaxLinesMenuItem_Click);
-			// 
-			// AutoScrollMenuItem
-			// 
-			this.AutoScrollMenuItem.CheckOnClick = true;
-			this.AutoScrollMenuItem.Name = "AutoScrollMenuItem";
-			this.AutoScrollMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.AutoScrollMenuItem.Text = "Auto Scroll";
-			this.AutoScrollMenuItem.Click += new System.EventHandler(this.AutoScrollMenuItem_Click);
 			// 
 			// groupBox2
 			// 
@@ -396,8 +352,7 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox LoggingEnabled;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private BizHawk.Client.EmuHawk.PlatformAgnosticVirtualListView TraceView;
-		public System.Windows.Forms.ColumnHeader Disasm;
+		private InputRoll TraceView;
 		private System.Windows.Forms.ToolStripMenuItem MaxLinesMenuItem;
 		private System.Windows.Forms.RadioButton ToFileRadio;
 		private System.Windows.Forms.RadioButton ToWindowRadio;
@@ -406,7 +361,6 @@
 		private System.Windows.Forms.ToolStripMenuItem EditSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
-		private System.Windows.Forms.ColumnHeader Registers;
 		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
 		private System.Windows.Forms.ContextMenuStrip TraceContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem CopyContextMenu;
@@ -414,6 +368,5 @@
 		private System.Windows.Forms.ToolStripMenuItem ClearContextMenu;
 		private System.Windows.Forms.Button OpenLogFile;
 		private System.Windows.Forms.ToolStripMenuItem SegmentSizeMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoScrollMenuItem;
 	}
 }

@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
@@ -40,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 				var ss = report.Split('\n');
 				foreach (var s in ss)
 					dlg.Lines.Add(s.TrimEnd('\r'));
-				dlg.virtualListView1.ItemCount = ss.Length;
+				dlg.virtualListView1.VirtualListSize = ss.Length;
 				dlg.Text = title;
 				dlg.btnClear.Visible = false;
 				dlg.ShowDialog(parent);
@@ -55,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!string.IsNullOrWhiteSpace(s))
 				{
 					Lines.Add(s.TrimEnd('\r'));
-					virtualListView1.ItemCount++;
+					virtualListView1.VirtualListSize++;
 				}
 			}
 		}
@@ -63,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		private void btnClear_Click(object sender, EventArgs e)
 		{
 			Lines.Clear();
-			virtualListView1.ItemCount = 0;
+			virtualListView1.VirtualListSize = 0;
 			virtualListView1.SelectedIndices.Clear();
 		}
 
@@ -99,9 +98,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void virtualListView1_QueryItemText(int item, int subItem, out string text)
+		private void virtualListView1_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
-			text = Lines[item];
+			e.Item = new ListViewItem(Lines[e.ItemIndex]);
 		}
 
 		private void virtualListView1_ClientSizeChanged(object sender, EventArgs e)

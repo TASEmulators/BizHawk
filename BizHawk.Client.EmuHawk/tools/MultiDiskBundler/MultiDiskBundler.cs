@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -18,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskBundler : Form, IToolFormAutoConfig
 	{
-		private XElement _currentXml = null;
+		private XElement _currentXml;
 
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
@@ -35,7 +33,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Global.Game.IsNullInstance &&  !GlobalWin.MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
-				string currentRom = GlobalWin.MainForm.CurrentlyOpenRom;
 				if (GlobalWin.MainForm.CurrentlyOpenRom.Contains("|"))
 				{
 					var pieces = GlobalWin.MainForm.CurrentlyOpenRom.Split('|');
@@ -50,12 +47,12 @@ namespace BizHawk.Client.EmuHawk
 					NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
 				}
 
-				 if (SystemDropDown.Items.Contains(Emulator.SystemId))
-				 {
-					 SystemDropDown.SelectedItem = Emulator.SystemId;
-				 }
+				if (SystemDropDown.Items.Contains(Emulator.SystemId))
+				{
+					SystemDropDown.SelectedItem = Emulator.SystemId;
+				}
 
-				 FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+				FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
 			}
 		}
 
@@ -83,10 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore
-		{
-			get { return true; }
-		}
+		public bool UpdateBefore => true;
 
 		#endregion
 
@@ -115,8 +109,8 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.OK;
 				Close();
 
-                var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-                GlobalWin.MainForm.LoadRom(fileInfo.FullName, lra);
+				var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
+				GlobalWin.MainForm.LoadRom(fileInfo.FullName, lra);
 			}
 		}
 
@@ -132,18 +126,18 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-            var mdf = new MultiDiskFileSelector
-            {
-                Location = UIHelper.Scale(new Point(7, 12)),
-                Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
-                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top                
+			var mdf = new MultiDiskFileSelector
+			{
+				Location = UIHelper.Scale(new Point(7, 12)),
+				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
+				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
-            mdf.SystemString = SystemDropDown.SelectedText;
+			mdf.SystemString = SystemDropDown.SelectedText;
 
 
-            groupBox.Controls.Add(mdf);
+			groupBox.Controls.Add(mdf);
 
 			FileSelectorPanel.Controls.Add(groupBox);
 		}
@@ -186,9 +180,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var fileSelectors = FileSelectors.ToList();
-
-				var names = fileSelectors.Select(f => f.GetName());
+				var names = FileSelectors.Select(f => f.GetName());
 
 				var name = NameBox.Text;
 
@@ -236,11 +228,6 @@ namespace BizHawk.Client.EmuHawk
 				SaveRunButton.Enabled = false;
 				return false;
 			}
-		}
-
-		private static string ConvertToTag(string name)
-		{
-			return new Regex("[^A-Za-z0-9]").Replace(name, "");
 		}
 
 		private void NameBox_TextChanged(object sender, EventArgs e)

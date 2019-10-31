@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			return samplesNeeded;
 		}
 
-		public void WriteSamples(short[] samples, int sampleCount)
+		public void WriteSamples(short[] samples, int sampleOffset, int sampleCount)
 		{
 			if (sampleCount == 0) return;
 			_remainingSamples += sampleCount;

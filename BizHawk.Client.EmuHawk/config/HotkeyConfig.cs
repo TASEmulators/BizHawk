@@ -14,11 +14,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			Closing += (o, e) =>
-			{
-				IDB_SAVE.Focus(); // A very dirty hack to avoid https://code.google.com/p/bizhawk/issues/detail?id=161
-			};
-
 			tabPage1.Focus();
 		}
 
@@ -34,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Instance.ControlInputFocus(this, Input.InputFocus.Mouse, false);
 		}
 
-		private void NewHotkeyWindow_Load(object sender, EventArgs e)
+		private void HotkeyConfig_Load(object sender, EventArgs e)
 		{
 			var source = new AutoCompleteStringCollection();
 			source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
@@ -45,6 +40,11 @@ namespace BizHawk.Client.EmuHawk
 			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
 			DoTabs();
 			DoFocus();
+		}
+
+		private void HotkeyConfig_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Input.Instance.ClearEvents();
 		}
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)
@@ -72,64 +72,49 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var w in InputWidgets)
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
+				var b = Global.Config.HotkeyBindings.First(x => x.DisplayName == w.WidgetName);
 				b.Bindings = w.Bindings;
 			}
 		}
 
-		private IEnumerable<InputCompositeWidget> InputWidgets
-		{
-			get
-			{
-				var widgets = new List<InputCompositeWidget>();
-				for (var x = 0; x < HotkeyTabControl.TabPages.Count; x++)
-				{
-					for (var y = 0; y < HotkeyTabControl.TabPages[x].Controls.Count; y++)
-					{
-						if (HotkeyTabControl.TabPages[x].Controls[y] is InputCompositeWidget)
-						{
-							widgets.Add(HotkeyTabControl.TabPages[x].Controls[y] as InputCompositeWidget);
-						}
-					}
-				}
-				return widgets;
-			}
-		}
+		private IEnumerable<InputCompositeWidget> InputWidgets =>
+			HotkeyTabControl.TabPages.Cast<TabPage>().SelectMany(tp => tp.Controls.OfType<InputCompositeWidget>());
 
 		private void DoTabs()
 		{
+			HotkeyTabControl.SuspendLayout();
 			HotkeyTabControl.TabPages.Clear();
 
 			// Buckets
-			var tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct().ToList();
+			var tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct();
 
 			foreach (var tab in tabs)
 			{
-				var _y = UIHelper.ScaleY(14);
-				var _x = UIHelper.ScaleX(6);
-
-				var tb = new TabPage {Name = tab, Text = tab};
-
-				var bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
-
+				var tb = new TabPage { Name = tab, Text = tab };
+				var bindings = Global.Config.HotkeyBindings.Where(n => n.TabGroup == tab).OrderBy(n => n.Ordinal).ThenBy(n => n.DisplayName);
+				int x = UIHelper.ScaleX(6);
+				int y = UIHelper.ScaleY(14);
 				int iwOffsetX = UIHelper.ScaleX(110);
 				int iwOffsetY = UIHelper.ScaleY(-4);
 				int iwWidth = UIHelper.ScaleX(120);
+
+				tb.SuspendLayout();
+
 				foreach (var b in bindings)
 				{
 					var l = new Label
 					{
 						Text = b.DisplayName,
-						Location = new Point(_x, _y),
-						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15)),
+						Location = new Point(x, y),
+						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15))
 					};
 
 					var w = new InputCompositeWidget
 					{
-						Location = new Point(_x + iwOffsetX, _y + iwOffsetY),
+						Location = new Point(x + iwOffsetX, y + iwOffsetY),
 						AutoTab = AutoTabCheckBox.Checked,
 						Width = iwWidth,
-						WidgetName = b.DisplayName,
+						WidgetName = b.DisplayName
 					};
 
 					w.SetupTooltip(toolTip1, b.ToolTip);
@@ -140,11 +125,11 @@ namespace BizHawk.Client.EmuHawk
 					tb.Controls.Add(l);
 					tb.Controls.Add(w);
 
-					_y += UIHelper.ScaleY(24);
-					if (_y > HotkeyTabControl.Height - UIHelper.ScaleY(35))
+					y += UIHelper.ScaleY(24);
+					if (y > HotkeyTabControl.Height - UIHelper.ScaleY(35))
 					{
-						_x += iwOffsetX + iwWidth + UIHelper.ScaleX(10);
-						_y = UIHelper.ScaleY(14);
+						x += iwOffsetX + iwWidth + UIHelper.ScaleX(10);
+						y = UIHelper.ScaleY(14);
 					}
 				}
 
@@ -153,13 +138,16 @@ namespace BizHawk.Client.EmuHawk
 					tb.Controls.Add(new Label
 					{
 						Text = "Save States hotkeys operate with branches when TAStudio is engaged.",
-						Location = new Point(_x, _y),
-						Size = new Size(iwWidth + iwOffsetX, HotkeyTabControl.Height - _y),
+						Location = new Point(x, y),
+						Size = new Size(iwWidth + iwOffsetX, HotkeyTabControl.Height - y)
 					});
 				}
 
 				HotkeyTabControl.TabPages.Add(tb);
+				tb.ResumeLayout();
 			}
+
+			HotkeyTabControl.ResumeLayout();
 		}
 
 		private void Defaults()
@@ -232,7 +220,6 @@ namespace BizHawk.Client.EmuHawk
 					if (w != null)
 					{
 						HotkeyTabControl.SelectTab((TabPage)w.Parent);
-						Input.Instance.BindUnpress(e.KeyCode);
 						w.Focus();
 					}
 				}

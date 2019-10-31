@@ -41,7 +41,7 @@
 			this.DomainDropDown = new System.Windows.Forms.ComboBox();
 			this.SizeLabel = new System.Windows.Forms.Label();
 			this.SizeDropDown = new System.Windows.Forms.ComboBox();
-			this.DisplayTypeLael = new System.Windows.Forms.Label();
+			this.DisplayTypeLabel = new System.Windows.Forms.Label();
 			this.DisplayTypeDropDown = new System.Windows.Forms.ComboBox();
 			this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
 			this.AddButton = new System.Windows.Forms.Button();
@@ -174,14 +174,14 @@
 			this.SizeDropDown.TabIndex = 19;
 			this.SizeDropDown.SelectedIndexChanged += new System.EventHandler(this.SizeDropDown_SelectedIndexChanged);
 			// 
-			// DisplayTypeLael
+			// DisplayTypeLabel
 			// 
-			this.DisplayTypeLael.AutoSize = true;
-			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 219);
-			this.DisplayTypeLael.Name = "DisplayTypeLael";
-			this.DisplayTypeLael.Size = new System.Drawing.Size(114, 25);
-			this.DisplayTypeLael.TabIndex = 20;
-			this.DisplayTypeLael.Text = "Display As";
+			this.DisplayTypeLabel.AutoSize = true;
+			this.DisplayTypeLabel.Location = new System.Drawing.Point(11, 219);
+			this.DisplayTypeLabel.Name = "DisplayTypeLabel";
+			this.DisplayTypeLabel.Size = new System.Drawing.Size(114, 25);
+			this.DisplayTypeLabel.TabIndex = 20;
+			this.DisplayTypeLabel.Text = "Display As";
 			// 
 			// DisplayTypeDropDown
 			// 
@@ -289,7 +289,7 @@
 			this.Controls.Add(this.AddButton);
 			this.Controls.Add(this.BigEndianCheckBox);
 			this.Controls.Add(this.DisplayTypeDropDown);
-			this.Controls.Add(this.DisplayTypeLael);
+			this.Controls.Add(this.DisplayTypeLabel);
 			this.Controls.Add(this.SizeDropDown);
 			this.Controls.Add(this.SizeLabel);
 			this.Controls.Add(this.DomainDropDown);
@@ -330,7 +330,7 @@
 		private System.Windows.Forms.ComboBox DomainDropDown;
 		private System.Windows.Forms.Label SizeLabel;
 		private System.Windows.Forms.ComboBox SizeDropDown;
-		private System.Windows.Forms.Label DisplayTypeLael;
+		private System.Windows.Forms.Label DisplayTypeLabel;
 		private System.Windows.Forms.ComboBox DisplayTypeDropDown;
 		private System.Windows.Forms.CheckBox BigEndianCheckBox;
 		private System.Windows.Forms.Button AddButton;

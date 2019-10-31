@@ -30,36 +30,33 @@ namespace BizHawk.Client.EmuHawk
 				//try loading libraries we know we'll need
 				//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
 				//but oddly it lets us proceed and we'll then catch it here
-				var d3dx9 = libLoader.LoadPlatformSpecific("d3dx9_43.dll");
-				var vc2015 = libLoader.LoadPlatformSpecific("vcruntime140.dll");
-				var vc2012 = libLoader.LoadPlatformSpecific("msvcr120.dll"); //TODO - check version?
-				var vc2010 = libLoader.LoadPlatformSpecific("msvcr100.dll"); //TODO - check version?
-				var vc2010p = libLoader.LoadPlatformSpecific("msvcp100.dll");
-				var fail = vc2015 == IntPtr.Zero || vc2010 == IntPtr.Zero || vc2012 == IntPtr.Zero || vc2010p == IntPtr.Zero;
-				var warn = d3dx9 == IntPtr.Zero;
-				if (fail || warn)
+				var d3dx9 = libLoader.LoadOrNull("d3dx9_43.dll");
+				var vc2015 = libLoader.LoadOrNull("vcruntime140.dll");
+				var vc2012 = libLoader.LoadOrNull("msvcr120.dll"); //TODO - check version?
+				var vc2010 = libLoader.LoadOrNull("msvcr100.dll"); //TODO - check version?
+				var vc2010p = libLoader.LoadOrNull("msvcp100.dll");
+				var reqPresent = vc2015.HasValue && vc2010.HasValue && vc2012.HasValue && vc2010p.HasValue;
+				var optPresent = d3dx9.HasValue;
+				if (!reqPresent || !optPresent)
 				{
 					var alertLines = new[]
 					{
 						"[ OK ] .NET CLR (You wouldn't even get here without it)",
-						$"[{(d3dx9 == IntPtr.Zero ? "WARN" : " OK ")}] Direct3d 9",
-						$"[{(vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero ? "FAIL" : " OK ")}] Visual C++ 2010 SP1 Runtime",
-						$"[{(vc2012 == IntPtr.Zero ? "FAIL" : " OK ")}] Visual C++ 2012 Runtime",
-						$"[{(vc2015 == IntPtr.Zero ? "FAIL" : " OK ")}] Visual C++ 2015 Runtime"
+						$"[{(d3dx9.HasValue ? " OK " : "WARN")}] Direct3d 9",
+						$"[{(vc2010.HasValue && vc2010p.HasValue ? " OK " : "FAIL")}] Visual C++ 2010 SP1 Runtime",
+						$"[{(vc2012.HasValue ? " OK " : "FAIL")}] Visual C++ 2012 Runtime",
+						$"[{(vc2015.HasValue ? " OK " : "FAIL")}] Visual C++ 2015 Runtime"
 					};
-					var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail)
+					var box = new CustomControls.PrereqsAlert(reqPresent)
 					{
-						textBox1 = { Text = string.Concat("\n", alertLines) }
+						textBox1 = { Text = string.Join(Environment.NewLine, alertLines) }
 					};
 					box.ShowDialog();
-					if (fail) System.Diagnostics.Process.GetCurrentProcess().Kill();
+					if (!reqPresent) Process.GetCurrentProcess().Kill();
 				}
 
-				libLoader.FreePlatformSpecific(d3dx9);
-				libLoader.FreePlatformSpecific(vc2015);
-				libLoader.FreePlatformSpecific(vc2012);
-				libLoader.FreePlatformSpecific(vc2010);
-				libLoader.FreePlatformSpecific(vc2010p);
+				foreach (var p in new[] { d3dx9, vc2015, vc2012, vc2010, vc2010p })
+					if (p.HasValue) libLoader.FreeByPtr(p.Value);
 
 				// this will look in subdirectory "dll" to load pinvoked stuff
 				var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
@@ -115,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileManager.Start();
+			TempFileManager.Start();
 
 #if true // switch to if false for system-agnostic glory!
 			switch (EXE_PROJECT.OSTailoredCode.CurrentOS)
@@ -147,8 +144,8 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.ResolveDefaults();
 
-			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
-			BizHawk.Client.Common.StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
+			StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
+			StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
 
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))

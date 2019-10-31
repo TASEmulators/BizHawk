@@ -38,6 +38,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
@@ -84,7 +85,7 @@
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\OpenTK.dll</HintPath>
     </Reference>
@@ -566,6 +567,8 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ControlRenderer\GdiPlusRenderer.cs" />
+    <Compile Include="CustomControls\ControlRenderer\IControlRenderer.cs" />
     <Compile Include="CustomControls\ExceptionBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -575,7 +578,7 @@
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\GDIRenderer.cs" />
+    <Compile Include="CustomControls\ControlRenderer\GDIRenderer.cs" />
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -585,21 +588,17 @@
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControls\InputRoll.cs">
+    <Compile Include="CustomControls\InputRoll\Cell.cs" />
+    <Compile Include="CustomControls\InputRoll\ColumnType.cs" />
+    <Compile Include="CustomControls\InputRoll\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\InputRoll.Drawing.cs">
+    <Compile Include="CustomControls\InputRoll\InputRoll.Drawing.cs">
       <DependentUpon>InputRoll.cs</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\InputRoll.Drawing.GDI.cs">
-      <DependentUpon>InputRoll.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\InputRoll.Drawing.GDIP.cs">
-      <DependentUpon>InputRoll.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControls\InputRoll\RollColumn.cs" />
+    <Compile Include="CustomControls\InputRoll\RollColumns.cs" />
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -611,30 +610,6 @@
     </Compile>
     <Compile Include="CustomControls\MsgBox.designer.cs">
       <DependentUpon>MsgBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.API.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Classes.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Drawing.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.EventHandlers.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Helpers.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.Properties.cs">
-      <DependentUpon>PlatformAgnosticVirtualListView.cs</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\PrereqsAlert.cs">
       <SubType>Form</SubType>
@@ -660,9 +635,6 @@
     <Compile Include="CustomControls\SmartTextBoxControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\TasListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomControls\TextDebugView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -672,7 +644,6 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -685,9 +656,11 @@
     <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
     <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
     <Compile Include="DisplayManager\TextureFrugalizer.cs" />
+    <Compile Include="EmuHawkUtil.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Extensions\CoreExtensions.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
+    <Compile Include="FileFilterEntry.cs" />
     <Compile Include="FileLoader.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -704,6 +677,7 @@
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\KeyboardMapping.cs" />
     <Compile Include="Input\OTK_Gamepad.cs" />
     <Compile Include="Input\OTK_Keyboard.cs" />
     <Compile Include="IControlMainform.cs" />
@@ -779,9 +753,6 @@
     <Compile Include="OpenAdvancedChooser.Designer.cs">
       <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\PlatformAgnosticVirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="PlatformChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -814,12 +785,6 @@
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttribute.cs" />
-    <Compile Include="tools\AutoHawk.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\AutoHawk.Designer.cs">
-      <DependentUpon>AutoHawk.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\BasicBot\BasicBot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1553,9 +1518,6 @@
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\TasListView.resx">
-      <DependentUpon>TasListView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1583,9 +1545,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\AutoHawk.resx">
-      <DependentUpon>AutoHawk.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
       <DependentUpon>BasicBot.cs</DependentUpon>
@@ -1899,6 +1858,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1926,6 +1886,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\StopButton.png" />
+    <None Include="images\mame.png" />
     <None Include="Resources\MoveTop.png" />
     <None Include="Resources\MoveBottom.png" />
     <None Include="Resources\MoveTop.bmp" />
@@ -2255,6 +2217,7 @@
     <None Include="images\ESE.png" />
     <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="config\ControllerImages\ZXSpectrumKeyboards.png" />
+    <None Include="images\ControllerImages\ArcadeController.jpg" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
