@@ -709,6 +709,38 @@
     </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\Audio.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.ICodeDataLog.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IDebuggable.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IEmulator.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IInputPollable.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IMemoryDomains.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.ISaveRam.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.ISettable.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IStatable.cs">
+      <DependentUpon>O2Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2HawkControllerDeck.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\O2HawkControllers.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\HW_Registers.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\Mappers\MapperBase.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\Mappers\Mapper_Default.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\MemoryMap.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\PPU.cs" />
+    <Compile Include="Consoles\Magnavox\Odyssey2\SerialPort.cs" />
     <Compile Include="Consoles\Magnavox\LibO2Em.cs" />
     <Compile Include="Consoles\Magnavox\O2Em.cs" />
     <Compile Include="Consoles\NEC\PCFX\LibTst.cs" />
@@ -1607,6 +1639,13 @@
     <Compile Include="CPUs\MC6800\Operations.cs" />
     <Compile Include="CPUs\MC6800\OP_Tables.cs" />
     <Compile Include="CPUs\MC6800\Registers.cs" />
+    <Compile Include="CPUs\Intel8048\Disassembler.cs" />
+    <Compile Include="CPUs\Intel8048\Execute.cs" />
+    <Compile Include="CPUs\Intel8048\Interrupts.cs" />
+    <Compile Include="CPUs\Intel8048\I8048.cs" />
+    <Compile Include="CPUs\Intel8048\Operations.cs" />
+    <Compile Include="CPUs\Intel8048\OP_Tables.cs" />
+    <Compile Include="CPUs\Intel8048\Registers.cs" />
     <Compile Include="CPUs\MC6809\Execute.cs" />
     <Compile Include="CPUs\MC6809\Interrupts.cs" />
     <Compile Include="CPUs\MC6809\MC6809.cs" />
