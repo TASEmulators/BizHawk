@@ -21,13 +21,13 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static SeparatorWatch Instance => new SeparatorWatch();
 
-        public static SeparatorWatch NewSeparatorWatch(string description)
-        {
-            return new SeparatorWatch
-            {
-                Notes = description
-            };
-        }
+		public static SeparatorWatch NewSeparatorWatch(string description)
+		{
+			return new SeparatorWatch
+			{
+				Notes = description
+			};
+		}
 
 		/// <summary>
 		/// Get the appropriate DisplayType
@@ -70,26 +70,24 @@ namespace BizHawk.Client.Common
 		/// <returns>A well formatted string representation</returns>
 		public override string ToDisplayString()
 		{
-            if (Notes == null || Notes == "")
-                return "----";
-            else
-                return Notes;			
+			return string.IsNullOrEmpty(Notes)
+				? "----"
+				: Notes;
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Transforms the current instance into a string
 		/// </summary>
 		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
 		public override string ToString()
-        {
-            return $"0\tS\t_\t1\t\t{Notes.Trim('\r', '\n')}";
-            //return $"{(Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain?.Size ?? 0xFF - 1).NumHexDigits()))}\t{SizeAsChar}\t{TypeAsChar}\t{Convert.ToInt32(BigEndian)}\t{Domain?.Name}\t{Notes.Trim('\r', '\n')}";
-        }
+		{
+			return $"0\tS\t_\t1\t\t{Notes.Trim('\r', '\n')}";
+		}
 
-        /// <summary>
-        /// Ignore that stuff
-        /// </summary>
-        public override bool Poke(string value)
+		/// <summary>
+		/// Ignore that stuff
+		/// </summary>
+		public override bool Poke(string value)
 		{
 			return false;
 		}
@@ -116,8 +114,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override void Update()
 		{
-            //AddressString = (Notes == null || Notes == "") ? "" : Notes;
-
-        }
+		}
 	}
 }

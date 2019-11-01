@@ -73,11 +73,7 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition
 		{
-			get
-			{
-				return _type;
-			}
-
+			get => _type;
 			set
 			{
 				_type = new Bk2ControllerDefinition(value);
@@ -203,18 +199,10 @@ namespace BizHawk.Client.Common
 
 			public List<List<string>> ControlsFromLog { private get; set; } = new List<List<string>>();
 
-			public override IEnumerable<IEnumerable<string>> ControlsOrdered
-			{
-				get
-				{
-					if (ControlsFromLog.Any())
-					{
-						return ControlsFromLog;
-					}
-
-					return base.ControlsOrdered;
-				}
-			}
+			public override IEnumerable<IEnumerable<string>> ControlsOrdered =>
+				ControlsFromLog.Any()
+					? ControlsFromLog
+					: base.ControlsOrdered;
 		}
 	}
 }

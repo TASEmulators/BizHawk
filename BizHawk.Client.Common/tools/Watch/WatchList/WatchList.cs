@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		private static readonly WatchNoteComparer NoteComparer = new WatchNoteComparer();
 
 		private readonly List<Watch> _watchList = new List<Watch>(0);
-		private readonly string _systemid;
+		private readonly string _systemId;
 		private IMemoryDomains _memoryDomains;
 
 		#endregion
@@ -52,11 +52,11 @@ namespace BizHawk.Client.Common
 		/// that will contains a set of <see cref="Watch"/>
 		/// </summary>
 		/// <param name="core">All available memory domains</param>
-		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
-		public WatchList(IMemoryDomains core, string systemid)
+		/// <param name="systemId">System identifier (NES, SNES, ...)</param>
+		public WatchList(IMemoryDomains core, string systemId)
 		{
 			_memoryDomains = core;
-			_systemid = systemid;
+			_systemId = systemId;
 		}
 
 		#endregion
@@ -458,7 +458,7 @@ namespace BizHawk.Client.Common
 			using (var sw = new StreamWriter(CurrentFileName))
 			{
 				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemid);
+				sb.Append("SystemID ").AppendLine(_systemId);
 
 				foreach (var watch in _watchList)
 				{

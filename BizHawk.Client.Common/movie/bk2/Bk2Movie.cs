@@ -35,11 +35,7 @@ namespace BizHawk.Client.Common
 
 		public string Filename
 		{
-			get
-			{
-				return _filename;
-			}
-
+			get => _filename;
 			set
 			{
 				_filename = value;
@@ -75,13 +71,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int InputLogLength
-		{
-			get
-			{
-				return Log.Count;
-			}
-		}
+		public int InputLogLength => Log.Count;
 
 		public int TimeLength
 		{

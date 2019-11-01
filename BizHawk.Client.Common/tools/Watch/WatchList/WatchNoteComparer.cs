@@ -30,21 +30,18 @@ namespace BizHawk.Client.Common
 				{
 					return 0;
 				}
-				else if (string.Compare(x.Notes, y.Notes, true) == 0)
+
+				if (string.Compare(x.Notes, y.Notes, true) == 0)
 				{
 					if (x.Address.Equals(y.Address))
 					{
 						return x.Size.CompareTo(y.Size);
 					}
-					else
-					{
-						return x.Address.CompareTo(y.Address);
-					}
+
+					return x.Address.CompareTo(y.Address);
 				}
-				else
-				{
-					return string.Compare(x.Notes, y.Notes, true);
-				}
+
+				return string.Compare(x.Notes, y.Notes, true);
 			}
 		}
 	}

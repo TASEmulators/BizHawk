@@ -49,9 +49,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			if (obj is TasMovieMarker)
+			if (obj is TasMovieMarker marker)
 			{
-				return Frame == ((TasMovieMarker)obj).Frame;
+				return Frame == marker.Frame;
 			}
 			
 			return false;

@@ -7,11 +7,7 @@ namespace BizHawk.Client.Common
 	{
 		public new string this[string key]
 		{
-			get
-			{
-				return ContainsKey(key) ? base[key] : "";
-			}
-
+			get => ContainsKey(key) ? base[key] : "";
 			set
 			{
 				if (ContainsKey(key))

@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 
 		public IStringLog Clone()
 		{
-			StreamStringLog ret = new StreamStringLog(_mDisk); // doesnt necessarily make sense to copy the mDisk value, they could be designated for different targets...
+			StreamStringLog ret = new StreamStringLog(_mDisk); // doesn't necessarily make sense to copy the mDisk value, they could be designated for different targets...
 			for (int i = 0; i < Count; i++)
 			{
 				ret.Add(this[i]);
