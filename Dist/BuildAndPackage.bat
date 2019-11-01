@@ -13,6 +13,7 @@ for /f "usebackq tokens=*" %%A in (`vswhere -version "[16.0,17.0)" -requires Mic
 
 IF "%MSBUILDPATH%"=="" GOTO MISSINGMSBUILD
 
+nuget restore ..\BizHawk.sln
 call "%MSBUILDPATH%" ..\BizHawk.sln /p:Configuration=Release /p:Platform="Any Cpu" /t:rebuild
 
 @if errorlevel 1 goto MSBUILDFAILED
