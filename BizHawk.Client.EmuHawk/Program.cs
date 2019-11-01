@@ -117,9 +117,11 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				new ExceptionBox(e).ShowDialog();
-				new ExceptionBox("Since your config file is corrupted, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
+				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
 				File.Delete(PathManager.DefaultIniPath);
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			}
