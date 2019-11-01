@@ -1103,52 +1103,6 @@ namespace BizHawk.Client.EmuHawk
 			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
 		}
 
-		private void SelectedRendererSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			// TODO: Merge TODO: adelikat: delete all this and the UI that goes with it
-			//if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
-			//{
-			//	if (Global.Config.TasStudioRenderer != InputRollRenderer)
-			//	{
-			//		switch (Global.Config.TasStudioRenderer)
-			//		{
-			//			case 0:
-			//				SetRenderer0.Text = "GDI (Pending TAStudio Restart)";
-			//				SetRenderer0.Enabled = false;
-			//				SetRenderer0.Checked = true;
-			//				SetRenderer1.Text = "GDI+ (Experimental)";
-			//				SetRenderer1.Checked = false;
-			//				break;
-			//			case 1:
-			//				SetRenderer1.Text = "GDI+ (Pending TAStudio Restart)";
-			//				SetRenderer1.Enabled = false;
-			//				SetRenderer1.Checked = true;
-			//				SetRenderer0.Text = "GDI";
-			//				SetRenderer0.Checked = false;
-			//				break;
-			//		}
-			//	}
-			//	else
-			//	{
-			//		SetRenderer0.Text = "GDI";
-			//		SetRenderer0.Enabled = true;
-			//		SetRenderer1.Text = "GDI+ (Experimental)";
-			//		SetRenderer1.Enabled = true;
-			//		SetRenderer0.Checked = Global.Config.TasStudioRenderer == 0;
-			//		SetRenderer1.Checked = Global.Config.TasStudioRenderer == 1;
-			//	}
-			//}
-			//else
-			//{
-			//	SetRenderer0.Checked = false;
-			//	SetRenderer0.Enabled = false;
-			//	SetRenderer0.Visible = false;
-			//	SetRenderer1.Checked = true;
-			//	SetRenderer1.Enabled = false;
-			//	SetRenderer1.Visible = true;
-			//}
-		}
-
 		private void HideLagFramesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			HideLagFrames0.Checked = TasView.LagFramesToHide == 0;
@@ -1195,18 +1149,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.HorizontalOrientation ^= true;
 			CurrentTasMovie.FlagChanges();
-		}
-
-		private void SetRenderer_Click(object sender, EventArgs e)
-		{
-			var incoming = (int)(sender as ToolStripMenuItem).Tag;
-
-			// Merge adelikat: TODO: what does this do???
-			//if (incoming != InputRollRenderer)
-			//{
-			//	MessageBox.Show("Changing the input roll renderer requires a\nmanual restart of TAStudio", "Renderer Change Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			//}
-			Global.Config.TasStudioRenderer = incoming;
 		}
 
 		private void HideLagFramesX_Click(object sender, EventArgs e)

@@ -125,9 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RendererOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SetRenderer0 = new System.Windows.Forms.ToolStripMenuItem();
-			this.SetRenderer1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.HideLagFramesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HideLagFrames0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.HideLagFrames1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -965,7 +962,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RotateMenuItem,
-            this.RendererOptionsMenuItem,
             this.HideLagFramesSubMenu,
             this.iconsToolStripMenuItem,
             this.toolStripSeparator23,
@@ -983,34 +979,6 @@ namespace BizHawk.Client.EmuHawk
 			this.RotateMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.RotateMenuItem.Text = "Rotate";
 			this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
-			// 
-			// RendererOptionsMenuItem
-			// 
-			this.RendererOptionsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-				this.SetRenderer0,
-				this.SetRenderer1});
-			this.RendererOptionsMenuItem.Name = "RendererOptionsMenuItem";
-			this.RendererOptionsMenuItem.Size = new System.Drawing.Size(183, 22);
-			this.RendererOptionsMenuItem.Text = "Renderer";
-			this.RendererOptionsMenuItem.DropDownOpened += new System.EventHandler(this.SelectedRendererSubMenu_DropDownOpened);
-			// 
-			// SetRenderer0
-			// 
-			this.SetRenderer0.CheckOnClick = true;
-			this.SetRenderer0.Name = "SetRenderer0";
-			this.SetRenderer0.Size = new System.Drawing.Size(180, 22);
-			this.SetRenderer0.Tag = 0;
-			this.SetRenderer0.Text = "GDI";
-			this.SetRenderer0.Click += new System.EventHandler(this.SetRenderer_Click);
-			// 
-			// SetRenderer1
-			// 
-			this.SetRenderer1.CheckOnClick = true;
-			this.SetRenderer1.Name = "SetRenderer1";
-			this.SetRenderer1.Size = new System.Drawing.Size(180, 22);
-			this.SetRenderer1.Tag = 1;
-			this.SetRenderer1.Text = "GDI+ (Experimental)";
-			this.SetRenderer1.Click += new System.EventHandler(this.SetRenderer_Click);
 			// 
 			// HideLagFramesSubMenu
 			// 
@@ -1826,8 +1794,5 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AutoRestoreOnMouseUpOnlyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadBranchOnDoubleclickMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RendererOptionsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SetRenderer0;
-		private System.Windows.Forms.ToolStripMenuItem SetRenderer1;
 	}
 }
