@@ -739,17 +739,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly Lazy<List<string>> lazyAsmTypes = new Lazy<List<string>>(() =>
-			Assembly.ReflectionOnlyLoadFrom(Assembly.GetExecutingAssembly().Location)
-				.GetTypes()
-				.Select(t => t.AssemblyQualifiedName)
-				.ToList()
+		private static readonly Lazy<HashSet<string>> _lazyAsmTypes = new Lazy<HashSet<string>>(() =>
+			new HashSet<string>(GetAssemblyTypes().Select(t => t.AssemblyQualifiedName))
 		);
+
+		private static Type[] GetAssemblyTypes()
+		{
+			try
+			{
+				return Assembly.ReflectionOnlyLoadFrom(Assembly.GetExecutingAssembly().Location).GetTypes();
+			}
+			catch (ReflectionTypeLoadException ex)
+			{
+				throw new AggregateException(ex.LoaderExceptions);
+			}
+		}
 
 		public bool IsAvailable(Type tool)
 		{
 			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool)
-				|| !lazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName) // not a tool
+				|| !_lazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName) // not a tool
 				|| (tool == typeof(LuaConsole) && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)) // simply doesn't work (for now)
 			{
 				return false;
