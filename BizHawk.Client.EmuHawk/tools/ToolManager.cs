@@ -740,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private static readonly Lazy<List<string>> lazyAsmTypes = new Lazy<List<string>>(() =>
-			Assembly.ReflectionOnlyLoadFrom(Assembly.GetExecutingAssembly().Location)
+			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for ApiHawk one day
 				.GetTypes()
 				.Select(t => t.AssemblyQualifiedName)
 				.ToList()
