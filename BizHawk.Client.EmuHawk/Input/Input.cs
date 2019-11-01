@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							foreach (var but in pad.buttonObjects)
 							{
-								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction());
+								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
 							}
 							foreach (var sv in pad.GetFloats())
 							{
