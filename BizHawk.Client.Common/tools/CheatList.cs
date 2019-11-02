@@ -25,7 +25,6 @@ namespace BizHawk.Client.Common
 		private const string ComparisonType = "ComparisonTypeColumn";
 
 		private List<Cheat> _cheatList = new List<Cheat>();
-		private string _currentFileName = "";
 		private string _defaultFileName = "";
 		private bool _changes;
 
@@ -51,7 +50,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string CurrentFileName => _currentFileName;
+		public string CurrentFileName { get; private set; } = "";
 
 		public bool IsReadOnly => false;
 
@@ -97,21 +96,26 @@ namespace BizHawk.Client.Common
 
 			if (_cheatList.Any() && _changes && autosave)
 			{
-				if (string.IsNullOrEmpty(_currentFileName))
+				if (string.IsNullOrEmpty(CurrentFileName))
 				{
-					_currentFileName = _defaultFileName;
+					CurrentFileName = _defaultFileName;
 				}
 
 				Save();
 			}
 
 			_cheatList.Clear();
-			_currentFileName = "";
+			CurrentFileName = "";
 			Changes = false;
 		}
 
 		public void Add(Cheat cheat)
 		{
+			if (cheat is null)
+			{
+				throw new ArgumentNullException($"{nameof(cheat)} can not be null");
+			}
+
 			if (cheat.IsSeparator)
 			{
 				_cheatList.Add(cheat);
@@ -324,28 +328,28 @@ namespace BizHawk.Client.Common
 			{
 				if (Changes && _cheatList.Any())
 				{
-					if (string.IsNullOrWhiteSpace(_currentFileName))
+					if (string.IsNullOrWhiteSpace(CurrentFileName))
 					{
-						_currentFileName = _defaultFileName;
+						CurrentFileName = _defaultFileName;
 					}
 
-					SaveFile(_currentFileName);
+					SaveFile(CurrentFileName);
 				}
-				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(_currentFileName))
+				else if (!_cheatList.Any() && !string.IsNullOrWhiteSpace(CurrentFileName))
 				{
-					new FileInfo(_currentFileName).Delete();
+					new FileInfo(CurrentFileName).Delete();
 				}
 			}
 		}
 
 		public bool Save()
 		{
-			if (string.IsNullOrWhiteSpace(_currentFileName))
+			if (string.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				_currentFileName = _defaultFileName;
+				CurrentFileName = _defaultFileName;
 			}
 
-			return SaveFile(_currentFileName);
+			return SaveFile(CurrentFileName);
 		}
 
 		public bool SaveFile(string path)
@@ -371,7 +375,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// Set to hex for saving
-							var temp_cheat_type = cheat.Type;
+							var tempCheatType = cheat.Type;
 
 							cheat.SetType(DisplayType.Hex);
 
@@ -388,7 +392,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.ComparisonType).Append('\t')
 								.AppendLine();
 
-							cheat.SetType(temp_cheat_type);
+							cheat.SetType(tempCheatType);
 
 						}
 					}
@@ -396,8 +400,8 @@ namespace BizHawk.Client.Common
 					sw.WriteLine(sb.ToString());
 				}
 
-				_currentFileName = path;
-				Global.Config.RecentCheats.Add(_currentFileName);
+				CurrentFileName = path;
+				Global.Config.RecentCheats.Add(CurrentFileName);
 				Changes = false;
 				return true;
 			}
@@ -417,7 +421,7 @@ namespace BizHawk.Client.Common
 
 			if (!append)
 			{
-				_currentFileName = path;
+				CurrentFileName = path;
 			}
 
 			using (var sr = file.OpenText())
@@ -441,7 +445,7 @@ namespace BizHawk.Client.Common
 							int? compare;
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
-							var bigendian = false;
+							var bigEndian = false;
 							Cheat.CompareType comparisonType = Cheat.CompareType.None;
 
 							if (s.Length < 6)
@@ -471,13 +475,13 @@ namespace BizHawk.Client.Common
 							{
 								size = Watch.SizeFromChar(vals[6][0]);
 								type = Watch.DisplayTypeFromChar(vals[7][0]);
-								bigendian = vals[8] == "1";
+								bigEndian = vals[8] == "1";
 							}
 							
 							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 9)
 							{
-								if (!Enum.TryParse<Cheat.CompareType>(vals[9], out comparisonType))
+								if (!Enum.TryParse(vals[9], out comparisonType))
 								{
 									continue; // Not sure if this is the best answer, could just resort to ==
 								}
@@ -488,7 +492,7 @@ namespace BizHawk.Client.Common
 								address,
 								size,
 								type,
-								bigendian,
+								bigEndian,
 								name);
 
 							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled, comparisonType));
