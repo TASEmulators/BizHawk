@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToGameDbBtn_Click(object sender, EventArgs e)
 		{
-			var picker = new RomStatusPicker();
+			using var picker = new RomStatusPicker();
 			var result = picker.ShowDialog();
 			if (result == DialogResult.OK)
 			{

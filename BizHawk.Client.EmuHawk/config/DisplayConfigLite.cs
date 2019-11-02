@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
+			using var ofd = new OpenFileDialog();
 			ofd.Filter = ".CGP (*.cgp)|*.cgp";
 			ofd.FileName = PathSelection;
 			if (ofd.ShowDialog() == DialogResult.OK)
@@ -241,7 +241,8 @@ namespace BizHawk.Client.EmuHawk
 					catch {}
 					if (!ok)
 					{
-						new ExceptionBox(errors).ShowDialog();
+						using var errorForm = new ExceptionBox(errors);
+						errorForm.ShowDialog();
 						return;
 					}
 				}

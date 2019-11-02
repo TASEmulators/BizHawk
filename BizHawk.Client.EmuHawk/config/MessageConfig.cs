@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				y = (int)YNumeric.Maximum - _py;
 			}
 
-			var p = new Pen(_brush);
+			using var p = new Pen(_brush);
 			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
 			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
 			e.Graphics.DrawRectangle(p, new Rectangle(x, y, 8, 8));

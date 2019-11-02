@@ -457,7 +457,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sfd = new SaveFileDialog();
+			using var sfd = new SaveFileDialog();
 			var result = sfd.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
@@ -584,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tsbExportText_Click(object sender, EventArgs e)
 		{
-			StringWriter sw = new StringWriter();
+			using var sw = new StringWriter();
 			foreach(var line in listContents)
 			{
 				foreach (var entry in line)

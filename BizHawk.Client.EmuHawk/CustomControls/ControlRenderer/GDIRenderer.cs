@@ -278,16 +278,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private static extern IntPtr CreateSolidBrush(int color);
 
 		[DllImport("gdi32.dll")]
-		private static extern IntPtr MoveToEx(IntPtr hdc, int x, int y, IntPtr point);
+		private static extern uint MoveToEx(IntPtr hdc, int x, int y, IntPtr point);
 
 		[DllImport("gdi32.dll")]
-		private static extern IntPtr LineTo(IntPtr hdc, int nXEnd, int nYEnd);
+		private static extern uint LineTo(IntPtr hdc, int nXEnd, int nYEnd);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr GetStockObject(int fnObject);
 
 		[DllImport("gdi32.dll")]
-		private static extern IntPtr SetDCPenColor(IntPtr hdc, int crColor);
+		private static extern uint SetDCPenColor(IntPtr hdc, int crColor);
 
 		[DllImport("gdi32.dll")]
 		private static extern IntPtr CreateCompatibleDC(IntPtr hdc);

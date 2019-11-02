@@ -953,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetBinarySaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				Filter = GetSaveFileFilter(),
 				RestoreDirectory = true,
@@ -976,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetSaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				Filter = "Text (*.txt)|*.txt|All Files|*.*",
 				RestoreDirectory = true,
@@ -1348,7 +1348,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var sfd = new OpenFileDialog
+			using var sfd = new OpenFileDialog
 			{
 				Filter = "Binary (*.bin)|*.bin|Save Files (*.sav)|*.sav|All Files|*.*",
 				RestoreDirectory = true,
@@ -1407,7 +1407,7 @@ namespace BizHawk.Client.EmuHawk
 				romName = Global.Config.RecentRoms.MostRecent;
 			}
 
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				FileName = $"{Path.GetFileNameWithoutExtension(romName)}.tbl",
 				InitialDirectory = intialDirectory,
@@ -1676,7 +1676,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GoToAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var inputPrompt = new InputPrompt
+			using var inputPrompt = new InputPrompt
 			{
 				Text = "Go to Address",
 				StartLocation = this.ChildPointToScreen(MemoryViewerBox),
@@ -1759,7 +1759,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (addresses.Any())
 			{
-				var poke = new RamPoke
+				using var poke = new RamPoke
 				{
 					InitialLocation = this.ChildPointToScreen(AddressLabel),
 					ParentTool = this
@@ -1785,7 +1785,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
-			new HexColorsForm().ShowHawkDialog();
+			using var form = new HexColorsForm();
+			form.ShowHawkDialog();
 		}
 
 		private void ResetColorsToDefaultMenuItem_Click(object sender, EventArgs e)
@@ -2461,7 +2462,7 @@ namespace BizHawk.Client.EmuHawk
 			//mat.M41 = matVals[3, 0]; mat.M42 = matVals[3, 1]; mat.M43 = matVals[3, 2]; mat.M44 = matVals[3, 3];
 			//MessageBox.Show(mat.ToString());
 
-			StringWriter sw = new StringWriter();
+			using var sw = new StringWriter();
 				for(int i=0;i<4;i++)
 			sw.WriteLine("{0,18:0.00000} {1,18:0.00000} {2,18:0.00000} {3,18:0.00000}", matVals[i, 0], matVals[i, 1], matVals[i, 2], matVals[i, 3]);
 			var str = sw.ToString();

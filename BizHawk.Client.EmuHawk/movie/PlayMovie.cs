@@ -557,7 +557,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				Filter = $"Movie Files (*.{MovieService.DefaultExtension})|*.{MovieService.DefaultExtension}|TAS project Files (*.{TasMovie.Extension})|*.{TasMovie.Extension}|All Files|*.*",
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)

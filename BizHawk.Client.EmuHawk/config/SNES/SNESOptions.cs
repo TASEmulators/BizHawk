@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((LibsnesCore)Global.Emulator).GetSettings();
 			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
-			var dlg = new SNESOptions
+			using var dlg = new SNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				CropSGBFrame = s.CropSGBFrame,

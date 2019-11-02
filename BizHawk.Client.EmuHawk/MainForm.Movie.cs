@@ -30,7 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
-				MessageBox.Show(new Form(){TopMost = true}, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				using var ownerForm = new Form() { TopMost = true };
+				MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
 

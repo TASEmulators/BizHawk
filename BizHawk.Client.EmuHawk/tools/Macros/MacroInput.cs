@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static bool SaveMacroAs(MovieZone macro)
 		{
-			var dialog = new SaveFileDialog
+			using var dialog = new SaveFileDialog
 			{
 				InitialDirectory = SuggestedFolder(),
 				FileName = macro.Name,
@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static MovieZone LoadMacro()
 		{
-			var dialog = new OpenFileDialog
+			using var dialog = new OpenFileDialog
 			{
 				InitialDirectory = SuggestedFolder(),
 				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"

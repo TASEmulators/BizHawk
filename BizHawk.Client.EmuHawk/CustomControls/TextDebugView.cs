@@ -15,9 +15,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.OnPaint(e);
 			e.Graphics.Clear(SystemColors.Control);
-			Font font = new Font(new FontFamily("Courier New"), 8);
+			using var font = new Font(new FontFamily("Courier New"), 8);
 			e.Graphics.DrawString(Text, font, Brushes.Black,0,0);
-			font.Dispose();
 		}
 
 		public override string Text

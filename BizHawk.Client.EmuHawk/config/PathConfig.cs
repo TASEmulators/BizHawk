@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							var f = new FirmwaresConfig { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			string selectedPath;
 			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
 			{
-				var f = new FolderBrowserEx
+				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				// FolderBrowserEx doesn't work in Mono for obvious reasons
-				var f = new FolderBrowserDialog
+				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)

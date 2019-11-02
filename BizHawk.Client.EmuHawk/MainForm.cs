@@ -1293,7 +1293,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RunLibretroCoreChooser()
 		{
-			var ofd = new OpenFileDialog();
+			using var ofd = new OpenFileDialog();
 
 			if (Global.Config.LibretroCore != null)
 			{
@@ -1625,14 +1625,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
-				var saveram = Emulator.AsSaveRam().CloneSaveRam();
-
-				if (saveram != null)
+				using (var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write)))
 				{
-					writer.Write(saveram, 0, saveram.Length);
+					var saveram = Emulator.AsSaveRam().CloneSaveRam();
+					if (saveram != null)
+					{
+						writer.Write(saveram, 0, saveram.Length);
+					}
 				}
-				writer.Close();
 
 				if (file.Exists)
 				{
@@ -2164,7 +2164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRom()
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Filter = RomFilter,
@@ -3139,7 +3139,7 @@ namespace BizHawk.Client.EmuHawk
 					// handle directories first
 					if (ext == "<directory>")
 					{
-						var fbd = new FolderBrowserEx();
+						using var fbd = new FolderBrowserEx();
 						if (fbd.ShowDialog() == DialogResult.Cancel)
 						{
 							aw.Dispose();
@@ -3150,7 +3150,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						var sfd = new SaveFileDialog();
+						using var sfd = new SaveFileDialog();
 						if (Global.Game != null)
 						{
 							sfd.FileName = $"{PathManager.FilesystemSafeName(Global.Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
@@ -3364,7 +3364,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int? LoadArchiveChooser(HawkFile file)
 		{
-			var ac = new ArchiveChooser(file);
+			using var ac = new ArchiveChooser(file);
 			if (ac.ShowDialog(this) == DialogResult.OK)
 			{
 				return ac.SelectedMemberIndex;
@@ -3422,7 +3422,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ChoosePlatformForRom(RomGame rom)
 		{
-			var platformChooser = new PlatformChooser
+			using var platformChooser = new PlatformChooser
 			{
 				RomGame = rom
 			};
@@ -3569,7 +3569,7 @@ namespace BizHawk.Client.EmuHawk
 						// determine the xml assets and create RomStatusDetails for all of them
 						var xmlGame = XmlGame.Create(new HawkFile(oa_openrom.Path));
 
-						StringWriter xSw = new StringWriter();
+						using var xSw = new StringWriter();
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
@@ -4079,7 +4079,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				AddExtension = true,
 				DefaultExt = "State",
@@ -4113,7 +4113,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
 				Filter = "Save States (*.State)|*.State|All Files|*.*",
