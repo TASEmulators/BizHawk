@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethod("socketServerIsConnected", "socketServerIsConnected")]
-		public bool SocketServerIsConnected() => GlobalWin.socketServer.connected;
+		public bool SocketServerIsConnected() => GlobalWin.socketServer.Connected;
 
 		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
 		public string SocketServerScreenShot()
