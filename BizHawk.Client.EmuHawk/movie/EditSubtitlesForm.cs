@@ -58,30 +58,31 @@ namespace BizHawk.Client.EmuHawk
 				_selectedMovie.Subtitles.Clear();
 				for (int i = 0; i < SubGrid.Rows.Count - 1; i++)
 				{
-					var s = new Subtitle();
+					var sub = new Subtitle();
 					
 					var c = SubGrid.Rows[i].Cells[0];
-					try { s.Frame = int.Parse(c.Value.ToString()); }
+					try { sub.Frame = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 0); return; }
 					c = SubGrid.Rows[i].Cells[1];
-					try { s.X = int.Parse(c.Value.ToString()); }
+					try { sub.X = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 1); return; }
 					c = SubGrid.Rows[i].Cells[2];
-					try { s.Y = int.Parse(c.Value.ToString()); }
+					try { sub.Y = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 2); return; }
 					c = SubGrid.Rows[i].Cells[3];
-					try { s.Duration = int.Parse(c.Value.ToString()); }
+					try { sub.Duration = int.Parse(c.Value.ToString()); }
 					catch { ShowError(i, 3); return; }
 					c = SubGrid.Rows[i].Cells[4];
-					try { s.Color = uint.Parse(c.Value.ToString(), NumberStyles.HexNumber); }
+					try { sub.Color = uint.Parse(c.Value.ToString(), NumberStyles.HexNumber); }
 					catch { ShowError(i, 4); return; }
 					try { c = SubGrid.Rows[i].Cells[5]; }
 					catch { ShowError(i, 5); return; }
-					s.Message = c.Value.ToString();
-					_selectedMovie.Subtitles.Add(s);
+					sub.Message = c.Value?.ToString();
+					_selectedMovie.Subtitles.Add(sub);
 				}
 				_selectedMovie.Save();
 			}
+
 			Close();
 		}
 
@@ -135,32 +136,42 @@ namespace BizHawk.Client.EmuHawk
 
 		private Subtitle GetRow(int index)
 		{
-			if (index >= SubGrid.Rows.Count) return new Subtitle();
+			if (index >= SubGrid.Rows.Count)
+			{
+				return new Subtitle();
+			}
 			
-			var s = new Subtitle();
-			var c = SubGrid.Rows[index].Cells[0];
+			var sub = new Subtitle();
 
-			// Empty catch because it should default to subtitle default value
-			try { s.Frame = int.Parse(c.Value.ToString()); }
-			catch { }
-			c = SubGrid.Rows[index].Cells[1];
-			try { s.X = int.Parse(c.Value.ToString()); }
-			catch { }
-			c = SubGrid.Rows[index].Cells[2];
-			try { s.Y = int.Parse(c.Value.ToString()); }
-			catch { }
-			c = SubGrid.Rows[index].Cells[3];
-			try { s.Duration = int.Parse(c.Value.ToString()); }
-			catch { }
-			c = SubGrid.Rows[index].Cells[4];
-			try { s.Color = uint.Parse(c.Value.ToString()); }
-			catch { }
-			c = SubGrid.Rows[index].Cells[5];
-			try { s.Message = c.Value.ToString(); }
-			catch { }
-			_selectedMovie.Subtitles.Add(s);
+			if (int.TryParse(SubGrid.Rows[index].Cells[0].Value.ToString(), out int frame))
+			{
+				sub.Frame = frame;
+			}
 
-			return s;
+			if (int.TryParse(SubGrid.Rows[index].Cells[1].Value.ToString(), out int x))
+			{
+				sub.X = x;
+			}
+
+			if (int.TryParse(SubGrid.Rows[index].Cells[2].Value.ToString(), out int y))
+			{
+				sub.Y = y;
+			}
+
+			if (int.TryParse(SubGrid.Rows[index].Cells[3].Value.ToString(), out int duration))
+			{
+				sub.Duration = duration;
+			}
+			
+			if (uint.TryParse(SubGrid.Rows[index].Cells[4].Value.ToString(), out uint color))
+			{
+				sub.Color = color;
+			}
+			
+			sub.Message = SubGrid.Rows[index].Cells[5].Value?.ToString() ?? "";
+
+			_selectedMovie.Subtitles.Add(sub);
+			return sub;
 		}
 
 		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -176,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var s = new SubtitleMaker {Sub = GetRow(c[0].Index)};
+			using var s = new SubtitleMaker { Sub = GetRow(c[0].Index) };
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
@@ -207,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
 				&& _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
 			var pfr = new PlatformFrameRates();
-			double fps = 1;
+			double fps;
 
 			try
 			{
@@ -229,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllText(fileName, str);
 
 			// Display success
-			MessageBox.Show($"Subtitles succesfully exported to {fileName}.", "Success");
+			MessageBox.Show($"Subtitles successfully exported to {fileName}.", "Success");
 		}
 
 		private void SubGrid_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
