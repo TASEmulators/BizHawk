@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var s = new SubtitleMaker {Sub = GetRow(c[0].Index)};
+			using var s = new SubtitleMaker {Sub = GetRow(c[0].Index)};
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				ChangeRow(s.Sub, SubGrid.SelectedRows[0].Index);
@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Export_Click(object sender, EventArgs e)
 		{
 			// Get file to save as
-			var form = new SaveFileDialog
+			using var form = new SaveFileDialog
 			{
 				AddExtension = true,
 				Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*"

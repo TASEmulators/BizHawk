@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 						$"[{(vc2012.HasValue ? " OK " : "FAIL")}] Visual C++ 2012 Runtime",
 						$"[{(vc2015.HasValue ? " OK " : "FAIL")}] Visual C++ 2015 Runtime"
 					};
-					var box = new CustomControls.PrereqsAlert(reqPresent)
+					using var box = new CustomControls.PrereqsAlert(reqPresent)
 					{
 						textBox1 = { Text = string.Join(Environment.NewLine, alertLines) }
 					};

@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 				di.Create();
 			}
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				FileName = $"{PathManager.FilesystemSafeName(Global.Game)}-Palettes",
 				InitialDirectory = path,

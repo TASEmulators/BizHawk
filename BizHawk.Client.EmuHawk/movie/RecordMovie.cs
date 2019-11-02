@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 				else throw;
 			}
 			
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,
 				DefaultExt = $".{Global.MovieSession.Movie.PreferredExtension}",

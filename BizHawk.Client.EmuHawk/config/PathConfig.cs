@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							var f = new FirmwaresConfig { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				system = null;
 			}
 
-			var f = new FolderBrowserEx
+			using var f = new FolderBrowserEx
 			{
 				Description = $"Set the directory for {name}",
 				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)

@@ -192,7 +192,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnBizBox_Click(object sender, EventArgs e)
 		{
-			new BizBox().ShowDialog();
+			using var bizBox = new BizBox();
+			bizBox.ShowDialog();
 		}
 	}
 

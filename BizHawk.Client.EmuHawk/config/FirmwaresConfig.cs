@@ -569,7 +569,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			new PathConfig().ShowDialog(this);
+			using var pathConfig = new PathConfig();
+			pathConfig.ShowDialog(this);
 			RefreshBasePath();
 		}
 

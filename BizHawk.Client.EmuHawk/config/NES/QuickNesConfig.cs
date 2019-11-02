@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonPal_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
 				Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",

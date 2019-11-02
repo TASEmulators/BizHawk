@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		private void btnExport_Click(object sender, EventArgs e)
 		{
 			//acquire target
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				Filter = "XRNS (*.xrns)|*.xrns"
 			};

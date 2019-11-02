@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				initialDirectory = Path.GetDirectoryName(filename);
 			}
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				FileName = filename,
 				InitialDirectory = initialDirectory,

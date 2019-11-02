@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			var oac = new OpenAdvancedChooser(this);
+			using var oac = new OpenAdvancedChooser(this);
 			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 			{
 				return;
@@ -355,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 
 			/*************************/
 			/* CLONE OF CODE FROM OpenRom (mostly) */
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Filter = filter,
@@ -489,12 +489,14 @@ namespace BizHawk.Client.EmuHawk
 				// Inaccurate core but allow the user to continue anyway
 			}
 
-			new RecordMovie(Emulator).ShowDialog();
+			using var form = new RecordMovie(Emulator);
+			form.ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			new PlayMovie().ShowDialog();
+			using var form = new PlayMovie();
+			form.ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -509,7 +511,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Multiselect = true,
@@ -646,7 +648,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var path = $"{PathManager.ScreenshotPrefix(Global.Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -965,7 +967,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
-			var controller = new ControllerConfig(Emulator.ControllerDefinition);
+			using var controller = new ControllerConfig(Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -975,7 +977,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new HotkeyConfig().ShowDialog() == DialogResult.OK)
+			using var hotkeyConfig = new HotkeyConfig();
+			if (hotkeyConfig.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
 				InputManager.SyncControls();
@@ -986,28 +989,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				var result = new FirmwaresConfig(true, args.RomPath).ShowDialog();
+				using var configForm = new FirmwaresConfig(true, args.RomPath);
+				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				new FirmwaresConfig().ShowDialog();
+				using var configForm = new FirmwaresConfig();
+				configForm.ShowDialog();
 			}
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
-			new MessageConfig().ShowDialog();
+			using var form = new MessageConfig();
+			form.ShowDialog();
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PathConfig().ShowDialog();
+			using var form = new PathConfig();
+			form.ShowDialog();
 		}
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new SoundConfig().ShowDialog() == DialogResult.OK)
+			using var form = new SoundConfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				RewireSound();
 			}
@@ -1015,27 +1023,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			new AutofireConfig().ShowDialog();
+			using var form = new AutofireConfig();
+			form.ShowDialog();
 		}
 
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			new RewindConfig().ShowDialog();
+			using var form = new RewindConfig();
+			form.ShowDialog();
 		}
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			new FileExtensionPreferences().ShowDialog();
+			using var form = new FileExtensionPreferences();
+			form.ShowDialog();
 		}
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			new EmuHawkOptions().ShowDialog();
+			using var form = new EmuHawkOptions();
+			form.ShowDialog();
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			using var form = new ProfileConfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.OSD.AddMessage("Profile settings saved");
 
@@ -1305,7 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = PathManager.DefaultIniPath;
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -1331,7 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = PathManager.DefaultIniPath;
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -1507,7 +1520,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new BatchRun().ShowDialog();
+			using var form = new BatchRun();
+			form.ShowDialog();
 		}
 
 		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
@@ -1595,15 +1609,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES)
 			{
-				new NESGraphicsConfig().ShowDialog(this);
+				using var form = new NESGraphicsConfig();
+				form.ShowDialog(this);
 			}
 			else if (Emulator is SubNESHawk)
 			{
-				new NESGraphicsConfig().ShowDialog(this);
+				using var form = new NESGraphicsConfig();
+				form.ShowDialog(this);
 			}
 			else if (Emulator is QuickNES)
 			{
-				new QuickNesConfig().ShowDialog(this);
+				using var form = new QuickNesConfig();
+				form.ShowDialog(this);
 			}
 		}
 
@@ -1616,7 +1633,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES nes && nes.IsVS)
 			{
-				new NesVsSettings().ShowHawkDialog();
+				using var form = new NesVsSettings();
+				form.ShowHawkDialog();
 			}
 		}
 
@@ -1669,11 +1687,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES)
 			{
-				new NesControllerSettings().ShowDialog();
+				using var form = new NesControllerSettings();
+				form.ShowDialog();
 			}
 			else if (Emulator is SubNESHawk)
 			{
-				new NesControllerSettings().ShowDialog();
+				using var form = new NesControllerSettings();
+				form.ShowDialog();
 			}
 			else if (Emulator is QuickNES)
 			{
@@ -1719,7 +1739,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PCEGraphicsConfig().ShowDialog();
+			using var form = new PCEGraphicsConfig();
+			form.ShowDialog();
 		}
 
 		private void PceBgViewerMenuItem_Click(object sender, EventArgs e)
@@ -1926,7 +1947,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new SMSGraphicsConfig().ShowDialog();
+			using var form = new SMSGraphicsConfig();
+			form.ShowDialog();
 		}
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -1996,7 +2018,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
 			var ti83 = (TI83)Emulator;
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*",
@@ -2023,7 +2045,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage(new TI83PaletteConfig().ShowDialog() == DialogResult.OK
+			using var form = new TI83PaletteConfig();
+			GlobalWin.OSD.AddMessage(form.ShowDialog() == DialogResult.OK
 				? "Palette settings saved"
 				: "Palette config aborted");
 		}
@@ -2049,12 +2072,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new A7800ControllerSettings().ShowDialog();
+			using var form = new A7800ControllerSettings();
+			form.ShowDialog();
 		}
 
 		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new A7800FilterSettings().ShowDialog();
+			using var form = new A7800FilterSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2141,7 +2166,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfigNew().ShowDialog();
+			using var form = new PSXControllerConfigNew();
+			form.ShowDialog();
 		}
 
 		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
@@ -2160,7 +2186,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXHashDiscs().ShowDialog();
+			using var form = new PSXHashDiscs();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2184,7 +2211,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			new SNESControllerSettings().ShowDialog();
+			using var form = new SNESControllerSettings();
+			form.ShowDialog();
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -2241,7 +2269,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new ColecoControllerSettings().ShowDialog();
+			using var form = new ColecoControllerSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2266,7 +2295,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
+			using var form = new N64VideoPluginconfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				if (Emulator.IsNull())
 				{
@@ -2285,7 +2315,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
+			using var form = new N64ControllersSetup();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
@@ -2502,7 +2533,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new IntvControllerSettings().ShowDialog();
+			using var form = new IntvControllerSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2537,27 +2569,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			new ZXSpectrumJoystickSettings().ShowDialog();
+			using var form = new ZXSpectrumJoystickSettings();
+			form.ShowDialog();
 		}
 
 		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new ZXSpectrumCoreEmulationSettings().ShowDialog();
+			using var form = new ZXSpectrumCoreEmulationSettings();
+			form.ShowDialog();
 		}
 
 		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new ZXSpectrumNonSyncSettings().ShowDialog();
+			using var form = new ZXSpectrumNonSyncSettings();
+			form.ShowDialog();
 		}
 
 		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new ZXSpectrumAudioSettings().ShowDialog();
+			using var form = new ZXSpectrumAudioSettings();
+			form.ShowDialog();
 		}
 
 		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
 		{
-			new ZXSpectrumPokeMemory().ShowDialog();
+			using var form = new ZXSpectrumPokeMemory();
+			form.ShowDialog();
 		}
 
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2639,7 +2676,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
 		{
-			var zxSnapExpDialog = new SaveFileDialog
+			using var zxSnapExpDialog = new SaveFileDialog
 			{
 				RestoreDirectory = true
 				, Title = "EXPERIMENTAL - Export 3rd party snapshot formats"
@@ -2670,17 +2707,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new AmstradCPCCoreEmulationSettings().ShowDialog();
+			using var form = new AmstradCPCCoreEmulationSettings();
+			form.ShowDialog();
 		}
 
 		private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new AmstradCPCAudioSettings().ShowDialog();
+			using var form = new AmstradCPCAudioSettings();
+			form.ShowDialog();
 		}
 
 		private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new AmstradCPCPokeMemory().ShowDialog();
+			using var form = new AmstradCPCPokeMemory();
+			form.ShowDialog();
 		}
 
 		private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2762,7 +2802,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new AmstradCPCNonSyncSettings().ShowDialog();
+			using var form = new AmstradCPCNonSyncSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2793,11 +2834,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VersionInfo.DeveloperBuild)
 			{
-				new AboutBox().ShowDialog();
+				using var form = new AboutBox();
+				form.ShowDialog();
 			}
 			else
 			{
-				new BizBox().ShowDialog();
+				using var form = new BizBox();
+				form.ShowDialog();
 			}
 		}
 
@@ -2936,7 +2979,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new DisplayConfigLite();
+			using var window = new DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -2969,7 +3012,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
+				using var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -3015,7 +3058,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var form = new EditCommentsForm();
+				using var form = new EditCommentsForm();
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -3112,7 +3155,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
-			var profileForm = new ProfileConfig();
+			using var profileForm = new ProfileConfig();
 			profileForm.ShowDialog();
 			Global.Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;

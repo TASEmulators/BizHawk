@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
+			using var sfd = new SaveFileDialog();
 			if (LogFile == null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + _extension;
@@ -367,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaxLinesMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
 		{
-			var prompt = new InputPrompt
+			using var prompt = new InputPrompt
 			{
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,

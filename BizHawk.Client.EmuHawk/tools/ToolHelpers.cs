@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(path);
 			}
 
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(path);
 			}
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
