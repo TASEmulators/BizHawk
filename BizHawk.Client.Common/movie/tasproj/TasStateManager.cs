@@ -84,18 +84,10 @@ namespace BizHawk.Client.Common
 			? _states.Last().Key
 			: 0;
 
-		private byte[] InitialState
-		{
-			get
-			{
-				if (_movie.StartsFromSavestate)
-				{
-					return _movie.BinarySavestate;
-				}
-
-				return _states[0];
-			}
-		}
+		private byte[] InitialState =>
+			_movie.StartsFromSavestate
+				? _movie.BinarySavestate
+				: _states[0];
 
 		public bool Any()
 		{

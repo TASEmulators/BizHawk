@@ -85,8 +85,7 @@ namespace BizHawk.Client.Common
 
 		public bool? History(int frame)
 		{
-			bool wasLag;
-			var result = _wasLag.TryGetValue(frame, out wasLag);
+			var result = _wasLag.TryGetValue(frame, out var wasLag);
 			if (result)
 			{
 				return wasLag;
@@ -112,8 +111,7 @@ namespace BizHawk.Client.Common
 
 		private void RemoveLagEntry(int frame)
 		{
-			bool lag;
-			var result = _lagLog.TryGetValue(frame, out lag);
+			var result = _lagLog.TryGetValue(frame, out var lag);
 			if (result)
 			{
 				_wasLag[frame] = lag;

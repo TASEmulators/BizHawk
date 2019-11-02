@@ -381,7 +381,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public void SetType(DisplayType type)
-		{			
+		{
 			if (_watch.IsDiplayTypeAvailable(type))
 			{
 				_watch.Type = type;

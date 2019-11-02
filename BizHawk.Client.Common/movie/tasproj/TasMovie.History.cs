@@ -23,11 +23,7 @@ namespace BizHawk.Client.Common
 
 		public int MaxSteps
 		{
-			get
-			{
-				return _maxSteps;
-			}
-
+			get => _maxSteps;
 			set
 			{
 				_maxSteps = value;
@@ -346,14 +342,9 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
-				if (oldPosition == -1)
-				{
-					name = $"Set Marker at frame {newMarker.Frame}";
-				}
-				else
-				{
-					name = $"Remove Marker at frame {oldPosition}";
-				}
+				name = oldPosition == -1
+					? $"Set Marker at frame {newMarker.Frame}"
+					: $"Remove Marker at frame {oldPosition}";
 
 				AddMovieAction(name);
 				_history.Last().Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));

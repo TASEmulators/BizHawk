@@ -117,20 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TempFileManager.Start();
 
-#if true // switch to if false for system-agnostic glory!
-			switch (EXE_PROJECT.OSTailoredCode.CurrentOS)
-			{
-				case EXE_PROJECT.OSTailoredCode.DistinctOS.Linux:
-				case EXE_PROJECT.OSTailoredCode.DistinctOS.macOS:
-					HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
-					break;
-				case EXE_PROJECT.OSTailoredCode.DistinctOS.Windows:
-					HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
-					break;
-			}
-#else
 			HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
-#endif
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
@@ -138,9 +125,11 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				new ExceptionBox(e).ShowDialog();
-				new ExceptionBox("Since your config file is corrupted, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
+				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
 				File.Delete(PathManager.DefaultIniPath);
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			}

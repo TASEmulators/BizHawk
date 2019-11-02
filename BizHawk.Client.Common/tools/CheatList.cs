@@ -34,23 +34,13 @@ namespace BizHawk.Client.Common
 
 		public int Count => _cheatList.Count;
 
-		public int CheatCount
-		{
-			get { return _cheatList.Count(c => !c.IsSeparator); }
-		}
+		public int CheatCount => _cheatList.Count(c => !c.IsSeparator);
 
-		public int ActiveCount
-		{
-			get { return _cheatList.Count(c => c.Enabled); }
-		}
+		public int ActiveCount => _cheatList.Count(c => c.Enabled);
 
 		public bool Changes
 		{
-			get
-			{
-				return _changes;
-			}
-
+			get => _changes;
 			set
 			{
 				_changes = value;
@@ -67,13 +57,9 @@ namespace BizHawk.Client.Common
 
 		public Cheat this[int index] => _cheatList[index];
 
-		public Cheat this[MemoryDomain domain, long address]
-		{
-			get
-			{
-				return _cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
-			}
-		}
+		public Cheat this[MemoryDomain domain, long address] =>
+			_cheatList.FirstOrDefault(cheat => cheat.Domain == domain && cheat.Address == address);
+
 
 		public IEnumerator<Cheat> GetEnumerator()
 		{
@@ -730,7 +716,7 @@ namespace BizHawk.Client.Common
 				Cheat = c;
 			}
 
-			public Cheat Cheat { get; private set; }
+			public Cheat Cheat { get; }
 		}
 	}
 }
