@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 
@@ -7,8 +6,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class MenuButton : Button
 	{
-		public MenuButton() { }
-
 		[DefaultValue(null)]
 		public ContextMenuStrip Menu { get; set; }
 
@@ -30,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			int arrowY = ClientRectangle.Height / 2 - 1;
 
 			Brush brush = Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
-			Point[] arrows = new Point[] { new Point(arrowX, arrowY), new Point(arrowX + 7, arrowY), new Point(arrowX + 3, arrowY + 4) };
+			Point[] arrows = { new Point(arrowX, arrowY), new Point(arrowX + 7, arrowY), new Point(arrowX + 3, arrowY + 4) };
 			pevent.Graphics.FillPolygon(brush, arrows);
 		}
 	}

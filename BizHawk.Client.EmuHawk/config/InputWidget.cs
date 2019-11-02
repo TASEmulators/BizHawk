@@ -52,11 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string Bindings
 		{
-			get
-			{
-				return Text;
-			}
-
+			get => Text;
 			set
 			{
 				ClearBindings();
