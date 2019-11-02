@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 							 */
 							int offset = 0;
 							bool executable = false;
-							var archiveHandler = new SevenZipSharpArchiveHandler();
+							var archiveHandler = new SharpCompressArchiveHandler();
 
 							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
 							{

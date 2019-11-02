@@ -57,6 +57,9 @@
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
@@ -79,42 +82,6 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
-    <Compile Include="7z\ArchiveExtractCallback.cs" />
-    <Compile Include="7z\ArchiveOpenCallback.cs" />
-    <Compile Include="7z\ArchiveUpdateCallback.cs" />
-    <Compile Include="7z\COM.cs" />
-    <Compile Include="7z\Common.cs" />
-    <Compile Include="7z\EventArgs.cs" />
-    <Compile Include="7z\Exceptions.cs" />
-    <Compile Include="7z\FileSignatureChecker.cs" />
-    <Compile Include="7z\Formats.cs" />
-    <Compile Include="7z\LibraryFeature.cs" />
-    <Compile Include="7z\LibraryManager.cs" />
-    <Compile Include="7z\LzmaDecodeStream.cs" />
-    <Compile Include="7z\LzmaEncodeStream.cs" />
-    <Compile Include="7z\LzmaProgressCallback.cs" />
-    <Compile Include="7z\NativeMethods.cs" />
-    <Compile Include="7z\sdk\Common\CRC.cs" />
-    <Compile Include="7z\sdk\Common\InBuffer.cs" />
-    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7z\sdk\ICoder.cs" />
-    <Compile Include="7z\SevenZipCompressor.cs" />
-    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipExtractor.cs" />
-    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipSfx.cs" />
-    <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="Api\CoreSystem.cs" />
     <Compile Include="Api\JoypadButton.cs" />
     <Compile Include="BinarySaveStates.cs" />
@@ -260,9 +227,7 @@
     <Compile Include="RomLoader.cs" />
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
-    <Compile Include="SevenZipSharpArchiveHandler.cs" />
-    <Compile Include="SevenZipWriter.cs" />
-    <Compile Include="SharpZipWriter.cs" />
+    <Compile Include="SharpCompressArchiveHandler.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
@@ -322,6 +287,9 @@
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

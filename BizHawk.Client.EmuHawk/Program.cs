@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TempFileManager.Start();
 
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
