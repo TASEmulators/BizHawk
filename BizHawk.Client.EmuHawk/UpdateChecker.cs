@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				JObject response = JObject.Parse(DownloadURLAsString(_latestVersionInfoURL));
 
-				LatestVersion = (string)response["name"];
+				LatestVersion = ValidateVersionNumberString((string)response["name"]);
 			}
 			catch
 			{
@@ -98,6 +98,11 @@ namespace BizHawk.Client.EmuHawk
 			using var response = (HttpWebResponse)request.GetResponse();
 			using var responseStream = new StreamReader(response.GetResponseStream());
 			return responseStream.ReadToEnd();
+		}
+
+		private static string ValidateVersionNumberString(string versionNumber)
+		{
+			return versionNumber != null && ParseVersion(versionNumber) != 0 ? versionNumber : "";
 		}
 
 		// Major version goes in the first 16 bits, and so on, up to 4 parts
