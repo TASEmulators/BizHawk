@@ -77,9 +77,6 @@ namespace BizHawk.Client.EmuHawk
 				// for Unix, skip everything else and just wire up the event handler
 				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 			}
-			
-			// Assembly.ReflectionOnlyLoadFrom doesn't automatically load deps, this stops it from throwing when called
-			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) => Assembly.ReflectionOnlyLoad(args.Name);
 		}
 
 		[STAThread]
