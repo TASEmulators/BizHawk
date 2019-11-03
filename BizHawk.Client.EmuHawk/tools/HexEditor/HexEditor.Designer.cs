@@ -92,7 +92,6 @@
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
-			this.swapBytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexMenuStrip.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -111,7 +110,6 @@
 			this.HexMenuStrip.Size = new System.Drawing.Size(584, 24);
 			this.HexMenuStrip.TabIndex = 1;
 			this.HexMenuStrip.Text = "menuStrip1";
-			this.HexMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.HexMenuStrip_ItemClicked);
 			// 
 			// FileSubMenu
 			// 
@@ -286,7 +284,6 @@
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MemoryDomainsMenuItem,
             this.DataSizeSubMenu,
-            this.swapBytesToolStripMenuItem,
             this.BigEndianMenuItem,
             this.toolStripSeparator2,
             this.GoToAddressMenuItem,
@@ -640,14 +637,6 @@
 			this.Header.TabIndex = 2;
 			this.Header.Text = "label1";
 			// 
-			// swapBytesToolStripMenuItem
-			// 
-			this.swapBytesToolStripMenuItem.CheckOnClick = true;
-			this.swapBytesToolStripMenuItem.Name = "swapBytesToolStripMenuItem";
-			this.swapBytesToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-			this.swapBytesToolStripMenuItem.Text = "Swap Bytes";
-			this.swapBytesToolStripMenuItem.Click += new System.EventHandler(this.SwapBytesMenuItem_Click);
-			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -742,6 +731,5 @@
 		private System.Windows.Forms.ToolStripMenuItem ExportContextItem;
 		private System.Windows.Forms.ToolStripMenuItem ExportMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importAsBinaryToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem swapBytesToolStripMenuItem;
 	}
 }

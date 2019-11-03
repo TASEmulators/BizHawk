@@ -582,12 +582,6 @@
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\HexView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\InputConfigBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="CustomControls\InputRoll\Cell.cs" />
     <Compile Include="CustomControls\InputRoll\ColumnType.cs" />
     <Compile Include="CustomControls\InputRoll\InputRoll.cs">
@@ -617,25 +611,10 @@
     <Compile Include="CustomControls\PrereqsAlert.Designer.cs">
       <DependentUpon>PrereqsAlert.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\QuickProgressPopup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
-      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControls\RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\TransparentTrackbar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\ReadonlyCheckbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\SmartTextBoxControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\TextDebugView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\ToolStripEx.cs">
@@ -936,12 +915,6 @@
     </Compile>
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\HexEditor\NewHexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor\NewHexEditor.Designer.cs">
-      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Communication.cs" />
@@ -1506,17 +1479,11 @@
     <EmbeddedResource Include="CustomControls\ExceptionBox.resx">
       <DependentUpon>ExceptionBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
-      <DependentUpon>InputConfigBase.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\MsgBox.resx">
       <DependentUpon>MsgBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\PrereqsAlert.resx">
       <DependentUpon>PrereqsAlert.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
-      <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -1615,9 +1582,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\NewHexEditor.resx">
-      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
       <DependentUpon>LuaCanvas.cs</DependentUpon>

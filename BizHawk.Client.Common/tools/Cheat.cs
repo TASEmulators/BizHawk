@@ -16,7 +16,6 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Watch _watch;
-		private readonly CompareType _comparisonType;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
@@ -27,7 +26,7 @@ namespace BizHawk.Client.Common
 			_watch = watch;
 			_compare = compare;
 			_val = value;
-			_comparisonType = comparisonType;
+			ComparisonType = comparisonType;
 
 			Pulse();
 		}
@@ -131,7 +130,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public CompareType ComparisonType => _comparisonType;
+		public CompareType ComparisonType { get; private set; }
 
 		public void Enable(bool handleChange = true)
 		{
@@ -187,7 +186,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					switch (_comparisonType)
+					switch (ComparisonType)
 					{
 						default:
 						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
@@ -323,12 +322,12 @@ namespace BizHawk.Client.Common
 					else
 					{
 						if (addr == _watch.Address)
-						{							
+						{
 							return (byte)(_val & 0xFF);
 						}
 
 						if (addr == _watch.Address + 1)
-						{							
+						{
 							return (byte)((_val >> 8) & 0xFF);
 						}
 
@@ -396,15 +395,13 @@ namespace BizHawk.Client.Common
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Watch)
+			if (obj is Watch watch)
 			{
-				var watch = obj as Watch;
 				return Domain == watch.Domain && Address == watch.Address;
 			}
 
-			if (obj is Cheat)
+			if (obj is Cheat cheat)
 			{
-				var cheat = obj as Cheat;
 				return Domain == cheat.Domain && Address == cheat.Address;
 			}
 

@@ -625,6 +625,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt)
 						{
+							if (!TasView.AnyRowsSelected) return;
 							int firstSel = TasView.SelectedRows.First();
 
 							if (frame <= firstSel)

@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Settings.Columns =CheatListView.AllColumns;
+			Settings.Columns = CheatListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -328,15 +328,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => CheatListView.SelectedRows;
 
-		private IEnumerable<Cheat> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => Global.CheatList[index]); }
-		}
+		private IEnumerable<Cheat> SelectedItems => SelectedIndices.Select(index => Global.CheatList[index]);
 
-		private IEnumerable<Cheat> SelectedCheats
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<Cheat> SelectedCheats => SelectedItems.Where(x => !x.IsSeparator);
 
 		private void DoSelectedIndexChange()
 		{
@@ -638,10 +632,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region ListView and Dialog Events
-
-		private void CheatListView_Click(object sender, EventArgs e)
-		{
-		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{

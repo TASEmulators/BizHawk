@@ -69,8 +69,6 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 //				if (!ApiInjector.IsAvailable(, t))
 //					continue;
-				if (t == typeof(HexView) && OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
-					continue; // Skip this tool on Unix. It isn't finished and only causes exceptions
 
 				var instance = Activator.CreateInstance(t);
 

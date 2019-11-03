@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Cheat _cheat;
 		private bool _loading;
-		private bool _editmode;
+		private bool _editMode;
 
 		private Action _addCallback;
 		private Action _editCallback;
@@ -215,7 +215,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var valid = !string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text);
 			AddButton.Enabled = valid;
-			EditButton.Enabled = _editmode && valid;
+			EditButton.Enabled = _editMode && valid;
 		}
 
 		private void SizeDropDown_SelectedIndexChanged(object sender, EventArgs e)
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetCheat(Cheat cheat)
 		{
-			_editmode = true;
+			_editMode = true;
 			_cheat = cheat;
 			if (cheat.IsSeparator)
 			{
@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearForm()
 		{
 			_cheat = Cheat.Separator;
-			_editmode = false;
+			_editMode = false;
 			SetFormToDefault();
 		}
 
