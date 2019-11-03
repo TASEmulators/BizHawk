@@ -1964,8 +1964,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// TODO: ignore these keypresses if no highlighted address
-			long _addressHighlighted = _highlightedAddress ?? -1; // TODO: delete me
+			if (!_highlightedAddress.HasValue)
+			{
+				return;
+			}
+
+			var currentAddress = _highlightedAddress ?? 0;
 			switch (DataSize)
 			{
 				default:
@@ -1978,9 +1982,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var temp = _nibbles[0].ToString() + ForceCorrectKeyString(e.KeyChar);
 						var x = byte.Parse(temp, NumberStyles.HexNumber);
-						_domain.PokeByte(_addressHighlighted, x);
+						_domain.PokeByte(currentAddress, x);
 						ClearNibbles();
-						SetHighlighted(_addressHighlighted + 1);
+						SetHighlighted(currentAddress + 1);
 						UpdateValues();
 						Refresh();
 					}
@@ -2007,9 +2011,9 @@ namespace BizHawk.Client.EmuHawk
 						var temp2 = _nibbles[2].ToString() + ((char)e.KeyChar);
 						var x2 = byte.Parse(temp2, NumberStyles.HexNumber);
 
-						PokeWord(_addressHighlighted, x1, x2);
+						PokeWord(currentAddress, x1, x2);
 						ClearNibbles();
-						SetHighlighted(_addressHighlighted + 2);
+						SetHighlighted(currentAddress + 2);
 						UpdateValues();
 						Refresh();
 					}
@@ -2058,10 +2062,10 @@ namespace BizHawk.Client.EmuHawk
 						var temp4 = _nibbles[6].ToString() + ForceCorrectKeyString(e.KeyChar);
 						var x4 = byte.Parse(temp4, NumberStyles.HexNumber);
 
-						PokeWord(_addressHighlighted, x1, x2);
-						PokeWord(_addressHighlighted + 2, x3, x4);
+						PokeWord(currentAddress, x1, x2);
+						PokeWord(currentAddress + 2, x3, x4);
 						ClearNibbles();
-						SetHighlighted(_addressHighlighted + 4);
+						SetHighlighted(currentAddress + 4);
 						UpdateValues();
 						Refresh();
 					}
