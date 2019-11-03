@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _fontWidth;
 		private readonly int _fontHeight;
 
-		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G' };    // G = off 0-9 & A-F are acceptable values
+		private readonly List<char> _nibbles = new List<char>();
 
 		private long? _highlightedAddress;
 		private readonly List<long> _secondaryHighlightedAddresses = new List<long>();
@@ -642,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
 			var viewerText = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
-			if (HasNibbles())
+			if (_nibbles.Any())
 			{
 				viewerText += $"  Typing: ({MakeNibbles()})";
 			}
@@ -652,10 +652,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearNibbles()
 		{
-			for (var i = 0; i < 8; i++)
-			{
-				_nibbles[i] = 'G';
-			}
+			_nibbles.Clear();
+			UpdateGroupBoxTitle();
 		}
 
 		private void GoToAddress(long address)
@@ -1052,24 +1050,12 @@ namespace BizHawk.Client.EmuHawk
 			return GetTextOffset() + ((address % 16) * _fontWidth);
 		}
 
-		private bool HasNibbles()
-		{
-			return _nibbles.Any(x => x != 'G');
-		}
-
 		private string MakeNibbles()
 		{
 			var str = "";
-			for (var x = 0; x < (DataSize * 2); x++)
+			foreach (var c in _nibbles)
 			{
-				if (_nibbles[x] != 'G')
-				{
-					str += _nibbles[x];
-				}
-				else
-				{
-					break;
-				}
+				str += c;
 			}
 
 			return str;
@@ -1980,9 +1966,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 1:
-					if (_nibbles[0] == 'G')
+					if (!_nibbles.Any())
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
+						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
 					}
 					else
 					{
@@ -1997,19 +1983,11 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case 2:
-					if (_nibbles[0] == 'G')
+					if (_nibbles.Count < 3)
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
+						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
 					}
-					else if (_nibbles[1] == 'G')
-					{
-						_nibbles[1] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[2] == 'G')
-					{
-						_nibbles[2] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[3] == 'G')
+					else
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
@@ -2026,35 +2004,11 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case 4:
-					if (_nibbles[0] == 'G')
+					if (_nibbles.Count < 7)
 					{
-						_nibbles[0] = ForceCorrectKeyString(e.KeyChar);
+						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
 					}
-					else if (_nibbles[1] == 'G')
-					{
-						_nibbles[1] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[2] == 'G')
-					{
-						_nibbles[2] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[3] == 'G')
-					{
-						_nibbles[3] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[4] == 'G')
-					{
-						_nibbles[4] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[5] == 'G')
-					{
-						_nibbles[5] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[6] == 'G')
-					{
-						_nibbles[6] = ForceCorrectKeyString(e.KeyChar);
-					}
-					else if (_nibbles[7] == 'G')
+					else
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
