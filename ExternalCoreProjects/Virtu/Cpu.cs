@@ -8,9 +8,18 @@ namespace Jellyfish.Virtu
 {
 	public sealed partial class Cpu : MachineComponent
 	{
-		public Cpu() { }
+		public Cpu()
+		{
+			InitializeOpCodeDelegates();
+		}
+
 		public Cpu(Machine machine) :
 			base(machine)
+		{
+			InitializeOpCodeDelegates();
+		}
+
+		private void InitializeOpCodeDelegates()
 		{
 			ExecuteOpCode65N02 = new Action[OpCodeCount]
             {
@@ -3434,7 +3443,6 @@ namespace Jellyfish.Virtu
 		}
 		#endregion
 
-		[JsonIgnore]
 		public bool Is65C02 { get { return _is65C02; } set { _is65C02 = value; _executeOpCode = _is65C02 ? ExecuteOpCode65C02 : ExecuteOpCode65N02; } }
 		public bool IsThrottled { get; set; }
 		public int Multiplier { get; set; }
@@ -3452,7 +3460,9 @@ namespace Jellyfish.Virtu
 
 		private Memory _memory;
 
+		[JsonIgnore]
 		private bool _is65C02;
+		[JsonIgnore]
 		private Action[] _executeOpCode;
 
 		[JsonIgnore]
