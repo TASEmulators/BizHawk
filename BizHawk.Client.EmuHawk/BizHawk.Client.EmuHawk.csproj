@@ -582,9 +582,6 @@
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\HexView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="CustomControls\InputRoll\Cell.cs" />
     <Compile Include="CustomControls\InputRoll\ColumnType.cs" />
     <Compile Include="CustomControls\InputRoll\InputRoll.cs">
@@ -918,12 +915,6 @@
     </Compile>
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\HexEditor\NewHexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor\NewHexEditor.Designer.cs">
-      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Communication.cs" />
@@ -1591,9 +1582,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\NewHexEditor.resx">
-      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
       <DependentUpon>LuaCanvas.cs</DependentUpon>
