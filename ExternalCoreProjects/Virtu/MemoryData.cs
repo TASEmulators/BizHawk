@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Jellyfish.Virtu
 {
@@ -101,6 +102,7 @@ namespace Jellyfish.Virtu
             Video.ModeC, Video.ModeD, Video.Mode1, Video.Mode2, Video.ModeE, Video.ModeF, Video.Mode1, Video.Mode2
         };
 
+        [JsonIgnore]
         private Action<int, byte>[][][] WriteRamModeBankRegion;
     }
 }

@@ -356,15 +356,18 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-        private void tbbOpenFolder_Click(object sender, EventArgs e)
-        {
-            var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows && !Directory.Exists(frmWares))
+		private void tbbOpenFolder_Click(object sender, EventArgs e)
+		{
+			var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (!OSTailoredCode.IsWindows() && !Directory.Exists(frmWares))
+			{
 				Directory.CreateDirectory(frmWares);
-            System.Diagnostics.Process.Start(frmWares);
-        }
+			}
 
-        private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
+			System.Diagnostics.Process.Start(frmWares);
+		}
+
+		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
 			{

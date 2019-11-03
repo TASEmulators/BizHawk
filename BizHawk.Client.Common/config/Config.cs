@@ -348,7 +348,7 @@ namespace BizHawk.Client.Common
 		/// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
 		/// force DX for Windows and GDI+ for Unix when a new config is generated
 		/// </remarks>
-		public EDispMethod DispMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+		public EDispMethod DispMethod = OSTailoredCode.IsWindows()
 			? EDispMethod.SlimDX9
 			: EDispMethod.GdiPlus;
 
@@ -378,7 +378,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+		public ESoundOutputMethod SoundOutputMethod = OSTailoredCode.IsWindows()
 			? ESoundOutputMethod.DirectSound
 			: ESoundOutputMethod.OpenAL; // force OpenAL for Unix when config is generated
 		public bool SoundEnabled = true;

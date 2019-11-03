@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				_renderer = new GdiRenderer();
 			}

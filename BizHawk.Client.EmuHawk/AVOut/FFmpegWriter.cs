@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = OSTailoredCode.ConstructSubshell(
-					OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+					OSTailoredCode.IsWindows()
 						? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
 						: "ffmpeg",
 					$"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"",

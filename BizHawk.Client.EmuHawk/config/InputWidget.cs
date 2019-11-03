@@ -67,7 +67,11 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows) HideCaret(Handle);
+			if (OSTailoredCode.IsWindows())
+			{
+				HideCaret(Handle);
+			}
+
 			base.OnMouseClick(e);
 		}
 
@@ -259,7 +263,10 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows) HideCaret(Handle);
+			if (OSTailoredCode.IsWindows())
+			{
+				HideCaret(Handle);
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

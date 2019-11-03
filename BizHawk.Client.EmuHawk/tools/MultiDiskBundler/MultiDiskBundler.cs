@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
 				Win32.FileAttributes toAttr = GetPathAttribute(toPath);

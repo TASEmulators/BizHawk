@@ -13,11 +13,20 @@ namespace Jellyfish.Virtu
 
 	public sealed partial class Memory : MachineComponent
 	{
-		public Memory() { }
+		public Memory()
+		{
+			InitializeWriteDelegates();
+		}
+
 		public Memory(Machine machine, byte[] appleIIe) :
 			base(machine)
 		{
 			_appleIIe = appleIIe;
+			InitializeWriteDelegates();
+		}
+
+		private void InitializeWriteDelegates()
+		{
 			WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
 			for (int mode = 0; mode < Video.ModeCount; mode++)
 			{
@@ -26,7 +35,6 @@ namespace Jellyfish.Virtu
 					new Action<int, byte>[RegionCount], new Action<int, byte>[RegionCount]
 				};
 			}
-
 			WriteRamModeBankRegion[Video.Mode0][BankMain][Region0407] = WriteRamMode0MainRegion0407;
 			WriteRamModeBankRegion[Video.Mode0][BankMain][Region080B] = WriteRamMode0MainRegion080B;
 			WriteRamModeBankRegion[Video.Mode1][BankMain][Region0407] = WriteRamMode1MainRegion0407;
@@ -2133,10 +2141,15 @@ namespace Jellyfish.Virtu
 		public MonitorType Monitor { get; private set; }
 		public int VideoMode { get { return StateVideoMode[_state & StateVideo]; } }
 
+		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC0C0;
+		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC1C7;
+		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC3C3;
+		[JsonIgnore]
 		private Action<int, byte> _writeIoRegionC8CF;
+		[JsonIgnore]
 		private Action<int, byte> _writeRomRegionD0FF;
 
 		[JsonIgnore]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Jellyfish.Virtu
 {
@@ -6,7 +7,9 @@ namespace Jellyfish.Virtu
     {
         private const int OpCodeCount = 256;
 
+        [JsonIgnore]
         private Action[] ExecuteOpCode65N02;
+        [JsonIgnore]
         private Action[] ExecuteOpCode65C02;
 
         private const int PC = 0x01;
