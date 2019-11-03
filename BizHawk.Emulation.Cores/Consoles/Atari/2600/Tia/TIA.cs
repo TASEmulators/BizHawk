@@ -352,7 +352,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hmp0Delay > 0)
 			{
 				_hmp0Delay++;
-				if (_hmp0Delay == 4)
+				if (_hmp0Delay == 5)
 				{
 					_hmp0Delay = 0;
 					_player0.HM = _hmp0Val;
@@ -362,7 +362,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hmp1Delay > 0)
 			{
 				_hmp1Delay++;
-				if (_hmp1Delay == 4)
+				if (_hmp1Delay == 5)
 				{
 					_hmp1Delay = 0;
 					_player1.HM = _hmp1Val;
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hmm0Delay > 0)
 			{
 				_hmm0Delay++;
-				if (_hmm0Delay == 4)
+				if (_hmm0Delay == 5)
 				{
 					_hmm0Delay = 0;
 					_player0.Missile.Hm = _hmm0Val;
@@ -382,7 +382,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hmm1Delay > 0)
 			{
 				_hmm1Delay++;
-				if (_hmm1Delay == 4)
+				if (_hmm1Delay == 5)
 				{
 					_hmm1Delay = 0;
 					_player1.Missile.Hm = _hmm1Val;
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hmbDelay > 0)
 			{
 				_hmbDelay++;
-				if (_hmbDelay == 4)
+				if (_hmbDelay == 5)
 				{
 					_hmbDelay = 0;
 					_ball.HM = _hmbVal;
