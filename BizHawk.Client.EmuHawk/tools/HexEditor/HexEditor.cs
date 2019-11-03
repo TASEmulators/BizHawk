@@ -641,7 +641,13 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateGroupBoxTitle()
 		{
 			var addressesString = "0x" + $"{_domain.Size / DataSize:X8}".TrimStart('0');
-			MemoryViewerBox.Text = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
+			var viewerText = $"{Emulator.SystemId} {_domain}{(_domain.CanPoke() ? string.Empty : " (READ-ONLY)")}  -  {addressesString} addresses";
+			if (HasNibbles())
+			{
+				viewerText += $"  Typing: ({MakeNibbles()})";
+			}
+
+			MemoryViewerBox.Text = viewerText;
 		}
 
 		private void ClearNibbles()
@@ -2073,6 +2079,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
+			UpdateGroupBoxTitle();
 			UpdateValues();
 		}
 
@@ -2270,11 +2277,6 @@ namespace BizHawk.Client.EmuHawk
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, textRect);
 					}
 				}
-			}
-
-			if (HasNibbles())
-			{
-				//e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(158, 4));
 			}
 		}
 
