@@ -423,11 +423,6 @@ namespace BizHawk.Client.EmuHawk
 			return i <= 0x1000000 ? 6 : 8;
 		}
 
-		private static char ForceCorrectKeyString(char keycode)
-		{
-			return (char)keycode;
-		}
-
 		private static bool IsHexKeyCode(char key)
 		{
 			if (key >= '0' && key <= '9') // 0-9
@@ -1635,14 +1630,15 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_highlightedAddress.HasValue)
 			{
-				if (IsFrozen(_highlightedAddress.Value))
+				var highlighted = _highlightedAddress.Value;
+				if (IsFrozen(highlighted))
 				{
-					UnFreezeAddress(_highlightedAddress.Value);
+					UnFreezeAddress(highlighted);
 					UnfreezeSecondaries();
 				}
 				else
 				{
-					FreezeAddress(_highlightedAddress.Value);
+					FreezeAddress(highlighted);
 					FreezeSecondaries();
 				}
 			}
@@ -1968,11 +1964,11 @@ namespace BizHawk.Client.EmuHawk
 				case 1:
 					if (!_nibbles.Any())
 					{
-						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
+						_nibbles.Add(e.KeyChar);
 					}
 					else
 					{
-						var temp = _nibbles[0].ToString() + ForceCorrectKeyString(e.KeyChar);
+						var temp = _nibbles[0].ToString() + e.KeyChar;
 						var x = byte.Parse(temp, NumberStyles.HexNumber);
 						_domain.PokeByte(currentAddress, x);
 						ClearNibbles();
@@ -1985,14 +1981,14 @@ namespace BizHawk.Client.EmuHawk
 				case 2:
 					if (_nibbles.Count < 3)
 					{
-						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
+						_nibbles.Add(e.KeyChar);
 					}
 					else
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
 
-						var temp2 = _nibbles[2].ToString() + ((char)e.KeyChar);
+						var temp2 = _nibbles[2].ToString() + e.KeyChar;
 						var x2 = byte.Parse(temp2, NumberStyles.HexNumber);
 
 						PokeWord(currentAddress, x1, x2);
@@ -2006,7 +2002,7 @@ namespace BizHawk.Client.EmuHawk
 				case 4:
 					if (_nibbles.Count < 7)
 					{
-						_nibbles.Add(ForceCorrectKeyString(e.KeyChar));
+						_nibbles.Add(e.KeyChar);
 					}
 					else
 					{
@@ -2019,7 +2015,7 @@ namespace BizHawk.Client.EmuHawk
 						var temp3 = _nibbles[4].ToString() + _nibbles[5];
 						var x3 = byte.Parse(temp3, NumberStyles.HexNumber);
 
-						var temp4 = _nibbles[6].ToString() + ForceCorrectKeyString(e.KeyChar);
+						var temp4 = _nibbles[6].ToString() + e.KeyChar;
 						var x4 = byte.Parse(temp4, NumberStyles.HexNumber);
 
 						PokeWord(currentAddress, x1, x2);
