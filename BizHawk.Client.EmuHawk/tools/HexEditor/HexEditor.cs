@@ -1947,75 +1947,37 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!_domain.CanPoke())
-			{
-				return;
-			}
-
-			if (!_highlightedAddress.HasValue)
+			if (!_domain.CanPoke() || !_highlightedAddress.HasValue)
 			{
 				return;
 			}
 
 			var currentAddress = _highlightedAddress ?? 0;
 			_nibbles.Add(e.KeyChar);
-			switch (DataSize)
+			if (_nibbles.Count == DataSize * 2)
 			{
-				default:
-				case 1:
-					if (_nibbles.Count == 2)
-					{
-						var temp = _nibbles[0].ToString() + e.KeyChar;
-						var x = byte.Parse(temp, NumberStyles.HexNumber);
-						_domain.PokeByte(currentAddress, x);
-						ClearNibbles();
-						SetHighlighted(currentAddress + 1);
-						UpdateValues();
-						Refresh();
-					}
+				var nibbleStr = MakeNibbles();
+				switch (DataSize)
+				{
+					default:
+					case 1:
+						var byteVal = byte.Parse(nibbleStr, NumberStyles.HexNumber);
+						_domain.PokeByte(currentAddress, byteVal);
+						break;
+					case 2:
+						var ushortVal = ushort.Parse(nibbleStr, NumberStyles.HexNumber);
+						_domain.PokeUshort(currentAddress, ushortVal, !BigEndian);  // TODO: is this method backwards?
+						break;
+					case 4:
+						var uintVal = uint.Parse(nibbleStr, NumberStyles.HexNumber);
+						_domain.PokeUint(currentAddress, uintVal, !BigEndian); // TODO: is this method backwards?
+						break;
+				}
 
-					break;
-				case 2:
-					if (_nibbles.Count == 4)
-					{
-						var temp = _nibbles[0].ToString() + _nibbles[1];
-						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
-
-						var temp2 = _nibbles[2].ToString() + e.KeyChar;
-						var x2 = byte.Parse(temp2, NumberStyles.HexNumber);
-
-						PokeWord(currentAddress, x1, x2);
-						ClearNibbles();
-						SetHighlighted(currentAddress + 2);
-						UpdateValues();
-						Refresh();
-					}
-
-					break;
-				case 4:
-					if (_nibbles.Count == 8)
-					{
-						var temp = _nibbles[0].ToString() + _nibbles[1];
-						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
-
-						var temp2 = _nibbles[2].ToString() + _nibbles[3];
-						var x2 = byte.Parse(temp2, NumberStyles.HexNumber);
-
-						var temp3 = _nibbles[4].ToString() + _nibbles[5];
-						var x3 = byte.Parse(temp3, NumberStyles.HexNumber);
-
-						var temp4 = _nibbles[6].ToString() + e.KeyChar;
-						var x4 = byte.Parse(temp4, NumberStyles.HexNumber);
-
-						PokeWord(currentAddress, x1, x2);
-						PokeWord(currentAddress + 2, x3, x4);
-						ClearNibbles();
-						SetHighlighted(currentAddress + 4);
-						UpdateValues();
-						Refresh();
-					}
-
-					break;
+				ClearNibbles();
+				SetHighlighted(currentAddress + DataSize);
+				UpdateValues();
+				Refresh();
 			}
 
 			UpdateGroupBoxTitle();
