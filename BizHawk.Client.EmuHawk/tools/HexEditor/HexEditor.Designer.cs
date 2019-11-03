@@ -111,7 +111,6 @@
 			this.HexMenuStrip.Size = new System.Drawing.Size(584, 24);
 			this.HexMenuStrip.TabIndex = 1;
 			this.HexMenuStrip.Text = "menuStrip1";
-			this.HexMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.HexMenuStrip_ItemClicked);
 			// 
 			// FileSubMenu
 			// 
