@@ -54,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _fontHeight;
 
 		private readonly char[] _nibbles = { 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G' };    // G = off 0-9 & A-F are acceptable values
+
+		private long? _highlightedAddress;
 		private readonly List<long> _secondaryHighlightedAddresses = new List<long>();
 
 		private readonly Dictionary<int, char> _textTable = new Dictionary<int, char>();
@@ -62,9 +64,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _numDigits = 4;
 		private string _numDigitsStr = "{0:X4}";
 		private string _digitFormatString = "{0:X2}";
-		private long _addressHighlighted = -1;
 		private long _addressOver = -1;
-
+		
 		private long _maxRow;
 
 		private MemoryDomain _domain = new NullMemoryDomain();
@@ -112,19 +113,6 @@ namespace BizHawk.Client.EmuHawk
 			Header.Font = font;
 			AddressesLabel.Font = font;
 			AddressLabel.Font = font;
-		}
-
-		private long? HighlightedAddress
-		{
-			get
-			{
-				if (_addressHighlighted >= 0)
-				{
-					return _addressHighlighted;
-				}
-				
-				return null; // Negative = no address highlighted
-			}
 		}
 
 		private WatchSize WatchSize => (WatchSize)DataSize;
@@ -258,17 +246,17 @@ namespace BizHawk.Client.EmuHawk
 			var numByte = search.Length / 2;
 
 			long startByte;
-			if (_addressHighlighted == -1)
+			if (_highlightedAddress == null)
 			{
 				startByte = 0;
 			}
-			else if (_addressHighlighted >= (_domain.Size - 1 - numByte))
+			else if (_highlightedAddress >= (_domain.Size - 1 - numByte))
 			{
 				startByte = 0;
 			}
 			else
 			{
-				startByte = _addressHighlighted + DataSize;
+				startByte = _highlightedAddress.Value + DataSize;
 			}
 
 			byte[] searchBytes = ConvertHexStringToByteArray(search);
@@ -317,15 +305,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var numByte = search.Length / 2;
 
-			long startByte;
-			if (_addressHighlighted == -1)
-			{
-				startByte = _domain.Size - DataSize - numByte;
-			}
-			else
-			{
-				startByte = _addressHighlighted - 1;
-			}
+			long startByte = _highlightedAddress - 1 ?? _domain.Size - DataSize - numByte;
 
 			byte[] searchBytes = ConvertHexStringToByteArray(search);
 			for (var i = startByte; i >= 0; i--)
@@ -640,10 +620,10 @@ namespace BizHawk.Client.EmuHawk
 				? SystemColors.ControlText
 				: SystemColors.ControlDarkDark;
 
-			if (HighlightedAddress >= _domain.Size
+			if (_highlightedAddress >= _domain.Size
 				|| (_secondaryHighlightedAddresses.Any() && _secondaryHighlightedAddresses.Max() >= _domain.Size))
 			{
-				_addressHighlighted = -1;
+				_highlightedAddress = null;
 				_secondaryHighlightedAddresses.Clear();
 			}
 
@@ -714,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 				HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
 			}
 
-			_addressHighlighted = address;
+			_highlightedAddress = address;
 			_addressOver = address;
 			ClearNibbles();
 			UpdateFormText();
@@ -723,12 +703,12 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateFormText()
 		{
 			Text = "Hex Editor";
-			if (_addressHighlighted >= 0)
+			if (_highlightedAddress.HasValue)
 			{
-				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
+				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _highlightedAddress);
 				if (_secondaryHighlightedAddresses.Any())
 				{
-					Text += $" (Selected 0x{_secondaryHighlightedAddresses.Count + (_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1):X})";
+					Text += $" (Selected 0x{_secondaryHighlightedAddresses.Count + (_secondaryHighlightedAddresses.Contains(_highlightedAddress.Value) ? 0 : 1):X})";
 				}
 			}
 		}
@@ -1001,16 +981,16 @@ namespace BizHawk.Client.EmuHawk
 			if (_addressOver >= 0 && _addressOver < _domain.Size)
 			{
 				_secondaryHighlightedAddresses.Clear();
-				if (_addressOver < _addressHighlighted)
+				if (_addressOver < _highlightedAddress)
 				{
-					for (var x = _addressOver; x < _addressHighlighted; x += DataSize)
+					for (var x = _addressOver; x < _highlightedAddress; x += DataSize)
 					{
 						_secondaryHighlightedAddresses.Add(x);
 					}
 				}
-				else if (_addressOver > _addressHighlighted)
+				else if (_addressOver > _highlightedAddress)
 				{
-					for (var x = _addressHighlighted + DataSize; x <= _addressOver; x += DataSize)
+					for (var x = _highlightedAddress.Value + DataSize; x <= _addressOver; x += DataSize)
 					{
 						_secondaryHighlightedAddresses.Add(x);
 					}
@@ -1031,7 +1011,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearHighlighted()
 		{
-			_addressHighlighted = -1;
+			_highlightedAddress = null;
 			UpdateFormText();
 			MemoryViewerBox.Refresh();
 		}
@@ -1044,8 +1024,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return new Point(
 				(int)((((address % 16) / DataSize) * (_fontWidth * (DataSize * 2 + 1))) + xOffset + extra),
-				(int)((((address / 16) - HexScrollBar.Value) * _fontHeight) + yOffset)
-				);
+				(int)((((address / 16) - HexScrollBar.Value) * _fontHeight) + yOffset));
 		}
 
 		// TODO: rename this, but it is a hack work around for highlighting misaligned addresses that result from highlighting on in a smaller data size and switching size
@@ -1191,9 +1170,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetFindValues()
 		{
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				var values = ValueString(HighlightedAddress.Value);
+				var values = ValueString(_highlightedAddress.Value);
 				return _secondaryHighlightedAddresses.Aggregate(values, (current, x) => current + ValueString(x));
 			}
 			
@@ -1403,7 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 			var data = Clipboard.GetDataObject();
 			PasteMenuItem.Enabled =
 				_domain.CanPoke() &&
-				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				data != null &&
 				data.GetDataPresent(DataFormats.Text);
 
@@ -1413,7 +1392,7 @@ namespace BizHawk.Client.EmuHawk
 		string MakeCopyExportString(bool export)
 		{
 			// make room for an array with _secondaryHighlightedAddresses and optionally HighlightedAddress
-			long[] addresses = new long[_secondaryHighlightedAddresses.Count + (HighlightedAddress.HasValue ? 1 : 0)];
+			long[] addresses = new long[_secondaryHighlightedAddresses.Count + (_highlightedAddress.HasValue ? 1 : 0)];
 
 			// if there was actually nothing to do, return
 			if (addresses.Length == 0)
@@ -1428,9 +1407,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// and add HighlightedAddress if present
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				addresses[addresses.Length - 1] = HighlightedAddress.Value;
+				addresses[addresses.Length - 1] = _highlightedAddress.Value;
 			}
 
 			// these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
@@ -1499,7 +1478,7 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < numBytes; i++)
 			{
 				var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
-				var address = _addressHighlighted + i;
+				var address = (_highlightedAddress ?? 0) + i;
 
 				if (address < _domain.Size)
 				{
@@ -1559,7 +1538,7 @@ namespace BizHawk.Client.EmuHawk
 			DataSizeWordMenuItem.Checked = DataSize == 2;
 			DataSizeDWordMenuItem.Checked = DataSize == 4;
 
-			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
+			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
 				FreezeAddressMenuItem.Image = Properties.Resources.Unfreeze;
 				FreezeAddressMenuItem.Text = "Un&freeze Address";
@@ -1571,11 +1550,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddToRamWatchMenuItem.Enabled =
-				HighlightedAddress.HasValue;
+				_highlightedAddress.HasValue;
 
 			PokeAddressMenuItem.Enabled =
 				FreezeAddressMenuItem.Enabled =
-				HighlightedAddress.HasValue &&
+				_highlightedAddress.HasValue &&
 				_domain.CanPoke();
 		}
 
@@ -1641,14 +1620,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToRamWatchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
+			if (_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
 			{
 				GlobalWin.Tools.LoadRamWatch(true);
 			}
 
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(HighlightedAddress.Value));
+				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(_highlightedAddress.Value));
 			}
 
 			_secondaryHighlightedAddresses.ForEach(addr =>
@@ -1662,16 +1641,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				if (IsFrozen(HighlightedAddress.Value))
+				if (IsFrozen(_highlightedAddress.Value))
 				{
-					UnFreezeAddress(HighlightedAddress.Value);
+					UnFreezeAddress(_highlightedAddress.Value);
 					UnfreezeSecondaries();
 				}
 				else
 				{
-					FreezeAddress(HighlightedAddress.Value);
+					FreezeAddress(_highlightedAddress.Value);
 					FreezeSecondaries();
 				}
 			}
@@ -1693,9 +1672,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var addresses = new List<long>();
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				addresses.Add(HighlightedAddress.Value);
+				addresses.Add(_highlightedAddress.Value);
 			}
 
 			if (_secondaryHighlightedAddresses.Any())
@@ -1779,6 +1758,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// TODO: ignore these keys if HighlightedAddress is null, and use Highlighted Address
+			long _addressHighlighted = _highlightedAddress ?? -1; // TODO: delete me
 			long newHighlighted;
 			switch (e.KeyCode)
 			{
@@ -1945,9 +1926,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (HighlightedAddress.HasValue)
+						if (_highlightedAddress.HasValue)
 						{
-							UnFreezeAddress(HighlightedAddress.Value);
+							UnFreezeAddress(_highlightedAddress.Value);
 						}
 					}
 
@@ -1984,6 +1965,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// TODO: ignore these keypresses if no highlighted address
+			long _addressHighlighted = _highlightedAddress ?? -1; // TODO: delete me
 			switch (DataSize)
 			{
 				default:
@@ -2096,25 +2079,25 @@ namespace BizHawk.Client.EmuHawk
 
 			CopyContextItem.Visible =
 				AddToRamWatchContextItem.Visible =
-				HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
+				_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any();
 
 			FreezeContextItem.Visible =
 				PokeContextItem.Visible =
 				IncrementContextItem.Visible =
 				DecrementContextItem.Visible =
 				ContextSeparator2.Visible =
-				(HighlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
+				(_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any()) &&
 				_domain.CanPoke();
 
 			UnfreezeAllContextItem.Visible = Global.CheatList.ActiveCount > 0;
 			PasteContextItem.Visible = _domain.CanPoke() && data != null && data.GetDataPresent(DataFormats.Text);
 
 			ContextSeparator1.Visible =
-				HighlightedAddress.HasValue ||
+				_highlightedAddress.HasValue ||
 				_secondaryHighlightedAddresses.Any() ||
 				(data != null && data.GetDataPresent(DataFormats.Text));
 
-			if (HighlightedAddress.HasValue && IsFrozen(HighlightedAddress.Value))
+			if (_highlightedAddress.HasValue && IsFrozen(_highlightedAddress.Value))
 			{
 				FreezeContextItem.Text = "Un&freeze";
 				FreezeContextItem.Image = Properties.Resources.Unfreeze;
@@ -2136,9 +2119,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				IncrementAddress(HighlightedAddress.Value);
+				IncrementAddress(_highlightedAddress.Value);
 			}
 
 			_secondaryHighlightedAddresses.ForEach(IncrementAddress);
@@ -2153,9 +2136,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (HighlightedAddress.HasValue)
+			if (_highlightedAddress.HasValue)
 			{
-				DecrementAddress(HighlightedAddress.Value);
+				DecrementAddress(_highlightedAddress.Value);
 			}
 
 			_secondaryHighlightedAddresses.ForEach(DecrementAddress);
@@ -2231,19 +2214,20 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_addressHighlighted >= 0 && IsVisible(_addressHighlighted))
+			if (_highlightedAddress.HasValue && IsVisible(_highlightedAddress.Value))
 			{
+				long addressHighlighted = _highlightedAddress ?? 0;
 				// Create a slight offset to increase rectangle sizes
-				var point = GetAddressCoordinates(_addressHighlighted);
-				var textX = (int)GetTextX(_addressHighlighted);
+				var point = GetAddressCoordinates(addressHighlighted);
+				var textX = (int)GetTextX(addressHighlighted);
 				var textPoint = new Point(textX, point.Y);
 
-				var rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + (NeedsExtra(_addressHighlighted) ? _fontWidth : 0) + 2, _fontHeight));
+				var rect = new Rectangle(point, new Size(_fontWidth * 2 * DataSize + (NeedsExtra(addressHighlighted) ? _fontWidth : 0) + 2, _fontHeight));
 				e.Graphics.DrawRectangle(_blackPen, rect);
 
 				var textRect = new Rectangle(textPoint, new Size(_fontWidth * DataSize, _fontHeight));
 
-				if (Global.CheatList.IsActive(_domain, _addressHighlighted))
+				if (Global.CheatList.IsActive(_domain, addressHighlighted))
 				{
 					_freezeHighlightBrush.Color = Global.Config.HexHighlightFreezeColor;
 					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
@@ -2323,7 +2307,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if ((ModifierKeys & Keys.Control) == Keys.Control)
 					{
-						if (pointedAddress == _addressHighlighted)
+						if (pointedAddress == _highlightedAddress)
 						{
 							ClearHighlighted();
 						}
@@ -2376,11 +2360,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void viewN64MatrixToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!HighlightedAddress.HasValue)
+			if (!_highlightedAddress.HasValue)
 				return;
 
 			bool bigEndian = true;
-			long addr = HighlightedAddress.Value;
+			long addr = _highlightedAddress.Value;
 			//ushort  = _domain.PeekWord(addr, bigEndian);
 
 			float[,] matVals = new float[4,4];
