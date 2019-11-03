@@ -116,6 +116,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Options
 
+		private void OptionsMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			BigEndianMenuItem.Checked = BigEndian;
+		}
+
 		private void DataSizeMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			OneByteMenuItem.Checked = DataSize == 1;
@@ -136,6 +141,11 @@ namespace BizHawk.Client.EmuHawk
 		private void FourByteMenuItem_Click(object sender, EventArgs e)
 		{
 			SetDataSize(4);
+		}
+
+		private void BigEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			BigEndian ^= true;
 		}
 
 		#endregion
