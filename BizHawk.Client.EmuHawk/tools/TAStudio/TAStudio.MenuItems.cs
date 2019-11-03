@@ -8,7 +8,6 @@ using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
