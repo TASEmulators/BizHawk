@@ -1758,16 +1758,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// TODO: ignore these keys if HighlightedAddress is null, and use Highlighted Address
-			long _addressHighlighted = _highlightedAddress ?? -1; // TODO: delete me
+			long currentAddress = _highlightedAddress ?? -1;
 			long newHighlighted;
 			switch (e.KeyCode)
 			{
 				case Keys.Up:
-					newHighlighted = _addressHighlighted - 16;
+					newHighlighted = currentAddress - 16;
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = newHighlighted + DataSize; i <= _addressHighlighted; i += DataSize)
+						for (var i = newHighlighted + DataSize; i <= currentAddress; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1782,10 +1781,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.Down:
-					newHighlighted = _addressHighlighted + 16;
+					newHighlighted = currentAddress + 16;
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = _addressHighlighted; i < newHighlighted; i += DataSize)
+						for (var i = currentAddress; i < newHighlighted; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1800,10 +1799,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.Left:
-					newHighlighted = _addressHighlighted - (1 * DataSize);
+					newHighlighted = currentAddress - (1 * DataSize);
 					if (e.Modifiers == Keys.Shift)
 					{
-						AddToSecondaryHighlights(_addressHighlighted);
+						AddToSecondaryHighlights(currentAddress);
 						GoToAddress(newHighlighted);
 					}
 					else
@@ -1814,10 +1813,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.Right:
-					newHighlighted = _addressHighlighted + (1 * DataSize);
+					newHighlighted = currentAddress + (1 * DataSize);
 					if (e.Modifiers == Keys.Shift)
 					{
-						AddToSecondaryHighlights(_addressHighlighted);
+						AddToSecondaryHighlights(currentAddress);
 						GoToAddress(newHighlighted);
 					}
 					else
@@ -1828,10 +1827,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.PageUp:
-					newHighlighted = _addressHighlighted - (_rowsVisible * 16);
+					newHighlighted = currentAddress - (_rowsVisible * 16);
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = newHighlighted + 1; i <= _addressHighlighted; i += DataSize)
+						for (var i = newHighlighted + 1; i <= currentAddress; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1846,10 +1845,10 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case Keys.PageDown:
-					newHighlighted = _addressHighlighted + (_rowsVisible * 16);
+					newHighlighted = currentAddress + (_rowsVisible * 16);
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = _addressHighlighted + 1; i < newHighlighted; i += DataSize)
+						for (var i = currentAddress + 1; i < newHighlighted; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1867,18 +1866,18 @@ namespace BizHawk.Client.EmuHawk
 					_secondaryHighlightedAddresses.Clear();
 					if (e.Modifiers == Keys.Shift)
 					{
-						GoToAddress(_addressHighlighted - 8);
+						GoToAddress(currentAddress - 8);
 					}
 					else
 					{
-						GoToAddress(_addressHighlighted + 8);
+						GoToAddress(currentAddress + 8);
 					}
 
 					break;
 				case Keys.Home:
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = 1; i <= _addressHighlighted; i += DataSize)
+						for (var i = 1; i <= currentAddress; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
@@ -1896,7 +1895,7 @@ namespace BizHawk.Client.EmuHawk
 					newHighlighted = _domain.Size - DataSize;
 					if (e.Modifiers == Keys.Shift)
 					{
-						for (var i = _addressHighlighted; i < newHighlighted; i += DataSize)
+						for (var i = currentAddress; i < newHighlighted; i += DataSize)
 						{
 							AddToSecondaryHighlights(i);
 						}
