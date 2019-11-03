@@ -26,8 +26,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private int NumDigits => DataSize * 2;
 		private int NumAddressDigits => ArrayLength.NumHexDigits();
-		private int AddressBarWidth => (Padding.Left * 2) + (ArrayLength.NumHexDigits() * _charSize.Width) + CellMargin;
-		private int CharBarStart => AddressBarWidth + ((16 / DataSize) * (NumDigits + 1) * _charSize.Width) + _cellPadding + _charSize.Width - 30; // TODO: why is this hack needed?
+		private int ValueBarStart => (Padding.Left * 2) + (ArrayLength.NumHexDigits() * _charSize.Width) + CellMargin;
+
+		private int NumValueDigits => (16 / DataSize) * (NumDigits + 1);
+		private int CharBarStart => ValueBarStart + (NumValueDigits * _charSize.Width) + _cellPadding;
+
 		private int CellWidth => ((NumDigits + 1) * _charSize.Width) + _cellPadding;
 		private int CellHeight => _charSize.Height + Padding.Top + Padding.Bottom;
 		private int VisibleRows => (Height / CellHeight) - 1;
@@ -108,14 +111,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawLines()
 		{
-			_renderer.Line(AddressBarWidth, CellHeight + Padding.Top, AddressBarWidth, Height);
-			_renderer.Line(AddressBarWidth, CellHeight + Padding.Top, Width, CellHeight + Padding.Top);
+			_renderer.Line(ValueBarStart, CellHeight + Padding.Top, ValueBarStart, Height);
+			_renderer.Line(ValueBarStart, CellHeight + Padding.Top, Width, CellHeight + Padding.Top);
 			_renderer.Line(CharBarStart + Padding.Left, CellHeight + Padding.Top, CharBarStart + Padding.Left, Height);
 		}
 
 		private void DrawHeader()
 		{
-			var x = AddressBarWidth + CellMargin;
+			var x = ValueBarStart + CellMargin;
 			var y = Padding.Top;
 			var sb = new StringBuilder();
 			for (int i = 0; i < _rowSize; i += DataSize)
@@ -172,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawDataRow(IList<long> values, int index)
 		{
-			var x = AddressBarWidth + CellMargin;
+			var x = ValueBarStart + CellMargin;
 			var y = CellHeight + Padding.Top + (CellHeight * index);
 
 			var sb = new StringBuilder();
