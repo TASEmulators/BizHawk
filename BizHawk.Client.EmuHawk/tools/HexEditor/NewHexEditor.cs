@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) => SaveConfigSettings();
 
 			HexViewControl.QueryIndexValue += HexView_QueryIndexValue;
+			HexViewControl.QueryCharacterOverride += HexView_QueryCharacterOverride;
 		}
 
 		private void NewHexEditor_Load(object sender, EventArgs e)
@@ -96,6 +97,17 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 			
+		}
+
+		private void HexView_QueryCharacterOverride(byte value, out char? character)
+		{
+			character = null;
+
+			// TODO: remove this, just for debugging
+			if (value == 'H')
+			{
+				character = 'h';
+			}
 		}
 
 		#endregion

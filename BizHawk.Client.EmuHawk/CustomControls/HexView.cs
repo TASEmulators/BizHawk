@@ -213,14 +213,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private char ToChar(byte val)
 		{
-			if (val < ' ')
+			if (val >= 0x7F || val < ' ')
 			{
 				return '.';
 			}
 
-			if (val >= 0x7F)
+			char? c = null;
+			QueryCharacterOverride?.Invoke(val, out c);
+			if (c.HasValue)
 			{
-				return '.';
+				return c.Value;
 			}
 
 			return (char)val;
@@ -259,6 +261,14 @@ namespace BizHawk.Client.EmuHawk
 		public event QueryIndexValueHandler QueryIndexValue;
 
 		public delegate void QueryIndexValueHandler(long index, int dataSize, out long value);
+
+		/// <summary>
+		/// Defines a character display override, intended to use with custom character tables
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryCharacterOverrideHandler QueryCharacterOverride;
+
+		public delegate void QueryCharacterOverrideHandler(byte value, out char? character);
 
 		#endregion
 
