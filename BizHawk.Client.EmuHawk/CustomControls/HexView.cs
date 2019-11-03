@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly IControlRenderer _renderer;
 		private readonly Font _font;
-		private readonly Color _foreColor = Color.Black;
 		private readonly VScrollBar _vBar = new VScrollBar { Visible = false };
 		private Size _charSize;
 		private readonly int _cellPadding;
@@ -96,17 +95,14 @@ namespace BizHawk.Client.EmuHawk
 				_renderer.SetSolidPen(SystemColors.Control);
 				_renderer.FillRectangle(0, 0, Width, Height);
 
-				_renderer.SetBrush(_foreColor);
-				_renderer.SetSolidPen(_foreColor);
-				_renderer.PrepDrawString(_font, _foreColor);
+				_renderer.SetBrush(ForeColor);
+				_renderer.SetSolidPen(BorderColor);
+				_renderer.PrepDrawString(_font, ForeColor);
 
 				DrawLines();
 				DrawHeader();
 				DrawAddressBar();
 				DrawValues();
-
-				// Debug
-				_renderer.DrawString(_vBar.Value.ToString(), new Point(0, 0));
 			}
 		}
 
@@ -114,6 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_renderer.Line(AddressBarWidth, CellHeight + Padding.Top, AddressBarWidth, Height);
 			_renderer.Line(AddressBarWidth, CellHeight + Padding.Top, Width, CellHeight + Padding.Top);
+			_renderer.Line(CharBarStart + Padding.Left, CellHeight + Padding.Top, CharBarStart + Padding.Left, Height);
 		}
 
 		private void DrawHeader()
@@ -202,10 +199,9 @@ namespace BizHawk.Client.EmuHawk
 
 			var sb = new StringBuilder();
 
-			for (int j = 0; j < values.Count; j++)
+			foreach (var v in values)
 			{
-				sb
-					.Append(ToChar((byte)values[j]));
+				sb.Append(ToChar((byte)v));
 			}
 
 			_renderer.DrawString(sb.ToString(), new Point(x, y));
@@ -231,6 +227,12 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets the border color of the control.
+		/// </summary>
+		[Category("CatAppearance")]
+		public Color BorderColor { get; set; } = SystemColors.ControlLight;
 
 		/// <summary>
 		/// Gets or sets the total length of the data set to edit

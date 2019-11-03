@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewHexEditor_Load(object sender, EventArgs e)
 		{
 			HexViewControl.ArrayLength = MemoryDomains.MainMemory.Size;
+			HexViewControl.DataSize = DataSize;
 		}
 
 		[ConfigPersist]
