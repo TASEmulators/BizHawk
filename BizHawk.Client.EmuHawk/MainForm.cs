@@ -165,11 +165,13 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			// TODO GL - a lot of disorganized wiring-up here
-			CGC.CGCBinPath = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			CGC.CGCBinPath = OSTailoredCode.IsWindows()
 				? Path.Combine(PathManager.GetDllDirectory(), "cgc.exe")
 				: "cgc"; // installed separately (via package manager or from https://developer.nvidia.com/cg-toolkit-download), look in $PATH
-			PresentationPanel = new PresentationPanel();
-			PresentationPanel.GraphicsControl.MainWindow = true;
+			PresentationPanel = new PresentationPanel
+			{
+				GraphicsControl = {MainWindow = true}
+			};
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
 			Controls.Add(PresentationPanel);
 			Controls.SetChildIndex(PresentationPanel, 0);
@@ -1047,7 +1049,7 @@ namespace BizHawk.Client.EmuHawk
 				// (this could be determined with more work; other side affects of the fullscreen mode include: corrupted TaskBar, no modal boxes on top of GL control, no screenshots)
 				// At any rate, we can solve this by adding a 1px black border around the GL control
 				// Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+				if (OSTailoredCode.IsWindows()
 					&& Global.Config.DispFullscreenHacks
 					&& Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
@@ -1076,7 +1078,7 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				if (OSTailoredCode.IsWindows())
 				{
 					// do this even if DispFullscreenHacks aren't enabled, to restore it in case it changed underneath us or something
 					Padding = new Padding(0);

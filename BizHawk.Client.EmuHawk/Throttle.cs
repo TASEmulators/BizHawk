@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				return ms;
 			}
 		}
-		static PlatformSpecificSysTimer sysTimer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+		static readonly PlatformSpecificSysTimer sysTimer = OSTailoredCode.IsWindows()
 			? (PlatformSpecificSysTimer) new WinSysTimer()
 			: new UnixMonoSysTimer();
 		static uint TimeBeginPeriod(uint ms)

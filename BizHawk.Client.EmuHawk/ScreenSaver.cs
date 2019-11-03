@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			public int Duration { get; set; } = 0; //TODO implementation
 		}
 
-		private static readonly IScreenBlankTimer _screenBlankTimer = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+		private static readonly IScreenBlankTimer _screenBlankTimer = OSTailoredCode.IsWindows()
 			? (IScreenBlankTimer) new Win32ScreenBlankTimer()
 			: new UnixScreenBlankTimer();
 

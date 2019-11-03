@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Sound(IntPtr mainWindowHandle)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
 					_outputDevice = new OpenALSoundOutput(this);

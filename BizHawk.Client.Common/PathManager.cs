@@ -410,7 +410,7 @@ namespace BizHawk.Client.Common
 #if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 
-			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
+			return OSTailoredCode.IsWindows()
 				? absolutePath.Replace(parentPath, ".")
 				: "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary");
 #else // written for Unix port but may be useful for .NET Core
@@ -441,7 +441,7 @@ namespace BizHawk.Client.Common
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
 		public static bool IsSubfolder(string parentPath, string childPath)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				var parentUri = new Uri(parentPath);
 

@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.IsWindows())
 			{
 				var libLoader = EXE_PROJECT.OSTailoredCode.LinkedLibManager;
 
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 		private static int Main(string[] args)
 		{
 			var exitCode = SubMain(args);
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Linux)
+			if (EXE_PROJECT.OSTailoredCode.IsLinux())
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
 				Process.GetCurrentProcess().Kill();
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
 			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			if (!VersionInfo.DeveloperBuild && EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (!VersionInfo.DeveloperBuild && EXE_PROJECT.OSTailoredCode.IsWindows())
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS != EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (!EXE_PROJECT.OSTailoredCode.IsWindows())
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 
 REDO_DISPMETHOD:
@@ -193,7 +193,7 @@ REDO_DISPMETHOD:
 				goto REDO_DISPMETHOD;
 			}
 
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.IsWindows())
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".
@@ -314,7 +314,7 @@ REDO_DISPMETHOD:
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows // LuaInterface is not currently working on Mono
+				if (EXE_PROJECT.OSTailoredCode.IsWindows() // LuaInterface is not currently working on Mono
 					&& File.Exists(configPath)
 					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"UseNLua\": ")) ?? string.Empty)
 						.Contains("false"))

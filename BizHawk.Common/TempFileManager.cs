@@ -86,16 +86,21 @@ namespace BizHawk.Common
 					catch
 					{
 					}
+
 					if(fis != null)
 					{
 						foreach (var fi in fis)
 						{
 							try
 							{
-								if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+								if (OSTailoredCode.IsWindows())
+								{
 									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+								}
 								else
+								{
 									fi.Delete();
+								}
 							}
 							catch
 							{
@@ -107,7 +112,7 @@ namespace BizHawk.Common
 					}
 				}
 
-				// try not to slam the filesystem too hard, we dont want this to cause any hiccups
+				// try not to slam the filesystem too hard, we don't want this to cause any hiccups
 				Thread.Sleep(5000);
 			}
 		}

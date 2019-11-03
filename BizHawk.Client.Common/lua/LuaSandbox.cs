@@ -43,30 +43,26 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				// WARNING: setting the current directory is SLOW!!! security checks for some reason.
 				// so we're bypassing it with windows hacks
 				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
 					return SetCurrentDirectoryW(pstr);
 			}
-			else
+
+			if (System.IO.Directory.Exists(_currentDirectory)) // race condition for great justice
 			{
-				if (System.IO.Directory.Exists(_currentDirectory)) // race condition for great justice
-                {
-                	Environment.CurrentDirectory = _currentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
-                	return true;
-                }
-                else
-                {
-                	return false;
-                }
+				Environment.CurrentDirectory = _currentDirectory; // that's right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
+				return true;
 			}
+
+			return false;
 		}
 
 		private string CoolGetCurrentDirectory()
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsWindows())
 			{
 				// GUESS WHAT!
 				// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
@@ -76,10 +72,8 @@ namespace BizHawk.Client.Common
 				fixed (byte* pBuf = &buf[0])
 					return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) GetCurrentDirectoryW(32767, pBuf));
 			}
-			else
-			{
-				return Environment.CurrentDirectory;
-			}
+
+			return Environment.CurrentDirectory;
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)
