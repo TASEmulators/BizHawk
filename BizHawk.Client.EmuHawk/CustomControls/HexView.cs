@@ -123,7 +123,6 @@ namespace BizHawk.Client.EmuHawk
 			var sb = new StringBuilder();
 			for (int i = 0; i < _rowSize; i += DataSize)
 			{
-				
 				sb
 					.Append(i.ToHexString(NumDigits))
 					.Append(" ");
@@ -168,6 +167,24 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					DrawDataRow(values, i);
+				}
+
+				for (int i = 0; i <= VisibleRows; i++)
+				{
+					var values = new List<byte>();
+					long baseAddr = (FirstVisibleRow + i) * 16;
+					for (int j = 0; j < 16; j++)
+					{
+						long addr = baseAddr + j;
+					
+						if (addr < ArrayLength)
+						{
+							// ReSharper disable once PossibleNullReferenceException
+							QueryIndexValue(addr, 1, out long value);
+							values.Add((byte)value);
+						}
+					}
+
 					DrawCharRow(values, i);
 				}
 			}
@@ -190,13 +207,8 @@ namespace BizHawk.Client.EmuHawk
 			_renderer.DrawString(sb.ToString(), new Point(x, y));
 		}
 
-		private void DrawCharRow(IList<long> values, int index)
+		private void DrawCharRow(IList<byte> values, int index)
 		{
-			if (DataSize != 1)
-			{
-				return; // TODO
-			}
-
 			var x = CharBarStart + CellMargin;
 			var y = CellHeight + Padding.Top + (CellHeight * index);
 
@@ -204,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var v in values)
 			{
-				sb.Append(ToChar((byte)v));
+				sb.Append(ToChar(v));
 			}
 
 			_renderer.DrawString(sb.ToString(), new Point(x, y));
