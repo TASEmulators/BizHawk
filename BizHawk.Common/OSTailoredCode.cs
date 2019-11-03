@@ -127,6 +127,7 @@ namespace BizHawk.Common
 					CreateNoWindow = true,
 					FileName = cmd,
 					RedirectStandardError = checkStderr,
+					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
 					UseShellExecute = false
 				}
