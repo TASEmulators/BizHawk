@@ -1958,15 +1958,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var currentAddress = _highlightedAddress ?? 0;
+			_nibbles.Add(e.KeyChar);
 			switch (DataSize)
 			{
 				default:
 				case 1:
-					if (!_nibbles.Any())
-					{
-						_nibbles.Add(e.KeyChar);
-					}
-					else
+					if (_nibbles.Count == 2)
 					{
 						var temp = _nibbles[0].ToString() + e.KeyChar;
 						var x = byte.Parse(temp, NumberStyles.HexNumber);
@@ -1979,11 +1976,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case 2:
-					if (_nibbles.Count < 3)
-					{
-						_nibbles.Add(e.KeyChar);
-					}
-					else
+					if (_nibbles.Count == 4)
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
@@ -2000,11 +1993,7 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 				case 4:
-					if (_nibbles.Count < 7)
-					{
-						_nibbles.Add(e.KeyChar);
-					}
-					else
+					if (_nibbles.Count == 8)
 					{
 						var temp = _nibbles[0].ToString() + _nibbles[1];
 						var x1 = byte.Parse(temp, NumberStyles.HexNumber);
