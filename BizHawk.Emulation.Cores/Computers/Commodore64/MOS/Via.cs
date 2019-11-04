@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			else
 			{
 				_t1C--;
-                if (_t1C == 0)
+				if (_t1C == 0)
 				{
 					switch (_acrT1Control)
 					{
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 							break;
 					}
 				}
-                else if (_t1C < 0)
+				else if (_t1C < 0)
 				{
 					if (_t1CLoaded)
 					{
@@ -331,7 +331,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 			}
 
-            // interrupt generation
+			// interrupt generation
 
 			if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
 			{
@@ -350,30 +350,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				with output pins on the peripheral ports.
 			*/
 
-            if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
-                (_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
-            {
-                if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
+			if ((_pcrCa1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Ca1 && !_ca1L) ||
+				(_pcrCa1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Ca1 && _ca1L))
+			{
+				if (_acrPaLatchEnable && (_ifr & 0x02) == 0)
 					_paLatch = _port.ReadExternalPra();
-                _ifr |= 0x02;
-            }
+				_ifr |= 0x02;
+			}
 
-            /*
+			/*
                 Input latching on the PB port is controlled in the same manner as that described for the PA port.
                 However, with the peripheral B port the input latch will store either the voltage on the pin or the contents
                 of the Output Register (ORB) depending on whether the pin is programmed to act as an input or an
                 output. As with the PA port, the processor always reads the input latches.
             */
 
-            if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
-                (_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
-            {
-                if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
+			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
+				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
+			{
+				if (_acrPbLatchEnable && (_ifr & 0x10) == 0)
 					_pbLatch = _port.ReadPrb(_prb, _ddrb);
 				if (_acrSrControl == ACR_SR_CONTROL_DISABLED)
 					_shiftIn = true;
-                _ifr |= 0x10;
-            }
+				_ifr |= 0x10;
+			}
 
 			if (_shiftIn)
 			{

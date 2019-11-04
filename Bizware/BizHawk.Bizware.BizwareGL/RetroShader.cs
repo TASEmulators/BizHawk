@@ -103,8 +103,8 @@ namespace BizHawk.Bizware.BizwareGL
 			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 
-            float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
-            Pipeline["Time"].Set(time);
+			float time = DateTime.Now.Second + (float)DateTime.Now.Millisecond / 1000;
+			Pipeline["Time"].Set(time);
 
 			int w = OutputSize.Width;
 			int h = OutputSize.Height;

@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MultiDiskFileSelector : UserControl
 	{
-        public string SystemString = "";
+		public string SystemString = "";
 
 		public string GetName()
 		{

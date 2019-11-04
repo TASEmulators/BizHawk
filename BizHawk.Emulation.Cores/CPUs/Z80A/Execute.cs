@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public long TotalExecutedCycles;
 
 		private int EI_pending;
-        // ZXHawk needs to be able to read this for zx-state snapshot export
-        public int EIPending { get { return EI_pending; } }
+		// ZXHawk needs to be able to read this for zx-state snapshot export
+		public int EIPending { get { return EI_pending; } }
 
 		public const ushort CBpre = 0;
 		public const ushort EXTDpre = 1;

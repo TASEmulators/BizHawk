@@ -53,10 +53,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override int Previous => 0;
 
-        /// <summary>
-        /// Ignore that stuff
-        /// </summary>
-        public override string ValueString => Notes; //"";
+		/// <summary>
+		/// Ignore that stuff
+		/// </summary>
+		public override string ValueString => Notes; //"";
 
 		/// <summary>
 		/// Ignore that stuff

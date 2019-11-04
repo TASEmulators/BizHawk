@@ -52,8 +52,8 @@ namespace BizHawk.Client.EmuHawk
 			{ "GBC", "Game Boy Color" },
 			{ "PCFX", "PC-FX" },
 			{ "32X", "32X" },
-            { "ZXSpectrum", "ZX Spectrum" },
-            { "AmstradCPC", "Amstrad CPC" },
+			{ "ZXSpectrum", "ZX Spectrum" },
+			{ "AmstradCPC", "Amstrad CPC" },
 			{ "ChannelF", "Channel F" },
 			{ "Vectrex", "Vectrex" }
 		};
@@ -393,81 +393,81 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ofd.InitialDirectory = currSelectorDir;
 				ofd.RestoreDirectory = true;
-                string frmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+				string frmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 
-                if (ofd.ShowDialog() == DialogResult.OK)
+				if (ofd.ShowDialog() == DialogResult.OK)
 				{
 					// remember the location we selected this firmware from, maybe there are others
 					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
 
-                    try
-                    {
-                        using (var hf = new HawkFile(ofd.FileName))
-                        {
-                            // for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
-                            foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
-                            {
-                                var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-                                string filePath = ofd.FileName;
+					try
+					{
+						using (var hf = new HawkFile(ofd.FileName))
+						{
+							// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
+							foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
+							{
+								var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+								string filePath = ofd.FileName;
 
-                                // if the selected file is an archive, allow the user to pick the inside file
-                                // to always be copied to the global firmwares directory                            
-                                if (hf.IsArchive)
-                                {
-                                    var ac = new ArchiveChooser(new HawkFile(filePath));
-                                    int memIdx = -1;
+								// if the selected file is an archive, allow the user to pick the inside file
+								// to always be copied to the global firmwares directory                            
+								if (hf.IsArchive)
+								{
+									var ac = new ArchiveChooser(new HawkFile(filePath));
+									int memIdx = -1;
 
-                                    if (ac.ShowDialog(this) == DialogResult.OK)
-                                    {
-                                        memIdx = ac.SelectedMemberIndex;
-                                    }
-                                    else
-                                    {
-                                        return;
-                                    }
+									if (ac.ShowDialog(this) == DialogResult.OK)
+									{
+										memIdx = ac.SelectedMemberIndex;
+									}
+									else
+									{
+										return;
+									}
 
-                                    var insideFile = hf.BindArchiveMember(memIdx);
-                                    var fileData = insideFile.ReadAllBytes();
+									var insideFile = hf.BindArchiveMember(memIdx);
+									var fileData = insideFile.ReadAllBytes();
 
-                                    // write to file in the firmwares folder
-                                    File.WriteAllBytes(Path.Combine(frmwarePath, insideFile.Name), fileData);
-                                    filePath = Path.Combine(frmwarePath, insideFile.Name);
-                                }
-                                else
-                                {
-                                    // selected file is not an archive
-                                    // check whether this file is currently outside of the global firmware directory
-                                    if (currSelectorDir != frmwarePath)
-                                    {
-                                        var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
-                                        if (askMoveResult == DialogResult.Yes)
-                                        {
-                                            try
-                                            {
-                                                FileInfo fi = new FileInfo(filePath);
-                                                filePath = Path.Combine(frmwarePath, fi.Name);
-                                                File.Copy(ofd.FileName, filePath);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                }
+									// write to file in the firmwares folder
+									File.WriteAllBytes(Path.Combine(frmwarePath, insideFile.Name), fileData);
+									filePath = Path.Combine(frmwarePath, insideFile.Name);
+								}
+								else
+								{
+									// selected file is not an archive
+									// check whether this file is currently outside of the global firmware directory
+									if (currSelectorDir != frmwarePath)
+									{
+										var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
+										if (askMoveResult == DialogResult.Yes)
+										{
+											try
+											{
+												FileInfo fi = new FileInfo(filePath);
+												filePath = Path.Combine(frmwarePath, fi.Name);
+												File.Copy(ofd.FileName, filePath);
+											}
+											catch (Exception ex)
+											{
+												MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
+												continue;
+											}
+										}
+									}
+								}
 
-                                Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
-                        return;
-                    }
+								Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
+						return;
+					}
 
-                    DoScan();
+					DoScan();
 				}
 			}
 		}
@@ -673,10 +673,10 @@ namespace BizHawk.Client.EmuHawk
 								File.WriteAllBytes(outfile, ms.ToArray());
 								hf.Unbind();
 
-                                if (cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
-                                {
-                                    didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
-                                }
+								if (cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
+								{
+									didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
+								}
 							}
 						}
 						finally
@@ -686,10 +686,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-                        if (cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
-                        {
-                            didSomething |= RunImportJobSingle(basepath, f, ref errors);
-                        } 
+						if (cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
+						{
+							didSomething |= RunImportJobSingle(basepath, f, ref errors);
+						} 
 					}
 				}
 			}
@@ -716,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-        private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
+		private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}

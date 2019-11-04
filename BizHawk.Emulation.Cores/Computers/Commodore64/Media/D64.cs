@@ -181,76 +181,76 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public static Disk Read(byte[] source)
 		{
-		    var formatB = source[D64_DISK_ID_OFFSET + 0x00];
-            var formatA = source[D64_DISK_ID_OFFSET + 0x01];
+			var formatB = source[D64_DISK_ID_OFFSET + 0x00];
+			var formatA = source[D64_DISK_ID_OFFSET + 0x01];
 
-            using (var mem = new MemoryStream(source))
-		    {
-                var reader = new BinaryReader(mem);
-                var trackDatas = new List<byte[]>();
-                var trackLengths = new List<int>();
-                var trackNumbers = new List<int>();
-                var trackDensities = new List<int>();
-		        var errorType = ErrorType.NoError;
-                int trackCount;
-		        int errorOffset = -1;
+			using (var mem = new MemoryStream(source))
+			{
+				var reader = new BinaryReader(mem);
+				var trackDatas = new List<byte[]>();
+				var trackLengths = new List<int>();
+				var trackNumbers = new List<int>();
+				var trackDensities = new List<int>();
+				var errorType = ErrorType.NoError;
+				int trackCount;
+				int errorOffset = -1;
 
-                switch (source.Length)
-                {
-                    case 174848: // 35 tracks no errors
-                        trackCount = 35;
-                        break;
-                    case 175531: // 35 tracks with errors
-                        trackCount = 35;
-                        errorOffset = 174848;
-                        break;
-                    case 196608: // 40 tracks no errors
-                        trackCount = 40;
-                        break;
-                    case 197376: // 40 tracks with errors
-                        trackCount = 40;
-                        errorOffset = 196608;
-                        break;
-                    default:
-                        throw new Exception("Not able to identify capacity of the D64 file.");
-                }
+				switch (source.Length)
+				{
+					case 174848: // 35 tracks no errors
+						trackCount = 35;
+						break;
+					case 175531: // 35 tracks with errors
+						trackCount = 35;
+						errorOffset = 174848;
+						break;
+					case 196608: // 40 tracks no errors
+						trackCount = 40;
+						break;
+					case 197376: // 40 tracks with errors
+						trackCount = 40;
+						errorOffset = 196608;
+						break;
+					default:
+						throw new Exception("Not able to identify capacity of the D64 file.");
+				}
 
-                for (var i = 0; i < trackCount; i++)
-                {
-                    if (errorOffset >= 0)
-                    {
-                        errorType = (ErrorType) source[errorOffset];
-                        errorOffset++;
-                    }
-                    var sectors = SectorsPerTrack[i];
-                    var trackLengthBits = 0;
-                    using (var trackMem = new MemoryStream())
-                    {
-                        for (var j = 0; j < sectors; j++)
-                        {
-                            int bitsWritten;
-                            var sectorData = reader.ReadBytes(256);
-                            var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out bitsWritten);
-                            trackMem.Write(diskData, 0, diskData.Length);
-                            trackLengthBits += bitsWritten;
-                        }
-                        var density = DensityTable[i];
+				for (var i = 0; i < trackCount; i++)
+				{
+					if (errorOffset >= 0)
+					{
+						errorType = (ErrorType) source[errorOffset];
+						errorOffset++;
+					}
+					var sectors = SectorsPerTrack[i];
+					var trackLengthBits = 0;
+					using (var trackMem = new MemoryStream())
+					{
+						for (var j = 0; j < sectors; j++)
+						{
+							int bitsWritten;
+							var sectorData = reader.ReadBytes(256);
+							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), formatA, formatB, StandardSectorGapLength[DensityTable[i]], errorType, out bitsWritten);
+							trackMem.Write(diskData, 0, diskData.Length);
+							trackLengthBits += bitsWritten;
+						}
+						var density = DensityTable[i];
 
-                        // we pad the tracks with extra gap bytes to meet MNIB standards
-                        while (trackMem.Length < StandardTrackLengthBytes[density])
-                        {
-                            trackMem.WriteByte(0x55);
-                        }
+						// we pad the tracks with extra gap bytes to meet MNIB standards
+						while (trackMem.Length < StandardTrackLengthBytes[density])
+						{
+							trackMem.WriteByte(0x55);
+						}
 
-                        trackDatas.Add(trackMem.ToArray());
-                        trackLengths.Add(trackLengthBits);
-                        trackNumbers.Add(i * 2);
-                        trackDensities.Add(DensityTable[i]);
-                    }
-                }
+						trackDatas.Add(trackMem.ToArray());
+						trackLengths.Add(trackLengthBits);
+						trackNumbers.Add(i * 2);
+						trackDensities.Add(DensityTable[i]);
+					}
+				}
 
 				return new Disk(trackDatas, trackNumbers, trackDensities, 84) {WriteProtected = false};
 			}
-        }
+		}
 	}
 }

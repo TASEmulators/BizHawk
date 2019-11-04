@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 			WasLagged = _lagLog.History(index + 1)
 		};
 
-	    public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 			: base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?

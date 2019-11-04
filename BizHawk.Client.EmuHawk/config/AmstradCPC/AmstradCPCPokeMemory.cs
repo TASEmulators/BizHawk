@@ -17,14 +17,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-            var ams = (AmstradCPC)Global.Emulator;
-            var addr = (ushort)numericUpDownAddress.Value;
-            var val = (byte)numericUpDownByte.Value;
+			var ams = (AmstradCPC)Global.Emulator;
+			var addr = (ushort)numericUpDownAddress.Value;
+			var val = (byte)numericUpDownByte.Value;
 
-            ams.PokeMemory(addr, val);
+			ams.PokeMemory(addr, val);
 
-            DialogResult = DialogResult.OK;
-            Close();            
+			DialogResult = DialogResult.OK;
+			Close();            
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -33,5 +33,5 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
-    }
+	}
 }

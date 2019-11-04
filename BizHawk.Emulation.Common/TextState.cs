@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Common
 		[JsonIgnore]
 		private Node Current => Nodes.Peek();
 
-	    public void Prepare()
+		public void Prepare()
 		{
 			Nodes = new Stack<Node>();
 			Nodes.Push(Root);

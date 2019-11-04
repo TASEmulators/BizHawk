@@ -21,37 +21,37 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings = ((AmstradCPC)Global.Emulator).GetSettings().Clone();
 
-            
+			
 
-            // OSD Message Verbosity
-            var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));     
-            foreach (var val in osdTypes)
-            {
-                osdMessageVerbositycomboBox1.Items.Add(val);
-            }
-            osdMessageVerbositycomboBox1.SelectedItem = _settings.OSDMessageVerbosity.ToString();
-            UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString()));
-        }
+			// OSD Message Verbosity
+			var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));     
+			foreach (var val in osdTypes)
+			{
+				osdMessageVerbositycomboBox1.Items.Add(val);
+			}
+			osdMessageVerbositycomboBox1.SelectedItem = _settings.OSDMessageVerbosity.ToString();
+			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString()));
+		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-            bool changed =                
-                _settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
+			bool changed =                
+				_settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
 
-            if (changed)
+			if (changed)
 			{
-                _settings.OSDMessageVerbosity = (AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
+				_settings.OSDMessageVerbosity = (AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
-                GlobalWin.MainForm.PutCoreSettings(_settings);
+				GlobalWin.MainForm.PutCoreSettings(_settings);
 
-                DialogResult = DialogResult.OK;
-                Close();
+				DialogResult = DialogResult.OK;
+				Close();
 			}
-            else
-            {
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+			else
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -61,26 +61,26 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-        private void UpdateOSDNotes(AmstradCPC.OSDVerbosity type)
-        {
-            switch (type)
-            {
-                case AmstradCPC.OSDVerbosity.Full:
-                    lblOSDVerbinfo.Text = "Show all OSD messages";
-                    break;
-                case AmstradCPC.OSDVerbosity.Medium:
-                    lblOSDVerbinfo.Text = "Only show machine/device generated messages";
-                    break;
-                case AmstradCPC.OSDVerbosity.None:
-                    lblOSDVerbinfo.Text = "No core-driven OSD messages";
-                    break;
-            }
-        }
+		private void UpdateOSDNotes(AmstradCPC.OSDVerbosity type)
+		{
+			switch (type)
+			{
+				case AmstradCPC.OSDVerbosity.Full:
+					lblOSDVerbinfo.Text = "Show all OSD messages";
+					break;
+				case AmstradCPC.OSDVerbosity.Medium:
+					lblOSDVerbinfo.Text = "Only show machine/device generated messages";
+					break;
+				case AmstradCPC.OSDVerbosity.None:
+					lblOSDVerbinfo.Text = "No core-driven OSD messages";
+					break;
+			}
+		}
 
-        private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            ComboBox cb = sender as ComboBox;
-            UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), cb.SelectedItem.ToString()));
-        }
-    }
+		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+		{
+			ComboBox cb = sender as ComboBox;
+			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), cb.SelectedItem.ToString()));
+		}
+	}
 }

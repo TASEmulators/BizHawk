@@ -237,11 +237,11 @@ namespace BizHawk.Client.Common
 
 		public int Count => _watchList.Count;
 
-	    public Settings.SearchMode Mode => _settings.Mode;
+		public Settings.SearchMode Mode => _settings.Mode;
 
-	    public MemoryDomain Domain => _settings.Domain;
+		public MemoryDomain Domain => _settings.Domain;
 
-	    public Compare CompareTo
+		public Compare CompareTo
 		{
 			get
 			{

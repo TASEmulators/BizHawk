@@ -64,10 +64,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DrawFinish();
 				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear ?? true);
-            }
+			}
 			catch (InvalidOperationException ex)
 			{
-                Console.WriteLine(ex.ToString());
+				Console.WriteLine(ex.ToString());
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_GUISurface = null;
-        }
+		}
 		#endregion
 
 		#region Helpers
@@ -149,13 +149,13 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage(message);
 		}
 
-        public void ClearGraphics()
+		public void ClearGraphics()
 		{
 			_GUISurface.Clear();
 			DrawFinish();
 		}
 
-        public void ClearText()
+		public void ClearText()
 		{
 			GlobalWin.OSD.ClearGUIText();
 		}
@@ -571,53 +571,53 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null)
-        {
-            using (var g = GetGraphics())
-            {
-                try
-                {
-                    var index = 0;
-                    if (string.IsNullOrEmpty(fontfamily))
-                    {
-                        index = _defaultPixelFont;
-                    }
-                    else
-                    {
-                        switch (fontfamily)
-                        {
-                            case "fceux":
-                            case "0":
-                                index = 0;
-                                break;
-                            case "gens":
-                            case "1":
-                                index = 1;
-                                break;
-                            default:
-                                Console.WriteLine($"Unable to find font family: {fontfamily}");
-                                return;
-                        }
-                    }
+		{
+			using (var g = GetGraphics())
+			{
+				try
+				{
+					var index = 0;
+					if (string.IsNullOrEmpty(fontfamily))
+					{
+						index = _defaultPixelFont;
+					}
+					else
+					{
+						switch (fontfamily)
+						{
+							case "fceux":
+							case "0":
+								index = 0;
+								break;
+							case "gens":
+							case "1":
+								index = 1;
+								break;
+							default:
+								Console.WriteLine($"Unable to find font family: {fontfamily}");
+								return;
+						}
+					}
 
-                    var f = new StringFormat(StringFormat.GenericTypographic)
-                    {
-                        FormatFlags = StringFormatFlags.MeasureTrailingSpaces
-                    };
-                    var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
-                    Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
-                    var rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
-                    if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), rect);
-                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-                    g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
-        }
+					var f = new StringFormat(StringFormat.GenericTypographic)
+					{
+						FormatFlags = StringFormatFlags.MeasureTrailingSpaces
+					};
+					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
+					var rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
+					if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), rect);
+					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+					g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+				}
+				catch (Exception)
+				{
+					return;
+				}
+			}
+		}
 
-        public void Text(int x, int y, string message, Color? forecolor = null, string anchor = null)
+		public void Text(int x, int y, string message, Color? forecolor = null, string anchor = null)
 		{
 			var a = 0;
 

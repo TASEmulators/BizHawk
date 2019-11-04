@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 	[Tool(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" },
-        unsupportedCores: new[] { "Snes9x" })]
+		unsupportedCores: new[] { "Snes9x" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "
