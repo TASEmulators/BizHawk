@@ -35,10 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 		private static readonly LuaFunctionList EmptyLuaFunList = new LuaFunctionList();
-		public override LuaFunctionList GetRegisteredFunctions()
-		{
-			return EmptyLuaFunList;
-		}
+		public override LuaFunctionList RegisteredFunctions => EmptyLuaFunList;
 		public override void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 		}

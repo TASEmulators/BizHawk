@@ -114,10 +114,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsRunning { get; set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public override LuaFunctionList GetRegisteredFunctions()
-		{
-			return EventsLibrary.RegisteredFunctions;
-		}
+		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
 
 		public override void WindowClosed(IntPtr handle)
 		{

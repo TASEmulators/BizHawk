@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	public abstract class PlatformEmuLuaLibrary
 	{
 		public readonly LuaDocumentation Docs = new LuaDocumentation();
+		public abstract LuaFunctionList RegisteredFunctions { get; }
 		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary) Libraries[typeof(GuiLuaLibrary)];
 		protected readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 		public IEnumerable<LuaFile> RunningScripts => ScriptList.Where(lf => lf.Enabled);
@@ -27,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 		public abstract void Close();
 		public abstract void EndLuaDrawing();
 		public abstract void ExecuteString(string command);
-		public abstract LuaFunctionList GetRegisteredFunctions();
 		public abstract void Restart(IEmulatorServiceProvider newServiceProvider);
 		public abstract EmuLuaLibrary.ResumeResult ResumeScriptFromThreadOf(LuaFile lf);
 		public abstract void SpawnAndSetFileThread(string pathToLoad, LuaFile lf);
