@@ -810,7 +810,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									}
 									render_counter = 8 - render_offset;
 
-									render_offset = 0;
+									render_offset = 7 - window_x_latch;
 								}
 								else
 								{
