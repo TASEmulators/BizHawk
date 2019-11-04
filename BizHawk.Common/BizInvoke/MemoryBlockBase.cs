@@ -95,9 +95,9 @@ namespace BizHawk.Common.BizInvoke
 		}
 
 		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
-		public static MemoryBlockBase CallPlatformCtor(ulong start, ulong size) => OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-			? (MemoryBlockBase) new MemoryBlock(start, size)
-			: new MemoryBlockUnix(start, size);
+		public static MemoryBlockBase CallPlatformCtor(ulong start, ulong size) => OSTailoredCode.IsUnixHost
+			? (MemoryBlockBase) new MemoryBlockUnix(start, size)
+			: new MemoryBlock(start, size);
 
 		/// <summary>allocate <paramref name="size"/> bytes at any address</summary>
 		public static MemoryBlockBase CallPlatformCtor(ulong size) => CallPlatformCtor(0, size);

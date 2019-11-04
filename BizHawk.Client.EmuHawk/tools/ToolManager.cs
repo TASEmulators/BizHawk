@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			newTool.Restart();
-			if (!OSTailoredCode.IsWindows() && newTool is RamSearch)
+			if (OSTailoredCode.IsUnixHost && newTool is RamSearch)
 			{
 				// the mono winforms implementation is buggy, skip to the return statement and call Show in MainForm instead
 			}
@@ -748,8 +748,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsAvailable(Type tool)
 		{
 			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool)
-				|| !lazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName) // not a tool
-				|| (tool == typeof(LuaConsole) && !OSTailoredCode.IsWindows())) // simply doesn't work (for now)
+				|| !lazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
 			{
 				return false;
 			}

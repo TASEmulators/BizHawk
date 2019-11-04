@@ -17,8 +17,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public EmuLuaLibrary()
 		{
-			Docs = new LuaDocumentation();
-			//if(NLua.Lua.WhichLua == "NLua")
+//			if (NLua.Lua.WhichLua == "NLua")
 				_lua["keepalives"] = _lua.NewTable();
 		}
 

@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshAspectRatioOptions();
 
-			if (!OSTailoredCode.IsWindows())
+			if (OSTailoredCode.IsUnixHost)
 			{
 				// Disable SlimDX on Unix
 				rbD3D9.Enabled = false;

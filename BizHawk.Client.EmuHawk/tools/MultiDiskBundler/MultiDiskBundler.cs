@@ -268,56 +268,31 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{
-			if (OSTailoredCode.IsWindows())
+			if (OSTailoredCode.IsUnixHost)
 			{
-				Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
-				Win32.FileAttributes toAttr = GetPathAttribute(toPath);
-
-				var path = new StringBuilder(260); // MAX_PATH
-				if (Win32.PathRelativePathTo(
-					path,
-					fromPath,
-					fromAttr,
-					toPath,
-					toAttr) == false)
-				{
-					throw new ArgumentException("Paths must have a common prefix");
-				}
-
-				return path.ToString();
-			}
 #if true
-			return PathManager.IsSubfolder(toPath, fromPath)
-				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{toPath}\" \"{fromPath}\"", $"invalid path {fromPath} or missing realpath binary")
-				: fromPath;
+				return PathManager.IsSubfolder(toPath, fromPath)
+					? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{toPath}\" \"{fromPath}\"", $"invalid path {fromPath} or missing realpath binary")
+					: fromPath;
 #else // written for Unix port but may be useful for .NET Core
-			// algorithm taken from https://stackoverflow.com/a/340454/7467292
-			var dirSepChar = Path.DirectorySeparatorChar;
-			string from = !fromPath.EndsWith(dirSepChar.ToString())
-				? fromPath + dirSepChar
-				: fromPath;
-			string to = !toPath.EndsWith(dirSepChar.ToString())
-				? toPath + dirSepChar
-				: toPath;
+				// algorithm taken from https://stackoverflow.com/a/340454/7467292
+				var dirSepChar = Path.DirectorySeparatorChar;
+				var fromUri = new Uri(fromPath.EndsWith(dirSepChar.ToString()) ? fromPath : fromPath + dirSepChar);
+				var toUri = new Uri(toPath.EndsWith(dirSepChar.ToString()) ? toPath : toPath + dirSepChar);
+				if (fromUri.Scheme != toUri.Scheme) return toPath;
 
-			Uri fromUri = new Uri(from);
-			Uri toUri = new Uri(to);
-
-			if (fromUri.Scheme != toUri.Scheme)
-			{
-				return toPath;
-			}
-
-			Uri relativeUri = fromUri.MakeRelativeUri(toUri);
-			string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-
-			if (string.Equals(toUri.Scheme, Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase))
-			{
-				relativePath = relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-			}
-
-			return relativePath.TrimEnd(dirSepChar);
+				var relativePath = Uri.UnescapeDataString(fromUri.MakeRelativeUri(toUri).ToString());
+				return (toUri.Scheme.Equals(Uri.UriSchemeFile, StringComparison.OrdinalIgnoreCase)
+					? relativePath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+					: relativePath
+				).TrimEnd(dirSepChar);
 #endif
+			}
+
+			var path = new StringBuilder(260 /* = MAX_PATH */);
+			return Win32.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
+				? path.ToString()
+				: throw new ArgumentException("Paths must have a common prefix");
 		}
 
 		/// <seealso cref="GetRelativePath"/>

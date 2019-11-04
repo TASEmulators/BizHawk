@@ -128,24 +128,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-			if (OSTailoredCode.IsWindows())
+			if (OSTailoredCode.IsUnixHost)
+			{
+				OTK_Keyboard.Initialize();
+				OTK_GamePad.Initialize();
+			}
+			else
 			{
 				KeyInput.Initialize();
 				IPCKeyInput.Initialize();
 				GamePad.Initialize();
 				GamePad360.Initialize();
 			}
-			else
-			{
-				OTK_Keyboard.Initialize();
-				OTK_GamePad.Initialize();
-			}
 			Instance = new Input();
 		}
 
 		public static void Cleanup()
 		{
-			if (OSTailoredCode.IsWindows())
+			if (!OSTailoredCode.IsUnixHost)
 			{
 				KeyInput.Cleanup();
 				GamePad.Cleanup();
@@ -339,17 +339,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
-				var keyEvents = OSTailoredCode.IsWindows()
-					? KeyInput.Update().Concat(IPCKeyInput.Update())
-					: OTK_Keyboard.Update();
-				if (OSTailoredCode.IsWindows())
+				var keyEvents = OSTailoredCode.IsUnixHost
+					? OTK_Keyboard.Update()
+					: KeyInput.Update().Concat(IPCKeyInput.Update());
+				if (OSTailoredCode.IsUnixHost)
 				{
-					GamePad.UpdateAll();
-					GamePad360.UpdateAll();
+					OTK_GamePad.UpdateAll();
 				}
 				else
 				{
-					OTK_GamePad.UpdateAll();
+					GamePad.UpdateAll();
+					GamePad360.UpdateAll();
 				}
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all

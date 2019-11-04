@@ -83,14 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			if (OSTailoredCode.IsWindows())
-			{
-				_renderer = new GdiRenderer();
-			}
-			else
-			{
-				_renderer = new GdiPlusRenderer();
-			}
+			_renderer = OSTailoredCode.IsUnixHost ? (IControlRenderer) new GdiPlusRenderer() : new GdiRenderer();
 
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))

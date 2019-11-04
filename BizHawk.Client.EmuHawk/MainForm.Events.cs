@@ -1436,7 +1436,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
 			var ramSearch = GlobalWin.Tools.Load<RamSearch>();
-			if (!OSTailoredCode.IsWindows())
+			if (OSTailoredCode.IsUnixHost)
 			{
 				// this is apparently needed for weird mono-forms-on-different-thread issues
 				// don't do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here

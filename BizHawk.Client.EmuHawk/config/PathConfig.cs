@@ -220,9 +220,10 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult result;
 			string selectedPath;
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				using var f = new FolderBrowserEx
+				// FolderBrowserEx doesn't work in Mono for obvious reasons
+				using var f = new FolderBrowserDialog
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
@@ -232,8 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				// FolderBrowserEx doesn't work in Mono for obvious reasons
-				using var f = new FolderBrowserDialog
+				using var f = new FolderBrowserEx
 				{
 					Description = $"Set the directory for {name}",
 					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)

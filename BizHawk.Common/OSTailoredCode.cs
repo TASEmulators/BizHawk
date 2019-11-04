@@ -17,15 +17,7 @@ namespace BizHawk.Common
 			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
 
-		public static bool IsWindows()
-		{
-			return CurrentOS == DistinctOS.Windows;
-		}
-
-		public static bool IsLinux()
-		{
-			return CurrentOS == DistinctOS.Linux;
-		}
+		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
 
 		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() =>
 		{

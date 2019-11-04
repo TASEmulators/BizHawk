@@ -93,13 +93,13 @@ namespace BizHawk.Common
 						{
 							try
 							{
-								if (OSTailoredCode.IsWindows())
+								if (OSTailoredCode.IsUnixHost)
 								{
-									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+									fi.Delete(); // naive deletion, Mono doesn't care
 								}
 								else
 								{
-									fi.Delete();
+									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
 								}
 							}
 							catch
