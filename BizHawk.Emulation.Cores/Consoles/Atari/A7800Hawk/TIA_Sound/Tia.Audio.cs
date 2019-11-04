@@ -182,11 +182,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							break;
 						case 0x0f:
-							if (Run3())
+							// poly5 output to div 6
+							if (Run5())
 							{
-								goto case 0x07;
+								if (Run3())
+								{
+									on = Run1();
+								}
 							}
-
 							break;
 					}
 				}

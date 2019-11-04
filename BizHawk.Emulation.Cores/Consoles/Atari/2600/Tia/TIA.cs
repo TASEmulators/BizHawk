@@ -77,6 +77,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private byte _pf1MaxDelay;
 		private byte _pf2MaxDelay;
 
+		private int _ctrlPFDelay;
+		private byte _ctrlPFVal;
+
 		private int _enam0Delay;
 		private int _enam1Delay;
 		private int _enambDelay;
@@ -261,6 +264,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					_vblankEnabled = (_vblankValue & 0x02) != 0;
 					_vblankDelay = 0;
+				}
+			}
+
+			if (_ctrlPFDelay > 0)
+			{
+				_ctrlPFDelay++;
+				if (_ctrlPFDelay == 2)
+				{
+					_playField.Reflect = (_ctrlPFVal & 0x01) != 0;
+					_playField.Score = (_ctrlPFVal & 0x02) != 0;
+					_playField.Priority = (_ctrlPFVal & 0x04) != 0;
+
+					_ball.Size = (byte)((_ctrlPFVal & 0x30) >> 4);
+
+					_ctrlPFDelay = 0;
 				}
 			}
 
@@ -1116,11 +1134,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x0A) // CTRLPF
 			{
-				_playField.Reflect = (value & 0x01) != 0;
-				_playField.Score = (value & 0x02) != 0;
-				_playField.Priority = (value & 0x04) != 0;
-
-				_ball.Size = (byte)((value & 0x30) >> 4);
+				_ctrlPFDelay = 1;
+				_ctrlPFVal = value;
 			}
 			else if (maskedAddr == 0x0B) // REFP0
 			{
@@ -1254,7 +1269,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			else if (maskedAddr == 0x12) // RESM0
 			{
 				// RESP delays draw signal clocking
-				_player0.Missile.Resp_check();
+				// but only for players? Needs investigation
+				//_player0.Missile.Resp_check();
 
 				if (!_hmove.LateHBlankReset)
 				{
@@ -1276,7 +1292,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			else if (maskedAddr == 0x13) // RESM1
 			{
 				// RESP delays draw signal clocking
-				_player1.Missile.Resp_check();
+				// but only for players? Needs investigation
+				//_player1.Missile.Resp_check();
 
 				if (!_hmove.LateHBlankReset)
 				{
@@ -1297,7 +1314,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				_ball.Resp_check();
+				// RESP delays draw signal clocking
+				// but only for players? Needs investigation
+				//_ball.Resp_check();
 
 				if (!_hmove.LateHBlankReset)
 				{
