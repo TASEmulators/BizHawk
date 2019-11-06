@@ -186,14 +186,9 @@ namespace BizHawk.Emulation.Common
 		public int PlayerNumber(string buttonName)
 		{
 			var match = PlayerRegex.Match(buttonName);
-			if (match.Success)
-			{
-				return int.Parse(match.Groups[1].Value);
-			}
-			else
-			{
-				return 0;
-			}
+			return match.Success
+				? int.Parse(match.Groups[1].Value)
+				: 0;
 		}
 
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
