@@ -150,7 +150,7 @@ git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_
 Dist/BuildRelease.sh
 ```
 
-The assemblies are put in `output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `output/EmuHawkMono.sh`. You may need to add the WINE library path to the script—find `d3dx9_43.dll.so` and update the case statement accordingly (and then please post it to #1430 or in IRC).
+The assemblies are put in `output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `output/EmuHawkMono.sh`. You may need to add the WINE library path to the script—find `d3dx9_43.dll.so` and update the case statement accordingly (and then please post it to [#1430](https://github.com/TASVideos/BizHawk/issues/1430) or in IRC).
 
 [to top](#bizhawk)
 
