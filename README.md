@@ -19,10 +19,10 @@ New user on Windows? Install the prerequisites first, click the "prereqs" button
 Jump to:
 * Installing
 	* [Windows 7/8.1/10](#windows-78110)
-	* [GNU+Linux](#gnulinux)
+	* [Unix](#unix)
 * Building
 	* [Windows 7/8.1/10](#windows-78110-1)
-	* [GNU+Linux](#gnulinux-1)
+	* [Unix](#unix-1)
 * [Usage](#usage)
 	* [TASing](#tasing)
 	* [Testing](#testing)
@@ -112,15 +112,13 @@ A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag
 
 [to top](#bizhawk)
 
-### GNU+Linux
+### Unix
 
-*...or, as I’ve recently taken to calling it, Mono+GNU+Linux.*
+**IMPORTANT**: Unix support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
 
-**IMPORTANT**: Linux support is a work-in-progress! It is *not* complete, does *not* look very nice, and is *not* ready for anything that needs accuracy.
+You'll need to either build BizHawk yourself (see [*Building*](#unix-1) below), or download a dev build (see [*Testing*](#testing) below; please note some features are broken in dev builds for unknown reasons).
 
-You'll need to either build BizHawk yourself (see [*Building*](#gnulinux-1) below), or download a dev build (see [*Testing*](#testing) below).
-
-The runtime dependencies are: Mono "complete", Mono VB.NET, WINE (just `libwine` if available), glibc, NVIDIA's `cgc` utility, and your distro's LSB implementation. Run `EmuHawkMono.sh` to start Mono with the right library and executable paths — you can run it from anywhere, so putting it in a .desktop file is fine. If running the script doesn't start EmuHawk, it might be because the library path for your distro isn't known (if you use a terminal, it will say so in the output).
+The runtime dependencies are: Mono "complete", Mono VB.NET, WINE (just `libwine` if available), glibc, OpenAL, NVIDIA's `cgc` utility, and your distro's LSB implementation. Run `EmuHawkMono.sh` to start Mono with the right library and executable paths—you can run it from anywhere, so putting it in a .desktop file is fine.
 
 The systems that currently work are: GB + GBC (GBHawk), NES (NesHawk), SMS, Atari 7800, and some classic home computers. Nothing other than EmuHawk has been ported. See [#1430](https://github.com/TASVideos/BizHawk/issues/1430) for progress.
 
@@ -135,26 +133,24 @@ If you have WSL, Git BASH, or similar, clone the repo with:
 git clone https://github.com/TASVideos/BizHawk.git BizHawk_master
 # or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master
 ```
-...or use a [Git GUI](https://desktop.github.com). Otherwise, you'll have to download an archive from GitHub.
+...or use a [Git GUI](https://desktop.github.com). Without git, you'll have to download [an archive of master](https://github.com/TASVideos/BizHawk/archive/master.zip).
 
 Once it's downloaded and extracted, go into the repo's `Dist` folder and run `BuildAndPackage_Release.bat`. BizHawk will be built as a .zip just like any other release.
 
-For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (if you can get JetBrains tools, use Rider). Open `BizHawk.sln` with VS to start and use the toolbar to choose `BizHawk.Client.EmuHawk | Release` and build. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) (somewhat outdated) for more detailed instructions.
+For anything more complicated than just building, you'll need an IDE like [VS Community 2019](https://visualstudio.microsoft.com/vs/community), currently the best free C# IDE (you may prefer Rider, MonoDevelop, or something else). To start with VS, open `BizHawk.sln` and use the toolbar to choose `Release | Any CPU | BizHawk.Client.EmuHawk` and click the Start button. See [Compiling at TASVideos](http://tasvideos.org/Bizhawk/Compiling.html) for more detailed instructions (warning: somewhat outdated).
 
 [to top](#bizhawk)
 
-### GNU+Linux
+### Unix
 
-Note: Currently, *running* (not building) requires WINE, but only the bundled libraries. **BizHawk should not run on WINE**.
-
-If there is a package named `bizhawk-git` or similar in the same repo as the normal package, install that to build master. Otherwise, building is as easy as:
+Before you can build, you need `msbuild` (which should include `nuget`) You may need to [add a repo](https://www.mono-project.com/download/stable/), if so, if may conflict with the distro's Mono package. Once it's installed, run:
 ```sh
-git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && BizHawk_master/Dist/BuildRelease.sh
-# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && BizHawk_master/Dist/BuildRelease.sh
-# devs may use `Dist/BuildDebug.sh` instead to get `#if DEBUG` code compiled into the binaries
+git clone https://github.com/TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+# or ssh: git clone git@github.com:TASVideos/BizHawk.git BizHawk_master && cd BizHawk_master
+Dist/BuildRelease.sh
 ```
 
-Once built, see [*Installing*](#gnulinux) above, the built output is `BizHawk_master/output`. Again, if your distro isn't in the list, you might get an "Unknown distro" warning in the terminal, and EmuHawk may not open or may show the missing dependencies dialog. You may need to add your distro to the case statement in the script, setting `libpath` to the location of `d3dx9_43.dll.so` (please do share if you get it working).
+The assemblies are put in `output`, so if you have the runtime dependencies (see [*Installing*](#unix)) you can call `output/EmuHawkMono.sh`. You may need to add the WINE library path to the script—find `d3dx9_43.dll.so` and update the case statement accordingly (and then please post it to #1430 or in IRC).
 
 [to top](#bizhawk)
 
@@ -277,7 +273,7 @@ Virtual Boy | Virtual Boyee |
 WonderSwan / Color | Cygne |
 ZX Spectrum | ZXHawk |
 
-Amstrad CPC, Magnavox Odyssey², and Sony PSP emulation are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
+Amstrad CPC, Fairchild Channel F, Magnavox Odyssey², Sony PSP, and MB Vectrex emulation, and a MAME frontend, are works-in-progress and there is **no ETA**. Cores for other systems are only conceptual. If you want to help speed up development, ask on IRC (see below).
 
 [to top](#bizhawk)
 

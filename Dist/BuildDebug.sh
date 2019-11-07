@@ -1,2 +1,2 @@
 #!/bin/sh
-cd "$(dirname "$0")/.." && msbuild /p:Configuration=Debug BizHawk.sln
+cd "$(dirname "$0")/.." && nuget restore BizHawk.sln && msbuild /p:Configuration=Debug BizHawk.sln
