@@ -57,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 				WriteMemory = WriteMemory,
 				PeekMemory = PeekMemory,
 				DummyReadMemory = ReadMemory,
+				ReadPort = ReadPort,
+				WritePort = WritePort,
 				OnExecFetch = ExecFetch,
 			};
 			

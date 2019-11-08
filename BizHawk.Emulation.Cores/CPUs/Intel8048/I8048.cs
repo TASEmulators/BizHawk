@@ -67,6 +67,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort CMP16 = 56;
 		public const ushort CMP16D = 57;
 		public const ushort CLR_E = 63;
+		public const ushort CLK_OUT = 64;
+		public const ushort IN = 65;
+		public const ushort OUT = 66;
+		public const ushort XCH = 67;
+		public const ushort XCH_RAM = 68;
+		public const ushort XCHD_RAM = 69;
+		public const ushort SEL_MB0 = 70;
+		public const ushort SEL_MB1 = 71;
+		public const ushort SEL_RB0 = 72;
+		public const ushort SEL_RB1 = 73;
 
 		public I8048()
 		{
@@ -91,11 +101,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		}
 
 		// Memory Access 
-
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
 		public Func<ushort, byte> DummyReadMemory;
+
+		// Port Access
+		public Func<ushort, byte> ReadPort;
+		public Action<ushort, byte> WritePort;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -250,6 +263,36 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case BIT:
 					BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case CLK_OUT:
+
+					break;
+				case IN:
+
+					break;
+				case OUT:
+
+					break;
+				case XCH:
+
+					break;
+				case XCH_RAM:
+
+					break;
+				case XCHD_RAM:
+
+					break;
+				case SEL_MB0:
+
+					break;
+				case SEL_MB1:
+
+					break;
+				case SEL_RB0:
+
+					break;
+				case SEL_RB1:
+
 					break;
 			}
 

@@ -55,5 +55,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 				return mapper.PeekMemory(addr);
 			}
 		}
+
+		public byte ReadPort(ushort addr)
+		{
+			return 0;
+		}
+
+		public void WritePort(ushort addr, byte value)
+		{
+
+		}
 	}
 }

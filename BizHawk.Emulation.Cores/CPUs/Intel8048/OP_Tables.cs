@@ -109,5 +109,110 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			IRQS = 9;
 		}
+
+		public void DJNZ(ushort reg)
+		{
+			if ((Regs[reg] - 1) == 0)
+			{		
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			else
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			
+			IRQS = 9;
+		}
+
+		public void JPB(ushort Tebit)
+		{
+			if (Regs[A].Bit(Tebit))
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			else
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+
+			IRQS = 9;
+		}
+
+		public void JP_COND(bool cond)
+		{
+			if (cond)
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			else
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+
+			IRQS = 9;
+		}
+
+		public void JP_2k(ushort high_addr)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
 	}
 }
