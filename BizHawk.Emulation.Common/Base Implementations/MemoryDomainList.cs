@@ -52,14 +52,7 @@ namespace BizHawk.Emulation.Common
 					return _systemBus;
 				}
 
-				var bus = this.FirstOrDefault(x => x.Name == "System Bus");
-
-				if (bus != null)
-				{
-					return bus;
-				}
-
-				return MainMemory;
+				return this.FirstOrDefault(x => x.Name == "System Bus") ?? MainMemory;
 			}
 
 			set => _systemBus = value;

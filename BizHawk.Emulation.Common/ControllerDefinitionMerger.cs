@@ -76,10 +76,7 @@ namespace BizHawk.Emulation.Common
 				_remaps = remaps;
 			}
 
-			public ControllerDefinition Definition
-			{
-				get { throw new NotImplementedException(); }
-			}
+			public ControllerDefinition Definition => throw new NotImplementedException();
 
 			public bool IsPressed(string button)
 			{

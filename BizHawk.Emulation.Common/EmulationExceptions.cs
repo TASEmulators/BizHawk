@@ -40,11 +40,6 @@ namespace BizHawk.Emulation.Common
 			: base("Core does not support CGB only games!")
 		{
 		}
-
-		public CGBNotSupportedException(string message)
-			: base(message)
-		{
-		}
 	}
 
 	public class SavestateSizeMismatchException : InvalidOperationException

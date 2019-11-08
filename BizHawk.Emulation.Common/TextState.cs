@@ -83,8 +83,7 @@ namespace BizHawk.Emulation.Common
 		{
 			// works for either save or load, but as a consequence cannot report intelligent
 			// errors about section name mismatches
-			Node next = null;
-			Current.Objects.TryGetValue(name, out next);
+			Current.Objects.TryGetValue(name, out var next);
 			if (next == null)
 			{
 				next = new Node();

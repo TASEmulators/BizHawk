@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
+// ReSharper disable StringLiteralTypo
 namespace BizHawk.Emulation.Common
 {
 	public static class FirmwareDatabase
@@ -202,10 +203,10 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", ps_30j);
 			Option("PSX", "E", ps_30e);
 
-			// in general, alternates arent allowed.. their quality isnt known.
+			// in general, alternates aren't allowed.. their quality isn't known.
 			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
 			// however, we're sticking with the 3.0 series.
-			// please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entrypoints and such.
+			// please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entry points and such.
 			// but 3.0 is what mednafen used
 			Option("PSX", "J", ps_10j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_11j, FirmwareOptionStatus.Unacceptable);
@@ -371,13 +372,13 @@ namespace BizHawk.Emulation.Common
 
 		public enum FirmwareOptionStatus
 		{
-			//This is what we want you to use to get checkmarks, and for tasing
+			//This is what we want you to use to get checkmarks, and for TASing
 			Ideal,
 
 			//This will work with our core
 			Acceptable,
 
-			//This is a good file, but it doesnt work with our core
+			//This is a good file, but it doesn't work with our core
 			Unacceptable,
 
 			//I know this is weird, you'd think the file is bad
