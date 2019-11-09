@@ -18,20 +18,18 @@ namespace BizHawk.Client.Common
 
 			using (var fs = SourceFile.OpenRead())
 			{
-				using (var br = new BinaryReader(fs))
+				using var br = new BinaryReader(fs);
+				var info = ParseHeader(movie, "PJM ", br);
+
+				fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
+
+				if (info.BinaryFormat)
 				{
-					var info = ParseHeader(movie, "PJM ", br);
-
-					fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
-
-					if (info.BinaryFormat)
-					{
-						ParseBinaryInputLog(br, movie, info);
-					}
-					else
-					{
-						ParseTextInputLog(br, movie, info);
-					}
+					ParseBinaryInputLog(br, movie, info);
+				}
+				else
+				{
+					ParseTextInputLog(br, movie, info);
 				}
 			}
 
@@ -112,7 +110,7 @@ namespace BizHawk.Client.Common
 					info.Player1Type = OctoshockDll.ePeripheralType.DualShock;
 					break;
 				default:
-					Result.Errors.Add("Movie has unrecognised controller type for Player 1.");
+					Result.Errors.Add("Movie has unrecognized controller type for Player 1.");
 					return info;
 			}
 
@@ -130,11 +128,11 @@ namespace BizHawk.Client.Common
 					info.Player2Type = OctoshockDll.ePeripheralType.DualShock;
 					break;
 				default:
-					Result.Errors.Add("Movie has unrecognised controller type for Player 2.");
+					Result.Errors.Add("Movie has unrecognized controller type for Player 2.");
 					return info;
 			}
 
-			var syncsettings = new Octoshock.SyncSettings
+			var syncSettings = new Octoshock.SyncSettings
 			{
 				FIOConfig =
 				{
@@ -160,7 +158,7 @@ namespace BizHawk.Client.Common
 			{
 				TypeNameHandling = TypeNameHandling.Auto
 			};
-			movie.SyncSettingsJson = JsonConvert.SerializeObject(new { o = (object)syncsettings }, jsonSettings);
+			movie.SyncSettingsJson = JsonConvert.SerializeObject(new { o = (object)syncSettings }, jsonSettings);
 
 			info.FrameCount = br.ReadUInt32();
 			uint rerecordCount = br.ReadUInt32();
@@ -189,8 +187,8 @@ namespace BizHawk.Client.Common
 
 		protected void ParseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
 		{
-			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
-			SimpleController controllers = new SimpleController();
+			var settings = new Octoshock.SyncSettings();
+			var controllers = new SimpleController();
 			settings.FIOConfig.Devices8 = new[]
 			{ 
 				info.Player1Type,
@@ -232,10 +230,10 @@ namespace BizHawk.Client.Common
 					{
 						controllers["P1 L3"] = (controllerState & 0x2) != 0;
 						controllers["P1 R3"] = (controllerState & 0x4) != 0;
-						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", (float)br.ReadByte());
-						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", (float)br.ReadByte());
-						Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", (float)br.ReadByte());
-						Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", (float)br.ReadByte());
+						var leftX = new Tuple<string, float>("P1 LStick X", br.ReadByte());
+						var leftY = new Tuple<string, float>("P1 LStick Y", br.ReadByte());
+						var rightX = new Tuple<string, float>("P1 RStick X", br.ReadByte());
+						var rightY = new Tuple<string, float>("P1 RStick Y", br.ReadByte());
 
 						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
 					}
@@ -255,10 +253,10 @@ namespace BizHawk.Client.Common
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
 					{
-						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", (float)br.ReadByte());
-						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", (float)br.ReadByte());
-						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", (float)br.ReadByte());
-						Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", (float)br.ReadByte());
+						var leftX = new Tuple<string, float>("P2 LStick X", br.ReadByte());
+						var leftY = new Tuple<string, float>("P2 LStick Y", br.ReadByte());
+						var rightX = new Tuple<string, float>("P2 RStick X", br.ReadByte());
+						var rightY = new Tuple<string, float>("P2 RStick Y", br.ReadByte());
 
 						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
 					}

@@ -11,25 +11,9 @@ namespace BizHawk.Client.Common
 
 	public abstract class MovieImporter : IMovieImport
 	{
-		public const string Comment = "comment";
-		public const string Coreorigin = "CoreOrigin";
-		public const string CRC16 = "CRC16";
-		public const string CRC32 = "CRC32";
-		protected const string Emulationorigin = "emuOrigin";
-		public const string Gamecode = "GameCode";
-		public const string InternalChecksum = "InternalChecksum";
-		public const string Japan = "Japan";
+		protected const string EmulationOrigin = "emuOrigin";
 		protected const string MD5 = "MD5";
-		protected const string Movieorigin = "MovieOrigin";
-		public const string Port1 = "port1";
-		public const string Port2 = "port2";
-		public const string ProjectId = "ProjectID";
-		public const string SHA256 = "SHA256";
-		public const string SuperGameboyMode = "SuperGameBoyMode";
-		public const string StartSecond = "StartSecond";
-		public const string StartSubSecond = "StartSubSecond";
-		public const string SyncHack = "SyncHack";
-		public const string UnitCode = "UnitCode";
+		protected const string MovieOrigin = "MovieOrigin";
 
 		public ImportResult Import(string path)
 		{

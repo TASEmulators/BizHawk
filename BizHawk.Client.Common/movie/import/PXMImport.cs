@@ -8,6 +8,7 @@ namespace BizHawk.Client.Common.Movie.Import
 	//
 	// However, the magic number/file signature is slightly different, requiring some
 	// refactoring to avoid PXM-specific code in the PJMImport class.
+	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".pxm")]
 	public class PxmImport : PjmImport
 	{
@@ -19,20 +20,18 @@ namespace BizHawk.Client.Common.Movie.Import
 
 			using (var fs = SourceFile.OpenRead())
 			{
-				using (var br = new BinaryReader(fs))
+				using var br = new BinaryReader(fs);
+				var info = ParseHeader(movie, "PXM ", br);
+
+				fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
+
+				if (info.BinaryFormat)
 				{
-					var info = ParseHeader(movie, "PXM ", br);
-
-					fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
-
-					if (info.BinaryFormat)
-					{
-						ParseBinaryInputLog(br, movie, info);
-					}
-					else
-					{
-						ParseTextInputLog(br, movie, info);
-					}
+					ParseBinaryInputLog(br, movie, info);
+				}
+				else
+				{
+					ParseTextInputLog(br, movie, info);
 				}
 			}
 

@@ -5,6 +5,7 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Client.Common
 {
+	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".fm2")]
 	public class Fm2Import : MovieImporter
 	{
@@ -15,112 +16,105 @@ namespace BizHawk.Client.Common
 
 			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
 
-			using (var sr = SourceFile.OpenText())
+			using var sr = SourceFile.OpenText();
+			string line;
+
+			while ((line = sr.ReadLine()) != null)
 			{
-				string line;
-				int lineNum = 0;
-
-				while ((line = sr.ReadLine()) != null)
+				if (line == "")
 				{
-					lineNum++;
+					continue;
+				}
 
-					if (line == "")
-					{
-						continue;
-					}
+				if (line[0] == '|')
+				{
+					// TODO: import a frame of input
+					// TODO: report any errors importing this frame and bail out if so
+				}
+				else if (line.ToLower().StartsWith("sub"))
+				{
+					var subtitle = ImportTextSubtitle(line);
 
-					if (line[0] == '|')
+					if (!string.IsNullOrEmpty(subtitle))
 					{
-						// TODO: import a frame of input
-						// TODO: report any errors importing this frame and bail out if so
+						Result.Movie.Subtitles.AddFromString(subtitle);
 					}
-					else if (line.ToLower().StartsWith("sub"))
-					{
-						var subtitle = ImportTextSubtitle(line);
+				}
+				else if (line.ToLower().StartsWith("emuversion"))
+				{
+					Result.Movie.Comments.Add($"{EmulationOrigin} {emulator} version {ParseHeader(line, "emuVersion")}");
+				}
+				else if (line.ToLower().StartsWith("version"))
+				{
+					string version = ParseHeader(line, "version");
 
-						if (!string.IsNullOrEmpty(subtitle))
-						{
-							Result.Movie.Subtitles.AddFromString(subtitle);
-						}
-					}
-					else if (line.ToLower().StartsWith("emuversion"))
+					if (version != "3")
 					{
-						Result.Movie.Comments.Add($"{Emulationorigin} {emulator} version {ParseHeader(line, "emuVersion")}");
-					}
-					else if (line.ToLower().StartsWith("version"))
-					{
-						string version = ParseHeader(line, "version");
-
-						if (version != "3")
-						{
-							Result.Warnings.Add("Detected a .fm2 movie version other than 3, which is unsupported");
-						}
-						else
-						{
-							Result.Movie.Comments.Add($"{Movieorigin} .fm2 version 3");
-						}
-					}
-					else if (line.ToLower().StartsWith("romfilename"))
-					{
-						Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
-					}
-					else if (line.ToLower().StartsWith("cdgamename"))
-					{
-						Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
-					}
-					else if (line.ToLower().StartsWith("romchecksum"))
-					{
-						string blob = ParseHeader(line, "romChecksum");
-						byte[] md5 = DecodeBlob(blob);
-						if (md5 != null && md5.Length == 16)
-						{
-							Result.Movie.HeaderEntries[MD5] = md5.BytesToHexString().ToLower();
-						}
-						else
-						{
-							Result.Warnings.Add("Bad ROM checksum.");
-						}
-					}
-					else if (line.ToLower().StartsWith("comment author"))
-					{
-						Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
-					}
-					else if (line.ToLower().StartsWith("rerecordcount"))
-					{
-						int rerecordCount = 0;
-						int.TryParse(ParseHeader(line, "rerecordCount"), out rerecordCount);
-
-						Result.Movie.Rerecords = (ulong)rerecordCount;
-					}
-					else if (line.ToLower().StartsWith("guid"))
-					{
-						continue; // We no longer care to keep this info
-					}
-					else if (line.ToLower().StartsWith("startsfromsavestate"))
-					{
-						// If this movie starts from a savestate, we can't support it.
-						if (ParseHeader(line, "StartsFromSavestate") == "1")
-						{
-							Result.Errors.Add("Movies that begin with a savestate are not supported.");
-							break;
-						}
-					}
-					else if (line.ToLower().StartsWith("palflag"))
-					{
-						Result.Movie.HeaderEntries[HeaderKeys.PAL] = ParseHeader(line, "palFlag");
-					}
-					else if (line.ToLower().StartsWith("fourscore"))
-					{
-						bool fourscore = ParseHeader(line, "fourscore") == "1";
-						if (fourscore)
-						{
-							// TODO: set controller config sync settings
-						}
+						Result.Warnings.Add("Detected a .fm2 movie version other than 3, which is unsupported");
 					}
 					else
 					{
-						Result.Movie.Comments.Add(line); // Everything not explicitly defined is treated as a comment.
+						Result.Movie.Comments.Add($"{MovieOrigin} .fm2 version 3");
 					}
+				}
+				else if (line.ToLower().StartsWith("romfilename"))
+				{
+					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
+				}
+				else if (line.ToLower().StartsWith("cdgamename"))
+				{
+					Result.Movie.HeaderEntries[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
+				}
+				else if (line.ToLower().StartsWith("romchecksum"))
+				{
+					string blob = ParseHeader(line, "romChecksum");
+					byte[] md5 = DecodeBlob(blob);
+					if (md5 != null && md5.Length == 16)
+					{
+						Result.Movie.HeaderEntries[MD5] = md5.BytesToHexString().ToLower();
+					}
+					else
+					{
+						Result.Warnings.Add("Bad ROM checksum.");
+					}
+				}
+				else if (line.ToLower().StartsWith("comment author"))
+				{
+					Result.Movie.HeaderEntries[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
+				}
+				else if (line.ToLower().StartsWith("rerecordcount"))
+				{
+					int.TryParse(ParseHeader(line, "rerecordCount"), out var rerecordCount);
+					Result.Movie.Rerecords = (ulong)rerecordCount;
+				}
+				else if (line.ToLower().StartsWith("guid"))
+				{
+					// We no longer care to keep this info
+				}
+				else if (line.ToLower().StartsWith("startsfromsavestate"))
+				{
+					// If this movie starts from a savestate, we can't support it.
+					if (ParseHeader(line, "StartsFromSavestate") == "1")
+					{
+						Result.Errors.Add("Movies that begin with a savestate are not supported.");
+						break;
+					}
+				}
+				else if (line.ToLower().StartsWith("palflag"))
+				{
+					Result.Movie.HeaderEntries[HeaderKeys.PAL] = ParseHeader(line, "palFlag");
+				}
+				else if (line.ToLower().StartsWith("fourscore"))
+				{
+					bool fourscore = ParseHeader(line, "fourscore") == "1";
+					if (fourscore)
+					{
+						// TODO: set controller config sync settings
+					}
+				}
+				else
+				{
+					Result.Movie.Comments.Add(line); // Everything not explicitly defined is treated as a comment.
 				}
 			}
 		}
