@@ -154,7 +154,7 @@
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
-    <Compile Include="movie\import\PXMImport.cs" />
+    <Compile Include="movie\import\PxmImport.cs" />
     <Compile Include="movie\tasproj\IStateManager.cs" />
     <Compile Include="movie\tasproj\StateManagerDecay.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
@@ -190,7 +190,7 @@
     <Compile Include="movie\import\Fm2Import.cs" />
     <Compile Include="movie\import\IMovieImport.cs" />
     <Compile Include="movie\import\MovieImport.cs" />
-    <Compile Include="movie\import\PJMImport.cs" />
+    <Compile Include="movie\import\PjmImport.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
