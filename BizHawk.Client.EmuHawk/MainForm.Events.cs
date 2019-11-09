@@ -3293,7 +3293,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				_FormDragDrop_internal(sender, e);
+				FormDragDrop_internal(e);
 			}
 			catch (Exception ex)
 			{

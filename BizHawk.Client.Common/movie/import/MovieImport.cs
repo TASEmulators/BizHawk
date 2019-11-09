@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// Return whether or not the type of file provided is currently imported by a legacy (i.e. to BKM not BK2) importer
-		public static bool UsesLegacyImporter(string extension)
+		private static bool UsesLegacyImporter(string extension)
 		{
 			string[] extensions =
 			{

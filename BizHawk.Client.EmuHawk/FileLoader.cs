@@ -14,15 +14,15 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private enum LoadOrdering
 		{
-			ROM,
-			STATE,
-			WATCH,
-			CDLFILE,
-			LUASESSION,
-			LUASCRIPT,
-			CHEAT,
-			MOVIEFILE,
-			LEGACYMOVIEFILE
+			Rom,
+			State,
+			Watch,
+			CdFile,
+			LuaSession,
+			LuaScript,
+			Cheat,
+			MovieFile,
+			LegacyMovieFile
 		}
 
 		public struct FileInformation
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Loaders
 
-		private void _LoadCDL(string filename, string archive = null)
+		private void LoadCdl(string filename, string archive = null)
 		{
 			if (GlobalWin.Tools.IsAvailable<CDL>())
 			{
@@ -55,13 +55,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void _LoadCheats(string filename, string archive = null)
+		private void LoadCheats(string filename, string archive = null)
 		{
 			Global.CheatList.Load(filename, false);
 			GlobalWin.Tools.Load<Cheats>();
 		}
 
-		private void _LoadLegacyMovie(string filename, string archive = null)
+		private void LoadLegacyMovie(string filename, string archive = null)
 		{
 			if (Global.Emulator.IsNull())
 			{
@@ -74,25 +74,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// tries to open a legacy movie format by importing it
-			string errorMsg;
-			string warningMsg;
-			var movie = MovieImport.ImportFile(filename, out errorMsg, out warningMsg);
+			var movie = MovieImport.ImportFile(filename, out var errorMsg, out var warningMsg);
 			if (!string.IsNullOrEmpty(errorMsg))
 			{
 				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			else
 			{
-				// fix movie extension to something palatable for these purposes. 
-				// for instance, something which doesnt clobber movies you already may have had.
-				// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+				// Fix movie extension to something palatable for these purposes. 
+				// For instance, something which doesn't clobber movies you already may have had.
+				// I'm evenly torn between this, and a file in %TEMP%, but since we don't really have a way to clean up this tempfile, I choose this:
 				StartNewMovie(movie, false);
 			}
 
 			GlobalWin.OSD.AddMessage(warningMsg);
 		}
 
-		private void _LoadLuaFile(string filename, string archive = null)
+		private void LoadLuaFile(string filename, string archive = null)
 		{
 			OpenLuaConsole();
 			if (GlobalWin.Tools.Has<LuaConsole>())
@@ -101,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void _LoadLuaSession(string filename, string archive = null)
+		private void LoadLuaSession(string filename, string archive = null)
 		{
 			OpenLuaConsole();
 			if (GlobalWin.Tools.Has<LuaConsole>())
@@ -110,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void _LoadMovie(string filename, string archive = null)
+		private void LoadMovie(string filename, string archive = null)
 		{
 			if (Global.Emulator.IsNull())
 			{
@@ -125,22 +123,24 @@ namespace BizHawk.Client.EmuHawk
 			StartNewMovie(MovieService.Get(filename), false);
 		}
 
-		private void _LoadRom(string filename, string archive = null)
+		private void LoadRom(string filename, string archive = null)
 		{
-			var args = new LoadRomArgs();
-			args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filename };
+			var args = new LoadRomArgs
+			{
+				OpenAdvanced = new OpenAdvanced_OpenRom {Path = filename}
+			};
 			LoadRom(filename, args);
 		}
 
-		private void _LoadState(string filename, string archive = null)
+		private void LoadStateFile(string filename, string archive = null)
 		{
 			LoadState(filename, Path.GetFileName(filename));
 		}
 
-		private void _LoadWatch(string filename, string archive = null)
+		private void LoadWatch(string filename, string archive = null)
 		{
 			GlobalWin.Tools.LoadRamWatch(true);
-			(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filename), false);
+			((RamWatch) GlobalWin.Tools.Get<RamWatch>()).LoadWatchFile(new FileInfo(filename), false);
 		}
 
 		#endregion
@@ -149,43 +149,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file).ToUpperInvariant() ?? "";
+				var ext = Path.GetExtension(file)?.ToUpperInvariant() ?? "";
 				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
 
 				switch (ext)
 				{
 					case ".LUA":
-						sortedFiles[LoadOrdering.LUASCRIPT].Add(fileInformation);
+						sortedFiles[LoadOrdering.LuaScript].Add(fileInformation);
 						break;
 					case ".LUASES":
-						sortedFiles[LoadOrdering.LUASESSION].Add(fileInformation);
+						sortedFiles[LoadOrdering.LuaSession].Add(fileInformation);
 						break;
 					case ".STATE":
-						sortedFiles[LoadOrdering.STATE].Add(fileInformation);
+						sortedFiles[LoadOrdering.State].Add(fileInformation);
 						break;
 					case ".CHT":
-						sortedFiles[LoadOrdering.CHEAT].Add(fileInformation);
+						sortedFiles[LoadOrdering.Cheat].Add(fileInformation);
 						break;
 					case ".WCH":
-						sortedFiles[LoadOrdering.WATCH].Add(fileInformation);
+						sortedFiles[LoadOrdering.Watch].Add(fileInformation);
 						break;
 					case ".CDL":
-						sortedFiles[LoadOrdering.CDLFILE].Add(fileInformation);
+						sortedFiles[LoadOrdering.CdFile].Add(fileInformation);
 						break;
 					default:
 						if (MovieService.IsValidMovieExtension(ext))
 						{
-							sortedFiles[LoadOrdering.MOVIEFILE].Add(fileInformation);
+							sortedFiles[LoadOrdering.MovieFile].Add(fileInformation);
 						}
 						else if (MovieImport.IsValidMovieExtension(ext))
 						{
-							sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Add(fileInformation);
+							sortedFiles[LoadOrdering.LegacyMovieFile].Add(fileInformation);
 						}
 						else if (KnownRomExtensions.Contains(ext))
 						{
 							if (string.IsNullOrEmpty(archive) || !_nonArchive.Contains(ext))
 							{
-								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 						}
 						else
@@ -196,18 +196,16 @@ namespace BizHawk.Client.EmuHawk
 							 * relevant files should be extracted, but see the note below for
 							 * further details.
 							 */
-							int offset = 0;
-							bool executable = false;
 							var archiveHandler = new SharpCompressArchiveHandler();
 
-							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out _, out _))
 							{
-								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 							else
 							{
-								// adelikat: adding this hack to restore the default behavior that unrecognized files are treated like roms
-								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+								// This is hack is to ensure that unrecognized files are treated like ROMs
+								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 
 							/*
@@ -243,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void _FormDragDrop_internal(object sender, DragEventArgs e)
+		private void FormDragDrop_internal(DragEventArgs e)
 		{
 			/*
 			 *  Refactor, moving the loading of particular files into separate functions that can
@@ -281,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(HawkFile.Util_ResolveLinks(filePaths), ref sortedFiles, null);
+			ProcessFileList(HawkFile.Util_ResolveLinks(filePaths), ref sortedFiles);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.
@@ -294,46 +292,44 @@ namespace BizHawk.Client.EmuHawk
 					case 0:
 						break;
 					case 1:
-						FileInformation fileInformation = sortedFiles[value].First<FileInformation>();
-						string filename = Path.Combine(new string[] { fileInformation.DirectoryName, fileInformation.FileName });
+						var fileInformation = sortedFiles[value].First();
+						string filename = Path.Combine(new[] { fileInformation.DirectoryName, fileInformation.FileName });
 
 						switch (value)
 						{
-							case LoadOrdering.ROM:
-								_LoadRom(filename, fileInformation.ArchiveName);
+							case LoadOrdering.Rom:
+								LoadRom(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.STATE:
-								_LoadState(filename, fileInformation.ArchiveName);
+							case LoadOrdering.State:
+								LoadStateFile(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.WATCH:
-								_LoadWatch(filename, fileInformation.ArchiveName);
+							case LoadOrdering.Watch:
+								LoadWatch(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.CDLFILE:
-								_LoadCDL(filename, fileInformation.ArchiveName);
+							case LoadOrdering.CdFile:
+								LoadCdl(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.LUASESSION:
-								_LoadLuaSession(filename, fileInformation.ArchiveName);
+							case LoadOrdering.LuaSession:
+								LoadLuaSession(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.LUASCRIPT:
-								_LoadLuaFile(filename, fileInformation.ArchiveName);
+							case LoadOrdering.LuaScript:
+								LoadLuaFile(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.CHEAT:
-								_LoadCheats(filename, fileInformation.ArchiveName);
+							case LoadOrdering.Cheat:
+								LoadCheats(filename, fileInformation.ArchiveName);
 								break;
-							case LoadOrdering.MOVIEFILE:
-							case LoadOrdering.LEGACYMOVIEFILE:
+							case LoadOrdering.MovieFile:
+							case LoadOrdering.LegacyMovieFile:
 								// I don't really like this hack, but for now, we only want to load one movie file.
-								if (sortedFiles[LoadOrdering.MOVIEFILE].Count + sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Count > 1)
+								if (sortedFiles[LoadOrdering.MovieFile].Count + sortedFiles[LoadOrdering.LegacyMovieFile].Count > 1)
 									break;
 
-								if (value == LoadOrdering.MOVIEFILE)
-									_LoadMovie(filename, fileInformation.ArchiveName);
+								if (value == LoadOrdering.MovieFile)
+									LoadMovie(filename, fileInformation.ArchiveName);
 								else
-									_LoadLegacyMovie(filename, fileInformation.ArchiveName);
+									LoadLegacyMovie(filename, fileInformation.ArchiveName);
 								break;
 						}
-						break;
-					default:
 						break;
 				}
 			}
