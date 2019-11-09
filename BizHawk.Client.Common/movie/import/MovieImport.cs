@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-
+using System.Reflection;
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
@@ -39,7 +39,23 @@ namespace BizHawk.Client.Common
 		private const string SYNCHACK = "SyncHack";
 		private const string UNITCODE = "UnitCode";
 
-		public static void ProcessMovieImport(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
+		/// <summary>
+		/// Returns a value indicating whether or not there is an importer for the given extension
+		/// </summary>
+		public static bool IsValidMovieExtension(string extension)
+		{
+			return SupportedExtensions.Any(e => string.Equals(extension, e, StringComparison.OrdinalIgnoreCase))
+				|| UsesLegacyImporter(extension);
+		}
+
+		/// <summary>
+		/// Attempts to convert a movie with the given filename to a support
+		/// <seealso cref="IMovie"/> type
+		/// </summary>
+		/// <param name="fn">The path to the file to import</param>
+		/// <param name="conversionErrorCallback">The callback that will be called if an error occurs</param>
+		/// <param name="messageCallback">The callback that will be called if any messages need to be presented to the user</param>
+		public static void Import(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
 		{
 			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			var m = ImportFile(fn, out var errorMsg, out var warningMsg);
@@ -71,18 +87,24 @@ namespace BizHawk.Client.Common
 				return LegacyImportFile(ext, path, out errorMsg, out warningMsg).ToBk2();
 			}
 
-			var importers = ImportersForExtension(ext);
-			var importerType = importers.FirstOrDefault();
+			var importerType = ImporterForExtension(ext);
 
-			if (importerType == default(Type))
+			if (importerType == default)
 			{
 				errorMsg = $"No importer found for file type {ext}";
 				return null;
 			}
 
 			// Create a new instance of the importer class using the no-argument constructor
-			IMovieImport importer = importerType.GetConstructor(new Type[] { })
-												.Invoke(new object[] { }) as IMovieImport;
+			IMovieImport importer = importerType
+				.GetConstructor(new Type[] { })
+				?.Invoke(new object[] { }) as IMovieImport;
+
+			if (importer == null)
+			{
+				errorMsg = $"No importer found for type {ext}";
+				return null;
+			}
 
 			Bk2Movie movie = null;
 
@@ -106,20 +128,13 @@ namespace BizHawk.Client.Common
 				errorMsg = ex.ToString();
 			}
 
+			movie?.Save();
 			return movie;
 		}
 
-		private static IEnumerable<Type> ImportersForExtension(string ext)
+		private static Type ImporterForExtension(string ext)
 		{
-			return typeof(MovieImport).Module
-				.GetTypes()
-				.Where(t => typeof(IMovieImport).IsAssignableFrom(t));
-		}
-
-		private static bool TypeImportsExtension(Type t, string ext)
-		{
-			var attrs = (ImportExtensionAttribute[])t.GetCustomAttributes(typeof(ImportExtensionAttribute), inherit: false);
-			return attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper());
+			return Importers.FirstOrDefault(i => string.Equals(i.Value, ext, StringComparison.OrdinalIgnoreCase)).Key;
 		}
 
 		private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg)
@@ -198,13 +213,17 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		// Return whether or not the type of file provided can currently be imported.
-		public static bool IsValidMovieExtension(string extension)
-		{
-			// TODO: Other movie formats that don't use a legacy importer (PJM/PXM, etc),
-			//       when those are implemented
-			return UsesLegacyImporter(extension);
-		}
+		private static readonly Dictionary<Type, string> Importers = Assembly.GetAssembly(typeof(ImportExtensionAttribute))
+			.GetTypes()
+			.Where(t => t.GetCustomAttributes(typeof(ImportExtensionAttribute))
+				.Any())
+			.ToDictionary(tkey => tkey, tvalue => ((ImportExtensionAttribute)tvalue.GetCustomAttributes(typeof(ImportExtensionAttribute))
+				.First()).Extension);
+			
+
+		private static IEnumerable<string> SupportedExtensions => Importers
+			.Select(i => i.Value)
+			.ToList();
 
 		// Return whether or not the type of file provided is currently imported by a legacy (i.e. to BKM not BK2) importer
 		private static bool UsesLegacyImporter(string extension)

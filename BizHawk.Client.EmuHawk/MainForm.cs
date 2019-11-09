@@ -3850,7 +3850,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void ProcessMovieImport(string fn)
 		{
-			MovieImport.ProcessMovieImport(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
+			MovieImport.Import(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
 		}
 
 		public void EnableRewind(bool enabled)
