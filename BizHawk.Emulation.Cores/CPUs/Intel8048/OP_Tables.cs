@@ -43,9 +43,59 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							oper,A,reg);
+							oper, A, reg);
 
 			IRQS = 4;
+		}
+
+		public void IN_OUT_A(ushort oper, ushort port)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							oper, A, port);
+
+			IRQS = 4;
+		}
+
+		public void MOV_R(ushort dest, ushort src)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							MOV, dest, src);
+
+			IRQS = 4;
+		}
+
+		public void JP_A()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void IN_BUS(ushort oper)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							oper, A);
+
+			IRQS = 9;
 		}
 
 		public void OP_A_DIR(ushort oper)
@@ -59,6 +109,21 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							oper, A, ALU);
+
+			IRQS = 9;
+		}
+
+		public void OP_R_DIR(ushort oper, ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							RD, ALU, PC,
+							INC16, PC,
+							IDLE,
+							IDLE,
+							IDLE,
+							oper, reg, ALU);
 
 			IRQS = 9;
 		}
@@ -170,7 +235,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 9;
 		}
 
-		public void JP_COND(bool cond)
+		public void JP_COND(bool cond, ushort SPEC)
 		{
 			if (cond)
 			{
@@ -191,7 +256,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 								IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
+								SPEC,
 								IDLE,
 								IDLE,
 								IDLE);

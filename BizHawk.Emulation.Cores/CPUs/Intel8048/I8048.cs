@@ -77,6 +77,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort SEL_MB1 = 71;
 		public const ushort SEL_RB0 = 72;
 		public const ushort SEL_RB1 = 73;
+		public const ushort INC_RAM = 74;
+		public const ushort RES_TF = 75;
+		public const ushort MOV = 76;
+		public const ushort MOV_RAM = 77;
+		public const ushort MOVT = 78;
+		public const ushort MOVT_RAM = 79;
 
 		public I8048()
 		{
@@ -294,6 +300,24 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case SEL_RB1:
 
 					break;
+				case INC_RAM:
+
+					break;
+				case RES_TF:
+
+					break;
+				case MOV:
+
+					break;
+				case MOV_RAM:
+
+					break;
+				case MOVT:
+
+					break;
+				case MOVT_RAM:
+
+					break;
 			}
 
 			if (++irq_pntr == IRQS)
@@ -399,11 +423,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(IRQS), ref IRQS);
 			ser.Sync(nameof(irq_pntr), ref irq_pntr);
 
+			ser.Sync(nameof(TF), ref TF);
+			ser.Sync(nameof(timer_en), ref timer_en);
+
 			ser.Sync(nameof(Regs), ref Regs, false);
 			ser.Sync(nameof(RAM), ref RAM, false);
+			
 			ser.Sync(nameof(F1), ref F1);
 			ser.Sync(nameof(T0), ref T0);
 			ser.Sync(nameof(T1), ref T1);
+
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 
 			ser.EndSection();

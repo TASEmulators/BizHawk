@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 	public partial class I8048
 	{
 		// registers
-		public ushort[] Regs = new ushort[21];
+		public ushort[] Regs = new ushort[22];
 
 		// 64 bytes of onboard ram
 		public ushort[] RAM = new ushort[64];
@@ -13,6 +13,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		// The 8048 has 2 flags that can be used for conditionals
 		// F0 is on the PSW, F1 is seperate
 		public bool F1;
+
+		// The timer flag is set if the timer overflows, testing it resets it to zero
+		public bool TF;
+		public bool timer_en;
 
 		// The 8048 has 2 test lines which can be used for conditionals, T0 can be used as an output
 		public bool T0, T1;
@@ -38,6 +42,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort P5 = 18;
 		public const ushort P6 = 19;
 		public const ushort P7 = 20;
+		public const ushort TIM = 21;
 
 		public bool Flag3
 		{
@@ -71,7 +76,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		private void ResetRegisters()
 		{
-			for (int i = 0; i < 21; i++)
+			for (int i = 0; i < 22; i++)
 			{
 				Regs[i] = 0;
 			}
