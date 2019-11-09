@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 
-using Newtonsoft.Json;
-
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.Common
@@ -150,15 +148,7 @@ namespace BizHawk.Client.Common
 				}
 			};
 
-			// Annoying kludge to force the json serializer to serialize the type name for "o" object.
-			// For just the "o" object to have type information, it must be cast to a superclass such
-			// that the TypeNameHandling.Auto decides to serialize the type as well as the object
-			// contents.  As such, the object cast is NOT redundant
-			var jsonSettings = new JsonSerializerSettings
-			{
-				TypeNameHandling = TypeNameHandling.Auto
-			};
-			movie.SyncSettingsJson = JsonConvert.SerializeObject(new { o = (object)syncSettings }, jsonSettings);
+			movie.SyncSettingsJson = ToJson(syncSettings);
 
 			info.FrameCount = br.ReadUInt32();
 			uint rerecordCount = br.ReadUInt32();

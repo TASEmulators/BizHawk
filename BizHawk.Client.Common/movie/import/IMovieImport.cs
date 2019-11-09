@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -47,6 +48,20 @@ namespace BizHawk.Client.Common
 				headerName.ToLower()) + headerName.Length;
 			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
+		}
+
+		protected static string ToJson(object syncSettings)
+		{
+			// Annoying kludge to force the json serializer to serialize the type name for "o" object.
+			// For just the "o" object to have type information, it must be cast to a superclass such
+			// that the TypeNameHandling.Auto decides to serialize the type as well as the object
+			// contents.  As such, the object cast is NOT redundant
+			var jsonSettings = new JsonSerializerSettings
+			{
+				TypeNameHandling = TypeNameHandling.Auto
+			};
+
+			return JsonConvert.SerializeObject(new { o = (object)syncSettings }, jsonSettings);
 		}
 	}
 

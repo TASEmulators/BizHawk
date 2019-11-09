@@ -2,6 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {
@@ -14,8 +15,10 @@ namespace BizHawk.Client.Common
 			var emulator = "FCEUX";
 			var platform = "NES"; // TODO: FDS?
 
-			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			var syncSettings = new NES.NESSyncSettings();
 
+			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
+			
 			using var sr = SourceFile.OpenText();
 			string line;
 
@@ -110,6 +113,11 @@ namespace BizHawk.Client.Common
 					if (fourscore)
 					{
 						// TODO: set controller config sync settings
+						syncSettings.Controls = new NESControlSettings
+						{
+							NesLeftPort = nameof(FourScore),
+							NesRightPort = nameof(FourScore)
+						};
 					}
 				}
 				else
@@ -117,6 +125,8 @@ namespace BizHawk.Client.Common
 					Result.Movie.Comments.Add(line); // Everything not explicitly defined is treated as a comment.
 				}
 			}
+
+			Result.Movie.SyncSettingsJson = ToJson(syncSettings);
 		}
 
 		private static string ImportTextSubtitle(string line)
