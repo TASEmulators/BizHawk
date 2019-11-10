@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions =
 			{
-				"BKM", "FMV", "GMV", "MC2", "MMV", "SMV", "VBM", "YMV"
+				"BKM", "FMV", "GMV", "MMV", "SMV", "VBM", "YMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
@@ -234,19 +234,6 @@ namespace BizHawk.Client.Common
 					buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 					controller = "PC Engine Controller";
 					break;
-				case ".LSMV":
-					buttons = new[]
-					{
-						"B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R"
-					};
-					controller = "SNES Controller";
-					if (platform == "GB" || platform == "GBC")
-					{
-						buttons = new[] { "A", "B", "Select", "Start", "Right", "Left", "Up", "Down" };
-						controller = "Gameboy Controller";
-					}
-
-					break;
 				case ".YMV":
 					buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
 					controller = "Saturn Controller";
@@ -258,35 +245,6 @@ namespace BizHawk.Client.Common
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 
-			if (ext == ".LSMV" && sections.Length != 0)
-			{
-				string flags = sections[0];
-				char[] off = { '.', ' ', '\t', '\n', '\r' };
-				if (flags.Length == 0 || off.Contains(flags[0]))
-				{
-					if (warningMsg == "")
-					{
-						warningMsg = "Unable to import subframe.";
-					}
-
-					return m;
-				}
-
-				bool reset = flags.Length >= 2 && !off.Contains(flags[1]);
-				flags = SingleSpaces(flags.Substring(2));
-				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
-				{
-					if (warningMsg == "")
-					{
-						warningMsg = "Unable to import delayed reset.";
-					}
-
-					return m;
-				}
-
-				controllers["Reset"] = reset;
-			}
-
 			/*
 			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
 			 Do not use the section after the last |. In other words, get the sections for the players.
@@ -294,13 +252,6 @@ namespace BizHawk.Client.Common
 			int start = 2;
 			int end = sections.Length - 1;
 			int playerOffset = -1;
-			if (ext == ".LSMV")
-			{
-				// LSNES frames don't start or end with a |.
-				start--;
-				end++;
-				playerOffset++;
-			}
 
 			for (int section = start; section < end; section++)
 			{
@@ -353,7 +304,7 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		// Import a text-based movie format. This works for .FM2, .MC2, and .YMV.
+		// Import a text-based movie format. This works for .MC2 and .YMV.
 		private static BkmMovie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
@@ -406,12 +357,6 @@ namespace BizHawk.Client.Common
 				{
 					string version = ParseHeader(line, "version");
 					m.Comments.Add($"{MOVIEORIGIN} {Path.GetExtension(path)} version {version}");
-					if (Path.GetExtension(path).ToUpper() == ".FM2" && version != "3")
-					{
-						errorMsg = ".FM2 movie version must always be 3.";
-						sr.Close();
-						return null;
-					}
 				}
 				else if (line.ToLower().StartsWith("romfilename"))
 				{
@@ -420,19 +365,6 @@ namespace BizHawk.Client.Common
 				else if (line.ToLower().StartsWith("cdgamename"))
 				{
 					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
-				}
-				else if (line.ToLower().StartsWith("romchecksum"))
-				{
-					string blob = ParseHeader(line, "romChecksum");
-					byte[] md5 = DecodeBlob(blob);
-					if (md5 != null && md5.Length == 16)
-					{
-						m.Header[MD5] = md5.BytesToHexString().ToLower();
-					}
-					else
-					{
-						warningMsg = "Bad ROM checksum.";
-					}
 				}
 				else if (line.ToLower().StartsWith("comment author"))
 				{
@@ -453,10 +385,6 @@ namespace BizHawk.Client.Common
 					}
 
 					m.Rerecords = (ulong)rerecordCount;
-				}
-				else if (line.ToLower().StartsWith("guid"))
-				{
-					continue; // We no longer care to keep this info
 				}
 				else if (line.ToLower().StartsWith("startsfromsavestate"))
 				{
@@ -497,36 +425,6 @@ namespace BizHawk.Client.Common
 				headerName.ToLower()) + headerName.Length;
 			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
-		}
-
-		// Decode a blob used in FM2 (base64:..., 0x123456...)
-		private static byte[] DecodeBlob(string blob)
-		{
-			if (blob.Length < 2)
-			{
-				return null;
-			}
-
-			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
-			{
-				// hex
-				return Util.HexStringToBytes(blob.Substring(2));
-			}
-
-			// base64
-			if (!blob.ToLower().StartsWith("base64:"))
-			{
-				return null;
-			}
-
-			try
-			{
-				return Convert.FromBase64String(blob.Substring(7));
-			}
-			catch (FormatException)
-			{
-				return null;
-			}
 		}
 
 		// Ends the string where a NULL character is found.
