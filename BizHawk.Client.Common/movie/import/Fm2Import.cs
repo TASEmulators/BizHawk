@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common
 {
+	// FM2 file format: http://www.fceux.com/web/FM2.html
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".fm2")]
 	public class Fm2Import : MovieImporter
@@ -17,11 +18,19 @@ namespace BizHawk.Client.Common
 
 			var syncSettings = new NES.NESSyncSettings();
 
+			var controllerSettings = new NESControlSettings
+			{
+				NesLeftPort = nameof(UnpluggedNES),
+				NesRightPort = nameof(UnpluggedNES)
+			};
+
+			_deck = controllerSettings.Instantiate((x, y) => true);
+			AddDeckControlButtons();
+
 			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = platform;
-			
+
 			using var sr = SourceFile.OpenText();
 			string line;
-
 			while ((line = sr.ReadLine()) != null)
 			{
 				if (line == "")
@@ -31,8 +40,7 @@ namespace BizHawk.Client.Common
 
 				if (line[0] == '|')
 				{
-					// TODO: import a frame of input
-					// TODO: report any errors importing this frame and bail out if so
+					ImportInputFrame(line);
 				}
 				else if (line.ToLower().StartsWith("sub"))
 				{
@@ -107,18 +115,43 @@ namespace BizHawk.Client.Common
 				{
 					Result.Movie.HeaderEntries[HeaderKeys.PAL] = ParseHeader(line, "palFlag");
 				}
+				else if (line.ToLower().StartsWith("port0"))
+				{
+					if (ParseHeader(line, "port0") == "1")
+					{
+						controllerSettings.NesLeftPort = nameof(ControllerNES);
+						_deck = controllerSettings.Instantiate((x, y) => false);
+						AddDeckControlButtons();
+					}
+				}
+				else if (line.ToLower().StartsWith("port1"))
+				{
+					if (ParseHeader(line, "port1") == "1")
+					{
+						controllerSettings.NesRightPort = nameof(ControllerNES);
+						_deck = controllerSettings.Instantiate((x, y) => false);
+						AddDeckControlButtons();
+					}
+				}
+				else if (line.ToLower().StartsWith("port2"))
+				{
+					if (ParseHeader(line, "port2") == "1")
+					{
+						Result.Errors.Add("Famicom port not yet supported");
+						break;
+					}
+				}
 				else if (line.ToLower().StartsWith("fourscore"))
 				{
 					bool fourscore = ParseHeader(line, "fourscore") == "1";
 					if (fourscore)
 					{
 						// TODO: set controller config sync settings
-						syncSettings.Controls = new NESControlSettings
-						{
-							NesLeftPort = nameof(FourScore),
-							NesRightPort = nameof(FourScore)
-						};
+						controllerSettings.NesLeftPort = nameof(FourScore);
+						controllerSettings.NesRightPort = nameof(FourScore);
 					}
+
+					_deck = controllerSettings.Instantiate((x, y) => false);
 				}
 				else
 				{
@@ -126,7 +159,72 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			syncSettings.Controls = controllerSettings;
 			Result.Movie.SyncSettingsJson = ToJson(syncSettings);
+		}
+
+		private IControllerDeck _deck;
+		
+		private readonly string[] _buttons = { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
+		private void ImportInputFrame(string line)
+		{
+			var controllers = new SimpleController
+			{
+				Definition = _deck.GetDefinition()
+			};
+
+			string[] sections = line.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+			controllers["Reset"] = sections[1][0] == '1';
+			switch (sections[0][0])
+			{
+				case '0':
+					break;
+				case '1':
+					controllers["Reset"] = true;
+					break;
+				case '2':
+					controllers["Power"] = true;
+					break;
+				case '4':
+					controllers["FDS Insert 0"] = true;
+					break;
+				case '8':
+					controllers["FDS Insert 1"] = true;
+					break;
+				// TODO: insert coin?
+				default:
+					Result.Warnings.Add($"Unknown command: {sections[0][0]}");
+					break;
+			}
+
+			for (int player = 1; player < sections.Length; player++)
+			{
+				string prefix = $"P{player} ";
+				// Only count lines with that have the right number of buttons and are for valid players.
+				if (sections[player].Length == _buttons.Length)
+				{
+					for (int button = 0; button < _buttons.Length; button++)
+					{
+						// Consider the button pressed so long as its spot is not occupied by a ".".
+						controllers[prefix + _buttons[button]] = sections[player][button] != '.';
+					}
+				}
+			}
+
+			Result.Movie.AppendFrame(controllers);
+		}
+
+		private void AddDeckControlButtons()
+		{
+			var controllers = new SimpleController
+			{
+				Definition = _deck.GetDefinition()
+			};
+
+			// TODO: FDS
+			// Yes, this adds them to the deck definition too
+			controllers.Definition.BoolButtons.Add("Reset");
+			controllers.Definition.BoolButtons.Add("Power");
 		}
 
 		private static string ImportTextSubtitle(string line)

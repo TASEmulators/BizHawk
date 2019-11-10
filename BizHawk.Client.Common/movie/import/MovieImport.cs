@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions =
 			{
-				"BKM", "FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
+				"BKM", "FCM", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
