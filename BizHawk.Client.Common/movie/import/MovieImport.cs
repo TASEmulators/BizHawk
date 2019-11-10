@@ -198,59 +198,6 @@ namespace BizHawk.Client.Common
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
 
-		// Import a frame from a text-based format.
-		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform, ref string warningMsg)
-		{
-			var buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
-			var controller = "Saturn Controller";
-
-			var controllers = new SimpleController { Definition = new ControllerDefinition { Name = controller } };
-
-			// Split up the sections of the frame.
-			string[] sections = line.Split('|');
-
-			/*
-			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
-			 Do not use the section after the last |. In other words, get the sections for the players.
-			*/
-			int start = 2;
-			int end = sections.Length - 1;
-			int playerOffset = -1;
-
-			for (int section = start; section < end; section++)
-			{
-				// The player number is one less than the section number for the reasons explained above.
-				int player = section + playerOffset;
-				string prefix = $"P{player} ";
-
-				// Only count lines with that have the right number of buttons and are for valid players.
-				if (
-					sections[section].Length == buttons.Length &&
-					player <= BkmMnemonicConstants.Players[controllers.Definition.Name])
-				{
-					for (int button = 0; button < buttons.Length; button++)
-					{
-						// Consider the button pressed so long as its spot is not occupied by a ".".
-						controllers[prefix + buttons[button]] = sections[section][button] != '.';
-					}
-				}
-			}
-
-			// Convert the data for the controllers to a mnemonic and add it as a frame.
-			m.AppendFrame(controllers);
-			return m;
-		}
-
-		// Get the content for a particular header.
-		private static string ParseHeader(string line, string headerName)
-		{
-			// Case-insensitive search.
-			int x = line.ToLower().LastIndexOf(
-				headerName.ToLower()) + headerName.Length;
-			string str = line.Substring(x + 1, line.Length - x - 1);
-			return str.Trim();
-		}
-
 		// Ends the string where a NULL character is found.
 		private static string NullTerminated(string str)
 		{
