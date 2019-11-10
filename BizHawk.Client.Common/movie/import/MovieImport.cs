@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 
@@ -154,9 +153,6 @@ namespace BizHawk.Client.Common
 					case ".VBM":
 						m = ImportVbm(path, out errorMsg, out warningMsg);
 						break;
-					case ".YMV":
-						m = ImportYmv(path, out errorMsg, out warningMsg);
-						break;
 					case ".BKM":
 						m.Filename = path;
 						m.Load(false);
@@ -197,7 +193,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions =
 			{
-				"BKM", "FMV", "GMV", "MMV", "SMV", "VBM", "YMV"
+				"BKM", "FMV", "GMV", "MMV", "SMV", "VBM"
 			};
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
@@ -242,96 +238,6 @@ namespace BizHawk.Client.Common
 
 			// Convert the data for the controllers to a mnemonic and add it as a frame.
 			m.AppendFrame(controllers);
-			return m;
-		}
-
-		// YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
-		private static BkmMovie ImportYmv(string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = warningMsg = "";
-			var m = new BkmMovie(path);
-			var file = new FileInfo(path);
-			var sr = file.OpenText();
-
-			var emulator = "Yabause";
-			var platform = "Sega Saturn";
-
-			m.Header[HeaderKeys.PLATFORM] = platform;
-			int lineNum = 0;
-			string line;
-			while ((line = sr.ReadLine()) != null)
-			{
-				lineNum++;
-				if (line == "")
-				{
-					continue;
-				}
-
-				if (line[0] == '|')
-				{
-					m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
-					if (errorMsg != "")
-					{
-						sr.Close();
-						return null;
-					}
-				}
-				else if (line.ToLower().StartsWith("emuversion"))
-				{
-					m.Comments.Add($"{EMULATIONORIGIN} {emulator} version {ParseHeader(line, "emuVersion")}");
-				}
-				else if (line.ToLower().StartsWith("version"))
-				{
-					string version = ParseHeader(line, "version");
-					m.Comments.Add($"{MOVIEORIGIN} {Path.GetExtension(path)} version {version}");
-				}
-				else if (line.ToLower().StartsWith("romfilename"))
-				{
-					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
-				}
-				else if (line.ToLower().StartsWith("comment author"))
-				{
-					m.Header[HeaderKeys.AUTHOR] = ParseHeader(line, "comment author");
-				}
-				else if (line.ToLower().StartsWith("rerecordcount"))
-				{
-					int rerecordCount;
-
-					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
-					try
-					{
-						rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
-					}
-					catch
-					{
-						rerecordCount = 0;
-					}
-
-					m.Rerecords = (ulong)rerecordCount;
-				}
-				else if (line.ToLower().StartsWith("startsfromsavestate"))
-				{
-					// If this movie starts from a savestate, we can't support it.
-					if (ParseHeader(line, "StartsFromSavestate") == "1")
-					{
-						errorMsg = "Movies that begin with a savestate are not supported.";
-						sr.Close();
-						return null;
-					}
-				}
-				else if (line.ToLower().StartsWith("ispal"))
-				{
-					bool pal = ParseHeader(line, "isPal") == "1";
-					m.Header[HeaderKeys.PAL] = pal.ToString();
-				}
-				else
-				{
-					// Everything not explicitly defined is treated as a comment.
-					m.Comments.Add(line);
-				}
-			}
-
-			sr.Close();
 			return m;
 		}
 

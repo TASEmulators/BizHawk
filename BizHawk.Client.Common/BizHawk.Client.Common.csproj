@@ -158,6 +158,7 @@
     <Compile Include="movie\import\LsmvImport.cs" />
     <Compile Include="movie\import\Mc2Import.cs" />
     <Compile Include="movie\import\PxmImport.cs" />
+    <Compile Include="movie\import\YmvImport.cs" />
     <Compile Include="movie\tasproj\IStateManager.cs" />
     <Compile Include="movie\tasproj\StateManagerDecay.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
