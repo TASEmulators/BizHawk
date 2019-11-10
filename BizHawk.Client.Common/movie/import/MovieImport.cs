@@ -145,9 +145,6 @@ namespace BizHawk.Client.Common
 					case ".GMV":
 						m = ImportGmv(path, out errorMsg, out warningMsg);
 						break;
-					case ".MC2":
-						m = ImportMc2(path, out errorMsg, out warningMsg);
-						break;
 					case ".MMV":
 						m = ImportMmv(path, out errorMsg, out warningMsg);
 						break;
@@ -205,40 +202,11 @@ namespace BizHawk.Client.Common
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
 
-		// Reduce all whitespace to single spaces.
-		private static string SingleSpaces(string line)
-		{
-			line = line.Replace("\t", " ");
-			line = line.Replace("\n", " ");
-			line = line.Replace("\r", " ");
-			line = line.Replace("\r\n", " ");
-			string prev;
-			do
-			{
-				prev = line;
-				line = line.Replace("  ", " ");
-			}
-			while (prev != line);
-			return line;
-		}
-
 		// Import a frame from a text-based format.
 		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform, ref string warningMsg)
 		{
-			string[] buttons = { };
-			var controller = "";
-			var ext = path != null ? Path.GetExtension(path).ToUpper() : "";
-			switch (ext)
-			{
-				case ".MC2":
-					buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
-					controller = "PC Engine Controller";
-					break;
-				case ".YMV":
-					buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
-					controller = "Saturn Controller";
-					break;
-			}
+			var buttons = new[] { "Left", "Right", "Up", "Down", "Start", "A", "B", "C", "X", "Y", "Z", "L", "R" };
+			var controller = "Saturn Controller";
 
 			var controllers = new SimpleController { Definition = new ControllerDefinition { Name = controller } };
 
@@ -258,12 +226,6 @@ namespace BizHawk.Client.Common
 				// The player number is one less than the section number for the reasons explained above.
 				int player = section + playerOffset;
 				string prefix = $"P{player} ";
-				
-				// Gameboy doesn't currently have a prefix saying which player the input is for.
-				if (controllers.Definition.Name == "Gameboy Controller")
-				{
-					prefix = "";
-				}
 
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
@@ -283,47 +245,16 @@ namespace BizHawk.Client.Common
 			return m;
 		}
 
-		// Import a subtitle from a text-based format.
-		private static BkmMovie ImportTextSubtitle(string line, BkmMovie m, string path)
-		{
-			line = SingleSpaces(line);
-
-			// The header name, frame, and message are separated by whitespace.
-			int first = line.IndexOf(' ');
-			int second = line.IndexOf(' ', first + 1);
-			if (first != -1 && second != -1)
-			{
-				// Concatenate the frame and message with default values for the additional fields.
-				var frame = line.Substring(0, first);
-				var length = line.Substring(first + 1, second - first - 1);
-
-				string message = line.Substring(second + 1).Trim();
-				m.Subtitles.AddFromString($"subtitle {frame} 0 0 {length} FFFFFFFF {message}");
-			}
-
-			return m;
-		}
-
-		// Import a text-based movie format. This works for .MC2 and .YMV.
-		private static BkmMovie ImportText(string path, out string errorMsg, out string warningMsg)
+		// YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
+		private static BkmMovie ImportYmv(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var file = new FileInfo(path);
 			var sr = file.OpenText();
-			var emulator = "";
-			var platform = "";
-			switch (Path.GetExtension(path).ToUpper())
-			{
-				case ".MC2":
-					emulator = "Mednafen/PCEjin";
-					platform = "PCE";
-					break;
-				case ".YMV":
-					emulator = "Yabause";
-					platform = "Sega Saturn";
-					break;
-			}
+
+			var emulator = "Yabause";
+			var platform = "Sega Saturn";
 
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			int lineNum = 0;
@@ -345,10 +276,6 @@ namespace BizHawk.Client.Common
 						return null;
 					}
 				}
-				else if (line.ToLower().StartsWith("sub"))
-				{
-					m = ImportTextSubtitle(line, m, path);
-				}
 				else if (line.ToLower().StartsWith("emuversion"))
 				{
 					m.Comments.Add($"{EMULATIONORIGIN} {emulator} version {ParseHeader(line, "emuVersion")}");
@@ -361,10 +288,6 @@ namespace BizHawk.Client.Common
 				else if (line.ToLower().StartsWith("romfilename"))
 				{
 					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "romFilename");
-				}
-				else if (line.ToLower().StartsWith("cdgamename"))
-				{
-					m.Header[HeaderKeys.GAMENAME] = ParseHeader(line, "cdGameName");
 				}
 				else if (line.ToLower().StartsWith("comment author"))
 				{
@@ -395,11 +318,6 @@ namespace BizHawk.Client.Common
 						sr.Close();
 						return null;
 					}
-				}
-				else if (line.ToLower().StartsWith("palflag"))
-				{
-					bool pal = ParseHeader(line, "palFlag") == "1";
-					m.Header[HeaderKeys.PAL] = pal.ToString();
 				}
 				else if (line.ToLower().StartsWith("ispal"))
 				{
@@ -737,12 +655,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return m;
-		}
-
-		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
-		private static BkmMovie ImportMc2(string path, out string errorMsg, out string warningMsg)
-		{
-			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
@@ -1470,12 +1382,6 @@ namespace BizHawk.Client.Common
 			r.Close();
 			fs.Close();
 			return m;
-		}
-
-		// YMV file format: https://code.google.com/p/yabause-rr/wiki/YMVfileformat
-		private static BkmMovie ImportYmv(string path, out string errorMsg, out string warningMsg)
-		{
-			return ImportText(path, out errorMsg, out warningMsg);
 		}
 	}
 }
