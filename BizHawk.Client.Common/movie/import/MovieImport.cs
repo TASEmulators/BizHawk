@@ -151,9 +151,6 @@ namespace BizHawk.Client.Common
 					case ".FCM":
 						m = ImportFcm(path, out errorMsg, out warningMsg);
 						break;
-					case ".FM2":
-						m = ImportFm2(path, out errorMsg, out warningMsg);
-						break;
 					case ".FMV":
 						m = ImportFmv(path, out errorMsg, out warningMsg);
 						break;
@@ -285,10 +282,6 @@ namespace BizHawk.Client.Common
 			var ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 			switch (ext)
 			{
-				case ".FM2":
-					buttons = new[] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
-					controller = "NES Controller";
-					break;
 				case ".MC2":
 					buttons = new[] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 					controller = "PC Engine Controller";
@@ -316,43 +309,6 @@ namespace BizHawk.Client.Common
 
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
-			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
-			{
-				controllers["Reset"] = sections[1][0] == '1';
-
-				// Get the first invalid command warning message that arises.
-				if (string.IsNullOrEmpty(warningMsg))
-				{
-					switch (sections[1][0])
-					{
-						case '0':
-							break;
-						case '1':
-							break;
-						case '2':
-							if ((int)m.FrameCount != 0)
-							{
-								warningMsg = "hard reset";
-							}
-
-							break;
-						case '4':
-							warningMsg = "FDS Insert";
-							break;
-						case '8':
-							warningMsg = "FDS Select Side";
-							break;
-						default:
-							warningMsg = "unknown";
-							break;
-					}
-
-					if (warningMsg != "")
-					{
-						warningMsg = $"Unable to import {warningMsg} command on line {lineNum}.";
-					}
-				}
-			}
 
 			if (ext == ".LSMV" && sections.Length != 0)
 			{
@@ -589,11 +545,6 @@ namespace BizHawk.Client.Common
 				{
 					bool pal = ParseHeader(line, "isPal") == "1";
 					m.Header[HeaderKeys.PAL] = pal.ToString();
-				}
-				else if (line.ToLower().StartsWith("fourscore"))
-				{
-					bool fourscore = ParseHeader(line, "fourscore") == "1";
-					m.Header[HeaderKeys.FOURSCORE] = fourscore.ToString();
 				}
 				else
 				{
@@ -934,12 +885,6 @@ namespace BizHawk.Client.Common
 			r.Close();
 			fs.Close();
 			return m;
-		}
-
-		// FM2 file format: http://www.fceux.com/web/FM2.html
-		private static BkmMovie ImportFm2(string path, out string errorMsg, out string warningMsg)
-		{
-			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// FMV file format: http://tasvideos.org/FMV.html
