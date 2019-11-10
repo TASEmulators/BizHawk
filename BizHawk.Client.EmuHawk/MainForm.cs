@@ -3977,7 +3977,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadState(path, quickSlotName, fromLua, suppressOSD);
 		}
 
-		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
+		public void SaveState(string path, string userFriendlyStateName, bool fromLua = false, bool suppressOSD = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
@@ -3996,7 +3996,10 @@ namespace BizHawk.Client.EmuHawk
 
 				ClientApi.OnStateSaved(this, userFriendlyStateName);
 
-				GlobalWin.OSD.AddMessage($"Saved state: {userFriendlyStateName}");
+				if (!suppressOSD)
+				{
+					GlobalWin.OSD.AddMessage($"Saved state: {userFriendlyStateName}");
+				}
 			}
 			catch (IOException)
 			{
@@ -4010,7 +4013,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
-		public void SaveQuickSave(string quickSlotName)
+		public void SaveQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false)
 		{
 			if (!Emulator.HasSavestates())
 			{
@@ -4044,7 +4047,7 @@ namespace BizHawk.Client.EmuHawk
 				Util.TryMoveBackupFile(path, $"{path}.bak");
 			}
 
-			SaveState(path, quickSlotName, false);
+			SaveState(path, quickSlotName, fromLua, suppressOSD);
 
 			if (GlobalWin.Tools.Has<LuaConsole>())
 			{
