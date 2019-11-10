@@ -11,7 +11,6 @@ using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
@@ -20,7 +19,6 @@ namespace BizHawk.Client.Common
 	{
 		// Movies 2.0 TODO: this is Movie.cs specific, can it be IMovie based? If not, needs to be refactored to a hardcoded 2.0 implementation, client needs to know what kind of type it imported to, or the mainform method needs to be moved here
 		private const string COMMENT = "comment";
-		private const string COREORIGIN = "CoreOrigin";
 		private const string CRC16 = "CRC16";
 		private const string CRC32 = "CRC32";
 		private const string EMULATIONORIGIN = "emuOrigin";
@@ -29,14 +27,7 @@ namespace BizHawk.Client.Common
 		private const string JAPAN = "Japan";
 		private const string MD5 = "MD5";
 		private const string MOVIEORIGIN = "MovieOrigin";
-		private const string PORT1 = "port1";
-		private const string PORT2 = "port2";
-		private const string PROJECTID = "ProjectID";
-		private const string SHA256 = "SHA256";
 		private const string SUPERGAMEBOYMODE = "SuperGameBoyMode";
-		private const string STARTSECOND = "StartSecond";
-		private const string STARTSUBSECOND = "StartSubSecond";
-		private const string SYNCHACK = "SyncHack";
 		private const string UNITCODE = "UnitCode";
 
 		/// <summary>
@@ -154,9 +145,6 @@ namespace BizHawk.Client.Common
 					case ".GMV":
 						m = ImportGmv(path, out errorMsg, out warningMsg);
 						break;
-					case ".LSMV":
-						m = ImportLsmv(path, out errorMsg, out warningMsg);
-						break;
 					case ".MC2":
 						m = ImportMc2(path, out errorMsg, out warningMsg);
 						break;
@@ -212,7 +200,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions =
 			{
-				"BKM", "FMV", "GMV", "MC2", "MMV", "LSMV", "SMV", "VBM", "YMV"
+				"BKM", "FMV", "GMV", "MC2", "MMV", "SMV", "VBM", "YMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
@@ -232,31 +220,6 @@ namespace BizHawk.Client.Common
 			}
 			while (prev != line);
 			return line;
-		}
-
-		private static IController EmptyLmsvFrame(string line)
-		{
-			var emptyController = new SimpleController
-			{
-				Definition = new ControllerDefinition { Name = "SNES Controller" }
-				, ["Reset"] = false
-				, ["Power"] = false
-			};
-
-			string[] buttons = { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
-			string[] sections = line.Split('|');
-			for (int section = 2; section < sections.Length - 1; section++)
-			{
-				int player = section - 1; // We start with 1
-				string prefix = $"P{player} "; // "P1"
-
-				foreach (var b in buttons)
-				{
-					emptyController[prefix + b] = false;
-				}
-			}
-
-			return emptyController;
 		}
 
 		// Import a frame from a text-based format.
@@ -380,20 +343,8 @@ namespace BizHawk.Client.Common
 			if (first != -1 && second != -1)
 			{
 				// Concatenate the frame and message with default values for the additional fields.
-				string frame;
-				string length;
-				string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
-
-				if (ext != ".LSMV")
-				{
-					frame = line.Substring(first + 1, second - first - 1);
-					length = "200";
-				}
-				else
-				{
-					frame = line.Substring(0, first);
-					length = line.Substring(first + 1, second - first - 1);
-				}
+				var frame = line.Substring(0, first);
+				var length = line.Substring(first + 1, second - first - 1);
 
 				string message = line.Substring(second + 1).Trim();
 				m.Subtitles.AddFromString($"subtitle {frame} 0 0 {length} FFFFFFFF {message}");
@@ -886,272 +837,6 @@ namespace BizHawk.Client.Common
 
 				m.AppendFrame(controllers);
 			}
-
-			return m;
-		}
-
-		// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
-		private static BkmMovie ImportLsmv(string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = warningMsg = "";
-			var m = new BkmMovie(path);
-			var hf = new HawkFile(path);
-
-			// .LSMV movies are .zip files containing data files.
-			if (!hf.IsArchive)
-			{
-				errorMsg = "This is not an archive.";
-				return null;
-			}
-
-			string platform = "SNES";
-			foreach (var item in hf.ArchiveItems)
-			{
-				if (item.Name == "authors")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					string authorList = "";
-					string authorLast = "";
-					using (var reader = new StringReader(authors))
-					{
-						string line;
-
-						// Each author is on a different line.
-						while ((line = reader.ReadLine()) != null)
-						{
-							string author = line.Trim();
-							if (author != "")
-							{
-								if (authorLast != "")
-								{
-									authorList += $"{authorLast}, ";
-								}
-
-								authorLast = author;
-							}
-						}
-					}
-
-					if (authorList != "")
-					{
-						authorList += "and ";
-					}
-
-					if (authorLast != "")
-					{
-						authorList += authorLast;
-					}
-
-					m.Header[HeaderKeys.AUTHOR] = authorList;
-					hf.Unbind();
-				}
-				else if (item.Name == "coreversion")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string coreversion = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Comments.Add($"{COREORIGIN} {coreversion}");
-					hf.Unbind();
-				}
-				else if (item.Name == "gamename")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string gamename = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[HeaderKeys.GAMENAME] = gamename;
-					hf.Unbind();
-				}
-				else if (item.Name == "gametype")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string gametype = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-
-					// TODO: Handle the other types.
-					switch (gametype)
-					{
-						case "gdmg":
-							platform = "GB";
-							break;
-						case "ggbc":
-						case "ggbca":
-							platform = "GBC";
-							break;
-						case "sgb_ntsc":
-						case "sgb_pal":
-							platform = "SNES";
-							Global.Config.GB_AsSGB = true;
-							break;
-					}
-
-					bool pal = gametype == "snes_pal" || gametype == "sgb_pal";
-					m.Header[HeaderKeys.PAL] = pal.ToString();
-					hf.Unbind();
-				}
-				else if (item.Name == "input")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
-
-					int lineNum = 0;
-					using (var reader = new StringReader(input))
-					{
-						lineNum++;
-						string line;
-						while ((line = reader.ReadLine()) != null)
-						{
-							if (line == "")
-							{
-								continue;
-							}
-
-							// Insert an empty frame in lsmv snes movies
-							// https://github.com/TASVideos/BizHawk/issues/721
-							// Both emulators send the input to bsnes core at the same V interval, but:
-							// lsnes' frame boundary occurs at V = 241, after which the input is read;
-							// BizHawk's frame boundary is just before automatic polling;
-							// This isn't a great place to add this logic but this code is a mess
-							if (lineNum == 1 && platform == "SNES")
-							{
-								// Note that this logic assumes the first non-empty log entry is a valid input log entry
-								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
-								m.AppendFrame(EmptyLmsvFrame(line)); // line is needed to parse pipes and know the controller configuration
-							}
-
-							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
-							if (errorMsg != "")
-							{
-								hf.Unbind();
-								return null;
-							}
-						}
-					}
-
-					hf.Unbind();
-				}
-				else if (item.Name.StartsWith("moviesram."))
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					byte[] moviesram = stream.ReadAllBytes();
-					if (moviesram.Length != 0)
-					{
-						errorMsg = "Movies that begin with SRAM are not supported.";
-						hf.Unbind();
-						return null;
-					}
-
-					hf.Unbind();
-				}
-				else if (item.Name == "port1")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string port1 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[PORT1] = port1;
-					hf.Unbind();
-				}
-				else if (item.Name == "port2")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string port2 = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[PORT2] = port2;
-					hf.Unbind();
-				}
-				else if (item.Name == "projectid")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string projectid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[PROJECTID] = projectid;
-					hf.Unbind();
-				}
-				else if (item.Name == "rerecords")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string rerecords = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					int rerecordCount;
-
-					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
-					try
-					{
-						rerecordCount = int.Parse(rerecords);
-					}
-					catch
-					{
-						rerecordCount = 0;
-					}
-
-					m.Rerecords = (ulong)rerecordCount;
-					hf.Unbind();
-				}
-				else if (item.Name.EndsWith(".sha256"))
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string rom = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					int pos = item.Name.LastIndexOf(".sha256");
-					string name = item.Name.Substring(0, pos);
-					m.Header[$"{SHA256}_{name}"] = rom;
-					hf.Unbind();
-				}
-				else if (item.Name == "savestate")
-				{
-					errorMsg = "Movies that begin with a savestate are not supported.";
-					return null;
-				}
-				else if (item.Name == "subtitles")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string subtitles = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					using (StringReader reader = new StringReader(subtitles))
-					{
-						string line;
-						while ((line = reader.ReadLine()) != null)
-						{
-							m = ImportTextSubtitle(line, m, path);
-						}
-					}
-
-					hf.Unbind();
-				}
-				else if (item.Name == "starttime.second")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string startSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[STARTSECOND] = startSecond;
-					hf.Unbind();
-				}
-				else if (item.Name == "starttime.subsecond")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string startSubSecond = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Header[STARTSUBSECOND] = startSubSecond;
-					hf.Unbind();
-				}
-				else if (item.Name == "systemid")
-				{
-					hf.BindArchiveMember(item.Index);
-					var stream = hf.GetStream();
-					string systemid = Encoding.UTF8.GetString(stream.ReadAllBytes()).Trim();
-					m.Comments.Add($"{EMULATIONORIGIN} {systemid}");
-					hf.Unbind();
-				}
-			}
-
-			m.Header[HeaderKeys.PLATFORM] = platform;
-
-			var ss = new LibsnesCore.SnesSyncSettings();
-			m.SyncSettingsJson = ConfigService.SaveWithType(ss);
-			Global.Config.SNES_InSnes9x = true; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 
 			return m;
 		}

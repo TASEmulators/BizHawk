@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
     <Compile Include="movie\import\FcmImport.cs" />
+    <Compile Include="movie\import\LsmvImport.cs" />
     <Compile Include="movie\import\PxmImport.cs" />
     <Compile Include="movie\tasproj\IStateManager.cs" />
     <Compile Include="movie\tasproj\StateManagerDecay.cs" />

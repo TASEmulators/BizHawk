@@ -247,23 +247,6 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		// Reduce all whitespace to single spaces.
-		private static string SingleSpaces(string line)
-		{
-			line = line.Replace("\t", " ");
-			line = line.Replace("\n", " ");
-			line = line.Replace("\r", " ");
-			line = line.Replace("\r\n", " ");
-			string prev;
-			do
-			{
-				prev = line;
-				line = line.Replace("  ", " ");
-			}
-			while (prev != line);
-			return line;
-		}
-
 		// Decode a blob used in FM2 (base64:..., 0x123456...)
 		private static byte[] DecodeBlob(string blob)
 		{

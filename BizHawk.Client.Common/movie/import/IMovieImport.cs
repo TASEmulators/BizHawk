@@ -50,6 +50,7 @@ namespace BizHawk.Client.Common
 			return str.Trim();
 		}
 
+		[Obsolete("Use ConfigService.SaveWithType() instead")]
 		protected static string ToJson(object syncSettings)
 		{
 			// Annoying kludge to force the json serializer to serialize the type name for "o" object.
@@ -62,6 +63,23 @@ namespace BizHawk.Client.Common
 			};
 
 			return JsonConvert.SerializeObject(new { o = (object)syncSettings }, jsonSettings);
+		}
+
+		// Reduce all whitespace to single spaces.
+		protected static string SingleSpaces(string line)
+		{
+			line = line.Replace("\t", " ");
+			line = line.Replace("\n", " ");
+			line = line.Replace("\r", " ");
+			line = line.Replace("\r\n", " ");
+			string prev;
+			do
+			{
+				prev = line;
+				line = line.Replace("  ", " ");
+			}
+			while (prev != line);
+			return line;
 		}
 	}
 

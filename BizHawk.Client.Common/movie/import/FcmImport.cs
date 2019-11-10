@@ -16,8 +16,6 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
-			
-
 			using var r = new BinaryReader(SourceFile.Open(FileMode.Open, FileAccess.Read));
 			var signature = new string(r.ReadChars(4));
 			if (signature != "FCM\x1A")
