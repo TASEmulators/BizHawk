@@ -120,6 +120,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample("client.invisibleemulation( true );")]
+		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
+		public void InvisibleEmulation(bool invisible)
+		{
+			GlobalWin.MainForm.InvisibleEmulation = invisible;
+		}
+
+		[LuaMethodExample("client.seekframe( 100 );")]
+		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
+		public void SeekFrame(int frame)
+		{
+			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+
+			// can't re-enter lua while doing this
+			GlobalWin.MainForm.SuppressLua = true;
+			while (Emulator.Frame != frame)
+			{
+				GlobalWin.MainForm.SeekFrameAdvance();
+			}
+
+			GlobalWin.MainForm.SuppressLua = false;
+
+			if (!wasPaused)
+			{
+				GlobalWin.MainForm.UnpauseEmulator();
+			}
+		}
+
 		[LuaMethodExample("local incliget = client.gettargetscanlineintensity( );")]
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
 		public static int GetTargetScanlineIntensity()

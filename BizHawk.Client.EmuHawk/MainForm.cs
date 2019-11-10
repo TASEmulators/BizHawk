@@ -585,6 +585,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
 		public bool PressRewind { get; set; } // necessary for tastudio < button
 		public bool FastForward { get; set; }
+		public bool InvisibleEmulation { get; set; }
 
 		// runloop won't exec lua
 		public bool SuppressLua { get; set; }
@@ -2828,7 +2829,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (IsTurboing)
+				if (IsTurboing || InvisibleEmulation)
 				{
 					GlobalWin.Tools.FastUpdateBefore();
 				}
@@ -2873,13 +2874,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// why not skip audio if the user doesn't want sound
-				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing && !InvisibleEmulation) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
 				{
 					atten = 0;
 				}
 
-				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
+				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
 				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
@@ -2910,7 +2911,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (IsTurboing)
+				if (IsTurboing || InvisibleEmulation)
 				{
 					GlobalWin.Tools.FastUpdateAfter(SuppressLua);
 				}
@@ -2919,7 +2920,7 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi && new_frame)
+				if (!PauseAvi && new_frame && !InvisibleEmulation)
 				{
 					AvFrameAdvance();
 				}
