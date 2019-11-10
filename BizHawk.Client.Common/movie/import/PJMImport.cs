@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 				}
 			};
 
-			movie.SyncSettingsJson = ToJson(syncSettings);
+			movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 
 			info.FrameCount = br.ReadUInt32();
 			uint rerecordCount = br.ReadUInt32();

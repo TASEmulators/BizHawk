@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common.movie.import
 			}
 
 			syncSettings.Controls = controllerSettings;
-			Result.Movie.SyncSettingsJson = ToJson(syncSettings);
+			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 		}
 
 		private void AddDeckControlButtons()

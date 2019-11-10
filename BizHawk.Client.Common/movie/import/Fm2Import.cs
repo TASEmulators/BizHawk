@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			}
 
 			syncSettings.Controls = controllerSettings;
-			Result.Movie.SyncSettingsJson = ToJson(syncSettings);
+			Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(syncSettings);
 		}
 
 		private IControllerDeck _deck;
