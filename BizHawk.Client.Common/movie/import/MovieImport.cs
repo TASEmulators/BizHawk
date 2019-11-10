@@ -138,9 +138,6 @@ namespace BizHawk.Client.Common
 			{
 				switch (ext)
 				{
-					case ".GMV":
-						m = ImportGmv(path, out errorMsg, out warningMsg);
-						break;
 					case ".MMV":
 						m = ImportMmv(path, out errorMsg, out warningMsg);
 						break;
@@ -190,7 +187,7 @@ namespace BizHawk.Client.Common
 		{
 			string[] extensions =
 			{
-				"BKM", "GMV", "MMV", "SMV", "VBM"
+				"BKM", "MMV", "SMV", "VBM"
 			};
 			return extensions.Any(ext => extension.ToUpper() == $".{ext}");
 		}
@@ -205,148 +202,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return str;
-		}
-
-		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
-		private static BkmMovie ImportGmv(string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = warningMsg = "";
-			var m = new BkmMovie(path);
-			var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-			var r = new BinaryReader(fs);
-
-			// 000 16-byte signature and format version: "Gens Movie TEST9"
-			string signature = r.ReadStringFixedAscii(15);
-			if (signature != "Gens Movie TEST")
-			{
-				errorMsg = "This is not a valid .GMV file.";
-				r.Close();
-				fs.Close();
-				return null;
-			}
-
-			m.Header[HeaderKeys.PLATFORM] = "GEN";
-
-			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
-			string version = r.ReadStringFixedAscii(1);
-			m.Comments.Add($"{MOVIEORIGIN} .GMV version {version}");
-			m.Comments.Add($"{EMULATIONORIGIN} Gens");
-
-			// 010 4-byte little-endian unsigned int: rerecord count
-			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = rerecordCount;
-
-			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
-			string player1Config = r.ReadStringFixedAscii(1);
-
-			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
-			string player2Config = r.ReadStringFixedAscii(1);
-			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition() };
-			if (player1Config == "6" || player2Config == "6")
-			{
-				controllers.Definition.Name = "GPGX Genesis Controller";
-			}
-			else
-			{
-				controllers.Definition.Name = "GPGX 3-Button Controller";
-			}
-
-			// 016 special flags (Version A and up only)
-			byte flags = r.ReadByte();
-
-			/*
-			 bit 7 (most significant): if "1", movie runs at 50 frames per second; if "0", movie runs at 60 frames per
-			 second The file format has no means of identifying NTSC/"PAL", but the FPS can still be derived from the
-			 header.
-			*/
-			bool pal = ((flags >> 7) & 0x1) != 0;
-			m.Header[HeaderKeys.PAL] = pal.ToString();
-
-			// bit 6: if "1", movie requires a savestate.
-			if (((flags >> 6) & 0x1) != 0)
-			{
-				errorMsg = "Movies that begin with a savestate are not supported.";
-				r.Close();
-				fs.Close();
-				return null;
-			}
-
-			// bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
-			bool threePlayers = ((flags >> 5) & 0x1) != 0;
-
-			// Unknown.
-			r.ReadByte();
-
-			// 018 40-byte zero-terminated ASCII movie name string
-			string description = NullTerminated(r.ReadStringFixedAscii(40));
-			m.Comments.Add($"{COMMENT} {description}");
-
-			/*
-			 040 frame data
-			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are
-			 left unpressed:
-			 * 0x01 Up
-			 * 0x02 Down
-			 * 0x04 Left
-			 * 0x08 Right
-			 * 0x10 A
-			 * 0x20 B
-			 * 0x40 C
-			 * 0x80 Start
-			*/
-			string[] buttons = { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
-			/*
-			 For XYZ-mode, each value is determined by OR-ing together values for whichever of the following are left
-			 unpressed:
-			 * 0x01 Controller 1 X
-			 * 0x02 Controller 1 Y
-			 * 0x04 Controller 1 Z
-			 * 0x08 Controller 1 Mode
-			 * 0x10 Controller 2 X
-			 * 0x20 Controller 2 Y
-			 * 0x40 Controller 2 Z
-			 * 0x80 Controller 2 Mode
-			*/
-			string[] other = { "X", "Y", "Z", "Mode" };
-
-			// The file has no terminator byte or frame count. The number of frames is the <filesize minus 64> divided by 3.
-			long frameCount = (fs.Length - 64) / 3;
-			for (long frame = 1; frame <= frameCount; frame++)
-			{
-				// Each frame consists of 3 bytes.
-				for (int player = 1; player <= 3; player++)
-				{
-					byte controllerState = r.ReadByte();
-
-					// * is controller 3 if a 3-player movie, or XYZ-mode if a 2-player movie.
-					if (player != 3 || threePlayers)
-					{
-						for (int button = 0; button < buttons.Length; button++)
-						{
-							controllers[$"P{player} {buttons[button]}"] = ((controllerState >> button) & 0x1) == 0;
-						}
-					}
-					else
-					{
-						for (int button = 0; button < other.Length; button++)
-						{
-							if (player1Config == "6")
-							{
-								controllers[$"P1 {other[button]}"] = ((controllerState >> button) & 0x1) == 0;
-							}
-
-							if (player2Config == "6")
-							{
-								controllers[$"P2 {other[button]}"] = ((controllerState >> (button + 4)) & 0x1) == 0;
-							}
-						}
-					}
-				}
-
-				m.AppendFrame(controllers);
-			}
-
-			return m;
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
