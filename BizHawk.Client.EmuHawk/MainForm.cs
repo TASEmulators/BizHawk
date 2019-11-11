@@ -2838,10 +2838,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				CaptureRewind(isRewinding);
+				if (!InvisibleEmulation)
+				{
+					CaptureRewind(isRewinding);
+				}
 
 				// Set volume, if enabled
-				if (Global.Config.SoundEnabledNormal)
+				if (Global.Config.SoundEnabledNormal && !InvisibleEmulation)
 				{
 					atten = Global.Config.SoundVolume / 100.0f;
 
@@ -2874,7 +2877,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// why not skip audio if the user doesn't want sound
-				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing && !InvisibleEmulation) || (_currAviWriter?.UsesAudio ?? false);
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing && !InvisibleEmulation)
+					|| (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
 				{
 					atten = 0;
