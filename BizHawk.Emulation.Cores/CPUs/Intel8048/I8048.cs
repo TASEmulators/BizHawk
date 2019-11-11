@@ -83,6 +83,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort MOV_RAM = 77;
 		public const ushort MOVT = 78;
 		public const ushort MOVT_RAM = 79;
+		public const ushort ST_CNT = 80;
+		public const ushort STP_CNT = 81;
+		public const ushort ST_T = 82;
 
 		public I8048()
 		{
@@ -316,6 +319,15 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case MOVT_RAM:
+
+					break;
+				case ST_CNT:
+
+					break;
+				case STP_CNT:
+
+					break;
+				case ST_T:
 
 					break;
 			}

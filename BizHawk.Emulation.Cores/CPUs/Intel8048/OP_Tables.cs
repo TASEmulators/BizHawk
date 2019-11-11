@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 9;
 		}
 
-		public void IN_BUS(ushort oper)
+		public void IN_OUT_BUS(ushort oper)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -94,6 +94,141 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							oper, A);
+
+			IRQS = 9;
+		}
+
+		public void OUT_P(ushort port)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							port, A);
+
+			IRQS = 9;
+		}
+
+		public void RET()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void RETR()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOV_A_P4(ushort port)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOV_P4_A(ushort port)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOV_A_A()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOV3_A_A()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOVX_A_R(ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
+
+			IRQS = 9;
+		}
+
+		public void MOVX_R_A(ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE);
 
 			IRQS = 9;
 		}
