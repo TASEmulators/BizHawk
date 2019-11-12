@@ -27,8 +27,8 @@ namespace BizHawk.Client.Common.movie.import
 
 			var ss = new LibsnesCore.SnesSyncSettings
 			{
-				LeftPort = LibsnesControllerDeck.ControllerType.Gamepad
-				, RightPort = LibsnesControllerDeck.ControllerType.Gamepad
+				LeftPort = LibsnesControllerDeck.ControllerType.Gamepad,
+				RightPort = LibsnesControllerDeck.ControllerType.Gamepad
 			};
 			_deck = new LibsnesControllerDeck(ss);
 
