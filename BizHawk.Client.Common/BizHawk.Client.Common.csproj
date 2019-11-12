@@ -154,6 +154,7 @@
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
+    <Compile Include="movie\import\BkmImport.cs" />
     <Compile Include="movie\import\FcmImport.cs" />
     <Compile Include="movie\import\FmvImport.cs" />
     <Compile Include="movie\import\GmvImport.cs" />
