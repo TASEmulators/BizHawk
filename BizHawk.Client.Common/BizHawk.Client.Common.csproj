@@ -159,6 +159,7 @@
     <Compile Include="movie\import\GmvImport.cs" />
     <Compile Include="movie\import\LsmvImport.cs" />
     <Compile Include="movie\import\Mc2Import.cs" />
+    <Compile Include="movie\import\MmvImport.cs" />
     <Compile Include="movie\import\PxmImport.cs" />
     <Compile Include="movie\import\SmvImport.cs" />
     <Compile Include="movie\import\VbmImport.cs" />
