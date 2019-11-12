@@ -106,7 +106,7 @@ Click `BizHawk-<version>.zip` to download it. Also note the changelog, the full 
 
 BizHawk functions like a "portable" program, you may move or rename the folder containing `EmuHawk.exe`, even to another drive — as long as you keep all the files together, and the prerequisites are installed when you go to run it.
 
-Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), Win10 is supported from 1803 "Redstone 4", Win8 is supported from 8.1 (*not* 8.0), and Win7 is supported from SP1 (ends Jan 2020, upgrade to Win10 or try [ReactOS](https://reactos.org/joining/faqs)).
+Following [Microsoft's support lifecycle](https://support.microsoft.com/en-us/help/13853/windows-lifecycle-fact-sheet), the supported versions of Windows are: Win10 from 1809 "Redstone 5", Win8.1, and until January, Win7 SP1.
 
 A "backport" release, [1.13.2](https://github.com/TASVideos/BizHawk/releases/tag/1.13.2), is available for users of Windows XP and/or 32-bit Windows. Being in the 1.x series, many bugs remain and features are missing.
 
