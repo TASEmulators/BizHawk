@@ -56,214 +56,214 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"XCH   A,R5", // 2d
 			"XCH   A,R6", // 2e
 			"XCH   A,R7", // 2f
-			"LEAX  ix16", // 30
-			"LEAY  ix16", // 31
-			"LEAS  ix16", // 32
-			"LEAU  ix16", // 33
-			"PSHS  i8", // 34
-			"PULS  i8", // 35
-			"PSHU  i8", // 36
-			"PULU  i8", // 37
+			"XCHD  A,@R0", // 30
+			"XCHD  A,@R1", // 31
+			"JPB   1", // 32
+			"???", // 33
+			"CALL  1", // 34
+			"DN", // 35
+			"JP    T0", // 36
+			"COM   A", // 37
 			"???", // 38
-			"RTS", // 39
-			"ABX", // 3a
-			"RTI", // 3b
-			"CWAI  i8", // 3c
-			"MUL", // 3d
-			"???", // 3e
-			"SWI1", // 3f
-			"NEG   A", // 40
-			"???", // 41
-			"???", // 42
-			"COM   A", // 43
-			"LSR   A", // 44
-			"???", // 45
-			"ROR   A", // 46
-			"ASR   A", // 47
-			"ASL   A", // 48
-			"ROL   A", // 49
-			"DEC   A", // 4a
-			"???", // 4b
-			"INC   A", // 4c
-			"TST   A", // 4d
-			"???", // 4e
-			"CLR   A", // 4f
-			"NEG   B", // 50
-			"???", // 51
-			"???", // 52
-			"COM   B", // 53
-			"LSR   B", // 54
-			"???", // 55
-			"ROR   B", // 56
-			"ASR   B", // 57
-			"ASL   B", // 58
-			"ROL   B", // 59
-			"DEC   B", // 5a
-			"???", // 5b
-			"INC   B", // 5c
-			"TST   B", // 5d
-			"???", // 5e
-			"CLR   B", // 5f
-			"NEG   ix16", // 60
-			"???", // 61
-			"???", // 62
-			"COM   ix16", // 63
-			"LSR   ix16", // 64
-			"???", // 65
-			"ROR   ix16", // 66
-			"ASR   ix16", // 67
-			"ASL   ix16", // 68
-			"ROL   ix16", // 69
-			"DEC   ix16", // 6a
-			"???", // 6b
-			"INC   ix16", // 6c
-			"TST   ix16", // 6d
-			"JMP   ix16", // 6e
-			"CLR   ix16", // 6f
-			"NEG   ex16", // 70
-			"???", // 71
-			"???", // 72
-			"COM   ex16", // 73
-			"LSR   ex16", // 74
-			"???", // 75
-			"ROR   ex16", // 76
-			"ASR   ex16", // 77
-			"ASL   ex16", // 78
-			"ROL   ex16", // 79
-			"DEC   ex16", // 7a
-			"???", // 7b
-			"INC   ex16", // 7c
-			"TST   ex16", // 7d
-			"JMP   ex16", // 7e
-			"CLR   ex16", // 7f
-			"SUB   A,i8", // 80
-			"CMP   A,i8", // 81
-			"SBC   A,i8", // 82
-			"SUB   D,i16", // 83
-			"AND   A,i8", // 84
-			"BIT   A,i8", // 85
-			"LD    A,i8", // 86
+			"OUT   P1", // 39
+			"OUT   P2", // 3a
+			"???", // 3b
+			"MOV   P4,A", // 3c
+			"MOV   P5,A", // 3d
+			"MOV   P6,A", // 3e
+			"MOV   P7,A", // 3f
+			"OR    A,@R0", // 40
+			"OR    A,@R1", // 41
+			"MOV   A,TIM", // 42
+			"OR    A,i8", // 43
+			"JP    2K 2", // 44
+			"START CNT", // 45
+			"JP    NT1", // 46
+			"SWP", // 47
+			"OR    A,R0", // 48
+			"OR    A,R1", // 49
+			"OR    A,R2", // 4a
+			"OR    A,R3", // 4b
+			"OR    A,R4", // 4c
+			"OR    A,R5", // 4d
+			"OR    A,R6", // 4e
+			"OR    A,R7", // 4f
+			"AND   A,@R0", // 50
+			"AND   A,@R1", // 51
+			"JPB   2", // 52
+			"AND   A,i8", // 53
+			"CALL  2", // 54
+			"START TIM", // 55
+			"JP    T1", // 56
+			"DAA", // 57
+			"AND   A,R0", // 58
+			"AND   A,R1", // 59
+			"AND   A,R2", // 5a
+			"AND   A,R3", // 5b
+			"AND   A,R4", // 5c
+			"AND   A,R5", // 5d
+			"AND   A,R6", // 5e
+			"AND   A,R7", // 5f
+			"ADD   A,@R0", // 60
+			"ADD   A,@R1", // 61
+			"MOV   TIM,A", // 62
+			"???", // 63
+			"JP    2K 3", // 64
+			"STOP  CNT", // 65
+			"???", // 66
+			"RRC", // 67
+			"ADD   A,R0", // 68
+			"ADD   A,R1", // 69
+			"ADD   A,R2", // 6a
+			"ADD   A,R3", // 6b
+			"ADD   A,R4", // 6c
+			"ADD   A,R5", // 6d
+			"ADD   A,R6", // 6e
+			"ADD   A,R7", // 6f
+			"ADC   A,@R0", // 70
+			"ADC   A,@R1", // 71
+			"JPB   3", // 72
+			"???", // 73
+			"CALL  3", // 74
+			"ENT0  CLK", // 75
+			"JP    F1", // 76
+			"ROR", // 77
+			"ADC   A,R0", // 78
+			"ADC   A,R1", // 79
+			"ADC   A,R2", // 7a
+			"ADC   A,R3", // 7b
+			"ADC   A,R4", // 7c
+			"ADC   A,R5", // 7d
+			"ADC   A,R6", // 7e
+			"ADC   A,R7", // 7f
+			"MOVX  A,@R0", // 80
+			"MOVX  A,@R1", // 81
+			"???", // 82
+			"RET", // 83
+			"JP    2K 4", // 84
+			"CLR   F0", // 85
+			"JP    !IRQ", // 86
 			"???", // 87
-			"EOR   A,i8", // 88
-			"ADC   A,i8", // 89
-			"OR    A,i8", // 8a
-			"ADD   A,i8", // 8b
-			"CMP   X,i16", // 8c
-			"BSR   i8", // 8d
-			"LD    X,i16", // 8e
-			"???", // 8f
-			"SUB   A,DP+i8", // 90
-			"CMP   A,DP+i8", // 91
-			"SBC   A,DP+i8", // 92
-			"SUB   D,DP+i8", // 93
-			"AND   A,DP+i8", // 94
-			"BIT   A,DP+i8", // 95
-			"LD    A,DP+i8", // 96
-			"ST    A,DP+i8", // 97
-			"EOR   A,DP+i8", // 98
-			"ADC   A,DP+i8", // 99
-			"OR    A,DP+i8", // 9a
-			"ADD   A,DP+i8", // 9b
-			"CMP   X,DP+i8", // 9c
-			"JSR   DP+i8", // 9d
-			"LD    X,DP+i8", // 9e
-			"ST    X,DP+i8", // 9f
-			"SUB   A,ix16", // a0
-			"CMP   A,ix16", // a1
-			"SBC   A,ix16", // a2
-			"SUB   D,ix16", // a3
-			"AND   A,ix16", // a4
-			"BIT   A,ix16", // a5
-			"LD    A,ix16", // a6
-			"ST    A,ix16", // a7
-			"EOR   A,ix16", // a8
-			"ADC   A,ix16", // a9
-			"OR    A,ix16", // aa
-			"ADD   A,ix16", // ab
-			"CMP   X,ix16", // ac
-			"JSR   ix16", // ad
-			"LD    X,ix16", // ae
-			"ST    X,ix16", // af
-			"SUB   A,ex16", // b0
-			"CMP   A,ex16", // b1
-			"SBC   A,ex16", // b2
-			"SUB   D,ex16", // b3
-			"AND   A,ex16", // b4
-			"BIT   A,ex16", // b5
-			"LD    A,ex16", // b6
-			"ST    A,ex16", // b7
-			"EOR   A,ex16", // b8
-			"ADC   A,ex16", // b9
-			"OR    A,ex16", // ba
-			"ADD   A,ex16", // bb
-			"CMP   X,ex16", // bc
-			"JSR   ex16", // bd
-			"LD    X,ex16", // be
-			"ST    X,ex16", // bf
-			"SUB   B,i8", // c0
-			"CMP   B,i8", // c1
-			"SBC   B,i8", // c2
-			"ADD   D,i16", // c3
-			"AND   B,i8", // c4
-			"BIT   B,i8", // c5
-			"LD    B,i8", // c6
-			"???", // c7
-			"EOR   B,i8", // c8
-			"ADC   B,i8", // c9
-			"OR    B,i8", // ca
-			"ADD   B,i8", // cb
-			"LD    D,i16", // cc
-			"???", // cd
-			"LD    U,i16", // ce
-			"???", // cf
-			"SUB   B,DP+i8", // d0
-			"CMP   B,DP+i8", // d1
-			"SBC   B,DP+i8", // d2
-			"ADD   D,DP+i8", // d3
-			"AND   B,DP+i8", // d4
-			"BIT   B,DP+i8", // d5
-			"LD    B,DP+i8", // d6
-			"ST    B,DP+i8", // d7
-			"EOR   B,DP+i8", // d8
-			"ADC   B,DP+i8", // d9
-			"OR    B,DP+i8", // da
-			"ADD   B,DP+i8", // db
-			"LD    D,DP+i8", // dc
-			"ST    D,DP+i8", // dd
-			"LD    U,DP+i8", // de
-			"ST    U,DP+i8", // df
-			"SUB   B,ix16", // e0
-			"CMP   B,ix16", // e1
-			"SBC   B,ix16", // e2
-			"ADD   D,ix16", // e3
-			"AND   B,ix16", // e4
-			"BIT   B,ix16", // e5
-			"LD    B,ix16", // e6
-			"ST    B,ix16", // e7
-			"EOR   B,ix16", // e8
-			"ADC   B,ix16", // e9
-			"OR    B,ix16", // ea
-			"ADD   B,ix16", // eb
-			"LD    D,ix16", // ec
-			"ST    D,ix16", // ed
-			"LD    U,ix16", // ee
-			"ST    U,ix16", // ef
-			"SUB   B,ex16", // f0
-			"CMP   B,ex16", // f1
-			"SBC   B,ex16", // f2
-			"ADD   D,ex16", // f3
-			"AND   B,ex16", // f4
-			"BIT   B,ex16", // f5
-			"LD    B,ex16", // f6
-			"ST    B,ex16", // f7
-			"EOR   B,ex16", // f8
-			"ADC   B,ex16", // f9
-			"OR    B,ex16", // fa
-			"ADD   B,ex16", // fb
-			"LD    D,ex16", // fc
-			"ST    D,ex16", // fd
-			"LD    U,ex16", // fe
-			"ST    U,ex16", // ff
+			"OR    BUS,i8", // 88
+			"OR    P1,i8", // 89
+			"OR    P2,i8", // 8a
+			"???", // 8b
+			"OR    P4,A", // 8c
+			"OR    P5,A", // 8d
+			"OR    P6,A", // 8e
+			"OR    P7,A", // 8f
+			"MOVX  @R0,A", // 90
+			"MOVX  @R1,A", // 91
+			"JPB   4", // 92
+			"RETR", // 93
+			"CALL  4", // 94
+			"COM   F0", // 95
+			"JP    A!=0", // 96
+			"CLR   C", // 97
+			"AND   BUS,i8", // 98
+			"AND   P1,i8", // 99
+			"AND   P2,i8", // 9a
+			"???", // 9b
+			"AND   P4,A", // 9c
+			"AND   P5,A", // 9d
+			"AND   P6,A", // 9e
+			"AND   P7,A", // 9f
+			"MOV   @R0,A", // a0
+			"MOV   @R1,A", // a1
+			"???", // a2
+			"MOV   A,@A", // a3
+			"JP    2K 5", // a4
+			"CLR   F1", // a5
+			"???", // a6
+			"COM   C", // a7
+			"MOV   R0,A", // a8
+			"MOV   R1,A", // a9
+			"MOV   R2,A", // aa
+			"MOV   R3,A", // ab
+			"MOV   R4,A", // ac
+			"MOV   R5,A", // ad
+			"MOV   R6,A", // ae
+			"MOV   R7,A", // af
+			"???", // b0
+			"???", // b1
+			"JPB   5", // b2
+			"JPP   A", // b3
+			"CALL  5", // b4
+			"COM   F1", // b5
+			"JP    F0", // b6
+			"???", // b7
+			"MOV   R0,i8", // b8
+			"MOV   R1,i8", // b9
+			"MOV   R2,i8", // ba
+			"MOV   R3,i8", // bb
+			"MOV   R4,i8", // bc
+			"MOV   R5,i8", // bd
+			"MOV   R6,i8", // be
+			"MOV   R7,i8", // bf
+			"???", // c0
+			"???", // c1
+			"???", // c2
+			"???", // c3
+			"JP    2K 6", // c4
+			"SEL   RB 0", // c5
+			"JP    A==0", // c6
+			"MOV   A,PSW", // c7
+			"DEC   R0", // c8
+			"DEC   R1", // c9
+			"DEC   R2", // ca
+			"DEC   R3", // cb
+			"DEC   R4", // cc
+			"DEC   R5", // cd
+			"DEC   R6", // ce
+			"DEC   R7", // cf
+			"XOR   A,@R0", // d0
+			"XOR   A,@R1", // d1
+			"JPB   6", // d2
+			"XOR   A,i8", // d3
+			"CALL  6", // d4
+			"SEL   RB 1", // d5
+			"???", // d6
+			"MOV   PSW,A", // d7
+			"XOR   A,R0", // d8
+			"XOR   A,R1", // d9
+			"XOR   A,R2", // da
+			"XOR   A,R3", // db
+			"XOR   A,R4", // dc
+			"XOR   A,R5", // dd
+			"XOR   A,R6", // de
+			"XOR   A,R7", // df
+			"???", // e0
+			"???", // e1
+			"???", // e2
+			"MOV3  A,@A", // e3
+			"JP    2K 7", // e4
+			"SEL   MB 0", // e5
+			"JP    NC", // e6
+			"ROL", // e7
+			"DJNZ  R0", // e8
+			"DJNZ  R1", // e9
+			"DJNZ  R2", // ea
+			"DJNZ  R3", // eb
+			"DJNZ  R4", // ec
+			"DJNZ  R5", // ed
+			"DJNZ  R6", // ee
+			"DJNZ  R7", // ef
+			"MOV   A,@R0", // f0
+			"MOV   A,@R1", // f1
+			"JPB   7", // f2
+			"???", // f3
+			"CALL  7", // f4
+			"SEL   MB 1", // f5
+			"JP    C", // f6
+			"RLC", // f7
+			"MOV   A,R0", // f8
+			"MOV   A,R1", // f9
+			"MOV   A,R2", // fa
+			"MOV   A,R3", // fb
+			"MOV   A,R4", // fc
+			"MOV   A,R5", // fd
+			"MOV   A,R6", // fe
+			"MOV   A,R7" // ff
 		};
 
 		public static string Disassemble(ushort addr, Func<ushort, byte> reader, out ushort size)
@@ -279,14 +279,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				byte d = reader(addr++);
 				bytes.Add(d);
 				result = result.Replace("i8", string.Format("#{0:X2}h", d));
-			}
-			else if (result.Contains("i16"))
-			{
-				byte dhi = reader(addr++);
-				byte dlo = reader(addr++);
-				bytes.Add(dhi);
-				bytes.Add(dlo);
-				result = result.Replace("i16", string.Format("#{0:X2}{1:X2}h", dhi, dlo));
 			}
 
 			StringBuilder ret = new StringBuilder();

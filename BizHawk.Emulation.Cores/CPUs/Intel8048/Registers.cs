@@ -5,10 +5,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 	public partial class I8048
 	{
 		// registers
-		public ushort[] Regs = new ushort[22];
-
-		// 64 bytes of onboard ram
-		public ushort[] RAM = new ushort[64];
+		public ushort[] Regs = new ushort[78];
 
 		// The 8048 has 2 flags that can be used for conditionals
 		// F0 is on the PSW, F1 is seperate
@@ -21,28 +18,35 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		// The 8048 has 2 test lines which can be used for conditionals, T0 can be used as an output
 		public bool T0, T1;
 
-		public const ushort PC = 0;
-		public const ushort PSW = 1;
-		public const ushort BUS = 2;
-		public const ushort A = 3;
-		public const ushort R0 = 4;
-		public const ushort R1 = 5;
-		public const ushort R2 = 6;
-		public const ushort R3 = 7;
-		public const ushort R4 = 8;
-		public const ushort R5 = 9;
-		public const ushort R6 = 10;
-		public const ushort R7 = 11;
-		public const ushort ADDR = 12; // internal
-		public const ushort ALU = 13; // internal
-		public const ushort ALU2 = 14; // internal
-		public const ushort P1 = 15;
-		public const ushort P2 = 16;
-		public const ushort P4 = 17;
-		public const ushort P5 = 18;
-		public const ushort P6 = 19;
-		public const ushort P7 = 20;
-		public const ushort TIM = 21;
+		// 8 'registers' but really they point to locations in RAM
+		public const ushort R0 = 0;
+		public const ushort R1 = 1;
+		public const ushort R2 = 2;
+		public const ushort R3 = 3;
+		public const ushort R4 = 4;
+		public const ushort R5 = 5;
+		public const ushort R6 = 6;
+		public const ushort R7 = 7;
+
+		// the location pointed to by the registers is controlled by the RAM bank
+		public ushort RB = 0;
+		public ushort RAM_ptr = 0;
+
+		//RAM occupies registers 0-63
+		public const ushort PC = 64;
+		public const ushort PSW = 65;
+		public const ushort BUS = 66;
+		public const ushort A = 67;
+		public const ushort ADDR = 68; // internal
+		public const ushort ALU = 69; // internal
+		public const ushort ALU2 = 70; // internal
+		public const ushort P1 = 71;
+		public const ushort P2 = 72;
+		public const ushort P4 = 73;
+		public const ushort P5 = 74;
+		public const ushort P6 = 75;
+		public const ushort P7 = 76;
+		public const ushort TIM = 77;
 
 		public bool Flag3
 		{
@@ -76,7 +80,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		private void ResetRegisters()
 		{
-			for (int i = 0; i < 22; i++)
+			for (int i = 0; i < 78; i++)
 			{
 				Regs[i] = 0;
 			}

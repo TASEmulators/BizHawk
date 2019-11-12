@@ -50,13 +50,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		}
 
-		public void CLR_Func(ushort src)
-		{
-			Regs[src] = 0;
-
-			FlagC = false;
-		}
-
 		// source is considered a 16 bit signed value, used for long relative branch
 		// no flags used
 		public void ADD16BR_Func(ushort dest, ushort src)
@@ -79,10 +72,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d += (Regs[src] & 0xF);
-
 			Regs[dest] = ans;
 		}
 
@@ -94,10 +83,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			FlagC = Reg16_d.Bit(8);
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
-
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d -= (Regs[src] & 0xF);
 
 			Regs[dest] = ans;
 		}
@@ -111,10 +96,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			FlagC = Reg16_d.Bit(8);
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
-
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d -= (Regs[src] & 0xF);
 		}
 
 		public void BIT_Func(ushort dest, ushort src)
@@ -143,13 +124,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			FlagC = Regs[src].Bit(0);
 
 			Regs[src] = (ushort)(Regs[src] >> 1);
-		}
-
-		public void COM_Func(ushort src)
-		{
-			Regs[src] = (ushort)((~Regs[src]) & 0xFF);
-
-			FlagC = true;
 		}
 
 		public void AND8_Func(ushort dest, ushort src)
@@ -232,10 +206,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 
-			// redo for half carry flag
-			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d += ((Regs[src] & 0xF) + c);
-
 			Regs[dest] = ans;
 		}
 
@@ -276,16 +246,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			FlagC = Reg16_d.Bit(16);
 
 			ushort ans = (ushort)(Reg16_d & 0xFFFF);
-		}
-
-		public void EXG_Func(ushort sel)
-		{
-
-		}
-
-		public void TFR_Func(ushort sel)
-		{
-
 		}
 	}
 }

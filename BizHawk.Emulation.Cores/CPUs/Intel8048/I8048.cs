@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort RLC = 18;
 		public const ushort RRC = 19;
 		public const ushort SWP = 20;
-		public const ushort COM = 21;
+		public const ushort COMA = 21;
 		public const ushort CMC = 22;
 		public const ushort CM0 = 23;
 		public const ushort CM1 = 24;
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort SET_ADDR = 37;
 		public const ushort NEG = 38;
 		public const ushort TST = 39;
-		public const ushort CLR = 40;
+		public const ushort CLRA = 40;
 		public const ushort CLC = 41;
 		public const ushort CL0 = 42;
 		public const ushort CL1 = 43;
@@ -56,7 +56,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort EN = 45;
 		public const ushort DI = 46;
 		public const ushort DN = 47;
-		public const ushort TFR = 48;
 		public const ushort ADD8BR = 49;
 		public const ushort ABX = 50;
 		public const ushort JPE = 51;
@@ -66,7 +65,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort ADD16 = 55;
 		public const ushort CMP16 = 56;
 		public const ushort CMP16D = 57;
-		public const ushort CLR_E = 63;
 		public const ushort CLK_OUT = 64;
 		public const ushort IN = 65;
 		public const ushort OUT = 66;
@@ -188,9 +186,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case TFR:
-					TFR_Func(cur_instr[instr_pntr++]);
-					break;
 				case SET_ADDR:
 					reg_d_ad = cur_instr[instr_pntr++];
 					reg_h_ad = cur_instr[instr_pntr++];
@@ -204,11 +199,17 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case TST:
 					TST_Func(cur_instr[instr_pntr++]);
 					break;
-				case CLR:
-					CLR_Func(cur_instr[instr_pntr++]);
+				case CLRA:
+					Regs[A] = 0;
 					break;
-				case CLR_E:
-
+				case CLC:
+					FlagC = false;
+					break;
+				case CL0:
+					FlagF0 = false;
+					break;
+				case CL1:
+					F1 = false;
 					break;
 				case ADD16BR:
 					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -246,8 +247,17 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case ROR:
 					ROR_Func(cur_instr[instr_pntr++]);
 					break;
-				case COM:
-					COM_Func(cur_instr[instr_pntr++]);
+				case COMA:
+					Regs[A] = (ushort)((~Regs[A]) & 0xFF);
+					break;
+				case CMC:
+					FlagC = !FlagC;
+					break;
+				case CM0:
+					FlagF0 = !FlagF0;
+					break;
+				case CM1:
+					F1 = !F1;
 					break;
 				case DA:
 					DA_Func(cur_instr[instr_pntr++]);
@@ -283,7 +293,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case XCH:
-
+					Regs[ALU] = Regs[cur_instr[instr_pntr]];
+					Regs[cur_instr[instr_pntr++]] = Regs[cur_instr[instr_pntr]];
+					Regs[cur_instr[instr_pntr++]] = Regs[ALU];
 					break;
 				case XCH_RAM:
 
@@ -298,10 +310,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case SEL_RB0:
-
+					RB = 0;
 					break;
 				case SEL_RB1:
-
+					RB = 24;
 					break;
 				case INC_RAM:
 
@@ -310,7 +322,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case MOV:
-
+					Regs[cur_instr[instr_pntr++]] = Regs[cur_instr[instr_pntr++]];
 					break;
 				case MOV_RAM:
 
@@ -330,6 +342,19 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case ST_T:
 
 					break;
+				case EI:
+					IntEn = true;
+					break;
+				case DI:
+					IntEn = false;
+					break;
+				case INCA:
+					INC8_Func(A);
+					break;
+				case DECA:
+					DEC8_Func(A);
+					break;
+
 			}
 
 			if (++irq_pntr == IRQS)
@@ -374,16 +399,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} {11}{12}{13}{14}  {15}{16}{17}{18}",
+					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} {11}{12}{13}{14}  {15}{16}{17}{18}{19}",
 					Regs[A],
-					Regs[R0],
-					Regs[R1],
-					Regs[R2],
-					Regs[R3],
-					Regs[R4],
-					Regs[R5],
-					Regs[R6],
-					Regs[R7],
+					Regs[(ushort)(R0 + RB)],
+					Regs[(ushort)(R1 + RB)],
+					Regs[(ushort)(R2 + RB)],
+					Regs[(ushort)(R3 + RB)],
+					Regs[(ushort)(R4 + RB)],
+					Regs[(ushort)(R5 + RB)],
+					Regs[(ushort)(R6 + RB)],
+					Regs[(ushort)(R7 + RB)],
 					Regs[PSW],
 					TotalExecutedCycles,
 					FlagC ? "C" : "c",
@@ -393,7 +418,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					IntEn ? "I" : "i",
 					F1 ? "F" : "f",
 					T0 ? "T" : "t",
-					T1 ? "T" : "t"
+					T1 ? "T" : "t",
+					RB > 0 ? "R" : "r"
 					)
 			};
 		}
@@ -438,8 +464,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(TF), ref TF);
 			ser.Sync(nameof(timer_en), ref timer_en);
 
+			ser.Sync(nameof(RB), ref RB);
+			ser.Sync(nameof(RAM_ptr), ref RAM_ptr);
+
 			ser.Sync(nameof(Regs), ref Regs, false);
-			ser.Sync(nameof(RAM), ref RAM, false);
 			
 			ser.Sync(nameof(F1), ref F1);
 			ser.Sync(nameof(T0), ref T0);

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							oper, reg);
+							oper, (ushort)(reg + RB));
 
 			IRQS = 4;
 		}
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							oper, A, reg);
+							oper, A, (ushort)(reg + RB));
 
 			IRQS = 4;
 		}
