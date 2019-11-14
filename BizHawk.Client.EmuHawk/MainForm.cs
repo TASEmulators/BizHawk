@@ -448,6 +448,15 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = false;
 				ToggleFullscreen();
 			}
+			
+			// Simply exit the program if the version is asked for
+			if (_argParser.printVersion)
+			{
+				// Print the version
+				Console.WriteLine(VersionInfo.GetEmuVersion());
+				// Return and leave
+				return _exitCode;
+			}
 
 			// incantation required to get the program reliably on top of the console window
 			// we might want it in ToggleFullscreen later, but here, it needs to happen regardless
