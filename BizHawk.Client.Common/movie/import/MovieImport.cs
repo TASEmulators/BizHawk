@@ -13,34 +13,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static bool IsValidMovieExtension(string extension)
 		{
-			return SupportedExtensions.Any(e => string.Equals(extension, e, StringComparison.OrdinalIgnoreCase));
-		}
-
-		/// <summary>
-		/// Attempts to convert a movie with the given filename to a support
-		/// <seealso cref="IMovie"/> type
-		/// </summary>
-		/// <param name="fn">The path to the file to import</param>
-		/// <param name="conversionErrorCallback">The callback that will be called if an error occurs</param>
-		/// <param name="messageCallback">The callback that will be called if any messages need to be presented to the user</param>
-		public static void Import(string fn, Action<string> conversionErrorCallback, Action<string> messageCallback)
-		{
-			var d = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			var m = ImportFile(fn, out var errorMsg, out var warningMsg);
-
-			if (!string.IsNullOrWhiteSpace(errorMsg))
-			{
-				conversionErrorCallback(errorMsg);
-			}
-
-			messageCallback(!string.IsNullOrWhiteSpace(warningMsg)
-				? warningMsg
-				: $"{Path.GetFileName(fn)} imported as {m.Filename}");
-
-			if (!Directory.Exists(d))
-			{
-				Directory.CreateDirectory(d);
-			}
+			return Importers
+				.Select(i => i.Value)
+				.Any(e => string.Equals(extension, e, StringComparison.OrdinalIgnoreCase));
 		}
 
 		// Attempt to import another type of movie file into a movie object.
@@ -106,10 +81,5 @@ namespace BizHawk.Client.Common
 				.Any())
 			.ToDictionary(tkey => tkey, tvalue => ((ImportExtensionAttribute)tvalue.GetCustomAttributes(typeof(ImportExtensionAttribute))
 				.First()).Extension);
-			
-
-		private static IEnumerable<string> SupportedExtensions => Importers
-			.Select(i => i.Value)
-			.ToList();
 	}
 }

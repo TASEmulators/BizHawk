@@ -3852,14 +3852,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void ShowConversionError(string errorMsg)
-		{
-			MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
 		private static void ProcessMovieImport(string fn)
 		{
-			MovieImport.Import(fn, ShowConversionError, GlobalWin.OSD.AddMessage);
+			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			var movie = MovieImport.ImportFile(fn, out var errorMsg, out var warningMsg);
+
+			if (!string.IsNullOrWhiteSpace(errorMsg))
+			{
+				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
+			GlobalWin.OSD.AddMessage(!string.IsNullOrWhiteSpace(warningMsg)
+				? warningMsg
+				: $"{Path.GetFileName(fn)} imported as {movie.Filename}");
+
+			if (!Directory.Exists(directory))
+			{
+				Directory.CreateDirectory(directory);
+			}
 		}
 
 		public void EnableRewind(bool enabled)
