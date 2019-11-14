@@ -73,21 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// tries to open a legacy movie format by importing it
-			var movie = MovieImport.ImportFile(filename, out var errorMsg, out var warningMsg);
-			if (!string.IsNullOrEmpty(errorMsg))
-			{
-				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			else
-			{
-				// Fix movie extension to something palatable for these purposes. 
-				// For instance, something which doesn't clobber movies you already may have had.
-				// I'm evenly torn between this, and a file in %TEMP%, but since we don't really have a way to clean up this tempfile, I choose this:
-				StartNewMovie(movie, false);
-			}
-
-			GlobalWin.OSD.AddMessage(warningMsg);
+			ProcessMovieImport(filename, true);
 		}
 
 		private void LoadLuaFile(string filename, string archive = null)

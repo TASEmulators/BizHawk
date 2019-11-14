@@ -322,20 +322,7 @@ namespace BizHawk.Client.EmuHawk
 					// Copy pasta from drag & drop
 					if (MovieImport.IsValidMovieExtension(Path.GetExtension(_argParser.cmdMovie)))
 					{
-						var imported = MovieImport.ImportFile(_argParser.cmdMovie, out var errorMsg, out var warningMsg);
-						if (!string.IsNullOrEmpty(errorMsg))
-						{
-							MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						}
-						else
-						{
-							// fix movie extension to something palatable for these purposes. 
-							// for instance, something which doesnt clobber movies you already may have had.
-							// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-							StartNewMovie(imported, false);
-						}
-
-						GlobalWin.OSD.AddMessage(warningMsg);
+						ProcessMovieImport(_argParser.cmdMovie, true);
 					}
 					else
 					{
@@ -3852,23 +3839,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void ProcessMovieImport(string fn)
+		private void ProcessMovieImport(string fn, bool start)
 		{
-			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			var movie = MovieImport.ImportFile(fn, out var errorMsg, out var warningMsg);
+			var result = MovieImport.ImportFile(fn);
 
-			if (!string.IsNullOrWhiteSpace(errorMsg))
+			if (result.Errors.Any())
 			{
-				MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(string.Join("\n", result.Errors), "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
-			GlobalWin.OSD.AddMessage(!string.IsNullOrWhiteSpace(warningMsg)
-				? warningMsg
-				: $"{Path.GetFileName(fn)} imported as {movie.Filename}");
-
-			if (!Directory.Exists(directory))
+			if (result.Warnings.Any())
 			{
-				Directory.CreateDirectory(directory);
+				GlobalWin.OSD.AddMessage(result.Warnings.First()); // For now, just show the first warning
+			}
+
+			GlobalWin.OSD.AddMessage($"{Path.GetFileName(fn)} imported as {result.Movie.Filename}");
+
+			if (start)
+			{
+				StartNewMovie(result.Movie, false);
+				Global.Config.RecentMovies.Add(result.Movie.Filename);
 			}
 		}
 

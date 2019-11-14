@@ -19,18 +19,14 @@ namespace BizHawk.Client.Common
 		}
 
 		// Attempt to import another type of movie file into a movie object.
-		public static IMovie ImportFile(string path, out string errorMsg, out string warningMsg)
+		public static ImportResult ImportFile(string path)
 		{
-			errorMsg = "";
-			warningMsg = "";
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
-
+			string ext = Path.GetExtension(path) ?? "";
 			var importerType = ImporterForExtension(ext);
 
 			if (importerType == default)
 			{
-				errorMsg = $"No importer found for file type {ext}";
-				return null;
+				return ImportResult.Error($"No importer found for file type {ext}");
 			}
 
 			// Create a new instance of the importer class using the no-argument constructor
@@ -40,34 +36,10 @@ namespace BizHawk.Client.Common
 
 			if (importer == null)
 			{
-				errorMsg = $"No importer found for type {ext}";
-				return null;
+				return ImportResult.Error($"No importer found for file type {ext}");
 			}
 
-			IMovie movie = null;
-
-			try
-			{
-				var result = importer.Import(path);
-				if (result.Errors.Count > 0)
-				{
-					errorMsg = result.Errors.First();
-				}
-
-				if (result.Warnings.Count > 0)
-				{
-					warningMsg = result.Warnings.First();
-				}
-
-				movie = result.Movie;
-			}
-			catch (Exception ex)
-			{
-				errorMsg = ex.ToString();
-			}
-
-			movie?.Save();
-			return movie;
+			return importer.Import(path);
 		}
 
 		private static Type ImporterForExtension(string ext)

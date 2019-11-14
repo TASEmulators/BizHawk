@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var fn in ofd.FileNames)
 				{
-					ProcessMovieImport(fn);
+					ProcessMovieImport(fn, false);
 				}
 			}
 		}

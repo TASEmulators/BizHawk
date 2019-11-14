@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -29,6 +30,11 @@ namespace BizHawk.Client.Common
 			Result.Movie = new Bk2Movie(newFileName);
 
 			RunImport();
+
+			if (!Result.Errors.Any())
+			{
+				Result.Movie.Save();
+			}
 
 			return Result;
 		}
@@ -85,6 +91,13 @@ namespace BizHawk.Client.Common
 		public IList<string> Errors { get; } = new List<string>();
 
 		public IMovie Movie { get; set; }
+
+		public static ImportResult Error(string errorMsg)
+		{
+			var result = new ImportResult();
+			result.Errors.Add(errorMsg);
+			return result;
+		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
