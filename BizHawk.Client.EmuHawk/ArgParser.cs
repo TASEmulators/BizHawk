@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool startFullscreen = false;
 		public string luaScript = null;
 		public bool luaConsole = false;
+		public bool printVersion = false;
 		public int socket_port = 0;
 		public string socket_ip = null;
 		public string mmf_filename = null;
@@ -82,6 +83,10 @@ namespace BizHawk.Client.EmuHawk
 
 					// automatically set dump length to maximum frame
 					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+				}
+				else if (arg.StartsWith("--version"))
+				{
+					printVersion = true;
 				}
 				else if (arg.StartsWith("--dump-name="))
 				{
