@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 		public IList<string> Warnings { get; } = new List<string>();
 		public IList<string> Errors { get; } = new List<string>();
 
-		public Bk2Movie Movie { get; set; }
+		public IMovie Movie { get; set; }
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]

@@ -14,28 +14,23 @@ namespace BizHawk.Client.Common.Movie.Import
 	{
 		protected override void RunImport()
 		{
-			Bk2Movie movie = Result.Movie;
-
+			var movie = Result.Movie;
 			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
-			using (var fs = SourceFile.OpenRead())
+			using var fs = SourceFile.OpenRead();
+			using var br = new BinaryReader(fs);
+			var info = ParseHeader(movie, "PXM ", br);
+
+			fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
+
+			if (info.BinaryFormat)
 			{
-				using var br = new BinaryReader(fs);
-				var info = ParseHeader(movie, "PXM ", br);
-
-				fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
-
-				if (info.BinaryFormat)
-				{
-					ParseBinaryInputLog(br, movie, info);
-				}
-				else
-				{
-					ParseTextInputLog(br, movie, info);
-				}
+				ParseBinaryInputLog(br, movie, info);
 			}
-
-			movie.Save();
+			else
+			{
+				ParseTextInputLog(br, movie, info);
+			}
 		}
 	}
 }

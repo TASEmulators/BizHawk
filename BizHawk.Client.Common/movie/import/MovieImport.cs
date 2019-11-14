@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			Bk2Movie movie = null;
+			IMovie movie = null;
 
 			try
 			{

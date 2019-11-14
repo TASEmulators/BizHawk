@@ -10,31 +10,25 @@ namespace BizHawk.Client.Common
 	{
 		protected override void RunImport()
 		{
-			Bk2Movie movie = Result.Movie;
+			Result.Movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
-			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
+			using var fs = SourceFile.OpenRead();
+			using var br = new BinaryReader(fs);
+			var info = ParseHeader(Result.Movie, "PJM ", br);
 
-			using (var fs = SourceFile.OpenRead())
+			fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
+
+			if (info.BinaryFormat)
 			{
-				using var br = new BinaryReader(fs);
-				var info = ParseHeader(movie, "PJM ", br);
-
-				fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
-
-				if (info.BinaryFormat)
-				{
-					ParseBinaryInputLog(br, movie, info);
-				}
-				else
-				{
-					ParseTextInputLog(br, movie, info);
-				}
+				ParseBinaryInputLog(br, Result.Movie, info);
 			}
-
-			movie.Save();
+			else
+			{
+				ParseTextInputLog(br, Result.Movie, info);
+			}
 		}
 
-		protected MiscHeaderInfo ParseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br)
+		protected MiscHeaderInfo ParseHeader(IMovie movie, string expectedMagic, BinaryReader br)
 		{
 			var info = new MiscHeaderInfo();
 
@@ -175,7 +169,7 @@ namespace BizHawk.Client.Common
 			return info;
 		}
 
-		protected void ParseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		protected void ParseBinaryInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
 			var settings = new Octoshock.SyncSettings();
 			var controllers = new SimpleController();
@@ -286,7 +280,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void ParseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		protected void ParseTextInputLog(BinaryReader br, IMovie movie, MiscHeaderInfo info)
 		{
 			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
 			SimpleController controllers = new SimpleController();
