@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common.movie.import
 	// VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".vbm")]
-	public class VbmImport : MovieImporter
+	internal class VbmImport : MovieImporter
 	{
 		protected override void RunImport()
 		{

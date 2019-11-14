@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 		ImportResult Import(string path);
 	}
 
-	public abstract class MovieImporter : IMovieImport
+	internal abstract class MovieImporter : IMovieImport
 	{
 		protected const string EmulationOrigin = "emuOrigin";
 		protected const string MD5 = "MD5";

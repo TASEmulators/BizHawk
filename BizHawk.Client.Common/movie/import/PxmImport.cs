@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common.Movie.Import
 	// refactoring to avoid PXM-specific code in the PJMImport class.
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".pxm")]
-	public class PxmImport : PjmImport
+	internal class PxmImport : PjmImport
 	{
 		protected override void RunImport()
 		{

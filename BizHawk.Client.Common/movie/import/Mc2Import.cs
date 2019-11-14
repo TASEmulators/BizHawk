@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common.movie.import
 	// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".mc2")]
-	public class Mc2Import : MovieImporter
+	internal class Mc2Import : MovieImporter
 	{
 		private PceControllerDeck _deck;
 

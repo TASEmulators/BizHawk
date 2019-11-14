@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common.movie.import
 	// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".gmv")]
-	public class GmvImport : MovieImporter
+	internal class GmvImport : MovieImporter
 	{
 		protected override void RunImport()
 		{

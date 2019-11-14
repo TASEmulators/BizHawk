@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	// FM2 file format: http://www.fceux.com/web/FM2.html
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".fm2")]
-	public class Fm2Import : MovieImporter
+	internal class Fm2Import : MovieImporter
 	{
 		protected override void RunImport()
 		{

@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common.movie.import
 	// FCM file format: http://code.google.com/p/fceu/wiki/FCM
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".fcm")]
-	public class FcmImport : MovieImporter
+	internal class FcmImport : MovieImporter
 	{
 		private IControllerDeck _deck;
 
@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
-			bool fourscore = false;
+
 			int frame = 1;
 			while (frame <= frameCount)
 			{

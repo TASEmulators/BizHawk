@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.movie.import
 	// https://code.google.com/archive/p/yabause-rr/wikis/YMVfileformat.wiki
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".ymv")]
-	public class YmvImport : MovieImporter
+	internal class YmvImport : MovieImporter
 	{
 		protected override void RunImport()
 		{

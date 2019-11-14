@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common.movie.import
@@ -12,7 +8,7 @@ namespace BizHawk.Client.Common.movie.import
 	// ReSharper disable once UnusedMember.Global
 	// http://tasvideos.org/EmulatorResources/Snes9x/SMV.html
 	[ImportExtension(".smv")]
-	public class SmvImport : MovieImporter
+	internal class SmvImport : MovieImporter
 	{
 		private LibsnesControllerDeck _deck;
 

@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common.movie.import
 	// FMV file format: http://tasvideos.org/FMV.html
 	// ReSharper disable once UnusedMember.Global
 	[ImportExtension(".fmv")]
-	public class FmvImport : MovieImporter
+	internal class FmvImport : MovieImporter
 	{
 		private IControllerDeck _deck;
 

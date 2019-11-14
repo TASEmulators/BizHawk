@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
-
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.Common
 {
 	[ImportExtension(".pjm")]
-	public class PjmImport : MovieImporter
+	internal class PjmImport : MovieImporter
 	{
 		protected override void RunImport()
 		{
