@@ -2805,7 +2805,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (runFrame || force)
 			{
-				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
+				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
@@ -2829,7 +2829,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (IsTurboing || InvisibleEmulation)
+				if (IsTurboing)
 				{
 					GlobalWin.Tools.FastUpdateBefore();
 				}
@@ -2877,7 +2877,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// why not skip audio if the user doesn't want sound
-				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing && !InvisibleEmulation)
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing)
 					|| (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
 				{
@@ -2915,7 +2915,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (IsTurboing || InvisibleEmulation)
+				if (IsTurboing)
 				{
 					GlobalWin.Tools.FastUpdateAfter(SuppressLua);
 				}
