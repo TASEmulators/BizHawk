@@ -180,21 +180,8 @@
     </Compile>
     <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
     <Compile Include="movie\bkm\BkmHeader.cs" />
-    <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
     <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
     <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.IO.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\import\Fm2Import.cs" />

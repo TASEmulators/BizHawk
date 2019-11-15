@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public static class BkmMnemonicConstants
+	internal static class BkmMnemonicConstants
 	{
 		public static readonly Dictionary<string, Dictionary<string, string>> Buttons = new Dictionary<string, Dictionary<string, string>>
 		{

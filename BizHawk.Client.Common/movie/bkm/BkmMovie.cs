@@ -1,51 +1,26 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace BizHawk.Client.Common
 {
-	public partial class BkmMovie : IMovie
+	internal class BkmMovie
 	{
-		private bool _makeBackup;
-		private bool _changes;
+		private readonly List<string> _log = new List<string>();
 		private int? _loopOffset;
-
-		public BkmMovie(string filename)
-			: this()
-		{
-			Rerecords = 0;
-			Filename = filename;
-			Loaded = !string.IsNullOrWhiteSpace(filename);
-		}
 
 		public BkmMovie()
 		{
 			Header = new BkmHeader { [HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1" };
-			Filename = "";
-			_preloadFramecount = 0;
-
-			IsCountingRerecords = true;
-			_mode = Moviemode.Inactive;
-			_makeBackup = true;
 		}
 
-		#region Properties
-
-		public ILogEntryGenerator LogGeneratorInstance()
-		{
-			return new BkmLogEntryGenerator();
-		}
-
-		public string PreferredExtension => Extension;
-
-		public const string Extension = "bkm";
+		public string PreferredExtension => "bkm";
 
 		public BkmHeader Header { get; }
-		public string Filename { get; set; }
-		public bool IsCountingRerecords { get; set; }
+		public string Filename { get; set; } = "";
 		public bool Loaded { get; private set; }
 		
 		public int InputLogLength => _log.Count;
-
-		public int TimeLength => _log.Count;
 
 		public double FrameCount
 		{
@@ -61,114 +36,115 @@ namespace BizHawk.Client.Common
 					return _log.Count;
 				}
 
-				return _preloadFramecount;
+				return 0;
 			}
 		}
 
-		public bool Changes => _changes;
-
-		#endregion
-
-		#region Public Log Editing
-
-		public IController GetInputState(int frame)
+		public BkmControllerAdapter GetInputState(int frame)
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getframe;
+				int getFrame;
 
 				if (_loopOffset.HasValue)
 				{
 					if (frame < _log.Count)
 					{
-						getframe = frame;
+						getFrame = frame;
 					}
 					else
 					{
-						getframe = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
+						getFrame = ((frame - _loopOffset.Value) % (_log.Count - _loopOffset.Value)) + _loopOffset.Value;
 					}
 				}
 				else
 				{
-					getframe = frame;
+					getFrame = frame;
 				}
 
 				var adapter = new BkmControllerAdapter
 				{
 					Definition = Global.MovieSession.MovieControllerAdapter.Definition
 				};
-				adapter.SetControllersAsMnemonic(_log[getframe]);
+				adapter.SetControllersAsMnemonic(_log[getFrame]);
 				return adapter;
 			}
 
 			return null;
 		}
 
-		public void ClearFrame(int frame)
+		public IDictionary<string, string> HeaderEntries => Header;
+
+		public SubtitleList Subtitles => Header.Subtitles;
+
+		public IList<string> Comments => Header.Comments;
+
+		public string SyncSettingsJson
 		{
-			var lg = LogGeneratorInstance();
-			SetFrameAt(frame, lg.EmptyEntry);
-			_changes = true;
+			get => Header[HeaderKeys.SYNCSETTINGS];
+			set => Header[HeaderKeys.SYNCSETTINGS] = value;
 		}
 
-		public void AppendFrame(IController source)
-		{
-			var lg = LogGeneratorInstance();
-			lg.SetSource(source);
-			_log.Add(lg.GenerateLogEntry());
-			_changes = true;
-		}
+		public string TextSavestate { get; set; }
+		public byte[] BinarySavestate { get; set; }
 
-		public void Truncate(int frame)
+		public bool Load()
 		{
-			if (frame < _log.Count)
+			var file = new FileInfo(Filename);
+
+			if (file.Exists == false)
 			{
-				_log.RemoveRange(frame, _log.Count - frame);
-				_changes = true;
+				Loaded = false;
+				return false;
 			}
-		}
 
-		public void PokeFrame(int frame, IController source)
-		{
-			var lg = LogGeneratorInstance();
-			lg.SetSource(source);
+			Header.Clear();
+			_log.Clear();
 
-			_changes = true;
-			SetFrameAt(frame, lg.GenerateLogEntry());
-		}
-
-		public void RecordFrame(int frame, IController source)
-		{
-			// Note: Truncation here instead of loadstate will make VBA style loadstates
-			// (Where an entire movie is loaded then truncated on the next frame
-			// this allows users to restore a movie with any savestate from that "timeline"
-			if (Global.Config.VBAStyleMovieLoadState)
+			using (var sr = file.OpenText())
 			{
-				if (Global.Emulator.Frame < _log.Count)
+				string line;
+
+				while ((line = sr.ReadLine()) != null)
 				{
-					Truncate(Global.Emulator.Frame);
+					if (line == "")
+					{
+						continue;
+					}
+
+					if (line.Contains("LoopOffset"))
+					{
+						try
+						{
+							_loopOffset = int.Parse(line.Split(new[] { ' ' }, 2)[1]);
+						}
+						catch (Exception)
+						{
+							continue;
+						}
+					}
+					else if (Header.ParseLineFromFile(line))
+					{
+						continue;
+					}
+					else if (line.StartsWith("|"))
+					{
+						_log.Add(line);
+					}
+					else
+					{
+						Header.Comments.Add(line);
+					}
 				}
 			}
 
-			var lg = LogGeneratorInstance();
-			lg.SetSource(source);
-			SetFrameAt(frame, lg.GenerateLogEntry());
-
-			_changes = true;
-		}
-
-		#endregion
-
-		private void SetFrameAt(int frameNum, string frame)
-		{
-			if (_log.Count > frameNum)
+			if (Header.SavestateBinaryBase64Blob != null)
 			{
-				_log[frameNum] = frame;
+				BinarySavestate = Convert.FromBase64String(Header.SavestateBinaryBase64Blob);
 			}
-			else
-			{
-				_log.Add(frame);
-			}
+
+			Loaded = true;
+			return true;
 		}
 	}
 }
