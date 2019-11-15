@@ -301,17 +301,10 @@ namespace BizHawk.Client.Common.movie.import
 					}
 
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					if (player <= BkmMnemonicConstants.Players[controllers.Definition.Name])
+					for (int button = 0; button < buttons.Length; button++)
 					{
-						for (int button = 0; button < buttons.Length; button++)
-						{
-							controllers[$"P{player} {buttons[button]}"] =
-								((controllerState >> button) & 0x1) != 0;
-						}
-					}
-					else if (!Result.Warnings.Any())
-					{
-						Result.Warnings.Add($"Controller {player} not supported.");
+						controllers[$"P{player} {buttons[button]}"] =
+							((controllerState >> button) & 0x1) != 0;
 					}
 				}
 
