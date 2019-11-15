@@ -14,7 +14,7 @@ namespace BizHawk.Client.ApiHawk
 		ulong? GetRegister(string name);
 		Dictionary<string, ulong> GetRegisters();
 		void SetRegister(string register, int value);
-		long TotalExecutedycles();
+		long TotalExecutedCycles();
 		string GetSystemId();
 		bool IsLagged();
 		void SetIsLagged(bool value = true);

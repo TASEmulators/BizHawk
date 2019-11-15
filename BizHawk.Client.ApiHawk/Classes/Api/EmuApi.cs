@@ -63,9 +63,6 @@ namespace BizHawk.Client.ApiHawk
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmuApi()
-		{ }
-
 		public void DisplayVsync(bool enabled)
 		{
 			EmuStatic.DisplayVsync(enabled);
@@ -170,7 +167,7 @@ namespace BizHawk.Client.ApiHawk
 			}
 		}
 
-		public long TotalExecutedycles()
+		public long TotalExecutedCycles()
 		{
 			try
 			{
@@ -257,112 +254,99 @@ namespace BizHawk.Client.ApiHawk
 
 		public string GetDisplayType()
 		{
-			if (RegionableCore != null)
-			{
-				return RegionableCore.Region.ToString();
-			}
-
-			return "";
+			return RegionableCore != null
+				? RegionableCore.Region.ToString()
+				: "";
 		}
 
 		public string GetBoardName()
 		{
-			if (BoardInfo != null)
-			{
-				return BoardInfo.BoardName;
-			}
-
-			return "";
+			return BoardInfo != null
+				? BoardInfo.BoardName
+				: "";
 		}
 		public object GetSettings()
 		{
-			if (Emulator is GPGX)
+			if (Emulator is GPGX gpgx)
 			{
-				var gpgx = Emulator as GPGX;
 				return gpgx.GetSettings();
 			}
-			else if (Emulator is LibsnesCore)
+			
+			if (Emulator is LibsnesCore snes)
 			{
-				var snes = Emulator as LibsnesCore;
 				return snes.GetSettings();
 			}
-			else if (Emulator is NES)
+			
+			if (Emulator is NES nes)
 			{
-				var nes = Emulator as NES;
 				return nes.GetSettings();
 			}
-			else if (Emulator is QuickNES)
+			
+			if (Emulator is QuickNES quickNes)
 			{
-				var quicknes = Emulator as QuickNES;
-				return quicknes.GetSettings();
+				return quickNes.GetSettings();
 			}
-			else if (Emulator is PCEngine)
+			
+			if (Emulator is PCEngine pce)
 			{
-				var pce = Emulator as PCEngine;
 				return pce.GetSettings();
 			}
-			else if (Emulator is SMS)
+			
+			if (Emulator is SMS sms)
 			{
-				var sms = Emulator as SMS;
 				return sms.GetSettings();
 			}
-			else if (Emulator is WonderSwan)
+			
+			if (Emulator is WonderSwan ws)
 			{
-				var ws = Emulator as WonderSwan;
 				return ws.GetSettings();
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 		public bool PutSettings(object settings)
 		{
-			if (Emulator is GPGX)
+			if (Emulator is GPGX gpgx)
 			{
-				var gpgx = Emulator as GPGX;
 				return gpgx.PutSettings(settings as GPGX.GPGXSettings);
 			}
-			else if (Emulator is LibsnesCore)
+			
+			if (Emulator is LibsnesCore snes)
 			{
-				var snes = Emulator as LibsnesCore;
 				return snes.PutSettings(settings as LibsnesCore.SnesSettings);
 			}
-			else if (Emulator is NES)
+			
+			if (Emulator is NES nes)
 			{
-				var nes = Emulator as NES;
 				return nes.PutSettings(settings as NES.NESSettings);
 			}
-			else if (Emulator is QuickNES)
+			
+			if (Emulator is QuickNES quickNes)
 			{
-				var quicknes = Emulator as QuickNES;
-				return quicknes.PutSettings(settings as QuickNES.QuickNESSettings);
+				return quickNes.PutSettings(settings as QuickNES.QuickNESSettings);
 			}
-			else if (Emulator is PCEngine)
+			
+			if (Emulator is PCEngine pce)
 			{
-				var pce = Emulator as PCEngine;
 				return pce.PutSettings(settings as PCEngine.PCESettings);
 			}
-			else if (Emulator is SMS)
+			
+			if (Emulator is SMS sms)
 			{
-				var sms = Emulator as SMS;
 				return sms.PutSettings(settings as SMS.SMSSettings);
 			}
-			else if (Emulator is WonderSwan)
+
+			if (Emulator is WonderSwan ws)
 			{
-				var ws = Emulator as WonderSwan;
 				return ws.PutSettings(settings as WonderSwan.Settings);
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 		public void SetRenderPlanes(params bool[] luaParam)
 		{
-			if (Emulator is GPGX)
+			if (Emulator is GPGX gpgx)
 			{
-				var gpgx = Emulator as GPGX;
 				var s = gpgx.GetSettings();
 				s.DrawBGA = luaParam[0];
 				s.DrawBGB = luaParam[1];
@@ -371,9 +355,8 @@ namespace BizHawk.Client.ApiHawk
 				gpgx.PutSettings(s);
 
 			}
-			else if (Emulator is LibsnesCore)
+			else if (Emulator is LibsnesCore snes)
 			{
-				var snes = Emulator as LibsnesCore;
 				var s = snes.GetSettings();
 				s.ShowBG1_0 = s.ShowBG1_1 = luaParam[0];
 				s.ShowBG2_0 = s.ShowBG2_1 = luaParam[1];
@@ -385,20 +368,18 @@ namespace BizHawk.Client.ApiHawk
 				s.ShowOBJ_3 = luaParam[7];
 				snes.PutSettings(s);
 			}
-			else if (Emulator is NES)
+			else if (Emulator is NES nes)
 			{
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
-				var nes = Emulator as NES;
 				var s = nes.GetSettings();
 				s.DispSprites = luaParam[0];
 				s.DispBackground = luaParam[1];
 				nes.PutSettings(s);
 			}
-			else if (Emulator is QuickNES)
+			else if (Emulator is QuickNES quickNes)
 			{
-				var quicknes = Emulator as QuickNES;
-				var s = quicknes.GetSettings();
+				var s = quickNes.GetSettings();
 
 				// this core doesn't support disabling BG
 				bool showsp = GetSetting(0, luaParam);
@@ -411,11 +392,10 @@ namespace BizHawk.Client.ApiHawk
 					s.NumSprites = 0;
 				}
 
-				quicknes.PutSettings(s);
+				quickNes.PutSettings(s);
 			}
-			else if (Emulator is PCEngine)
+			else if (Emulator is PCEngine pce)
 			{
-				var pce = Emulator as PCEngine;
 				var s = pce.GetSettings();
 				s.ShowOBJ1 = GetSetting(0, luaParam);
 				s.ShowBG1 = GetSetting(1, luaParam);
@@ -427,17 +407,15 @@ namespace BizHawk.Client.ApiHawk
 
 				pce.PutSettings(s);
 			}
-			else if (Emulator is SMS)
+			else if (Emulator is SMS sms)
 			{
-				var sms = Emulator as SMS;
 				var s = sms.GetSettings();
 				s.DispOBJ = GetSetting(0, luaParam);
 				s.DispBG = GetSetting(1, luaParam);
 				sms.PutSettings(s);
 			}
-			else if (Emulator is WonderSwan)
+			else if (Emulator is WonderSwan ws)
 			{
-				var ws = Emulator as WonderSwan;
 				var s = ws.GetSettings();
 				s.EnableSprites = GetSetting(0, luaParam);
 				s.EnableFG = GetSetting(1, luaParam);
