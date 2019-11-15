@@ -101,9 +101,9 @@ namespace BizHawk.Client.Common
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ImportExtensionAttribute : Attribute
+	public class ImporterForAttribute : Attribute
 	{
-		public ImportExtensionAttribute(string emulator, string extension)
+		public ImporterForAttribute(string emulator, string extension)
 		{
 			Emulator = emulator;
 			Extension = extension;
