@@ -759,13 +759,11 @@ namespace BizHawk.Client.ApiHawk
 						}
 
 					case "GB":
-						if (Global.Emulator is Gameboy)
+						if (Global.Emulator is Gameboy gb)
 						{
-							return SystemInfo.GB;
-						}
-						else if (Global.Emulator is GBColors)
-						{
-							return SystemInfo.GBC;
+							return gb.IsCGBMode()
+								? SystemInfo.GBC
+								: SystemInfo.GB;
 						}
 						else
 						{
