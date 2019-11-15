@@ -55,11 +55,11 @@ namespace BizHawk.Client.Common
 			return Importers.FirstOrDefault(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
 		}
 
-		private static readonly Dictionary<Type, ImportExtensionAttribute> Importers = Assembly.GetAssembly(typeof(ImportExtensionAttribute))
+		private static readonly Dictionary<Type, ImporterForAttribute> Importers = Assembly.GetAssembly(typeof(ImporterForAttribute))
 			.GetTypes()
-			.Where(t => t.GetCustomAttributes(typeof(ImportExtensionAttribute))
+			.Where(t => t.GetCustomAttributes(typeof(ImporterForAttribute))
 				.Any())
-			.ToDictionary(tkey => tkey, tvalue => ((ImportExtensionAttribute)tvalue.GetCustomAttributes(typeof(ImportExtensionAttribute))
+			.ToDictionary(tkey => tkey, tvalue => ((ImporterForAttribute)tvalue.GetCustomAttributes(typeof(ImporterForAttribute))
 				.First()));
 	}
 }

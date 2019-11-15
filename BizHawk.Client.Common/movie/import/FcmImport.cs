@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.movie.import
 {
 	// FCM file format: http://code.google.com/p/fceu/wiki/FCM
 	// ReSharper disable once UnusedMember.Global
-	[ImportExtension("FCEU", ".fcm")]
+	[ImporterFor("FCEU", ".fcm")]
 	internal class FcmImport : MovieImporter
 	{
 		private IControllerDeck _deck;
