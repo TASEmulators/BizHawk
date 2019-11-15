@@ -348,47 +348,43 @@ namespace BizHawk.Client.Common
 
 		private void LoadPreviousState()
 		{
-			using (var reader = new BinaryReader(GetPreviousStateMemoryStream()))
+			using var reader = new BinaryReader(GetPreviousStateMemoryStream());
+			byte[] buf = ((MemoryStream)reader.BaseStream).GetBuffer();
+			bool fullState = reader.ReadByte() == 1;
+			if (_rewindDeltaEnable)
 			{
-				byte[] buf = ((MemoryStream)reader.BaseStream).GetBuffer();
-				bool fullState = reader.ReadByte() == 1;
-				if (_rewindDeltaEnable)
+				if (fullState)
 				{
-					if (fullState)
-					{
-						UpdateLastState(buf, 1, buf.Length - 1);
-					}
-					else
-					{
-						int index = 1;
-						int offset = 0;
-
-						while (index < buf.Length)
-						{
-							int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
-							int length = (int)VLInteger.ReadUnsigned(buf, ref index);
-
-							offset += offsetDelta;
-
-							Buffer.BlockCopy(buf, index, _lastState, offset, length);
-							index += length;
-						}
-					}
-
-					using (var lastStateReader = new BinaryReader(new MemoryStream(_lastState)))
-					{
-						Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
-					}
+					UpdateLastState(buf, 1, buf.Length - 1);
 				}
 				else
 				{
-					if (!fullState)
-					{
-						throw new InvalidOperationException();
-					}
+					int index = 1;
+					int offset = 0;
 
-					Global.Emulator.AsStatable().LoadStateBinary(reader);
+					while (index < buf.Length)
+					{
+						int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
+						int length = (int)VLInteger.ReadUnsigned(buf, ref index);
+
+						offset += offsetDelta;
+
+						Buffer.BlockCopy(buf, index, _lastState, offset, length);
+						index += length;
+					}
 				}
+
+				using var lastStateReader = new BinaryReader(new MemoryStream(_lastState));
+				Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
+			}
+			else
+			{
+				if (!fullState)
+				{
+					throw new InvalidOperationException();
+				}
+
+				Global.Emulator.AsStatable().LoadStateBinary(reader);
 			}
 		}
 	}
