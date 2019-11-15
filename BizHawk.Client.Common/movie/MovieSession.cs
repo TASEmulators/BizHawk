@@ -324,10 +324,8 @@ namespace BizHawk.Client.Common
 
 		public bool HandleMovieLoadState(string path)
 		{
-			using (var sr = new StreamReader(path))
-			{
-				return HandleMovieLoadState(sr);
-			}
+			using var sr = new StreamReader(path);
+			return HandleMovieLoadState(sr);
 		}
 
 		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive

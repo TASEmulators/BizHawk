@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 
 			sb.Append("\r\n");
 
-			// Seperator
+			// Separator
 			sb.Append("\r\n");
 
 			return sb.ToString();

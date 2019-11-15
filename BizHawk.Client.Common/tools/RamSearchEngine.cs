@@ -57,15 +57,9 @@ namespace BizHawk.Client.Common
 
 		#region API
 
-		public IEnumerable<long> OutOfRangeAddress
-		{
-			get
-			{
-				return _watchList
-					.Where(watch => watch.Address >= Domain.Size)
-					.Select(watch => watch.Address);
-			}
-		}
+		public IEnumerable<long> OutOfRangeAddress => _watchList
+			.Where(watch => watch.Address >= Domain.Size)
+			.Select(watch => watch.Address);
 
 		public void Start()
 		{
@@ -154,7 +148,7 @@ namespace BizHawk.Client.Common
 						"",
 						0,
 						_watchList[index].Previous,
-						(_watchList[index] as IMiniWatchDetails).ChangeCount);
+						((IMiniWatchDetails)_watchList[index]).ChangeCount);
 				}
 
 				return Watch.GenerateWatch(

@@ -416,7 +416,6 @@ namespace BizHawk.Client.Common
 		public void Undo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
-			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 
@@ -442,7 +441,6 @@ namespace BizHawk.Client.Common
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
-			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 
