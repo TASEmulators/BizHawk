@@ -15,8 +15,16 @@ namespace BizHawk.Client.Common
 		{
 			return Importers
 				.Select(i => i.Value)
-				.Any(e => string.Equals(extension, e, StringComparison.OrdinalIgnoreCase));
+				.Any(e => string.Equals(extension, e.Extension, StringComparison.OrdinalIgnoreCase));
 		}
+
+		public static Dictionary<string, string> AvailableImporters()
+		{
+			return Importers
+				.OrderBy(i => i.Value.Emulator)
+				.ToDictionary(tkey => tkey.Value.Emulator, tvalue => tvalue.Value.Extension);
+		}
+			
 
 		// Attempt to import another type of movie file into a movie object.
 		public static ImportResult ImportFile(string path)
@@ -30,9 +38,9 @@ namespace BizHawk.Client.Common
 			}
 
 			// Create a new instance of the importer class using the no-argument constructor
-			IMovieImport importer = importerType
+			IMovieImport importer = (IMovieImport)importerType
 				.GetConstructor(new Type[] { })
-				?.Invoke(new object[] { }) as IMovieImport;
+				?.Invoke(new object[] { });
 
 			if (importer == null)
 			{
@@ -44,14 +52,14 @@ namespace BizHawk.Client.Common
 
 		private static Type ImporterForExtension(string ext)
 		{
-			return Importers.FirstOrDefault(i => string.Equals(i.Value, ext, StringComparison.OrdinalIgnoreCase)).Key;
+			return Importers.FirstOrDefault(i => string.Equals(i.Value.Extension, ext, StringComparison.OrdinalIgnoreCase)).Key;
 		}
 
-		private static readonly Dictionary<Type, string> Importers = Assembly.GetAssembly(typeof(ImportExtensionAttribute))
+		private static readonly Dictionary<Type, ImportExtensionAttribute> Importers = Assembly.GetAssembly(typeof(ImportExtensionAttribute))
 			.GetTypes()
 			.Where(t => t.GetCustomAttributes(typeof(ImportExtensionAttribute))
 				.Any())
 			.ToDictionary(tkey => tkey, tvalue => ((ImportExtensionAttribute)tvalue.GetCustomAttributes(typeof(ImportExtensionAttribute))
-				.First()).Extension);
+				.First()));
 	}
 }

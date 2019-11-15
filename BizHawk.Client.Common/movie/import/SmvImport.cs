@@ -7,7 +7,7 @@ namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
 	// http://tasvideos.org/EmulatorResources/Snes9x/SMV.html
-	[ImportExtension(".smv")]
+	[ImportExtension("Snes9x", ".smv")]
 	internal class SmvImport : MovieImporter
 	{
 		private LibsnesControllerDeck _deck;

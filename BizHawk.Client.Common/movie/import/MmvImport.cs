@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
 	// MMV file format: http://tasvideos.org/MMV.html
-	[ImportExtension(".mmv")]
+	[ImportExtension("Dega", ".mmv")]
 	internal class MmvImport : MovieImporter
 	{
 		protected override void RunImport()

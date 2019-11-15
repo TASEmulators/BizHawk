@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common.Movie.Import
 	// However, the magic number/file signature is slightly different, requiring some
 	// refactoring to avoid PXM-specific code in the PJMImport class.
 	// ReSharper disable once UnusedMember.Global
-	[ImportExtension(".pxm")]
+	[ImportExtension("PCSX", ".pxm")]
 	internal class PxmImport : PjmImport
 	{
 		protected override void RunImport()

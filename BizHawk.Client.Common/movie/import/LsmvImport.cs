@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
 	// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
-	[ImportExtension(".lsmv")]
+	[ImportExtension("LSNES", ".lsmv")]
 	internal class LsmvImport : MovieImporter
 	{
 		private LibsnesControllerDeck _deck;

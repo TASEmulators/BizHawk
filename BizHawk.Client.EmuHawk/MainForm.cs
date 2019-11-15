@@ -2077,6 +2077,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public static string ToFilter(string name, IDictionary<string, string> entries)
+		{
+			var items = new List<string>
+			{
+				name,
+				string.Join(";", entries.Select(e => $"*{e.Value}"))
+			};
+
+			foreach (var kvp in entries)
+			{
+				items.Add(kvp.Key);
+				items.Add($"*{kvp.Value}");
+			}
+
+			items.Add("All Files");
+			items.Add("*.*");
+
+			return FormatFilter(items.ToArray());
+		}
+
 		public static string FormatFilter(params string[] args)
 		{
 			var sb = new StringBuilder();

@@ -3,7 +3,7 @@
 namespace BizHawk.Client.Common.movie.import
 {
 	// ReSharper disable once UnusedMember.Global
-	[ImportExtension(".bkm")]
+	[ImportExtension("BizHawk", ".bkm")]
 	internal class BkmImport : MovieImporter
 	{
 		protected override void RunImport()

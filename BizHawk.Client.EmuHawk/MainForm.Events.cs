@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
@@ -515,25 +515,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Multiselect = true,
-				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
-					"FCEUX", "*.fm2",
-					"PCEjin/Mednafen", "*.mc2;*.mcm",
-					"Dega", "*.mmv",
-					"Gens", "*.gmv",
-					"Visual Boy Advance", "*.vbm",
-					"LSNES", "*.lsmv",
-					"FCEU", "*.fcm",
-					"Famtasia", "*.fmv",
-					"VirtuaNES", "*.vmv",
-					"Nintendulator", "*.nmv",
-					"Snes9x", "*.smv",
-					"Yabause", "*.ymv",
-					"ZSNES", "*.zmv",
-					"PSXjin", "*.pjm",
-					"PCSX", "*.pxm",
-					"BizHawk Bkm", "*.bkm",
-					"All Files", "*.*"),
+				Filter = ToFilter("Movie Files", MovieImport.AvailableImporters()),
 				RestoreDirectory = false
 			};
 
