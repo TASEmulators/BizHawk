@@ -7,34 +7,31 @@ namespace BizHawk.Client.ApiHawk
 {
 	public sealed class JoypadApi : IJoypad
 	{
-		public JoypadApi()
-		{ }
-
 		public Dictionary<string,dynamic> Get(int? controller = null)
 		{
 			var buttons = new Dictionary<string, dynamic>();
-			var adaptor = Global.AutofireStickyXORAdapter;
-			foreach (var button in adaptor.Source.Definition.BoolButtons)
+			var adapter = Global.AutofireStickyXORAdapter;
+			foreach (var button in adapter.Source.Definition.BoolButtons)
 			{
 				if (!controller.HasValue)
 				{
-					buttons[button] = adaptor.IsPressed(button);
+					buttons[button] = adapter.IsPressed(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.IsPressed($"P{controller} {button.Substring(3)}");
+					buttons[button.Substring(3)] = adapter.IsPressed($"P{controller} {button.Substring(3)}");
 				}
 			}
 
-			foreach (var button in adaptor.Source.Definition.FloatControls)
+			foreach (var button in adapter.Source.Definition.FloatControls)
 			{
 				if (controller == null)
 				{
-					buttons[button] = adaptor.GetFloat(button);
+					buttons[button] = adapter.GetFloat(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.GetFloat($"P{controller} {button.Substring(3)}");
+					buttons[button.Substring(3)] = adapter.GetFloat($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -49,14 +46,15 @@ namespace BizHawk.Client.ApiHawk
 		public Dictionary<string, dynamic> GetImmediate()
 		{
 			var buttons = new Dictionary<string, dynamic>();
-			var adaptor = Global.ActiveController;
-			foreach (var button in adaptor.Definition.BoolButtons)
+			var adapter = Global.ActiveController;
+			foreach (var button in adapter.Definition.BoolButtons)
 			{
-				buttons[button] = adaptor.IsPressed(button);
+				buttons[button] = adapter.IsPressed(button);
 			}
-			foreach (var button in adaptor.Definition.FloatControls)
+
+			foreach (var button in adapter.Definition.FloatControls)
 			{
-				buttons[button] = adaptor.GetFloat(button);
+				buttons[button] = adapter.GetFloat(button);
 			}
 
 			return buttons;
@@ -116,7 +114,7 @@ namespace BizHawk.Client.ApiHawk
 						theValue = null;
 					}
 
-					var toPress = button.ToString();
+					var toPress = button;
 					if (controller.HasValue)
 					{
 						toPress = $"P{controller} {button}";
@@ -178,21 +176,13 @@ namespace BizHawk.Client.ApiHawk
 
 					if (!string.IsNullOrWhiteSpace(theValueStr))
 					{
-						float f;
-						if (float.TryParse(theValueStr, out f))
+						if (float.TryParse(theValueStr, out var f))
 						{
 							theValue = f;
 						}
 					}
 
-					if (controller == null)
-					{
-						Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
-					}
-					else
-					{
-						Global.StickyXORAdapter.SetFloat($"P{controller} {name}", theValue);
-					}
+					Global.StickyXORAdapter.SetFloat(controller == null ? name : $"P{controller} {name}", theValue);
 				}
 			}
 			catch
@@ -204,14 +194,9 @@ namespace BizHawk.Client.ApiHawk
 		{
 			try
 			{
-				if (controller == null)
-				{
-					Global.StickyXORAdapter.SetFloat(control, value);
-				}
-				else
-				{
-					Global.StickyXORAdapter.SetFloat($"P{controller} {control}", value);
-				}
+				Global.StickyXORAdapter.SetFloat(controller == null
+					? control
+					: $"P{controller} {control}", value);
 			}
 			catch
 			{

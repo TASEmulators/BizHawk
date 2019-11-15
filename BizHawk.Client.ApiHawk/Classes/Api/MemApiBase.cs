@@ -179,11 +179,11 @@ namespace BizHawk.Client.ApiHawk
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
 			{
-				for (var i = 0; i < memoryblock.Count; i++)
+				foreach (var m in memoryblock)
 				{
 					if (addr < d.Size)
 					{
-						d.PokeByte(addr++, memoryblock[i]);
+						d.PokeByte(addr++, m);
 					}
 					else
 					{
@@ -197,12 +197,12 @@ namespace BizHawk.Client.ApiHawk
 			}
 		}
 
-		protected float ReadFloat(long addr, bool bigendian, string domain = null)
+		protected float ReadFloat(long addr, bool bigEndian, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (addr < d.Size)
 			{
-				var val = d.PeekUint(addr, bigendian);
+				var val = d.PeekUint(addr, bigEndian);
 				var bytes = BitConverter.GetBytes(val);
 				return BitConverter.ToSingle(bytes, 0);
 			}
@@ -212,7 +212,7 @@ namespace BizHawk.Client.ApiHawk
 			return 0;
 		}
 
-		protected void WriteFloat(long addr, double value, bool bigendian, string domain = null)
+		protected void WriteFloat(long addr, double value, bool bigEndian, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
@@ -222,7 +222,7 @@ namespace BizHawk.Client.ApiHawk
 					var dv = (float)value;
 					var bytes = BitConverter.GetBytes(dv);
 					var v = BitConverter.ToUInt32(bytes, 0);
-					d.PokeUint(addr, v, bigendian);
+					d.PokeUint(addr, v, bigEndian);
 				}
 				else
 				{

@@ -10,7 +10,7 @@ namespace BizHawk.Client.ApiHawk
 	public sealed class MemApi : MemApiBase, IMem
 	{
 		private MemoryDomain _currentMemoryDomain;
-		private bool _isBigEndian = false;
+		private bool _isBigEndian;
 		public MemApi()
 			: base()
 		{
@@ -122,10 +122,8 @@ namespace BizHawk.Client.ApiHawk
 				data[i] = d.PeekByte(addr + i);
 			}
 
-			using (var hasher = System.Security.Cryptography.SHA256.Create())
-			{
-				return hasher.ComputeHash(data).BytesToHexString();
-			}
+			using var hasher = System.Security.Cryptography.SHA256.Create();
+			return hasher.ComputeHash(data).BytesToHexString();
 		}
 
 		#endregion
@@ -134,14 +132,16 @@ namespace BizHawk.Client.ApiHawk
 
 		private int ReadSigned(long addr, int size, string domain = null)
 		{
-			if (_isBigEndian) return ReadSignedBig(addr, size, domain);
-			else return ReadSignedLittle(addr, size, domain);
+			return _isBigEndian
+				? ReadSignedBig(addr, size, domain)
+				: ReadSignedLittle(addr, size, domain);
 		}
 
 		private uint ReadUnsigned(long addr, int size, string domain = null)
 		{
-			if (_isBigEndian) return ReadUnsignedBig(addr, size, domain);
-			else return ReadUnsignedLittle(addr, size, domain);
+			return _isBigEndian
+				? ReadUnsignedBig(addr, size, domain)
+				: ReadUnsignedLittle(addr, size, domain);
 		}
 
 		private void WriteSigned(long addr, int value, int size, string domain = null)

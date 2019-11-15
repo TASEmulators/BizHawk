@@ -30,7 +30,7 @@ namespace BizHawk.Client.ApiHawk
 					return JoypadButton.A;
 
 				case "B":
-					return JoypadButton.B;				
+					return JoypadButton.B;
 
 				case "B1":
 					return JoypadButton.B1;

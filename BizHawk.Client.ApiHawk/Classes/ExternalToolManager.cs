@@ -18,15 +18,15 @@ namespace BizHawk.Client.ApiHawk
 	{
 		#region Fields
 
-		private static FileSystemWatcher directoryMonitor;
-		private static List<ToolStripMenuItem> menuItems = new List<ToolStripMenuItem>();
+		private static readonly FileSystemWatcher DirectoryMonitor;
+		private static readonly List<ToolStripMenuItem> MenuItems = new List<ToolStripMenuItem>();
 
 		#endregion
 
 		#region cTor(s)
 
 		/// <summary>
-		/// Initilization
+		/// Initialization
 		/// </summary>
 		static ExternalToolManager()
 		{
@@ -34,12 +34,15 @@ namespace BizHawk.Client.ApiHawk
 			{
 				Directory.CreateDirectory(Global.Config.PathEntries["Global", "External Tools"].Path);
 			}
-			directoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll");
-			directoryMonitor.IncludeSubdirectories = false;
-			directoryMonitor.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName;
-			directoryMonitor.Filter = "*.dll";
-			directoryMonitor.Created += new FileSystemEventHandler(DirectoryMonitor_Created);
-			directoryMonitor.EnableRaisingEvents = true;
+
+			DirectoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll")
+			{
+				IncludeSubdirectories = false
+				, NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName
+				, Filter = "*.dll"
+			};
+			DirectoryMonitor.Created += DirectoryMonitor_Created;
+			DirectoryMonitor.EnableRaisingEvents = true;
 
 			ClientApi.RomLoaded += delegate { BuildToolStrip(); };
 
@@ -51,18 +54,18 @@ namespace BizHawk.Client.ApiHawk
 		#region Methods
 
 		/// <summary>
-		/// Build the toolstrip menu
+		/// Build the ToolStrip menu
 		/// </summary>
 		private static void BuildToolStrip()
 		{
-			menuItems.Clear();
-			if (Directory.Exists(directoryMonitor.Path))
+			MenuItems.Clear();
+			if (Directory.Exists(DirectoryMonitor.Path))
 			{
-				DirectoryInfo dInfo = new DirectoryInfo(directoryMonitor.Path);
+				DirectoryInfo dInfo = new DirectoryInfo(DirectoryMonitor.Path);
 
 				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
 				{
-					menuItems.Add(GenerateToolTipFromFileName(fi.FullName));
+					MenuItems.Add(GenerateToolTipFromFileName(fi.FullName));
 				}
 			}
 		}
@@ -78,20 +81,17 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>For the moment, you could only load a dll that have a form (which implements <see cref="BizHawk.Client.EmuHawk.IExternalToolForm"/>)</remarks>
 		private static ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
-			Type customFormType;
-			Assembly externalToolFile;
 			ToolStripMenuItem item = null;
 
 			try
 			{
 				BizHawk.Common.Win32Hacks.RemoveMOTW(fileName);
-				externalToolFile = Assembly.LoadFrom(fileName);
+				var externalToolFile = Assembly.LoadFrom(fileName);
 				object[] attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolAttribute), false);
 				if (attributes != null && attributes.Count() == 1)
 				{
 					BizHawkExternalToolAttribute attribute = (BizHawkExternalToolAttribute)attributes[0];
-					item = new ToolStripMenuItem(attribute.Name);
-					item.ToolTipText = attribute.Description;
+					item = new ToolStripMenuItem(attribute.Name) { ToolTipText = attribute.Description };
 					if (attribute.IconResourceName != "")
 					{
 						Stream s = externalToolFile.GetManifestResourceStream($"{externalToolFile.GetName().Name}.{attribute.IconResourceName}");
@@ -101,7 +101,7 @@ namespace BizHawk.Client.ApiHawk
 						}
 					}
 
-					customFormType = externalToolFile.GetTypes().FirstOrDefault<Type>(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm");
+					var customFormType = externalToolFile.GetTypes().FirstOrDefault(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm");
 					if (customFormType == null)
 					{
 						item.ToolTipText = "Does not have a CustomMainForm";
@@ -110,7 +110,7 @@ namespace BizHawk.Client.ApiHawk
 					item.Tag = fileName;
 
 					attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolUsageAttribute), false);
-					if (attributes != null && attributes.Count() == 1)
+					if (attributes != null && attributes.Length == 1)
 					{
 						BizHawkExternalToolUsageAttribute attribute2 = (BizHawkExternalToolUsageAttribute)attributes[0];
 						if(Global.Emulator.SystemId == "NULL" && attribute2.ToolUsage != BizHawkExternalToolUsage.Global)
@@ -132,9 +132,10 @@ namespace BizHawk.Client.ApiHawk
 				}
 				else
 				{
-					item = new ToolStripMenuItem(externalToolFile.GetName().Name);
-					item.ToolTipText = "BizHawkExternalTool attribute hasn't been found";
-					item.Enabled = false;
+					item = new ToolStripMenuItem(externalToolFile.GetName().Name)
+					{
+						ToolTipText = "BizHawkExternalTool attribute hasn't been found", Enabled = false
+					};
 				}
 			}
 			catch (BadImageFormatException)
@@ -144,7 +145,7 @@ namespace BizHawk.Client.ApiHawk
 				item.Enabled = false;
 			}
 
-#if DEBUG //I added special debug stuff to get additionnal informations. Don(t think it can be usefull for released versions
+#if DEBUG //I added special debug stuff to get additional information. Don't think it can be useful for released versions
 			catch (ReflectionTypeLoadException ex)
 			{
 				foreach (Exception e in ex.LoaderExceptions)
@@ -174,7 +175,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="e">Event arguments</param>
 		private static void DirectoryMonitor_Created(object sender, FileSystemEventArgs e)
 		{
-			menuItems.Add(GenerateToolTipFromFileName(e.FullPath));
+			MenuItems.Add(GenerateToolTipFromFileName(e.FullPath));
 		}
 
 		#endregion
@@ -185,13 +186,7 @@ namespace BizHawk.Client.ApiHawk
 		/// Gets a prebuild <see cref="ToolStripMenuItem"/>
 		/// This list auto-updated by the <see cref="ExternalToolManager"/> itself
 		/// </summary>
-		public static IEnumerable<ToolStripMenuItem> ToolStripMenu
-		{
-			get
-			{
-				return menuItems;
-			}
-		}
+		public static IEnumerable<ToolStripMenuItem> ToolStripMenu => MenuItems;
 
 		#endregion
 	}

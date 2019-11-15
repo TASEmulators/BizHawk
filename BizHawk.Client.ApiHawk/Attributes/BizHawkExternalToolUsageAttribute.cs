@@ -3,20 +3,12 @@
 namespace BizHawk.Client.ApiHawk
 {
 	/// <summary>
-	/// This class hold logic interraction for the BizHawkExternalToolUsageAttribute
+	/// This class holds logic interaction for the BizHawkExternalToolUsageAttribute
 	/// This attribute helps ApiHawk to know how a tool can be enabled or not
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)]
 	public sealed class BizHawkExternalToolUsageAttribute : Attribute
 	{
-		#region Fields
-
-		private BizHawkExternalToolUsage _ToolUsage;
-		private CoreSystem _System;
-		private string _GameHash;
-
-		#endregion
-
 		#region cTor(s)
 
 		/// <summary>
@@ -36,9 +28,9 @@ namespace BizHawk.Client.ApiHawk
 				throw new InvalidOperationException("A game hash must be set");
 			}
 
-			_ToolUsage = usage;			
-			_System = system;
-			_GameHash = gameHash;
+			ToolUsage = usage;
+			System = system;
+			GameHash = gameHash;
 		}
 
 		/// <summary>
@@ -63,37 +55,20 @@ namespace BizHawk.Client.ApiHawk
 		#region Properties
 
 		/// <summary>
-		/// Gets the specific system used by the exetrnal tool
+		/// Gets the specific system used by the external tool
 		/// </summary>
-		public CoreSystem System
-		{
-			get
-			{
-				return _System;
-			}
-		}
+		public CoreSystem System { get; }
+		
 
 		/// <summary>
-		/// Gets the specific game (hash) used by the exetrnal tool
+		/// Gets the specific game (hash) used by the external tool
 		/// </summary>
-		public string GameHash
-		{
-			get
-			{
-				return _GameHash;
-			}
-		}
-
+		public string GameHash { get; }
+		
 		/// <summary>
 		/// Gets the tool usage
 		/// </summary>
-		public BizHawkExternalToolUsage ToolUsage
-		{
-			get
-			{
-				return _ToolUsage;
-			}
-		}				
+		public BizHawkExternalToolUsage ToolUsage { get; }
 
 		#endregion
 	}

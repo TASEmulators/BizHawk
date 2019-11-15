@@ -236,7 +236,7 @@ namespace BizHawk.Client.ApiHawk
 					return "AmstradCPC";
 
 				default:
-					throw new IndexOutOfRangeException($"{value.ToString()} is missing in convert list");
+					throw new IndexOutOfRangeException($"{value} is missing in convert list");
 			}
 		}
 

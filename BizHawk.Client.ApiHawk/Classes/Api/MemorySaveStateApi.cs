@@ -34,11 +34,9 @@ namespace BizHawk.Client.ApiHawk
 			{
 				var state = _memorySavestates[guid];
 
-				using (var ms = new MemoryStream(state))
-				using (var br = new BinaryReader(ms))
-				{
-					StatableCore.LoadStateBinary(br);
-				}
+				using var ms = new MemoryStream(state);
+				using var br = new BinaryReader(ms);
+				StatableCore.LoadStateBinary(br);
 			}
 			catch
 			{

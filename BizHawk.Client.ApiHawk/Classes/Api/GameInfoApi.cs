@@ -10,9 +10,6 @@ namespace BizHawk.Client.ApiHawk
 		[OptionalService]
 		private IBoardInfo BoardInfo { get; set; }
 
-		public GameInfoApi()
-		{ }
-
 		public string GetRomName()
 		{
 			if (Global.Game != null)

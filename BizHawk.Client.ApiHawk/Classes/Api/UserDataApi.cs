@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.ApiHawk
@@ -26,12 +24,9 @@ namespace BizHawk.Client.ApiHawk
 
 		public object Get(string key)
 		{
-			if (Global.UserBag.ContainsKey(key))
-			{
-				return Global.UserBag[key];
-			}
-
-			return null;
+			return Global.UserBag.ContainsKey(key)
+				? Global.UserBag[key]
+				: null;
 		}
 
 		public void Clear()
