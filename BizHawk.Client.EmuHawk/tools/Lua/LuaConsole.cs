@@ -23,6 +23,9 @@ namespace BizHawk.Client.EmuHawk
 		private const string ScriptColumnName = "Script";
 		private const string PathColumnName = "PathName";
 
+		private readonly LuaAutocompleteInstaller _luaAutoInstaller = new LuaAutocompleteInstaller();
+		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -226,8 +229,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateDialog();
 		}
-
-		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
 
 		private void SetColumns()
 		{
@@ -1139,16 +1140,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly LuaAutocompleteInstaller LuaAutoInstaller = new LuaAutocompleteInstaller();
-
 		private void RegisterToTextEditorsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			// Hide until this one is implemented
 			RegisterNotePadMenuItem.Visible = false;
 
-			if (LuaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.Sublime2))
+			if (_luaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.Sublime2))
 			{
-				if (LuaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.Sublime2))
+				if (_luaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.Sublime2))
 				{
 					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (installed)";
 					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
@@ -1168,9 +1167,9 @@ namespace BizHawk.Client.EmuHawk
 				RegisterSublimeText2MenuItem.Image = null;
 			}
 
-			if (LuaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.NotePad))
+			if (_luaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.NotePad))
 			{
-				if (LuaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.NotePad))
+				if (_luaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.NotePad))
 				{
 					RegisterNotePadMenuItem.Text = "Notepad++ (installed)";
 					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
@@ -1193,12 +1192,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisterSublimeText2MenuItem_Click(object sender, EventArgs e)
 		{
-			LuaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.Sublime2);
+			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.Sublime2);
 		}
 
 		private void RegisterNotePadMenuItem_Click(object sender, EventArgs e)
 		{
-			LuaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad);
+			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad);
 		}
 
 		#endregion
