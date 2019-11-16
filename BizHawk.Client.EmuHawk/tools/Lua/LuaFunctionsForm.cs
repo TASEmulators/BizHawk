@@ -124,7 +124,6 @@ namespace BizHawk.Client.EmuHawk
 			public int Column
 			{
 				get => _column;
-
 				set
 				{
 					if (_column == value)
@@ -143,29 +142,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				var indexes = FunctionView.SelectedIndices;
-
-				//TODO - duplicated code with FunctionView_Copy
-				//also -- this list is more compact (the examples would fill space)
-				//it isn't clear whether we should copy the examples here. So maybe this should stay distinct (and more compact?)
-
-				if (indexes.Count > 0)
-				{
-					var sb = new StringBuilder();
-
-					foreach (int index in indexes)
-					{
-						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs[index];
-						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
-					}
-
-					if (sb.Length > 0)
-						Clipboard.SetDataObject(sb.ToString());
-				}
+				FunctionView_Copy(null, null);
 			}
 		}
 
-		//FREVBHFYL?
 		private void FunctionView_Copy(object sender, EventArgs e)
 		{
 			if (FunctionView.SelectedIndices.Count == 0)
@@ -173,12 +153,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var itm = _filteredList[FunctionView.SelectedIndices[0]];
-			var sb = new StringBuilder($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); //comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
-			if (itm.Example != null)
+			var sb = new StringBuilder();
+			foreach (int index in FunctionView.SelectedIndices)
 			{
-				sb.AppendLine();
-				sb.Append(itm.Example);
+				var itm = _filteredList[index];
+				sb.Append($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); // comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
+				if (itm.Example != null)
+				{
+					sb.AppendLine();
+					sb.AppendLine(itm.Example);
+				}
 			}
 
 			if (sb.Length > 0)
