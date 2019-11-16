@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -197,10 +196,7 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public bool HorizontalOrientation
 		{
-			get
-			{
-				return _horizontalOrientation;
-			}
+			get => _horizontalOrientation;
 			set
 			{
 				if (_horizontalOrientation != value)
@@ -250,11 +246,7 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public int RowCount
 		{
-			get
-			{
-				return _rowCount;
-			}
-
+			get => _rowCount;
 			set
 			{
 				_rowCount = value;
@@ -332,8 +324,8 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public int HoverInterval
 		{
-			get { return _hoverTimer.Interval; }
-			set { _hoverTimer.Interval = value; }
+			get => _hoverTimer.Interval;
+			set => _hoverTimer.Interval = value;
 		}
 
 		#endregion
@@ -613,11 +605,7 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int MaxCharactersInHorizontal
 		{
-			get
-			{
-				return _maxCharactersInHorizontal;
-			}
-
+			get => _maxCharactersInHorizontal;
 			set
 			{
 				_maxCharactersInHorizontal = value;
@@ -743,11 +731,7 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int LastVisibleRow
 		{
-			get
-			{
-				return FirstVisibleRow + VisibleRows + CountLagFramesDisplay(VisibleRows);
-			}
-
+			get => FirstVisibleRow + VisibleRows + CountLagFramesDisplay(VisibleRows);
 			set
 			{
 				int halfRow = 0;
