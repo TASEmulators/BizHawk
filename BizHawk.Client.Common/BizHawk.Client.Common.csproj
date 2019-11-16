@@ -82,6 +82,7 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Api\APISubsetContainer.cs" />
     <Compile Include="Api\Classes\EmuApi.cs" />
     <Compile Include="Api\Classes\GameInfoApi.cs" />
     <Compile Include="Api\Classes\JoypadApi.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="IPS.cs" />
     <Compile Include="IZipWriter.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="lua\DelegatingLuaLibrary.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
     <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
     <Compile Include="lua\EmuLuaLibrary.Events.cs" />

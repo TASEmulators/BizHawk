@@ -24,6 +24,23 @@ namespace BizHawk.Client.EmuHawk
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
+			static APISubsetContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
+			{
+				var ctorParamTypes = new[] { typeof(Action<string>) };
+				var ctorParams = new object[] { logCallback };
+				var libDict = new Dictionary<Type, IExternalApi>();
+				foreach (var api in Assembly.Load("BizHawk.Client.ApiHawk").GetTypes()
+					.Concat(Assembly.GetAssembly(typeof(APISubsetContainer)).GetTypes())
+					.Where(t => t.IsSealed && typeof(IExternalApi).IsAssignableFrom(t) && ServiceInjector.IsAvailable(sp, t)))
+				{
+					var ctorWithParams = api.GetConstructor(ctorParamTypes);
+					var instance = (IExternalApi) (ctorWithParams == null ? Activator.CreateInstance(api) : ctorWithParams.Invoke(ctorParams));
+					ServiceInjector.UpdateServices(sp, instance);
+					libDict.Add(api, instance);
+				}
+				return ApiHawkContainerInstance = new APISubsetContainer(libDict);
+			}
+
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 
@@ -56,6 +73,8 @@ namespace BizHawk.Client.EmuHawk
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					ServiceInjector.UpdateServices(serviceProvider, instance);
+					if (instance is DelegatingLuaLibrary dlgInstance)
+						dlgInstance.APIs = ApiHawkContainerInstance ?? InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -77,6 +96,9 @@ namespace BizHawk.Client.EmuHawk
 				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
 			}
 		}
+
+		/// <remarks>lazily instantiated</remarks>
+		private static APISubsetContainer ApiHawkContainerInstance;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
