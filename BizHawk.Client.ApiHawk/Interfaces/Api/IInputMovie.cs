@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 namespace BizHawk.Client.ApiHawk
 {
-	public interface IMovie : IExternalApi
+	public interface IInputMovie : IExternalApi
 	{
 		bool StartsFromSavestate();
 		bool StartsFromSaveram();

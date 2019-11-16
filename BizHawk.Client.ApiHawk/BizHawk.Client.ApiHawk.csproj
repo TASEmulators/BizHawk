@@ -88,7 +88,7 @@
     <Compile Include="Interfaces\Api\ISaveState.cs" />
     <Compile Include="Interfaces\Api\IUserData.cs" />
     <Compile Include="Interfaces\Api\ISql.cs" />
-    <Compile Include="Interfaces\Api\IMovie.cs" />
+    <Compile Include="Interfaces\Api\IInputMovie.cs" />
     <Compile Include="Interfaces\Api\IMemorySavestate.cs" />
     <Compile Include="Interfaces\Api\IMemEvents.cs" />
     <Compile Include="Interfaces\Api\IEmu.cs" />
