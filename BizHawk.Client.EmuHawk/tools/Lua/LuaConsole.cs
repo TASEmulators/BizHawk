@@ -97,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemIcon += LuaListView_QueryItemImage;
 
 			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
-			LuaSandbox.DefaultLogger = ConsoleLog;
+			LuaSandbox.DefaultLogger = WriteToOutputWindow;
 		}
 
 		public PlatformEmuLuaLibrary LuaImp { get; private set; }
@@ -118,14 +118,6 @@ namespace BizHawk.Client.EmuHawk
 		public void FastUpdate()
 		{
 			// Do nothing
-		}
-
-		private void ConsoleLog(string message)
-		{
-			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
-			OutputBox.SelectionStart = OutputBox.Text.Length;
-			OutputBox.ScrollToCaret();
-			UpdateDialog();
 		}
 
 		private void LuaConsole_Load(object sender, EventArgs e)
@@ -160,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 				OpenScriptMenuItem.Enabled = false;
 				NewScriptToolbarItem.Enabled = false;
 				OpenScriptToolbarItem.Enabled = false;
-				ConsoleLog("The Lua environment can currently only be created on Windows. You may not load scripts.");
+				WriteToOutputWindow("The Lua environment can currently only be created on Windows. You may not load scripts.");
 			}
 
 			LuaListView.AllColumns.Clear();
@@ -490,6 +482,8 @@ namespace BizHawk.Client.EmuHawk
 			return LuaImp.ScriptList.Any(t => path == t.Path);
 		}
 
+		private int _messageCount;
+		private const int MaxCount = 50;
 		public void WriteToOutputWindow(string message)
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
@@ -499,9 +493,15 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text += message;
-				OutputBox.SelectionStart = OutputBox.Text.Length;
-				OutputBox.ScrollToCaret();
+				_messageCount++;
+
+				if (_messageCount <= MaxCount)
+				{
+					OutputBox.Text += message;
+					OutputBox.SelectionStart = OutputBox.Text.Length;
+					OutputBox.ScrollToCaret();
+					
+				}
 			});
 		}
 
@@ -603,6 +603,8 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show(ex.ToString());
 				}
 			}
+
+			_messageCount = 0;
 		}
 
 		private FileInfo GetSaveFileFromUser()
@@ -890,7 +892,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (IOException)
 			{
-				ConsoleLog($"Unable to access file {item.Path}");
+				WriteToOutputWindow($"Unable to access file {item.Path}");
 			}
 			catch (Exception ex)
 			{
@@ -1357,7 +1359,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (InputBox.Text.Contains("emu.frameadvance("))
 					{
-						ConsoleLog("emu.frameadvance() can not be called from the console");
+						WriteToOutputWindow("emu.frameadvance() can not be called from the console");
 						return;
 					}
 
@@ -1372,7 +1374,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (OutputBox.Text == consoleBeforeCall)
 							{
-								ConsoleLog("Command successfully executed");
+								WriteToOutputWindow("Command successfully executed");
 							}
 						});
 					});
