@@ -148,6 +148,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (OSTailoredCode.IsUnixHost)
+			{
+				OpenSessionMenuItem.Enabled = false;
+				RecentSessionsSubMenu.Enabled = false;
+				RecentScriptsSubMenu.Enabled = false;
+				NewScriptMenuItem.Enabled = false;
+				OpenScriptMenuItem.Enabled = false;
+				NewScriptToolbarItem.Enabled = false;
+				OpenScriptToolbarItem.Enabled = false;
+				ConsoleLog("The Lua environment can currently only be created on Windows. You may not load scripts.");
+			}
+
 			LuaListView.AllColumns.Clear();
 			SetColumns();
 		}
@@ -1249,6 +1261,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
+			if (OSTailoredCode.IsUnixHost)
+			{
+				Console.WriteLine("The Lua environment can currently only be created on Windows, no scripts will be loaded.");
+				return;
+			}
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			try
 			{
