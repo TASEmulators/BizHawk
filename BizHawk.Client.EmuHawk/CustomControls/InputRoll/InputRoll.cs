@@ -258,6 +258,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_rowCount = value;
+				Invalidate();
 				RecalculateScrollBars();
 			}
 		}
