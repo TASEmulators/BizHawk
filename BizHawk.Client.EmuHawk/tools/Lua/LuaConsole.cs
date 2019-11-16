@@ -322,7 +322,6 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateDialog()
 		{
 			LuaListView.RowCount = LuaImp.ScriptList.Count;
-			LuaListView.Refresh();
 			UpdateNumberOfScripts();
 			UpdateRegisteredFunctionsDialog();
 		}
@@ -854,38 +853,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			var files = !SelectedFiles.Any() && Global.Config.ToggleAllIfNoneSelected ? LuaImp.ScriptList : SelectedFiles;
+			var files = !SelectedFiles.Any() && Global.Config.ToggleAllIfNoneSelected
+				? LuaImp.ScriptList
+				: SelectedFiles;
 			foreach (var file in files)
 			{
-				file.Toggle();
-
-				if (file.Enabled && file.Thread == null)
-				{
-					EnableLuaFile(file);
-				}
-				else if (!file.Enabled && file.Thread != null)
-				{
-					LuaImp.CallExitEvent(file);
-
-					foreach (var selectedItem in SelectedItems)
-					{
-						var temp = selectedItem;
-						LuaImp.RegisteredFunctions.RemoveAll(lf => lf.Lua == temp.Thread);
-						UpdateRegisteredFunctionsDialog();
-					}
-
-					LuaImp.CallExitEvent(file);
-					file.Stop();
-					if (Global.Config.RemoveRegisteredFunctionsOnToggle)
-					{
-						LuaImp.RegisteredFunctions.ClearAll();
-					}
-				}
+				ToggleLuaScript(file);
 			}
 
 			UpdateDialog();
-			UpdateNumberOfScripts();
-			LuaListView.Refresh();
 		}
 
 		private void EnableLuaFile(LuaFile item)
@@ -1467,10 +1443,40 @@ namespace BizHawk.Client.EmuHawk
 			if (index < LuaImp.ScriptList.Count)
 			{
 				var file = LuaImp.ScriptList[index.Value];
-				if (!file.IsSeparator)
+				ToggleLuaScript(file);
+				UpdateDialog();
+			}
+		}
+
+		private void ToggleLuaScript(LuaFile file)
+		{
+			if (file.IsSeparator)
+			{
+				return;
+			}
+
+			file.Toggle();
+
+			if (file.Enabled && file.Thread == null)
+			{
+				EnableLuaFile(file);
+			}
+			else if (!file.Enabled && file.Thread != null)
+			{
+				LuaImp.CallExitEvent(file);
+
+				foreach (var selectedItem in SelectedItems)
 				{
-					file.Toggle();
-					UpdateDialog();
+					var temp = selectedItem;
+					LuaImp.RegisteredFunctions.RemoveAll(lf => lf.Lua == temp.Thread);
+					UpdateRegisteredFunctionsDialog();
+				}
+
+				LuaImp.CallExitEvent(file);
+				file.Stop();
+				if (Global.Config.RemoveRegisteredFunctionsOnToggle)
+				{
+					LuaImp.RegisteredFunctions.ClearAll();
 				}
 			}
 		}
