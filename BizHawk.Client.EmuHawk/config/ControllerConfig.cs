@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
 			ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
-			ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
+			ControllerImages.Add("Nintendo 64 Controller", Properties.Resources.N64);
 			ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
 			ControllerImages.Add("Gameboy Controller H", Properties.Resources.GBController);
 			ControllerImages.Add("Gameboy Controller + Tilt", Properties.Resources.GBController);

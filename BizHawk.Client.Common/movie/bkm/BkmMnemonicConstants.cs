@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 				}
 			},
 			{
-				"Nintento 64 Controller", new Dictionary<string, string>
+				"Nintendo 64 Controller", new Dictionary<string, string>
 				{
 					{ "DPad U", "U" }, { "DPad D", "D" }, { "DPad L", "L" }, { "DPad R", "R" },
 					{ "B", "B" }, { "A", "A" }, { "Z", "Z" }, { "Start", "S" }, { "L", "L" }, { "R", "R" },
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 
 		public static readonly Dictionary<string, Dictionary<string, string>> Analogs = new Dictionary<string, Dictionary<string, string>>
 		{
-			{ "Nintento 64 Controller", new Dictionary<string, string> { { "X Axis", "X" }, { "Y Axis", "Y" } } }
+			{ "Nintendo 64 Controller", new Dictionary<string, string> { { "X Axis", "X" }, { "Y Axis", "Y" } } }
 		};
 
 		public static readonly Dictionary<string, Dictionary<string, string>> Commands = new Dictionary<string, Dictionary<string, string>>
@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 			{ "PC Engine Controller", new Dictionary<string, string>() },
 			{ "SMS Controller", new Dictionary<string, string> { { "Pause", "p" }, { "Reset", "r" } } },
 			{ "TI83 Controller", new Dictionary<string, string>() },
-			{ "Nintento 64 Controller", new Dictionary<string, string> { { "Power", "P" }, { "Reset", "r" } } },
+			{ "Nintendo 64 Controller", new Dictionary<string, string> { { "Power", "P" }, { "Reset", "r" } } },
 			{ "Saturn Controller", new Dictionary<string, string> { { "Power", "P" }, { "Reset", "r" } } },
 			{ "GPGX 3-Button Controller", new Dictionary<string, string> { { "Power", "P" }, { "Reset", "r" } } }
 		};
@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 		{
 			{ "Gameboy Controller", 1 }, { "GBA Controller", 1 }, { "Genesis 3-Button Controller", 2 }, { "GPGX Genesis Controller", 2 }, { "NES Controller", 4 },
 			{ "SNES Controller", 4 }, { "PC Engine Controller", 5 }, { "SMS Controller", 2 }, { "TI83 Controller", 1 }, { "Atari 2600 Basic Controller", 2 }, { "Atari 7800 ProLine Joystick Controller", 2 },
-			{ "ColecoVision Basic Controller", 2 }, { "Commodore 64 Controller", 2 }, { "Nintento 64 Controller", 4 }, { "Saturn Controller", 2 },
+			{ "ColecoVision Basic Controller", 2 }, { "Commodore 64 Controller", 2 }, { "Nintendo 64 Controller", 4 }, { "Saturn Controller", 2 },
 			{ "GPGX 3-Button Controller", 2 }, { "Lynx Controller", 1 }
 		};
 

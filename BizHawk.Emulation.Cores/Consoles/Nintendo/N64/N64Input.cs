@@ -5,31 +5,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	internal class N64Input
 	{
-		private mupen64plusInputApi api;
-		public CoreComm CoreComm { get; private set; }
+		private readonly mupen64plusInputApi _api;
+		public CoreComm CoreComm { get; }
 		public IController Controller { get; set; }
 
 		public bool LastFrameInputPolled { get; set; }
 		public bool ThisFrameInputPolled { get; set; }
-		public ControllerDefinition ControllerDefinition { get { return N64ControllerDefinition; } }
+		public ControllerDefinition ControllerDefinition => N64ControllerDefinition;
 
 		public static readonly ControllerDefinition N64ControllerDefinition = new ControllerDefinition
 		{
-			Name = "Nintento 64 Controller",
+			Name = "Nintendo 64 Controller",
 			BoolButtons =
 			{
 				"P1 A Up", "P1 A Down", "P1 A Left", "P1 A Right", "P1 DPad U", "P1 DPad D", "P1 DPad L", "P1 DPad R", "P1 Start", "P1 Z", "P1 B", "P1 A", "P1 C Up", "P1 C Down", "P1 C Right", "P1 C Left", "P1 L", "P1 R", 
-				//"P2 A Up", "P2 A Down", "P2 A Left", "P2 A Right", "P2 DPad U", "P2 DPad D", "P2 DPad L", "P2 DPad R", "P2 Start", "P2 Z", "P2 B", "P2 A", "P2 C Up", "P2 C Down", "P2 C Right", "P2 C Left", "P2 L", "P2 R", 
-				//"P3 A Up", "P3 A Down", "P3 A Left", "P3 A Right", "P3 DPad U", "P3 DPad D", "P3 DPad L", "P3 DPad R", "P3 Start", "P3 Z", "P3 B", "P3 A", "P3 C Up", "P3 C Down", "P3 C Right", "P3 C Left", "P3 L", "P3 R", 
-				//"P4 A Up", "P4 A Down", "P4 A Left", "P4 A Right", "P4 DPad U", "P4 DPad D", "P4 DPad L", "P4 DPad R", "P4 Start", "P4 Z", "P4 B", "P4 A", "P4 C Up", "P4 C Down", "P4 C Right", "P4 C Left", "P4 L", "P4 R", 
 				"Reset", "Power"
 			},
 			FloatControls =
 			{
 				"P1 X Axis", "P1 Y Axis",
-				//"P2 X Axis", "P2 Y Axis",
-				//"P3 X Axis", "P3 Y Axis",
-				//"P4 X Axis", "P4 Y Axis"
 			},
 			FloatRanges =
 			{
@@ -53,10 +47,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64Input(IInputPollable emuCore, mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
 		{
 			_emuCore = emuCore;
-			api = new mupen64plusInputApi(core);
+			_api = new mupen64plusInputApi(core);
 			CoreComm = comm;
 
-			api.SetM64PInputCallback(new mupen64plusInputApi.InputCallback(GetControllerInput));
+			_api.SetM64PInputCallback(GetControllerInput);
 
 			core.VInterrupt += ShiftInputPolledBools;
 			for (int i = 0; i < controllerSettings.Length; ++i)
@@ -129,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// into a form the N64 understands
 		/// </summary>
 		/// <param name="num">Number of controller to translate</param>
-		/// <returns>Bitlist of pressed buttons</returns>
+		/// <returns>Bit list of pressed buttons</returns>
 		public int ReadController(int num)
 		{
 			int buttons = 0;
@@ -159,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="type">Type to which the controller pak is set. Currently only NO_PAK and MEMORY_CARD are supported</param>
 		public void SetControllerPakType(int controller, N64SyncSettings.N64ControllerSettings.N64ControllerPakType type)
 		{
-			api.SetM64PControllerPakType(controller, type);
+			_api.SetM64PControllerPakType(controller, type);
 		}
 
 		/// <summary>
@@ -169,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="connectionStatus">New status of the controller connection</param>
 		public void SetControllerConnected(int controller, bool connectionStatus)
 		{
-			api.SetM64PControllerConnected(controller, connectionStatus);
+			_api.SetM64PControllerConnected(controller, connectionStatus);
 		}
 	}
 }

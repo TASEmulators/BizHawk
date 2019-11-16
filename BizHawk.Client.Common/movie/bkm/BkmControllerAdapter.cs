@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (ControlType == "Nintento 64 Controller")
+			if (ControlType == "Nintendo 64 Controller")
 			{
 				SetN64ControllersAsMnemonic(mnemonic);
 				return;
