@@ -1,5 +1,5 @@
 ﻿using System;
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public interface ITool : IExternalApi
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class JoypadApi : IJoypad
 	{

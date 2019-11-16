@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.ApiHawk
+﻿using BizHawk.Client.Common;
+
+namespace BizHawk.Client.ApiHawk
 {
 	interface IPlugin
 	{

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk

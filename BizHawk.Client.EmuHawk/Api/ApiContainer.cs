@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 
 using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

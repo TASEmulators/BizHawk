@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Common.BufferExtensions;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class MemApi : MemApiBase, IMem
 	{

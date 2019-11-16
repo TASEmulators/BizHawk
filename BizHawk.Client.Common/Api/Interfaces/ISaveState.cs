@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.ApiHawk
+﻿namespace BizHawk.Client.Common
 {
 	public interface ISaveState : IExternalApi
 	{

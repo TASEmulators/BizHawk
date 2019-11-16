@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 
 namespace BizHawk.Client.EmuHawk
 {

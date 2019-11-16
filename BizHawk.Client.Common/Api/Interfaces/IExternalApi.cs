@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.ApiHawk
+﻿namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This interface specifies that a client exposes a given interface, such as <see cref="BizHawk.Emulation.Common.IDebuggable"/>,
