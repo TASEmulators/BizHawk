@@ -7,6 +7,7 @@ using System.Reflection;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 

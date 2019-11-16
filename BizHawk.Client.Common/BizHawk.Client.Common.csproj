@@ -82,7 +82,33 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Api\Classes\EmuApi.cs" />
+    <Compile Include="Api\Classes\GameInfoApi.cs" />
+    <Compile Include="Api\Classes\JoypadApi.cs" />
+    <Compile Include="Api\Classes\MemApi.cs" />
+    <Compile Include="Api\Classes\MemApiBase.cs" />
+    <Compile Include="Api\Classes\MemEventsApi.cs" />
+    <Compile Include="Api\Classes\MemorySaveStateApi.cs" />
+    <Compile Include="Api\Classes\MovieApi.cs" />
+    <Compile Include="Api\Classes\SqlApi.cs" />
+    <Compile Include="Api\Classes\UserDataApi.cs" />
     <Compile Include="Api\CoreSystem.cs" />
+    <Compile Include="Api\Interfaces\IApiContainer.cs" />
+    <Compile Include="Api\Interfaces\IComm.cs" />
+    <Compile Include="Api\Interfaces\IEmu.cs" />
+    <Compile Include="Api\Interfaces\IExternalApi.cs" />
+    <Compile Include="Api\Interfaces\IGameInfo.cs" />
+    <Compile Include="Api\Interfaces\IGui.cs" />
+    <Compile Include="Api\Interfaces\IInput.cs" />
+    <Compile Include="Api\Interfaces\IInputMovie.cs" />
+    <Compile Include="Api\Interfaces\IJoypad.cs" />
+    <Compile Include="Api\Interfaces\IMem.cs" />
+    <Compile Include="Api\Interfaces\IMemEvents.cs" />
+    <Compile Include="Api\Interfaces\IMemorySavestate.cs" />
+    <Compile Include="Api\Interfaces\ISaveState.cs" />
+    <Compile Include="Api\Interfaces\ISql.cs" />
+    <Compile Include="Api\Interfaces\ITool.cs" />
+    <Compile Include="Api\Interfaces\IUserData.cs" />
     <Compile Include="Api\JoypadButton.cs" />
     <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BitmapBufferVideoProvider.cs" />

@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public interface IGui : IExternalApi
 	{

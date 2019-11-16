@@ -3,7 +3,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class MemEventsApi : IMemEvents
 	{

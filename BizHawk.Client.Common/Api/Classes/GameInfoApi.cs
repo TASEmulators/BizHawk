@@ -3,7 +3,7 @@
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.ApiHawk
+namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoApi : IGameInfo
 	{
