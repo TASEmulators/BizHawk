@@ -363,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
+			temp.SaveAsHexFast(writer);
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)
