@@ -140,10 +140,8 @@ namespace BizHawk.Client.Common
 				data[i] = d.PeekByte(addr + i);
 			}
 
-			using (var hasher = System.Security.Cryptography.SHA256.Create())
-			{
-				return hasher.ComputeHash(data).BytesToHexString();
-			}
+			using var hasher = System.Security.Cryptography.SHA256.Create();
+			return hasher.ComputeHash(data).BytesToHexString();
 		}
 
 		#endregion
