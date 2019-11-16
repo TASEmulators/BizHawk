@@ -6,7 +6,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.ApiHawk
 {
-	public sealed class MovieApi : IMovie
+	public sealed class MovieApi : IInputMovie
 	{
 		private static class MoviePluginStatic
 		{
