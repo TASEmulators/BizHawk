@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					LuaImp.GuiLibrary.DrawFinish();
-					CloseLua();
+					LuaImp?.Close();
 				}
 				else
 				{
@@ -432,11 +432,6 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
-		private void CloseLua()
-		{
-			LuaImp?.Close();
-		}
-
 		private static FileInfo GetFileFromUser(string filter)
 		{
 			var ofd = new OpenFileDialog
@@ -516,34 +511,6 @@ namespace BizHawk.Client.EmuHawk
 			OutputBox.Invoke(() =>
 			{
 				OutputBox.Text = "";
-				OutputBox.Refresh();
-			});
-		}
-
-		public void SelectAll()
-		{
-			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
-			{
-				return;
-			}
-
-			OutputBox.Invoke(() =>
-			{
-				OutputBox.SelectAll();
-				OutputBox.Refresh();
-			});
-		}
-
-		public void Copy()
-		{
-			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
-			{
-				return;
-			}
-
-			OutputBox.Invoke(() =>
-			{
-				OutputBox.Copy();
 				OutputBox.Refresh();
 			});
 		}
@@ -1226,12 +1193,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectAllContextItem_Click(object sender, EventArgs e)
 		{
-			SelectAll();
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
+				return;
+			}
+
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.SelectAll();
+				OutputBox.Refresh();
+			});
 		}
 
 		private void CopyContextItem_Click(object sender, EventArgs e)
 		{
-			Copy();
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
+				return;
+			}
+
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.Copy();
+				OutputBox.Refresh();
+			});
 		}
 
 		#endregion
