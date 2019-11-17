@@ -841,6 +841,7 @@ namespace BizHawk.Client.EmuHawk
 					Verb = "Open",
 					FileName = sfd.FileName
 				});
+				AddFileWatches();
 			}
 		}
 
