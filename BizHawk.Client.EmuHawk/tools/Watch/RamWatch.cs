@@ -168,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.RecentWatches.Add(path);
 					WatchListView.RowCount = _watches.Count;
 					UpdateWatchCount();
+					UpdateValues();
 					UpdateStatusBar();
 					_watches.Changes = false;
 				}
@@ -191,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					UpdateStatusBar();
-
+					UpdateValues();
 					PokeAddressToolBarItem.Enabled =
 						FreezeAddressToolBarItem.Enabled =
 						SelectedIndices.Any() &&
@@ -214,6 +215,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.RefreshDomains(MemoryDomains);
 				_watches.Reload();
+				UpdateValues();
 				UpdateStatusBar();
 			}
 			else
@@ -239,6 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			GlobalWin.OSD.ClearGUIText();
 			if (_watches.Any())
 			{
 				_watches.UpdateValues();
@@ -520,6 +523,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.Clear();
 				WatchListView.RowCount = _watches.Count;
+				UpdateValues();
 				UpdateWatchCount();
 				UpdateStatusBar();
 				_sortReverse = false;
@@ -1076,7 +1080,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Dialog, Context Menu, and ListView Events
 
-		private void NewRamWatch_Load(object sender, EventArgs e)
+		private void RamWatch_Load(object sender, EventArgs e)
 		{
 			// Hack for previous config settings
 			if (Settings.Columns.Any(c => string.IsNullOrWhiteSpace(c.Text)))
@@ -1089,7 +1093,6 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(WatchListView.ToColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
-
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any() &&
@@ -1101,12 +1104,12 @@ namespace BizHawk.Client.EmuHawk
 			Settings.Columns = WatchListView.AllColumns;
 		}
 
-		private void NewRamWatch_Activated(object sender, EventArgs e)
+		private void RamWatch_Activated(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
 		}
 
-		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
+		private void RamWatch_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".wch")
@@ -1114,10 +1117,11 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Load(filePaths[0], append: false);
 				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 				WatchListView.RowCount = _watches.Count;
+				UpdateValues();
 			}
 		}
 
-		private void NewRamWatch_Enter(object sender, EventArgs e)
+		private void RamWatch_Enter(object sender, EventArgs e)
 		{
 			WatchListView.Focus();
 		}

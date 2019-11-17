@@ -897,7 +897,7 @@
             this.WatchListView.UseCustomBackground = true;
             this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
             this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
-            this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
+            this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
             this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
             this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
             this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
@@ -916,11 +916,11 @@
             this.Name = "RamWatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = " RAM Watch";
-            this.Activated += new System.EventHandler(this.NewRamWatch_Activated);
-            this.Load += new System.EventHandler(this.NewRamWatch_Load);
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
+            this.Activated += new System.EventHandler(this.RamWatch_Activated);
+            this.Load += new System.EventHandler(this.RamWatch_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
-            this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
+            this.Enter += new System.EventHandler(this.RamWatch_Enter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
             this.ListViewContextMenu.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
