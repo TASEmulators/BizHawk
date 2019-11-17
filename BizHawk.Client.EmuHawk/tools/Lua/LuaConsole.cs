@@ -139,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!Global.Config.RecentLua.Empty)
 				{
-					LoadLuaFromRecent(Global.Config.RecentLua.MostRecent);
+					LoadLuaFile(Global.Config.RecentLua.MostRecent);
 				}
 			}
 
@@ -472,11 +472,6 @@ namespace BizHawk.Client.EmuHawk
 			NumberOfScripts.Text = message;
 		}
 
-		private void LoadLuaFromRecent(string path)
-		{
-			LoadLuaFile(path);
-		}
-
 		private bool LuaAlreadyInSession(string path)
 		{
 			return LuaImp.ScriptList.Any(t => path == t.Path);
@@ -736,7 +731,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLua.RecentMenu(LoadLuaFromRecent, true));
+				Global.Config.RecentLua.RecentMenu(LoadLuaFile, true));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)

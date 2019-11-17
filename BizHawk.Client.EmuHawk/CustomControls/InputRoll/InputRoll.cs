@@ -250,6 +250,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_rowCount = value;
+				_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
 				Invalidate();
 				RecalculateScrollBars();
 			}
