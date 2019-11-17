@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-				Console.WriteLine(error);
+				LogCallback(error);
 				throw new NotImplementedException(error);
 			}
 		}
@@ -52,10 +52,19 @@ namespace BizHawk.Client.Common
 				}
 
 				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-				Console.WriteLine(error);
+				LogCallback(error);
 				throw new NotImplementedException(error);
 			}
 		}
+
+		public MemApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
+
+		public MemApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
 
 		private string VerifyMemoryDomain(string domain)
 		{
@@ -63,7 +72,7 @@ namespace BizHawk.Client.Common
 			{
 				if (DomainList[domain] == null)
 				{
-					Console.WriteLine($"Unable to find domain: {domain}, falling back to current");
+					LogCallback($"Unable to find domain: {domain}, falling back to current");
 					return Domain.Name;
 				}
 
@@ -71,7 +80,7 @@ namespace BizHawk.Client.Common
 			}
 			catch // Just in case
 			{
-				Console.WriteLine($"Unable to find domain: {domain}, falling back to current");
+				LogCallback($"Unable to find domain: {domain}, falling back to current");
 			}
 
 			return Domain.Name;
@@ -85,7 +94,7 @@ namespace BizHawk.Client.Common
 				return d.PeekByte(addr);
 			}
 
-			Console.WriteLine($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
+			LogCallback($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
 			return 0;
 		}
 
@@ -100,12 +109,12 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Console.WriteLine($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
+					LogCallback($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
 				}
 			}
 			else
 			{
-				Console.WriteLine($"Error: the domain {d.Name} is not writable");
+				LogCallback($"Error: the domain {d.Name} is not writable");
 			}
 		}
 
@@ -234,12 +243,12 @@ namespace BizHawk.Client.Common
 					return true;
 				}
 
-				Console.WriteLine($"Unable to find domain: {domain}");
+				LogCallback($"Unable to find domain: {domain}");
 				return false;
 			}
 			catch // Just in case
 			{
-				Console.WriteLine($"Unable to find domain: {domain}");
+				LogCallback($"Unable to find domain: {domain}");
 			}
 
 			return false;
@@ -253,13 +262,13 @@ namespace BizHawk.Client.Common
 			if (addr < 0 || addr >= d.Size)
 			{
 				string error = $"Address {addr} is outside the bounds of domain {d.Name}";
-				Console.WriteLine(error);
+				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
 			if (addr + count > d.Size)
 			{
 				string error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
-				Console.WriteLine(error);
+				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
 
@@ -297,7 +306,7 @@ namespace BizHawk.Client.Common
 				if (addr < d.Size)
 					list.Add(d.PeekByte(addr));
 				else {
-					Console.WriteLine($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in {nameof(ReadByteRange)}()");
+					LogCallback($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in {nameof(ReadByteRange)}()");
 					list.Add(0);
 				}
 			}
@@ -318,13 +327,13 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						Console.WriteLine($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {nameof(WriteByteRange)}()");
+						LogCallback($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {nameof(WriteByteRange)}()");
 					}
 				}
 			}
 			else
 			{
-				Console.WriteLine($"Error: the domain {d.Name} is not writable");
+				LogCallback($"Error: the domain {d.Name} is not writable");
 			}
 		}
 
@@ -338,7 +347,7 @@ namespace BizHawk.Client.Common
 				return BitConverter.ToSingle(bytes, 0);
 			}
 
-			Console.WriteLine($"Warning: Attempted read {addr} outside memory size of {d.Size}");
+			LogCallback($"Warning: Attempted read {addr} outside memory size of {d.Size}");
 
 			return 0;
 		}
@@ -357,12 +366,12 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Console.WriteLine($"Warning: Attempted write {addr} outside memory size of {d.Size}");
+					LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
 				}
 			}
 			else
 			{
-				Console.WriteLine($"Error: the domain {Domain.Name} is not writable");
+				LogCallback($"Error: the domain {Domain.Name} is not writable");
 			}
 		}
 
