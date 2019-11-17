@@ -87,7 +87,6 @@
     <Compile Include="Api\Classes\GameInfoApi.cs" />
     <Compile Include="Api\Classes\JoypadApi.cs" />
     <Compile Include="Api\Classes\MemApi.cs" />
-    <Compile Include="Api\Classes\MemApiBase.cs" />
     <Compile Include="Api\Classes\MemEventsApi.cs" />
     <Compile Include="Api\Classes\MemorySaveStateApi.cs" />
     <Compile Include="Api\Classes\MovieApi.cs" />
