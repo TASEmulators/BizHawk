@@ -267,10 +267,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
-			Invoke(new MethodInvoker(delegate
+			// Even after _watches is cleared, these callbacks hang around! So this check is necessary
+			var script = LuaImp.ScriptList.FirstOrDefault(s => s.Path == e.FullPath && s.Enabled);
+
+			if (script != null)
 			{
-				RefreshScriptMenuItem_Click(null, null);
-			}));
+				Invoke(new MethodInvoker(delegate { RefreshScriptMenuItem_Click(null, null); }));
+			}
 		}
 
 		public void LoadLuaFile(string path)
