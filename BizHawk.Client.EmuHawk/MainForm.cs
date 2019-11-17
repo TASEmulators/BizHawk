@@ -387,18 +387,6 @@ namespace BizHawk.Client.EmuHawk
 				else GlobalWin.Tools.LuaConsole.LoadLuaFile(_argParser.luaScript);
 			}
 
-			GlobalWin.Tools.AutoLoad();
-
-			if (Global.Config.RecentWatches.AutoLoad)
-			{
-				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
-			}
-
-			if (Global.Config.RecentCheats.AutoLoad)
-			{
-				GlobalWin.Tools.Load<Cheats>();
-			}
-
 			SetStatusBar();
 
 			if (Global.Config.StartPaused)
@@ -3611,11 +3599,6 @@ namespace BizHawk.Client.EmuHawk
 
 						Emulator.CoreComm.RomStatusDetails = xSw.ToString();
 						Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
-					}
-
-					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
-					{
-						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
 
 					if (loader.LoadedEmulator is NES nes)

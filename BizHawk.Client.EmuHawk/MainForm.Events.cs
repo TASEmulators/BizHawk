@@ -3234,6 +3234,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
+			if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+			{
+				GlobalWin.Tools.Load<TI83KeyPad>();
+			}
+
+			GlobalWin.Tools.AutoLoad();
+
+			if (Global.Config.RecentWatches.AutoLoad)
+			{
+				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
+			}
+
+			if (Global.Config.RecentCheats.AutoLoad)
+			{
+				GlobalWin.Tools.Load<Cheats>();
+			}
+
 			HandlePlatformMenus();
 		}
 
