@@ -235,13 +235,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddFileWatches()
 		{
-			_watches.Clear();
-			foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
+			if (Global.Config.LuaReloadOnScriptFileChange)
 			{
-				var processedPath = PathManager.TryMakeRelative(item.Path);
-				string pathToLoad = ProcessPath(processedPath);
+				_watches.Clear();
+				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
+				{
+					var processedPath = PathManager.TryMakeRelative(item.Path);
+					string pathToLoad = ProcessPath(processedPath);
 
-				CreateFileWatcher(pathToLoad);
+					CreateFileWatcher(pathToLoad);
+				}
 			}
 		}
 
