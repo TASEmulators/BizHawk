@@ -10,19 +10,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 {
 	public class O2HawkControllerDeck
 	{
-		public O2HawkControllerDeck(string controller1Name)
+		public O2HawkControllerDeck(string controller1Name, string controller2Name)
 		{
 			if (!ValidControllerTypes.ContainsKey(controller1Name))
 			{
 				throw new InvalidOperationException("Invalid controller type: " + controller1Name);
 			}
 
+			if (!ValidControllerTypes.ContainsKey(controller2Name))
+			{
+				throw new InvalidOperationException("Invalid controller type: " + controller2Name);
+			}
+
 			Port1 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller1Name], 1);
+			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2);
 
 			Definition = new ControllerDefinition
 			{
 				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
+					.Concat(Port2.Definition.BoolButtons)
 					.ToList()
 			};
 
@@ -36,14 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 			return Port1.Read(c);
 		}
 
-		public ushort ReadAccX1(IController c)
+		public byte ReadPort2(IController c)
 		{
-			return Port1.ReadAccX(c);
-		}
-
-		public ushort ReadAccY1(IController c)
-		{
-			return Port1.ReadAccY(c);
+			return Port2.Read(c);
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -53,9 +55,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 			ser.BeginSection(nameof(Port1));
 			Port1.SyncState(ser);
 			ser.EndSection();
+			ser.BeginSection(nameof(Port2));
+			Port2.SyncState(ser);
+			ser.EndSection();
 		}
 
-		private readonly IPort Port1;
+		private readonly IPort Port1, Port2;
 
 		private static Dictionary<string, Type> _controllerTypes;
 

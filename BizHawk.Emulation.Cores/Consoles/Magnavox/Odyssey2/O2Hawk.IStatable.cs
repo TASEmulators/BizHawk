@@ -61,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync(nameof(controller_state), ref controller_state);
-			ser.Sync(nameof(Acc_X_state), ref Acc_X_state);
-			ser.Sync(nameof(Acc_Y_state), ref Acc_Y_state);
 			ser.Sync(nameof(in_vblank), ref in_vblank);
 			ser.Sync(nameof(in_vblank_old), ref in_vblank_old);	
 			ser.Sync(nameof(vblank_rise), ref vblank_rise);

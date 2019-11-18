@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 			_settings = (O2Settings)settings ?? new O2Settings();
 			_syncSettings = (O2SyncSettings)syncSettings ?? new O2SyncSettings();
-			_controllerDeck = new O2HawkControllerDeck(_syncSettings.Port1);
+			_controllerDeck = new O2HawkControllerDeck("O2 Controller", "O2 Controller");
 
 			byte[] Bios = null;
 
@@ -121,7 +121,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 
-			Register_Reset();
 			ppu.Reset();
 			audio.Reset();
 			serialport.Reset();

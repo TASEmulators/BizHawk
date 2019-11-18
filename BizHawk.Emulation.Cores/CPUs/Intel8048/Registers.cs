@@ -32,6 +32,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public ushort RB = 0;
 		public ushort RAM_ptr = 0;
 
+		// high PC address bit is controlled by instruction bank
+		// only hanges on JMP and CALL instructions
+		public ushort MB = 0;
+
 		//RAM occupies registers 0-63
 		public const ushort PC = 64;
 		public const ushort PSW = 65;

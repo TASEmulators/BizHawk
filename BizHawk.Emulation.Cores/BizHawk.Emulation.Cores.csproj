@@ -735,7 +735,6 @@
     </Compile>
     <Compile Include="Consoles\Magnavox\Odyssey2\O2HawkControllerDeck.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\O2HawkControllers.cs" />
-    <Compile Include="Consoles\Magnavox\Odyssey2\HW_Registers.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\Mappers\MapperBase.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\Mappers\Mapper_Default.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\MemoryMap.cs" />

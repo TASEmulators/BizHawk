@@ -13,11 +13,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort RD = 2;
 		public const ushort WR = 3;
 		public const ushort TR = 4;
-		public const ushort ADD16BR = 5;
+		public const ushort INC11 = 5;
 		public const ushort ADD8 = 6;
-		public const ushort ADD8RAM = 7;
+		public const ushort CMP8 = 7;
 		public const ushort ADC8 = 8;
-		public const ushort ADC8RAM = 9;
 		public const ushort INC16 = 10;
 		public const ushort INC8 = 11;
 		public const ushort INCA = 12;
@@ -35,55 +34,51 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort CM1 = 24;
 		public const ushort DA = 25;
 		public const ushort AND8 = 26;
-		public const ushort AND8RAM = 27;
-		public const ushort XOR8 = 28;
-		public const ushort XOR8RAM = 29;
-		public const ushort OR8 = 30;
-		public const ushort OR8RAM = 31;
-		public const ushort ASL = 32;
-		public const ushort ASR = 33;
-		public const ushort LSR = 34;
-		public const ushort BIT = 35;
-		public const ushort RD_INC = 36;
-		public const ushort SET_ADDR = 37;
-		public const ushort NEG = 38;
-		public const ushort TST = 39;
-		public const ushort CLRA = 40;
-		public const ushort CLC = 41;
-		public const ushort CL0 = 42;
-		public const ushort CL1 = 43;
-		public const ushort EI = 44;
-		public const ushort EN = 45;
-		public const ushort DI = 46;
-		public const ushort DN = 47;
-		public const ushort ADD8BR = 49;
-		public const ushort ABX = 50;
-		public const ushort JPE = 51;
-		public const ushort MSK = 52;
-		public const ushort CMP8 = 53;
-		public const ushort SUB16 = 54;
-		public const ushort ADD16 = 55;
-		public const ushort CMP16 = 56;
-		public const ushort CMP16D = 57;
-		public const ushort CLK_OUT = 64;
-		public const ushort IN = 65;
-		public const ushort OUT = 66;
-		public const ushort XCH = 67;
-		public const ushort XCH_RAM = 68;
-		public const ushort XCHD_RAM = 69;
-		public const ushort SEL_MB0 = 70;
-		public const ushort SEL_MB1 = 71;
-		public const ushort SEL_RB0 = 72;
-		public const ushort SEL_RB1 = 73;
-		public const ushort INC_RAM = 74;
-		public const ushort RES_TF = 75;
-		public const ushort MOV = 76;
-		public const ushort MOV_RAM = 77;
-		public const ushort MOVT = 78;
-		public const ushort MOVT_RAM = 79;
-		public const ushort ST_CNT = 80;
-		public const ushort STP_CNT = 81;
-		public const ushort ST_T = 82;
+		public const ushort XOR8 = 27;
+		public const ushort OR8 = 28;
+		public const ushort ASL = 29;
+		public const ushort ASR = 30;
+		public const ushort LSR = 31;
+		public const ushort BIT = 32;
+		public const ushort RD_INC = 33;
+		public const ushort SET_ADDR = 34;
+		public const ushort TST = 35;
+		public const ushort CLRA = 36;
+		public const ushort CLC = 37;
+		public const ushort CL0 = 38;
+		public const ushort CL1 = 39;
+		public const ushort EI = 40;
+		public const ushort EN = 41;
+		public const ushort DI = 42;
+		public const ushort DN = 43;
+		public const ushort ADD8BR = 44;
+		public const ushort ABX = 45;
+		public const ushort JPE = 46;
+		public const ushort MSK = 47;
+		public const ushort SUB16 = 48;
+		public const ushort ADD16 = 49;
+		public const ushort CMP16 = 50;
+		public const ushort CMP16D = 51;
+		public const ushort CLK_OUT = 52;
+		public const ushort IN = 53;
+		public const ushort OUT = 54;
+		public const ushort XCH = 55;
+		public const ushort XCH_RAM = 56;
+		public const ushort XCHD_RAM = 57;
+		public const ushort SEL_MB0 = 58;
+		public const ushort SEL_MB1 = 59;
+		public const ushort SEL_RB0 = 60;
+		public const ushort SEL_RB1 = 61;
+		public const ushort INC_RAM = 62;
+		public const ushort RES_TF = 63;
+		public const ushort MOV = 64;
+		public const ushort MOVT = 65;
+		public const ushort MOVT_RAM = 66;
+		public const ushort ST_CNT = 67;
+		public const ushort STP_CNT = 68;
+		public const ushort ST_T = 69;
+		public const ushort SET_ADDR_8 = 70;
+		public const ushort MEM_ALU = 71;
 
 		public I8048()
 		{
@@ -188,13 +183,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case SET_ADDR:
 					reg_d_ad = cur_instr[instr_pntr++];
-					reg_h_ad = cur_instr[instr_pntr++];
 					reg_l_ad = cur_instr[instr_pntr++];
+					reg_h_ad = cur_instr[instr_pntr++]; // direct value
 
-					// Console.WriteLine(reg_d_ad + " " + reg_h_ad + " " + reg_l_ad);
-					// Console.WriteLine(Regs[reg_d_ad] + " " + Regs[reg_h_ad] + " " + Regs[reg_l_ad]);
-
-					Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
+					Regs[reg_d_ad] = (ushort)(MB | reg_h_ad | Regs[reg_l_ad]);
 					break;
 				case TST:
 					TST_Func(cur_instr[instr_pntr++]);
@@ -211,9 +203,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case CL1:
 					F1 = false;
 					break;
-				case ADD16BR:
-					ADD16BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case ADD8BR:
 					ADD8BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -225,6 +214,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case CMP8:
 					CMP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case INC11:
+					reg_d_ad = cur_instr[instr_pntr++];
+					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | MB);
 					break;
 				case INC16:
 					INC16_Func(cur_instr[instr_pntr++]);
@@ -298,16 +291,27 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[cur_instr[instr_pntr++]] = Regs[ALU];
 					break;
 				case XCH_RAM:
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
 
+					Regs[ALU] = Regs[reg_d_ad];
+					Regs[reg_d_ad] = Regs[A];
+					Regs[A] = Regs[ALU];
 					break;
 				case XCHD_RAM:
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
+
+					Regs[ALU] = Regs[reg_d_ad];
+					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] & 0xF0) | (Regs[A] & 0xF));
+					Regs[A] = (ushort)((Regs[A] & 0xF0) | (Regs[ALU] & 0xF));
 
 					break;
 				case SEL_MB0:
-
+					MB = 0;
 					break;
 				case SEL_MB1:
-
+					MB = 1 << 11;
 					break;
 				case SEL_RB0:
 					RB = 0;
@@ -316,16 +320,15 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					RB = 24;
 					break;
 				case INC_RAM:
-
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
+					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] + 1) & 0xFF);
 					break;
 				case RES_TF:
 
 					break;
 				case MOV:
 					Regs[cur_instr[instr_pntr++]] = Regs[cur_instr[instr_pntr++]];
-					break;
-				case MOV_RAM:
-
 					break;
 				case MOVT:
 
@@ -354,7 +357,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case DECA:
 					DEC8_Func(A);
 					break;
-
+				case SET_ADDR_8:
+					reg_d_ad = cur_instr[instr_pntr++];
+					Regs[reg_d_ad] &= 0xFF00;
+					Regs[reg_d_ad] |= Regs[cur_instr[instr_pntr++]];
+					break;
+				case MEM_ALU:
+					Regs[ALU] = Regs[(ushort)(Regs[cur_instr[instr_pntr++]] & 0x3F)];
+					break;
 			}
 
 			if (++irq_pntr == IRQS)
@@ -466,7 +476,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			ser.Sync(nameof(RB), ref RB);
 			ser.Sync(nameof(RAM_ptr), ref RAM_ptr);
-
+			ser.Sync(nameof(MB), ref MB);
 			ser.Sync(nameof(Regs), ref Regs, false);
 			
 			ser.Sync(nameof(F1), ref F1);

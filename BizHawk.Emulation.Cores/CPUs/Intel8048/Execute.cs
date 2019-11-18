@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x0D: MOV_A_P4(5);								break; // MOV A,P5
 				case 0x0E: MOV_A_P4(6);								break; // MOV A,P6
 				case 0x0F: MOV_A_P4(7);								break; // MOV A,P7
-				case 0x10: OP_A_R(INC_RAM, R0);						break; // INC #,@R0
-				case 0x11: OP_A_R(INC_RAM, R1);						break; // INC #,@R1
+				case 0x10: OP_IR(INC_RAM, R0);						break; // INC @R0
+				case 0x11: OP_IR(INC_RAM, R1);						break; // INC @R1
 				case 0x12: JPB(0);									break; // JPB 0
 				case 0x13: OP_A_DIR(ADC8);							break; // ADC A,#
 				case 0x14: CALL(0);									break; // CALL
@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x1D: OP_R_IMP(INC8, R5);						break; // INC R5
 				case 0x1E: OP_R_IMP(INC8, R6);						break; // INC R6
 				case 0x1F: OP_R_IMP(INC8, R7);						break; // INC R7
-				case 0x20: OP_A_R(XCH_RAM, R0);						break; // XCH A,@R0
-				case 0x21: OP_A_R(XCH_RAM, R1);						break; // XCH A,@R1
+				case 0x20: OP_IR(XCH_RAM, R0);						break; // XCH A,@R0
+				case 0x21: OP_IR(XCH_RAM, R1);						break; // XCH A,@R1
 				case 0x22: ILLEGAL();								break; // ILLEGAL
 				case 0x23: OP_A_DIR(MOV);							break; // MOV A,#
 				case 0x24: JP_2k(1);								break; // JP 2K 1
@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x2D: OP_A_R(XCH, R5);							break; // XCH A,R5
 				case 0x2E: OP_A_R(XCH, R6);							break; // XCH A,R6
 				case 0x2F: OP_A_R(XCH, R7);							break; // XCH A,R7
-				case 0x30: OP_A_R(XCHD_RAM, R0);					break; // XCHD A,@R0
-				case 0x31: OP_A_R(XCHD_RAM, R1);					break; // XCHD A,@R1
+				case 0x30: OP_IR(XCHD_RAM, R0);						break; // XCHD A,@R0
+				case 0x31: OP_IR(XCHD_RAM, R1);						break; // XCHD A,@R1
 				case 0x32: JPB(1);									break; // JPB 1
 				case 0x33: ILLEGAL();								break; // ILLEGAL
 				case 0x34: CALL(1);									break; // CALL
@@ -87,8 +87,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x3D: MOV_P4_A(5);								break; // MOV P5,A
 				case 0x3E: MOV_P4_A(6);								break; // MOV P6,A
 				case 0x3F: MOV_P4_A(7);								break; // MOV P7,A
-				case 0x40: OP_A_R(OR8RAM, R0);						break; // OR A,@R0
-				case 0x41: OP_A_R(OR8RAM, R1);						break; // OR A,@R1
+				case 0x40: OP_A_IR(OR8, R0);						break; // OR A,@R0
+				case 0x41: OP_A_IR(OR8, R1);						break; // OR A,@R1
 				case 0x42: MOV_R(A, TIM);							break; // MOV A,TIM
 				case 0x43: OP_A_DIR(OR8);							break; // OR A,#
 				case 0x44: JP_2k(2);								break; // JP 2K 2
@@ -103,8 +103,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x4D: OP_A_R(OR8, R5);							break; // OR A,R5
 				case 0x4E: OP_A_R(OR8, R6);							break; // OR A,R6
 				case 0x4F: OP_A_R(OR8, R7);							break; // OR A,R7
-				case 0x50: OP_A_R(AND8RAM, R0);						break; // AND A,@R0
-				case 0x51: OP_A_R(AND8RAM, R1);						break; // AND A,@R1
+				case 0x50: OP_A_IR(AND8, R0);						break; // AND A,@R0
+				case 0x51: OP_A_IR(AND8, R1);						break; // AND A,@R1
 				case 0x52: JPB(2);									break; // JPB 2
 				case 0x53: OP_A_DIR(AND8);							break; // AND A,#
 				case 0x54: CALL(2);									break; // CALL
@@ -119,8 +119,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x5D: OP_A_R(AND8, R5);						break; // AND A,R5
 				case 0x5E: OP_A_R(AND8, R6);						break; // AND A,R6
 				case 0x5F: OP_A_R(AND8, R7);						break; // AND A,R7
-				case 0x60: OP_A_R(ADD8RAM, R0);						break; // ADD A,@R0
-				case 0x61: OP_A_R(ADD8RAM, R1);						break; // ADD A,@R1
+				case 0x60: OP_A_IR(ADD8, R0);						break; // ADD A,@R0
+				case 0x61: OP_A_IR(ADD8, R1);						break; // ADD A,@R1
 				case 0x62: MOV_R(TIM, A);							break; // MOV TIM,A
 				case 0x63: ILLEGAL();								break; // ILLEGAL
 				case 0x64: JP_2k(3);								break; // JP 2K 3
@@ -135,8 +135,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x6D: OP_A_R(ADD8, R5);						break; // ADD A,R5
 				case 0x6E: OP_A_R(ADD8, R6);						break; // ADD A,R6
 				case 0x6F: OP_A_R(ADD8, R7);						break; // ADD A,R7
-				case 0x70: OP_A_R(ADC8RAM, R0);						break; // ADC A,@R0
-				case 0x71: OP_A_R(ADC8RAM, R1);						break; // ADC A,@R1
+				case 0x70: OP_A_IR(ADC8, R0);						break; // ADC A,@R0
+				case 0x71: OP_A_IR(ADC8, R1);						break; // ADC A,@R1
 				case 0x72: JPB(3);									break; // JPB 3
 				case 0x73: ILLEGAL();								break; // ILLEGAL
 				case 0x74: CALL(3);									break; // CALL
@@ -231,8 +231,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0xCD: OP_R_IMP(DEC8, R5);						break; // DEC R5
 				case 0xCE: OP_R_IMP(DEC8, R6);						break; // DEC R6
 				case 0xCF: OP_R_IMP(DEC8, R7);						break; // DEC R7
-				case 0xD0: OP_A_R(XOR8RAM, R0);						break; // XOR A,@R0
-				case 0xD1: OP_A_R(XOR8RAM, R1);						break; // XOR A,@R1
+				case 0xD0: OP_A_IR(XOR8, R0);						break; // XOR A,@R0
+				case 0xD1: OP_A_IR(XOR8, R1);						break; // XOR A,@R1
 				case 0xD2: JPB(6);									break; // JPB 6
 				case 0xD3: OP_A_DIR(XOR8);							break; // XOR A,#
 				case 0xD4: CALL(6);									break; // CALL
@@ -263,8 +263,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0xED: DJNZ(R5);								break; // DJNZ R5
 				case 0xEE: DJNZ(R6);								break; // DJNZ R6
 				case 0xEF: DJNZ(R7);								break; // DJNZ R7
-				case 0xF0: OP_A_R(MOV_RAM, R0);						break; // MOV A,@R0
-				case 0xF1: OP_A_R(MOV_RAM, R1);						break; // MOV A,@R1
+				case 0xF0: OP_A_IR(MOV, R0);						break; // MOV A,@R0
+				case 0xF1: OP_A_IR(MOV, R1);						break; // MOV A,@R1
 				case 0xF2: JPB(7);									break; // JPB 7
 				case 0xF3: ILLEGAL();								break; // ILLEGAL
 				case 0xF4: CALL(7);									break; // CALL

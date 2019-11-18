@@ -46,33 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public class O2SyncSettings
 		{
-			[JsonIgnore]
-			public string Port1 = O2HawkControllerDeck.DefaultControllerName;
-
-			public enum ControllerType
-			{
-				Default,
-				Tilt
-			}
-
-			[JsonIgnore]
-			private ControllerType _O2Controller;
-
-			[DisplayName("Controller")]
-			[Description("Select Controller Type")]
-			[DefaultValue(ControllerType.Default)]
-			public ControllerType O2Controller
-			{
-				get { return _O2Controller; }
-				set
-				{
-					if (value == ControllerType.Default) { Port1 = O2HawkControllerDeck.DefaultControllerName; }
-					else { Port1 = "Gameboy Controller + Tilt"; }
-
-					_O2Controller = value;
-				}
-			}
-
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(false)]

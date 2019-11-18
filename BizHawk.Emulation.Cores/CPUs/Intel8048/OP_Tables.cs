@@ -48,6 +48,26 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 4;
 		}
 
+		public void OP_IR(ushort oper, ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							oper, (ushort)(reg + RB));
+
+			IRQS = 4;
+		}
+
+		public void OP_A_IR(ushort oper, ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							MEM_ALU, (ushort)(reg + RB),
+							oper, A, ALU);
+
+			IRQS = 4;
+		}
+
 		public void IN_OUT_A(ushort oper, ushort port)
 		{
 			PopulateCURINSTR(IDLE,
@@ -66,21 +86,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							MOV, dest, src);
 
 			IRQS = 4;
-		}
-
-		public void JP_A()
-		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
-
-			IRQS = 9;
 		}
 
 		public void IN_OUT_BUS(ushort oper)
@@ -239,7 +244,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							RD, ALU, PC,
-							INC16, PC,
+							INC11, PC,
 							IDLE,
 							IDLE,
 							IDLE,
@@ -254,7 +259,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							RD, ALU, PC,
-							INC16, PC,
+							INC11, PC,
 							IDLE,
 							IDLE,
 							IDLE,
@@ -269,7 +274,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							RD, ALU, PC,
-							INC16, PC,
+							INC11, PC,
 							IDLE,
 							IDLE,
 							IDLE,
@@ -340,6 +345,21 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 9;
 		}
 
+		public void JP_A()
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							MEM_ALU, A,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							SET_ADDR_8, PC, ALU);
+
+			IRQS = 9;
+		}
+
 		public void JPB(ushort Tebit)
 		{
 			if (Regs[A].Bit(Tebit))
@@ -347,20 +367,20 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
 								IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
-								IDLE);
+								SET_ADDR_8, PC, ALU);
 			}
 			else
 			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
 								IDLE,
 								IDLE,
 								IDLE,
@@ -377,20 +397,20 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
 								IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
-								IDLE);
+								SET_ADDR_8, PC, ALU);
 			}
 			else
 			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
 								SPEC,
 								IDLE,
 								IDLE,
@@ -405,12 +425,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
+							RD, ALU, PC,
+							INC11, PC,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							SET_ADDR, PC, ALU, high_addr);
 
 			IRQS = 9;
 		}

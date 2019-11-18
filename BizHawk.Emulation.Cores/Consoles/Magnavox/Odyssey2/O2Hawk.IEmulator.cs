@@ -1,8 +1,7 @@
-﻿using BizHawk.Common.NumberExtensions;
+﻿using System;
+
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 {
@@ -13,8 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
-		public ushort Acc_X_state;
-		public ushort Acc_Y_state;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -76,10 +73,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 				in_vblank_old = in_vblank;
 			}
 
-			// turn off the screen so the image doesnt persist
-			// but dont turn off blank_frame yet, it still needs to be true until the next VBL
-			// this doesn't run for GBC, some games, ex MIB the series 2, rely on the screens persistence while off to make video look smooth.
-			// But some GB gams, ex Battletoads, turn off the screen for a long time from the middle of the frame, so need to be cleared.
 			if (ppu.clear_screen)
 			{
 				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)color_palette[0]; }
@@ -126,9 +119,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
-
-			Acc_X_state = _controllerDeck.ReadAccX1(controller);
-			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
 		public int Frame => _frame;
@@ -166,17 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			if (ppu.blank_frame)
-			{
-				for (int i = 0; i < _vidbuffer.Length; i++)
-				{
-					_vidbuffer[i] = (int)color_palette[0];
-				}
-			}
-
 			for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
-
-			ppu.blank_frame = false;
 		}
 
 		public int VirtualWidth => 160;

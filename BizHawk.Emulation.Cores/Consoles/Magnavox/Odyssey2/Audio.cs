@@ -7,59 +7,22 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 {
-	// Audio Emulation
+	// Audio Emulation (a 24 bit shift register plus a control register)
 	public class Audio : ISoundProvider
 	{
 		public O2Hawk Core { get; set; }
 
-		private BlipBuffer _blip_L = new BlipBuffer(15000);
-		private BlipBuffer _blip_R = new BlipBuffer(15000);
-
-		public const int NR10 = 0;
-		public const int NR11 = 1;
-		public const int NR12 = 2;
-		public const int NR13 = 3;
-		public const int NR14 = 4;
-		public const int NR21 = 5;
-		public const int NR22 = 6;
-		public const int NR23 = 7;
-		public const int NR24 = 8;
-		public const int NR30 = 9;
-		public const int NR31 = 10;
-		public const int NR32 = 11;
-		public const int NR33 = 12;
-		public const int NR34 = 13;
-		public const int NR41 = 14;
-		public const int NR42 = 15;
-		public const int NR43 = 16;
-		public const int NR44 = 17;
-		public const int NR50 = 18;
-		public const int NR51 = 19;
-		public const int NR52 = 20;
-
-
-		public byte[] Audio_Regs = new byte[21];
-
-		// Contol Variables
-		public bool AUD_CTRL_vin_L_en;
-		public bool AUD_CTRL_vin_R_en;
-		public bool AUD_CTRL_sq1_L_en;
-		public bool AUD_CTRL_sq2_L_en;
-		public bool AUD_CTRL_wave_L_en;
-		public bool AUD_CTRL_noise_L_en;
-		public bool AUD_CTRL_sq1_R_en;
-		public bool AUD_CTRL_sq2_R_en;
-		public bool AUD_CTRL_wave_R_en;
-		public bool AUD_CTRL_noise_R_en;
-		public bool AUD_CTRL_power;
-		public byte AUD_CTRL_vol_L;
-		public byte AUD_CTRL_vol_R;
+		private BlipBuffer _blip_C = new BlipBuffer(15000);
 
 		public byte sample;
 
+		public byte shift_0, shift_1, shift_2, aud_ctrl;
+
 		public uint master_audio_clock;
 
-		public int latched_sample_L, latched_sample_R;
+		public int tick_cnt, output_bit;
+
+		public int latched_sample_C;
 
 		public byte ReadReg(int addr)
 		{
@@ -67,10 +30,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 			switch (addr)
 			{
-				case 0xFF10: ret = (byte)(Audio_Regs[NR10]); break; // NR10 (sweep)
-				case 0xFF11: ret = (byte)(Audio_Regs[NR11]); break; // NR11 (sound length / wave pattern duty %)
-				case 0xFF12: ret = (byte)(Audio_Regs[NR12]); break; // NR12 (envelope)
-				case 0xFF13: ret = (byte)(Audio_Regs[NR13]); break; // NR13 (freq low)
+				case 0xA7: ret = shift_0; break;
+				case 0xA8: ret = shift_1; break;
+				case 0xA9: ret = shift_2; break;
+				case 0xAA: ret = aud_ctrl; break;
 			}
 
 			return ret;
@@ -78,34 +41,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void WriteReg(int addr, byte value)
 		{
+			switch (addr)
+			{
+				case 0xA7: shift_0 = value; break;
+				case 0xA8: shift_1 = value; break;
+				case 0xA9: shift_2 = value; break;
+				case 0xAA: aud_ctrl = value; break;
+			}
 
 		}
 
 		public void tick()
 		{
+			int C_final = 0;
 
-			// add up components to each channel
-			int L_final = 0;
-			int R_final = 0;
-
-			if (AUD_CTRL_sq1_L_en) { L_final += 0; }
-
-
-			if (AUD_CTRL_sq1_R_en) { R_final += 0; }
-
-			L_final *= (AUD_CTRL_vol_L + 1) * 40;
-			R_final *= (AUD_CTRL_vol_R + 1) * 40;
-
-			if (L_final != latched_sample_L)
+			if (aud_ctrl.Bit(7))
 			{
-			_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
-			latched_sample_L = L_final;
+				tick_cnt++;
+				if (tick_cnt > (aud_ctrl.Bit(5) ? 455 : 1820))
+				{
+					tick_cnt = 0;
+
+					output_bit = (shift_0 >> 1) & 1;
+
+					shift_0 = (byte)((shift_0 >> 1) | ((shift_1 & 1) << 3));
+					shift_1 = (byte)((shift_1 >> 1) | ((shift_2 & 1) << 3));
+
+					if (aud_ctrl.Bit(6))
+					{
+						shift_2 = (byte)((shift_2 >> 1) | ((output_bit) << 3));
+					}
+					else
+					{
+						shift_0 = (byte)(shift_2 >> 1);
+					}
+				}
+
+				C_final = output_bit;
+				C_final *= ((aud_ctrl & 0xF) + 1) * 40;
 			}
 
-			if (R_final != latched_sample_R)
+			if (C_final != latched_sample_C)
 			{
-			_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
-			latched_sample_R = R_final;
+			_blip_C.AddDelta(master_audio_clock, C_final - latched_sample_C);
+			latched_sample_C = C_final;
 			}
 
 			master_audio_clock++;
@@ -121,39 +100,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void Reset()
 		{
-			Audio_Regs = new byte[21];
-
 			master_audio_clock = 0;
 
 			sample = 0;
 
-			_blip_L.SetRates(4194304, 44100);
-			_blip_R.SetRates(4194304, 44100);
+			_blip_C.SetRates(4194304, 44100);
 		}
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync(nameof(Audio_Regs), ref Audio_Regs, false);
-
 			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
 
 			ser.Sync(nameof(sample), ref sample);
-			ser.Sync(nameof(latched_sample_L), ref latched_sample_L);
-			ser.Sync(nameof(latched_sample_R), ref latched_sample_R);
+			ser.Sync(nameof(latched_sample_C), ref latched_sample_C);
 
-			ser.Sync(nameof(AUD_CTRL_vin_L_en), ref AUD_CTRL_vin_L_en);
-			ser.Sync(nameof(AUD_CTRL_vin_R_en), ref AUD_CTRL_vin_R_en);
-			ser.Sync(nameof(AUD_CTRL_sq1_L_en), ref AUD_CTRL_sq1_L_en);
-			ser.Sync(nameof(AUD_CTRL_sq2_L_en), ref AUD_CTRL_sq2_L_en);
-			ser.Sync(nameof(AUD_CTRL_wave_L_en), ref AUD_CTRL_wave_L_en);
-			ser.Sync(nameof(AUD_CTRL_noise_L_en), ref AUD_CTRL_noise_L_en);
-			ser.Sync(nameof(AUD_CTRL_sq1_R_en), ref AUD_CTRL_sq1_R_en);
-			ser.Sync(nameof(AUD_CTRL_sq2_R_en), ref AUD_CTRL_sq2_R_en);
-			ser.Sync(nameof(AUD_CTRL_wave_R_en), ref AUD_CTRL_wave_R_en);
-			ser.Sync(nameof(AUD_CTRL_noise_R_en), ref AUD_CTRL_noise_R_en);
-			ser.Sync(nameof(AUD_CTRL_power), ref AUD_CTRL_power);
-			ser.Sync(nameof(AUD_CTRL_vol_L), ref AUD_CTRL_vol_L);
-			ser.Sync(nameof(AUD_CTRL_vol_R), ref AUD_CTRL_vol_R);
+			ser.Sync(nameof(aud_ctrl), ref aud_ctrl);
+			ser.Sync(nameof(shift_0), ref shift_0);
+			ser.Sync(nameof(shift_1), ref shift_1);
+			ser.Sync(nameof(shift_2), ref shift_2);
+			ser.Sync(nameof(tick_cnt), ref tick_cnt);
+			ser.Sync(nameof(output_bit), ref output_bit);
 		}
 
 		#region audio
@@ -172,17 +138,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_blip_L.EndFrame(master_audio_clock);
-			_blip_R.EndFrame(master_audio_clock);
+			_blip_C.EndFrame(master_audio_clock);
 
-			nsamp = _blip_L.SamplesAvailable();
+			nsamp = _blip_C.SamplesAvailable();
 
 			samples = new short[nsamp * 2];
 
 			if (nsamp != 0)
 			{
-				_blip_L.ReadSamplesLeft(samples, nsamp);
-				_blip_R.ReadSamplesRight(samples, nsamp);
+				_blip_C.ReadSamples(samples, nsamp, false);
 			}
 
 			master_audio_clock = 0;
@@ -195,8 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void DiscardSamples()
 		{
-			_blip_L.Clear();
-			_blip_R.Clear();
+			_blip_C.Clear();
 			master_audio_clock = 0;
 		}
 
@@ -207,12 +170,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void DisposeSound()
 		{
-			_blip_L.Clear();
-			_blip_R.Clear();
-			_blip_L.Dispose();
-			_blip_R.Dispose();
-			_blip_L = null;
-			_blip_R = null;
+			_blip_C.Clear();
+			_blip_C.Dispose();
+			_blip_C = null;
 		}
 
 		#endregion
