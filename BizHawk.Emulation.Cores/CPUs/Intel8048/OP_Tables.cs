@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							oper, reg, ALU);
+							oper, (ushort)(reg + RB), ALU);
 
 			IRQS = 9;
 		}
@@ -317,13 +317,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		public void DJNZ(ushort reg)
 		{
-			if ((Regs[reg] - 1) == 0)
+			if ((Regs[reg + RB] - 1) == 0)
 			{		
 				PopulateCURINSTR(IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
-								IDLE,
+								DEC8, (ushort)(reg + RB),
+								RD, ALU, PC,
+								INC11, PC,
 								IDLE,
 								IDLE,
 								IDLE,
@@ -333,13 +333,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
+								DEC8, (ushort)(reg + RB),
+								RD, ALU, PC,
+								INC11, PC,
 								IDLE,
 								IDLE,
 								IDLE,
-								IDLE,
-								IDLE,
-								IDLE,
-								IDLE);
+								SET_ADDR_8, PC, ALU);
 			}
 			
 			IRQS = 9;

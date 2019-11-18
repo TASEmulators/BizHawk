@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"???", // 01
 			"OUT   BUS,A", // 02
 			"ADD   A,i8", // 03
-			"JP    R0", // 04
+			"JP    2K 0,i8", // 04
 			"EI", // 05
 			"???", // 06
 			"DEC   A", // 07
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"INC   @R1", // 11
 			"JPB   0", // 12
 			"ADC   A,i8", // 13
-			"CALL  @R0", // 14
+			"CALL  0,i8", // 14
 			"DI", // 15
 			"JP    TF", // 16
 			"INC   A", // 17
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"XCH   A,@R1", // 21
 			"???", // 22
 			"MOV   A,i8", // 23
-			"JP    R1", // 24
+			"JP    2K 1,i8", // 24
 			"EN", // 25
 			"JP    !T0", // 26
 			"CLR   A", // 27
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"XCHD  A,@R1", // 31
 			"JPB   1", // 32
 			"???", // 33
-			"CALL  1", // 34
+			"CALL  1,i8", // 34
 			"DN", // 35
 			"JP    T0", // 36
 			"COM   A", // 37
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"OR    A,@R1", // 41
 			"MOV   A,TIM", // 42
 			"OR    A,i8", // 43
-			"JP    2K 2", // 44
+			"JP    2K 2,i8", // 44
 			"START CNT", // 45
 			"JP    NT1", // 46
 			"SWP", // 47
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"AND   A,@R1", // 51
 			"JPB   2", // 52
 			"AND   A,i8", // 53
-			"CALL  2", // 54
+			"CALL  2,i8", // 54
 			"START TIM", // 55
 			"JP    T1", // 56
 			"DAA", // 57
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"ADD   A,@R1", // 61
 			"MOV   TIM,A", // 62
 			"???", // 63
-			"JP    2K 3", // 64
+			"JP    2K 3,i8", // 64
 			"STOP  CNT", // 65
 			"???", // 66
 			"RRC", // 67
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"ADC   A,@R1", // 71
 			"JPB   3", // 72
 			"???", // 73
-			"CALL  3", // 74
+			"CALL  3,i8", // 74
 			"ENT0  CLK", // 75
 			"JP    F1", // 76
 			"ROR", // 77
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOVX  A,@R1", // 81
 			"???", // 82
 			"RET", // 83
-			"JP    2K 4", // 84
+			"JP    2K 4,i8", // 84
 			"CLR   F0", // 85
 			"JP    !IRQ", // 86
 			"???", // 87
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOVX  @R1,A", // 91
 			"JPB   4", // 92
 			"RETR", // 93
-			"CALL  4", // 94
+			"CALL  4,i8", // 94
 			"COM   F0", // 95
 			"JP    A!=0", // 96
 			"CLR   C", // 97
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   @R1,A", // a1
 			"???", // a2
 			"MOV   A,@A", // a3
-			"JP    2K 5", // a4
+			"JP    2K 5,i8", // a4
 			"CLR   F1", // a5
 			"???", // a6
 			"COM   C", // a7
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"???", // b1
 			"JPB   5", // b2
 			"JPP   A", // b3
-			"CALL  5", // b4
+			"CALL  5,i8", // b4
 			"COM   F1", // b5
 			"JP    F0", // b6
 			"???", // b7
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"???", // c1
 			"???", // c2
 			"???", // c3
-			"JP    2K 6", // c4
+			"JP    2K 6,i8", // c4
 			"SEL   RB 0", // c5
 			"JP    A==0", // c6
 			"MOV   A,PSW", // c7
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"XOR   A,@R1", // d1
 			"JPB   6", // d2
 			"XOR   A,i8", // d3
-			"CALL  6", // d4
+			"CALL  6,i8", // d4
 			"SEL   RB 1", // d5
 			"???", // d6
 			"MOV   PSW,A", // d7
@@ -236,23 +236,23 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"???", // e1
 			"???", // e2
 			"MOV3  A,@A", // e3
-			"JP    2K 7", // e4
+			"JP    2K 7,i8", // e4
 			"SEL   MB 0", // e5
 			"JP    NC", // e6
 			"ROL", // e7
-			"DJNZ  R0", // e8
-			"DJNZ  R1", // e9
-			"DJNZ  R2", // ea
-			"DJNZ  R3", // eb
-			"DJNZ  R4", // ec
-			"DJNZ  R5", // ed
-			"DJNZ  R6", // ee
-			"DJNZ  R7", // ef
+			"DJNZ  R0,i8", // e8
+			"DJNZ  R1,i8", // e9
+			"DJNZ  R2,i8", // ea
+			"DJNZ  R3,i8", // eb
+			"DJNZ  R4,i8", // ec
+			"DJNZ  R5,i8", // ed
+			"DJNZ  R6,i8", // ee
+			"DJNZ  R7,i8", // ef
 			"MOV   A,@R0", // f0
 			"MOV   A,@R1", // f1
 			"JPB   7", // f2
 			"???", // f3
-			"CALL  7", // f4
+			"CALL  7,i8", // f4
 			"SEL   MB 1", // f5
 			"JP    C", // f6
 			"RLC", // f7

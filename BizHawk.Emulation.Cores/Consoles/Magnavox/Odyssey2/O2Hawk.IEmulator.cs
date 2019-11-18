@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void do_frame(IController controller)
 		{
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 10000; i++)
 			{
 				audio.tick();
 				ppu.tick();

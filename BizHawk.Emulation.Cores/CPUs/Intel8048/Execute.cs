@@ -191,14 +191,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0xA5: OP_IMP(CL1);								break; // CLR F1
 				case 0xA6: ILLEGAL();								break; // ILLEGAL
 				case 0xA7: OP_IMP(CMC);								break; // COM C
-				case 0xA8: OP_A_R(MOVT, R0);						break; // MOV R0,A
-				case 0xA9: OP_A_R(MOVT, R1);						break; // MOV R1,A
-				case 0xAA: OP_A_R(MOVT, R2);						break; // MOV R2,A
-				case 0xAB: OP_A_R(MOVT, R3);						break; // MOV R3,A
-				case 0xAC: OP_A_R(MOVT, R4);						break; // MOV R4,A
-				case 0xAD: OP_A_R(MOVT, R5);						break; // MOV R5,A
-				case 0xAE: OP_A_R(MOVT, R6);						break; // MOV R6,A
-				case 0xAF: OP_A_R(MOVT, R7);						break; // MOV R7,A
+				case 0xA8: OP_R_IMP(MOVAR, R0);						break; // MOV R0,A
+				case 0xA9: OP_R_IMP(MOVAR, R1);						break; // MOV R1,A
+				case 0xAA: OP_R_IMP(MOVAR, R2);						break; // MOV R2,A
+				case 0xAB: OP_R_IMP(MOVAR, R3);						break; // MOV R3,A
+				case 0xAC: OP_R_IMP(MOVAR, R4);						break; // MOV R4,A
+				case 0xAD: OP_R_IMP(MOVAR, R5);						break; // MOV R5,A
+				case 0xAE: OP_R_IMP(MOVAR, R6);						break; // MOV R6,A
+				case 0xAF: OP_R_IMP(MOVAR, R7);						break; // MOV R7,A
 				case 0xB0: ILLEGAL();								break; // ILLEGAL
 				case 0xB1: ILLEGAL();								break; // ILLEGAL
 				case 0xB2: JPB(5);									break; // JPB 5

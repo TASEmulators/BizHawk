@@ -73,15 +73,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort RES_TF = 63;
 		public const ushort MOV = 64;
 		public const ushort MOVT = 65;
-		public const ushort MOVT_RAM = 66;
-		public const ushort ST_CNT = 67;
-		public const ushort STP_CNT = 68;
-		public const ushort ST_T = 69;
-		public const ushort SET_ADDR_8 = 70;
-		public const ushort MEM_ALU = 71;
-		public const ushort PUSH = 72;
-		public const ushort PULL = 73;
-		public const ushort PULL_PC = 74;
+		public const ushort MOVAR = 66;
+		public const ushort MOVT_RAM = 67;
+		public const ushort ST_CNT = 68;
+		public const ushort STP_CNT = 69;
+		public const ushort ST_T = 70;
+		public const ushort SET_ADDR_8 = 71;
+		public const ushort MEM_ALU = 72;
+		public const ushort PUSH = 73;
+		public const ushort PULL = 74;
+		public const ushort PULL_PC = 75;
 
 		public I8048()
 		{
@@ -331,10 +332,15 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case MOV:
-					Regs[cur_instr[instr_pntr++]] = Regs[cur_instr[instr_pntr++]];
+					reg_d_ad = cur_instr[instr_pntr++];
+					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
 					break;
 				case MOVT:
-
+					reg_d_ad = cur_instr[instr_pntr++];
+					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
+					break;
+				case MOVAR:
+					Regs[cur_instr[instr_pntr++]] = Regs[A];
 					break;
 				case MOVT_RAM:
 
