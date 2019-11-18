@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public class SerialPort
 	{

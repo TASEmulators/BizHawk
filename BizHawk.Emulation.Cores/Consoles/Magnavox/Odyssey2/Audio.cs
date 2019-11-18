@@ -5,7 +5,7 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	// Audio Emulation (a 24 bit shift register plus a control register)
 	public class Audio : ISoundProvider

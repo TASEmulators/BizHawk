@@ -8,7 +8,7 @@ using BizHawk.Emulation.Common;
 	$0000-$03FF    BIOS
 */
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk
 	{
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 			}
 			else
 			{
-				return mapper.ReadMemory(addr);
+				return mapper.ReadMemory((ushort)(addr - 0x400));
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 			}
 			else
 			{
-				return mapper.PeekMemory(addr);
+				return mapper.PeekMemory((ushort)(addr - 0x400));
 			}
 		}
 

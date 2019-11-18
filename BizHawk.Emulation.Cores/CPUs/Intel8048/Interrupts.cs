@@ -18,7 +18,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		}
 
 		public bool IRQPending;
+		public bool TIRQPending;
 		public bool IntEn;
+		public bool TimIntEn;
 
 		public Action IRQCallback = delegate () { };
 

@@ -221,8 +221,13 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for ChannelF
 		/// </summary>
+		/// 
 		public static SystemInfo ChannelF { get; } = new SystemInfo("Channel F", CoreSystem.ChannelF, 2);
-
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for ChannelF
+		/// </summary>
+		/// 
+		public static SystemInfo O2 { get; } = new SystemInfo("Odyssey2", CoreSystem.Odyssey2, 2);
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for MAME
 		/// </summary>

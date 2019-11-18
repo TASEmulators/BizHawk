@@ -37,6 +37,7 @@
 		GB3x,
 		GB4x,
 		ChannelF,
+		Odyssey2,
 		MAME
 	}
 }

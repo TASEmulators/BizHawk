@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common.Components.I8048;
 
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	[Core(
 		"O2Hawk",
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 			byte[] Bios = null;
 
-			Bios = comm.CoreFileProvider.GetFirmware("O2", "World", true, "BIOS Not Found, Cannot Load");
+			Bios = comm.CoreFileProvider.GetFirmware("O2", "BIOS", true, "BIOS Not Found, Cannot Load");
 			ppu = new PPU();
 
 			if (Bios == null)
@@ -139,7 +139,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		private void Setup_Mapper()
 		{
-
+			mapper = new MapperDefault();
+			mapper.Core = this;
 		}
 	}
 }

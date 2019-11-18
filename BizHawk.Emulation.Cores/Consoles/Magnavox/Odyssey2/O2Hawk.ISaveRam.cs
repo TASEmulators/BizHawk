@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk : ISaveRam
 	{

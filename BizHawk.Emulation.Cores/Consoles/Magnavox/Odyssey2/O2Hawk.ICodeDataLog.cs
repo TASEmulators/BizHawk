@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.I8048;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk : ICodeDataLogger
 	{

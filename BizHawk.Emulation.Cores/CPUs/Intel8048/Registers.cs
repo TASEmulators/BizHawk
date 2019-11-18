@@ -14,9 +14,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		// The timer flag is set if the timer overflows, testing it resets it to zero
 		public bool TF;
 		public bool timer_en;
+		public bool counter_en;
+		public int timer_prescale;
 
 		// The 8048 has 2 test lines which can be used for conditionals, T0 can be used as an output
-		public bool T0, T1;
+		public bool T0, T1, T1_old;
 
 		// 8 'registers' but really they point to locations in RAM
 		public const ushort R0 = 0;

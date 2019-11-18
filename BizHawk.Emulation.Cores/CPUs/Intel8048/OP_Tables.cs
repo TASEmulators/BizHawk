@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
+							PULL_PC,
 							IDLE,
 							IDLE,
 							IDLE,
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
+							PULL,
 							IDLE,
 							IDLE,
 							IDLE,
@@ -305,12 +305,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							TR, ALU, A,
+							RD, ALU, PC,
+							INC11, PC,
 							IDLE,
+							PUSH,
 							IDLE,
-							MSK, ALU,
-							IDLE,
-							ALU);
+							SET_ADDR, PC, ALU, dest_h);
 
 			IRQS = 9;
 		}

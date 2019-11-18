@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X", "VEC" };
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X", "VEC", "O2" };
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -1177,6 +1177,9 @@ namespace BizHawk.Client.Common
 								break;
 							case "VEC":
 								core = CoreInventory.Instance["VEC", "VectrexHawk"];
+								break;
+							case "O2":
+								core = CoreInventory.Instance["O2", "O2Hawk"];
 								break;
 						}
 

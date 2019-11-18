@@ -79,6 +79,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort ST_T = 69;
 		public const ushort SET_ADDR_8 = 70;
 		public const ushort MEM_ALU = 71;
+		public const ushort PUSH = 72;
+		public const ushort PULL = 73;
+		public const ushort PULL_PC = 74;
 
 		public I8048()
 		{
@@ -90,13 +93,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ResetRegisters();
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
-			Regs[PC] = 0xFFFE;
+			Regs[PC] = 0x0;
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							RD_INC, ALU, PC,
-							RD_INC, ALU2, PC,
-							SET_ADDR, PC, ALU, ALU2);
+							IDLE,
+							IDLE,
+							IDLE);
 
 			IRQS = 6;
 			instr_pntr = irq_pntr = 0;
@@ -186,7 +189,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					reg_l_ad = cur_instr[instr_pntr++];
 					reg_h_ad = cur_instr[instr_pntr++]; // direct value
 
-					Regs[reg_d_ad] = (ushort)(MB | reg_h_ad | Regs[reg_l_ad]);
+					Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
 					break;
 				case TST:
 					TST_Func(cur_instr[instr_pntr++]);
@@ -337,19 +340,27 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					break;
 				case ST_CNT:
-
+					counter_en = true;
 					break;
 				case STP_CNT:
-
+					counter_en = timer_en = false;
 					break;
 				case ST_T:
-
+					timer_en = true;
+					timer_prescale = 0;
 					break;
 				case EI:
 					IntEn = true;
 					break;
+				case EN:
+					TimIntEn = true;
+					break;
 				case DI:
 					IntEn = false;
+					break;
+				case DN:
+					TimIntEn = false;
+					TIRQPending = false;
 					break;
 				case INCA:
 					INC8_Func(A);
@@ -365,12 +376,37 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case MEM_ALU:
 					Regs[ALU] = Regs[(ushort)(Regs[cur_instr[instr_pntr++]] & 0x3F)];
 					break;
+				case PUSH:
+					Regs[(Regs[PSW] & 0x7) * 2 + 8] = (ushort)(Regs[PC] & 0xFF);
+					Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] = (ushort)(((Regs[PC] >> 8) & 0xF) | (Regs[PSW] & 0xF0));
+					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) + 1) & 0x7) | (Regs[PSW] & 0xF8));
+					break;
+				case PULL:
+					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) - 1) & 0x7) | (Regs[PSW] & 0xF8));
+					Regs[PC] = (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8] & 0xFF);
+					Regs[PC] |= (ushort)((Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF) << 8);
+					Regs[PSW] &= 0xF;
+					Regs[PSW] |= (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF0);				
+					break;
+				case PULL_PC:
+					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) - 1) & 0x7) | (Regs[PSW] & 0xF8));
+					Regs[PC] = (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8] & 0xFF);
+					Regs[PC] |= (ushort)((Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF) << 8);
+					break;
+				case MSK:
+
+					break;
+				case SWP:
+					reg_d_ad = Regs[A];
+					Regs[A] = (ushort)(Regs[A] >> 4);
+					Regs[A] |= (ushort)((reg_d_ad << 4) & 0xF0);
+					break;
 			}
 
 			if (++irq_pntr == IRQS)
 			{
 				// then regular IRQ				
-				if (IRQPending && IntEn)
+				if ((IRQPending && IntEn) | (TIRQPending && TimIntEn))
 				{
 					IRQPending = false;
 
@@ -390,6 +426,42 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			}
 
 			TotalExecutedCycles++;
+
+			if (timer_en)
+			{
+				timer_prescale++;
+				if (timer_prescale == 32)
+				{
+					timer_prescale = 0;
+					if (Regs[TIM] == 255)
+					{
+						TF = true;
+						if (TimIntEn)
+						{
+							TIRQPending = true;
+						}
+					}
+					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
+				}
+			}
+
+			if (counter_en)
+			{
+				if (!T1 && T1_old)
+				{
+					if (Regs[TIM] == 255)
+					{
+						TF = true;
+						if (TimIntEn)
+						{
+							TIRQPending = true;
+						}
+					}
+					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
+				}
+			}
+
+			T1_old = T1;
 		}
 
 		// tracer stuff
@@ -463,7 +535,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.BeginSection("MC6809");
 
 			ser.Sync(nameof(IntEn), ref IntEn);
+			ser.Sync(nameof(TimIntEn), ref TimIntEn);
 			ser.Sync(nameof(IRQPending), ref IRQPending);
+			ser.Sync(nameof(TIRQPending), ref TIRQPending);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);
@@ -473,6 +547,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			ser.Sync(nameof(TF), ref TF);
 			ser.Sync(nameof(timer_en), ref timer_en);
+			ser.Sync(nameof(counter_en), ref counter_en);
+			ser.Sync(nameof(timer_prescale), ref timer_prescale);
 
 			ser.Sync(nameof(RB), ref RB);
 			ser.Sync(nameof(RAM_ptr), ref RAM_ptr);
@@ -482,6 +558,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(F1), ref F1);
 			ser.Sync(nameof(T0), ref T0);
 			ser.Sync(nameof(T1), ref T1);
+			ser.Sync(nameof(T1_old), ref T1_old);
 
 			ser.Sync(nameof(TotalExecutedCycles), ref TotalExecutedCycles);
 

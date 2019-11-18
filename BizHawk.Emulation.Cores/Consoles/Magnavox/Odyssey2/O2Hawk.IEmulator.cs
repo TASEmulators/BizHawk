@@ -3,7 +3,7 @@
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public partial class O2Hawk : IEmulator, IVideoProvider
 	{
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
 
 		public void do_frame(IController controller)
 		{
-			for (int i = 0; i < 70224; i++)
+			for (int i = 0; i < 100; i++)
 			{
 				audio.tick();
 				ppu.tick();

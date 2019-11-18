@@ -3,7 +3,7 @@ using System;
 
 using BizHawk.Emulation.Common.Components.I8048;
 
-namespace BizHawk.Emulation.Cores.Nintendo.O2Hawk
+namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
 	public class MapperBase
 	{

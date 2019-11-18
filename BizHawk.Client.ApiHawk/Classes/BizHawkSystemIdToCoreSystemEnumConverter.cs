@@ -115,15 +115,17 @@ namespace BizHawk.Client.ApiHawk
 					return CoreSystem.GB3x;
 
 				case "GB4x":
-					return CoreSystem.GB3x;
+					return CoreSystem.GB4x;
 
 				case "MAME":
 					return CoreSystem.MAME;
 
+				case "O2":
+					return CoreSystem.Odyssey2;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":
-				case "O2":
 				case "SGB":
 				case "UZE":
 				case "PCFX":
@@ -234,6 +236,9 @@ namespace BizHawk.Client.ApiHawk
 
 				case CoreSystem.AmstradCPC:
 					return "AmstradCPC";
+
+				case CoreSystem.Odyssey2:
+					return "O2";
 
 				default:
 					throw new IndexOutOfRangeException($"{value} is missing in convert list");
