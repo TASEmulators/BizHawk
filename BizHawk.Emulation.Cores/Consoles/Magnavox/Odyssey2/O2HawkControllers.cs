@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+			"Up", "Down", "Left", "Right", "F"
 		};
 
 		public void SyncState(Serializer ser)

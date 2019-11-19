@@ -66,13 +66,20 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(vblank_rise), ref vblank_rise);
 			ser.Sync(nameof(input_register), ref input_register);
 
+			ser.Sync(nameof(RAM_en), ref RAM_en);
+			ser.Sync(nameof(ppu_en), ref ppu_en);
+			ser.Sync(nameof(cart_b0), ref cart_b0);
+			ser.Sync(nameof(cart_b1), ref cart_b1);
+			ser.Sync(nameof(lum_en), ref lum_en);
+			ser.Sync(nameof(copy_en), ref copy_en);
+			ser.Sync(nameof(kybrd_en), ref kybrd_en);
+
 			// memory domains
 			ser.Sync(nameof(RAM), ref RAM, false);
-			ser.Sync(nameof(VRAM), ref VRAM, false);
 			ser.Sync(nameof(OAM), ref OAM, false);
 			ser.Sync(nameof(_bios), ref _bios, false);
 			ser.Sync(nameof(RAM_Bank), ref RAM_Bank);
-			ser.Sync(nameof(addr_access), ref addr_access);
+			ser.Sync(nameof(addr_latch), ref addr_latch);
 
 			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
 			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);

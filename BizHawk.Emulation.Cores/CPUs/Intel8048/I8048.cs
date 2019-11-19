@@ -83,6 +83,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort PUSH = 73;
 		public const ushort PULL = 74;
 		public const ushort PULL_PC = 75;
+		public const ushort EEA = 76;
+		public const ushort DEA = 77;
+		public const ushort RD_P = 78;
+		public const ushort WR_P = 79;
 
 		public I8048()
 		{
@@ -343,7 +347,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[cur_instr[instr_pntr++]] = Regs[A];
 					break;
 				case MOVT_RAM:
-
+					Regs[Regs[cur_instr[instr_pntr++]]] = Regs[A];
 					break;
 				case ST_CNT:
 					counter_en = true;
@@ -406,6 +410,18 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					reg_d_ad = Regs[A];
 					Regs[A] = (ushort)(Regs[A] >> 4);
 					Regs[A] |= (ushort)((reg_d_ad << 4) & 0xF0);
+					break;
+				case EEA:
+					EA = true;
+					break;
+				case DEA:
+					EA = false;
+					break;
+				case RD_P:
+					EA = false;
+					break;
+				case WR_P:
+					WritePort(cur_instr[instr_pntr++], (byte)Regs[cur_instr[instr_pntr++]]);
 					break;
 			}
 
@@ -551,6 +567,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(IRQS), ref IRQS);
 			ser.Sync(nameof(irq_pntr), ref irq_pntr);
 
+			ser.Sync(nameof(EA), ref EA);
 			ser.Sync(nameof(TF), ref TF);
 			ser.Sync(nameof(timer_en), ref timer_en);
 			ser.Sync(nameof(counter_en), ref counter_en);

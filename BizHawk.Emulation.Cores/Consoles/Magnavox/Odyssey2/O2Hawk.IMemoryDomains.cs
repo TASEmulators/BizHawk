@@ -22,6 +22,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					(addr, value) => RAM[addr] = value,
 					1),
 				new MemoryDomainDelegate(
+					"CPU RAM",
+					64,
+					MemoryDomain.Endian.Little,
+					addr => (byte)cpu.Regs[addr],
+					(addr, value) => cpu.Regs[addr] = value,
+					1),
+				new MemoryDomainDelegate(
 					"System Bus",
 					0X1000,
 					MemoryDomain.Endian.Little,
@@ -36,11 +43,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					(addr, value) => _rom[addr] = value,
 					1),
 				new MemoryDomainDelegate(
-					"VRAM",
-					VRAM.Length,
+					"PPU",
+					256,
 					MemoryDomain.Endian.Little,
-					addr => VRAM[addr],
-					(addr, value) => VRAM[addr] = value,
+					addr => ppu.ReadReg((int)addr),
+					(addr, value) => ppu.WriteReg((int)addr, value),
 					1)
 			};
 

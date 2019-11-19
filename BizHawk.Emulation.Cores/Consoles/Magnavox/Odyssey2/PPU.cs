@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				ret = VDC_collision;
 			}
-			else
+			else if(addr == 0xA3)
 			{
 				ret = VDC_color;
 			}
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_collision = value;
 			}
-			else
+			else if (addr == 0xA3)
 			{
 				VDC_color = value;
 			}
@@ -150,13 +150,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		}
 
 		public void Reset()
-		{
-
-		}
-
-		// order sprites according to x coordinate
-		// note that for sprites of equal x coordinate, priority goes to first on the list
-		public void reorder_and_assemble_sprites()
 		{
 
 		}

@@ -183,8 +183,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0x9D: OP_EXP_A(AND8, P5);						break; // AND P5,A
 				case 0x9E: OP_EXP_A(AND8, P6);						break; // AND P6,A
 				case 0x9F: OP_EXP_A(AND8, P7);						break; // AND P7,A
-				case 0xA0: OP_A_R(MOVT_RAM, R0);					break; // MOV @R0,A
-				case 0xA1: OP_A_R(MOVT_RAM, R1);					break; // MOV @R1,A
+				case 0xA0: OP_IR(MOVT_RAM, R0);						break; // MOV @R0,A
+				case 0xA1: OP_IR(MOVT_RAM, R1);						break; // MOV @R1,A
 				case 0xA2: ILLEGAL();								break; // ILLEGAL
 				case 0xA3: MOV_A_A();								break; // MOV A,@A
 				case 0xA4: JP_2k(5);								break; // JP 2K 5

@@ -30,6 +30,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
+					.Concat(new[]
+					{
+						"Power"
+					})
 					.ToList()
 			};
 

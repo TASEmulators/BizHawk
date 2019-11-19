@@ -227,13 +227,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
+							EEA,
+							WR_P, 0, (ushort)(reg + RB),
+							DEA,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							WR_P, 0, A);
 
 			IRQS = 9;
 		}

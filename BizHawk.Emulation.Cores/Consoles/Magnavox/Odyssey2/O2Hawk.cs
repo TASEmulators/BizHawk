@@ -21,10 +21,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		// memory domains
 		public byte[] RAM = new byte[0x80];
 
-		public byte[] VRAM = new byte[0x4000];
 		public byte[] OAM = new byte[0xA0];
 
 		public int RAM_Bank;
+		public byte addr_latch;
+		public bool ppu_en, RAM_en, kybrd_en, copy_en, lum_en, cart_b0, cart_b1;
+		public const bool P15 = true;
 
 		public byte[] _bios;
 		public readonly byte[] _rom;		
@@ -34,8 +36,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public bool has_bat;
 
 		private int _frame = 0;
-
-		public ushort addr_access;
 
 		public MapperBase mapper;
 
@@ -108,6 +108,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			SetupMemoryDomains();
 			HardReset();
+
+			for (int i = 0; i < 64; i++)
+			{
+				cpu.Regs[i] = (byte)i;
+			}
+
+			for (int j = 0; j < 0x80; j++)
+			{
+				RAM[j] = (byte)j;
+			}
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
