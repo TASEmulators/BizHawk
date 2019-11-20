@@ -335,6 +335,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
+			if (Global.Emulator is Gameboy)
+			{
+				movie.HeaderEntries.Add("CycleCount", "0");
+			}
+
 			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
 			{
 				movie.HeaderEntries.Add("IsSGMode", "1");

@@ -166,10 +166,15 @@ namespace BizHawk.Client.Common
 
 		protected virtual void Write(string fn, bool backup = false)
 		{
-			if (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
+			if (Global.Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)
 			{
-				var _subnes = (BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
+				var _subnes = (Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk)Global.Emulator;
 				Header["VBlankCount"] = _subnes.VBL_CNT.ToString();
+			}
+			else if (Global.Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
+			{
+				var _gameboy = (Emulation.Cores.Nintendo.Gameboy.Gameboy)Global.Emulator;
+				Header["CycleCount"] = _gameboy.CycleCount.ToString();
 			}
 
 			var file = new FileInfo(fn);

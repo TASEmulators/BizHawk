@@ -268,13 +268,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_autosaveTimer.Stop();
 
-			if (Emulator is BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
-				&& Emulator.Frame != CurrentTasMovie.InputLogLength - 1)
+			if (Emulator.Frame != CurrentTasMovie.InputLogLength - 1)
 			{
-				var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result == DialogResult.OK)
+				if (Emulator is Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
+					|| Emulator is Emulation.Cores.Nintendo.Gameboy.Gameboy)
 				{
-					GoToFrame(CurrentTasMovie.InputLogLength - 1);
+					var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+					if (result == DialogResult.OK)
+					{
+						GoToFrame(CurrentTasMovie.InputLogLength - 1);
+					}
 				}
 			}
 
