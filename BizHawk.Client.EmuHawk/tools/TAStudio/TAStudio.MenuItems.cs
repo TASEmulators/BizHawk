@@ -267,6 +267,17 @@ namespace BizHawk.Client.EmuHawk
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
+
+			if (Emulator is BizHawk.Emulation.Cores.Nintendo.SubNESHawk.SubNESHawk
+				&& Emulator.Frame != CurrentTasMovie.InputLogLength - 1)
+			{
+				var result = MessageBox.Show("This core requires emulation to be on the last frame when writing the movie, otherwise movie length may appear incorrect.\nSeek there?", "Export movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result == DialogResult.OK)
+				{
+					GoToFrame(CurrentTasMovie.InputLogLength - 1);
+				}
+			}
+
 			var bk2 = CurrentTasMovie.ToBk2(true, true);
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			Cursor = Cursors.WaitCursor;
