@@ -145,7 +145,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0)
+			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0 
+				|| CurrentTasMovie.Filename == DefaultTasProjName())
 			{
 				return;
 			}
