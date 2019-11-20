@@ -1381,13 +1381,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
 				{
-					FirstVisibleRow = 0;
-					Refresh();
+					//FirstVisibleRow = 0;
+					//Refresh();
 				}
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
 				{
-					LastVisibleRow = RowCount;
-					Refresh();
+					//LastVisibleRow = RowCount;
+					//Refresh();
 				}
 				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
 				{
@@ -1476,20 +1476,20 @@ namespace BizHawk.Client.EmuHawk
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Ctrl + Home
 				{
 					//move selection courser to frame 0
-					if (LetKeysModifySelection)
-					{
-						DeselectAll();
-						SelectRow(0, true);
-					}
+					//if (LetKeysModifySelection)
+					//{
+					//	DeselectAll();
+					//	SelectRow(0, true);
+					//}
 				}
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.End) // Ctrl + End
 				{
 					//move selection courser to end of movie
-					if (LetKeysModifySelection)
-					{
-						DeselectAll();
-						SelectRow(RowCount-1, true);
-					}
+					//if (LetKeysModifySelection)
+					//{
+					//	DeselectAll();
+					//	SelectRow(RowCount-1, true);
+					//}
 				}
 
 			}
