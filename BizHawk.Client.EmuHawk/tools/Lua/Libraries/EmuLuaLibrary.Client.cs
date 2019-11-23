@@ -120,6 +120,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
 		[LuaMethodExample("client.invisibleemulation( true );")]
 		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
 		public void InvisibleEmulation(bool invisible)
@@ -127,6 +131,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.InvisibleEmulation = invisible;
 		}
 
+		/// <summary>
+		/// Use with <see cref="InvisibleEmulation(bool)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
 		[LuaMethodExample("client.seekframe( 100 );")]
 		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
 		public void SeekFrame(int frame)

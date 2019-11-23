@@ -585,6 +585,27 @@ namespace BizHawk.Client.EmuHawk
 		public bool HoldFrameAdvance { get; set; } // necessary for tastudio > button
 		public bool PressRewind { get; set; } // necessary for tastudio < button
 		public bool FastForward { get; set; }
+
+		/// <summary>
+		/// Disables updates for video/audio, and enters "turbo" mode.
+		/// Can be used to replicate Gens-rr's "latency compensation" that involves:
+		/// <list type="bullet">
+		/// <item><description>Saving a no-framebuffer state that is stored in RAM</description></item>
+		/// <item><description>Emulating forth for some frames with updates disabled</description></item>
+		/// <item><list type="bullet">
+		/// <item><description>Optionally hacking in-game memory
+		/// (like camera position, to show off-screen areas)</description></item>
+		/// </list></item>
+		/// <item><description>Updating the screen</description></item>
+		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
+		/// </list>
+		/// The most common usecase is CamHack for Sonic games.
+		/// Accessing this from Lua allows to keep internal code hacks to minimum.
+		/// <list type="bullet">
+		/// <item><description><see cref="EmuHawkLuaLibrary.InvisibleEmulation(bool)"/></description></item>
+		/// <item><description><see cref="EmuHawkLuaLibrary.SeekFrame(int)"/></description></item>
+		/// </list>
+		/// </summary>
 		public bool InvisibleEmulation { get; set; }
 
 		// runloop won't exec lua
