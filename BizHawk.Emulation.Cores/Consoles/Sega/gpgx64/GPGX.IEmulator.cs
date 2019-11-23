@@ -58,8 +58,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			_drivelight = false;
 
 			Core.gpgx_advance();
-			UpdateVideo();
-			update_audio();
+
+			if (render)
+				UpdateVideo();
+
+			if (rendersound)
+				update_audio();
 
 			if (IsLagFrame)
 				LagCount++;

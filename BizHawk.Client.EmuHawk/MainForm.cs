@@ -571,6 +571,28 @@ namespace BizHawk.Client.EmuHawk
 		public bool PressRewind { get; set; } // necessary for tastudio < button
 		public bool FastForward { get; set; }
 
+		/// <summary>
+		/// Disables updates for video/audio, and enters "turbo" mode.
+		/// Can be used to replicate Gens-rr's "latency compensation" that involves:
+		/// <list type="bullet">
+		/// <item><description>Saving a no-framebuffer state that is stored in RAM</description></item>
+		/// <item><description>Emulating forth for some frames with updates disabled</description></item>
+		/// <item><list type="bullet">
+		/// <item><description>Optionally hacking in-game memory
+		/// (like camera position, to show off-screen areas)</description></item>
+		/// </list></item>
+		/// <item><description>Updating the screen</description></item>
+		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
+		/// </list>
+		/// The most common usecase is CamHack for Sonic games.
+		/// Accessing this from Lua allows to keep internal code hacks to minimum.
+		/// <list type="bullet">
+		/// <item><description><see cref="EmuHawkLuaLibrary.InvisibleEmulation(bool)"/></description></item>
+		/// <item><description><see cref="EmuHawkLuaLibrary.SeekFrame(int)"/></description></item>
+		/// </list>
+		/// </summary>
+		public bool InvisibleEmulation { get; set; }
+
 		// runloop won't exec lua
 		public bool SuppressLua { get; set; }
 
@@ -2809,7 +2831,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (runFrame || force)
 			{
-				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
+				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
@@ -2842,10 +2864,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				CaptureRewind(isRewinding);
+				if (!InvisibleEmulation)
+				{
+					CaptureRewind(isRewinding);
+				}
 
 				// Set volume, if enabled
-				if (Global.Config.SoundEnabledNormal)
+				if (Global.Config.SoundEnabledNormal && !InvisibleEmulation)
 				{
 					atten = Global.Config.SoundVolume / 100.0f;
 
@@ -2878,13 +2903,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				// why not skip audio if the user doesn't want sound
-				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing)
+					|| (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
 				{
 					atten = 0;
 				}
 
-				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
+				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
 				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
@@ -2924,7 +2950,7 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi && new_frame)
+				if (!PauseAvi && new_frame && !InvisibleEmulation)
 				{
 					AvFrameAdvance();
 				}

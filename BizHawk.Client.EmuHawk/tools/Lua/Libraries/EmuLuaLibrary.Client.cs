@@ -120,6 +120,42 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Use with <see cref="SeekFrame(int)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
+		[LuaMethodExample("client.invisibleemulation( true );")]
+		[LuaMethod("invisibleemulation", "Disables and enables emulator updates")]
+		public void InvisibleEmulation(bool invisible)
+		{
+			GlobalWin.MainForm.InvisibleEmulation = invisible;
+		}
+
+		/// <summary>
+		/// Use with <see cref="InvisibleEmulation(bool)"/> for CamHack.
+		/// Refer to <see cref="MainForm.InvisibleEmulation"/> for the workflow details.
+		/// </summary>
+		[LuaMethodExample("client.seekframe( 100 );")]
+		[LuaMethod("seekframe", "Makes the emulator seek to the frame specified")]
+		public void SeekFrame(int frame)
+		{
+			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+
+			// can't re-enter lua while doing this
+			GlobalWin.MainForm.SuppressLua = true;
+			while (Emulator.Frame != frame)
+			{
+				GlobalWin.MainForm.SeekFrameAdvance();
+			}
+
+			GlobalWin.MainForm.SuppressLua = false;
+
+			if (!wasPaused)
+			{
+				GlobalWin.MainForm.UnpauseEmulator();
+			}
+		}
+
 		[LuaMethodExample("local incliget = client.gettargetscanlineintensity( );")]
 		[LuaMethod("gettargetscanlineintensity", "Gets the current scanline intensity setting, used for the scanline display filter")]
 		public static int GetTargetScanlineIntensity()
