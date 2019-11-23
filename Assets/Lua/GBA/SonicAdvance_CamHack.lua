@@ -1,3 +1,5 @@
+-- feos, 2019
+
 local offX, offY, camX, camY
 local addr_offX = 0x5B96
 local addr_offY = 0x5B98
