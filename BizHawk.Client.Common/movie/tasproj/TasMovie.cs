@@ -13,8 +13,6 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-		private readonly IStateManager _stateManager;
-		private readonly TasLagLog _lagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
 		private BackgroundWorker _progressReportWorker;
 
@@ -32,19 +30,19 @@ namespace BizHawk.Client.Common
 		public bool UseInputCache { get; set; }
 		public int CurrentBranch { get; set; }
 
-		public TasLagLog TasLagLog => _lagLog;
+		public TasLagLog TasLagLog { get; } = new TasLagLog();
 		public IStringLog InputLog => Log;
 		public int BranchCount => Branches.Count;
-		public int LastStatedFrame => _stateManager.Last;
+		public int LastStatedFrame => TasStateManager.Last;
 		public override string PreferredExtension => Extension;
-		public IStateManager TasStateManager => _stateManager;
+		public IStateManager TasStateManager { get; }
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
-			HasState = _stateManager.HasState(index),
+			HasState = TasStateManager.HasState(index),
 			LogEntry = GetInputLogEntry(index),
-			Lagged = _lagLog[index + 1],
-			WasLagged = _lagLog.History(index + 1)
+			Lagged = TasLagLog[index + 1],
+			WasLagged = TasLagLog.History(index + 1)
 		};
 
 		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
@@ -58,7 +56,7 @@ namespace BizHawk.Client.Common
 			}
 
 			ChangeLog = new TasMovieChangeLog(this);
-			_stateManager = new TasStateManager(this);
+			TasStateManager = new TasStateManager(this);
 			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
@@ -77,7 +75,7 @@ namespace BizHawk.Client.Common
 			}
 
 			ChangeLog = new TasMovieChangeLog(this);
-			_stateManager = new TasStateManager(this);
+			TasStateManager = new TasStateManager(this);
 			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
@@ -147,8 +145,8 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			var anyInvalidated = _lagLog.RemoveFrom(frame);
-			_stateManager.Invalidate(frame + 1);
+			var anyInvalidated = TasLagLog.RemoveFrom(frame);
+			TasStateManager.Invalidate(frame + 1);
 			Changes = anyInvalidated;
 			LastEditedFrame = frame;
 
@@ -215,9 +213,9 @@ namespace BizHawk.Client.Common
 
 		public void ClearGreenzone()
 		{
-			if (_stateManager.Any())
+			if (TasStateManager.Any())
 			{
-				_stateManager.Clear();
+				TasStateManager.Clear();
 				Changes = true;
 			}
 		}
@@ -232,17 +230,17 @@ namespace BizHawk.Client.Common
 				LastPositionStable = false;
 			}
 
-			_lagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			TasLagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			if (!_stateManager.HasState(Global.Emulator.Frame))
+			if (!TasStateManager.HasState(Global.Emulator.Frame))
 			{
-				_stateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
+				TasStateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 
 		public void ClearLagLog()
 		{
-			_lagLog.Clear();
+			TasLagLog.Clear();
 		}
 
 		public void CopyLog(IEnumerable<string> log)
@@ -423,7 +421,7 @@ namespace BizHawk.Client.Common
 
 			if (_timelineBranchFrame.HasValue)
 			{
-				_lagLog.RemoveFrom(_timelineBranchFrame.Value);
+				TasLagLog.RemoveFrom(_timelineBranchFrame.Value);
 				TasStateManager.Invalidate(_timelineBranchFrame.Value);
 			}
 

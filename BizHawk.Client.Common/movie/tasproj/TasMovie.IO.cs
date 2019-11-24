@@ -25,13 +25,13 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
+				bs.PutLump(BinaryStateLump.Input, WriteInputLog);
 
 				// TasProj extras
-				var settings = JsonConvert.SerializeObject(_stateManager.Settings);
+				var settings = JsonConvert.SerializeObject(TasStateManager.Settings);
 				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 
-				bs.PutLump(BinaryStateLump.LagLog, tw => _lagLog.Save(tw));
+				bs.PutLump(BinaryStateLump.LagLog, tw => TasLagLog.Save(tw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
@@ -68,9 +68,9 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(Session)));
 
-				if (_stateManager.Settings.SaveStateHistory && !backup)
+				if (TasStateManager.Settings.SaveStateHistory && !backup)
 				{
-					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => _stateManager.Save(bw));
+					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => TasStateManager.Save(bw));
 				}
 			}
 
@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 				// TasMovie enhanced information
 				bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 				{
-					_lagLog.Load(tr);
+					TasLagLog.Load(tr);
 				});
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
@@ -190,7 +190,7 @@ namespace BizHawk.Client.Common
 					var json = tr.ReadToEnd();
 					try
 					{
-						_stateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
+						TasStateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
 					}
 					catch
 					{
@@ -266,18 +266,18 @@ namespace BizHawk.Client.Common
 
 				if (!preload)
 				{
-					if (_stateManager.Settings.SaveStateHistory)
+					if (TasStateManager.Settings.SaveStateHistory)
 					{
 						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 						{
-							_stateManager.Load(br);
+							TasStateManager.Load(br);
 						});
 					}
 
 					// Movie should always have a state at frame 0.
 					if (!StartsFromSavestate && Global.Emulator.Frame == 0)
 					{
-						_stateManager.Capture();
+						TasStateManager.Capture();
 					}
 				}
 			}
@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 		private void ClearTasprojExtras()
 		{
 			ClearLagLog();
-			_stateManager.Clear();
+			TasStateManager.Clear();
 			Markers.Clear();
 			ChangeLog.ClearLog();
 		}

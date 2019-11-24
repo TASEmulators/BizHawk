@@ -19,12 +19,12 @@ namespace BizHawk.Client.Common
 
 			base.RecordFrame(frame, source);
 
-			_lagLog.RemoveFrom(frame);
-			_lagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			TasLagLog.RemoveFrom(frame);
+			TasLagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
 			if (IsRecording)
 			{
-				_stateManager.Invalidate(frame + 1);
+				TasStateManager.Invalidate(frame + 1);
 			}
 
 			if (frame != 0)
@@ -45,8 +45,8 @@ namespace BizHawk.Client.Common
 
 			base.Truncate(frame);
 
-			_lagLog.RemoveFrom(frame);
-			_stateManager.Invalidate(frame);
+			TasLagLog.RemoveFrom(frame);
+			TasStateManager.Invalidate(frame);
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
@@ -544,17 +544,17 @@ namespace BizHawk.Client.Common
 
 		public void RemoveLagHistory(int frame)
 		{
-			_lagLog.RemoveHistoryAt(frame);
+			TasLagLog.RemoveHistoryAt(frame);
 		}
 
 		public void InsertLagHistory(int frame, bool isLag)
 		{
-			_lagLog.InsertHistoryAt(frame, isLag);
+			TasLagLog.InsertHistoryAt(frame, isLag);
 		}
 
 		public void SetLag(int frame, bool? value)
 		{
-			_lagLog[frame] = value;
+			TasLagLog[frame] = value;
 		}
 
 		#endregion
