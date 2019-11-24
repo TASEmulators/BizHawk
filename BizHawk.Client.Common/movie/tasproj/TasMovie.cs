@@ -427,19 +427,19 @@ namespace BizHawk.Client.Common
 			return Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
 		}
 
-		public int BranchHashByIndex(int index)
+		public Guid BranchGuidByIndex(int index)
 		{
 			if (index >= Branches.Count)
 			{
-				return -1;
+				return Guid.Empty;
 			}
 
-			return Branches[index].UniqueIdentifier.GetHashCode();
+			return Branches[index].UniqueIdentifier;
 		}
 
-		public int BranchIndexByHash(int hash)
+		public int BranchIndexByHash(Guid uuid)
 		{
-			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier.GetHashCode() == hash);
+			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier == uuid);
 			if (branch == null)
 			{
 				return -1;

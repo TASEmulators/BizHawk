@@ -655,9 +655,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
-				int currentHash = Movie.BranchHashByIndex(Movie.CurrentBranch);
+				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				int newIndex = Movie.BranchIndexByHash(currentHash);
+				int newIndex = Movie.BranchIndexByHash(guid);
 				Movie.CurrentBranch = newIndex;
 				Select(newIndex, true);
 			}
