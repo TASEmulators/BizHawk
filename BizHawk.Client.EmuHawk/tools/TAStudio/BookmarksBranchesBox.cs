@@ -16,12 +16,12 @@ namespace BizHawk.Client.EmuHawk
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
 
-		private readonly ScreenshotForm Screenshot = new ScreenshotForm();
+		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
 
 		private TasMovie Movie => Tastudio.CurrentTasMovie;
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
-		private int LongestBranchText = 0;
+		private int _longestBranchText;
 
 		private enum BranchUndo
 		{
@@ -53,8 +53,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int HoverInterval
 		{
-			get { return BranchView.HoverInterval; }
-			set { BranchView.HoverInterval = value; }
+			get => BranchView.HoverInterval;
+			set => BranchView.HoverInterval = value;
 		}
 
 		public BookmarksBranchesBox()
@@ -551,9 +551,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LongestBranchText = temp;
+			_longestBranchText = temp;
 
-			int textWidth = (LongestBranchText * 12) + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
+			int textWidth = (_longestBranchText * 12) + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
 			var column = BranchView.AllColumns.Single(c => c.Name == UserTextColumnName);
 
 			if (textWidth < 90)
@@ -638,7 +638,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BranchView.CurrentCell?.RowIndex == null || BranchView.CurrentCell.Column == null)
 			{
-				Screenshot.FadeOut();
+				_screenshot.FadeOut();
 			}
 			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
 			{
@@ -648,18 +648,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
 		{
-			Screenshot.FadeOut();
+			_screenshot.FadeOut();
 		}
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
 			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
-				int currenthash = Movie.BranchHashByIndex(Movie.CurrentBranch);
+				int currentHash = Movie.BranchHashByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
-				int newindex = Movie.BranchIndexByHash(currenthash);
-				Movie.CurrentBranch = newindex;
-				Select(newindex, true);
+				int newIndex = Movie.BranchIndexByHash(currentHash);
+				Movie.CurrentBranch = newIndex;
+				Select(newIndex, true);
 			}
 		}
 
@@ -682,20 +682,20 @@ namespace BizHawk.Client.EmuHawk
 						location.Offset(width + Width, 0);
 					}
 
-					Screenshot.UpdateValues(branch, location, width, height,
+					_screenshot.UpdateValues(branch, location, width, height,
 						(int)Graphics.FromHwnd(this.Handle).MeasureString(
-							branch.UserText, Screenshot.Font, width).Height);
+							branch.UserText, _screenshot.Font, width).Height);
 
-					Screenshot.FadeIn();
+					_screenshot.FadeIn();
 				}
 				else
 				{
-					Screenshot.FadeOut();
+					_screenshot.FadeOut();
 				}
 			}
 			else
 			{
-				Screenshot.FadeOut();
+				_screenshot.FadeOut();
 			}
 		}
 
