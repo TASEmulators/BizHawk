@@ -15,8 +15,8 @@ namespace BizHawk.Client.Common
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
 		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
 
-		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-		public readonly TasBranchCollection Branches = new TasBranchCollection();
+		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public TasBranchCollection Branches { get; } = new TasBranchCollection();
 		public TasSession Session { get; private set; }
 
 		public new const string Extension = "tasproj";
@@ -30,11 +30,15 @@ namespace BizHawk.Client.Common
 		public int CurrentBranch { get; set; }
 
 		public TasLagLog TasLagLog { get; } = new TasLagLog();
-		public IStringLog InputLog => Log;
-		public int BranchCount => Branches.Count;
+
 		public int LastStatedFrame => TasStateManager.Last;
 		public override string PreferredExtension => Extension;
 		public IStateManager TasStateManager { get; }
+
+		public IStringLog CloneInput()
+		{
+			return Log.Clone();
+		}
 
 		public TasMovieRecord this[int index] => new TasMovieRecord
 		{
@@ -279,10 +283,10 @@ namespace BizHawk.Client.Common
 
 					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
-						var strs = line.Split('x');
+						var split = line.Split('x');
 						try
 						{
-							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+							stateFrame = int.Parse(split[1], NumberStyles.HexNumber);
 						}
 						catch
 						{
@@ -292,10 +296,10 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.Contains("Frame "))
 					{
-						var strs = line.Split(' ');
+						var split = line.Split(' ');
 						try
 						{
-							stateFrame = int.Parse(strs[1]);
+							stateFrame = int.Parse(split[1]);
 						}
 						catch
 						{
@@ -377,16 +381,16 @@ namespace BizHawk.Client.Common
 				errorMessage = "Savestate Frame number failed to parse";
 			}
 
-			var stateFramei = stateFrame ?? 0;
+			var stateFrameValue = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < Log.Count)
+			if (stateFrameValue > 0 && stateFrameValue < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Truncate(stateFramei);
+					Truncate(stateFrameValue);
 				}
 			}
-			else if (stateFramei > Log.Count) // Post movie savestate
+			else if (stateFrameValue > Log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{

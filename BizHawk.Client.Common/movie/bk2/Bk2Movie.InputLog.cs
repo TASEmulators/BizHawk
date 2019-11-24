@@ -20,25 +20,25 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getframe;
+				int getFrame;
 
 				if (LoopOffset.HasValue)
 				{
 					if (frame < Log.Count)
 					{
-						getframe = frame;
+						getFrame = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getFrame = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
 				{
-					getframe = frame;
+					getFrame = frame;
 				}
 
-				return Log[getframe];
+				return Log[getFrame];
 			}
 
 			return "";
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 					// in BK2, this is part of the input log, and not involved with the core state at all
 					// accordingly, this case (for special neshawk format frame numbers) is irrelevant
 					// probably
-					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');
 						try

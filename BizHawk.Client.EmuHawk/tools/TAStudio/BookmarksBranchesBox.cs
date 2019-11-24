@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = "";
 
-			if (index >= Movie.BranchCount)
+			if (index >= Movie.Branches.Count)
 			{
 				return;
 			}
@@ -154,26 +154,17 @@ namespace BizHawk.Client.EmuHawk
 			TasBranch branch = CreateBranch();
 			Movie.NewBranchText = ""; // reset every time it's used
 			Movie.AddBranch(branch);
-			BranchView.RowCount = Movie.BranchCount;
-			Movie.CurrentBranch = Movie.BranchCount - 1;
+			BranchView.RowCount = Movie.Branches.Count;
+			Movie.CurrentBranch = Movie.Branches.Count - 1;
 			BranchView.ScrollToIndex(Movie.CurrentBranch);
 			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
 
-		public TasBranch SelectedBranch
-		{
-			get
-			{
-				if (BranchView.AnyRowsSelected)
-				{
-					return GetBranch(BranchView.SelectedRows.First());
-				}
-
-				return null;
-			}
-		}
+		public TasBranch SelectedBranch => BranchView.AnyRowsSelected
+			? GetBranch(BranchView.SelectedRows.First())
+			: null;
 
 		private TasBranch CreateBranch()
 		{
@@ -181,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
-				InputLog = Movie.InputLog.Clone(),
+				InputLog = Movie.CloneInput(),
 				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				ChangeLog = new TasMovieChangeLog(Movie),
@@ -243,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
-			CallSavedCallback(Movie.BranchCount - 1);
+			CallSavedCallback(Movie.Branches.Count - 1);
 			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
@@ -251,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
-			CallSavedCallback(Movie.BranchCount - 1);
+			CallSavedCallback(Movie.Branches.Count - 1);
 			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
@@ -348,12 +339,12 @@ namespace BizHawk.Client.EmuHawk
 				_branchUndo = BranchUndo.Remove;
 
 				Movie.RemoveBranch(SelectedBranch);
-				BranchView.RowCount = Movie.BranchCount;
+				BranchView.RowCount = Movie.Branches.Count;
 
-				if (index == Movie.BranchCount)
+				if (index == Movie.Branches.Count)
 				{
 					BranchView.ClearSelectedRows();
-					Select(Movie.BranchCount - 1, true);
+					Select(Movie.Branches.Count - 1, true);
 				}
 
 				CallRemovedCallback(index);
@@ -384,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (_branchUndo == BranchUndo.Remove)
 			{
 				Movie.AddBranch(_backupBranch);
-				BranchView.RowCount = Movie.BranchCount;
+				BranchView.RowCount = Movie.Branches.Count;
 				CallSavedCallback(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Removal canceled");
 			}
@@ -524,14 +515,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			BranchView.RowCount = Movie.BranchCount;
+			BranchView.RowCount = Movie.Branches.Count;
 			BranchView.Refresh();
 		}
 
 		public void Restart()
 		{
 			BranchView.DeselectAll();
-			BranchView.RowCount = Movie.BranchCount;
+			BranchView.RowCount = Movie.Branches.Count;
 			BranchView.Refresh();
 		}
 
@@ -653,7 +644,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.Branches.Count)
 			{
 				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
@@ -665,11 +656,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell?.RowIndex != null && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.BranchCount)
+			if (e.NewCell?.RowIndex != null && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.Branches.Count)
 			{
 				if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
 					BranchView.CurrentCell.RowIndex.HasValue &&
-					BranchView.CurrentCell.RowIndex < Movie.BranchCount)
+					BranchView.CurrentCell.RowIndex < Movie.Branches.Count)
 				{
 					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
 					Point location = PointToScreen(Location);
