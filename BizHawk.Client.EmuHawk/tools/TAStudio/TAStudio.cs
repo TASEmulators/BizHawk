@@ -138,6 +138,15 @@ namespace BizHawk.Client.EmuHawk
 			LastPositionFrame = -1;
 		}
 
+		public void LoadBranchByIndex(int index)
+		{
+			if (index < CurrentTasMovie.BranchCount)
+			{
+				var branch = CurrentTasMovie.Branches[index];
+				BookMarkControl.LoadBranch(branch);
+			}
+		}
+
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
 		{
 			if (CurrentTasMovie == null)

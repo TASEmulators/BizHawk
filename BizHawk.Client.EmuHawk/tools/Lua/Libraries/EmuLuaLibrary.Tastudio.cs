@@ -428,6 +428,16 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
+		[LuaMethodExample("tastudio.loadbranch(0)")]
+		[LuaMethod("loadbranch", "Loads a branch at the given index, if a branch at that index exists.")]
+		public void LoadBranch(int index)
+		{
+			if (Engaged())
+			{
+				Tastudio.LoadBranchByIndex(index);
+			}
+		}
+
 		#endregion
 
 		#region Markers

@@ -191,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		private void LoadBranch(TasBranch branch)
+		public void LoadBranch(TasBranch branch)
 		{
 			if (Tastudio.Settings.OldControlSchemeForBranches && !Tastudio.TasPlaybackBox.RecordingMode)
 			{
