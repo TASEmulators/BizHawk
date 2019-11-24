@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					SaveTas(sender, e);
+					SaveTas();
 				}
 			}
 		}

@@ -130,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result == DialogResult.Yes)
 				{
 					_exiting = true; // Asking to save changes should only ever be called when closing something
-					SaveTas(null, null);
+					SaveTas();
 				}
 				else if (result == DialogResult.No)
 				{
