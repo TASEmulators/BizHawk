@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudioSettings Settings { get; set; }
 
 		[ConfigPersist]
-		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
 
 		public class TAStudioSettings
 		{
@@ -706,7 +706,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var loadZone = new MovieZone(path)
 			{
-				Start = TasView.FirstSelectedIndex.Value
+				Start = TasView.FirstSelectedIndex ?? 0
 			};
 			loadZone.PlaceZone(CurrentTasMovie);
 		}

@@ -625,11 +625,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private int? FirstNonEmptySelectedFrame
+		{
+			get
+			{
+				var lg = CurrentTasMovie.LogGeneratorInstance();
+				lg.SetSource(Global.MovieSession.MovieControllerInstance());
+				var empty = lg.EmptyEntry;
+				foreach (var row in TasView.SelectedRows)
+				{
+
+					if (CurrentTasMovie[row].LogEntry != empty)
+					{
+						return row;
+					}
+				}
+
+				return null;
+			}
+		}
+
 		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+				var firstWithInput = FirstNonEmptySelectedFrame;
+				bool needsToRollback = firstWithInput.HasValue && firstWithInput < Emulator.Frame;
 				int rollBackFrame = TasView.FirstSelectedIndex ?? 0;
 
 				CurrentTasMovie.ChangeLog.BeginNewBatch($"Clear frames {TasView.SelectedRows.Min()}-{TasView.SelectedRows.Max()}");
