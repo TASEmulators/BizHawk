@@ -14,7 +14,6 @@ namespace BizHawk.Client.Common
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
 		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
-		private BackgroundWorker _progressReportWorker;
 
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
@@ -49,7 +48,6 @@ namespace BizHawk.Client.Common
 			: base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
 				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
@@ -68,7 +66,6 @@ namespace BizHawk.Client.Common
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 		{
-			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
 			{
 				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
@@ -83,21 +80,6 @@ namespace BizHawk.Client.Common
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 			BindMarkersToInput = false;
 			CurrentBranch = -1;
-		}
-
-		public void NewBGWorker(BackgroundWorker newWorker)
-		{
-			_progressReportWorker = newWorker;
-		}
-
-		public void ReportProgress(double percent)
-		{
-			if (percent > 100d)
-			{
-				return;
-			}
-
-			_progressReportWorker?.ReportProgress((int)percent);
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
