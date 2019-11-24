@@ -151,9 +151,8 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr) // Note: ExtractInputLog will clear Lag and State data potentially, this must come before loading those
 				{
-					var errorMessage = "";
 					IsCountingRerecords = false;
-					ExtractInputLog(tr, out errorMessage);
+					ExtractInputLog(tr, out _);
 					IsCountingRerecords = true;
 				});
 

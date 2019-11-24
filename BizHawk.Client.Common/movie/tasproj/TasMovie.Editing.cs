@@ -126,8 +126,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO: consider making this IEnumerable<int> instead of forcing the collection to be an array
-		public void RemoveFrames(int[] frames)
+		public void RemoveFrames(ICollection<int> frames)
 		{
 			if (frames.Any())
 			{

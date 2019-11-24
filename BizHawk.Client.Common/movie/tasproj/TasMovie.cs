@@ -184,7 +184,7 @@ namespace BizHawk.Client.Common
 			_inputStateCache.Clear();
 		}
 
-		public string CreateDisplayValueForButton(IController adapter, string buttonName)
+		private string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
@@ -555,11 +555,7 @@ namespace BizHawk.Client.Common
 		private bool _changes;
 		public override bool Changes
 		{
-			get
-			{
-				return _changes;
-			}
-
+			get => _changes;
 			protected set
 			{
 				if (_changes != value)

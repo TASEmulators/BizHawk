@@ -127,22 +127,22 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getframe;
+				int getFrame;
 
 				if (LoopOffset.HasValue)
 				{
 					if (frame < Log.Count)
 					{
-						getframe = frame;
+						getFrame = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getFrame = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
 				{
-					getframe = frame;
+					getFrame = frame;
 				}
 
 				var adapter = new Bk2ControllerAdapter
@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 					Definition = Global.MovieSession.MovieControllerAdapter.Definition
 				};
 
-				adapter.SetControllersAsMnemonic(Log[getframe]);
+				adapter.SetControllersAsMnemonic(Log[getFrame]);
 				return adapter;
 			}
 
