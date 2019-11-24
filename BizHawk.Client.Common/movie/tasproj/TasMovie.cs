@@ -502,15 +502,8 @@ namespace BizHawk.Client.Common
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
 
-			if (divergentPoint.HasValue)
-			{
-				InvalidateAfter(divergentPoint.Value);
-			}
-			else
-			{
-				InvalidateAfter(branch.InputLog.Count);
-			}
-			
+			InvalidateAfter(divergentPoint ?? branch.InputLog.Count);
+
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers;
