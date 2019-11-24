@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -27,7 +28,8 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
 
 				// TasProj extras
-				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(_stateManager.Settings.ToString()));
+				var settings = JsonConvert.SerializeObject(_stateManager.Settings);
+				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(settings));
 
 				bs.PutLump(BinaryStateLump.LagLog, tw => _lagLog.Save(tw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
@@ -185,7 +187,15 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
 				{
-					_stateManager.Settings.PopulateFromString(tr.ReadToEnd());
+					var json = tr.ReadToEnd();
+					try
+					{
+						_stateManager.Settings = JsonConvert.DeserializeObject<TasStateManagerSettings>(json);
+					}
+					catch
+					{
+						// Do nothing, and use default settings instead
+					}
 				});
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)

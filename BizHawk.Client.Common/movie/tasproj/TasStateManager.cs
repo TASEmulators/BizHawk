@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 		private int _stateFrequency;
 		
 		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) +
-			(int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
+			(int)((ulong)Settings.DiskCapacityMb * 1024 * 1024 / _expectedStateSize);
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		public TasStateManager(TasMovie movie)
@@ -340,7 +340,7 @@ namespace BizHawk.Client.Common
 			// if the size is still too big, exclude states form the beginning
 			// still leave marker states
 			int index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			while (saveUsed > (ulong)Settings.DiskSaveCapacityMb * 1024 * 1024)
 			{
 				do
 				{
@@ -362,7 +362,7 @@ namespace BizHawk.Client.Common
 
 			// if there are enough markers to still be over the limit, remove marker frames
 			index = 0;
-			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			while (saveUsed > (ulong)Settings.DiskSaveCapacityMb * 1024 * 1024)
 			{
 				if (!ret.Contains(++index))
 				{
