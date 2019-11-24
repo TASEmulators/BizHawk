@@ -82,18 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_renderer = new GdiPlusRenderer(Font);
 
-			using (var g = CreateGraphics())
-			using (_renderer.LockGraphics(g, Width, Height))
-			{
-				// Measure width change to ignore extra padding at start/end
-				var size1 = _renderer.MeasureString("A", Font);
-				var size2 = _renderer.MeasureString("AA", Font);
-				_charSize = new Size(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
-			}
-
 			UpdateCellSize();
-			ColumnWidth = CellWidth;
-			ColumnHeight = CellHeight + 2;
 
 			_vBar.SmallChange = CellHeight;
 			_vBar.LargeChange = CellHeight * 20;
@@ -1945,8 +1934,24 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void UpdateCellSize()
 		{
+			using (var g = CreateGraphics())
+			using (_renderer.LockGraphics(g, Width, Height))
+			{
+				// Measure width change to ignore extra padding at start/end
+				var size1 = _renderer.MeasureString("A", Font);
+				var size2 = _renderer.MeasureString("AA", Font);
+				_charSize = new Size(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
+			}
+
 			CellHeight = _charSize.Height + (CellHeightPadding * 2);
 			CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			ColumnWidth = CellWidth;
+			ColumnHeight = CellHeight + 2;
+		}
+
+		protected override void OnFontChanged(EventArgs e)
+		{
+			UpdateCellSize();
 		}
 
 		// SuuperW: Count lag frames between FirstDisplayed and given display position
