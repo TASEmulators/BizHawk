@@ -140,11 +140,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadBranchByIndex(int index)
 		{
-			if (index < CurrentTasMovie.BranchCount)
-			{
-				var branch = CurrentTasMovie.Branches[index];
-				BookMarkControl.LoadBranch(branch);
-			}
+			BookMarkControl.LoadBranchExternal(index);
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
