@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -51,6 +52,9 @@ namespace BizHawk.Client.EmuHawk
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
+
+		[ConfigPersist]
+		public Font TasViewFont { get; set; } = new Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
 
 		public class TAStudioSettings
 		{
@@ -304,6 +308,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			TasView.Font = TasViewFont;
 			RefreshDialog();
 			_initialized = true;
 		}
@@ -1174,6 +1179,21 @@ namespace BizHawk.Client.EmuHawk
 		protected void DragEnterWrapper(object sender, DragEventArgs e)
 		{
 			GenericDragEnter(sender, e);
+		}
+
+		private void SetFontMenuItem_Click(object sender, EventArgs e)
+		{
+			using var fontDialog = new FontDialog
+			{
+				ShowColor = false,
+				Font = TasView.Font
+			};
+			var result = fontDialog.ShowDialog();
+			if (result != DialogResult.Cancel)
+			{
+				TasView.Font = TasViewFont = fontDialog.Font;
+				TasView.Refresh();
+			}
 		}
 	}
 }

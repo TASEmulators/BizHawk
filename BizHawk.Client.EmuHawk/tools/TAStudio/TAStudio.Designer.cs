@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class TAStudio
 	{
@@ -193,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
+			this.SetFontMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -648,7 +647,8 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator14,
             this.AutopauseAtEndOfMovieMenuItem,
             this.sepToolStripMenuItem,
-            this.autoHoldFireToolStripMenuItem});
+            this.autoHoldFireToolStripMenuItem,
+			this.SetFontMenuItem});
 			this.ConfigSubMenu.Name = "ConfigSubMenu";
 			this.ConfigSubMenu.Size = new System.Drawing.Size(50, 20);
 			this.ConfigSubMenu.Text = "&Config";
@@ -1592,6 +1592,13 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.TabIndex = 10;
 			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
 			// 
+			// SetFontMenuItem
+			// 
+			this.SetFontMenuItem.Name = "SetFontMenuItem";
+			this.SetFontMenuItem.Size = new System.Drawing.Size(264, 22);
+			this.SetFontMenuItem.Text = "Set Font";
+			this.SetFontMenuItem.Click += new System.EventHandler(this.SetFontMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1794,5 +1801,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AutoRestoreOnMouseUpOnlyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadBranchOnDoubleclickMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SetFontMenuItem;
 	}
 }
