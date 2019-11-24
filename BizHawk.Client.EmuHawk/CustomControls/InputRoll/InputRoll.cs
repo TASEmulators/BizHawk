@@ -65,8 +65,6 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool SuspendHotkeys { get; set; }
 
-		private readonly Font _font = new Font("Arial", 8, FontStyle.Bold);
-
 		public InputRoll()
 		{
 			UseCustomBackground = true;
@@ -82,14 +80,14 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			_renderer = new GdiPlusRenderer();
+			_renderer = new GdiPlusRenderer(Font);
 
 			using (var g = CreateGraphics())
 			using (_renderer.LockGraphics(g, Width, Height))
 			{
 				// Measure width change to ignore extra padding at start/end
-				var size1 = _renderer.MeasureString("A", _font);
-				var size2 = _renderer.MeasureString("AA", _font);
+				var size1 = _renderer.MeasureString("A", Font);
+				var size2 = _renderer.MeasureString("AA", Font);
 				_charSize = new Size(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
 			}
 

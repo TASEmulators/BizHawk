@@ -10,13 +10,12 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private readonly Pen _currentPen = new Pen(Color.Black);
 		private readonly SolidBrush _currentBrush = new SolidBrush(Color.Black);
 		private readonly SolidBrush _currentStringBrush = new SolidBrush(Color.Black);
-		private readonly Font _defaultFont = new Font("Arial", 8, FontStyle.Bold);
 		private Font _currentFont;
 		private bool _rotateString;
 
-		public GdiPlusRenderer()
+		public GdiPlusRenderer(Font font)
 		{
-			_currentFont = _defaultFont;
+			_currentFont = font;
 		}
 
 		private class GdiPlusGraphicsLock : IDisposable
@@ -34,7 +33,6 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_currentPen.Dispose();
 			_currentBrush.Dispose();
 			_currentStringBrush.Dispose();
-			_defaultFont.Dispose();
 		}
 
 		public void DrawBitmap(Bitmap bitmap, Point point)

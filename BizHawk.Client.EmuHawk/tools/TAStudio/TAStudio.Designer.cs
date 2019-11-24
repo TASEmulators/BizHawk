@@ -1236,7 +1236,7 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TasView.CellHeightPadding = 0;
-			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
