@@ -550,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			TasMovie newMovie = new TasMovie(startsFromSavestate, _seekBackgroundWorker);
+			TasMovie newMovie = new TasMovie(startsFromSavestate);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
@@ -604,7 +604,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
+				Global.MovieSession.Movie = new TasMovie();
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
 				
 				stateManager.InvalidateCallback = GreenzoneInvalidated;

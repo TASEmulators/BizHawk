@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			WasLagged = TasLagLog.History(index + 1)
 		};
 
-		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+		public TasMovie(string path, bool startsFromSavestate = false)
 			: base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 			CurrentBranch = -1;
 		}
 
-		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+		public TasMovie(bool startsFromSavestate = false)
 		{
 			if (!Global.Emulator.HasSavestates())
 			{
