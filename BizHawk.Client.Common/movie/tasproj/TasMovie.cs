@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
-		public readonly TasSession Session;
+		public TasSession Session { get; private set; }
 
 		public new const string Extension = "tasproj";
 		public const string DefaultProjectName = "default";

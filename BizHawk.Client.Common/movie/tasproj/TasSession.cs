@@ -21,35 +21,5 @@ namespace BizHawk.Client.Common
 			CurrentFrame = Global.Emulator.Frame;
 			CurrentBranch = _movie.CurrentBranch;
 		}
-
-		public override string ToString()
-		{
-			UpdateValues();
-
-			var sb = new StringBuilder();
-			sb.AppendLine(CurrentFrame.ToString());
-			sb.AppendLine(CurrentBranch.ToString());
-
-			return sb.ToString();
-		}
-
-		public void PopulateFromString(string session)
-		{
-			if (!string.IsNullOrWhiteSpace(session))
-			{
-				string[] lines = session.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-				CurrentFrame = lines.Length > 0 ? int.Parse(lines[0]) : 0;
-
-				if (lines.Length > 1)
-				{
-					CurrentBranch = int.Parse(lines[1]);
-				}
-				else
-				{
-					CurrentBranch = -1;
-				}
-			}
-		}
 	}
 }

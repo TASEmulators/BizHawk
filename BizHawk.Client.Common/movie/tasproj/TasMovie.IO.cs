@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 					Branches.Save(bs);
 				}
 
-				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(Session.ToString()));
+				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(JsonConvert.SerializeObject(Session)));
 
 				if (_stateManager.Settings.SaveStateHistory && !backup)
 				{
@@ -253,7 +253,15 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Session, false, delegate(TextReader tr)
 				{
-					Session.PopulateFromString(tr.ReadToEnd());
+					var json = tr.ReadToEnd();
+					try
+					{
+						Session = JsonConvert.DeserializeObject<TasSession>(json);
+					}
+					catch
+					{
+						// Do nothing, and use default settings instead
+					}
 				});
 
 				if (!preload)
