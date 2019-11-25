@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 
 				lg.SetSource(states[i]);
 				var entry = lg.GenerateLogEntry();
-				if (Log[frame + i] != entry)
+				if (firstChangedFrame == -1 && Log[frame + i] != entry)
 				{
 					firstChangedFrame = frame + i;
 				}
