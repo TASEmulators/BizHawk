@@ -522,11 +522,10 @@ namespace BizHawk.Client.EmuHawk
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
-							var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-							CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex ?? 0, _tasClipboard.Select(x => x.ControllerState));
-							if (needsToRollback)
+							var rollbackFrame =  CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex ?? 0, _tasClipboard.Select(x => x.ControllerState));
+							if (rollbackFrame > 0)
 							{
-								GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+								GoToLastEmulatedFrameIfNecessary(rollbackFrame);
 								DoAutoRestore();
 							}
 							else
@@ -561,10 +560,8 @@ namespace BizHawk.Client.EmuHawk
 								{
 									return;
 								}
-								else
-								{
-									_tasClipboard.Add(new TasClipboardEntry(i, line));
-								}
+
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
 							}
 
 							var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;

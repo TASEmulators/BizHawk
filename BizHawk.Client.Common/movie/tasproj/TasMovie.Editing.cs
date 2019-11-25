@@ -304,8 +304,9 @@ namespace BizHawk.Client.Common
 			InsertInput(frame, inputLog); // Sets the ChangeLog
 		}
 
-		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
+		public int CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
+			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
 			var lg = LogGeneratorInstance();
 			var states = inputStates.ToList();
@@ -315,7 +316,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, $"Copy Over Input: {frame}");
+			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 
 			for (int i = 0; i < states.Count; i++)
 			{
@@ -325,7 +326,13 @@ namespace BizHawk.Client.Common
 				}
 
 				lg.SetSource(states[i]);
-				Log[frame + i] = lg.GenerateLogEntry();
+				var entry = lg.GenerateLogEntry();
+				if (Log[frame + i] != entry)
+				{
+					firstChangedFrame = frame + i;
+				}
+
+				Log[frame + i] = entry;
 			}
 
 			ChangeLog.EndBatch();
@@ -333,6 +340,7 @@ namespace BizHawk.Client.Common
 			InvalidateAfter(frame);
 
 			ChangeLog.SetGeneralRedo();
+			return firstChangedFrame;
 		}
 
 		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
