@@ -14,13 +14,6 @@ namespace BizHawk.Client.Common
 
 	public class MovieSession : IMovieSession
 	{
-		public MovieSession()
-		{
-			ReadOnly = true;
-			MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
-			MultiTrack = new MultitrackRecorder();
-		}
-
 		/// <summary>
 		/// Gets the queued movie
 		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
@@ -31,11 +24,11 @@ namespace BizHawk.Client.Common
 		// This wrapper but the logic could change, don't make the client code understand these details
 		public bool MovieIsQueued => QueuedMovie != null;
 
-		public MultitrackRecorder MultiTrack { get; }
-		public IMovieController MovieControllerAdapter { get; set; }
+		public MultitrackRecorder MultiTrack { get; } = new MultitrackRecorder();
+		public IMovieController MovieControllerAdapter { get; set; } = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter;
 
 		public IMovie Movie { get; set; }
-		public bool ReadOnly { get; set; }
+		public bool ReadOnly { get; set; } = true;
 		public Action<string> MessageCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
@@ -308,10 +301,10 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieAfterFrameLoop()
 		{
-			if (Movie is TasMovie)
+			if (Movie is TasMovie tasMovie)
 			{
-				(Movie as TasMovie).GreenzoneCurrentFrame();
-				if (Movie.IsPlaying && Global.Emulator.Frame >= Movie.InputLogLength)
+				tasMovie.GreenzoneCurrentFrame();
+				if (tasMovie.IsPlaying && Global.Emulator.Frame >= tasMovie.InputLogLength)
 				{
 					HandleFrameLoopForRecordMode();
 				}
@@ -375,8 +368,7 @@ namespace BizHawk.Client.Common
 
 			if (ReadOnly)
 			{
-				string errorMsg;
-				var result = Movie.CheckTimeLines(reader, out errorMsg);
+				var result = Movie.CheckTimeLines(reader, out var errorMsg);
 				if (!result)
 				{
 					Output(errorMsg);

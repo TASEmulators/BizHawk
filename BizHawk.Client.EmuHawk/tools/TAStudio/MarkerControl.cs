@@ -157,10 +157,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView.AnyRowsSelected)
 			{
-				while (MarkerView.SelectedRows.Last() > Markers.Count() - 1)
+				while (MarkerView.SelectedRows.Last() > Markers.Count - 1)
 				{
-					MarkerView.SelectRow(Markers.Count(), false);
-					MarkerView.SelectRow(Markers.Count() - 1, true);
+					MarkerView.SelectRow(Markers.Count, false);
+					MarkerView.SelectRow(Markers.Count - 1, true);
 				}
 			}
 
@@ -196,11 +196,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Markers.Add(new TasMovieMarker(markerFrame, ""));
+				Markers.Add(new TasMovieMarker(markerFrame));
 				UpdateValues();
 			}
 
-			MarkerView.ScrollToIndex(Markers.Count() - 1);
+			MarkerView.ScrollToIndex(Markers.Count - 1);
 			Tastudio.RefreshDialog();
 		}
 
@@ -270,11 +270,6 @@ namespace BizHawk.Client.EmuHawk
 					.Select(index => Markers[index])
 					.ToList();
 			}
-		}
-
-		private void MarkerView_ItemActivate(object sender, EventArgs e)
-		{
-			Tastudio.GoToMarker(SelectedMarkers.First());
 		}
 
 		// SuuperW: Marker renaming can be done with a right-click.
