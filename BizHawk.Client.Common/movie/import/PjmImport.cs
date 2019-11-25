@@ -294,39 +294,56 @@ namespace BizHawk.Client.Common
 
 			string[] buttons =
 			{
-				"Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+				"Start", "Up", "Right", "Down", "Left",
 				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"
 			};
 
 			bool isCdTrayOpen = false;
 			int cdNumber = 1;
 
+			int player1Count = info.Player1Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player1Type == OctoshockDll.ePeripheralType.Pad ? 15 : 31;
+			int player2Count = info.Player2Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player2Type == OctoshockDll.ePeripheralType.Pad ? 15 : 31;
+			int strCount = player1Count + player2Count + 4; // 2 for control byte and pipe and line feed chars
+
 			for (int frame = 0; frame < info.FrameCount; ++frame)
 			{
+				var mnemonicStr = new string(br.ReadChars(strCount));
+
+				// Gross, if not CR LF, this will fail, but will the PSXjin?
+				if (!mnemonicStr.EndsWith("|\r\n"))
+				{
+					Result.Errors.Add("Unable to parse text input, unknown configuration");
+				}
+
+				var split = mnemonicStr.Replace("\r\n", "").Split('|');
+				var player1Str = split[0];
+				var player2Str = split[1];
+				var controltStr = split[2];
 				if (info.Player1Type != OctoshockDll.ePeripheralType.None)
 				{
 					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
 					// due to the layout, we handle select separately too first.
-					controllers["P1 Select"] = br.ReadChar() != '.';
+					controllers["P1 Select"] = player1Str[0] != '.';
 
 					if (info.Player1Type == OctoshockDll.ePeripheralType.DualShock)
 					{
-						controllers["P1 L3"] = br.ReadChar() != '.';
-						controllers["P1 R3"] = br.ReadChar() != '.';
+						controllers["P1 L3"] = player1Str[1] != '.';
+						controllers["P1 R3"] = player1Str[2] != '.';
 					}
 
-					for (int button = 3; button < buttons.Length; button++)
+					int offSet = info.Player1Type == OctoshockDll.ePeripheralType.Pad ? 0 : 2;
+					for (int button = 1; button < buttons.Length; button++)
 					{
-						controllers[$"P1 {buttons[button]}"] = br.ReadChar() != '.';
+						controllers[$"P1 {buttons[button]}"] = player1Str[button + offSet] != '.';
 					}
 
 					if (info.Player1Type == OctoshockDll.ePeripheralType.DualShock)
 					{
 						// The analog controls are encoded as four space-separated numbers with a leading space
-						string leftXRaw = new string(br.ReadChars(4)).Trim();
-						string leftYRaw = new string(br.ReadChars(4)).Trim();
-						string rightXRaw = new string(br.ReadChars(4)).Trim();
-						string rightYRaw = new string(br.ReadChars(4)).Trim();
+						string leftXRaw = player1Str.Substring(14, 4);
+						string leftYRaw = player1Str.Substring(18, 4);
+						string rightXRaw = player1Str.Substring(22, 4);
+						string rightYRaw = player1Str.Substring(26, 4);
 
 						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
 						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
@@ -337,24 +354,22 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				// Each controller is terminated with a pipeline.
-				br.ReadChar();
-
 				if (info.Player2Type != OctoshockDll.ePeripheralType.None)
 				{
 					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
 					// due to the layout, we handle select separately too first.
-					controllers["P2 Select"] = br.ReadChar() != '.';
+					controllers["P2 Select"] = player2Str[0] != '.';
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
 					{
-						controllers["P2 L3"] = br.ReadChar() != '.';
-						controllers["P2 R3"] = br.ReadChar() != '.';
+						controllers["P2 L3"] = player2Str[1] != '.';
+						controllers["P2 R3"] = player2Str[2] != '.';
 					}
 
-					for (int button = 3; button < buttons.Length; button++)
+					int offSet = info.Player2Type == OctoshockDll.ePeripheralType.Pad ? 0 : 2;
+					for (int button = 1; button < buttons.Length; button++)
 					{
-						controllers[$"P2 {buttons[button]}"] = br.ReadChar() != '.';
+						controllers[$"P2 {buttons[button]}"] = player2Str[button + offSet] != '.';
 					}
 
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
@@ -374,10 +389,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				// Each controller is terminated with a pipeline.
-				br.ReadChar();
-
-				byte controlState = br.ReadByte();
+				byte controlState = (byte)controltStr[0];
 				controllers["Reset"] = (controlState & 0x02) != 0;
 				if ((controlState & 0x04) != 0)
 				{
@@ -406,9 +418,6 @@ namespace BizHawk.Client.Common
 				{
 					Result.Warnings.Add($"Ignored toggle hack flag on frame {frame}");
 				}
-
-				// Each controller is terminated with a pipeline.
-				br.ReadChar();
 
 				movie.AppendFrame(controllers);
 			}
