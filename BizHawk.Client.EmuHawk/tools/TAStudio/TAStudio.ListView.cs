@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
-		private int floatEditRow
+		private int FloatEditRow
 		{
 			set
 			{
@@ -567,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 						!(_floatEditRow == frame || _extraFloatRows.Contains(frame)))
 					{
 						_extraFloatRows.Clear();
-						floatEditRow = -1;
+						FloatEditRow = -1;
 						RefreshTasView();
 					}
 					else
@@ -575,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 						if (_extraFloatRows.Contains(frame))
 						{
 							_extraFloatRows.Clear();
-							floatEditRow = frame;
+							FloatEditRow = frame;
 							RefreshTasView();
 						}
 
@@ -703,13 +703,13 @@ namespace BizHawk.Client.EmuHawk
 						{
 							if (_floatEditColumn == buttonName && _floatEditRow == frame)
 							{
-								floatEditRow = -1;
+								FloatEditRow = -1;
 							}
 							else
 							{
 								CurrentTasMovie.ChangeLog.BeginNewBatch($"Float Edit: {frame}");
 								_floatEditColumn = buttonName;
-								floatEditRow = frame;
+								FloatEditRow = frame;
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
 								_floatBackupState = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
@@ -799,7 +799,7 @@ namespace BizHawk.Client.EmuHawk
 			// Exit float editing if value was changed with cursor
 			if (FloatEditingMode && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 			{
-				floatEditRow = -1;
+				FloatEditRow = -1;
 				_triggerAutoRestore = true;
 				JumpToGreenzone();
 				DoTriggeredAutoRestoreIfNeeded();
@@ -1381,7 +1381,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.KeyCode == Keys.Enter)
 			{
 				_floatEditYPos = -1;
-				floatEditRow = -1;
+				FloatEditRow = -1;
 			}
 			else if (e.KeyCode == Keys.Escape)
 			{
@@ -1395,7 +1395,7 @@ namespace BizHawk.Client.EmuHawk
 					DoTriggeredAutoRestoreIfNeeded();
 				}
 
-				floatEditRow = -1;
+				FloatEditRow = -1;
 			}
 			else
 			{

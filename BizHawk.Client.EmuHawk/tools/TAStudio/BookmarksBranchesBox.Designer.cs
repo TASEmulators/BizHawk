@@ -167,7 +167,6 @@
 			this.BranchView.ScrollSpeed = 13;
 			this.BranchView.SeekingCutoffInterval = 0;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
-			this.BranchView.SuspendHotkeys = false;
 			this.BranchView.TabIndex = 0;
 			this.BranchView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.BranchView_PointedCellChanged);
 			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);

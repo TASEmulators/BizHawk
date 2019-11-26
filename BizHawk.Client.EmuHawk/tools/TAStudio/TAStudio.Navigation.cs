@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
@@ -25,7 +23,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// SuuperW: I changed this to public so that it could be used by MarkerControl.cs
 		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false)
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
@@ -93,11 +90,6 @@ namespace BizHawk.Client.EmuHawk
 			var nextMarker = CurrentTasMovie.Markers.Next(Emulator.Frame);
 			var next = nextMarker?.Frame ?? CurrentTasMovie.InputLogLength - 1;
 			GoToFrame(next);
-		}
-
-		public void GoToMarker(TasMovieMarker marker)
-		{
-			GoToFrame(marker.Frame);
 		}
 
 		/// <summary>

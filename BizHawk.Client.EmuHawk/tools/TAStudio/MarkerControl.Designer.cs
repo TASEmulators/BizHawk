@@ -207,7 +207,6 @@
 			this.MarkerView.ScrollSpeed = 1;
 			this.MarkerView.SeekingCutoffInterval = 0;
 			this.MarkerView.Size = new System.Drawing.Size(186, 224);
-			this.MarkerView.SuspendHotkeys = false;
 			this.MarkerView.TabIndex = 0;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
