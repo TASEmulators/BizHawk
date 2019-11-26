@@ -267,6 +267,7 @@
 			// 
 			// lvCDL
 			// 
+			this.lvCDL.CellWidthPadding = 3;
 			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvCDL.FullRowSelect = true;
 			this.lvCDL.GridLines = true;

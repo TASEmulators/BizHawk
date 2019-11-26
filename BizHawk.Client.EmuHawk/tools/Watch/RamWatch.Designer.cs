@@ -878,6 +878,7 @@
             // 
             // WatchListView
             // 
+			this.WatchListView.CellWidthPadding = 3;
             this.WatchListView.AllowColumnResize = true;
             this.WatchListView.AllowColumnReorder = true;
             this.WatchListView.FullRowSelect = true;

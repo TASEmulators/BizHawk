@@ -76,8 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
-			CellWidthPadding = 3;
-			CellHeightPadding = 0;
 			CurrentCell = null;
 			ScrollMethod = "near";
 

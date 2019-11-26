@@ -179,6 +179,7 @@
 			// 
 			// WatchListView
 			// 
+			this.WatchListView.CellWidthPadding = 3;
 			this.WatchListView.AllowColumnReorder = true;
 			this.WatchListView.AllowColumnResize = true;
 			this.WatchListView.AllowDrop = true;

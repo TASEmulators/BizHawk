@@ -94,6 +94,7 @@
 			// 
 			// CheatListView
 			// 
+			this.CheatListView.CellWidthPadding = 3;
 			this.CheatListView.AllowColumnReorder = true;
 			this.CheatListView.AllowColumnResize = true;
 			this.CheatListView.MultiSelect = true;

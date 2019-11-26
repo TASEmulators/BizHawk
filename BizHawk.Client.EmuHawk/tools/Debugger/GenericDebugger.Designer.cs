@@ -237,6 +237,7 @@
 			this.DisassemblerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.DisassemblerView.CellWidthPadding = 3;
 			this.DisassemblerView.AllowColumnReorder = false;
 			this.DisassemblerView.AllowColumnResize = true;
 			this.DisassemblerView.ContextMenuStrip = this.DisassemblerContextMenu;
