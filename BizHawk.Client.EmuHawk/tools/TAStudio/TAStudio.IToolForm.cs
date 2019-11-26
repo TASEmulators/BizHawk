@@ -51,11 +51,6 @@ namespace BizHawk.Client.EmuHawk
 				refreshNeeded = AutoAdjustInput();
 			}
 
-			if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
-			{
-				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-			}
-
 			MaybeFollowCursor();
 
 			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
@@ -68,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			UpdateValues();
+			// Do nothing
 		}
 
 		public void Restart()
