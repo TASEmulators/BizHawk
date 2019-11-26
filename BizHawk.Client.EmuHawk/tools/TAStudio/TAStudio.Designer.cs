@@ -1228,6 +1228,7 @@
 			// 
 			// TasView
 			//
+			this.TasView.GridLines = true;
 			this.TasView.AllowMassNavigationShortcuts = false;
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;

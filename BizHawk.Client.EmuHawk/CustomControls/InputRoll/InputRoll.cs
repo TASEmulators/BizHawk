@@ -76,7 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
-			GridLines = true;
 			CellWidthPadding = 3;
 			CellHeightPadding = 0;
 			CurrentCell = null;
