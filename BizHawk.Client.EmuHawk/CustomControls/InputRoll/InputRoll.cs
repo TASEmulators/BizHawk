@@ -616,9 +616,8 @@ namespace BizHawk.Client.EmuHawk
 			var settings = ConfigService.LoadWithType(settingsJson);
 
 			// TODO: don't silently fail, inform the user somehow
-			if (settings is InputRollSettings)
+			if (settings is InputRollSettings rollSettings)
 			{
-				var rollSettings = settings as InputRollSettings;
 				_columns = rollSettings.Columns;
 				_columns.ChangedCallback = ColumnChangedCallback;
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
@@ -763,7 +762,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsVisible(int index)
 		{
-			return (index >= FirstVisibleRow) && (index <= LastFullyVisibleRow);
+			return index >= FirstVisibleRow && index <= LastFullyVisibleRow;
 		}
 
 		public bool IsPartiallyVisible(int index)
@@ -924,24 +923,12 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public IEnumerable<int> SelectedRows
-		{
-			get
-			{
-				return _selectedItems
-					.Where(cell => cell.RowIndex.HasValue)
-					.Select(cell => cell.RowIndex.Value)
-					.Distinct();
-			}
-		}
+		public IEnumerable<int> SelectedRows => _selectedItems
+			.Where(cell => cell.RowIndex.HasValue)
+			.Select(cell => cell.RowIndex.Value)
+			.Distinct();
 
-		public bool AnyRowsSelected
-		{
-			get
-			{
-				return _selectedItems.Any(cell => cell.RowIndex.HasValue);
-			}
-		}
+		public bool AnyRowsSelected => _selectedItems.Any(cell => cell.RowIndex.HasValue);
 
 		public void ClearSelectedRows()
 		{
@@ -1014,8 +1001,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CellChanged(newCell);
 
-				if (IsHoveringOnColumnCell ||
-					(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
+				if (IsHoveringOnColumnCell
+					|| (WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
 				{
 					Refresh();
 				}
@@ -1763,8 +1750,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool WasHoveringOnColumnCell => LastCell?.Column != null && !LastCell.RowIndex.HasValue;
 
-		private bool WasHoveringOnDataCell => LastCell?.Column != null && LastCell.RowIndex.HasValue;
-
 		private bool IsPointingOnCellEdge(int? x)
 		{
 			if (x.HasValue)
@@ -1831,23 +1816,14 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets the total width of all the columns by using the last column's Right property.
 		/// </summary>
 		/// <returns>A nullable Int representing total width.</returns>
-		private int? TotalColWidth
-		{
-			get
-			{
-				if (_columns.VisibleColumns.Any())
-				{
-					return _columns.VisibleColumns.Last().Right;
-				}
-
-				return null;
-			}
-		}
+		private int? TotalColWidth => _columns.VisibleColumns.Any()
+			? _columns.VisibleColumns.Last().Right
+			: null;
 
 		/// <summary>
 		/// Returns the RollColumn object at the specified visible pixel coordinate.
 		/// </summary>
-		/// <param name="pixels">The pixel coordinate.</param>
+		/// <param name="pixel">The pixel coordinate.</param>
 		/// <returns>RollColumn object that contains the pixel coordinate or null if none exists.</returns>
 		private RollColumn ColumnAtPixel(int pixel)
 		{
@@ -1871,6 +1847,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			return null;
 		}
 
@@ -1900,6 +1877,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return (int)Math.Floor((float)(pixels - ColumnWidth) / CellWidth);
 			}
+
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
 
