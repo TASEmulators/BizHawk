@@ -185,6 +185,8 @@
 			// 
 			// MarkerView
 			// 
+			this.MarkerView.CellWidthPadding = 3;
+			this.MarkerView.GridLines = true;
 			this.MarkerView.AllowColumnReorder = false;
 			this.MarkerView.AllowColumnResize = false;
 			this.MarkerView.AlwaysScroll = false;

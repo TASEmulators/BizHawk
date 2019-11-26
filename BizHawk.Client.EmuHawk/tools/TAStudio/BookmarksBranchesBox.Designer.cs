@@ -146,6 +146,8 @@
 			// 
 			// BranchView
 			// 
+			this.BranchView.CellWidthPadding = 3;
+			this.BranchView.GridLines = true;
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
 			this.BranchView.AlwaysScroll = false;
