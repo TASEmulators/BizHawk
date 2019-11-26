@@ -812,7 +812,6 @@
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.Size = new System.Drawing.Size(273, 271);
 			this.LuaListView.TabIndex = 0;
-			this.LuaListView.UseCustomBackground = true;
 			this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
 			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
 			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);

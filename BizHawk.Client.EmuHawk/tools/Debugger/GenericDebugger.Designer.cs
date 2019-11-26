@@ -248,7 +248,6 @@
 			this.DisassemblerView.Name = "DisassemblerView";
 			this.DisassemblerView.Size = new System.Drawing.Size(395, 476);
 			this.DisassemblerView.TabIndex = 1;
-			this.DisassemblerView.UseCustomBackground = true;
 			this.DisassemblerView.RowScroll += new InputRoll.RowScrollEvent(this.DisassemblerView_Scroll);
 			this.DisassemblerView.SizeChanged += new System.EventHandler(this.DisassemblerView_SizeChanged);
 			this.DisassemblerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DisassemblerView_KeyDown);

@@ -266,34 +266,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				WatchListView.UseCustomBackground = NeedsBackground;
 				WatchListView.Invalidate();
-			}
-		}
-
-		private bool NeedsBackground
-		{
-			get
-			{
-				foreach (var watch in _watches)
-				{
-					if (watch.IsSeparator)
-					{
-						return true;
-					}
-
-					if (Global.CheatList.IsActive(watch.Domain, watch.Address))
-					{
-						return true;
-					}
-
-					if (watch.IsOutOfRange)
-					{
-						return true;
-					}
-				}
-
-				return false;
 			}
 		}
 

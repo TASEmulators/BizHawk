@@ -109,7 +109,6 @@
 			this.CheatListView.Name = "CheatListView";
 			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
-			this.CheatListView.UseCustomBackground = true;
 			this.CheatListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.CheatListView_ColumnClick);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
 			this.CheatListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);

@@ -459,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void DrawBg(List<RollColumn> visibleColumns)
 		{
-			if (UseCustomBackground && QueryItemBkColor != null)
+			if (QueryItemBkColor != null)
 			{
 				DoBackGroundCallback(visibleColumns);
 			}

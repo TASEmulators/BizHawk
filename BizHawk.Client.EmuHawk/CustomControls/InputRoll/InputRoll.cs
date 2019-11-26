@@ -76,7 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
-			UseCustomBackground = true;
 			GridLines = true;
 			CellWidthPadding = 3;
 			CellHeightPadding = 0;
@@ -582,10 +581,6 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsPaintDown { get; private set; }
-
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public bool UseCustomBackground { get; set; }
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

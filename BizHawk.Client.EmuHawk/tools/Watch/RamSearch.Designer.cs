@@ -193,7 +193,6 @@
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
-			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.MultiSelect = true;
 			this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
