@@ -916,11 +916,9 @@
             this.Name = "RamWatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = " RAM Watch";
-            this.Activated += new System.EventHandler(this.RamWatch_Activated);
             this.Load += new System.EventHandler(this.RamWatch_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
-            this.Enter += new System.EventHandler(this.RamWatch_Enter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
             this.ListViewContextMenu.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);

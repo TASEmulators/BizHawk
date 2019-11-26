@@ -1104,11 +1104,6 @@ namespace BizHawk.Client.EmuHawk
 			Settings.Columns = WatchListView.AllColumns;
 		}
 
-		private void RamWatch_Activated(object sender, EventArgs e)
-		{
-			WatchListView.Refresh();
-		}
-
 		private void RamWatch_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -1119,11 +1114,6 @@ namespace BizHawk.Client.EmuHawk
 				WatchListView.RowCount = _watches.Count;
 				UpdateValues();
 			}
-		}
-
-		private void RamWatch_Enter(object sender, EventArgs e)
-		{
-			WatchListView.Focus();
 		}
 
 		private void ListViewContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1265,7 +1255,6 @@ namespace BizHawk.Client.EmuHawk
 			EditWatch();
 		}
 
-		// InputRoll TODO
 		private void WatchListView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
