@@ -68,14 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
-				return;
-			}
-
-			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-
-			MaybeFollowCursor();
+			UpdateValues();
 		}
 
 		public void Restart()
