@@ -1342,26 +1342,33 @@ namespace BizHawk.Client.EmuHawk
 				// Scroll
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
 				{
-					if (FirstVisibleRow > 0)
+					var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+					var increment = LastVisibleRow - FirstVisibleRow;
+					var newSelectedRow = selectedRow - increment;
+					if (newSelectedRow < 0)
 					{
-						LastVisibleRow = FirstVisibleRow;
-						Refresh();
+						newSelectedRow = 0;
 					}
+
+					FirstVisibleRow = newSelectedRow;
+					DeselectAll();
+					SelectRow(newSelectedRow, true);
+					Refresh();
 				}
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
 				{
-					var totalRows = LastVisibleRow - FirstVisibleRow;
-					if (totalRows <= RowCount)
+					var selectedRow = SelectedRows.Any() ? SelectedRows.First() : FirstVisibleRow;
+					var increment = LastVisibleRow - FirstVisibleRow;
+					var newSelectedRow = selectedRow + increment;
+					if (newSelectedRow > RowCount - 1)
 					{
-						var final = LastVisibleRow + totalRows;
-						if (final > RowCount)
-						{
-							final = RowCount;
-						}
-
-						LastVisibleRow = final;
-						Refresh();
+						newSelectedRow = RowCount - 1;
 					}
+
+					LastVisibleRow = newSelectedRow;
+					DeselectAll();
+					SelectRow(newSelectedRow, true);
+					Refresh();
 				}
 				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
 				{
