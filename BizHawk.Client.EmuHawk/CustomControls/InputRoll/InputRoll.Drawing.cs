@@ -260,10 +260,9 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 
-							string text;
 							int strOffsetX = 0;
 							int strOffsetY = 0;
-							QueryItemText(f + startRow, col, out text, ref strOffsetX, ref strOffsetY);
+							QueryItemText(f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
 
 							int textWidth = _renderer.MeasureString(text, Font).Width;
 							if (col.Rotatable)
@@ -304,7 +303,6 @@ namespace BizHawk.Client.EmuHawk
 						{
 							RollColumn col = visibleColumns[j];
 
-							string text;
 							int strOffsetX = 0;
 							int strOffsetY = 0;
 							Point point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
@@ -320,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 								_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
 							}
 
-							QueryItemText(f + startRow, visibleColumns[j], out text, ref strOffsetX, ref strOffsetY);
+							QueryItemText(f + startRow, visibleColumns[j], out var text, ref strOffsetX, ref strOffsetY);
 
 							bool rePrep = false;
 							if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = f + startRow }))
