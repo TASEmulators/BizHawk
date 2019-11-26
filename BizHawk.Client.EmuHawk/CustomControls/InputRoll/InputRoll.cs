@@ -1201,8 +1201,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			base.OnMouseDown(e);
-
 			if (AllowRightClickSelection && e.Button == MouseButtons.Right)
 			{
 				if (!IsHoveringOnColumnCell && CurrentCell != null)
@@ -1211,10 +1209,13 @@ namespace BizHawk.Client.EmuHawk
 					_currentY = e.Y;
 					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 					newCell.RowIndex += FirstVisibleRow;
+					_selectedItems.Clear();
 					CellChanged(newCell);
 					SelectCell(CurrentCell);
 				}
 			}
+
+			base.OnMouseDown(e);
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
