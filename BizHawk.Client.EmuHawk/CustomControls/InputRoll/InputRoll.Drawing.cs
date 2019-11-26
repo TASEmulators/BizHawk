@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 				// White Background
 				_renderer.SetBrush(Color.White);
 				_renderer.SetSolidPen(Color.White);
-				_renderer.FillRectangle(0, 0, Width, Height);
+				_renderer.FillRectangle(0, CellHeight, _drawWidth, _drawHeight);
 
 				// Lag frame calculations
 				SetLagFramesArray();
@@ -370,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 				int bottomEdge = RowsToPixels(0);
 
 				// Gray column box and black line underneath
-				_renderer.FillRectangle(0, 0, Width + 1, bottomEdge + 1);
+				_renderer.FillRectangle(0, 0, _drawWidth + 1, bottomEdge + 1);
 				_renderer.Line(0, 0, TotalColWidth.Value + 1, 0);
 				_renderer.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
 
