@@ -46,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 		private int? _currentX;
 		private int? _currentY;
 
+		private Cell _lastCell; // The previous cell the mouse was in
+
 		private int _drawHeight;
 		private int _drawWidth;
 
@@ -116,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_hoverTimer.Stop();
 
-			CellHovered?.Invoke(this, new CellEventArgs(LastCell, CurrentCell));
+			CellHovered?.Invoke(this, new CellEventArgs(_lastCell, CurrentCell));
 		}
 
 		protected override void Dispose(bool disposing)
@@ -536,33 +538,15 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int? FirstSelectedIndex
-		{
-			get
-			{
-				if (AnyRowsSelected)
-				{
-					return SelectedRows.Min();
-				}
-
-				return null;
-			}
-		}
+		public int? FirstSelectedIndex => AnyRowsSelected
+			? SelectedRows.Min()
+			: (int?)null;
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int? LastSelectedIndex
-		{
-			get
-			{
-				if (AnyRowsSelected)
-				{
-					return SelectedRows.Max();
-				}
-
-				return null;
-			}
-		}
+		public int? LastSelectedIndex => AnyRowsSelected
+			? SelectedRows.Max()
+			: (int?)null;
 
 		/// <summary>
 		/// Gets or sets the current Cell that the mouse was in.
@@ -570,17 +554,6 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Cell CurrentCell { get; set; }
-
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public bool CurrentCellIsDataCell => CurrentCell?.RowIndex != null && CurrentCell.Column != null;
-
-		/// <summary>
-		/// Gets or sets the previous Cell that the mouse was in.
-		/// </summary>
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Cell LastCell { get; private set; }
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -700,8 +673,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		private int LastFullyVisibleRow
 		{
 			get
@@ -716,9 +687,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int LastVisibleRow
+		private int LastVisibleRow
 		{
 			get => FirstVisibleRow + VisibleRows + CountLagFramesDisplay(VisibleRows);
 			set
@@ -764,7 +733,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool IsVisible(int index)
+		private bool IsVisible(int index)
 		{
 			return index >= FirstVisibleRow && index <= LastFullyVisibleRow;
 		}
@@ -792,12 +761,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// Gets the first visible column index, if scrolling is needed
-		/// </summary>
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int FirstVisibleColumn
+		private int FirstVisibleColumn
 		{
 			get
 			{
@@ -812,13 +776,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int LastVisibleColumnIndex
+		private int LastVisibleColumnIndex
 		{
 			get
 			{
-				List<RollColumn> columnList = VisibleColumns.ToList();
+				var columnList = VisibleColumns.ToList();
 
 				if (HorizontalOrientation)
 				{
@@ -1509,13 +1471,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void CellChanged(Cell newCell)
 		{
-			LastCell = CurrentCell;
+			_lastCell = CurrentCell;
 			CurrentCell = newCell;
 
 			if (PointedCellChanged != null &&
-				(LastCell.Column != CurrentCell.Column || LastCell.RowIndex != CurrentCell.RowIndex))
+				(_lastCell.Column != CurrentCell.Column || _lastCell.RowIndex != CurrentCell.RowIndex))
 			{
-				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
+				PointedCellChanged(this, new CellEventArgs(_lastCell, CurrentCell));
 			}
 
 			if (CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue)
@@ -1605,7 +1567,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				NeedsVScrollbar = ColumnHeight + (RowCount * RowHeight)  > Height;
+				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight)  > Height;
 				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - _drawWidth + 1 > 0;
 			}
 
@@ -1683,22 +1645,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateDrawSize()
 		{
-			if (NeedsVScrollbar)
-			{
-				_drawWidth = Width - _vBar.Width;
-			}
-			else
-			{
-				_drawWidth = Width;
-			}
-			if (NeedsHScrollbar)
-			{
-				_drawHeight = Height - _hBar.Height;
-			}
-			else
-			{
-				_drawHeight = Height;
-			}
+			_drawWidth = NeedsVScrollbar
+				? Width - _vBar.Width
+				: Width;
+
+			_drawHeight = NeedsHScrollbar
+				? Height - _hBar.Height
+				: Height;
 		}
 
 		/// <summary>
@@ -1759,7 +1712,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsHoveringOnDataCell => CurrentCell?.Column != null && CurrentCell.RowIndex.HasValue;
 
-		private bool WasHoveringOnColumnCell => LastCell?.Column != null && !LastCell.RowIndex.HasValue;
+		private bool WasHoveringOnColumnCell => _lastCell?.Column != null && !_lastCell.RowIndex.HasValue;
 
 		private bool IsPointingOnCellEdge(int? x)
 		{
@@ -1909,9 +1862,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
 		private int CellWidth { get; set; }
-
-		[Browsable(false)]
-		public int RowHeight => CellHeight;
 
 		/// <summary>
 		/// Gets or sets a value indicating the height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.

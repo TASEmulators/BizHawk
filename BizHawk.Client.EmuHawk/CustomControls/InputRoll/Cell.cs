@@ -93,4 +93,12 @@ namespace BizHawk.Client.EmuHawk
 			return c1.Column.Name.CompareTo(c2.Column.Name);
 		}
 	}
+
+	public static class CellExtensions
+	{
+		public static bool IsDataCell(this Cell cell)
+		{
+			return cell != null && cell.RowIndex != null && cell.Column != null;
+		}
+	}
 }

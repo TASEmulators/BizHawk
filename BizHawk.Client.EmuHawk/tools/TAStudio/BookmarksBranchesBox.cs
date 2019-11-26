@@ -116,8 +116,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Highlight the branch cell a little, if hovering over it
-			if (BranchView.CurrentCellIsDataCell &&
-				BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
+			if (BranchView.CurrentCell.IsDataCell()
+				&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
 				column.Name == BranchNumberColumnName && 
 				index == BranchView.CurrentCell.RowIndex)
 			{
