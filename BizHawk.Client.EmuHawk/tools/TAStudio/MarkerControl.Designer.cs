@@ -238,7 +238,6 @@
 			this.Controls.Add(this.MarkersGroupBox);
 			this.Name = "MarkerControl";
 			this.Size = new System.Drawing.Size(198, 278);
-			this.Load += new System.EventHandler(this.MarkerControl_Load);
 			this.MarkerContextMenu.ResumeLayout(false);
 			this.MarkersGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);

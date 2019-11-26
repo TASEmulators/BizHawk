@@ -30,24 +30,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> LoadedCallback { get; set; }
 
-		private void CallLoadedCallback(int index)
-		{
-			LoadedCallback?.Invoke(index);
-		}
-
 		public Action<int> SavedCallback { get; set; }
 
-		private void CallSavedCallback(int index)
-		{
-			SavedCallback?.Invoke(index);
-		}
-
 		public Action<int> RemovedCallback { get; set; }
-
-		private void CallRemovedCallback(int index)
-		{
-			RemovedCallback?.Invoke(index);
-		}
 
 		public TAStudio Tastudio { get; set; }
 
@@ -234,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
-			CallSavedCallback(Movie.Branches.Count - 1);
+			SavedCallback?.Invoke(Movie.Branches.Count - 1);
 			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
@@ -242,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
-			CallSavedCallback(Movie.Branches.Count - 1);
+			SavedCallback?.Invoke(Movie.Branches.Count - 1);
 			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
@@ -265,92 +250,100 @@ namespace BizHawk.Client.EmuHawk
 			if (BranchView.AnyRowsSelected)
 			{
 				LoadSelectedBranch();
-				CallLoadedCallback(BranchView.SelectedRows.First());
+				LoadedCallback?.Invoke(BranchView.SelectedRows.First());
 			}
 		}
 
 		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch != null)
+			if (SelectedBranch == null)
 			{
-				Movie.CurrentBranch = BranchView.SelectedRows.First();
-
-				_backupBranch = SelectedBranch.Clone();
-				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
-				UndoBranchToolStripMenuItem.Text = "Undo Branch Update";
-				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
-				_branchUndo = BranchUndo.Update;
-
-				UpdateBranch(SelectedBranch);
-				CallSavedCallback(Movie.CurrentBranch);
-				GlobalWin.OSD.AddMessage($"Saved branch {Movie.CurrentBranch}");
+				return;
 			}
+
+			Movie.CurrentBranch = BranchView.SelectedRows.First();
+
+			_backupBranch = SelectedBranch.Clone();
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+			UndoBranchToolStripMenuItem.Text = "Undo Branch Update";
+			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
+			_branchUndo = BranchUndo.Update;
+
+			UpdateBranch(SelectedBranch);
+			SavedCallback?.Invoke(Movie.CurrentBranch);
+			GlobalWin.OSD.AddMessage($"Saved branch {Movie.CurrentBranch}");
 		}
 
 		private void EditBranchTextToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch != null)
+			if (SelectedBranch == null)
 			{
-				int index = BranchView.SelectedRows.First();
-				string oldText = SelectedBranch.UserText;
+				return;
+			}
 
-				if (EditBranchTextPopUp(index))
-				{
-					_backupBranch = SelectedBranch.Clone();
-					_backupBranch.UserText = oldText;
-					UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
-					UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
-					toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
-					_branchUndo = BranchUndo.Text;
+			int index = BranchView.SelectedRows.First();
+			string oldText = SelectedBranch.UserText;
 
-					GlobalWin.OSD.AddMessage($"Edited branch {index}");
-				}
+			if (EditBranchTextPopUp(index))
+			{
+				_backupBranch = SelectedBranch.Clone();
+				_backupBranch.UserText = oldText;
+				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+				UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
+				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
+				_branchUndo = BranchUndo.Text;
+
+				GlobalWin.OSD.AddMessage($"Edited branch {index}");
 			}
 		}
 
 		private void JumpToBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch != null)
+			if (SelectedBranch == null)
 			{
-				int index = BranchView.SelectedRows.First();
-				TasBranch branch = Movie.GetBranch(index);
-				Tastudio.GoToFrame(branch.Frame);
+				return;
 			}
+
+			int index = BranchView.SelectedRows.First();
+			TasBranch branch = Movie.GetBranch(index);
+			Tastudio.GoToFrame(branch.Frame);
 		}
 
 		private void RemoveBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SelectedBranch != null)
+			if (SelectedBranch == null)
 			{
-				int index = BranchView.SelectedRows.First();
-				if (index == Movie.CurrentBranch)
-				{
-					Movie.CurrentBranch = -1;
-				}
-				else if (index < Movie.CurrentBranch)
-				{
-					Movie.CurrentBranch--;
-				}
-
-				_backupBranch = SelectedBranch.Clone();
-				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
-				UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
-				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
-				_branchUndo = BranchUndo.Remove;
-
-				Movie.RemoveBranch(SelectedBranch);
-				BranchView.RowCount = Movie.Branches.Count;
-
-				if (index == Movie.Branches.Count)
-				{
-					BranchView.ClearSelectedRows();
-					Select(Movie.Branches.Count - 1, true);
-				}
-
-				CallRemovedCallback(index);
-				Tastudio.RefreshDialog();
-				GlobalWin.OSD.AddMessage($"Removed branch {index}");
+				return;
 			}
+
+			int index = BranchView.SelectedRows.First();
+			if (index == Movie.CurrentBranch)
+			{
+				Movie.CurrentBranch = -1;
+			}
+			else if (index < Movie.CurrentBranch)
+			{
+				Movie.CurrentBranch--;
+			}
+
+			_backupBranch = SelectedBranch.Clone();
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+			UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
+			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
+			_branchUndo = BranchUndo.Remove;
+
+			Movie.RemoveBranch(SelectedBranch);
+			BranchView.RowCount = Movie.Branches.Count;
+
+			if (index == Movie.Branches.Count)
+			{
+				BranchView.ClearSelectedRows();
+				Select(Movie.Branches.Count - 1, true);
+			}
+
+			RemovedCallback?.Invoke(index);
+			Tastudio.RefreshDialog();
+			GlobalWin.OSD.AddMessage($"Removed branch {index}");
 		}
 
 		private void UndoBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -358,13 +351,13 @@ namespace BizHawk.Client.EmuHawk
 			if (_branchUndo == BranchUndo.Load)
 			{
 				LoadBranch(_backupBranch);
-				CallLoadedCallback(Movie.Branches.IndexOf(_backupBranch));
+				LoadedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
 			{
 				Movie.UpdateBranch(Movie.GetBranch(_backupBranch.UniqueIdentifier), _backupBranch);
-				CallSavedCallback(Movie.Branches.IndexOf(_backupBranch));
+				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Update canceled");
 			}
 			else if (_branchUndo == BranchUndo.Text)
@@ -376,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.AddBranch(_backupBranch);
 				BranchView.RowCount = Movie.Branches.Count;
-				CallSavedCallback(Movie.Branches.IndexOf(_backupBranch));
+				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
 				GlobalWin.OSD.AddMessage("Branch Removal canceled");
 			}
 
@@ -643,7 +636,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.Branches.Count)
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex < Movie.Branches.Count)
 			{
 				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
@@ -673,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_screenshot.UpdateValues(branch, location, width, height,
-						(int)Graphics.FromHwnd(this.Handle).MeasureString(
+						(int)Graphics.FromHwnd(Handle).MeasureString(
 							branch.UserText, _screenshot.Font, width).Height);
 
 					_screenshot.FadeIn();

@@ -39,10 +39,6 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
-		private void MarkerControl_Load(object sender, EventArgs e)
-		{
-		}
-
 		public InputRoll MarkerInputRoll => MarkerView;
 
 		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
@@ -259,16 +255,11 @@ namespace BizHawk.Client.EmuHawk
 				MarkerInputRoll.AnyRowsSelected;
 		}
 
-		private List<TasMovieMarker> SelectedMarkers
-		{
-			get
-			{
-				return MarkerView
-					.SelectedRows
-					.Select(index => Markers[index])
-					.ToList();
-			}
-		}
+		private List<TasMovieMarker> SelectedMarkers => MarkerView
+			.SelectedRows
+			.Select(index => Markers[index])
+			.ToList();
+		
 
 		// SuuperW: Marker renaming can be done with a right-click.
 		// A much more useful feature would be to easily jump to it.
