@@ -704,6 +704,8 @@ namespace BizHawk.Client.EmuHawk
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
+
+				PointMouseToNewCell();
 			}
 		}
 
@@ -766,6 +768,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					while ((lastVisible - value < 0 || lastVisible - value > _lagFrames[VisibleRows - halfRow]) && FirstVisibleRow != 0);
 				}
+
+				PointMouseToNewCell();
 			}
 		}
 
@@ -910,6 +914,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
+			PointMouseToNewCell();
 		}
 
 		/// <summary>
@@ -971,6 +977,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _columnDownMoved;
 		private int _previousX; // TODO: move me
+
+		// It's necessary to call this anytime the control is programmatically scrolled
+		// Since the mouse may not be pointing to the same cell anymore
+		private void PointMouseToNewCell()
+		{
+			if (_currentX.HasValue && _currentY.HasValue)
+			{
+				var newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+				if (CurrentCell != newCell)
+				{
+					if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+					{
+						newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+					}
+
+					newCell.RowIndex += FirstVisibleRow;
+					if (newCell.RowIndex < 0)
+					{
+						newCell.RowIndex = 0;
+					}
+
+					CellChanged(newCell);
+				}
+			}
+		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -1058,41 +1089,6 @@ namespace BizHawk.Client.EmuHawk
 		// TODO add query callback of whether to select the cell or not
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
-			{
-				// TODO: this is copy pasta from OnMouseMove()
-				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
-				{
-					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
-				}
-
-				newCell.RowIndex += FirstVisibleRow;
-				if (newCell.RowIndex < 0)
-				{
-					newCell.RowIndex = 0;
-				}
-
-				if (!newCell.Equals(CurrentCell))
-				{
-					CellChanged(newCell);
-
-					if (IsHoveringOnColumnCell ||
-						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
-					{
-						Refresh();
-					}
-					else if (_columnDown != null)
-					{
-						Refresh();
-					}
-				}
-				else if (_columnDown != null)
-				{
-					Refresh();
-				}
-			}
-
 			if (e.Button == MouseButtons.Left)
 			{
 				if (IsHoveringOnColumnEdge)
