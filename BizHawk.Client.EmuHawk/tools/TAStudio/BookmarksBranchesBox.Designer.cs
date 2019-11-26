@@ -148,7 +148,6 @@
 			// 
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
-			this.BranchView.AllowRightClickSelection = true;
 			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 

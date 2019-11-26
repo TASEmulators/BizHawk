@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool HideWasLagFrames { get; set; }
 
 		[Category("Behavior")]
-		public bool AllowRightClickSelection { get; set; }
+		public bool AllowRightClickSelection { get; set; } = true;
 
 		[Category("Behavior")]
 		public bool LetKeysModifySelection { get; set; }
