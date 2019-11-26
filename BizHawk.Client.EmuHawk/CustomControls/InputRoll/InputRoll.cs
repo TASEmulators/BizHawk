@@ -76,9 +76,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public InputRoll()
 		{
-			CurrentCell = null;
-			ScrollMethod = "near";
-
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
@@ -292,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[DefaultValue("near")]
 		[Category("Behavior")]
-		public string ScrollMethod { get; set; }
+		public string ScrollMethod { get; set; } = "near";
 
 		/// <summary>
 		/// Gets or sets a value indicating how the scrolling behavior for the hover event
