@@ -1382,18 +1382,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
 				{
-					if (FirstVisibleRow > 0)
+					if (SelectedRows.Any())
 					{
-						FirstVisibleRow--;
-						Refresh();
+						var selectedRow = SelectedRows.First();
+						if (selectedRow > 0)
+						{
+							var targetSelectedRow = selectedRow - 1;
+							DeselectAll();
+							SelectRow(targetSelectedRow, true);
+							ScrollToIndex(targetSelectedRow);
+							Refresh();
+						}
 					}
 				}
 				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
 				{
-					if (FirstVisibleRow < RowCount - 1)
+					if (SelectedRows.Any())
 					{
-						FirstVisibleRow++;
-						Refresh();
+						var selectedRow = SelectedRows.First();
+						if (selectedRow < RowCount - 1)
+						{
+							var targetSelectedRow = selectedRow + 1;
+							DeselectAll();
+							SelectRow(targetSelectedRow, true);
+							ScrollToIndex(targetSelectedRow);
+							Refresh();
+						}
 					}
 				}
 				// Selection courser
