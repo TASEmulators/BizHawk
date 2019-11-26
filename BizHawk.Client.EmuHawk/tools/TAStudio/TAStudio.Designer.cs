@@ -1227,7 +1227,8 @@
 			this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
 			// 
 			// TasView
-			// 
+			//
+			this.TasView.AllowMassNavigationShortcuts = false;
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
 			this.TasView.AllowRightClickSelection = false;

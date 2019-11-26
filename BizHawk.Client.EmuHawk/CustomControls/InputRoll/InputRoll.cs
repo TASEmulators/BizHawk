@@ -55,8 +55,17 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool HideWasLagFrames { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the control will respond to right-click events with a context menu
+		/// </summary>
 		[Category("Behavior")]
 		public bool AllowRightClickSelection { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not Home and End will navigate to the beginning or end of the list
+		/// </summary>
+		[Category("Behavior")]
+		public bool AllowMassNavigationShortcuts { get; set; } = true;
 
 		[Category("Behavior")]
 		public bool LetKeysModifySelection { get; set; }
@@ -1354,15 +1363,19 @@ namespace BizHawk.Client.EmuHawk
 						Refresh();
 					}
 				}
-				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
+				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
 				{
-					//FirstVisibleRow = 0;
-					//Refresh();
+					DeselectAll();
+					SelectRow(0, true);
+					FirstVisibleRow = 0;
+					Refresh();
 				}
-				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
+				else if (AllowMassNavigationShortcuts && !e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
 				{
-					//LastVisibleRow = RowCount;
-					//Refresh();
+					DeselectAll();
+					SelectRow(RowCount - 1, true);
+					LastVisibleRow = RowCount;
+					Refresh();
 				}
 				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
 				{
@@ -1446,27 +1459,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 
 					}
-
 				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Ctrl + Home
-				{
-					//move selection courser to frame 0
-					//if (LetKeysModifySelection)
-					//{
-					//	DeselectAll();
-					//	SelectRow(0, true);
-					//}
-				}
-				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.End) // Ctrl + End
-				{
-					//move selection courser to end of movie
-					//if (LetKeysModifySelection)
-					//{
-					//	DeselectAll();
-					//	SelectRow(RowCount-1, true);
-					//}
-				}
-
 			}
 
 			base.OnKeyDown(e);
