@@ -1327,6 +1327,15 @@ namespace BizHawk.Client.EmuHawk
 			ColumnRightClick?.Invoke(this, new ColumnClickEventArgs(column));
 		}
 
+		// This allows arrow keys to be detected by KeyDown.
+		protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+		{
+			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			{
+				e.IsInputKey = true;
+			}
+		}
+
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (!SuspendHotkeys)

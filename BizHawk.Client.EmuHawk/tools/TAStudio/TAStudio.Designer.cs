@@ -1264,7 +1264,6 @@
 			this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
 			this.TasView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
-			this.TasView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TasView_PreviewKeyDown);
 			// 
 			// TasStatusStrip
 			// 

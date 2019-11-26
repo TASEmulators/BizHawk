@@ -1504,17 +1504,6 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
-		/// <summary>
-		/// This allows arrow keys to be detected by KeyDown.
-		/// </summary>
-		private void TasView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-		{
-			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
-			{
-				e.IsInputKey = true;
-			}
-		}
-
 		#endregion
 	}
 }
