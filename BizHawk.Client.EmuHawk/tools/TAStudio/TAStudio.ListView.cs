@@ -1229,9 +1229,8 @@ namespace BizHawk.Client.EmuHawk
 				_triggerAutoRestore = true;
 				JumpToGreenzone();
 				DoTriggeredAutoRestoreIfNeeded();
-
+				RefreshDialog();
 			}
-			RefreshDialog();
 		}
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
