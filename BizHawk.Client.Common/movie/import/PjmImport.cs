@@ -301,8 +301,8 @@ namespace BizHawk.Client.Common
 			bool isCdTrayOpen = false;
 			int cdNumber = 1;
 
-			int player1Count = info.Player1Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player1Type == OctoshockDll.ePeripheralType.Pad ? 15 : 31;
-			int player2Count = info.Player2Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player2Type == OctoshockDll.ePeripheralType.Pad ? 15 : 31;
+			int player1Count = info.Player1Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player1Type == OctoshockDll.ePeripheralType.Pad ? 15 : 33;
+			int player2Count = info.Player2Type == OctoshockDll.ePeripheralType.None ? 1 : info.Player2Type == OctoshockDll.ePeripheralType.Pad ? 15 : 33;
 			int strCount = player1Count + player2Count + 4; // 2 for control byte and pipe and line feed chars
 
 			for (int frame = 0; frame < info.FrameCount; ++frame)
@@ -324,7 +324,7 @@ namespace BizHawk.Client.Common
 				var split = mnemonicStr.Replace("\r\n", "").Split('|');
 				var player1Str = split[0];
 				var player2Str = split[1];
-				var controltStr = split[2];
+				var controlStr = split[2];
 				if (info.Player1Type != OctoshockDll.ePeripheralType.None)
 				{
 					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
@@ -346,10 +346,10 @@ namespace BizHawk.Client.Common
 					if (info.Player1Type == OctoshockDll.ePeripheralType.DualShock)
 					{
 						// The analog controls are encoded as four space-separated numbers with a leading space
-						string leftXRaw = player1Str.Substring(14, 4);
-						string leftYRaw = player1Str.Substring(18, 4);
-						string rightXRaw = player1Str.Substring(22, 4);
-						string rightYRaw = player1Str.Substring(26, 4);
+						string leftXRaw = player1Str.Substring(16, 4);
+						string leftYRaw = player1Str.Substring(20, 4);
+						string rightXRaw = player1Str.Substring(24, 4);
+						string rightYRaw = player1Str.Substring(28, 4);
 
 						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
 						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
@@ -381,10 +381,10 @@ namespace BizHawk.Client.Common
 					if (info.Player2Type == OctoshockDll.ePeripheralType.DualShock)
 					{
 						// The analog controls are encoded as four space-separated numbers with a leading space
-						string leftXRaw = new string(br.ReadChars(4)).Trim();
-						string leftYRaw = new string(br.ReadChars(4)).Trim();
-						string rightXRaw = new string(br.ReadChars(4)).Trim();
-						string rightYRaw = new string(br.ReadChars(4)).Trim();
+						string leftXRaw = player2Str.Substring(16, 4);
+						string leftYRaw = player2Str.Substring(20, 4);
+						string rightXRaw = player2Str.Substring(24, 4);
+						string rightYRaw = player2Str.Substring(28, 4);
 
 						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
 						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
@@ -395,7 +395,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				byte controlState = (byte)controltStr[0];
+				byte controlState = (byte)controlStr[0];
 				controllers["Reset"] = (controlState & 0x02) != 0;
 				if ((controlState & 0x04) != 0)
 				{
