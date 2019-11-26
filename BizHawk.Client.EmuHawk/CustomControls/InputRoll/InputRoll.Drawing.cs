@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				_renderer.FillRectangle(0, 0, ColumnWidth + 1, DrawHeight + 1);
+				_renderer.FillRectangle(0, 0, ColumnWidth + 1, _drawHeight + 1);
 
 				int y = -_vBar.Value;
 				for (int j = 0; j < visibleColumns.Count; j++)
@@ -473,14 +473,14 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 1; i < VisibleRows + 1; i++)
 					{
 						int x = RowsToPixels(i);
-						_renderer.Line(x, 1, x, DrawHeight);
+						_renderer.Line(x, 1, x, _drawHeight);
 					}
 
 					// Rows
 					for (int i = 0; i < visibleColumns.Count + 1; i++)
 					{
 						int y = GetHColTop(i) - _vBar.Value;
-						_renderer.Line(RowsToPixels(0) + 1, y, DrawWidth, y);
+						_renderer.Line(RowsToPixels(0) + 1, y, _drawWidth, y);
 					}
 				}
 				else
@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Don't draw if off screen.
-			if (x > DrawWidth || y > DrawHeight)
+			if (x > _drawWidth || y > _drawHeight)
 			{
 				return;
 			}

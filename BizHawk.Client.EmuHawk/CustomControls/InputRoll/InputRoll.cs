@@ -46,6 +46,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? _currentX;
 		private int? _currentY;
 
+		private int _drawHeight;
+		private int _drawWidth;
+
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -583,14 +586,6 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsPaintDown { get; private set; }
 
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int DrawHeight { get; private set; }
-
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int DrawWidth { get; private set; }
-
 		/// <summary>
 		/// Gets or sets the width of data cells when in Horizontal orientation.
 		/// </summary>
@@ -712,7 +707,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int halfRow = 0;
-				if ((DrawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+				if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
 				{
 					halfRow = 1;
 				}
@@ -729,7 +724,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				int halfRow = 0;
-				if ((DrawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+				if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
 				{
 					halfRow = 1;
 				}
@@ -790,10 +785,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					return (DrawWidth - ColumnWidth) / CellWidth;
+					return (_drawWidth - ColumnWidth) / CellWidth;
 				}
 
-				return (DrawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
+				return (_drawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
 			}
 		}
 
@@ -828,10 +823,10 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					int count = columnList.Count;
-					return Enumerable.Range(0, count).Select(i => count - 1 - i).First(i => GetHColTop(i) <= DrawWidth + _hBar.Value);
+					return Enumerable.Range(0, count).Select(i => count - 1 - i).First(i => GetHColTop(i) <= _drawWidth + _hBar.Value);
 				}
 
-				return columnList.FindLastIndex(c => c.Left <= DrawWidth + _hBar.Value);
+				return columnList.FindLastIndex(c => c.Left <= _drawWidth + _hBar.Value);
 			}
 		}
 
@@ -1605,13 +1600,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				NeedsVScrollbar = GetHColBottom(iLastColumn) > DrawHeight;
+				NeedsVScrollbar = GetHColBottom(iLastColumn) > _drawHeight;
 				NeedsHScrollbar = RowCount > 1;
 			}
 			else
 			{
 				NeedsVScrollbar = ColumnHeight + (RowCount * RowHeight)  > Height;
-				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - DrawWidth + 1 > 0;
+				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - _drawWidth + 1 > 0;
 			}
 
 			UpdateDrawSize();
@@ -1621,7 +1616,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_hBar.Maximum = Math.Max((VisibleRows - 1) * CellWidth, _hBar.Maximum);
 					_hBar.LargeChange = (VisibleRows - 1) * CellWidth;
-					_vBar.LargeChange = Math.Max(0, DrawHeight / 2);
+					_vBar.LargeChange = Math.Max(0, _drawHeight / 2);
 				}
 				else
 				{
@@ -1629,7 +1624,7 @@ namespace BizHawk.Client.EmuHawk
 					_vBar.LargeChange = (VisibleRows - 1) * CellHeight;
 					// DrawWidth can be negative if the TAStudio window is small enough
 					// Clamp LargeChange to 0 here to prevent exceptions
-					_hBar.LargeChange = Math.Max(0, DrawWidth / 2);
+					_hBar.LargeChange = Math.Max(0, _drawWidth / 2);
 				}
 			}
 
@@ -1638,7 +1633,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					_vBar.Maximum = GetHColBottom(iLastColumn) - DrawHeight + _vBar.LargeChange;
+					_vBar.Maximum = GetHColBottom(iLastColumn) - _drawHeight + _vBar.LargeChange;
 					if (_vBar.Maximum < 0)
 					{
 						_vBar.Maximum = 0;
@@ -1672,7 +1667,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_hBar.Maximum = TotalColWidth.Value - DrawWidth + _hBar.LargeChange;
+					_hBar.Maximum = TotalColWidth.Value - _drawWidth + _hBar.LargeChange;
 				}
 
 				_hBar.Location = new Point(0, Height - _hBar.Height);
@@ -1690,19 +1685,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (NeedsVScrollbar)
 			{
-				DrawWidth = Width - _vBar.Width;
+				_drawWidth = Width - _vBar.Width;
 			}
 			else
 			{
-				DrawWidth = Width;
+				_drawWidth = Width;
 			}
 			if (NeedsHScrollbar)
 			{
-				DrawHeight = Height - _hBar.Height;
+				_drawHeight = Height - _hBar.Height;
 			}
 			else
 			{
-				DrawHeight = Height;
+				_drawHeight = Height;
 			}
 		}
 
