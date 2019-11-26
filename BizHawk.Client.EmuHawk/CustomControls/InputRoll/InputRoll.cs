@@ -238,10 +238,17 @@ namespace BizHawk.Client.EmuHawk
 			get => _rowCount;
 			set
 			{
-				_rowCount = value;
-				_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
-				Invalidate();
-				RecalculateScrollBars();
+				if (_rowCount != value)
+				{
+					RecalculateScrollBars();
+					_rowCount = value;
+					_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
+				}
+
+				// Similarly to ListView in virtual mode, we want to always refresh
+				// when setting row count, that gives the calling code assurance that
+				// redraw will happen
+				Refresh();
 			}
 		}
 

@@ -822,12 +822,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshTasView()
 		{
 			CurrentTasMovie.UseInputCache = true;
-			if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
-			{
-				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-			}
-
-			TasView.Refresh();
+			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
