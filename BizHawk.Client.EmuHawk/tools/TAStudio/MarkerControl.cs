@@ -240,8 +240,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MarkerView.RowCount = Markers.Count;
 			}
-
-			MarkerView.Refresh();
 		}
 
 		public void Restart()
