@@ -195,7 +195,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerView.CellHeightPadding = 0;
 			this.MarkerView.ContextMenuStrip = this.MarkerContextMenu;
-			this.MarkerView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MarkerView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;
 			this.MarkerView.HideWasLagFrames = false;
 			this.MarkerView.HorizontalOrientation = false;

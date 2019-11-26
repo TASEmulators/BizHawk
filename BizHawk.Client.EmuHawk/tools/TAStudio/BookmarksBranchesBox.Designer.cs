@@ -156,6 +156,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BranchView.CellHeightPadding = 0;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
+			this.BranchView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
