@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				refreshNeeded = true;
 			}
 
-			RefreshDialog(refreshNeeded);
+			RefreshDialog(refreshNeeded, refreshBranches: false);
 		}
 
 		public void FastUpdate()

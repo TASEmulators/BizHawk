@@ -797,7 +797,7 @@ namespace BizHawk.Client.EmuHawk
 			return TasView.SelectedRows;
 		}
 
-		public void RefreshDialog(bool refreshTasView = true)
+		public void RefreshDialog(bool refreshTasView = true, bool refreshBranches = true)
 		{
 			if (_exiting)
 			{
@@ -811,7 +811,10 @@ namespace BizHawk.Client.EmuHawk
 
 			MarkerControl?.UpdateValues();
 
-			BookMarkControl?.UpdateValues();
+			if (refreshBranches)
+			{
+				BookMarkControl?.UpdateValues();
+			}
 
 			if (_undoForm != null && !_undoForm.IsDisposed)
 			{
