@@ -309,6 +309,12 @@ namespace BizHawk.Client.Common
 			{
 				var mnemonicStr = new string(br.ReadChars(strCount));
 
+				// Junk whitespace at the end of a file
+				if (string.IsNullOrWhiteSpace(mnemonicStr))
+				{
+					continue;
+				}
+
 				// Gross, if not CR LF, this will fail, but will the PSXjin?
 				if (!mnemonicStr.EndsWith("|\r\n"))
 				{
