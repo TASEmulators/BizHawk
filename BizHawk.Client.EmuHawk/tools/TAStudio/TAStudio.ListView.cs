@@ -70,10 +70,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastEditedFrame);
 			}
-			else
-			{
-				_triggerAutoRestore = false;
-			}
 		}
 
 		private void StartSeeking(int? frame, bool fromMiddleClick = false)
@@ -580,8 +576,10 @@ namespace BizHawk.Client.EmuHawk
 
 						_floatEditYPos = e.Y;
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
+						
 						_triggerAutoRestore = true;
 						JumpToGreenzone();
+
 						return;
 					}
 				}
@@ -661,11 +659,6 @@ namespace BizHawk.Client.EmuHawk
 							_triggerAutoRestore = true;
 							JumpToGreenzone();
 							RefreshDialog();
-						}
-
-						if (!Settings.AutoRestoreOnMouseUpOnly)
-						{
-							DoTriggeredAutoRestoreIfNeeded();
 						}
 					}
 					else
@@ -842,6 +835,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ClearLeftMouseStates();
 				}
+
+				DoTriggeredAutoRestoreIfNeeded();
 			}
 
 			if (e.Button == MouseButtons.Right)
@@ -856,8 +851,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_suppressContextMenu = false;
-
-			DoTriggeredAutoRestoreIfNeeded();
 		}
 
 		private void TasView_MouseWheel(object sender, MouseEventArgs e)
@@ -1105,8 +1098,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_rightClickAlt || _rightClickControl || _rightClickShift)
 				{
-					JumpToGreenzone();
 					_triggerAutoRestore = true;
+					JumpToGreenzone();
 					_suppressContextMenu = true;
 				}
 			}
@@ -1134,14 +1127,12 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column		
-						JumpToGreenzone();
-					}
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 
-					if (!Settings.AutoRestoreOnMouseUpOnly)
-					{
-						_triggerAutoRestore = startVal < Emulator.Frame && endVal < Emulator.Frame;
-						DoTriggeredAutoRestoreIfNeeded();
+						if (!_triggerAutoRestore)
+						{
+							JumpToGreenzone();
+						}
 					}
 				}
 			}
@@ -1169,12 +1160,6 @@ namespace BizHawk.Client.EmuHawk
 
 						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 						JumpToGreenzone();
-					}
-
-					if (!Settings.AutoRestoreOnMouseUpOnly)
-					{
-						_triggerAutoRestore = true;
-						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
 			}
@@ -1224,9 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
 				_floatTypedValue = value.ToString();
 
-				_triggerAutoRestore = true;
 				JumpToGreenzone();
-				DoTriggeredAutoRestoreIfNeeded();
 				RefreshDialog();
 			}
 		}

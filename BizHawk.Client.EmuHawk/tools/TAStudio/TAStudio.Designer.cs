@@ -90,7 +90,6 @@
 			this.AutosaveAsBackupFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BackupPerFileSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutoRestoreOnMouseUpOnlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -631,7 +630,6 @@
             this.autosaveToolStripMenuItem,
             this.BackupPerFileSaveMenuItem,
             this.toolStripSeparator9,
-            this.AutoRestoreOnMouseUpOnlyMenuItem,
             this.AutoadjustInputMenuItem,
             this.DrawInputByDraggingMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
@@ -723,13 +721,6 @@
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
 			this.toolStripSeparator9.Size = new System.Drawing.Size(241, 6);
-			// 
-			// AutoRestoreOnMouseUpOnlyMenuItem
-			// 
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Name = "AutoRestoreOnMouseUpOnlyMenuItem";
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Size = new System.Drawing.Size(244, 22);
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Text = "Auto-restore on Mouse Up only";
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Click += new System.EventHandler(this.AutoRestoreOnMouseUpOnlyMenuItem_Click);
 			// 
 			// AutoadjustInputMenuItem
 			// 
@@ -1799,7 +1790,6 @@
 		private System.Windows.Forms.ToolStripMenuItem BackupPerFileSaveMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBackupMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBk2BackupMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoRestoreOnMouseUpOnlyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadBranchOnDoubleclickMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetFontMenuItem;

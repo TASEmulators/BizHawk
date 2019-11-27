@@ -69,7 +69,6 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
 				SeekingCutoffInterval = 2;
-				AutoRestoreOnMouseUpOnly = false;
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
@@ -96,7 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; } // unused, relying on VisibleRows is smarter
-			public bool AutoRestoreOnMouseUpOnly { get; set; } // default to taseditor way, must be harmless since we suspend rerecord counting while drawing
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
