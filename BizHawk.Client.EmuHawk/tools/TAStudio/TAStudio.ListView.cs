@@ -549,7 +549,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				bool wasHeld = _leftButtonHeld;
 				_leftButtonHeld = true;
 
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
@@ -563,8 +562,8 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.SelectedRows.Contains(frame);
 						return;
 					}
-					else if (_floatEditColumn != buttonName ||
-						!(_floatEditRow == frame || _extraFloatRows.Contains(frame)))
+					if (_floatEditColumn != buttonName
+						|| !(_floatEditRow == frame || _extraFloatRows.Contains(frame)))
 					{
 						_extraFloatRows.Clear();
 						FloatEditRow = -1;
@@ -614,16 +613,15 @@ namespace BizHawk.Client.EmuHawk
 						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
 
-						if ((Control.ModifierKeys == Keys.Alt && Control.ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
+						if ((ModifierKeys == Keys.Alt && ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
 							|| TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
-							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
 							_startRow = TasView.CurrentCell.RowIndex.Value;
 							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
-						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt)
+						else if (ModifierKeys == Keys.Shift && ModifierKeys != Keys.Alt)
 						{
 							if (!TasView.AnyRowsSelected) return;
 							int firstSel = TasView.SelectedRows.First();
