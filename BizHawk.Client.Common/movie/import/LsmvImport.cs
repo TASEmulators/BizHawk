@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
@@ -16,6 +17,9 @@ namespace BizHawk.Client.Common.movie.import
 		private LibsnesControllerDeck _deck;
 		protected override void RunImport()
 		{
+			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
+			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+
 			var hf = new HawkFile(SourceFile.FullName);
 
 			// .LSMV movies are .zip files containing data files.

@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common.movie.import
@@ -14,6 +16,9 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
+			var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
+			Result.Movie.HeaderEntries[HeaderKeys.CORE] = bsnesName;
+
 			using var fs = SourceFile.Open(FileMode.Open, FileAccess.Read);
 			using var r = new BinaryReader(fs);
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.GBHawk;
@@ -111,6 +112,8 @@ namespace BizHawk.Client.Common.movie.import
 			if (isGBA)
 			{
 				platform = "GBA";
+				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
+				Result.Movie.HeaderEntries[HeaderKeys.CORE] = mGBAName;
 			}
 
 			if (isGBC)

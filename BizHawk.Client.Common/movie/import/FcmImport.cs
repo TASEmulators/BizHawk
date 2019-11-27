@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.Common.movie.import
@@ -16,6 +17,9 @@ namespace BizHawk.Client.Common.movie.import
 
 		protected override void RunImport()
 		{
+			var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
+			Result.Movie.HeaderEntries[HeaderKeys.CORE] = neshawkName;
+
 			using var r = new BinaryReader(SourceFile.Open(FileMode.Open, FileAccess.Read));
 			var signature = new string(r.ReadChars(4));
 			if (signature != "FCM\x1A")
