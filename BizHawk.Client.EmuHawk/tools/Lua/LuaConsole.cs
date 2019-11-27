@@ -854,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Shenanigans
 				// We want any gui.text messages from a script to immediately update even when paused
-				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGuiText();
 				GlobalWin.Tools.UpdateToolsAfter();
 				LuaImp.EndLuaDrawing();
 				LuaImp.StartLuaDrawing();

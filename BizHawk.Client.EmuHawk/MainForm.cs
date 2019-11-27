@@ -2842,7 +2842,7 @@ namespace BizHawk.Client.EmuHawk
 				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
 				// client input-related duties
-				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGuiText();
 
 				Global.CheatList.Pulse();
 
@@ -3032,7 +3032,7 @@ namespace BizHawk.Client.EmuHawk
 					" >>";
 			}
 
-			GlobalWin.OSD.FPS = fpsString;
+			GlobalWin.OSD.Fps = fpsString;
 
 			// need to refresh window caption in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
@@ -3954,7 +3954,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
-				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.OSD.ClearGuiText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())

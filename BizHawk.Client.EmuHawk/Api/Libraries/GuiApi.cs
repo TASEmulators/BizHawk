@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearText()
 		{
-			GlobalWin.OSD.ClearGUIText();
+			GlobalWin.OSD.ClearGuiText();
 		}
 
 		public void SetDefaultForegroundColor(Color color)
@@ -650,7 +650,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
+			GlobalWin.OSD.AddGuiText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 	}
 }
