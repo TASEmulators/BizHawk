@@ -1405,6 +1405,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// For whatever reason an auto-complete TextBox doesn't respond to delete
+		// Which is annoying but worse is that it let's the key propagate
+		// If a script is highlighted in the ListView, and the user presses 
+		// delete, it will remove the script without this hack
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == Keys.Delete && InputBox.Focused)
+			{
+				return true;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
 		protected override bool ProcessTabKey(bool forward)
 		{
 			// TODO: Make me less dirty (please)
