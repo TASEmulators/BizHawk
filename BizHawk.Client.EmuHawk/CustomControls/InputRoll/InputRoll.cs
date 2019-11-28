@@ -871,6 +871,7 @@ namespace BizHawk.Client.EmuHawk
 			PointMouseToNewCell();
 		}
 
+		private bool _programmaticallyChangingRow = false;
 		/// <summary>
 		/// Scrolls so that the given index is visible, if it isn't already; doesn't use scroll settings.
 		/// </summary>
@@ -878,6 +879,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsVisible(index))
 			{
+				_programmaticallyChangingRow = true;
 				if (FirstVisibleRow > index)
 				{
 					FirstVisibleRow = index;
@@ -951,7 +953,11 @@ namespace BizHawk.Client.EmuHawk
 						newCell.RowIndex = 0;
 					}
 
-					CellChanged(newCell);
+					if (!_programmaticallyChangingRow)
+					{
+						_programmaticallyChangingRow = false;
+						CellChanged(newCell);
+					}
 				}
 			}
 		}
