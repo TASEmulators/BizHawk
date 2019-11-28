@@ -232,9 +232,9 @@ namespace BizHawk.Client.Common
 		public void OrderWatches(string column, bool reverse)
 		{
 			var separatorIndices = _watchList.Select((w, i) => new { watch = w, index = i })
-											 .Where(w => w.watch.IsSeparator)
-											 .Select(w => w.index)
-											 .ToList();
+							 .Where(w => w.watch.IsSeparator)
+							 .Select(w => w.index)
+							 .ToList();
 
 			separatorIndices.Add(_watchList.Count);
 
