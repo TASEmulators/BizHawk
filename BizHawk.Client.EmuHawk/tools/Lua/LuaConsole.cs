@@ -1175,6 +1175,9 @@ namespace BizHawk.Client.EmuHawk
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Any(file => file.Enabled);
+
+			ClearRegisteredFunctionsContextItem.Enabled =
+				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1217,6 +1220,11 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.Copy();
 				OutputBox.Refresh();
 			});
+		}
+
+		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Clear();
 		}
 
 		#endregion
