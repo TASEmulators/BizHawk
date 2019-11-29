@@ -1173,9 +1173,15 @@ namespace BizHawk.Client.EmuHawk
 					_currentY = e.Y;
 					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 					newCell.RowIndex += FirstVisibleRow;
-					_selectedItems.Clear();
+
+					// If this cell is not currently selected, clear and select
+					if (!_selectedItems.Contains(newCell))
+					{
+						_selectedItems.Clear();
+						SelectCell(CurrentCell);
+					}
+					
 					CellChanged(newCell);
-					SelectCell(CurrentCell);
 				}
 			}
 
