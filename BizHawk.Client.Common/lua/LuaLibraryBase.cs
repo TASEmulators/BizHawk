@@ -58,11 +58,6 @@ namespace BizHawk.Client.Common
 			return (int)(double)luaArg;
 		}
 
-		protected static uint LuaUInt(object luaArg)
-		{
-			return (uint)(double)luaArg;
-		}
-
 		protected static Color? ToColor(object o)
 		{
 			if (o == null)
@@ -70,14 +65,14 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			if (o.GetType() == typeof(double))
+			if (o is double d)
 			{
-				return Color.FromArgb((int)(long)(double)o);
+				return Color.FromArgb((int)(long)d);
 			}
 
-			if (o.GetType() == typeof(string))
+			if (o is string s)
 			{
-				return Color.FromName(o.ToString());
+				return Color.FromName(s);
 			}
 
 			return null;
