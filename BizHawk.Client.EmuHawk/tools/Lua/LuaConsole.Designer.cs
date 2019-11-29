@@ -71,7 +71,6 @@
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableScriptsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ReturnAllIfNoneSelectedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.RemoveRegisteredFunctionsOnToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ReloadWhenScriptFileChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.RegisterToTextEditorsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -462,7 +461,6 @@
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DisableScriptsOnLoadMenuItem,
             this.ReturnAllIfNoneSelectedMenuItem,
-            this.RemoveRegisteredFunctionsOnToggleMenuItem,
             this.ReloadWhenScriptFileChangesMenuItem,
             this.toolStripSeparator4,
             this.RegisterToTextEditorsSubMenu});
@@ -484,13 +482,6 @@
 			this.ReturnAllIfNoneSelectedMenuItem.Size = new System.Drawing.Size(285, 22);
 			this.ReturnAllIfNoneSelectedMenuItem.Text = "Toggle All if None Selected";
 			this.ReturnAllIfNoneSelectedMenuItem.Click += new System.EventHandler(this.ToggleAllIfNoneSelectedMenuItem_Click);
-			// 
-			// RemoveRegisteredFunctionsOnToggleMenuItem
-			// 
-			this.RemoveRegisteredFunctionsOnToggleMenuItem.Name = "RemoveRegisteredFunctionsOnToggleMenuItem";
-			this.RemoveRegisteredFunctionsOnToggleMenuItem.Size = new System.Drawing.Size(285, 22);
-			this.RemoveRegisteredFunctionsOnToggleMenuItem.Text = "Remove Registered Functions on Toggle";
-			this.RemoveRegisteredFunctionsOnToggleMenuItem.Click += new System.EventHandler(this.RemoveRegisteredFunctionsOnToggleMenuItem_Click);
 			// 
 			// ReloadWhenScriptFileChangesMenuItem
 			// 
@@ -966,9 +957,8 @@
 		private System.Windows.Forms.ToolStripButton DuplicateToolbarButton;
 		private System.Windows.Forms.ToolStripMenuItem DuplicateScriptMenuItem;
         private System.Windows.Forms.TextBox InputBox;
-				private System.Windows.Forms.SplitContainer splitContainer1;
-				private System.Windows.Forms.ToolStripMenuItem ReturnAllIfNoneSelectedMenuItem;
-				private System.Windows.Forms.ToolStripMenuItem RemoveRegisteredFunctionsOnToggleMenuItem;
+		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.ToolStripMenuItem ReturnAllIfNoneSelectedMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ReloadWhenScriptFileChangesMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem RegisterToTextEditorsSubMenu;

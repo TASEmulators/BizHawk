@@ -1054,7 +1054,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 			ReturnAllIfNoneSelectedMenuItem.Checked = Global.Config.ToggleAllIfNoneSelected;
-			RemoveRegisteredFunctionsOnToggleMenuItem.Checked = Global.Config.RemoveRegisteredFunctionsOnToggle;
 			ReloadWhenScriptFileChangesMenuItem.Checked = Global.Config.LuaReloadOnScriptFileChange;
 		}
 
@@ -1066,11 +1065,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ToggleAllIfNoneSelected ^= true;
-		}
-
-		private void RemoveRegisteredFunctionsOnToggleMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RemoveRegisteredFunctionsOnToggle ^= true;
 		}
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
@@ -1485,10 +1479,6 @@ namespace BizHawk.Client.EmuHawk
 
 				LuaImp.CallExitEvent(file);
 				file.Stop();
-				if (Global.Config.RemoveRegisteredFunctionsOnToggle)
-				{
-					LuaImp.RegisteredFunctions.ClearAll();
-				}
 			}
 		}
 
