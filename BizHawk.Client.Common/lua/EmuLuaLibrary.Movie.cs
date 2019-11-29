@@ -2,6 +2,7 @@
 using System.IO;
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	public sealed class MovieLuaLibrary : LuaLibraryBase
@@ -176,9 +177,9 @@ namespace BizHawk.Client.Common
 		{
 			// Lua numbers are always double, integer precision holds up
 			// to 53 bits, so throw an error if it's bigger than that.
-			const double PrecisionLimit = 9007199254740992d;
+			const double precisionLimit = 9007199254740992d;
 
-			if (count > PrecisionLimit)
+			if (count > precisionLimit)
 			{
 				throw new Exception("Rerecord count exceeds Lua integer precision.");
 			}
@@ -208,8 +209,8 @@ namespace BizHawk.Client.Common
 			{
 				var movie = Global.MovieSession.Movie;
 				var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-				var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-						movie.HeaderEntries[HeaderKeys.PAL] == "1";
+				var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+					&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
 				return new PlatformFrameRates()[system, pal];
 			}

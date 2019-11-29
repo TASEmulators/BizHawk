@@ -11,6 +11,8 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 using NLua;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
@@ -267,37 +269,34 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setrenderplanes", "Toggles the drawing of sprites and background planes. Set to false or nil to disable a pane, anything else will draw them")]
 		public void SetRenderPlanes(params bool[] luaParam)
 		{
-			if (Emulator is NES)
+			if (Emulator is NES nes)
 			{
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
-				var nes = Emulator as NES;
 				var s = nes.GetSettings();
 				s.DispSprites = luaParam[0];
 				s.DispBackground = luaParam[1];
 				nes.PutSettings(s);
 			}
-			else if (Emulator is QuickNES)
+			else if (Emulator is QuickNES quicknes)
 			{
-				var quicknes = Emulator as QuickNES;
 				var s = quicknes.GetSettings();
 
 				// this core doesn't support disabling BG
-				bool showsp = GetSetting(0, luaParam);
-				if (showsp && s.NumSprites == 0)
+				bool showSp = GetSetting(0, luaParam);
+				if (showSp && s.NumSprites == 0)
 				{
 					s.NumSprites = 8;
 				}
-				else if (!showsp && s.NumSprites > 0)
+				else if (!showSp && s.NumSprites > 0)
 				{
 					s.NumSprites = 0;
 				}
 
 				quicknes.PutSettings(s);
 			}
-			else if (Emulator is PCEngine)
+			else if (Emulator is PCEngine pce)
 			{
-				var pce = Emulator as PCEngine;
 				var s = pce.GetSettings();
 				s.ShowOBJ1 = GetSetting(0, luaParam);
 				s.ShowBG1 = GetSetting(1, luaParam);
@@ -309,17 +308,15 @@ namespace BizHawk.Client.Common
 
 				pce.PutSettings(s);
 			}
-			else if (Emulator is SMS)
+			else if (Emulator is SMS sms)
 			{
-				var sms = Emulator as SMS;
 				var s = sms.GetSettings();
 				s.DispOBJ = GetSetting(0, luaParam);
 				s.DispBG = GetSetting(1, luaParam);
 				sms.PutSettings(s);
 			}
-			else if (Emulator is WonderSwan)
+			else if (Emulator is WonderSwan ws)
 			{
-				var ws = Emulator as WonderSwan;
 				var s = ws.GetSettings();
 				s.EnableSprites = GetSetting(0, luaParam);
 				s.EnableFG = GetSetting(1, luaParam);
@@ -330,12 +327,7 @@ namespace BizHawk.Client.Common
 
 		private static bool GetSetting(int index, bool[] settings)
 		{
-			if (index < settings.Length)
-			{
-				return settings[index];
-			}
-
-			return true;
+			return index >= settings.Length || settings[index];
 		}
 
 		[LuaMethodExample("emu.yield( );")]
@@ -349,24 +341,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getdisplaytype", "returns the display type (PAL vs NTSC) that the emulator is currently running in")]
 		public string GetDisplayType()
 		{
-			if (RegionableCore != null)
-			{
-				return RegionableCore.Region.ToString();
-			}
-
-			return "";
+			return RegionableCore != null
+				? RegionableCore.Region.ToString()
+				: "";
 		}
 
 		[LuaMethodExample("local stemuget = emu.getboardname();")]
 		[LuaMethod("getboardname", "returns (if available) the board name of the loaded ROM")]
 		public string GetBoardName()
 		{
-			if (BoardInfo != null)
-			{
-				return BoardInfo.BoardName;
-			}
-
-			return "";
+			return BoardInfo != null
+				? BoardInfo.BoardName
+				: "";
 		}
 
 		[LuaMethod("getluacore", "returns the name of the Lua core currently in use")]

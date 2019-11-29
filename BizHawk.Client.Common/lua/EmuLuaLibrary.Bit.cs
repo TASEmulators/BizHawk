@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing standard bitwise operations.")]

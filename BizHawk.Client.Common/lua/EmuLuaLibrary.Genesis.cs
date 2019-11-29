@@ -6,6 +6,8 @@ using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
@@ -24,12 +26,9 @@ namespace BizHawk.Client.Common
 
 		private GPGX.GPGXSettings GetSettings()
 		{
-			if (Genesis != null)
-			{
-				return Genesis.GetSettings();
-			}
-
-			return new GPGX.GPGXSettings();
+			return Genesis != null
+				? Genesis.GetSettings()
+				: new GPGX.GPGXSettings();
 		}
 
 		private void PutSettings(GPGX.GPGXSettings settings)

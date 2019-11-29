@@ -4,6 +4,8 @@ using BizHawk.Emulation.Common;
 using NLua;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to SNESHawk (functions may not run when an SNES game is not loaded)")]
@@ -22,12 +24,9 @@ namespace BizHawk.Client.Common
 
 		private LibsnesCore.SnesSettings GetSettings()
 		{
-			if (Snes != null)
-			{
-				return Snes.GetSettings();
-			}
-
-			return new LibsnesCore.SnesSettings();
+			return Snes != null
+				? Snes.GetSettings()
+				: new LibsnesCore.SnesSettings();
 		}
 
 		private void PutSettings(LibsnesCore.SnesSettings settings)

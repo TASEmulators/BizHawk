@@ -8,6 +8,8 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	[Description("Functions related specifically to Nes Cores")]
@@ -31,7 +33,7 @@ namespace BizHawk.Client.Common
 
 		private bool NESAvailable => Neshawk != null || Quicknes != null;
 
-		private bool HasMemoryDOmains => MemoryDomains != null;
+		private bool HasMemoryDomains => MemoryDomains != null;
 
 		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
@@ -42,7 +44,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("addgamegenie", "Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
 		public void AddGameGenie(string code)
 		{
-			if (NESAvailable && HasMemoryDOmains)
+			if (NESAvailable && HasMemoryDomains)
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
