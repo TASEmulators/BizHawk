@@ -490,6 +490,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Api
 
+		private int? _lastSelectedRow;
+
 		public void SelectRow(int index, bool val)
 		{
 			if (_columns.VisibleColumns.Any())
@@ -501,11 +503,13 @@ namespace BizHawk.Client.EmuHawk
 						RowIndex = index,
 						Column = _columns[0]
 					});
+					_lastSelectedRow = index;
 				}
 				else
 				{
 					IEnumerable<Cell> items = _selectedItems.Where(cell => cell.RowIndex == index);
 					_selectedItems.RemoveWhere(items.Contains);
+					_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 				}
 			}
 		}
@@ -520,16 +524,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			FullRowSelect = oldFullRowVal;
+			_lastSelectedRow = RowCount;
 		}
 
 		public void DeselectAll()
 		{
+			_lastSelectedRow = null;
 			_selectedItems.Clear();
 		}
 
 		public void TruncateSelection(int index)
 		{
 			_selectedItems.RemoveWhere(cell => cell.RowIndex > index);
+			_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 		}
 
 		[Browsable(false)]
@@ -899,11 +906,6 @@ namespace BizHawk.Client.EmuHawk
 			.Distinct();
 
 		public bool AnyRowsSelected => _selectedItems.Any(cell => cell.RowIndex.HasValue);
-
-		public void ClearSelectedRows()
-		{
-			_selectedItems.Clear();
-		}
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
@@ -1384,7 +1386,46 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-				// Selection courser
+				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift+Up
+				{
+					if (MultiSelect && _lastSelectedRow > 0)
+					{
+						if (_selectedItems.Any(i => i.RowIndex == _lastSelectedRow.Value)
+							&& _selectedItems.Any(i => i.RowIndex == _lastSelectedRow - 1)) // Unhighlight if already highlighted
+						{
+							SelectRow(_lastSelectedRow.Value, false);
+						}
+						else
+						{
+							SelectRow(_lastSelectedRow.Value - 1, true);
+						}
+
+						Refresh();
+					}
+				}
+				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift+Down
+				{
+					if (MultiSelect && _lastSelectedRow < RowCount - 1)
+					{
+						if (_selectedItems.Any(i => i.RowIndex == _lastSelectedRow.Value)
+							&& _selectedItems.Any(i => i.RowIndex == _lastSelectedRow + 1)) // Unhighlight if already highlighted
+						{
+							var origIndex = _lastSelectedRow.Value;
+							SelectRow(origIndex, false);
+
+							// SelectRow assumed the max row should be selected, but in this edge case it isn't
+							_lastSelectedRow = _selectedItems.FirstOrDefault()?.RowIndex;
+						}
+						else
+						{
+							SelectRow(_lastSelectedRow.Value + 1, true);
+							
+						}
+
+						Refresh();
+					}
+				}
+				// Selection cursor
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
 				{
 					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
@@ -1678,6 +1719,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!MultiSelect)
 				{
 					_selectedItems.Clear();
+					_lastSelectedRow = null;
 				}
 
 				if (FullRowSelect)
@@ -1685,6 +1727,7 @@ namespace BizHawk.Client.EmuHawk
 					if (toggle && _selectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
 					{
 						_selectedItems.RemoveWhere(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex);
+						_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
 					}
 					else
 					{
@@ -1695,11 +1738,13 @@ namespace BizHawk.Client.EmuHawk
 								RowIndex = cell.RowIndex,
 								Column = column
 							});
+							_lastSelectedRow = cell.RowIndex;
 						}
 					}
 				}
 				else
 				{
+					_lastSelectedRow = null; // TODO: tracking this by cell is a lot more work
 					if (toggle && _selectedItems.Any(x => x.RowIndex.HasValue && x.RowIndex == cell.RowIndex))
 					{
 						var item = _selectedItems
