@@ -9,11 +9,11 @@ namespace BizHawk.Client.Common
 	{
 		private readonly LuaFunction _function;
 
-		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, Lua lua, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, Lua lua, string name = null)
 		{
 			_function = function;
 			Name = name ?? "Anonymous";
-			Event = theevent;
+			Event = theEvent;
 			Lua = lua;
 			Guid = Guid.NewGuid();
 
@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		public Guid Guid { get; private set; }
+		public Guid Guid { get; }
 
 		public string Name { get; }
 
