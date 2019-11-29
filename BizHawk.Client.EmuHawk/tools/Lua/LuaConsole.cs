@@ -1181,6 +1181,9 @@ namespace BizHawk.Client.EmuHawk
 			ClearConsoleContextItem.Enabled = 
 				SelectAllContextItem.Enabled = 
 				OutputBox.Text.Any();
+
+			ClearRegisteredFunctionsLogContextItem.Enabled = 
+				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void ClearConsoleContextItem_Click(object sender, EventArgs e)
