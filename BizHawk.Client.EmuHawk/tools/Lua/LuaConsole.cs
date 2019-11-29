@@ -1464,17 +1464,15 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file.Enabled && file.Thread == null)
 			{
+				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
+				UpdateRegisteredFunctionsDialog();
 			}
 			else if (!file.Enabled && file.Thread != null)
 			{
 				LuaImp.CallExitEvent(file);
-
-				foreach (var selectedItem in SelectedItems)
-				{
-					LuaImp.RegisteredFunctions.RemoveForFile(selectedItem);
-					UpdateRegisteredFunctionsDialog();
-				}
+				LuaImp.RegisteredFunctions.RemoveForFile(file);
+				UpdateRegisteredFunctionsDialog();
 
 				LuaImp.CallExitEvent(file);
 				file.Stop();
