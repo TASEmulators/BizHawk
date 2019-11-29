@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Appearance")]
 		[DefaultValue(true)]
-		public bool GridLines { get; set; }
+		public bool GridLines { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the control is horizontal or vertical
