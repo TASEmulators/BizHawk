@@ -826,7 +826,7 @@
 			this.LuaListView.HorizontalOrientation = false;
 			this.LuaListView.LetKeysModifySelection = false;
 			this.LuaListView.Location = new System.Drawing.Point(4, 21);
-			this.LuaListView.MultiSelect = false;
+			this.LuaListView.MultiSelect = true;
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.RowCount = 0;
 			this.LuaListView.ScrollSpeed = 1;
