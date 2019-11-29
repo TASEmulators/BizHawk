@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 						if (!prohibit)
 						{
-							var result = LuaImp.ResumeScriptFromThreadOf(lf);
+							var result = LuaImp.ResumeScript(lf);
 							if (result.Terminated)
 							{
 								LuaImp.CallExitEvent(lf);

@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 		private static readonly EmuLuaLibrary.ResumeResult EmptyResumeResult = new EmuLuaLibrary.ResumeResult();
-		public override EmuLuaLibrary.ResumeResult ResumeScriptFromThreadOf(LuaFile lf)
+		public override EmuLuaLibrary.ResumeResult ResumeScript(LuaFile lf)
 		{
 			return EmptyResumeResult;
 		}

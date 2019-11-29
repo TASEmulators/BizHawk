@@ -209,20 +209,20 @@ namespace BizHawk.Client.EmuHawk
 				_lua.Pop();
 		}
 
-		public ResumeResult ResumeScript(Lua script)
+		public override ResumeResult ResumeScript(LuaFile lf)
 		{
-			_currThread = script;
+			_currThread = lf.Thread;
 
 			try
 			{
 				LuaLibraryBase.SetCurrentThread(_currThread);
 
-				var execResult = script.Resume(0);
+				var execResult = _currThread.Resume(0);
 
 				_lua.RunScheduledDisposes();
 
 				// not sure how this is going to work out, so do this too
-				script.RunScheduledDisposes();
+				_currThread.RunScheduledDisposes();
 
 				_currThread = null;
 				var result = new ResumeResult();
@@ -244,11 +244,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.ClearCurrentThread();
 			}
-		}
-
-		public override ResumeResult ResumeScriptFromThreadOf(LuaFile lf)
-		{
-			return ResumeScript(lf.Thread);
 		}
 
 		public static void Print(params object[] outputs)
