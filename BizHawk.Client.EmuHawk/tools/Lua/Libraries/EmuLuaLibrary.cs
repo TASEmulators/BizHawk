@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Any())
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
+					addLibrary = VersionInfo.DeveloperBuild || ((LuaLibraryAttribute)attributes.First()).Released;
 				}
 
 				if (addLibrary)
@@ -133,7 +133,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool IsRunning { get; set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
 		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
