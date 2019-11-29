@@ -716,7 +716,7 @@
 			this.RefreshScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RefreshScriptToolbarItem.Name = "RefreshScriptToolbarItem";
 			this.RefreshScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
-			this.RefreshScriptToolbarItem.Text = "Reload Script";
+			this.RefreshScriptToolbarItem.Text = "Refresh";
 			this.RefreshScriptToolbarItem.Click += new System.EventHandler(this.RefreshScriptMenuItem_Click);
 			// 
 			// PauseToolbarItem
