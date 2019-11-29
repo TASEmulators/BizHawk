@@ -431,24 +431,6 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
-		private static FileInfo GetFileFromUser(string filter)
-		{
-			var ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.GetLuaPath(),
-					Filter = filter,
-					RestoreDirectory = true
-				};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
-			var result = ofd.ShowHawkDialog();
-			return result == DialogResult.OK ? new FileInfo(ofd.FileName) : null;
-		}
-
 		private void UpdateNumberOfScripts()
 		{
 			var message = "";
@@ -720,10 +702,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = GetFileFromUser("Lua Session Files (*.luases)|*.luases|All Files|*.*");
-			if (file != null)
+			var ofd = new OpenFileDialog
 			{
-				LuaImp.ScriptList.LoadLuaSession(file.FullName);
+				InitialDirectory = PathManager.GetLuaPath(),
+				Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*",
+				RestoreDirectory = true,
+				Multiselect = false
+			};
+
+			if (!Directory.Exists(ofd.InitialDirectory))
+			{
+				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
+			{
+				LuaImp.ScriptList.LoadLuaSession(ofd.FileName);
 				RunLuaScripts();
 				UpdateDialog();
 				LuaImp.ScriptList.Changes = false;
@@ -813,10 +808,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*");
-			if (file != null)
+			var ofd = new OpenFileDialog
 			{
-				LoadLuaFile(file.FullName);
+				InitialDirectory = PathManager.GetLuaPath(),
+				Filter = "Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*",
+				RestoreDirectory = true,
+				Multiselect = true
+			};
+
+			if (!Directory.Exists(ofd.InitialDirectory))
+			{
+				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK && ofd.FileNames != null)
+			{
+				foreach (var file in ofd.FileNames)
+				{
+					LoadLuaFile(file);
+				}
+
 				UpdateDialog();
 			}
 		}
