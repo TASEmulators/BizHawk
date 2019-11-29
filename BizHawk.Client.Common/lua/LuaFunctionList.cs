@@ -59,7 +59,8 @@ namespace BizHawk.Client.Common
 		public static IEnumerable<NamedLuaFunction> ForFile(this IEnumerable<NamedLuaFunction> list, LuaFile luaFile)
 		{
 			return list
-				.Where(l => l.LuaFile.Thread == luaFile.Thread);
+				.Where(l => l.LuaFile.Path == luaFile.Path
+					|| l.LuaFile.Thread == luaFile.Thread);
 		}
 
 		public static IEnumerable<NamedLuaFunction> ForEvent(this IEnumerable<NamedLuaFunction> list, string eventName)
