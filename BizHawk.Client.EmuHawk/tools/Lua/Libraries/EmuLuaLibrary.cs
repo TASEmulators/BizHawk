@@ -162,14 +162,9 @@ namespace BizHawk.Client.EmuHawk
 			EventsLibrary.CallFrameAfterEvent();
 		}
 
-		public void CallExitEvent(Lua thread)
-		{
-			EventsLibrary.CallExitEvent(thread);
-		}
-
 		public override void CallExitEvent(LuaFile lf)
 		{
-			CallExitEvent(lf.Thread);
+			EventsLibrary.CallExitEvent(lf);
 		}
 
 		public override void Close()
@@ -214,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				LuaLibraryBase.SetCurrentThread(_currThread);
+				LuaLibraryBase.SetCurrentThread(lf);
 
 				var execResult = _currThread.Resume(0);
 

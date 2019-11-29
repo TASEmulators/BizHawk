@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			LogOutputCallback = logOutputCallback;
 		}
 
-		protected static Lua CurrentThread { get; private set; }
+		protected static LuaFile CurrentFile { get; private set; }
 
 		private static Thread CurrentHostThread;
 		private static readonly object ThreadMutex = new object();
@@ -35,11 +35,11 @@ namespace BizHawk.Client.Common
 			lock (ThreadMutex)
 			{
 				CurrentHostThread = null;
-				CurrentThread = null;
+				CurrentFile = null;
 			}
 		}
 
-		public static void SetCurrentThread(Lua luaThread)
+		public static void SetCurrentThread(LuaFile luaFile)
 		{
 			lock (ThreadMutex)
 			{
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 				}
 
 				CurrentHostThread = Thread.CurrentThread;
-				CurrentThread = luaThread;
+				CurrentFile = luaFile;
 			}
 		}
 

@@ -302,9 +302,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (control.Handle == ptr)
 					{
-						if (control is LuaCheckbox)
+						if (control is LuaCheckbox checkbox)
 						{
-							return (control as LuaCheckbox).Checked;
+							return checkbox.Checked;
 						}
 
 						return false;
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
-			var form = new LuaWinform(CurrentThread);
+			var form = new LuaWinform(CurrentFile);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{

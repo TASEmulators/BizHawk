@@ -13,12 +13,12 @@ namespace BizHawk.Client.EmuHawk
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
-		private readonly Lua _ownerThread;
+		private readonly LuaFile _ownerFile;
 
-		public LuaWinform(Lua ownerThread)
+		public LuaWinform(LuaFile ownerFile)
 		{
 			InitializeComponent();
-			_ownerThread = ownerThread;
+			_ownerFile = ownerFile;
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			LuaSandbox.Sandbox(_ownerThread, () =>
+			LuaSandbox.Sandbox(_ownerFile.Thread, () =>
 			{
 				Environment.CurrentDirectory = _currentDirectory;
 				foreach (LuaEvent luaEvent in ControlEvents)
@@ -49,9 +49,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public class LuaEvent
 		{
-			public LuaEvent(IntPtr handle, LuaFunction lfunction)
+			public LuaEvent(IntPtr handle, LuaFunction luaFunction)
 			{
-				Event = lfunction;
+				Event = luaFunction;
 				Control = handle;
 			}
 
