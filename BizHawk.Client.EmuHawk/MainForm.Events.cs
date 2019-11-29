@@ -2383,7 +2383,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "Vectrex Settings");
+			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
 		}
 
 		#endregion
