@@ -8,6 +8,15 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MovieApi : IInputMovie
 	{
+		public MovieApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
+
+		public MovieApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
+
 		private static class MoviePluginStatic
 		{
 			public static string Filename()
@@ -105,8 +114,6 @@ namespace BizHawk.Client.Common
 			}
 
 		}
-		public MovieApi()
-		{ }
 
 		public bool StartsFromSavestate()
 		{
@@ -122,7 +129,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!Global.MovieSession.Movie.IsActive)
 			{
-				Console.WriteLine("No movie loaded");
+				LogCallback("No movie loaded");
 				return null;
 			}
 
@@ -131,7 +138,7 @@ namespace BizHawk.Client.Common
 
 			if (adapter == null)
 			{
-				Console.WriteLine("Can't get input of the last frame of the movie. Use the previous frame");
+				LogCallback("Can't get input of the last frame of the movie. Use the previous frame");
 				return null;
 			}
 
@@ -173,7 +180,7 @@ namespace BizHawk.Client.Common
 				var test = new FileInfo(filename);
 				if (test.Exists)
 				{
-					Console.WriteLine($"File {filename} already exists, will not overwrite");
+					LogCallback($"File {filename} already exists, will not overwrite");
 					return;
 				}
 
