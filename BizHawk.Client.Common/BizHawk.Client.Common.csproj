@@ -166,7 +166,6 @@
     <Compile Include="lua\LuaFunctionList.cs" />
     <Compile Include="lua\LuaHelper.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
-    <Compile Include="lua\LuaMemoryBase.cs" />
     <Compile Include="lua\LuaSandbox.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
     <Compile Include="miniz\LibMiniz.cs" />

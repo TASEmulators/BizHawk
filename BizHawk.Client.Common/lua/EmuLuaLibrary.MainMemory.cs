@@ -1,16 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
 
-using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+
+using NLua;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]
-	public sealed class MainMemoryLuaLibrary : LuaMemoryBase
+	public sealed class MainMemoryLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
+		[OptionalService]
+		private IMemoryDomains MemoryDomainCore { get; set; }
+
 		public MainMemoryLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -19,7 +26,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "mainmemory";
 
-		protected override MemoryDomain Domain
+		private MemoryDomain Domain
 		{
 			get
 			{
@@ -34,6 +41,115 @@ namespace BizHawk.Client.Common
 					throw new NotImplementedException(error);
 				}
 			}
+		}
+
+		private uint ReadUnsignedByte(int addr)
+		{
+			var d = Domain;
+			if (addr < d.Size)
+			{
+				return d.PeekByte(addr);
+			}
+
+			Log($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
+			return 0;
+		}
+
+		private void WriteUnsignedByte(int addr, uint v)
+		{
+			var d = Domain;
+			if (d.CanPoke())
+			{
+				if (addr < Domain.Size)
+				{
+					d.PokeByte(addr, (byte)v);
+				}
+				else
+				{
+					Log($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
+				}
+			}
+			else
+			{
+				Log($"Error: the domain {d.Name} is not writable");
+			}
+		}
+
+		private static int U2S(uint u, int size)
+		{
+			var s = (int)u;
+			s <<= 8 * (4 - size);
+			s >>= 8 * (4 - size);
+			return s;
+		}
+
+		private int ReadSignedLittleCore(int addr, int size)
+		{
+			return U2S(ReadUnsignedLittle(addr, size), size);
+		}
+
+		private uint ReadUnsignedLittle(int addr, int size)
+		{
+			uint v = 0;
+			for (var i = 0; i < size; ++i)
+			{
+				v |= ReadUnsignedByte(addr + i) << (8 * i);
+			}
+
+			return v;
+		}
+
+		private int ReadSignedBig(int addr, int size)
+		{
+			return U2S(ReadUnsignedBig(addr, size), size);
+		}
+
+		private uint ReadUnsignedBig(int addr, int size)
+		{
+			uint v = 0;
+			for (var i = 0; i < size; ++i)
+			{
+				v |= ReadUnsignedByte(addr + i) << (8 * (size - 1 - i));
+			}
+
+			return v;
+		}
+
+		private void WriteSignedLittle(int addr, int v, int size)
+		{
+			WriteUnsignedLittle(addr, (uint)v, size);
+		}
+
+		private void WriteUnsignedLittle(int addr, uint v, int size)
+		{
+			for (var i = 0; i < size; ++i)
+			{
+				WriteUnsignedByte(addr + i, (v >> (8 * i)) & 0xFF);
+			}
+		}
+
+		private void WriteSignedBig(int addr, int v, int size)
+		{
+			WriteUnsignedBig(addr, (uint)v, size);
+		}
+
+		private void WriteUnsignedBig(int addr, uint v, int size)
+		{
+			for (var i = 0; i < size; ++i)
+			{
+				WriteUnsignedByte(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
+			}
+		}
+
+		private uint ReadSignedLittle(int addr, int size)
+		{
+			uint v = 0;
+			for (var i = 0; i < size; ++i)
+			{
+				v |= ReadUnsignedByte(addr + i) << (8 * i);
+			}
+
+			return v;
 		}
 
 		#region Unique Library Methods
@@ -74,28 +190,92 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length)
 		{
-			return base.ReadByteRange(addr, length);
+			var d = Domain;
+			var lastAddr = length + addr;
+			var table = Lua.NewTable();
+			if (lastAddr <= d.Size)
+			{
+				for (var i = 0; i < length; i++)
+				{
+					int a = addr + i;
+					var v = d.PeekByte(a);
+					table[i] = v;
+				}
+			}
+			else
+			{
+				Log($"Warning: Attempted read {lastAddr} outside memory domain size of {d.Size} in readbyterange()");
+			}
+
+			return table;
 		}
 
 		[LuaMethodExample("")]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock)
 		{
-			base.WriteByteRange(memoryblock);
+			var d = Domain;
+			if (d.CanPoke())
+			{
+				foreach (var address in memoryblock.Keys)
+				{
+					var addr = LuaInt(address);
+					if (addr < d.Size)
+					{
+						d.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+					}
+					else
+					{
+						Log($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in writebyterange()");
+					}
+				}
+			}
+			else
+			{
+				Log($"Error: the domain {d.Name} is not writable");
+			}
 		}
 
 		[LuaMethodExample("local simairea = mainmemory.readfloat(0x100, false);")]
 		[LuaMethod("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]
 		public float ReadFloat(int addr, bool bigendian)
 		{
-			return base.ReadFloat(addr, bigendian);
+			var d = Domain;
+			if (addr < d.Size)
+			{
+				var val = d.PeekUint(addr, bigendian);
+				var bytes = BitConverter.GetBytes(val);
+				return BitConverter.ToSingle(bytes, 0);
+			}
+
+			Log($"Warning: Attempted read {addr} outside memory size of {d.Size}");
+
+			return 0;
 		}
 
 		[LuaMethodExample("mainmemory.writefloat( 0x100, 10.0, false );")]
 		[LuaMethod("writefloat", "Writes the given 32-bit float value to the given address and endian")]
 		public void WriteFloat(int addr, double value, bool bigendian)
 		{
-			base.WriteFloat(addr, value, bigendian);
+			var d = Domain;
+			if (d.CanPoke())
+			{
+				if (addr < d.Size)
+				{
+					var dv = (float)value;
+					var bytes = BitConverter.GetBytes(dv);
+					var v = BitConverter.ToUInt32(bytes, 0);
+					d.PokeUint(addr, v, bigendian);
+				}
+				else
+				{
+					Log($"Warning: Attempted write {addr} outside memory size of {d.Size}");
+				}
+			}
+			else
+			{
+				Log($"Error: the domain {Domain.Name} is not writable");
+			}
 		}
 
 		#endregion
