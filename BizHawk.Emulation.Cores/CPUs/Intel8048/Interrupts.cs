@@ -26,7 +26,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		private void ResetInterrupts()
 		{
-			IntEn = true;
+			IntEn = false;
+			TimIntEn = false;
 		}
 	}
 }

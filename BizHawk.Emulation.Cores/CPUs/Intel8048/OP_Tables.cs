@@ -212,13 +212,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
+							EEA,
+							WR_P, 0, (ushort)(reg + RB),
+							DEA,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD_P, A, 0);
 
 			IRQS = 9;
 		}
@@ -268,18 +268,35 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 9;
 		}
 
+		// TODO: This should only write back to the port destination if directly wired, otherwise we should wait for a write pulse
+		// TODO: for O2, P1 is tied direct to CTRL outputs so this is ok, BUS and P2 should do something else though
 		public void OP_PB_DIR(ushort oper, ushort reg)
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IDLE,
-							RD, ALU, PC,
-							INC11, PC,
-							IDLE,
-							IDLE,
-							IDLE,
-							oper, reg, ALU);
-
+			if (reg == 1)
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
+								oper, (ushort)(reg + PX), ALU,
+								IDLE,
+								IDLE,
+								WR_P, reg, (ushort)(reg + PX));
+			}
+			else
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
+								oper, (ushort)(reg + PX), ALU,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			
 			IRQS = 9;
 		}
 

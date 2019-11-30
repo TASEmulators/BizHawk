@@ -52,10 +52,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			for (int i = 0; i < 10000; i++)
 			{
-				audio.tick();
+				ppu.tick();
 				ppu.tick();
 				ppu.DMA_tick();
 				serialport.serial_transfer_tick();
+				ppu.Audio_tick();
 				cpu.ExecuteOne();
 
 				if (in_vblank && !in_vblank_old)
@@ -82,10 +83,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void do_single_step()
 		{
-			audio.tick();
+			ppu.tick();
 			ppu.tick();
 			ppu.DMA_tick();
 			serialport.serial_transfer_tick();
+			ppu.Audio_tick();
 			cpu.ExecuteOne();
 		}
 
@@ -138,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void Dispose()
 		{
-			audio.DisposeSound();
+			ppu.DisposeSound();
 		}
 
 		#region Video provider

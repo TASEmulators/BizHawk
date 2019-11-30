@@ -709,7 +709,6 @@
     </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
-    <Compile Include="Consoles\Magnavox\Odyssey2\Audio.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.ICodeDataLog.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\O2Hawk.IDebuggable.cs">

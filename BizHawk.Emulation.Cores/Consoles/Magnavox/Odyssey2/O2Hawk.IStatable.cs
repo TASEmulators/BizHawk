@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 			serialport.SyncState(ser);
-			audio.SyncState(ser);
 
 			ser.BeginSection("Odyssey2");
 			ser.Sync(nameof(core), ref core, false);
