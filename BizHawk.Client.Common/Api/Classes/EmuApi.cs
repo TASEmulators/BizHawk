@@ -18,6 +18,15 @@ namespace BizHawk.Client.Common
 	[Description("A library for interacting with the currently loaded emulator core")]
 	public sealed class EmuApi : IEmu
 	{
+		public EmuApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
+
+		public EmuApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
+
 		private static class EmuStatic
 		{
 			public static void DisplayVsync(bool enabled)
@@ -37,8 +46,8 @@ namespace BizHawk.Client.Common
 			{
 				Global.Config.AutoMinimizeSkipping = enabled;
 			}
-
 		}
+
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
@@ -100,7 +109,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
+				LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDisassemblable.Disassemble)}()");
 				return null;
 			}
 		}
@@ -121,7 +130,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
+				LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 				return null;
 			}
 		}
@@ -144,7 +153,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
+				LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.GetCpuFlagsAndRegisters)}()");
 			}
 
 			return table;
@@ -163,7 +172,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.SetCpuRegister)}()");
+				LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.SetCpuRegister)}()");
 			}
 		}
 
@@ -180,7 +189,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Console.WriteLine($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.TotalExecutedCycles)}()");
+				LogCallback($"Error: {Emulator.Attributes().CoreName} does not yet implement {nameof(IDebuggable.TotalExecutedCycles)}()");
 
 				return 0;
 			}
@@ -198,7 +207,7 @@ namespace BizHawk.Client.Common
 				return InputPollableCore.IsLagFrame;
 			}
 
-			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
+			LogCallback($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return false;
 		}
 
@@ -210,7 +219,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
+				LogCallback($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 
@@ -221,7 +230,7 @@ namespace BizHawk.Client.Common
 				return InputPollableCore.LagCount;
 			}
 
-			Console.WriteLine($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
+			LogCallback($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			return 0;
 		}
 
@@ -233,7 +242,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Console.WriteLine($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
+				LogCallback($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement {nameof(IInputPollable)}");
 			}
 		}
 
