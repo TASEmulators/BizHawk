@@ -12,22 +12,12 @@ namespace BizHawk.Client.Common
 
 		public string GetRomName()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Name ?? "";
-			}
-
-			return "";
+			return Global.Game?.Name ?? "";
 		}
 
 		public string GetRomHash()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Hash ?? "";
-			}
-
-			return "";
+			return Global.Game?.Hash ?? "";
 		}
 
 		public bool InDatabase()
@@ -42,22 +32,12 @@ namespace BizHawk.Client.Common
 
 		public string GetStatus()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Status.ToString();
-			}
-
-			return "";
+			return Global.Game?.Status.ToString();
 		}
 
 		public bool IsStatusBad()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.IsRomStatusBad();
-			}
-
-			return true;
+			return Global.Game?.IsRomStatusBad() ?? true;
 		}
 
 		public string GetBoardType()

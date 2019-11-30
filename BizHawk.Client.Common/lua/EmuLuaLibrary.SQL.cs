@@ -44,11 +44,11 @@ namespace BizHawk.Client.Common
 			{
 				var connBuilder = new SQLiteConnectionStringBuilder
 				{
-					DataSource = name
-					, Version = 3 // SQLite version 
-					, JournalMode = SQLiteJournalModeEnum.Wal // Allows for reads and writes to happen at the same time
-					, DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted // This only helps make the database lock left. May be pointless now
-					, SyncMode = SynchronizationModes.Off // This shortens the delay for do synchronous calls.
+					DataSource = name,
+					Version = 3,
+					JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
+					DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
+					SyncMode = SynchronizationModes.Off, // This shortens the delay for do synchronous calls.
 				};
 
 				_mDBConnection = new SQLiteConnection(connBuilder.ToString());
@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 				var table = Lua.NewTable();
 				_mDBConnection.Open();
 				string sql = $"PRAGMA read_uncommitted =1;{query}";
-				var command = new SQLiteCommand(sql, _mDBConnection);
+				using var command = new SQLiteCommand(sql, _mDBConnection);
 				SQLiteDataReader reader = command.ExecuteReader();
 				bool rows = reader.HasRows;
 				long rowCount = 0;

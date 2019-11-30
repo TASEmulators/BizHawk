@@ -29,7 +29,7 @@ namespace BizHawk.Client.Common
 				{
 					DataSource = name,
 					Version = 3,
-					JournalMode = SQLiteJournalModeEnum.Wal,  // Allows for reads and writes to happen at the same time
+					JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
 					DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
 					SyncMode = SynchronizationModes.Off // This shortens the delay for do synchronous calls.
 				};

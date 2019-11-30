@@ -377,22 +377,22 @@ namespace BizHawk.Client.Common
 				s.DispBackground = luaParam[1];
 				nes.PutSettings(s);
 			}
-			else if (Emulator is QuickNES quickNes)
+			else if (Emulator is QuickNES quicknes)
 			{
-				var s = quickNes.GetSettings();
+				var s = quicknes.GetSettings();
 
 				// this core doesn't support disabling BG
-				bool showsp = GetSetting(0, luaParam);
-				if (showsp && s.NumSprites == 0)
+				bool showSp = GetSetting(0, luaParam);
+				if (showSp && s.NumSprites == 0)
 				{
 					s.NumSprites = 8;
 				}
-				else if (!showsp && s.NumSprites > 0)
+				else if (!showSp && s.NumSprites > 0)
 				{
 					s.NumSprites = 0;
 				}
 
-				quickNes.PutSettings(s);
+				quicknes.PutSettings(s);
 			}
 			else if (Emulator is PCEngine pce)
 			{
@@ -426,12 +426,7 @@ namespace BizHawk.Client.Common
 
 		private static bool GetSetting(int index, bool[] settings)
 		{
-			if (index < settings.Length)
-			{
-				return settings[index];
-			}
-
-			return true;
+			return index >= settings.Length || settings[index];
 		}
 	}
 }
