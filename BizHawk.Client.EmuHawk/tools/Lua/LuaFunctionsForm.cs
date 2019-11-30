@@ -12,21 +12,20 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Sorting _columnSort = new Sorting();
 
-		private List<LibraryFunction> FunctionList = new List<LibraryFunction>();
-
+		private List<LibraryFunction> _functionList = new List<LibraryFunction>();
 		private List<LibraryFunction> _filteredList = new List<LibraryFunction>();
 
 		private void GenerateFilteredList()
 		{
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
-				_filteredList = FunctionList
+				_filteredList = _functionList
 					.Where(f => $"{f.Library}.{f.Name}".ToLowerInvariant().Contains(FilterBox.Text.ToLowerInvariant()))
 					.ToList();
 			}
 			else
 			{
-				_filteredList = FunctionList.ToList();
+				_filteredList = _functionList.ToList();
 			}
 		}
 
@@ -38,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
+			_functionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
 				.OrderBy(l => l.Library)
 				.ThenBy(l => l.Name)
 				.ToList();
@@ -66,19 +65,19 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						FunctionList = FunctionList.OrderByDescending(x => x.ReturnType).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						FunctionList = FunctionList.OrderByDescending(x => x.Library).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						FunctionList = FunctionList.OrderByDescending(x => x.Name).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						FunctionList = FunctionList.OrderByDescending(x => x.ParameterList).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						FunctionList = FunctionList.OrderByDescending(x => x.Description).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Description).ToList();
 						break;
 				}
 			}
@@ -87,19 +86,19 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						FunctionList = FunctionList.OrderBy(x => x.ReturnType).ToList();
+						_functionList = _functionList.OrderBy(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						FunctionList = FunctionList.OrderBy(x => x.Library).ToList();
+						_functionList = _functionList.OrderBy(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						FunctionList = FunctionList.OrderBy(x => x.Name).ToList();
+						_functionList = _functionList.OrderBy(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						FunctionList = FunctionList.OrderBy(x => x.ParameterList).ToList();
+						_functionList = _functionList.OrderBy(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						FunctionList = FunctionList.OrderBy(x => x.Description).ToList();
+						_functionList = _functionList.OrderBy(x => x.Description).ToList();
 						break;
 				}
 			}
