@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, bool autoload = false, bool romloading = false)
+		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, bool autoload = false, bool romLoading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					bool crazyStuff = true;
 
 					//sentinel for newer format OpenAdvanced type code
-					if (romloading)
+					if (romLoading)
 					{
 						if (filename.StartsWith("*"))
 						{
@@ -41,15 +41,15 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							caption = oa.DisplayName;
 
 							crazyStuff = false;
-							if (oa is OpenAdvanced_OpenRom)
+							if (oa is OpenAdvanced_OpenRom openRom)
 							{
 								crazyStuff = true;
-								physicalPath = ((oa as OpenAdvanced_OpenRom).Path);
+								physicalPath = openRom.Path;
 							}
 						}
 					}
 
-					//TODO - do TSMI and TSDD need disposing? yuck
+					// TODO - do TSMI and TSDD need disposing? yuck
 					var item = new ToolStripMenuItem { Text = caption.Replace("&", "&&") };
 					items.Add(item);
 
@@ -65,9 +65,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 						//TODO - use standard methods to split filename (hawkfile acquire?)
 						var hf = new HawkFile();
 						hf.Parse(physicalPath);
-						bool canExplore = true;
-						if (!File.Exists(hf.FullPathWithoutMember))
-							canExplore = false;
+						bool canExplore = File.Exists(hf.FullPathWithoutMember);
 
 						if (canExplore)
 						{
@@ -82,11 +80,11 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							{
 								//make a menuitem to let you copy the path
 								var tsmiCopyCanonicalPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
-								tsmiCopyCanonicalPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(physicalPath); };
+								tsmiCopyCanonicalPath.Click += (o, ev) => { Clipboard.SetText(physicalPath); };
 								tsdd.Items.Add(tsmiCopyCanonicalPath);
 
 								var tsmiCopyArchivePath = new ToolStripMenuItem { Text = "Copy Archive Path" };
-								tsmiCopyArchivePath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(hf.FullPathWithoutMember); };
+								tsmiCopyArchivePath.Click += (o, ev) => { Clipboard.SetText(hf.FullPathWithoutMember); };
 								tsdd.Items.Add(tsmiCopyArchivePath);
 
 								var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
@@ -95,24 +93,27 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 							}
 							else
 							{
-								//make a menuitem to let you copy the path
+								// make a menuitem to let you copy the path
 								var tsmiCopyPath = new ToolStripMenuItem { Text = "&Copy Path" };
-								tsmiCopyPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(physicalPath); };
+								tsmiCopyPath.Click += (o, ev) => { Clipboard.SetText(physicalPath); };
 								tsdd.Items.Add(tsmiCopyPath);
 							}
 
 							tsdd.Items.Add(new ToolStripSeparator());
 
-							//make a menuitem to let you explore to it
+							// make a menuitem to let you explore to it
 							var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
 							string explorePath = $"\"{hf.FullPathWithoutMember}\"";
 							tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", $"/select, {explorePath}"); };
 							tsdd.Items.Add(tsmiExplore);
 
 							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
-							var lame = new System.Collections.Specialized.StringCollection();
-							lame.Add(hf.FullPathWithoutMember);
-							tsmiCopyFile.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetFileDropList(lame); };
+							var lame = new System.Collections.Specialized.StringCollection
+							{
+								hf.FullPathWithoutMember
+							};
+
+							tsmiCopyFile.Click += (o, ev) => { Clipboard.SetFileDropList(lame); };
 							tsdd.Items.Add(tsmiCopyFile);
 
 							var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
@@ -173,13 +174,13 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 
 			items.Add(new ToolStripSeparator());
 
-			var clearitem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
-			clearitem.Click += (o, ev) => recent.Clear();
-			items.Add(clearitem);
+			var clearItem = new ToolStripMenuItem { Text = "&Clear", Enabled = !recent.Frozen };
+			clearItem.Click += (o, ev) => recent.Clear();
+			items.Add(clearItem);
 
-			var freezeitem = new ToolStripMenuItem { Text = recent.Frozen ? "&Unfreeze" : "&Freeze" };
-			freezeitem.Click += (o, ev) => recent.Frozen ^= true;
-			items.Add(freezeitem);
+			var freezeItem = new ToolStripMenuItem { Text = recent.Frozen ? "&Unfreeze" : "&Freeze" };
+			freezeItem.Click += (o, ev) => recent.Frozen ^= true;
+			items.Add(freezeItem);
 
 			if (autoload)
 			{
@@ -188,26 +189,24 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				items.Add(auto);
 			}
 
-			var settingsitem = new ToolStripMenuItem { Text = "&Recent Settings..." };
-			settingsitem.Click += (o, ev) =>
+			var settingsItem = new ToolStripMenuItem { Text = "&Recent Settings..." };
+			settingsItem.Click += (o, ev) =>
 			{
-				using (var prompt = new InputPrompt
+				using var prompt = new InputPrompt
 				{
 					TextInputType = InputPrompt.InputType.Unsigned,
 					Message = "Number of recent files to track",
 					InitialValue = recent.MAX_RECENT_FILES.ToString()
-				})
+				};
+				var result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
 				{
-					var result = prompt.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						int val = int.Parse(prompt.PromptText);
-						if (val > 0)
-							recent.MAX_RECENT_FILES = val;
-					}
+					int val = int.Parse(prompt.PromptText);
+					if (val > 0)
+						recent.MAX_RECENT_FILES = val;
 				}
 			};
-			items.Add(settingsitem);
+			items.Add(settingsItem);
 
 			return items.ToArray();
 		}
@@ -217,18 +216,15 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			GlobalWin.Sound.StopSound();
 			if (recent.Frozen)
 			{
-				var result = MessageBox.Show($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show($"Could not open {path}", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			else
 			{
 				// ensure topmost, not to have to minimize everything to see and use our modal window, if it somehow got covered
-				var result = MessageBox.Show(new Form(){TopMost = true}, $"Could not open {path}\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				var result = MessageBox.Show(new Form { TopMost = true }, $"Could not open {path}\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 				{
-					if (encodedPath != null)
-						recent.Remove(encodedPath);
-					else
-						recent.Remove(path);
+					recent.Remove(encodedPath ?? path);
 				}
 			}
 

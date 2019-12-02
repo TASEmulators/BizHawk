@@ -407,13 +407,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the number of <see cref="Watch"/> that are not <see cref="SeparatorWatch"/>
 		/// </summary>
-		public int WatchCount
-		{
-			get
-			{
-				return _watchList.Count(watch => !watch.IsSeparator);
-			}
-		}
+		public int WatchCount => _watchList.Count(watch => !watch.IsSeparator);
 
 		#endregion
 
