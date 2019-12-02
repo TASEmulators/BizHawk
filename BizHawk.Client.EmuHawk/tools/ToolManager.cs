@@ -819,10 +819,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (!IsLoaded<RamWatch>())
+			if (IsLoaded<RamWatch>())
 			{
-				Load<RamWatch>();
+				return;
 			}
+
+			Load<RamWatch>();
 
 			if (IsAvailable<RamWatch>()) // Just because we attempted to load it, doesn't mean it was, the current core may not have the correct dependencies
 			{
