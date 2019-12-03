@@ -40,11 +40,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_graphics.DrawImage(bitmap, point);
 		}
 
-		public void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect)
+		public void DrawRectangle(Rectangle rect)
 		{
-			_graphics.DrawRectangle(
-				_currentPen,
-				new Rectangle(nLeftRect, nTopRect, nRightRect - nLeftRect, nBottomRect - nTopRect));
+			_graphics.DrawRectangle(_currentPen, rect);
 		}
 
 		public void DrawString(string str, Rectangle rect)

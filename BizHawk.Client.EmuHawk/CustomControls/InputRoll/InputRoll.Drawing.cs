@@ -105,10 +105,9 @@ namespace BizHawk.Client.EmuHawk
 					columnWidth = ColumnWidth;
 					columnHeight = GetHColHeight(columnIndex);
 				}
+
 				int x1 = _currentX.Value - (columnWidth / 2);
 				int y1 = _currentY.Value - (columnHeight / 2);
-				int x2 = x1 + columnWidth;
-				int y2 = y1 + columnHeight;
 				int textOffsetY = CellHeightPadding;
 				if (HorizontalOrientation)
 				{
@@ -117,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_renderer.SetSolidPen(_backColor);
-				_renderer.DrawRectangle(x1, y1, x2, y2);
+				_renderer.DrawRectangle(new Rectangle(x1, y1, columnWidth, columnHeight));
 				_renderer.PrepDrawString(Font, _foreColor);
 				_renderer.DrawString(_columnDown.Text, new Rectangle(x1 + CellWidthPadding, y1 + textOffsetY, columnWidth, columnHeight));
 			}

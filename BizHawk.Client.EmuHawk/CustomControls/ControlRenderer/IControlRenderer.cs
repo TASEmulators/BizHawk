@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		void DrawString(string str, Rectangle rect);
 
-		void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
+		void DrawRectangle(Rectangle rect);
 		void FillRectangle(int x, int y, int w, int h);
 
 		/// <summary>
