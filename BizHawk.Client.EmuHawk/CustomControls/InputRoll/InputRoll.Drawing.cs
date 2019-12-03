@@ -337,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				_renderer.FillRectangle(new Rectangle(0, 0, ColumnWidth + 1, _drawHeight + 1));
+				_renderer.FillRectangle(new Rectangle(0, 0, ColumnWidth + 1, _drawHeight));
 
 				int y = -_vBar.Value;
 				for (int j = 0; j < visibleColumns.Count; j++)
@@ -351,8 +351,8 @@ namespace BizHawk.Client.EmuHawk
 					_renderer.Line(1, y, ColumnWidth, y);
 				}
 
-				_renderer.Line(0, 0, 0, y + 1);
-				_renderer.Line(ColumnWidth, 0, ColumnWidth, y + 1);
+				_renderer.Line(0, 0, 0, y);
+				_renderer.Line(ColumnWidth, 0, ColumnWidth, y);
 			}
 			else
 			{
@@ -360,8 +360,8 @@ namespace BizHawk.Client.EmuHawk
 
 				// Gray column box and black line underneath
 				_renderer.FillRectangle(new Rectangle(0, 0, _drawWidth + 1, bottomEdge + 1));
-				_renderer.Line(0, 0, TotalColWidth + 1, 0);
-				_renderer.Line(0, bottomEdge, TotalColWidth + 1, bottomEdge);
+				_renderer.Line(0, 0, TotalColWidth, 0);
+				_renderer.Line(0, bottomEdge, TotalColWidth, bottomEdge);
 
 				// Vertical black separators
 				foreach (var column in visibleColumns)
