@@ -42,14 +42,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawString(string text, int width, int x, int y)
+		private void DrawString(string text, Rectangle rect)
 		{
-			if (string.IsNullOrWhiteSpace(text))
+			if (!string.IsNullOrWhiteSpace(text))
 			{
-				return;
+				_renderer.DrawString(text, rect);
 			}
-
-			_renderer.DrawString(text, new Rectangle(x, y, width - CellWidthPadding, CellHeight));
 		}
 
 		protected override void OnPaintBackground(PaintEventArgs e)
@@ -173,12 +171,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width, strX, strY);
+						DrawString(column.Text, new Rectangle(strX, strY,  column.Width, CellHeight));
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width, strX, strY);
+						DrawString(column.Text, new Rectangle(strX, strY,  column.Width, CellHeight));
 					}
 
 					y += columnHeight;
@@ -197,12 +195,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width, x, y);
+						DrawString(column.Text, new Rectangle(x, y, column.Width, ColumnHeight));
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width, x, y);
+						DrawString(column.Text, new Rectangle(x, y, column.Width, ColumnHeight));
 					}
 				}
 			}
@@ -265,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 								int textY = CellWidthPadding + strOffsetY;
 
 								_renderer.PrepDrawString(Font, _foreColor, rotate: true);
-								DrawString(text, 999, baseX - textY, baseY + textX); // TODO: calculate width
+								DrawString(text, new Rectangle(baseX - textY, baseY + textX, 999, CellHeight));
 								_renderer.PrepDrawString(Font, _foreColor, rotate: false);
 							}
 							else
@@ -274,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 								int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
 								int textY = CellHeightPadding + strOffsetY;
 
-								DrawString(text, ColumnWidth, baseX + textX, baseY + textY);
+								DrawString(text, new Rectangle(baseX + textX, baseY + textY, ColumnWidth, CellHeight));
 							}
 						}
 					}
@@ -318,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 								rePrep = true;
 							}
 
-							DrawString(text, col.Width, point.X + strOffsetX, point.Y + strOffsetY);
+							DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, col.Width, ColumnHeight));
 
 							if (rePrep)
 							{
