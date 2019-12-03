@@ -252,15 +252,16 @@ namespace BizHawk.Client.EmuHawk
 
 			SetColumnsFromCurrentStickies();
 
-			RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
-
-			RightClickMenu.Items
-			.OfType<ToolStripMenuItem>()
-			.First(t => t.Name == "RotateMenuItem")
-			.Click += (o, ov) =>
+			if (TasView.Rotatable)
 			{
-				CurrentTasMovie.FlagChanges();
-			};
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
+					.ToArray());
+
+				RightClickMenu.Items
+					.OfType<ToolStripMenuItem>()
+					.First(t => t.Name == "RotateMenuItem")
+					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
+			}
 
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.ScrollSpeed = Settings.ScrollSpeed;

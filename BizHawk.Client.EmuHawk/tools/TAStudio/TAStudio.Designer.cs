@@ -1240,6 +1240,7 @@
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
+			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
 			this.TasView.SeekingCutoffInterval = 0;

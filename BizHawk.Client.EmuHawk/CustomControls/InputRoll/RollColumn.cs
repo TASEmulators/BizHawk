@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	public class RollColumn
 	{

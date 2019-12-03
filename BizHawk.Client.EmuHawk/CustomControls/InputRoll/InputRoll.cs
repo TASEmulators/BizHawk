@@ -330,6 +330,13 @@ namespace BizHawk.Client.EmuHawk
 			set => _hoverTimer.Interval = value;
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether or not the control can be toggled into HorizontalOrientation mode
+		/// </summary>
+		[DefaultValue(false)]
+		[Category("Behavior")]
+		public bool Rotatable { get; set; }
+
 		#endregion
 
 		#region Event Handlers
@@ -909,21 +916,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
-			yield return new ToolStripSeparator();
-
-			var rotate = new ToolStripMenuItem
+			if (Rotatable)
 			{
-				Name = "RotateMenuItem",
-				Text = "Rotate",
-				ShortcutKeyDisplayString = RotateHotkeyStr,
-			};
+				yield return new ToolStripSeparator();
 
-			rotate.Click += (o, ev) =>
-			{
-				HorizontalOrientation ^= true;
-			};
+				var rotate = new ToolStripMenuItem
+				{
+					Name = "RotateMenuItem",
+					Text = "Rotate",
+					ShortcutKeyDisplayString = RotateHotkeyStr,
+				};
 
-			yield return rotate;
+				rotate.Click += (o, ev) => { HorizontalOrientation ^= true; };
+
+				yield return rotate;
+			}
 		}
 
 		public string RotateHotkeyStr => "Ctrl+Shift+F";
@@ -1314,7 +1321,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.F) // Ctrl+Shift+F
 				{
-					HorizontalOrientation ^= true;
+					if (Rotatable)
+					{
+						HorizontalOrientation ^= true;
+					}
 				}
 				// Scroll
 				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
