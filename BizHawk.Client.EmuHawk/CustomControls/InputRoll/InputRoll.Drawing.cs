@@ -166,7 +166,6 @@ namespace BizHawk.Client.EmuHawk
 					var column = visibleColumns[j];
 					var columnHeight = GetHColHeight(j);
 					var textHeight = (int)_renderer.MeasureString(column.Text, Font).Height;
-					var point = new Point(CellWidthPadding, y + ((columnHeight - textHeight) / 2));
 					int strX = CellWidthPadding;
 					int strY = y + ((columnHeight - textHeight) / 2);
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
