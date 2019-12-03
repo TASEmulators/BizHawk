@@ -2379,6 +2379,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region O2Hawk
+
+		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
+		}
+
+		#endregion
+
 		#region GEN
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)

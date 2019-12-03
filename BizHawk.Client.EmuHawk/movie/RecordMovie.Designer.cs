@@ -47,7 +47,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(391, 139);
+			this.Cancel.Location = new System.Drawing.Point(391, 135);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -58,7 +58,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(310, 139);
+			this.OK.Location = new System.Drawing.Point(310, 135);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;

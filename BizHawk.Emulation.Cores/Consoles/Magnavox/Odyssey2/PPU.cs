@@ -1,9 +1,13 @@
 ﻿using System;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.BufferExtensions;
+using BizHawk.Emulation.Common;
+
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {
-	public class PPU
+	public class PPU : ISoundProvider
 	{
 		public O2Hawk Core { get; set; }
 
@@ -25,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte STAT;
 		public byte scroll_y;
 		public byte scroll_x;
-		public byte LY;
+		public int LY;
 		public byte LY_actual;
 		public byte LY_inc;
 		public byte LYC;
@@ -39,6 +43,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public int DMA_clock;
 		public int DMA_inc;
 		public byte DMA_byte;
+		public int cycle;
+		public bool VBL;
+		public bool HBL;
 
 		public byte ReadReg(int addr)
 		{
@@ -75,6 +82,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if(addr == 0xA3)
 			{
 				ret = VDC_color;
+			}
+			else if (addr <= 0xA7)
+			{
+				ret = AudioReadReg(addr);
 			}
 
 			return ret;
@@ -114,11 +125,47 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_color = value;
 			}
+			else if (addr <= 0xA7)
+			{
+				AudioWriteReg(addr, value);
+			}
 		}
 
 		public void tick()
 		{
+			cycle++;
 
+			// drawing cycles
+			if ((cycle >= 43) && !VBL)
+			{
+				if (cycle == 43)
+				{
+					HBL = false;
+					// trigger timer tick if enabled
+					if (Core.cpu.counter_en) { Core.cpu.T1 = false; }
+				}
+			}
+
+			// end of scanline
+			if (cycle == 228)
+			{
+				cycle = 0;
+				HBL = true;
+				if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = true;}
+
+				// trigger timer tick if enabled
+				if (Core.cpu.counter_en) { Core.cpu.T1 = true; }
+
+				LY++;
+				if (LY == 262)
+				{
+					LY = 0;
+					HBL = false;
+					VBL = true;
+				}
+
+				if (LY == 22) { VBL = false; }
+			}
 		}
 
 		// might be needed, not sure yet
@@ -151,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void Reset()
 		{
-
+			AudioReset();
 		}
 
 		public static readonly byte[] Internal_Graphics = { 0x3C, 0x66, 0x66, 0x66, 0x66, 0x66, 0x3C, // 0				0x00
@@ -220,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x00, 0x00, 0x00, 0x54, 0x54, 0xFF, 0x7E, // (boat 3 unk)	0x3F
 															};
 
+
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync(nameof(Sprites), ref Sprites, false);
@@ -255,6 +303,168 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(DMA_clock), ref DMA_clock);
 			ser.Sync(nameof(DMA_inc), ref DMA_inc);
 			ser.Sync(nameof(DMA_byte), ref DMA_byte);
+			ser.Sync(nameof(cycle), ref cycle);
+			ser.Sync(nameof(VBL), ref VBL);
+			ser.Sync(nameof(HBL), ref HBL);
+
+			AudioSyncState(ser);
 		}
+
+		private BlipBuffer _blip_C = new BlipBuffer(15000);
+
+		public byte sample;
+
+		public byte shift_0, shift_1, shift_2, aud_ctrl;
+
+		public uint master_audio_clock;
+
+		public int tick_cnt, output_bit;
+
+		public int latched_sample_C;
+
+		public byte AudioReadReg(int addr)
+		{
+			byte ret = 0;
+
+			switch (addr)
+			{
+				case 0xA7: ret = shift_0; break;
+				case 0xA8: ret = shift_1; break;
+				case 0xA9: ret = shift_2; break;
+				case 0xAA: ret = aud_ctrl; break;
+			}
+
+			return ret;
+		}
+
+		public void AudioWriteReg(int addr, byte value)
+		{
+			switch (addr)
+			{
+				case 0xA7: shift_0 = value; break;
+				case 0xA8: shift_1 = value; break;
+				case 0xA9: shift_2 = value; break;
+				case 0xAA: aud_ctrl = value; break;
+			}
+
+		}
+
+		public void Audio_tick()
+		{
+			int C_final = 0;
+
+			if (aud_ctrl.Bit(7))
+			{
+				tick_cnt++;
+				if (tick_cnt > (aud_ctrl.Bit(5) ? 455 : 1820))
+				{
+					tick_cnt = 0;
+
+					output_bit = (shift_0 >> 1) & 1;
+
+					shift_0 = (byte)((shift_0 >> 1) | ((shift_1 & 1) << 3));
+					shift_1 = (byte)((shift_1 >> 1) | ((shift_2 & 1) << 3));
+
+					if (aud_ctrl.Bit(6))
+					{
+						shift_2 = (byte)((shift_2 >> 1) | ((output_bit) << 3));
+					}
+					else
+					{
+						shift_0 = (byte)(shift_2 >> 1);
+					}
+				}
+
+				C_final = output_bit;
+				C_final *= ((aud_ctrl & 0xF) + 1) * 40;
+			}
+
+			if (C_final != latched_sample_C)
+			{
+				_blip_C.AddDelta(master_audio_clock, C_final - latched_sample_C);
+				latched_sample_C = C_final;
+			}
+
+			master_audio_clock++;
+		}
+
+		public void AudioReset()
+		{
+			master_audio_clock = 0;
+
+			sample = 0;
+
+			_blip_C.SetRates(4194304, 44100);
+		}
+
+		public void AudioSyncState(Serializer ser)
+		{
+			ser.Sync(nameof(master_audio_clock), ref master_audio_clock);
+
+			ser.Sync(nameof(sample), ref sample);
+			ser.Sync(nameof(latched_sample_C), ref latched_sample_C);
+
+			ser.Sync(nameof(aud_ctrl), ref aud_ctrl);
+			ser.Sync(nameof(shift_0), ref shift_0);
+			ser.Sync(nameof(shift_1), ref shift_1);
+			ser.Sync(nameof(shift_2), ref shift_2);
+			ser.Sync(nameof(tick_cnt), ref tick_cnt);
+			ser.Sync(nameof(output_bit), ref output_bit);
+		}
+
+		#region audio
+
+		public bool CanProvideAsync => false;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Only Sync mode is supported_");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			_blip_C.EndFrame(master_audio_clock);
+
+			nsamp = _blip_C.SamplesAvailable();
+
+			samples = new short[nsamp * 2];
+
+			if (nsamp != 0)
+			{
+				_blip_C.ReadSamples(samples, nsamp, false);
+			}
+
+			master_audio_clock = 0;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async is not available");
+		}
+
+		public void DiscardSamples()
+		{
+			_blip_C.Clear();
+			master_audio_clock = 0;
+		}
+
+		private void GetSamples(short[] samples)
+		{
+
+		}
+
+		public void DisposeSound()
+		{
+			_blip_C.Clear();
+			_blip_C.Dispose();
+			_blip_C = null;
+		}
+
+		#endregion
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -5,16 +6,13 @@ using System.IO;
 
 using BizHawk.Client.Common;
 using NLua;
-using System;
-using System.Collections.Generic;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
-		//public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
-
 		public LuaCanvas(int width, int height, int? x = null, int? y = null)
 		{
 			InitializeComponent();
@@ -24,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (x.HasValue)
 			{
-				StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+				StartPosition = FormStartPosition.Manual;
 				Left = (int)x;
 				if (y.HasValue)
 				{
@@ -50,9 +48,9 @@ namespace BizHawk.Client.EmuHawk
 			"Sets the location of the canvas window")]
 		public void SetLocation(int x, int y) 
 		{
-			StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			Left = (int)x;
-			Top = (int)y;
+			StartPosition = FormStartPosition.Manual;
+			Left = x;
+			Top = y;
 		}
 
 		[LuaMethodExample(
@@ -99,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			"LuaCanvas.setDefaultTextBackground( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultTextBackground",
-			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
+			"Sets the default background color to use in text drawing methods, half-transparent black by default")]
 		public void SetDefaultTextBackground(Color color)
 		{
 			luaPictureBox.SetDefaultTextBackground(color);
@@ -119,7 +117,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -137,7 +134,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -155,7 +151,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -173,7 +168,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -208,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
-		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		public void DrawImageRegion(string path, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int destX, int destY, int? destWidth = null, int? destHeight = null)
 		{
 			if (!File.Exists(path))
 			{
@@ -216,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			luaPictureBox.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+			luaPictureBox.DrawImageRegion(path, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
 		}
 
 		[LuaMethodExample(
@@ -245,9 +239,9 @@ namespace BizHawk.Client.EmuHawk
 			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
 		)]
-		public void DrawArc(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
+		public void DrawArc(int x, int y, int width, int height, int startAngle, int sweepAngle, Color? line = null)
 		{
-			luaPictureBox.DrawArc(x, y, width, height, startangle, sweepangle, line);
+			luaPictureBox.DrawArc(x, y, width, height, startAngle, sweepAngle, line);
 		}
 
 		[LuaMethodExample(
@@ -260,12 +254,12 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int width,
 			int height,
-			int startangle,
-			int sweepangle,
+			int startAngle,
+			int sweepAngle,
 			Color? line = null,
 			Color? background = null)
 		{
-			luaPictureBox.DrawPie(x, y, width, height, startangle, sweepangle, line, background);
+			luaPictureBox.DrawPie(x, y, width, height, startAngle, sweepAngle, line, background);
 		}
 
 		[LuaMethodExample(
@@ -282,7 +276,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -300,7 +293,6 @@ namespace BizHawk.Client.EmuHawk
 			catch (Exception ex)
 			{
 				ConsoleLuaLibrary.Log(ex.Message);
-				return;
 			}
 		}
 
@@ -324,15 +316,15 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? forecolor = null,
-			Color? backcolor = null,
-			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			Color? foreColor = null,
+			Color? backColor = null,
+			int? fontSize = null,
+			string fontFamily = null,
+			string fontStyle = null,
+			string horizontalAlign = null,
+			string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+			luaPictureBox.DrawText(x, y, message, foreColor, backColor, fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 		[LuaMethodExample(
@@ -344,15 +336,15 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? forecolor = null,
-			Color? backcolor = null,
-			int? fontsize = null,
-			string fontfamily = null,
-			string fontstyle = null,
-			string horizalign = null,
-			string vertalign = null)
+			Color? foreColor = null,
+			Color? backColor = null,
+			int? fontSize = null,
+			string fontFamily = null,
+			string fontStyle = null,
+			string horizontalAlign = null,
+			string verticalAlign = null)
 		{
-			luaPictureBox.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+			luaPictureBox.DrawText(x, y, message, foreColor, backColor, fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
 
 

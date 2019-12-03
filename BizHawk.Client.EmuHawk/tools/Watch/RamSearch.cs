@@ -832,8 +832,8 @@ namespace BizHawk.Client.EmuHawk
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
 
-				UpdateList();
 				WatchListView.DeselectAll();
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 			}
 		}

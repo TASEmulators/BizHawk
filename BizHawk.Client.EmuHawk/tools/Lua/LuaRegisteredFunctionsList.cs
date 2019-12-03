@@ -13,18 +13,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		public void UpdateValues()
 		{
-			if (GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any())
-			{
-				PopulateListView();
-			}
-			else
-			{
-				Close();
-			}
+			PopulateListView();
 		}
 
 		private void LuaRegisteredFunctionsList_Load(object sender, EventArgs e)
@@ -46,8 +37,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FunctionView.Items.Clear();
 			
-			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.OrderBy(x => x.Event).ThenBy(x => x.Name);
-			foreach (var nlf in nlfs)
+			var functions = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions
+				.OrderBy(f => f.Event)
+				.ThenBy(f => f.Name);
+			foreach (var nlf in functions)
 			{
 				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);

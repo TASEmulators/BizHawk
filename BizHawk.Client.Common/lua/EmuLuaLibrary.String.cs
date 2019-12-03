@@ -4,6 +4,7 @@ using System.Linq;
 
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("A library exposing standard .NET string methods")]
@@ -68,96 +69,66 @@ namespace BizHawk.Client.Common
 		[LuaMethod("replace", "Returns a string that replaces all occurances of str2 in str1 with the value of replace")]
 		public static string Replace(string str, string str2, string replace)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.Replace(str2, replace);
+			return string.IsNullOrEmpty(str)
+				? null
+				: str.Replace(str2, replace);
 		}
 
 		[LuaMethodExample("local stbiztou = bizstring.toupper( \"Some string\" );")]
 		[LuaMethod("toupper", "Returns an uppercase version of the given string")]
 		public static string ToUpper(string str)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.ToUpper();
+			return string.IsNullOrEmpty(str)
+				? null
+				: str.ToUpper();
 		}
 
 		[LuaMethodExample("local stbiztol = bizstring.tolower( \"Some string\" );")]
 		[LuaMethod("tolower", "Returns an lowercase version of the given string")]
 		public static string ToLower(string str)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.ToLower();
+			return string.IsNullOrEmpty(str)
+				? null
+				: str.ToLower();
 		}
 
 		[LuaMethodExample("local stbizsub = bizstring.substring( \"Some string\", 6, 3 );")]
 		[LuaMethod("substring", "Returns a string that represents a substring of str starting at position for the specified length")]
 		public static string SubString(string str, int position, int length)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.Substring(position, length);
+			return string.IsNullOrEmpty(str)
+				? null
+				: str.Substring(position, length);
 		}
 
 		[LuaMethodExample("local stbizrem = bizstring.remove( \"Some string\", 4, 5 );")]
 		[LuaMethod("remove", "Returns a string that represents str with the given position and count removed")]
 		public static string Remove(string str, int position, int count)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			return str.Remove(position, count);
+			return string.IsNullOrEmpty(str)
+				? null
+				: str.Remove(position, count);
 		}
 
 		[LuaMethodExample("if ( bizstring.contains( \"Some string\", \"Some\") ) then\r\n\tconsole.log( \"Returns whether or not str contains str2\" );\r\nend;")]
 		[LuaMethod("contains", "Returns whether or not str contains str2")]
 		public static bool Contains(string str, string str2)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return false;
-			}
-
-			return str.Contains(str2);
+			return !string.IsNullOrEmpty(str) && str.Contains(str2);
 		}
 
 		[LuaMethodExample("if ( bizstring.startswith( \"Some string\", \"Some\") ) then\r\n\tconsole.log( \"Returns whether str starts with str2\" );\r\nend;")]
 		[LuaMethod("startswith", "Returns whether str starts with str2")]
 		public static bool StartsWith(string str, string str2)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return false;
-			}
-
-			return str.StartsWith(str2);
+			return !string.IsNullOrEmpty(str) && str.StartsWith(str2);
 		}
 
 		[LuaMethodExample("if ( bizstring.endswith( \"Some string\", \"string\") ) then\r\n\tconsole.log( \"Returns whether str ends wth str2\" );\r\nend;")]
 		[LuaMethod("endswith", "Returns whether str ends wth str2")]
 		public static bool EndsWith(string str, string str2)
 		{
-			if (string.IsNullOrEmpty(str))
-			{
-				return false;
-			}
-
-			return str.EndsWith(str2);
+			return !string.IsNullOrEmpty(str) && str.EndsWith(str2);
 		}
 
 		[LuaMethodExample("local nlbizspl = bizstring.split( \"Some, string\", \", \" );")]

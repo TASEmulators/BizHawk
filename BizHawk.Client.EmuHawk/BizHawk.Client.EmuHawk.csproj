@@ -972,9 +972,6 @@
     <Compile Include="tools\Lua\LuaWinform.Designer.cs">
       <DependentUpon>LuaWinform.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\SyncTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\Macros\MacroInput.ButtonSelect.cs">
       <SubType>Form</SubType>
     </Compile>

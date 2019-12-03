@@ -9,12 +9,12 @@ namespace BizHawk.Client.Common
 	{
 		private readonly LuaFunction _function;
 
-		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, Lua lua, string name = null)
+		public NamedLuaFunction(LuaFunction function, string theEvent, Action<string> logCallback, LuaFile luaFile, string name = null)
 		{
 			_function = function;
 			Name = name ?? "Anonymous";
-			Event = theevent;
-			Lua = lua;
+			Event = theEvent;
+			LuaFile = luaFile;
 			Guid = Guid.NewGuid();
 
 			Callback = delegate
@@ -35,11 +35,11 @@ namespace BizHawk.Client.Common
 			};
 		}
 
-		public Guid Guid { get; private set; }
+		public Guid Guid { get; }
 
 		public string Name { get; }
 
-		public Lua Lua { get; }
+		public LuaFile LuaFile { get; }
 
 		public string Event { get; }
 
@@ -49,7 +49,7 @@ namespace BizHawk.Client.Common
 
 		public void Call(string name = null)
 		{
-			LuaSandbox.Sandbox(Lua, () =>
+			LuaSandbox.Sandbox(LuaFile.Thread, () =>
 			{
 				_function.Call(name);
 			});

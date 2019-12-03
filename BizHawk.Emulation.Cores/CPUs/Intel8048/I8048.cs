@@ -418,10 +418,18 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					EA = false;
 					break;
 				case RD_P:
-					EA = false;
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_l_ad = cur_instr[instr_pntr++];
+
+					Regs[reg_d_ad] = ReadPort(reg_l_ad);
+					Regs[PX + reg_l_ad] = Regs[reg_d_ad];
 					break;
 				case WR_P:
-					WritePort(cur_instr[instr_pntr++], (byte)Regs[cur_instr[instr_pntr++]]);
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_l_ad = cur_instr[instr_pntr++];
+
+					WritePort(reg_d_ad, (byte)Regs[reg_l_ad]);
+					Regs[PX + reg_d_ad] = Regs[reg_l_ad];
 					break;
 			}
 
@@ -492,7 +500,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		public string TraceHeader
 		{
-			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (EFHINZVC)"; }
+			get { return "MC6809: PC, machine code, mnemonic, operands, registers (A, B, X, Y, US, SP, DP, CC), Cy, flags (CAFBIFTTR)"; }
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -503,7 +511,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} {11}{12}{13}{14}  {15}{16}{17}{18}{19}",
+					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} {11}{12}{13}{14}{15}{16}{17}{18}{19}{20}",
 					Regs[A],
 					Regs[(ushort)(R0 + RB)],
 					Regs[(ushort)(R1 + RB)],
@@ -520,6 +528,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					FlagF0 ? "F" : "f",
 					FlagBS ? "B" : "b",
 					IntEn ? "I" : "i",
+					TimIntEn ? "N" : "n",
 					F1 ? "F" : "f",
 					T0 ? "T" : "t",
 					T1 ? "T" : "t",

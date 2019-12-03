@@ -183,8 +183,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaImp.CallExitEvent(file);
 
-					LuaImp.RegisteredFunctions.RemoveAll(lf => lf.Lua == file.Thread);
-
+					LuaImp.RegisteredFunctions.RemoveForFile(file);
 					UpdateRegisteredFunctionsDialog();
 
 					file.Stop();
@@ -432,24 +431,6 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
-		private static FileInfo GetFileFromUser(string filter)
-		{
-			var ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.GetLuaPath(),
-					Filter = filter,
-					RestoreDirectory = true
-				};
-
-			if (!Directory.Exists(ofd.InitialDirectory))
-			{
-				Directory.CreateDirectory(ofd.InitialDirectory);
-			}
-
-			var result = ofd.ShowHawkDialog();
-			return result == DialogResult.OK ? new FileInfo(ofd.FileName) : null;
-		}
-
 		private void UpdateNumberOfScripts()
 		{
 			var message = "";
@@ -551,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 						if (!prohibit)
 						{
-							var result = LuaImp.ResumeScriptFromThreadOf(lf);
+							var result = LuaImp.ResumeScript(lf);
 							if (result.Terminated)
 							{
 								LuaImp.CallExitEvent(lf);
@@ -678,7 +659,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void UpdateRegisteredFunctionsDialog()
 		{
-			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>())
+			foreach (var form in Application.OpenForms.OfType<LuaRegisteredFunctionsList>().ToList())
 			{
 				form.UpdateValues();
 			}
@@ -721,10 +702,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = GetFileFromUser("Lua Session Files (*.luases)|*.luases|All Files|*.*");
-			if (file != null)
+			var ofd = new OpenFileDialog
 			{
-				LuaImp.ScriptList.LoadLuaSession(file.FullName);
+				InitialDirectory = PathManager.GetLuaPath(),
+				Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*",
+				RestoreDirectory = true,
+				Multiselect = false
+			};
+
+			if (!Directory.Exists(ofd.InitialDirectory))
+			{
+				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
+			{
+				LuaImp.ScriptList.LoadLuaSession(ofd.FileName);
 				RunLuaScripts();
 				UpdateDialog();
 				LuaImp.ScriptList.Changes = false;
@@ -814,10 +808,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*");
-			if (file != null)
+			var ofd = new OpenFileDialog
 			{
-				LoadLuaFile(file.FullName);
+				InitialDirectory = PathManager.GetLuaPath(),
+				Filter = "Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*",
+				RestoreDirectory = true,
+				Multiselect = true
+			};
+
+			if (!Directory.Exists(ofd.InitialDirectory))
+			{
+				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK && ofd.FileNames != null)
+			{
+				foreach (var file in ofd.FileNames)
+				{
+					LoadLuaFile(file);
+				}
+
 				UpdateDialog();
 			}
 		}
@@ -904,12 +915,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var item in items)
 				{
-					var temp = item;
-					LuaImp.RegisteredFunctions.RemoveAll(x => x.Lua == temp.Thread);
-
+					LuaImp.RegisteredFunctions.RemoveForFile(item);
 					LuaImp.ScriptList.Remove(item);
 				}
-
+				
 				UpdateRegisteredFunctionsDialog();
 				UpdateDialog();
 			}
@@ -1054,7 +1063,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 			ReturnAllIfNoneSelectedMenuItem.Checked = Global.Config.ToggleAllIfNoneSelected;
-			RemoveRegisteredFunctionsOnToggleMenuItem.Checked = Global.Config.RemoveRegisteredFunctionsOnToggle;
 			ReloadWhenScriptFileChangesMenuItem.Checked = Global.Config.LuaReloadOnScriptFileChange;
 		}
 
@@ -1066,11 +1074,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.ToggleAllIfNoneSelected ^= true;
-		}
-
-		private void RemoveRegisteredFunctionsOnToggleMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RemoveRegisteredFunctionsOnToggle ^= true;
 		}
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
@@ -1175,6 +1178,9 @@ namespace BizHawk.Client.EmuHawk
 			StopAllScriptsContextItem.Visible =
 				ScriptContextSeparator.Visible =
 				LuaImp.ScriptList.Any(file => file.Enabled);
+
+			ClearRegisteredFunctionsContextItem.Enabled =
+				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
@@ -1184,6 +1190,9 @@ namespace BizHawk.Client.EmuHawk
 			ClearConsoleContextItem.Enabled = 
 				SelectAllContextItem.Enabled = 
 				OutputBox.Text.Any();
+
+			ClearRegisteredFunctionsLogContextItem.Enabled = 
+				GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void ClearConsoleContextItem_Click(object sender, EventArgs e)
@@ -1217,6 +1226,11 @@ namespace BizHawk.Client.EmuHawk
 				OutputBox.Copy();
 				OutputBox.Refresh();
 			});
+		}
+
+		private void ClearRegisteredFunctionsContextMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Clear();
 		}
 
 		#endregion
@@ -1462,25 +1476,18 @@ namespace BizHawk.Client.EmuHawk
 
 			if (file.Enabled && file.Thread == null)
 			{
+				LuaImp.RegisteredFunctions.RemoveForFile(file); // First remove any existing registered functions for this file
 				EnableLuaFile(file);
+				UpdateRegisteredFunctionsDialog();
 			}
 			else if (!file.Enabled && file.Thread != null)
 			{
 				LuaImp.CallExitEvent(file);
-
-				foreach (var selectedItem in SelectedItems)
-				{
-					var temp = selectedItem;
-					LuaImp.RegisteredFunctions.RemoveAll(lf => lf.Lua == temp.Thread);
-					UpdateRegisteredFunctionsDialog();
-				}
+				LuaImp.RegisteredFunctions.RemoveForFile(file);
+				UpdateRegisteredFunctionsDialog();
 
 				LuaImp.CallExitEvent(file);
 				file.Stop();
-				if (Global.Config.RemoveRegisteredFunctionsOnToggle)
-				{
-					LuaImp.RegisteredFunctions.ClearAll();
-				}
 			}
 		}
 

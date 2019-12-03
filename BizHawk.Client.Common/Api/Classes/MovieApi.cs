@@ -95,8 +95,8 @@ namespace BizHawk.Client.Common
 				{
 					var movie = Global.MovieSession.Movie;
 					var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-					var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-							movie.HeaderEntries[HeaderKeys.PAL] == "1";
+					var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+						&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
 					return new PlatformFrameRates()[system, pal];
 				}

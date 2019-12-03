@@ -4,21 +4,21 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("A library for performing SQLite operations.")]
-	public sealed class SQLLuaLibrary : LuaLibraryBase
+	public sealed class SqlLuaLibrary : LuaLibraryBase
 	{
-		public SQLLuaLibrary(Lua lua)
+		public SqlLuaLibrary(Lua lua)
 			: base(lua) { }
 
-		public SQLLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public SqlLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "SQL";
 
-		SQLiteConnection m_dbConnection;
-		string connectionString;
+		SQLiteConnection _mDBConnection;
 
 		[LuaMethodExample("local stSQLcre = SQL.createdatabase( \"eg_db\" );")]
 		[LuaMethod("createdatabase", "Creates a SQLite Database. Name should end with .db")]
@@ -29,11 +29,10 @@ namespace BizHawk.Client.Common
 				SQLiteConnection.CreateFile(name);
 				return "Database Created Successfully";
 			}
-			catch (SQLiteException sqlEX)
+			catch (SQLiteException sqlEx)
 			{
-				return sqlEX.Message;
+				return sqlEx.Message;
 			}
-
 		}
 
 
@@ -43,21 +42,23 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
-				connBuilder.DataSource = name;
-				connBuilder.Version = 3; //SQLite version 
-				connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;  //Allows for reads and writes to happen at the same time
-				connBuilder.DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted;  //This only helps make the database lock left. May be pointless now
-				connBuilder.SyncMode = SynchronizationModes.Off; //This shortens the delay for do synchronous calls.
-				m_dbConnection = new SQLiteConnection(connBuilder.ToString());
-				connectionString = connBuilder.ToString();
-				m_dbConnection.Open();
-				m_dbConnection.Close();
+				var connBuilder = new SQLiteConnectionStringBuilder
+				{
+					DataSource = name,
+					Version = 3,
+					JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
+					DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
+					SyncMode = SynchronizationModes.Off, // This shortens the delay for do synchronous calls.
+				};
+
+				_mDBConnection = new SQLiteConnection(connBuilder.ToString());
+				_mDBConnection.Open();
+				_mDBConnection.Close();
 				return "Database Opened Successfully";
 			}
-			catch (SQLiteException sqlEX)
+			catch (SQLiteException sqlEx)
 			{
-				return sqlEX.Message;
+				return sqlEx.Message;
 			}
 		}
 
@@ -72,11 +73,11 @@ namespace BizHawk.Client.Common
 			}
 			try
 			{
-				m_dbConnection.Open();
+				_mDBConnection.Open();
 				string sql = query;
-				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+				SQLiteCommand command = new SQLiteCommand(sql, _mDBConnection);
 				command.ExecuteNonQuery();
-				m_dbConnection.Close();
+				_mDBConnection.Close();
 
 				return "Command ran successfully";
 
@@ -87,7 +88,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (SQLiteException sqlEx)
 			{
-				m_dbConnection.Close();
+				_mDBConnection.Close();
 				return sqlEx.Message;
 			}
 		}
@@ -104,9 +105,9 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var table = Lua.NewTable();
-				m_dbConnection.Open();
+				_mDBConnection.Open();
 				string sql = $"PRAGMA read_uncommitted =1;{query}";
-				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+				using var command = new SQLiteCommand(sql, _mDBConnection);
 				SQLiteDataReader reader = command.ExecuteReader();
 				bool rows = reader.HasRows;
 				long rowCount = 0;
@@ -124,7 +125,7 @@ namespace BizHawk.Client.Common
 					rowCount += 1;
 				}
 				reader.Close();
-				m_dbConnection.Close();
+				_mDBConnection.Close();
 				if (rows == false)
 				{
 					return "No rows found";
@@ -137,12 +138,11 @@ namespace BizHawk.Client.Common
 			{
 				return "Database not opened.";
 			}
-			catch (SQLiteException sqlEX)
+			catch (SQLiteException sqlEx)
 			{
-				m_dbConnection.Close();
-				return sqlEX.Message;
+				_mDBConnection.Close();
+				return sqlEx.Message;
 			}
 		}
-
 	}
 }

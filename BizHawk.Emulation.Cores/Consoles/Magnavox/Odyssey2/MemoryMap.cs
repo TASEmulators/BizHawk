@@ -80,10 +80,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 					if (ppu_en && !copy_en)
 					{
-						if ((addr_latch >= 0xA7) || (addr_latch <= 0xAA))
-						{
-							return audio.ReadReg(addr_latch);
-						}
 						return ppu.ReadReg(addr_latch);
 					}
 
@@ -134,14 +130,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 					if (ppu_en)
 					{
-						if ((addr_latch >= 0xA7) || (addr_latch <= 0xAA))
-						{
-							audio.WriteReg(addr_latch, value);
-						}
-						else
-						{
-							ppu.WriteReg(addr_latch, value);
-						}			
+						ppu.WriteReg(addr_latch, value);
+						//Console.WriteLine((addr_latch) + " " + value);
 					}					
 				}
 			}
@@ -155,6 +145,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				kybrd_en = !value.Bit(2);
 				cart_b1 = value.Bit(1);
 				cart_b0 = value.Bit(0);
+
+				//Console.WriteLine("main ctrl: " + value + " " + ppu_en + " " + RAM_en);
 			}
 			else
 			{

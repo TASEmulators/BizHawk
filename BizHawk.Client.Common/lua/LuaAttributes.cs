@@ -23,7 +23,6 @@ namespace BizHawk.Client.Common
 			Example = example;
 		}
 
-		public string Name { get; }
 		public string Example { get; }
 	}
 

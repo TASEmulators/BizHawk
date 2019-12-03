@@ -360,6 +360,8 @@
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.VectrexsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.O2HawkSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.O2HawksettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
@@ -527,6 +529,7 @@
 			this.neoGeoPocketToolStripMenuItem,
 			this.zXSpectrumToolStripMenuItem,
 			this.VectrexSubMenu,
+			this.O2HawkSubMenu,
 			this.HelpSubMenu,
 			this.amstradCPCToolStripMenuItem});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
@@ -3256,6 +3259,21 @@
 			this.VectrexsettingsToolStripMenuItem.Text = "Settings...";
 			this.VectrexsettingsToolStripMenuItem.Click += new System.EventHandler(this.VectrexSettingsMenuItem_Click);
 			// 
+			// O2HawkSubMenu
+			// 
+			this.O2HawkSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.O2HawksettingsToolStripMenuItem});
+			this.O2HawkSubMenu.Name = "O2HawkSubMenu";
+			this.O2HawkSubMenu.Size = new System.Drawing.Size(60, 19);
+			this.O2HawkSubMenu.Text = "&O2Hawk";
+			// 
+			// O2HawksettingsToolStripMenuItem
+			// 
+			this.O2HawksettingsToolStripMenuItem.Name = "O2HawksettingsToolStripMenuItem";
+			this.O2HawksettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.O2HawksettingsToolStripMenuItem.Text = "Settings...";
+			this.O2HawksettingsToolStripMenuItem.Click += new System.EventHandler(this.O2HawkSettingsMenuItem_Click);
+			// 
 			// GenesisSubMenu
 			// 
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -4592,6 +4610,8 @@
 		private System.Windows.Forms.ToolStripMenuItem GGLsettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VectrexSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem VectrexsettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem O2HawkSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem O2HawksettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;

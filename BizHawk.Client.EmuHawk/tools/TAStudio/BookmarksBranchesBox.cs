@@ -337,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (index == Movie.Branches.Count)
 			{
-				BranchView.ClearSelectedRows();
+				BranchView.DeselectAll();
 				Select(Movie.Branches.Count - 1, true);
 			}
 

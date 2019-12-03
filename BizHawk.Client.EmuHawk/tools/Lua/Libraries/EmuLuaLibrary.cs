@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Any())
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
+					addLibrary = VersionInfo.DeveloperBuild || ((LuaLibraryAttribute)attributes.First()).Released;
 				}
 
 				if (addLibrary)
@@ -133,7 +133,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool IsRunning { get; set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
 		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
@@ -163,14 +162,9 @@ namespace BizHawk.Client.EmuHawk
 			EventsLibrary.CallFrameAfterEvent();
 		}
 
-		public void CallExitEvent(Lua thread)
-		{
-			EventsLibrary.CallExitEvent(thread);
-		}
-
 		public override void CallExitEvent(LuaFile lf)
 		{
-			CallExitEvent(lf.Thread);
+			EventsLibrary.CallExitEvent(lf);
 		}
 
 		public override void Close()
@@ -209,20 +203,20 @@ namespace BizHawk.Client.EmuHawk
 				_lua.Pop();
 		}
 
-		public ResumeResult ResumeScript(Lua script)
+		public override ResumeResult ResumeScript(LuaFile lf)
 		{
-			_currThread = script;
+			_currThread = lf.Thread;
 
 			try
 			{
-				LuaLibraryBase.SetCurrentThread(_currThread);
+				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = script.Resume(0);
+				var execResult = _currThread.Resume(0);
 
 				_lua.RunScheduledDisposes();
 
 				// not sure how this is going to work out, so do this too
-				script.RunScheduledDisposes();
+				_currThread.RunScheduledDisposes();
 
 				_currThread = null;
 				var result = new ResumeResult();
@@ -244,11 +238,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.ClearCurrentThread();
 			}
-		}
-
-		public override ResumeResult ResumeScriptFromThreadOf(LuaFile lf)
-		{
-			return ResumeScript(lf.Thread);
 		}
 
 		public static void Print(params object[] outputs)

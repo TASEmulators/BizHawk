@@ -6,14 +6,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class LuaDropDown : ComboBox
 	{
-		public LuaDropDown(List<string> items)
+		public LuaDropDown(ICollection<string> items)
 		{
 			Items.AddRange(items.Cast<object>().ToArray());
 			SelectedIndex = 0;
 			DropDownStyle = ComboBoxStyle.DropDownList;
 		}
 
-		public void SetItems(List<string> items)
+		public void SetItems(ICollection<string> items)
 		{
 			Items.Clear();
 			Items.AddRange(items.Cast<object>().ToArray());

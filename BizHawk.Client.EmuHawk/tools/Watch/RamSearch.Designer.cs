@@ -256,7 +256,7 @@
 			// 
 			this.AddToRamWatchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
-			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
+			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.AddToRamWatchContextMenuItem.Text = "Add to RAM Watch";
 			this.AddToRamWatchContextMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);

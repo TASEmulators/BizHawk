@@ -1,6 +1,7 @@
 ﻿using System;
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : LuaLibraryBase

@@ -6,6 +6,8 @@ using NLua;
 
 using BizHawk.Emulation.Common;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	public sealed class MemorySavestateEmuLuaLibrary : LuaLibraryBase

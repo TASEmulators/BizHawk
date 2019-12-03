@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-
 using NLua;
-
 using BizHawk.Client.Common;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
