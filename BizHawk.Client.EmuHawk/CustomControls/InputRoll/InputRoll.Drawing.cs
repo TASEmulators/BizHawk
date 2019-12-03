@@ -93,31 +93,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnDrag(List<RollColumn> visibleColumns)
 		{
-			if (_columnDown?.Width > 0 && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
+			if (!(_columnDown?.Width > 0)
+				|| !_columnDownMoved
+				|| !_currentX.HasValue
+				|| !_currentY.HasValue
+				|| !IsHoveringOnColumnCell)
 			{
-				int columnWidth = _columnDown.Width;
-				int columnHeight = CellHeight;
-				if (HorizontalOrientation)
-				{
-					int columnIndex = visibleColumns.IndexOf(_columnDown);
-					columnWidth = ColumnWidth;
-					columnHeight = GetHColHeight(columnIndex);
-				}
-
-				int x1 = _currentX.Value - (columnWidth / 2);
-				int y1 = _currentY.Value - (columnHeight / 2);
-				int textOffsetY = CellHeightPadding;
-				if (HorizontalOrientation)
-				{
-					int textHeight = (int)_renderer.MeasureString(_columnDown.Text, Font).Height;
-					textOffsetY = (columnHeight - textHeight) / 2;
-				}
-
-				_renderer.SetSolidPen(_backColor);
-				_renderer.DrawRectangle(new Rectangle(x1, y1, columnWidth, columnHeight));
-				_renderer.PrepDrawString(Font, _foreColor);
-				_renderer.DrawString(_columnDown.Text, new Rectangle(x1 + CellWidthPadding, y1 + textOffsetY, columnWidth, columnHeight));
+				return;
 			}
+
+			int columnWidth = _columnDown.Width;
+			int columnHeight = CellHeight;
+			if (HorizontalOrientation)
+			{
+				int columnIndex = visibleColumns.IndexOf(_columnDown);
+				columnWidth = ColumnWidth;
+				columnHeight = GetHColHeight(columnIndex);
+			}
+
+			int x1 = _currentX.Value - (columnWidth / 2);
+			int y1 = _currentY.Value - (columnHeight / 2);
+			int textOffsetY = CellHeightPadding;
+			if (HorizontalOrientation)
+			{
+				int textHeight = (int)_renderer.MeasureString(_columnDown.Text, Font).Height;
+				textOffsetY = (columnHeight - textHeight) / 2;
+			}
+
+			_renderer.SetSolidPen(_backColor);
+			_renderer.DrawRectangle(new Rectangle(x1, y1, columnWidth, columnHeight));
+			_renderer.PrepDrawString(Font, _foreColor);
+			_renderer.DrawString(_columnDown.Text, new Rectangle(x1 + CellWidthPadding, y1 + textOffsetY, columnWidth, columnHeight));
 		}
 
 		private void DrawCellDrag(List<RollColumn> visibleColumns)
