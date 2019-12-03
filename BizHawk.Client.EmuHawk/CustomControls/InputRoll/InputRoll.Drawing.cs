@@ -493,18 +493,19 @@ namespace BizHawk.Client.EmuHawk
 		private void DoSelectionBG(List<RollColumn> visibleColumns)
 		{
 			Color rowColor = Color.White;
+			int firstVisibleRow = FirstVisibleRow;
 			int lastVisibleRow = LastVisibleRow;
 			int lastRow = -1;
 			foreach (Cell cell in _selectedItems)
 			{
-				if (cell.RowIndex > lastVisibleRow || cell.RowIndex < FirstVisibleRow || !VisibleColumns.Contains(cell.Column))
+				if (!cell.RowIndex.HasValue || cell.RowIndex > lastVisibleRow || cell.RowIndex < firstVisibleRow || !VisibleColumns.Contains(cell.Column))
 				{
 					continue;
 				}
 
 				Cell relativeCell = new Cell
 				{
-					RowIndex = cell.RowIndex - FirstVisibleRow,
+					RowIndex = cell.RowIndex - firstVisibleRow,
 					Column = cell.Column,
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
