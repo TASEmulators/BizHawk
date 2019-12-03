@@ -975,6 +975,11 @@ namespace BizHawk.Client.EmuHawk
 				if (_currentX != _previousX)
 				{
 					_columnResizing.Width += _currentX - _previousX;
+					if (_columnResizing.Width <= 0)
+					{
+						_columnResizing.Width = 1;
+					}
+
 					_columns.ColumnsChanged();
 					Refresh();
 				}
