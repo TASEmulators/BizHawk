@@ -157,49 +157,39 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_renderer.PrepDrawString(Font, _foreColor);
 
-			if (HorizontalOrientation)
-			{
-				int y = -_vBar.Value;
+			int h = ColumnHeight;
+			int yOffset = HorizontalOrientation ? -_vBar.Value : 0;
 
-				for(int j = 0; j < visibleColumns.Count; j++)
+			for (int j = 0; j < visibleColumns.Count; j++)
+			{
+				var column = visibleColumns[j];
+				var w = column.Width;
+				int x, y;
+
+				if (HorizontalOrientation)
 				{
-					var column = visibleColumns[j];
 					var columnHeight = GetHColHeight(j);
 					var textHeight = (int)_renderer.MeasureString(column.Text, Font).Height;
-					int strX = CellWidthPadding;
-					int strY = y + ((columnHeight - textHeight) / 2);
-					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
-					{
-						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, new Rectangle(strX, strY,  column.Width, CellHeight));
-						_renderer.PrepDrawString(Font, _foreColor);
-					}
-					else
-					{
-						DrawString(column.Text, new Rectangle(strX, strY,  column.Width, CellHeight));
-					}
-
-					y += columnHeight;
+					x = CellWidthPadding;
+					y = yOffset + ((columnHeight - textHeight) / 2);
+					yOffset += columnHeight;
 				}
-			}
-			else
-			{
-				foreach (var column in visibleColumns)
+				else
 				{
-					var x = column.Left + 2 * CellWidthPadding - _hBar.Value;
-
+					x = column.Left + 2 * CellWidthPadding - _hBar.Value;
 					// TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
-					var y = CellHeightPadding;
-					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
-					{
-						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, new Rectangle(x, y, column.Width, ColumnHeight));
-						_renderer.PrepDrawString(Font, _foreColor);
-					}
-					else
-					{
-						DrawString(column.Text, new Rectangle(x, y, column.Width, ColumnHeight));
-					}
+					y = CellHeightPadding;
+				}
+
+				if (IsHoveringOnColumnCell && column == CurrentCell.Column)
+				{
+					_renderer.PrepDrawString(Font, SystemColors.HighlightText);
+					DrawString(column.Text, new Rectangle(x, y,  column.Width, h));
+					_renderer.PrepDrawString(Font, _foreColor);
+				}
+				else
+				{
+					DrawString(column.Text, new Rectangle(x, y, w, h));
 				}
 			}
 		}
