@@ -44,12 +44,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSoundProvider(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ISoundProvider>();
+			return core != null && core.ServiceProvider.HasService<ISoundProvider>();
 		}
 
 		public static ISoundProvider AsSoundProvider(this IEmulator core)
@@ -70,12 +65,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IMemoryDomains>();
+			return core != null && core.ServiceProvider.HasService<IMemoryDomains>();
 		}
 
 		public static IMemoryDomains AsMemoryDomains(this IEmulator core)
@@ -85,12 +75,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSaveRam(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ISaveRam>();
+			return core != null && core.ServiceProvider.HasService<ISaveRam>();
 		}
 
 		public static ISaveRam AsSaveRam(this IEmulator core)
@@ -100,12 +85,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasSavestates(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IStatable>();
+			return core != null && core.ServiceProvider.HasService<IStatable>();
 		}
 
 		public static IStatable AsStatable(this IEmulator core)
@@ -115,12 +95,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPollInput(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IInputPollable>();
+			return core != null && core.ServiceProvider.HasService<IInputPollable>();
 		}
 
 		public static IInputPollable AsInputPollable(this IEmulator core)
@@ -130,13 +105,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool InputCallbacksAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
 			// TODO: this is a pretty ugly way to handle this
-			var pollable = core.ServiceProvider.GetService<IInputPollable>();
+			var pollable = core?.ServiceProvider.GetService<IInputPollable>();
 			if (pollable != null)
 			{
 				try
@@ -155,12 +125,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasDriveLight(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDriveLight>();
+			return core != null && core.ServiceProvider.HasService<IDriveLight>();
 		}
 
 		public static IDriveLight AsDriveLight(this IEmulator core)
@@ -170,12 +135,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanDebug(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IDebuggable>();
+			return core != null && core.ServiceProvider.HasService<IDebuggable>();
 		}
 
 		public static IDebuggable AsDebuggable(this IEmulator core)
@@ -185,12 +145,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CpuTraceAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ITraceable>();
+			return core != null && core.ServiceProvider.HasService<ITraceable>();
 		}
 
 		public static ITraceable AsTracer(this IEmulator core)
@@ -200,13 +155,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool MemoryCallbacksAvailable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
 			// TODO: this is a pretty ugly way to handle this
-			var debuggable = (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			var debuggable = (IDebuggable) core?.ServiceProvider.GetService<IDebuggable>();
 			if (debuggable != null)
 			{
 				try
@@ -251,7 +201,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.HasService<IDisassemblable>();
 		}
 
-		public static IDisassemblable AsDissassembler(this IEmulator core)
+		public static IDisassemblable AsDisassembler(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IDisassemblable>();
 		}
@@ -284,12 +234,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanCDLog(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ICodeDataLogger>();
+			return core != null && core.ServiceProvider.HasService<ICodeDataLogger>();
 		}
 
 		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core)
@@ -304,22 +249,12 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool UsesLinkCable(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ILinkable>();
+			return core != null && core.ServiceProvider.HasService<ILinkable>();
 		}
 
 		public static bool CanGenerateGameDBEntries(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<ICreateGameDBEntries>();
+			return core != null && core.ServiceProvider.HasService<ICreateGameDBEntries>();
 		}
 
 		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core)
@@ -329,12 +264,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool HasBoardInfo(this IEmulator core)
 		{
-			if (core == null)
-			{
-				return false;
-			}
-
-			return core.ServiceProvider.HasService<IBoardInfo>();
+			return core != null && core.ServiceProvider.HasService<IBoardInfo>();
 		}
 
 		public static IBoardInfo AsBoardInfo(this IEmulator core)

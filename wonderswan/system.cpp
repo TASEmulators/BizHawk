@@ -24,7 +24,11 @@
 #include <cstdio>
 #include <cstdarg>
 
+#ifdef _WIN32
 #define EXPORT extern "C" __declspec(dllexport)
+#elif __linux__
+#define EXPORT extern "C"
+#endif
 
 namespace MDFN_IEN_WSWAN
 {

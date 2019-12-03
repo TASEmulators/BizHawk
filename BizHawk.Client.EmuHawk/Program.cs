@@ -21,7 +21,12 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (EXE_PROJECT.OSTailoredCode.IsUnixHost)
+			{
+				// for Unix, skip everything else and just wire up the event handler
+				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+			}
+			else
 			{
 				var libLoader = EXE_PROJECT.OSTailoredCode.LinkedLibManager;
 
@@ -47,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 						$"[{(vc2012.HasValue ? " OK " : "FAIL")}] Visual C++ 2012 Runtime",
 						$"[{(vc2015.HasValue ? " OK " : "FAIL")}] Visual C++ 2015 Runtime"
 					};
-					var box = new CustomControls.PrereqsAlert(reqPresent)
+					using var box = new CustomControls.PrereqsAlert(reqPresent)
 					{
 						textBox1 = { Text = string.Join(Environment.NewLine, alertLines) }
 					};
@@ -72,16 +77,13 @@ namespace BizHawk.Client.EmuHawk
 
 				//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 			}
-
-			// Assembly.ReflectionOnlyLoadFrom doesn't automatically load deps, this stops it from throwing when called
-			AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) => Assembly.ReflectionOnlyLoad(args.Name);
 		}
 
 		[STAThread]
 		private static int Main(string[] args)
 		{
 			var exitCode = SubMain(args);
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Linux)
+			if (EXE_PROJECT.OSTailoredCode.IsUnixHost)
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
 				Process.GetCurrentProcess().Kill();
@@ -97,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
 			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			if (!VersionInfo.DeveloperBuild && EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (!VersionInfo.DeveloperBuild && !EXE_PROJECT.OSTailoredCode.IsUnixHost)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
@@ -112,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TempFileManager.Start();
 
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			HawkFile.ArchiveHandlerFactory = new SharpCompressArchiveHandler();
 
 			string cmdConfigFile = ArgParser.GetCmdConfigFile(args);
 			if (cmdConfigFile != null) PathManager.SetDefaultIniPath(cmdConfigFile);
@@ -120,9 +122,11 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				new ExceptionBox(e).ShowDialog();
-				new ExceptionBox("Since your config file is corrupted, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
+				new ExceptionBox("Since your config file is corrupted or from a different BizHawk version, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
 				File.Delete(PathManager.DefaultIniPath);
 				Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			}
@@ -146,10 +150,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS != EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
-				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
-
-REDO_DISPMETHOD:
+		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
@@ -194,7 +195,7 @@ REDO_DISPMETHOD:
 				goto REDO_DISPMETHOD;
 			}
 
-			if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows)
+			if (!EXE_PROJECT.OSTailoredCode.IsUnixHost)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".
@@ -315,7 +316,7 @@ REDO_DISPMETHOD:
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (EXE_PROJECT.OSTailoredCode.CurrentOS == EXE_PROJECT.OSTailoredCode.DistinctOS.Windows // LuaInterface is not currently working on Mono
+				if (!EXE_PROJECT.OSTailoredCode.IsUnixHost // LuaInterface is not currently working on Mono
 					&& File.Exists(configPath)
 					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"UseNLua\": ")) ?? string.Empty)
 						.Contains("false"))

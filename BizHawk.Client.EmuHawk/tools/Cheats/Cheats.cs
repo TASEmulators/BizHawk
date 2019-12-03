@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Settings.Columns =CheatListView.AllColumns;
+			Settings.Columns = CheatListView.AllColumns;
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColumns();
 		}
 
-		private void CheatListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void CheatListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CheatListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void CheatListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (index < Global.CheatList.Count)
 			{
@@ -328,15 +328,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => CheatListView.SelectedRows;
 
-		private IEnumerable<Cheat> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => Global.CheatList[index]); }
-		}
+		private IEnumerable<Cheat> SelectedItems => SelectedIndices.Select(index => Global.CheatList[index]);
 
-		private IEnumerable<Cheat> SelectedCheats
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<Cheat> SelectedCheats => SelectedItems.Where(x => !x.IsSeparator);
 
 		private void DoSelectedIndexChange()
 		{
@@ -446,7 +440,8 @@ namespace BizHawk.Client.EmuHawk
 				ToggleMenuItem.Enabled =
 				SelectedIndices.Any();
 
-			DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
+			// Always leave enabled even if no cheats enabled. This way the hotkey will always work however a new cheat is enabled
+			// DisableAllCheatsMenuItem.Enabled = Global.CheatList.ActiveCount > 0;
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
@@ -553,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
-		{
+		{	
 			Global.CheatList.DisableAll();
 		}
 
@@ -637,10 +632,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region ListView and Dialog Events
-
-		private void CheatListView_Click(object sender, EventArgs e)
-		{
-		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)
 		{
@@ -736,21 +727,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public CheatsSettings()
 			{
-				Columns = new List<InputRoll.RollColumn>
+				Columns = new List<RollColumn>
 				{
-					new InputRoll.RollColumn { Text = "Names", Name = NameColumn, Visible = true, Width = 128, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Address", Name = AddressColumn, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Value", Name = ValueColumn, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, Width = 63, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, Width = 98, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "On", Name = OnColumn, Visible = false, Width = 28, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Size", Name = SizeColumn, Visible = true, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, Width = 55, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, Width = 88, Type = InputRoll.RollColumn.InputType.Text }
+					new RollColumn { Text = "Names", Name = NameColumn, Visible = true, Width = 128, Type = ColumnType.Text },
+					new RollColumn { Text = "Address", Name = AddressColumn, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = ValueColumn, Visible = true, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare", Name = CompareColumn, Visible = true, Width = 63, Type = ColumnType.Text },
+					new RollColumn { Text = "Compare Type", Name = ComparisonTypeColumn, Visible = true, Width = 98, Type = ColumnType.Text },
+					new RollColumn { Text = "On", Name = OnColumn, Visible = false, Width = 28, Type = ColumnType.Text },
+					new RollColumn { Text = "Size", Name = SizeColumn, Visible = true, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Endian", Name = EndianColumn, Visible = false, Width = 55, Type = ColumnType.Text },
+					new RollColumn { Text = "Display Type", Name = TypeColumn, Visible = false, Width = 88, Type = ColumnType.Text }
 				};
 			}
 
-			public List<InputRoll.RollColumn> Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 		}
 	}
 }

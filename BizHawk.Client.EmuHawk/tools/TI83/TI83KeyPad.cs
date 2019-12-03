@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool AskSaveChanges() { return true; }
 		public bool UpdateBefore => false;
 
-	    public void NewUpdate(ToolFormUpdateType type) { }
+		public void NewUpdate(ToolFormUpdateType type) { }
 
 		public void UpdateValues()
 		{

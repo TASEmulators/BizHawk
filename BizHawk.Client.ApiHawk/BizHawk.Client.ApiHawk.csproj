@@ -35,7 +35,9 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NoWarn>1591</NoWarn><!-- don't bug us with "Missing XML comment [...]" until we have and enforce .stylecop.json i.e. when we care -->
+    <LangVersion>8.0</LangVersion>
+    <NoWarn>1591</NoWarn>
+    <!-- don't bug us with "Missing XML comment [...]" until we have and enforce .stylecop.json i.e. when we care -->
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -56,17 +58,7 @@
     <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
     <Compile Include="Attributes\BizHawkExternalToolAttribute.cs" />
     <Compile Include="Classes\ApiInjector.cs" />
-    <Compile Include="Classes\Api\EmuApi.cs" />
-    <Compile Include="Classes\Api\GameInfoApi.cs" />
-    <Compile Include="Classes\Api\MemApi.cs" />
-    <Compile Include="Classes\Api\MemApiBase.cs" />
     <Compile Include="Classes\Api\PluginBase.cs" />
-    <Compile Include="Classes\Api\JoypadApi.cs" />
-    <Compile Include="Classes\Api\MemEventsApi.cs" />
-    <Compile Include="Classes\Api\MemorySaveStateApi.cs" />
-    <Compile Include="Classes\Api\MovieApi.cs" />
-    <Compile Include="Classes\Api\SqlApi.cs" />
-    <Compile Include="Classes\Api\UserDataApi.cs" />
     <Compile Include="Classes\BasicApiProvider.cs" />
     <Compile Include="Classes\BizHawkSystemIdToCoreSystemEnumConverter.cs" />
     <Compile Include="Classes\Events\EventArgs\BeforeQuickLoadEventArgs.cs" />
@@ -82,25 +74,9 @@
     <Compile Include="Enums\BizHawkExternalToolUsage.cs" />
     <Compile Include="Classes\ClientApi.cs" />
     <Compile Include="Classes\ExternalToolManager.cs" />
-    <Compile Include="Interfaces\Api\IComm.cs" />
-    <Compile Include="Interfaces\Api\IInput.cs" />
-    <Compile Include="Interfaces\Api\ITool.cs" />
-    <Compile Include="Interfaces\Api\ISaveState.cs" />
-    <Compile Include="Interfaces\Api\IUserData.cs" />
-    <Compile Include="Interfaces\Api\ISql.cs" />
-    <Compile Include="Interfaces\Api\IMovie.cs" />
-    <Compile Include="Interfaces\Api\IMemorySavestate.cs" />
-    <Compile Include="Interfaces\Api\IMemEvents.cs" />
-    <Compile Include="Interfaces\Api\IEmu.cs" />
-    <Compile Include="Interfaces\Api\IExternalApi.cs" />
-    <Compile Include="Interfaces\Api\IJoypad.cs" />
     <Compile Include="Interfaces\IExternalApiProvider.cs" />
     <Compile Include="Interfaces\IExternalToolForm.cs" />
-    <Compile Include="Interfaces\Api\IGameInfo.cs" />
-    <Compile Include="Interfaces\Api\IGui.cs" />
-    <Compile Include="Interfaces\Api\IMem.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Interfaces\Api\IApiContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -156,12 +156,14 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Vectrex;
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
-                    case "ZXSpectrum":
-                        return SystemInfo.ZXSpectrum;
-                    case "AmstradCPC":
-                        return SystemInfo.AmstradCPC;
+					case "ZXSpectrum":
+						return SystemInfo.ZXSpectrum;
+					case "AmstradCPC":
+						return SystemInfo.AmstradCPC;
 					case "ChannelF":
 						return SystemInfo.ChannelF;
+					case "O2":
+						return SystemInfo.O2;
 				}
 			}
 		}

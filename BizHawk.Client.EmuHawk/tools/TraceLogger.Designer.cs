@@ -89,7 +89,6 @@
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;
-			this.TraceView.UseCustomBackground = true;
 			this.TraceView.AllowColumnResize = true;
 			this.TraceView.AllowColumnReorder = false;
 			// 

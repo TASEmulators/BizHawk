@@ -7,62 +7,26 @@ namespace BizHawk.Client.ApiHawk.Classes.Events
 	/// </summary>
 	public sealed class BeforeQuickLoadEventArgs : EventArgs
 	{
-		#region Fields
-
-		private bool _Handled = false;
-		private string _QuickSaveSlotName;
-
-		#endregion
-
-		#region cTor(s)
-
 		internal BeforeQuickLoadEventArgs(string name)
 		{
-			_QuickSaveSlotName = name;
+			Name = name;
 		}
-
-		#endregion
-
-		#region Properties
 
 		/// <summary>
 		/// Gets or sets value that defined if saved has been handled or not
 		/// </summary>
-		public bool Handled
-		{
-			get
-			{
-				return _Handled;
-			}
-			set
-			{
-				_Handled = value;
-			}
-		}
+		public bool Handled { get; set; }
+		
 
 		/// <summary>
 		/// Gets quicksave name
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _QuickSaveSlotName;
-			}
-		}
+		public string Name { get; }
 
 
 		/// <summary>
 		/// Gets slot used for quicksave
 		/// </summary>
-		public int Slot
-		{
-			get
-			{
-				return int.Parse(_QuickSaveSlotName.Substring(_QuickSaveSlotName.Length - 1));
-			}
-		}
-
-		#endregion
+		public int Slot => int.Parse(Name.Substring(Name.Length - 1));
 	}
 }

@@ -172,7 +172,6 @@
 			this.HistoryView.Name = "HistoryView";
 			this.HistoryView.Size = new System.Drawing.Size(369, 213);
 			this.HistoryView.TabIndex = 2;
-			this.HistoryView.UseCustomBackground = true;
 			this.HistoryView.DoubleClick += new System.EventHandler(this.HistoryView_DoubleClick);
 			this.HistoryView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseDown);
 			this.HistoryView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.HistoryView_MouseUp);

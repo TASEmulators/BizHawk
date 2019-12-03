@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.PCEngine;
@@ -50,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		unsafe static void Draw16x16(byte* src, int* dest, int pitch, int* pal)
+		static unsafe void Draw16x16(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 16;
 			dest -= inc;
@@ -62,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe static void Draw8x8(byte* src, int* dest, int pitch, int* pal)
+		static unsafe void Draw8x8(byte* src, int* dest, int pitch, int* pal)
 		{
 			int inc = pitch - 8;
 			dest -= inc;
@@ -125,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe static void DrawPalette(Bitmap bmp, int* pal)
+		static unsafe void DrawPalette(Bitmap bmp, int* pal)
 		{
 			var lockdata = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
@@ -165,10 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore
-		{
-			get { return true; }
-		}
+		public bool UpdateBefore => true;
 
 		#endregion
 

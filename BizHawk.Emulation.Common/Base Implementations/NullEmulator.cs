@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			if (render == false)
 			{
@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Common
 			var ms = new MemoryStream();
 			gz.CopyTo(ms);
 			_data = ms.ToArray();
-			for (int i = 0; i < 3800; i++) // compenstate for sample start point
+			for (int i = 0; i < 3800; i++) // compensate for sample start point
 			{
 				Next();
 			}

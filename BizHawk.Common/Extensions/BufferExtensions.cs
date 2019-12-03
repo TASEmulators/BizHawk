@@ -8,17 +8,6 @@ namespace BizHawk.Common.BufferExtensions
 {
 	public static class BufferExtensions
 	{
-		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
-		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X2}", b);
-			}
-
-			writer.WriteLine();
-		}
-
 		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 		public static unsafe void SaveAsHexFast(this byte[] buffer, TextWriter writer)
@@ -35,57 +24,6 @@ namespace BizHawk.Common.BufferExtensions
 							writer.Write(table[src[i] & 15]);
 						}
 				}
-			}
-
-			writer.WriteLine();
-		}
-
-		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
-		public static void SaveAsHex(this byte[] buffer, TextWriter writer, int length)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				writer.Write("{0:X2}", buffer[i]);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this short[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X4}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this ushort[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X4}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this int[] buffer, TextWriter writer)
-		{
-			foreach (int b in buffer)
-			{
-				writer.Write("{0:X8}", b);
-			}
-
-			writer.WriteLine();
-		}
-
-		public static void SaveAsHex(this uint[] buffer, TextWriter writer)
-		{
-			foreach (var b in buffer)
-			{
-				writer.Write("{0:X8}", b);
 			}
 
 			writer.WriteLine();
@@ -124,48 +62,6 @@ namespace BizHawk.Common.BufferExtensions
 					*dst++ = (byte)(Hex2Int(*src++) << 4 | Hex2Int(*src++));
 					count--;
 				}
-			}
-		}
-
-		public static void ReadFromHex(this short[] buffer, string hex)
-		{
-			if (hex.Length % 4 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
-			{
-				var shorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
-				buffer[i] = short.Parse(shorthex, NumberStyles.HexNumber);
-			}
-		}
-
-		public static void ReadFromHex(this ushort[] buffer, string hex)
-		{
-			if (hex.Length % 4 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 4 < hex.Length; i++)
-			{
-				var ushorthex = string.Concat(hex[i * 4], hex[(i * 4) + 1], hex[(i * 4) + 2], hex[(i * 4) + 3]);
-				buffer[i] = ushort.Parse(ushorthex, NumberStyles.HexNumber);
-			}
-		}
-
-		public static void ReadFromHex(this int[] buffer, string hex)
-		{
-			if (hex.Length % 8 != 0)
-			{
-				throw new Exception("Hex value string does not appear to be properly formatted.");
-			}
-
-			for (int i = 0; i < buffer.Length && i * 8 < hex.Length; i++)
-			{
-				var inthex = hex.Substring(i * 8, 8);
-				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
 			}
 		}
 

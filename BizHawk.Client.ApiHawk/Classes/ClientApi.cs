@@ -16,7 +16,7 @@ namespace BizHawk.Client.ApiHawk
 {
 	/// <summary>
 	/// This class contains some methods that
-	/// interract with BizHawk client
+	/// interact with BizHawk client
 	/// </summary>
 	public static class ClientApi
 	{
@@ -46,11 +46,11 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		public static event BeforeQuickSaveEventHandler BeforeQuickSave;
 		/// <summary>
-		/// Occurs when a ROM is succesfully loaded
+		/// Occurs when a ROM is successfully loaded
 		/// </summary>
 		public static event EventHandler RomLoaded;
 		/// <summary>
-		/// Occurs when a savestate is sucessfully loaded
+		/// Occurs when a savestate is successfully loaded
 		/// </summary>
 		public static event StateLoadedEventHandler StateLoaded;
 		/// <summary>
@@ -63,7 +63,7 @@ namespace BizHawk.Client.ApiHawk
 		#region cTor(s)
 
 		/// <summary>
-		/// Static stuff initilization
+		/// Static stuff initialization
 		/// </summary>
 		static ClientApi()
 		{
@@ -210,10 +210,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="stateName">User friendly name for saved state</param>
 		public static void OnStateLoaded(object sender, string stateName)
 		{
-			if (StateLoaded != null)
-			{
-				StateLoaded(sender, new StateLoadedEventArgs(stateName));
-			}
+			StateLoaded?.Invoke(sender, new StateLoadedEventArgs(stateName));
 		}
 
 		/// <summary>
@@ -223,10 +220,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="stateName">User friendly name for saved state</param>
 		public static void OnStateSaved(object sender, string stateName)
 		{
-			if (StateSaved != null)
-			{
-				StateSaved(sender, new StateSavedEventArgs(stateName));
-			}
+			StateSaved?.Invoke(sender, new StateSavedEventArgs(stateName));
 		}
 
 		/// <summary>
@@ -249,7 +243,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <summary>
 		/// Save a state with specified name
 		/// </summary>
-		/// <param name="name">Savetate friendly name</param>
+		/// <param name="name">Savestate friendly name</param>
 		public static void SaveState(string name)
 		{
 			InvokeMainFormMethod("SaveState", new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), $"{name}.State"), name, false });
@@ -417,10 +411,10 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		private static void GetAllInputs()
 		{
-			AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
+			AutoFireStickyXorAdapter joypadAdapter = Global.AutofireStickyXORAdapter;
 
-			IEnumerable<string> pressedButtons = from button in joypadAdaptor.Definition.BoolButtons
-												 where joypadAdaptor.IsPressed(button)
+			IEnumerable<string> pressedButtons = from button in joypadAdapter.Definition.BoolButtons
+												 where joypadAdapter.IsPressed(button)
 												 select button;
 
 			foreach (Joypad j in allJoypads)
@@ -448,8 +442,8 @@ namespace BizHawk.Client.ApiHawk
 			{
 				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
 				{
-					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat($"P{i} X Axis");
-					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat($"P{i} Y Axis");
+					allJoypads[i - 1].AnalogX = joypadAdapter.GetFloat($"P{i} X Axis");
+					allJoypads[i - 1].AnalogY = joypadAdapter.GetFloat($"P{i} Y Axis");
 				}
 			}
 		}
@@ -652,7 +646,7 @@ namespace BizHawk.Client.ApiHawk
 				object osd = f.GetValue(null);
 				t = f.GetType();
 				MethodInfo m = t.GetMethod("AddMessage");
-				m.Invoke(osd, new Object[] { $"Window size set to {size}x" });
+				m.Invoke(osd, new object[] { $"Window size set to {size}x" });
 			}
 			else
 			{
@@ -765,13 +759,11 @@ namespace BizHawk.Client.ApiHawk
 						}
 
 					case "GB":
-						if (Global.Emulator is Gameboy)
+						if (Global.Emulator is Gameboy gb)
 						{
-							return SystemInfo.GB;
-						}
-						else if (Global.Emulator is GBColors)
-						{
-							return SystemInfo.GBC;
+							return gb.IsCGBMode()
+								? SystemInfo.GBC
+								: SystemInfo.GB;
 						}
 						else
 						{

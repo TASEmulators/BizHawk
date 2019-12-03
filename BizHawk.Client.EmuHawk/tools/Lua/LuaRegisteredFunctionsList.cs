@@ -13,18 +13,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		public void UpdateValues()
 		{
-			if (GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Any())
-			{
-				PopulateListView();
-			}
-			else
-			{
-				Close();
-			}
+			PopulateListView();
 		}
 
 		private void LuaRegisteredFunctionsList_Load(object sender, EventArgs e)
@@ -46,8 +37,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FunctionView.Items.Clear();
 			
-			var nlfs = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().OrderBy(x => x.Event).ThenBy(x => x.Name);
-			foreach (var nlf in nlfs)
+			var functions = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions
+				.OrderBy(f => f.Event)
+				.ThenBy(f => f.Name);
+			foreach (var nlf in functions)
 			{
 				var item = new ListViewItem { Text = nlf.Event };
 				item.SubItems.Add(nlf.Name);
@@ -76,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
-					GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions()[guid].Call();
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid].Call();
 				}
 			}
 		}
@@ -89,8 +82,8 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
-					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions()[guid];
-					GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Remove(nlf);
+					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
+					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Remove(nlf);
 				}
 
 				PopulateListView();
@@ -109,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().ClearAll();
+			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.ClearAll();
 			PopulateListView();
 		}
 
@@ -118,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.GetRegisteredFunctions().Any();
+			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

@@ -128,24 +128,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
+			{
+				OTK_Keyboard.Initialize();
+				OTK_GamePad.Initialize();
+			}
+			else
 			{
 				KeyInput.Initialize();
 				IPCKeyInput.Initialize();
 				GamePad.Initialize();
 				GamePad360.Initialize();
 			}
-			else
-			{
-				OTK_Keyboard.Initialize();
-//				OTK_Gamepad.Initialize();
-			}
 			Instance = new Input();
 		}
 
 		public static void Cleanup()
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (!OSTailoredCode.IsUnixHost)
 			{
 				KeyInput.Cleanup();
 				GamePad.Cleanup();
@@ -339,17 +339,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
-				var keyEvents = OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-					? KeyInput.Update().Concat(IPCKeyInput.Update())
-					: OTK_Keyboard.Update();
-				if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+				var keyEvents = OSTailoredCode.IsUnixHost
+					? OTK_Keyboard.Update()
+					: KeyInput.Update().Concat(IPCKeyInput.Update());
+				if (OSTailoredCode.IsUnixHost)
 				{
-					GamePad.UpdateAll();
-					GamePad360.UpdateAll();
+					OTK_GamePad.UpdateAll();
 				}
 				else
 				{
-					//TODO
+					GamePad.UpdateAll();
+					GamePad360.UpdateAll();
 				}
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
@@ -364,6 +364,22 @@ namespace BizHawk.Client.EmuHawk
 					lock (FloatValues)
 					{
 						//FloatValues.Clear();
+
+						// analyse OpenTK xinput (or is it libinput?)
+						foreach (var pad in OTK_GamePad.EnumerateDevices())
+						{
+							foreach (var but in pad.buttonObjects)
+							{
+								HandleButton(pad.InputNamePrefix + but.ButtonName, but.ButtonAction(), InputFocus.Pad);
+							}
+							foreach (var sv in pad.GetFloats())
+							{
+								var n = $"{pad.InputNamePrefix}{sv.Item1} Axis";
+								var f = sv.Item2;
+								if (trackdeltas) FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+								FloatValues[n] = f;
+							}
+						}
 
 						//analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())

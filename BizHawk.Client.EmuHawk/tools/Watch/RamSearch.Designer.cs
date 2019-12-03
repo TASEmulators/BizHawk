@@ -179,6 +179,7 @@
 			// 
 			// WatchListView
 			// 
+			this.WatchListView.CellWidthPadding = 3;
 			this.WatchListView.AllowColumnReorder = true;
 			this.WatchListView.AllowColumnResize = true;
 			this.WatchListView.AllowDrop = true;
@@ -193,7 +194,6 @@
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
-			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.MultiSelect = true;
 			this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
@@ -256,7 +256,7 @@
 			// 
 			this.AddToRamWatchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
-			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
+			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.AddToRamWatchContextMenuItem.Text = "Add to RAM Watch";
 			this.AddToRamWatchContextMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);

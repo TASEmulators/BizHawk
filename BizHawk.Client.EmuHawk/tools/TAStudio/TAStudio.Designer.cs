@@ -1,6 +1,4 @@
-﻿using BizHawk.Client.Common;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class TAStudio
 	{
@@ -92,7 +90,6 @@ namespace BizHawk.Client.EmuHawk
 			this.AutosaveAsBackupFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BackupPerFileSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutoRestoreOnMouseUpOnlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -193,6 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
+			this.SetFontMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
@@ -632,7 +630,6 @@ namespace BizHawk.Client.EmuHawk
             this.autosaveToolStripMenuItem,
             this.BackupPerFileSaveMenuItem,
             this.toolStripSeparator9,
-            this.AutoRestoreOnMouseUpOnlyMenuItem,
             this.AutoadjustInputMenuItem,
             this.DrawInputByDraggingMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
@@ -648,7 +645,8 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator14,
             this.AutopauseAtEndOfMovieMenuItem,
             this.sepToolStripMenuItem,
-            this.autoHoldFireToolStripMenuItem});
+            this.autoHoldFireToolStripMenuItem,
+			this.SetFontMenuItem});
 			this.ConfigSubMenu.Name = "ConfigSubMenu";
 			this.ConfigSubMenu.Size = new System.Drawing.Size(50, 20);
 			this.ConfigSubMenu.Text = "&Config";
@@ -723,13 +721,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
 			this.toolStripSeparator9.Size = new System.Drawing.Size(241, 6);
-			// 
-			// AutoRestoreOnMouseUpOnlyMenuItem
-			// 
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Name = "AutoRestoreOnMouseUpOnlyMenuItem";
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Size = new System.Drawing.Size(244, 22);
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Text = "Auto-restore on Mouse Up only";
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Click += new System.EventHandler(this.AutoRestoreOnMouseUpOnlyMenuItem_Click);
 			// 
 			// AutoadjustInputMenuItem
 			// 
@@ -814,7 +805,7 @@ namespace BizHawk.Client.EmuHawk
 			this.LoadBranchOnDoubleclickMenuItem.Name = "LoadBranchOnDoubleclickMenuItem";
 			this.LoadBranchOnDoubleclickMenuItem.Size = new System.Drawing.Size(244, 22);
 			this.LoadBranchOnDoubleclickMenuItem.Text = "Load Branch on double-click";
-			this.LoadBranchOnDoubleclickMenuItem.Click += new System.EventHandler(this.LoadBranchOnDoubleclickMenuItem_Click);
+			this.LoadBranchOnDoubleclickMenuItem.Click += new System.EventHandler(this.LoadBranchOnDoubleClickMenuItem_Click);
 			// 
 			// OsdInBranchScreenshotsMenuItem
 			// 
@@ -834,7 +825,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem.Name = "AutopauseAtEndOfMovieMenuItem";
 			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(244, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
-			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
+			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutoPauseAtEndMenuItem_Click);
 			// 
 			// sepToolStripMenuItem
 			// 
@@ -1227,16 +1218,19 @@ namespace BizHawk.Client.EmuHawk
 			this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
 			// 
 			// TasView
-			// 
+			//
+			this.TasView.CellWidthPadding = 3;
+			this.TasView.GridLines = true;
+			this.TasView.AllowMassNavigationShortcuts = false;
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
-			this.TasView.AllowRightClickSelecton = false;
+			this.TasView.AllowRightClickSelection = false;
 			this.TasView.AlwaysScroll = false;
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TasView.CellHeightPadding = 0;
-			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TasView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
@@ -1246,11 +1240,11 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
+			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
 			this.TasView.SeekingCutoffInterval = 0;
 			this.TasView.Size = new System.Drawing.Size(289, 528);
-			this.TasView.SuspendHotkeys = false;
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
@@ -1264,7 +1258,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
 			this.TasView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
-			this.TasView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TasView_PreviewKeyDown);
 			// 
 			// TasStatusStrip
 			// 
@@ -1590,7 +1583,14 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
 			this.MainVertialSplit.SplitterDistance = 295;
 			this.MainVertialSplit.TabIndex = 10;
-			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVertialSplit_SplitterMoved);
+			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
+			// 
+			// SetFontMenuItem
+			// 
+			this.SetFontMenuItem.Name = "SetFontMenuItem";
+			this.SetFontMenuItem.Size = new System.Drawing.Size(264, 22);
+			this.SetFontMenuItem.Text = "Set Font";
+			this.SetFontMenuItem.Click += new System.EventHandler(this.SetFontMenuItem_Click);
 			// 
 			// TAStudio
 			// 
@@ -1612,7 +1612,6 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TAStudio_KeyDown);
 			this.MouseLeave += new System.EventHandler(this.TAStudio_MouseLeave);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
@@ -1792,8 +1791,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem BackupPerFileSaveMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBackupMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBk2BackupMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoRestoreOnMouseUpOnlyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem LoadBranchOnDoubleclickMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SetFontMenuItem;
 	}
 }

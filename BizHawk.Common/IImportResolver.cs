@@ -28,31 +28,31 @@ namespace BizHawk.Common
 		}
 	}
 
-    /// <summary>
-    /// compose multiple ImportResolvers, where subsequent ones takes precedence over earlier ones
-    /// </summary>
-    public class PatchImportResolver : IImportResolver
-    {
-        private readonly List<IImportResolver> _resolvers = new List<IImportResolver>();
+	/// <summary>
+	/// compose multiple ImportResolvers, where subsequent ones takes precedence over earlier ones
+	/// </summary>
+	public class PatchImportResolver : IImportResolver
+	{
+		private readonly List<IImportResolver> _resolvers = new List<IImportResolver>();
 
-        public PatchImportResolver(params IImportResolver[] rr)
-        {
-            Add(rr);
-        }
-        public void Add(params IImportResolver[] rr)
-        {
-            _resolvers.AddRange(rr);
-        }
+		public PatchImportResolver(params IImportResolver[] rr)
+		{
+			Add(rr);
+		}
+		public void Add(params IImportResolver[] rr)
+		{
+			_resolvers.AddRange(rr);
+		}
 
-        public IntPtr Resolve(string entryPoint)
-        {
-            for (int i = _resolvers.Count - 1; i >= 0; i--)
-            {
-                var ret = _resolvers[i].Resolve(entryPoint);
-                if (ret != IntPtr.Zero)
-                    return ret;
-            }
-            return IntPtr.Zero;
-        }
-    }
+		public IntPtr Resolve(string entryPoint)
+		{
+			for (int i = _resolvers.Count - 1; i >= 0; i--)
+			{
+				var ret = _resolvers[i].Resolve(entryPoint);
+				if (ret != IntPtr.Zero)
+					return ret;
+			}
+			return IntPtr.Zero;
+		}
+	}
 }

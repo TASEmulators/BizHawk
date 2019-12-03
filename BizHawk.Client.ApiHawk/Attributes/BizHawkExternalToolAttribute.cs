@@ -3,20 +3,12 @@
 namespace BizHawk.Client.ApiHawk
 {
 	/// <summary>
-	/// This class hold logic interraction for the ExternalToolAttribute
+	/// This class holds logic interaction for the ExternalToolAttribute
 	/// This attribute helps BizHawk to handle ExternalTools
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)]
 	public sealed class BizHawkExternalToolAttribute : Attribute
 	{
-		#region Fields
-
-		private string _Name;
-		private string _Description;
-		private string _IconResourceName;
-
-		#endregion
-
 		#region cTor(s)
 
 		/// <summary>
@@ -27,9 +19,9 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="iconResourceName">Icon embedded resource name</param>
 		public BizHawkExternalToolAttribute(string name, string description, string iconResourceName)
 		{
-			_Name = name;
-			_Description = description;
-			_IconResourceName = iconResourceName;
+			Name = name;
+			Description = description;
+			IconResourceName = iconResourceName;
 		}
 
 		/// <summary>
@@ -56,36 +48,19 @@ namespace BizHawk.Client.ApiHawk
 		/// <summary>
 		/// Gets tool's friendly name
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _Name;
-			}
-		}
+		public string Name { get; }
 
 		/// <summary>
-		/// Gets tool's descriptino
+		/// Gets tool's description
 		/// </summary>
-		public string Description
-		{
-			get
-			{
-				return _Description;
-			}
-		}
+		public string Description { get; }
+		
 
 		/// <summary>
 		/// Get the name of the embedded resource icon
 		/// </summary>
-		/// <remarks>Don't forget to set compile => Embedded reource to the icon file in your project</remarks>
-		public string IconResourceName
-		{
-			get
-			{
-				return _IconResourceName;
-			}
-		}
+		/// <remarks>Don't forget to set compile => Embedded resource to the icon file in your project</remarks>
+		public string IconResourceName { get; }
 
 		#endregion
 	}

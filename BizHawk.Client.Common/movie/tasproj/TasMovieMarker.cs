@@ -28,9 +28,9 @@ namespace BizHawk.Client.Common
 			Message = split[1];
 		}
 
-		public virtual int Frame { get; }
+		public int Frame { get; }
 
-		public virtual string Message { get; set; }
+		public string Message { get; set; }
 
 		public override string ToString()
 		{
@@ -49,9 +49,9 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			if (obj is TasMovieMarker)
+			if (obj is TasMovieMarker marker)
 			{
-				return Frame == ((TasMovieMarker)obj).Frame;
+				return Frame == marker.Frame;
 			}
 			
 			return false;

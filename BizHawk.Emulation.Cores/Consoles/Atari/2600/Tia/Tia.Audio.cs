@@ -192,11 +192,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 							break;
 						case 0x0f:
-							if (Run3_L())
+							// poly5 output to div 6
+							if (Run5_L())
 							{
-								goto case 0x07;
+								if (Run3_L())
+								{
+									on_L = Run1_L();
+								}
 							}
-
 							break;
 					}
 				}
@@ -349,11 +352,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 							break;
 						case 0x0f:
-							if (Run3_R())
+							// poly5 output to div 6
+							if (Run5_R())
 							{
-								goto case 0x07;
+								if (Run3_R())
+								{
+									on_R = Run1_R();
+								}
 							}
-
 							break;
 					}
 				}

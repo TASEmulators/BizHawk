@@ -35,4 +35,16 @@
 		Overdump,
 		NotInDatabase
 	}
+
+	/// <summary>
+	/// The Advanced ROM Loader type in MainForm/RomLoader/OpenAdvancedChooser
+	/// </summary>
+	public enum AdvancedRomLoaderType
+	{
+		None,
+		LibretroLaunchNoGame,
+		LibretroLaunchGame,
+		ClassicLaunchGame,
+		MAMELaunchGame
+	}
 }

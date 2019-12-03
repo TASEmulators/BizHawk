@@ -473,16 +473,13 @@ namespace BizHawk.Emulation.Common.Components.MC6800
 				// then regular IRQ				
 				else if (IRQPending && !FlagI)
 				{
-					if (!FlagI)
-					{
-						IRQPending = false;
+					IRQPending = false;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
+					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
 
-						IRQ_();
-						IRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
+					IRQ_();
+					IRQCallback();
+					instr_pntr = irq_pntr = 0;
 				}				
 				// otherwise start the next instruction
 				else

@@ -8,7 +8,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.InputAdapterExtensions;
-using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,25 +42,16 @@ namespace BizHawk.Client.EmuHawk
 
 	public class OSDManager
 	{
-		public string FPS { get; set; }
+		public string Fps { get; set; }
 		public IBlitterFont MessageFont;
-
-		public void Dispose()
-		{
-
-		}
 
 		public void Begin(IBlitter blitter)
 		{
 			MessageFont = blitter.GetFontType(nameof(MessageFont));
 		}
 
-		public Color FixedMessagesColor { get { return Color.FromArgb(Global.Config.MessagesColor); } }
-		public Color FixedAlertMessageColor { get { return Color.FromArgb(Global.Config.AlertMessageColor); } }
-
-		public OSDManager()
-		{
-		}
+		public Color FixedMessagesColor => Color.FromArgb(Global.Config.MessagesColor);
+		public Color FixedAlertMessageColor => Color.FromArgb(Global.Config.AlertMessageColor);
 
 		private float GetX(IBlitter g, int x, int anchor, string message)
 		{
@@ -127,17 +117,17 @@ namespace BizHawk.Client.EmuHawk
 			return Global.Emulator.Frame.ToString();
 		}
 
-		private List<UIMessage> messages = new List<UIMessage>(5);
-		private List<UIDisplay> GUITextList = new List<UIDisplay>();
+		private readonly List<UIMessage> _messages = new List<UIMessage>(5);
+		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
 
 		public void AddMessage(string message)
 		{
-			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
+			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
+		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
 		{
-			GUITextList.Add(new UIDisplay
+			_guiTextList.Add(new UIDisplay
 			{
 				Message = message,
 				X = x,
@@ -148,9 +138,9 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public void ClearGUIText()
+		public void ClearGuiText()
 		{
-			GUITextList.Clear();
+			_guiTextList.Clear();
 		}
 
 		public void DrawMessages(IBlitter g)
@@ -160,58 +150,55 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
+			_messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
 			int line = 1;
 			if (Global.Config.StackOSDMessages)
 			{
-				for (int i = messages.Count - 1; i >= 0; i--, line++)
+				for (int i = _messages.Count - 1; i >= 0; i--, line++)
 				{
-					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, _messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, _messages[i].Message);
 					if (Global.Config.DispMessageanchor < 2)
 					{
-						y += ((line - 1) * 18);
+						y += (line - 1) * 18;
 					}
 					else
 					{
-						y -= ((line - 1) * 18);
+						y -= (line - 1) * 18;
 					}
 
-					//g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
 			}
 			else
 			{
-				if (messages.Any())
+				if (_messages.Any())
 				{
-					int i = messages.Count - 1;
+					int i = _messages.Count - 1;
 
-					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, _messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, _messages[i].Message);
 					if (Global.Config.DispMessageanchor < 2)
 					{
-						y += ((line - 1) * 18);
+						y += (line - 1) * 18;
 					}
 					else
 					{
-						y -= ((line - 1) * 18);
+						y -= (line - 1) * 18;
 					}
 
-					//g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
 			}
 
-			foreach (var text in GUITextList)
+			foreach (var text in _guiTextList)
 			{
 				try
 				{
-					float posx = GetX(g, text.X, text.Anchor, text.Message);
-					float posy = GetY(g, text.Y, text.Anchor, text.Message);
+					float posX = GetX(g, text.X, text.Anchor, text.Message);
+					float posY = GetY(g, text.Y, text.Anchor, text.Message);
 
-					//g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
-					g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
+					g.DrawString(text.Message, MessageFont, text.ForeColor, posX, posY);
 				}
 				catch (Exception)
 				{
@@ -266,17 +253,6 @@ namespace BizHawk.Client.EmuHawk
 			return lg.GenerateInputDisplay();
 		}
 
-		public string InputStrSticky()
-		{
-			var stickyOr = new StickyOrAdapter
-			{
-				Source = Global.StickyXORAdapter,
-				SourceStickyOr = Global.AutofireStickyXORAdapter
-			};
-
-			return MakeStringFor(stickyOr);
-		}
-
 		private string MakeStringFor(IController controller)
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
@@ -302,17 +278,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeRerecordCount()
 		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				return Global.MovieSession.Movie.Rerecords.ToString();
-			}
-			
-			return "";
+			return Global.MovieSession.Movie.IsActive
+				? Global.MovieSession.Movie.Rerecords.ToString()
+				: "";
 		}
 
 		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
 		{
-			//g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
 			g.DrawString(message, MessageFont, color, x, y);
 		}
 
@@ -344,7 +316,6 @@ namespace BizHawk.Client.EmuHawk
 					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
 					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
 					Color c = Color.FromArgb(Global.Config.MovieInput);
-					//g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
 					g.DrawString(input, MessageFont, c, x, y);
 				}
 
@@ -360,25 +331,25 @@ namespace BizHawk.Client.EmuHawk
 					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, bgStr);
 					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, bgStr);
 
-					//now, we're going to render these repeatedly, with higher-priority things overriding
+					// now, we're going to render these repeatedly, with higher-priority things overriding
 
-					//first display previous frame's input.
-					//note: that's only available in case we're working on a movie
+					// first display previous frame's input.
+					// note: that's only available in case we're working on a movie
 					var previousStr = InputPrevious();
 					g.DrawString(previousStr, MessageFont, previousColor, x, y);
 
-					//next, draw the immediate input.
-					//that is, whatever's being held down interactively right this moment even if the game is paused
-					//this includes things held down due to autohold or autofire
-					//I know, this is all really confusing
+					// next, draw the immediate input.
+					// that is, whatever is being held down interactively right this moment even if the game is paused
+					// this includes things held down due to autohold or autofire
+					// I know, this is all really confusing
 					var immediate = InputStrImmediate();
 					g.DrawString(immediate, MessageFont, immediateColor, x, y);
 
-					//next draw anything that's pressed because it's sticky.
-					//this applies to autofire and autohold both. somehow. I dont understand it.
-					//basically we're tinting whatever's pressed because it's sticky specially
-					//in order to achieve this we want to avoid drawing anything pink that isnt actually held down right now
-					//so we make an AND adapter and combine it using immediate & sticky
+					// next draw anything that's pressed because it's sticky.
+					// this applies to autofire and autohold both. somehow. I don't understand it.
+					// basically we're tinting whatever is pressed because it's sticky specially
+					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
+					// so we make an AND adapter and combine it using immediate & sticky
 					var autoString = MakeStringFor(Global.StickyXORAdapter.Source.Xor(Global.AutofireStickyXORAdapter).And(Global.AutofireStickyXORAdapter));
 					g.DrawString(autoString, MessageFont, autoColor, x, y);
 
@@ -396,12 +367,12 @@ namespace BizHawk.Client.EmuHawk
 				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, x, y);
 			}
 
-			if (Global.Config.DisplayFPS && FPS != null)
+			if (Global.Config.DisplayFPS && Fps != null)
 			{
-				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, FPS);
-				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, FPS);
+				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, Fps);
+				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, Fps);
 
-				DrawOsdMessage(g, FPS, FixedMessagesColor, x, y);
+				DrawOsdMessage(g, Fps, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
@@ -415,31 +386,31 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayRerecordCount)
 			{
-				string rerec = MakeRerecordCount();
-				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, rerec);
-				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, rerec);
+				string rerecordCount = MakeRerecordCount();
+				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, rerecordCount);
+				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, rerecordCount);
 
-				DrawOsdMessage(g, rerec, FixedMessagesColor, x, y);
+				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, x, y);
 			}
 
 			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
 			{
-				var disp = new StringBuilder("Held: ");
+				var sb = new StringBuilder("Held: ");
 
 				foreach (string sticky in Global.StickyXORAdapter.CurrentStickies)
 				{
-					disp.Append(sticky).Append(' ');
+					sb.Append(sticky).Append(' ');
 				}
 
 				foreach (string autoSticky in Global.AutofireStickyXORAdapter.CurrentStickies)
 				{
-					disp
+					sb
 						.Append("Auto-")
 						.Append(autoSticky)
 						.Append(' ');
 				}
 
-				var message = disp.ToString();
+				var message = sb.ToString();
 
 				g.DrawString(
 					message,
@@ -460,5 +431,4 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 	}
-
 }

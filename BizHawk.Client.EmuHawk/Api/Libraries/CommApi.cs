@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -97,7 +99,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MmfRead(string mmf_filename, int expectedSize)
 		{
-			return GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize).ToString();
+			return GlobalWin.memoryMappedFiles.ReadFromFile(mmf_filename, expectedSize);
 		}
 
 

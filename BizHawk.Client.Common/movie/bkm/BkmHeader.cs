@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public class BkmHeader : Dictionary<string, string>
+	internal class BkmHeader : Dictionary<string, string>
 	{
 		public BkmHeader()
 		{
@@ -45,91 +45,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ulong Rerecords
-		{
-			get
-			{
-				if (!ContainsKey(HeaderKeys.RERECORDS))
-				{
-					this[HeaderKeys.RERECORDS] = "0";
-				}
-
-				return ulong.Parse(this[HeaderKeys.RERECORDS]);
-			}
-
-			set
-			{
-				this[HeaderKeys.RERECORDS] = value.ToString();
-			}
-		}
-
-		public bool StartsFromSavestate
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.STARTSFROMSAVESTATE))
-				{
-					return bool.Parse(this[HeaderKeys.STARTSFROMSAVESTATE]);
-				}
-				
-				return false;
-			}
-
-			set
-			{
-				if (value)
-				{
-					Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
-				}
-				else
-				{
-					Remove(HeaderKeys.STARTSFROMSAVESTATE);
-				}
-			}
-		}
-
-		public string GameName
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.GAMENAME))
-				{
-					return this[HeaderKeys.GAMENAME];
-				}
-				
-				return "";
-			}
-
-			set
-			{
-				this[HeaderKeys.GAMENAME] = value;
-			}
-		}
-
-		public string SystemId
-		{
-			get
-			{
-				if (ContainsKey(HeaderKeys.PLATFORM))
-				{
-					return this[HeaderKeys.PLATFORM];
-				}
-				
-				return "";
-			}
-
-			set
-			{
-				this[HeaderKeys.PLATFORM] = value;
-			}
-		}
-
 		public new string this[string key]
 		{
-			get
-			{
-				return ContainsKey(key) ? base[key] : "";
-			}
+			get => ContainsKey(key) ? base[key] : "";
 
 			set
 			{

@@ -330,22 +330,27 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())
+			if (Global.Emulator is Gameboy && ((Gameboy) Global.Emulator).IsCGBMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
-			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsSG1000)
+			if (Global.Emulator is Gameboy)
+			{
+				movie.HeaderEntries.Add("CycleCount", "0");
+			}
+
+			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsSG1000)
 			{
 				movie.HeaderEntries.Add("IsSGMode", "1");
-            }
+			}
 
-			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsGameGear)
+			if (Global.Emulator is SMS && ((SMS) Global.Emulator).IsGameGear)
 			{
 				movie.HeaderEntries.Add("IsGGMode", "1");
 			}
 
-			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsMegaCD)
+			if (Global.Emulator is GPGX && ((GPGX) Global.Emulator).IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}

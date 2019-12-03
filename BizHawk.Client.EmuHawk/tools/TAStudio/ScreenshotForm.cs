@@ -4,9 +4,9 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 
 // We pretend it's a tooltip kind of thing, so show only the actual contents
-// and avoid stealing forcus, while still being topmost
+// and avoid stealing focus, while still being topmost
 // http://stackoverflow.com/a/25219399/2792852
-// This is not an actual tooltip, because they can't reliably fade in and out with trasparency
+// This is not an actual tooltip, because they can't reliably fade in and out with transparency
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ScreenshotForm : Form
@@ -22,9 +22,9 @@ namespace BizHawk.Client.EmuHawk
 		private TasBranch _branch;
 		private int _drawingHeight;
 
-		new public Font Font;
-		new public int Padding;
-		new public string Text;
+		public new Font Font;
+		public new int Padding;
+		public new string Text;
 
 		public ScreenshotForm()
 		{

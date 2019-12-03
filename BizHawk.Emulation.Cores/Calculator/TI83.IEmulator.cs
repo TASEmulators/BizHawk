@@ -71,9 +71,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public string SystemId => "TI83";
 
-	    public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation => true;
 
-	    public void ResetCounters()
+		public void ResetCounters()
 		{
 			Frame = 0;
 			_lagCount = 0;

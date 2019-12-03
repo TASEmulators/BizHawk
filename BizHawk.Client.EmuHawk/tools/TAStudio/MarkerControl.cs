@@ -21,13 +21,13 @@ namespace BizHawk.Client.EmuHawk
 
 			MarkerView.AllColumns.AddRange(new[]
 			{
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = "FrameColumn",
 					Text = "Frame",
 					Width = 52
 				},
-				new InputRoll.RollColumn
+				new RollColumn
 				{
 					Name = "LabelColumn",
 					Text = "",
@@ -39,13 +39,9 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
-		private void MarkerControl_Load(object sender, EventArgs e)
-		{
-		}
-
 		public InputRoll MarkerInputRoll => MarkerView;
 
-		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void MarkerView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 
@@ -70,18 +66,10 @@ namespace BizHawk.Client.EmuHawk
 						color = column.Name == "LabelColumn" ? TAStudio.GreenZone_FrameCol : TAStudio.GreenZone_InputLog;
 					}
 				}
-				else
-				{
-					color = Color.White;
-				}
-			}
-			else
-			{
-				color = Color.White;
 			}
 		}
 
-		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void MarkerView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -165,10 +153,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MarkerView.AnyRowsSelected)
 			{
-				while (MarkerView.SelectedRows.Last() > Markers.Count() - 1)
+				while (MarkerView.SelectedRows.Last() > Markers.Count - 1)
 				{
-					MarkerView.SelectRow(Markers.Count(), false);
-					MarkerView.SelectRow(Markers.Count() - 1, true);
+					MarkerView.SelectRow(Markers.Count, false);
+					MarkerView.SelectRow(Markers.Count - 1, true);
 				}
 			}
 
@@ -204,11 +192,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Markers.Add(new TasMovieMarker(markerFrame, ""));
+				Markers.Add(new TasMovieMarker(markerFrame));
 				UpdateValues();
 			}
 
-			MarkerView.ScrollToIndex(Markers.Count() - 1);
+			MarkerView.ScrollToIndex(Markers.Count - 1);
 			Tastudio.RefreshDialog();
 		}
 
@@ -248,8 +236,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MarkerView.RowCount = Markers.Count;
 			}
-
-			MarkerView.Refresh();
 		}
 
 		public void Restart()
@@ -269,21 +255,11 @@ namespace BizHawk.Client.EmuHawk
 				MarkerInputRoll.AnyRowsSelected;
 		}
 
-		private List<TasMovieMarker> SelectedMarkers
-		{
-			get
-			{
-				return MarkerView
-					.SelectedRows
-					.Select(index => Markers[index])
-					.ToList();
-			}
-		}
-
-		private void MarkerView_ItemActivate(object sender, EventArgs e)
-		{
-			Tastudio.GoToMarker(SelectedMarkers.First());
-		}
+		private List<TasMovieMarker> SelectedMarkers => MarkerView
+			.SelectedRows
+			.Select(index => Markers[index])
+			.ToList();
+		
 
 		// SuuperW: Marker renaming can be done with a right-click.
 		// A much more useful feature would be to easily jump to it.

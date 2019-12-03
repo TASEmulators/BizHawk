@@ -14,6 +14,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -49,13 +50,16 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\References\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLua">
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96">
+      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -79,43 +83,34 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
-    <Compile Include="7z\ArchiveExtractCallback.cs" />
-    <Compile Include="7z\ArchiveOpenCallback.cs" />
-    <Compile Include="7z\ArchiveUpdateCallback.cs" />
-    <Compile Include="7z\COM.cs" />
-    <Compile Include="7z\Common.cs" />
-    <Compile Include="7z\EventArgs.cs" />
-    <Compile Include="7z\Exceptions.cs" />
-    <Compile Include="7z\FileSignatureChecker.cs" />
-    <Compile Include="7z\Formats.cs" />
-    <Compile Include="7z\LibraryFeature.cs" />
-    <Compile Include="7z\LibraryManager.cs" />
-    <Compile Include="7z\LzmaDecodeStream.cs" />
-    <Compile Include="7z\LzmaEncodeStream.cs" />
-    <Compile Include="7z\LzmaProgressCallback.cs" />
-    <Compile Include="7z\NativeMethods.cs" />
-    <Compile Include="7z\sdk\Common\CRC.cs" />
-    <Compile Include="7z\sdk\Common\InBuffer.cs" />
-    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7z\sdk\ICoder.cs" />
-    <Compile Include="7z\SevenZipCompressor.cs" />
-    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipExtractor.cs" />
-    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipSfx.cs" />
-    <Compile Include="7z\StreamWrappers.cs" />
+    <Compile Include="Api\APISubsetContainer.cs" />
+    <Compile Include="Api\Classes\EmuApi.cs" />
+    <Compile Include="Api\Classes\GameInfoApi.cs" />
+    <Compile Include="Api\Classes\JoypadApi.cs" />
+    <Compile Include="Api\Classes\MemApi.cs" />
+    <Compile Include="Api\Classes\MemApiBase.cs" />
+    <Compile Include="Api\Classes\MemEventsApi.cs" />
+    <Compile Include="Api\Classes\MemorySaveStateApi.cs" />
+    <Compile Include="Api\Classes\MovieApi.cs" />
+    <Compile Include="Api\Classes\SqlApi.cs" />
+    <Compile Include="Api\Classes\UserDataApi.cs" />
     <Compile Include="Api\CoreSystem.cs" />
+    <Compile Include="Api\Interfaces\IApiContainer.cs" />
+    <Compile Include="Api\Interfaces\IComm.cs" />
+    <Compile Include="Api\Interfaces\IEmu.cs" />
+    <Compile Include="Api\Interfaces\IExternalApi.cs" />
+    <Compile Include="Api\Interfaces\IGameInfo.cs" />
+    <Compile Include="Api\Interfaces\IGui.cs" />
+    <Compile Include="Api\Interfaces\IInput.cs" />
+    <Compile Include="Api\Interfaces\IInputMovie.cs" />
+    <Compile Include="Api\Interfaces\IJoypad.cs" />
+    <Compile Include="Api\Interfaces\IMem.cs" />
+    <Compile Include="Api\Interfaces\IMemEvents.cs" />
+    <Compile Include="Api\Interfaces\IMemorySavestate.cs" />
+    <Compile Include="Api\Interfaces\ISaveState.cs" />
+    <Compile Include="Api\Interfaces\ISql.cs" />
+    <Compile Include="Api\Interfaces\ITool.cs" />
+    <Compile Include="Api\Interfaces\IUserData.cs" />
     <Compile Include="Api\JoypadButton.cs" />
     <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BitmapBufferVideoProvider.cs" />
@@ -149,6 +144,7 @@
     <Compile Include="IPS.cs" />
     <Compile Include="IZipWriter.cs" />
     <Compile Include="KeyTurbo.cs" />
+    <Compile Include="lua\DelegatingLuaLibrary.cs" />
     <Compile Include="lua\EmuLuaLibrary.Bit.cs" />
     <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
     <Compile Include="lua\EmuLuaLibrary.Events.cs" />
@@ -187,7 +183,17 @@
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
-    <Compile Include="movie\import\PXMImport.cs" />
+    <Compile Include="movie\import\BkmImport.cs" />
+    <Compile Include="movie\import\FcmImport.cs" />
+    <Compile Include="movie\import\FmvImport.cs" />
+    <Compile Include="movie\import\GmvImport.cs" />
+    <Compile Include="movie\import\LsmvImport.cs" />
+    <Compile Include="movie\import\Mc2Import.cs" />
+    <Compile Include="movie\import\MmvImport.cs" />
+    <Compile Include="movie\import\PxmImport.cs" />
+    <Compile Include="movie\import\SmvImport.cs" />
+    <Compile Include="movie\import\VbmImport.cs" />
+    <Compile Include="movie\import\YmvImport.cs" />
     <Compile Include="movie\tasproj\IStateManager.cs" />
     <Compile Include="movie\tasproj\StateManagerDecay.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
@@ -203,27 +209,14 @@
     </Compile>
     <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
     <Compile Include="movie\bkm\BkmHeader.cs" />
-    <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
     <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
     <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.IO.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
-      <DependentUpon>BkmMovie.cs</DependentUpon>
-    </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\import\Fm2Import.cs" />
     <Compile Include="movie\import\IMovieImport.cs" />
     <Compile Include="movie\import\MovieImport.cs" />
-    <Compile Include="movie\import\PJMImport.cs" />
+    <Compile Include="movie\import\PjmImport.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
@@ -260,9 +253,7 @@
     <Compile Include="RomLoader.cs" />
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
-    <Compile Include="SevenZipSharpArchiveHandler.cs" />
-    <Compile Include="SevenZipWriter.cs" />
-    <Compile Include="SharpZipWriter.cs" />
+    <Compile Include="SharpCompressArchiveHandler.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
@@ -322,6 +313,9 @@
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

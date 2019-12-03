@@ -80,14 +80,8 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
 		public float AnalogX
 		{
-			get
-			{
-				return (float)Math.Round(_AnalogX, 0);
-			}
-			set
-			{
-				_AnalogX = value;
-			}
+			get => (float)Math.Round(_AnalogX, 0);
+			set => _AnalogX = value;
 		}
 
 		/// <summary>
@@ -96,14 +90,8 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
 		public float AnalogY
 		{
-			get
-			{
-				return (float)Math.Round(_AnalogY, 0);
-			}
-			set
-			{
-				_AnalogY = value;
-			}
+			get => (float)Math.Round(_AnalogY, 0);
+			set => _AnalogY = value;
 		}
 
 		/// <summary>
@@ -113,10 +101,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>It overrides all existing inputs</remarks>
 		public JoypadButton Inputs
 		{
-			get
-			{
-				return _PressedButtons;
-			}
+			get => _PressedButtons;
 			set
 			{
 				value &= _System.AvailableButtons;
@@ -127,13 +112,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <summary>
 		/// Gets <see cref="SystemInfo"/> for current <see cref="Joypad"/>
 		/// </summary>
-		public SystemInfo System
-		{
-			get
-			{
-				return _System;
-			}
-		}
+		public SystemInfo System => _System;
 
 		#endregion
 	}

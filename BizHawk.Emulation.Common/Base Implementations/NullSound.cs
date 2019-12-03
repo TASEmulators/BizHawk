@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common
 			: this()
 		{
 			_spfNumerator = spf;
-			_spfDenominator = 1;	
+			_spfDenominator = 1;
 		}
 
 		/// <summary>

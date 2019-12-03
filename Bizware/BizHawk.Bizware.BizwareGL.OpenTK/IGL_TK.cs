@@ -303,7 +303,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			{
 				int size, length;
 				ActiveUniformType type;
-				string name = new System.Text.StringBuilder(1024).ToString().ToString();
+				string name = new System.Text.StringBuilder(1024).ToString();
 				GL.GetActiveUniform(pid, i, 1024, out length, out size, out type, out name);
 				errcode = GL.GetError();
 				int loc = GL.GetUniformLocation(pid, name);

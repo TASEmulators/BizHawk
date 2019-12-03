@@ -29,14 +29,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// everything to swap in for context switches
 		/// </summary>
-		private List<MemoryBlock> _memoryBlocks = new List<MemoryBlock>();
+		private List<MemoryBlockBase> _memoryBlocks = new List<MemoryBlockBase>();
 
 		/// <summary>
 		/// an informative name for each memory block:  used for debugging purposes
 		/// </summary>
 		private List<string> _memoryBlockNames = new List<string>();
 
-		protected void AddMemoryBlock(MemoryBlock block, string name)
+		protected void AddMemoryBlock(MemoryBlockBase block, string name)
 		{
 			_memoryBlocks.Add(block);
 			_memoryBlockNames.Add(name);

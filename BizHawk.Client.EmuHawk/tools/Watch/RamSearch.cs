@@ -166,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 			ErrorIconButton.Visible = _searches.OutOfRangeAddress.Any();
 		}
 
-		private void ListView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
+		private void ListView_QueryItemBkColor(int index, RollColumn column, ref Color color)
 		{
 			if (_searches.Count > 0)
 			{
@@ -195,7 +195,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ListView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
+		private void ListView_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 
@@ -565,15 +565,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedRows;
 
-		private IEnumerable<Watch> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _searches[index]); }
-		}
+		private IEnumerable<Watch> SelectedItems => SelectedIndices.Select(index => _searches[index]);
 
-		private IEnumerable<Watch> SelectedWatches
-		{
-			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
+		private IEnumerable<Watch> SelectedWatches => SelectedItems.Where(x => !x.IsSeparator);
 
 		private void SetRemovedMessage(int val)
 		{
@@ -771,8 +765,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SetReboot(bool rebootNeeded)
 		{
 			RebootToolBarSeparator.Visible =
-					RebootToolbarButton.Visible =
-					rebootNeeded;
+				RebootToolbarButton.Visible =
+				rebootNeeded;
 		}
 
 		private void SetToDetailedMode()
@@ -838,8 +832,8 @@ namespace BizHawk.Client.EmuHawk
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
 
-				UpdateList();
 				WatchListView.DeselectAll();
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 			}
 		}
@@ -974,13 +968,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RamSearchSettings()
 			{
-				Columns = new List<InputRoll.RollColumn>
+				Columns = new List<RollColumn>
 				{
-					new InputRoll.RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = true, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = InputRoll.RollColumn.InputType.Text },
-					new InputRoll.RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = InputRoll.RollColumn.InputType.Text },
+					new RollColumn { Text = "Address", Name = WatchList.ADDRESS, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Value", Name = WatchList.VALUE, Visible = true, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Prev", Name = WatchList.PREV, Visible = true, Width = 59, Type = ColumnType.Text },
+					new RollColumn { Text = "Changes", Name = WatchList.CHANGES, Visible = true, Width = 60, Type = ColumnType.Text },
+					new RollColumn { Text = "Diff", Name = WatchList.DIFF, Visible = false, Width = 59, Type = ColumnType.Text },
 				};
 
 				PreviewMode = true;
@@ -988,7 +982,7 @@ namespace BizHawk.Client.EmuHawk
 				AutoSearchTakeLagFramesIntoAccount = true;
 			}
 
-			public List<InputRoll.RollColumn> Columns { get; set; }
+			public List<RollColumn> Columns { get; set; }
 			public bool PreviewMode { get; set; }
 			public bool AlwaysExcludeRamWatch { get; set; }
 			public bool AutoSearchTakeLagFramesIntoAccount { get; set; }

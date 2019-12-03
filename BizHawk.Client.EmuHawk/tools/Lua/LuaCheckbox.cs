@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DoLuaClick(object sender, EventArgs e)
 		{
 			var parent = Parent as LuaWinform;
-		    parent?.DoLuaEvent(Handle);
+			parent?.DoLuaEvent(Handle);
 		}
 
 		protected override void OnClick(EventArgs e)

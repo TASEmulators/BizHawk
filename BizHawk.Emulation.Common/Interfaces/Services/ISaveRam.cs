@@ -22,9 +22,9 @@
 		/// <summary>
 		/// Gets a value indicating whether or not SaveRAM has been modified since the last save
 		/// TODO: This is not the best interface. What defines a "save"? I suppose a Clone(), right? at least specify that here.
-		/// Clone() should probably take an optionthat says whether to clear the dirty flag.
+		/// Clone() should probably take an option that says whether to clear the dirty flag.
 		/// And anyway, cores might not know if they can even track a functional dirty flag -- we should convey that fact somehow
-		/// (reminder: do that with flags, so we dont have to change the interface 10000 times)
+		/// (reminder: do that with flags, so we don't have to change the interface 10000 times)
 		/// Dirty SaveRAM can in principle be determined by the frontend in that case, but it could possibly be too slow for the file menu dropdown or other things
 		/// </summary>
 		bool SaveRamModified { get; }

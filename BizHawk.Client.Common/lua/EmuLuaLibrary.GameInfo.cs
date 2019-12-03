@@ -3,6 +3,8 @@ using NLua;
 
 using BizHawk.Emulation.Common;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : LuaLibraryBase
@@ -22,24 +24,14 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getromname", "returns the name of the currently loaded rom, if a rom is loaded")]
 		public string GetRomName()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Name ?? "";
-			}
-
-			return "";
+			return Global.Game?.Name ?? "";
 		}
 
 		[LuaMethodExample("local stgamget = gameinfo.getromhash( );")]
 		[LuaMethod("getromhash", "returns the hash of the currently loaded rom, if a rom is loaded")]
 		public string GetRomHash()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Hash ?? "";
-			}
-
-			return "";
+			return Global.Game?.Hash ?? "";
 		}
 
 		[LuaMethodExample("if ( gameinfo.indatabase( ) ) then\r\n\tconsole.log( \"returns whether or not the currently loaded rom is in the game database\" );\r\nend;")]
@@ -58,24 +50,14 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getstatus", "returns the game database status of the currently loaded rom. Statuses are for example: GoodDump, BadDump, Hack, Unknown, NotInDatabase")]
 		public string GetStatus()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.Status.ToString();
-			}
-
-			return "";
+			return Global.Game?.Status.ToString();
 		}
 
 		[LuaMethodExample("if ( gameinfo.isstatusbad( ) ) then\r\n\tconsole.log( \"returns the currently loaded rom's game database status is considered 'bad'\" );\r\nend;")]
 		[LuaMethod("isstatusbad", "returns the currently loaded rom's game database status is considered 'bad'")]
 		public bool IsStatusBad()
 		{
-			if (Global.Game != null)
-			{
-				return Global.Game.IsRomStatusBad();
-			}
-
-			return true;
+			return Global.Game?.IsRomStatusBad() ?? true;
 		}
 
 		[LuaMethodExample("local stgamget = gameinfo.getboardtype( );")]

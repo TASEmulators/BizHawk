@@ -12,21 +12,20 @@ namespace BizHawk.Client.EmuHawk
 	{
 		bool Nullable { get; }
 		int? ToRawInt();
-		void SetFromRawInt(int? rawint);
+		void SetFromRawInt(int? rawInt);
 	}
 
 	public class HexTextBox : TextBox, INumberBox
 	{
 		private string _addressFormatStr = "";
 		private long? _maxSize;
-		private bool _nullable = true;
 
 		public HexTextBox()
 		{
 			CharacterCasing = CharacterCasing.Upper;
 		}
 
-		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
+		public bool Nullable { get; set; } = true;
 
 		public void SetHexProperties(long domainSize)
 		{
@@ -38,10 +37,10 @@ namespace BizHawk.Client.EmuHawk
 			MaxLength = _maxSize.Value.NumHexDigits();
 			_addressFormatStr = $"{{0:X{MaxLength}}}";
 
-			//try to preserve the old value, as best we can
+			// try to preserve the old value, as best we can
 			if(!wasMaxSizeSet)
 				ResetText();
-			else if(_nullable)
+			else if (Nullable)
 				Text = "";
 			else if (MaxLength != currMaxLength)
 			{
@@ -65,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void ResetText()
 		{
-			Text = _nullable ? "" : string.Format(_addressFormatStr, 0);
+			Text = Nullable ? "" : string.Format(_addressFormatStr, 0);
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -179,14 +178,12 @@ namespace BizHawk.Client.EmuHawk
 
 	public class UnsignedIntegerBox : TextBox, INumberBox
 	{
-		private bool _nullable = true;
-
 		public UnsignedIntegerBox()
 		{
 			CharacterCasing = CharacterCasing.Upper;
 		}
 
-		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
+		public bool Nullable { get; set; } = true;
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
@@ -203,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void ResetText()
 		{
-			Text = _nullable ? "" : "0";
+			Text = Nullable ? "" : "0";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

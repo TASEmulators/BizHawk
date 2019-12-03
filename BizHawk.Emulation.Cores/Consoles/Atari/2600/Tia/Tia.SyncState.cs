@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// add everything to the state 
 			ser.Sync("Bus_State", ref BusState);
 
+			ser.Sync("_ctrlPFDelay", ref _ctrlPFDelay);
+			ser.Sync("_ctrlPFVal", ref _ctrlPFVal);
 			ser.Sync("PF0_up", ref _pf0Update);
 			ser.Sync("PF1_up", ref _pf1Update);
 			ser.Sync("PF2_up", ref _pf2Update);

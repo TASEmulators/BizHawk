@@ -16,56 +16,31 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool TurboSeek
 		{
-			get
-			{
-				return Global.Config.TurboSeek;
-			}
-
-			set
-			{
-				TurboSeekCheckbox.Checked = value;
-			}
+			get => Global.Config.TurboSeek;
+			set => TurboSeekCheckbox.Checked = value;
 		}
 
 		[Browsable(true)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AutoRestore
 		{
-			get
-			{
-				return Tastudio.Settings.AutoRestoreLastPosition;
-			}
-
-			set
-			{
-				AutoRestoreCheckbox.Checked = value;
-			}
+			get => Tastudio.Settings.AutoRestoreLastPosition;
+			set => AutoRestoreCheckbox.Checked = value;
 		}
 
 		[Browsable(true)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool FollowCursor
 		{
-			get
-			{
-				return Tastudio.Settings.FollowCursor;
-			}
-
-			set
-			{
-				FollowCursorCheckbox.Checked = value;
-			}
+			get => Tastudio.Settings.FollowCursor;
+			set => FollowCursorCheckbox.Checked = value;
 		}
 
 		[Browsable(true)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RecordingMode
 		{
-			get
-			{
-				return Global.MovieSession.Movie.IsRecording;
-			}
-
+			get => Global.MovieSession.Movie.IsRecording;
 			set
 			{
 				RecordingModeCheckbox.Checked = value;

@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Common
 
 	public class RegisterValue
 	{
-		public ulong Value { get; private set; }
-		public byte BitSize { get; private set; }
+		public ulong Value { get; }
+		public byte BitSize { get; }
 
 		public RegisterValue(ulong val, byte bitSize)
 		{

@@ -6,6 +6,8 @@ using NLua;
 
 using BizHawk.Emulation.Common;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
 {
 	public sealed class MemorySavestateEmuLuaLibrary : LuaLibraryBase
@@ -45,11 +47,9 @@ namespace BizHawk.Client.Common
 			{
 				var state = _memorySavestates[guid];
 
-				using (var ms = new MemoryStream(state))
-				using (var br = new BinaryReader(ms))
-				{
-					StatableCore.LoadStateBinary(br);
-				}
+				using var ms = new MemoryStream(state);
+				using var br = new BinaryReader(ms);
+				StatableCore.LoadStateBinary(br);
 			}
 			catch
 			{

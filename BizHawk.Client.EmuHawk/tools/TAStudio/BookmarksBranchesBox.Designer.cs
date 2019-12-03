@@ -146,15 +146,17 @@
 			// 
 			// BranchView
 			// 
+			this.BranchView.CellWidthPadding = 3;
+			this.BranchView.GridLines = true;
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
-			this.BranchView.AllowRightClickSelecton = true;
 			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BranchView.CellHeightPadding = 0;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
+			this.BranchView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
@@ -168,7 +170,6 @@
 			this.BranchView.ScrollSpeed = 13;
 			this.BranchView.SeekingCutoffInterval = 0;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
-			this.BranchView.SuspendHotkeys = false;
 			this.BranchView.TabIndex = 0;
 			this.BranchView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.BranchView_PointedCellChanged);
 			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);

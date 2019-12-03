@@ -3,37 +3,39 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
+using Newtonsoft.Json.Linq;
+
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class UpdateChecker
 	{
-		private static readonly string _latestVersionInfoURL = "http://tasvideos.org/SystemBizHawkReleaseManager.html";
+		private static readonly string _latestVersionInfoURL = "https://api.github.com/repos/TASVideos/BizHawk/releases/latest";
 		private static readonly TimeSpan _minimumCheckDuration = TimeSpan.FromHours(8);
 
 		private static bool AutoCheckEnabled
 		{
-			get { return Global.Config.Update_AutoCheckEnabled; }
-			set { Global.Config.Update_AutoCheckEnabled = value; }
+			get => Global.Config.Update_AutoCheckEnabled;
+			set => Global.Config.Update_AutoCheckEnabled = value;
 		}
 
 		private static DateTime? LastCheckTimeUTC
 		{
-			get { return Global.Config.Update_LastCheckTimeUTC; }
-			set { Global.Config.Update_LastCheckTimeUTC = value; }
+			get => Global.Config.Update_LastCheckTimeUTC;
+			set => Global.Config.Update_LastCheckTimeUTC = value;
 		}
 
 		private static string LatestVersion
 		{
-			get { return Global.Config.Update_LatestVersion; }
-			set { Global.Config.Update_LatestVersion = value; }
+			get => Global.Config.Update_LatestVersion;
+			set => Global.Config.Update_LatestVersion = value;
 		}
 
 		private static string IgnoreVersion
 		{
-			get { return Global.Config.Update_IgnoreVersion; }
-			set { Global.Config.Update_IgnoreVersion = value; }
+			get => Global.Config.Update_IgnoreVersion;
+			set => Global.Config.Update_IgnoreVersion = value;
 		}
 
 		public static void BeginCheck(bool skipCheck = false)
@@ -74,9 +76,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				string latestVersionInfo = WebUtility.HtmlDecode(DownloadURLAsString(_latestVersionInfoURL));
+				JObject response = JObject.Parse(DownloadURLAsString(_latestVersionInfoURL));
 
-				LatestVersion = GetVersionNumberFromVersionInfo(latestVersionInfo);
+				LatestVersion = ValidateVersionNumberString((string)response["name"]);
 			}
 			catch
 			{
@@ -90,31 +92,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DownloadURLAsString(string url)
 		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+			var request = (HttpWebRequest)WebRequest.Create(url);
+			request.UserAgent = "BizHawk";
 			request.KeepAlive = false;
-			using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-			using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-			{
-				return responseStream.ReadToEnd();
-			}
+			using var response = (HttpWebResponse)request.GetResponse();
+			using var responseStream = new StreamReader(response.GetResponseStream());
+			return responseStream.ReadToEnd();
 		}
 
-		private static string GetVersionNumberFromVersionInfo(string info)
+		private static string ValidateVersionNumberString(string versionNumber)
 		{
-			string versionNumber = GetTextFromTag(info, "VersionNumber");
-			return (versionNumber != null && ParseVersion(versionNumber) != 0) ? versionNumber : "";
-		}
-
-		private static string GetTextFromTag(string info, string tagName)
-		{
-			string openTag = $"[{tagName}]";
-			string closeTag = $"[/{tagName}]";
-			int start = info.IndexOf(openTag, StringComparison.OrdinalIgnoreCase);
-			if (start == -1) return null;
-			start += openTag.Length;
-			int end = info.IndexOf(closeTag, start, StringComparison.OrdinalIgnoreCase);
-			if (end == -1) return null;
-			return info.Substring(start, end - start).Trim();
+			return versionNumber != null && ParseVersion(versionNumber) != 0 ? versionNumber : "";
 		}
 
 		// Major version goes in the first 16 bits, and so on, up to 4 parts

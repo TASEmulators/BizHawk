@@ -147,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("cleartext", "clears all text created by gui.text()")]
 		public static void ClearText()
 		{
-			GlobalWin.OSD.ClearGUIText();
+			GlobalWin.OSD.ClearGuiText();
 		}
 
 		[LuaMethodExample("gui.defaultForeground( 0x000000FF );")]
@@ -702,7 +702,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
+			GlobalWin.OSD.AddGuiText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
 		[LuaMethodExample("local nlguicre = gui.createcanvas( 77, 99, 2, 48 );")]

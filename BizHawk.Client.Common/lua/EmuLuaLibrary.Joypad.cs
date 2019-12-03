@@ -1,6 +1,7 @@
 ﻿using System;
 using NLua;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	public sealed class JoypadLuaLibrary : LuaLibraryBase
@@ -18,28 +19,28 @@ namespace BizHawk.Client.Common
 		public LuaTable Get(int? controller = null)
 		{
 			var buttons = Lua.NewTable();
-			var adaptor = Global.AutofireStickyXORAdapter;
-			foreach (var button in adaptor.Source.Definition.BoolButtons)
+			var adapter = Global.AutofireStickyXORAdapter;
+			foreach (var button in adapter.Source.Definition.BoolButtons)
 			{
 				if (!controller.HasValue)
 				{
-					buttons[button] = adaptor.IsPressed(button);
+					buttons[button] = adapter.IsPressed(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.IsPressed($"P{controller} {button.Substring(3)}");
+					buttons[button.Substring(3)] = adapter.IsPressed($"P{controller} {button.Substring(3)}");
 				}
 			}
 
-			foreach (var button in adaptor.Source.Definition.FloatControls)
+			foreach (var button in adapter.Source.Definition.FloatControls)
 			{
 				if (controller == null)
 				{
-					buttons[button] = adaptor.GetFloat(button);
+					buttons[button] = adapter.GetFloat(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == $"P{controller}")
 				{
-					buttons[button.Substring(3)] = adaptor.GetFloat($"P{controller} {button.Substring(3)}");
+					buttons[button.Substring(3)] = adapter.GetFloat($"P{controller} {button.Substring(3)}");
 				}
 			}
 
@@ -167,21 +168,13 @@ namespace BizHawk.Client.Common
 
 					if (!string.IsNullOrWhiteSpace(theValueStr))
 					{
-						float f;
-						if (float.TryParse(theValueStr, out f))
+						if (float.TryParse(theValueStr, out var f))
 						{
 							theValue = f;
 						}
 					}
 
-					if (controller == null)
-					{
-						Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
-					}
-					else
-					{
-						Global.StickyXORAdapter.SetFloat($"P{controller} {name}", theValue);
-					}
+					Global.StickyXORAdapter.SetFloat(controller == null ? name.ToString() : $"P{controller} {name}", theValue);
 				}
 			}
 			catch

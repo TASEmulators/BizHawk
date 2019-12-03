@@ -267,6 +267,7 @@
 			// 
 			// lvCDL
 			// 
+			this.lvCDL.CellWidthPadding = 3;
 			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lvCDL.FullRowSelect = true;
 			this.lvCDL.GridLines = true;
@@ -275,7 +276,6 @@
 			this.lvCDL.Name = "lvCDL";
 			this.lvCDL.Size = new System.Drawing.Size(992, 323);
 			this.lvCDL.TabIndex = 9;
-			this.lvCDL.UseCustomBackground = true;
 			this.lvCDL.AllowColumnReorder = false;
 			this.lvCDL.AllowColumnResize = true;
 			this.lvCDL.QueryItemText += new InputRoll.QueryItemTextHandler(this.lvCDL_QueryItemText);

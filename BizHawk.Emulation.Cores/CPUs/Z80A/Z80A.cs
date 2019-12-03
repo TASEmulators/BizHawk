@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RST = 65;
 		public const ushort REP_OP_I = 66;
 		public const ushort REP_OP_O = 67;
-        public const ushort IN_A_N_INC = 68;
+		public const ushort IN_A_N_INC = 68;
 		public const ushort RD_INC_TR_PC = 69; // transfer WZ to PC after read
 		public const ushort WR_TR_PC = 70; // transfer WZ to PC after write
 		public const ushort OUT_INC = 71;
@@ -436,8 +436,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					IN_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN_A_N_INC:
-                    IN_A_N_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-                    break;
+					IN_A_N_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
 					break;

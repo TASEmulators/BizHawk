@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// </summary>
 	internal sealed class MapHeap : IBinaryStateable, IDisposable
 	{
-		public MemoryBlock Memory { get; private set; }
+		public MemoryBlockBase Memory { get; private set; }
 		/// <summary>
 		/// name, used in identifying errors
 		/// </summary>
@@ -42,18 +42,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return ((ulong)page << WaterboxUtils.PageShift) + Memory.Start;
 		}
 
-		private const MemoryBlock.Protection FREE = (MemoryBlock.Protection)255;
+		private const MemoryBlockBase.Protection FREE = (MemoryBlockBase.Protection)255;
 
-		private readonly MemoryBlock.Protection[] _pages;
+		private readonly MemoryBlockBase.Protection[] _pages;
 		private readonly byte[] _pagesAsBytes;
 
 		public MapHeap(ulong start, ulong size, string name)
 		{
 			size = WaterboxUtils.AlignUp(size);
-			Memory = new MemoryBlock(start, size);
+			Memory = MemoryBlockBase.CallPlatformCtor(start, size);
 			Name = name;
 			_pagesAsBytes = new byte[size >> WaterboxUtils.PageShift];
-			_pages = (MemoryBlock.Protection[])(object)_pagesAsBytes;
+			_pages = (MemoryBlockBase.Protection[])(object)_pagesAsBytes;
 			for (var i = 0; i < _pages.Length; i++)
 				_pages[i] = FREE;
 			Console.WriteLine($"Created {nameof(MapHeap)} `{name}` at {start:x16}:{start + size:x16}");
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return -1;
 		}
 
-		private void ProtectInternal(int startPage, int numPages, MemoryBlock.Protection prot, bool wasUsed)
+		private void ProtectInternal(int startPage, int numPages, MemoryBlockBase.Protection prot, bool wasUsed)
 		{
 			for (var i = startPage; i < startPage + numPages; i++)
 				_pages[i] = prot;
@@ -113,9 +113,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			ulong length = ((ulong)numPages) << WaterboxUtils.PageShift;
 			if (prot == FREE)
 			{
-				Memory.Protect(start, length, MemoryBlock.Protection.RW);
+				Memory.Protect(start, length, MemoryBlockBase.Protection.RW);
 				WaterboxUtils.ZeroMemory(Z.US(start), (long)length);
-				Memory.Protect(start, length, MemoryBlock.Protection.None);
+				Memory.Protect(start, length, MemoryBlockBase.Protection.None);
 				Used -= length;
 				Console.WriteLine($"Freed {length} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			}
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var p = _pages[i];
 					ulong zstart = GetStartAddr(ps);
 					ulong zlength = (ulong)(i - ps + 1) << WaterboxUtils.PageShift;
-					Memory.Protect(zstart, zlength, p == FREE ? MemoryBlock.Protection.None : p);
+					Memory.Protect(zstart, zlength, p == FREE ? MemoryBlockBase.Protection.None : p);
 					ps = i + 1;
 				}
 			}
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return true;
 		}
 
-		public ulong Map(ulong size, MemoryBlock.Protection prot)
+		public ulong Map(ulong size, MemoryBlockBase.Protection prot)
 		{
 			if (size == 0)
 				return 0;
@@ -218,14 +218,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var copyPageLen = Math.Min(oldNumPages, newNumPages);
 
 			var data = new byte[copyDataLen];
-			Memory.Protect(start, copyDataLen, MemoryBlock.Protection.RW);
+			Memory.Protect(start, copyDataLen, MemoryBlockBase.Protection.RW);
 			Marshal.Copy(Z.US(start), data, 0, (int)copyDataLen);
 
-			var pages = new MemoryBlock.Protection[copyPageLen];
+			var pages = new MemoryBlockBase.Protection[copyPageLen];
 			Array.Copy(_pages, oldStartPage, pages, 0, copyPageLen);
 
 			ProtectInternal(oldStartPage, oldNumPages, FREE, true);
-			ProtectInternal(newStartPage, newNumPages, MemoryBlock.Protection.RW, false);
+			ProtectInternal(newStartPage, newNumPages, MemoryBlockBase.Protection.RW, false);
 
 			var ret = GetStartAddr(newStartPage);
 			Marshal.Copy(data, 0, Z.US(ret), (int)copyDataLen);
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return Protect(start, size, FREE);
 		}
 
-		public bool Protect(ulong start, ulong size, MemoryBlock.Protection prot)
+		public bool Protect(ulong start, ulong size, MemoryBlockBase.Protection prot)
 		{
 			if (start < Memory.Start || start + size > Memory.End || size == 0)
 				return false;
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Memory.XorHash);
 			bw.Write(_pagesAsBytes);
 
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.R);
 			var srcs = Memory.GetXorStream(Memory.Start, Memory.Size, false);
 			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException("Unexpected error reading!");
 
 			Used = 0;
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.RW);
 			var dsts = Memory.GetXorStream(Memory.Start, Memory.Size, true);
 			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
 				siz = siz / 4096 * 4096;
-				var ptr = mmo.Map(siz, MemoryBlock.Protection.RW);
+				var ptr = mmo.Map(siz, MemoryBlockBase.Protection.RW);
 				allocs.Add(ptr, siz);
 			}
 
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
 				siz = siz / 4096 * 4096;
-				var ptr = mmo.Map(siz, MemoryBlock.Protection.RW);
+				var ptr = mmo.Map(siz, MemoryBlockBase.Protection.RW);
 				allocs.Add(ptr, siz);
 			}
 

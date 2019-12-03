@@ -64,79 +64,79 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 		}
 		
-        public static byte[] Write(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities)
-        {
-            const byte version = 0;
-            const byte trackCount = 84;
-            const int headerLength = 0xC;
-            const byte dataFillerValue = 0xFF;
+		public static byte[] Write(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities)
+		{
+			const byte version = 0;
+			const byte trackCount = 84;
+			const int headerLength = 0xC;
+			const byte dataFillerValue = 0xFF;
 
-            var trackMaxLength = (ushort)Math.Max(7928, trackData.Max(d => d.Length));
+			var trackMaxLength = (ushort)Math.Max(7928, trackData.Max(d => d.Length));
 
-            using (var mem = new MemoryStream())
-            {
-                var writer = new BinaryWriter(mem);
+			using (var mem = new MemoryStream())
+			{
+				var writer = new BinaryWriter(mem);
 
-                // header ID
-                writer.Write("GCR-1541".ToCharArray());
+				// header ID
+				writer.Write("GCR-1541".ToCharArray());
 
-                // version #
-                writer.Write(version);
+				// version #
+				writer.Write(version);
 
-                // tracks in the image
-                writer.Write(trackCount);
+				// tracks in the image
+				writer.Write(trackCount);
 
-                // maximum track size in bytes
-                writer.Write(trackMaxLength);
+				// maximum track size in bytes
+				writer.Write(trackMaxLength);
 
-                // combine track data
-                var offsets = new List<int>();
-                var densities = new List<int>();
-                using (var trackMem = new MemoryStream())
-                {
-                    var trackMemWriter = new BinaryWriter(trackMem);
-                    for (var i = 0; i < trackCount; i++)
-                    {
-                        if (trackNumbers.Contains(i))
-                        {
-                            var trackIndex = trackNumbers.IndexOf(i);
-                            offsets.Add((int)trackMem.Length);
-                            densities.Add(trackDensities[trackIndex]);
+				// combine track data
+				var offsets = new List<int>();
+				var densities = new List<int>();
+				using (var trackMem = new MemoryStream())
+				{
+					var trackMemWriter = new BinaryWriter(trackMem);
+					for (var i = 0; i < trackCount; i++)
+					{
+						if (trackNumbers.Contains(i))
+						{
+							var trackIndex = trackNumbers.IndexOf(i);
+							offsets.Add((int)trackMem.Length);
+							densities.Add(trackDensities[trackIndex]);
 
-                            var data = trackData[trackIndex];
-                            var buffer = Enumerable.Repeat(dataFillerValue, trackMaxLength).ToArray();
-                            var dataBytes = data.Select(d => unchecked((byte)d)).ToArray();
-                            Array.Copy(dataBytes, buffer, dataBytes.Length);
-                            trackMemWriter.Write((ushort)dataBytes.Length);
-                            trackMemWriter.Write(buffer);
-                        }
-                        else
-                        {
-                            offsets.Add(-1);
-                            densities.Add(0);
-                        }
-                    }
-                    trackMemWriter.Flush();
+							var data = trackData[trackIndex];
+							var buffer = Enumerable.Repeat(dataFillerValue, trackMaxLength).ToArray();
+							var dataBytes = data.Select(d => unchecked((byte)d)).ToArray();
+							Array.Copy(dataBytes, buffer, dataBytes.Length);
+							trackMemWriter.Write((ushort)dataBytes.Length);
+							trackMemWriter.Write(buffer);
+						}
+						else
+						{
+							offsets.Add(-1);
+							densities.Add(0);
+						}
+					}
+					trackMemWriter.Flush();
 
-                    // offset table
-                    foreach (var offset in offsets.Select(o => o >= 0 ? o + headerLength + trackCount * 8 : 0))
-                    {
-                        writer.Write(offset);
-                    }
+					// offset table
+					foreach (var offset in offsets.Select(o => o >= 0 ? o + headerLength + trackCount * 8 : 0))
+					{
+						writer.Write(offset);
+					}
 
-                    // speed zone data
-                    foreach (var density in densities)
-                    {
-                        writer.Write(density);
-                    }
+					// speed zone data
+					foreach (var density in densities)
+					{
+						writer.Write(density);
+					}
 
-                    // track data
-                    writer.Write(trackMem.ToArray());
-                }
+					// track data
+					writer.Write(trackMem.ToArray());
+				}
 
-                writer.Flush();
-                return mem.ToArray();
-            }
-        }
+				writer.Flush();
+				return mem.ToArray();
+			}
+		}
 	}
 }

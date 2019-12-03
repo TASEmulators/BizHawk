@@ -5,8 +5,8 @@ namespace BizHawk.Client.Common
 {
 	public class PlatformFrameRates
 	{
-		// these are political numbers, designed to be in accord with tasvideos.org tradition. theyre not necessarily mathematical factualities (although they may be in some cases)
-		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where theyre all collected)
+		// these are political numbers, designed to be in accord with tasvideos.org tradition. they're not necessarily mathematical factualities (although they may be in some cases)
+		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where they're all collected)
 		// are we collecting them anywhere else? for avi-writing code perhaps?
 
 		// just some constants, according to specs
@@ -61,18 +61,18 @@ namespace BizHawk.Client.Common
 			["C64_DREAN"] = PALNCarrier * 2 / 7 / 312 / 65,
 			["INTV"] = 59.92,
 
-            ["ZXSpectrum_PAL"] = 50.080128205,
-            ["AmstradCPC_PAL"] = 50.08012820512821,
+			["ZXSpectrum_PAL"] = 50.080128205,
+			["AmstradCPC_PAL"] = 50.08012820512821,
 
-            // according to ryphecha, using
-            // clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
-            // lpf[2][2] = { { 263, 262.5 }, { 314, 312.5 } }; //ntsc,pal; noninterlaced, interlaced
-            // cpl[2] = { 3412.5, 3405 }; //ntsc mode, pal mode
-            // PAL PS1: 0, PAL Mode: 0, Interlaced: 0 --- 59.826106 (53.693182e06/(263*3412.5))
-            // PAL PS1: 0, PAL Mode: 0, Interlaced: 1 --- 59.940060 (53.693182e06/(262.5*3412.5))
-            // PAL PS1: 1, PAL Mode: 1, Interlaced: 0 --- 49.761427 (53.203425e06/(314*3405))
-            // PAL PS1: 1, PAL Mode: 1, Interlaced: 1 --- 50.000282(53.203425e06/(312.5*3405))
-        };
+			// according to ryphecha, using
+			// clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
+			// lpf[2][2] = { { 263, 262.5 }, { 314, 312.5 } }; //ntsc,pal; non-interlaced, interlaced
+			// cpl[2] = { 3412.5, 3405 }; //ntsc mode, pal mode
+			// PAL PS1: 0, PAL Mode: 0, Interlaced: 0 --- 59.826106 (53.693182e06/(263*3412.5))
+			// PAL PS1: 0, PAL Mode: 0, Interlaced: 1 --- 59.940060 (53.693182e06/(262.5*3412.5))
+			// PAL PS1: 1, PAL Mode: 1, Interlaced: 0 --- 49.761427 (53.203425e06/(314*3405))
+			// PAL PS1: 1, PAL Mode: 1, Interlaced: 1 --- 50.000282(53.203425e06/(312.5*3405))
+		};
 
 		public double this[string systemId, bool pal]
 		{
@@ -90,22 +90,22 @@ namespace BizHawk.Client.Common
 
 		public TimeSpan MovieTime(IMovie movie)
 		{
-			var dblseconds = GetSeconds(movie);
-			var seconds = (int)(dblseconds % 60);
+			var dblSeconds = GetSeconds(movie);
+			var seconds = (int)(dblSeconds % 60);
 			var days = seconds / 86400;
 			var hours = seconds / 3600;
 			var minutes = (seconds / 60) % 60;
-			var milliseconds = (int)((dblseconds - seconds) * 1000);
+			var milliseconds = (int)((dblSeconds - seconds) * 1000);
 			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
 		}
 
 		private double Fps(IMovie movie)
 		{
 			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-				movie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+				&& movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
-				return this[system, pal];
+			return this[system, pal];
 		}
 
 		private double GetSeconds(IMovie movie)

@@ -51,11 +51,6 @@ namespace BizHawk.Client.EmuHawk
 				refreshNeeded = AutoAdjustInput();
 			}
 
-			if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
-			{
-				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-			}
-
 			MaybeFollowCursor();
 
 			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(_lastRefresh))
@@ -63,19 +58,12 @@ namespace BizHawk.Client.EmuHawk
 				refreshNeeded = true;
 			}
 
-			RefreshDialog(refreshNeeded);
+			RefreshDialog(refreshNeeded, refreshBranches: false);
 		}
 
 		public void FastUpdate()
 		{
-			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
-				return;
-			}
-
-			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-
-			MaybeFollowCursor();
+			// Do nothing
 		}
 
 		public void Restart()
@@ -130,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result == DialogResult.Yes)
 				{
 					_exiting = true; // Asking to save changes should only ever be called when closing something
-					SaveTas(null, null);
+					SaveTas();
 				}
 				else if (result == DialogResult.No)
 				{

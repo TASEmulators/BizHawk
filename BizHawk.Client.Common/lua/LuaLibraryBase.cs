@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			LogOutputCallback = logOutputCallback;
 		}
 
-		protected static Lua CurrentThread { get; private set; }
+		protected static LuaFile CurrentFile { get; private set; }
 
 		private static Thread CurrentHostThread;
 		private static readonly object ThreadMutex = new object();
@@ -35,11 +35,11 @@ namespace BizHawk.Client.Common
 			lock (ThreadMutex)
 			{
 				CurrentHostThread = null;
-				CurrentThread = null;
+				CurrentFile = null;
 			}
 		}
 
-		public static void SetCurrentThread(Lua luaThread)
+		public static void SetCurrentThread(LuaFile luaFile)
 		{
 			lock (ThreadMutex)
 			{
@@ -49,18 +49,13 @@ namespace BizHawk.Client.Common
 				}
 
 				CurrentHostThread = Thread.CurrentThread;
-				CurrentThread = luaThread;
+				CurrentFile = luaFile;
 			}
 		}
 
 		protected static int LuaInt(object luaArg)
 		{
 			return (int)(double)luaArg;
-		}
-
-		protected static uint LuaUInt(object luaArg)
-		{
-			return (uint)(double)luaArg;
 		}
 
 		protected static Color? ToColor(object o)
@@ -70,14 +65,14 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			if (o.GetType() == typeof(double))
+			if (o is double d)
 			{
-				return Color.FromArgb((int)(long)(double)o);
+				return Color.FromArgb((int)(long)d);
 			}
 
-			if (o.GetType() == typeof(string))
+			if (o is string s)
 			{
-				return Color.FromName(o.ToString());
+				return Color.FromName(s);
 			}
 
 			return null;

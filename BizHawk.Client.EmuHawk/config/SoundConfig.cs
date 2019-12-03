@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			cbEnableRWFF.Checked = Global.Config.SoundEnabledRWFF;
 			cbMuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
 
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
 			{
 				// Disable DirectSound and XAudio2 on Mono
 				rbOutputMethodDirectSound.Enabled = false;
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateDeviceList()
 		{
 			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (!OSTailoredCode.IsUnixHost)
 			{
 				if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
 				if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();

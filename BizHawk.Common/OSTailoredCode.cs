@@ -10,10 +10,14 @@ namespace BizHawk.Common
 {
 	public static class OSTailoredCode
 	{
-		/// <remarks>macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see></remarks>
+		/// <remarks>
+		/// macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see>
+		/// </remarks>
 		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
 			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
+
+		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
 
 		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() =>
 		{
@@ -127,6 +131,7 @@ namespace BizHawk.Common
 					CreateNoWindow = true,
 					FileName = cmd,
 					RedirectStandardError = checkStderr,
+					RedirectStandardInput = true,
 					RedirectStandardOutput = checkStdout,
 					UseShellExecute = false
 				}
@@ -140,13 +145,11 @@ namespace BizHawk.Common
 		/// <remarks>OS is implicit and needs to be checked at callsite</remarks>
 		public static string SimpleSubshell(string cmd, string args, string noOutputMsg)
 		{
-			using (var proc = ConstructSubshell(cmd, args))
-			{
-				proc.Start();
-				var stdout = proc.StandardOutput;
-				if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
-				return stdout.ReadLine();
-			}
+			using var proc = ConstructSubshell(cmd, args);
+			proc.Start();
+			var stdout = proc.StandardOutput;
+			if (stdout.EndOfStream) throw new Exception($"{noOutputMsg} ({cmd} wrote nothing to stdout)");
+			return stdout.ReadLine();
 		}
 	}
 }

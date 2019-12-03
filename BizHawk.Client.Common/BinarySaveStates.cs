@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace BizHawk.Client.Common
@@ -25,7 +24,7 @@ namespace BizHawk.Client.Common
 		[Name("MovieSaveRam", "bin")]
 		public static BinaryStateLump MovieSaveRam { get; private set; }
 
-		// Only for movies they probably shoudln't be leaching this stuff
+		// Only for movies they probably shouldn't be leaching this stuff
 		[Name("Header", "txt")]
 		public static BinaryStateLump Movieheader { get; private set; }
 		[Name("Comments", "txt")]
@@ -53,7 +52,7 @@ namespace BizHawk.Client.Common
 		[Name("Session", "txt")]
 		public static BinaryStateLump Session { get; private set; }
 
-		// branchstuff
+		// branch stuff
 		[Name("Branches\\CoreData", "bin")]
 		public static BinaryStateLump BranchCoreData { get; private set; }
 		[Name("Branches\\InputLog", "txt")]
@@ -68,8 +67,6 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump BranchMarkers { get; private set; }
 		[Name("Branches\\UserText", "txt")]
 		public static BinaryStateLump BranchUserText { get; private set; }
-		[Name("Branches\\GreenZone")]
-		public static BinaryStateLump BranchStateHistory { get; private set; }
 
 		[AttributeUsage(AttributeTargets.Property)]
 		private class NameAttribute : Attribute
@@ -149,7 +146,7 @@ namespace BizHawk.Client.Common
 		private ZipFile _zip;
 		private Version _ver;
 		private bool _isDisposed;
-		private Dictionary<string, ZipEntry> _entriesbyname;
+		private Dictionary<string, ZipEntry> _entriesByName;
 
 		private BinaryStateLoader()
 		{
@@ -191,7 +188,7 @@ namespace BizHawk.Client.Common
 
 		private void PopulateEntries()
 		{
-			_entriesbyname = new Dictionary<string, ZipEntry>();
+			_entriesByName = new Dictionary<string, ZipEntry>();
 			foreach (ZipEntry z in _zip)
 			{
 				string name = z.Name;
@@ -201,7 +198,7 @@ namespace BizHawk.Client.Common
 					name = name.Substring(0, i);
 				}
 
-				_entriesbyname.Add(name.Replace('/', '\\'), z);
+				_entriesByName.Add(name.Replace('/', '\\'), z);
 			}
 		}
 
@@ -248,7 +245,7 @@ namespace BizHawk.Client.Common
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
 			ZipEntry e;
-			if (_entriesbyname.TryGetValue(lump.ReadName, out e))
+			if (_entriesByName.TryGetValue(lump.ReadName, out e))
 			{
 				using (var zs = _zip.GetInputStream(e))
 				{
@@ -333,9 +330,6 @@ namespace BizHawk.Client.Common
 
 		public BinaryStateSaver(string path, bool notamovie = true) // notamovie is hack, really should have separate something
 		{
-			////_zip = new IonicZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);
-			////_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
-			////_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 			_zip = new FrameworkZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);
 
 			if (notamovie)

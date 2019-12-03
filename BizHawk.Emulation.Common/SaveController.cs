@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Common
 		public void DeSerialize(BinaryReader b)
 		{
 			_buttons.Clear();
-			int numbuttons = b.ReadInt32();
-			for (int i = 0; i < numbuttons; i++)
+			int numButtons = b.ReadInt32();
+			for (int i = 0; i < numButtons; i++)
 			{
 				string k = b.ReadString();
 				float v = b.ReadSingle();

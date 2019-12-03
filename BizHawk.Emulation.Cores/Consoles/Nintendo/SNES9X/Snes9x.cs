@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = "SNES"
 			})
 		{
-			settings = settings ?? new Settings();
-			syncSettings = syncSettings ?? new SyncSettings();
+			settings ??= new Settings();
+			syncSettings ??= new SyncSettings();
 
 			_core = PreInit<LibSnes9x>(new PeRunnerOptions
 			{

@@ -5,6 +5,7 @@ using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
 	[Description("Main memory library reads and writes from the Main memory domain (the default memory domain set by any given core)")]

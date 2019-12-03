@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -9,27 +10,11 @@ namespace BizHawk.Client.Common
 		ImportResult Import(string path);
 	}
 
-	public abstract class MovieImporter : IMovieImport
+	internal abstract class MovieImporter : IMovieImport
 	{
-		public const string Comment = "comment";
-		public const string Coreorigin = "CoreOrigin";
-		public const string CRC16 = "CRC16";
-		public const string CRC32 = "CRC32";
-		protected const string Emulationorigin = "emuOrigin";
-		public const string Gamecode = "GameCode";
-		public const string InternalChecksum = "InternalChecksum";
-		public const string Japan = "Japan";
+		protected const string EmulationOrigin = "emuOrigin";
 		protected const string MD5 = "MD5";
-		protected const string Movieorigin = "MovieOrigin";
-		public const string Port1 = "port1";
-		public const string Port2 = "port2";
-		public const string ProjectId = "ProjectID";
-		public const string SHA256 = "SHA256";
-		public const string SuperGameboyMode = "SuperGameBoyMode";
-		public const string StartSecond = "StartSecond";
-		public const string StartSubSecond = "StartSubSecond";
-		public const string SyncHack = "SyncHack";
-		public const string UnitCode = "UnitCode";
+		protected const string MovieOrigin = "MovieOrigin";
 
 		public ImportResult Import(string path)
 		{
@@ -45,6 +30,11 @@ namespace BizHawk.Client.Common
 			Result.Movie = new Bk2Movie(newFileName);
 
 			RunImport();
+
+			if (!Result.Errors.Any())
+			{
+				Result.Movie.Save();
+			}
 
 			return Result;
 		}
@@ -64,30 +54,62 @@ namespace BizHawk.Client.Common
 			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
 		}
+
+		// Reduce all whitespace to single spaces.
+		protected static string SingleSpaces(string line)
+		{
+			line = line.Replace("\t", " ");
+			line = line.Replace("\n", " ");
+			line = line.Replace("\r", " ");
+			line = line.Replace("\r\n", " ");
+			string prev;
+			do
+			{
+				prev = line;
+				line = line.Replace("  ", " ");
+			}
+			while (prev != line);
+			return line;
+		}
+
+		// Ends the string where a NULL character is found.
+		protected static string NullTerminated(string str)
+		{
+			int pos = str.IndexOf('\0');
+			if (pos != -1)
+			{
+				str = str.Substring(0, pos);
+			}
+
+			return str;
+		}
 	}
 
 	public class ImportResult
 	{
-		public ImportResult()
+		public IList<string> Warnings { get; } = new List<string>();
+		public IList<string> Errors { get; } = new List<string>();
+
+		public IMovie Movie { get; set; }
+
+		public static ImportResult Error(string errorMsg)
 		{
-			Warnings = new List<string>();
-			Errors = new List<string>();
+			var result = new ImportResult();
+			result.Errors.Add(errorMsg);
+			return result;
 		}
-
-		public IList<string> Warnings { get; private set; }
-		public IList<string> Errors { get; }
-
-		public Bk2Movie Movie { get; set; }
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ImportExtensionAttribute : Attribute
+	public class ImporterForAttribute : Attribute
 	{
-		public ImportExtensionAttribute(string extension)
+		public ImporterForAttribute(string emulator, string extension)
 		{
+			Emulator = emulator;
 			Extension = extension;
 		}
 
-		public string Extension { get; private set; }
+		public string Emulator { get; }
+		public string Extension { get; }
 	}
 }

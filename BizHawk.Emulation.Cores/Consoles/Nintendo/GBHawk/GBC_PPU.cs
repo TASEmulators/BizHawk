@@ -126,20 +126,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
-							 // note that their is no stat interrupt bug in GBC
+					// note that their is no stat interrupt bug in GBC
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
-
 
 					if (((STAT & 3) == 0) && STAT.Bit(3)) { HBL_INT = true; } else { HBL_INT = false; }
 					if (((STAT & 3) == 1) && STAT.Bit(4)) { VBL_INT = true; } else { VBL_INT = false; }
 					// OAM not triggered?
 					// if (((STAT & 3) == 2) && STAT.Bit(5)) { OAM_INT = true; } else { OAM_INT = false; }
 
-					if (value.Bit(6))
+					if (value.Bit(6) && LCDC.Bit(7))
 					{
 						if (LY == LYC) { LYC_INT = true; }
 						else { LYC_INT = false; }
 					}
+					if (!STAT.Bit(6)) { LYC_INT = false; }
 					break; 
 				case 0xFF42: // SCY
 					scroll_y = value;
@@ -1100,7 +1100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									}
 									render_counter = 8 - render_offset;
 
-									render_offset = 0;								
+									render_offset = 7 - window_x_latch;								
 								}
 								else
 								{

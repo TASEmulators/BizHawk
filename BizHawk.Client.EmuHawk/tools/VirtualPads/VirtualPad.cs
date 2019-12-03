@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using System.Drawing;
 
@@ -19,24 +18,16 @@ namespace BizHawk.Client.EmuHawk
 			PadControls.ForEach(c => c.UpdateValues());
 		}
 
-		private List<IVirtualPadControl> PadControls
-		{
-			get
-			{
-				return PadBox.Controls
-					.OfType<IVirtualPadControl>()
-					.ToList();
-			}
-		}
+		private List<IVirtualPadControl> PadControls =>
+			PadBox.Controls
+				.OfType<IVirtualPadControl>()
+				.ToList();
 
-		public string PadSchemaDisplayName { get { return _schema.DisplayName; } }
+		public string PadSchemaDisplayName => _schema.DisplayName;
 
 		public bool ReadOnly
 		{
-			get
-			{
-				return _readOnly;
-			}
+			get => _readOnly;
 
 			set
 			{

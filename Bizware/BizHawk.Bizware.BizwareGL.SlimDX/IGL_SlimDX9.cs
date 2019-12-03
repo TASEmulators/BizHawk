@@ -298,35 +298,29 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		Blend ConvertBlendArg(gl.BlendingFactorDest glmode) { return ConvertBlendArg((gl.BlendingFactorSrc)glmode); }
 
-		Blend ConvertBlendArg(gl.BlendingFactorSrc glmode)
+		Blend ConvertBlendArg(gl.BlendingFactorSrc glmode) => glmode switch
 		{
-			if(glmode == gl.BlendingFactorSrc.Zero) return Blend.Zero;
-			if(glmode == gl.BlendingFactorSrc.One) return Blend.One;
-			if(glmode == gl.BlendingFactorSrc.SrcColor) return Blend.SourceColor;
-			if(glmode == gl.BlendingFactorSrc.OneMinusSrcColor) return Blend.InverseSourceColor;
-			if(glmode == gl.BlendingFactorSrc.SrcAlpha) return Blend.SourceAlpha;
-			if(glmode == gl.BlendingFactorSrc.OneMinusSrcAlpha) return Blend.InverseSourceAlpha;
-			if(glmode == gl.BlendingFactorSrc.DstAlpha) return Blend.DestinationAlpha;
-			if(glmode == gl.BlendingFactorSrc.OneMinusDstAlpha) return Blend.InverseDestinationAlpha;
-			if(glmode == gl.BlendingFactorSrc.DstColor) return Blend.DestinationColor;
-			if(glmode == gl.BlendingFactorSrc.OneMinusDstColor) return Blend.InverseDestinationColor;
-			if(glmode == gl.BlendingFactorSrc.SrcAlphaSaturate) return Blend.SourceAlphaSaturated;
-			if(glmode == gl.BlendingFactorSrc.ConstantColor) return Blend.BlendFactor;
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColor) return Blend.InverseBlendFactor;
-			if(glmode == gl.BlendingFactorSrc.ConstantAlpha) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlpha) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.Src1Alpha) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.Src1Color) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusSrc1Color) throw new NotSupportedException();
-			if (glmode == gl.BlendingFactorSrc.OneMinusSrc1Alpha) throw new NotSupportedException();
-			/* Compiles when commented
-			if(glmode == gl.BlendingFactorSrc.ConstantColorExt) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColorExt) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.ConstantAlphaExt) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlphaExt) throw new NotSupportedException();
-			*/
-			throw new ArgumentOutOfRangeException();
-		}
+			gl.BlendingFactorSrc.Zero => Blend.Zero,
+			gl.BlendingFactorSrc.One => Blend.One,
+			gl.BlendingFactorSrc.SrcColor => Blend.SourceColor,
+			gl.BlendingFactorSrc.OneMinusSrcColor => Blend.InverseSourceColor,
+			gl.BlendingFactorSrc.SrcAlpha => Blend.SourceAlpha,
+			gl.BlendingFactorSrc.OneMinusSrcAlpha => Blend.InverseSourceAlpha,
+			gl.BlendingFactorSrc.DstAlpha => Blend.DestinationAlpha,
+			gl.BlendingFactorSrc.OneMinusDstAlpha => Blend.InverseDestinationAlpha,
+			gl.BlendingFactorSrc.DstColor => Blend.DestinationColor,
+			gl.BlendingFactorSrc.OneMinusDstColor => Blend.InverseDestinationColor,
+			gl.BlendingFactorSrc.SrcAlphaSaturate => Blend.SourceAlphaSaturated,
+			gl.BlendingFactorSrc.ConstantColor => Blend.BlendFactor,
+			gl.BlendingFactorSrc.OneMinusConstantColor => Blend.InverseBlendFactor,
+			gl.BlendingFactorSrc.ConstantAlpha => throw new NotSupportedException(),
+			gl.BlendingFactorSrc.OneMinusConstantAlpha => throw new NotSupportedException(),
+			gl.BlendingFactorSrc.Src1Alpha => throw new NotSupportedException(),
+			gl.BlendingFactorSrc.Src1Color => throw new NotSupportedException(),
+			gl.BlendingFactorSrc.OneMinusSrc1Color => throw new NotSupportedException(),
+			gl.BlendingFactorSrc.OneMinusSrc1Alpha => throw new NotSupportedException(),
+			_ => throw new ArgumentOutOfRangeException()
+		};
 
 		public void SetBlendState(IBlendState rsBlend)
 		{

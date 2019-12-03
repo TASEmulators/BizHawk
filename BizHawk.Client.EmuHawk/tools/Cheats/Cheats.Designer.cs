@@ -94,6 +94,7 @@
 			// 
 			// CheatListView
 			// 
+			this.CheatListView.CellWidthPadding = 3;
 			this.CheatListView.AllowColumnReorder = true;
 			this.CheatListView.AllowColumnResize = true;
 			this.CheatListView.MultiSelect = true;
@@ -109,10 +110,8 @@
 			this.CheatListView.Name = "CheatListView";
 			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
-			this.CheatListView.UseCustomBackground = true;
 			this.CheatListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.CheatListView_ColumnClick);
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
-			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
 			this.CheatListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragDrop);
 			this.CheatListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewCheatForm_DragEnter);
 			this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
@@ -348,6 +347,8 @@
 			// 
 			this.DisableAllCheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.DisableAllCheatsMenuItem.Name = "DisableAllCheatsMenuItem";
+			this.DisableAllCheatsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Back)));
+			this.DisableAllCheatsMenuItem.ShortcutKeyDisplayString = "Ctrl + Backspace";
 			this.DisableAllCheatsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.DisableAllCheatsMenuItem.Text = "Disable all";
 			this.DisableAllCheatsMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);

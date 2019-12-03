@@ -18,23 +18,23 @@ namespace BizHawk.Client.EmuHawk
 
 	public class CustomCheckBox : CheckBox
 	{
-		Color _CheckBackColor = SystemColors.Control;
+		Color _checkBackColor = SystemColors.Control;
 		public Color CheckBackColor
 		{
-			get { return _CheckBackColor; }
-			set { _CheckBackColor = value; Refresh(); }
+			get => _checkBackColor;
+			set { _checkBackColor = value; Refresh(); }
 		}
 
-		bool? _ForceChecked;
+		bool? _forceChecked;
 		public bool? ForceChecked
 		{
-			get { return _ForceChecked; }
-			set { _ForceChecked = value; Refresh(); }
+			get => _forceChecked;
+			set { _forceChecked = value; Refresh(); }
 		}
 
 		protected override void OnPaint(PaintEventArgs pevent)
 		{
-			//draw text-label part of the control with something so that it isn't hallofmirrorsy
+			// draw text-label part of the control with something so that it isn't hallofmirrorsy
 			using(var brush = new SolidBrush(Parent.BackColor))
 				pevent.Graphics.FillRectangle(brush, ClientRectangle);
 			
@@ -42,11 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			var glyphLoc = ClientRectangle;
 			glyphLoc.Size = SystemInformation.MenuCheckSize;
 
-			//draw the selectedbackdrop color roughly where the glyph belongs
-			using (var brush = new SolidBrush(_CheckBackColor))
+			// draw the selectedbackdrop color roughly where the glyph belongs
+			using (var brush = new SolidBrush(_checkBackColor))
 				pevent.Graphics.FillRectangle(brush, glyphLoc);
 
-			//draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl) 
+			// draw a checkbox menu glyph (we could do this more elegantly with DrawFrameControl) 
 			bool c = CheckState == CheckState.Checked;
 			if (ForceChecked.HasValue)
 			{
@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				ControlPaint.DrawMenuGlyph(pevent.Graphics, glyphLoc, MenuGlyph.Checkmark, Color.Black, Color.Transparent);
 			}
 
-			//draw a border on top of it all
+			// draw a border on top of it all
 			ControlPaint.DrawBorder3D(pevent.Graphics, r, Border3DStyle.Sunken);
 
 			//stuff that didnt work

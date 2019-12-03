@@ -12,21 +12,20 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Sorting _columnSort = new Sorting();
 
-		private List<LibraryFunction> FunctionList = new List<LibraryFunction>();
-
+		private List<LibraryFunction> _functionList = new List<LibraryFunction>();
 		private List<LibraryFunction> _filteredList = new List<LibraryFunction>();
 
 		private void GenerateFilteredList()
 		{
 			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
 			{
-				_filteredList = FunctionList
+				_filteredList = _functionList
 					.Where(f => $"{f.Library}.{f.Name}".ToLowerInvariant().Contains(FilterBox.Text.ToLowerInvariant()))
 					.ToList();
 			}
 			else
 			{
-				_filteredList = FunctionList.ToList();
+				_filteredList = _functionList.ToList();
 			}
 		}
 
@@ -38,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
+			_functionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
 				.OrderBy(l => l.Library)
 				.ThenBy(l => l.Name)
 				.ToList();
@@ -66,19 +65,19 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						FunctionList = FunctionList.OrderByDescending(x => x.ReturnType).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						FunctionList = FunctionList.OrderByDescending(x => x.Library).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						FunctionList = FunctionList.OrderByDescending(x => x.Name).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						FunctionList = FunctionList.OrderByDescending(x => x.ParameterList).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						FunctionList = FunctionList.OrderByDescending(x => x.Description).ToList();
+						_functionList = _functionList.OrderByDescending(x => x.Description).ToList();
 						break;
 				}
 			}
@@ -87,19 +86,19 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0: // Return
-						FunctionList = FunctionList.OrderBy(x => x.ReturnType).ToList();
+						_functionList = _functionList.OrderBy(x => x.ReturnType).ToList();
 						break;
 					case 1: // Library
-						FunctionList = FunctionList.OrderBy(x => x.Library).ToList();
+						_functionList = _functionList.OrderBy(x => x.Library).ToList();
 						break;
 					case 2: // Name
-						FunctionList = FunctionList.OrderBy(x => x.Name).ToList();
+						_functionList = _functionList.OrderBy(x => x.Name).ToList();
 						break;
 					case 3: // Parameters
-						FunctionList = FunctionList.OrderBy(x => x.ParameterList).ToList();
+						_functionList = _functionList.OrderBy(x => x.ParameterList).ToList();
 						break;
 					case 4: // Description
-						FunctionList = FunctionList.OrderBy(x => x.Description).ToList();
+						_functionList = _functionList.OrderBy(x => x.Description).ToList();
 						break;
 				}
 			}
@@ -119,60 +118,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private class Sorting
 		{
-			private bool _desc;
 			private int _column = 1;
 
 			public int Column
 			{
-				get
-				{
-					return _column;
-				}
-
+				get => _column;
 				set
 				{
 					if (_column == value)
 					{
-						_desc ^= true;
+						Descending ^= true;
 					}
 
 					_column = value;
 				}
 			}
 
-			public bool Descending
-			{
-				get { return _desc; }
-			}
+			public bool Descending { get; private set; }
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift) // Copy
 			{
-				var indexes = FunctionView.SelectedIndices;
-
-				//TODO - duplicated code with FunctionView_Copy
-				//also -- this list is more compact (the examples would fill space)
-				//it isn't clear whether we should copy the examples here. So maybe this should stay distinct (and more compact?)
-
-				if (indexes.Count > 0)
-				{
-					var sb = new StringBuilder();
-
-					foreach (int index in indexes)
-					{
-						var libraryFunction = GlobalWin.Tools.LuaConsole.LuaImp.Docs[index];
-						sb.Append(libraryFunction.Library).Append('.').Append(libraryFunction.Name).Append("()\n");
-					}
-
-					if (sb.Length > 0)
-						Clipboard.SetDataObject(sb.ToString());
-				}
+				FunctionView_Copy(null, null);
 			}
 		}
 
-		//FREVBHFYL?
 		private void FunctionView_Copy(object sender, EventArgs e)
 		{
 			if (FunctionView.SelectedIndices.Count == 0)
@@ -180,16 +152,22 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var itm = _filteredList[FunctionView.SelectedIndices[0]];
-			var sb = new StringBuilder($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); //comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
-			if (itm.Example != null)
+			var sb = new StringBuilder();
+			foreach (int index in FunctionView.SelectedIndices)
 			{
-				sb.AppendLine();
-				sb.Append(itm.Example);
+				var itm = _filteredList[index];
+				sb.Append($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); // comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
+				if (itm.Example != null)
+				{
+					sb.AppendLine();
+					sb.AppendLine(itm.Example);
+				}
 			}
 
 			if (sb.Length > 0)
+			{
 				Clipboard.SetText(sb.ToString());
+			}
 		}
 		
 		private void UpdateList()

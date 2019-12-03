@@ -503,16 +503,85 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 					else
 					{
 						PopulateCURINSTR(CWAI);
-						irq_pntr = 0;
+						irq_pntr = instr_pntr = 0;
 						IRQS = -1;
 					}
 					instr_pntr = 0;
 					break;
 				case SYNC:
-					IN_SYNC = true;
-					IRQS = 1;				
-					instr_pntr = irq_pntr = 0;
-					PopulateCURINSTR(SYNC);
+					if (NMIPending)
+					{
+						NMIPending = false;
+						IN_SYNC = false;
+
+						Regs[ADDR] = 0xFFFC;
+						PopulateCURINSTR(RD_INC, ALU, ADDR,
+										RD_INC, ALU2, ADDR,
+										SET_ADDR, PC, ALU, ALU2);
+						irq_pntr = -1;
+						IRQS = 3;
+
+						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC NMI====", RegisterInfo = "" }); }
+					}
+					else if (FIRQPending)
+					{
+						if (!FlagF)
+						{
+							FIRQPending = false;
+
+							Regs[ADDR] = 0xFFF6;
+							PopulateCURINSTR(RD_INC, ALU, ADDR,
+											RD_INC, ALU2, ADDR,
+											SET_ADDR, PC, ALU, ALU2);
+							irq_pntr = -1;
+							IRQS = 3;
+
+							if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC FIRQ====", RegisterInfo = "" }); }
+						}
+						else
+						{
+							FIRQPending = false;					
+							IN_SYNC = false;
+							IRQS = 2;
+							instr_pntr = irq_pntr = 0;
+							PopulateCURINSTR(IDLE,
+											IDLE);
+						}
+					}
+					else if (IRQPending)
+					{
+						if (!FlagI)
+						{
+							IRQPending = false;
+							IN_SYNC = false;
+
+							Regs[ADDR] = 0xFFF8;
+							PopulateCURINSTR(RD_INC, ALU, ADDR,
+											RD_INC, ALU2, ADDR,
+											SET_ADDR, PC, ALU, ALU2);
+							irq_pntr = -1;
+							IRQS = 3;
+
+							if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC IRQ====", RegisterInfo = "" }); }
+						}
+						else
+						{
+							FIRQPending = false;
+							IN_SYNC = false;
+							IRQS = 2;
+							instr_pntr = irq_pntr = 0;
+							PopulateCURINSTR(IDLE,
+											IDLE);
+						}
+					}
+					else
+					{
+						IN_SYNC = true;
+						IRQS = -1;
+						instr_pntr = irq_pntr = 0;
+						PopulateCURINSTR(SYNC);
+					}
+					
 					break;
 			}
 
@@ -525,62 +594,31 @@ namespace BizHawk.Emulation.Common.Components.MC6809
 
 					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====NMI====", RegisterInfo = "" }); }
 
-					IN_SYNC = false;
 					NMI_();
 					NMICallback();
 					instr_pntr = irq_pntr = 0;
 				}
 				// fast IRQ has next priority
-				else if (FIRQPending)
+				else if (FIRQPending && !FlagF)
 				{
-					if (!FlagF)
-					{
-						FIRQPending = false;
+					FIRQPending = false;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
+					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====FIRQ====", RegisterInfo = "" }); }
 
-						IN_SYNC = false;
-						FIRQ_();
-						FIRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						FIRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
+					FIRQ_();
+					FIRQCallback();
+					instr_pntr = irq_pntr = 0;
 				}
 				// then regular IRQ				
 				else if (IRQPending && !FlagI)
 				{
-					if (!FlagI)
-					{
-						IRQPending = false;
+					IRQPending = false;
 
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
+					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
 
-						IN_SYNC = false;
-						IRQ_();
-						IRQCallback();
-						instr_pntr = irq_pntr = 0;
-					}
-					else if (IN_SYNC)
-					{
-						IRQPending = false;
-
-						if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====SYNC====", RegisterInfo = "" }); }
-
-						IN_SYNC = false;
-						IRQS = 1;
-						instr_pntr = irq_pntr = 0;
-						PopulateCURINSTR(IDLE);
-					}
+					IRQ_();
+					IRQCallback();
+					instr_pntr = irq_pntr = 0;
 				}				
 				// otherwise start the next instruction
 				else

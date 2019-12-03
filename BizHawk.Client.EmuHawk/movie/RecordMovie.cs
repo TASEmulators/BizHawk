@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows.Forms;
 using System.Linq;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
@@ -16,15 +15,15 @@ namespace BizHawk.Client.EmuHawk
 	// TODO - Allow relative paths in record textbox
 	public partial class RecordMovie : Form
 	{
-		private IEmulator Emulator;
+		private readonly IEmulator _emulator;
 
 		public RecordMovie(IEmulator core)
 		{
 			InitializeComponent();
 
-			Emulator = core;
+			_emulator = core;
 
-			if (!Emulator.HasSavestates())
+			if (!_emulator.HasSavestates())
 			{
 				StartFromCombo.Items.Remove(
 					StartFromCombo.Items
@@ -33,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 							.ToLower() == "now"));
 			}
 
-			if (!Emulator.HasSaveRam())
+			if (!_emulator.HasSaveRam())
 			{
 				StartFromCombo.Items.Remove(
 					StartFromCombo.Items
@@ -92,9 +91,9 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now" && Emulator.HasSavestates())
+				if (StartFromCombo.SelectedItem.ToString() == "Now" && _emulator.HasSavestates())
 				{
-					var core = Emulator.AsStatable();
+					var core = _emulator.AsStatable();
 
 					movieToRecord.StartsFromSavestate = true;
 					movieToRecord.StartsFromSaveRam = false;
@@ -105,27 +104,21 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						using (var sw = new StringWriter())
-						{
-							core.SaveStateText(sw);
-							movieToRecord.TextSavestate = sw.ToString();
-						}
+						using var sw = new StringWriter();
+						core.SaveStateText(sw);
+						movieToRecord.TextSavestate = sw.ToString();
 					}
 
 					// TODO: do we want to support optionally not saving this?
-					if (true)
+					movieToRecord.SavestateFramebuffer = new int[0];
+					if (_emulator.HasVideoProvider())
 					{
-						// hack: some IMovies eat the framebuffer, so don't bother with them
-						movieToRecord.SavestateFramebuffer = new int[0];
-						if (movieToRecord.SavestateFramebuffer != null && Emulator.HasVideoProvider())
-						{
-							movieToRecord.SavestateFramebuffer = (int[])Emulator.AsVideoProvider().GetVideoBuffer().Clone();
-						}
+						movieToRecord.SavestateFramebuffer = (int[])_emulator.AsVideoProvider().GetVideoBuffer().Clone();
 					}
 				}
-				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && Emulator.HasSaveRam())
+				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && _emulator.HasSaveRam())
 				{
-					var core = Emulator.AsSaveRam();
+					var core = _emulator.AsSaveRam();
 					movieToRecord.StartsFromSavestate = false;
 					movieToRecord.StartsFromSaveRam = true;
 					movieToRecord.SaveRam = core.CloneSaveRam();
@@ -155,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
-		{			
+		{
 			string movieFolderPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			
 			// Create movie folder if it doesn't already exist
@@ -168,16 +161,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception movieDirException)
 			{
-				if (movieDirException is IOException ||
-						movieDirException is UnauthorizedAccessException ||
-						movieDirException is PathTooLongException)
+				if (movieDirException is IOException
+					|| movieDirException is UnauthorizedAccessException)
 				{
 					//TO DO : Pass error to user?
 				}
 				else throw;
 			}
 			
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,
 				DefaultExt = $".{Global.MovieSession.Movie.PreferredExtension}",

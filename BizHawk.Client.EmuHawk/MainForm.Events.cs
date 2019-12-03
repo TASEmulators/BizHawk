@@ -3,24 +3,21 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 using BizHawk.Client.Common;
 
-using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
@@ -309,18 +306,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
+			AdvancedLoader = AdvancedRomLoaderType.None;
 			OpenRom();
 		}
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			var oac = new OpenAdvancedChooser(this);
+			using var oac = new OpenAdvancedChooser(this);
 			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 			{
 				return;
 			}
 
-			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
+			AdvancedLoader = oac.Result;
+
+			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
 				var argsNoGame = new LoadRomArgs
 				{
@@ -334,14 +334,19 @@ namespace BizHawk.Client.EmuHawk
 
 			var filter = RomFilter;
 
-			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchGame)
+			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_Libretro();
 				filter = oac.SuggestedExtensionFilter;
 			}
-			else if (oac.Result == OpenAdvancedChooser.Command.ClassicLaunchGame)
+			else if (AdvancedLoader == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+			}
+			else if (AdvancedLoader == AdvancedRomLoaderType.MAMELaunchGame)
+			{
+				args.OpenAdvanced = new OpenAdvanced_MAME();
+				filter = "MAME Arcade ROMs (*.zip)|*.zip";
 			}
 			else
 			{
@@ -350,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 
 			/*************************/
 			/* CLONE OF CODE FROM OpenRom (mostly) */
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Filter = filter,
@@ -468,8 +473,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var result = MessageBox.Show(
 					this,
-					"Thanks for using Bizhawk!  The emulation core you have selected " +
-					"is currently BETA-status.  We appreciate your help in testing Bizhawk. " +
+					"Thanks for using BizHawk!  The emulation core you have selected " +
+					"is currently BETA-status.  We appreciate your help in testing BizHawk. " +
 					"You can record a movie on this core if you'd like to, but expect to " +
 					"encounter bugs and sync problems.  Continue?", "BizHawk", MessageBoxButtons.YesNo);
 
@@ -478,63 +483,20 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
-			else if (Emulator is Snes9x)
+
+			if (!EmuHawkUtil.EnsureCoreIsAccurate(Emulator))
 			{
-				var box = new MsgBox(
-					"While the Snes9x core is faster, it is not nearly as accurate as bsnes. \nIt is recommended that you switch to the bsnes core for movie recording\nSwitch to bsnes?",
-					"Accuracy Warning",
-					MessageBoxIcon.Warning);
-
-				box.SetButtons(
-					new[] { "Switch", "Continue" },
-					new[] { DialogResult.Yes, DialogResult.Cancel });
-
-				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
-				box.SetMessageToAutoSize();
-				var result = box.ShowDialog();
-
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.SNES_InSnes9x = false;
-					RebootCore();
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					// Do nothing and allow the user to continue to record the movie
-				}
-			}
-			else if (Emulator is QuickNES) // This is unsustainable :( But mixing the logic together is even worse, this needs to be rethought
-			{
-				var box = new MsgBox(
-					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
-					"Accuracy Warning",
-					MessageBoxIcon.Warning);
-
-				box.SetButtons(
-					new[] { "Switch", "Continue" },
-					new[] { DialogResult.Yes, DialogResult.Cancel });
-
-				box.MaximumSize = UIHelper.Scale(new Size(475, 350));
-				box.SetMessageToAutoSize();
-				var result = box.ShowDialog();
-
-				if (result == DialogResult.Yes)
-				{
-					Global.Config.NES_InQuickNES = false;
-					RebootCore();
-				}
-				else if (result == DialogResult.Cancel)
-				{
-					// Do nothing and allow the user to continue to record the movie
-				}
+				// Inaccurate core but allow the user to continue anyway
 			}
 
-			new RecordMovie(Emulator).ShowDialog();
+			using var form = new RecordMovie(Emulator);
+			form.ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			new PlayMovie().ShowDialog();
+			using var form = new PlayMovie();
+			form.ShowDialog();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -549,29 +511,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Multiselect = true,
-				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
-					"FCEUX", "*.fm2",
-					"PCEjin/Mednafen", "*.mc2;*.mcm",
-					"Dega", "*.mmv",
-					"Gens", "*.gmv",
-					"Visual Boy Advance", "*.vbm",
-					"LSNES", "*.lsmv",
-					"FCEU", "*.fcm",
-					"Famtasia", "*.fmv",
-					"VirtuaNES", "*.vmv",
-					"Nintendulator", "*.nmv",
-					"Snes9x", "*.smv",
-					"Yabause", "*.ymv",
-					"ZSNES", "*.zmv",
-					"PSXjin", "*.pjm",
-					"PCSX", "*.pxm",
-					"BizHawk Bkm", "*.bkm",
-					"All Files", "*.*"),
+				Filter = ToFilter("Movie Files", MovieImport.AvailableImporters()),
 				RestoreDirectory = false
 			};
 
@@ -580,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (var fn in ofd.FileNames)
 				{
-					ProcessMovieImport(fn);
+					ProcessMovieImport(fn, false);
 				}
 			}
 		}
@@ -659,7 +603,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordAVMenuItem_Click(object sender, EventArgs e)
 		{
-			RecordAv(null, null); // force unattended, but allow tradtional setup
+			RecordAv(null, null); // force unattended, but allow traditional setup
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
@@ -686,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var path = $"{PathManager.ScreenshotPrefix(Global.Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
 
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -1005,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
-			var controller = new ControllerConfig(Emulator.ControllerDefinition);
+			using var controller = new ControllerConfig(Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -1015,7 +959,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new HotkeyConfig().ShowDialog() == DialogResult.OK)
+			using var hotkeyConfig = new HotkeyConfig();
+			if (hotkeyConfig.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
 				InputManager.SyncControls();
@@ -1024,31 +969,35 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			if (e is RomLoader.RomErrorArgs)
+			if (e is RomLoader.RomErrorArgs args)
 			{
-				var args = (RomLoader.RomErrorArgs)e;
-				var result = new FirmwaresConfig(true, args.RomPath).ShowDialog();
+				using var configForm = new FirmwaresConfig(true, args.RomPath);
+				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				new FirmwaresConfig().ShowDialog();
+				using var configForm = new FirmwaresConfig();
+				configForm.ShowDialog();
 			}
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
-			new MessageConfig().ShowDialog();
+			using var form = new MessageConfig();
+			form.ShowDialog();
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PathConfig().ShowDialog();
+			using var form = new PathConfig();
+			form.ShowDialog();
 		}
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new SoundConfig().ShowDialog() == DialogResult.OK)
+			using var form = new SoundConfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				RewireSound();
 			}
@@ -1056,27 +1005,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			new AutofireConfig().ShowDialog();
+			using var form = new AutofireConfig();
+			form.ShowDialog();
 		}
 
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			new RewindConfig().ShowDialog();
+			using var form = new RewindConfig();
+			form.ShowDialog();
 		}
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			new FileExtensionPreferences().ShowDialog();
+			using var form = new FileExtensionPreferences();
+			form.ShowDialog();
 		}
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			new EmuHawkOptions().ShowDialog();
+			using var form = new EmuHawkOptions();
+			form.ShowDialog();
 		}
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new ProfileConfig().ShowDialog() == DialogResult.OK)
+			using var form = new ProfileConfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.OSD.AddMessage("Profile settings saved");
 
@@ -1346,7 +1300,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = PathManager.DefaultIniPath;
-			var sfd = new SaveFileDialog
+			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -1372,7 +1326,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = PathManager.DefaultIniPath;
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = Path.GetDirectoryName(path),
 				FileName = Path.GetFileName(path),
@@ -1400,7 +1354,6 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["RAM Search"].Bindings;
 			HexEditorMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hex Editor"].Bindings;
 			LuaConsoleMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lua Console"].Bindings;
-			LuaConsoleMenuItem.Enabled = GlobalWin.Tools.IsAvailable<LuaConsole>();
 			CheatsMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;
 			TAStudioMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["TAStudio"].Bindings;
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
@@ -1422,8 +1375,6 @@ namespace BizHawk.Client.EmuHawk
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
-
-			ExperimentalToolsSubMenu.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -1446,17 +1397,11 @@ namespace BizHawk.Client.EmuHawk
 
 				externalToolToolStripMenuItem.DropDownItems.Add(item);
 			}
-			
+
 			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
 			}
-		}
-
-		private void ExperimentalToolsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
-			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1472,10 +1417,10 @@ namespace BizHawk.Client.EmuHawk
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
 			var ramSearch = GlobalWin.Tools.Load<RamSearch>();
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
 			{
 				// this is apparently needed for weird mono-forms-on-different-thread issues
-				// dont do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here
+				// don't do .Show() within Load<T>() for RamSearch - instead put an instance of it here on MainForm, then show here
 				// the mono winforms implementation is.... weird and buggy
 				ramSearch.Show();
 			}
@@ -1549,17 +1494,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new BatchRun().ShowDialog();
-		}
-
-		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<AutoHawk>();
-		}
-
-		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<NewHexEditor>();
+			using var form = new BatchRun();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -1585,7 +1521,7 @@ namespace BizHawk.Client.EmuHawk
 
 			VSControlsMenuItem.Enabled =
 			VSSettingsMenuItem.Enabled =
-				Emulator is NES && ((NES)Emulator).IsVS;
+				Emulator is NES nes && nes.IsVS;
 
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = Emulator is NES && !Global.MovieSession.Movie.IsActive;
@@ -1642,15 +1578,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES)
 			{
-				new NESGraphicsConfig().ShowDialog(this);
+				using var form = new NESGraphicsConfig();
+				form.ShowDialog(this);
 			}
 			else if (Emulator is SubNESHawk)
 			{
-				new NESGraphicsConfig().ShowDialog(this);
+				using var form = new NESGraphicsConfig();
+				form.ShowDialog(this);
 			}
 			else if (Emulator is QuickNES)
 			{
-				new QuickNesConfig().ShowDialog(this);
+				using var form = new QuickNesConfig();
+				form.ShowDialog(this);
 			}
 		}
 
@@ -1661,9 +1600,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES && ((NES)Emulator).IsVS)
+			if (Emulator is NES nes && nes.IsVS)
 			{
-				new NesVsSettings().ShowHawkDialog();
+				using var form = new NesVsSettings();
+				form.ShowHawkDialog();
 			}
 		}
 
@@ -1678,7 +1618,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES && ((NES)Emulator).IsVS)
+			if (Emulator is NES nes && nes.IsVS)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -1690,7 +1630,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES && ((NES)Emulator).IsVS)
+			if (Emulator is NES nes && nes.IsVS)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -1702,7 +1642,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES && ((NES)Emulator).IsVS)
+			if (Emulator is NES nes && nes.IsVS)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -1716,11 +1656,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES)
 			{
-				new NesControllerSettings().ShowDialog();
+				using var form = new NesControllerSettings();
+				form.ShowDialog();
 			}
 			else if (Emulator is SubNESHawk)
 			{
-				new NesControllerSettings().ShowDialog();
+				using var form = new NesControllerSettings();
+				form.ShowDialog();
 			}
 			else if (Emulator is QuickNES)
 			{
@@ -1766,7 +1708,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PCEGraphicsConfig().ShowDialog();
+			using var form = new PCEGraphicsConfig();
+			form.ShowDialog();
 		}
 
 		private void PceBgViewerMenuItem_Click(object sender, EventArgs e)
@@ -1842,7 +1785,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SMSDisplayOverscanMenuItem.Visible =
 				Global.Game.System == "SMS" || Global.Game.System == "SG";
-			
+
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMSdisplayToolStripMenuItem.Visible =
@@ -1973,7 +1916,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new SMSGraphicsConfig().ShowDialog();
+			using var form = new SMSGraphicsConfig();
+			form.ShowDialog();
 		}
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -2013,7 +1957,7 @@ namespace BizHawk.Client.EmuHawk
 			s.ControllerType = "Sports Pad";
 			PutCoreSyncSettings(s);
 		}
-		
+
 		private void SMSControllerKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var s = ((SMS)Emulator).GetSyncSettings();
@@ -2043,7 +1987,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
 			var ti83 = (TI83)Emulator;
-			var ofd = new OpenFileDialog
+			using var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
 				Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*",
@@ -2070,7 +2014,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage(new TI83PaletteConfig().ShowDialog() == DialogResult.OK
+			using var form = new TI83PaletteConfig();
+			GlobalWin.OSD.AddMessage(form.ShowDialog() == DialogResult.OK
 				? "Palette settings saved"
 				: "Palette config aborted");
 		}
@@ -2096,12 +2041,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new A7800ControllerSettings().ShowDialog();
+			using var form = new A7800ControllerSettings();
+			form.ShowDialog();
 		}
 
 		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new A7800FilterSettings().ShowDialog();
+			using var form = new A7800FilterSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2119,7 +2066,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GBPrefs.DoGBPrefsDialog(this);
 			}
-			else // sameboy
+			else // SameBoy
 			{
 				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
 			}
@@ -2149,6 +2096,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region GBA
 
+		private void GBACoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
+		}
+
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBAGPUView>();
@@ -2168,14 +2120,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
-			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
-		}
-
-		private void GbaWithmGBAMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA ^= true;
-			FlagNeedsReboot();
+			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA;
+			GBAVBANextMenuItem.Checked = !Global.Config.GBA_UsemGBA;
 		}
 
 		#endregion
@@ -2189,7 +2135,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfigNew().ShowDialog();
+			using var form = new PSXControllerConfigNew();
+			form.ShowDialog();
 		}
 
 		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
@@ -2208,7 +2155,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXHashDiscs().ShowDialog();
+			using var form = new PSXHashDiscs();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2232,7 +2180,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			new SNESControllerSettings().ShowDialog();
+			using var form = new SNESControllerSettings();
+			form.ShowDialog();
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -2254,6 +2203,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			SNESOptions.DoSettingsDialog(this);
+		}
+
+		private void Snes9xSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
 		}
 
 		#endregion
@@ -2284,7 +2238,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new ColecoControllerSettings().ShowDialog();
+			using var form = new ColecoControllerSettings();
+			form.ShowDialog();
 		}
 
 		#endregion
@@ -2309,7 +2264,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new N64VideoPluginconfig().ShowDialog() == DialogResult.OK)
+			using var form = new N64VideoPluginconfig();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				if (Emulator.IsNull())
 				{
@@ -2317,7 +2273,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					// Do nothing, Reboot is being flagged already if they chaned anything
+					// Do nothing, Reboot is being flagged already if they changed anything
 				}
 			}
 			else
@@ -2328,7 +2284,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
+			using var form = new N64ControllersSetup();
+			if (form.ShowDialog() == DialogResult.OK)
 			{
 				FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
@@ -2422,6 +2379,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region O2Hawk
+
+		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Odyssey Settings");
+		}
+
+		#endregion
+
 		#region GEN
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)
@@ -2443,7 +2409,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Wondersawn
 
-		private void WondersawnSettingsMenuItem_Click(object sender, EventArgs e)
+		private void WonderSwanSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
 		}
@@ -2469,9 +2435,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AppleDisksSubMenu.DropDownItems.Clear();
 
-			if (Emulator is AppleII)
+			if (Emulator is AppleII appleII)
 			{
-				var appleII = (AppleII)Emulator;
 				for (int i = 0; i < appleII.DiskCount; i++)
 				{
 					var menuItem = new ToolStripMenuItem
@@ -2508,9 +2473,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			C64DisksSubMenu.DropDownItems.Clear();
 
-			if (Emulator is C64)
+			if (Emulator is C64 c64)
 			{
-				var c64 = (C64)Emulator;
 				for (int i = 0; i < c64.DiskCount; i++)
 				{
 					var menuItem = new ToolStripMenuItem
@@ -2540,270 +2504,291 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Intv
 
-		private void IntvSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			IntVControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new IntvControllerSettings().ShowDialog();
+			using var form = new IntvControllerSettings();
+			form.ShowDialog();
 		}
 
-        #endregion
+		#endregion
 
-        #region ZXSpectrum
+		#region VirtualBoy
+		private void VirtualBoySettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
+		}
 
-        private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
+		#endregion
 
-        }
+		#region NeoGeoPocket
 
-        
-        private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
-        {
-            GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
-        }
-        
+		private void NeoGeoSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
+		}
 
-        private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumJoystickSettings().ShowDialog();
-        }
+		#endregion
 
-        private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumCoreEmulationSettings().ShowDialog();
-        }
+		#region PC-FX
 
-        private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumNonSyncSettings().ShowDialog();
-        }
+		private void PCFXSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
+		}
 
-        private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumAudioSettings().ShowDialog();
-        }
+		#endregion
 
-        private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
-        {
-            new ZXSpectrumPokeMemory().ShowDialog();
-        }
+		#region ZXSpectrum
 
-        private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            if (Emulator is ZXSpectrum)
-            {
-                ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
-                ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
-            }
-        }
+		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new ZXSpectrumJoystickSettings();
+			form.ShowDialog();
+		}
 
-        private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            ZXSpectrumTapesSubMenu.DropDownItems.Clear();
+		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new ZXSpectrumCoreEmulationSettings();
+			form.ShowDialog();
+		}
 
-            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new ZXSpectrumNonSyncSettings();
+			form.ShowDialog();
+		}
 
-            if (Emulator is ZXSpectrum)
-            {
-                var speccy = (ZXSpectrum)Emulator;
-                var currSel = speccy._machine.TapeMediaIndex;
+		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new ZXSpectrumAudioSettings();
+			form.ShowDialog();
+		}
 
-                for (int i = 0; i < speccy._tapeInfo.Count; i++)
-                {
-                    string name = speccy._tapeInfo[i].Name;
+		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new ZXSpectrumPokeMemory();
+			form.ShowDialog();
+		}
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = $"{i}_{name}",
-                        Text = $"{i}: {name}",
-                        Checked = currSel == i
-                    };
+		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Emulator is ZXSpectrum)
+			{
+				ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
+				ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
+			}
+		}
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        speccy._machine.TapeMediaIndex = dummy;
-                    };
-
-                    items.Add(menuItem);
-                }
-            }
-
-            ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
-        }
-
-        private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            ZXSpectrumDisksSubMenu.DropDownItems.Clear();
-
-            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
-
-            if (Emulator is ZXSpectrum)
-            {
-                var speccy = (ZXSpectrum)Emulator;
-                var currSel = speccy._machine.DiskMediaIndex;
-
-                for (int i = 0; i < speccy._diskInfo.Count; i++)
-                {
-                    string name = speccy._diskInfo[i].Name;
-
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = $"{i}_{name}",
-                        Text = $"{i}: {name}",
-                        Checked = currSel == i
-                    };
-
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        speccy._machine.DiskMediaIndex = dummy;
-                    };
-
-                    items.Add(menuItem);
-                }
-            }
-
-            ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
-        }
-
-        private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog zxSnapExpDialog = new SaveFileDialog();
-            zxSnapExpDialog.RestoreDirectory = true;
-            zxSnapExpDialog.Title = "EXPERIMENTAL - Export 3rd party snapshot formats";
-            zxSnapExpDialog.DefaultExt = "szx";
-            zxSnapExpDialog.Filter = "ZX-State files (*.szx)|*.szx";
-            zxSnapExpDialog.SupportMultiDottedExtensions = true;
-
-            try
-            {
-                var res = zxSnapExpDialog.ShowDialog();
-                if (res == DialogResult.OK)
-                {
-                    var speccy = (ZXSpectrum)Emulator;
-                    var snap = speccy.GetSZXSnapshot();
-                    File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
-                    //File.WriteAllText(zxSnapExpDialog.FileName, snap);
-                }
-            }
-            catch (Exception ex)
-            {
-                var ee = ex;
-            }
-        }
-
-        #endregion
-
-        #region AmstradCPC
-
-        private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCCoreEmulationSettings().ShowDialog();
-        }
-
-        private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCAudioSettings().ShowDialog();
-        }
-
-        private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCPokeMemory().ShowDialog();
-        }
-
-        private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            if (Emulator is AmstradCPC)
-            {
-                AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
-                AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
-            }
-        }
-
-        private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
-            AmstradCPCTapesSubMenu.DropDownItems.Clear();
+		private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
 			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
-			if (Emulator is AmstradCPC)
-            {
-                var ams = (AmstradCPC)Emulator;
-                var currSel = ams._machine.TapeMediaIndex;
+			if (Emulator is ZXSpectrum speccy)
+			{
+				var tapeMediaIndex = speccy._machine.TapeMediaIndex;
 
-                for (int i = 0; i < ams._tapeInfo.Count; i++)
-                {
-                    string name = ams._tapeInfo[i].Name;
+				for (int i = 0; i < speccy._tapeInfo.Count; i++)
+				{
+					string name = speccy._tapeInfo[i].Name;
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = $"{i}_{name}",
-                        Text = $"{i}: {name}",
-                        Checked = currSel == i
-                    };
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = $"{i}_{name}",
+						Text = $"{i}: {name}",
+						Checked = tapeMediaIndex == i
+					};
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        ams._machine.TapeMediaIndex = dummy;
-                    };
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						speccy._machine.TapeMediaIndex = dummy;
+					};
 
 					items.Add(menuItem);
 				}
-            }
+			}
+
+			ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
+
+		private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			ZXSpectrumDisksSubMenu.DropDownItems.Clear();
+
+			var items = new List<ToolStripMenuItem>();
+
+			if (Emulator is ZXSpectrum speccy)
+			{
+				var diskMediaIndex = speccy._machine.DiskMediaIndex;
+
+				for (int i = 0; i < speccy._diskInfo.Count; i++)
+				{
+					string name = speccy._diskInfo[i].Name;
+
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = $"{i}_{name}",
+						Text = $"{i}: {name}",
+						Checked = diskMediaIndex == i
+					};
+
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						speccy._machine.DiskMediaIndex = dummy;
+					};
+
+					items.Add(menuItem);
+				}
+			}
+
+			ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
+
+		private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
+		{
+			using var zxSnapExpDialog = new SaveFileDialog
+			{
+				RestoreDirectory = true
+				, Title = "EXPERIMENTAL - Export 3rd party snapshot formats"
+				, DefaultExt = "szx"
+				, Filter = "ZX-State files (*.szx)|*.szx"
+				, SupportMultiDottedExtensions = true
+			};
+
+			try
+			{
+				var res = zxSnapExpDialog.ShowDialog();
+				if (res == DialogResult.OK)
+				{
+					var speccy = (ZXSpectrum)Emulator;
+					var snap = speccy.GetSZXSnapshot();
+					File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
+				}
+			}
+			catch (Exception ex)
+			{
+				var ee = ex;
+			}
+		}
+
+		#endregion
+
+		#region AmstradCPC
+
+		private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new AmstradCPCCoreEmulationSettings();
+			form.ShowDialog();
+		}
+
+		private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new AmstradCPCAudioSettings();
+			form.ShowDialog();
+		}
+
+		private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new AmstradCPCPokeMemory();
+			form.ShowDialog();
+		}
+
+		private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Emulator is AmstradCPC)
+			{
+				AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
+				AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
+			}
+		}
+
+		private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AmstradCPCTapesSubMenu.DropDownItems.Clear();
+
+			var items = new List<ToolStripMenuItem>();
+
+			if (Emulator is AmstradCPC ams)
+			{
+				var tapeMediaIndex = ams._machine.TapeMediaIndex;
+
+				for (int i = 0; i < ams._tapeInfo.Count; i++)
+				{
+					string name = ams._tapeInfo[i].Name;
+
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = $"{i}_{name}",
+						Text = $"{i}: {name}",
+						Checked = tapeMediaIndex == i
+					};
+
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						ams._machine.TapeMediaIndex = dummy;
+					};
+
+					items.Add(menuItem);
+				}
+			}
 
 			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-        private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
-        {
+		private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 
-			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+			var items = new List<ToolStripMenuItem>();
 
-			if (Emulator is AmstradCPC)
-            {
-                var ams = (AmstradCPC)Emulator;
-                var currSel = ams._machine.DiskMediaIndex;
+			if (Emulator is AmstradCPC ams)
+			{
+				var diskMediaIndex = ams._machine.DiskMediaIndex;
 
-                for (int i = 0; i < ams._diskInfo.Count; i++)
-                {
-                    string name = ams._diskInfo[i].Name;
+				for (int i = 0; i < ams._diskInfo.Count; i++)
+				{
+					string name = ams._diskInfo[i].Name;
 
-                    var menuItem = new ToolStripMenuItem
-                    {
-                        Name = $"{i}_{name}",
-                        Text = $"{i}: {name}",
-                        Checked = currSel == i
-                    };
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = $"{i}_{name}",
+						Text = $"{i}: {name}",
+						Checked = diskMediaIndex == i
+					};
 
-                    int dummy = i;
-                    menuItem.Click += (o, ev) =>
-                    {
-                        ams._machine.DiskMediaIndex = dummy;
-                    };
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						ams._machine.DiskMediaIndex = dummy;
+					};
 
 					items.Add(menuItem);
 				}
-            }
+			}
 
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-        private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AmstradCPCNonSyncSettings().ShowDialog();
-        }
+		private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using var form = new AmstradCPCNonSyncSettings();
+			form.ShowDialog();
+		}
 
-        #endregion
+		#endregion
 
-        #region Help
+		#region Help
 
-        private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -2827,11 +2812,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VersionInfo.DeveloperBuild)
 			{
-				new AboutBox().ShowDialog();
+				using var form = new AboutBox();
+				form.ShowDialog();
 			}
 			else
 			{
-				new BizBox().ShowDialog();
+				using var form = new BizBox();
+				form.ShowDialog();
 			}
 		}
 
@@ -2853,9 +2840,9 @@ namespace BizHawk.Client.EmuHawk
 				showMenuVisible = true; // need to always be able to restore this as an emergency measure
 			}
 
-			if (argParser._chromeless)
+			if (_argParser._chromeless)
 			{
-				showMenuVisible = true; // I decided this was always possible in chromeless mode, we'll see what they think
+				showMenuVisible = true; // I decided this was always possible in chrome-less mode, we'll see what they think
 			}
 
 			ShowMenuContextMenuItem.Visible =
@@ -2970,7 +2957,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new DisplayConfigLite();
+			using var window = new DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
@@ -3003,7 +2990,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
+				using var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -3049,7 +3036,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				var form = new EditCommentsForm();
+				using var form = new EditCommentsForm();
 				form.GetMovie(Global.MovieSession.Movie);
 				form.ShowDialog();
 			}
@@ -3146,7 +3133,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
-			var profileForm = new ProfileConfig();
+			using var profileForm = new ProfileConfig();
 			profileForm.ShowDialog();
 			Global.Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;
@@ -3256,6 +3243,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
+			if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+			{
+				GlobalWin.Tools.Load<TI83KeyPad>();
+			}
+
+			GlobalWin.Tools.AutoLoad();
+
+			if (Global.Config.RecentWatches.AutoLoad)
+			{
+				GlobalWin.Tools.LoadRamWatch(!Global.Config.DisplayRamWatch);
+			}
+
+			if (Global.Config.RecentCheats.AutoLoad)
+			{
+				GlobalWin.Tools.Load<Cheats>();
+			}
+
 			HandlePlatformMenus();
 		}
 
@@ -3297,119 +3301,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				FormDragDrop_Internal(sender, e);
+				FormDragDrop_internal(e);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show($"Exception on drag and drop:\n{ex}");
 			}
-		}
-
-		private void FormDragDrop_Internal(object sender, DragEventArgs e)
-		{
-			_FormDragDrop_internal(sender, e);
-/*
-			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			var isLua = false;
-			foreach (var path in filePaths)
-			{
-				var extension = Path.GetExtension(path);
-				if (extension != null && extension.ToUpper() == ".LUA")
-				{
-					OpenLuaConsole();
-					if (GlobalWin.Tools.Has<LuaConsole>())
-					{
-						GlobalWin.Tools.LuaConsole.LoadLuaFile(path);
-					}
-					isLua = true;
-				}
-			}
-			if (isLua)
-			{
-				return;
-			}
-
-			var ext = Path.GetExtension(filePaths[0]) ?? "";
-			if (ext.ToUpper() == ".LUASES")
-			{
-				OpenLuaConsole();
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LoadLuaSession(filePaths[0]);
-				}
-			}
-			else if (MovieService.IsValidMovieExtension(ext))
-			{
-				if (Emulator.IsNull())
-				{
-					OpenRom();
-				}
-
-				if (Emulator.IsNull())
-				{
-					return;
-				}
-
-				StartNewMovie(MovieService.Get(filePaths[0]), false);
-			}
-			else if (ext.ToUpper() == ".STATE")
-			{
-				LoadState(filePaths[0], Path.GetFileName(filePaths[0]));
-			}
-			else if (ext.ToUpper() == ".CHT")
-			{
-				Global.CheatList.Load(filePaths[0], false);
-				GlobalWin.Tools.Load<Cheats>();
-			}
-			else if (ext.ToUpper() == ".WCH")
-			{
-				GlobalWin.Tools.LoadRamWatch(true);
-				(GlobalWin.Tools.Get<RamWatch>() as RamWatch).LoadWatchFile(new FileInfo(filePaths[0]), false);
-			}
-
-			else if (ext.ToUpper() == ".CDL" && Emulator is PCEngine)
-			{
-				GlobalWin.Tools.Load<CDL>();
-				(GlobalWin.Tools.Get<CDL>() as CDL).LoadFile(filePaths[0]);
-			}
-
-			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
-			{
-				if (Emulator.IsNull())
-				{
-					OpenRom();
-				}
-
-				if (Emulator.IsNull())
-				{
-					return;
-				}
-
-				// tries to open a legacy movie format by importing it
-				string errorMsg;
-				string warningMsg;
-				var movie = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
-				if (!string.IsNullOrEmpty(errorMsg))
-				{
-					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				else
-				{
-					// fix movie extension to something palatable for these purposes. 
-					// for instance, something which doesnt clobber movies you already may have had.
-					// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
-					StartNewMovie(movie, false);
-				}
-
-				GlobalWin.OSD.AddMessage(warningMsg);
-			}
-			else
-			{
-				var args = new LoadRomArgs();
-				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
-				LoadRom(filePaths[0], args);
-			}
- */
 		}
 
 		#endregion

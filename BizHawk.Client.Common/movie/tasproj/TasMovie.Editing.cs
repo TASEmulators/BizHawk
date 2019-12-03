@@ -19,12 +19,12 @@ namespace BizHawk.Client.Common
 
 			base.RecordFrame(frame, source);
 
-			_lagLog.RemoveFrom(frame);
-			_lagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+			TasLagLog.RemoveFrom(frame);
+			TasLagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
 			if (IsRecording)
 			{
-				_stateManager.Invalidate(frame + 1);
+				TasStateManager.Invalidate(frame + 1);
 			}
 
 			if (frame != 0)
@@ -45,8 +45,8 @@ namespace BizHawk.Client.Common
 
 			base.Truncate(frame);
 
-			_lagLog.RemoveFrom(frame);
-			_stateManager.Invalidate(frame);
+			TasLagLog.RemoveFrom(frame);
+			TasStateManager.Invalidate(frame);
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
@@ -126,8 +126,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO: consider making this IEnumerable<int> instead of forcing the collection to be an array
-		public void RemoveFrames(int[] frames)
+		public void RemoveFrames(ICollection<int> frames)
 		{
 			if (frames.Any())
 			{
@@ -305,8 +304,9 @@ namespace BizHawk.Client.Common
 			InsertInput(frame, inputLog); // Sets the ChangeLog
 		}
 
-		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
+		public int CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
+			int firstChangedFrame = -1;
 			ChangeLog.BeginNewBatch($"Copy Over Input: {frame}");
 			var lg = LogGeneratorInstance();
 			var states = inputStates.ToList();
@@ -316,7 +316,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(states.Count + frame - Log.Count);
 			}
 
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, $"Copy Over Input: {frame}");
+			ChangeLog.AddGeneralUndo(frame, frame + states.Count - 1, $"Copy Over Input: {frame}");
 
 			for (int i = 0; i < states.Count; i++)
 			{
@@ -326,7 +326,13 @@ namespace BizHawk.Client.Common
 				}
 
 				lg.SetSource(states[i]);
-				Log[frame + i] = lg.GenerateLogEntry();
+				var entry = lg.GenerateLogEntry();
+				if (firstChangedFrame == -1 && Log[frame + i] != entry)
+				{
+					firstChangedFrame = frame + i;
+				}
+
+				Log[frame + i] = entry;
 			}
 
 			ChangeLog.EndBatch();
@@ -334,6 +340,7 @@ namespace BizHawk.Client.Common
 			InvalidateAfter(frame);
 
 			ChangeLog.SetGeneralRedo();
+			return firstChangedFrame;
 		}
 
 		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
@@ -545,17 +552,17 @@ namespace BizHawk.Client.Common
 
 		public void RemoveLagHistory(int frame)
 		{
-			_lagLog.RemoveHistoryAt(frame);
+			TasLagLog.RemoveHistoryAt(frame);
 		}
 
 		public void InsertLagHistory(int frame, bool isLag)
 		{
-			_lagLog.InsertHistoryAt(frame, isLag);
+			TasLagLog.InsertHistoryAt(frame, isLag);
 		}
 
 		public void SetLag(int frame, bool? value)
 		{
-			_lagLog[frame] = value;
+			TasLagLog[frame] = value;
 		}
 
 		#endregion

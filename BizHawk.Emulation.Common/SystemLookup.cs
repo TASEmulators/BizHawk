@@ -22,20 +22,22 @@ namespace BizHawk.Emulation.Common
 			new SystemInfo { SystemId = "PSX", FullName = "Playstation" },
 
 			new SystemInfo { SystemId = "SMS", FullName = "Sega Master System" },
-			new SystemInfo { SystemId = "GEN", FullName = "Sega Genesis/Megadrive" },
+			new SystemInfo { SystemId = "GEN", FullName = "Sega Genesis/Mega Drive" },
 			new SystemInfo { SystemId = "SAT", FullName = "Sega Saturn" },
 
 			new SystemInfo { SystemId = "PCE", FullName = "PC Engine/TurboGrafx 16" },
-			new SystemInfo { SystemId = "Coleco", FullName = "Colecovision" },
+			new SystemInfo { SystemId = "Coleco", FullName = "ColecoVision" },
 			new SystemInfo { SystemId = "TI83", FullName = "TI-83 Calculator" },
 			new SystemInfo { SystemId = "WSWAN", FullName = "WonderSwan" },
 
 			new SystemInfo { SystemId = "C64", FullName = "Commodore 64" },
 			new SystemInfo { SystemId = "AppleII", FullName = "Apple II" },
-			new SystemInfo { SystemId = "INTV", FullName = "Intellivision" },
-            new SystemInfo { SystemId = "ZXSpectrum", FullName = "Sinclair ZX Spectrum" },
-            new SystemInfo { SystemId = "AmstradCPC", FullName = "Amstrad CPC" },
+			new SystemInfo { SystemId = "INTV", FullName = "IntelliVision" },
+			new SystemInfo { SystemId = "ZXSpectrum", FullName = "Sinclair ZX Spectrum" },
+			new SystemInfo { SystemId = "AmstradCPC", FullName = "Amstrad CPC" },
 			new SystemInfo { SystemId = "ChannelF", FullName = "Fairchild Channel F"},
+			new SystemInfo { SystemId = "O2", FullName = "Odyssey2"},
+			new SystemInfo { SystemId = "VEC", FullName = "Vectrex"}
 		};
 
 		public SystemInfo this[string systemId]
@@ -43,13 +45,7 @@ namespace BizHawk.Emulation.Common
 			get
 			{
 				var system = _systems.FirstOrDefault(s => s.SystemId == systemId);
-
-				if (system != null)
-				{
-					return system;
-				}
-
-				return new SystemInfo { SystemId = "Unknown", FullName = "Unknown" };
+				return system ?? new SystemInfo { SystemId = "Unknown", FullName = "Unknown" };
 			}
 		}
 

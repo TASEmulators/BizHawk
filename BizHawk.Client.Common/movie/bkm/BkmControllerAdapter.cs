@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public class BkmControllerAdapter : IMovieController
+	internal class BkmControllerAdapter : IController
 	{
 		#region IController Implementation
 
@@ -22,54 +22,6 @@ namespace BizHawk.Client.Common
 		}
 
 		#endregion
-
-		#region IMovieController Implementation
-
-		/// <summary>
-		/// latches one player from the source
-		/// </summary>
-		public void LatchPlayerFromSource(IController playerSource, int playerNum)
-		{
-			foreach (var button in playerSource.Definition.BoolButtons)
-			{
-				var bnp = ButtonNameParser.Parse(button);
-
-				if (bnp?.PlayerNum != playerNum)
-				{
-					continue;
-				}
-
-				var val = playerSource.IsPressed(button);
-				_myBoolButtons[button] = val;
-			}
-		}
-
-		/// <summary>
-		/// latches all buttons from the provided source
-		/// </summary>
-		public void LatchFromSource(IController source)
-		{
-			foreach (var button in Definition.BoolButtons)
-			{
-				_myBoolButtons[button] = source.IsPressed(button);
-			}
-
-			foreach (var name in Definition.FloatControls)
-			{
-				_myFloatControls[name] = source.GetFloat(name);
-			}
-		}
-
-		/// <summary>
-		/// latches sticky buttons from Global.AutofireStickyXORAdapter
-		/// </summary>
-		public void LatchSticky()
-		{
-			foreach (var button in Definition.BoolButtons)
-			{
-				_myBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
-			}
-		}
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
@@ -123,7 +75,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			if (ControlType == "Nintento 64 Controller")
+			if (ControlType == "Nintendo 64 Controller")
 			{
 				SetN64ControllersAsMnemonic(mnemonic);
 				return;
@@ -272,8 +224,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
-
-		#endregion
 
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();

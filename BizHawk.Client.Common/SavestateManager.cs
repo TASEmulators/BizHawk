@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -16,86 +15,84 @@ namespace BizHawk.Client.Common
 
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
-			using (var bs = new BinaryStateSaver(filename))
+			using var bs = new BinaryStateSaver(filename);
+			if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text
+				|| (Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
 			{
-				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
-					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
+				// text savestate format
+				using (new SimpleTime("Save Core"))
 				{
-					// text savestate format
-					using (new SimpleTime("Save Core"))
-					{
-						bs.PutLump(BinaryStateLump.CorestateText, (tw) => core.SaveStateText(tw));
-					}
+					bs.PutLump(BinaryStateLump.CorestateText, tw => core.SaveStateText(tw));
+				}
+			}
+			else
+			{
+				// binary core lump format
+				using (new SimpleTime("Save Core"))
+				{
+					bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
+				}
+			}
+
+			if (Global.Config.SaveScreenshotWithStates && Global.Emulator.HasVideoProvider())
+			{
+				var vp = Global.Emulator.AsVideoProvider();
+				var buff = vp.GetVideoBuffer();
+				if (buff.Length == 1)
+				{
+					// is a hacky opengl texture ID. can't handle this now!
+					// need to discuss options
+					// 1. cores must be able to provide a pixels VideoProvider in addition to a texture ID, on command (not very hard overall but interface changing and work per core)
+					// 2. SavestateManager must be setup with a mechanism for resolving texture IDs (even less work, but sloppy)
+					// There are additional problems with AVWriting. They depend on VideoProvider providing pixels.
 				}
 				else
 				{
-					// binary core lump format
-					using (new SimpleTime("Save Core"))
+					int outWidth = vp.BufferWidth;
+					int outHeight = vp.BufferHeight;
+
+					// if buffer is too big, scale down screenshot
+					if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
 					{
-						bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
+						outWidth /= 2;
+						outHeight /= 2;
+					}
+
+					using (new SimpleTime("Save Framebuffer"))
+					{
+						bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, outWidth, outHeight));
 					}
 				}
+			}
 
-				if (Global.Config.SaveScreenshotWithStates && Global.Emulator.HasVideoProvider())
-				{
-					var vp = Global.Emulator.AsVideoProvider();
-					var buff = vp.GetVideoBuffer();
-					if (buff.Length == 1)
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				bs.PutLump(BinaryStateLump.Input,
+					delegate(TextWriter tw)
 					{
-						// is a hacky opengl texture ID. can't handle this now!
-						// need to discuss options
-						// 1. cores must be able to provide a pixels videoprovider in addition to a texture ID, on command (not very hard overall but interface changing and work per core)
-						// 2. SavestateManager must be setup with a mechanism for resolving texture IDs (even less work, but sloppy)
-						// There are additional problems with AVWriting. They depend on VideoProvider providing pixels.
-					}
-					else
+						// this never should have been a core's responsibility
+						tw.WriteLine("Frame {0}", Global.Emulator.Frame);
+						Global.MovieSession.HandleMovieSaveState(tw);
+					});
+			}
+
+			if (Global.UserBag.Any())
+			{
+				bs.PutLump(BinaryStateLump.UserData,
+					delegate(TextWriter tw)
 					{
-						int out_w = vp.BufferWidth;
-						int out_h = vp.BufferHeight;
+						var data = ConfigService.SaveWithType(Global.UserBag);
+						tw.WriteLine(data);
+					});
+			}
 
-						// if buffer is too big, scale down screenshot
-						if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
-						{
-							out_w /= 2;
-							out_h /= 2;
-						}
-
-						using (new SimpleTime("Save Framebuffer"))
-						{
-							bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, out_w, out_h));
-						}
-					}
-				}
-
-				if (Global.MovieSession.Movie.IsActive)
-				{
-					bs.PutLump(BinaryStateLump.Input,
-						delegate(TextWriter tw)
-						{
-							// this never should have been a core's responsibility
-							tw.WriteLine("Frame {0}", Global.Emulator.Frame);
-							Global.MovieSession.HandleMovieSaveState(tw);
-						});
-				}
-
-				if (Global.UserBag.Any())
-				{
-					bs.PutLump(BinaryStateLump.UserData,
-						delegate(TextWriter tw)
-						{
-							var data = ConfigService.SaveWithType(Global.UserBag);
-							tw.WriteLine(data);
-						});
-				}
-
-				if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
-				{
-					bs.PutLump(BinaryStateLump.LagLog,
-						delegate(TextWriter tw)
-						{
-							(Global.MovieSession.Movie as TasMovie).TasLagLog.Save(tw);
-						});
-				}
+			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			{
+				bs.PutLump(BinaryStateLump.LagLog,
+					delegate(TextWriter tw)
+					{
+						((TasMovie)Global.MovieSession.Movie).TasLagLog.Save(tw);
+					});
 			}
 		}
 
@@ -126,17 +123,6 @@ namespace BizHawk.Client.Common
 				}
 				catch (EndOfStreamException)
 				{
-				}
-			}
-		}
-
-		public static void PopulateFramebuffer(byte[] bytes)
-		{
-			using (var ms = new MemoryStream(bytes))
-			{
-				using (var br = new BinaryReader(ms))
-				{
-					PopulateFramebuffer(br);
 				}
 			}
 		}
@@ -208,10 +194,8 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 	}
 }

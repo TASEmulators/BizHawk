@@ -15,11 +15,7 @@ namespace BizHawk.Client.Common
 
 		public string SyncSettingsJson
 		{
-			get
-			{
-				return _syncSettingsJson;
-			}
-
+			get => _syncSettingsJson;
 			set
 			{
 				if (_syncSettingsJson != value)
@@ -154,11 +150,7 @@ namespace BizHawk.Client.Common
 
 		public string Hash
 		{
-			get
-			{
-				return Header[HeaderKeys.SHA1];
-			}
-
+			get => Header[HeaderKeys.SHA1];
 			set
 			{
 				if (Header[HeaderKeys.SHA1] != value)
@@ -171,11 +163,7 @@ namespace BizHawk.Client.Common
 
 		public string Author
 		{
-			get
-			{
-				return Header[HeaderKeys.AUTHOR];
-			}
-
+			get => Header[HeaderKeys.AUTHOR];
 			set
 			{
 				if (Header[HeaderKeys.AUTHOR] != value)
@@ -188,11 +176,7 @@ namespace BizHawk.Client.Common
 
 		public string Core
 		{
-			get
-			{
-				return Header[HeaderKeys.CORE];
-			}
-
+			get => Header[HeaderKeys.CORE];
 			set
 			{
 				if (Header[HeaderKeys.CORE] != value)
@@ -205,11 +189,7 @@ namespace BizHawk.Client.Common
 
 		public string BoardName
 		{
-			get
-			{
-				return Header[HeaderKeys.BOARDNAME];
-			}
-
+			get => Header[HeaderKeys.BOARDNAME];
 			set
 			{
 				if (Header[HeaderKeys.BOARDNAME] != value)
@@ -222,11 +202,7 @@ namespace BizHawk.Client.Common
 
 		public string EmulatorVersion
 		{
-			get
-			{
-				return Header[HeaderKeys.EMULATIONVERSION];
-			}
-
+			get => Header[HeaderKeys.EMULATIONVERSION];
 			set
 			{
 				if (Header[HeaderKeys.EMULATIONVERSION] != value)
@@ -239,11 +215,7 @@ namespace BizHawk.Client.Common
 
 		public string FirmwareHash
 		{
-			get
-			{
-				return Header[HeaderKeys.FIRMWARESHA1];
-			}
-
+			get => Header[HeaderKeys.FIRMWARESHA1];
 			set
 			{
 				if (Header[HeaderKeys.FIRMWARESHA1] != value)

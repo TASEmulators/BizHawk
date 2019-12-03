@@ -13,7 +13,6 @@ namespace BizHawk.Client.Common
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
 		public const string STARTSFROMSAVERAM = "StartsFromSaveRam";
 		public const string SAVESTATEBINARYBASE64BLOB = "SavestateBinaryBase64Blob"; // this string will not contain base64: ; it's implicit (this is to avoid another big string op to dice off the base64: substring)
-		public const string FOURSCORE = "FourScore";
 		public const string SHA1 = "SHA1";
 		public const string FIRMWARESHA1 = "FirmwareSHA1";
 		public const string PAL = "PAL";
@@ -23,9 +22,6 @@ namespace BizHawk.Client.Common
 
 		// Core Setting
 		public const string CORE = "Core";
-
-		// Plugin Settings
-		public const string VIDEOPLUGIN = "VideoPlugin";
 
 		public static bool Contains(string val)
 		{

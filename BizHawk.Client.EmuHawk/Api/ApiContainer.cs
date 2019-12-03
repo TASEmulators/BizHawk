@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 
 using BizHawk.Client.ApiHawk;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public IMem Mem => (IMem)Libraries[typeof(MemApi)];
 		public IMemEvents MemEvents => (IMemEvents)Libraries[typeof(MemEventsApi)];
 		public IMemorySaveState MemorySaveState => (IMemorySaveState)Libraries[typeof(MemorySaveStateApi)];
-		public IMovie Movie => (IMovie)Libraries[typeof(MovieApi)];
+		public IInputMovie Movie => (IInputMovie)Libraries[typeof(MovieApi)];
 		public ISaveState SaveState => (ISaveState)Libraries[typeof(SaveStateApi)];
 		public ISql Sql => (ISql)Libraries[typeof(SqlApi)];
 		public ITool Tool => (ITool)Libraries[typeof(ToolApi)];

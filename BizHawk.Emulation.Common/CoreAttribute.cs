@@ -23,12 +23,12 @@ namespace BizHawk.Emulation.Common
 			SingleInstance = singleInstance;
 		}
 
-		public string CoreName { get; private set; }
-		public string Author { get; private set; }
-		public bool Ported { get; private set; }
-		public bool Released { get; private set; }
-		public string PortedVersion { get; private set; }
-		public string PortedUrl { get; private set; }
-		public bool SingleInstance { get; private set; }
+		public string CoreName { get; }
+		public string Author { get; }
+		public bool Ported { get; }
+		public bool Released { get; }
+		public string PortedVersion { get; }
+		public string PortedUrl { get; }
+		public bool SingleInstance { get; }
 	}
 }

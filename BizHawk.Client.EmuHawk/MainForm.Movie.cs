@@ -10,11 +10,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
-		public void StartNewMovie(string path, bool record)
-		{
-			StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
-		}
-
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
 			// SuuperW: Check changes. adelikat: this could break bk2 movies
@@ -30,7 +25,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
-				MessageBox.Show(new Form(){TopMost = true}, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				using var ownerForm = new Form { TopMost = true };
+				MessageBox.Show(ownerForm, ex.Message, "Movie/Platform Mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
 

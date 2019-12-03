@@ -11,6 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sony.PSP;
+using BizHawk.Emulation.Cores.Arcades.MAME;
 
 using BizHawk.Client.Common;
 
@@ -50,6 +51,10 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			else if (core is Snes9x)
 			{
 				return Properties.Resources.snes9x;
+			}
+			else if (core is MAME)
+			{
+				return Properties.Resources.mame;
 			}
 			else
 			{

@@ -133,14 +133,14 @@ namespace BizHawk.Common.BizInvoke
 					throw new InvalidOperationException();
 			}
 
-			private readonly MemoryBlock _memory;
+			private readonly MemoryBlockBase _memory;
 			private readonly object _sync = new object();
 			private readonly WeakReference[] _refs;
 
 			public SysVHostMsGuest()
 			{
 				int size = 4 * 1024 * 1024;
-				_memory = new MemoryBlock((ulong)size);
+				_memory = MemoryBlockBase.CallPlatformCtor((ulong)size);
 				_memory.Activate();
 				_refs = new WeakReference[size / BlockSize];
 			}
@@ -186,7 +186,7 @@ namespace BizHawk.Common.BizInvoke
 
 			private void WriteThunk(byte[] data, int placeholderIndex, IntPtr p, int index)
 			{
-				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RW);
+				_memory.Protect(_memory.Start, _memory.Size, MemoryBlockBase.Protection.RW);
 				var ss = _memory.GetStream(_memory.Start + (ulong)index * BlockSize, BlockSize, true);
 				ss.Write(data, 0, data.Length);
 				for (int i = data.Length; i < BlockSize; i++)
@@ -194,7 +194,7 @@ namespace BizHawk.Common.BizInvoke
 				ss.Position = placeholderIndex;
 				var bw = new BinaryWriter(ss);
 				bw.Write((long)p);
-				_memory.Protect(_memory.Start, _memory.Size, MemoryBlock.Protection.RX);
+				_memory.Protect(_memory.Start, _memory.Size, MemoryBlockBase.Protection.RX);
 			}
 
 			private IntPtr GetThunkAddress(int index)

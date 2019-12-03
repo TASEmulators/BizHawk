@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -173,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							var f = new FirmwaresConfig { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -217,15 +218,32 @@ namespace BizHawk.Client.EmuHawk
 				system = null;
 			}
 
-			var f = new FolderBrowserEx
+			DialogResult result;
+			string selectedPath;
+			if (OSTailoredCode.IsUnixHost)
 			{
-				Description = $"Set the directory for {name}",
-				SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
-			};
-			var result = f.ShowDialog();
+				// FolderBrowserEx doesn't work in Mono for obvious reasons
+				using var f = new FolderBrowserDialog
+				{
+					Description = $"Set the directory for {name}",
+					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
+			else
+			{
+				using var f = new FolderBrowserEx
+				{
+					Description = $"Set the directory for {name}",
+					SelectedPath = PathManager.MakeAbsolutePath(box.Text, system)
+				};
+				result = f.ShowDialog();
+				selectedPath = f.SelectedPath;
+			}
 			if (result == DialogResult.OK)
 			{
-				box.Text = PathManager.TryMakeRelative(f.SelectedPath, system);
+				box.Text = PathManager.TryMakeRelative(selectedPath, system);
 			}
 		}
 

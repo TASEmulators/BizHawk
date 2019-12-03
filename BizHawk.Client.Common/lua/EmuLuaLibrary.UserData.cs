@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-
 using NLua;
-
 using BizHawk.Client.Common;
 
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for setting and retrieving dynamic data that will be saved and loaded with savestates")]
@@ -38,12 +37,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("get", "gets the data with the given key, if the key does not exist it will return nil")]
 		public object Get(string key)
 		{
-			if (Global.UserBag.ContainsKey(key))
-			{
-				return Global.UserBag[key];
-			}
-
-			return null;
+			return Global.UserBag.ContainsKey(key)
+				? Global.UserBag[key]
+				: null;
 		}
 
 		[LuaMethodExample("userdata.clear( );")]

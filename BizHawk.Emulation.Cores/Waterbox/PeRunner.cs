@@ -662,18 +662,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (address != IntPtr.Zero)
 					return Z.SS(-1);
-				MemoryBlock.Protection mprot;
+				MemoryBlockBase.Protection mprot;
 				switch (prot)
 				{
-					case 0: mprot = MemoryBlock.Protection.None; break;
+					case 0: mprot = MemoryBlockBase.Protection.None; break;
 					default:
 					case 6: // W^X
 					case 7: // W^X
 					case 4: // exec only????
 					case 2: return Z.SS(-1); // write only????
-					case 3: mprot = MemoryBlock.Protection.RW; break;
-					case 1: mprot = MemoryBlock.Protection.R; break;
-					case 5: mprot = MemoryBlock.Protection.RX; break;
+					case 3: mprot = MemoryBlockBase.Protection.RW; break;
+					case 1: mprot = MemoryBlockBase.Protection.R; break;
+					case 5: mprot = MemoryBlockBase.Protection.RX; break;
 				}
 				if ((flags & 0x20) == 0)
 				{
@@ -711,18 +711,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "n10")]
 			public int MProtect(UIntPtr address, UIntPtr size, int prot)
 			{
-				MemoryBlock.Protection mprot;
+				MemoryBlockBase.Protection mprot;
 				switch (prot)
 				{
-					case 0: mprot = MemoryBlock.Protection.None; break;
+					case 0: mprot = MemoryBlockBase.Protection.None; break;
 					default:
 					case 6: // W^X
 					case 7: // W^X
 					case 4: // exec only????
 					case 2: return -1; // write only????
-					case 3: mprot = MemoryBlock.Protection.RW; break;
-					case 1: mprot = MemoryBlock.Protection.R; break;
-					case 5: mprot = MemoryBlock.Protection.RX; break;
+					case 3: mprot = MemoryBlockBase.Protection.RW; break;
+					case 1: mprot = MemoryBlockBase.Protection.R; break;
+					case 5: mprot = MemoryBlockBase.Protection.RX; break;
 				}
 				return _parent._mmapheap.Protect((ulong)address, (ulong)size, mprot) ? 0 : -1;
 			}

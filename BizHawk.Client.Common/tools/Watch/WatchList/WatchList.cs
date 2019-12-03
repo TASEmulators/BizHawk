@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		private static readonly WatchNoteComparer NoteComparer = new WatchNoteComparer();
 
 		private readonly List<Watch> _watchList = new List<Watch>(0);
-		private readonly string _systemid;
+		private readonly string _systemId;
 		private IMemoryDomains _memoryDomains;
 
 		#endregion
@@ -52,11 +52,11 @@ namespace BizHawk.Client.Common
 		/// that will contains a set of <see cref="Watch"/>
 		/// </summary>
 		/// <param name="core">All available memory domains</param>
-		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
-		public WatchList(IMemoryDomains core, string systemid)
+		/// <param name="systemId">System identifier (NES, SNES, ...)</param>
+		public WatchList(IMemoryDomains core, string systemId)
 		{
 			_memoryDomains = core;
-			_systemid = systemid;
+			_systemId = systemId;
 		}
 
 		#endregion
@@ -325,6 +325,8 @@ namespace BizHawk.Client.Common
 
 					break;
 			}
+
+			Changes = true;
 		}
 
 		/// <summary>
@@ -388,15 +390,8 @@ namespace BizHawk.Client.Common
 		/// <returns><see cref="Watch"/> at the specified index</returns>
 		public Watch this[int index]
 		{
-			get
-			{
-				return _watchList[index];
-			}
-
-			set
-			{
-				_watchList[index] = value;
-			}
+			get => _watchList[index];
+			set => _watchList[index] = value;
 		}
 
 		#endregion IList<Watch>
@@ -414,13 +409,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the number of <see cref="Watch"/> that are not <see cref="SeparatorWatch"/>
 		/// </summary>
-		public int WatchCount
-		{
-			get
-			{
-				return _watchList.Count(watch => !watch.IsSeparator);
-			}
-		}
+		public int WatchCount => _watchList.Count(watch => !watch.IsSeparator);
 
 		#endregion
 
@@ -465,7 +454,7 @@ namespace BizHawk.Client.Common
 			using (var sw = new StreamWriter(CurrentFileName))
 			{
 				var sb = new StringBuilder();
-				sb.Append("SystemID ").AppendLine(_systemid);
+				sb.Append("SystemID ").AppendLine(_systemId);
 
 				foreach (var watch in _watchList)
 				{
@@ -607,14 +596,7 @@ namespace BizHawk.Client.Common
 				CurrentFileName = path;
 			}
 
-			if (!append)
-			{
-				Changes = false;
-			}
-			else
-			{
-				Changes = true;
-			}
+			Changes = append;
 
 			return true;
 		}

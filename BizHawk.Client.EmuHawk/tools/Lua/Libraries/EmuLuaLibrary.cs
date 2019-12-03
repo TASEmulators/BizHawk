@@ -17,14 +17,30 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public EmuLuaLibrary()
 		{
-			Docs = new LuaDocumentation();
-			//if(NLua.Lua.WhichLua == "NLua")
+//			if (NLua.Lua.WhichLua == "NLua")
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
+			static APISubsetContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
+			{
+				var ctorParamTypes = new[] { typeof(Action<string>) };
+				var ctorParams = new object[] { logCallback };
+				var libDict = new Dictionary<Type, IExternalApi>();
+				foreach (var api in Assembly.Load("BizHawk.Client.ApiHawk").GetTypes()
+					.Concat(Assembly.GetAssembly(typeof(APISubsetContainer)).GetTypes())
+					.Where(t => t.IsSealed && typeof(IExternalApi).IsAssignableFrom(t) && ServiceInjector.IsAvailable(sp, t)))
+				{
+					var ctorWithParams = api.GetConstructor(ctorParamTypes);
+					var instance = (IExternalApi) (ctorWithParams == null ? Activator.CreateInstance(api) : ctorWithParams.Invoke(ctorParams));
+					ServiceInjector.UpdateServices(sp, instance);
+					libDict.Add(api, instance);
+				}
+				return ApiHawkContainerInstance = new APISubsetContainer(libDict);
+			}
+
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
 
@@ -48,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Any())
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
+					addLibrary = VersionInfo.DeveloperBuild || ((LuaLibraryAttribute)attributes.First()).Released;
 				}
 
 				if (addLibrary)
@@ -57,6 +73,8 @@ namespace BizHawk.Client.EmuHawk
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					ServiceInjector.UpdateServices(serviceProvider, instance);
+					if (instance is DelegatingLuaLibrary dlgInstance)
+						dlgInstance.APIs = ApiHawkContainerInstance ?? InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -78,6 +96,9 @@ namespace BizHawk.Client.EmuHawk
 				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
 			}
 		}
+
+		/// <remarks>lazily instantiated</remarks>
+		private static APISubsetContainer ApiHawkContainerInstance;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
@@ -112,13 +133,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool IsRunning { get; set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public override LuaFunctionList GetRegisteredFunctions()
-		{
-			return EventsLibrary.RegisteredFunctions;
-		}
+		public override LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
 
 		public override void WindowClosed(IntPtr handle)
 		{
@@ -145,14 +162,9 @@ namespace BizHawk.Client.EmuHawk
 			EventsLibrary.CallFrameAfterEvent();
 		}
 
-		public void CallExitEvent(Lua thread)
-		{
-			EventsLibrary.CallExitEvent(thread);
-		}
-
 		public override void CallExitEvent(LuaFile lf)
 		{
-			CallExitEvent(lf.Thread);
+			EventsLibrary.CallExitEvent(lf);
 		}
 
 		public override void Close()
@@ -191,20 +203,20 @@ namespace BizHawk.Client.EmuHawk
 				_lua.Pop();
 		}
 
-		public ResumeResult ResumeScript(Lua script)
+		public override ResumeResult ResumeScript(LuaFile lf)
 		{
-			_currThread = script;
+			_currThread = lf.Thread;
 
 			try
 			{
-				LuaLibraryBase.SetCurrentThread(_currThread);
+				LuaLibraryBase.SetCurrentThread(lf);
 
-				var execResult = script.Resume(0);
+				var execResult = _currThread.Resume(0);
 
 				_lua.RunScheduledDisposes();
 
 				// not sure how this is going to work out, so do this too
-				script.RunScheduledDisposes();
+				_currThread.RunScheduledDisposes();
 
 				_currThread = null;
 				var result = new ResumeResult();
@@ -226,11 +238,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaLibraryBase.ClearCurrentThread();
 			}
-		}
-
-		public override ResumeResult ResumeScriptFromThreadOf(LuaFile lf)
-		{
-			return ResumeScript(lf.Thread);
 		}
 
 		public static void Print(params object[] outputs)

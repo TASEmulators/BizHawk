@@ -36,16 +36,16 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
-		public Action<string> ShowMessage { get; private set; }
+		public Action<string> ShowMessage { get; }
 
 		/// <summary>
 		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
-		public Action<string> Notify { get; private set; }
+		public Action<string> Notify { get; }
 
 		public Func<int, int, bool, object> RequestGLContext { get; set; }
 		public Action<object> ReleaseGLContext { get; set; }
 		public Action<object> ActivateGLContext { get; set; }
-		public Action DeactivateGLContext { get; set; } // this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
+		public Action DeactivateGLContext { get; set; } // this shouldn't be necessary.. frontend should be changing context before it does anything.. but for now..
 	}
 }

@@ -410,21 +410,18 @@ namespace BizHawk.Client.Common
 #if true
 			if (!IsSubfolder(parentPath, absolutePath)) return absolutePath;
 
-			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-				? absolutePath.Replace(parentPath, ".")
-				: "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary");
+			return OSTailoredCode.IsUnixHost
+				? "./" + OSTailoredCode.SimpleSubshell("realpath", $"--relative-to=\"{parentPath}\" \"{absolutePath}\"", $"invalid path {absolutePath} or missing realpath binary")
+				: absolutePath.Replace(parentPath, ".");
 #else // written for Unix port but may be useful for .NET Core
 			if (!IsSubfolder(parentPath, absolutePath))
 			{
-				return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-					|| parentPath.TrimEnd('.') != $"{absolutePath}/"
-						? absolutePath
-						: ".";
+				return OSTailoredCode.IsUnixHost && parentPath.TrimEnd('.') == $"{absolutePath}/" ? "." : absolutePath;
 			}
 
-			return OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-				? absolutePath.Replace(parentPath, ".")
-				: absolutePath.Replace(parentPath.TrimEnd('.'), "./");
+			return OSTailoredCode.IsUnixHost
+				? absolutePath.Replace(parentPath.TrimEnd('.'), "./")
+				: absolutePath.Replace(parentPath, ".");
 #endif
 		}
 
@@ -441,40 +438,33 @@ namespace BizHawk.Client.Common
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/7710620/7467292</remarks>
 		public static bool IsSubfolder(string parentPath, string childPath)
 		{
-			if (OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows)
+			if (OSTailoredCode.IsUnixHost)
 			{
-				var parentUri = new Uri(parentPath);
-
-				for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
-				{
-					if (new Uri(childUri.FullName) == parentUri) return true;
-				}
-
-				return false;
-			}
-
 #if true
-			return OSTailoredCode.SimpleSubshell("realpath", $"-L \"{childPath}\"", $"invalid path {childPath} or missing realpath binary")
-				.StartsWith(OSTailoredCode.SimpleSubshell("realpath", $"-L \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary"));
-#else // written for Unix port but may be useful for .NET Core
-			{
-				var parentUri = new Uri(parentPath.TrimEnd('.'));
-
+				return OSTailoredCode.SimpleSubshell("realpath", $"-L \"{childPath}\"", $"invalid path {childPath} or missing realpath binary")
+					.StartsWith(OSTailoredCode.SimpleSubshell("realpath", $"-L \"{parentPath}\"", $"invalid path {parentPath} or missing realpath binary"));
+#else // written for Unix port but may be useful for Windows when moving to .NET Core
+				var parentUriPath = new Uri(parentPath.TrimEnd('.')).AbsolutePath.TrimEnd('/');
 				try
 				{
 					for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
 					{
-						if (new Uri(childUri.FullName).AbsolutePath.TrimEnd('/') == parentUri.AbsolutePath.TrimEnd('/')) return true;
+						if (new Uri(childUri.FullName).AbsolutePath.TrimEnd('/') == parentUriPath) return true;
 					}
 				}
 				catch
 				{
 					// ignored
 				}
-
 				return false;
-			}
 #endif
+			}
+			var parentUri = new Uri(parentPath);
+			for (var childUri = new DirectoryInfo(childPath).Parent; childUri != null; childUri = childUri?.Parent)
+			{
+				if (new Uri(childUri.FullName) == parentUri) return true;
+			}
+			return false;
 		}
 
 		/// <summary>

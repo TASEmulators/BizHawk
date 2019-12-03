@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 					},
 					Xml = x
 				};
-				string fullpath = "";
+				string fullPath = "";
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
@@ -75,25 +75,23 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? "";
-							fullpath = Path.Combine(fullpath, filename.Split('|').First());
+							fullPath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? "";
+							fullPath = Path.Combine(fullPath, filename.Split('|').First());
 							try
 							{
-								using (var hf = new HawkFile(fullpath))
+								using var hf = new HawkFile(fullPath);
+								if (hf.IsArchive)
 								{
-									if (hf.IsArchive)
-									{                                       
-                                        var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
-										hf.Unbind();
-										hf.BindArchiveMember(archiveItem);
-										data = hf.GetStream().ReadAllBytes();
+									var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
+									hf.Unbind();
+									hf.BindArchiveMember(archiveItem);
+									data = hf.GetStream().ReadAllBytes();
 
-                                        filename = filename.Split('|').Skip(1).First();
-									}
-									else
-									{
-										data = File.ReadAllBytes(fullpath.Split('|').First());
-									}
+									filename = filename.Split('|').Skip(1).First();
+								}
+								else
+								{
+									data = File.ReadAllBytes(fullPath.Split('|').First());
 								}
 							}
 							catch
@@ -103,12 +101,10 @@ namespace BizHawk.Client.Common
 						}
 
 						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
-						ret.AssetFullPaths.Add(fullpath);
-						using (var sha1 = System.Security.Cryptography.SHA1.Create())
-						{
-							sha1.TransformFinalBlock(data, 0, data.Length);
-							hashStream.Write(sha1.Hash, 0, sha1.Hash.Length);
-						}
+						ret.AssetFullPaths.Add(fullPath);
+						using var sha1 = System.Security.Cryptography.SHA1.Create();
+						sha1.TransformFinalBlock(data, 0, data.Length);
+						hashStream.Write(sha1.Hash, 0, sha1.Hash.Length);
 					}
 
 					ret.GI.Hash = hashStream.GetBuffer().HashSHA1(0, (int)hashStream.Length);

@@ -86,9 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = OSTailoredCode.ConstructSubshell(
-					OSTailoredCode.CurrentOS == OSTailoredCode.DistinctOS.Windows
-						? Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe")
-						: "ffmpeg",
+					OSTailoredCode.IsUnixHost ? "ffmpeg" : Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe"),
 					$"-y -f nut -i - {_token.Commandline} \"{_baseName}{(_segment == 0 ? string.Empty : $"_{_segment}")}{_ext}\"",
 					checkStdout: false,
 					checkStderr: true // ffmpeg sends informative display to stderr, and nothing to stdout

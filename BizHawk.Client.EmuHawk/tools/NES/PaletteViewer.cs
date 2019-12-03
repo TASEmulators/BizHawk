@@ -12,12 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public class Palette
 		{
-			public int Address { get; private set; }
+			public int Address { get; }
 			public int Value { get; set; }
-			public Color Color
-			{
-				get { return Color.FromArgb(Value); }
-			}
+			public Color Color => Color.FromArgb(Value);
 
 			public Palette(int address)
 			{

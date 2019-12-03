@@ -185,16 +185,17 @@
 			// 
 			// MarkerView
 			// 
+			this.MarkerView.CellWidthPadding = 3;
+			this.MarkerView.GridLines = true;
 			this.MarkerView.AllowColumnReorder = false;
 			this.MarkerView.AllowColumnResize = false;
-			this.MarkerView.AllowRightClickSelecton = true;
 			this.MarkerView.AlwaysScroll = false;
 			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MarkerView.CellHeightPadding = 0;
 			this.MarkerView.ContextMenuStrip = this.MarkerContextMenu;
-			this.MarkerView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MarkerView.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MarkerView.FullRowSelect = true;
 			this.MarkerView.HideWasLagFrames = false;
 			this.MarkerView.HorizontalOrientation = false;
@@ -208,7 +209,6 @@
 			this.MarkerView.ScrollSpeed = 1;
 			this.MarkerView.SeekingCutoffInterval = 0;
 			this.MarkerView.Size = new System.Drawing.Size(186, 224);
-			this.MarkerView.SuspendHotkeys = false;
 			this.MarkerView.TabIndex = 0;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
@@ -238,7 +238,6 @@
 			this.Controls.Add(this.MarkersGroupBox);
 			this.Name = "MarkerControl";
 			this.Size = new System.Drawing.Size(198, 278);
-			this.Load += new System.EventHandler(this.MarkerControl_Load);
 			this.MarkerContextMenu.ResumeLayout(false);
 			this.MarkersGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);

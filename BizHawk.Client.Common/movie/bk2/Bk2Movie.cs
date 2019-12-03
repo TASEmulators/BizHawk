@@ -35,11 +35,7 @@ namespace BizHawk.Client.Common
 
 		public string Filename
 		{
-			get
-			{
-				return _filename;
-			}
-
+			get => _filename;
 			set
 			{
 				_filename = value;
@@ -75,13 +71,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int InputLogLength
-		{
-			get
-			{
-				return Log.Count;
-			}
-		}
+		public int InputLogLength => Log.Count;
 
 		public int TimeLength
 		{
@@ -137,22 +127,22 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-				int getframe;
+				int getFrame;
 
 				if (LoopOffset.HasValue)
 				{
 					if (frame < Log.Count)
 					{
-						getframe = frame;
+						getFrame = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getFrame = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
 				{
-					getframe = frame;
+					getFrame = frame;
 				}
 
 				var adapter = new Bk2ControllerAdapter
@@ -160,7 +150,7 @@ namespace BizHawk.Client.Common
 					Definition = Global.MovieSession.MovieControllerAdapter.Definition
 				};
 
-				adapter.SetControllersAsMnemonic(Log[getframe]);
+				adapter.SetControllersAsMnemonic(Log[getFrame]);
 				return adapter;
 			}
 

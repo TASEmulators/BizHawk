@@ -1,18 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Common.BufferExtensions;
-using BizHawk.Client.Common;
-
 using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Common;
 
 using ICSharpCode.SharpZipLib.Zip;
@@ -33,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 		}
 
-		byte[] waveformTemp = new byte[32 * 2];
+		readonly byte[] waveformTemp = new byte[32 * 2];
 
 		protected override void OnShown(EventArgs e)
 		{
@@ -161,9 +153,9 @@ namespace BizHawk.Client.EmuHawk
 			public short[] waveform;
 		}
 
-		PSGEntry[] LastSamples = new PSGEntry[8];
-		List<PSGEntry> PSGEntries = new List<PSGEntry>();
-		Dictionary<string, PSGEntry> PSGEntryTable = new Dictionary<string, PSGEntry>();
+		readonly PSGEntry[] LastSamples = new PSGEntry[8];
+		readonly List<PSGEntry> PSGEntries = new List<PSGEntry>();
+		readonly Dictionary<string, PSGEntry> PSGEntryTable = new Dictionary<string, PSGEntry>();
 
 		public void Restart()
 		{
@@ -174,14 +166,11 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 
 
 		//32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
-		static readonly byte[] emptyWav = new byte[] {
+		static readonly byte[] emptyWav = {
 			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 
 			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00, 
 			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00, 
