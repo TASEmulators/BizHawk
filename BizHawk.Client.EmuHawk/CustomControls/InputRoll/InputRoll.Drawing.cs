@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var column in visibleColumns)
 				{
-					var x = column.Left.Value + 2 * CellWidthPadding - _hBar.Value;
+					var x = column.Left + 2 * CellWidthPadding - _hBar.Value;
 
 					// TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
 					var y = CellHeightPadding;
@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 
 							int strOffsetX = 0;
 							int strOffsetY = 0;
-							Point point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
+							Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 							Bitmap image = null;
 							int bitmapOffsetX = 0;
@@ -360,20 +360,20 @@ namespace BizHawk.Client.EmuHawk
 
 				// Gray column box and black line underneath
 				_renderer.FillRectangle(new Rectangle(0, 0, _drawWidth + 1, bottomEdge + 1));
-				_renderer.Line(0, 0, TotalColWidth.Value + 1, 0);
-				_renderer.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
+				_renderer.Line(0, 0, TotalColWidth + 1, 0);
+				_renderer.Line(0, bottomEdge, TotalColWidth + 1, bottomEdge);
 
 				// Vertical black separators
 				foreach (var column in visibleColumns)
 				{
-					int pos = column.Left.Value - _hBar.Value;
+					int pos = column.Left - _hBar.Value;
 					_renderer.Line(pos, 0, pos, bottomEdge);
 				}
 
 				// Draw right most line
 				if (visibleColumns.Any())
 				{
-					int right = TotalColWidth.Value - _hBar.Value;
+					int right = TotalColWidth - _hBar.Value;
 					_renderer.Line(right, 0, right, bottomEdge);
 				}
 			}
@@ -389,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_renderer.FillRectangle(new Rectangle(column.Left.Value + 1 - _hBar.Value, 1, column.Width - 1, ColumnHeight - 1));
+					_renderer.FillRectangle(new Rectangle(column.Left + 1 - _hBar.Value, 1, column.Width - 1, ColumnHeight - 1));
 				}
 			}
 
@@ -423,13 +423,13 @@ namespace BizHawk.Client.EmuHawk
 						if (column == CurrentCell.Column)
 						{
 							// Left of column is to the right of the viewable area or right of column is to the left of the viewable area
-							if (column.Left.Value - _hBar.Value > Width || column.Right.Value - _hBar.Value < 0)
+							if (column.Left - _hBar.Value > Width || column.Right - _hBar.Value < 0)
 							{
 								continue;
 							}
 
-							int left = column.Left.Value - _hBar.Value;
-							int width = column.Right.Value - _hBar.Value - left;
+							int left = column.Left - _hBar.Value;
+							int width = column.Right - _hBar.Value - left;
 
 							_renderer.SetBrush(CurrentCell.Column.Emphasis
 								? SystemColors.Highlight.Add(0x00550000)
@@ -478,13 +478,13 @@ namespace BizHawk.Client.EmuHawk
 					int y = ColumnHeight + 1;
 					foreach (var column in visibleColumns)
 					{
-						int x = (column.Left ?? 0) - _hBar.Value;
+						int x = column.Left - _hBar.Value;
 						_renderer.Line(x, y, x, Height - 1);
 					}
 
 					if (visibleColumns.Any())
 					{
-						int x = (TotalColWidth ?? 0) - _hBar.Value;
+						int x = TotalColWidth - _hBar.Value;
 						_renderer.Line(x, y, x, Height - 1);
 					}
 
@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				x = cell.Column.Left.Value - _hBar.Value + 1;
+				x = cell.Column.Left - _hBar.Value + 1;
 				w = cell.Column.Width - 1;
 				h = CellHeight - 1;
 			}

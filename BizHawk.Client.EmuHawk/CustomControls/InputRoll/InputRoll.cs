@@ -1636,7 +1636,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				NeedsVScrollbar = ColumnHeight + (RowCount * CellHeight)  > Height;
-				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - _drawWidth + 1 > 0;
+				NeedsHScrollbar = TotalColWidth - _drawWidth + 1 > 0;
 			}
 
 			UpdateDrawSize();
@@ -1697,7 +1697,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_hBar.Maximum = TotalColWidth.Value - _drawWidth + _hBar.LargeChange;
+					_hBar.Maximum = TotalColWidth - _drawWidth + _hBar.LargeChange;
 				}
 
 				_hBar.Location = new Point(0, Height - _hBar.Height);
@@ -1848,13 +1848,10 @@ namespace BizHawk.Client.EmuHawk
 		// A boolean that indicates if the InputRoll is too large horizontally and requires a horizontal scrollbar.
 		private bool NeedsHScrollbar { get; set; }
 
-		/// <summary>
-		/// Gets the total width of all the columns by using the last column's Right property.
-		/// </summary>
-		/// <returns>A nullable Int representing total width.</returns>
-		private int? TotalColWidth => _columns.VisibleColumns.Any()
+		// Gets the total width of all the columns by using the last column's Right property.
+		private int TotalColWidth => _columns.VisibleColumns.Any()
 			? _columns.VisibleColumns.Last().Right
-			: null;
+			: 0;
 
 		/// <summary>
 		/// Returns the RollColumn object at the specified visible pixel coordinate.
@@ -1877,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				foreach (RollColumn column in _columns.VisibleColumns)
 				{
-					if (column.Left.Value - _hBar.Value <= pixel && column.Right.Value - _hBar.Value >= pixel)
+					if (column.Left - _hBar.Value <= pixel && column.Right - _hBar.Value >= pixel)
 					{
 						return column;
 					}
