@@ -231,11 +231,14 @@ namespace BizHawk.Client.Common
 		/// <param name="reverse">Defines the order of the sort. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
-			var separatorIndices = _watchList.Select((w, i) => new { watch = w, index = i })
-							 .Where(w => w.watch.IsSeparator)
-							 .Select(w => w.index)
-							 .ToList();
-
+			var separatorIndices = new List<int>();
+			for (var i = 0; i < _watchList.Count; i++)
+			{
+				if (_watchList[i].IsSeparator)
+				{
+					separatorIndices.Add(i);
+				}
+			}
 			separatorIndices.Add(_watchList.Count);
 
 			// Sort "blocks" of addresses between separators.
