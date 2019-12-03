@@ -60,11 +60,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			}
 		}
 
-		public void FillRectangle(int x, int y, int w, int h)
+		public void FillRectangle(Rectangle rect)
 		{
-			_graphics.FillRectangle(
-				_currentBrush,
-				new Rectangle(x, y, w, h));
+			_graphics.FillRectangle(_currentBrush, rect);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2)

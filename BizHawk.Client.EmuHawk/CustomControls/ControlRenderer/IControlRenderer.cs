@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		void DrawString(string str, Rectangle rect);
 
 		void DrawRectangle(Rectangle rect);
-		void FillRectangle(int x, int y, int w, int h);
+		void FillRectangle(Rectangle rect);
 
 		/// <summary>
 		/// Draw a bitmap object at the given position
