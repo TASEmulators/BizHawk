@@ -214,114 +214,116 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (QueryItemText != null)
+			if (QueryItemText == null)
 			{
-				if (HorizontalOrientation)
+				return;
+			}
+
+			if (HorizontalOrientation)
+			{
+				int startRow = FirstVisibleRow;
+				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+
+				_renderer.PrepDrawString(Font, _foreColor);
+				int lastVisible = LastVisibleColumnIndex;
+				for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 				{
-					int startRow = FirstVisibleRow;
-					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+					RollColumn col = visibleColumns[j];
+					int colHeight = GetHColHeight(j);
 
-					_renderer.PrepDrawString(Font, _foreColor);
-					int lastVisible = LastVisibleColumnIndex;
-					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
-					{
-						RollColumn col = visibleColumns[j];
-						int colHeight = GetHColHeight(j);
-
-						for (int i = 0, f = 0; f < range; i++, f++)
-						{
-							f += _lagFrames[i];
-
-							int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
-							int baseY = GetHColTop(j) - _vBar.Value;
-
-							if (!col.Rotatable)
-							{
-								Bitmap image = null;
-								int bitmapOffsetX = 0;
-								int bitmapOffsetY = 0;
-
-								QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
-
-								if (image != null)
-								{
-									int x = baseX + CellWidthPadding + bitmapOffsetX;
-									int y = baseY + CellHeightPadding + bitmapOffsetY;
-									_renderer.DrawBitmap(image, new Point(x, y));
-								}
-							}
-
-							int strOffsetX = 0;
-							int strOffsetY = 0;
-							QueryItemText(f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
-
-							int textWidth = (int)_renderer.MeasureString(text, Font).Width;
-							if (col.Rotatable)
-							{
-								// Center Text
-								int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
-								int textY = CellWidthPadding + strOffsetY;
-
-								_renderer.PrepDrawString(Font, _foreColor, rotate: true);
-								DrawString(text, new Rectangle(baseX - textY, baseY + textX, 999, CellHeight));
-								_renderer.PrepDrawString(Font, _foreColor, rotate: false);
-							}
-							else
-							{
-								// Center Text
-								int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
-								int textY = CellHeightPadding + strOffsetY;
-
-								DrawString(text, new Rectangle(baseX + textX, baseY + textY, ColumnWidth, CellHeight));
-							}
-						}
-					}
-				}
-				else
-				{
-					int startRow = FirstVisibleRow;
-					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
-
-					_renderer.PrepDrawString(Font, _foreColor);
-					int xPadding = CellWidthPadding + 1 - _hBar.Value;
-					for (int i = 0, f = 0; f < range; i++, f++) // Vertical
+					for (int i = 0, f = 0; f < range; i++, f++)
 					{
 						f += _lagFrames[i];
-						int lastVisible = LastVisibleColumnIndex;
-						for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
+
+						int baseX = RowsToPixels(i) + (col.Rotatable ? CellWidth : 0);
+						int baseY = GetHColTop(j) - _vBar.Value;
+
+						if (!col.Rotatable)
 						{
-							RollColumn col = visibleColumns[j];
-
-							int strOffsetX = 0;
-							int strOffsetY = 0;
-							Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
-
 							Bitmap image = null;
 							int bitmapOffsetX = 0;
 							int bitmapOffsetY = 0;
 
-							QueryItemIcon?.Invoke(f + startRow, visibleColumns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+							QueryItemIcon?.Invoke(f + startRow, col, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 
 							if (image != null)
 							{
-								_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
+								int x = baseX + CellWidthPadding + bitmapOffsetX;
+								int y = baseY + CellHeightPadding + bitmapOffsetY;
+								_renderer.DrawBitmap(image, new Point(x, y));
 							}
+						}
 
-							QueryItemText(f + startRow, visibleColumns[j], out var text, ref strOffsetX, ref strOffsetY);
+						int strOffsetX = 0;
+						int strOffsetY = 0;
+						QueryItemText(f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
 
-							bool rePrep = false;
-							if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = f + startRow }))
-							{
-								_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-								rePrep = true;
-							}
+						int textWidth = (int)_renderer.MeasureString(text, Font).Width;
+						if (col.Rotatable)
+						{
+							// Center Text
+							int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
+							int textY = CellWidthPadding + strOffsetY;
 
-							DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, col.Width, ColumnHeight));
+							_renderer.PrepDrawString(Font, _foreColor, rotate: true);
+							DrawString(text, new Rectangle(baseX - textY, baseY + textX, 999, CellHeight));
+							_renderer.PrepDrawString(Font, _foreColor, rotate: false);
+						}
+						else
+						{
+							// Center Text
+							int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
+							int textY = CellHeightPadding + strOffsetY;
 
-							if (rePrep)
-							{
-								_renderer.PrepDrawString(Font, _foreColor);
-							}
+							DrawString(text, new Rectangle(baseX + textX, baseY + textY, ColumnWidth, CellHeight));
+						}
+					}
+				}
+			}
+			else
+			{
+				int startRow = FirstVisibleRow;
+				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+
+				_renderer.PrepDrawString(Font, _foreColor);
+				int xPadding = CellWidthPadding + 1 - _hBar.Value;
+				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
+				{
+					f += _lagFrames[i];
+					int lastVisible = LastVisibleColumnIndex;
+					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
+					{
+						RollColumn col = visibleColumns[j];
+
+						int strOffsetX = 0;
+						int strOffsetY = 0;
+						Point point = new Point(col.Left + xPadding, RowsToPixels(i) + CellHeightPadding);
+
+						Bitmap image = null;
+						int bitmapOffsetX = 0;
+						int bitmapOffsetY = 0;
+
+						QueryItemIcon?.Invoke(f + startRow, visibleColumns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+
+						if (image != null)
+						{
+							_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
+						}
+
+						QueryItemText(f + startRow, visibleColumns[j], out var text, ref strOffsetX, ref strOffsetY);
+
+						bool rePrep = false;
+						if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = f + startRow }))
+						{
+							_renderer.PrepDrawString(Font, SystemColors.HighlightText);
+							rePrep = true;
+						}
+
+						DrawString(text, new Rectangle(point.X + strOffsetX, point.Y + strOffsetY, col.Width, ColumnHeight));
+
+						if (rePrep)
+						{
+							_renderer.PrepDrawString(Font, _foreColor);
 						}
 					}
 				}
