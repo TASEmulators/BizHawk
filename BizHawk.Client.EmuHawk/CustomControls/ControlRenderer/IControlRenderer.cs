@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// Measure the width and height of string <paramref name="str"/> when drawn
 		/// using the given font <paramref  name="font"/>
 		/// </summary>
-		Size MeasureString(string str, Font font);
+		SizeF MeasureString(string str, Font font);
 
 		void SetBrush(Color color);
 		void SetSolidPen(Color color);

@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _maxCharactersInHorizontal = 1;
 
 		private int _rowCount;
-		private Size _charSize;
+		private SizeF _charSize;
 
 		// Updated on paint
 		private int[] _horizontalColumnHeights;
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var newWidth = (maxLength * _charSize.Width) + (CellWidthPadding * 2);
-					CurrentCell.Column.Width = newWidth;
+					CurrentCell.Column.Width = (int)newWidth;
 					_columns.ColumnsChanged();
 					Refresh();
 				}
@@ -1936,11 +1936,13 @@ namespace BizHawk.Client.EmuHawk
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", Font);
 				var size2 = _renderer.MeasureString("AA", Font);
-				_charSize = new Size(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
+				_charSize = new SizeF(size2.Width - size1.Width, size1.Height); // TODO make this a property so changing it updates other values.
 			}
 
-			CellHeight = _charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			// TODO: Should we round instead of truncate?
+			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
+			CellWidth = (int)(_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;
 		}

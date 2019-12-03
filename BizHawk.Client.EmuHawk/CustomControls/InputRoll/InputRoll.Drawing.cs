@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (width.HasValue)
 			{
-				var max = (width.Value - CellWidthPadding) / _charSize.Width;
+				var max = (int)((width.Value - CellWidthPadding) / _charSize.Width + 0.5);
 				if (text.Length >= max)
 				{
 					text = text.Substring(0, max);
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 					int strOffsetX = 0;
 					int strOffsetY = 0;
 					QueryItemText(startRow, col, out text, ref strOffsetX, ref strOffsetY);
-					int textWidth = _renderer.MeasureString(text, Font).Width;
+					int textWidth = (int)_renderer.MeasureString(text, Font).Width;
 					height = Math.Max(height, textWidth + (CellWidthPadding * 2));
 				}
 				_horizontalColumnHeights[j] = height;
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				int textOffsetY = CellHeightPadding;
 				if (HorizontalOrientation)
 				{
-					int textHeight = _renderer.MeasureString(_columnDown.Text, Font).Height;
+					int textHeight = (int)_renderer.MeasureString(_columnDown.Text, Font).Height;
 					textOffsetY = (columnHeight - textHeight) / 2;
 				}
 
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var column = visibleColumns[j];
 					var columnHeight = GetHColHeight(j);
-					var textHeight = _renderer.MeasureString(column.Text, Font).Height;
+					var textHeight = (int)_renderer.MeasureString(column.Text, Font).Height;
 					var point = new Point(CellWidthPadding, y + ((columnHeight - textHeight) / 2));
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 							int strOffsetY = 0;
 							QueryItemText(f + startRow, col, out var text, ref strOffsetX, ref strOffsetY);
 
-							int textWidth = _renderer.MeasureString(text, Font).Width;
+							int textWidth = (int)_renderer.MeasureString(text, Font).Width;
 							if (col.Rotatable)
 							{
 								// Center Text

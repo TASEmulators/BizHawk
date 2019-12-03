@@ -80,10 +80,9 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			return new GdiPlusGraphicsLock();
 		}
 
-		public Size MeasureString(string str, Font font)
+		public SizeF MeasureString(string str, Font font)
 		{
-			var size = _graphics.MeasureString(str, font);
-			return new Size((int)(size.Width + 0.5), (int)(size.Height + 0.5));
+			return _graphics.MeasureString(str, font);
 		}
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)
