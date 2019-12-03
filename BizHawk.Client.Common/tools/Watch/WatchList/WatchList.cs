@@ -325,6 +325,8 @@ namespace BizHawk.Client.Common
 
 					break;
 			}
+
+			Changes = true;
 		}
 
 		/// <summary>
