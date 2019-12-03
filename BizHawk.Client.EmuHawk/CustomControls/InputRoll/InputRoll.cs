@@ -981,7 +981,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_currentX != _previousX)
 				{
-					_columnResizing.Width += _currentX - _previousX;
+					_columnResizing.Width += _currentX.Value - _previousX;
 					if (_columnResizing.Width <= 0)
 					{
 						_columnResizing.Width = 1;
@@ -1597,7 +1597,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				ColumnWidth = _columns.VisibleColumns.Max(c => c.Width.Value) + CellWidthPadding * 4;
+				ColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
 			}
 		}
 

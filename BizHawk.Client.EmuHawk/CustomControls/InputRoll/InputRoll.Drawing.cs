@@ -95,9 +95,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnDrag(List<RollColumn> visibleColumns)
 		{
-			if (_columnDown?.Width != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
+			if (_columnDown?.Width > 0 && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
 			{
-				int columnWidth = _columnDown.Width.Value;
+				int columnWidth = _columnDown.Width;
 				int columnHeight = CellHeight;
 				if (HorizontalOrientation)
 				{
@@ -124,8 +124,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawCellDrag(List<RollColumn> visibleColumns)
 		{
-			if (_draggingCell != null && _draggingCell.RowIndex.HasValue && _draggingCell.Column.Width.HasValue
-				&& _currentX.HasValue && _currentY.HasValue)
+			if (_draggingCell?.RowIndex != null
+				&& _draggingCell.Column.Width > 0
+				&& _currentX.HasValue
+				&& _currentY.HasValue)
 			{
 				var text = "";
 				int offsetX = 0;
@@ -141,9 +143,9 @@ namespace BizHawk.Client.EmuHawk
 					int columnIndex = visibleColumns.IndexOf(_draggingCell.Column);
 					columnHeight = GetHColHeight(columnIndex);
 				}
-				int x1 = _currentX.Value - (_draggingCell.Column.Width.Value / 2);
+				int x1 = _currentX.Value - (_draggingCell.Column.Width / 2);
 				int y1 = _currentY.Value - (columnHeight / 2);
-				int x2 = x1 + _draggingCell.Column.Width.Value;
+				int x2 = x1 + _draggingCell.Column.Width;
 				int y2 = y1 + columnHeight;
 
 				_renderer.SetBrush(bgColor);
@@ -171,12 +173,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width ?? 0, strX, strY);
+						DrawString(column.Text, column.Width, strX, strY);
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width ?? 0, strX, strY);
+						DrawString(column.Text, column.Width, strX, strY);
 					}
 
 					y += columnHeight;
@@ -195,12 +197,12 @@ namespace BizHawk.Client.EmuHawk
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width ?? 0, x, y);
+						DrawString(column.Text, column.Width, x, y);
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width ?? 0, x, y);
+						DrawString(column.Text, column.Width, x, y);
 					}
 				}
 			}
@@ -316,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 								rePrep = true;
 							}
 
-							DrawString(text, col.Width ?? 0, point.X + strOffsetX, point.Y + strOffsetY);
+							DrawString(text, col.Width, point.X + strOffsetX, point.Y + strOffsetY);
 
 							if (rePrep)
 							{
@@ -387,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					_renderer.FillRectangle(new Rectangle(column.Left.Value + 1 - _hBar.Value, 1, column.Width.Value - 1, ColumnHeight - 1));
+					_renderer.FillRectangle(new Rectangle(column.Left.Value + 1 - _hBar.Value, 1, column.Width - 1, ColumnHeight - 1));
 				}
 			}
 
@@ -575,7 +577,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				x = cell.Column.Left.Value - _hBar.Value + 1;
-				w = cell.Column.Width.Value - 1;
+				w = cell.Column.Width - 1;
 				h = CellHeight - 1;
 			}
 
