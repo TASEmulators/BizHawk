@@ -155,11 +155,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnText(List<RollColumn> visibleColumns)
 		{
+			_renderer.PrepDrawString(Font, _foreColor);
+
 			if (HorizontalOrientation)
 			{
 				int y = -_vBar.Value;
-
-				_renderer.PrepDrawString(Font, _foreColor);
 
 				for(int j = 0; j < visibleColumns.Count; j++)
 				{
@@ -184,8 +184,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_renderer.PrepDrawString(Font, _foreColor);
-
 				foreach (var column in visibleColumns)
 				{
 					var x = column.Left + 2 * CellWidthPadding - _hBar.Value;
@@ -219,12 +217,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			int startRow = FirstVisibleRow;
+			int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+			_renderer.PrepDrawString(Font, _foreColor);
+
 			if (HorizontalOrientation)
 			{
-				int startRow = FirstVisibleRow;
-				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
-
-				_renderer.PrepDrawString(Font, _foreColor);
 				int lastVisible = LastVisibleColumnIndex;
 				for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 				{
@@ -282,10 +280,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				int startRow = FirstVisibleRow;
-				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
-
-				_renderer.PrepDrawString(Font, _foreColor);
 				int xPadding = CellWidthPadding + 1 - _hBar.Value;
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
@@ -607,77 +601,37 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (HorizontalOrientation)
+			for (int i = 0, f = 0; f < range; i++, f++)
 			{
-				for (int i = 0, f = 0; f < range; i++, f++)
+				f += _lagFrames[i];
+				Color rowColor = Color.White;
+				QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
+
+				for (int j = firstVisibleColumn; j <= lastVisibleColumn; j++)
 				{
-					f += _lagFrames[i];
-					
-					Color rowColor = Color.White;
-					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
+					Color itemColor = Color.White;
+					QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
 
-					for (int j = firstVisibleColumn; j <= lastVisibleColumn; j++)
+					if (itemColor == Color.White)
 					{
-						Color itemColor = Color.White;
-						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
-						if (itemColor == Color.White)
-						{
-							itemColor = rowColor;
-						}
-						else if (itemColor.A != 255 && itemColor.A != 0)
-						{
-							float alpha = (float)itemColor.A / 255;
-							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
-								rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
-								rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
-						}
-
-						if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
-						{
-							var cell = new Cell
-							{
-								Column = visibleColumns[j],
-								RowIndex = i
-							};
-							DrawCellBG(itemColor, cell, visibleColumns);
-						}
+						itemColor = rowColor;
 					}
-				}
-			}
-			else
-			{
-				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
-				{
-					f += _lagFrames[i];
-					
-					Color rowColor = Color.White;
-					QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
-
-					for (int j = FirstVisibleColumn; j <= lastVisibleColumn; j++) // Horizontal
+					else if (itemColor.A != 255 && itemColor.A != 0)
 					{
-						Color itemColor = Color.White;
-						QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
-						if (itemColor == Color.White)
-						{
-							itemColor = rowColor;
-						}
-						else if (itemColor.A != 255 && itemColor.A != 0)
-						{
-							float alpha = (float)itemColor.A / 255;
-							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
-								rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
-								rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
-						}
+						float alpha = (float)itemColor.A / 255;
+						itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
+							rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
+							rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
+					}
 
-						if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+					if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
+					{
+						var cell = new Cell
 						{
-							var cell = new Cell
-							{
-								Column = visibleColumns[j],
-								RowIndex = i
-							};
-							DrawCellBG(itemColor, cell, visibleColumns);
-						}
+							Column = visibleColumns[j],
+							RowIndex = i
+						};
+						DrawCellBG(itemColor, cell, visibleColumns);
 					}
 				}
 			}
