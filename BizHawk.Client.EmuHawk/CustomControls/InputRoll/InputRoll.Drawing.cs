@@ -42,14 +42,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawString(string text, int width, Point point)
+		private void DrawString(string text, int width, int x, int y)
 		{
 			if (string.IsNullOrWhiteSpace(text))
 			{
 				return;
 			}
 
-			_renderer.DrawString(text, new Rectangle(point.X, point.Y, width - CellWidthPadding, CellHeight));
+			_renderer.DrawString(text, new Rectangle(x, y, width - CellWidthPadding, CellHeight));
 		}
 
 		protected override void OnPaintBackground(PaintEventArgs e)
@@ -167,16 +167,17 @@ namespace BizHawk.Client.EmuHawk
 					var columnHeight = GetHColHeight(j);
 					var textHeight = (int)_renderer.MeasureString(column.Text, Font).Height;
 					var point = new Point(CellWidthPadding, y + ((columnHeight - textHeight) / 2));
-
+					int strX = CellWidthPadding;
+					int strY = y + ((columnHeight - textHeight) / 2);
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width ?? 0, point);
+						DrawString(column.Text, column.Width ?? 0, strX, strY);
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width ?? 0, point);
+						DrawString(column.Text, column.Width ?? 0, strX, strY);
 					}
 
 					y += columnHeight;
@@ -188,17 +189,19 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var column in visibleColumns)
 				{
-					var point = new Point(column.Left.Value + 2 * CellWidthPadding - _hBar.Value, CellHeightPadding); // TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+					var x = column.Left.Value + 2 * CellWidthPadding - _hBar.Value;
 
+					// TODO: fix this CellPadding issue (2 * CellPadding vs just CellPadding)
+					var y = CellHeightPadding;
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
 						_renderer.PrepDrawString(Font, SystemColors.HighlightText);
-						DrawString(column.Text, column.Width ?? 0, point);
+						DrawString(column.Text, column.Width ?? 0, x, y);
 						_renderer.PrepDrawString(Font, _foreColor);
 					}
 					else
 					{
-						DrawString(column.Text, column.Width ?? 0, point);
+						DrawString(column.Text, column.Width ?? 0, x, y);
 					}
 				}
 			}
@@ -259,10 +262,9 @@ namespace BizHawk.Client.EmuHawk
 								// Center Text
 								int textX = Math.Max(((colHeight - textWidth) / 2), CellWidthPadding) + strOffsetX;
 								int textY = CellWidthPadding + strOffsetY;
-								var point = new Point(baseX - textY, baseY + textX);
 
 								_renderer.PrepDrawString(Font, _foreColor, rotate: true);
-								DrawString(text, 999, point); // TODO
+								DrawString(text, 999, baseX - textY, baseY + textX); // TODO: calculate width
 								_renderer.PrepDrawString(Font, _foreColor, rotate: false);
 							}
 							else
@@ -270,9 +272,8 @@ namespace BizHawk.Client.EmuHawk
 								// Center Text
 								int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
 								int textY = CellHeightPadding + strOffsetY;
-								var point = new Point(baseX + textX, baseY + textY);
 
-								DrawString(text, ColumnWidth, point);
+								DrawString(text, ColumnWidth, baseX + textX, baseY + textY);
 							}
 						}
 					}
@@ -316,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 								rePrep = true;
 							}
 
-							DrawString(text, col.Width ?? 0, new Point(point.X + strOffsetX, point.Y + strOffsetY));
+							DrawString(text, col.Width ?? 0, point.X + strOffsetX, point.Y + strOffsetY);
 
 							if (rePrep)
 							{
