@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				int lastVisible = LastVisibleColumnIndex;
+				int lastVisible = LastVisibleColumn;
 				for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 				{
 					RollColumn col = visibleColumns[j];
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
-					int lastVisible = LastVisibleColumnIndex;
+					int lastVisible = LastVisibleColumn;
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						RollColumn col = visibleColumns[j];
@@ -427,9 +427,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// TODO refactor this and DoBackGroundCallback functions.
-		/// <summary>
-		/// Draw Gridlines and background colors using QueryItemBkColor.
-		/// </summary>
+		// Draw Gridlines and background colors using QueryItemBkColor.
 		private void DrawBg(List<RollColumn> visibleColumns)
 		{
 			if (QueryItemBkColor != null)
@@ -532,9 +530,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// Given a cell with RowIndex in between 0 and VisibleRows, it draws the background color specified. Do not call with absolute row indices.
-		/// </summary>
+		// Given a cell with RowIndex in between 0 and VisibleRows, it draws the background color specified. Do not call with absolute row indices.
 		private void DrawCellBG(Color color, Cell cell, List<RollColumn> visibleColumns)
 		{
 			int x, y, w, h;
@@ -549,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 
 				int columnIndex = visibleColumns.IndexOf(cell.Column);
 				w = CellWidth - 1;
-				y = GetHColTop(columnIndex) - _vBar.Value + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				y = GetHColTop(columnIndex) - _vBar.Value + 1;
 				h = GetHColHeight(columnIndex) - 1;
 			}
 			else
@@ -575,14 +571,12 @@ namespace BizHawk.Client.EmuHawk
 			_renderer.FillRectangle(new Rectangle(x, y, w, h));
 		}
 
-		/// <summary>
-		/// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
-		/// </summary>
+		// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		private void DoBackGroundCallback(List<RollColumn> visibleColumns)
 		{
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
-			int lastVisibleColumn = LastVisibleColumnIndex;
+			int lastVisibleColumn = LastVisibleColumn;
 			int firstVisibleColumn = FirstVisibleColumn;
 
 			// Prevent exceptions with small TAStudio windows

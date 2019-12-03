@@ -790,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int LastVisibleColumnIndex
+		private int LastVisibleColumn
 		{
 			get
 			{
