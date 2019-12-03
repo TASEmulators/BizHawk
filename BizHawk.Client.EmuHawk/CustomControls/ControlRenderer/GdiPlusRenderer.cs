@@ -47,18 +47,18 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 				new Rectangle(nLeftRect, nTopRect, nRightRect - nLeftRect, nBottomRect - nTopRect));
 		}
 
-		public void DrawString(string str, Point point)
+		public void DrawString(string str, Rectangle rect)
 		{
 			if (_rotateString)
 			{
-				_graphics.TranslateTransform(point.X, point.Y);
+				_graphics.TranslateTransform(rect.X, rect.Y);
 				_graphics.RotateTransform(90);
 				_graphics.DrawString(str, _currentFont, _currentStringBrush, Point.Empty);
 				_graphics.ResetTransform();
 			}
 			else
 			{
-				_graphics.DrawString(str, _currentFont, _currentStringBrush, point);
+				_graphics.DrawString(str, _currentFont, _currentStringBrush, rect);
 			}
 		}
 

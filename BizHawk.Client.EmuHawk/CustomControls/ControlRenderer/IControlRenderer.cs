@@ -22,9 +22,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		void PrepDrawString(Font font, Color color, bool rotate = false);
 
 		/// <summary>
-		/// Draw the given string using the given  font and foreground color at given location
+		/// Draw the given string using the given font and foreground color at the X/Y of the given rect.
+		/// Text not fitting inside of the rect will be truncated
 		/// </summary>
-		void DrawString(string str, Point point);
+		void DrawString(string str, Rectangle rect);
 
 		void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
 		void FillRectangle(int x, int y, int w, int h);
