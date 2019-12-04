@@ -1525,12 +1525,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OrientationChanged()
 		{
-			RecalculateScrollBars();
-
 			// TODO scroll to correct positions
 			ColumnChangedCallback();
-			RecalculateScrollBars();
-
 			Refresh();
 		}
 
