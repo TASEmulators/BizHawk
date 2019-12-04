@@ -13,10 +13,7 @@ namespace BizHawk.Client.Common
 {
 	public class Config
 	{
-		public static string ControlDefaultPath
-		{
-			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
-		}
+		public static string ControlDefaultPath => PathManager.MakeProgramRelativePath("defctrl.json");
 
 		public void ConfigCheckAllControlDefaults()
 		{
@@ -62,7 +59,6 @@ namespace BizHawk.Client.Common
 		// General Client Settings
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
-		public int TargetZoomFactor = 2;
 
 		// TODO: move me
 		public class ToomFactors : Dictionary<string, int>
@@ -79,10 +75,7 @@ namespace BizHawk.Client.Common
 					return base[index];
 				}
 
-				set
-				{
-					base[index] = value;
-				}
+				set => base[index] = value;
 			}
 		}
 
@@ -93,15 +86,12 @@ namespace BizHawk.Client.Common
 		public int DispFinalFilter = 0; // None
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
-		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
 		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
-		public int MainWidth = -1;
-		public int MainHeight = -1;
 		public bool RunInBackground = true;
 		public bool AcceptBackgroundInput = false;
 		public bool AcceptBackgroundInputControllerOnly = false;
@@ -155,21 +145,7 @@ namespace BizHawk.Client.Common
 		//check CurrentDomain_AssemblyResolve if you change the defaults or name of this key
 		public bool UseNLua = true; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
 
-		////public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
-
-		private bool _turboSeek;
-		public bool TurboSeek
-		{
-			get
-			{
-				return _turboSeek;
-			}
-
-			set
-			{
-				_turboSeek = value;
-			}
-		}
+		public bool TurboSeek { get; set; }
 
 		public enum EDispMethod
 		{
@@ -241,8 +217,8 @@ namespace BizHawk.Client.Common
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 		public const int DefaultSaveStateCompressionLevelNormal = 1;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
-		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isnt actually used yet 
-		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isnt actually used yet 
+		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isn't actually used yet 
+		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isn't actually used yet 
 		public int MovieCompressionLevel = 2;
 
 		/// <summary>
@@ -470,8 +446,7 @@ namespace BizHawk.Client.Common
 
 		public object GetCoreSyncSettings(Type t)
 		{
-			object ret;
-			CoreSyncSettings.TryGetValue(t.ToString(), out ret);
+			CoreSyncSettings.TryGetValue(t.ToString(), out var ret);
 			return ret;
 		}
 
