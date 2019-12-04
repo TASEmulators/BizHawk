@@ -1907,7 +1907,7 @@ namespace BizHawk.Client.EmuHawk
 		private int MaxColumnWidth { get; set; }
 
 		// The height of a column cell in Vertical Orientation.
-		private int ColumnHeight { get; set; }
+		private int ColumnHeight => CellHeight + 2;
 
 		// The width of a cell in Horizontal Orientation. Only can be changed by changing the Font or CellPadding.
 		private int CellWidth { get; set; }
@@ -1939,8 +1939,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
 			}
-
-			ColumnHeight = CellHeight + 2;
 		}
 
 		protected override void OnFontChanged(EventArgs e)

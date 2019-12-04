@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				int columnIndex = visibleColumns.IndexOf(_columnDown);
-				columnWidth = ColumnWidth;
+				columnWidth = MaxColumnWidth;
 				columnHeight = GetHColHeight(columnIndex);
 			}
 
@@ -269,7 +269,7 @@ namespace BizHawk.Client.EmuHawk
 							int textX = Math.Max(((CellWidth - textWidth) / 2), CellWidthPadding) + strOffsetX;
 							int textY = CellHeightPadding + strOffsetY;
 
-							DrawString(text, new Rectangle(baseX + textX, baseY + textY, ColumnWidth, CellHeight));
+							DrawString(text, new Rectangle(baseX + textX, baseY + textY, MaxColumnWidth, CellHeight));
 						}
 					}
 				}
@@ -327,22 +327,22 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				_renderer.FillRectangle(new Rectangle(0, 0, ColumnWidth + 1, _drawHeight));
+				_renderer.FillRectangle(new Rectangle(0, 0, MaxColumnWidth + 1, _drawHeight));
 
 				int y = -_vBar.Value;
 				for (int j = 0; j < visibleColumns.Count; j++)
 				{
-					_renderer.Line(1, y, ColumnWidth, y);
+					_renderer.Line(1, y, MaxColumnWidth, y);
 					y += GetHColHeight(j);
 				}
 
 				if (visibleColumns.Any())
 				{
-					_renderer.Line(1, y, ColumnWidth, y);
+					_renderer.Line(1, y, MaxColumnWidth, y);
 				}
 
 				_renderer.Line(0, 0, 0, y);
-				_renderer.Line(ColumnWidth, 0, ColumnWidth, y);
+				_renderer.Line(MaxColumnWidth, 0, MaxColumnWidth, y);
 			}
 			else
 			{
@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					int columnIndex = visibleColumns.IndexOf(column);
-					_renderer.FillRectangle(new Rectangle(1, GetHColTop(columnIndex) + 1, ColumnWidth - 1, GetHColHeight(columnIndex) - 1));
+					_renderer.FillRectangle(new Rectangle(1, GetHColTop(columnIndex) + 1, MaxColumnWidth - 1, GetHColHeight(columnIndex) - 1));
 				}
 				else
 				{
@@ -402,7 +402,7 @@ namespace BizHawk.Client.EmuHawk
 							? SystemColors.Highlight.Add(0x00222222)
 							: SystemColors.Highlight);
 
-						_renderer.FillRectangle(new Rectangle(1, top + 1, ColumnWidth - 1, height - 1));
+						_renderer.FillRectangle(new Rectangle(1, top + 1, MaxColumnWidth - 1, height - 1));
 					}
 				}
 				else
@@ -545,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				x = RowsToPixels(cell.RowIndex.Value) + 1;
-				if (x < ColumnWidth)
+				if (x < MaxColumnWidth)
 				{
 					return;
 				}
