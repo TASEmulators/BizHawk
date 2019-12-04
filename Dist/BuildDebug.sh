@@ -1,2 +1,2 @@
 #!/bin/sh
-cd "$(dirname "$0")/.." && dotnet build BizHawk.sln
+cd "$(dirname "$0")/.." && nuget restore BizHawk.sln && CscToolExe="$(which csc)" dotnet build BizHawk.sln "$@"
