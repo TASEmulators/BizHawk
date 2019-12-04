@@ -163,7 +163,6 @@
 			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.LetKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
-			this.BranchView.MaxCharactersInHorizontal = 1;
 			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;

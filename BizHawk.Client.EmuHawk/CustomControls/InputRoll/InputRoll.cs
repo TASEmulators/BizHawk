@@ -31,7 +31,6 @@ namespace BizHawk.Client.EmuHawk
 		private RollColumns _columns = new RollColumns();
 		private bool _horizontalOrientation;
 		private bool _programmaticallyUpdatingScrollBarValues;
-		private int _maxCharactersInHorizontal = 1;
 
 		private int _rowCount;
 		private SizeF _charSize;
@@ -572,21 +571,6 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsPaintDown { get; private set; }
-
-		/// <summary>
-		/// Gets or sets the width of data cells when in Horizontal orientation.
-		/// </summary>
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public int MaxCharactersInHorizontal
-		{
-			get => _maxCharactersInHorizontal;
-			set
-			{
-				_maxCharactersInHorizontal = value;
-				UpdateCellSize();
-			}
-		}
 
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1949,7 +1933,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// TODO: Should we round instead of truncate?
 			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
-			CellWidth = (int)(_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			CellWidth = (int)_charSize.Width + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 			
 			ColumnWidth = CellWidth;
 			ColumnHeight = CellHeight + 2;

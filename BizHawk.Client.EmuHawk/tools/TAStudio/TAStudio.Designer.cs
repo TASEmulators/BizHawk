@@ -1237,7 +1237,6 @@
 			this.TasView.LagFramesToHide = 0;
 			this.TasView.LetKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
-			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
 			this.TasView.Rotatable = true;

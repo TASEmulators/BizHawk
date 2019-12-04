@@ -136,7 +136,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
-			TasView.MaxCharactersInHorizontal = 1;
 			LastPositionFrame = -1;
 		}
 
