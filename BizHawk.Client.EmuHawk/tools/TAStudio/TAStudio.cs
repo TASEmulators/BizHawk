@@ -579,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
-			
+			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections
 			TasView.DeselectAll();
 			BookMarkControl.Restart();
@@ -669,6 +669,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 				BookMarkControl.UpdateTextColumnWidth();
+				MarkerControl.UpdateTextColumnWidth();
 			}
 
 			TastudioPlayMode();

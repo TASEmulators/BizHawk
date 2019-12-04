@@ -187,6 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result == DialogResult.OK)
 				{
 					Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
+					UpdateTextColumnWidth();
 					UpdateValues();
 				}
 			}
@@ -198,6 +199,19 @@ namespace BizHawk.Client.EmuHawk
 
 			MarkerView.ScrollToIndex(Markers.Count - 1);
 			Tastudio.RefreshDialog();
+		}
+
+		public void UpdateTextColumnWidth()
+		{
+			if (Markers.Any())
+			{
+				var longestBranchText = Markers
+					.OrderBy(b => b.Message?.Length ?? 0)
+					.Last()
+					.Message;
+
+				MarkerView.ExpandColumnToFitText("LabelColumn", longestBranchText);
+			}
 		}
 
 		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
@@ -226,6 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				marker.Message = i.PromptText;
+				UpdateTextColumnWidth();
 				UpdateValues();
 			}
 		}
