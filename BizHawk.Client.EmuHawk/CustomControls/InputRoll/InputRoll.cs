@@ -752,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					return (_drawWidth - ColumnWidth) / CellWidth;
+					return (_drawWidth - MaxColumnWidth) / CellWidth;
 				}
 
 				return (_drawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
@@ -1577,7 +1577,7 @@ namespace BizHawk.Client.EmuHawk
 			RecalculateScrollBars();
 			if (_columns.VisibleColumns.Any())
 			{
-				ColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
 			}
 		}
 
@@ -1872,7 +1872,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_horizontalOrientation)
 			{
-				return (index * CellWidth) + ColumnWidth;
+				return (index * CellWidth) + MaxColumnWidth;
 			}
 
 			return (index * CellHeight) + ColumnHeight;
@@ -1888,7 +1888,7 @@ namespace BizHawk.Client.EmuHawk
 			// Using Math.Floor and float because integer division rounds towards 0 but we want to round down.
 			if (_horizontalOrientation)
 			{
-				return (int)Math.Floor((float)(pixels - ColumnWidth) / CellWidth);
+				return (int)Math.Floor((float)(pixels - MaxColumnWidth) / CellWidth);
 			}
 
 			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
@@ -1904,7 +1904,7 @@ namespace BizHawk.Client.EmuHawk
 			GetHColTop(index) + GetHColHeight(index);
 
 		// The width of the largest column cell in Horizontal Orientation
-		private int ColumnWidth { get; set; }
+		private int MaxColumnWidth { get; set; }
 
 		// The height of a column cell in Vertical Orientation.
 		private int ColumnHeight { get; set; }
@@ -1935,7 +1935,11 @@ namespace BizHawk.Client.EmuHawk
 			CellHeight = (int)_charSize.Height + (CellHeightPadding * 2);
 			CellWidth = (int)_charSize.Width + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 			
-			ColumnWidth = CellWidth;
+			if (_columns.VisibleColumns.Any())
+			{
+				MaxColumnWidth = _columns.VisibleColumns.Max(c => c.Width) + CellWidthPadding * 4;
+			}
+
 			ColumnHeight = CellHeight + 2;
 		}
 
