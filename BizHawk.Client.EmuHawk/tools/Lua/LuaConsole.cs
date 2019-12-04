@@ -279,7 +279,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var processedPath = PathManager.TryMakeRelative(path);
 
-			if (LuaAlreadyInSession(processedPath) == false)
+			var alreadyInSession = LuaImp.ScriptList.Any(t => processedPath == t.Path);
+			if (alreadyInSession)
+			{
+				foreach (var file in LuaImp.ScriptList
+					.Where(file => processedPath == file.Path
+						&& file.Enabled == false
+						&& !Global.Config.DisableLuaScriptsOnLoad))
+				{
+					if (file.Thread != null)
+					{
+						file.Toggle();
+					}
+
+					break;
+				}
+
+				RunLuaScripts();
+			}
+			else
 			{
 				var luaFile = new LuaFile("", processedPath);
 
@@ -301,16 +319,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CreateFileWatcher(processedPath);
 				}
-			}
-			else
-			{
-				foreach (var file in LuaImp.ScriptList.Where(file => processedPath == file.Path && file.Enabled == false && !Global.Config.DisableLuaScriptsOnLoad))
-				{
-					file.Toggle();
-					break;
-				}
-
-				RunLuaScripts();
 			}
 
 			UpdateDialog();
@@ -454,11 +462,6 @@ namespace BizHawk.Client.EmuHawk
 			NumberOfScripts.Text = message;
 		}
 
-		private bool LuaAlreadyInSession(string path)
-		{
-			return LuaImp.ScriptList.Any(t => path == t.Path);
-		}
-
 		private int _messageCount;
 		private const int MaxCount = 50;
 		public void WriteToOutputWindow(string message)
@@ -474,10 +477,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_messageCount <= MaxCount)
 				{
-					OutputBox.Text += message;
+					OutputBox.Text += message + "\n";
 					OutputBox.SelectionStart = OutputBox.Text.Length;
 					OutputBox.ScrollToCaret();
-					
 				}
 			});
 		}
