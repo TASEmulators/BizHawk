@@ -572,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
+				if (BranchView.CurrentCell.IsDataCell()
 					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
 				{
 					BranchView.DragCurrentCell();
@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex < Movie.Branches.Count)
+			if (e.NewCell.IsDataCell() && e.OldCell.RowIndex < Movie.Branches.Count)
 			{
 				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
