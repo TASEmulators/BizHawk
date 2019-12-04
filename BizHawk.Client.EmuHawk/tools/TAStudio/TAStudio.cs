@@ -574,14 +574,8 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			}
 
-			//if (TasView.AllColumns.Count == 0 || file.Extension != $".{TasMovie.Extension}")
-			//{
-				SetUpColumns();
-			//}
-			//else
-			//{
-				SetUpToolStripColumns();
-			//}
+			SetUpColumns();
+			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
