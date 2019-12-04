@@ -126,6 +126,25 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
+		public void ExpandColumnToFitText(string columnName, string text)
+		{
+			var column = AllColumns.SingleOrDefault(c => c.Name == columnName);
+			if (column != null)
+			{
+				using var g = CreateGraphics();
+				using (_renderer.LockGraphics(g, Width, Height))
+				{
+					var strLength = (int)_renderer.MeasureString(text, Font).Width + (CellWidthPadding * 2);
+					if (column.Width < strLength)
+					{
+						column.Width = strLength;
+						AllColumns.ColumnsChanged();
+						Refresh();
+					}
+				}
+			}
+		}
+
 		protected override void OnDoubleClick(EventArgs e)
 		{
 			if (IsHoveringOnColumnEdge)

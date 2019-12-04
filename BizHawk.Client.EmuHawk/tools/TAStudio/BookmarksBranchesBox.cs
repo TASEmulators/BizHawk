@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 		private TasMovie Movie => Tastudio.CurrentTasMovie;
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
-		private int _longestBranchText;
 
 		private enum BranchUndo
 		{
@@ -520,34 +519,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateTextColumnWidth()
 		{
-			int temp = 0;
-			foreach (TasBranch b in Movie.Branches)
+			if (Movie.Branches.Any())
 			{
-				if (string.IsNullOrEmpty(b.UserText))
-				{
-					continue;
-				}
+				var longestBranchText = Movie.Branches
+					.OrderBy(b => b.UserText?.Length ?? 0)
+					.Last()
+					.UserText;
 
-				if (temp < b.UserText.Length)
-				{
-					temp = b.UserText.Length;
-				}
-			}
-
-			_longestBranchText = temp;
-
-			int textWidth = (_longestBranchText * 12) + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
-			var column = BranchView.AllColumns.Single(c => c.Name == UserTextColumnName);
-
-			if (textWidth < 90)
-			{
-				textWidth = 90;
-			}
-
-			if (column.Width != textWidth)
-			{
-				column.Width = textWidth;
-				BranchView.AllColumns.ColumnsChanged();
+				BranchView.ExpandColumnToFitText(UserTextColumnName, longestBranchText);
 			}
 		}
 
