@@ -1897,8 +1897,17 @@ namespace BizHawk.Client.EmuHawk
 		private int GetHColHeight(int index) =>
 			_horizontalColumnHeights != null && index < _horizontalColumnHeights.Length ? _horizontalColumnHeights[index] : CellHeight;
 
-		private int GetHColTop(int index) =>
-			_horizontalColumnTops != null && index < _horizontalColumnTops.Length ? _horizontalColumnTops[index] : (index * CellHeight);
+		private int GetHColTop(int index)
+		{
+			if (_horizontalColumnTops == null)
+			{
+				return 0;
+			}
+
+			return index < _horizontalColumnTops.Length
+				? _horizontalColumnTops[index]
+				: _horizontalColumnTops.Last() + CellHeight;
+		}
 
 		private int GetHColBottom(int index) =>
 			GetHColTop(index) + GetHColHeight(index);
