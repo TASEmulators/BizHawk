@@ -1029,6 +1029,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StopAllScriptsMenuItem_Click(object sender, EventArgs e)
 		{
 			LuaImp.ScriptList.StopAllScripts();
+			UpdateDialog();
 		}
 
 		private void RegisteredFunctionsMenuItem_Click(object sender, EventArgs e)
