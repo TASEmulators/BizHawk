@@ -1223,7 +1223,7 @@
     <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\O2Schema .cs" />
+    <Compile Include="tools\VirtualPads\schema\O2Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\VECSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GGLSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
