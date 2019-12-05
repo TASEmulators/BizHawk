@@ -2010,6 +2010,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetLagFramesArray()
 		{
+			int firstVisibleRow = FirstVisibleRow;
+			int visibleRows = VisibleRows;
 			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				bool showNext = false;
@@ -2017,19 +2019,19 @@ namespace BizHawk.Client.EmuHawk
 				// First one needs to check BACKWARDS for lag frame count.
 				SetLagFramesFirst();
 				int f = _lagFrames[0];
-				if (QueryFrameLag(FirstVisibleRow + f, HideWasLagFrames))
+				if (QueryFrameLag(firstVisibleRow + f, HideWasLagFrames))
 				{
 					showNext = true;
 				}
 
-				for (int i = 1; i <= VisibleRows; i++)
+				for (int i = 1; i <= visibleRows; i++)
 				{
 					_lagFrames[i] = 0;
 					if (!showNext)
 					{
 						for (; _lagFrames[i] < LagFramesToHide; _lagFrames[i]++)
 						{
-							if (!QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
+							if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
 							{
 								break;
 							}
@@ -2039,13 +2041,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (!QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
+						if (!QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
 						{
 							showNext = false;
 						}
 					}
 
-					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
+					if (_lagFrames[i] == LagFramesToHide && QueryFrameLag(firstVisibleRow + i + f, HideWasLagFrames))
 					{
 						showNext = true;
 					}
@@ -2053,7 +2055,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				for (int i = 0; i <= VisibleRows; i++)
+				for (int i = 0; i <= visibleRows; i++)
 				{
 					_lagFrames[i] = 0;
 				}
@@ -2061,6 +2063,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void SetLagFramesFirst()
 		{
+			int firstVisibleRow = FirstVisibleRow;
 			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				// Count how many lag frames are above displayed area.
@@ -2069,7 +2072,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					count++;
 				}
-				while (QueryFrameLag(FirstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
+				while (QueryFrameLag(firstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
 				count--;
 
 				// Count forward
@@ -2078,7 +2081,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					fCount++;
 				}
-				while (QueryFrameLag(FirstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
+				while (QueryFrameLag(firstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
 				_lagFrames[0] = (byte)fCount;
 			}
 			else
