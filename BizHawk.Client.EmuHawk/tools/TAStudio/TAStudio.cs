@@ -909,7 +909,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadState(KeyValuePair<int, byte[]> state)
 		{
-			StatableEmulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
+			using var ms = new MemoryStream(state.Value);
+			using var br = new BinaryReader(ms);
+			StatableEmulator.LoadStateBinary(br);
 
 			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
 			{
