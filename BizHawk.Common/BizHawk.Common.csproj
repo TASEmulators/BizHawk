@@ -95,7 +95,6 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SimpleTime.cs" />
-    <Compile Include="Sprintf.cs" />
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
