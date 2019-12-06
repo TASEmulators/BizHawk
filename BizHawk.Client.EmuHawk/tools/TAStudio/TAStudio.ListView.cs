@@ -932,11 +932,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			// TODO: think about nullability
-			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet?
-			// Most of these are stupid but I got annoyed at null crashes
-			if (e.OldCell == null || e.OldCell.Column == null || e.OldCell.RowIndex == null ||
-				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
+			// TODO: If NewCell is null, it indicates that there was a mouse leave scenario, we may want to account for that
+			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet
+			if (e.OldCell?.Column == null || e.OldCell?.RowIndex == null
+				|| e.NewCell?.Column == null || e.NewCell?.RowIndex == null)
 			{
 				return;
 			}
@@ -974,33 +973,27 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_startCursorDrag && !Mainform.IsSeeking)
 			{
-				if (e.NewCell.RowIndex.HasValue)
-				{
-					GoToFrame(e.NewCell.RowIndex.Value);
-				}
+				GoToFrame(e.NewCell.RowIndex.Value);
 			}
 			else if (_startSelectionDrag)
 			{
-				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
+				for (var i = startVal; i <= endVal; i++)
 				{
-					for (var i = startVal; i <= endVal; i++)
+					TasView.SelectRow(i, _selectionDragState);
+					if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
 					{
-						TasView.SelectRow(i, _selectionDragState);
-						if (FloatEditingMode && (ModifierKeys == Keys.Control || ModifierKeys == Keys.Shift))
+						if (_selectionDragState)
 						{
-							if (_selectionDragState)
-							{
-								_extraFloatRows.Add(i);
-							}
-							else
-							{
-								_extraFloatRows.Remove(i);
-							}
+							_extraFloatRows.Add(i);
+						}
+						else
+						{
+							_extraFloatRows.Remove(i);
 						}
 					}
-
-					SetSplicer();
 				}
+
+				SetSplicer();
 			}
 			else if (_rightClickFrame != -1)
 			{
@@ -1112,62 +1105,56 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Left-click
-			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
+			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = false;
 
-				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
+				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
-					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
+					bool setVal = _boolPaintState;
+
+					if (_patternPaint && _boolPaintState)
 					{
-						bool setVal = _boolPaintState;
-
-						if (_patternPaint && _boolPaintState)
+						if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 						{
-							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
-							{
-								setVal = CurrentTasMovie.BoolIsPressed(i - 1, _startBoolDrawColumn);
-							}
-							else
-							{
-								setVal = BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
-							}
+							setVal = CurrentTasMovie.BoolIsPressed(i - 1, _startBoolDrawColumn);
 						}
-
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-
-						if (!_triggerAutoRestore)
+						else
 						{
-							JumpToGreenzone();
+							setVal = BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 						}
+					}
+
+					CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+
+					if (!_triggerAutoRestore)
+					{
+						JumpToGreenzone();
 					}
 				}
 			}
 
-			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
+			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startFloatDrawColumn))
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = false;
 
-				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
+				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
-					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
+					float setVal = _floatPaintState;
+					if (_patternPaint)
 					{
-						float setVal = _floatPaintState;
-						if (_patternPaint)
+						if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 						{
-							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
-							{
-								setVal = CurrentTasMovie.GetFloatState(i - 1, _startFloatDrawColumn);
-							}
-							else
-							{
-								setVal = FloatPatterns[ControllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
-							}
+							setVal = CurrentTasMovie.GetFloatState(i - 1, _startFloatDrawColumn);
 						}
-
-						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-						JumpToGreenzone();
+						else
+						{
+							setVal = FloatPatterns[ControllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
+						}
 					}
+
+					CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+					JumpToGreenzone();
 				}
 			}
 
