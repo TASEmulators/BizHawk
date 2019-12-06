@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider
 	{
-		public MAME(CoreComm comm, string dir, string file)
+		public MAME(CoreComm comm, string dir, string file, out string gamename)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			MAMEThread = new Thread(ExecuteMAMEThread);
 
 			AsyncLaunchMAME();
+
+			gamename = gameName;
 		}
 
 		#region Properties
@@ -49,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public int BufferHeight { get; private set; } = 240;
 		public int VsyncNumerator { get; private set; } = 60;
 		public int VsyncDenominator { get; private set; } = 1;
-		private int samplesPerFrame => (int)Math.Round(sampleRate / this.VsyncRate());
 
 		#endregion
 
@@ -61,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private SortedDictionary<string, string> fieldsPorts = new SortedDictionary<string, string>();
 		private IController Controller = NullController.Instance;
 		private int[] frameBuffer = new int[0];
-		private short[] audioBuffer = new short[0];
 		private Queue<short> audioSamples = new Queue<short>();
+		private decimal dAudioSamples = 0;
 		private int sampleRate = 44100;
 		private bool paused = true;
 		private bool exiting = false;
@@ -70,6 +71,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
+		private string gameName = "Arcade";
 		private LibMAME.PeriodicCallbackDelegate periodicCallback;
 		private LibMAME.SoundCallbackDelegate soundCallback;
 		private LibMAME.BootCallbackDelegate bootCallback;
@@ -123,12 +125,45 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		/*
+		 * GetSamplesSync() and MAME
+		 * 
+		 * MAME generates samples 50 times per second, regardless of the VBlank
+		 * rate of the emulated machine. It then uses complicated logic to
+		 * output the required amount of audio to the OS driver and to the AVI,
+		 * where it's meant to tie flashed samples to video frame duration.
+		 * 
+		 * I'm doing my own logic here for now. I grab MAME's audio buffer
+		 * whenever it's filled (MAMESoundCallback()) and enqueue it.
+		 * 
+		 * Whenever Hawk wants new audio, I dequeue it, but with a little quirk.
+		 * Since sample count per frame may not align with frame duration, I
+		 * subtract the entire decimal fraction of "required" samples from total
+		 * samples. I check if the fractional reminder of total samples is > 0.5
+		 * by rounding it. I invert it to see what number I should add to the
+		 * integer representation of "required" samples, to compensate for
+		 * misalignment between fractional and integral "required" samples.
+		 * 
+		 * TODO: Figure out how MAME does this and maybe use their method instead.
+		 */
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = samplesPerFrame;
-			samples = new short[samplesPerFrame * 2];
+			decimal dSamplesPerFrame = (decimal)sampleRate * VsyncDenominator / VsyncNumerator;
 
-			for (int i = 0; i < samplesPerFrame * 2; i++)
+			if (audioSamples.Any())
+			{
+				dAudioSamples -= dSamplesPerFrame;
+				int remainder = (int)Math.Round(dAudioSamples - Math.Truncate(dAudioSamples)) ^ 1;
+				nsamp = (int)Math.Round(dSamplesPerFrame) + remainder;
+			}
+			else
+			{
+				nsamp = (int)Math.Round(dSamplesPerFrame);
+			}
+
+			samples = new short[nsamp * 2];
+
+			for (int i = 0; i < nsamp * 2; i++)
 			{
 				if (audioSamples.Any())
 				{
@@ -291,6 +326,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				$"MAMEHawk is { version }");
 		}
 
+		private void UpdateGameName()
+		{
+			int lengthInBytes;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetGameName, out lengthInBytes);
+			gameName = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
+			}
+		}
+
 		#endregion
 
 		#region Callbacks
@@ -369,6 +416,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				for (int i = 0; i < numSamples; i++)
 				{
 					audioSamples.Enqueue(*(pSample + i));
+					dAudioSamples++;
 				}
 			}
 
@@ -384,6 +432,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			CheckVersions();
 			GetInputFields();
 			Update();
+			UpdateGameName();
 			MAMEStartupComplete.Set();
 		}
 		
@@ -454,6 +503,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Unpause = "emu.unpause()";
 			public const string Exit = "manager:machine():exit()";
 			public const string GetVersion = "return emu.app_version()";
+			public const string GetGameName = "return manager:machine():system().description";
 			public const string GetPixels = "return manager:machine():video():pixels()";
 			public const string GetSamples = "return manager:machine():sound():samples()";
 			public const string GetFrameNumber = "return select(2, next(manager:machine().screens)):frame_number()";

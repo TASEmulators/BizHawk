@@ -164,6 +164,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.ChannelF;
 					case "O2":
 						return SystemInfo.O2;
+					case "MAME":
+						return SystemInfo.MAME;
 				}
 			}
 		}

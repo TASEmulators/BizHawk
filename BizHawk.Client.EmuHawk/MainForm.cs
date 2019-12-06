@@ -596,8 +596,6 @@ namespace BizHawk.Client.EmuHawk
 		// runloop won't exec lua
 		public bool SuppressLua { get; set; }
 
-		public AdvancedRomLoaderType AdvancedLoader { get; set; }
-
 		public long MouseWheelTracker { get; private set; }
 
 		private int? _pauseOnFrame;
@@ -3530,7 +3528,7 @@ namespace BizHawk.Client.EmuHawk
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
 					MessageCallback = GlobalWin.OSD.AddMessage,
-					AdvancedLoader = AdvancedLoader
+					OpenAdvanced = args.OpenAdvanced
 				};
 				Global.FirmwareManager.RecentlyServed.Clear();
 
@@ -3548,6 +3546,7 @@ namespace BizHawk.Client.EmuHawk
 
 				IOpenAdvanced ioa = args.OpenAdvanced;
 				var oa_openrom = ioa as OpenAdvanced_OpenRom;
+				var oa_mame = ioa as OpenAdvanced_MAME;
 				var oa_retro = ioa as OpenAdvanced_Libretro;
 				var ioa_retro = ioa as IOpenAdvancedLibretro;
 
@@ -3589,6 +3588,11 @@ namespace BizHawk.Client.EmuHawk
 				if (oa_openrom != null)
 				{
 					oa_openrom.Path = loader.CanonicalFullPath;
+				}
+
+				if (oa_mame != null)
+				{
+					oa_mame.Path = loader.CanonicalFullPath;
 				}
 
 				if (result)

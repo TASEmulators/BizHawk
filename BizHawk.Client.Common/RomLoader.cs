@@ -172,7 +172,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public AdvancedRomLoaderType AdvancedLoader { get; set; }
+		public IOpenAdvanced OpenAdvanced { get; set; }
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common
 				{
 					// MAME uses these extensions for arcade ROMs, but also accepts all sorts of variations of archives, folders, and files. if we let archive loader handle this, it won't know where to stop, since it'd require MAME's ROM database (which contains ROM names and blob hashes) to look things up, and even then it might be confused by archive/folder structure
 					// so assume the user provides the proper ROM directly, and handle possible errors later
-					if (AdvancedLoader == AdvancedRomLoaderType.MAMELaunchGame)
+					if (OpenAdvanced is OpenAdvanced_MAME)
 					{
 						file.NonArchiveExtensions = new[] { ".zip", ".7z" };
 					}
@@ -295,7 +295,7 @@ namespace BizHawk.Client.Common
 				{
 					string ext = null;
 
-					if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchGame)
+					if (OpenAdvanced is OpenAdvanced_Libretro)
 					{
 						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
 
@@ -1159,7 +1159,9 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "Arcade":
-								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName);
+								string gameName = "";
+								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, out gameName);
+								rom.GameInfo.Name = gameName;
 								break;
 							case "GEN":
 								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
