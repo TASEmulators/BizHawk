@@ -7,10 +7,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -34,8 +31,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -46,7 +43,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				using var ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}

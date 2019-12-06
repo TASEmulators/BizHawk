@@ -10,12 +10,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public partial class ZXSpectrum : IStatable
     {
-        public bool BinarySaveStatesPreferred
-        {
-            get { return true; }
-        }
+        public bool BinarySaveStatesPreferred => true;
 
-        public void SaveStateText(TextWriter writer)
+		public void SaveStateText(TextWriter writer)
         {
             SyncState(new Serializer(writer));
         }
@@ -37,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public byte[] SaveStateBinary()
         {
-            MemoryStream ms = new MemoryStream();
-            BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
             SaveStateBinary(bw);
             bw.Flush();
             return ms.ToArray();

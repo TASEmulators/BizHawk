@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream(_savebuff2, true);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(_savebuff2, true);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			if (ms.Position != _savebuff2.Length)

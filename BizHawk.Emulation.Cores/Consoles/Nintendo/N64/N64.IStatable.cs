@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
 	public partial class N64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
+		public bool BinarySaveStatesPreferred => true;
 
 		// these functions are all exact copy paste from gambatte.
 		// if something's wrong here, it's probably wrong there too
@@ -82,8 +82,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				SaveStateBinaryPrivateBuff = new byte[lenwant];
 			}
 
-			var ms = new MemoryStream(SaveStateBinaryPrivateBuff);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(SaveStateBinaryPrivateBuff);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 

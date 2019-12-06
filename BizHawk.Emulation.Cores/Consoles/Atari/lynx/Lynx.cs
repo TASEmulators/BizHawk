@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			byte[] realfile = null;
 
 			{
-				var ms = new MemoryStream(file, false);
-				var br = new BinaryReader(ms);
+				using var ms = new MemoryStream(file, false);
+				using var br = new BinaryReader(ms);
 				string header = Encoding.ASCII.GetString(br.ReadBytes(4));
 				int p0 = br.ReadUInt16();
 				int p1 = br.ReadUInt16();

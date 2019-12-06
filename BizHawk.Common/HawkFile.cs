@@ -147,10 +147,8 @@ namespace BizHawk.Common
 		/// </summary>
 		public static bool ExistsAt(string path)
 		{
-			using (var file = new HawkFile(path))
-			{
-				return file.Exists;
-			}
+			using var file = new HawkFile(path);
+			return file.Exists;
 		}
 
 		/// <summary>
@@ -158,20 +156,16 @@ namespace BizHawk.Common
 		/// </summary>
 		public static byte[] ReadAllBytes(string path)
 		{
-			using (var file = new HawkFile(path))
+			using var file = new HawkFile(path);
+			if (!file.Exists)
 			{
-				if (!file.Exists)
-				{
-					throw new FileNotFoundException(path);
-				}
-
-				using (Stream stream = file.GetStream())
-				{
-					var ms = new MemoryStream((int)stream.Length);
-					stream.CopyTo(ms);
-					return ms.GetBuffer();
-				}
+				throw new FileNotFoundException(path);
 			}
+
+			using Stream stream = file.GetStream();
+			using var ms = new MemoryStream((int)stream.Length);
+			stream.CopyTo(ms);
+			return ms.GetBuffer();
 		}
 
 		/// <summary>

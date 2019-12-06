@@ -34,7 +34,7 @@ namespace BizHawk.Common.IOExtensions
 
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
-			var ms = new MemoryStream();
+			using var ms = new MemoryStream();
 			for (;;)
 			{
 				var b = br.ReadByte();

@@ -8,10 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -59,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			ms.Close();

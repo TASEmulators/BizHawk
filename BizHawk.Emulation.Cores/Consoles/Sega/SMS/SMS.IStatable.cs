@@ -3,15 +3,11 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -35,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -47,13 +43,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				using var ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}
 			Cpu.SyncState(ser);
 
-			ser.BeginSection(nameof(SMS));			
+			ser.BeginSection(nameof(SMS));
 			Vdp.SyncState(ser);
 			PSG.SyncState(ser);
 			ser.Sync("RAM", ref SystemRam, false);

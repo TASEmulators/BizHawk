@@ -10,13 +10,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     /// </summary>
     public partial class AmstradCPC : IStatable
     {
+        public bool BinarySaveStatesPreferred => true;
 
-        public bool BinarySaveStatesPreferred
-        {
-            get { return true; }
-        }
-
-        public void SaveStateText(TextWriter writer)
+		public void SaveStateText(TextWriter writer)
         {
             SyncState(new Serializer(writer));
         }
@@ -38,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         public byte[] SaveStateBinary()
         {
-            MemoryStream ms = new MemoryStream();
-            BinaryWriter bw = new BinaryWriter(ms);
+            using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
             SaveStateBinary(bw);
             bw.Flush();
             return ms.ToArray();

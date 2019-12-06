@@ -31,13 +31,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public byte[] SaveStateBinary()
 		{
-			using (var ms = new MemoryStream())
-			{
-				var bw = new BinaryWriter(ms);
-				SaveStateBinary(bw);
-				bw.Flush();
-				return ms.ToArray();
-			}
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
 		}
 
 		private void SyncState(Serializer ser)
