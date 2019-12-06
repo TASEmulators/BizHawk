@@ -4,94 +4,94 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// CPCHawk: Core Class
-    /// * IStatable *
-    /// </summary>
-    public partial class AmstradCPC : IStatable
-    {
-        public bool BinarySaveStatesPreferred => true;
+	/// <summary>
+	/// CPCHawk: Core Class
+	/// * IStatable *
+	/// </summary>
+	public partial class AmstradCPC : IStatable
+	{
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
-        {
-            SyncState(new Serializer(writer));
-        }
+		{
+			SyncState(new Serializer(writer));
+		}
 
-        public void LoadStateText(TextReader reader)
-        {
-            SyncState(new Serializer(reader));
-        }
+		public void LoadStateText(TextReader reader)
+		{
+			SyncState(new Serializer(reader));
+		}
 
-        public void SaveStateBinary(BinaryWriter bw)
-        {
-            SyncState(new Serializer(bw));
-        }
+		public void SaveStateBinary(BinaryWriter bw)
+		{
+			SyncState(new Serializer(bw));
+		}
 
-        public void LoadStateBinary(BinaryReader br)
-        {
-            SyncState(new Serializer(br));
-        }
+		public void LoadStateBinary(BinaryReader br)
+		{
+			SyncState(new Serializer(br));
+		}
 
-        public byte[] SaveStateBinary()
-        {
-            using var ms = new MemoryStream();
+		public byte[] SaveStateBinary()
+		{
+			using var ms = new MemoryStream();
 			using var bw = new BinaryWriter(ms);
-            SaveStateBinary(bw);
-            bw.Flush();
-            return ms.ToArray();
-        }
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
+		}
 
-        private void SyncState(Serializer ser)
-        {
-            byte[] core = null;
-            if (ser.IsWriter)
-            {
-                var ms = new MemoryStream();
-                ms.Close();
-                core = ms.ToArray();
-            }
+		private void SyncState(Serializer ser)
+		{
+			byte[] core = null;
+			if (ser.IsWriter)
+			{
+				var ms = new MemoryStream();
+				ms.Close();
+				core = ms.ToArray();
+			}
 
-            if (ser.IsWriter)
-            {
-                ser.SyncEnum(nameof(_machineType), ref _machineType);
+			if (ser.IsWriter)
+			{
+				ser.SyncEnum(nameof(_machineType), ref _machineType);
 
-                _cpu.SyncState(ser);
-                ser.BeginSection(nameof(AmstradCPC));
-                _machine.SyncState(ser);
-                ser.Sync("Frame", ref _machine.FrameCount);
-                ser.Sync("LagCount", ref _lagCount);
-                ser.Sync("IsLag", ref _isLag);
-                ser.EndSection();
-            }
+				_cpu.SyncState(ser);
+				ser.BeginSection(nameof(AmstradCPC));
+				_machine.SyncState(ser);
+				ser.Sync("Frame", ref _machine.FrameCount);
+				ser.Sync("LagCount", ref _lagCount);
+				ser.Sync("IsLag", ref _isLag);
+				ser.EndSection();
+			}
 
-            if (ser.IsReader)
-            {
-                var tmpM = _machineType;
-                ser.SyncEnum(nameof(_machineType), ref _machineType);
-                if (tmpM != _machineType && _machineType.ToString() != "72")
-                {
-                    string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
-                    msg += "Current Configuration: " + tmpM.ToString();
-                    msg += "\n";
-                    msg += "Saved Configuration:    " + _machineType.ToString();
-                    msg += "\n\n";
-                    msg += "If you wish to load this SaveState ensure that you have the correct machine configuration selected, reboot the core, then try again.";
-                    CoreComm.ShowMessage(msg);
-                    _machineType = tmpM;
-                }
-                else
-                {
-                    _cpu.SyncState(ser);
-                    ser.BeginSection(nameof(AmstradCPC));
-                    _machine.SyncState(ser);
-                    ser.Sync("Frame", ref _machine.FrameCount);
-                    ser.Sync("LagCount", ref _lagCount);
-                    ser.Sync("IsLag", ref _isLag);
-                    ser.EndSection();
+			if (ser.IsReader)
+			{
+				var tmpM = _machineType;
+				ser.SyncEnum(nameof(_machineType), ref _machineType);
+				if (tmpM != _machineType && _machineType.ToString() != "72")
+				{
+					string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
+					msg += "Current Configuration: " + tmpM.ToString();
+					msg += "\n";
+					msg += "Saved Configuration:    " + _machineType.ToString();
+					msg += "\n\n";
+					msg += "If you wish to load this SaveState ensure that you have the correct machine configuration selected, reboot the core, then try again.";
+					CoreComm.ShowMessage(msg);
+					_machineType = tmpM;
+				}
+				else
+				{
+					_cpu.SyncState(ser);
+					ser.BeginSection(nameof(AmstradCPC));
+					_machine.SyncState(ser);
+					ser.Sync("Frame", ref _machine.FrameCount);
+					ser.Sync("LagCount", ref _lagCount);
+					ser.Sync("IsLag", ref _isLag);
+					ser.EndSection();
 
-                    SyncAllByteArrayDomains();
-                }
-            }
-        }
-    }
+					SyncAllByteArrayDomains();
+				}
+			}
+		}
+	}
 }

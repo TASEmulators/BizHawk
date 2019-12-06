@@ -6,121 +6,121 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    /// <summary>
-    /// Responsible for Compressed Square Wave conversion
-    /// https://web.archive.org/web/20171024182530/http://ramsoft.bbk.org.omegahg.com/csw.html
-    /// </summary>
-    public class CswConverter : MediaConverter
-    {
-        /// <summary>
-        /// The type of serializer
-        /// </summary>
-        private MediaConverterType _formatType = MediaConverterType.CSW;
-        public override MediaConverterType FormatType
-        {
-            get
-            {
-                return _formatType;
-            }
-        }
+	/// <summary>
+	/// Responsible for Compressed Square Wave conversion
+	/// https://web.archive.org/web/20171024182530/http://ramsoft.bbk.org.omegahg.com/csw.html
+	/// </summary>
+	public class CswConverter : MediaConverter
+	{
+		/// <summary>
+		/// The type of serializer
+		/// </summary>
+		private MediaConverterType _formatType = MediaConverterType.CSW;
+		public override MediaConverterType FormatType
+		{
+			get
+			{
+				return _formatType;
+			}
+		}
 
-        /// <summary>
-        /// Position counter
-        /// </summary>
-        private int _position = 0;
+		/// <summary>
+		/// Position counter
+		/// </summary>
+		private int _position = 0;
 
-        /// <summary>
-        /// Signs whether this class can be used to read the data format
-        /// </summary>
-        public override bool IsReader { get { return true; } }
+		/// <summary>
+		/// Signs whether this class can be used to read the data format
+		/// </summary>
+		public override bool IsReader { get { return true; } }
 
-        /// <summary>
-        /// Signs whether this class can be used to write the data format
-        /// </summary>
-        public override bool IsWriter { get { return false; } }
+		/// <summary>
+		/// Signs whether this class can be used to write the data format
+		/// </summary>
+		public override bool IsWriter { get { return false; } }
 
-        #region Construction
+		#region Construction
 
-        private DatacorderDevice _datacorder;
+		private DatacorderDevice _datacorder;
 
-        public CswConverter(DatacorderDevice _tapeDevice)
-        {
-            _datacorder = _tapeDevice;
-        }
+		public CswConverter(DatacorderDevice _tapeDevice)
+		{
+			_datacorder = _tapeDevice;
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        /// Returns TRUE if pzx header is detected
-        /// </summary>
-        public override bool CheckType(byte[] data)
-        {
-            // CSW Header
+		/// <summary>
+		/// Returns TRUE if pzx header is detected
+		/// </summary>
+		public override bool CheckType(byte[] data)
+		{
+			// CSW Header
 
-            // check whether this is a valid csw format file by looking at the identifier in the header
-            // (first 22 bytes of the file)
-            string ident = Encoding.ASCII.GetString(data, 0, 22);
+			// check whether this is a valid csw format file by looking at the identifier in the header
+			// (first 22 bytes of the file)
+			string ident = Encoding.ASCII.GetString(data, 0, 22);
 
-            // version info
-            int majorVer = data[8];
-            int minorVer = data[9];
+			// version info
+			int majorVer = data[8];
+			int minorVer = data[9];
 
-            if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
-            {
-                // this is not a valid CSW format file
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
+			{
+				// this is not a valid CSW format file
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 
-        /// <summary>
-        /// DeSerialization method
-        /// </summary>
-        public override void Read(byte[] data)
-        {
-            // clear existing tape blocks
-            _datacorder.DataBlocks.Clear();
+		/// <summary>
+		/// DeSerialization method
+		/// </summary>
+		public override void Read(byte[] data)
+		{
+			// clear existing tape blocks
+			_datacorder.DataBlocks.Clear();
 
-            // CSW Header
+			// CSW Header
 
-            // check whether this is a valid csw format file by looking at the identifier in the header
-            // (first 22 bytes of the file)
-            string ident = Encoding.ASCII.GetString(data, 0, 22);
+			// check whether this is a valid csw format file by looking at the identifier in the header
+			// (first 22 bytes of the file)
+			string ident = Encoding.ASCII.GetString(data, 0, 22);
 
-            if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
-            {
-                // this is not a valid CSW format file
-                throw new Exception(this.GetType().ToString() +
-                    "This is not a valid CSW format file");
-            }
+			if (ident.ToUpper() != "COMPRESSED SQUARE WAVE")
+			{
+				// this is not a valid CSW format file
+				throw new Exception(this.GetType().ToString() +
+					"This is not a valid CSW format file");
+			}
 
-            if (data[0x16] != 0x1a)
-            {
-                // invalid terminator code
-                throw new Exception(this.GetType().ToString() +
-                    "This image reports as a CSW but has an invalid terminator code");
-            }
+			if (data[0x16] != 0x1a)
+			{
+				// invalid terminator code
+				throw new Exception(this.GetType().ToString() +
+					"This image reports as a CSW but has an invalid terminator code");
+			}
 
-            _position = 0;
+			_position = 0;
 
-            // version info
-            int majorVer = data[0x17];
-            int minorVer = data[0x18];
+			// version info
+			int majorVer = data[0x17];
+			int minorVer = data[0x18];
 
-            int sampleRate;
-            int totalPulses;
-            byte compressionType;
-            byte flags;
-            byte headerExtensionLen;
-            byte[] cswData;
-            byte[] cswDataUncompressed;
+			int sampleRate;
+			int totalPulses;
+			byte compressionType;
+			byte flags;
+			byte headerExtensionLen;
+			byte[] cswData;
+			byte[] cswDataUncompressed;
 
-            if (majorVer == 2)
-            {
-                /*
+			if (majorVer == 2)
+			{
+				/*
                     CSW-2 Header
                     CSW global file header - status: required
                     Offset	    Value	Type	Description
@@ -143,28 +143,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     0x34+HDR	-	    -	        CSW data.
                 */
 
-                _position = 0x19;
-                sampleRate = GetInt32(data, _position);
-                _position += 4;
+				_position = 0x19;
+				sampleRate = GetInt32(data, _position);
+				_position += 4;
 
-                totalPulses = GetInt32(data, _position);
-                cswDataUncompressed = new byte[totalPulses + 1];
-                _position += 4;
+				totalPulses = GetInt32(data, _position);
+				cswDataUncompressed = new byte[totalPulses + 1];
+				_position += 4;
 
-                compressionType = data[_position++];
-                flags = data[_position++];
-                headerExtensionLen = data[_position++];  
-                              
-                _position = 0x34 + headerExtensionLen;
+				compressionType = data[_position++];
+				flags = data[_position++];
+				headerExtensionLen = data[_position++];
 
-                cswData = new byte[data.Length - _position];
-                Array.Copy(data, _position, cswData, 0, cswData.Length);
+				_position = 0x34 + headerExtensionLen;
 
-                ProcessCSWV2(cswData, ref cswDataUncompressed, compressionType, totalPulses);                          
-            }
-            else if (majorVer == 1)
-            {
-                /*
+				cswData = new byte[data.Length - _position];
+				Array.Copy(data, _position, cswData, 0, cswData.Length);
+
+				ProcessCSWV2(cswData, ref cswDataUncompressed, compressionType, totalPulses);
+			}
+			else if (majorVer == 1)
+			{
+				/*
                     CSW-1 Header
                     CSW global file header - status: required
                     Offset	Value	Type	    Description
@@ -181,81 +181,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     0x20	-	    -	        CSW data.
                 */
 
-                _position = 0x19;
-                sampleRate = GetWordValue(data, _position);
-                _position += 2;
+				_position = 0x19;
+				sampleRate = GetWordValue(data, _position);
+				_position += 2;
 
-                compressionType = data[_position++];
-                flags = data[_position++];
+				compressionType = data[_position++];
+				flags = data[_position++];
 
-                _position += 3;
+				_position += 3;
 
-                cswDataUncompressed = new byte[data.Length - _position];
+				cswDataUncompressed = new byte[data.Length - _position];
 
-                if (compressionType == 1)
-                    Array.Copy(data, _position, cswDataUncompressed, 0, cswDataUncompressed.Length);
-                else
-                    throw new Exception(this.GetType().ToString() +
-                    "CSW Format unknown compression type");
-            }
-            else
-            {
-                throw new Exception(this.GetType().ToString() +
-                    "CSW Format Version " + majorVer + "." + minorVer + " is not currently supported");
-            }
+				if (compressionType == 1)
+					Array.Copy(data, _position, cswDataUncompressed, 0, cswDataUncompressed.Length);
+				else
+					throw new Exception(this.GetType().ToString() +
+					"CSW Format unknown compression type");
+			}
+			else
+			{
+				throw new Exception(this.GetType().ToString() +
+					"CSW Format Version " + majorVer + "." + minorVer + " is not currently supported");
+			}
 
-            // create the single tape block
-            // (use DATA block for now so initial signal level is handled correctly by the datacorder device)
-            TapeDataBlock t = new TapeDataBlock();
-            t.BlockDescription = BlockType.CSW_Recording;
-            t.BlockID = 0x18;
-            t.DataPeriods = new List<int>();
+			// create the single tape block
+			// (use DATA block for now so initial signal level is handled correctly by the datacorder device)
+			TapeDataBlock t = new TapeDataBlock();
+			t.BlockDescription = BlockType.CSW_Recording;
+			t.BlockID = 0x18;
+			t.DataPeriods = new List<int>();
 
-            if (flags.Bit(0))
-                t.InitialPulseLevel = true;
-            else
-                t.InitialPulseLevel = false;
+			if (flags.Bit(0))
+				t.InitialPulseLevel = true;
+			else
+				t.InitialPulseLevel = false;
 
-            var rate = (69888 * 50) / sampleRate;
+			var rate = (69888 * 50) / sampleRate;
 
-            for (int i = 0; i < cswDataUncompressed.Length;)
-            {
-                int length = cswDataUncompressed[i++] * rate;
-                if (length == 0)
-                {
-                    length = GetInt32(cswDataUncompressed, i) / rate;
-                    i += 4;
-                }
+			for (int i = 0; i < cswDataUncompressed.Length;)
+			{
+				int length = cswDataUncompressed[i++] * rate;
+				if (length == 0)
+				{
+					length = GetInt32(cswDataUncompressed, i) / rate;
+					i += 4;
+				}
 
-                t.DataPeriods.Add(length);
-            }
+				t.DataPeriods.Add(length);
+			}
 
-            // add closing period
-            t.DataPeriods.Add((69888 * 50) / 10);
+			// add closing period
+			t.DataPeriods.Add((69888 * 50) / 10);
 
-            // add to datacorder
-            _datacorder.DataBlocks.Add(t);
-        }
+			// add to datacorder
+			_datacorder.DataBlocks.Add(t);
+		}
 
-        /// <summary>
-        /// Processes a CSW v2 data block
-        /// </summary>
-        public static void ProcessCSWV2(
-            byte[] srcBuff,
-            ref byte[] destBuff,
-            byte compType,
-            int pulseCount)
-        {
-            if (compType == 1)
-            {
-                Array.Copy(srcBuff, 0, destBuff, 0, pulseCount);
-            }                
-            else if (compType == 2)
-            {
-                DecompressZRLE(srcBuff, ref destBuff);
-            }
-            else
-                throw new Exception("CSW Format unknown compression type");
-        }
-    }
+		/// <summary>
+		/// Processes a CSW v2 data block
+		/// </summary>
+		public static void ProcessCSWV2(
+			byte[] srcBuff,
+			ref byte[] destBuff,
+			byte compType,
+			int pulseCount)
+		{
+			if (compType == 1)
+			{
+				Array.Copy(srcBuff, 0, destBuff, 0, pulseCount);
+			}
+			else if (compType == 2)
+			{
+				DecompressZRLE(srcBuff, ref destBuff);
+			}
+			else
+				throw new Exception("CSW Format unknown compression type");
+		}
+	}
 }

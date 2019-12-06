@@ -3,213 +3,213 @@ using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// The abstract class that all emulated models will inherit from
-    /// * Main properties / fields / contruction*
-    /// </summary>
-    public abstract partial class CPCBase
-    {
-        #region Devices
+	/// <summary>
+	/// The abstract class that all emulated models will inherit from
+	/// * Main properties / fields / contruction*
+	/// </summary>
+	public abstract partial class CPCBase
+	{
+		#region Devices
 
-        /// <summary>
-        /// The calling ZXSpectrum class (piped in via constructor)
-        /// </summary>
-        public AmstradCPC CPC { get; set; }
+		/// <summary>
+		/// The calling ZXSpectrum class (piped in via constructor)
+		/// </summary>
+		public AmstradCPC CPC { get; set; }
 
-        /// <summary>
-        /// Reference to the instantiated Z80 cpu (piped in via constructor)
-        /// </summary>
-        public Z80A CPU { get; set; }
+		/// <summary>
+		/// Reference to the instantiated Z80 cpu (piped in via constructor)
+		/// </summary>
+		public Z80A CPU { get; set; }
 
-        /// <summary>
-        /// ROM and extended info
-        /// </summary>
-        public RomData RomData { get; set; }
+		/// <summary>
+		/// ROM and extended info
+		/// </summary>
+		public RomData RomData { get; set; }
 
-        /// <summary>
-        /// The Amstrad datacorder device
-        /// </summary>
-        public virtual DatacorderDevice TapeDevice { get; set; }
+		/// <summary>
+		/// The Amstrad datacorder device
+		/// </summary>
+		public virtual DatacorderDevice TapeDevice { get; set; }
 
-        /// <summary>
-        /// beeper output for the tape
-        /// </summary>
-        public IBeeperDevice TapeBuzzer { get; set; }
+		/// <summary>
+		/// beeper output for the tape
+		/// </summary>
+		public IBeeperDevice TapeBuzzer { get; set; }
 
-        /// <summary>
-        /// Device representing the AY-3-8912 chip found in the CPC
-        /// </summary>
-        public IPSG AYDevice { get; set; }
+		/// <summary>
+		/// Device representing the AY-3-8912 chip found in the CPC
+		/// </summary>
+		public IPSG AYDevice { get; set; }
 
-        /// <summary>
-        /// The keyboard device
-        /// Technically, this is controlled by the PSG, but has been abstracted due to the port over from ZXHawk
-        /// </summary>
-        public IKeyboard KeyboardDevice { get; set; }
+		/// <summary>
+		/// The keyboard device
+		/// Technically, this is controlled by the PSG, but has been abstracted due to the port over from ZXHawk
+		/// </summary>
+		public IKeyboard KeyboardDevice { get; set; }
 
-        /// <summary>
-        /// The Amstrad disk drive
-        /// </summary>
-        public virtual NECUPD765 UPDDiskDevice { get; set; }
+		/// <summary>
+		/// The Amstrad disk drive
+		/// </summary>
+		public virtual NECUPD765 UPDDiskDevice { get; set; }
 
-        /// <summary>
-        /// The Cathode Ray Tube Controller chip
-        /// </summary>
-        public CRCT_6845 CRCT { get; set; }
+		/// <summary>
+		/// The Cathode Ray Tube Controller chip
+		/// </summary>
+		public CRCT_6845 CRCT { get; set; }
 
-        /// <summary>
-        /// The Amstrad gate array
-        /// </summary>
-        public AmstradGateArray GateArray { get; set; }
+		/// <summary>
+		/// The Amstrad gate array
+		/// </summary>
+		public AmstradGateArray GateArray { get; set; }
 
-//      /// <summary>
-//      /// Renders pixels to the screen
-//      /// </summary>
-//      public CRTDevice CRT { get; set; }
+		//      /// <summary>
+		//      /// Renders pixels to the screen
+		//      /// </summary>
+		//      public CRTDevice CRT { get; set; }
 
-        /// <summary>
-        /// The PPI contoller chip
-        /// </summary>
-        public PPI_8255 PPI { get; set; }
+		/// <summary>
+		/// The PPI contoller chip
+		/// </summary>
+		public PPI_8255 PPI { get; set; }
 
-        /// <summary>
-        /// The length of a standard frame in CPU cycles
-        /// </summary>
-        public int FrameLength;
+		/// <summary>
+		/// The length of a standard frame in CPU cycles
+		/// </summary>
+		public int FrameLength;
 
-        #endregion
+		#endregion
 
-        #region Emulator State
+		#region Emulator State
 
-        /// <summary>
-        /// Signs whether the frame has ended
-        /// </summary>
-        public bool FrameCompleted;
+		/// <summary>
+		/// Signs whether the frame has ended
+		/// </summary>
+		public bool FrameCompleted;
 
-        /// <summary>
-        /// Overflow from the previous frame (in Z80 cycles)
-        /// </summary>
-        public int OverFlow;
+		/// <summary>
+		/// Overflow from the previous frame (in Z80 cycles)
+		/// </summary>
+		public int OverFlow;
 
-        /// <summary>
-        /// The total number of frames rendered
-        /// </summary>
-        public int FrameCount;
+		/// <summary>
+		/// The total number of frames rendered
+		/// </summary>
+		public int FrameCount;
 
-        /// <summary>
-        /// The current cycle (T-State) that we are at in the frame
-        /// </summary>
-        public long _frameCycles;
+		/// <summary>
+		/// The current cycle (T-State) that we are at in the frame
+		/// </summary>
+		public long _frameCycles;
 
-        /// <summary>
-        /// Stores where we are in the frame after each CPU cycle
-        /// </summary>
-        public long LastFrameStartCPUTick;
+		/// <summary>
+		/// Stores where we are in the frame after each CPU cycle
+		/// </summary>
+		public long LastFrameStartCPUTick;
 
-        /// <summary>
-        /// Gets the current frame cycle according to the CPU tick count
-        /// </summary>
-        public virtual long CurrentFrameCycle => GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+		/// <summary>
+		/// Gets the current frame cycle according to the CPU tick count
+		/// </summary>
+		public virtual long CurrentFrameCycle => GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
-        /// <summary>
-        /// Non-Deterministic bools
-        /// </summary>
-        public bool _render;
-        public bool _renderSound;
+		/// <summary>
+		/// Non-Deterministic bools
+		/// </summary>
+		public bool _render;
+		public bool _renderSound;
 
-        #endregion
+		#endregion
 
-        #region Constants
+		#region Constants
 
-        /// <summary>
-        /// Mask constants & misc
-        /// </summary>
-        protected const int BORDER_BIT = 0x07;
-        protected const int EAR_BIT = 0x10;
-        protected const int MIC_BIT = 0x08;
-        protected const int TAPE_BIT = 0x40;
-        protected const int AY_SAMPLE_RATE = 16;
+		/// <summary>
+		/// Mask constants & misc
+		/// </summary>
+		protected const int BORDER_BIT = 0x07;
+		protected const int EAR_BIT = 0x10;
+		protected const int MIC_BIT = 0x08;
+		protected const int TAPE_BIT = 0x40;
+		protected const int AY_SAMPLE_RATE = 16;
 
-        #endregion
+		#endregion
 
-        #region Emulation Loop
+		#region Emulation Loop
 
-        /// <summary>
-        /// Executes a single frame
-        /// </summary>
-        public virtual void ExecuteFrame(bool render, bool renderSound)
-        {
-            GateArray.FrameEnd = false;
-            CRCT.lineCounter = 0;
+		/// <summary>
+		/// Executes a single frame
+		/// </summary>
+		public virtual void ExecuteFrame(bool render, bool renderSound)
+		{
+			GateArray.FrameEnd = false;
+			CRCT.lineCounter = 0;
 
-            InputRead = false;
-            _render = render;
-            _renderSound = renderSound;
+			InputRead = false;
+			_render = render;
+			_renderSound = renderSound;
 
-            FrameCompleted = false;
+			FrameCompleted = false;
 
-            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
-                TapeDevice.StartFrame();
+			if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+				TapeDevice.StartFrame();
 
-            if (_renderSound)
-            {
-                AYDevice.StartFrame();
-            }
+			if (_renderSound)
+			{
+				AYDevice.StartFrame();
+			}
 
-            PollInput();
+			PollInput();
 
-            //CRT.SetupVideo();
-            //CRT.ScanlineCounter = 0;
+			//CRT.SetupVideo();
+			//CRT.ScanlineCounter = 0;
 
-            while (!GateArray.FrameEnd)
-            {
-                GateArray.ClockCycle();
+			while (!GateArray.FrameEnd)
+			{
+				GateArray.ClockCycle();
 
-                // cycle the tape device
-                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
-                    TapeDevice.TapeCycle();
-            }
-            // we have reached the end of a frame
-            LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
+				// cycle the tape device
+				if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+					TapeDevice.TapeCycle();
+			}
+			// we have reached the end of a frame
+			LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 
-            if (AYDevice != null)
-                AYDevice.EndFrame();
+			if (AYDevice != null)
+				AYDevice.EndFrame();
 
-            FrameCount++;
+			FrameCount++;
 
-            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
-                TapeDevice.EndFrame();
+			if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+				TapeDevice.EndFrame();
 
-            FrameCompleted = true;
+			FrameCompleted = true;
 
-            // is this a lag frame?
-            CPC.IsLagFrame = !InputRead;
+			// is this a lag frame?
+			CPC.IsLagFrame = !InputRead;
 
-            // FDC debug            
-            if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
-            {
-                // only write UPD log every second
-                if (FrameCount % 10 == 0)
-                {
-                    System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
-                    UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
-                    //System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
-                }
-            }
+			// FDC debug            
+			if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
+			{
+				// only write UPD log every second
+				if (FrameCount % 10 == 0)
+				{
+					System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
+					UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
+					//System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
+				}
+			}
 
-            GateArray.FrameClock = 0;
-        }
+			GateArray.FrameClock = 0;
+		}
 
-        #endregion
+		#endregion
 
-        #region Reset Functions
+		#region Reset Functions
 
-        /// <summary>
-        /// Hard reset of the emulated machine
-        /// </summary>
-        public virtual void HardReset()
-        {
-            /*
+		/// <summary>
+		/// Hard reset of the emulated machine
+		/// </summary>
+		public virtual void HardReset()
+		{
+			/*
             //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
@@ -256,14 +256,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
             }
             */
-        }
+		}
 
-        /// <summary>
-        /// Soft reset of the emulated machine
-        /// </summary>
-        public virtual void SoftReset()
-        {
-            /*
+		/// <summary>
+		/// Soft reset of the emulated machine
+		/// </summary>
+		public virtual void SoftReset()
+		{
+			/*
             //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
@@ -310,65 +310,65 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
             }
             */
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region IStatable
+		#region IStatable
 
-        public void SyncState(Serializer ser)
-        {
-            ser.BeginSection("CPCMachine");
-            ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
-            ser.Sync(nameof(OverFlow), ref OverFlow);
-            ser.Sync(nameof(FrameCount), ref FrameCount);
-            ser.Sync(nameof(_frameCycles), ref _frameCycles);
-            ser.Sync(nameof(inputRead), ref inputRead);
-            ser.Sync(nameof(LastFrameStartCPUTick), ref LastFrameStartCPUTick);
-            ser.Sync(nameof(ROMLower), ref ROMLower, false);
-            ser.Sync(nameof(ROM0), ref ROM0, false);
-            ser.Sync(nameof(ROM7), ref ROM7, false);
-            ser.Sync(nameof(RAM0), ref RAM0, false);
-            ser.Sync(nameof(RAM1), ref RAM1, false);
-            ser.Sync(nameof(RAM2), ref RAM2, false);
-            ser.Sync(nameof(RAM3), ref RAM3, false);
-            ser.Sync(nameof(RAM4), ref RAM4, false);
-            ser.Sync(nameof(RAM5), ref RAM5, false);
-            ser.Sync(nameof(RAM6), ref RAM6, false);
-            ser.Sync(nameof(RAM7), ref RAM7, false);
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("CPCMachine");
+			ser.Sync(nameof(FrameCompleted), ref FrameCompleted);
+			ser.Sync(nameof(OverFlow), ref OverFlow);
+			ser.Sync(nameof(FrameCount), ref FrameCount);
+			ser.Sync(nameof(_frameCycles), ref _frameCycles);
+			ser.Sync(nameof(inputRead), ref inputRead);
+			ser.Sync(nameof(LastFrameStartCPUTick), ref LastFrameStartCPUTick);
+			ser.Sync(nameof(ROMLower), ref ROMLower, false);
+			ser.Sync(nameof(ROM0), ref ROM0, false);
+			ser.Sync(nameof(ROM7), ref ROM7, false);
+			ser.Sync(nameof(RAM0), ref RAM0, false);
+			ser.Sync(nameof(RAM1), ref RAM1, false);
+			ser.Sync(nameof(RAM2), ref RAM2, false);
+			ser.Sync(nameof(RAM3), ref RAM3, false);
+			ser.Sync(nameof(RAM4), ref RAM4, false);
+			ser.Sync(nameof(RAM5), ref RAM5, false);
+			ser.Sync(nameof(RAM6), ref RAM6, false);
+			ser.Sync(nameof(RAM7), ref RAM7, false);
 
-            ser.Sync(nameof(UpperROMPosition), ref UpperROMPosition);
-            ser.Sync(nameof(UpperROMPaged), ref UpperROMPaged);
-            ser.Sync(nameof(LowerROMPaged), ref LowerROMPaged);
-            ser.Sync(nameof(RAMConfig), ref RAMConfig);
-            ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
+			ser.Sync(nameof(UpperROMPosition), ref UpperROMPosition);
+			ser.Sync(nameof(UpperROMPaged), ref UpperROMPaged);
+			ser.Sync(nameof(LowerROMPaged), ref LowerROMPaged);
+			ser.Sync(nameof(RAMConfig), ref RAMConfig);
+			ser.Sync(nameof(RAM64KBank), ref RAM64KBank);
 
-            CRCT.SyncState(ser);
-            //CRT.SyncState(ser);
-            GateArray.SyncState(ser);
-            KeyboardDevice.SyncState(ser);
-            TapeBuzzer.SyncState(ser);
-            AYDevice.SyncState(ser);
+			CRCT.SyncState(ser);
+			//CRT.SyncState(ser);
+			GateArray.SyncState(ser);
+			KeyboardDevice.SyncState(ser);
+			TapeBuzzer.SyncState(ser);
+			AYDevice.SyncState(ser);
 
-            ser.Sync(nameof(tapeMediaIndex), ref tapeMediaIndex);
-            if (ser.IsReader)
-                TapeMediaIndex = tapeMediaIndex;
+			ser.Sync(nameof(tapeMediaIndex), ref tapeMediaIndex);
+			if (ser.IsReader)
+				TapeMediaIndex = tapeMediaIndex;
 
-            TapeDevice.SyncState(ser);
+			TapeDevice.SyncState(ser);
 
-            ser.Sync(nameof(diskMediaIndex), ref diskMediaIndex);
-            if (ser.IsReader)
-                DiskMediaIndex = diskMediaIndex;
+			ser.Sync(nameof(diskMediaIndex), ref diskMediaIndex);
+			if (ser.IsReader)
+				DiskMediaIndex = diskMediaIndex;
 
-            if (UPDDiskDevice != null)
-            {
-                UPDDiskDevice.SyncState(ser);
-            }
+			if (UPDDiskDevice != null)
+			{
+				UPDDiskDevice.SyncState(ser);
+			}
 
-            ser.EndSection();
-        }
+			ser.EndSection();
+		}
 
-        #endregion
+		#endregion
 
-    }
+	}
 }
