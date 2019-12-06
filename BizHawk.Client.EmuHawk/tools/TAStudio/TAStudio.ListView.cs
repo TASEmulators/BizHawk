@@ -836,6 +836,13 @@ namespace BizHawk.Client.EmuHawk
 					ClearLeftMouseStates();
 				}
 
+				// If painting up, we have altered frames without loading states (for smoothness)
+				// So now we have to ensure that all the edited frames are invalidated
+				if (CurrentTasMovie.LastEditedFrame < Emulator.Frame)
+				{
+					GoToFrame(CurrentTasMovie.LastEditedFrame);
+				}
+
 				DoTriggeredAutoRestoreIfNeeded();
 			}
 
