@@ -336,9 +336,9 @@ namespace BizHawk.Client.EmuHawk
 						text = CurrentTasMovie.DisplayValue(index, columnName);
 						if (column.Type == ColumnType.Float)
 						{
-							// feos: this could be cashed, but I don't notice any slowdown this way either
-							ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-								[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(columnName)];
+							// feos: this could be cached, but I don't notice any slowdown this way either
+							ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+								[ControllerType.FloatControls.IndexOf(columnName)];
 							if (text == range.Mid.ToString())
 							{
 								text = "";
@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 					int frame = TasView.SelectedRows.FirstOrDefault();
 					string buttonName = TasView.CurrentCell.Column.Name;
 
-					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
+					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
 						if (ModifierKeys != Keys.Alt)
 						{
@@ -606,7 +606,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
-					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
+					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
 						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
@@ -811,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader &&
 				!_suppressContextMenu && TasView.SelectedRows.Any() && !_leftButtonHeld)
 			{
-				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
+				if (CurrentTasMovie.FrameCount < TasView.SelectedRows.Max())
 				{
 					// trying to be smart here
 					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
@@ -947,7 +947,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// skip rerecord counting on drawing entirely, mouse down is enough
 			// avoid introducing another global
-			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			bool wasCountingRerecords = CurrentTasMovie.IsCountingRerecords;
 			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			int startVal, endVal;
@@ -1107,7 +1107,7 @@ namespace BizHawk.Client.EmuHawk
 			// Left-click
 			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
-				Global.MovieSession.Movie.IsCountingRerecords = false;
+				CurrentTasMovie.IsCountingRerecords = false;
 
 				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
@@ -1136,7 +1136,7 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (TasView.IsPaintDown && !string.IsNullOrEmpty(_startFloatDrawColumn))
 			{
-				Global.MovieSession.Movie.IsCountingRerecords = false;
+				CurrentTasMovie.IsCountingRerecords = false;
 
 				for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 				{
@@ -1158,7 +1158,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+			CurrentTasMovie.IsCountingRerecords = wasCountingRerecords;
 
 			if (MouseButtonHeld)
 			{
@@ -1175,11 +1175,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int increment = (_floatEditYPos - e.Y) / 4;
 				if (_floatEditYPos == -1)
+				{
 					return;
+				}
 
 				float value = _floatPaintState + increment;
-				ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-					[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
+				ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+					[ControllerType.FloatControls.IndexOf(_floatEditColumn)];
 
 				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
 				// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
@@ -1272,8 +1274,8 @@ namespace BizHawk.Client.EmuHawk
 			float prev = value;
 			string prevTyped = _floatTypedValue;
 
-			ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
+			ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+				[ControllerType.FloatControls.IndexOf(_floatEditColumn)];
 
 			float rMax = range.Max;
 			float rMin = range.Min;

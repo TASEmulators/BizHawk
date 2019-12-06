@@ -1099,7 +1099,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
 			var form = new EditSubtitlesForm { ReadOnly = false };
-			form.GetMovie(Global.MovieSession.Movie);
+			form.GetMovie(CurrentTasMovie);
 			form.ShowDialog();
 		}
 

@@ -366,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 				StartNewTasMovie();
 			}
 
-			if (Global.Emulator is NullEmulator)
+			if (Emulator.IsNull())
 			{
 				DisengageTastudio();
 				return false;
@@ -416,10 +416,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnType type;
 				int digits;
-				if (Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.Contains(kvp.Key))
+				if (ControllerType.FloatControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-						[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(kvp.Key)];
+					ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+						[ControllerType.FloatControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
 				}
