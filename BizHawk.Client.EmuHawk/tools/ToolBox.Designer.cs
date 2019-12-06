@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolBox));
 			this.ToolBoxStrip = new ToolStripEx();
 			this.SuspendLayout();
 			// 
@@ -57,7 +56,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(140, 183);
 			this.Controls.Add(this.ToolBoxStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.ToolBox_MultiSize;
 			this.MaximumSize = new System.Drawing.Size(270, 600);
 			this.MinimumSize = new System.Drawing.Size(135, 38);
 			this.Name = "ToolBox";

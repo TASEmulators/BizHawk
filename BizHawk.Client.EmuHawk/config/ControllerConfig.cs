@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class ControllerConfig : Form
 	{
 		private const int MaxPlayers = 12;
-		private static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
+		private static readonly Dictionary<string, Lazy<Bitmap>> ControllerImages = new Dictionary<string, Lazy<Bitmap>>();
 		private readonly ControllerDefinition _theDefinition;
 
 		static ControllerConfig()
@@ -249,12 +249,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetControllerPicture(string controlName)
 		{
-			Bitmap bmp;
-			if (!ControllerImages.TryGetValue(controlName, out bmp))
-			{
-				bmp = Properties.Resources.Help;
-			}
-
+			ControllerImages.TryGetValue(controlName, out var lazyBmp);
+			var bmp = lazyBmp?.Value ?? Properties.Resources.Help;
 			pictureBox1.Image = bmp;
 			pictureBox1.Size = bmp.Size;
 			tableLayoutPanel1.ColumnStyles[1].Width = bmp.Width;
@@ -264,10 +260,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var pictureBox2 = new PictureBox
 					{
-						Image = Properties.Resources.C64Keyboard,
-						Size = Properties.Resources.C64Keyboard.Size
+						Image = Properties.Resources.C64Keyboard.Value,
+						Size = Properties.Resources.C64Keyboard.Value.Size
 					};
-				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Width;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.C64Keyboard.Value.Width;
 				pictureBox1.Height /= 2;
 				pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 				pictureBox1.Dock = DockStyle.Top;
@@ -279,9 +275,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (controlName == "ZXSpectrum Controller")
 			{
-				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
 			}
 
 			if (controlName == "ChannelF Controller")
@@ -291,11 +287,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (controlName == "AmstradCPC Controller")
 			{
-				/*
-				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards;
-				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Size;
-				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Width;
-				*/
+#if false
+				pictureBox1.Image = Properties.Resources.ZXSpectrumKeyboards.Value;
+				pictureBox1.Size = Properties.Resources.ZXSpectrumKeyboards.Value.Size;
+				tableLayoutPanel1.ColumnStyles[1].Width = Properties.Resources.ZXSpectrumKeyboards.Value.Width;
+#endif
 			}
 		}
 

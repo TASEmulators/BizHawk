@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudio));
 			this.TASMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -323,7 +322,7 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Image = ((System.Drawing.Image)(resources.GetObject("RecentSubMenu.Image")));
+			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(190, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -1600,7 +1599,7 @@
 			this.Controls.Add(this.MainVertialSplit);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(200, 148);

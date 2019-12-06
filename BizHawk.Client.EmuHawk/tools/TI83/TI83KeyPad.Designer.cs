@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TI83KeyPad));
 			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.KeyPadSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -1938,7 +1937,7 @@
 			this.Controls.Add(this.SecondButton);
 			this.Controls.Add(this.YButton);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(371, 581);

@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NesControllerSettings));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.checkBoxFamicom = new System.Windows.Forms.CheckBox();
@@ -145,7 +144,7 @@
 			this.Controls.Add(this.checkBoxFamicom);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.Name = "NesControllerSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES Controller Settings";

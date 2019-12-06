@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCETileViewer));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.bmpViewBGPal = new BizHawk.Client.EmuHawk.BmpView();
 			this.bmpViewBG = new BizHawk.Client.EmuHawk.BmpView();
@@ -183,7 +182,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pce_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PCETileViewer";

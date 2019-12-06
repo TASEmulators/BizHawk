@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
 			this.ScriptListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ToggleScriptContextItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PauseScriptContextItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -705,7 +704,7 @@
 			// OpenScriptToolbarItem
 			// 
 			this.OpenScriptToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.OpenScriptToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("OpenScriptToolbarItem.Image")));
+			this.OpenScriptToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenScriptToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenScriptToolbarItem.Name = "OpenScriptToolbarItem";
 			this.OpenScriptToolbarItem.Size = new System.Drawing.Size(23, 22);
@@ -877,7 +876,7 @@
 			this.Controls.Add(this.OutputMessages);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(400, 180);
 			this.Name = "LuaConsole";

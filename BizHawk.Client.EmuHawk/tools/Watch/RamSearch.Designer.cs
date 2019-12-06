@@ -30,7 +30,6 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ToolStripMenuItem SearchMenuItem;
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
 			this.WatchListView = new InputRoll();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1008,7 +1007,7 @@
 			// DoSearchToolButton
 			// 
 			this.DoSearchToolButton.Enabled = false;
-			this.DoSearchToolButton.Image = ((System.Drawing.Image)(resources.GetObject("DoSearchToolButton.Image")));
+			this.DoSearchToolButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.DoSearchToolButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DoSearchToolButton.Name = "DoSearchToolButton";
 			this.DoSearchToolButton.Size = new System.Drawing.Size(65, 22);
@@ -1048,7 +1047,7 @@
 			// ClearChangeCountsToolBarItem
 			// 
 			this.ClearChangeCountsToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.ClearChangeCountsToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountsToolBarItem.Image")));
+			this.ClearChangeCountsToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.ClearChangeCountsToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.ClearChangeCountsToolBarItem.Name = "ClearChangeCountsToolBarItem";
 			this.ClearChangeCountsToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -1354,7 +1353,7 @@
 			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.RamSearchMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.search_MultiSize;
 			this.MainMenuStrip = this.RamSearchMenu;
 			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";

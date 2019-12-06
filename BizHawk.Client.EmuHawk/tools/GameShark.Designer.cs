@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameShark));
 			this.mnuGameShark = new System.Windows.Forms.MenuStrip();
 			this.btnClear = new System.Windows.Forms.Button();
 			this.lblCheat = new System.Windows.Forms.Label();
@@ -118,7 +117,7 @@
 			this.Controls.Add(this.txtCheat);
 			this.Controls.Add(this.btnGo);
 			this.Controls.Add(this.mnuGameShark);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Shark_MultiSize;
 			this.MainMenuStrip = this.mnuGameShark;
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(230, 155);

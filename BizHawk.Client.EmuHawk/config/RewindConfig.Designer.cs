@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RewindConfig));
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
             this.SmallLabel1 = new System.Windows.Forms.Label();
@@ -1001,7 +1000,7 @@
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RewindConfig";

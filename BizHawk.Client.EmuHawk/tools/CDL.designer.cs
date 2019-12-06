@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CDL));
 			this.menuStrip1 = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -216,7 +215,7 @@
 			// 
 			this.tsbLoggingActive.CheckOnClick = true;
 			this.tsbLoggingActive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbLoggingActive.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoggingActive.Image")));
+			this.tsbLoggingActive.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tsbLoggingActive.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbLoggingActive.Name = "tsbLoggingActive";
 			this.tsbLoggingActive.Size = new System.Drawing.Size(41, 22);
@@ -234,7 +233,7 @@
 			this.tsbViewUpdate.CheckOnClick = true;
 			this.tsbViewUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.tsbViewUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbViewUpdate.Image = ((System.Drawing.Image)(resources.GetObject("tsbViewUpdate.Image")));
+			this.tsbViewUpdate.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tsbViewUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbViewUpdate.Name = "tsbViewUpdate";
 			this.tsbViewUpdate.Size = new System.Drawing.Size(46, 22);
@@ -296,7 +295,7 @@
 			this.Controls.Add(this.lvCDL);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.cdlogger_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(150, 130);
 			this.Name = "CDL";

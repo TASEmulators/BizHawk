@@ -1373,7 +1373,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _wasPaused;
 		private bool _didMenuPause;
 
-		private Cursor _blankCursor;
 		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
@@ -1994,13 +1993,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (hide && !_cursorHidden)
 			{
-				if (_blankCursor == null)
-				{
-					var ms = new MemoryStream(Properties.Resources.BlankCursor);
-					_blankCursor = new Cursor(ms);
-				}
-
-				PresentationPanel.Control.Cursor = _blankCursor;
+				PresentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
 			}
 			else if (!hide && _cursorHidden)

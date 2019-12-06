@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaRegisteredFunctionsList));
 			this.FunctionView = new System.Windows.Forms.ListView();
 			this.FunctionsEvent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.FunctionsName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -162,7 +161,7 @@
 			this.Controls.Add(this.CallButton);
 			this.Controls.Add(this.FunctionView);
 			this.Controls.Add(this.OK);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(360, 150);
 			this.Name = "LuaRegisteredFunctionsList";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

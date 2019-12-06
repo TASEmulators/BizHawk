@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new InputRoll();
 			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -321,7 +320,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.TracerBox);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(400, 230);

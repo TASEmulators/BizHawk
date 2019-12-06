@@ -64,7 +64,6 @@
             "-",
             "-",
             "-"}, -1);
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCESoundDebugger));
 			this.btnExport = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.lvPsgWaveforms = new System.Windows.Forms.ListView();
@@ -264,7 +263,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SoundMenuStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug_MultiSize;
 			this.MainMenuStrip = this.SoundMenuStrip;
 			this.Name = "PCESoundDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

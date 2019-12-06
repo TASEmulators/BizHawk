@@ -4626,7 +4626,7 @@
 			this.Controls.Add(this.SaveButton);
 			this.Controls.Add(this.N64plugintabcontrol);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.monitor_MultiSize;
 			this.Name = "N64VideoPluginconfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Plugin Settings";

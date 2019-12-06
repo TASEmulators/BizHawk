@@ -18,7 +18,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.MainformMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenRomMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1527,7 +1526,7 @@
 			// 
 			// DisplayConfigMenuItem
 			// 
-			this.DisplayConfigMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("DisplayConfigMenuItem.Image")));
+			this.DisplayConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
 			this.DisplayConfigMenuItem.Name = "DisplayConfigMenuItem";
 			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.DisplayConfigMenuItem.Text = "Display...";
@@ -1551,7 +1550,7 @@
 			// 
 			// FirmwaresMenuItem
 			// 
-			this.FirmwaresMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("FirmwaresMenuItem.Image")));
+			this.FirmwaresMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcb;
 			this.FirmwaresMenuItem.Name = "FirmwaresMenuItem";
 			this.FirmwaresMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.FirmwaresMenuItem.Text = "&Firmwares...";
@@ -3114,7 +3113,7 @@
 			// 
 			// N64PluginSettingsMenuItem
 			// 
-			this.N64PluginSettingsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("N64PluginSettingsMenuItem.Image")));
+			this.N64PluginSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.monitor;
 			this.N64PluginSettingsMenuItem.Name = "N64PluginSettingsMenuItem";
 			this.N64PluginSettingsMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.N64PluginSettingsMenuItem.Text = "Plugins";
@@ -4148,7 +4147,7 @@
 			// 
 			// toolStripMenuItem8
 			// 
-			this.toolStripMenuItem8.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem8.Image")));
+			this.toolStripMenuItem8.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
 			this.toolStripMenuItem8.Name = "toolStripMenuItem8";
 			this.toolStripMenuItem8.Size = new System.Drawing.Size(159, 22);
 			this.toolStripMenuItem8.Text = "Display...";
@@ -4172,7 +4171,7 @@
 			// 
 			// toolStripMenuItem11
 			// 
-			this.toolStripMenuItem11.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem11.Image")));
+			this.toolStripMenuItem11.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pcb;
 			this.toolStripMenuItem11.Name = "toolStripMenuItem11";
 			this.toolStripMenuItem11.Size = new System.Drawing.Size(159, 22);
 			this.toolStripMenuItem11.Text = "&Firmwares...";

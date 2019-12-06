@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NesPPU));
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
@@ -840,7 +839,7 @@
 			this.Controls.Add(this.PalettesGroup);
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.NesPPUMenu;
 			this.Margin = new System.Windows.Forms.Padding(4);

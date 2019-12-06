@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HexEditor));
 			this.HexMenuStrip = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -645,7 +644,7 @@
 			this.Controls.Add(this.Header);
 			this.Controls.Add(this.MemoryViewerBox);
 			this.Controls.Add(this.HexMenuStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.poke_MultiSize;
 			this.MainMenuStrip = this.HexMenuStrip;
 			this.MinimumSize = new System.Drawing.Size(360, 180);
 			this.Name = "HexEditor";

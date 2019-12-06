@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64ControllersSetup));
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.ControllerSetting4 = new BizHawk.Client.EmuHawk.N64ControllerSettingControl();
@@ -114,7 +113,7 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "N64ControllersSetup";

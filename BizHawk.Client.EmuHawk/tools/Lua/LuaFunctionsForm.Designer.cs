@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaFunctionsForm));
 			this.OK = new System.Windows.Forms.Button();
 			this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
 			this.FilterBox = new System.Windows.Forms.TextBox();
@@ -152,7 +151,7 @@
 			this.Controls.Add(this.FilterBox);
 			this.Controls.Add(this.FunctionView);
 			this.Controls.Add(this.OK);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.textdoc_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(200, 50);
 			this.Name = "LuaFunctionsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

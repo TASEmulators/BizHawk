@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BasicBot));
 			this.BotMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -337,7 +336,7 @@
 			// BotStatusButton
 			// 
 			this.BotStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.BotStatusButton.Image = ((System.Drawing.Image)(resources.GetObject("BotStatusButton.Image")));
+			this.BotStatusButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.BotStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.BotStatusButton.Name = "BotStatusButton";
 			this.BotStatusButton.RightToLeftAutoMirrorImage = true;
@@ -1158,7 +1157,7 @@
 			this.Controls.Add(this.ControlsBox);
 			this.Controls.Add(this.BotStatusStrip);
 			this.Controls.Add(this.BotMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.basicbot;
 			this.MainMenuStrip = this.BotMenu;
 			this.Name = "BasicBot";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

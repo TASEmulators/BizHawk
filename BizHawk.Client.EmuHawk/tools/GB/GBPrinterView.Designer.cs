@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBPrinterView));
 			this.paperView = new BmpView();
 			this.label1 = new System.Windows.Forms.Label();
 			this.paperScroll = new System.Windows.Forms.VScrollBar();
@@ -121,7 +120,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.paperScroll);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gambatte_MultiSize;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "GBPrinterView";

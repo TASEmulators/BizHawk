@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutBox));
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -116,7 +115,7 @@
 			// 
 			// mom2
 			// 
-			this.mom2.Image = ((System.Drawing.Image)(resources.GetObject("mom2.Image")));
+			this.mom2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.mom2.Value;
 			this.mom2.Location = new System.Drawing.Point(372, 274);
 			this.mom2.Name = "mom2";
 			this.mom2.Size = new System.Drawing.Size(115, 150);
@@ -125,7 +124,7 @@
 			// 
 			// pictureBox2
 			// 
-			this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+			this.pictureBox2.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pictureBox2.Value;
 			this.pictureBox2.Location = new System.Drawing.Point(353, 97);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(122, 108);
@@ -135,7 +134,7 @@
 			// 
 			// mom1
 			// 
-			this.mom1.Image = ((System.Drawing.Image)(resources.GetObject("mom1.Image")));
+			this.mom1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.mom1.Value;
 			this.mom1.Location = new System.Drawing.Point(372, 274);
 			this.mom1.Name = "mom1";
 			this.mom1.Size = new System.Drawing.Size(115, 150);
@@ -145,7 +144,7 @@
 			// 
 			// pictureBox4
 			// 
-			this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
+			this.pictureBox4.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pictureBox4.Value;
 			this.pictureBox4.Location = new System.Drawing.Point(21, 89);
 			this.pictureBox4.Name = "pictureBox4";
 			this.pictureBox4.Size = new System.Drawing.Size(128, 128);
@@ -155,7 +154,7 @@
 			// 
 			// pictureBox3
 			// 
-			this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+			this.pictureBox3.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pictureBox3.Value;
 			this.pictureBox3.Location = new System.Drawing.Point(21, 89);
 			this.pictureBox3.Name = "pictureBox3";
 			this.pictureBox3.Size = new System.Drawing.Size(128, 128);
@@ -165,7 +164,7 @@
 			// 
 			// pictureBox1
 			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pictureBox1.Value;
 			this.pictureBox1.Location = new System.Drawing.Point(155, 108);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(171, 216);
@@ -275,7 +274,7 @@
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.DoubleBuffered = true;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.logo;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(527, 524);
 			this.MinimumSize = new System.Drawing.Size(527, 524);
