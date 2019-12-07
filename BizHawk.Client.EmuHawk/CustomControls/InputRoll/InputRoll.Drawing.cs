@@ -21,11 +21,15 @@ namespace BizHawk.Client.EmuHawk
 				// Lag frame calculations
 				SetLagFramesArray();
 
+				CalculateHorizontalColumnPositions(VisibleColumns.ToList());
+
 				List<RollColumn> visibleColumns;
 
 				if (HorizontalOrientation)
 				{
-					visibleColumns = VisibleColumns.ToList(); // TODO
+					visibleColumns = VisibleColumns
+						.Take(_horizontalColumnTops.Count(c => c < e.ClipRectangle.Height))
+						.ToList();
 				}
 				else
 				{
@@ -34,15 +38,13 @@ namespace BizHawk.Client.EmuHawk
 						.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
 						.ToList();
 				}
-				
+
 				var firstVisibleRow = Math.Max(FirstVisibleRow, 0);
 				var visibleRows = HorizontalOrientation
 					? e.ClipRectangle.Width / CellWidth
 					: e.ClipRectangle.Height / CellHeight;
 
 				var lastVisibleRow = firstVisibleRow + visibleRows;
-
-				CalculateHorizontalColumnPositions(visibleColumns);
 
 				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
 				if (visibleColumns.Any() && needsColumnRedraw)

@@ -285,6 +285,8 @@ namespace BizHawk.Client.EmuHawk
 				int h = VisibleColumns.Any()
 					? GetHColBottom(VisibleColumns.Count() - 1)
 					: 0;
+				h = Math.Min(h, _drawHeight);
+
 				Invalidate(new Rectangle(x, y, w, h));
 			}
 			else
