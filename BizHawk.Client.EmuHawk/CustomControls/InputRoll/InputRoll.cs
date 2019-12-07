@@ -284,14 +284,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				int x = _hBar.Value;
+				int x = 0;
 				int y = ColumnHeight + 1;
 
 				int w = VisibleColumns.Any()
 					? Math.Min(VisibleColumns.Max(c => c.Right) - _hBar.Value, Width)
 					: 0;
 
-				int h = Height - y;
+				int h = Math.Min(RowCount * CellHeight,  Height - y);
 				Invalidate(new Rectangle(x, y, w, h));
 			}
 		}
@@ -807,31 +807,7 @@ namespace BizHawk.Client.EmuHawk
 				return (rect.Width - MaxColumnWidth) / CellWidth;
 			}
 
-			return (rect.Height - ColumnHeight - 3) / CellHeight; // Minus three makes it work
-		}
-
-		// TODO: account for no visible columns
-		private int FirstVisibleColumn(List<RollColumn> columnList)
-		{
-			if (HorizontalOrientation)
-			{
-				return Enumerable.Range(0, columnList.Count).First(i => GetHColBottom(i) > _vBar.Value);
-			}
-
-			return columnList.FindIndex(c => c.Right > _hBar.Value);
-		}
-
-		private int LastVisibleColumn(List<RollColumn> columnList, int width)
-		{
-			if (HorizontalOrientation)
-			{
-				int count = columnList.Count;
-				return Enumerable.Range(0, count)
-					.Select(i => count - 1 - i)
-					.First(i => GetHColTop(i) <= _drawWidth + _hBar.Value);
-			}
-
-			return columnList.FindLastIndex(c => c.Left <= _drawWidth + _hBar.Value && c.Left < width);
+			return rect.Height / CellHeight; // Minus three makes it work
 		}
 
 		private Cell _draggingCell;

@@ -22,7 +22,8 @@ namespace BizHawk.Client.EmuHawk
 				SetLagFramesArray();
 
 				var visibleColumns = _columns.VisibleColumns
-					.Where(c => c.Left < e.ClipRectangle.Width)
+					.Where(c => c.Right > _hBar.Value)
+					.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
 					.ToList();
 
 				// TODO: FirstVisibleRow assumes there is a visible row
@@ -38,10 +39,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Background
-				DrawBg(visibleColumns, e.ClipRectangle);
+				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
 
 				// Foreground
-				DrawData(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
+				DrawData(visibleColumns, firstVisibleRow, lastVisibleRow);
 
 				DrawColumnDrag(visibleColumns);
 				DrawCellDrag(visibleColumns);
@@ -208,18 +209,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawData(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
+		private void DrawData(List<RollColumn> visibleColumns, int firstVisibleRow, int lastVisibleRow)
 		{
-			int firstVisibleColumn = FirstVisibleColumn(visibleColumns);
-			var lastVisibleColumn = LastVisibleColumn(visibleColumns, rect.Width);
-
-			// Prevent exceptions with small TAStudio windows
-			if (visibleColumns.Count == 0)
+			if (QueryItemText == null)
 			{
 				return;
 			}
 
-			if (QueryItemText == null)
+			if (!visibleColumns.Any())
 			{
 				return;
 			}
@@ -291,8 +288,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
-					int lastVisible = lastVisibleColumn;
-					for (int j = firstVisibleColumn; j <= lastVisible; j++) // Horizontal
+					for (int j = 0; j < visibleColumns.Count; j++) // Horizontal
 					{
 						RollColumn col = visibleColumns[j];
 
@@ -445,11 +441,11 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO refactor this and DoBackGroundCallback functions.
 		// Draw Gridlines and background colors using QueryItemBkColor.
-		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect)
+		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
 			if (QueryItemBkColor != null)
 			{
-				DoBackGroundCallback(visibleColumns, rect.Width);
+				DoBackGroundCallback(visibleColumns, firstVisibleRow, lastVisibleRow);
 			}
 
 			if (GridLines)
@@ -461,14 +457,14 @@ namespace BizHawk.Client.EmuHawk
 					for (int i = 1; i < VisibleRows + 1; i++)
 					{
 						int x = RowsToPixels(i);
-						_renderer.Line(x, 1, x, _drawHeight);
+						_renderer.Line(x, 1, x, rect.Height);
 					}
 
 					// Rows
 					for (int i = 0; i < visibleColumns.Count + 1; i++)
 					{
 						int y = GetHColTop(i) - _vBar.Value;
-						_renderer.Line(RowsToPixels(0) + 1, y, _drawWidth, y);
+						_renderer.Line(RowsToPixels(0) + 1, y, rect.Width, y);
 					}
 				}
 				else
@@ -478,19 +474,19 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var column in visibleColumns)
 					{
 						int x = column.Left - _hBar.Value;
-						_renderer.Line(x, y, x, Height - 1);
+						_renderer.Line(x, y, x, rect.Height - 1);
 					}
 
 					if (visibleColumns.Any())
 					{
 						int x = TotalColWidth - _hBar.Value;
-						_renderer.Line(x, y, x, Height - 1);
+						_renderer.Line(x, y, x, rect.Height - 1);
 					}
 
 					// Rows
 					for (int i = 1; i < VisibleRows + 1; i++)
 					{
-						_renderer.Line(0, RowsToPixels(i), Width + 1, RowsToPixels(i));
+						_renderer.Line(0, RowsToPixels(i), rect.Width + 1, RowsToPixels(i));
 					}
 				}
 			}
@@ -590,18 +586,15 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
-		private void DoBackGroundCallback(List<RollColumn> visibleColumns, int width)
+		private void DoBackGroundCallback(List<RollColumn> visibleColumns, int firstVisibleRow, int lastVisibleRow)
 		{
-			int startIndex = FirstVisibleRow;
-			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
-			int lastVisibleColumn = LastVisibleColumn(visibleColumns, width);
-			int firstVisibleColumn = FirstVisibleColumn(visibleColumns);
-
-			// Prevent exceptions with small TAStudio windows
-			if (firstVisibleColumn < 0)
+			if (!visibleColumns.Any())
 			{
 				return;
 			}
+
+			int startIndex = firstVisibleRow;
+			int range = Math.Min(lastVisibleRow, RowCount - 1) - startIndex + 1;
 
 			for (int i = 0, f = 0; f < range; i++, f++)
 			{
@@ -609,10 +602,10 @@ namespace BizHawk.Client.EmuHawk
 				Color rowColor = Color.White;
 				QueryRowBkColor?.Invoke(f + startIndex, ref rowColor);
 
-				for (int j = firstVisibleColumn; j <= lastVisibleColumn; j++)
+				foreach (var column in visibleColumns)
 				{
 					Color itemColor = Color.White;
-					QueryItemBkColor?.Invoke(f + startIndex, visibleColumns[j], ref itemColor);
+					QueryItemBkColor?.Invoke(f + startIndex, column, ref itemColor);
 
 					if (itemColor == Color.White)
 					{
@@ -630,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var cell = new Cell
 						{
-							Column = visibleColumns[j],
+							Column = column,
 							RowIndex = i
 						};
 						DrawCellBG(itemColor, cell, visibleColumns);
