@@ -30,14 +30,7 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		private static readonly WatchDomainComparer DomainComparer = new WatchDomainComparer();
-		private static readonly WatchAddressComparer AddressComparer = new WatchAddressComparer();
-		private static readonly WatchFullDisplayTypeComparer DisplayTypeComparer = new WatchFullDisplayTypeComparer();
-		private static readonly WatchValueComparer ValueComparer = new WatchValueComparer();
-		private static readonly WatchPreviousValueComparer PreviousValueComparer = new WatchPreviousValueComparer();
-		private static readonly WatchValueDifferenceComparer ValueDifferenceComparer = new WatchValueDifferenceComparer();
-		private static readonly WatchChangeCountComparer ChangeCountComparer = new WatchChangeCountComparer();
-		private static readonly WatchNoteComparer NoteComparer = new WatchNoteComparer();
+		private static readonly Dictionary<string, IComparer<Watch>> WatchComparers;
 
 		private readonly List<Watch> _watchList = new List<Watch>(0);
 		private readonly string _systemId;
@@ -46,6 +39,25 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region cTor(s)
+
+		/// <summary>
+		/// Static constructor for the <see cref="WatchList"/> class.
+		/// </summary>
+		static WatchList()
+		{
+			// Initialize mapping of columns to comparers for sorting.
+			WatchComparers = new Dictionary<string, IComparer<Watch>>
+			{
+				{ ADDRESS, new WatchAddressComparer() },
+				{ VALUE, new WatchValueComparer() },
+				{ PREV, new WatchPreviousValueComparer() },
+				{ CHANGES, new WatchChangeCountComparer() },
+				{ DIFF, new WatchValueDifferenceComparer() },
+				{ TYPE, new WatchFullDisplayTypeComparer() },
+				{ DOMAIN, new WatchDomainComparer() },
+				{ NOTES, new WatchNoteComparer() }
+			};
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WatchList"/> class
@@ -213,117 +225,32 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Sort the current list based on one of the constant
+		/// Sort the current list based on one of the column constants.
 		/// </summary>
-		/// <param name="column">Value that specify sorting base</param>
-		/// <param name="reverse">Value that define the ordering. Ascending (true) or descending (false)</param>
+		/// <param name="column">The column to sort by.</param>
+		/// <param name="reverse">Defines the order of the sort. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
-			switch (column)
+			var separatorIndices = new List<int>();
+			for (var i = 0; i < _watchList.Count; i++)
 			{
-				case ADDRESS:
-					if (reverse)
-					{
-						_watchList.Sort(AddressComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort();
-					}
+				if (_watchList[i].IsSeparator)
+				{
+					separatorIndices.Add(i);
+				}
+			}
+			separatorIndices.Add(_watchList.Count);
 
-					break;
-
-				case VALUE:
-					if (reverse)
-					{
-						_watchList.Sort(ValueComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ValueComparer);
-					}
-
-					break;
-
-				case PREV:
-					if (reverse)
-					{
-						_watchList.Sort(PreviousValueComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(PreviousValueComparer);
-					}
-
-					break;
-
-				case DIFF:
-					if (reverse)
-					{
-						_watchList.Sort(ValueDifferenceComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ValueDifferenceComparer);
-					}
-
-					break;
-
-				case CHANGES:
-					if (reverse)
-					{
-						_watchList.Sort(ChangeCountComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(ChangeCountComparer);
-					}
-
-					break;
-
-				case DOMAIN:
-					if (reverse)
-					{
-						_watchList.Sort(DomainComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(DomainComparer);
-					}
-
-					break;
-
-				case TYPE:
-					if (reverse)
-					{
-						_watchList.Sort(DisplayTypeComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(DisplayTypeComparer);
-					}
-
-					break;
-
-				case NOTES:
-					if (reverse)
-					{
-						_watchList.Sort(NoteComparer);
-						_watchList.Reverse();
-					}
-					else
-					{
-						_watchList.Sort(NoteComparer);
-					}
-
-					break;
+			// Sort "blocks" of addresses between separators.
+			int startIndex = 0;
+			foreach (int index in separatorIndices)
+			{
+				_watchList.Sort(startIndex, index - startIndex, WatchComparers[column]);
+				if (reverse)
+				{
+					_watchList.Reverse(startIndex, index - startIndex);
+				}
+				startIndex = index + 1;
 			}
 
 			Changes = true;
