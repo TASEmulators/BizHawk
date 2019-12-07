@@ -277,7 +277,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Redraw()
 		{
-			// TODO: horizontal orientation
 			if (HorizontalOrientation)
 			{
 				int x = MaxColumnWidth;
@@ -803,17 +802,6 @@ namespace BizHawk.Client.EmuHawk
 
 				return (_drawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
 			}
-		}
-
-		// TODO: don't duplicate property logic
-		private int CalcVisibleRows(Rectangle rect)
-		{
-			if (HorizontalOrientation)
-			{
-				return rect.Width / CellWidth;
-			}
-
-			return rect.Height / CellHeight; // Minus three makes it work
 		}
 
 		private Cell _draggingCell;

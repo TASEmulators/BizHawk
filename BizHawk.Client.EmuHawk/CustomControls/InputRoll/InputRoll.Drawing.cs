@@ -35,9 +35,10 @@ namespace BizHawk.Client.EmuHawk
 						.ToList();
 				}
 				
-				// TODO: FirstVisibleRow assumes there is a visible row
-				var firstVisibleRow = FirstVisibleRow;
-				var visibleRows = CalcVisibleRows(e.ClipRectangle);
+				var firstVisibleRow = Math.Max(FirstVisibleRow, 0);
+				var visibleRows = HorizontalOrientation
+					? e.ClipRectangle.Width / CellWidth
+					: e.ClipRectangle.Height / CellHeight;
 
 				var lastVisibleRow = firstVisibleRow + visibleRows;
 
