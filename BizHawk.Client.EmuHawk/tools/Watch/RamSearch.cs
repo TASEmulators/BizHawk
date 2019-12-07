@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_forcePreviewClear = false;
-				WatchListView.Invalidate();
+				WatchListView.RowCount = _searches.Count;
 			}
 		}
 
