@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Required to use before calling drawing methods
 		/// </summary>
-		IDisposable LockGraphics(Graphics g, int width, int height);
+		IDisposable LockGraphics(Graphics g);
 
 		/// <summary>
 		/// Measure the width and height of string <paramref name="str"/> when drawn

@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_graphics.DrawLine(_currentPen, x1, y1, x2, y2);
 		}
 
-		public IDisposable LockGraphics(Graphics g, int width, int height)
+		public IDisposable LockGraphics(Graphics g)
 		{
 			_graphics = g;
 			return new GdiPlusGraphicsLock();

@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			if (column != null)
 			{
 				using var g = CreateGraphics();
-				using (_renderer.LockGraphics(g, Width, Height))
+				using (_renderer.LockGraphics(g))
 				{
 					var strLength = (int)_renderer.MeasureString(text, Font).Width + (CellWidthPadding * 2);
 					if (column.Width < strLength)
@@ -1951,7 +1951,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateCellSize()
 		{
 			using (var g = CreateGraphics())
-			using (_renderer.LockGraphics(g, Width, Height))
+			using (_renderer.LockGraphics(g))
 			{
 				// Measure width change to ignore extra padding at start/end
 				var size1 = _renderer.MeasureString("A", Font);

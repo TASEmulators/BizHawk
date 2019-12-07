@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (_renderer.LockGraphics(e.Graphics, Width, Height))
+			using (_renderer.LockGraphics(e.Graphics))
 			{
 				// White Background
 				_renderer.SetBrush(Color.White);
