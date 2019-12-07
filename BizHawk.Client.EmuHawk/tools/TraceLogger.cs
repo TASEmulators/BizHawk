@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private List<RollColumn> Columns
 		{
-			get { return TraceView.AllColumns; }
+			get => TraceView.AllColumns;
 			set
 			{
 				TraceView.AllColumns.Clear();
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		private FileInfo _logFile;
 		private FileInfo LogFile
 		{
-			get { return _logFile; }
+			get => _logFile;
 			set
 			{
 				_logFile = value;
@@ -94,10 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 
 		public bool AskSaveChanges()
 		{

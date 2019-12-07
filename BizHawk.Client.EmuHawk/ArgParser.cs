@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class ArgParser
+	public class ArgParser
 	//parses command line arguments and adds the values to a class attribute
 	//default values are null for strings and false for boolean
 	//the last value will overwrite previously set values
@@ -161,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			//inititalize socket server
+			// initialize socket server
 			if (socket_ip != null && socket_port > 0)
 			{
 				GlobalWin.socketServer = new Communication.SocketServer();
@@ -185,13 +184,8 @@ namespace BizHawk.Client.EmuHawk
 			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 	}
-
-	class ArgParserException : Exception
+	public class ArgParserException : Exception
 	{
-		public ArgParserException()
-		{
-		}
-
 		public ArgParserException(string message) : base(message)
 		{
 		}
