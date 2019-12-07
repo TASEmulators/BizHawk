@@ -30,7 +30,8 @@ namespace BizHawk.Client.EmuHawk
 				var lastVisibleRow = firstVisibleRow + CalcVisibleRows(e.ClipRectangle);
 				CalculateHorizontalColumnPositions(visibleColumns);
 
-				if (visibleColumns.Any())
+				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
+				if (visibleColumns.Any() && needsColumnRedraw)
 				{
 					DrawColumnBg(visibleColumns);
 					DrawColumnText(visibleColumns);

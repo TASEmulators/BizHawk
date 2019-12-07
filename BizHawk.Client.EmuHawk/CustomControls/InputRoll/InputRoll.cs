@@ -271,24 +271,28 @@ namespace BizHawk.Client.EmuHawk
 				// Similarly to ListView in virtual mode, we want to always refresh
 				// when setting row count, that gives the calling code assurance that
 				// redraw will happen
-				
-				// TODO: horizontal orientation
-				if (HorizontalOrientation)
-				{
-					Refresh();
-				}
-				else
-				{
-					int x = _hBar.Value;
-					int y = ColumnHeight;
+				Redraw();
+			}
+		}
 
-					int w = VisibleColumns.Any()
-						? Math.Min(VisibleColumns.Max(c => c.Right) - _hBar.Value, Width)
-						: 0;
+		public void Redraw()
+		{
+			// TODO: horizontal orientation
+			if (HorizontalOrientation)
+			{
+				Refresh();
+			}
+			else
+			{
+				int x = _hBar.Value;
+				int y = ColumnHeight + 1;
 
-					int h = Height - y;
-					Invalidate(new Rectangle(x, y, w, h));
-				}
+				int w = VisibleColumns.Any()
+					? Math.Min(VisibleColumns.Max(c => c.Right) - _hBar.Value, Width)
+					: 0;
+
+				int h = Height - y;
+				Invalidate(new Rectangle(x, y, w, h));
 			}
 		}
 
