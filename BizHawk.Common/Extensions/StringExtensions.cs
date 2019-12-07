@@ -29,16 +29,6 @@ namespace BizHawk.Common.StringExtensions
 			return options.Any(opt => opt.Equals(str, StringComparison.CurrentCultureIgnoreCase));
 		}
 
-		public static bool In(this string str, IEnumerable<string> options)
-		{
-			return options.Any(opt => opt.Equals(str, StringComparison.CurrentCultureIgnoreCase));
-		}
-
-		public static bool In<T>(this string str, IEnumerable<T> options, Func<T, string, bool> eval)
-		{
-			return options.Any(opt => eval(opt, str));
-		}
-
 		public static bool NotIn(this string str, params string[] options)
 		{
 			return options.All(opt => opt.ToLower() != str.ToLower());
