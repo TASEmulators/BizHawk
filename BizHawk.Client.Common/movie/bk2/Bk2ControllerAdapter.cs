@@ -36,14 +36,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// TODO: get rid of this, add a SetBool() method or something for the set access, replace get wtih IsPressed
+		// TODO: get rid of this, add a SetBool() method or something for the set access, replace get with IsPressed
 		public bool this[string button]
 		{
-			get
-			{
-				return _myBoolButtons[button];
-			}
-
+			get => _myBoolButtons[button];
 			set
 			{
 				if (_myBoolButtons.ContainsKey(button))
