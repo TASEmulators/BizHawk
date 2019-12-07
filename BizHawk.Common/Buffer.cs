@@ -15,6 +15,12 @@ namespace BizHawk.Common
 		public int Len;
 		public int Itemsize;
 
+		public void Write08(int addr, byte val) { Byteptr[addr] = val; }
+		public void Write32(int addr, uint val) { *(uint*)(Byteptr + addr) = val; }
+		public byte Read08(int addr) { return Byteptr[addr]; }
+		public ushort Read16(int addr) { return *(ushort*)(Byteptr + addr); }
+		public uint Read32(int addr) { return *(uint*)(Byteptr + addr); }
+
 		public static CBuffer<T> malloc(int amt, int itemsize)
 		{
 			return new CBuffer<T>(amt, itemsize);
