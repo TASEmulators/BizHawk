@@ -93,11 +93,9 @@ namespace BizHawk.Common.BufferExtensions
 
 		public static string HashMD5(this byte[] data, int offset, int len)
 		{
-			using (var md5 = MD5.Create())
-			{
-				md5.ComputeHash(data, offset, len);
-				return md5.Hash.BytesToHexString();
-			}
+			using var md5 = MD5.Create();
+			md5.ComputeHash(data, offset, len);
+			return md5.Hash.BytesToHexString();
 		}
 
 		public static string HashMD5(this byte[] data)
@@ -107,11 +105,9 @@ namespace BizHawk.Common.BufferExtensions
 
 		public static string HashSHA1(this byte[] data, int offset, int len)
 		{
-			using (var sha1 = SHA1.Create())
-			{
-				sha1.ComputeHash(data, offset, len);
-				return sha1.Hash.BytesToHexString();
-			}
+			using var sha1 = SHA1.Create();
+			sha1.ComputeHash(data, offset, len);
+			return sha1.Hash.BytesToHexString();
 		}
 
 		public static string HashSHA1(this byte[] data)

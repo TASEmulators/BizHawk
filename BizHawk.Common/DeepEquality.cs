@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace BizHawk.Common
@@ -50,27 +49,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		/// <summary>
-		/// test if two arrays are equal in contents; arrays should have same type
-		/// </summary>
-		private static bool ArrayEquals<T>(T[] o1, T[] o2)
-		{
-			if (o1.Length != o2.Length)
-			{
-				return false;
-			}
-
-			for (int i = 0; i < o1.Length; i++)
-			{
-				if (!DeepEquals(o1[i], o2[i]))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
 		static MethodInfo ArrayEqualsGeneric = typeof(DeepEquality).GetMethod("ArrayEquals", BindingFlags.NonPublic | BindingFlags.Static);
 
 		/// <summary>
@@ -101,7 +79,7 @@ namespace BizHawk.Common
 				// this is actually pretty fast; it allows using fast ldelem and stelem opcodes on
 				// arbitrary array types without emitting custom IL
 				var method = ArrayEqualsGeneric.MakeGenericMethod(new Type[] { t1.GetElementType() });
-				return (bool)method.Invoke(null, new object[] { o1, o2 });
+				return (bool)method.Invoke(null, new[] { o1, o2 });
 			}
 
 			if (t1.IsPrimitive)

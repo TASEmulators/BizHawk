@@ -15,10 +15,6 @@ namespace BizHawk.Common
 		// switchstream method? flush old stream?
 		private Stream _currStream;
 
-		public SwitcherStream()
-		{
-		}
-
 		/// <summary>
 		/// if this is enabled, seeks to Begin,0 will get ignored; anything else will be an exception
 		/// </summary>
@@ -34,11 +30,7 @@ namespace BizHawk.Common
 
 		public override long Position
 		{
-			get
-			{
-				return _currStream.Position;
-			}
-
+			get => _currStream.Position;
 			set
 			{
 				if (DenySeekHack)
@@ -53,11 +45,6 @@ namespace BizHawk.Common
 
 				_currStream.Position = value;
 			}
-		}
-
-		public void SetCurrStream(Stream str)
-		{
-			_currStream = str;
 		}
 
 		public override void Flush()

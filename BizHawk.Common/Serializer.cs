@@ -14,40 +14,19 @@ namespace BizHawk.Common
 
 		#region Public
 
-		public bool IsReader
-		{
-			get { return _isReader; }
-		}
+		public bool IsReader => _isReader;
 
-		public bool IsWriter
-		{
-			get { return !IsReader; }
-		}
+		public bool IsWriter => !IsReader;
 
-		public bool IsText
-		{
-			get { return _isText; }
-		}
+		public bool IsText => _isText;
 
-		public BinaryReader BinaryReader
-		{
-			get { return _br; }
-		}
+		public BinaryReader BinaryReader => _br;
 
-		public BinaryWriter BinaryWriter
-		{
-			get { return _bw; }
-		}
+		public BinaryWriter BinaryWriter => _bw;
 
-		public TextReader TextReader
-		{
-			get { return _tr; }
-		}
+		public TextReader TextReader => _tr;
 
-		public TextWriter TextWriter
-		{
-			get { return _tw; } 
-		}
+		public TextWriter TextWriter => _tw;
 
 		public Serializer(BinaryWriter bw)
 		{
@@ -118,7 +97,7 @@ namespace BizHawk.Common
 
 		public void BeginSection(string name)
 		{
-			this._sections.Push(name);
+			_sections.Push(name);
 			if (IsText)
 			{
 				if (IsWriter)
@@ -135,7 +114,7 @@ namespace BizHawk.Common
 
 		public void EndSection()
 		{
-			var name = this._sections.Pop();
+			var name = _sections.Pop();
 			if (IsText)
 			{
 				if (IsWriter)

@@ -116,39 +116,6 @@ namespace BizHawk.Common.IOExtensions
 			}
 		}
 
-		public static int[] ReadInt32s(this BinaryReader br, int num)
-		{
-			int[] ret = new int[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadInt32();
-			}
-
-			return ret;
-		}
-
-		public static short[] ReadInt16s(this BinaryReader br, int num)
-		{
-			short[] ret = new short[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadInt16();
-			}
-
-			return ret;
-		}
-
-		public static ushort[] ReadUInt16s(this BinaryReader br, int num)
-		{
-			ushort[] ret = new ushort[num];
-			for (int i = 0; i < num; i++)
-			{
-				ret[i] = br.ReadUInt16();
-			}
-
-			return ret;
-		}
-
 		public static void WriteBit(this BinaryWriter bw, Bit bit)
 		{
 			bw.Write((bool)bit);

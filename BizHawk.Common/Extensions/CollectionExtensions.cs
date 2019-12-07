@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -94,26 +92,6 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 
 			throw new InvalidOperationException("Item not found");
-		}
-
-		public static byte[] ToByteArray(this IEnumerable<bool> list)
-		{
-			var bits = new BitArray(list.ToArray());
-			byte[] bytes = new byte[(bits.Length / 8) + (bits.Length % 8 == 0 ? 0 : 1)];
-			bits.CopyTo(bytes, 0);
-			return bytes;
-		}
-
-		/// <summary>
-		/// Converts any byte array into a bit array represented as a list of booleans
-		/// </summary>
-		public static IEnumerable<bool> ToBools(this byte[] bytes)
-		{
-			var bits = new BitArray(bytes);
-			var bools = new bool[bits.Length];
-			bits.CopyTo(bools, 0);
-
-			return bools;
 		}
 	}
 }

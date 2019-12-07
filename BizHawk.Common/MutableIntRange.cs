@@ -9,10 +9,7 @@ namespace BizHawk.Common
 
 		public int Min
 		{
-			get
-			{
-				return _min;
-			}
+			get => _min;
 			set
 			{
 				if (_max < value) throw new ArgumentException();
@@ -22,10 +19,7 @@ namespace BizHawk.Common
 
 		public int Max
 		{
-			get
-			{
-				return _max;
-			}
+			get => _max;
 			set
 			{
 				if (value < _min) throw new ArgumentException();

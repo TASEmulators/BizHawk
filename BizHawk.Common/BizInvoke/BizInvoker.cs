@@ -194,8 +194,7 @@ namespace BizHawk.Common.BizInvoke
 			TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			// create the delegate type
-			MethodBuilder delegateInvoke;
-			var delegateType = BizInvokeUtilities.CreateDelegateType(baseMethod, nativeCall, type, out delegateInvoke);
+			var delegateType = BizInvokeUtilities.CreateDelegateType(baseMethod, nativeCall, type, out var delegateInvoke);
 
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();

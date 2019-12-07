@@ -19,14 +19,11 @@ namespace BizHawk.Common
 
 		public T this[int index]
 		{
-			get { return buffer[index]; }
-			set { buffer[index] = value; }
+			get => buffer[index];
+			set => buffer[index] = value;
 		}
 
-		public int Count
-		{
-			get { return Position; }
-		}
+		public int Count => Position;
 
 		public void Add(T item)
 		{
@@ -53,7 +50,7 @@ namespace BizHawk.Common
 			buffer = new T[capacity];
 		}
 
-		public int Count { get { return size; } }
+		public int Count => size;
 
 		public void Enqueue(T item)
 		{
@@ -130,10 +127,7 @@ namespace BizHawk.Common
 			return dict.ContainsKey(key);
 		}
 
-		public ICollection<TKey> Keys
-		{
-			get { return dict.Keys; }
-		}
+		public ICollection<TKey> Keys => dict.Keys;
 
 		public bool Remove(TKey key)
 		{
@@ -145,15 +139,12 @@ namespace BizHawk.Common
 			return dict.TryGetValue(key, out value);
 		}
 
-		public ICollection<TValue> Values
-		{
-			get { return dict.Values; }
-		}
+		public ICollection<TValue> Values => dict.Values;
 
 		public TValue this[TKey key]
 		{
-			get { return dict[key]; }
-			set { throw new InvalidOperationException(); }
+			get => dict[key];
+			set => throw new InvalidOperationException();
 		}
 
 		public void Add(KeyValuePair<TKey, TValue> item)
@@ -176,15 +167,9 @@ namespace BizHawk.Common
 			dict.CopyTo(array, arrayIndex);
 		}
 
-		public int Count
-		{
-			get { return dict.Count; }
-		}
+		public int Count => dict.Count;
 
-		public bool IsReadOnly
-		{
-			get { return true; }
-		}
+		public bool IsReadOnly => true;
 
 		public bool Remove(KeyValuePair<TKey, TValue> item)
 		{
