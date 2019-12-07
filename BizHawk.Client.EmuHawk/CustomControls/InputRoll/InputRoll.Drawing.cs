@@ -16,13 +16,18 @@ namespace BizHawk.Client.EmuHawk
 				// White Background
 				_renderer.SetBrush(Color.White);
 				_renderer.SetSolidPen(Color.White);
-				_renderer.FillRectangle(new Rectangle(0, CellHeight, _drawWidth, _drawHeight));
+				_renderer.FillRectangle(e.ClipRectangle);
 
 				// Lag frame calculations
 				SetLagFramesArray();
 
-				var visibleColumns = _columns.VisibleColumns.ToList();
+				var visibleColumns = _columns.VisibleColumns
+					.Where(c => c.Left < e.ClipRectangle.Width)
+					.ToList();
 
+				// TODO: FirstVisibleRow assumes there is a visible row
+				var firstVisibleRow = FirstVisibleRow;
+				var lastVisibleRow = firstVisibleRow + CalcVisibleRows(e.ClipRectangle);
 				CalculateHorizontalColumnPositions(visibleColumns);
 
 				if (visibleColumns.Any())
@@ -32,10 +37,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Background
-				DrawBg(visibleColumns);
+				DrawBg(visibleColumns, e.ClipRectangle);
 
 				// Foreground
-				DrawData(visibleColumns);
+				DrawData(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow);
 
 				DrawColumnDrag(visibleColumns);
 				DrawCellDrag(visibleColumns);
@@ -57,6 +62,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateHorizontalColumnPositions(List<RollColumn> visibleColumns)
 		{
+			int firstVisibleRow = FirstVisibleRow;
+
 			if (!HorizontalOrientation)
 			{
 				_horizontalColumnHeights = null;
@@ -68,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			_horizontalColumnTops = new int[visibleColumns.Count];
 
 			int top = 0;
-			int startRow = FirstVisibleRow;
+			int startRow = firstVisibleRow;
 			for (int j = 0; j < visibleColumns.Count; j++)
 			{
 				RollColumn col = visibleColumns[j];
@@ -200,8 +207,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawData(List<RollColumn> visibleColumns)
+		private void DrawData(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
+			int firstVisibleColumn = FirstVisibleColumn(visibleColumns);
+			var lastVisibleColumn = LastVisibleColumn(visibleColumns, rect.Width);
+
 			// Prevent exceptions with small TAStudio windows
 			if (visibleColumns.Count == 0)
 			{
@@ -213,14 +223,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			int startRow = FirstVisibleRow;
-			int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+			int startRow = firstVisibleRow;
+			int range = Math.Min(lastVisibleRow, RowCount - 1) - startRow + 1;
 			_renderer.PrepDrawString(Font, _foreColor);
 
 			if (HorizontalOrientation)
 			{
-				int lastVisible = LastVisibleColumn;
-				for (int j = FirstVisibleColumn; j <= lastVisible; j++)
+				int lastVisible = lastVisibleRow;
+				for (int j = firstVisibleRow; j <= lastVisible; j++)
 				{
 					RollColumn col = visibleColumns[j];
 					int colHeight = GetHColHeight(j);
@@ -280,8 +290,8 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
-					int lastVisible = LastVisibleColumn;
-					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
+					int lastVisible = lastVisibleColumn;
+					for (int j = firstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						RollColumn col = visibleColumns[j];
 
@@ -434,11 +444,11 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO refactor this and DoBackGroundCallback functions.
 		// Draw Gridlines and background colors using QueryItemBkColor.
-		private void DrawBg(List<RollColumn> visibleColumns)
+		private void DrawBg(List<RollColumn> visibleColumns, Rectangle rect)
 		{
 			if (QueryItemBkColor != null)
 			{
-				DoBackGroundCallback(visibleColumns);
+				DoBackGroundCallback(visibleColumns, rect.Width);
 			}
 
 			if (GridLines)
@@ -579,12 +589,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
-		private void DoBackGroundCallback(List<RollColumn> visibleColumns)
+		private void DoBackGroundCallback(List<RollColumn> visibleColumns, int width)
 		{
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
-			int lastVisibleColumn = LastVisibleColumn;
-			int firstVisibleColumn = FirstVisibleColumn;
+			int lastVisibleColumn = LastVisibleColumn(visibleColumns, width);
+			int firstVisibleColumn = FirstVisibleColumn(visibleColumns);
 
 			// Prevent exceptions with small TAStudio windows
 			if (firstVisibleColumn < 0)

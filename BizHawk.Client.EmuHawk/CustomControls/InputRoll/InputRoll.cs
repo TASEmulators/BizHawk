@@ -778,35 +778,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int FirstVisibleColumn
+		// TODO: don't duplicate property logic
+		private int CalcVisibleRows(Rectangle rect)
 		{
-			get
+			if (HorizontalOrientation)
 			{
-				var columnList = VisibleColumns.ToList();
-
-				if (HorizontalOrientation)
-				{
-					return Enumerable.Range(0, columnList.Count).First(i => GetHColBottom(i) > _vBar.Value);
-				}
-
-				return columnList.FindIndex(c => c.Right > _hBar.Value);
+				return (rect.Width - MaxColumnWidth) / CellWidth;
 			}
+
+			return (rect.Height - ColumnHeight - 3) / CellHeight; // Minus three makes it work
 		}
 
-		private int LastVisibleColumn
+		// TODO: account for no visible columns
+		private int FirstVisibleColumn(List<RollColumn> columnList)
 		{
-			get
+			if (HorizontalOrientation)
 			{
-				var columnList = VisibleColumns.ToList();
-
-				if (HorizontalOrientation)
-				{
-					int count = columnList.Count;
-					return Enumerable.Range(0, count).Select(i => count - 1 - i).First(i => GetHColTop(i) <= _drawWidth + _hBar.Value);
-				}
-
-				return columnList.FindLastIndex(c => c.Left <= _drawWidth + _hBar.Value);
+				return Enumerable.Range(0, columnList.Count).First(i => GetHColBottom(i) > _vBar.Value);
 			}
+
+			return columnList.FindIndex(c => c.Right > _hBar.Value);
+		}
+
+		private int LastVisibleColumn(List<RollColumn> columnList, int width)
+		{
+			if (HorizontalOrientation)
+			{
+				int count = columnList.Count;
+				return Enumerable.Range(0, count)
+					.Select(i => count - 1 - i)
+					.First(i => GetHColTop(i) <= _drawWidth + _hBar.Value);
+			}
+
+			return columnList.FindLastIndex(c => c.Left <= _drawWidth + _hBar.Value && c.Left < width);
 		}
 
 		private Cell _draggingCell;
