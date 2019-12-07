@@ -459,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (QueryItemBkColor != null)
 			{
-				DoBackGroundCallback(visibleColumns, firstVisibleRow, lastVisibleRow);
+				DoBackGroundCallback(visibleColumns, rect, firstVisibleRow, lastVisibleRow);
 			}
 
 			if (GridLines)
@@ -510,11 +510,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_selectedItems.Any())
 			{
-				DoSelectionBG(visibleColumns);
+				DoSelectionBG(visibleColumns, rect);
 			}
 		}
 
-		private void DoSelectionBG(List<RollColumn> visibleColumns)
+		private void DoSelectionBG(List<RollColumn> visibleColumns, Rectangle rect)
 		{
 			Color rowColor = Color.White;
 			int firstVisibleRow = FirstVisibleRow;
@@ -557,12 +557,12 @@ namespace BizHawk.Client.EmuHawk
 				cellColor = Color.FromArgb(cellColor.R - (int)((cellColor.R - SystemColors.Highlight.R) * alpha),
 					cellColor.G - (int)((cellColor.G - SystemColors.Highlight.G) * alpha),
 					cellColor.B - (int)((cellColor.B - SystemColors.Highlight.B) * alpha));
-				DrawCellBG(cellColor, relativeCell, visibleColumns);
+				DrawCellBG(cellColor, relativeCell, visibleColumns, rect);
 			}
 		}
 
 		// Given a cell with RowIndex in between 0 and VisibleRows, it draws the background color specified. Do not call with absolute row indices.
-		private void DrawCellBG(Color color, Cell cell, List<RollColumn> visibleColumns)
+		private void DrawCellBG(Color color, Cell cell, List<RollColumn> visibleColumns, Rectangle rect)
 		{
 			int x, y, w, h;
 
@@ -592,18 +592,12 @@ namespace BizHawk.Client.EmuHawk
 				h = CellHeight - 1;
 			}
 
-			// Don't draw if off screen.
-			if (x > _drawWidth || y > _drawHeight)
-			{
-				return;
-			}
-
 			_renderer.SetBrush(color);
 			_renderer.FillRectangle(new Rectangle(x, y, w, h));
 		}
 
 		// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
-		private void DoBackGroundCallback(List<RollColumn> visibleColumns, int firstVisibleRow, int lastVisibleRow)
+		private void DoBackGroundCallback(List<RollColumn> visibleColumns, Rectangle rect, int firstVisibleRow, int lastVisibleRow)
 		{
 			if (!visibleColumns.Any())
 			{
@@ -643,7 +637,7 @@ namespace BizHawk.Client.EmuHawk
 							Column = column,
 							RowIndex = i
 						};
-						DrawCellBG(itemColor, cell, visibleColumns);
+						DrawCellBG(itemColor, cell, visibleColumns, rect);
 					}
 				}
 			}

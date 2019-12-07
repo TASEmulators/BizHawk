@@ -1920,7 +1920,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return index < _horizontalColumnTops.Length
+			return index >= 0 && index < _horizontalColumnTops.Length
 				? _horizontalColumnTops[index]
 				: _horizontalColumnTops.Last() + CellHeight;
 		}
