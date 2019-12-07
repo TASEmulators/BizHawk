@@ -13,7 +13,6 @@ namespace BizHawk.Client.Common
 	public sealed partial class TasMovie : Bk2Movie, INotifyPropertyChanged
 	{
 		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
-		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
 
 		public IStringLog VerificationLog { get; } = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public TasBranchCollection Branches { get; } = new TasBranchCollection();
@@ -26,7 +25,6 @@ namespace BizHawk.Client.Common
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
-		public bool UseInputCache { get; set; }
 		public int CurrentBranch { get; set; }
 
 		public TasLagLog TasLagLog { get; } = new TasLagLog();
@@ -148,24 +146,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public string DisplayValue(int frame, string buttonName)
 		{
-			if (UseInputCache && _inputStateCache.ContainsKey(frame))
-			{
-				return CreateDisplayValueForButton(_inputStateCache[frame], buttonName);
-			}
-
 			var adapter = GetInputState(frame);
-
-			if (UseInputCache)
-			{
-				_inputStateCache.Add(frame, adapter);
-			}
-
 			return CreateDisplayValueForButton(adapter, buttonName);
-		}
-
-		public void FlushInputCache()
-		{
-			_inputStateCache.Clear();
 		}
 
 		private string CreateDisplayValueForButton(IController adapter, string buttonName)

@@ -814,12 +814,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshTasView()
 		{
-			CurrentTasMovie.UseInputCache = true;
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-
-			CurrentTasMovie.FlushInputCache();
-			CurrentTasMovie.UseInputCache = false;
-
 			_lastRefresh = Emulator.Frame;
 		}
 
