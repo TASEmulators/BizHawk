@@ -21,14 +21,26 @@ namespace BizHawk.Client.EmuHawk
 				// Lag frame calculations
 				SetLagFramesArray();
 
-				var visibleColumns = _columns.VisibleColumns
-					.Where(c => c.Right > _hBar.Value)
-					.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
-					.ToList();
+				List<RollColumn> visibleColumns;
 
+				if (HorizontalOrientation)
+				{
+					visibleColumns = VisibleColumns.ToList(); // TODO
+				}
+				else
+				{
+					visibleColumns = _columns.VisibleColumns
+						.Where(c => c.Right > _hBar.Value)
+						.Where(c => c.Left - _hBar.Value < e.ClipRectangle.Width)
+						.ToList();
+				}
+				
 				// TODO: FirstVisibleRow assumes there is a visible row
 				var firstVisibleRow = FirstVisibleRow;
-				var lastVisibleRow = firstVisibleRow + CalcVisibleRows(e.ClipRectangle);
+				var visibleRows = CalcVisibleRows(e.ClipRectangle);
+
+				var lastVisibleRow = firstVisibleRow + visibleRows;
+
 				CalculateHorizontalColumnPositions(visibleColumns);
 
 				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
@@ -227,8 +239,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HorizontalOrientation)
 			{
-				int lastVisible = lastVisibleRow;
-				for (int j = firstVisibleRow; j <= lastVisible; j++)
+				for (int j = 0; j < visibleColumns.Count; j++)
 				{
 					RollColumn col = visibleColumns[j];
 					int colHeight = GetHColHeight(j);
@@ -454,7 +465,7 @@ namespace BizHawk.Client.EmuHawk
 				if (HorizontalOrientation)
 				{
 					// Columns
-					for (int i = 1; i < VisibleRows + 1; i++)
+					for (int i = 1; i < lastVisibleRow - firstVisibleRow + 1; i++)
 					{
 						int x = RowsToPixels(i);
 						_renderer.Line(x, 1, x, rect.Height);
@@ -463,8 +474,11 @@ namespace BizHawk.Client.EmuHawk
 					// Rows
 					for (int i = 0; i < visibleColumns.Count + 1; i++)
 					{
+						// TODO: MaxColumnWidth shouldn't be necessary
+						// This also makes too many assumptions, the parameters need to drive what is being drawn
 						int y = GetHColTop(i) - _vBar.Value;
-						_renderer.Line(RowsToPixels(0) + 1, y, rect.Width, y);
+						int x = RowsToPixels(0) + 1;
+						_renderer.Line(x, y, rect.Width + MaxColumnWidth, y);
 					}
 				}
 				else

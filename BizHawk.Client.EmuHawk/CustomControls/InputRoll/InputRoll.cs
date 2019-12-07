@@ -280,7 +280,13 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: horizontal orientation
 			if (HorizontalOrientation)
 			{
-				Refresh();
+				int x = MaxColumnWidth;
+				int y = 0;
+				int w = Width - x;
+				int h = VisibleColumns.Any()
+					? GetHColBottom(VisibleColumns.Count() - 1)
+					: 0;
+				Invalidate(new Rectangle(x, y, w, h));
 			}
 			else
 			{
@@ -804,7 +810,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (HorizontalOrientation)
 			{
-				return (rect.Width - MaxColumnWidth) / CellWidth;
+				return rect.Width / CellWidth;
 			}
 
 			return rect.Height / CellHeight; // Minus three makes it work
