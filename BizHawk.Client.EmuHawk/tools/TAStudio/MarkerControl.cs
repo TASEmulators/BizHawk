@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			MarkerView.DeselectAll();
-			UpdateValues();
+			MarkerView.Refresh();
 		}
 
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
