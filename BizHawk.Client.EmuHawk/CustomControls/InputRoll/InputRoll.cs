@@ -261,8 +261,14 @@ namespace BizHawk.Client.EmuHawk
 			get => _rowCount;
 			set
 			{
+				bool fullRefresh = false;
 				if (_rowCount != value)
 				{
+					if (value < _rowCount && IsVisible(value))
+					{
+						fullRefresh = true;
+					}
+
 					_rowCount = value;
 					_selectedItems.RemoveWhere(i => i.RowIndex >= _rowCount);
 					RecalculateScrollBars();
@@ -271,11 +277,18 @@ namespace BizHawk.Client.EmuHawk
 				// Similarly to ListView in virtual mode, we want to always refresh
 				// when setting row count, that gives the calling code assurance that
 				// redraw will happen
-				Redraw();
+				if (fullRefresh)
+				{
+					Refresh();
+				}
+				else
+				{
+					FastDraw();
+				}
 			}
 		}
 
-		public void Redraw()
+		private void FastDraw()
 		{
 			if (HorizontalOrientation)
 			{
