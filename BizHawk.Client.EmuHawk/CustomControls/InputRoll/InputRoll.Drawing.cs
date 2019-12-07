@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsColumnRedraw = HorizontalOrientation || e.ClipRectangle.Y < ColumnHeight;
 				if (visibleColumns.Any() && needsColumnRedraw)
 				{
-					DrawColumnBg(visibleColumns);
+					DrawColumnBg(visibleColumns, e.ClipRectangle);
 					DrawColumnText(visibleColumns);
 				}
 
@@ -338,14 +338,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DrawColumnBg(List<RollColumn> visibleColumns)
+		private void DrawColumnBg(List<RollColumn> visibleColumns, Rectangle rect)
 		{
 			_renderer.SetBrush(SystemColors.ControlLight);
 			_renderer.SetSolidPen(Color.Black);
 
 			if (HorizontalOrientation)
 			{
-				_renderer.FillRectangle(new Rectangle(0, 0, MaxColumnWidth + 1, _drawHeight));
+				_renderer.FillRectangle(new Rectangle(0, 0, MaxColumnWidth + 1, rect.Height));
 
 				int y = -_vBar.Value;
 				for (int j = 0; j < visibleColumns.Count; j++)
@@ -367,7 +367,7 @@ namespace BizHawk.Client.EmuHawk
 				int bottomEdge = RowsToPixels(0);
 
 				// Gray column box and black line underneath
-				_renderer.FillRectangle(new Rectangle(0, 0, _drawWidth + 1, bottomEdge + 1));
+				_renderer.FillRectangle(new Rectangle(0, 0, rect.Width, bottomEdge + 1));
 				_renderer.Line(0, 0, TotalColWidth, 0);
 				_renderer.Line(0, bottomEdge, TotalColWidth, bottomEdge);
 
