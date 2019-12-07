@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
-			Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(comm);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -3835,7 +3835,7 @@ namespace BizHawk.Client.EmuHawk
 			Emulator.Dispose();
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(coreComm);
 			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
@@ -3855,7 +3855,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				var coreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+				Emulator = new NullEmulator(coreComm);
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();

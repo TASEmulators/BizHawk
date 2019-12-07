@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 
@@ -57,16 +56,6 @@ namespace BizHawk.Client.EmuHawk
 			cbAllowDoubleclickFullscreen.Checked = Global.Config.DispChrome_AllowDoubleClickFullscreen;
 
 			nudPrescale.Value = Global.Config.DispPrescale;
-
-			// null emulator config hack
-			{
-				NullEmulator.NullEmulatorSettings s;
-				if (Global.Emulator is NullEmulator)
-					s = (Global.Emulator as dynamic).GetSettings();
-				else
-					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
-				checkSnowyNullEmulator.Checked = s.SnowyDisplay;
-			}
 
 			if (Global.Config.DispManagerAR == Config.EDispManagerAR.None)
 				rbUseRaw.Checked = true;
@@ -144,20 +133,6 @@ namespace BizHawk.Client.EmuHawk
 			if (rbDisplayFull.Checked) Global.Config.DispSpeedupFeatures = 2;
 			if (rbDisplayMinimal.Checked) Global.Config.DispSpeedupFeatures = 1;
 			if (rbDisplayAbsoluteZero.Checked) Global.Config.DispSpeedupFeatures = 0;
-
-			// HACK:: null emulator's settings don't persist to config normally
-			{
-				NullEmulator.NullEmulatorSettings s;
-				if (Global.Emulator is NullEmulator)
-					s = (Global.Emulator as dynamic).GetSettings();
-				else
-					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
-				s.SnowyDisplay = checkSnowyNullEmulator.Checked;
-
-				Global.Config.PutCoreSettings<NullEmulator>(s);
-				if (Global.Emulator is NullEmulator)
-					(Global.Emulator as dynamic).PutSettings(s);
-			}
 
 			if (rbUseRaw.Checked)
 				Global.Config.DispManagerAR = Config.EDispManagerAR.None;
