@@ -9,6 +9,15 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2ControllerAdapter : IMovieController
 	{
+		private class ControlMap
+		{
+			public string Name { get; set; }
+			public bool IsBool { get; set; }
+			public bool IsFloat { get; set; }
+		}
+
+		private List<ControlMap> _controlsOrdered = new List<ControlMap>();
+
 		private readonly string _logKey = "";
 		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();
@@ -74,6 +83,17 @@ namespace BizHawk.Client.Common
 			{
 				_type = new Bk2ControllerDefinition(value);
 				SetLogOverride();
+
+				var def = Global.Emulator.ControllerDefinition;
+				_controlsOrdered =  Definition.ControlsOrdered
+					.SelectMany(c => c)
+					.Select(c => new ControlMap
+					{
+						Name = c,
+						IsBool = def.BoolButtons.Contains(c),
+						IsFloat = def.FloatControls.Contains(c)
+					})
+					.ToList();
 			}
 		}
 
@@ -150,24 +170,22 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
-				var def = Global.Emulator.ControllerDefinition;
 				var trimmed = mnemonic.Replace("|", "");
-				var buttons = Definition.ControlsOrdered.SelectMany(c => c);
 				var iterator = 0;
 
-				foreach (var key in buttons)
+				foreach (var key in _controlsOrdered)
 				{
-					if (def.BoolButtons.Contains(key))
+					if (key.IsBool)
 					{
-						_myBoolButtons[key] = trimmed[iterator] != '.';
+						_myBoolButtons[key.Name] = trimmed[iterator] != '.';
 						iterator++;
 					}
-					else if (def.FloatControls.Contains(key))
+					else if (key.IsFloat)
 					{
 						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
 						var temp = trimmed.Substring(iterator, commaIndex);
 						var val = int.Parse(temp.Trim());
-						_myFloatControls[key] = val;
+						_myFloatControls[key.Name] = val;
 
 						iterator += commaIndex + 1;
 					}
