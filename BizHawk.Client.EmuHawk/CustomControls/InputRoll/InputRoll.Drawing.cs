@@ -301,9 +301,9 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += _lagFrames[i];
-					for (int j = 0; j < visibleColumns.Count; j++) // Horizontal
+					foreach (var column in visibleColumns)
 					{
-						RollColumn col = visibleColumns[j];
+						RollColumn col = column;
 
 						int strOffsetX = 0;
 						int strOffsetY = 0;
@@ -313,17 +313,17 @@ namespace BizHawk.Client.EmuHawk
 						int bitmapOffsetX = 0;
 						int bitmapOffsetY = 0;
 
-						QueryItemIcon?.Invoke(f + startRow, visibleColumns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+						QueryItemIcon?.Invoke(f + startRow, column, ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 
 						if (image != null)
 						{
 							_renderer.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding));
 						}
 
-						QueryItemText(f + startRow, visibleColumns[j], out var text, ref strOffsetX, ref strOffsetY);
+						QueryItemText(f + startRow, column, out var text, ref strOffsetX, ref strOffsetY);
 
 						bool rePrep = false;
-						if (_selectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = f + startRow }))
+						if (_selectedItems.Contains(new Cell { Column = column, RowIndex = f + startRow }))
 						{
 							_renderer.PrepDrawString(Font, SystemColors.HighlightText);
 							rePrep = true;
