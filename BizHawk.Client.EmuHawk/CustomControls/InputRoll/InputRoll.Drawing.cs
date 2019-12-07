@@ -21,12 +21,11 @@ namespace BizHawk.Client.EmuHawk
 				// Lag frame calculations
 				SetLagFramesArray();
 
-				CalculateHorizontalColumnPositions(VisibleColumns.ToList());
-
 				List<RollColumn> visibleColumns;
 
 				if (HorizontalOrientation)
 				{
+					CalculateHorizontalColumnPositions(VisibleColumns.ToList());
 					visibleColumns = VisibleColumns
 						.Take(_horizontalColumnTops.Count(c => c < e.ClipRectangle.Height))
 						.ToList();
