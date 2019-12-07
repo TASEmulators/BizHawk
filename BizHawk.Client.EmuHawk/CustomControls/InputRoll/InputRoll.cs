@@ -1520,7 +1520,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecalculateScrollBars();
 			base.OnResize(e);
-			Refresh();
 		}
 
 		private void OrientationChanged()
