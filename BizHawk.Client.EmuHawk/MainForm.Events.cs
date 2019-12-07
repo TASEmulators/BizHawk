@@ -2783,6 +2783,14 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Arcade
+		private void ArcadeSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Arcade Settings");
+		}
+
+		#endregion
+
 		#region Help
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

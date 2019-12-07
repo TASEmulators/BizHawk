@@ -1717,6 +1717,7 @@ namespace BizHawk.Client.EmuHawk
 			amstradCPCToolStripMenuItem.Visible = false;
 			VectrexSubMenu.Visible = false;
 			O2HawkSubMenu.Visible = false;
+			arcadeToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1843,6 +1844,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GB4x":
 					GB4xSubMenu.Visible = true;
+					break;
+				case "MAME":
+					arcadeToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
