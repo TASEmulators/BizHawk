@@ -23,11 +23,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public Palette[] BgPalettes = new Palette[16];
-		public Palette[] SpritePalettes = new Palette[16];
+		public Palette[] BgPalettes { get; set; } = new Palette[16];
+		public Palette[] SpritePalettes { get; set; } = new Palette[16];
 
-		public Palette[] BgPalettesPrev = new Palette[16];
-		public Palette[] SpritePalettesPrev = new Palette[16];
+		public Palette[] BgPalettesPrev { get; set; } = new Palette[16];
+		public Palette[] SpritePalettesPrev { get; set; } = new Palette[16];
 
 		public PaletteViewer()
 		{
@@ -88,8 +88,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
 			ImageFormat i;
@@ -110,14 +110,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ScreenshotToClipboard()
 		{
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
 			DrawToBitmap(b, rect);
 
-			using (var img = b)
-			{
-				Clipboard.SetImage(img);
-			}
+			using var img = b;
+			Clipboard.SetImage(img);
 		}
 	}
 }

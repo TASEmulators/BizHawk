@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			set => RefreshRate.Value = value;
 		}
 
-		int scanline;
+		private int _scanline;
 
 		public NESNameTableViewer()
 		{
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public API
 
-		public bool AskSaveChanges() { return true; }
+		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => true;
 
 		public void Restart()
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			_ppu.InstallCallback1(() => Generate(), scanline);
+			_ppu.InstallCallback1(() => Generate(), _scanline);
 		}
 
 		public void FastUpdate()
@@ -59,56 +59,56 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalpal)
+		private unsafe void DrawTile(int* dst, int pitch, byte* pal, byte* tile, int* finalPal)
 		{
 			dst += 7;
-			int vinc = pitch + 8;
+			int verticalInc = pitch + 8;
 			for (int j = 0; j < 8; j++)
 			{
 				int lo = tile[0];
 				int hi = tile[8] << 1;
 				for (int i = 0; i < 8; i++)
 				{
-					*dst-- = finalpal[pal[lo & 1 | hi & 2]];
+					*dst-- = finalPal[pal[lo & 1 | hi & 2]];
 					lo >>= 1;
 					hi >>= 1;
 				}
-				dst += vinc;
+				dst += verticalInc;
 				tile++;
 			}
 		}
 
-		private unsafe void GenerateExAttr(int* dst, int pitch, byte[] palram, byte[] ppumem, byte[] exram)
+		private unsafe void GenerateExAttr(int* dst, int pitch, byte[] palRam, byte[] ppuMem, byte[] exRam)
 		{
 			byte[] chr = _ppu.GetExTiles();
-			int chr_mask = chr.Length - 1;
+			int chrMask = chr.Length - 1;
 
-			fixed (byte* chrptr = chr, palptr = palram, ppuptr = ppumem, exptr = exram)
-			fixed (int* finalpal = _ppu.GetPalette())
+			fixed (byte* chrPtr = chr, palPtr = palRam, ppuPtr = ppuMem, exPtr = exRam)
+			fixed (int* finalPal = _ppu.GetPalette())
 			{
-				DrawExNT(dst, pitch, palptr, ppuptr + 0x2000, exptr, chrptr, chr_mask, finalpal);
-				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2400, exptr, chrptr, chr_mask, finalpal);
+				DrawExNT(dst, pitch, palPtr, ppuPtr + 0x2000, exPtr, chrPtr, chrMask, finalPal);
+				DrawExNT(dst + 256, pitch, palPtr, ppuPtr + 0x2400, exPtr, chrPtr, chrMask, finalPal);
 				dst += pitch * 240;
-				DrawExNT(dst, pitch, palptr, ppuptr + 0x2800, exptr, chrptr, chr_mask, finalpal);
-				DrawExNT(dst + 256, pitch, palptr, ppuptr + 0x2c00, exptr, chrptr, chr_mask, finalpal);
+				DrawExNT(dst, pitch, palPtr, ppuPtr + 0x2800, exPtr, chrPtr, chrMask, finalPal);
+				DrawExNT(dst + 256, pitch, palPtr, ppuPtr + 0x2c00, exPtr, chrPtr, chrMask, finalPal);
 			}
 		}
 
-		private unsafe void GenerateAttr(int* dst, int pitch, byte[] palram, byte[] ppumem)
+		private unsafe void GenerateAttr(int* dst, int pitch, byte[] palRam, byte[] ppuMem)
 		{
-			fixed (byte* palptr = palram, ppuptr = ppumem)
-			fixed (int* finalpal = _ppu.GetPalette())
+			fixed (byte* palPtr = palRam, ppuPtr = ppuMem)
+			fixed (int* finalPal = _ppu.GetPalette())
 			{
-				byte* chrptr = ppuptr + (_ppu.BGBaseHigh ? 0x1000 : 0);
-				DrawNT(dst, pitch, palptr, ppuptr + 0x2000, chrptr, finalpal);
-				DrawNT(dst + 256, pitch, palptr, ppuptr + 0x2400, chrptr, finalpal);
+				byte* chrPtr = ppuPtr + (_ppu.BGBaseHigh ? 0x1000 : 0);
+				DrawNT(dst, pitch, palPtr, ppuPtr + 0x2000, chrPtr, finalPal);
+				DrawNT(dst + 256, pitch, palPtr, ppuPtr + 0x2400, chrPtr, finalPal);
 				dst += pitch * 240;
-				DrawNT(dst, pitch, palptr, ppuptr + 0x2800, chrptr, finalpal);
-				DrawNT(dst + 256, pitch, palptr, ppuptr + 0x2c00, chrptr, finalpal);
+				DrawNT(dst, pitch, palPtr, ppuPtr + 0x2800, chrPtr, finalPal);
+				DrawNT(dst + 256, pitch, palPtr, ppuPtr + 0x2c00, chrPtr, finalPal);
 			}
 		}
 
-		private unsafe void DrawNT(int* dst, int pitch, byte* palram, byte* nt, byte* chr, int* finalpal)
+		private unsafe void DrawNT(int* dst, int pitch, byte* palRam, byte* nt, byte* chr, int* finalPal)
 		{
 			byte* at = nt + 0x3c0;
 
@@ -120,10 +120,10 @@ namespace BizHawk.Client.EmuHawk
 					byte a = at[ty >> 2 << 3 | tx >> 2];
 					a >>= tx & 2;
 					a >>= (ty & 2) << 1;
-					int palnum = a & 3;
+					int palNum = a & 3;
 
-					int tileaddr = t << 4;
-					DrawTile(dst, pitch, palram + palnum * 4, chr + tileaddr, finalpal);
+					int tileAddr = t << 4;
+					DrawTile(dst, pitch, palRam + palNum * 4, chr + tileAddr, finalPal);
 					dst += 8;
 				}
 				dst -= 256;
@@ -131,20 +131,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private unsafe void DrawExNT(int* dst, int pitch, byte* palram, byte* nt, byte* exnt, byte* chr, int chr_mask, int* finalpal)
+		private unsafe void DrawExNT(int* dst, int pitch, byte* palRam, byte* nt, byte* exNt, byte* chr, int chrMask, int* finalPal)
 		{
 			for (int ty = 0; ty < 30; ty++)
 			{
 				for (int tx = 0; tx < 32; tx++)
 				{
 					byte t = *nt++;
-					byte ex = *exnt++;
+					byte ex = *exNt++;
 
-					int tilenum = t | (ex & 0x3f) << 8;
-					int palnum = ex >> 6;
+					int tileNum = t | (ex & 0x3f) << 8;
+					int palNum = ex >> 6;
 
-					int tileaddr = tilenum << 4 & chr_mask;
-					DrawTile(dst, pitch, palram + palnum * 4, chr + tileaddr, finalpal);
+					int tileAddr = tileNum << 4 & chrMask;
+					DrawTile(dst, pitch, palRam + palNum * 4, chr + tileAddr, finalPal);
 					dst += 8;
 				}
 				dst -= 256;
@@ -164,30 +164,30 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var bmpdata = NameTableView.Nametables.LockBits(
+			var bmpData = NameTableView.Nametables.LockBits(
 				new Rectangle(0, 0, 512, 480),
 				ImageLockMode.WriteOnly,
 				PixelFormat.Format32bppArgb);
 
-			var dptr = (int*)bmpdata.Scan0.ToPointer();
-			var pitch = bmpdata.Stride / 4;
+			var dPtr = (int*)bmpData.Scan0.ToPointer();
+			var pitch = bmpData.Stride / 4;
 
 			// Buffer all the data from the ppu, because it will be read multiple times and that is slow
 			var ppuBuffer = _ppu.GetPPUBus();
 
-			var palram = _ppu.GetPalRam();
+			var palRam = _ppu.GetPalRam();
 
 			if (_ppu.ExActive)
 			{
-				byte[] exram = _ppu.GetExRam();
-				GenerateExAttr(dptr, pitch, palram, ppuBuffer, exram);
+				byte[] exRam = _ppu.GetExRam();
+				GenerateExAttr(dPtr, pitch, palRam, ppuBuffer, exRam);
 			}
 			else
 			{
-				GenerateAttr(dptr, pitch, palram, ppuBuffer);
+				GenerateAttr(dPtr, pitch, palRam, ppuBuffer);
 			}
 
-			NameTableView.Nametables.UnlockBits(bmpdata);
+			NameTableView.Nametables.UnlockBits(bmpData);
 			NameTableView.Refresh();
 		}
 
@@ -239,11 +239,11 @@ namespace BizHawk.Client.EmuHawk
 			_ppu?.RemoveCallback1();
 		}
 
-		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)
+		private void ScanlineTextBox_TextChanged(object sender, EventArgs e)
 		{
-			if (int.TryParse(txtScanline.Text, out scanline))
+			if (int.TryParse(txtScanline.Text, out _scanline))
 			{
-				_ppu.InstallCallback1(() => Generate(), scanline);
+				_ppu.InstallCallback1(() => Generate(), _scanline);
 			}
 		}
 
@@ -277,12 +277,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NameTableView_MouseMove(object sender, MouseEventArgs e)
 		{
-			int TileX, TileY, NameTable;
+			int tileX, tileY, nameTable;
 			if (NameTableView.Which == NameTableViewer.WhichNametable.NT_ALL)
 			{
-				TileX = e.X / 8;
-				TileY = e.Y / 8;
-				NameTable = (TileX / 32) + ((TileY / 30) * 2);
+				tileX = e.X / 8;
+				tileY = e.Y / 8;
+				nameTable = (tileX / 32) + ((tileY / 30) * 2);
 			}
 			else
 			{
@@ -290,44 +290,44 @@ namespace BizHawk.Client.EmuHawk
 				{
 					default:
 					case NameTableViewer.WhichNametable.NT_2000:
-						NameTable = 0;
+						nameTable = 0;
 						break;
 					case NameTableViewer.WhichNametable.NT_2400:
-						NameTable = 1;
+						nameTable = 1;
 						break;
 					case NameTableViewer.WhichNametable.NT_2800:
-						NameTable = 2;
+						nameTable = 2;
 						break;
 					case NameTableViewer.WhichNametable.NT_2C00:
-						NameTable = 3;
+						nameTable = 3;
 						break;
 				}
 
-				TileX = e.X / 16;
-				TileY = e.Y / 16;
+				tileX = e.X / 16;
+				tileY = e.Y / 16;
 			}
 
-			XYLabel.Text = $"{TileX} : {TileY}";
-			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
-			PPUAddressLabel.Text = $"{PPUAddress:X4}";
-			int TileID = _ppu.PeekPPU(PPUAddress);
-			TileIDLabel.Text = $"{TileID:X2}";
-			TableLabel.Text = NameTable.ToString();
+			XYLabel.Text = $"{tileX} : {tileY}";
+			int ppuAddress = 0x2000 + (nameTable * 0x400) + ((tileY % 30) * 32) + (tileX % 32);
+			PPUAddressLabel.Text = $"{ppuAddress:X4}";
+			int tileID = _ppu.PeekPPU(ppuAddress);
+			TileIDLabel.Text = $"{tileID:X2}";
+			TableLabel.Text = nameTable.ToString();
 
-			int ytable = 0, yline = 0;
+			int yTable = 0, yLine = 0;
 			if (e.Y >= 240)
 			{
-				ytable += 2;
-				yline = 240;
+				yTable += 2;
+				yLine = 240;
 			}
-			int table = (e.X >> 8) + ytable;
-			int ntaddr = (table << 10);
+			int table = (e.X >> 8) + yTable;
+			int ntAddr = (table << 10);
 			int px = e.X & 255;
-			int py = e.Y - yline;
+			int py = e.Y - yLine;
 			int tx = px >> 3;
 			int ty = py >> 3;
-			int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-			int at = _ppu.PeekPPU(atbyte_ptr + 0x2000);
+			int atBytePtr = ntAddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
+			int at = _ppu.PeekPPU(atBytePtr + 0x2000);
 			if ((ty & 2) != 0) at >>= 4;
 			if ((tx & 2) != 0) at >>= 2;
 			at &= 0x03;

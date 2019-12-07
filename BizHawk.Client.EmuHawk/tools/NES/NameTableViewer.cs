@@ -12,15 +12,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Bitmap Nametables;
 
-		private readonly Size pSize;
-
 		public NameTableViewer()
 		{
-			pSize = new Size(512, 480);
+			var pSize = new Size(512, 480);
 			Nametables = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			SetStyle(ControlStyles.Opaque, true);
 			Size = new Size(256, 224);
@@ -84,36 +82,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			using (Bitmap b = new Bitmap(Width, Height))
+			using Bitmap b = new Bitmap(Width, Height);
+			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+			switch (extension)
 			{
-				Rectangle rect = new Rectangle(new Point(0, 0), Size);
-				DrawToBitmap(b, rect);
-
-				ImageFormat i;
-				string extension = file.Extension.ToUpper();
-				switch (extension)
-				{
-					default:
-					case ".PNG":
-						i = ImageFormat.Png;
-						break;
-					case ".BMP":
-						i = ImageFormat.Bmp;
-						break;
-				}
-
-				b.Save(file.FullName, i);
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
 			}
+
+			b.Save(file.FullName, i);
 		}
 
 		public void ScreenshotToClipboard()
 		{
-			using(var b = new Bitmap(Width, Height))
-			{
-				Rectangle rect = new Rectangle(new Point(0, 0), Size);
-				DrawToBitmap(b, rect);
-				Clipboard.SetImage(b);
-			}
+			using var b = new Bitmap(Width, Height);
+			var rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+			Clipboard.SetImage(b);
 		}
 	}
 }

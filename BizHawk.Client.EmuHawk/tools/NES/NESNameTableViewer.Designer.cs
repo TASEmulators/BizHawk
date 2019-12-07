@@ -184,7 +184,7 @@
 			this.txtScanline.Size = new System.Drawing.Size(60, 20);
 			this.txtScanline.TabIndex = 2;
 			this.txtScanline.Text = "0";
-			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextbox_TextChanged);
+			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextBox_TextChanged);
 			// 
 			// rbNametableNW
 			// 
