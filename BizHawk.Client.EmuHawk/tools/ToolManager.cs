@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			if (Global.Config.SuppressAskSave) // User has elected to not be nagged
 			{
 				return true;
 			}
@@ -559,7 +559,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool</typeparam>
 		public bool AskSave<T>() where T : IToolForm
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			if (Global.Config.SuppressAskSave) // User has elected to not be nagged
 			{
 				return true;
 			}

@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
 			AcceptBackgroundInputControllerOnlyCheckBox.Checked = Global.Config.AcceptBackgroundInputControllerOnly;
 			HandleAlternateKeyboardLayoutsCheckBox.Checked = Global.Config.HandleAlternateKeyboardLayouts;
-			NeverAskSaveCheckbox.Checked = Global.Config.SupressAskSave;
+			NeverAskSaveCheckbox.Checked = Global.Config.SuppressAskSave;
 			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
 
 			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
@@ -87,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
 			Global.Config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
 			Global.Config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
-			Global.Config.SupressAskSave = NeverAskSaveCheckbox.Checked;
+			Global.Config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
 			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;

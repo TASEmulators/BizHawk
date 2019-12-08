@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
-		public bool SupressAskSave = false;
+		public bool SuppressAskSave = false;
 		public bool AVI_CaptureOSD = false;
 		public bool Screenshot_CaptureOSD = false;
 		public bool FirstBoot = true;
