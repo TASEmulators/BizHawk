@@ -4293,8 +4293,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.SelectSlot(slot);
-					return;
+					var handled = Master.SelectSlot(slot);
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				Global.Config.SaveSlot = slot;
@@ -4309,8 +4312,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.PreviousSlot();
-					return;
+					var handled = Master.PreviousSlot();
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				if (Global.Config.SaveSlot == 0)
@@ -4337,8 +4343,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.NextSlot();
-					return;
+					var handled = Master.NextSlot();
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				if (Global.Config.SaveSlot >= 9)

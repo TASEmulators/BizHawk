@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger : IControlMainform
 	{
-		public bool WantsToControlSavestates { get { return false; } }
+		public bool WantsToControlSavestates => false;
 
 		public void SaveState() { }
 		public void LoadState() { }
@@ -15,22 +10,22 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadStateAs() { }
 		public void SaveQuickSave(int slot) { }
 		public void LoadQuickSave(int slot) { }
-		public void SelectSlot(int slot) { }
-		public void PreviousSlot() { }
-		public void NextSlot() { }
+		public bool SelectSlot(int slot) => false;
+		public bool PreviousSlot() => false;
+		public bool NextSlot() => false;
 
-		public bool WantsToControlReadOnly { get { return false; } }
+		public bool WantsToControlReadOnly => false;
 		public void ToggleReadOnly() { }
 
-		public bool WantsToControlStopMovie { get { return false; } }
-		public void StopMovie(bool supressSave) { }
+		public bool WantsToControlStopMovie => false;
+		public void StopMovie(bool suppressSave) { }
 
 		// TODO: We probably want to do this
-		public bool WantsToControlRewind { get { return false; } }
+		public bool WantsToControlRewind => false;
 		public void CaptureRewind() { }
-		public bool Rewind() { return false; }
+		public bool Rewind() => false;
 
-		public bool WantsToControlRestartMovie { get { return false; } }
+		public bool WantsToControlRestartMovie => false;
 		public void RestartMovie() { }
 
 		// TODO: We want to prevent movies and probably other things

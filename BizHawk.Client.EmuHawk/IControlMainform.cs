@@ -10,9 +10,15 @@
 		void LoadStateAs();
 		void SaveQuickSave(int slot);
 		void LoadQuickSave(int slot);
-		void SelectSlot(int slot);
-		void PreviousSlot();
-		void NextSlot();
+
+		/// <summary>
+		/// Overrides the select slot method
+		/// </summary>
+		/// <returns>Returns whether the function is handled.
+		/// If false, the mainform should continue with its logic</returns>
+		bool SelectSlot(int slot);
+		bool PreviousSlot();
+		bool NextSlot();
 
 		bool WantsToControlReadOnly { get; }
 
@@ -31,7 +37,7 @@
 		/// Should not be called directly.
 		/// <remarks>Like MainForm's StopMovie(), saving the movie is part of this function's responsibility.</remarks>
 		/// </summary>
-		void StopMovie(bool supressSave);
+		void StopMovie(bool suppressSave);
 
 		bool WantsToControlRewind { get; }
 
