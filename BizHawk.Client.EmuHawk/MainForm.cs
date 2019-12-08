@@ -18,7 +18,6 @@ using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -245,17 +244,15 @@ namespace BizHawk.Client.EmuHawk
 				string xmlPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
 				string x7zPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
 				bool loadXml = File.Exists(xmlPath);
-				using (var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath))
+				using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
+				if (!loadXml)
 				{
-					if (!loadXml)
-					{
-						nesCartFile.BindFirst();
-					}
-
-					return nesCartFile
-						.GetStream()
-						.ReadAllBytes();
+					nesCartFile.BindFirst();
 				}
+
+				return nesCartFile
+					.GetStream()
+					.ReadAllBytes();
 			};
 			try
 			{
@@ -413,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// If user picked a game, then do the commandline logic
-				if (!Global.Game.IsNullInstance)
+				if (!Global.Game.IsNullInstance())
 				{
 					var movie = MovieService.Get(_argParser.cmdMovie);
 					Global.MovieSession.ReadOnly = true;
@@ -440,13 +437,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
 			{
-				if (Global.Game.IsNullInstance)
+				if (Global.Game.IsNullInstance())
 				{
 					OpenRom();
 				}
 
 				// If user picked a game, then do the autoload logic
-				if (!Global.Game.IsNullInstance)
+				if (!Global.Game.IsNullInstance())
 				{
 					if (File.Exists(Global.Config.RecentMovies.MostRecent))
 					{
@@ -464,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = true;
 			}
 
-			if (!Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance())
 			{
 				if (_argParser.cmdLoadState != null)
 				{
@@ -1786,7 +1783,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HandlePlatformMenus()
 		{
 			var system = "";
-			if (!Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance())
 			{
 				system = Emulator.SystemId;
 			}
@@ -3015,7 +3012,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
-				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
+				bool newFrame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -3054,12 +3051,12 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi && new_frame && !InvisibleEmulation)
+				if (!PauseAvi && newFrame && !InvisibleEmulation)
 				{
 					AvFrameAdvance();
 				}
 
-				if (new_frame)
+				if (newFrame)
 				{
 					_framesSinceLastFpsUpdate++;
 
@@ -4169,8 +4166,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool handled;
-			ClientApi.OnBeforeQuickSave(this, quickSlotName, out handled);
+			ClientApi.OnBeforeQuickSave(this, quickSlotName, out var handled);
 			if (handled)
 			{
 				return;
@@ -4244,7 +4240,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
-				SaveState(sfd.FileName, sfd.FileName, false);
+				SaveState(sfd.FileName, sfd.FileName);
 			}
 
 			if (GlobalWin.Tools.IsLoaded<TAStudio>())
