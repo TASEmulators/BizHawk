@@ -45,7 +45,14 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
+			SetupColumns();
+			BranchView.QueryItemText += QueryItemText;
+			BranchView.QueryItemBkColor += QueryItemBkColor;
+		}
 
+		private void SetupColumns()
+		{
+			BranchView.AllColumns.Clear();
 			BranchView.AllColumns.AddRange(new[]
 			{
 				new RollColumn
@@ -67,9 +74,6 @@ namespace BizHawk.Client.EmuHawk
 					Width = 90
 				},
 			});
-
-			BranchView.QueryItemText += QueryItemText;
-			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
 		#region Query callbacks
@@ -515,8 +519,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			BranchView.DeselectAll();
 			BranchView.RowCount = Movie.Branches.Count;
+
+			if (BranchView.RowCount == 0)
+			{
+				SetupColumns();
+			}
+
 			BranchView.Refresh();
 		}
 

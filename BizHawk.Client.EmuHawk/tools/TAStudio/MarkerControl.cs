@@ -18,7 +18,14 @@ namespace BizHawk.Client.EmuHawk
 		public MarkerControl()
 		{
 			InitializeComponent();
+			SetupColumns();
+			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
+			MarkerView.QueryItemText += MarkerView_QueryItemText;
+		}
 
+		private void SetupColumns()
+		{
+			MarkerView.AllColumns.Clear();
 			MarkerView.AllColumns.AddRange(new[]
 			{
 				new RollColumn
@@ -34,9 +41,6 @@ namespace BizHawk.Client.EmuHawk
 					Width = 125
 				}
 			});
-
-			MarkerView.QueryItemBkColor += MarkerView_QueryItemBkColor;
-			MarkerView.QueryItemText += MarkerView_QueryItemText;
 		}
 
 		public InputRoll MarkerInputRoll => MarkerView;
@@ -255,7 +259,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			MarkerView.DeselectAll();
+			SetupColumns();
+			MarkerView.RowCount = Markers.Count;
 			MarkerView.Refresh();
 		}
 
