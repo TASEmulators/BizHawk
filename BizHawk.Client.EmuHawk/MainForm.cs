@@ -2484,31 +2484,47 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private Color SlotForeColor(int slot)
+		{
+			return _stateSlots.HasSlot(slot)
+				? Global.Config.SaveSlot == slot
+					? SystemColors.HighlightText
+					: SystemColors.WindowText
+				: SystemColors.GrayText;
+		}
+
+		private Color SlotBackColor(int slot)
+		{
+			return  Global.Config.SaveSlot == slot
+				? SystemColors.Highlight
+				: SystemColors.Control;
+		}
+
 		private void UpdateStatusSlots()
 		{
 			_stateSlots.Update();
 
-			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Global.Config.SaveSlot == 0 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Global.Config.SaveSlot == 1 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Global.Config.SaveSlot == 2 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Global.Config.SaveSlot == 3 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Global.Config.SaveSlot == 4 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Global.Config.SaveSlot == 5 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Global.Config.SaveSlot == 6 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Global.Config.SaveSlot == 7 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Global.Config.SaveSlot == 8 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Global.Config.SaveSlot == 9 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot0StatusButton.ForeColor = SlotForeColor(0);
+			Slot1StatusButton.ForeColor = SlotForeColor(1);
+			Slot2StatusButton.ForeColor = SlotForeColor(2);
+			Slot3StatusButton.ForeColor = SlotForeColor(3);
+			Slot4StatusButton.ForeColor = SlotForeColor(4);
+			Slot5StatusButton.ForeColor = SlotForeColor(5);
+			Slot6StatusButton.ForeColor = SlotForeColor(6);
+			Slot7StatusButton.ForeColor = SlotForeColor(7);
+			Slot8StatusButton.ForeColor = SlotForeColor(8);
+			Slot9StatusButton.ForeColor = SlotForeColor(9);
 
-			Slot0StatusButton.BackColor = Global.Config.SaveSlot == 0 ? SystemColors.Highlight : SystemColors.Control;
-			Slot1StatusButton.BackColor = Global.Config.SaveSlot == 1 ? SystemColors.Highlight : SystemColors.Control;
-			Slot2StatusButton.BackColor = Global.Config.SaveSlot == 2 ? SystemColors.Highlight : SystemColors.Control;
-			Slot3StatusButton.BackColor = Global.Config.SaveSlot == 3 ? SystemColors.Highlight : SystemColors.Control;
-			Slot4StatusButton.BackColor = Global.Config.SaveSlot == 4 ? SystemColors.Highlight : SystemColors.Control;
-			Slot5StatusButton.BackColor = Global.Config.SaveSlot == 5 ? SystemColors.Highlight : SystemColors.Control;
-			Slot6StatusButton.BackColor = Global.Config.SaveSlot == 6 ? SystemColors.Highlight : SystemColors.Control;
-			Slot7StatusButton.BackColor = Global.Config.SaveSlot == 7 ? SystemColors.Highlight : SystemColors.Control;
-			Slot8StatusButton.BackColor = Global.Config.SaveSlot == 8 ? SystemColors.Highlight : SystemColors.Control;
-			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.Highlight : SystemColors.Control;
+			Slot0StatusButton.BackColor = SlotBackColor(0);
+			Slot1StatusButton.BackColor = SlotBackColor(1);
+			Slot2StatusButton.BackColor = SlotBackColor(2);
+			Slot3StatusButton.BackColor = SlotBackColor(3);
+			Slot4StatusButton.BackColor = SlotBackColor(4);
+			Slot5StatusButton.BackColor = SlotBackColor(5);
+			Slot6StatusButton.BackColor = SlotBackColor(6);
+			Slot7StatusButton.BackColor = SlotBackColor(7);
+			Slot8StatusButton.BackColor = SlotBackColor(8);
+			Slot9StatusButton.BackColor = SlotBackColor(9);
 
 			SaveSlotsStatusLabel.Visible =
 				Slot0StatusButton.Visible =

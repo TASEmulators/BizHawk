@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -36,20 +35,6 @@ namespace BizHawk.Client.Common
 				}
 
 				_slots[i] = file.Exists;
-			}
-		}
-
-		public bool HasSavestateSlots
-		{
-			get
-			{
-				if (!Global.Emulator.HasSavestates())
-				{
-					return false;
-				}
-
-				Update();
-				return _slots.Any(slot => slot);
 			}
 		}
 
