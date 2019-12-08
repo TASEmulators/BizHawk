@@ -2500,7 +2500,7 @@ namespace BizHawk.Client.EmuHawk
 				: SystemColors.Control;
 		}
 
-		private void UpdateStatusSlots()
+		public void UpdateStatusSlots()
 		{
 			_stateSlots.Update();
 

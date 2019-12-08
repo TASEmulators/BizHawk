@@ -19,6 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
 
 		private TasMovie Movie => Tastudio.CurrentTasMovie;
+		private MainForm MainForm => GlobalWin.MainForm; // TODO: pass this in
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
 
@@ -144,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
+			MainForm.UpdateStatusSlots();
 		}
 
 		public TasBranch SelectedBranch => BranchView.AnyRowsSelected
@@ -157,8 +159,8 @@ namespace BizHawk.Client.EmuHawk
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.CloneInput(),
-				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
-				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
+				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
+				OSDFrameBuffer = MainForm.CaptureOSD(),
 				ChangeLog = new TasMovieChangeLog(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
@@ -183,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Movie.Truncate(branch.Frame);
 
-			GlobalWin.MainForm.PauseOnFrame = null;
+			MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
 
@@ -343,6 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			RemovedCallback?.Invoke(index);
 			Tastudio.RefreshDialog();
 			GlobalWin.OSD.AddMessage($"Removed branch {index}");
+			MainForm.UpdateStatusSlots();
 		}
 
 		private void UndoBranchToolStripMenuItem_Click(object sender, EventArgs e)
