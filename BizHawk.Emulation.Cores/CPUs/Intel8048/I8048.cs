@@ -87,6 +87,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort DEA = 77;
 		public const ushort RD_P = 78;
 		public const ushort WR_P = 79;
+		public const ushort EM = 80;
+		public const ushort DM = 81;
 
 		public I8048()
 		{
@@ -322,10 +324,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					MB = 1 << 11;
 					break;
 				case SEL_RB0:
-					RB = 0;
+					FlagBS = false; // register bank also changed here
 					break;
 				case SEL_RB1:
-					RB = 24;
+					FlagBS = true; // register bank also changed here
 					break;
 				case INC_RAM:
 					reg_d_ad = cur_instr[instr_pntr++];
@@ -431,21 +433,37 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					WritePort(reg_d_ad, (byte)Regs[reg_l_ad]);
 					Regs[PX + reg_d_ad] = Regs[reg_l_ad];
 					break;
+				case EM:
+					INT_MSTR = true;
+					break;
+				case DM:
+					INT_MSTR = false;
+					break;
 			}
 
 			if (++irq_pntr == IRQS)
 			{
 				// then regular IRQ				
-				if ((IRQPending && IntEn) | (TIRQPending && TimIntEn))
+				if (IRQPending && IntEn && INT_MSTR)
 				{
 					IRQPending = false;
 
 					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====IRQ====", RegisterInfo = "" }); }
 
-					IRQ_();
+					IRQ_(0);
 					IRQCallback();
 					instr_pntr = irq_pntr = 0;
-				}				
+				}
+				else if (TIRQPending && TimIntEn && INT_MSTR)
+				{
+					TIRQPending = false;
+
+					if (TraceCallback != null) { TraceCallback(new TraceInfo { Disassembly = "====TIRQ====", RegisterInfo = "" }); }
+
+					IRQ_(1);
+					IRQCallback();
+					instr_pntr = irq_pntr = 0;
+				}
 				// otherwise start the next instruction
 				else
 				{
@@ -569,6 +587,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(TimIntEn), ref TimIntEn);
 			ser.Sync(nameof(IRQPending), ref IRQPending);
 			ser.Sync(nameof(TIRQPending), ref TIRQPending);
+			ser.Sync(nameof(INT_MSTR), ref INT_MSTR);
 
 			ser.Sync(nameof(instr_pntr), ref instr_pntr);
 			ser.Sync(nameof(cur_instr), ref cur_instr, false);

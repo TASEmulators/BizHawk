@@ -69,7 +69,20 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public bool FlagBS
 		{
 			get { return (Regs[PSW] & 0x10) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x10) | (value ? 0x10 : 0x00)); }
+			set
+			{
+				// change register bank also
+				Regs[PSW] = (byte)((Regs[PSW] & ~0x10) | (value ? 0x10 : 0x00));
+				if (value & 0x10 > 0)
+				{
+					RB = 24;
+				}
+				else
+				{
+					RB = 0;
+				}
+
+			}
 		}
 
 		public bool FlagF0

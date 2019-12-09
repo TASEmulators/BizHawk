@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			if (addr < 0x8000)
 			{
-				return Core._rom[addr];
+				return Core._rom[addr & (Core._rom.Length - 1)];
 			}
 			else
 			{

@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							PULL,
-							IDLE,
+							EM,
 							IDLE,
 							IDLE,
 							IDLE);

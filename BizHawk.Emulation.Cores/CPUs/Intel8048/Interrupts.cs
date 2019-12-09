@@ -4,23 +4,35 @@ namespace BizHawk.Emulation.Common.Components.I8048
 {
 	public partial class I8048
 	{
-		private void IRQ_()
+		private void IRQ_(ushort src)
 		{
-			Regs[ADDR] = 0xFFF8;
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IDLE,
-							RD_INC, ALU, ADDR,
-							RD_INC, ALU2, ADDR,
-							SET_ADDR, PC, ALU, ALU2);
+			if (src == 0)
+			{
+				Regs[ALU] = 0x0003;
+			}
+			else
+			{
+				Regs[ALU] = 0x0007;
+			}
 
-			IRQS = 19;
+			PopulateCURINSTR(DM,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							PUSH,
+							IDLE,
+							SET_ADDR, PC, ALU, 0);
+
+			IRQS = 9;
 		}
 
 		public bool IRQPending;
 		public bool TIRQPending;
 		public bool IntEn;
 		public bool TimIntEn;
+		public bool INT_MSTR;
 
 		public Action IRQCallback = delegate () { };
 
@@ -28,6 +40,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			IntEn = false;
 			TimIntEn = false;
+			INT_MSTR = true;
 		}
 	}
 }

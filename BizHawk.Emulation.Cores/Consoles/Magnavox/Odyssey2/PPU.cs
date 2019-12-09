@@ -112,6 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA0)
 			{
 				VDC_ctrl = value;
+				Console.WriteLine(value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA1)
 			{
@@ -136,13 +137,16 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			cycle++;
 
 			// drawing cycles
-			if ((cycle >= 43) && !VBL)
+			if (cycle >= 43)
 			{
 				if (cycle == 43)
 				{
 					HBL = false;
 					// trigger timer tick if enabled
 					if (Core.cpu.counter_en) { Core.cpu.T1 = false; }
+					//if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
+					Core.cpu.IRQPending = false;
+					if (LY == 0) { VDC_status |= 0x08; }
 				}
 			}
 
@@ -151,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				cycle = 0;
 				HBL = true;
-				if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = true;}
+				
 
 				// trigger timer tick if enabled
 				if (Core.cpu.counter_en) { Core.cpu.T1 = true; }
@@ -162,9 +166,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					LY = 0;
 					HBL = false;
 					VBL = true;
+					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = true; }
 				}
 
 				if (LY == 22) { VBL = false; }
+				if (LY == 1) { VDC_status &= 0xF7; }
 			}
 		}
 
@@ -266,6 +272,27 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x00, 0x00, 0x00, 0x01, 0x38, 0xFF, 0x7E, // (boat 2)		0x3E
 															0x00, 0x00, 0x00, 0x54, 0x54, 0xFF, 0x7E, // (boat 3 unk)	0x3F
 															};
+
+		public static readonly uint[] Color_Palette =
+		{
+			0xFF006D07, //green
+			0xFF56C469, // light green
+			0xFF2AAABE, // blue-green
+			0xFF77E6EB, // light blue-green
+			0xFF1A37BE, // blue
+			0xFF5C80F6, // light blue
+			0xFF94309F, // violet
+			0xFFDC84D4, // light violet
+			0xFF790000, // red
+			0xFFC75151, // light red
+			0xFF77670B, // yellow
+			0xFFC6B869, // light yellow
+			0xFF676767, // grey
+			0xFFCECECE, // light grey
+			0xFF000000, // black
+			0xFFFFFFFF, // white
+
+		};
 
 
 		public void SyncState(Serializer ser)
