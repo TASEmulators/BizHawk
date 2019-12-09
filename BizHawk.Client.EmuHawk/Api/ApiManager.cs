@@ -17,28 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		private static ApiContainer container;
 		private static void Register(IEmulatorServiceProvider serviceProvider)
 		{
-			// Register external apis
-			var apis = Assembly
-				.Load("BizHawk.Client.ApiHawk")
-				.GetTypes()
-				.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
-				.Concat(Assembly
-					.GetAssembly(typeof(ApiContainer))
-					.GetTypes()
-					.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-					.Where(t => t.IsSealed)
-					.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)))
-				.Concat(Assembly
-					 .Load("BizHawk.Client.Common")
-					 .GetTypes()
-					 .Where(t => typeof(IExternalApi).IsAssignableFrom(t))
-					 .Where(t => t.IsSealed)
-					 .Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
-
-
-			foreach (var api in apis)
+			foreach (var api in Assembly.Load("BizHawk.Client.Common").GetTypes()
+				.Concat(Assembly.Load("BizHawk.Client.ApiHawk").GetTypes())
+				.Concat(Assembly.GetAssembly(typeof(ApiContainer)).GetTypes())
+				.Where(t => typeof(IExternalApi).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				var instance = (IExternalApi)Activator.CreateInstance(api);
 				ServiceInjector.UpdateServices(serviceProvider, instance);
