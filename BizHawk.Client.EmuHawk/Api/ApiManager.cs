@@ -29,7 +29,14 @@ namespace BizHawk.Client.EmuHawk
 					.GetTypes()
 					.Where(t => typeof(IExternalApi).IsAssignableFrom(t))
 					.Where(t => t.IsSealed)
-					.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
+					.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)))
+				.Concat(Assembly
+					 .Load("BizHawk.Client.Common")
+					 .GetTypes()
+					 .Where(t => typeof(IExternalApi).IsAssignableFrom(t))
+					 .Where(t => t.IsSealed)
+					 .Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
+
 
 			foreach (var api in apis)
 			{
