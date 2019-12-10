@@ -370,8 +370,8 @@ namespace BizHawk.Client.EmuHawk
 
 				// Gray column box and black line underneath
 				_renderer.FillRectangle(new Rectangle(0, 0, rect.Width, bottomEdge + 1));
-				_renderer.Line(0, 0, TotalColWidth, 0);
-				_renderer.Line(0, bottomEdge, TotalColWidth, bottomEdge);
+				_renderer.Line(0, 0, rect.Width, 0);
+				_renderer.Line(0, bottomEdge, rect.Width, bottomEdge);
 
 				// Vertical black separators
 				foreach (var column in visibleColumns)
@@ -384,7 +384,10 @@ namespace BizHawk.Client.EmuHawk
 				if (visibleColumns.Any())
 				{
 					int right = TotalColWidth - _hBar.Value;
-					_renderer.Line(right, 0, right, bottomEdge);
+					if (right <= rect.Left + rect.Width)
+					{
+						_renderer.Line(right, 0, right, bottomEdge);
+					}
 				}
 			}
 
