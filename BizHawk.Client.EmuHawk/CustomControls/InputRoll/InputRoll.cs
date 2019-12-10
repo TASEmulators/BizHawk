@@ -1533,6 +1533,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecalculateScrollBars();
 			base.OnResize(e);
+			FastDraw();
 		}
 
 		private void OrientationChanged()
