@@ -322,7 +322,6 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(190, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -356,7 +355,6 @@
 			// 
 			this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator22});
-			this.recentMacrosToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.recentMacrosToolStripMenuItem.Name = "recentMacrosToolStripMenuItem";
 			this.recentMacrosToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
@@ -1182,7 +1180,6 @@
 			// 
 			// TASEditorManualOnlineMenuItem
 			// 
-			this.TASEditorManualOnlineMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.TASEditorManualOnlineMenuItem.Name = "TASEditorManualOnlineMenuItem";
 			this.TASEditorManualOnlineMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.TASEditorManualOnlineMenuItem.Text = "TAS Editor Manual Online...";
@@ -1190,7 +1187,6 @@
 			// 
 			// ForumThreadMenuItem
 			// 
-			this.ForumThreadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumThreadMenuItem.Name = "ForumThreadMenuItem";
 			this.ForumThreadMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.ForumThreadMenuItem.Text = "Forum Thread...";
@@ -1594,7 +1590,6 @@
 			this.Controls.Add(this.MainVertialSplit);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(200, 148);

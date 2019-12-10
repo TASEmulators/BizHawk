@@ -114,8 +114,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
+			void SetImages()
+			{
+				RecentSubMenu.Image = Properties.Resources.Recent;
+				recentMacrosToolStripMenuItem.Image = Properties.Resources.Recent;
+				TASEditorManualOnlineMenuItem.Image = Properties.Resources.Help;
+				ForumThreadMenuItem.Image = Properties.Resources.TAStudio;
+
+				Icon = Properties.Resources.TAStudio_MultiSize;
+			}
+
 			Settings = new TAStudioSettings();
 			InitializeComponent();
+			SetImages();
 			InitializeSeekWorker();
 
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
