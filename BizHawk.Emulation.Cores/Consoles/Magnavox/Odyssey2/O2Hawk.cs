@@ -91,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			_frameHz = 60;
 
 			ppu.Core = this;
+			cpu.Core = this;
 			serialport.Core = this;
 
 			ser.Register<IVideoProvider>(this);

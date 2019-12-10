@@ -38,10 +38,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		// the location pointed to by the registers is controlled by the RAM bank
 		public ushort RB = 0;
-		public ushort RAM_ptr = 0;
 
 		// high PC address bit is controlled by instruction bank
-		// only hanges on JMP and CALL instructions
+		// only changes on JMP and CALL instructions
 		public ushort MB = 0;
 
 		//RAM occupies registers 0-63

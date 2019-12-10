@@ -1,5 +1,5 @@
 using System;
-
+using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Common;
 
 // Intel Corp 8048
@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 {
 	public sealed partial class I8048
 	{
+		public O2Hawk Core { get; set; }
+
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
 		public const ushort OP = 1;
@@ -227,7 +229,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case INC11:
 					reg_d_ad = cur_instr[instr_pntr++];
-					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | MB);
+					Regs[ALU2] = (ushort) (Regs[reg_d_ad] & 0x800);
+					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | Regs[ALU2]);
 					break;
 				case INC16:
 					INC16_Func(cur_instr[instr_pntr++]);
@@ -349,7 +352,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[cur_instr[instr_pntr++]] = Regs[A];
 					break;
 				case MOVT_RAM:
-					Regs[Regs[cur_instr[instr_pntr++]]] = Regs[A];
+					Regs[Regs[cur_instr[instr_pntr++]]] = Regs[instr_pntr++];
 					break;
 				case ST_CNT:
 					counter_en = true;
@@ -529,7 +532,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				Disassembly = $"{(disassemble ? Disassemble(Regs[PC], ReadMemory, out notused) : "---")} ".PadRight(50),
 				RegisterInfo = string.Format(
-					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} {11}{12}{13}{14}{15}{16}{17}{18}{19}{20}",
+					"A:{0:X2} R0:{1:X2} R1:{2:X2} R2:{3:X2} R3:{4:X2} R4:{5:X2} R5:{6:X2} R6:{7:X2} R7:{8:X2} PSW:{9:X4} Cy:{10} LY:{11} {12}{13}{14}{15}{16}{17}{18}{19}{20}{21}",
 					Regs[A],
 					Regs[(ushort)(R0 + RB)],
 					Regs[(ushort)(R1 + RB)],
@@ -541,6 +544,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[(ushort)(R7 + RB)],
 					Regs[PSW],
 					TotalExecutedCycles,
+					Core.ppu.LY,
 					FlagC ? "C" : "c",
 					FlagAC ? "A" : "a",
 					FlagF0 ? "F" : "f",
@@ -602,7 +606,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ser.Sync(nameof(timer_prescale), ref timer_prescale);
 
 			ser.Sync(nameof(RB), ref RB);
-			ser.Sync(nameof(RAM_ptr), ref RAM_ptr);
 			ser.Sync(nameof(MB), ref MB);
 			ser.Sync(nameof(Regs), ref Regs, false);
 			

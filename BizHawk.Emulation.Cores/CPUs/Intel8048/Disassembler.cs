@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"RETR", // 93
 			"CALL  4,i8", // 94
 			"COM   F0", // 95
-			"JP    A!=0", // 96
+			"JP    A!=0,i8", // 96
 			"CLR   C", // 97
 			"AND   BUS,i8", // 98
 			"AND   P1,i8", // 99
@@ -184,8 +184,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   R5,A", // ad
 			"MOV   R6,A", // ae
 			"MOV   R7,A", // af
-			"???", // b0
-			"???", // b1
+			"MOV   @R0,i8", // b0
+			"MOV   @R1,i8", // b1
 			"JPB   5,i8", // b2
 			"JPP   A,i8", // b3
 			"CALL  5,i8", // b4

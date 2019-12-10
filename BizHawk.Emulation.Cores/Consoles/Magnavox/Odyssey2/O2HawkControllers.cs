@@ -65,18 +65,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				result -= 128;
 			}
-			if (c.IsPressed(Definition.BoolButtons[5]))
-			{
-				result -= 64;
-			}
-			if (c.IsPressed(Definition.BoolButtons[6]))
-			{
-				result -= 32;
-			}
-			if (c.IsPressed(Definition.BoolButtons[7]))
-			{
-				result -= 16;
-			}
 
 			return result;
 		}

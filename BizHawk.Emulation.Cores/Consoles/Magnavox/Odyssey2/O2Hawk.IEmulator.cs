@@ -73,12 +73,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 				in_vblank_old = in_vblank;
 			}
-
-			if (ppu.clear_screen)
-			{
-				for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = (int)color_palette[0]; }
-				ppu.clear_screen = false;
-			}
 		}
 
 		public void do_single_step()
@@ -158,13 +152,17 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			for (int j = 0; j < frame_buffer.Length; j++) { frame_buffer[j] = _vidbuffer[j]; }
+			for (int j = 0; j < frame_buffer.Length; j++) 
+			{ 
+				frame_buffer[j] = _vidbuffer[j];
+				_vidbuffer[j] = 0;
+			}
 		}
 
-		public int VirtualWidth => 160;
-		public int VirtualHeight => 144;
-		public int BufferWidth => 160;
-		public int BufferHeight => 144;
+		public int VirtualWidth => 186;
+		public int VirtualHeight => 240;
+		public int BufferWidth => 186;
+		public int BufferHeight => 240;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;

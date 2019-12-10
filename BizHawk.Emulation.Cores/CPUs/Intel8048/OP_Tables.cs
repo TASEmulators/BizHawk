@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							oper, (ushort)(reg + RB));
+							oper, (ushort)(reg + RB), A);
 
 			IRQS = 4;
 		}
@@ -66,6 +66,21 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							oper, A, ALU);
 
 			IRQS = 4;
+		}
+
+		public void OP_DIR_IR(ushort oper, ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							RD, ALU, PC,
+							INC11, PC,
+							IDLE,
+							IDLE,
+							IDLE,
+							oper, (ushort)(reg + RB), ALU);
+
+			IRQS = 9;
 		}
 
 		public void IN_OUT_A(ushort oper, ushort port)

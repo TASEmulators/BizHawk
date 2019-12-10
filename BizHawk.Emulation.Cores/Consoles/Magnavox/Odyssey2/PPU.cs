@@ -22,7 +22,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public uint[] OBJ_palette = new uint[32];
 
 		public bool HDMA_active;
-		public bool clear_screen;
 
 		// register variables
 		public byte LCDC;
@@ -96,6 +95,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (addr < 0x10)
 			{
 				Sprites[addr] = value;
+                Console.WriteLine("spr: " + addr + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0x40)
 			{
@@ -145,8 +145,33 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// trigger timer tick if enabled
 					if (Core.cpu.counter_en) { Core.cpu.T1 = false; }
 					//if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
-					Core.cpu.IRQPending = false;
-					if (LY == 0) { VDC_status |= 0x08; }
+					
+					if (LY == 240) { VDC_status |= 0x08; }
+					if (LY == 241) { VDC_status &= 0xF7; }
+				}
+
+				// draw a pixel
+				if (LY < 240)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						if ((Sprites[i * 4] >= LY) && (Sprites[i * 4] < (LY + 8)))
+						{
+							if ((Sprites[i * 4 + 1] >= (cycle - 43)) && (Sprites[i * 4 + 1] < (cycle - 43 + 8)))
+							{
+								// sprite is in drawing region, pick a pixel
+								int offset_y = Sprites[i * 4] - LY;
+								int offset_x = Sprites[i * 4 + 1] - (cycle - 43);
+
+								int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
+
+								if (pixel_pick == 1)
+								{
+									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette[(Sprites[i * 4 + 2] >> 3) & 0x7];
+								}
+							}
+						}
+					}
 				}
 			}
 
@@ -161,16 +186,24 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (Core.cpu.counter_en) { Core.cpu.T1 = true; }
 
 				LY++;
+				if (LY == 240)
+				{
+					VBL = true;
+					Core.in_vblank = true;
+					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = true; }
+				}
+				if (LY == 241)
+				{
+					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
+				}
 				if (LY == 262)
 				{
 					LY = 0;
 					HBL = false;
-					VBL = true;
-					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = true; }
+					VBL = false;
+					Core.in_vblank = false;
+					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
 				}
-
-				if (LY == 22) { VBL = false; }
-				if (LY == 1) { VDC_status &= 0xF7; }
 			}
 		}
 
@@ -310,7 +343,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(BG_palette), ref BG_palette, false);
 			ser.Sync(nameof(OBJ_palette), ref OBJ_palette, false);
 			ser.Sync(nameof(HDMA_active), ref HDMA_active);
-			ser.Sync(nameof(clear_screen), ref clear_screen);
 
 			ser.Sync(nameof(LCDC), ref LCDC);
 			ser.Sync(nameof(STAT), ref STAT);
@@ -373,6 +405,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				case 0xA9: shift_2 = value; break;
 				case 0xAA: aud_ctrl = value; break;
 			}
+
+			Console.WriteLine(aud_ctrl);
 
 		}
 
