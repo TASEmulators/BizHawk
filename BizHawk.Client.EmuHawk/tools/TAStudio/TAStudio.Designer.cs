@@ -481,7 +481,7 @@
 			// SelectBetweenMarkersMenuItem
 			// 
 			this.SelectBetweenMarkersMenuItem.Name = "SelectBetweenMarkersMenuItem";
-			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
 			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
 			this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
