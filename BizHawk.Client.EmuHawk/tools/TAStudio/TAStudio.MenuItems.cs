@@ -1454,6 +1454,11 @@ namespace BizHawk.Client.EmuHawk
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 			CancelSeekContextMenuItem.Enabled = Mainform.PauseOnFrame.HasValue;
 			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Emulator.Frame;
+
+			ClearContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
+			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
+			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;
+			CloneContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clone Frames"].Bindings;
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)

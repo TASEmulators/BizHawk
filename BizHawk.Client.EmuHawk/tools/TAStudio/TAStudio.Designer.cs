@@ -580,8 +580,7 @@
 			// 
 			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
 			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "";
-			this.InsertNumFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.Insert)));
+			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+Ins";
 			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
@@ -1451,7 +1450,6 @@
 			// ClearContextMenuItem
 			// 
 			this.ClearContextMenuItem.Name = "ClearContextMenuItem";
-			this.ClearContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.ClearContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.ClearContextMenuItem.Text = "Clear";
 			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
@@ -1459,7 +1457,6 @@
 			// InsertFrameContextMenuItem
 			// 
 			this.InsertFrameContextMenuItem.Name = "InsertFrameContextMenuItem";
-			this.InsertFrameContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
 			this.InsertFrameContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.InsertFrameContextMenuItem.Text = "Insert";
 			this.InsertFrameContextMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
@@ -1467,7 +1464,6 @@
 			// DeleteFramesContextMenuItem
 			// 
 			this.DeleteFramesContextMenuItem.Name = "DeleteFramesContextMenuItem";
-			this.DeleteFramesContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
 			this.DeleteFramesContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.DeleteFramesContextMenuItem.Text = "Delete";
 			this.DeleteFramesContextMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
@@ -1475,7 +1471,6 @@
 			// CloneContextMenuItem
 			// 
 			this.CloneContextMenuItem.Name = "CloneContextMenuItem";
-			this.CloneContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
 			this.CloneContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.CloneContextMenuItem.Text = "Clone";
 			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
