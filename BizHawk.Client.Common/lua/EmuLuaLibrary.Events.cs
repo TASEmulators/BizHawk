@@ -183,9 +183,9 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core. If no address is given, it will attach to every memory read")]
-		public string OnMemoryExecute(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
+		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core. If is explicitly nil, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core. If the address is explicitly nil, it will attach to every memory read")]
+		public string OnMemoryExecute(LuaFunction luaf, uint? address, string name = null, string domain = null)
 		{
 			try
 			{
