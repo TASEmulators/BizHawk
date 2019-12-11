@@ -64,15 +64,17 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ELFSharp">
-      <HintPath>..\References\ELFSharp.dll</HintPath>
+    <Reference Include="ELFSharp, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../packages/ELFSharp.0.1/lib/net40/ELFSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <HintPath>../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PeNet">
       <HintPath>..\References\PeNet.dll</HintPath>
