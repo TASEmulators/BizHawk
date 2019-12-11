@@ -357,8 +357,14 @@ namespace BizHawk.Client.EmuHawk
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
 
+			UndoMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Undo"].Bindings;
+			RedoMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Redo"].Bindings;
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select between Markers"].Bindings;
+			SelectAllMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select All"].Bindings;
+			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Reselect Clip."].Bindings;
 			ClearFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
 			InsertFrameMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
+			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert # Frames"].Bindings;
 			DeleteFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;
 			CloneFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clone Frames"].Bindings;
 		}
@@ -373,6 +379,11 @@ namespace BizHawk.Client.EmuHawk
 			InsertFrameMenuItem_Click(null, null);
 		}
 
+		public void InsertNumFramesExternal()
+		{
+			InsertNumFramesMenuItem_Click(null, null);
+		}
+
 		public void DeleteFramesExternal()
 		{
 			DeleteFramesMenuItem_Click(null, null);
@@ -381,6 +392,31 @@ namespace BizHawk.Client.EmuHawk
 		public void CloneFramesExternal()
 		{
 			CloneFramesMenuItem_Click(null, null);
+		}
+
+		public void UndoExternal()
+		{
+			UndoMenuItem_Click(null, null);
+		}
+
+		public void RedoExternal()
+		{
+			RedoMenuItem_Click(null, null);
+		}
+
+		public void SelectBetweenMarkersExternal()
+		{
+			SelectBetweenMarkersMenuItem_Click(null, null);
+		}
+
+		public void SelectAllExternal()
+		{
+			SelectAllMenuItem_Click(null, null);
+		}
+
+		public void ReselectClipboardExternal()
+		{
+			ReselectClipboardMenuItem_Click(null, null);
 		}
 
 		private void UndoMenuItem_Click(object sender, EventArgs e)
@@ -1455,6 +1491,8 @@ namespace BizHawk.Client.EmuHawk
 			CancelSeekContextMenuItem.Enabled = Mainform.PauseOnFrame.HasValue;
 			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Emulator.Frame;
 
+			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
+			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert # Frames"].Bindings;
 			ClearContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
 			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
 			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;

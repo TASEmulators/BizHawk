@@ -501,6 +501,61 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					break;
+				case "Undo":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.UndoExternal();
+					}
+					else
+					{
+						return false;
+					}
+
+					break;
+				case "Redo":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.RedoExternal();
+					}
+					else
+					{
+						return false;
+					}
+
+					break;
+				case "Select between Markers":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.SelectBetweenMarkersExternal();
+					}
+					else
+					{
+						return false;
+					}
+					
+					break;
+				case "Select All":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.SelectAllExternal();
+					}
+					else
+					{
+						return false;
+					}
+					
+					break;
+				case "Reselect Clip.":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.SelectAllExternal();
+					}
+					else
+					{
+						return false;
+					}
+					
+					break;
 				case "Clear Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 					{
@@ -522,6 +577,16 @@ namespace BizHawk.Client.EmuHawk
 						return false;
 					}
 
+					break;
+				case "Insert # Frames":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.InsertNumFramesExternal();
+					}
+					else
+					{
+						return false;
+					}
 					break;
 				case "Delete Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())

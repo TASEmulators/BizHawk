@@ -55,13 +55,7 @@ namespace BizHawk.Client.Common
 			return GetEnumerator();
 		}
 
-		public Binding this[string index]
-		{
-			get
-			{
-				return Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
-			}
-		}
+		public Binding this[string index] => Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
 
 		private static Binding Bind(string tabGroup, string displayName, string bindings = "", string defaultBinding = "", string toolTip = "")
 		{
@@ -223,8 +217,14 @@ namespace BizHawk.Client.Common
 						Bind("TAStudio", "Toggle Follow Cursor", "Shift+F"),
 						Bind("TAStudio", "Toggle Auto-Restore", "Shift+R"),
 						Bind("TAStudio", "Toggle Turbo Seek", "Shift+S"),
+						Bind("TAStudio", "Undo", "Ctrl+Z"), // TODO: these are getting not unique enough
+						Bind("TAStudio", "Redo", "Ctrl+Y"),
+						Bind("TAStudio", "Sel. bet. Markers", "Ctrl+A"),
+						Bind("TAStudio", "Select All", "Ctrl+Shift+A"),
+						Bind("TAStudio", "Reselect Clip.", "Ctrl+B"),
 						Bind("TAStudio", "Clear Frames", "Delete"),
 						Bind("TAStudio", "Insert Frame", "Insert"),
+						Bind("TAStudio", "Insert # Frames", "Ctrl+Shift+Insert"),
 						Bind("TAStudio", "Delete Frames", "Ctrl+Delete"),
 						Bind("TAStudio", "Clone Frames", "Ctrl+Insert"),
 						Bind("TAStudio", "Analog Increment", "UpArrow"),
