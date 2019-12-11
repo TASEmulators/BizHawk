@@ -584,7 +584,6 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			}
 
-			SetUpColumns();
 			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
