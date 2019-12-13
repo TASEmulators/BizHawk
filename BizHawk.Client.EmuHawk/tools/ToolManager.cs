@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (newTool is Form form)
 			{
-				form.Owner = GlobalWin.MainForm;
+				form.Owner = _owner;
 			}
 
 			if (isExternal)
@@ -211,12 +211,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
-			var oldsize = form.Size; // this should be the right time to grab this size
+			var oldSize = form.Size; // this should be the right time to grab this size
 			foreach (Control c in form.Controls)
 			{
-				if (c is MenuStrip)
+				if (c is MenuStrip ms)
 				{
-					var ms = c as MenuStrip;
 					foreach (ToolStripMenuItem submenu in ms.Items)
 					{
 						if (submenu.Text.Contains("Settings"))
@@ -318,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				settings.RestoreDefaults();
 				RefreshSettings(form, dest, settings, idx);
-				form.Size = oldsize;
+				form.Size = oldSize;
 
 				form.GetType()
 					.GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
