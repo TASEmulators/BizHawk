@@ -23,6 +23,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -2038,8 +2039,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new A7800ControllerSettings();
-			form.ShowDialog();
+			if (Emulator is A7800Hawk atari7800Hawk)
+			{
+				using var form = new A7800ControllerSettings(this, atari7800Hawk.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -727,6 +727,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public Methods
 
+		public void AddOnScreenMessage(string message)
+		{
+			GlobalWin.OSD.AddMessage(message);
+		}
+
 		public void ClearHolds()
 		{
 			Global.StickyXORAdapter.ClearStickies();
@@ -741,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 		public void FlagNeedsReboot()
 		{
 			RebootStatusBarIcon.Visible = true;
-			GlobalWin.OSD.AddMessage("Core reboot needed for this setting");
+			AddOnScreenMessage("Core reboot needed for this setting");
 		}
 
 		/// <summary>
