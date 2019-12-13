@@ -2365,6 +2365,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// TODO: Get/Put settings/sync settings methods could become a service we instantiate and use and pass to other forms
 		/// <summary>
 		/// send core sync settings to emu, setting reboot flag if needed
 		/// </summary>

@@ -2048,8 +2048,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new A7800FilterSettings();
-			form.ShowDialog();
+			if (Emulator is A7800Hawk atari7800Hawk)
+			{
+				using var form = new A7800FilterSettings(this, atari7800Hawk.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		#endregion
