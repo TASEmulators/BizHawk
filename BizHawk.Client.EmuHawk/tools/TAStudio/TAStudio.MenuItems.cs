@@ -1489,7 +1489,7 @@ namespace BizHawk.Client.EmuHawk
 			StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 			CancelSeekContextMenuItem.Enabled = Mainform.PauseOnFrame.HasValue;
-			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Emulator.Frame;
+			BranchContextMenuItem.Visible = TasView.CurrentCell?.RowIndex == Emulator.Frame;
 
 			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
 			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert # Frames"].Bindings;
