@@ -584,6 +584,13 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			}
 
+			// If we are loading an existing non-default movie, we will already have columns generated
+			// Only set up columns if needed
+			if (!TasView.AllColumns.Any())
+			{
+				SetUpColumns();
+			}
+
 			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
