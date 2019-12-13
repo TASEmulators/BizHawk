@@ -1330,7 +1330,7 @@ namespace BizHawk.Client.EmuHawk
 					TasView.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
-					RefreshTasView();
+					TasView.Refresh();
 					ColumnsSubMenu.ShowDropDown();
 					((ToolStripMenuItem)sender.OwnerItem).ShowDropDown();
 				};
