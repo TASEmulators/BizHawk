@@ -548,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Reselect Clip.":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 					{
-						GlobalWin.Tools.TAStudio.SelectAllExternal();
+						GlobalWin.Tools.TAStudio.ReselectClipboardExternal();
 					}
 					else
 					{
