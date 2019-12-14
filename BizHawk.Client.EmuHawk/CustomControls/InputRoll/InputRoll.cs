@@ -736,9 +736,16 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int halfRow = 0;
-				if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+				if (HorizontalOrientation)
 				{
-					halfRow = 1;
+					halfRow = 1;  // TODO: A more precise calculation, but it really isn't important, you have to be pixel perfect for this to be off by 1 and even then it doesn't look bad because the 1 pixel is the border
+				}
+				else
+				{
+					if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+					{
+						halfRow = 1;
+					}
 				}
 
 				return FirstVisibleRow + VisibleRows - halfRow + CountLagFramesDisplay(VisibleRows - halfRow);
@@ -751,9 +758,16 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				int halfRow = 0;
-				if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+				if (HorizontalOrientation)
 				{
-					halfRow = 1;
+					halfRow = 1; // TODO: A more precise calculation, but it really isn't important, you have to be pixel perfect for this to be off by 1 and even then it doesn't look bad because the 1 pixel is the border
+				}
+				else
+				{
+					if ((_drawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+					{
+						halfRow = 1;
+					}
 				}
 
 				if (LagFramesToHide == 0)
