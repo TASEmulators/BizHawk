@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_autosaveTimer.Stop();
+				_autosaveTimer?.Stop();
 				GlobalWin.Sound.StopSound();
 				MessageStatusLabel.Text = "Saving...";
 				Cursor = Cursors.WaitCursor;
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Save();
 				if (Settings.AutosaveInterval > 0)
 				{
-					_autosaveTimer.Start();
+					_autosaveTimer?.Start();
 				}
 
 				MessageStatusLabel.Text = $"{CurrentTasMovie.Name} saved.";
