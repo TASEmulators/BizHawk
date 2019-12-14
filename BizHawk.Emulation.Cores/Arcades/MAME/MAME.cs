@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>
 	{
-		public MAME(CoreComm comm, string dir, string file, object syncsettings, out string gamename)
+		public MAME(CoreComm comm, string dir, string file, object syncSettings, out string gamename)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
@@ -32,12 +32,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			AsyncLaunchMAME();
 
-			syncSettings = (SyncSettings)syncsettings ?? new SyncSettings();
-			syncSettings.ExpandoSettings = new ExpandoObject();
-			var dynamicObject = (IDictionary<string, object>)syncSettings.ExpandoSettings;
+			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_syncSettings.ExpandoSettings = new ExpandoObject();
+			var dynamicObject = (IDictionary<string, object>)_syncSettings.ExpandoSettings;
 			dynamicObject.Add("OKAY", 1);
 
-			gamename = gameName;
+			gamename = _gameName;
 		}
 
 		#region Properties
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Fields
 
-		private SyncSettings syncSettings;
+		private SyncSettings _syncSettings;
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
-		private string gameName = "Arcade";
+		private string _gameName = "Arcade";
 		private LibMAME.PeriodicCallbackDelegate periodicCallback;
 		private LibMAME.SoundCallbackDelegate soundCallback;
 		private LibMAME.BootCallbackDelegate bootCallback;
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region IEmulator
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			if (exiting)
 			{
@@ -130,22 +130,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		public SyncSettings GetSyncSettings()
 		{
-			return syncSettings.Clone();
+			return _syncSettings.Clone();
 		}
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			bool ret = SyncSettings.NeedsReboot(o, syncSettings);
-			syncSettings = o;
+			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
+			_syncSettings = o;
 			return ret;
 		}
 
 		public class SyncSettings
 		{
-			public SyncSettings()
-			{
-			}
-
 			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
 			{
 				return !DeepEquality.DeepEquals(x, y);
@@ -256,7 +252,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			LibMAME.mame_set_log_callback(logCallback);
 
 			// https://docs.mamedev.org/commandline/commandline-index.html
-			string[] args = new string[] {
+			string[] args =
+			{
 				 "mame"                                // dummy, internally discarded by index, so has to go first
 				, gameFilename                         // no dash for rom names
 				, "-noreadconfig"                      // forbid reading any config files
@@ -266,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				, "-update_in_pause"                   // ^ including frame-advancing
 				, "-rompath",            gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
 				, "-volume",                     "-32" // lowest attenuation means mame osd remains silent
-				, "-output",                 "console" // print everyting to hawk console
+				, "-output",                 "console" // print everything to hawk console
 				, "-samplerate", sampleRate.ToString() // match hawk samplerate
 				, "-video",                     "none" // forbid mame window altogether
 				, "-keyboardprovider",          "none"
@@ -285,7 +282,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void UpdateFramerate()
 		{
 			VsyncNumerator = 1000000000;
-			UInt64 refresh = (UInt64)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
+			long refresh = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetRefresh);
 			VsyncDenominator = (int)(refresh / 1000000000);
 		}
 
@@ -305,8 +302,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			BufferHeight = LibMAME.mame_lua_get_int(MAMELuaCommand.GetHeight);
 			int expectedSize = BufferWidth * BufferHeight;
 			int bytesPerPixel = 4;
-			int lengthInBytes;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetPixels, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{
@@ -356,9 +352,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void CheckVersions()
 		{
-			int lengthInBytes;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetVersion, out lengthInBytes);
-			string MAMEVersion = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetVersion, out var lengthInBytes);
+			string mameVersion = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
 			{
@@ -366,17 +361,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 
 			string version = this.Attributes().PortedVersion;
-			Debug.Assert(version == MAMEVersion,
+			Debug.Assert(version == mameVersion,
 				"MAME versions desync!\n\n" +
-				$"MAME is { MAMEVersion }\n" +
+				$"MAME is { mameVersion }\n" +
 				$"MAMEHawk is { version }");
 		}
 
 		private void UpdateGameName()
 		{
-			int lengthInBytes;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetGameName, out lengthInBytes);
-			gameName = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetGameName, out var lengthInBytes);
+			_gameName = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
 
 			if (!LibMAME.mame_lua_free_string(ptr))
 			{
@@ -445,8 +439,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void MAMESoundCallback()
 		{
 			int bytesPerSample = 2;
-			int lengthInBytes;
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSamples, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{
@@ -507,9 +500,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private void GetInputFields()
 		{
-			int lengthInBytes;
-
-			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out lengthInBytes);
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetInputFields, out var lengthInBytes);
 
 			if (ptr == IntPtr.Zero)
 			{
