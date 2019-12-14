@@ -183,9 +183,9 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core. If is explicitly nil, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
-		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core. If the address is explicitly nil, it will attach to every memory read")]
-		public string OnMemoryExecute(LuaFunction luaf, uint? address, string name = null, string domain = null)
+		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
+		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string domain = null)
 		{
 			try
 			{
@@ -214,6 +214,39 @@ namespace BizHawk.Client.Common
 				return Guid.Empty.ToString();
 			}
 
+			LogMemoryExecuteCallbacksNotImplemented();
+			return Guid.Empty.ToString();
+		}
+
+		[LuaMethodExample("local steveonm = event.onmemoryexecuteany(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
+		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
+		public string OnMemoryExecuteAny(LuaFunction luaf, string name = null, string domain = null)
+		{
+			try
+			{
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true
+					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
+				{
+					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
+					RegisteredFunctions.Add(nlf);
+					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
+						string.IsNullOrWhiteSpace(domain) && Domains?.HasSystemBus == true
+							? Domains.SystemBus.Name
+							: domain,
+						MemoryCallbackType.Execute,
+						"Lua Hook",
+						nlf.MemCallback,
+						null,
+						null
+					));
+					return nlf.Guid.ToString();
+				}
+				// fall through
+			}
+			catch (NotImplementedException)
+			{
+				// fall through
+			}
 			LogMemoryExecuteCallbacksNotImplemented();
 			return Guid.Empty.ToString();
 		}
