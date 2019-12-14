@@ -1160,7 +1160,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "Arcade":
 								string gameName = "";
-								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, out gameName);
+								nextEmulator = new MAME(nextComm, file.Directory, file.CanonicalName, GetCoreSyncSettings<MAME>(), out gameName);
 								rom.GameInfo.Name = gameName;
 								break;
 							case "GEN":
