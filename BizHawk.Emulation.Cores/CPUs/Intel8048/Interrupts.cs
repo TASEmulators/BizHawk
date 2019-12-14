@@ -21,11 +21,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
+							IDLE,
 							PUSH,
 							IDLE,
 							SET_ADDR, PC, ALU, 0);
 
-			IRQS = 9;
+			IRQS = 10;
 		}
 
 		public bool IRQPending;

@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class O2Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, ISettable<O2Hawk.O2Settings, O2Hawk.O2SyncSettings>
 	{
-		public byte input_register;
-
 		// memory domains
 		public byte[] RAM = new byte[0x80];
 
@@ -25,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public int RAM_Bank;
 		public byte addr_latch;
+		public byte kb_byte;
 		public bool ppu_en, RAM_en, kybrd_en, copy_en, lum_en, cart_b0, cart_b1;
 		public const bool P15 = true;
 

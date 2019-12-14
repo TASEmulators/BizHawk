@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							oper, A, port);
 
-			IRQS = 4;
+			IRQS = 9;
 		}
 
 		public void MOV_R(ushort dest, ushort src)
@@ -119,6 +119,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
+							//IDLE);
 							RD_P, A, 0);
 
 			IRQS = 9;

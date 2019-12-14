@@ -78,11 +78,26 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							return 0;
 						}
 					}
-					if (ppu_en && !copy_en)
+					if (ppu_en)
 					{
 						return ppu.ReadReg(addr_latch);
 					}
 
+					// if neither RAM or PPU is enabled, then a RD pulse from instruction IN A,BUS will latch controller
+					// onto the bus, but only if they are enabled correctly using port 2
+					if (kybrd_en)
+					{
+						if ((kb_byte & 7) == 1)
+						{
+							return controller_state_1;
+						}
+						if ((kb_byte & 7) == 0)
+						{
+							return controller_state_2;
+						}
+					}
+
+					Console.WriteLine(cpu.TotalExecutedCycles);
 					// not sure what happens if this case is reached, probably whatever the last value on the bus is
 					return 0;
 				}
@@ -128,11 +143,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							// voice module goes here
 						}
 					}
+
 					if (ppu_en)
 					{
 						ppu.WriteReg(addr_latch, value);
 						//Console.WriteLine((addr_latch) + " " + value);
-					}					
+					}
 				}
 			}
 			else if (port == 1)
@@ -146,11 +162,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				cart_b1 = value.Bit(1);
 				cart_b0 = value.Bit(0);
 
-				//Console.WriteLine("main ctrl: " + value + " " + ppu_en + " " + RAM_en);
+				//Console.WriteLine("main ctrl: " + value + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles);
 			}
 			else
 			{
 				// keyboard
+				kb_byte = value;
 			}
 		}
 	}

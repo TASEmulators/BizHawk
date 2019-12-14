@@ -47,23 +47,23 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			if (c.IsPressed(Definition.BoolButtons[0]))
 			{
-				result -= 4;
+				result -= 1;
 			}
 			if (c.IsPressed(Definition.BoolButtons[1]))
 			{
-				result -= 8;
+				result -= 4;
 			}
 			if (c.IsPressed(Definition.BoolButtons[2]))
 			{
-				result -= 2;
+				result -= 8;
 			}
 			if (c.IsPressed(Definition.BoolButtons[3]))
 			{
-				result -= 1;
+				result -= 2;
 			}
 			if (c.IsPressed(Definition.BoolButtons[4]))
 			{
-				result -= 128;
+				result -= 16;
 			}
 
 			return result;

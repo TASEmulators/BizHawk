@@ -77,6 +77,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort DM = 64;
 		public const ushort SET_ADDR_M3 = 65;
 
+		public ushort test;
+
 		public I8048()
 		{
 			Reset();
@@ -92,10 +94,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
 							IDLE);
 
-			IRQS = 6;
+			IRQS = 5;
 			instr_pntr = irq_pntr = 0;
 		}
 

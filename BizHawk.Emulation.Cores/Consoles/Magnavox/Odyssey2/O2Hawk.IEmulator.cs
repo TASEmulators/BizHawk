@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public byte controller_state;
+		public byte controller_state_1, controller_state_2;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -53,9 +53,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			// update the controller state on VBlank
 			GetControllerState(controller);
 
-			// check if controller state caused interrupt
-			do_controller_check();
-
 			// send the image on VBlank
 			SendVideoBuffer();
 
@@ -89,36 +86,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			cpu.ExecuteOne();
 		}
 
-		public void do_controller_check()
-		{
-			// check if new input changed the input register and triggered IRQ
-			byte contr_prev = input_register;
-
-			input_register &= 0xF0;
-			if ((input_register & 0x30) == 0x20)
-			{
-				input_register |= (byte)(controller_state & 0xF);
-			}
-			else if ((input_register & 0x30) == 0x10)
-			{
-				input_register |= (byte)((controller_state & 0xF0) >> 4);
-			}
-			else if ((input_register & 0x30) == 0x00)
-			{
-				// if both polls are set, then a bit is zero if either or both pins are zero
-				byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
-				input_register |= temp;
-			}
-			else
-			{
-				input_register |= 0xF;
-			}
-		}
-
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
-			controller_state = _controllerDeck.ReadPort1(controller);
+			controller_state_1 = _controllerDeck.ReadPort1(controller);
+			controller_state_2 = _controllerDeck.ReadPort2(controller);
 		}
 
 		public int Frame => _frame;

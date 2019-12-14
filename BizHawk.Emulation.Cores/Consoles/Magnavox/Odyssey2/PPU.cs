@@ -190,13 +190,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							{
 								// character is in drawing region, pick a pixel
 								int offset_y = LY - Sprites[i * 4];
-								int offset_x = 7 - ((cycle - 43) - Sprites[i * 4 + 1]);
+								int offset_x = ((cycle - 43) - Sprites[i * 4 + 1]);
 
 								int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
 
 								if (pixel_pick == 1)
 								{
-									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette[(Sprites[i * 4 + 2] >> 3) & 0x7];
+									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
 									Pixel_Stat |= (byte)(i << 1);
 								}
 							}
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 								if (pixel_pick == 1)
 								{
-									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette[(Foreground[i * 4 + 3] >> 1) & 0x7];
+									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
 									Pixel_Stat |= 0x80;
 								}
 							}
@@ -365,7 +365,19 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x00, 0x00, 0x00, 0x54, 0x54, 0xFF, 0x7E, 00  // (boat 3 unk)	0x3F
 															};
 
-		public static readonly uint[] Color_Palette =
+		public static readonly uint[] Color_Palette_SPR =
+		{
+			0xFF676767, // grey
+			0xFF790000, // red
+			0xFF006D07, //green
+			0xFFC75151, // light red
+			0xFF1A37BE, // blue
+			0xFF94309F, // violet
+			0xFFCECECE, // light grey
+			0xFFFFFFFF, // white
+		};
+
+		public static readonly uint[] Color_Palette_BG =
 		{
 			0xFF006D07, //green
 			0xFF56C469, // light green

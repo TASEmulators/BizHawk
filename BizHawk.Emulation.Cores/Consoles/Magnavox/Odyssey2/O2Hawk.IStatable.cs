@@ -59,11 +59,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync("IsLag", ref _islag);
 			_controllerDeck.SyncState(ser);
 
-			ser.Sync(nameof(controller_state), ref controller_state);
+			ser.Sync(nameof(controller_state_1), ref controller_state_1);
+			ser.Sync(nameof(controller_state_2), ref controller_state_2);
 			ser.Sync(nameof(in_vblank), ref in_vblank);
 			ser.Sync(nameof(in_vblank_old), ref in_vblank_old);	
 			ser.Sync(nameof(vblank_rise), ref vblank_rise);
-			ser.Sync(nameof(input_register), ref input_register);
 
 			ser.Sync(nameof(RAM_en), ref RAM_en);
 			ser.Sync(nameof(ppu_en), ref ppu_en);
@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(_bios), ref _bios, false);
 			ser.Sync(nameof(RAM_Bank), ref RAM_Bank);
 			ser.Sync(nameof(addr_latch), ref addr_latch);
+			ser.Sync(nameof(kb_byte), ref kb_byte);
 
 			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
 			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);
