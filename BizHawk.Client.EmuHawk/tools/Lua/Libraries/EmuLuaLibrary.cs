@@ -24,13 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
-			static APISubsetContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
+			static ApiContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
 			{
 				var ctorParamTypes = new[] { typeof(Action<string>) };
 				var ctorParams = new object[] { logCallback };
 				var libDict = new Dictionary<Type, IExternalApi>();
-				foreach (var api in Assembly.Load("BizHawk.Client.ApiHawk").GetTypes()
-					.Concat(Assembly.GetAssembly(typeof(APISubsetContainer)).GetTypes())
+				foreach (var api in Assembly.GetAssembly(typeof(EmuApi)).GetTypes()
+					.Concat(Assembly.GetAssembly(typeof(ToolApi)).GetTypes())
 					.Where(t => t.IsSealed && typeof(IExternalApi).IsAssignableFrom(t) && ServiceInjector.IsAvailable(sp, t)))
 				{
 					var ctorWithParams = api.GetConstructor(ctorParamTypes);
@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 					ServiceInjector.UpdateServices(sp, instance);
 					libDict.Add(api, instance);
 				}
-				return ApiHawkContainerInstance = new APISubsetContainer(libDict);
+				return ApiHawkContainerInstance = new ApiContainer(libDict);
 			}
 
 			LuaWait = new AutoResetEvent(false);
@@ -73,8 +73,11 @@ namespace BizHawk.Client.EmuHawk
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					ServiceInjector.UpdateServices(serviceProvider, instance);
-					if (instance is DelegatingLuaLibrary dlgInstance)
-						dlgInstance.APIs = ApiHawkContainerInstance ?? InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
+
+					ApiHawkContainerInstance ??= InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
+					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiHawkContainerInstance; // this is necessary as the property has the `new` modifier
+					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiHawkContainerInstance;
+
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -98,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <remarks>lazily instantiated</remarks>
-		private static APISubsetContainer ApiHawkContainerInstance;
+		private static ApiContainer ApiHawkContainerInstance;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
