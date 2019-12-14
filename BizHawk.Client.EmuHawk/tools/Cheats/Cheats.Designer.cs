@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cheats));
 			this.CheatListView = new InputRoll();
 			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.ToggleContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -473,7 +472,7 @@
 			// NewToolBarItem
 			// 
 			this.NewToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.NewToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("NewToolBarItem.Image")));
+			this.NewToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
 			this.NewToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewToolBarItem.Name = "NewToolBarItem";
 			this.NewToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -483,7 +482,7 @@
 			// OpenToolBarItem
 			// 
 			this.OpenToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.OpenToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("OpenToolBarItem.Image")));
+			this.OpenToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
 			this.OpenToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenToolBarItem.Name = "OpenToolBarItem";
 			this.OpenToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -493,7 +492,7 @@
 			// SaveToolBarItem
 			// 
 			this.SaveToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SaveToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("SaveToolBarItem.Image")));
+			this.SaveToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveToolBarItem.Name = "SaveToolBarItem";
 			this.SaveToolBarItem.Size = new System.Drawing.Size(23, 22);
@@ -558,7 +557,7 @@
 			// LoadGameGenieToolbarItem
 			// 
 			this.LoadGameGenieToolbarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.LoadGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("LoadGameGenieToolbarItem.Image")));
+			this.LoadGameGenieToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
 			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
@@ -619,7 +618,7 @@
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.CheatsMenu);
 			this.Controls.Add(this.CheatListView);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "Cheats";
 			this.Text = "Cheats";

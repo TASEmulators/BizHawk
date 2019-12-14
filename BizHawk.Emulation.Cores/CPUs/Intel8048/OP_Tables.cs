@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE);
 
 			IRQS = 4;
+			Console.WriteLine("EXCEPTION");
 		}
 
 		public void OP_IMP(ushort oper)
@@ -68,9 +69,29 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 4;
 		}
 
+		public void OP_DIR_IR(ushort oper, ushort reg)
+		{
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							RD, ALU, PC,
+							INC11, PC,
+							IDLE,
+							IDLE,
+							IDLE,
+							oper, (ushort)(reg + RB), ALU);
+
+			IRQS = 9;
+		}
+
 		public void IN_OUT_A(ushort oper, ushort port)
 		{
 			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE, 
+							IDLE,
 							IDLE,
 							IDLE,
 							oper, A, port);
@@ -88,7 +109,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 4;
 		}
 
-		public void IN_OUT_BUS(ushort oper)
+		public void BUS_PORT_IN()
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -98,9 +119,26 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							oper, A);
+							RD_P, A, 0);
 
 			IRQS = 9;
+			// Console.WriteLine("IN "+ TotalExecutedCycles);
+		}
+
+		public void BUS_PORT_OUT()
+		{
+			PopulateCURINSTR(IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				WR_P, 0, A);
+
+			IRQS = 9;
+			Console.WriteLine("OUT");
 		}
 
 		public void OUT_P(ushort port)
@@ -113,9 +151,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							port, A);
+							WR_P, port, A);
 
 			IRQS = 9;
+
 		}
 
 		public void RET()
@@ -140,7 +179,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							PULL,
-							IDLE,
+							EM,
 							IDLE,
 							IDLE,
 							IDLE);
@@ -181,14 +220,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void MOV_A_A()
 		{
 			PopulateCURINSTR(IDLE,
+							TR, ALU, PC,
+							IDLE,
+							SET_ADDR_8, ALU, A,
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD, A, ALU);
 
 			IRQS = 9;
 		}
@@ -196,14 +235,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void MOV3_A_A()
 		{
 			PopulateCURINSTR(IDLE,
+							TR, ALU, PC,
+							IDLE,
+							SET_ADDR_8, ALU, A,
+							IDLE,
+							SET_ADDR_M3,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD, A, ALU);
 
 			IRQS = 9;
 		}
@@ -212,13 +251,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
+							EEA,
+							WR_P, 0, (ushort)(reg + RB),
+							DEA,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD_P, A, 0);
 
 			IRQS = 9;
 		}
@@ -268,18 +307,35 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 9;
 		}
 
+		// TODO: This should only write back to the port destination if directly wired, otherwise we should wait for a write pulse
+		// TODO: for O2, P1 is tied direct to CTRL outputs so this is ok, BUS and P2 should do something else though
 		public void OP_PB_DIR(ushort oper, ushort reg)
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IDLE,
-							RD, ALU, PC,
-							INC11, PC,
-							IDLE,
-							IDLE,
-							IDLE,
-							oper, reg, ALU);
-
+			if (reg == 1)
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
+								oper, (ushort)(reg + PX), ALU,
+								IDLE,
+								IDLE,
+								WR_P, reg, (ushort)(reg + PX));
+			}
+			else
+			{
+				PopulateCURINSTR(IDLE,
+								IDLE,
+								IDLE,
+								RD, ALU, PC,
+								INC11, PC,
+								oper, (ushort)(reg + PX), ALU,
+								IDLE,
+								IDLE,
+								IDLE);
+			}
+			
 			IRQS = 9;
 		}
 

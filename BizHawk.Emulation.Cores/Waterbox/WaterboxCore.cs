@@ -303,8 +303,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			ms.Close();

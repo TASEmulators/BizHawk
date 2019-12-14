@@ -1181,8 +1181,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public byte[] SaveStateBinary()
 		{
 			//this are objectionable shenanigans, but theyre required to get the extra info in the stream. we need a better approach.
-			var ms = new MemoryStream(savebuff2, true);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(savebuff2, true);
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			if (ms.Position != savebuff2.Length)
@@ -1191,10 +1191,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return savebuff2;
 		}
 
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		#endregion
 

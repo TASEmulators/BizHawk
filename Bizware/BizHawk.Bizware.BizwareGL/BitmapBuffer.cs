@@ -1,20 +1,13 @@
 ﻿//TODO - introduce Trim for ArtManager
 //TODO - add a small buffer reuse manager.. small images can be stored in larger buffers which we happen to have held. use a timer to wait to free it until some time has passed
 
-
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using sd = System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -34,11 +27,12 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public bool HasAlpha = true;
 
-		public Size Size { get { return new Size(Width, Height); } }
+		public Size Size => new Size(Width, Height);
 
-		sd.Bitmap WrappedBitmap;
-		GCHandle CurrLockHandle;
-		BitmapData CurrLock;
+		private readonly Bitmap WrappedBitmap;
+		private GCHandle CurrLockHandle;
+		private BitmapData CurrLock;
+
 		public BitmapData LockBits() //TODO - add read/write semantic, for wraps
 		{
 			if(CurrLock != null)
@@ -51,11 +45,13 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 
 			CurrLockHandle = GCHandle.Alloc(Pixels, GCHandleType.Pinned);
-			CurrLock = new BitmapData();
-			CurrLock.Height = Height;
-			CurrLock.Width = Width;
-			CurrLock.Stride = Width * 4;
-			CurrLock.Scan0 = CurrLockHandle.AddrOfPinnedObject();
+			CurrLock = new BitmapData
+			{
+				Height = Height,
+				Width = Width,
+				Stride = Width * 4,
+				Scan0 = CurrLockHandle.AddrOfPinnedObject()
+			};
 
 			return CurrLock;
 		}
@@ -170,8 +166,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public BitmapBuffer Trim()
 		{
-			int x, y;
-			return Trim(out x, out y);
+			return Trim(out _, out _);
 		}
 
 		/// <summary>
@@ -222,8 +217,8 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public void Pad()
 		{
-			int widthRound = nexthigher(Width);
-			int heightRound = nexthigher(Height);
+			int widthRound = NextHigher(Width);
+			int heightRound = NextHigher(Height);
 			if (widthRound == Width && heightRound == Height) return;
 			int[] NewPixels = new int[heightRound * widthRound];
 
@@ -244,8 +239,8 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public BitmapBuffer(string fname, BitmapLoadOptions options)
 		{
-			using (var fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read))
-				LoadInternal(fs, null, options);
+			using var fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
+			LoadInternal(fs, null, options);
 		}
 
 		/// <summary>
@@ -276,9 +271,9 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public BitmapBuffer(int width, int height, int[] pixels)
 		{
-			this.Pixels = pixels;
-			this.Width = width;
-			this.Height = height;
+			Pixels = pixels;
+			Width = width;
+			Height = height;
 		}
 
 		/// <summary>
@@ -335,7 +330,6 @@ namespace BizHawk.Bizware.BizwareGL
 					BitmapData bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
 					Color[] palette = bmp.Palette.Entries;
 					byte* ptr = (byte*)bmpdata.Scan0.ToPointer();
-					int stride = bmpdata.Stride;
 					fixed (int* pPtr = &Pixels[0])
 					{
 						for (int idx = 0, y = 0; y < h; y++)
@@ -478,15 +472,6 @@ namespace BizHawk.Bizware.BizwareGL
 			}
 		}
 
-		/// <summary>
-		/// just a temporary measure while refactoring emuhawk
-		/// </summary>
-		public void AcceptIntArray(int[] arr)
-		{
-			//should these be copied?
-			Pixels = arr;
-		}
-
 		void InitSize(int width, int height)
 		{
 			Pixels = new int[width * height];
@@ -497,7 +482,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// returns the next higher power of 2 than the provided value, for rounding up POW2 textures.
 		/// </summary>
-		int nexthigher(int k)
+		private static int NextHigher(int k)
 		{
 			k--;
 			for (int i = 1; i < 32; i <<= 1)
@@ -530,13 +515,11 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			if (WrappedBitmap != null)
 			{
-				using (var g = Graphics.FromImage(bmp))
-				{
-					g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
-					g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
-					g.DrawImageUnscaled(WrappedBitmap, 0, 0);
-					return;
-				}
+				using var g = Graphics.FromImage(bmp);
+				g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
+				g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+				g.DrawImageUnscaled(WrappedBitmap, 0, 0);
+				return;
 			}
 
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 

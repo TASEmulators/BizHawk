@@ -236,7 +236,7 @@
             this.Controls.Add(this.ProfileSelectComboBox);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue;
             this.MinimumSize = new System.Drawing.Size(315, 280);
             this.Name = "ProfileConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

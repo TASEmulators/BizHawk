@@ -20,8 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			label1.Text = "";
 			try
 			{
-				var rm = new System.Resources.ResourceManager("BizHawk.Client.EmuHawk.Properties.Resources", GetType().Assembly);
-				sfx = new SoundPlayer(rm.GetStream("nothawk"));
+				sfx = new SoundPlayer(Properties.Resources.nothawk);
 				sfx.Play();
 			}
 			catch

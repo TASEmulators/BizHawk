@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				throw new ArgumentException($"Type {toolType.Name} does not implement {nameof(IToolForm)}.");
 			}
 			
-			// The type[] in parameter is used to avoid an ambigous name exception
+			// The type[] in parameter is used to avoid an ambiguous name exception
 			MethodInfo method = GetType().GetMethod("Load", new Type[] { typeof(bool) }).MakeGenericMethod(toolType);
 			return (IToolForm)method.Invoke(this, new object[] { focus });
 		}
@@ -118,9 +118,9 @@ namespace BizHawk.Client.EmuHawk
 				return null;
 			}
 
-			if (newTool is Form)
+			if (newTool is Form form)
 			{
-				(newTool as Form).Owner = GlobalWin.MainForm;
+				form.Owner = _owner;
 			}
 
 			if (isExternal)
@@ -132,16 +132,15 @@ namespace BizHawk.Client.EmuHawk
 			string toolType = typeof(T).ToString();
 
 			// auto settings
-			if (newTool is IToolFormAutoConfig)
+			if (newTool is IToolFormAutoConfig tool)
 			{
-				ToolDialogSettings settings;
-				if (!Global.Config.CommonToolSettings.TryGetValue(toolType, out settings))
+				if (!Global.Config.CommonToolSettings.TryGetValue(toolType, out var settings))
 				{
 					settings = new ToolDialogSettings();
 					Global.Config.CommonToolSettings[toolType] = settings;
 				}
 
-				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
+				AttachSettingHooks(tool, settings);
 			}
 
 			// custom settings
@@ -212,12 +211,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
-			var oldsize = form.Size; // this should be the right time to grab this size
+			var oldSize = form.Size; // this should be the right time to grab this size
 			foreach (Control c in form.Controls)
 			{
-				if (c is MenuStrip)
+				if (c is MenuStrip ms)
 				{
-					var ms = c as MenuStrip;
 					foreach (ToolStripMenuItem submenu in ms.Items)
 					{
 						if (submenu.Text.Contains("Settings"))
@@ -319,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				settings.RestoreDefaults();
 				RefreshSettings(form, dest, settings, idx);
-				form.Size = oldsize;
+				form.Size = oldSize;
 
 				form.GetType()
 					.GetMethodsWithAttrib(typeof(RestoreDefaultsAttribute))
@@ -347,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 				object val;
 				if (data.TryGetValue(prop.Name, out val))
 				{
-					if (val is string && prop.PropertyType != typeof(string))
+					if (val is string str && prop.PropertyType != typeof(string))
 					{
 						// if a type has a TypeConverter, and that converter can convert to string,
 						// that will be used in place of object markup by JSON.NET
@@ -356,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 						// back on regular object serialization when needed.  so try to undo a TypeConverter
 						// operation here
 						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
-						val = converter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, (string)val);
+						val = converter.ConvertFromString(null, System.Globalization.CultureInfo.InvariantCulture, str);
 					}
 					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
 					{
@@ -543,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool AskSave()
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			if (Global.Config.SuppressAskSave) // User has elected to not be nagged
 			{
 				return true;
 			}
@@ -560,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <typeparam name="T">Type of tool</typeparam>
 		public bool AskSave<T>() where T : IToolForm
 		{
-			if (Global.Config.SupressAskSave) // User has elected to not be nagged
+			if (Global.Config.SuppressAskSave) // User has elected to not be nagged
 			{
 				return true;
 			}
@@ -820,10 +818,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadRamWatch(bool loadDialog)
 		{
-			if (!IsLoaded<RamWatch>())
+			if (IsLoaded<RamWatch>())
 			{
-				Load<RamWatch>();
+				return;
 			}
+
+			Load<RamWatch>();
 
 			if (IsAvailable<RamWatch>()) // Just because we attempted to load it, doesn't mean it was, the current core may not have the correct dependencies
 			{

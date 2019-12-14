@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudio));
 			this.TASMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -323,7 +322,6 @@
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Image = ((System.Drawing.Image)(resources.GetObject("RecentSubMenu.Image")));
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(190, 22);
 			this.RecentSubMenu.Text = "Recent";
@@ -357,7 +355,6 @@
 			// 
 			this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator22});
-			this.recentMacrosToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
 			this.recentMacrosToolStripMenuItem.Name = "recentMacrosToolStripMenuItem";
 			this.recentMacrosToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
@@ -430,7 +427,6 @@
 			// UndoMenuItem
 			// 
 			this.UndoMenuItem.Name = "UndoMenuItem";
-			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.UndoMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.UndoMenuItem.Text = "&Undo";
 			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
@@ -439,7 +435,6 @@
 			// 
 			this.RedoMenuItem.Enabled = false;
 			this.RedoMenuItem.Name = "RedoMenuItem";
-			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
 			this.RedoMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
@@ -455,7 +450,6 @@
 			// 
 			this.SelectionUndoMenuItem.Enabled = false;
 			this.SelectionUndoMenuItem.Name = "SelectionUndoMenuItem";
-			this.SelectionUndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
 			this.SelectionUndoMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.SelectionUndoMenuItem.Text = "Selection Undo";
 			// 
@@ -463,7 +457,6 @@
 			// 
 			this.SelectionRedoMenuItem.Enabled = false;
 			this.SelectionRedoMenuItem.Name = "SelectionRedoMenuItem";
-			this.SelectionRedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.SelectionRedoMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.SelectionRedoMenuItem.Text = "Selection Redo";
 			// 
@@ -482,7 +475,6 @@
 			// SelectBetweenMarkersMenuItem
 			// 
 			this.SelectBetweenMarkersMenuItem.Name = "SelectBetweenMarkersMenuItem";
-			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
 			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
 			this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
@@ -491,8 +483,6 @@
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
-			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.A)));
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
@@ -500,7 +490,6 @@
 			// ReselectClipboardMenuItem
 			// 
 			this.ReselectClipboardMenuItem.Name = "ReselectClipboardMenuItem";
-			this.ReselectClipboardMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
 			this.ReselectClipboardMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
 			this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
@@ -581,8 +570,6 @@
 			// 
 			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
 			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "";
-			this.InsertNumFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.Insert)));
 			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(280, 22);
 			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
@@ -1184,7 +1171,6 @@
 			// 
 			// TASEditorManualOnlineMenuItem
 			// 
-			this.TASEditorManualOnlineMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.TASEditorManualOnlineMenuItem.Name = "TASEditorManualOnlineMenuItem";
 			this.TASEditorManualOnlineMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.TASEditorManualOnlineMenuItem.Text = "TAS Editor Manual Online...";
@@ -1192,7 +1178,6 @@
 			// 
 			// ForumThreadMenuItem
 			// 
-			this.ForumThreadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumThreadMenuItem.Name = "ForumThreadMenuItem";
 			this.ForumThreadMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.ForumThreadMenuItem.Text = "Forum Thread...";
@@ -1237,9 +1222,9 @@
 			this.TasView.LagFramesToHide = 0;
 			this.TasView.LetKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
-			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
+			this.TasView.Rotatable = true;
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
 			this.TasView.SeekingCutoffInterval = 0;
@@ -1383,7 +1368,6 @@
 			// SelectBetweenMarkersContextMenuItem
 			// 
 			this.SelectBetweenMarkersContextMenuItem.Name = "SelectBetweenMarkersContextMenuItem";
-			this.SelectBetweenMarkersContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
 			this.SelectBetweenMarkersContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.SelectBetweenMarkersContextMenuItem.Text = "Select between Markers";
 			this.SelectBetweenMarkersContextMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
@@ -1452,7 +1436,6 @@
 			// ClearContextMenuItem
 			// 
 			this.ClearContextMenuItem.Name = "ClearContextMenuItem";
-			this.ClearContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.ClearContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.ClearContextMenuItem.Text = "Clear";
 			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
@@ -1460,7 +1443,6 @@
 			// InsertFrameContextMenuItem
 			// 
 			this.InsertFrameContextMenuItem.Name = "InsertFrameContextMenuItem";
-			this.InsertFrameContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
 			this.InsertFrameContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.InsertFrameContextMenuItem.Text = "Insert";
 			this.InsertFrameContextMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
@@ -1468,7 +1450,6 @@
 			// DeleteFramesContextMenuItem
 			// 
 			this.DeleteFramesContextMenuItem.Name = "DeleteFramesContextMenuItem";
-			this.DeleteFramesContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
 			this.DeleteFramesContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.DeleteFramesContextMenuItem.Text = "Delete";
 			this.DeleteFramesContextMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
@@ -1476,7 +1457,6 @@
 			// CloneContextMenuItem
 			// 
 			this.CloneContextMenuItem.Name = "CloneContextMenuItem";
-			this.CloneContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
 			this.CloneContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.CloneContextMenuItem.Text = "Clone";
 			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
@@ -1484,8 +1464,6 @@
 			// InsertNumFramesContextMenuItem
 			// 
 			this.InsertNumFramesContextMenuItem.Name = "InsertNumFramesContextMenuItem";
-			this.InsertNumFramesContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.Insert)));
 			this.InsertNumFramesContextMenuItem.Size = new System.Drawing.Size(242, 22);
 			this.InsertNumFramesContextMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesContextMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
@@ -1600,7 +1578,6 @@
 			this.Controls.Add(this.MainVertialSplit);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(200, 148);

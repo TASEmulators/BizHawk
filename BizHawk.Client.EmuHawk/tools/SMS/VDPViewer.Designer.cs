@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SmsVDPViewer));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.bmpViewTiles = new BizHawk.Client.EmuHawk.BmpView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -181,7 +180,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.sms_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "SmsVDPViewer";

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\DotNetBuild.Common.targets" Condition=" '$(OS)' != 'Windows_NT' " />
   <Target Name="Build">
     <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" />
   </Target>
@@ -42,7 +43,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(ProjectDir)../Build/standin.sh"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="dummy.cs" />

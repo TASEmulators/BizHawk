@@ -38,19 +38,22 @@
 			BookMarkControl.LoadBranchExternal(slot);
 		}
 
-		public void SelectSlot(int slot)
+		public bool SelectSlot(int slot)
 		{
 			BookMarkControl.SelectBranchExternal(slot);
+			return false;
 		}
 
-		public void PreviousSlot()
+		public bool PreviousSlot()
 		{
 			BookMarkControl.SelectBranchExternal(false);
+			return false;
 		}
 
-		public void NextSlot()
+		public bool NextSlot()
 		{
 			BookMarkControl.SelectBranchExternal(true);
+			return false;
 		}
 
 		public bool WantsToControlReadOnly => true;

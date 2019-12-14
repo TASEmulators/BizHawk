@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Forms;
 
 namespace BizHawk.Bizware.BizwareGL
 {
@@ -17,7 +16,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		/// <summary>
 		/// Makes this control current for rendering operations.
-		/// Note that at this time, the window size shouldnt change until End() or else something bad might happen
+		/// Note that at this time, the window size shouldn't change until End() or else something bad might happen
 		/// Please be aware that this might change the rendering context, meaning that some things you set without calling Begin/End might not be affected
 		/// </summary>
 		void Begin();
@@ -27,7 +26,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// NOTE: DO NOT EXPECT TO SEE BEGIN/END CALLED IN PAIRS, STRICTLY.
 		/// this is more about GL context management than anything else.
 		/// See GLManager for details.
-		/// In particular, dont expect to have End() called before doing certain things. Maybe use SwapBuffers instead
+		/// In particular, don't expect to have End() called before doing certain things. Maybe use SwapBuffers instead
 		/// </summary>
 		void End();
 	}

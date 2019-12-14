@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubtitleMaker));
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
             this.Message = new System.Windows.Forms.TextBox();
@@ -223,7 +222,7 @@
             this.Controls.Add(this.Message);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
             this.MinimumSize = new System.Drawing.Size(272, 225);
             this.Name = "SubtitleMaker";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

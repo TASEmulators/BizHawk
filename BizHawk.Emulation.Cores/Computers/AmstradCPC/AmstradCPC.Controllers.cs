@@ -3,50 +3,50 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// CPCHawk: Core Class
-    /// * Controllers *
-    /// </summary>
-    public partial class AmstradCPC
-    {
-        /// <summary>
-        /// The one CPCHawk ControllerDefinition
-        /// </summary>
-        public ControllerDefinition AmstradCPCControllerDefinition
-        {
-            get
-            {
-                ControllerDefinition definition = new ControllerDefinition();
-                definition.Name = "AmstradCPC Controller";
+	/// <summary>
+	/// CPCHawk: Core Class
+	/// * Controllers *
+	/// </summary>
+	public partial class AmstradCPC
+	{
+		/// <summary>
+		/// The one CPCHawk ControllerDefinition
+		/// </summary>
+		public ControllerDefinition AmstradCPCControllerDefinition
+		{
+			get
+			{
+				ControllerDefinition definition = new ControllerDefinition();
+				definition.Name = "AmstradCPC Controller";
 
-                // joysticks
-                List<string> joys1 = new List<string>
-                {
+				// joysticks
+				List<string> joys1 = new List<string>
+				{
                     // P1 Joystick
                     "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Fire1", "P1 Fire2", "P1 Fire3"
-                };
+				};
 
-                foreach (var s in joys1)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "J1";
-                }
+				foreach (var s in joys1)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "J1";
+				}
 
-                List<string> joys2 = new List<string>
-                {
+				List<string> joys2 = new List<string>
+				{
                     // P2 Joystick
                     "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Fire",
-                };
+				};
 
-                foreach (var s in joys2)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "J2";
-                }
+				foreach (var s in joys2)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "J2";
+				}
 
-                // keyboard
-                List<string> keys = new List<string>
-                {
+				// keyboard
+				List<string> keys = new List<string>
+				{
                     // http://www.cpcwiki.eu/index.php/Programming:Keyboard_scanning
                     // http://www.cpcwiki.eu/index.php/File:Grimware_cpc464_version3_case_top.jpg
         
@@ -64,66 +64,66 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     "Key CURUP", "Key CURDOWN", "Key CURLEFT", "Key CURRIGHT", "Key COPY", 
                     // Keyboard - Numpad
                     "Key NUM0", "Key NUM1", "Key NUM2", "Key NUM3", "Key NUM4", "Key NUM5", "Key NUM6", "Key NUM7", "Key NUM8", "Key NUM9", "Key NUMPERIOD", "KEY ENTER"
-                };
+				};
 
-                foreach (var s in keys)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Keyboard";
-                }
+				foreach (var s in keys)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Keyboard";
+				}
 
-                // Power functions
-                List<string> power = new List<string>
-                {
+				// Power functions
+				List<string> power = new List<string>
+				{
                     // Power functions
                     "Reset", "Power"
-                };
+				};
 
-                foreach (var s in power)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Power";
-                }
+				foreach (var s in power)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Power";
+				}
 
-                // Datacorder (tape device)
-                List<string> tape = new List<string>
-                {
+				// Datacorder (tape device)
+				List<string> tape = new List<string>
+				{
                     // Tape functions
                     "Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape",
-                    "Insert Previous Tape", "Next Tape Block", "Prev Tape Block", "Get Tape Status"
-                };
+					"Insert Previous Tape", "Next Tape Block", "Prev Tape Block", "Get Tape Status"
+				};
 
-                foreach (var s in tape)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Datacorder";
-                }
+				foreach (var s in tape)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Datacorder";
+				}
 
-                // Datacorder (tape device)
-                List<string> disk = new List<string>
-                {
+				// Datacorder (tape device)
+				List<string> disk = new List<string>
+				{
                     // Tape functions
                     "Insert Next Disk", "Insert Previous Disk", /*"Eject Current Disk",*/ "Get Disk Status"
-                };
+				};
 
-                foreach (var s in disk)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Amstrad Disk Drive";
-                }
+				foreach (var s in disk)
+				{
+					definition.BoolButtons.Add(s);
+					definition.CategoryLabels[s] = "Amstrad Disk Drive";
+				}
 
-                return definition;
-            }
-        }
-    }
+				return definition;
+			}
+		}
+	}
 
-    /// <summary>
-    /// The possible joystick types
-    /// </summary>
-    public enum JoystickType
-    {
-        NULL,
-        Joystick1,
-        Joystick2
-    }
+	/// <summary>
+	/// The possible joystick types
+	/// </summary>
+	public enum JoystickType
+	{
+		NULL,
+		Joystick1,
+		Joystick2
+	}
 }

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\DotNetBuild.Common.targets" Condition=" '$(OS)' != 'Windows_NT' " />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -84,9 +85,7 @@
     <Compile Include="IImportResolver.cs" />
     <Compile Include="IMonitor.cs" />
     <Compile Include="InstanceDll.cs" />
-    <Compile Include="IPC\SharedMemoryBlock.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="MruStack.cs" />
     <Compile Include="MutableIntRange.cs" />
     <Compile Include="OSTailoredCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,11 +93,9 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SimpleTime.cs" />
-    <Compile Include="Sprintf.cs" />
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
-    <Compile Include="UnmanagedResourceHeap.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Win32Hacks.cs" />
   </ItemGroup>

@@ -84,8 +84,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public byte[] SaveStateBinary()
 		{
 			StartSaveStateBinaryInternal();
-			var ms = new MemoryStream(_savebuff2, true);
-			var bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream(_savebuff2, true);
+			using var bw = new BinaryWriter(ms);
 			FinishSaveStateBinaryInternal(bw);
 			bw.Flush();
 			ms.Close();

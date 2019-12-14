@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BizHawk.Common
 {
-	public static unsafe partial class Util
+	public static unsafe class Util
 	{
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
@@ -87,29 +87,6 @@ namespace BizHawk.Common
 			// hmm these might be asynchronous too
 			// wait for the move to complete, at least enough for pathWant to be cleared up
 			return TryWaitForFileToVanish(pathWant);
-		}
-
-		public static bool IsPowerOfTwo(int x)
-		{
-			if (x == 0 || x == 1)
-			{
-				return true;
-			}
-
-			return (x & (x - 1)) == 0;
-		}
-
-		public static int SaveRamBytesUsed(byte[] saveRam)
-		{
-			for (var i = saveRam.Length - 1; i >= 0; i--)
-			{
-				if (saveRam[i] != 0)
-				{
-					return i + 1;
-				}
-			}
-
-			return 0;
 		}
 
 		// Could be extension method
@@ -351,12 +328,6 @@ namespace BizHawk.Common
 			return ret;
 		}
 
-		public static int Memcmp(void* a, string b, int len)
-		{
-			fixed (byte* bp = Encoding.ASCII.GetBytes(b))
-				return Memcmp(a, bp, len);
-		}
-
 		public static int Memcmp(void* a, void* b, int len)
 		{
 			var ba = (byte*)a;
@@ -381,17 +352,6 @@ namespace BizHawk.Common
 			for (int i = 0; i < len; i++)
 			{
 				bptr[i] = (byte)val;
-			}
-		}
-
-		public static void Memset32(void* ptr, int val, int len)
-		{
-			System.Diagnostics.Debug.Assert(len % 4 == 0);
-			int dwords = len / 4;
-			int* dwptr = (int*)ptr;
-			for (int i = 0; i < dwords; i++)
-			{
-				dwptr[i] = val;
 			}
 		}
 
@@ -447,8 +407,7 @@ namespace BizHawk.Common
 
 			foreach (var kvp in first)
 			{
-				TValue secondValue;
-				if (!second.TryGetValue(kvp.Key, out secondValue))
+				if (!second.TryGetValue(kvp.Key, out var secondValue))
 				{
 					return false;
 				}
@@ -478,23 +437,6 @@ namespace BizHawk.Common
 			using (var gs = new GZipStream(src, CompressionMode.Decompress, true))
 				gs.CopyTo(ms);
 			return data;
-		}
-	}
-
-	public static class BitConverterLE
-	{
-		public static void WriteBytes(ushort value, byte[] dst, int index)
-		{
-			dst[index    ] = (byte)(value      );
-			dst[index + 1] = (byte)(value >>  8);
-		}
-
-		public static void WriteBytes(uint value, byte[] dst, int index)
-		{
-			dst[index    ] = (byte)(value      );
-			dst[index + 1] = (byte)(value >>  8);
-			dst[index + 2] = (byte)(value >> 16);
-			dst[index + 3] = (byte)(value >> 24);
 		}
 	}
 

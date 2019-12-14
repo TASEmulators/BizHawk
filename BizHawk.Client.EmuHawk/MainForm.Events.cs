@@ -23,6 +23,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
@@ -306,7 +307,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
-			AdvancedLoader = AdvancedRomLoaderType.None;
 			OpenRom();
 		}
 
@@ -318,9 +318,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			AdvancedLoader = oac.Result;
-
-			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchNoGame)
+			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchNoGame)
 			{
 				var argsNoGame = new LoadRomArgs
 				{
@@ -334,16 +332,16 @@ namespace BizHawk.Client.EmuHawk
 
 			var filter = RomFilter;
 
-			if (AdvancedLoader == AdvancedRomLoaderType.LibretroLaunchGame)
+			if (oac.Result == AdvancedRomLoaderType.LibretroLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_Libretro();
 				filter = oac.SuggestedExtensionFilter;
 			}
-			else if (AdvancedLoader == AdvancedRomLoaderType.ClassicLaunchGame)
+			else if (oac.Result == AdvancedRomLoaderType.ClassicLaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_OpenRom();
 			}
-			else if (AdvancedLoader == AdvancedRomLoaderType.MAMELaunchGame)
+			else if (oac.Result == AdvancedRomLoaderType.MAMELaunchGame)
 			{
 				args.OpenAdvanced = new OpenAdvanced_MAME();
 				filter = "MAME Arcade ROMs (*.zip)|*.zip";
@@ -2041,14 +2039,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new A7800ControllerSettings();
-			form.ShowDialog();
+			if (Emulator is A7800Hawk atari7800Hawk)
+			{
+				using var form = new A7800ControllerSettings(this, atari7800Hawk.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new A7800FilterSettings();
-			form.ShowDialog();
+			if (Emulator is A7800Hawk atari7800Hawk)
+			{
+				using var form = new A7800FilterSettings(this, atari7800Hawk.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		#endregion
@@ -2782,6 +2786,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var form = new AmstradCPCNonSyncSettings();
 			form.ShowDialog();
+		}
+
+		#endregion
+
+		#region Arcade
+		private void ArcadeSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Arcade Settings");
 		}
 
 		#endregion

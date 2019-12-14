@@ -7,6 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
+		private Bk2ControllerAdapter _adapter;
+
 		public Bk2Movie(string filename)
 			: this()
 		{
@@ -127,6 +129,14 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
+				if (_adapter == null)
+				{
+					_adapter = new Bk2ControllerAdapter
+					{
+						Definition = Global.MovieSession.MovieControllerAdapter.Definition
+					};
+				}
+
 				int getFrame;
 
 				if (LoopOffset.HasValue)
@@ -145,13 +155,8 @@ namespace BizHawk.Client.Common
 					getFrame = frame;
 				}
 
-				var adapter = new Bk2ControllerAdapter
-				{
-					Definition = Global.MovieSession.MovieControllerAdapter.Definition
-				};
-
-				adapter.SetControllersAsMnemonic(Log[getFrame]);
-				return adapter;
+				_adapter.SetControllersAsMnemonic(Log[getFrame]);
+				return _adapter;
 			}
 
 			return null;

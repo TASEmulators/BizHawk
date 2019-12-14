@@ -28,14 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaCanvas));
             this.luaPictureBox = new BizHawk.Client.EmuHawk.LuaPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.luaPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // luaPictureBox
             // 
-            this.luaPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("luaPictureBox.Image")));
+            this.luaPictureBox.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.luaPictureBox;
             this.luaPictureBox.Location = new System.Drawing.Point(0, 0);
             this.luaPictureBox.Margin = new System.Windows.Forms.Padding(0);
             this.luaPictureBox.Name = "luaPictureBox";

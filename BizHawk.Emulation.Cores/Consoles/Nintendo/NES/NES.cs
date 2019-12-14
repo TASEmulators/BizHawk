@@ -658,7 +658,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
-				var ms = new MemoryStream(file, false);
+				using var ms = new MemoryStream(file, false);
 				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
 				if (iNesHeaderInfo.trainer_size != 0)

@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			SuggestedExtensionFilter = filter;
 
 			Result = AdvancedRomLoaderType.LibretroLaunchGame;
-			DialogResult =  DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 

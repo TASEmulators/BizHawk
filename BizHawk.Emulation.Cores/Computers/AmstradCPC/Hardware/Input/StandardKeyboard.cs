@@ -6,61 +6,61 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
-    /// <summary>
-    /// The 48k keyboard device
-    /// </summary>
-    public class StandardKeyboard : IKeyboard
-    {
-        public CPCBase _machine { get; set; }
+	/// <summary>
+	/// The 48k keyboard device
+	/// </summary>
+	public class StandardKeyboard : IKeyboard
+	{
+		public CPCBase _machine { get; set; }
 
-        private int _currentLine;
-        public int CurrentLine
-        {
-            get { return _currentLine; }
-            set
-            {
-                // bits 0-3 contain the line
-                var line = value & 0x0f;
+		private int _currentLine;
+		public int CurrentLine
+		{
+			get { return _currentLine; }
+			set
+			{
+				// bits 0-3 contain the line
+				var line = value & 0x0f;
 
-                if (line > 0)
-                {
+				if (line > 0)
+				{
 
-                }
+				}
 
-                _currentLine = line;
-            }
-        }
+				_currentLine = line;
+			}
+		}
 
-        private bool[] _keyStatus;
-        public bool[] KeyStatus
-        {
-            get { return _keyStatus; }
-            set { _keyStatus = value; }
-        }
+		private bool[] _keyStatus;
+		public bool[] KeyStatus
+		{
+			get { return _keyStatus; }
+			set { _keyStatus = value; }
+		}
 
-        private string[] _keyboardMatrix;
-        public string[] KeyboardMatrix
-        {
-            get { return _keyboardMatrix; }
-            set { _keyboardMatrix = value; }
-        }
+		private string[] _keyboardMatrix;
+		public string[] KeyboardMatrix
+		{
+			get { return _keyboardMatrix; }
+			set { _keyboardMatrix = value; }
+		}
 
-        private string[] _nonMatrixKeys;
-        public string[] NonMatrixKeys
-        {
-            get { return _nonMatrixKeys; }
-            set { _nonMatrixKeys = value; }
-        }
+		private string[] _nonMatrixKeys;
+		public string[] NonMatrixKeys
+		{
+			get { return _nonMatrixKeys; }
+			set { _nonMatrixKeys = value; }
+		}
 
-        public StandardKeyboard(CPCBase machine)
-        {
-            _machine = machine;
-            //_machine.AYDevice.PortA_IN_CallBack = INCallback;
-            //_machine.AYDevice.PortA_OUT_CallBack = OUTCallback;
+		public StandardKeyboard(CPCBase machine)
+		{
+			_machine = machine;
+			//_machine.AYDevice.PortA_IN_CallBack = INCallback;
+			//_machine.AYDevice.PortA_OUT_CallBack = OUTCallback;
 
-            // scancode rows, ascending (Bit0 - Bit7)
-            KeyboardMatrix = new string[]
-            {
+			// scancode rows, ascending (Bit0 - Bit7)
+			KeyboardMatrix = new string[]
+			{
                 // 0x40
                 "Key CURUP", "Key CURRIGHT", "Key CURDOWN", "Key NUM9", "Key NUM6", "Key NUM3", "Key ENTER", "Key NUMPERIOD",
                 // 0x41
@@ -82,72 +82,72 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // 0x49
                 "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Fire1", "P1 Fire2", "P1 Fire3", "Key DEL",
 
-            };
+			};
 
-            // keystatus array to match the matrix
-            KeyStatus = new bool[8 * 10];
-            
-            // nonmatrix keys (anything that hasnt already been taken)
-            var nonMatrix = new List<string>();
-            
-            foreach (var key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
-            {
-                if (!KeyboardMatrix.Any(s => s == key))
-                    nonMatrix.Add(key);
-            }
-           
-            NonMatrixKeys = nonMatrix.ToArray();            
-        }
+			// keystatus array to match the matrix
+			KeyStatus = new bool[8 * 10];
 
-        /// <summary>
-        /// Reads the currently selected line
-        /// </summary>
-        public byte ReadCurrentLine()
-        {
-            var lin = _currentLine; // - 0x40;
-            var pos = lin * 8;
-            var l = KeyStatus.Skip(pos).Take(8).ToArray();
-            BitArray bi = new BitArray(l);
-            byte[] bytes = new byte[1];
-            bi.CopyTo(bytes, 0);
-            byte inv = (byte)(~bytes[0]);
-            return inv;
-        }
+			// nonmatrix keys (anything that hasnt already been taken)
+			var nonMatrix = new List<string>();
 
-        /// <summary>
-        /// Returns the index of the key within the matrix
-        /// </summary>
-        public int GetKeyIndexFromMatrix(string key)
-        {
-            int index = Array.IndexOf(KeyboardMatrix, key);
-            return index;
-        }
+			foreach (var key in _machine.CPC.AmstradCPCControllerDefinition.BoolButtons)
+			{
+				if (!KeyboardMatrix.Any(s => s == key))
+					nonMatrix.Add(key);
+			}
 
-        /// <summary>
-        /// Sets key status
-        /// </summary>
-        public void SetKeyStatus(string key, bool isPressed)
-        {
-            int index = GetKeyIndexFromMatrix(key);
-            KeyStatus[index] = isPressed;
-        }
+			NonMatrixKeys = nonMatrix.ToArray();
+		}
 
-        /// <summary>
-        /// Gets a key's status
-        /// </summary>
-        public bool GetKeyStatus(string key)
-        {
-            int index = GetKeyIndexFromMatrix(key);
-            return KeyStatus[index];
-        }
+		/// <summary>
+		/// Reads the currently selected line
+		/// </summary>
+		public byte ReadCurrentLine()
+		{
+			var lin = _currentLine; // - 0x40;
+			var pos = lin * 8;
+			var l = KeyStatus.Skip(pos).Take(8).ToArray();
+			BitArray bi = new BitArray(l);
+			byte[] bytes = new byte[1];
+			bi.CopyTo(bytes, 0);
+			byte inv = (byte)(~bytes[0]);
+			return inv;
+		}
+
+		/// <summary>
+		/// Returns the index of the key within the matrix
+		/// </summary>
+		public int GetKeyIndexFromMatrix(string key)
+		{
+			int index = Array.IndexOf(KeyboardMatrix, key);
+			return index;
+		}
+
+		/// <summary>
+		/// Sets key status
+		/// </summary>
+		public void SetKeyStatus(string key, bool isPressed)
+		{
+			int index = GetKeyIndexFromMatrix(key);
+			KeyStatus[index] = isPressed;
+		}
+
+		/// <summary>
+		/// Gets a key's status
+		/// </summary>
+		public bool GetKeyStatus(string key)
+		{
+			int index = GetKeyIndexFromMatrix(key);
+			return KeyStatus[index];
+		}
 
 
-        public void SyncState(Serializer ser)
-        {
-            ser.BeginSection("Keyboard");
-            ser.Sync("currentLine", ref _currentLine);
-            ser.Sync("keyStatus", ref _keyStatus, false);
-            ser.EndSection();
-        }
-    }
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Keyboard");
+			ser.Sync("currentLine", ref _currentLine);
+			ser.Sync("keyStatus", ref _keyStatus, false);
+			ser.EndSection();
+		}
+	}
 }

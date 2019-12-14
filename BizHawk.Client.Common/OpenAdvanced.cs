@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 		public Token token = new Token();
 
 		public string TypeName { get { return "Libretro"; } }
-		public string DisplayName { get { return $"{Path.GetFileNameWithoutExtension(token.CorePath)}:{token.Path}"; } }
+		public string DisplayName { get { return $"{Path.GetFileNameWithoutExtension(token.CorePath)}: {token.Path}"; } }
 		public string SimplePath { get { return token.Path; } }
 
 		public void Deserialize(string str)
@@ -192,7 +192,7 @@ namespace BizHawk.Client.Common
 		public string Path;
 
 		public string TypeName { get { return "MAME"; } }
-		public string DisplayName { get { return Path; } }
+		public string DisplayName { get { return $"{TypeName}: {Path}"; } }
 		public string SimplePath { get { return Path; } }
 
 		public void Deserialize(string str)

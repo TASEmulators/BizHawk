@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutofireConfig));
 			this.Ok = new System.Windows.Forms.Button();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OnNumeric = new System.Windows.Forms.NumericUpDown();
@@ -161,7 +160,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.Ok);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning_MultiSize;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(512, 512);
 			this.MinimumSize = new System.Drawing.Size(218, 179);

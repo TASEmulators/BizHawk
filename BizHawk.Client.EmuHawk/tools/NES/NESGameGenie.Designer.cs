@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESGameGenie));
 			this.GameGenieCode = new System.Windows.Forms.TextBox();
 			this.GameGenieCodeBox = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -443,7 +442,7 @@
 			this.Controls.Add(this.GameGenieCodeBox);
 			this.Controls.Add(this.MenuStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.MainMenuStrip = this.MenuStrip;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(322, 302);

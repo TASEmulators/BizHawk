@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCommentsForm));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.CommentGrid = new System.Windows.Forms.DataGridView();
@@ -106,7 +105,7 @@
 			this.Controls.Add(this.CommentGrid);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(188, 121);
 			this.Name = "EditCommentsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

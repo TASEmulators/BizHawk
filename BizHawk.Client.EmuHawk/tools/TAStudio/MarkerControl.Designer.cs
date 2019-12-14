@@ -202,7 +202,6 @@
 			this.MarkerView.LagFramesToHide = 0;
 			this.MarkerView.LetKeysModifySelection = false;
 			this.MarkerView.Location = new System.Drawing.Point(6, 19);
-			this.MarkerView.MaxCharactersInHorizontal = 1;
 			this.MarkerView.MultiSelect = false;
 			this.MarkerView.Name = "MarkerView";
 			this.MarkerView.RowCount = 0;

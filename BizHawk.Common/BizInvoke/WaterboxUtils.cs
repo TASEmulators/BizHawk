@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace BizHawk.Common.BizInvoke
 {
@@ -25,18 +22,14 @@ namespace BizHawk.Common.BizInvoke
 
 		public static byte[] Hash(byte[] data)
 		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(data);
-			}
+			using var h = SHA1.Create();
+			return h.ComputeHash(data);
 		}
 
 		public static byte[] Hash(Stream s)
 		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(s);
-			}
+			using var h = SHA1.Create();
+			return h.ComputeHash(s);
 		}
 
 		public static unsafe void ZeroMemory(IntPtr mem, long length)
@@ -49,24 +42,19 @@ namespace BizHawk.Common.BizInvoke
 			}
 		}
 
-		public static long Timestamp()
-		{
-			return DateTime.UtcNow.Ticks;
-		}
-
 		/// <summary>
 		/// system page size
 		/// </summary>
-		public static int PageSize { get; private set; }
+		public static int PageSize { get; }
 
 		/// <summary>
 		/// bitshift corresponding to PageSize
 		/// </summary>
-		public static int PageShift { get; private set; }
+		public static int PageShift { get; }
 		/// <summary>
 		/// bitmask corresponding to PageSize
 		/// </summary>
-		public static ulong PageMask { get; private set; }
+		public static ulong PageMask { get; }
 
 		static WaterboxUtils()
 		{

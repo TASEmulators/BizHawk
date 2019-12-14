@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			byte[] core = null;
 			if (ser.IsWriter)
 			{
-				var ms = new MemoryStream();
+				using var ms = new MemoryStream();
 				ms.Close();
 				core = ms.ToArray();
 			}
@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			mapper.SyncState(ser);
 			ppu.SyncState(ser);
 			serialport.SyncState(ser);
-			audio.SyncState(ser);
 
 			ser.BeginSection("Odyssey2");
 			ser.Sync(nameof(core), ref core, false);

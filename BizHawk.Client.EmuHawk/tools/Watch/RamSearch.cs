@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				_forcePreviewClear = false;
-				WatchListView.Invalidate();
+				WatchListView.RowCount = _searches.Count;
 			}
 		}
 
@@ -832,8 +832,8 @@ namespace BizHawk.Client.EmuHawk
 				SetRemovedMessage(indices.Count);
 				_searches.RemoveRange(indices);
 
-				UpdateList();
 				WatchListView.DeselectAll();
+				UpdateList();
 				ToggleSearchDependentToolBarItems();
 			}
 		}

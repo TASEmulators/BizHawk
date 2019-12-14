@@ -159,7 +159,7 @@
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
             this.Name = "ZXSpectrumJoystickSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Joystick Settings";

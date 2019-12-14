@@ -100,7 +100,7 @@ namespace BizHawk.Bizware.BizwareGL
 		void BeginScene();
 
 		/// <summary>
-		/// Indicates end of scene rendering; use after alldraw calls as per normal
+		/// Indicates end of scene rendering; use after all draw calls as per normal
 		/// </summary>
 		void EndScene();
 
@@ -173,7 +173,7 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetTextureWrapMode(Texture2d tex, bool clamp);
 
 		/// <summary>
-		/// Loads the texture with new data. This isnt supposed to be especially versatile, it just blasts a bitmap buffer into the texture
+		/// Loads the texture with new data. This isn't supposed to be especially versatile, it just blasts a bitmap buffer into the texture
 		/// </summary>
 		void LoadTextureData(Texture2d tex, BitmapBuffer bmp);
 

@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirmwaresConfig));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.lvFirmwares = new System.Windows.Forms.ListView();
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -216,7 +215,7 @@
 			this.tbbGroup.CheckOnClick = true;
 			this.tbbGroup.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.tbbGroup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbGroup.Image = ((System.Drawing.Image)(resources.GetObject("tbbGroup.Image")));
+			this.tbbGroup.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbGroup.Name = "tbbGroup";
 			this.tbbGroup.Size = new System.Drawing.Size(44, 22);
@@ -231,7 +230,7 @@
 			// tbbScan
 			// 
 			this.tbbScan.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbScan.Image = ((System.Drawing.Image)(resources.GetObject("tbbScan.Image")));
+			this.tbbScan.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbScan.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbScan.Name = "tbbScan";
 			this.tbbScan.Size = new System.Drawing.Size(36, 22);
@@ -241,7 +240,7 @@
 			// tbbOrganize
 			// 
 			this.tbbOrganize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbOrganize.Image = ((System.Drawing.Image)(resources.GetObject("tbbOrganize.Image")));
+			this.tbbOrganize.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbOrganize.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbOrganize.Name = "tbbOrganize";
 			this.tbbOrganize.Size = new System.Drawing.Size(58, 22);
@@ -251,7 +250,7 @@
 			// tbbImport
 			// 
 			this.tbbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbImport.Image = ((System.Drawing.Image)(resources.GetObject("tbbImport.Image")));
+			this.tbbImport.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbImport.Name = "tbbImport";
 			this.tbbImport.Size = new System.Drawing.Size(47, 22);
@@ -262,7 +261,7 @@
 			// 
 			this.tbbClose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.tbbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbClose.Image = ((System.Drawing.Image)(resources.GetObject("tbbClose.Image")));
+			this.tbbClose.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbClose.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbClose.Margin = new System.Windows.Forms.Padding(0, 1, 2, 2);
 			this.tbbClose.Name = "tbbClose";
@@ -282,7 +281,7 @@
 			this.tbbCloseReload.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.tbbCloseReload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tbbCloseReload.Enabled = false;
-			this.tbbCloseReload.Image = ((System.Drawing.Image)(resources.GetObject("tbbCloseReload.Image")));
+			this.tbbCloseReload.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbCloseReload.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbCloseReload.Name = "tbbCloseReload";
 			this.tbbCloseReload.Size = new System.Drawing.Size(129, 22);
@@ -294,7 +293,7 @@
 			// tbbOpenFolder
 			// 
 			this.tbbOpenFolder.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tbbOpenFolder.Image = ((System.Drawing.Image)(resources.GetObject("tbbOpenFolder.Image")));
+			this.tbbOpenFolder.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
 			this.tbbOpenFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbOpenFolder.Name = "tbbOpenFolder";
 			this.tbbOpenFolder.Size = new System.Drawing.Size(128, 22);

@@ -6,7 +6,7 @@ using NLua;
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.Common
 {
-	[Description("These functions behavior identically to the mainmemory functions but the user can set the memory domain to read and write from. The default domain is main memory. Use getcurrentmemorydomain(), and usememorydomain() to control which domain is used. Each core has its own set of valid memory domains. Use getmemorydomainlist() to get a list of memory domains for the current core loaded.")]
+	[Description("These functions behavior identically to the mainmemory functions but the user can set the memory domain to read and write from. The default domain is the system bus. Use getcurrentmemorydomain(), and usememorydomain() to control which domain is used. Each core has its own set of valid memory domains. Use getmemorydomainlist() to get a list of memory domains for the current core loaded.")]
 	public sealed class MemoryLuaLibrary : DelegatingLuaLibrary
 	{
 		public MemoryLuaLibrary(Lua lua)

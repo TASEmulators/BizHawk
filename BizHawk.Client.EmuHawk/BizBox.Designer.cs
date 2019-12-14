@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BizBox));
 			this.OK = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -181,7 +180,7 @@
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.OK);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.logo;
 			this.MinimumSize = new System.Drawing.Size(453, 253);
 			this.Name = "BizBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

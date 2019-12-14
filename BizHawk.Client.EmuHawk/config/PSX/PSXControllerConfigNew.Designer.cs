@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PSXControllerConfigNew));
             this.cbMultitap_1 = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lbl_p_1_4 = new System.Windows.Forms.Label();
@@ -428,7 +427,7 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PSXControllerConfigNew";

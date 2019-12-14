@@ -19,9 +19,9 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
 
 		private TasMovie Movie => Tastudio.CurrentTasMovie;
+		private MainForm MainForm => GlobalWin.MainForm; // TODO: pass this in
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
-		private int _longestBranchText;
 
 		private enum BranchUndo
 		{
@@ -45,7 +45,14 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
+			SetupColumns();
+			BranchView.QueryItemText += QueryItemText;
+			BranchView.QueryItemBkColor += QueryItemBkColor;
+		}
 
+		private void SetupColumns()
+		{
+			BranchView.AllColumns.Clear();
 			BranchView.AllColumns.AddRange(new[]
 			{
 				new RollColumn
@@ -67,9 +74,6 @@ namespace BizHawk.Client.EmuHawk
 					Width = 90
 				},
 			});
-
-			BranchView.QueryItemText += QueryItemText;
-			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
 		#region Query callbacks
@@ -145,6 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
+			MainForm.UpdateStatusSlots();
 		}
 
 		public TasBranch SelectedBranch => BranchView.AnyRowsSelected
@@ -158,8 +163,8 @@ namespace BizHawk.Client.EmuHawk
 				Frame = Tastudio.Emulator.Frame,
 				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.CloneInput(),
-				CoreFrameBuffer = GlobalWin.MainForm.MakeScreenshotImage(),
-				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
+				CoreFrameBuffer = MainForm.MakeScreenshotImage(),
+				OSDFrameBuffer = MainForm.CaptureOSD(),
 				ChangeLog = new TasMovieChangeLog(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
@@ -184,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Movie.Truncate(branch.Frame);
 
-			GlobalWin.MainForm.PauseOnFrame = null;
+			MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
 
@@ -344,6 +349,7 @@ namespace BizHawk.Client.EmuHawk
 			RemovedCallback?.Invoke(index);
 			Tastudio.RefreshDialog();
 			GlobalWin.OSD.AddMessage($"Removed branch {index}");
+			MainForm.UpdateStatusSlots();
 		}
 
 		private void UndoBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -513,41 +519,26 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			BranchView.DeselectAll();
 			BranchView.RowCount = Movie.Branches.Count;
+
+			if (BranchView.RowCount == 0)
+			{
+				SetupColumns();
+			}
+
 			BranchView.Refresh();
 		}
 
 		public void UpdateTextColumnWidth()
 		{
-			int temp = 0;
-			foreach (TasBranch b in Movie.Branches)
+			if (Movie.Branches.Any())
 			{
-				if (string.IsNullOrEmpty(b.UserText))
-				{
-					continue;
-				}
+				var longestBranchText = Movie.Branches
+					.OrderBy(b => b.UserText?.Length ?? 0)
+					.Last()
+					.UserText;
 
-				if (temp < b.UserText.Length)
-				{
-					temp = b.UserText.Length;
-				}
-			}
-
-			_longestBranchText = temp;
-
-			int textWidth = (_longestBranchText * 12) + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
-			var column = BranchView.AllColumns.Single(c => c.Name == UserTextColumnName);
-
-			if (textWidth < 90)
-			{
-				textWidth = 90;
-			}
-
-			if (column.Width != textWidth)
-			{
-				column.Width = textWidth;
-				BranchView.AllColumns.ColumnsChanged();
+				BranchView.ExpandColumnToFitText(UserTextColumnName, longestBranchText);
 			}
 		}
 
@@ -593,7 +584,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
+				if (BranchView.CurrentCell.IsDataCell()
 					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
 				{
 					BranchView.DragCurrentCell();
@@ -636,7 +627,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex < Movie.Branches.Count)
+			if (e.NewCell.IsDataCell() && e.OldCell.RowIndex < Movie.Branches.Count)
 			{
 				var guid = Movie.BranchGuidByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);

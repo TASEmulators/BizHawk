@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,23 +10,11 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public BmpView BmpView { get { return bmpView1; } }
-
-		[Browsable(false)]
-		public bool ShouldDraw { get { return this.Visible; } }
+		public BmpView BmpView => bmpView1;
 
 		public override string ToString()
 		{
 			return Text;
-		}
-
-		public void SetDetails(IList<Tuple<string, string>> details)
-		{
-			listView1.Items.Clear();
-			foreach (var t in details)
-			{
-				listView1.Items.Add(new ListViewItem(new string[] { t.Item1, t.Item2 }));
-			}
 		}
 
 		private void MobileDetailView_SizeChanged(object sender, EventArgs e)

@@ -295,11 +295,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public MemoryCallback(string scope, MemoryCallbackType type, string name, MemoryCallbackDelegate callback, uint? address, uint? mask)
 		{
-			if (type == MemoryCallbackType.Execute && !address.HasValue)
-			{
-				throw new InvalidOperationException("When assigning an execute callback, an address must be specified");
-			}
-
 			Type = type;
 			Name = name;
 			Callback = callback;

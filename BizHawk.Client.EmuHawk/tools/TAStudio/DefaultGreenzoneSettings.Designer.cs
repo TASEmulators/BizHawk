@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DefaultGreenzoneSettings));
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.DefaultsButton = new System.Windows.Forms.Button();
@@ -92,7 +91,7 @@
 			this.Controls.Add(this.DefaultsButton);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.Name = "DefaultGreenzoneSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Default Savestate History Settings";

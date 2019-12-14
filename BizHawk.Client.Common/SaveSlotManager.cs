@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -29,27 +27,20 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < 10; i++)
 			{
-				var file = new FileInfo($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{i}.State");
-				if (file.Directory != null && file.Directory.Exists == false)
+				if (Global.MovieSession.Movie is TasMovie tasMovie)
 				{
-					file.Directory.Create();
+					_slots[i] = i < tasMovie.Branches.Count;
 				}
-
-				_slots[i] = file.Exists;
-			}
-		}
-
-		public bool HasSavestateSlots
-		{
-			get
-			{
-				if (!Global.Emulator.HasSavestates())
+				else
 				{
-					return false;
-				}
+					var file = new FileInfo($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{i}.State");
+					if (file.Directory != null && file.Directory.Exists == false)
+					{
+						file.Directory.Create();
+					}
 
-				Update();
-				return _slots.Any(slot => slot);
+					_slots[i] = file.Exists;
+				}
 			}
 		}
 
@@ -84,12 +75,22 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			if (Global.MovieSession.Movie is TasMovie tasMovie)
+			{
+				return;
+			}
+
 			_redo[slot] ^= true;
 		}
 
 		public bool IsRedo(int slot)
 		{
 			if (slot < 0 || slot > 9)
+			{
+				return false;
+			}
+
+			if (Global.MovieSession.Movie is TasMovie tasMovie)
 			{
 				return false;
 			}

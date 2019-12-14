@@ -45,36 +45,39 @@ namespace BizHawk.Client.EmuHawk.Filters
 			Owner = owner;
 			this.Preset = preset;
 			Passes = preset.Passes.ToArray();
-
-			bool ok = true;
 			Errors = "";
 
 			//load up the shaders
 			Shaders = new RetroShader[preset.Passes.Count];
-			for (int i = 0; i < preset.Passes.Count; i++)
+			for (var i = 0; i < preset.Passes.Count; i++)
 			{
-				RetroShaderPreset.ShaderPass pass = preset.Passes[i];
-
 				//acquire content
-				string path = Path.Combine(baseDirectory, pass.ShaderPath);
-				if (!File.Exists(path))
+				var path = Path.Combine(baseDirectory, preset.Passes[i].ShaderPath);
+				string content;
+				try
 				{
-					ok = false;
-					break;
+					content = ResolveIncludes(File.ReadAllText(path), Path.GetDirectoryName(path));
 				}
-				string content = ResolveIncludes(File.ReadAllText(path), Path.GetDirectoryName(path));
+				catch (DirectoryNotFoundException e)
+				{
+					Errors += $"caught {nameof(DirectoryNotFoundException)}: {e.Message}\n";
+					return;
+				}
+				catch (FileNotFoundException e)
+				{
+					Errors += $"could not read file {e.FileName}\n";
+					return;
+				}
 
-
-				var shader = new RetroShader(Owner, content, debug);
-				Shaders[i] = shader;
+				var shader = Shaders[i] = new RetroShader(Owner, content, debug);
 				if (!shader.Available)
 				{
-					Errors += $"===================\r\nPass {i}:\r\n{shader.Errors}";
-					ok = false;
+					Errors += $"===================\r\nPass {i}:\r\n{shader.Errors}\n";
+					return;
 				}
 			}
 
-			Available = ok;
+			Available = true;
 		}
 
 		public void Dispose()
@@ -85,12 +88,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 			_isDisposed = true;
 		}
 
-		/// <summary>
-		/// Whether this shader chain is available (it wont be available if some resources failed to load or compile)
-		/// </summary>
-		public bool Available { get; private set; }
-		public string Errors { get; private set; }
-
+		/// <summary>Whether this shader chain is available (it wont be available if some resources failed to load or compile)</summary>
+		public readonly bool Available;
+		public readonly string Errors;
 		public readonly IGL Owner;
 		public readonly RetroShaderPreset Preset;
 		public readonly RetroShader[] Shaders;

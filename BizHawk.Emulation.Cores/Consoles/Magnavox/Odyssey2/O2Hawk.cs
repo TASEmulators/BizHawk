@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte[] cart_RAM;
 		public bool has_bat;
 
-		private int _frame = 0;
+		public int _frame = 0;
 
 		public MapperBase mapper;
 
@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public I8048 cpu;
 		public PPU ppu;
-		public Audio audio;
 		public SerialPort serialport;
 
 		[CoreConstructor("O2")]
@@ -62,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				OnExecFetch = ExecFetch,
 			};
 			
-			audio = new Audio();
 			serialport = new SerialPort();
 
 			CoreComm = comm;
@@ -92,12 +90,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			_frameHz = 60;
 
-			audio.Core = this;
 			ppu.Core = this;
+			cpu.Core = this;
 			serialport.Core = this;
 
 			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(audio);
+			ser.Register<ISoundProvider>(ppu);
 			ServiceProvider = ser;
 
 			_settings = (O2Settings)settings ?? new O2Settings();
@@ -118,6 +116,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				RAM[j] = (byte)j;
 			}
+
+			for (int k = 0; k < 0x100; k++)
+			{
+				ppu.WriteReg(k, (byte)k);
+			}
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
@@ -132,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 
 			ppu.Reset();
-			audio.Reset();
 			serialport.Reset();
 
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);

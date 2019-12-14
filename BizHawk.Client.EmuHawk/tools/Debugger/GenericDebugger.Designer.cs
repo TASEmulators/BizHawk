@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GenericDebugger));
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -363,7 +362,7 @@
 			this.Controls.Add(this.RegistersGroupBox);
 			this.Controls.Add(this.DisassemblerBox);
 			this.Controls.Add(this.menuStrip1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug_MultiSize;
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "GenericDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

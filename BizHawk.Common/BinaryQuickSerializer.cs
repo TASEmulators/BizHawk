@@ -27,11 +27,6 @@ namespace BizHawk.Common
 			return caller.Method;
 		}
 
-		private static MethodInfo Method(Expression<Action> f)
-		{
-			return FromExpression(f.Body);
-		}
-
 		private static MethodInfo Method<T>(Expression<Action<T>> f)
 		{
 			return FromExpression(f.Body);

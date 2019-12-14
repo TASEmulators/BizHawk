@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamWatch));
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -273,7 +272,7 @@
             // 
             // MoveTopContextMenuItem
             // 
-            this.MoveTopContextMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("MoveTopContextMenuItem.Image")));
+            this.MoveTopContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveTop;
             this.MoveTopContextMenuItem.Name = "MoveTopContextMenuItem";
             this.MoveTopContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Up)));
@@ -351,7 +350,7 @@
             // newToolStripButton
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
+            this.newToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
             this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -361,7 +360,7 @@
             // openToolStripButton
             // 
             this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
+            this.openToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
             this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -371,7 +370,7 @@
             // saveToolStripButton
             // 
             this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
+            this.saveToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
             this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripButton.Name = "saveToolStripButton";
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -397,7 +396,7 @@
             // editWatchToolStripButton
             // 
             this.editWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.editWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("editWatchToolStripButton.Image")));
+            this.editWatchToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CutHS;
             this.editWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.editWatchToolStripButton.Name = "editWatchToolStripButton";
             this.editWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -418,7 +417,7 @@
             // clearChangeCountsToolStripButton
             // 
             this.clearChangeCountsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.clearChangeCountsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("clearChangeCountsToolStripButton.Image")));
+            this.clearChangeCountsToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.placeholder_bitmap;
             this.clearChangeCountsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.clearChangeCountsToolStripButton.Name = "clearChangeCountsToolStripButton";
             this.clearChangeCountsToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -429,7 +428,7 @@
             // duplicateWatchToolStripButton
             // 
             this.duplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.duplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("duplicateWatchToolStripButton.Image")));
+            this.duplicateWatchToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
             this.duplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.duplicateWatchToolStripButton.Name = "duplicateWatchToolStripButton";
             this.duplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -750,7 +749,7 @@
             // 
             // MoveTopMenuItem
             // 
-            this.MoveTopMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("MoveTopMenuItem.Image")));
+            this.MoveTopMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveTop;
             this.MoveTopMenuItem.Name = "MoveTopMenuItem";
             this.MoveTopMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Up)));
@@ -912,7 +911,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.RamWatchMenu);
             this.Controls.Add(this.WatchListView);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.watch_MultiSize;
             this.Name = "RamWatch";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = " RAM Watch";

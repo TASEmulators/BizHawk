@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuickNesConfig));
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -141,7 +140,7 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.propertyGrid1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.QuickNes_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(390, 285);
 			this.Name = "QuickNesConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

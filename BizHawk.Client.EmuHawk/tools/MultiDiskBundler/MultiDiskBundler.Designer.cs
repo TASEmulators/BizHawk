@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultiDiskBundler));
             this.MultiDiskMenuStrip = new System.Windows.Forms.MenuStrip();
             this.SaveRunButton = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
@@ -190,7 +189,7 @@
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.SaveRunButton);
             this.Controls.Add(this.MultiDiskMenuStrip);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.dual_MultiSize;
             this.MainMenuStrip = this.MultiDiskMenuStrip;
             this.Name = "MultiDiskBundler";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

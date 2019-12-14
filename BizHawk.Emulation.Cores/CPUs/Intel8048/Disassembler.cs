@@ -26,11 +26,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   A,P7", // 0f
 			"INC   @R0", // 10
 			"INC   @R1", // 11
-			"JPB   0", // 12
+			"JPB   0,i8", // 12
 			"ADC   A,i8", // 13
 			"CALL  0,i8", // 14
 			"DI", // 15
-			"JP    TF", // 16
+			"JP    TF,i8", // 16
 			"INC   A", // 17
 			"INC   R0", // 18
 			"INC   R1", // 19
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   A,i8", // 23
 			"JP    2K 1,i8", // 24
 			"EN", // 25
-			"JP    !T0", // 26
+			"JP    !T0,i8", // 26
 			"CLR   A", // 27
 			"XCH   A,R0", // 28
 			"XCH   A,R1", // 29
@@ -58,11 +58,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"XCH   A,R7", // 2f
 			"XCHD  A,@R0", // 30
 			"XCHD  A,@R1", // 31
-			"JPB   1", // 32
+			"JPB   1,i8", // 32
 			"???", // 33
 			"CALL  1,i8", // 34
 			"DN", // 35
-			"JP    T0", // 36
+			"JP    T0,i8", // 36
 			"COM   A", // 37
 			"???", // 38
 			"OUT   P1", // 39
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"OR    A,i8", // 43
 			"JP    2K 2,i8", // 44
 			"START CNT", // 45
-			"JP    NT1", // 46
+			"JP    NT1,i8", // 46
 			"SWP", // 47
 			"OR    A,R0", // 48
 			"OR    A,R1", // 49
@@ -90,11 +90,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"OR    A,R7", // 4f
 			"AND   A,@R0", // 50
 			"AND   A,@R1", // 51
-			"JPB   2", // 52
+			"JPB   2,i8", // 52
 			"AND   A,i8", // 53
 			"CALL  2,i8", // 54
 			"START TIM", // 55
-			"JP    T1", // 56
+			"JP    T1,i8", // 56
 			"DAA", // 57
 			"AND   A,R0", // 58
 			"AND   A,R1", // 59
@@ -122,11 +122,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"ADD   A,R7", // 6f
 			"ADC   A,@R0", // 70
 			"ADC   A,@R1", // 71
-			"JPB   3", // 72
+			"JPB   3,i8", // 72
 			"???", // 73
 			"CALL  3,i8", // 74
 			"ENT0  CLK", // 75
-			"JP    F1", // 76
+			"JP    F1,i8", // 76
 			"ROR", // 77
 			"ADC   A,R0", // 78
 			"ADC   A,R1", // 79
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"RET", // 83
 			"JP    2K 4,i8", // 84
 			"CLR   F0", // 85
-			"JP    !IRQ", // 86
+			"JP    !IRQ,i8", // 86
 			"???", // 87
 			"OR    BUS,i8", // 88
 			"OR    P1,i8", // 89
@@ -154,11 +154,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"OR    P7,A", // 8f
 			"MOVX  @R0,A", // 90
 			"MOVX  @R1,A", // 91
-			"JPB   4", // 92
+			"JPB   4,i8", // 92
 			"RETR", // 93
 			"CALL  4,i8", // 94
 			"COM   F0", // 95
-			"JP    A!=0", // 96
+			"JP    A!=0,i8", // 96
 			"CLR   C", // 97
 			"AND   BUS,i8", // 98
 			"AND   P1,i8", // 99
@@ -184,13 +184,13 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   R5,A", // ad
 			"MOV   R6,A", // ae
 			"MOV   R7,A", // af
-			"???", // b0
-			"???", // b1
-			"JPB   5", // b2
-			"JPP   A", // b3
+			"MOV   @R0,i8", // b0
+			"MOV   @R1,i8", // b1
+			"JPB   5,i8", // b2
+			"JPP   A,i8", // b3
 			"CALL  5,i8", // b4
 			"COM   F1", // b5
-			"JP    F0", // b6
+			"JP    F0,i8", // b6
 			"???", // b7
 			"MOV   R0,i8", // b8
 			"MOV   R1,i8", // b9
@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"???", // c3
 			"JP    2K 6,i8", // c4
 			"SEL   RB 0", // c5
-			"JP    A==0", // c6
+			"JP    A==0,i8", // c6
 			"MOV   A,PSW", // c7
 			"DEC   R0", // c8
 			"DEC   R1", // c9
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"DEC   R7", // cf
 			"XOR   A,@R0", // d0
 			"XOR   A,@R1", // d1
-			"JPB   6", // d2
+			"JPB   6,i8", // d2
 			"XOR   A,i8", // d3
 			"CALL  6,i8", // d4
 			"SEL   RB 1", // d5
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV3  A,@A", // e3
 			"JP    2K 7,i8", // e4
 			"SEL   MB 0", // e5
-			"JP    NC", // e6
+			"JP    NC,i8", // e6
 			"ROL", // e7
 			"DJNZ  R0,i8", // e8
 			"DJNZ  R1,i8", // e9
@@ -250,11 +250,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"DJNZ  R7,i8", // ef
 			"MOV   A,@R0", // f0
 			"MOV   A,@R1", // f1
-			"JPB   7", // f2
+			"JPB   7,i8", // f2
 			"???", // f3
 			"CALL  7,i8", // f4
 			"SEL   MB 1", // f5
-			"JP    C", // f6
+			"JP    C,i8", // f6
 			"RLC", // f7
 			"MOV   A,R0", // f8
 			"MOV   A,R1", // f9

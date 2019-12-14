@@ -16,12 +16,6 @@ namespace BizHawk.Common
 			Enabled = enabled;
 		}
 
-		public UndoHistory(IEnumerable<T> newState, bool enabled)
-		{
-			AddState(newState);
-			Enabled = enabled;
-		}
-
 		public bool Enabled { get; }
 
 		public bool CanUndo => Enabled && _curPos > 1;

@@ -59,8 +59,6 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.txtCustomARWidth = new System.Windows.Forms.TextBox();
 			this.rbUseCustom = new System.Windows.Forms.RadioButton();
-			this.label2 = new System.Windows.Forms.Label();
-			this.checkSnowyNullEmulator = new System.Windows.Forms.CheckBox();
 			this.rbOpenGL = new System.Windows.Forms.RadioButton();
 			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -440,25 +438,6 @@
 			this.rbUseCustom.Text = "Use custom size:";
 			this.rbUseCustom.UseVisualStyleBackColor = true;
 			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(6, 128);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(398, 27);
-			this.label2.TabIndex = 17;
-			this.label2.Text = "Some people think the white noise is a great idea, and some people don\'t. Disabli" +
-    "ng this displays black instead.";
-			// 
-			// checkSnowyNullEmulator
-			// 
-			this.checkSnowyNullEmulator.AutoSize = true;
-			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(6, 108);
-			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
-			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
-			this.checkSnowyNullEmulator.TabIndex = 16;
-			this.checkSnowyNullEmulator.Text = "Enable Snowy Null Emulator";
-			this.checkSnowyNullEmulator.UseVisualStyleBackColor = true;
-			// 
 			// rbOpenGL
 			// 
 			this.rbOpenGL.AutoSize = true;
@@ -760,8 +739,6 @@
 			// tpMisc
 			// 
 			this.tpMisc.Controls.Add(this.groupBox5);
-			this.tpMisc.Controls.Add(this.label2);
-			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
 			this.tpMisc.Location = new System.Drawing.Point(4, 22);
 			this.tpMisc.Name = "tpMisc";
 			this.tpMisc.Size = new System.Drawing.Size(528, 291);
@@ -1054,8 +1031,6 @@
 		private System.Windows.Forms.RadioButton rbUseRaw;
 		private System.Windows.Forms.RadioButton rbUseSystem;
 		private System.Windows.Forms.GroupBox grpARSelection;
-		private System.Windows.Forms.CheckBox checkSnowyNullEmulator;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label lblScanlines;
 		private System.Windows.Forms.TextBox txtCustomARHeight;
 		private System.Windows.Forms.Label label3;

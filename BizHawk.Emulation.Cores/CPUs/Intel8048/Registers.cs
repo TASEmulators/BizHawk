@@ -33,22 +33,24 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort R6 = 6;
 		public const ushort R7 = 7;
 
+		// offset for port regs
+		public const ushort PX = 70;
+
 		// the location pointed to by the registers is controlled by the RAM bank
 		public ushort RB = 0;
-		public ushort RAM_ptr = 0;
 
 		// high PC address bit is controlled by instruction bank
-		// only hanges on JMP and CALL instructions
+		// only changes on JMP and CALL instructions
 		public ushort MB = 0;
 
 		//RAM occupies registers 0-63
 		public const ushort PC = 64;
 		public const ushort PSW = 65;
-		public const ushort BUS = 66;
-		public const ushort A = 67;
-		public const ushort ADDR = 68; // internal
-		public const ushort ALU = 69; // internal
-		public const ushort ALU2 = 70; // internal
+		public const ushort A = 66;
+		public const ushort ADDR = 67; // internal
+		public const ushort ALU = 68; // internal
+		public const ushort ALU2 = 69; // internal
+		public const ushort BUS = 70;
 		public const ushort P1 = 71;
 		public const ushort P2 = 72;
 		public const ushort P4 = 73;
@@ -66,7 +68,20 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public bool FlagBS
 		{
 			get { return (Regs[PSW] & 0x10) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x10) | (value ? 0x10 : 0x00)); }
+			set
+			{
+				// change register bank also
+				Regs[PSW] = (byte)((Regs[PSW] & ~0x10) | (value ? 0x10 : 0x00));
+				if (value & 0x10 > 0)
+				{
+					RB = 24;
+				}
+				else
+				{
+					RB = 0;
+				}
+
+			}
 		}
 
 		public bool FlagF0

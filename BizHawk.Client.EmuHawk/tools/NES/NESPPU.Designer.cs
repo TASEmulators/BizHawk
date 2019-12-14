@@ -29,7 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NesPPU));
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
@@ -436,7 +435,7 @@
 			this.txtScanline.Size = new System.Drawing.Size(79, 22);
 			this.txtScanline.TabIndex = 6;
 			this.txtScanline.Text = "0";
-			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextbox_TextChanged);
+			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextBox_TextChanged);
 			// 
 			// groupBox1
 			// 
@@ -755,7 +754,7 @@
 			this.cHRROMTileViewerToolStripMenuItem.Name = "cHRROMTileViewerToolStripMenuItem";
 			this.cHRROMTileViewerToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
 			this.cHRROMTileViewerToolStripMenuItem.Text = "CHR ROM Tile Viewer";
-			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.cHRROMTileViewerToolStripMenuItem_Click);
+			this.cHRROMTileViewerToolStripMenuItem.Click += new System.EventHandler(this.ChrROMTileViewerToolStripMenuItem_Click);
 			// 
 			// NesPPUStatusBar
 			// 
@@ -813,7 +812,7 @@
 			this.numericUpDownCHRROMBank.Name = "numericUpDownCHRROMBank";
 			this.numericUpDownCHRROMBank.Size = new System.Drawing.Size(160, 22);
 			this.numericUpDownCHRROMBank.TabIndex = 1;
-			this.numericUpDownCHRROMBank.ValueChanged += new System.EventHandler(this.numericUpDownCHRROMBank_ValueChanged);
+			this.numericUpDownCHRROMBank.ValueChanged += new System.EventHandler(this.NumericUpDownChrRomBank_ValueChanged);
 			// 
 			// CHRROMView
 			// 
@@ -840,7 +839,7 @@
 			this.Controls.Add(this.PalettesGroup);
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.NESControllerIcon_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.NesPPUMenu;
 			this.Margin = new System.Windows.Forms.Padding(4);

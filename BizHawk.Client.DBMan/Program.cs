@@ -1,12 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
 using Community.CsharpSqlite.SQLiteClient;
-using System.IO;
-
 
 namespace BizHawk.Client.DBMan
 {
@@ -15,17 +14,17 @@ namespace BizHawk.Client.DBMan
 		static Program()
 		{
 #if WINDOWS
-			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			string dllDir = Path.Combine(GetExeDirectoryAbsolute(), "dll");
 			SetDllDirectory(dllDir);
 
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
 			WhackAllMOTW(dllDir);
 #endif
 		}
@@ -46,17 +45,18 @@ namespace BizHawk.Client.DBMan
 					if (asm.FullName == args.Name)
 						return asm;
 
-				//load missing assemblies by trying to find them in the dll directory
-				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				// load missing assemblies by trying to find them in the dll directory
+				string dllName = new AssemblyName(args.Name).Name + ".dll";
 				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
-				string fname = Path.Combine(directory, dllname);
+				string fname = Path.Combine(directory, dllName);
 				if (!File.Exists(fname)) return null;
-				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+
+				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return Assembly.LoadFile(fname);
 			}
 		}
 
-		//declared here instead of a more usual place to avoid dependencies on the more usual place
+		// declared here instead of a more usual place to avoid dependencies on the more usual place
 #if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool SetDllDirectory(string lpPathName);
@@ -133,14 +133,11 @@ namespace BizHawk.Client.DBMan
 			{
 				MessageBox.Show(e.ToString());
 			}
-
-			return;
 		}
 
 		static void InitDB()
 		{
-			DB.Con = new SqliteConnection();
-			DB.Con.ConnectionString = @"Version=3,uri=file://gamedb/game.db";
+			DB.Con = new SqliteConnection { ConnectionString = @"Version=3,uri=file://gamedb/game.db" };
 			DB.Con.Open();
 		}
 	}

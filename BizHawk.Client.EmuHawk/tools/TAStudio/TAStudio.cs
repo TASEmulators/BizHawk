@@ -114,8 +114,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
+			void SetImages()
+			{
+				RecentSubMenu.Image = Properties.Resources.Recent;
+				recentMacrosToolStripMenuItem.Image = Properties.Resources.Recent;
+				TASEditorManualOnlineMenuItem.Image = Properties.Resources.Help;
+				ForumThreadMenuItem.Image = Properties.Resources.TAStudio;
+
+				Icon = Properties.Resources.TAStudio_MultiSize;
+			}
+
 			Settings = new TAStudioSettings();
 			InitializeComponent();
+			SetImages();
 			InitializeSeekWorker();
 
 			_defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
@@ -136,7 +147,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
-			TasView.MaxCharactersInHorizontal = 1;
 			LastPositionFrame = -1;
 		}
 
@@ -252,17 +262,15 @@ namespace BizHawk.Client.EmuHawk
 
 			SetColumnsFromCurrentStickies();
 
-			if (VersionInfo.DeveloperBuild)
+			if (TasView.Rotatable)
 			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems()
+					.ToArray());
 
 				RightClickMenu.Items
-				.OfType<ToolStripMenuItem>()
-				.First(t => t.Name == "RotateMenuItem")
-				.Click += (o, ov) =>
-				{
-					CurrentTasMovie.FlagChanges();
-				};
+					.OfType<ToolStripMenuItem>()
+					.First(t => t.Name == "RotateMenuItem")
+					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
 			}
 
 			TasView.InputPaintingMode = Settings.DrawInput;
@@ -369,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 				StartNewTasMovie();
 			}
 
-			if (Global.Emulator is NullEmulator)
+			if (Emulator.IsNull())
 			{
 				DisengageTastudio();
 				return false;
@@ -419,10 +427,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ColumnType type;
 				int digits;
-				if (Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.Contains(kvp.Key))
+				if (ControllerType.FloatControls.Contains(kvp.Key))
 				{
-					ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-						[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(kvp.Key)];
+					ControllerDefinition.FloatRange range = ControllerType.FloatRanges
+						[ControllerType.FloatControls.IndexOf(kvp.Key)];
 					type = ColumnType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
 				}
@@ -576,19 +584,19 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			}
 
-			//if (TasView.AllColumns.Count == 0 || file.Extension != $".{TasMovie.Extension}")
-			//{
+			// If we are loading an existing non-default movie, we will already have columns generated
+			// Only set up columns if needed
+			if (!TasView.AllColumns.Any())
+			{
 				SetUpColumns();
-			//}
-			//else
-			//{
-				SetUpToolStripColumns();
-			//}
+			}
+
+			SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			BookMarkControl.UpdateTextColumnWidth();
-			
+			MarkerControl.UpdateTextColumnWidth();
 			// clear all selections
 			TasView.DeselectAll();
 			BookMarkControl.Restart();
@@ -678,6 +686,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 				BookMarkControl.UpdateTextColumnWidth();
+				MarkerControl.UpdateTextColumnWidth();
 			}
 
 			TastudioPlayMode();
@@ -822,12 +831,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshTasView()
 		{
-			CurrentTasMovie.UseInputCache = true;
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-
-			CurrentTasMovie.FlushInputCache();
-			CurrentTasMovie.UseInputCache = false;
-
 			_lastRefresh = Emulator.Frame;
 		}
 
@@ -917,7 +921,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadState(KeyValuePair<int, byte[]> state)
 		{
-			StatableEmulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
+			using var ms = new MemoryStream(state.Value);
+			using var br = new BinaryReader(ms);
+			StatableEmulator.LoadStateBinary(br);
 
 			if (state.Key == 0 && CurrentTasMovie.StartsFromSavestate)
 			{

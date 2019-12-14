@@ -35,7 +35,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MovieHeaderEditor));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.AuthorTextBox = new System.Windows.Forms.TextBox();
@@ -207,7 +206,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.AuthorTextBox);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio_MultiSize;
 			this.MinimumSize = new System.Drawing.Size(150, 311);
 			this.Name = "MovieHeaderEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

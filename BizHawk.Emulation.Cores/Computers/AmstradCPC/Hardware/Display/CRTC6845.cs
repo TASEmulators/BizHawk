@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// The CRTC latches the Display Start H & L address at different times
 		/// (depending on the chip type)
 		/// </summary>
-		private int StartAddressLatch;		
+		private int StartAddressLatch;
 
 		#endregion
 
@@ -541,7 +541,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				case 1: return ReadStatus_Type1(ref data);
 				case 3:
 				case 4: return ReadStatus_Type3_4(ref data);
-				default: return false;					
+				default: return false;
 			}
 		}
 
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						// Bits 5 and 4 determine the skew
 						res = (val & 0x30) >> 4;
 						if (res > 2)
-							return -1;						
+							return -1;
 						break;
 
 					// UMR6845R
@@ -600,7 +600,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 						if (res > 2)
 							return -1;
 						break;
-					
+
 					// UMR6845R
 					case 1:
 						return 0;
@@ -1141,7 +1141,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		#region Clock Cycles
 
-		/* persistent switch signals */		
+		/* persistent switch signals */
 		bool s_VS;
 		bool s_HDISP;
 		bool s_VDISP;
@@ -1172,7 +1172,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		private void ClockCycle_Generic()
 		{
-			
+
 		}
 
 		/// <summary>
@@ -1788,7 +1788,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			else
 			{
 				_DISPTMG = false;
-			}			
+			}
 
 			/* Cursor Control */
 			if (s_HDISP && s_VDISP)

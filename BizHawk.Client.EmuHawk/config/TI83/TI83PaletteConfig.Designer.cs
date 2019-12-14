@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TI83PaletteConfig));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
 			this.BackgroundPanel = new System.Windows.Forms.Panel();
@@ -122,7 +121,7 @@
 			this.Controls.Add(this.BackgroundPanel);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.calculator_MultiSize;
 			this.Name = "TI83PaletteConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Palette Config";

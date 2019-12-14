@@ -40,33 +40,29 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_graphics.DrawImage(bitmap, point);
 		}
 
-		public void DrawRectangle(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect)
+		public void DrawRectangle(Rectangle rect)
 		{
-			_graphics.DrawRectangle(
-				_currentPen,
-				new Rectangle(nLeftRect, nTopRect, nRightRect - nLeftRect, nBottomRect - nTopRect));
+			_graphics.DrawRectangle(_currentPen, rect);
 		}
 
-		public void DrawString(string str, Point point)
+		public void DrawString(string str, Rectangle rect)
 		{
 			if (_rotateString)
 			{
-				_graphics.TranslateTransform(point.X, point.Y);
+				_graphics.TranslateTransform(rect.X, rect.Y);
 				_graphics.RotateTransform(90);
 				_graphics.DrawString(str, _currentFont, _currentStringBrush, Point.Empty);
 				_graphics.ResetTransform();
 			}
 			else
 			{
-				_graphics.DrawString(str, _currentFont, _currentStringBrush, point);
+				_graphics.DrawString(str, _currentFont, _currentStringBrush, rect);
 			}
 		}
 
-		public void FillRectangle(int x, int y, int w, int h)
+		public void FillRectangle(Rectangle rect)
 		{
-			_graphics.FillRectangle(
-				_currentBrush,
-				new Rectangle(x, y, w, h));
+			_graphics.FillRectangle(_currentBrush, rect);
 		}
 
 		public void Line(int x1, int y1, int x2, int y2)
@@ -74,16 +70,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			_graphics.DrawLine(_currentPen, x1, y1, x2, y2);
 		}
 
-		public IDisposable LockGraphics(Graphics g, int width, int height)
+		public IDisposable LockGraphics(Graphics g)
 		{
 			_graphics = g;
 			return new GdiPlusGraphicsLock();
 		}
 
-		public Size MeasureString(string str, Font font)
+		public SizeF MeasureString(string str, Font font)
 		{
-			var size = _graphics.MeasureString(str, font);
-			return new Size((int)(size.Width + 0.5), (int)(size.Height + 0.5));
+			return _graphics.MeasureString(str, font);
 		}
 
 		public void PrepDrawString(Font font, Color color, bool rotate = false)

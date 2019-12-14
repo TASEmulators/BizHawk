@@ -45,12 +45,6 @@ namespace BizHawk.Common
 	public class Bag<K, V> : BagBase<K, V, Dictionary<K, List<V>>, List<V>> { }
 
 	/// <summary>
-	/// a Dictionary-of-lists with key K and values List&lt;V&gt;
-	/// </summary>
-	[Serializable]
-	public class SortedBag<K, V> : BagBase<K, V, SortedDictionary<K, List<V>>, List<V>> { }
-
-	/// <summary>
 	/// base class for Bag and SortedBag
 	/// </summary>
 	/// <typeparam name="K">dictionary keys</typeparam>

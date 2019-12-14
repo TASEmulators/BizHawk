@@ -10,7 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	[Schema("INTV")]
 	public class IntvSchema : IVirtualPadSchema
 	{
-		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
 		private string StandardControllerName => typeof(StandardController).DisplayName();
 		private string AnalogControllerName => typeof(FakeAnalogController).DisplayName();
 

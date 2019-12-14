@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PceBgViewer));
 			this.PceBgViewerMenu = new MenuStripEx();
 			this.ViewerSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.VDC1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -255,7 +254,7 @@
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.PceBgViewerMenu);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pce_MultiSize;
 			this.MainMenuStrip = this.PceBgViewerMenu;
 			this.Name = "PceBgViewer";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

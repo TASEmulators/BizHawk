@@ -1,52 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public unsafe static class Win32
+	public static unsafe class Win32
 	{
-		public static bool Is64BitProcess { get { return (IntPtr.Size == 8); } }
-		public static bool Is64BitOperatingSystem { get { return Is64BitProcess || InternalCheckIsWow64(); } }
-
-		[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool IsWow64Process(
-				[In] IntPtr hProcess,
-				[Out] out bool wow64Process
-		);
-
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string dllToLoad);
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-		[DllImport("kernel32.dll")]
-		public static extern bool FreeLibrary(IntPtr hModule);
-
-
-		static bool InternalCheckIsWow64()
-		{
-			if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
-					Environment.OSVersion.Version.Major >= 6)
-			{
-				using (var p = System.Diagnostics.Process.GetCurrentProcess())
-				{
-					bool retVal;
-					if (!IsWow64Process(p.Handle, out retVal))
-					{
-						return false;
-					}
-					return retVal;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct RECT
@@ -237,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public const int WAVE_FORMAT_PCM = 1;
 		public const int AVIIF_KEYFRAME = 0x00000010;
-
 
 		[Flags]
 		public enum OpenFileStyle : uint
@@ -434,13 +395,11 @@ namespace BizHawk.Client.EmuHawk
 
 		// Release an open AVI stream
 		[DllImport("avifil32.dll")]
-		public static extern int AVIStreamRelease(
-			IntPtr pavi);
+		public static extern int AVIStreamRelease(IntPtr pavi);
 
 		// Release an open AVI stream
 		[DllImport("avifil32.dll")]
-		public static extern int AVIFileRelease(
-			IntPtr pfile);
+		public static extern int AVIFileRelease(IntPtr pfile);
 
 
 		// Replacement of mmioFOURCC macros

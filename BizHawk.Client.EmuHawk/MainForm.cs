@@ -18,7 +18,6 @@ using BizHawk.Bizware.BizwareGL;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -98,6 +97,110 @@ namespace BizHawk.Client.EmuHawk
 
 		public MainForm(string[] args)
 		{
+			void SetImages()
+			{
+				OpenRomMenuItem.Image = Properties.Resources.OpenFile;
+				RecentRomSubMenu.Image = Properties.Resources.Recent;
+				CloseRomMenuItem.Image = Properties.Resources.Close;
+				PreviousSlotMenuItem.Image = Properties.Resources.MoveLeft;
+				NextSlotMenuItem.Image = Properties.Resources.MoveRight;
+				ReadonlyMenuItem.Image = Properties.Resources.ReadOnly;
+				RecentMovieSubMenu.Image = Properties.Resources.Recent;
+				RecordMovieMenuItem.Image = Properties.Resources.RecordHS;
+				PlayMovieMenuItem.Image = Properties.Resources.Play;
+				StopMovieMenuItem.Image = Properties.Resources.Stop;
+				PlayFromBeginningMenuItem.Image = Properties.Resources.restart;
+				ImportMoviesMenuItem.Image = Properties.Resources.Import;
+				SaveMovieMenuItem.Image = Properties.Resources.SaveAs;
+				SaveMovieAsMenuItem.Image = Properties.Resources.SaveAs;
+				StopMovieWithoutSavingMenuItem.Image = Properties.Resources.Stop;
+				RecordAVMenuItem.Image = Properties.Resources.RecordHS;
+				ConfigAndRecordAVMenuItem.Image = Properties.Resources.AVI;
+				StopAVIMenuItem.Image = Properties.Resources.Stop;
+				ScreenshotMenuItem.Image = Properties.Resources.camera;
+				PauseMenuItem.Image = Properties.Resources.Pause;
+				RebootCoreMenuItem.Image = Properties.Resources.reboot;
+				SwitchToFullscreenMenuItem.Image = Properties.Resources.Fullscreen;
+				ControllersMenuItem.Image = Properties.Resources.GameController;
+				HotkeysMenuItem.Image = Properties.Resources.HotKeys;
+				DisplayConfigMenuItem.Image = Properties.Resources.tvIcon;
+				SoundMenuItem.Image = Properties.Resources.AudioHS;
+				PathsMenuItem.Image = Properties.Resources.CopyFolderHS;
+				FirmwaresMenuItem.Image = Properties.Resources.pcb;
+				MessagesMenuItem.Image = Properties.Resources.MessageConfig;
+				AutofireMenuItem.Image = Properties.Resources.Lightning;
+				RewindOptionsMenuItem.Image = Properties.Resources.Previous;
+				ProfilesMenuItem.Image = Properties.Resources.user_blue_small;
+				N64VideoPluginSettingsMenuItem.Image = Properties.Resources.monitor;
+				SaveConfigMenuItem.Image = Properties.Resources.Save;
+				LoadConfigMenuItem.Image = Properties.Resources.LoadConfig;
+				ToolBoxMenuItem.Image = Properties.Resources.ToolBox;
+				RamWatchMenuItem.Image = Properties.Resources.watch;
+				RamSearchMenuItem.Image = Properties.Resources.search;
+				LuaConsoleMenuItem.Image = Properties.Resources.Lua;
+				TAStudioMenuItem.Image = Properties.Resources.TAStudio;
+				HexEditorMenuItem.Image = Properties.Resources.poke;
+				TraceLoggerMenuItem.Image = Properties.Resources.pencil;
+				DebuggerMenuItem.Image = Properties.Resources.Bug;
+				CodeDataLoggerMenuItem.Image = Properties.Resources.cdlogger;
+				VirtualPadMenuItem.Image = Properties.Resources.GameController;
+				CheatsMenuItem.Image = Properties.Resources.Freeze;
+				gameSharkConverterToolStripMenuItem.Image = Properties.Resources.Shark;
+				MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
+				NesControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				NESGraphicSettingsMenuItem.Image = Properties.Resources.tvIcon;
+				NESSoundChannelsMenuItem.Image = Properties.Resources.AudioHS;
+				PceControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				PCEGraphicsSettingsMenuItem.Image = Properties.Resources.tvIcon;
+				KeypadMenuItem.Image = Properties.Resources.calculator;
+				PSXControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				SNESControllerConfigurationMenuItem.Image = Properties.Resources.GameController;
+				SnesGfxDebuggerMenuItem.Image = Properties.Resources.Bug;
+				ColecoControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				N64PluginSettingsMenuItem.Image = Properties.Resources.monitor;
+				N64ControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				IntVControllerSettingsMenuItem.Image = Properties.Resources.GameController;
+				OnlineHelpMenuItem.Image = Properties.Resources.Help;
+				ForumsMenuItem.Image = Properties.Resources.TAStudio;
+				FeaturesMenuItem.Image = Properties.Resources.kitchensink;
+				AboutMenuItem.Image = Properties.Resources.CorpHawkSmall;
+				DumpStatusButton.Image = Properties.Resources.Blank;
+				PlayRecordStatusButton.Image = Properties.Resources.Blank;
+				PauseStatusButton.Image = Properties.Resources.Blank;
+				RebootStatusBarIcon.Image = Properties.Resources.reboot;
+				AVIStatusLabel.Image = Properties.Resources.Blank;
+				LedLightStatusLabel.Image = Properties.Resources.LightOff;
+				KeyPriorityStatusLabel.Image = Properties.Resources.Both;
+				CoreNameStatusBarButton.Image = Properties.Resources.CorpHawkSmall;
+				ProfileFirstBootLabel.Image = Properties.Resources.user_blue_small;
+				LinkConnectStatusBarButton.Image = Properties.Resources.connect_16x16;
+				OpenRomContextMenuItem.Image = Properties.Resources.OpenFile;
+				LoadLastRomContextMenuItem.Image = Properties.Resources.Recent;
+				StopAVContextMenuItem.Image = Properties.Resources.Stop;
+				RecordMovieContextMenuItem.Image = Properties.Resources.RecordHS;
+				PlayMovieContextMenuItem.Image = Properties.Resources.Play;
+				RestartMovieContextMenuItem.Image = Properties.Resources.restart;
+				StopMovieContextMenuItem.Image = Properties.Resources.Stop;
+				LoadLastMovieContextMenuItem.Image = Properties.Resources.Recent;
+				StopNoSaveContextMenuItem.Image = Properties.Resources.Stop;
+				SaveMovieContextMenuItem.Image = Properties.Resources.SaveAs;
+				SaveMovieAsContextMenuItem.Image = Properties.Resources.SaveAs;
+				UndoSavestateContextMenuItem.Image = Properties.Resources.undo;
+				toolStripMenuItem6.Image = Properties.Resources.GameController;
+				toolStripMenuItem7.Image = Properties.Resources.HotKeys;
+				toolStripMenuItem8.Image = Properties.Resources.tvIcon;
+				toolStripMenuItem9.Image = Properties.Resources.AudioHS;
+				toolStripMenuItem10.Image = Properties.Resources.CopyFolderHS;
+				toolStripMenuItem11.Image = Properties.Resources.pcb;
+				toolStripMenuItem12.Image = Properties.Resources.MessageConfig;
+				toolStripMenuItem13.Image = Properties.Resources.Lightning;
+				toolStripMenuItem14.Image = Properties.Resources.Previous;
+				toolStripMenuItem66.Image = Properties.Resources.Save;
+				toolStripMenuItem67.Image = Properties.Resources.LoadConfig;
+				ScreenshotContextMenuItem.Image = Properties.Resources.camera;
+				CloseRomContextMenuItem.Image = Properties.Resources.Close;
+			}
+
 			GlobalWin.MainForm = this;
 			Global.Rewinder = new Rewinder
 			{
@@ -118,6 +221,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
+			SetImages();
 			Global.Game = GameInfo.NullInstance;
 			if (Global.Config.ShowLogWindow)
 			{
@@ -140,17 +244,15 @@ namespace BizHawk.Client.EmuHawk
 				string xmlPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
 				string x7zPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
 				bool loadXml = File.Exists(xmlPath);
-				using (var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath))
+				using var nesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath);
+				if (!loadXml)
 				{
-					if (!loadXml)
-					{
-						nesCartFile.BindFirst();
-					}
-
-					return nesCartFile
-						.GetStream()
-						.ReadAllBytes();
+					nesCartFile.BindFirst();
 				}
+
+				return nesCartFile
+					.GetStream()
+					.ReadAllBytes();
 			};
 			try
 			{
@@ -236,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
-			Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(comm);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -308,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// If user picked a game, then do the commandline logic
-				if (!Global.Game.IsNullInstance)
+				if (!Global.Game.IsNullInstance())
 				{
 					var movie = MovieService.Get(_argParser.cmdMovie);
 					Global.MovieSession.ReadOnly = true;
@@ -335,13 +437,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
 			{
-				if (Global.Game.IsNullInstance)
+				if (Global.Game.IsNullInstance())
 				{
 					OpenRom();
 				}
 
 				// If user picked a game, then do the autoload logic
-				if (!Global.Game.IsNullInstance)
+				if (!Global.Game.IsNullInstance())
 				{
 					if (File.Exists(Global.Config.RecentMovies.MostRecent))
 					{
@@ -359,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = true;
 			}
 
-			if (!Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance())
 			{
 				if (_argParser.cmdLoadState != null)
 				{
@@ -596,8 +698,6 @@ namespace BizHawk.Client.EmuHawk
 		// runloop won't exec lua
 		public bool SuppressLua { get; set; }
 
-		public AdvancedRomLoaderType AdvancedLoader { get; set; }
-
 		public long MouseWheelTracker { get; private set; }
 
 		private int? _pauseOnFrame;
@@ -627,6 +727,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public Methods
 
+		public void AddOnScreenMessage(string message)
+		{
+			GlobalWin.OSD.AddMessage(message);
+		}
+
 		public void ClearHolds()
 		{
 			Global.StickyXORAdapter.ClearStickies();
@@ -641,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 		public void FlagNeedsReboot()
 		{
 			RebootStatusBarIcon.Visible = true;
-			GlobalWin.OSD.AddMessage("Core reboot needed for this setting");
+			AddOnScreenMessage("Core reboot needed for this setting");
 		}
 
 		/// <summary>
@@ -1375,7 +1480,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _wasPaused;
 		private bool _didMenuPause;
 
-		private Cursor _blankCursor;
 		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
@@ -1684,7 +1788,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HandlePlatformMenus()
 		{
 			var system = "";
-			if (!Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance())
 			{
 				system = Emulator.SystemId;
 			}
@@ -1720,6 +1824,7 @@ namespace BizHawk.Client.EmuHawk
 			amstradCPCToolStripMenuItem.Visible = false;
 			VectrexSubMenu.Visible = false;
 			O2HawkSubMenu.Visible = false;
+			arcadeToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1846,6 +1951,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GB4x":
 					GB4xSubMenu.Visible = true;
+					break;
+				case "MAME":
+					arcadeToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -1996,13 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (hide && !_cursorHidden)
 			{
-				if (_blankCursor == null)
-				{
-					var ms = new MemoryStream(Properties.Resources.BlankCursor);
-					_blankCursor = new Cursor(ms);
-				}
-
-				PresentationPanel.Control.Cursor = _blankCursor;
+				PresentationPanel.Control.Cursor = Properties.Resources.BlankCursor;
 				_cursorHidden = true;
 			}
 			else if (!hide && _cursorHidden)
@@ -2263,6 +2365,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// TODO: Get/Put settings/sync settings methods could become a service we instantiate and use and pass to other forms
 		/// <summary>
 		/// send core sync settings to emu, setting reboot flag if needed
 		/// </summary>
@@ -2387,31 +2490,47 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void UpdateStatusSlots()
+		private Color SlotForeColor(int slot)
+		{
+			return _stateSlots.HasSlot(slot)
+				? Global.Config.SaveSlot == slot
+					? SystemColors.HighlightText
+					: SystemColors.WindowText
+				: SystemColors.GrayText;
+		}
+
+		private Color SlotBackColor(int slot)
+		{
+			return  Global.Config.SaveSlot == slot
+				? SystemColors.Highlight
+				: SystemColors.Control;
+		}
+
+		public void UpdateStatusSlots()
 		{
 			_stateSlots.Update();
 
-			Slot0StatusButton.ForeColor = _stateSlots.HasSlot(0) ? Global.Config.SaveSlot == 0 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot1StatusButton.ForeColor = _stateSlots.HasSlot(1) ? Global.Config.SaveSlot == 1 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot2StatusButton.ForeColor = _stateSlots.HasSlot(2) ? Global.Config.SaveSlot == 2 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot3StatusButton.ForeColor = _stateSlots.HasSlot(3) ? Global.Config.SaveSlot == 3 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot4StatusButton.ForeColor = _stateSlots.HasSlot(4) ? Global.Config.SaveSlot == 4 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot5StatusButton.ForeColor = _stateSlots.HasSlot(5) ? Global.Config.SaveSlot == 5 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot6StatusButton.ForeColor = _stateSlots.HasSlot(6) ? Global.Config.SaveSlot == 6 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot7StatusButton.ForeColor = _stateSlots.HasSlot(7) ? Global.Config.SaveSlot == 7 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot8StatusButton.ForeColor = _stateSlots.HasSlot(8) ? Global.Config.SaveSlot == 8 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
-			Slot9StatusButton.ForeColor = _stateSlots.HasSlot(9) ? Global.Config.SaveSlot == 9 ? SystemColors.HighlightText : SystemColors.WindowText : SystemColors.GrayText;
+			Slot0StatusButton.ForeColor = SlotForeColor(0);
+			Slot1StatusButton.ForeColor = SlotForeColor(1);
+			Slot2StatusButton.ForeColor = SlotForeColor(2);
+			Slot3StatusButton.ForeColor = SlotForeColor(3);
+			Slot4StatusButton.ForeColor = SlotForeColor(4);
+			Slot5StatusButton.ForeColor = SlotForeColor(5);
+			Slot6StatusButton.ForeColor = SlotForeColor(6);
+			Slot7StatusButton.ForeColor = SlotForeColor(7);
+			Slot8StatusButton.ForeColor = SlotForeColor(8);
+			Slot9StatusButton.ForeColor = SlotForeColor(9);
 
-			Slot0StatusButton.BackColor = Global.Config.SaveSlot == 0 ? SystemColors.Highlight : SystemColors.Control;
-			Slot1StatusButton.BackColor = Global.Config.SaveSlot == 1 ? SystemColors.Highlight : SystemColors.Control;
-			Slot2StatusButton.BackColor = Global.Config.SaveSlot == 2 ? SystemColors.Highlight : SystemColors.Control;
-			Slot3StatusButton.BackColor = Global.Config.SaveSlot == 3 ? SystemColors.Highlight : SystemColors.Control;
-			Slot4StatusButton.BackColor = Global.Config.SaveSlot == 4 ? SystemColors.Highlight : SystemColors.Control;
-			Slot5StatusButton.BackColor = Global.Config.SaveSlot == 5 ? SystemColors.Highlight : SystemColors.Control;
-			Slot6StatusButton.BackColor = Global.Config.SaveSlot == 6 ? SystemColors.Highlight : SystemColors.Control;
-			Slot7StatusButton.BackColor = Global.Config.SaveSlot == 7 ? SystemColors.Highlight : SystemColors.Control;
-			Slot8StatusButton.BackColor = Global.Config.SaveSlot == 8 ? SystemColors.Highlight : SystemColors.Control;
-			Slot9StatusButton.BackColor = Global.Config.SaveSlot == 9 ? SystemColors.Highlight : SystemColors.Control;
+			Slot0StatusButton.BackColor = SlotBackColor(0);
+			Slot1StatusButton.BackColor = SlotBackColor(1);
+			Slot2StatusButton.BackColor = SlotBackColor(2);
+			Slot3StatusButton.BackColor = SlotBackColor(3);
+			Slot4StatusButton.BackColor = SlotBackColor(4);
+			Slot5StatusButton.BackColor = SlotBackColor(5);
+			Slot6StatusButton.BackColor = SlotBackColor(6);
+			Slot7StatusButton.BackColor = SlotBackColor(7);
+			Slot8StatusButton.BackColor = SlotBackColor(8);
+			Slot9StatusButton.BackColor = SlotBackColor(9);
 
 			SaveSlotsStatusLabel.Visible =
 				Slot0StatusButton.Visible =
@@ -2915,7 +3034,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
-				bool new_frame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
+				bool newFrame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -2954,12 +3073,12 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter(SuppressLua);
 				}
 
-				if (!PauseAvi && new_frame && !InvisibleEmulation)
+				if (!PauseAvi && newFrame && !InvisibleEmulation)
 				{
 					AvFrameAdvance();
 				}
 
-				if (new_frame)
+				if (newFrame)
 				{
 					_framesSinceLastFpsUpdate++;
 
@@ -3530,7 +3649,7 @@ namespace BizHawk.Client.EmuHawk
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
 					MessageCallback = GlobalWin.OSD.AddMessage,
-					AdvancedLoader = AdvancedLoader
+					OpenAdvanced = args.OpenAdvanced
 				};
 				Global.FirmwareManager.RecentlyServed.Clear();
 
@@ -3548,6 +3667,7 @@ namespace BizHawk.Client.EmuHawk
 
 				IOpenAdvanced ioa = args.OpenAdvanced;
 				var oa_openrom = ioa as OpenAdvanced_OpenRom;
+				var oa_mame = ioa as OpenAdvanced_MAME;
 				var oa_retro = ioa as OpenAdvanced_Libretro;
 				var ioa_retro = ioa as IOpenAdvancedLibretro;
 
@@ -3589,6 +3709,11 @@ namespace BizHawk.Client.EmuHawk
 				if (oa_openrom != null)
 				{
 					oa_openrom.Path = loader.CanonicalFullPath;
+				}
+
+				if (oa_mame != null)
+				{
+					oa_mame.Path = loader.CanonicalFullPath;
 				}
 
 				if (result)
@@ -3838,7 +3963,7 @@ namespace BizHawk.Client.EmuHawk
 			Emulator.Dispose();
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(coreComm);
 			ClientApi.UpdateEmulatorAndVP(Emulator);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
@@ -3858,7 +3983,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				var coreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+				Emulator = new NullEmulator(coreComm);
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
@@ -4063,8 +4188,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			bool handled;
-			ClientApi.OnBeforeQuickSave(this, quickSlotName, out handled);
+			ClientApi.OnBeforeQuickSave(this, quickSlotName, out var handled);
 			if (handled)
 			{
 				return;
@@ -4138,7 +4262,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
 			{
-				SaveState(sfd.FileName, sfd.FileName, false);
+				SaveState(sfd.FileName, sfd.FileName);
 			}
 
 			if (GlobalWin.Tools.IsLoaded<TAStudio>())
@@ -4187,8 +4311,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.SelectSlot(slot);
-					return;
+					var handled = Master.SelectSlot(slot);
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				Global.Config.SaveSlot = slot;
@@ -4203,8 +4330,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.PreviousSlot();
-					return;
+					var handled = Master.PreviousSlot();
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				if (Global.Config.SaveSlot == 0)
@@ -4231,8 +4361,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (IsSavestateSlave)
 				{
-					Master.NextSlot();
-					return;
+					var handled = Master.NextSlot();
+					if (handled)
+					{
+						return;
+					}
 				}
 
 				if (Global.Config.SaveSlot >= 9)

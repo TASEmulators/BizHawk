@@ -19,8 +19,6 @@ namespace BizHawk.Client.EmuHawk
 			RowIndex = cell.RowIndex;
 		}
 
-		public bool IsDataCell => Column != null && RowIndex.HasValue;
-
 		public override bool Equals(object obj)
 		{
 			var cell = obj as Cell;
