@@ -4,7 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
+using System.Dynamic;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -17,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		portedVersion: "0.214",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
-	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider
+	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>
 	{
-		public MAME(CoreComm comm, string dir, string file, out string gamename)
+		public MAME(CoreComm comm, string dir, string file, object syncsettings, out string gamename)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 
@@ -29,6 +31,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			MAMEThread = new Thread(ExecuteMAMEThread);
 
 			AsyncLaunchMAME();
+
+			syncSettings = (SyncSettings)syncsettings ?? new SyncSettings();
+			syncSettings.ExpandoSettings = new ExpandoObject();
+			var dynamicObject = (IDictionary<string, object>)syncSettings.ExpandoSettings;
+			dynamicObject.Add("OKAY", 1);
 
 			gamename = gameName;
 		}
@@ -56,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		#region Fields
 
+		private SyncSettings syncSettings;
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
@@ -111,6 +119,44 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			exiting = true;
 			MAMEThread.Join();
+		}
+
+		#endregion
+
+		#region ISettable
+
+		public object GetSettings() => null;
+		public bool PutSettings(object o) => false;
+
+		public SyncSettings GetSyncSettings()
+		{
+			return syncSettings.Clone();
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			bool ret = SyncSettings.NeedsReboot(o, syncSettings);
+			syncSettings = o;
+			return ret;
+		}
+
+		public class SyncSettings
+		{
+			public SyncSettings()
+			{
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public ExpandoObject ExpandoSettings { get; set; }
 		}
 
 		#endregion
@@ -429,10 +475,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private void MAMEBootCallback()
 		{
 			LibMAME.mame_lua_execute(MAMELuaCommand.Pause);
+
 			CheckVersions();
 			GetInputFields();
 			Update();
 			UpdateGameName();
+
 			MAMEStartupComplete.Set();
 		}
 		
