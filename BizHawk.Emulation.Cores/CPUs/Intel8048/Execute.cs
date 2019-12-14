@@ -25,15 +25,15 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				case 0x00: OP_IMP(IDLE);							break; // NOP
 				case 0x01: ILLEGAL();								break; // ILLEGAL
-				case 0x02: IN_OUT_BUS(OUT);							break; // OUT BUS,A
+				case 0x02: BUS_PORT_OUT();							break; // OUT BUS,A
 				case 0x03: OP_A_DIR(ADD8);							break; // ADD A,#
 				case 0x04: JP_2k(0);								break; // JP 2K 0
 				case 0x05: OP_IMP(EI);								break; // EI
 				case 0x06: ILLEGAL();								break; // ILLEGAL
 				case 0x07: OP_IMP(DECA);							break; // DEC A
-				case 0x08: IN_OUT_BUS(IN);							break; // IN A,BUS
-				case 0x09: IN_OUT_A(IN, 1);							break; // IN A,1
-				case 0x0A: IN_OUT_A(IN, 2);							break; // IN A,2
+				case 0x08: BUS_PORT_IN();							break; // IN A,BUS
+				case 0x09: IN_OUT_A(RD_P, 1);						break; // IN A,1
+				case 0x0A: IN_OUT_A(RD_P, 2);						break; // IN A,2
 				case 0x0B: ILLEGAL();								break; // ILLEGAL
 				case 0x0C: MOV_A_P4(4);								break; // MOV A,P4
 				case 0x0D: MOV_A_P4(5);								break; // MOV A,P5

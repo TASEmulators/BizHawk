@@ -50,7 +50,18 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void do_frame(IController controller)
 		{
-			for (int i = 0; i < 10000; i++)
+			// update the controller state on VBlank
+			GetControllerState(controller);
+
+			// check if controller state caused interrupt
+			do_controller_check();
+
+			// send the image on VBlank
+			SendVideoBuffer();
+
+			bool frame_chk = true;
+
+			while (frame_chk)
 			{
 				ppu.tick();
 				ppu.tick();
@@ -59,16 +70,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				ppu.Audio_tick();
 				cpu.ExecuteOne();
 
-				if (in_vblank && !in_vblank_old)
+				if (!in_vblank && in_vblank_old)
 				{
-					// update the controller state on VBlank
-					GetControllerState(controller);
-
-					// check if controller state caused interrupt
-					do_controller_check();
-
-					// send the image on VBlank
-					SendVideoBuffer();
+					frame_chk = false;
 				}
 
 				in_vblank_old = in_vblank;

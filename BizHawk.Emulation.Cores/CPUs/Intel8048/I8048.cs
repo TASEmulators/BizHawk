@@ -17,80 +17,65 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort TR = 4;
 		public const ushort INC11 = 5;
 		public const ushort ADD8 = 6;
-		public const ushort CMP8 = 7;
-		public const ushort ADC8 = 8;
-		public const ushort INC16 = 10;
+		public const ushort ADC8 = 7;
+		public const ushort AND8 = 8;
+		public const ushort XOR8 = 9;
+		public const ushort OR8 = 10;
 		public const ushort INC8 = 11;
 		public const ushort INCA = 12;
-		public const ushort DEC16 = 13;
-		public const ushort DEC8 = 14;
-		public const ushort DECA = 15;
-		public const ushort ROL = 16;
-		public const ushort ROR = 17;
-		public const ushort RLC = 18;
-		public const ushort RRC = 19;
+		public const ushort DEC8 = 13;
+		public const ushort DECA = 14;
+		public const ushort ROL = 15;
+		public const ushort ROR = 16;
+		public const ushort RLC = 17;
+		public const ushort RRC = 18;
+		public const ushort CLRA = 19;
 		public const ushort SWP = 20;
 		public const ushort COMA = 21;
 		public const ushort CMC = 22;
 		public const ushort CM0 = 23;
 		public const ushort CM1 = 24;
 		public const ushort DA = 25;
-		public const ushort AND8 = 26;
-		public const ushort XOR8 = 27;
-		public const ushort OR8 = 28;
-		public const ushort ASL = 29;
-		public const ushort ASR = 30;
-		public const ushort LSR = 31;
-		public const ushort BIT = 32;
-		public const ushort RD_INC = 33;
-		public const ushort SET_ADDR = 34;
-		public const ushort TST = 35;
-		public const ushort CLRA = 36;
-		public const ushort CLC = 37;
-		public const ushort CL0 = 38;
-		public const ushort CL1 = 39;
-		public const ushort EI = 40;
-		public const ushort EN = 41;
-		public const ushort DI = 42;
-		public const ushort DN = 43;
-		public const ushort ADD8BR = 44;
-		public const ushort ABX = 45;
-		public const ushort JPE = 46;
-		public const ushort MSK = 47;
-		public const ushort SUB16 = 48;
-		public const ushort ADD16 = 49;
-		public const ushort CMP16 = 50;
-		public const ushort CMP16D = 51;
-		public const ushort CLK_OUT = 52;
-		public const ushort IN = 53;
-		public const ushort OUT = 54;
-		public const ushort XCH = 55;
-		public const ushort XCH_RAM = 56;
-		public const ushort XCHD_RAM = 57;
-		public const ushort SEL_MB0 = 58;
-		public const ushort SEL_MB1 = 59;
-		public const ushort SEL_RB0 = 60;
-		public const ushort SEL_RB1 = 61;
-		public const ushort INC_RAM = 62;
-		public const ushort RES_TF = 63;
-		public const ushort MOV = 64;
-		public const ushort MOVT = 65;
-		public const ushort MOVAR = 66;
-		public const ushort MOVT_RAM = 67;
-		public const ushort ST_CNT = 68;
-		public const ushort STP_CNT = 69;
-		public const ushort ST_T = 70;
-		public const ushort SET_ADDR_8 = 71;
-		public const ushort MEM_ALU = 72;
-		public const ushort PUSH = 73;
-		public const ushort PULL = 74;
-		public const ushort PULL_PC = 75;
-		public const ushort EEA = 76;
-		public const ushort DEA = 77;
-		public const ushort RD_P = 78;
-		public const ushort WR_P = 79;
-		public const ushort EM = 80;
-		public const ushort DM = 81;
+		public const ushort SET_ADDR = 26;
+		public const ushort CLC = 27;
+		public const ushort CL0 = 28;
+		public const ushort CL1 = 29;
+		public const ushort EI = 30;
+		public const ushort EN = 31;
+		public const ushort DI = 32;
+		public const ushort DN = 33;
+		public const ushort ABX = 34;
+		public const ushort JPE = 35;
+		public const ushort MSK = 36;
+		public const ushort CLK_OUT = 37;
+		public const ushort XCH = 38;
+		public const ushort XCH_RAM = 39;
+		public const ushort XCHD_RAM = 40;
+		public const ushort SEL_MB0 = 41;
+		public const ushort SEL_MB1 = 42;
+		public const ushort SEL_RB0 = 43;
+		public const ushort SEL_RB1 = 44;
+		public const ushort INC_RAM = 45;
+		public const ushort RES_TF = 46;
+		public const ushort MOV = 47;
+		public const ushort MOVT = 48;
+		public const ushort MOVAR = 49;
+		public const ushort MOVT_RAM = 50;
+		public const ushort ST_CNT = 51;
+		public const ushort STP_CNT = 52;
+		public const ushort ST_T = 53;
+		public const ushort SET_ADDR_8 = 54;
+		public const ushort MEM_ALU = 55;
+		public const ushort PUSH = 56;
+		public const ushort PULL = 57;
+		public const ushort PULL_PC = 58;
+		public const ushort EEA = 59;
+		public const ushort DEA = 60;
+		public const ushort RD_P = 61;
+		public const ushort WR_P = 62;
+		public const ushort EM = 63;
+		public const ushort DM = 64;
+		public const ushort SET_ADDR_M3 = 65;
 
 		public I8048()
 		{
@@ -184,9 +169,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case RD_INC:
-					Read_Inc_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case WR:
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
@@ -200,9 +182,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 					Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
 					break;
-				case TST:
-					TST_Func(cur_instr[instr_pntr++]);
-					break;
 				case CLRA:
 					Regs[A] = 0;
 					break;
@@ -215,43 +194,34 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case CL1:
 					F1 = false;
 					break;
-				case ADD8BR:
-					ADD8BR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case ADD8:
 					ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case ADC8:
 					ADC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case CMP8:
-					CMP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case INC11:
 					reg_d_ad = cur_instr[instr_pntr++];
 					Regs[ALU2] = (ushort) (Regs[reg_d_ad] & 0x800);
 					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | Regs[ALU2]);
 					break;
-				case INC16:
-					INC16_Func(cur_instr[instr_pntr++]);
-					break;
 				case INC8:
 					INC8_Func(cur_instr[instr_pntr++]);
-					break;
-				case DEC16:
-					DEC16_Func(cur_instr[instr_pntr++]);
-					break;
-				case CMP16:
-					CMP16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case DEC8:
 					DEC8_Func(cur_instr[instr_pntr++]);
 					break;
 				case ROL:
-					ROL_Func(cur_instr[instr_pntr++]);
+					ROL_Func(A);
 					break;
 				case ROR:
-					ROR_Func(cur_instr[instr_pntr++]);
+					ROR_Func(A);
+					break;
+				case RLC:
+					RLC_Func(A);
+					break;
+				case RRC:
+					RRC_Func(A);
 					break;
 				case COMA:
 					Regs[A] = (ushort)((~Regs[A]) & 0xFF);
@@ -277,25 +247,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case OR8:
 					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case ASL:
-					ASL_Func(cur_instr[instr_pntr++]);
-					break;
-				case ASR:
-					ASR_Func(cur_instr[instr_pntr++]);
-					break;
-				case LSR:
-					LSR_Func(cur_instr[instr_pntr++]);
-					break;
-				case BIT:
-					BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					break;
 				case CLK_OUT:
-
-					break;
-				case IN:
-
-					break;
-				case OUT:
 
 					break;
 				case XCH:
@@ -318,7 +270,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[ALU] = Regs[reg_d_ad];
 					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] & 0xF0) | (Regs[A] & 0xF));
 					Regs[A] = (ushort)((Regs[A] & 0xF0) | (Regs[ALU] & 0xF));
-
 					break;
 				case SEL_MB0:
 					MB = 0;
@@ -338,7 +289,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[reg_d_ad] = (ushort)((Regs[reg_d_ad] + 1) & 0xFF);
 					break;
 				case RES_TF:
-
+					TF = false;
 					break;
 				case MOV:
 					reg_d_ad = cur_instr[instr_pntr++];
@@ -352,7 +303,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[cur_instr[instr_pntr++]] = Regs[A];
 					break;
 				case MOVT_RAM:
-					Regs[Regs[cur_instr[instr_pntr++]]] = Regs[instr_pntr++];
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
+					Regs[reg_d_ad] = Regs[A];
 					break;
 				case ST_CNT:
 					counter_en = true;
@@ -441,6 +394,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case DM:
 					INT_MSTR = false;
+					break;
+				case SET_ADDR_M3:
+					Regs[ALU] &= 0xFF;
+					Regs[ALU] |= 0x300;
 					break;
 			}
 

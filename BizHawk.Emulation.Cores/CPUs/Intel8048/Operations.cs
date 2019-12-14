@@ -15,20 +15,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			Regs[dest] = ReadMemory(Regs[src]);
 		}
 
-		public void Read_Inc_Func(ushort dest, ushort src)
-		{
-			if (CDLCallback != null)
-			{
-				if (src == PC) CDLCallback(Regs[src], eCDLogMemFlags.FetchOperand);
-				else CDLCallback(Regs[src], eCDLogMemFlags.Data);
-			}
-			//Console.WriteLine(dest + " " + src + " " + opcode_see);
-
-			Regs[dest] = ReadMemory(Regs[src]);
-
-			Regs[src]++;
-		}
-
 		public void Write_Func(ushort dest, ushort src)
 		{
 			if (CDLCallback != null) CDLCallback(Regs[dest], eCDLogMemFlags.Write | eCDLogMemFlags.Data);
@@ -38,29 +24,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void TR_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = Regs[src];
-		}
-
-		public void LD_8_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = Regs[src];
-		}
-
-		public void TST_Func(ushort src)
-		{
-
-		}
-
-		// source is considered a 16 bit signed value, used for long relative branch
-		// no flags used
-		public void ADD16BR_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
-		}
-
-		public void ADD8BR_Func(ushort dest, ushort src)
-		{
-			if (Regs[src] > 127) { Regs[src] |= 0xFF00; }
-			Regs[dest] = (ushort)(Regs[dest] + (short)Regs[src]);
 		}
 
 		public void ADD8_Func(ushort dest, ushort src)
@@ -73,57 +36,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 
 			Regs[dest] = ans;
-		}
-
-		public void SUB8_Func(ushort dest, ushort src)
-		{
-			int Reg16_d = Regs[dest];
-			Reg16_d -= Regs[src];
-
-			FlagC = Reg16_d.Bit(8);
-
-			ushort ans = (ushort)(Reg16_d & 0xFF);
-
-			Regs[dest] = ans;
-		}
-
-		// same as SUB8 but result not stored
-		public void CMP8_Func(ushort dest, ushort src)
-		{
-			int Reg16_d = Regs[dest];
-			Reg16_d -= Regs[src];
-
-			FlagC = Reg16_d.Bit(8);
-
-			ushort ans = (ushort)(Reg16_d & 0xFF);
-		}
-
-		public void BIT_Func(ushort dest, ushort src)
-		{
-			ushort ans = (ushort)(Regs[dest] & Regs[src]);
-		}
-
-		public void ASL_Func(ushort src)
-		{
-			FlagC = Regs[src].Bit(7);
-
-			Regs[src] = (ushort)((Regs[src] << 1) & 0xFF);
-		}
-
-		public void ASR_Func(ushort src)
-		{
-			FlagC = Regs[src].Bit(0);
-
-			ushort temp = (ushort)(Regs[src] & 0x80); // MSB doesn't change in this operation
-
-			Regs[src] = (ushort)((Regs[src] >> 1) | temp);
-		}
-
-		public void LSR_Func(ushort src)
-		{
-			FlagC = Regs[src].Bit(0);
-
-			Regs[src] = (ushort)(Regs[src] >> 1);
 		}
 
 		public void AND8_Func(ushort dest, ushort src)
@@ -143,17 +55,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 		public void ROR_Func(ushort src)
 		{
-			ushort c = (ushort)(FlagC ? 0x80 : 0);
+			ushort c = (ushort)((Regs[src] & 1) << 7);
 
-			FlagC = Regs[src].Bit(0);
-
-			Regs[src] = (ushort)(c | (Regs[src] >> 1));
+			Regs[src] = (ushort)(c | ((Regs[src] >> 1) & 0x7F));
 		}
 
 		public void ROL_Func(ushort src)
 		{
-			ushort c = (ushort)(FlagC ? 1 : 0);
-			FlagC = Regs[src].Bit(7);
+			ushort c = (ushort)((Regs[src] >> 7) & 1);
 
 			Regs[src] = (ushort)(((Regs[src] << 1) & 0xFF) | c);
 		}
@@ -164,7 +73,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			FlagC = Regs[src].Bit(0);
 
-			Regs[src] = (ushort)(c | (Regs[src] >> 1));
+			Regs[src] = (ushort)(c | ((Regs[src] >> 1) & 0x7F));
 		}
 
 		public void RLC_Func(ushort src)
@@ -185,16 +94,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			Regs[src] = (ushort)((Regs[src] - 1) & 0xFF);
 		}
 
-		public void INC16_Func(ushort src)
-		{
-			Regs[src] += 1;
-		}
-
-		public void DEC16_Func(ushort src)
-		{
-			Regs[src] -= 1;
-		}
-
 		public void ADC8_Func(ushort dest, ushort src)
 		{
 			int Reg16_d = Regs[dest];
@@ -213,19 +112,17 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			int a = Regs[src];
 
-			byte CF = 0;
-			if (FlagC || ((a & 0xF) > 9))
+			if (((a & 0xF) > 9) | FlagAC)
 			{
-				CF = 6;
-			}
-			if (FlagC || (((a >> 4) & 0xF) > 9) || ((((a >> 4) & 0xF) > 8) && ((a & 0xF) > 9)))
-			{
-				CF |= (byte)(6 << 4);
+				a += 0x6;
 			}
 
-			a += CF;
+			if ((((a >> 4) & 0xF) > 9) | FlagC)
+			{
+				a += 0x60;
+			}
 
-			if ((a > 0xFF) || FlagC)
+			if (a > 0xFF)
 			{
 				FlagC = true;
 			}
@@ -233,19 +130,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			{
 				FlagC = false;
 			}
+			
 			Regs[src] = (byte)a;
-		}
-
-		public void CMP16_Func(ushort dest, ushort src)
-		{
-			int Reg16_d = Regs[dest];
-			int Reg16_s = Regs[src];
-
-			Reg16_d -= Reg16_s;
-
-			FlagC = Reg16_d.Bit(16);
-
-			ushort ans = (ushort)(Reg16_d & 0xFFFF);
 		}
 	}
 }

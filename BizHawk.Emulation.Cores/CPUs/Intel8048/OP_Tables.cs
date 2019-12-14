@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE);
 
 			IRQS = 4;
+			Console.WriteLine("EXCEPTION");
 		}
 
 		public void OP_IMP(ushort oper)
@@ -53,7 +54,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
-							oper, (ushort)(reg + RB), A);
+							oper, (ushort)(reg + RB));
 
 			IRQS = 4;
 		}
@@ -88,6 +89,11 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			PopulateCURINSTR(IDLE,
 							IDLE,
 							IDLE,
+							IDLE,
+							IDLE, 
+							IDLE,
+							IDLE,
+							IDLE,
 							oper, A, port);
 
 			IRQS = 4;
@@ -103,7 +109,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 4;
 		}
 
-		public void IN_OUT_BUS(ushort oper)
+		public void BUS_PORT_IN()
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -113,9 +119,26 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							oper, A);
+							RD_P, A, 0);
 
 			IRQS = 9;
+			// Console.WriteLine("IN "+ TotalExecutedCycles);
+		}
+
+		public void BUS_PORT_OUT()
+		{
+			PopulateCURINSTR(IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				IDLE,
+				WR_P, 0, A);
+
+			IRQS = 9;
+			Console.WriteLine("OUT");
 		}
 
 		public void OUT_P(ushort port)
@@ -128,9 +151,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							IDLE,
 							IDLE,
-							port, A);
+							WR_P, port, A);
 
 			IRQS = 9;
+
 		}
 
 		public void RET()
@@ -196,14 +220,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void MOV_A_A()
 		{
 			PopulateCURINSTR(IDLE,
+							TR, ALU, PC,
+							IDLE,
+							SET_ADDR_8, ALU, A,
 							IDLE,
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD, A, ALU);
 
 			IRQS = 9;
 		}
@@ -211,14 +235,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void MOV3_A_A()
 		{
 			PopulateCURINSTR(IDLE,
+							TR, ALU, PC,
+							IDLE,
+							SET_ADDR_8, ALU, A,
+							IDLE,
+							SET_ADDR_M3,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE);
+							RD, A, ALU);
 
 			IRQS = 9;
 		}
