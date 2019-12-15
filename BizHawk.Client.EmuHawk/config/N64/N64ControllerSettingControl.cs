@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.ReflectionExtensions;
-
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
@@ -21,11 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int ControllerNumber
 		{
-			get
-			{
-				return _controllerNumber;
-			}
-
+			get => _controllerNumber;
 			set
 			{
 				_controllerNumber = value;
@@ -35,11 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsConnected
 		{
-			get
-			{
-				return EnabledCheckbox.Checked;
-			}
-
+			get => EnabledCheckbox.Checked;
 			set
 			{
 				EnabledCheckbox.Checked = value;

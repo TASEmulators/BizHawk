@@ -2292,15 +2292,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new N64ControllersSetup();
-			if (form.ShowDialog() == DialogResult.OK)
+			if (Emulator is N64 n64)
 			{
-				FlagNeedsReboot();
-				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Controller settings aborted");
+				using var form = new N64ControllersSetup(this, n64.GetSyncSettings().Clone());
+				form.ShowDialog();
 			}
 		}
 
