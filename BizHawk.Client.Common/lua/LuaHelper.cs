@@ -8,6 +8,17 @@ namespace BizHawk.Client.Common
 {
 	public static class LuaExtensions
 	{
+		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua)
+		{
+			var table = lua.NewTable();
+			for (int i = 0; i < list.Count; i++)
+			{
+				table[i] = list[i];
+			}
+
+			return table;
+		}
+
 		public static LuaTable ToLuaTable<T>(this IDictionary<string, T> dictionary, Lua lua)
 		{
 			var table = lua.NewTable();

@@ -368,26 +368,20 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
 		public LuaTable GetBranches()
 		{
-			var table = Lua.NewTable();
-
 			if (Engaged())
 			{
-				var branches = Tastudio.CurrentTasMovie.Branches
+				return Tastudio.CurrentTasMovie.Branches
 					.Select(b => new
 					{
 						Id = b.UniqueIdentifier.ToString(),
 						b.Frame,
 						Text = b.UserText
 					})
-					.ToList();
-
-				for (int i = 0; i < branches.Count; i++)
-				{
-					table[i] = branches[i];
-				}
+					.ToList()
+					.ToLuaTable(Lua);
 			}
 
-			return table;
+			return Lua.NewTable();
 		}
 
 		[LuaMethodExample("local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]

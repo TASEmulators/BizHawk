@@ -73,11 +73,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length)
 		{
-			var result = APIs.Mem.ReadByteRange(addr, length, Domain.Name);
-			var table = Lua.NewTable();
-			var count = result.Count;
-			for (var i = 0; i != count; i++) table[i] = result[i];
-			return table;
+			return APIs.Mem
+				.ReadByteRange(addr, length, Domain.Name)
+				.ToLuaTable(Lua);
 		}
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>

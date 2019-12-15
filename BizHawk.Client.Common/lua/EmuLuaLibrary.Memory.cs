@@ -27,11 +27,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
 		public LuaTable GetMemoryDomainList()
 		{
-			var result = APIs.Mem.GetMemoryDomainList();
-			var table = Lua.NewTable();
-			var count = result.Count;
-			for (var i = 0; i != count; i++) table[i] = result[i];
-			return table;
+			return APIs.Mem
+				.GetMemoryDomainList()
+				.ToLuaTable(Lua);
 		}
 
 		[LuaMethodExample("local uimemget = memory.getmemorydomainsize( mainmemory.getname( ) );")]
@@ -70,11 +68,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length, string domain = null)
 		{
-			var result = APIs.Mem.ReadByteRange(addr, length, domain);
-			var table = Lua.NewTable();
-			var count = result.Count;
-			for (var i = 0; i != count; i++) table[i] = result[i];
-			return table;
+			return APIs.Mem
+				.ReadByteRange(addr, length, domain)
+				.ToLuaTable(Lua);
 		}
 
 		/// <remarks>TODO C# version requires a contiguous address range</remarks>

@@ -102,22 +102,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getcomments", "If a movie is active, will return the movie comments as a lua table")]
 		public LuaTable GetComments()
 		{
-			var result = APIs.Movie.GetComments();
-			var table = Lua.NewTable();
-			var count = result.Count;
-			for (var i = 0; i != count; i++) table[i] = result[i];
-			return table;
+			return APIs.Movie
+				.GetComments()
+				.ToLuaTable(Lua);
 		}
 
 		[LuaMethodExample("local nlmovget = movie.getsubtitles( );")]
 		[LuaMethod("getsubtitles", "If a movie is active, will return the movie subtitles as a lua table")]
 		public LuaTable GetSubtitles()
 		{
-			var result = APIs.Movie.GetSubtitles();
-			var table = Lua.NewTable();
-			var count = result.Count;
-			for (var i = 0; i != count; i++) table[i] = result[i];
-			return table;
+			return APIs.Movie
+				.GetSubtitles()
+				.ToLuaTable(Lua);
 		}
 	}
 }
