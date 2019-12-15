@@ -8,14 +8,14 @@ namespace BizHawk.Client.Common
 {
 	public static class LuaExtensions
 	{
-		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua)
+		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua, int indexFrom = 0)
 		{
 			var table = lua.NewTable();
-			for (int i = 0; i < list.Count; i++)
+			var indexAfterLast = indexFrom + list.Count;
+			for (var i = indexFrom; i != indexAfterLast; i++)
 			{
 				table[i] = list[i];
 			}
-
 			return table;
 		}
 

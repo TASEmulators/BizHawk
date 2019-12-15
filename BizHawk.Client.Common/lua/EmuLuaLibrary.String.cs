@@ -132,23 +132,10 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodExample("local nlbizspl = bizstring.split( \"Some, string\", \", \" );")]
-		[LuaMethod("split", "Splits str based on separator into a LuaTable. Separator must be one character!. Same functionality as .NET string.Split() using the RemoveEmptyEntries option")]
-		public LuaTable Split(string str, string separator)
-		{
-			var table = Lua.NewTable();
-			if (!string.IsNullOrEmpty(str))
-			{
-				var splitStr = str.Split(
-					new[] { separator.FirstOrDefault() },
-					StringSplitOptions.RemoveEmptyEntries);
-
-				for (int i = 0; i < splitStr.Length; i++)
-				{
-					table[i + 1] = splitStr[i];
-				}
-			}
-
-			return table;
-		}
+		[LuaMethod("split", "Splits str into a Lua-style array using the given separator (consecutive separators in str will NOT create empty entries in the array). If the separator is not a string exactly one char long, ',' will be used.")]
+		public LuaTable Split(string str, string separator) => string.IsNullOrEmpty(str)
+			? Lua.NewTable()
+			: str.Split(new[] { separator?.Length == 1 ? separator[0] : ',' }, StringSplitOptions.RemoveEmptyEntries)
+				.ToLuaTable(Lua, 1);
 	}
 }
