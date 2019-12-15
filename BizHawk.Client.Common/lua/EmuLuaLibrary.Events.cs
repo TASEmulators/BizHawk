@@ -201,6 +201,10 @@ namespace BizHawk.Client.Common
 						{
 							domain = Domains.SystemBus.Name;
 						}
+						else
+						{
+							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+						}
 					}
 
 					DebuggableCore.MemoryCallbacks.Add(
@@ -228,11 +232,22 @@ namespace BizHawk.Client.Common
 					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
+
+					if (string.IsNullOrWhiteSpace(domain))
+					{
+						if (Domains != null && Domains.HasSystemBus)
+						{
+							domain = Domains.SystemBus.Name;
+						}
+						else
+						{
+							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+						}
+					}
+
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
-						string.IsNullOrWhiteSpace(domain) && Domains?.HasSystemBus == true
-							? Domains.SystemBus.Name
-							: domain,
+						domain,
 						MemoryCallbackType.Execute,
 						"Lua Hook",
 						nlf.MemCallback,
@@ -268,6 +283,10 @@ namespace BizHawk.Client.Common
 						{
 							domain = Domains.SystemBus.Name;
 						}
+						else
+						{
+							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+						}
 					}
 
 					DebuggableCore.MemoryCallbacks.Add(
@@ -301,6 +320,10 @@ namespace BizHawk.Client.Common
 						if (Domains != null && Domains.HasSystemBus)
 						{
 							domain = Domains.SystemBus.Name;
+						}
+						else
+						{
+							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
 						}
 					}
 
