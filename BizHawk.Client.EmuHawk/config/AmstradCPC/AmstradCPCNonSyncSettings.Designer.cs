@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class AmstradCPCNonSyncSettings
+    partial class AmstradCpcNonSyncSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -114,7 +114,7 @@
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
-			this.Name = "AmstradCPCNonSyncSettings";
+			this.Name = "AmstradCpcNonSyncSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Other Non-Sync Settings";
 			this.Load += new System.EventHandler(this.IntvControllerSettings_Load);

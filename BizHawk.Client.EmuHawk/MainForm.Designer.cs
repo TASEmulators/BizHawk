@@ -3559,14 +3559,14 @@
 			this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Name = "amstradCPCCoreEmulationSettingsToolStripMenuItem";
 			this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Text = "Core Emulation Settings";
-			this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Click += new System.EventHandler(this.amstradCPCCoreEmulationSettingsToolStripMenuItem_Click);
+			this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCpcCoreEmulationSettingsToolStripMenuItem_Click);
 			// 
 			// AmstradCPCAudioSettingsToolStripMenuItem
 			// 
 			this.AmstradCPCAudioSettingsToolStripMenuItem.Name = "AmstradCPCAudioSettingsToolStripMenuItem";
 			this.AmstradCPCAudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.AmstradCPCAudioSettingsToolStripMenuItem.Text = "Audio Settings";
-			this.AmstradCPCAudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCPCAudioSettingsToolStripMenuItem_Click);
+			this.AmstradCPCAudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCpcAudioSettingsToolStripMenuItem_Click);
 			// 
 			// AmstradCPCNonSyncSettingsToolStripMenuItem
 			// 
@@ -3580,7 +3580,7 @@
 			this.AmstradCPCPokeMemoryToolStripMenuItem.Name = "AmstradCPCPokeMemoryToolStripMenuItem";
 			this.AmstradCPCPokeMemoryToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.AmstradCPCPokeMemoryToolStripMenuItem.Text = "POKE Memory";
-			this.AmstradCPCPokeMemoryToolStripMenuItem.Click += new System.EventHandler(this.AmstradCPCPokeMemoryToolStripMenuItem_Click);
+			this.AmstradCPCPokeMemoryToolStripMenuItem.Click += new System.EventHandler(this.AmstradCpcPokeMemoryToolStripMenuItem_Click);
 			// 
 			// AmstradCPCMediaToolStripMenuItem
 			// 

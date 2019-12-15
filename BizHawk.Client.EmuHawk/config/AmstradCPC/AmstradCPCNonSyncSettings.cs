@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AmstradCPCNonSyncSettings : Form
+	public partial class AmstradCpcNonSyncSettings : Form
 	{
-		private AmstradCPC.AmstradCPCSettings _settings;
+		private readonly MainForm _mainForm;
+		private readonly AmstradCPC.AmstradCPCSettings _settings;
 
-		public AmstradCPCNonSyncSettings()
+		public AmstradCpcNonSyncSettings(
+			MainForm mainForm,
+			AmstradCPC.AmstradCPCSettings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_settings = ((AmstradCPC)Global.Emulator).GetSettings().Clone();
-
-			
-
 			// OSD Message Verbosity
-			var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));     
+			var osdTypes = Enum.GetNames(typeof(AmstradCPC.OSDVerbosity));
 			foreach (var val in osdTypes)
 			{
 				osdMessageVerbositycomboBox1.Items.Add(val);
@@ -35,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool changed =                
+			bool changed =
 				_settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
 
 			if (changed)
@@ -56,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Misc settings aborted");
+			_mainForm.AddOnScreenMessage("Misc settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
@@ -79,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateOSDNotes((AmstradCPC.OSDVerbosity)Enum.Parse(typeof(AmstradCPC.OSDVerbosity), cb.SelectedItem.ToString()));
 		}
 	}

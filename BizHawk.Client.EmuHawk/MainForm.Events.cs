@@ -2687,22 +2687,31 @@ namespace BizHawk.Client.EmuHawk
 
 		#region AmstradCPC
 
-		private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AmstradCPCCoreEmulationSettings();
-			form.ShowDialog();
+			if (Emulator is AmstradCPC cpc)
+			{
+				using var form = new AmstradCpcCoreEmulationSettings(this, cpc.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
-		private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AmstradCPCAudioSettings();
-			form.ShowDialog();
+			if (Emulator is AmstradCPC cpc)
+			{
+				using var form = new AmstradCpcAudioSettings(this, cpc.GetSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
-		private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AmstradCPCPokeMemory();
-			form.ShowDialog();
+			if (Emulator is AmstradCPC cpc)
+			{
+				using var form = new AmstradCpcPokeMemory(this, cpc);
+				form.ShowDialog();
+			}
 		}
 
 		private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2784,8 +2793,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AmstradCPCNonSyncSettings();
-			form.ShowDialog();
+			if (Emulator is AmstradCPC cpc)
+			{
+				using var form = new AmstradCpcNonSyncSettings(this, cpc.GetSettings().Clone());
+				form.ShowDialog();
+			}
+			
 		}
 
 		#endregion

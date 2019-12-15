@@ -1,27 +1,24 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
-using System.Text;
-using static BizHawk.Emulation.Cores.Computers.AmstradCPC.AmstradCPC;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AmstradCPCCoreEmulationSettings : Form
+	public partial class AmstradCpcCoreEmulationSettings : Form
 	{
-		private AmstradCPC.AmstradCPCSyncSettings _syncSettings;
+		private readonly MainForm _mainForm;
+		private readonly AmstradCPC.AmstradCPCSyncSettings _syncSettings;
 
-		public AmstradCPCCoreEmulationSettings()
+		public AmstradCpcCoreEmulationSettings(MainForm mainForm,
+			AmstradCPC.AmstradCPCSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = ((AmstradCPC)Global.Emulator).GetSyncSettings().Clone();
-
 			// machine selection
 			var machineTypes = Enum.GetNames(typeof(MachineType));
 			foreach (var val in machineTypes)
@@ -31,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			MachineSelectionComboBox.SelectedItem = _syncSettings.MachineType.ToString();
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString()));
 
-			// border selecton
+			// border selection
 			var borderTypes = Enum.GetNames(typeof(AmstradCPC.BorderType));
 			foreach (var val in borderTypes)
 			{
@@ -62,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoStartStopTape = autoLoadcheckBox1.Checked;
 
-				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 
 				DialogResult = DialogResult.OK;
 				Close();
@@ -76,25 +73,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Core emulator settings aborted");
+			_mainForm.AddOnScreenMessage("Core emulator settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
 		private void MachineSelectionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), cb.SelectedItem.ToString()));
 		}
 
 		private void UpdateMachineNotes(MachineType type)
 		{
-			textBoxMachineNotes.Text = CPCMachineMetaData.GetMetaString(type);
+			textBoxMachineNotes.Text = AmstradCPC.CPCMachineMetaData.GetMetaString(type);
 		}
 
-		private void borderTypecomboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		private void BorderTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateBorderNotes((AmstradCPC.BorderType)Enum.Parse(typeof(AmstradCPC.BorderType), cb.SelectedItem.ToString()));
 		}
 
@@ -103,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (type)
 			{
 				case AmstradCPC.BorderType.Uniform:
-					lblBorderInfo.Text = "Attempts to equalise the border areas";
+					lblBorderInfo.Text = "Attempts to equalize the border areas";
 					break;
 				case AmstradCPC.BorderType.Uncropped:
 					lblBorderInfo.Text = "Pretty much the signal the gate array is generating (looks pants)";

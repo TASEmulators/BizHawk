@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class AmstradCPCCoreEmulationSettings
+    partial class AmstradCpcCoreEmulationSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -155,6 +155,7 @@
 			this.borderTypecomboBox1.Name = "borderTypecomboBox1";
 			this.borderTypecomboBox1.Size = new System.Drawing.Size(159, 21);
 			this.borderTypecomboBox1.TabIndex = 28;
+			this.borderTypecomboBox1.SelectedIndexChanged += new System.EventHandler(this.BorderTypeComboBox_SelectedIndexChanged);
 			// 
 			// textBoxMachineNotes
 			// 
@@ -169,7 +170,7 @@
 			this.textBoxMachineNotes.Size = new System.Drawing.Size(424, 222);
 			this.textBoxMachineNotes.TabIndex = 31;
 			// 
-			// AmstradCPCCoreEmulationSettings
+			// AmstradCpcCoreEmulationSettings
 			// 
 			this.AcceptButton = this.OkBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,8 +190,7 @@
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
-			this.Name = "AmstradCPCCoreEmulationSettings";
+			this.Name = "AmstradCpcCoreEmulationSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Core Emulation Settings";
 			this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
