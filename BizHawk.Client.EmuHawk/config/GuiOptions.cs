@@ -64,8 +64,17 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = Global.Config.MoviesOnDisk;
 			cbMoviesInAWE.Checked = Global.Config.MoviesInAWE;
 
-			NLuaRadio.Checked = Global.Config.UseNLua;
-			LuaInterfaceRadio.Checked = !Global.Config.UseNLua;
+			switch (Global.Config.LuaEngine)
+			{
+				case Config.ELuaEngine.LuaPlusLuaInterface:
+					LuaInterfaceRadio.Checked = true;
+					break;
+				case Config.ELuaEngine.NLuaPlusKopiLua:
+					NLuaRadio.Checked = true;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 
 			if (LogConsole.ConsoleVisible)
 			{
@@ -101,13 +110,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			Global.Config.MoviesInAWE = cbMoviesInAWE.Checked;
 
-			bool changedLua = Global.Config.UseNLua != NLuaRadio.Checked;
-			Global.Config.UseNLua = NLuaRadio.Checked;
+			var prevLuaEngine = Global.Config.LuaEngine;
+			if (LuaInterfaceRadio.Checked) Global.Config.LuaEngine = Config.ELuaEngine.LuaPlusLuaInterface;
+			else if (NLuaRadio.Checked) Global.Config.LuaEngine = Config.ELuaEngine.NLuaPlusKopiLua;
 
 			Close();
 			DialogResult = DialogResult.OK;
 			GlobalWin.OSD.AddMessage("Custom configurations saved.");
-			if(changedLua) GlobalWin.OSD.AddMessage("Restart emulator for Lua change to take effect");
+			if (prevLuaEngine != Global.Config.LuaEngine) GlobalWin.OSD.AddMessage("Restart emulator for Lua change to take effect");
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

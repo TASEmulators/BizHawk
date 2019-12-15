@@ -318,8 +318,8 @@ namespace BizHawk.Client.EmuHawk
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
 				if (!EXE_PROJECT.OSTailoredCode.IsUnixHost // LuaInterface is not currently working on Mono
 					&& File.Exists(configPath)
-					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"UseNLua\": ")) ?? string.Empty)
-						.Contains("false"))
+					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty)
+						.Contains("0"))
 				{
 					requested = "LuaInterface";
 				}

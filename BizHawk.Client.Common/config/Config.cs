@@ -142,8 +142,15 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int FlushSaveRamFrames;
 
-		//check CurrentDomain_AssemblyResolve if you change the defaults or name of this key
-		public bool UseNLua = false; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
+		public enum ELuaEngine
+		{
+			/// <remarks>Don't change this member's ordinal (don't reorder) without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
+			LuaPlusLuaInterface,
+			NLuaPlusKopiLua
+		}
+
+		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
+		public ELuaEngine LuaEngine = ELuaEngine.LuaPlusLuaInterface;
 
 		public bool TurboSeek { get; set; }
 
