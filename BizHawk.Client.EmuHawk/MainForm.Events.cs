@@ -1579,17 +1579,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES nes)
 			{
-				using var form = new NESGraphicsConfig(this, nes.GetSettings());
+				using var form = new NESGraphicsConfig(this, nes.GetSettings().Clone());
 				form.ShowDialog(this);
 			}
 			else if (Emulator is SubNESHawk sub)
 			{
-				using var form = new NESGraphicsConfig(this, sub.GetSettings());
+				using var form = new NESGraphicsConfig(this, sub.GetSettings().Clone());
 				form.ShowDialog(this);
 			}
-			else if (Emulator is QuickNES)
+			else if (Emulator is QuickNES quickNes)
 			{
-				using var form = new QuickNesConfig();
+				using var form = new QuickNesConfig(this, quickNes.GetSettings().Clone());
 				form.ShowDialog(this);
 			}
 		}

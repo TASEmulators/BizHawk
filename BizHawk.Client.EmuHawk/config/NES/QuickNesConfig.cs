@@ -10,16 +10,20 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class QuickNesConfig : Form
 	{
-		private QuickNES.QuickNESSettings _settings;
+		private readonly MainForm _mainForm;
+		private readonly QuickNES.QuickNESSettings _settings;
 
-		public QuickNesConfig()
+		public QuickNesConfig(
+			MainForm mainForm,
+			QuickNES.QuickNESSettings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void QuickNesConfig_Load(object sender, EventArgs e)
 		{
-			_settings = ((QuickNES)Global.Emulator).GetSettings();
 			propertyGrid1.SelectedObject = _settings;
 			SetPaletteImage();
 		}
@@ -97,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.PutCoreSettings(_settings);
+			_mainForm.PutCoreSettings(_settings);
 			DialogResult = DialogResult.OK;
 			Close();
 		}
