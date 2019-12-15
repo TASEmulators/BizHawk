@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class APISubsetContainer : IApiContainer
+	public class APISubsetContainer : IApiContainer
 	{
 		public Dictionary<Type, IExternalApi> Libraries { get; set; }
 

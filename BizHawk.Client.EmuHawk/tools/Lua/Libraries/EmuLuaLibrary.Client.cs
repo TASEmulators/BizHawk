@@ -15,7 +15,7 @@ using System.Diagnostics;
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
-	public sealed class EmuHawkLuaLibrary : LuaLibraryBase
+	public sealed class EmuHawkLuaLibrary : DelegatingLuaLibraryEmu
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -225,31 +225,19 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.opencheats( );")]
 		[LuaMethod("opencheats", "opens the Cheats dialog")]
-		public static void OpenCheats()
-		{
-			GlobalWin.Tools.Load<Cheats>();
-		}
+		public void OpenCheats() => APIs.Tool.OpenCheats();
 
 		[LuaMethodExample("client.openhexeditor( );")]
 		[LuaMethod("openhexeditor", "opens the Hex Editor dialog")]
-		public static void OpenHexEditor()
-		{
-			GlobalWin.Tools.Load<HexEditor>();
-		}
+		public void OpenHexEditor() => APIs.Tool.OpenHexEditor();
 
 		[LuaMethodExample("client.openramwatch( );")]
 		[LuaMethod("openramwatch", "opens the RAM Watch dialog")]
-		public static void OpenRamWatch()
-		{
-			GlobalWin.Tools.LoadRamWatch(loadDialog: true);
-		}
+		public void OpenRamWatch() => APIs.Tool.OpenRamWatch();
 
 		[LuaMethodExample("client.openramsearch( );")]
 		[LuaMethod("openramsearch", "opens the RAM Search dialog")]
-		public static void OpenRamSearch()
-		{
-			GlobalWin.Tools.Load<RamSearch>();
-		}
+		public void OpenRamSearch() => APIs.Tool.OpenRamSearch();
 
 		[LuaMethodExample("client.openrom( \"C:\\\" );")]
 		[LuaMethod("openrom", "opens the Open ROM dialog")]
@@ -261,24 +249,15 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("client.opentasstudio( );")]
 		[LuaMethod("opentasstudio", "opens the TAStudio dialog")]
-		public static void OpenTasStudio()
-		{
-			GlobalWin.Tools.Load<TAStudio>();
-		}
+		public void OpenTasStudio() => APIs.Tool.OpenTasStudio();
 
 		[LuaMethodExample("client.opentoolbox( );")]
 		[LuaMethod("opentoolbox", "opens the Toolbox Dialog")]
-		public static void OpenToolBox()
-		{
-			GlobalWin.Tools.Load<ToolBox>();
-		}
+		public void OpenToolBox() => APIs.Tool.OpenToolBox();
 
 		[LuaMethodExample("client.opentracelogger( );")]
 		[LuaMethod("opentracelogger", "opens the tracelogger if it is available for the given core")]
-		public static void OpenTraceLogger()
-		{
-			GlobalWin.Tools.Load<TraceLogger>();
-		}
+		public void OpenTraceLogger() => APIs.Tool.OpenTraceLogger();
 
 		[LuaMethodExample("client.pause( );")]
 		[LuaMethod("pause", "Pauses the emulator")]
@@ -465,38 +444,16 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]
 		public LuaTable GetTool(string name)
 		{
-			var toolType = ReflectionUtil.GetTypeByName(name)
-				.FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
-
-			if (toolType != null)
-			{
-				GlobalWin.Tools.Load(toolType);
-			}
-
-			var selectedTool = GlobalWin.Tools.AvailableTools
-				.FirstOrDefault(tool => tool.GetType().Name.ToLower() == name.ToLower());
-
-			if (selectedTool != null)
-			{
-				return LuaHelper.ToLuaTable(Lua, selectedTool);
-			}
-
-			return null;
+			var selectedTool = APIs.Tool.GetTool(name);
+			return selectedTool == null ? null : LuaHelper.ToLuaTable(Lua, selectedTool);
 		}
 
 		[LuaMethodExample("local nlclicre = client.createinstance( \"objectname\" );")]
 		[LuaMethod("createinstance", "returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned")]
 		public LuaTable CreateInstance(string name)
 		{
-			var possibleTypes = ReflectionUtil.GetTypeByName(name);
-
-			if (possibleTypes.Any())
-			{
-				var instance = Activator.CreateInstance(possibleTypes.First());
-				return LuaHelper.ToLuaTable(Lua, instance);
-			}
-
-			return null;
+			var instance = APIs.Tool.GetTool(name);
+			return instance == null ? null : LuaHelper.ToLuaTable(Lua, instance);
 		}
 
 		[LuaMethodExample("client.displaymessages( true );")]

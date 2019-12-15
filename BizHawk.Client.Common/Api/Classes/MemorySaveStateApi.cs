@@ -8,8 +8,14 @@ namespace BizHawk.Client.Common
 {
 	public sealed class MemorySaveStateApi : IMemorySaveState
 	{
-		public MemorySaveStateApi()
-		{ }
+		public MemorySaveStateApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
+
+		public MemorySaveStateApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
 
 		[RequiredService]
 		private IStatable StatableCore { get; set; }
@@ -40,7 +46,7 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				Console.WriteLine("Unable to find the given savestate in memory");
+				LogCallback("Unable to find the given savestate in memory");
 			}
 		}
 

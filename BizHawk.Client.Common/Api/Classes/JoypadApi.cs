@@ -7,6 +7,15 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadApi : IJoypad
 	{
+		public JoypadApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
+
+		public JoypadApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
+
 		public Dictionary<string,dynamic> Get(int? controller = null)
 		{
 			var buttons = new Dictionary<string, dynamic>();
@@ -42,7 +51,6 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		// TODO: what about float controls?
 		public Dictionary<string, dynamic> GetImmediate()
 		{
 			var buttons = new Dictionary<string, dynamic>();
@@ -79,7 +87,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (Exception)
 			{
-				Console.WriteLine($"invalid mnemonic string: {inputLogEntry}");
+				LogCallback($"invalid mnemonic string: {inputLogEntry}");
 			}
 		}
 

@@ -917,6 +917,7 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Lua\Libraries\DelegatingLuaLibraryEmu.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Communication.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
