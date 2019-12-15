@@ -2242,8 +2242,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ColecoControllerSettings();
-			form.ShowDialog();
+			if (Emulator is ColecoVision coleco)
+			{
+				using var form = new ColecoControllerSettings(this, coleco.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		#endregion
