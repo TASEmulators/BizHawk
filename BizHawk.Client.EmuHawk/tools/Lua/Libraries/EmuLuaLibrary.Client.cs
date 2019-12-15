@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
 using NLua;
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using System.Threading;
@@ -22,15 +20,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[RequiredService]
 		private IVideoProvider VideoProvider { get; set; }
-
-		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
-			{
-				{ 0, "None" },
-				{ 1, "x2SAI" },
-				{ 2, "SuperX2SAI" },
-				{ 3, "SuperEagle" },
-				{ 4, "Scanlines" },
-			};
 
 		public EmuHawkLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -445,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable GetTool(string name)
 		{
 			var selectedTool = APIs.Tool.GetTool(name);
-			return selectedTool == null ? null : LuaHelper.ToLuaTable(Lua, selectedTool);
+			return selectedTool == null ? null : Lua.TableFromObject(selectedTool);
 		}
 
 		[LuaMethodExample("local nlclicre = client.createinstance( \"objectname\" );")]
@@ -453,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 		public LuaTable CreateInstance(string name)
 		{
 			var instance = APIs.Tool.GetTool(name);
-			return instance == null ? null : LuaHelper.ToLuaTable(Lua, instance);
+			return instance == null ? null : Lua.TableFromObject(instance);
 		}
 
 		[LuaMethodExample("client.displaymessages( true );")]

@@ -5,9 +5,9 @@ using NLua;
 
 namespace BizHawk.Client.Common
 {
-	public static class LuaHelper
+	public static class LuaExtensions
 	{
-		public static LuaTable ToLuaTable(Lua lua, object obj)
+		public static LuaTable TableFromObject(this Lua lua, object obj)
 		{
 			var table = lua.NewTable();
 

@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class ApiContainer : APISubsetContainer
+	public sealed class ApiContainer : ApiSubsetContainer
 	{
 		public IComm Comm => (IComm) Libraries[typeof(CommApi)];
 		public IGui Gui => (IGui) Libraries[typeof(GuiApi)];

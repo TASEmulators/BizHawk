@@ -34,12 +34,10 @@ namespace BizHawk.Client.Common
 				{
 					return MemoryDomainCore.MainMemory;
 				}
-				else
-				{
-					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-					Log(error);
-					throw new NotImplementedException(error);
-				}
+
+				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+				Log(error);
+				throw new NotImplementedException(error);
 			}
 		}
 

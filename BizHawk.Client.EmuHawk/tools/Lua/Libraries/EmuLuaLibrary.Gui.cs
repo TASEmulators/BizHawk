@@ -711,7 +711,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var canvas = new LuaCanvas(width, height, x, y);
 			canvas.Show();
-			return LuaHelper.ToLuaTable(Lua, canvas);
+			return Lua.TableFromObject(canvas);
 		}
 	}
 }
