@@ -15,29 +15,21 @@ namespace BizHawk.Client.EmuHawk
 		// Allow selection of palette file from archive
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
-		private NES _nes;
-		private SubNESHawk _subneshawk;
+		private readonly MainForm _mainForm;
 		private NES.NESSettings _settings;
-		private Bitmap _bmp;
+		//private Bitmap _bmp;
 
-		public NESGraphicsConfig()
+		public NESGraphicsConfig(
+			MainForm mainForm,
+			NES.NESSettings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes = (NES)Global.Emulator;
-				_settings = _nes.GetSettings();
-			}
-			else
-			{
-				_subneshawk = (SubNESHawk)Global.Emulator;
-				_settings = _subneshawk.GetSettings();
-			}
-
 			LoadStuff();
 		}
 
@@ -84,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			_bmp = new Bitmap(w, h);
+			var bmp = new Bitmap(w, h);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;
@@ -93,11 +85,11 @@ namespace BizHawk.Client.EmuHawk
 					int cx = i * 16 / w;
 					int cindex = (cy * 16) + cx;
 					Color col = Color.FromArgb(0xff, pal[cindex, 0], pal[cindex, 1], pal[cindex, 2]);
-					_bmp.SetPixel(i, j, col);
+					bmp.SetPixel(i, j, col);
 				}
 			}
 
-			pictureBoxPalette.Image = _bmp;
+			pictureBoxPalette.Image = bmp;
 		}
 
 		private byte[,] ResolvePalette(bool showmsg = false)
@@ -118,25 +110,22 @@ namespace BizHawk.Client.EmuHawk
 
 						return data;
 					}
-					else
-					{
-						return _settings.Palette;
-					}
-				}
-				else // no filename: interpret this as "reset to default"
-				{
-					if (showmsg)
-					{
-						GlobalWin.OSD.AddMessage("Standard Palette set");
-					}
 
-					return (byte[,])Palettes.QuickNESPalette.Clone();
+					return _settings.Palette;
 				}
+				
+				// no filename: interpret this as "reset to default"
+				if (showmsg)
+				{
+					GlobalWin.OSD.AddMessage("Standard Palette set");
+				}
+
+				return (byte[,])Palettes.QuickNESPalette.Clone();
+				
 			}
-			else // checkbox unchecked: we're reusing whatever palette was set
-			{
-				return _settings.Palette;
-			}
+			
+			// checkbox unchecked: we're reusing whatever palette was set
+			return _settings.Palette;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
@@ -157,15 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.BackgroundColor &= 0x00FFFFFF;
 			}
 
-			if (Global.Emulator is NES)
-			{
-				_nes.PutSettings(_settings);
-			}
-			else
-			{
-				_subneshawk.PutSettings(_settings);
-			}
-
+			_mainForm.PutCoreSettings(_settings);
 			Close();
 		}
 

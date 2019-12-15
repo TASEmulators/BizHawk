@@ -1575,14 +1575,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES)
+			if (Emulator is NES nes)
 			{
-				using var form = new NESGraphicsConfig();
+				using var form = new NESGraphicsConfig(this, nes.GetSettings());
 				form.ShowDialog(this);
 			}
-			else if (Emulator is SubNESHawk)
+			else if (Emulator is SubNESHawk sub)
 			{
-				using var form = new NESGraphicsConfig();
+				using var form = new NESGraphicsConfig(this, sub.GetSettings());
 				form.ShowDialog(this);
 			}
 			else if (Emulator is QuickNES)
@@ -1671,10 +1671,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var dlg = new NESSyncSettingsForm())
-			{
-				dlg.ShowDialog(this);
-			}
+			using var dlg = new NESSyncSettingsForm();
+			dlg.ShowDialog(this);
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)
