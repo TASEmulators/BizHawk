@@ -49,10 +49,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getregisters", "returns the complete set of available flags and registers for a given core")]
 		public LuaTable GetRegisters()
 		{
-			var result = APIs.Emu.GetRegisters();
-			var table = Lua.NewTable();
-			foreach (var kvp in result) table[kvp.Key] = kvp.Value;
-			return table;
+			return APIs.Emu
+				.GetRegisters()
+				.ToLuaTable(Lua);
 		}
 
 		[LuaMethodExample("emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]

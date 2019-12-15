@@ -1,8 +1,6 @@
 ﻿using System;
 using NLua;
 
-using BizHawk.Emulation.Common;
-
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 namespace BizHawk.Client.Common
@@ -45,10 +43,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getoptions", "returns the game options for the currently loaded rom. Options vary per platform")]
 		public LuaTable GetOptions()
 		{
-			var dict = APIs.GameInfo.GetOptions();
-			var table = Lua.NewTable();
-			foreach (var kvp in dict) table[kvp.Key] = kvp.Value;
-			return table;
+			return APIs.GameInfo
+				.GetOptions()
+				.ToLuaTable(Lua);
 		}
 	}
 }

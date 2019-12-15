@@ -31,10 +31,9 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getinput", "Returns a table of buttons pressed on a given frame of the loaded movie")]
 		public LuaTable GetInput(int frame)
 		{
-			var result = APIs.Movie.GetInput(frame);
-			var table = Lua.NewTable();
-			foreach (var kvp in result) table[kvp.Key] = kvp.Value;
-			return table;
+			return APIs.Movie
+				.GetInput(frame)
+				.ToLuaTable(Lua);
 		}
 
 		[LuaMethodExample("local stmovget = movie.getinputasmnemonic( 500 );")]
@@ -93,10 +92,10 @@ namespace BizHawk.Client.Common
 		[LuaMethod("getheader", "If a movie is active, will return the movie header as a lua table")]
 		public LuaTable GetHeader()
 		{
-			var result = APIs.Movie.GetHeader();
-			var table = Lua.NewTable();
-			foreach (var kvp in result) table[kvp.Key] = kvp.Value;
-			return table;
+			
+			return APIs.Movie
+				.GetHeader()
+				.ToLuaTable(Lua);
 		}
 
 		[LuaMethodExample("local nlmovget = movie.getcomments( );")]

@@ -39,10 +39,9 @@ namespace BizHawk.Client.Common
 			var result = APIs.Sql.ReadCommand(query);
 			if (result is Dictionary<string, object> dict)
 			{
-				var table = Lua.NewTable();
-				foreach (var kvp in dict) table[kvp.Key] = kvp.Value;
-				return table;
+				return dict.ToLuaTable(Lua);
 			}
+
 			return result;
 		}
 	}
