@@ -41,11 +41,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="saveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
 		public void Save(Dictionary<string, Config.AnalogBind> saveConfigObject = null)
 		{
-			var saveto = saveConfigObject ?? _realConfigObject;
+			var saveTo = saveConfigObject ?? _realConfigObject;
 			foreach (Control c in Controls)
 			{
 				var abc = (AnalogBindControl)c;
-				saveto[abc.ButtonName] = abc.Bind;
+				saveTo[abc.ButtonName] = abc.Bind;
 			}
 		}
 	}
