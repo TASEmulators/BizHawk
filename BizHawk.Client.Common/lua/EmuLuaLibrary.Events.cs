@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
-		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string domain = null)
+		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string scope = null)
 		{
 			try
 			{
@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemoryexecuteany(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after any address is executed by the core (CPU-intensive)\" );\r\n\tend\r\n\t, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecuteany", "Fires after any address is executed by the core (CPU-intensive)")]
-		public string OnMemoryExecuteAny(LuaFunction luaf, string name = null, string domain = null)
+		public string OnMemoryExecuteAny(LuaFunction luaf, string name = null, string scope = null)
 		{
 			try
 			{
@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
-						ProcessScope(domain),
+						ProcessScope(scope),
 						MemoryCallbackType.Execute,
 						"Lua Hook",
 						nlf.MemCallback,
@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
-		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
+		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
 		{
 			try
 			{
@@ -268,7 +268,7 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local steveonm = event.onmemorywrite(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
-		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
+		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
 		{
 			try
 			{
@@ -293,7 +293,7 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(scope), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
