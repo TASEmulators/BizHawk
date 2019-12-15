@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class N64VideoPluginconfig
+	partial class N64VideoPluginConfig
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginConfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
 			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
@@ -4627,10 +4627,10 @@
 			this.Controls.Add(this.N64plugintabcontrol);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.monitor_MultiSize;
-			this.Name = "N64VideoPluginconfig";
+			this.Name = "N64VideoPluginConfig";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Plugin Settings";
-			this.Load += new System.EventHandler(this.N64VideoPluginconfig_Load);
+			this.Load += new System.EventHandler(this.N64VideoPluginConfig_Load);
 			this.N64plugintabcontrol.ResumeLayout(false);
 			this.N64vpluginglobaltab.ResumeLayout(false);
 			this.N64vpluginglobaltab.PerformLayout();

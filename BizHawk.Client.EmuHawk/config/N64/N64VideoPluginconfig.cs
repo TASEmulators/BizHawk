@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
@@ -10,7 +9,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class N64VideoPluginconfig : Form
+	public partial class N64VideoPluginConfig : Form
 	{
 		private N64Settings _s;
 		private N64SyncSettings _ss;
@@ -37,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _programmaticallyChangingPluginComboBox = false;
 
-		public N64VideoPluginconfig()
+		public N64VideoPluginConfig()
 		{
 			InitializeComponent();
 		}
@@ -507,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 			PutSyncSettings(_ss);
 		} 
 
-		private void N64VideoPluginconfig_Load(object sender, EventArgs e)
+		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
 		{
 			_s = GetSettings();
 			_ss = GetSyncSettings();
@@ -930,7 +929,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		private void UpdateGlideHacksSection()
 		{
 			if (GlideUseDefaultHacks1.Checked || GlideUseDefaultHacks2.Checked)
@@ -1202,10 +1200,10 @@ namespace BizHawk.Client.EmuHawk
 				VideoResolutionComboBox.SelectedIndex = 0;
 			}
 
-			var strArr = new string[] {};
+			string[] strArr;
 			int oldSizeX, oldSizeY;
 
-			var oldResolution = VideoResolutionComboBox.SelectedItem.ToString();
+			var oldResolution = VideoResolutionComboBox.SelectedItem?.ToString() ?? "";
 			if (oldResolution != _customResItemName)
 			{
 				strArr = oldResolution.Split('x');
@@ -1248,11 +1246,9 @@ namespace BizHawk.Client.EmuHawk
 								bestFit = 0;
 								break;
 							}
-							else
-							{
-								bestFit = i - 1;
-								break;
-							}
+							
+							bestFit = i - 1;
+							break;
 						}
 					}
 				}
