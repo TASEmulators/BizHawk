@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common.BizInvoke;
@@ -152,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				InitMemCallbacks();
 				KillMemCallbacks();
 
-				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
-				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+				_tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
+				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			}
 
 			_romfile = null;
@@ -385,7 +384,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 		}
 
-		public bool IsMegaCD { get { return _cds != null; } }
+		public bool IsMegaCD => _cds != null;
 
 		public class VDPView : IMonitor
 		{
@@ -429,6 +428,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return new VDPView(v, _elf);
 		}
 
-		public DisplayType Region { get; private set; }
+		public DisplayType Region { get; }
 	}
 }
