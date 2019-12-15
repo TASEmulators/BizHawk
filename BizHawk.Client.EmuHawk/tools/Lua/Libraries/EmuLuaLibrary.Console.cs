@@ -45,29 +45,20 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Log(params object[] outputs)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				LogWithSeparator("\t", "\n", outputs);
-			}
+			LogWithSeparator("\t", "\n", outputs);
 		}
 
-		//// Single param version is used by logOutputCallback of some libraries.
+		// Single param version is used by logOutputCallback of some libraries.
 		public static void LogOutput(object output)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				Log(output);
-			}
+			Log(output);
 		}
 
 		[LuaMethodExample("console.writeline( \"New log line.\" );")]
 		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void WriteLine(params object[] outputs)
 		{
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				LogWithSeparator("\n", "\n", outputs);
-			}
+			LogWithSeparator("\n", "\n", outputs);
 		}
 
 		[LuaMethodExample("console.write( \"New log message.\" );")]
@@ -106,10 +97,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (output is LuaTable)
+					if (output is LuaTable lti)
 					{
 						var sb = new StringBuilder();
-						var lti = output as LuaTable;
 
 						var keys = (from object key in lti.Keys select key.ToString()).ToList();
 						var values = (from object value in lti.Values select value.ToString()).ToList();
