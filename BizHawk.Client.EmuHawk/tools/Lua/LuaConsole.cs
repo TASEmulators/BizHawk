@@ -462,6 +462,8 @@ namespace BizHawk.Client.EmuHawk
 			NumberOfScripts.Text = message;
 		}
 
+		private void WriteLine(string message) => WriteToOutputWindow(message + "\n");
+
 		private int _messageCount;
 		private const int MaxCount = 50;
 		public void WriteToOutputWindow(string message)
@@ -477,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_messageCount <= MaxCount)
 				{
-					OutputBox.Text += message + "\n";
+					OutputBox.Text += message;
 					OutputBox.SelectionStart = OutputBox.Text.Length;
 					OutputBox.ScrollToCaret();
 				}
@@ -874,7 +876,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (IOException)
 			{
-				WriteToOutputWindow($"Unable to access file {item.Path}");
+				WriteLine($"Unable to access file {item.Path}");
 			}
 			catch (Exception ex)
 			{
@@ -1363,7 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (InputBox.Text.Contains("emu.frameadvance("))
 					{
-						WriteToOutputWindow("emu.frameadvance() can not be called from the console");
+						WriteLine("emu.frameadvance() can not be called from the console");
 						return;
 					}
 
@@ -1378,7 +1380,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (OutputBox.Text == consoleBeforeCall)
 							{
-								WriteToOutputWindow("Command successfully executed");
+								WriteLine("Command successfully executed");
 							}
 						});
 					});

@@ -133,7 +133,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
+			if (!string.IsNullOrEmpty(terminator))
+			{
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
+			}
 		}
 	}
 }
