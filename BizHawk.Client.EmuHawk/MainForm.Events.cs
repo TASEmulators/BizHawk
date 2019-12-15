@@ -1523,7 +1523,8 @@ namespace BizHawk.Client.EmuHawk
 				Emulator is NES nes && nes.IsVS;
 
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = Emulator is NES && !Global.MovieSession.Movie.IsActive;
+			MovieSettingsMenuItem.Enabled = (Emulator is NES || Emulator is SubNESHawk)
+				&& !Global.MovieSession.Movie.IsActive;
 
 			NesControllerSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NesControllerSettings>()
 				&& !Global.MovieSession.Movie.IsActive;
@@ -1671,8 +1672,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var dlg = new NESSyncSettingsForm();
-			dlg.ShowDialog(this);
+			if (Emulator is NES nes)
+			{
+				using var dlg = new NESSyncSettingsForm(this, nes.GetSyncSettings().Clone(), nes.HasMapperProperties);
+				dlg.ShowDialog(this);
+			}
+			else if (Emulator is SubNESHawk sub)
+			{
+				using var dlg = new NESSyncSettingsForm(this, sub.GetSyncSettings().Clone(), sub.HasMapperProperties);
+				dlg.ShowDialog(this);
+			}
+			
 		}
 
 		private void BarcodeReaderMenuItem_Click(object sender, EventArgs e)

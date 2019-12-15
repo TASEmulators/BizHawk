@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -69,9 +69,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int _frame = 0;
 
-		public bool IsFDS
+		public bool IsFDS => subnes.Board is FDS;
+
+		public bool HasMapperProperties
 		{
-			get { return subnes.Board is FDS; }
+			get
+			{
+				var fields = subnes.Board.GetType().GetFields();
+				foreach (var field in fields)
+				{
+					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
+					if (attrib != null)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 		}
 
 		private readonly ITraceable _tracer;
