@@ -417,16 +417,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
-		public LuaTable GetAvailableTools()
-		{
-			var xx = GlobalWin.Tools.AvailableTools.ToList();
-			var x = GlobalWin.Tools.AvailableTools
-				.Select(t => t.Name.ToLower())
-				.ToList()
-				.ToLuaTable(Lua);
-
-			return x;
-		}
+		public LuaTable GetAvailableTools() => GlobalWin.Tools.AvailableTools.Select(tool => tool.Name.ToLower()).EnumerateToLuaTable(Lua);
 
 		[LuaMethodExample("local nlcliget = client.gettool( \"Tool name\" );")]
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 using NLua;
 
@@ -8,6 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public static class LuaExtensions
 	{
+		public static LuaTable EnumerateToLuaTable<T>(this IEnumerable<T> list, Lua lua) => list.ToList().ToLuaTable(lua);
+
 		public static LuaTable ToLuaTable<T>(this IList<T> list, Lua lua, int indexFrom = 0)
 		{
 			var table = lua.NewTable();
@@ -34,26 +35,16 @@ namespace BizHawk.Client.Common
 		public static LuaTable TableFromObject(this Lua lua, object obj)
 		{
 			var table = lua.NewTable();
-
-			var type = obj.GetType();
-
-			var methods = type.GetMethods();
-			foreach (var method in methods)
+			foreach (var method in obj.GetType().GetMethods())
 			{
-				if (method.IsPublic)
-				{
-					string luaName = ""; // Empty will default to the actual method name;
-
-					var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(typeof(LuaMethodAttribute)).FirstOrDefault();
-					if (luaMethodAttr != null)
-					{
-						luaName = luaMethodAttr.Name;
-					}
-
-					table[method.Name] = lua.RegisterFunction(luaName, obj, method);
-				}
+				if (!method.IsPublic) continue;
+				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				table[method.Name] = lua.RegisterFunction(
+					foundAttrs.Length == 0 ? string.Empty : ((LuaMethodAttribute) foundAttrs[0]).Name, // empty string will default to the actual method name
+					obj,
+					method
+				);
 			}
-
 			return table;
 		}
 	}

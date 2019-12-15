@@ -45,20 +45,9 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 
 			// Register lua libraries
-			var libs = Assembly
-				.Load("BizHawk.Client.Common")
-				.GetTypes()
-				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
-				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
-				.Concat(Assembly
-					.GetAssembly(typeof(EmuLuaLibrary))
-					.GetTypes()
-					.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
-					.Where(t => t.IsSealed)
-					.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
-
-			foreach (var lib in libs)
+			foreach (var lib in Assembly.Load("BizHawk.Client.Common").GetTypes()
+				.Concat(Assembly.GetAssembly(typeof(EmuLuaLibrary)).GetTypes())
+				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t) && t.IsSealed && ServiceInjector.IsAvailable(serviceProvider, t)))
 			{
 				bool addLibrary = true;
 				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
@@ -90,13 +79,12 @@ namespace BizHawk.Client.EmuHawk
 			// Add LuaCanvas to Docs
 			Type luaCanvas = typeof(LuaCanvas);
 
-			var methods = luaCanvas
-				.GetMethods()
-				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttribute), false).Any());
-
-			foreach (var method in methods)
+			foreach (var method in luaCanvas.GetMethods())
 			{
-				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
+				if (method.GetCustomAttributes(typeof(LuaMethodAttribute), false).Length != 0)
+				{
+					Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
+				}
 			}
 		}
 
@@ -122,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void StartLuaDrawing()
 		{
-			if (ScriptList.Any() && GuiLibrary.SurfaceIsNull)
+			if (ScriptList.Count != 0 && GuiLibrary.SurfaceIsNull)
 			{
 				GuiLibrary.DrawNew("emu");
 			}
@@ -130,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void EndLuaDrawing()
 		{
-			if (ScriptList.Any())
+			if (ScriptList.Count != 0)
 			{
 				GuiLibrary.DrawFinish();
 			}

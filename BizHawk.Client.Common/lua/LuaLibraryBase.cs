@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 
 using NLua;
@@ -86,19 +85,11 @@ namespace BizHawk.Client.Common
 		public void LuaRegister(Type callingLibrary, LuaDocumentation docs = null)
 		{
 			Lua.NewTable(Name);
-
-			var luaAttr = typeof(LuaMethodAttribute);
-
-			var methods = GetType()
-				.GetMethods()
-				.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
-
-			foreach (var method in methods)
+			foreach (var method in GetType().GetMethods())
 			{
-				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false).First();
-				var luaName = $"{Name}.{luaMethodAttr.Name}";
-				Lua.RegisterFunction(luaName, this, method);
-
+				var foundAttrs = method.GetCustomAttributes(typeof(LuaMethodAttribute), false);
+				if (foundAttrs.Length == 0) continue;
+				Lua.RegisterFunction($"{Name}.{((LuaMethodAttribute) foundAttrs[0]).Name}", this, method);
 				docs?.Add(new LibraryFunction(Name, callingLibrary.Description(), method));
 			}
 		}

@@ -160,22 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodExample("local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
-		public LuaTable GetSelection()
-		{
-			LuaTable table = Lua.NewTable();
-
-			if (Engaged())
-			{
-				var selection = Tastudio.GetSelection().ToList();
-
-				for (int i = 0; i < selection.Count; i++)
-				{
-					table[i] = selection[i];
-				}
-			}
-
-			return table;
-		}
+		public LuaTable GetSelection() => Engaged() ? Tastudio.GetSelection().EnumerateToLuaTable(Lua) : Lua.NewTable();
 
 		[LuaMethodExample("")]
 		[LuaMethod("submitinputchange", "")]
@@ -377,8 +362,7 @@ namespace BizHawk.Client.EmuHawk
 						b.Frame,
 						Text = b.UserText
 					})
-					.ToList()
-					.ToLuaTable(Lua);
+					.EnumerateToLuaTable(Lua);
 			}
 
 			return Lua.NewTable();
@@ -392,29 +376,24 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				if (Tastudio.CurrentTasMovie.Branches.Any(b => b.UniqueIdentifier.ToString() == branchId))
+				var branch = Tastudio.CurrentTasMovie.Branches.FirstOrDefault(b => b.UniqueIdentifier.ToString() == branchId);
+				if (branch != null && frame < branch.InputLog.Count)
 				{
-					var branch = Tastudio.CurrentTasMovie.Branches.First(b => b.UniqueIdentifier.ToString() == branchId);
-					if (frame < branch.InputLog.Count)
+					var adapter = new Bk2ControllerAdapter
 					{
-						var input = branch.InputLog[frame];
+						Definition = Global.MovieSession.MovieControllerAdapter.Definition
+					};
 
-						var adapter = new Bk2ControllerAdapter
-						{
-							Definition = Global.MovieSession.MovieControllerAdapter.Definition
-						};
+					adapter.SetControllersAsMnemonic(branch.InputLog[frame]);
 
-						adapter.SetControllersAsMnemonic(input);
+					foreach (var button in adapter.Definition.BoolButtons)
+					{
+						table[button] = adapter.IsPressed(button);
+					}
 
-						foreach (var button in adapter.Definition.BoolButtons)
-						{
-							table[button] = adapter.IsPressed(button);
-						}
-
-						foreach (var button in adapter.Definition.FloatControls)
-						{
-							table[button] = adapter.GetFloat(button);
-						}
+					foreach (var button in adapter.Definition.FloatControls)
+					{
+						table[button] = adapter.GetFloat(button);
 					}
 				}
 			}
