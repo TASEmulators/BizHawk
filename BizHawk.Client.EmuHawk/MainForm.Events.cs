@@ -2066,9 +2066,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy)
+			if (Global.Emulator is Gameboy gb)
 			{
-				GBPrefs.DoGBPrefsDialog(this);
+				GBPrefs.DoGBPrefsDialog(this, gb);
 			}
 			else // SameBoy
 			{
@@ -2340,7 +2340,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			DGBPrefs.DoDGBPrefsDialog(this);
+			if (Emulator is GambatteLink gambatte)
+			{
+				DGBPrefs.DoDGBPrefsDialog(this, gambatte);
+			}
 		}
 
 		private void DgbHawkSettingsMenuItem_Click(object sender, EventArgs e)

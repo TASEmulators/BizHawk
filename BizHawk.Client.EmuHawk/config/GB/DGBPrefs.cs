@@ -29,9 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
 
-		public static void DoDGBPrefsDialog(IWin32Window owner)
+		public static void DoDGBPrefsDialog(MainForm mainForm, GambatteLink gambatte)
 		{
-			var gambatte = (GambatteLink)Global.Emulator;
 			var s = gambatte.GetSettings();
 			var ss = gambatte.GetSyncSettings();
 
@@ -42,13 +41,13 @@ namespace BizHawk.Client.EmuHawk
 			dlg.gbPrefControl1.ColorGameBoy = emu.IsCGBMode(false);
 			dlg.gbPrefControl2.ColorGameBoy = emu.IsCGBMode(true);
 
-			if (dlg.ShowDialog(owner) == DialogResult.OK)
+			if (dlg.ShowDialog(mainForm) == DialogResult.OK)
 			{
 				dlg.GetSettings(out s, out ss);
 				gambatte.PutSettings(s);
 				if (dlg.SyncSettingsChanged)
 				{
-					GlobalWin.MainForm.PutCoreSyncSettings(ss);
+					mainForm.PutCoreSyncSettings(ss);
 				}
 			}
 		}
