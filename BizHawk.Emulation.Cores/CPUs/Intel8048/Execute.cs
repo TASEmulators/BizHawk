@@ -199,8 +199,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case 0xAD: OP_R_IMP(MOVAR, R5);						break; // MOV R5,A
 				case 0xAE: OP_R_IMP(MOVAR, R6);						break; // MOV R6,A
 				case 0xAF: OP_R_IMP(MOVAR, R7);						break; // MOV R7,A
-				case 0xB0: OP_DIR_IR(MOVT_RAM, R0);					break; // MOV @R0,#
-				case 0xB1: OP_DIR_IR(MOVT_RAM, R1);					break; // MOV @R1,#
+				case 0xB0: OP_DIR_IR(MOVT_RAM_D, R0);				break; // MOV @R0,#
+				case 0xB1: OP_DIR_IR(MOVT_RAM_D, R1);				break; // MOV @R1,#
 				case 0xB2: JPB(5);									break; // JPB 5
 				case 0xB3: JP_A();									break; // JPP A
 				case 0xB4: CALL(5);									break; // CALL

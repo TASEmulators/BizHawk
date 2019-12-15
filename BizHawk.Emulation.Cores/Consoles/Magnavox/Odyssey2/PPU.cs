@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if (addr == 0xA2)
 			{
-				ret = VDC_collision;
+				ret = 0;//VDC_collision;
 				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if(addr == 0xA3)
@@ -227,7 +227,40 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 
 					// quads
+					for (int i = 0; i < 4; i++)
+					{
+						if ((LY >= Quad_Chars[i * 16 + 12]) && (LY < (Quad_Chars[i * 16 + 12] + 8)))
+						{
+							if (((cycle - 43) >= Quad_Chars[i * 16 + 12 + 1]) && ((cycle - 43) < (Quad_Chars[i * 16 + 12 + 1] + 64)))
+							{
+								// sprite is in drawing region, pick a pixel
+								int offset_y = LY - Quad_Chars[i * 16 + 12];
+								int offset_x = 63 - ((cycle - 43) - Quad_Chars[i * 16 + 12 + 1]);
+								int quad_num = 0;
+								while (offset_x > 15)
+								{
+									offset_x -= 16;
+									quad_num++;
+								}
+
+								if (offset_x <= 7)
+								{
+									int char_sel = Quad_Chars[i * 16 + 4 * quad_num + 2] + ((Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 8);
+
+									int pixel_pick = (Internal_Graphics[(char_sel + offset_y) % 0x200] >> offset_x) & 1;
+
+									if (pixel_pick == 1)
+									{
+										Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Quad_Chars[i * 16 + 4 * quad_num + 3] >> 1) & 0x7];
+										Pixel_Stat |= 0x80;
+									}
+								}
+							}
+						}
+					}
+
 					// background
+
 					// calculate collision
 
 				}
@@ -482,8 +515,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				case 0xAA: aud_ctrl = value; break;
 			}
 
-			
-
+			//Console.WriteLine((addr - 0xA7) + " " + value);
 		}
 
 		public void Audio_tick()
@@ -509,6 +541,19 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					else
 					{
 						shift_0 = (byte)(shift_0 >> 1);
+					}
+
+					if (aud_ctrl.Bit(4))
+					{
+						if (shift_2.Bit(7) == output_bit.Bit(0))
+						{
+							shift_2 &= 0x7F;
+						}
+						else
+						{
+							shift_2 = (byte)(shift_2 | 0x80);
+						}
+						
 					}
 				}
 

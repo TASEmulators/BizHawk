@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public byte controller_state_1, controller_state_2;
+		public byte controller_state_1, controller_state_2, kb_state_row, kb_state_col;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -91,6 +91,68 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			InputCallbacks.Call();
 			controller_state_1 = _controllerDeck.ReadPort1(controller);
 			controller_state_2 = _controllerDeck.ReadPort2(controller);
+
+			kb_state_row = 8; // nothing pressed
+			if (controller.IsPressed("0")) { kb_state_row = 0; kb_state_col = 0; }
+			if (controller.IsPressed("1")) { kb_state_row = 0; kb_state_col = 1; }
+			if (controller.IsPressed("2")) { kb_state_row = 0; kb_state_col = 2; }
+			if (controller.IsPressed("3")) { kb_state_row = 0; kb_state_col = 3; }
+			if (controller.IsPressed("4")) { kb_state_row = 0; kb_state_col = 4; }
+			if (controller.IsPressed("5")) { kb_state_row = 0; kb_state_col = 5; }
+			if (controller.IsPressed("6")) { kb_state_row = 0; kb_state_col = 6; }
+			if (controller.IsPressed("7")) { kb_state_row = 0; kb_state_col = 7; }
+			if (controller.IsPressed("8")) { kb_state_row = 1; kb_state_col = 0; }
+			if (controller.IsPressed("9")) { kb_state_row = 1; kb_state_col = 1; }
+			if (controller.IsPressed("SPC")) { kb_state_row = 1; kb_state_col = 4; }
+			if (controller.IsPressed("?")) { kb_state_row = 1; kb_state_col = 5; }
+			if (controller.IsPressed("L")) { kb_state_row = 1; kb_state_col = 6; }
+			if (controller.IsPressed("P")) { kb_state_row = 1; kb_state_col = 7; }
+			if (controller.IsPressed("+")) { kb_state_row = 2; kb_state_col = 0; }
+			if (controller.IsPressed("W")) { kb_state_row = 2; kb_state_col = 1; }
+			if (controller.IsPressed("E")) { kb_state_row = 2; kb_state_col = 2; }
+			if (controller.IsPressed("R")) { kb_state_row = 2; kb_state_col = 3; }
+			if (controller.IsPressed("T")) { kb_state_row = 2; kb_state_col = 4; }
+			if (controller.IsPressed("U")) { kb_state_row = 2; kb_state_col = 5; }
+			if (controller.IsPressed("I")) { kb_state_row = 2; kb_state_col = 6; }
+			if (controller.IsPressed("O")) { kb_state_row = 2; kb_state_col = 7; }
+			if (controller.IsPressed("Q")) { kb_state_row = 3; kb_state_col = 0; }
+			if (controller.IsPressed("S")) { kb_state_row = 3; kb_state_col = 1; }
+			if (controller.IsPressed("D")) { kb_state_row = 3; kb_state_col = 2; }
+			if (controller.IsPressed("F")) { kb_state_row = 3; kb_state_col = 3; }
+			if (controller.IsPressed("G")) { kb_state_row = 3; kb_state_col = 4; }
+			if (controller.IsPressed("H")) { kb_state_row = 3; kb_state_col = 5; }
+			if (controller.IsPressed("J")) { kb_state_row = 3; kb_state_col = 6; }
+			if (controller.IsPressed("K")) { kb_state_row = 3; kb_state_col = 7; }
+			if (controller.IsPressed("A")) { kb_state_row = 4; kb_state_col = 0; }
+			if (controller.IsPressed("Z")) { kb_state_row = 4; kb_state_col = 1; }
+			if (controller.IsPressed("X")) { kb_state_row = 4; kb_state_col = 2; }
+			if (controller.IsPressed("C")) { kb_state_row = 4; kb_state_col = 3; }
+			if (controller.IsPressed("V")) { kb_state_row = 4; kb_state_col = 4; }
+			if (controller.IsPressed("B")) { kb_state_row = 4; kb_state_col = 5; }
+			if (controller.IsPressed("M")) { kb_state_row = 4; kb_state_col = 6; }
+			if (controller.IsPressed(".")) { kb_state_row = 4; kb_state_col = 7; }
+			if (controller.IsPressed("-")) { kb_state_row = 5; kb_state_col = 0; }
+			if (controller.IsPressed("*")) { kb_state_row = 5; kb_state_col = 1; }
+			if (controller.IsPressed("/")) { kb_state_row = 5; kb_state_col = 2; }
+			if (controller.IsPressed("=")) { kb_state_row = 5; kb_state_col = 3; }
+			if (controller.IsPressed("YES")) { kb_state_row = 5; kb_state_col = 4; }
+			if (controller.IsPressed("NO")) { kb_state_row = 5; kb_state_col = 5; }
+			if (controller.IsPressed("CLR")) { kb_state_row = 5; kb_state_col = 6; }
+			if (controller.IsPressed("ENT")) { kb_state_row = 5; kb_state_col = 7; }
+
+		}
+
+		public void KB_Scan()
+		{
+			if (kb_byte == kb_state_row)
+			{
+				kb_byte &= 0xEF;
+				kb_byte |= (byte)(kb_state_col << 5);
+			}
+			else
+			{
+				kb_byte |= 0x10;
+			}
 		}
 
 		public int Frame => _frame;
@@ -135,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public int VirtualWidth => 186;
+		public int VirtualWidth => 213;
 		public int VirtualHeight => 240;
 		public int BufferWidth => 186;
 		public int BufferHeight => 240;

@@ -80,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(RAM_Bank), ref RAM_Bank);
 			ser.Sync(nameof(addr_latch), ref addr_latch);
 			ser.Sync(nameof(kb_byte), ref kb_byte);
+			ser.Sync(nameof(kb_state_row), ref kb_state_row);
+			ser.Sync(nameof(kb_state_col), ref kb_state_col);
 
 			ser.Sync(nameof(frame_buffer), ref frame_buffer, false);
 			ser.Sync(nameof(_vidbuffer), ref _vidbuffer, false);

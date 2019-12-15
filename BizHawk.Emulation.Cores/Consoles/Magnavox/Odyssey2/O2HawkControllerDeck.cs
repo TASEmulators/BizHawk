@@ -32,6 +32,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
 					{
+						"0", "1", "2", "3", "4", "5", "6", "7", 
+						"8", "9",         "SPC", "?", "L", "P",
+						"+", "W", "E", "R", "T", "U", "I", "O",
+						"Q", "S", "D", "F", "G", "H", "J", "K",
+						"A", "Z", "X", "C", "V", "B", "M", ".",
+						"-", "*", "/", "=", "YES", "NO", "CLR", "ENT",
 						"Power"
 					})
 					.ToList()

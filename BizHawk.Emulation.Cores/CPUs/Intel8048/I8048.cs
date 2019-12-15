@@ -76,6 +76,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort EM = 63;
 		public const ushort DM = 64;
 		public const ushort SET_ADDR_M3 = 65;
+		public const ushort MOVT_RAM_D = 66;
 
 		public ushort test;
 
@@ -399,6 +400,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case SET_ADDR_M3:
 					Regs[ALU] &= 0xFF;
 					Regs[ALU] |= 0x300;
+					break;
+				case MOVT_RAM_D:
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
+					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
+					//Console.WriteLine(reg_d_ad + " " + Regs[reg_d_ad] + " " + Regs[ALU] + " " + TotalExecutedCycles);
 					break;
 			}
 

@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else
 			{
 				// keyboard
-				return 0;
+				return kb_byte;
 			}
 		}
 
@@ -167,7 +167,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else
 			{
 				// keyboard
-				kb_byte = value;
+				kb_byte = (byte)(value & 7);
+                KB_Scan();
 			}
 		}
 	}
