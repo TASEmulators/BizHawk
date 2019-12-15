@@ -123,6 +123,11 @@ namespace BizHawk.Client.Common
 			Log($"{Emulator.Attributes().CoreName} does not implement memory execute callbacks");
 		}
 
+		private void LogScopeNotAvailable(string scope)
+		{
+			Log($"{scope} is not an avaialble scope for {Emulator.Attributes().CoreName}");
+		}
+
 		#endregion
 
 
@@ -192,6 +197,12 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable() &&
 					DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
+					if (!HasScope(scope))
+					{
+						LogScopeNotAvailable(scope);
+						return Guid.Empty.ToString();
+					}
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
@@ -218,6 +229,12 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore?.MemoryCallbacksAvailable() == true
 					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
+					if (!HasScope(scope))
+					{
+						LogScopeNotAvailable(scope);
+						return Guid.Empty.ToString();
+					}
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
@@ -246,8 +263,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true)
 				{
+					if (!HasScope(scope))
+					{
+						LogScopeNotAvailable(scope);
+						return Guid.Empty.ToString();
+					}
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
@@ -271,8 +294,14 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
+				if (DebuggableCore?.MemoryCallbacksAvailable() == true)
 				{
+					if (!HasScope(scope))
+					{
+						LogScopeNotAvailable(scope);
+						return Guid.Empty.ToString();
+					}
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(
@@ -349,6 +378,11 @@ namespace BizHawk.Client.Common
 			}
 
 			return scope;
+		}
+
+		private bool HasScope(string scope)
+		{
+			return string.IsNullOrWhiteSpace(scope) || DebuggableCore.MemoryCallbacks.AvailableScopes.Contains(scope);
 		}
 	}
 }
