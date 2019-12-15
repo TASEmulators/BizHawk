@@ -240,23 +240,6 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		private string ProcessScope(string scope)
-		{
-			if (string.IsNullOrWhiteSpace(scope))
-			{
-				if (Domains != null && Domains.HasSystemBus)
-				{
-					scope = Domains.SystemBus.Name;
-				}
-				else
-				{
-					scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
-				}
-			}
-
-			return scope;
-		}
-
 		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string scope = null)
@@ -349,6 +332,23 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		private string ProcessScope(string scope)
+		{
+			if (string.IsNullOrWhiteSpace(scope))
+			{
+				if (Domains != null && Domains.HasSystemBus)
+				{
+					scope = Domains.SystemBus.Name;
+				}
+				else
+				{
+					scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+				}
+			}
+
+			return scope;
 		}
 	}
 }
