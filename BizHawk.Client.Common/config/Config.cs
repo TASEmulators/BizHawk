@@ -551,6 +551,9 @@ namespace BizHawk.Client.Common
 		public bool GB_UseGBHawk = false;
 		public bool CoreForcingViaGameDB = true;
 		public string LibretroCore;
+
+		public string LastWrittenFrom = VersionInfo.Mainversion;
+		public string LastWrittenFromDetailed = VersionInfo.GetEmuVersion();
 	}
 
 	// These are used in the defctrl.json or wherever
