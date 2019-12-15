@@ -71,23 +71,31 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
-			static string SerialiseTable(LuaTable lti)
+			static string SerializeTable(LuaTable lti)
 			{
 				var keyObjs = lti.Keys;
 				var valueObjs = lti.Values;
-				if (keyObjs.Count != valueObjs.Count) throw new IndexOutOfRangeException("each value must be paired with one key, they differ in number");
-				var values = new List<object>(keyObjs.Count);
+				if (keyObjs.Count != valueObjs.Count)
+				{
+					throw new IndexOutOfRangeException("each value must be paired with one key, they differ in number");
+				}
+
+				var values = new object[keyObjs.Count];
 				var kvpIndex = 0;
-				foreach (var valueObj in valueObjs) values[kvpIndex++] = valueObj;
+				foreach (var valueObj in valueObjs)
+				{
+					values[kvpIndex++] = valueObj;
+				}
+
 				return string.Concat(keyObjs.Cast<object>()
 					.Select((kObj, i) => $"\"{kObj}\": \"{values[i]}\"\n")
 					.OrderBy(s => s)
 				);
 			}
 
-			static void SerialiseAndWrite(object output) => GlobalWin.Tools.LuaConsole.WriteToOutputWindow(
+			static void SerializeAndWrite(object output) => GlobalWin.Tools.LuaConsole.WriteToOutputWindow(
 				output is LuaTable table
-					? SerialiseTable(table)
+					? SerializeTable(table)
 					: output?.ToString() ?? "nil"
 			);
 
@@ -102,11 +110,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			SerialiseAndWrite(outputs[0]);
+			SerializeAndWrite(outputs[0]);
 			for (int outIndex = 1, indexAfterLast = outputs.Length; outIndex != indexAfterLast; outIndex++)
 			{
 				GlobalWin.Tools.LuaConsole.WriteToOutputWindow(separator);
-				SerialiseAndWrite(outputs[outIndex]);
+				SerializeAndWrite(outputs[outIndex]);
 			}
 
 			if (!string.IsNullOrEmpty(terminator))

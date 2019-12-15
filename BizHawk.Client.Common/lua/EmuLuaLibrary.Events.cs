@@ -363,6 +363,15 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		[LuaMethodExample("local scopes = event.availableScopes();")]
+		[LuaMethod("availableScopes", "Lists the available scopes that can be passed into memory events")]
+		public LuaTable AvailableScopes()
+		{
+			return DebuggableCore?.MemoryCallbacksAvailable() == true
+				? DebuggableCore.MemoryCallbacks.AvailableScopes.ToLuaTable(Lua)
+				: Lua.NewTable();
+		}
+
 		private string ProcessScope(string scope)
 		{
 			if (string.IsNullOrWhiteSpace(scope))
