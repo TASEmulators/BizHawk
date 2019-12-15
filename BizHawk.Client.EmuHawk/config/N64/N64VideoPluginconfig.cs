@@ -36,32 +36,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _programmaticallyChangingPluginComboBox = false;
 
-		public N64VideoPluginConfig()
+		public N64VideoPluginConfig(
+			N64Settings settings,
+			N64SyncSettings syncSettings)
 		{
+			_s = settings;
+			_ss = syncSettings;
 			InitializeComponent();
-		}
-
-		// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
-		private static N64SyncSettings GetSyncSettings()
-		{
-			if (Global.Emulator is N64)
-			{
-				return ((N64)Global.Emulator).GetSyncSettings();
-			}
-
-			return (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>()
-				?? new N64SyncSettings();
-		}
-
-		private static N64Settings GetSettings()
-		{
-			if (Global.Emulator is N64)
-			{
-				return ((N64)Global.Emulator).GetSettings();
-			}
-
-			return (N64Settings)Global.Config.GetCoreSettings<N64>()
-				?? new N64Settings();
 		}
 
 		private static void PutSyncSettings(N64SyncSettings s)
@@ -508,9 +489,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
 		{
-			_s = GetSettings();
-			_ss = GetSyncSettings();
-
 			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(_ss.Core);
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(_ss.Rsp);
 
