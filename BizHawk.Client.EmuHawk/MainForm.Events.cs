@@ -28,6 +28,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
+using BizHawk.Emulation.Cores.Intellivision;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2521,8 +2522,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new IntvControllerSettings();
-			form.ShowDialog();
+			if (Emulator is Intellivision intv)
+			{
+				using var form = new IntvControllerSettings(this, intv.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		#endregion
