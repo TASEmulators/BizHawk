@@ -1520,7 +1520,8 @@ namespace BizHawk.Client.EmuHawk
 
 			VSControlsMenuItem.Enabled =
 			VSSettingsMenuItem.Enabled =
-				Emulator is NES nes && nes.IsVS;
+				(Emulator is NES nes && nes.IsVS)
+				|| (Emulator is SubNESHawk sub && sub.IsVs);
 
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = (Emulator is NES || Emulator is SubNESHawk)
@@ -1602,7 +1603,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES nes && nes.IsVS)
 			{
-				using var form = new NesVsSettings();
+				using var form = new NesVsSettings(this, nes.GetSyncSettings().Clone());
+				form.ShowHawkDialog();
+			}
+			else if (Emulator is SubNESHawk sub && sub.IsVs)
+			{
+				using var form = new NesVsSettings(this, sub.GetSyncSettings().Clone());
 				form.ShowHawkDialog();
 			}
 		}
@@ -1618,7 +1624,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS)
+			if (Emulator is NES nes && nes.IsVS
+			|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -1630,7 +1637,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS)
+			if (Emulator is NES nes && nes.IsVS
+				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -1642,7 +1650,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES nes && nes.IsVS)
+			if (Emulator is NES nes && nes.IsVS
+				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{

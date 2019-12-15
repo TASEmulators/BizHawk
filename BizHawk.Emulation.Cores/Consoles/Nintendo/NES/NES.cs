@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		private NES()
 		{
@@ -112,19 +112,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public bool IsVS
-		{
-			get { return _isVS; }
-		}
+		public bool IsVS => _isVS;
 
-		public bool IsFDS
-		{
-			get { return Board is FDS; }
-		}
+		public bool IsFDS => Board is FDS;
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public DisplayType Region { get { return _display_type; } }
+		public DisplayType Region => _display_type;
 
 		public class MyVideoProvider : IVideoProvider
 		{
@@ -223,10 +217,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 			}
-			public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
-			public int VirtualHeight { get { return BufferHeight; } }
-			public int BufferWidth { get { return right - left + 1; } }
-			public int BackgroundColor { get { return 0; } }
+			public int VirtualWidth => (int)(BufferWidth * 1.146);
+			public int VirtualHeight => BufferHeight;
+			public int BufferWidth => right - left + 1;
+			public int BackgroundColor => 0;
+
 			public int BufferHeight
 			{
 				get
@@ -262,7 +257,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		private int _frame;
-		public int Frame { get { return _frame; } set { _frame = value; } }
+		public int Frame { get => _frame;
+			set => _frame = value;
+		}
 
 		public void ResetCounters()
 		{
@@ -273,11 +270,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public long Timestamp { get; private set; }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
-		public string SystemId { get { return "NES"; } }
+		public string SystemId => "NES";
 
-		public string GameName { get { return game_name; } }
+		public string GameName => game_name;
 
 		public enum EDetectionOrigin
 		{

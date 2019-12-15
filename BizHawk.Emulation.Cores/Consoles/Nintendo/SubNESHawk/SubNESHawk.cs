@@ -69,7 +69,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public int _frame = 0;
 
-		public bool IsFDS => subnes.Board is FDS;
+		public bool IsFDS => subnes.IsFDS;
+
+		public bool IsVs => subnes.IsVS;
 
 		public bool HasMapperProperties
 		{
