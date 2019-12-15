@@ -44,11 +44,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void RefreshType()
 		{
-			var lockdata = bmpView1.BMP.LockBits(new Rectangle(0, 0, 256, 128), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockBits = bmpView1.BMP.LockBits(new Rectangle(0, 0, 256, 128), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			int[] lut = GBColors.GetLut(_type);
 
-			int* dest = (int*)lockdata.Scan0;
+			int* dest = (int*)lockBits.Scan0;
 
 			for (int j = 0; j < 128; j++)
 			{
@@ -62,10 +62,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				dest -= 256;
-				dest += lockdata.Stride / sizeof(int);
+				dest += lockBits.Stride / sizeof(int);
 			}
 
-			bmpView1.BMP.UnlockBits(lockdata);
+			bmpView1.BMP.UnlockBits(lockBits);
 			bmpView1.Refresh();
 		}
 
@@ -101,23 +101,20 @@ namespace BizHawk.Client.EmuHawk
 				_type = GBColors.ColorType.gba;
 			}
 
-			var radioButton = sender as RadioButton;
-			if (radioButton != null && radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				RefreshType();
 			}
 		}
 
-		public static void DoCGBColorChoserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
+		public static void DoCGBColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
 		{
-			using (var dlg = new CGBColorChooserForm())
+			using var dlg = new CGBColorChooserForm();
+			dlg.LoadType(s);
+			var result = dlg.ShowDialog(parent);
+			if (result == DialogResult.OK)
 			{
-				dlg.LoadType(s);
-				var result = dlg.ShowDialog(parent);
-				if (result == DialogResult.OK)
-				{
-					s.CGBColors = dlg._type;
-				}
+				s.CGBColors = dlg._type;
 			}
 		}
 	}

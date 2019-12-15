@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ColorGameBoy)
 			{
-				CGBColorChooserForm.DoCGBColorChoserFormDialog(ParentForm, _s);
+				CGBColorChooserForm.DoCGBColorChooserFormDialog(ParentForm, _s);
 			}
 			else
 			{
