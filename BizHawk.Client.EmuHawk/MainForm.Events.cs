@@ -1653,14 +1653,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is NES)
+			if (Emulator is NES nes)
 			{
-				using var form = new NesControllerSettings();
+				using var form = new NesControllerSettings(this, nes.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
-			else if (Emulator is SubNESHawk)
+			else if (Emulator is SubNESHawk sub)
 			{
-				using var form = new NesControllerSettings();
+				using var form = new NesControllerSettings(this, sub.GetSyncSettings().Clone());
 				form.ShowDialog();
 			}
 			else if (Emulator is QuickNES)
