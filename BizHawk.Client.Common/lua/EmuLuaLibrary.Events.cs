@@ -194,21 +194,8 @@ namespace BizHawk.Client.Common
 				{
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-						else
-						{
-							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
-						}
-					}
-
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Execute, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -232,22 +219,9 @@ namespace BizHawk.Client.Common
 					&& DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecuteAny", LogOutputCallback, CurrentFile, name);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-						else
-						{
-							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
-						}
-					}
-
 					RegisteredFunctions.Add(nlf);
 					DebuggableCore.MemoryCallbacks.Add(new MemoryCallback(
-						domain,
+						ProcessScope(domain),
 						MemoryCallbackType.Execute,
 						"Lua Hook",
 						nlf.MemCallback,
@@ -266,6 +240,23 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
+		private string ProcessScope(string scope)
+		{
+			if (string.IsNullOrWhiteSpace(scope))
+			{
+				if (Domains != null && Domains.HasSystemBus)
+				{
+					scope = Domains.SystemBus.Name;
+				}
+				else
+				{
+					scope = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
+				}
+			}
+
+			return scope;
+		}
+
 		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
@@ -276,21 +267,8 @@ namespace BizHawk.Client.Common
 				{
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-						else
-						{
-							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
-						}
-					}
-
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Read, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -314,21 +292,8 @@ namespace BizHawk.Client.Common
 				{
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentFile, name);
 					RegisteredFunctions.Add(nlf);
-
-					if (string.IsNullOrWhiteSpace(domain))
-					{
-						if (Domains != null && Domains.HasSystemBus)
-						{
-							domain = Domains.SystemBus.Name;
-						}
-						else
-						{
-							domain = DebuggableCore.MemoryCallbacks.AvailableScopes.First();
-						}
-					}
-
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(domain, MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
+						new MemoryCallback(ProcessScope(domain), MemoryCallbackType.Write, "Lua Hook", nlf.MemCallback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
