@@ -2216,8 +2216,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new SNESControllerSettings();
-			form.ShowDialog();
+			if (Emulator is LibsnesCore bsnes)
+			{
+				using var form = new SNESControllerSettings(this, bsnes.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -2238,7 +2241,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			SNESOptions.DoSettingsDialog(this);
+			if (Emulator is LibsnesCore bsnes)
+			{
+				SNESOptions.DoSettingsDialog(this, bsnes);
+			}
 		}
 
 		private void Snes9xSettingsMenuItem_Click(object sender, EventArgs e)

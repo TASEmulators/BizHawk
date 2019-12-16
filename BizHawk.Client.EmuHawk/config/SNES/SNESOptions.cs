@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,10 +14,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _suppressDoubleSize;
 		private bool _userDoubleSizeOption;
 
-		public static void DoSettingsDialog(IWin32Window owner)
+		public static void DoSettingsDialog(MainForm mainForm, LibsnesCore bsnes)
 		{
-			var s = ((LibsnesCore)Global.Emulator).GetSettings();
-			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
+			var s = bsnes.GetSettings();
+			var ss = bsnes.GetSyncSettings();
 			using var dlg = new SNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
@@ -33,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 				ShowBg4 = s.ShowBG4_0
 			};
 
-			var result = dlg.ShowDialog(owner);
+			var result = dlg.ShowDialog(mainForm);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
@@ -47,18 +46,14 @@ namespace BizHawk.Client.EmuHawk
 				s.ShowBG3_0 = s.ShowBG3_1 = dlg.ShowBg3;
 				s.ShowBG4_0 = s.ShowBG4_1 = dlg.ShowBg4;
 
-				GlobalWin.MainForm.PutCoreSettings(s);
-				GlobalWin.MainForm.PutCoreSyncSettings(ss);
+				mainForm.PutCoreSettings(s);
+				mainForm.PutCoreSyncSettings(ss);
 			}
 		}
 
 		private bool AlwaysDoubleSize
 		{
-			get
-			{
-				return _userDoubleSizeOption;
-			}
-
+			get => _userDoubleSizeOption;
 			set
 			{
 				_userDoubleSizeOption = value;
@@ -68,19 +63,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CropSGBFrame
 		{
-			get { return cbCropSGBFrame.Checked; }
-			set { cbCropSGBFrame.Checked = value; }
+			get => cbCropSGBFrame.Checked;
+			set => cbCropSGBFrame.Checked = value;
 		}
 
-		private bool ShowObj1 { get { return Obj1Checkbox.Checked; } set { Obj1Checkbox.Checked = value; } }
-		private bool ShowObj2 { get { return Obj2Checkbox.Checked; } set { Obj2Checkbox.Checked = value; } }
-		private bool ShowObj3 { get { return Obj3Checkbox.Checked; } set { Obj3Checkbox.Checked = value; } }
-		private bool ShowObj4 { get { return Obj4Checkbox.Checked; } set { Obj4Checkbox.Checked = value; } }
+		private bool ShowObj1 { get => Obj1Checkbox.Checked; set => Obj1Checkbox.Checked = value;
+		}
+		private bool ShowObj2 { get => Obj2Checkbox.Checked; set => Obj2Checkbox.Checked = value; }
+		private bool ShowObj3 { get => Obj3Checkbox.Checked; set => Obj3Checkbox.Checked = value; }
+		private bool ShowObj4 { get => Obj4Checkbox.Checked; set => Obj4Checkbox.Checked = value; }
 
-		private bool ShowBg1 { get { return Bg1Checkbox.Checked; } set { Bg1Checkbox.Checked = value; } }
-		private bool ShowBg2 { get { return Bg2Checkbox.Checked; } set { Bg2Checkbox.Checked = value; } }
-		private bool ShowBg3 { get { return Bg3Checkbox.Checked; } set { Bg3Checkbox.Checked = value; } }
-		private bool ShowBg4 { get { return Bg4Checkbox.Checked; } set { Bg4Checkbox.Checked = value; } }
+		private bool ShowBg1 { get => Bg1Checkbox.Checked; set => Bg1Checkbox.Checked = value; }
+		private bool ShowBg2 { get => Bg2Checkbox.Checked; set => Bg2Checkbox.Checked = value; }
+		private bool ShowBg3 { get => Bg3Checkbox.Checked; set => Bg3Checkbox.Checked = value; }
+		private bool ShowBg4 { get => Bg4Checkbox.Checked; set => Bg4Checkbox.Checked = value; }
 
 		private void RefreshDoubleSizeOption()
 		{
@@ -110,6 +106,5 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
-
 	}
 }
