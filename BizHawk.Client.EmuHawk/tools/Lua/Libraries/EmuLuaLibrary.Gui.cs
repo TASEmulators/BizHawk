@@ -21,9 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "gui";
 
-		#region Gui API
-
-		public void Dispose() => APIs.Gui.Dispose();
+		public bool HasLuaSurface => APIs.Gui.HasGUISurface;
 
 		public bool SurfaceIsNull => !APIs.Gui.HasGUISurface;
 
@@ -34,10 +32,6 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodExample("gui.DrawFinish( );")]
 		[LuaMethod("DrawFinish", "Finishes drawing to the current lua surface and causes it to get displayed.")]
 		public void DrawFinish() => APIs.Gui.DrawFinish();
-
-		public bool HasLuaSurface => APIs.Gui.HasGUISurface;
-
-		#endregion
 
 		[LuaMethodExample("gui.addmessage( \"Some message\" );")]
 		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
@@ -194,5 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			canvas.Show();
 			return Lua.TableFromObject(canvas);
 		}
+
+		public void Dispose() => APIs.Gui.Dispose();
 	}
 }

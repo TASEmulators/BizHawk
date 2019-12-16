@@ -1,127 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class SqlApi : ISql
 	{
-		SQLiteConnection _dbConnection;
+		private SQLiteConnection _dbConnection;
 
 		public string CreateDatabase(string name)
 		{
 			try
 			{
 				SQLiteConnection.CreateFile(name);
-				return "Database Created Successfully";
 			}
 			catch (SQLiteException sqlEx)
 			{
 				return sqlEx.Message;
 			}
+			return "Database Created Successfully";
 		}
 
 		public string OpenDatabase(string name)
 		{
 			try
 			{
-				var connBuilder = new SQLiteConnectionStringBuilder
-				{
-					DataSource = name,
-					Version = 3,
-					JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
-					DefaultIsolationLevel = System.Data.IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
-					SyncMode = SynchronizationModes.Off // This shortens the delay for do synchronous calls.
-				};
-
-				_dbConnection = new SQLiteConnection(connBuilder.ToString());
+				_dbConnection = new SQLiteConnection(
+					new SQLiteConnectionStringBuilder {
+						DataSource = name,
+						Version = 3,
+						JournalMode = SQLiteJournalModeEnum.Wal, // Allows for reads and writes to happen at the same time
+						DefaultIsolationLevel = IsolationLevel.ReadCommitted, // This only helps make the database lock left. May be pointless now
+						SyncMode = SynchronizationModes.Off // This shortens the delay for do synchronous calls.
+					}.ToString()
+				);
 				_dbConnection.Open();
-				_dbConnection.Close();
-				return "Database Opened Successfully";
 			}
 			catch (SQLiteException sqlEx)
 			{
 				return sqlEx.Message;
 			}
+			_dbConnection?.Close();
+			return "Database Opened Successfully";
 		}
 
-		public string WriteCommand(string query = "")
+		public string WriteCommand(string query = null)
 		{
-			if (string.IsNullOrWhiteSpace(query))
-			{
-				return "query is empty";
-			}
-
+			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
+			if (_dbConnection == null) return "Database not open.";
+			string result;
 			try
 			{
 				_dbConnection.Open();
-				var command = new SQLiteCommand(query, _dbConnection);
-				command.ExecuteNonQuery();
-				_dbConnection.Close();
-
-				return "Command ran successfully";
-			}
-			catch (NullReferenceException)
-			{
-				return "Database not open.";
+				new SQLiteCommand(query, _dbConnection).ExecuteNonQuery();
+				result = "Command ran successfully";
 			}
 			catch (SQLiteException sqlEx)
 			{
-				_dbConnection.Close();
-				return sqlEx.Message;
+				result = sqlEx.Message;
 			}
+			_dbConnection.Close();
+			return result;
 		}
 
-		public dynamic ReadCommand(string query = "")
+		public dynamic ReadCommand(string query = null)
 		{
-			if (string.IsNullOrWhiteSpace(query))
-			{
-				return "query is empty";
-			}
-
+			if (string.IsNullOrWhiteSpace(query)) return "query is empty";
+			if (_dbConnection == null) return "Database not open.";
+			dynamic result;
 			try
 			{
-				var table = new Dictionary<string, object>();
 				_dbConnection.Open();
-				string sql = $"PRAGMA read_uncommitted =1;{query}";
-				using var command = new SQLiteCommand(sql, _dbConnection);
-				SQLiteDataReader reader = command.ExecuteReader();
-				bool rows = reader.HasRows;
-				long rowCount = 0;
-				var columns = new List<string>();
-				for (int i = 0; i < reader.FieldCount; ++i) //Add all column names into list
+				using var command = new SQLiteCommand($"PRAGMA read_uncommitted =1;{query}", _dbConnection);
+				using var reader = command.ExecuteReader();
+				if (reader.HasRows)
 				{
-					columns.Add(reader.GetName(i));
-				}
-
-				while (reader.Read())
-				{
-					for (int i = 0; i < reader.FieldCount; ++i)
+					var columns = new string[reader.FieldCount];
+					for (int i = 0, l = reader.FieldCount; i < l; i++) columns[i] = reader.GetName(i);
+					long rowCount = 0;
+					var table = new Dictionary<string, object>();
+					while (reader.Read())
 					{
-						table[$"{columns[i]} {rowCount}"] = reader.GetValue(i);
+						for (int i = 0, l = reader.FieldCount; i < l; i++) table[$"{columns[i]} {rowCount}"] = reader.GetValue(i);
+						rowCount++;
 					}
-
-					rowCount += 1;
+					reader.Close();
+					result = table;
 				}
-
-				reader.Close();
-				_dbConnection.Close();
-				if (rows == false)
+				else
 				{
-					return "No rows found";
+					result = "No rows found";
 				}
-
-				return table;
-			}
-			catch (NullReferenceException)
-			{
-				return "Database not opened.";
 			}
 			catch (SQLiteException sqlEx)
 			{
-				_dbConnection.Close();
-				return sqlEx.Message;
+				result = sqlEx.Message;
 			}
+			_dbConnection.Close();
+			return result;
 		}
 	}
 }

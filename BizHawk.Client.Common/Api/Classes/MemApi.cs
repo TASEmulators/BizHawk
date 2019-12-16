@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
@@ -16,47 +17,6 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains MemoryDomainCore { get; set; }
 
-		private MemoryDomain _currentMemoryDomain;
-
-		private MemoryDomain Domain
-		{
-			get
-			{
-				if (MemoryDomainCore != null)
-				{
-					if (_currentMemoryDomain == null)
-					{
-						_currentMemoryDomain = MemoryDomainCore.HasSystemBus
-							? MemoryDomainCore.SystemBus
-							: MemoryDomainCore.MainMemory;
-					}
-
-					return _currentMemoryDomain;
-				}
-
-				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-				LogCallback(error);
-				throw new NotImplementedException(error);
-			}
-		}
-
-		private bool _isBigEndian;
-
-		private IMemoryDomains DomainList
-		{
-			get
-			{
-				if (MemoryDomainCore != null)
-				{
-					return MemoryDomainCore;
-				}
-
-				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-				LogCallback(error);
-				throw new NotImplementedException(error);
-			}
-		}
-
 		public MemApi(Action<string> logCallback)
 		{
 			LogCallback = logCallback;
@@ -66,64 +26,92 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		private string VerifyMemoryDomain(string domain)
+		private bool _isBigEndian;
+
+		private MemoryDomain _currentMemoryDomain;
+		private MemoryDomain Domain
 		{
-			try
+			get
 			{
-				if (DomainList[domain] == null)
+				MemoryDomain LazyInit()
 				{
-					LogCallback($"Unable to find domain: {domain}, falling back to current");
-					return Domain.Name;
+					if (MemoryDomainCore == null)
+					{
+						var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+						LogCallback(error);
+						throw new NotImplementedException(error);
+					}
+					return MemoryDomainCore.HasSystemBus ? MemoryDomainCore.SystemBus : MemoryDomainCore.MainMemory;
 				}
-
-				return domain;
+				_currentMemoryDomain ??= LazyInit();
+				return _currentMemoryDomain;
 			}
-			catch // Just in case
+			set => _currentMemoryDomain = value;
+		}
+
+		private IMemoryDomains DomainList
+		{
+			get
 			{
-				LogCallback($"Unable to find domain: {domain}, falling back to current");
+				if (MemoryDomainCore == null)
+				{
+					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+					LogCallback(error);
+					throw new NotImplementedException(error);
+				}
+				return MemoryDomainCore;
 			}
+		}
 
-			return Domain.Name;
+		private MemoryDomain NamedDomainOrCurrent(string name)
+		{
+			if (!string.IsNullOrEmpty(name))
+			{
+				try
+				{
+					var found = DomainList[name];
+					if (found != null) return found;
+				}
+				catch
+				{
+					// ignored
+				}
+				LogCallback($"Unable to find domain: {name}, falling back to current");
+			}
+			return Domain;
 		}
 
 		private uint ReadUnsignedByte(long addr, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			if (addr < d.Size)
+			var d = NamedDomainOrCurrent(domain);
+			if (addr >= d.Size)
 			{
-				return d.PeekByte(addr);
+				LogCallback($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
+				return default;
 			}
-
-			LogCallback($"Warning: attempted read of {addr} outside the memory size of {d.Size}");
-			return 0;
+			return d.PeekByte(addr);
 		}
 
 		private void WriteUnsignedByte(long addr, uint v, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			if (d.CanPoke())
-			{
-				if (addr < d.Size)
-				{
-					d.PokeByte(addr, (byte)v);
-				}
-				else
-				{
-					LogCallback($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
-				}
-			}
-			else
+			var d = NamedDomainOrCurrent(domain);
+			if (!d.CanPoke())
 			{
 				LogCallback($"Error: the domain {d.Name} is not writable");
+				return;
 			}
+			if (addr >= d.Size)
+			{
+				LogCallback($"Warning: attempted write to {addr} outside the memory size of {d.Size}");
+				return;
+			}
+			d.PokeByte(addr, (byte) v);
 		}
 
 		private static int U2S(uint u, int size)
 		{
-			var s = (int)u;
-			s <<= 8 * (4 - size);
-			s >>= 8 * (4 - size);
-			return s;
+			var sh = 8 * (4 - size);
+			return ((int) u << sh) >> sh;
 		}
 
 		#region Endian Handling
@@ -131,60 +119,32 @@ namespace BizHawk.Client.Common
 		private uint ReadUnsignedLittle(long addr, int size, string domain = null)
 		{
 			uint v = 0;
-			for (var i = 0; i < size; ++i)
-			{
-				v |= ReadUnsignedByte(addr + i, domain) << (8 * i);
-			}
-
+			for (var i = 0; i < size; i++) v |= ReadUnsignedByte(addr + i, domain) << (8 * i);
 			return v;
 		}
 
 		private uint ReadUnsignedBig(long addr, int size, string domain = null)
 		{
 			uint v = 0;
-			for (var i = 0; i < size; ++i)
-			{
-				v |= ReadUnsignedByte(addr + i, domain) << (8 * (size - 1 - i));
-			}
-
+			for (var i = 0; i < size; i++) v |= ReadUnsignedByte(addr + i, domain) << (8 * (size - 1 - i));
 			return v;
 		}
 
 		private void WriteUnsignedLittle(long addr, uint v, int size, string domain = null)
 		{
-			for (var i = 0; i < size; ++i)
-			{
-				WriteUnsignedByte(addr + i, (v >> (8 * i)) & 0xFF, domain);
-			}
+			for (var i = 0; i < size; i++) WriteUnsignedByte(addr + i, (v >> (8 * i)) & 0xFF, domain);
 		}
 
 		private void WriteUnsignedBig(long addr, uint v, int size, string domain = null)
 		{
-			for (var i = 0; i < size; ++i)
-			{
-				WriteUnsignedByte(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF, domain);
-			}
+			for (var i = 0; i < size; i++) WriteUnsignedByte(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF, domain);
 		}
 
-		private int ReadSigned(long addr, int size, string domain = null)
-		{
-			return _isBigEndian
-				? U2S(ReadUnsignedBig(addr, size, domain), size)
-				: U2S(ReadUnsignedLittle(addr, size, domain), size);
-		}
+		private int ReadSigned(long addr, int size, string domain = null) => U2S(ReadUnsigned(addr, size, domain), size);
 
-		private uint ReadUnsigned(long addr, int size, string domain = null)
-		{
-			return _isBigEndian
-				? ReadUnsignedBig(addr, size, domain)
-				: ReadUnsignedLittle(addr, size, domain);
-		}
+		private uint ReadUnsigned(long addr, int size, string domain = null) => _isBigEndian ? ReadUnsignedBig(addr, size, domain) : ReadUnsignedLittle(addr, size, domain);
 
-		private void WriteSigned(long addr, int value, int size, string domain = null)
-		{
-			if (_isBigEndian) WriteUnsignedBig(addr, (uint)value, size, domain);
-			else WriteUnsignedLittle(addr, (uint)value, size, domain);
-		}
+		private void WriteSigned(long addr, int value, int size, string domain = null) => WriteUnsigned(addr, (uint) value, size, domain);
 
 		private void WriteUnsigned(long addr, uint value, int size, string domain = null)
 		{
@@ -196,88 +156,57 @@ namespace BizHawk.Client.Common
 
 		#region Unique Library Methods
 
-		public void SetBigEndian(bool enabled = true)
-		{
-			_isBigEndian = enabled;
-		}
+		public void SetBigEndian(bool enabled = true) => _isBigEndian = enabled;
 
 		public List<string> GetMemoryDomainList()
 		{
 			var list = new List<string>();
-
-			foreach (var domain in DomainList)
-			{
-				list.Add(domain.Name);
-			}
-
+			foreach (var domain in DomainList) list.Add(domain.Name);
 			return list;
 		}
 
-		public uint GetMemoryDomainSize(string name = "")
-		{
-			if (string.IsNullOrEmpty(name))
-			{
-				return (uint)Domain.Size;
-			}
+		public uint GetMemoryDomainSize(string name = null) => (uint) NamedDomainOrCurrent(name).Size;
 
-			return (uint)DomainList[VerifyMemoryDomain(name)].Size;
-		}
+		public string GetCurrentMemoryDomain() => Domain.Name;
 
-		public string GetCurrentMemoryDomain()
-		{
-			return Domain.Name;
-		}
-
-		public uint GetCurrentMemoryDomainSize()
-		{
-			return (uint)Domain.Size;
-		}
+		public uint GetCurrentMemoryDomainSize() => (uint) Domain.Size;
 
 		public bool UseMemoryDomain(string domain)
 		{
 			try
 			{
-				if (DomainList[domain] != null)
+				var found = DomainList[domain];
+				if (found != null)
 				{
-					_currentMemoryDomain = DomainList[domain];
+					Domain = found;
 					return true;
 				}
-
-				LogCallback($"Unable to find domain: {domain}");
-				return false;
 			}
-			catch // Just in case
+			catch
 			{
-				LogCallback($"Unable to find domain: {domain}");
+				// ignored
 			}
-
+			LogCallback($"Unable to find domain: {domain}");
 			return false;
 		}
 
 		public string HashRegion(long addr, int count, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-
-			// checks
+			var d = NamedDomainOrCurrent(domain);
 			if (addr < 0 || addr >= d.Size)
 			{
-				string error = $"Address {addr} is outside the bounds of domain {d.Name}";
+				var error = $"Address {addr} is outside the bounds of domain {d.Name}";
 				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
 			if (addr + count > d.Size)
 			{
-				string error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
+				var error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
 				LogCallback(error);
 				throw new ArgumentOutOfRangeException(error);
 			}
-
-			byte[] data = new byte[count];
-			for (int i = 0; i < count; i++)
-			{
-				data[i] = d.PeekByte(addr + i);
-			}
-
+			var data = new byte[count];
+			for (var i = 0; i < count; i++) data[i] = d.PeekByte(addr + i);
 			using var hasher = SHA256.Create();
 			return hasher.ComputeHash(data).BytesToHexString();
 		}
@@ -286,188 +215,111 @@ namespace BizHawk.Client.Common
 
 		#region Common Special and Legacy Methods
 
-		public uint ReadByte(long addr, string domain = null)
-		{
-			return ReadUnsignedByte(addr, domain);
-		}
+		public uint ReadByte(long addr, string domain = null) => ReadUnsignedByte(addr, domain);
 
-		public void WriteByte(long addr, uint value, string domain = null)
-		{
-			WriteUnsignedByte(addr, value, domain);
-		}
+		public void WriteByte(long addr, uint value, string domain = null) => WriteUnsignedByte(addr, value, domain);
 
 		public List<byte> ReadByteRange(long addr, int length, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			var lastAddr = length + addr;
-			var list = new List<byte>();
-			for (; addr <= lastAddr; addr++)
-			{
-				if (addr < d.Size)
-					list.Add(d.PeekByte(addr));
-				else {
-					LogCallback($"Warning: Attempted read {addr} outside memory domain size of {d.Size} in {nameof(ReadByteRange)}()");
-					list.Add(0);
-				}
-			}
-
-			return list;
+			var d = NamedDomainOrCurrent(domain);
+			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
+			var lastReqAddr = addr + length - 1;
+			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			var bytes = new byte[length];
+			for (var i = addr < 0 ? -addr : 0; i != indexAfterLast; i++) bytes[i] = d.PeekByte(addr + i);
+			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(ReadByteRange)}()");
+			return bytes.ToList();
 		}
 
 		public void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			if (d.CanPoke())
-			{
-				foreach (var m in memoryblock)
-				{
-					if (addr < d.Size)
-					{
-						d.PokeByte(addr++, m);
-					}
-					else
-					{
-						LogCallback($"Warning: Attempted write {addr} outside memory domain size of {d.Size} in {nameof(WriteByteRange)}()");
-					}
-				}
-			}
-			else
+			var d = NamedDomainOrCurrent(domain);
+			if (!d.CanPoke())
 			{
 				LogCallback($"Error: the domain {d.Name} is not writable");
+				return;
 			}
+			if (addr < 0) LogCallback($"Warning: Attempted reads on addresses {addr}..-1 outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
+			var lastReqAddr = addr + memoryblock.Count - 1;
+			var indexAfterLast = Math.Min(lastReqAddr, d.Size - 1) - addr + 1;
+			for (var i = addr < 0 ? (int) -addr : 0; i != indexAfterLast; i++) d.PokeByte(addr + i, memoryblock[i]);
+			if (lastReqAddr >= d.Size) LogCallback($"Warning: Attempted reads on addresses {d.Size}..{lastReqAddr} outside range of domain {d.Name} in {nameof(WriteByteRange)}()");
 		}
 
 		public float ReadFloat(long addr, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			if (addr < d.Size)
+			var d = NamedDomainOrCurrent(domain);
+			if (addr >= d.Size)
 			{
-				var val = d.PeekUint(addr, _isBigEndian);
-				var bytes = BitConverter.GetBytes(val);
-				return BitConverter.ToSingle(bytes, 0);
+				LogCallback($"Warning: Attempted read {addr} outside memory size of {d.Size}");
+				return default;
 			}
-
-			LogCallback($"Warning: Attempted read {addr} outside memory size of {d.Size}");
-
-			return 0;
+			return BitConverter.ToSingle(BitConverter.GetBytes(d.PeekUint(addr, _isBigEndian)), 0);
 		}
 
 		public void WriteFloat(long addr, double value, string domain = null)
 		{
-			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
-			if (d.CanPoke())
-			{
-				if (addr < d.Size)
-				{
-					var dv = (float)value;
-					var bytes = BitConverter.GetBytes(dv);
-					var v = BitConverter.ToUInt32(bytes, 0);
-					d.PokeUint(addr, v, _isBigEndian);
-				}
-				else
-				{
-					LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
-				}
-			}
-			else
+			var d = NamedDomainOrCurrent(domain);
+			if (!d.CanPoke())
 			{
 				LogCallback($"Error: the domain {Domain.Name} is not writable");
+				return;
 			}
+			if (addr >= d.Size)
+			{
+				LogCallback($"Warning: Attempted write {addr} outside memory size of {d.Size}");
+				return;
+			}
+			d.PokeUint(addr, BitConverter.ToUInt32(BitConverter.GetBytes((float) value), 0), _isBigEndian);
 		}
 
 		#endregion
 
 		#region 1 Byte
 
-		public int ReadS8(long addr, string domain = null)
-		{
-			return (sbyte)ReadUnsignedByte(addr, domain);
-		}
+		public int ReadS8(long addr, string domain = null) => (sbyte) ReadUnsignedByte(addr, domain);
 
-		public uint ReadU8(long addr, string domain = null)
-		{
-			return (byte)ReadUnsignedByte(addr, domain);
-		}
+		public uint ReadU8(long addr, string domain = null) => (byte) ReadUnsignedByte(addr, domain);
 
-		public void WriteS8(long addr, int value, string domain = null)
-		{
-			WriteSigned(addr, value, 1, domain);
-		}
+		public void WriteS8(long addr, int value, string domain = null) => WriteSigned(addr, value, 1, domain);
 
-		public void WriteU8(long addr, uint value, string domain = null)
-		{
-			WriteUnsignedByte(addr, value, domain);
-		}
+		public void WriteU8(long addr, uint value, string domain = null) => WriteUnsignedByte(addr, value, domain);
 
 		#endregion
 
 		#region 2 Byte
 
-		public int ReadS16(long addr, string domain = null)
-		{
-			return (short)ReadSigned(addr, 2, domain);
-		}
+		public int ReadS16(long addr, string domain = null) => (short) ReadSigned(addr, 2, domain);
 
-		public void WriteS16(long addr, int value, string domain = null)
-		{
-			WriteSigned(addr, value, 2, domain);
-		}
+		public uint ReadU16(long addr, string domain = null) => (ushort) ReadUnsigned(addr, 2, domain);
 
-		public uint ReadU16(long addr, string domain = null)
-		{
-			return (ushort)ReadUnsigned(addr, 2, domain);
-		}
+		public void WriteS16(long addr, int value, string domain = null) => WriteSigned(addr, value, 2, domain);
 
-		public void WriteU16(long addr, uint value, string domain = null)
-		{
-			WriteUnsigned(addr, value, 2, domain);
-		}
+		public void WriteU16(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 2, domain);
+
 		#endregion
 
 		#region 3 Byte
 
-		public int ReadS24(long addr, string domain = null)
-		{
-			return ReadSigned(addr, 3, domain);
-		}
-		public void WriteS24(long addr, int value, string domain = null)
-		{
-			WriteSigned(addr, value, 3, domain);
-		}
+		public int ReadS24(long addr, string domain = null) => ReadSigned(addr, 3, domain);
 
-		public uint ReadU24(long addr, string domain = null)
-		{
-			return ReadUnsigned(addr, 3, domain);
-		}
+		public uint ReadU24(long addr, string domain = null) => ReadUnsigned(addr, 3, domain);
 
-		public void WriteU24(long addr, uint value, string domain = null)
-		{
-			WriteUnsigned(addr, value, 3, domain);
-		}
+		public void WriteS24(long addr, int value, string domain = null) => WriteSigned(addr, value, 3, domain);
+
+		public void WriteU24(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 3, domain);
 
 		#endregion
 
 		#region 4 Byte
 
-		public int ReadS32(long addr, string domain = null)
-		{
-			return ReadSigned(addr, 4, domain);
-		}
+		public int ReadS32(long addr, string domain = null) => ReadSigned(addr, 4, domain);
 
-		public void WriteS32(long addr, int value, string domain = null)
-		{
-			WriteSigned(addr, value, 4, domain);
-		}
+		public uint ReadU32(long addr, string domain = null) => ReadUnsigned(addr, 4, domain);
 
-		public uint ReadU32(long addr, string domain = null)
-		{
-			return ReadUnsigned(addr, 4, domain);
-		}
+		public void WriteS32(long addr, int value, string domain = null) => WriteSigned(addr, value, 4, domain);
 
-		public void WriteU32(long addr, uint value, string domain = null)
-		{
-			WriteUnsigned(addr, value, 4, domain);
-		}
+		public void WriteU32(long addr, uint value, string domain = null) => WriteUnsigned(addr, value, 4, domain);
 
 		#endregion
 	}
