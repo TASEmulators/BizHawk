@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class SMSGraphicsConfig
+	partial class SmsGraphicsConfig
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -105,7 +105,7 @@
             this.Controls.Add(this.OK);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "SMSGraphicsConfig";
+            this.Name = "SmsGraphicsConfig";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

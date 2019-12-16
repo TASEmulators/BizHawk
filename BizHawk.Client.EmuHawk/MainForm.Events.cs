@@ -1937,8 +1937,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new SMSGraphicsConfig();
-			form.ShowDialog();
+			if (Emulator is SMS sms)
+			{
+				using var form = new SmsGraphicsConfig(this, sms.GetSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)

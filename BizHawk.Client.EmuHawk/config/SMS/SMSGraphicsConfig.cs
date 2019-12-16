@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SMSGraphicsConfig : Form
+	public partial class SmsGraphicsConfig : Form
 	{
-		public SMSGraphicsConfig()
+		private readonly MainForm _mainForm;
+		private readonly SMS.SMSSettings _settings;
+		public SmsGraphicsConfig(
+			MainForm mainForm,
+			SMS.SMSSettings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void SMSGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			var s = ((SMS)Global.Emulator).GetSettings();
-			DispOBJ.Checked = s.DispOBJ;
-			DispBG.Checked = s.DispBG;
+			DispOBJ.Checked = _settings.DispOBJ;
+			DispBG.Checked = _settings.DispBG;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Global.Emulator).GetSettings();
-			s.DispOBJ = DispOBJ.Checked;
-			s.DispBG = DispBG.Checked;
-			GlobalWin.MainForm.PutCoreSettings(s);
+			_settings.DispOBJ = DispOBJ.Checked;
+			_settings.DispBG = DispBG.Checked;
+			_mainForm.PutCoreSettings(_settings);
 			Close();
 		}
 	}
