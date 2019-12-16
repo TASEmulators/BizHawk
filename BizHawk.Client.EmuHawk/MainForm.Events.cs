@@ -1716,16 +1716,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var dlg = new PCEControllerConfig())
+			if (Emulator is PCEngine pce)
 			{
+				using var dlg = new PCEControllerConfig(this, pce.GetSyncSettings().Clone());
 				dlg.ShowDialog();
 			}
 		}
 
 		private void PceGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PCEGraphicsConfig();
-			form.ShowDialog();
+			if (Emulator is PCEngine pce)
+			{
+				using var form = new PCEGraphicsConfig(this, pce.GetSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void PceBgViewerMenuItem_Click(object sender, EventArgs e)
