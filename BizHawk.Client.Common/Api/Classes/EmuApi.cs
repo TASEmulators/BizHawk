@@ -352,29 +352,29 @@ namespace BizHawk.Client.Common
 
 			return false;
 		}
-		public void SetRenderPlanes(params bool[] luaParam)
+		public void SetRenderPlanes(params bool[] args)
 		{
 			if (Emulator is GPGX gpgx)
 			{
 				var s = gpgx.GetSettings();
-				s.DrawBGA = luaParam[0];
-				s.DrawBGB = luaParam[1];
-				s.DrawBGW = luaParam[2];
-				s.DrawObj = luaParam[3];
+				s.DrawBGA = args[0];
+				s.DrawBGB = args[1];
+				s.DrawBGW = args[2];
+				s.DrawObj = args[3];
 				gpgx.PutSettings(s);
 
 			}
 			else if (Emulator is LibsnesCore snes)
 			{
 				var s = snes.GetSettings();
-				s.ShowBG1_0 = s.ShowBG1_1 = luaParam[0];
-				s.ShowBG2_0 = s.ShowBG2_1 = luaParam[1];
-				s.ShowBG3_0 = s.ShowBG3_1 = luaParam[2];
-				s.ShowBG4_0 = s.ShowBG4_1 = luaParam[3];
-				s.ShowOBJ_0 = luaParam[4];
-				s.ShowOBJ_1 = luaParam[5];
-				s.ShowOBJ_2 = luaParam[6];
-				s.ShowOBJ_3 = luaParam[7];
+				s.ShowBG1_0 = s.ShowBG1_1 = args[0];
+				s.ShowBG2_0 = s.ShowBG2_1 = args[1];
+				s.ShowBG3_0 = s.ShowBG3_1 = args[2];
+				s.ShowBG4_0 = s.ShowBG4_1 = args[3];
+				s.ShowOBJ_0 = args[4];
+				s.ShowOBJ_1 = args[5];
+				s.ShowOBJ_2 = args[6];
+				s.ShowOBJ_3 = args[7];
 				snes.PutSettings(s);
 			}
 			else if (Emulator is NES nes)
@@ -382,8 +382,8 @@ namespace BizHawk.Client.Common
 				// in the future, we could do something more arbitrary here.
 				// but this isn't any worse than the old system
 				var s = nes.GetSettings();
-				s.DispSprites = luaParam[0];
-				s.DispBackground = luaParam[1];
+				s.DispSprites = args[0];
+				s.DispBackground = args[1];
 				nes.PutSettings(s);
 			}
 			else if (Emulator is QuickNES quicknes)
@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 				var s = quicknes.GetSettings();
 
 				// this core doesn't support disabling BG
-				bool showSp = GetSetting(0, luaParam);
+				bool showSp = GetSetting(0, args);
 				if (showSp && s.NumSprites == 0)
 				{
 					s.NumSprites = 8;
@@ -406,12 +406,12 @@ namespace BizHawk.Client.Common
 			else if (Emulator is PCEngine pce)
 			{
 				var s = pce.GetSettings();
-				s.ShowOBJ1 = GetSetting(0, luaParam);
-				s.ShowBG1 = GetSetting(1, luaParam);
-				if (luaParam.Length > 2)
+				s.ShowOBJ1 = GetSetting(0, args);
+				s.ShowBG1 = GetSetting(1, args);
+				if (args.Length > 2)
 				{
-					s.ShowOBJ2 = GetSetting(2, luaParam);
-					s.ShowBG2 = GetSetting(3, luaParam);
+					s.ShowOBJ2 = GetSetting(2, args);
+					s.ShowBG2 = GetSetting(3, args);
 				}
 
 				pce.PutSettings(s);
@@ -419,16 +419,16 @@ namespace BizHawk.Client.Common
 			else if (Emulator is SMS sms)
 			{
 				var s = sms.GetSettings();
-				s.DispOBJ = GetSetting(0, luaParam);
-				s.DispBG = GetSetting(1, luaParam);
+				s.DispOBJ = GetSetting(0, args);
+				s.DispBG = GetSetting(1, args);
 				sms.PutSettings(s);
 			}
 			else if (Emulator is WonderSwan ws)
 			{
 				var s = ws.GetSettings();
-				s.EnableSprites = GetSetting(0, luaParam);
-				s.EnableFG = GetSetting(1, luaParam);
-				s.EnableBG = GetSetting(2, luaParam);
+				s.EnableSprites = GetSetting(0, args);
+				s.EnableFG = GetSetting(1, args);
+				s.EnableBG = GetSetting(2, args);
 				ws.PutSettings(s);
 			}
 		}

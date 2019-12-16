@@ -27,6 +27,6 @@ namespace BizHawk.Client.Common
 		string GetBoardName();
 		object GetSettings();
 		bool PutSettings(object settings);
-		void SetRenderPlanes(params bool[] param);
+		void SetRenderPlanes(params bool[] args);
 	}
 }

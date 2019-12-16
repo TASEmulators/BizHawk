@@ -58,9 +58,9 @@ namespace BizHawk.Client.Common
 		public static readonly StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
 
 		/// <summary>
-		/// Used to AND to another controller, used for Joypad.Set()
+		/// Used to AND to another controller, used for <see cref="JoypadApi.Set(System.Collections.Generic.Dictionary{string,bool},System.Nullable{int})">JoypadApi.Set</see>
 		/// </summary>
-		public static readonly OverrideAdaptor LuaAndAdaptor = new OverrideAdaptor();
+		public static readonly OverrideAdaptor ButtonOverrideAdaptor = new OverrideAdaptor();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons

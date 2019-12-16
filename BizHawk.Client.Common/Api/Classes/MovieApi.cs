@@ -74,20 +74,6 @@ namespace BizHawk.Client.Common
 				Global.MovieSession.ReadOnly = readOnly;
 			}
 
-			public static void SetRerecordCount(double count)
-			{
-				// Lua numbers are always double, integer precision holds up
-				// to 53 bits, so throw an error if it's bigger than that.
-				const double PrecisionLimit = 9007199254740992d;
-
-				if (count > PrecisionLimit)
-				{
-					throw new Exception("Rerecord count exceeds Lua integer precision.");
-				}
-
-				Global.MovieSession.Movie.Rerecords = (ulong)count;
-			}
-
 			public static void SetRerecordCounting(bool counting)
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = counting;
@@ -272,10 +258,7 @@ namespace BizHawk.Client.Common
 			MoviePluginStatic.SetReadOnly(readOnly);
 		}
 
-		public void SetRerecordCount(double count)
-		{
-			MoviePluginStatic.SetRerecordCount(count);
-		}
+		public void SetRerecordCount(ulong count) => Global.MovieSession.Movie.Rerecords = count;
 
 		public void SetRerecordCounting(bool counting)
 		{

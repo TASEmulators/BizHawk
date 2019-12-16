@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		string Mode();
 		void Save(string filename = "");
 		void SetReadOnly(bool readOnly);
-		void SetRerecordCount(double count);
+		void SetRerecordCount(ulong count);
 		void SetRerecordCounting(bool counting);
 		void Stop();
 		double GetFps();

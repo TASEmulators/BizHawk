@@ -20,9 +20,11 @@ namespace BizHawk.Client.Common
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
 		public LuaTable Get(int? controller = null)
 		{
-			return APIs.Joypad
-				.Get(controller)
-				.ToLuaTable(Lua);
+			var table = APIs.Joypad.Get(controller).ToLuaTable(Lua);
+			table["clear"] = null;
+			table["getluafunctionslist"] = null;
+			table["output"] = null;
+			return table;
 		}
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]

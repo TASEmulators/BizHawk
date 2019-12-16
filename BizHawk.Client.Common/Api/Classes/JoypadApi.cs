@@ -44,10 +44,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			buttons["clear"] = null;
-			buttons["getluafunctionslist"] = null;
-			buttons["output"] = null;
-
 			return buttons;
 		}
 
@@ -77,12 +73,12 @@ namespace BizHawk.Client.Common
 
 				foreach (var button in lg.Definition.BoolButtons)
 				{
-					Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+					Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
 				}
 
 				foreach (var floatButton in lg.Definition.FloatControls)
 				{
-					Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
+					Global.ButtonOverrideAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
 				}
 			}
 			catch (Exception)
@@ -132,19 +128,19 @@ namespace BizHawk.Client.Common
 					{
 						if (theValue.HasValue) // Force
 						{
-							Global.LuaAndAdaptor.SetButton(toPress, theValue.Value);
-							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+							Global.ButtonOverrideAdaptor.SetButton(toPress, theValue.Value);
+							Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
 						}
 						else // Unset
 						{
-							Global.LuaAndAdaptor.UnSet(toPress);
-							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+							Global.ButtonOverrideAdaptor.UnSet(toPress);
+							Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
 						}
 					}
 					else // Inverse
 					{
-						Global.LuaAndAdaptor.SetInverse(toPress);
-						Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+						Global.ButtonOverrideAdaptor.SetInverse(toPress);
+						Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
 					}
 				}
 			}
@@ -163,10 +159,10 @@ namespace BizHawk.Client.Common
 					toPress = $"P{controller} {button}";
 				}
 				if (state.HasValue)
-					Global.LuaAndAdaptor.SetButton(toPress, state.Value);
+					Global.ButtonOverrideAdaptor.SetButton(toPress, state.Value);
 				else 
-					Global.LuaAndAdaptor.UnSet(toPress);
-				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+					Global.ButtonOverrideAdaptor.UnSet(toPress);
+				Global.ActiveController.Overrides(Global.ButtonOverrideAdaptor);
 			}
 			catch
 			{

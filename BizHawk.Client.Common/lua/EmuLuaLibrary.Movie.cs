@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("movie.setrerecordcount( 20.0 );")]
 		[LuaMethod("setrerecordcount", "Sets the rerecord count of the current movie.")]
-		public void SetRerecordCount(double count) => APIs.Movie.SetRerecordCount(count);
+		public void SetRerecordCount(double count) => APIs.Movie.SetRerecordCount((ulong) count.AsInteger());
 
 		[LuaMethodExample("movie.setrerecordcounting( true );")]
 		[LuaMethod("setrerecordcounting", "Sets whether or not the current movie will increment the rerecord counter on loadstate")]
