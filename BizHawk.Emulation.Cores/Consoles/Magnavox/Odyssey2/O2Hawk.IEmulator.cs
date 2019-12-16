@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			//Console.WriteLine("-----------------------FRAME-----------------------");
+			// Console.WriteLine("-----------------------FRAME-----------------------");
 
 			if (_tracer.Enabled)
 			{
@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 		}
 
-		public int VirtualWidth => 213;
+		public int VirtualWidth => 372;
 		public int VirtualHeight => 240;
 		public int BufferWidth => 186;
 		public int BufferHeight => 240;

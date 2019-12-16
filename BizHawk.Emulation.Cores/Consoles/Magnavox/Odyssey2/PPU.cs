@@ -1,7 +1,6 @@
 ﻿using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 
@@ -20,31 +19,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_color;
 		public byte Frame_Col, Pixel_Stat;
-		
-		public uint[] BG_palette = new uint[32];
-		public uint[] OBJ_palette = new uint[32];
 
-		public bool HDMA_active;
 
 		// register variables
-		public byte LCDC;
-		public byte STAT;
-		public byte scroll_y;
-		public byte scroll_x;
 		public int LY;
 		public byte LY_actual;
 		public byte LY_inc;
 		public byte LYC;
-		public byte DMA_addr;
-		public byte BGP;
-		public byte obj_pal_0;
-		public byte obj_pal_1;
-		public byte window_y;
-		public byte window_x;
-		public bool DMA_start;
-		public int DMA_clock;
-		public int DMA_inc;
-		public byte DMA_byte;
 		public int cycle;
 		public bool VBL;
 		public bool HBL;
@@ -120,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr < 0x80)
 			{
 				Quad_Chars[addr - 0x40] = value;
+				//Quad_Chars[0x0E] = 0x7;
 			}
 			else if (addr < 0xA0)
 			{
@@ -182,72 +164,120 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY < 240)
 				{
 					// sprites
-					for (int i = 0; i < 4; i++)
+					for (int i = 3; i >= 0; i--)
 					{
-						if ((LY >= Sprites[i * 4]) && (LY < (Sprites[i * 4] + 8)))
+						int double_size = Sprites[i * 4 + 2].Bit(2) ? 4 : 2;
+						
+						if ((LY >= Sprites[i * 4]) && (LY < (Sprites[i * 4] + 8 * double_size)))
 						{
-							if (((cycle - 43) >= Sprites[i * 4 + 1]) && ((cycle - 43) < (Sprites[i * 4 + 1] + 8)))
+							if (((cycle - 43) >= Sprites[i * 4 + 1]) && ((cycle - 43) < (Sprites[i * 4 + 1] + 8 * (double_size / 2))))
 							{
 								// character is in drawing region, pick a pixel
-								int offset_y = LY - Sprites[i * 4];
-								int offset_x = ((cycle - 43) - Sprites[i * 4 + 1]);
+								int offset_y = (LY - Sprites[i * 4]) >> (double_size / 2);
+								int offset_x = ((cycle - 43) - Sprites[i * 4 + 1]) >> (double_size / 2 - 1);
 
 								int pixel_pick = (Sprite_Shapes[i * 8 + offset_y] >> offset_x) & 1;
 
 								if (pixel_pick == 1)
 								{
-									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+									if (Core._settings.Show_Sprites)
+									{
+										Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
+									}
+
 									Pixel_Stat |= (byte)(i << 1);
 								}
 							}
 						}
 					}
-
+					
 					// single characters
 					for (int i = 0; i < 12; i++)
 					{
-						if ((LY >= Foreground[i * 4]) && (LY < (Foreground[i * 4] + 8)))
+						if ((LY >= Foreground[i * 4]) && (LY < (Foreground[i * 4] + 8 * 2)))
 						{
 							if (((cycle - 43) >= Foreground[i * 4 + 1]) && ((cycle - 43) < (Foreground[i * 4 + 1] + 8)))
 							{
 								// sprite is in drawing region, pick a pixel
-								int offset_y = LY - Foreground[i * 4];
+								int offset_y = (LY - Foreground[i * 4]) >> 1;
 								int offset_x = 7 - ((cycle - 43) - Foreground[i * 4 + 1]);
-								int char_sel = Foreground[i * 4 + 2] + ((Foreground[i * 4 + 3] & 1) << 8);
+								int char_sel = Foreground[i * 4 + 2];
 
-								int pixel_pick = (Internal_Graphics[(char_sel + offset_y) % 0x200] >> offset_x) & 1;
+								int char_pick = (char_sel - (((~(Foreground[i * 4] >> 1)) + 1) & 0xFF));
+								
+								if (char_pick < 0)
+								{
+									char_pick &= 0xFF;
+									char_pick = char_pick >> 1;
+									char_pick |= (Foreground[i * 4 + 3] & 1) << 7;
+									char_pick = char_pick << 1;
+								}
+								else
+								{
+									char_pick &= 0xFF;
+									char_pick = char_pick >> 1;
+									char_pick |= (~(Foreground[i * 4 + 3] & 1)) << 7;
+									char_pick &= 0xFF;
+									char_pick = char_pick << 1;
+								}
+
+								int pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
 
 								if (pixel_pick == 1)
 								{
-									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
+									if (Core._settings.Show_Chars)
+									{
+										Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Foreground[i * 4 + 3] >> 1) & 0x7];
+									}
+
 									Pixel_Stat |= 0x80;
 								}
 							}
 						}
 					}
-
+                    
 					// quads
 					for (int i = 0; i < 4; i++)
 					{
-						if ((LY >= Quad_Chars[i * 16 + 12]) && (LY < (Quad_Chars[i * 16 + 12] + 8)))
+						if ((LY >= Quad_Chars[i * 16]) && (LY < (Quad_Chars[i * 16] + 8 * 2)))
 						{
-							if (((cycle - 43) >= Quad_Chars[i * 16 + 12 + 1]) && ((cycle - 43) < (Quad_Chars[i * 16 + 12 + 1] + 64)))
+							if (((cycle - 43) >= Quad_Chars[i * 16 + 1]) && ((cycle - 43) < (Quad_Chars[i * 16 + 1] + 64)))
 							{
 								// sprite is in drawing region, pick a pixel
-								int offset_y = LY - Quad_Chars[i * 16 + 12];
-								int offset_x = 63 - ((cycle - 43) - Quad_Chars[i * 16 + 12 + 1]);
-								int quad_num = 0;
+								int offset_y = (LY - Quad_Chars[i * 16]) >> 1;
+								int offset_x = 63 - ((cycle - 43) - Quad_Chars[i * 16 + 1]);
+								int quad_num = 3;
 								while (offset_x > 15)
 								{
 									offset_x -= 16;
-									quad_num++;
+									quad_num--;
 								}
 
-								if (offset_x <= 7)
+								if (offset_x > 7)
 								{
-									int char_sel = Quad_Chars[i * 16 + 4 * quad_num + 2] + ((Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 8);
+									offset_x -= 8;
+									
+									int char_sel = Quad_Chars[i * 16 + 4 * quad_num + 2];
 
-									int pixel_pick = (Internal_Graphics[(char_sel + offset_y) % 0x200] >> offset_x) & 1;
+									int char_pick = (char_sel - (((~(Quad_Chars[i * 16] >> 1)) + 1) & 0xFF));
+									
+									if (char_pick < 0)
+									{
+										char_pick &= 0xFF;
+										char_pick = char_pick >> 1;
+										char_pick |= (Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 7;
+										char_pick = char_pick << 1;
+									}
+									else
+									{
+										char_pick &= 0xFF;
+										char_pick = char_pick >> 1;
+										char_pick |= (~(Quad_Chars[i * 16 + 4 * quad_num + 3] & 1)) << 7;
+										char_pick &= 0xFF;
+										char_pick = char_pick << 1;
+									}
+
+									int pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
 
 									if (pixel_pick == 1)
 									{
@@ -332,12 +362,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			AudioReset();
 		}
 
-		public static readonly byte[] Internal_Graphics = { 0x3C, 0x66, 0x66, 0x66, 0x66, 0x66, 0x3C, 00, // 0				0x00
+		public static readonly byte[] Internal_Graphics = { 0x7C, 0xC6, 0xC6, 0xC6, 0xC6, 0xC6, 0x7C, 00, // 0				0x00
 															0x18, 0x38, 0x18, 0x18, 0x18, 0x18, 0x3C, 00, // 1				0x01
 															0x3C, 0x66, 0x0C, 0x18, 0x30, 0x60, 0x7E, 00, // 2				0x02
 															0x3C, 0x66, 0x06, 0x1C, 0x06, 0x66, 0x3C, 00, // 3				0x03
 															0xCC, 0xCC, 0xCC, 0xFE, 0x0C, 0x0C, 0x0C, 00, // 4				0x04
-															0x7E, 0x60, 0x60, 0x3C, 0x60, 0x66, 0x3C, 00, // 5				0x05
+															0x7E, 0x60, 0x60, 0x3C, 0x06, 0x66, 0x3C, 00, // 5				0x05
 															0x3C, 0x66, 0x60, 0x7C, 0x66, 0x66, 0x3C, 00, // 6				0x06
 															0xFE, 0x06, 0x0C, 0x18, 0x30, 0x60, 0xC0, 00, // 7				0x07
 															0x3C, 0x66, 0x66, 0x3C, 0x66, 0x66, 0x3C, 00, // 8				0x08
@@ -364,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0xC6, 0xC6, 0xC6, 0xFE, 0xC6, 0xC6, 0xC6, 00, // H				0x1D
 															0x06, 0x06, 0x06, 0x06, 0x06, 0xC6, 0x7C, 00, // J				0x1E
 															0xC6, 0xCC, 0xD8, 0xF0, 0xD8, 0xCC, 0xC6, 00, // K				0x1F
-															0x38, 0x6C, 0xC6, 0xC6, 0xF7, 0xC6, 0xC6, 00, // A				0x20
+															0x38, 0x6C, 0xC6, 0xC6, 0xFE, 0xC6, 0xC6, 00, // A				0x20
 															0x7E, 0x06, 0x0C, 0x18, 0x30, 0x60, 0x7E, 00, // Z				0x21
 															0xC6, 0xC6, 0x6C, 0x38, 0x6C, 0xC6, 0xC6, 00, // X				0x22
 															0x7C, 0xC6, 0xC0, 0xC0, 0xC0, 0xC6, 0x7C, 00, // C				0x23
@@ -378,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x00, 0x00, 0x7E, 0x00, 0x7E, 0x00, 0x00, 00, // =				0x2B
 															0x66, 0x66, 0x66, 0x3C, 0x18, 0x18, 0x18, 00, // Y				0x2C
 															0xC6, 0xE6, 0xF6, 0xFE, 0xDE, 0xCE, 0xC6, 00, // N				0x2D
-															0x03, 0x06, 0xC0, 0x18, 0x30, 0x60, 0xC0, 00, // /				0x2E
+															0x03, 0x06, 0x0C, 0x18, 0x30, 0x60, 0xC0, 00, // /				0x2E
 															0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 0x7E, 00, // (box)			0x2F
 															0xCE, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xCE, 00, // 10				0x30
 															0x00, 0x00, 0x3C, 0x7E, 0x7E, 0x7E, 0x3C, 00, // (ball)			0x31
@@ -428,7 +458,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			0xFFCECECE, // light grey
 			0xFF000000, // black
 			0xFFFFFFFF, // white
-
 		};
 
 
@@ -448,28 +477,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(Frame_Col), ref Frame_Col);
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 
-			ser.Sync(nameof(BG_palette), ref BG_palette, false);
-			ser.Sync(nameof(OBJ_palette), ref OBJ_palette, false);
-			ser.Sync(nameof(HDMA_active), ref HDMA_active);
-
-			ser.Sync(nameof(LCDC), ref LCDC);
-			ser.Sync(nameof(STAT), ref STAT);
-			ser.Sync(nameof(scroll_y), ref scroll_y);
-			ser.Sync(nameof(scroll_x), ref scroll_x);
 			ser.Sync(nameof(LY), ref LY);
 			ser.Sync(nameof(LY_actual), ref LY_actual);
 			ser.Sync(nameof(LY_inc), ref LY_inc);
 			ser.Sync(nameof(LYC), ref LYC);
-			ser.Sync(nameof(DMA_addr), ref DMA_addr);
-			ser.Sync(nameof(BGP), ref BGP);
-			ser.Sync(nameof(obj_pal_0), ref obj_pal_0);
-			ser.Sync(nameof(obj_pal_1), ref obj_pal_1);
-			ser.Sync(nameof(window_y), ref window_y);
-			ser.Sync(nameof(window_x), ref window_x);
-			ser.Sync(nameof(DMA_start), ref DMA_start);
-			ser.Sync(nameof(DMA_clock), ref DMA_clock);
-			ser.Sync(nameof(DMA_inc), ref DMA_inc);
-			ser.Sync(nameof(DMA_byte), ref DMA_byte);
 			ser.Sync(nameof(cycle), ref cycle);
 			ser.Sync(nameof(VBL), ref VBL);
 			ser.Sync(nameof(HBL), ref HBL);

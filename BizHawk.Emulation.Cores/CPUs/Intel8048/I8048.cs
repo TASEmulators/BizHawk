@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			IRQS = 5;
 			instr_pntr = irq_pntr = 0;
+			Regs[PX + 1] = 0xFF;
 		}
 
 		// Memory Access 
@@ -238,7 +239,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					F1 = !F1;
 					break;
 				case DA:
-					DA_Func(cur_instr[instr_pntr++]);
+					DA_Func(A);
 					break;
 				case AND8:
 					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

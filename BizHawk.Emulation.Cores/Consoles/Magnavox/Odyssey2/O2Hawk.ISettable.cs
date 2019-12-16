@@ -33,11 +33,21 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			return ret;
 		}
 
-		private O2Settings _settings = new O2Settings();
+		public O2Settings _settings = new O2Settings();
 		public O2SyncSettings _syncSettings = new O2SyncSettings();
 
 		public class O2Settings
 		{
+			[DisplayName("Display Characters")]
+			[Description("When true, displays character.")]
+			[DefaultValue(true)]
+			public bool Show_Chars { get; set; }
+
+			[DisplayName("Display Sprites")]
+			[Description("When true, displays sprites.")]
+			[DefaultValue(true)]
+			public bool Show_Sprites { get; set; }
+
 			public O2Settings Clone()
 			{
 				return (O2Settings)MemberwiseClone();

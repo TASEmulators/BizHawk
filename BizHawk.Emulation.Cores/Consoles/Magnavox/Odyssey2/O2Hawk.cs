@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte addr_latch;
 		public byte kb_byte;
 		public bool ppu_en, RAM_en, kybrd_en, copy_en, lum_en, cart_b0, cart_b1;
+		public ushort rom_bank;
 		public const bool P15 = true;
 
 		public byte[] _bios;
@@ -132,6 +133,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			in_vblank_old = true;
 
 			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
+
+			WritePort(1, 0xFF);
 
 			ppu.Reset();
 			serialport.Reset();

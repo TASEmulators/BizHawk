@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(lum_en), ref lum_en);
 			ser.Sync(nameof(copy_en), ref copy_en);
 			ser.Sync(nameof(kybrd_en), ref kybrd_en);
+			ser.Sync(nameof(rom_bank), ref rom_bank);
 
 			// memory domains
 			ser.Sync(nameof(RAM), ref RAM, false);

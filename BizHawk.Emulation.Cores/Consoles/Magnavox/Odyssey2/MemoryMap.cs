@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else
 			{
-				return mapper.ReadMemory((ushort)(addr - 0x400));
+				return mapper.ReadMemory((ushort)((addr - 0x400) | rom_bank));
 			}
 		}
 
@@ -161,6 +161,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				kybrd_en = !value.Bit(2);
 				cart_b1 = value.Bit(1);
 				cart_b0 = value.Bit(0);
+
+				rom_bank = (ushort)(cart_b0 ? 1 : 0);
+				rom_bank |= (ushort)(cart_b1 ? 2 : 0);
+				rom_bank = (ushort)(rom_bank << 11);
 
 				//Console.WriteLine("main ctrl: " + value + " " + ppu_en + " " + RAM_en + " " + cpu.TotalExecutedCycles);
 			}
