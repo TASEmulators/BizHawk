@@ -11,11 +11,8 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions specific to GenesisHawk (functions may not run when an Genesis game is not loaded)")]
-	public sealed class GenesisLuaLibrary : LuaLibraryBase
+	public sealed class GenesisLuaLibrary : DelegatingLuaLibrary
 	{
-		[OptionalService]
-		private GPGX Genesis { get; set; }
-
 		public GenesisLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -24,64 +21,49 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "genesis";
 
-		private GPGX.GPGXSettings GetSettings()
+		private GPGX.GPGXSettings Settings
 		{
-			return Genesis != null
-				? Genesis.GetSettings()
-				: new GPGX.GPGXSettings();
-		}
-
-		private void PutSettings(GPGX.GPGXSettings settings)
-		{
-			Genesis?.PutSettings(settings);
+			get => APIs.Emu.GetSettings() as GPGX.GPGXSettings ?? new GPGX.GPGXSettings();
+			set => APIs.Emu.PutSettings(value);
 		}
 
 		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bga", "Returns whether the bg layer A is displayed")]
-		public bool GetLayerBgA()
-		{
-			return GetSettings().DrawBGA;
-		}
+		public bool GetLayerBgA() => Settings.DrawBGA;
 
 		[LuaMethodExample("if ( genesis.getlayer_bgb( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer B is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgb", "Returns whether the bg layer B is displayed")]
-		public bool GetLayerBgB()
-		{
-			return GetSettings().DrawBGB;
-		}
+		public bool GetLayerBgB() => Settings.DrawBGB;
 
 		[LuaMethodExample("if ( genesis.getlayer_bgw( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer W is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgw", "Returns whether the bg layer W is displayed")]
-		public bool GetLayerBgW()
-		{
-			return GetSettings().DrawBGW;
-		}
+		public bool GetLayerBgW() => Settings.DrawBGW;
 
 		[LuaMethodExample("genesis.setlayer_bga( true );")]
 		[LuaMethod("setlayer_bga", "Sets whether the bg layer A is displayed")]
 		public void SetLayerBgA(bool value)
 		{
-			var s = GetSettings();
+			var s = Settings;
 			s.DrawBGA = value;
-			PutSettings(s);
+			Settings = s;
 		}
 
 		[LuaMethodExample("genesis.setlayer_bgb( true );")]
 		[LuaMethod("setlayer_bgb", "Sets whether the bg layer B is displayed")]
 		public void SetLayerBgB(bool value)
 		{
-			var s = GetSettings();
+			var s = Settings;
 			s.DrawBGB = value;
-			PutSettings(s);
+			Settings = s;
 		}
 
 		[LuaMethodExample("genesis.setlayer_bgw( true );")]
 		[LuaMethod("setlayer_bgw", "Sets whether the bg layer W is displayed")]
 		public void SetLayerBgW(bool value)
 		{
-			var s = GetSettings();
+			var s = Settings;
 			s.DrawBGW = value;
-			PutSettings(s);
+			Settings = s;
 		}
 	}
 }
