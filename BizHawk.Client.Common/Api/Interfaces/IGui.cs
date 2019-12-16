@@ -1,16 +1,17 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.Common
 {
-	public interface IGui : IExternalApi
+	public interface IGui : IDisposable, IExternalApi
 	{
 		#region Gui API
 		void ToggleCompositingMode();
 		ImageAttributes GetAttributes();
 		void SetAttributes(ImageAttributes a);
-		void DrawNew(string name, bool? clear = true);
+		void DrawNew(string name, bool clear = true);
 		void DrawFinish();
 		bool HasGUISurface { get; }
 		#endregion
@@ -27,6 +28,7 @@ namespace BizHawk.Client.Common
 		void ClearText();
 		void SetDefaultForegroundColor(Color color);
 		void SetDefaultBackgroundColor(Color color);
+		Color? GetDefaultTextBackground();
 		void SetDefaultTextBackground(Color color);
 		void SetDefaultPixelFont(string fontfamily);
 		void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color = null);

@@ -23,9 +23,14 @@ namespace BizHawk.Client.EmuHawk
 		private ImageAttributes _attributes = new ImageAttributes();
 		private System.Drawing.Drawing2D.CompositingMode _compositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 
+		public GuiApi(Action<string> logCallback)
+		{
+			LogCallback = logCallback;
+		}
 
-		public GuiApi()
-		{ }
+		public GuiApi() : this(Console.WriteLine) {}
+
+		private readonly Action<string> LogCallback;
 
 		private DisplaySurface _GUISurface = null;
 
@@ -59,16 +64,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawNew(string name, bool? clear = true)
+		public void DrawNew(string name, bool clear)
 		{
 			try
 			{
 				DrawFinish();
-				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear ?? true);
+				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear);
 			}
 			catch (InvalidOperationException ex)
 			{
-				Console.WriteLine(ex.ToString());
+				LogCallback(ex.ToString());
 			}
 		}
 
@@ -87,6 +92,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
+		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
 		private SolidBrush GetBrush(Color color)
 		{
 			SolidBrush b;
@@ -113,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Graphics GetGraphics()
 		{
-			var g = _GUISurface == null ? Graphics.FromImage(new Bitmap(1,1)) : _GUISurface.GetGraphics();
+			var g = _GUISurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _GUISurface.GetGraphics();
 
 			// we don't like CoreComm, right? Someone should find a different way to do this then.
 			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
@@ -171,6 +177,8 @@ namespace BizHawk.Client.EmuHawk
 			_defaultBackground = color;
 		}
 
+		public Color? GetDefaultTextBackground() => _defaultTextBackground;
+
 		public void SetDefaultTextBackground(Color color)
 		{
 			_defaultTextBackground = color;
@@ -189,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 					_defaultPixelFont = 1;
 					break;
 				default:
-					Console.WriteLine($"Unable to find font family: {fontfamily}");
+					LogCallback($"Unable to find font family: {fontfamily}");
 					return;
 			}
 		}
@@ -332,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Console.WriteLine($"File not found: {path}");
+				LogCallback($"File not found: {path}");
 				return;
 			}
 
@@ -372,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!File.Exists(path))
 			{
-				Console.WriteLine($"File not found: {path}");
+				LogCallback($"File not found: {path}");
 				return;
 			}
 
@@ -526,6 +534,7 @@ namespace BizHawk.Client.EmuHawk
 							case "left":
 								break;
 							case "center":
+							case "middle":
 								x -= sizeOfText.Width / 2;
 								break;
 							case "right":
@@ -539,12 +548,13 @@ namespace BizHawk.Client.EmuHawk
 						switch (vertalign.ToLower())
 						{
 							default:
-							case "bottom":
+							case "top":
 								break;
+							case "center":
 							case "middle":
 								y -= sizeOfText.Height / 2;
 								break;
-							case "top":
+							case "bottom":
 								y -= sizeOfText.Height;
 								break;
 						}
@@ -595,7 +605,7 @@ namespace BizHawk.Client.EmuHawk
 								index = 1;
 								break;
 							default:
-								Console.WriteLine($"Unable to find font family: {fontfamily}");
+								LogCallback($"Unable to find font family: {fontfamily}");
 								return;
 						}
 					}
