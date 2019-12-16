@@ -13,38 +13,36 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 namespace BizHawk.Client.Common
 {
 	[Description("Functions related specifically to Nes Cores")]
-	public sealed class NesLuaLibrary : LuaLibraryBase
+	public sealed class NesLuaLibrary : DelegatingLuaLibrary
 	{
 		// TODO:  
 		// perhaps with the new core config system, one could
 		// automatically bring out all of the settings to a lua table, with names.  that
 		// would be completely arbitrary and would remove the whole requirement for this mess
-		public NesLuaLibrary(Lua lua)
-			: base(lua) { }
-
-		[OptionalService]
-		private NES Neshawk { get; set; }
-
-		[OptionalService]
-		private QuickNES Quicknes { get; set; }
-
 		[OptionalService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		private bool NESAvailable => Neshawk != null || Quicknes != null;
-
-		private bool HasMemoryDomains => MemoryDomains != null;
+		public NesLuaLibrary(Lua lua)
+			: base(lua) { }
 
 		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "nes";
 
+		private bool NESAvailable => APIs.Emu.GetSystemId() == "NES";
+
+		private object Settings
+		{
+			get => APIs.Emu.GetSettings();
+			set => APIs.Emu.PutSettings(value);
+		}
+
 		[LuaMethodExample("nes.addgamegenie( \"GXXZZLVI\" );")]
 		[LuaMethod("addgamegenie", "Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
 		public void AddGameGenie(string code)
 		{
-			if (NESAvailable && HasMemoryDomains)
+			if (NESAvailable && MemoryDomains != null)
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
@@ -64,109 +62,57 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("if ( nes.getallowmorethaneightsprites( ) ) then\r\n\tconsole.log( \"Gets the NES setting 'Allow more than 8 sprites per scanline' value\" );\r\nend;")]
 		[LuaMethod("getallowmorethaneightsprites", "Gets the NES setting 'Allow more than 8 sprites per scanline' value")]
-		public bool GetAllowMoreThanEightSprites()
+		public bool GetAllowMoreThanEightSprites() => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return Quicknes.GetSettings().NumSprites != 8;
-			}
-
-			if (Neshawk != null)
-			{
-				return Neshawk.GetSettings().AllowMoreThanEightSprites;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => nhs.AllowMoreThanEightSprites,
+			QuickNES.QuickNESSettings qns => qns.NumSprites != 8,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("local innesget = nes.getbottomscanline( false );")]
 		[LuaMethod("getbottomscanline", "Gets the current value for the bottom scanline value")]
-		public int GetBottomScanline(bool pal = false)
+		public int GetBottomScanline(bool pal = false) => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return Quicknes.GetSettings().ClipTopAndBottom ? 231 : 239;
-			}
-
-			if (Neshawk != null)
-			{
-				return pal
-					? Neshawk.GetSettings().PAL_BottomLine
-					: Neshawk.GetSettings().NTSC_BottomLine;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => pal ? nhs.PAL_BottomLine : nhs.NTSC_BottomLine,
+			QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 231 : 239,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("if ( nes.getclipleftandright( ) ) then\r\n\tconsole.log( \"Gets the current value for the Clip Left and Right sides option\" );\r\nend;")]
 		[LuaMethod("getclipleftandright", "Gets the current value for the Clip Left and Right sides option")]
-		public bool GetClipLeftAndRight()
+		public bool GetClipLeftAndRight() => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return Quicknes.GetSettings().ClipLeftAndRight;
-			}
-
-			if (Neshawk != null)
-			{
-				return Neshawk.GetSettings().ClipLeftAndRight;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => nhs.ClipLeftAndRight,
+			QuickNES.QuickNESSettings qns => qns.ClipLeftAndRight,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("if ( nes.getdispbackground( ) ) then\r\n\tconsole.log( \"Indicates whether or not the bg layer is being displayed\" );\r\nend;")]
 		[LuaMethod("getdispbackground", "Indicates whether or not the bg layer is being displayed")]
-		public bool GetDisplayBackground()
+		public bool GetDisplayBackground() => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return true;
-			}
-
-			if (Neshawk != null)
-			{
-				return Neshawk.GetSettings().DispBackground;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => nhs.DispBackground,
+			QuickNES.QuickNESSettings _ => true,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("if ( nes.getdispsprites( ) ) then\r\n\tconsole.log( \"Indicates whether or not sprites are being displayed\" );\r\nend;")]
 		[LuaMethod("getdispsprites", "Indicates whether or not sprites are being displayed")]
-		public bool GetDisplaySprites()
+		public bool GetDisplaySprites() => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return Quicknes.GetSettings().NumSprites > 0;
-			}
-
-			if (Neshawk != null)
-			{
-				return Neshawk.GetSettings().DispSprites;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => nhs.DispSprites,
+			QuickNES.QuickNESSettings qns => qns.NumSprites > 0,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("local innesget = nes.gettopscanline(false);")]
 		[LuaMethod("gettopscanline", "Gets the current value for the top scanline value")]
-		public int GetTopScanline(bool pal = false)
+		public int GetTopScanline(bool pal = false) => Settings switch
 		{
-			if (Quicknes != null)
-			{
-				return Quicknes.GetSettings().ClipTopAndBottom ? 8 : 0;
-			}
-
-			if (Neshawk != null)
-			{
-				return pal
-					? Neshawk.GetSettings().PAL_TopLine
-					: Neshawk.GetSettings().NTSC_TopLine;
-			}
-
-			throw new InvalidOperationException();
-		}
+			NES.NESSettings nhs => pal ? nhs.PAL_TopLine : nhs.NTSC_TopLine,
+			QuickNES.QuickNESSettings qns => qns.ClipTopAndBottom ? 8 : 0,
+			_ => throw new InvalidOperationException()
+		};
 
 		[LuaMethodExample("nes.removegamegenie( \"GXXZZLVI\" );")]
 		[LuaMethod("removegamegenie", "Removes the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect")]
@@ -184,17 +130,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setallowmorethaneightsprites", "Sets the NES setting 'Allow more than 8 sprites per scanline'")]
 		public void SetAllowMoreThanEightSprites(bool allow)
 		{
-			if (Neshawk != null)
+			switch (Settings)
 			{
-				var s = Neshawk.GetSettings();
-				s.AllowMoreThanEightSprites = allow;
-				Neshawk.PutSettings(s);
-			}
-			else if (Quicknes != null)
-			{
-				var s = Quicknes.GetSettings();
-				s.NumSprites = allow ? 64 : 8;
-				Quicknes.PutSettings(s);
+				case NES.NESSettings nhs:
+					nhs.AllowMoreThanEightSprites = allow;
+					Settings = nhs;
+					break;
+				case QuickNES.QuickNESSettings qns:
+					qns.NumSprites = allow ? 64 : 8;
+					Settings = qns;
+					break;
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -202,17 +149,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setclipleftandright", "Sets the Clip Left and Right sides option")]
 		public void SetClipLeftAndRight(bool leftandright)
 		{
-			if (Neshawk != null)
+			switch (Settings)
 			{
-				var s = Neshawk.GetSettings();
-				s.ClipLeftAndRight = leftandright;
-				Neshawk.PutSettings(s);
-			}
-			else if (Quicknes != null)
-			{
-				var s = Quicknes.GetSettings();
-				s.ClipLeftAndRight = leftandright;
-				Quicknes.PutSettings(s);
+				case NES.NESSettings nhs:
+					nhs.ClipLeftAndRight = leftandright;
+					Settings = nhs;
+					break;
+				case QuickNES.QuickNESSettings qns:
+					qns.ClipLeftAndRight = leftandright;
+					Settings = qns;
+					break;
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -220,11 +168,16 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setdispbackground", "Sets whether or not the background layer will be displayed")]
 		public void SetDisplayBackground(bool show)
 		{
-			if (Neshawk != null)
+			switch (Settings)
 			{
-				var s = Neshawk.GetSettings();
-				s.DispBackground = show;
-				Neshawk.PutSettings(s);
+				case NES.NESSettings nhs:
+					nhs.DispBackground = show;
+					Settings = nhs;
+					break;
+				case QuickNES.QuickNESSettings _:
+					return;
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -232,17 +185,18 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setdispsprites", "Sets whether or not sprites will be displayed")]
 		public void SetDisplaySprites(bool show)
 		{
-			if (Neshawk != null)
+			switch (Settings)
 			{
-				var s = Neshawk.GetSettings();
-				s.DispSprites = show;
-				Neshawk.PutSettings(s);
-			}
-			else if (Quicknes != null)
-			{
-				var s = Quicknes.GetSettings();
-				s.NumSprites = show ? 8 : 0;
-				Quicknes.PutSettings(s);
+				case NES.NESSettings nhs:
+					nhs.DispSprites = show;
+					Settings = nhs;
+					break;
+				case QuickNES.QuickNESSettings qns:
+					qns.NumSprites = show ? 8 : 0;
+					Settings = qns;
+					break;
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -250,40 +204,44 @@ namespace BizHawk.Client.Common
 		[LuaMethod("setscanlines", "sets the top and bottom scanlines to be drawn (same values as in the graphics options dialog). Top must be in the range of 0 to 127, bottom must be between 128 and 239. Not supported in the Quick Nes core")]
 		public void SetScanlines(int top, int bottom, bool pal = false)
 		{
-			if (Neshawk != null)
+			switch (Settings)
 			{
-				if (top > 127)
-				{
-					top = 127;
-				}
-				else if (top < 0)
-				{
-					top = 0;
-				}
+				case NES.NESSettings nhs:
+					if (top > 127)
+					{
+						top = 127;
+					}
+					else if (top < 0)
+					{
+						top = 0;
+					}
 
-				if (bottom > 239)
-				{
-					bottom = 239;
-				}
-				else if (bottom < 128)
-				{
-					bottom = 128;
-				}
+					if (bottom > 239)
+					{
+						bottom = 239;
+					}
+					else if (bottom < 128)
+					{
+						bottom = 128;
+					}
 
-				var s = Neshawk.GetSettings();
+					if (pal)
+					{
+						nhs.PAL_TopLine = top;
+						nhs.PAL_BottomLine = bottom;
+					}
+					else
+					{
+						nhs.NTSC_TopLine = top;
+						nhs.NTSC_BottomLine = bottom;
+					}
 
-				if (pal)
-				{
-					s.PAL_TopLine = top;
-					s.PAL_BottomLine = bottom;
-				}
-				else
-				{
-					s.NTSC_TopLine = top;
-					s.NTSC_BottomLine = bottom;
-				}
-
-				Neshawk.PutSettings(s);
+					Settings = nhs;
+					break;
+				case QuickNES.QuickNESSettings _:
+					return;
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 	}
