@@ -989,6 +989,7 @@
     <Compile Include="Consoles\Nintendo\NDS\MelonDS.cs" />
     <Compile Include="Consoles\Nintendo\NDS\MelonDS_InputPollable.cs" />
     <Compile Include="Consoles\Nintendo\NDS\MelonDS_SaveRam.cs" />
+    <Compile Include="Consoles\Nintendo\NDS\MelonDS_Settable.cs" />
     <Compile Include="Consoles\Nintendo\NDS\MelonDS_SoundProvider.cs" />
     <Compile Include="Consoles\Nintendo\NDS\MelonDS_Statable.cs" />
     <Compile Include="Consoles\Nintendo\NDS\MelonDS_VideoProvider.cs" />
