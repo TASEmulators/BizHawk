@@ -2038,10 +2038,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new TI83PaletteConfig();
-			GlobalWin.OSD.AddMessage(form.ShowDialog() == DialogResult.OK
-				? "Palette settings saved"
-				: "Palette config aborted");
+			if (Emulator is TI83 ti83)
+			{
+				using var form = new TI83PaletteConfig(this, ti83.GetSettings().Clone());
+				GlobalWin.OSD.AddMessage(form.ShowDialog() == DialogResult.OK
+					? "Palette settings saved"
+					: "Palette config aborted");
+			}
 		}
 
 		#endregion
