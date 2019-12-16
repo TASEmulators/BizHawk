@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class PSXControllerConfigNew
+	partial class PSXControllerConfig
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -430,7 +430,7 @@
             this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "PSXControllerConfigNew";
+            this.Name = "PSXControllerConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Controller / Memcard Configuration";
             this.Load += new System.EventHandler(this.PSXControllerConfigNew_Load);

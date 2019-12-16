@@ -29,6 +29,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 using BizHawk.Emulation.Cores.Intellivision;
+using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2161,16 +2162,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PSXControllerConfigNew();
-			form.ShowDialog();
+			if (Emulator is Octoshock psx)
+			{
+				using var form = new PSXControllerConfig(this, psx.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = PSXOptions.DoSettingsDialog(this);
-			if (result == DialogResult.OK)
+			if (Emulator is Octoshock psx)
 			{
-				FrameBufferResized();
+				var result = PSXOptions.DoSettingsDialog(this, psx);
+				if (result == DialogResult.OK)
+				{
+					FrameBufferResized();
+				}
 			}
 		}
 

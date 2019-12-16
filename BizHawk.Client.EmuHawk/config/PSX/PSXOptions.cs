@@ -10,11 +10,17 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PSXOptions : Form
 	{
 		// backups of the labels for string replacing
-		private readonly string lblPixelPro_text, lblMednafen_text, lblTweakedMednafen_text;
+		private readonly string _lblPixelProText, _lblMednafenText, _lblTweakedMednafenText;
 		
-		private PSXOptions(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
+		private PSXOptions(
+			MainForm mainForm,
+			Octoshock.Settings settings,
+			Octoshock.SyncSettings syncSettings,
+			OctoshockDll.eVidStandard vidStandard,
+			Size currentVideoSize)
 		{
 			InitializeComponent();
+			_mainForm = mainForm;
 			_settings = settings;
 			_syncSettings = syncSettings;
 			_previewVideoStandard = vidStandard;
@@ -29,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 				lblPAL.Font = new Font(lblPAL.Font, FontStyle.Bold);
 			}
 
-			lblPixelPro_text = lblPixelPro.Text;
-			lblMednafen_text = lblMednafen.Text;
-			lblTweakedMednafen_text = lblTweakedMednafen.Text;
+			_lblPixelProText = lblPixelPro.Text;
+			_lblMednafenText = lblMednafen.Text;
+			_lblTweakedMednafenText = lblTweakedMednafen.Text;
 
 			rbPixelPro.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.PixelPro;
 			rbDebugMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Debug;
@@ -55,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private Size _previewVideoSize;
+		private readonly MainForm _mainForm;
 		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
 		private readonly Octoshock.Settings _settings;
 		private readonly Octoshock.SyncSettings _syncSettings;
@@ -66,16 +73,15 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
-		public static DialogResult DoSettingsDialog(IWin32Window owner)
+		public static DialogResult DoSettingsDialog(MainForm mainForm, Octoshock psx)
 		{
-			var psx = (Octoshock)Global.Emulator;
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
 			var size = psx.CurrentVideoSize; 
-			using var dlg = new PSXOptions(s, ss, vid, size);
+			using var dlg = new PSXOptions(mainForm, s, ss, vid, size);
 
-			var result = dlg.ShowDialog(owner);
+			var result = dlg.ShowDialog(mainForm);
 			return result;
 		}
 
@@ -116,8 +122,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SyncSettingsFromGui(_settings, _syncSettings);
 			_settings.Validate();
-			GlobalWin.MainForm.PutCoreSettings(_settings);
-			GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+			_mainForm.PutCoreSettings(_settings);
+			_mainForm.PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -145,15 +151,15 @@ namespace BizHawk.Client.EmuHawk
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
 			var ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
+			lblPixelPro.Text = _lblPixelProText.Replace("800x480", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
 			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblMednafen.Text = lblMednafen_text.Replace("320x240", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
+			lblMednafen.Text = _lblMednafenText.Replace("320x240", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
+			lblTweakedMednafen.Text = _lblTweakedMednafenText.Replace("400x300", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 		}
 
 		private void DrawingArea_ValueChanged(object sender, EventArgs e)
