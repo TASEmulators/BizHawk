@@ -137,7 +137,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Rewind config aborted");
 			Close();
 		}
 
@@ -185,7 +184,6 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
 			Global.Config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
-			GlobalWin.OSD.AddMessage("Rewind and State settings saved");
 			Close();
 		}
 

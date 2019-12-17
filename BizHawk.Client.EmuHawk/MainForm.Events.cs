@@ -1025,7 +1025,10 @@ namespace BizHawk.Client.EmuHawk
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new RewindConfig();
-			form.ShowDialog();
+			AddOnScreenMessage(form.ShowDialog().IsOk()
+				? "Rewind and State settings saved"
+				: "Rewind config aborted");
+
 		}
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
