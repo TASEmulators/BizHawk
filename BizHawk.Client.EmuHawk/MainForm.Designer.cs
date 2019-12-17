@@ -542,7 +542,6 @@
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
 			this.MainformMenu.MenuDeactivate += new System.EventHandler(this.MainformMenu_MenuDeactivate);
-			this.MainformMenu.Leave += new System.EventHandler(this.MainformMenu_Leave);
 			// 
 			// FileSubMenu
 			// 
