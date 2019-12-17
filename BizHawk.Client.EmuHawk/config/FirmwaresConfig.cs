@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
         private void tbbOpenFolder_Click(object sender, EventArgs e)
         {
             var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
-			if (OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.Windows && !Directory.Exists(frmWares))
+			if (!Directory.Exists(frmWares))
 				Directory.CreateDirectory(frmWares);
             System.Diagnostics.Process.Start(frmWares);
         }
