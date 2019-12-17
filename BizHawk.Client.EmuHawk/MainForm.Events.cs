@@ -952,8 +952,13 @@ namespace BizHawk.Client.EmuHawk
 			using var controller = new ControllerConfig(Emulator, Global.Config);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
+				AddOnScreenMessage("Controller settings saved");
 				InitControls();
 				InputManager.SyncControls();
+			}
+			else
+			{
+				AddOnScreenMessage("Controller config aborted");
 			}
 		}
 

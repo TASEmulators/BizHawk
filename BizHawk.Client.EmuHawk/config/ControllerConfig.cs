@@ -53,11 +53,6 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);			
 		}
 
-		private ControllerConfig()
-		{
-			InitializeComponent();
-		}
-
 		protected override void OnActivated(EventArgs e)
 		{
 			base.OnActivated(e);
@@ -209,10 +204,12 @@ namespace BizHawk.Client.EmuHawk
 		public ControllerConfig(
 			IEmulator emulator,
 			Config config)
-			: this()
 		{
 			_emulator = emulator;
 			_config = config;
+			
+			InitializeComponent();
+
 			SuspendLayout();
 			LoadPanels(_config);
 
@@ -362,14 +359,12 @@ namespace BizHawk.Client.EmuHawk
 
 			Save();
 
-			GlobalWin.OSD.AddMessage("Controller settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void ButtonCancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Controller config aborted");
 			Close();
 		}
 
