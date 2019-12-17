@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle Skip Lag Frame":
 					Global.Config.SkipLagFrame ^= true;
-					GlobalWin.OSD.AddMessage($"Skip Lag Frames toggled {(Global.Config.SkipLagFrame ? "On" : "Off")}");
+					AddOnScreenMessage($"Skip Lag Frames toggled {(Global.Config.SkipLagFrame ? "On" : "Off")}");
 					break;
 				case "Toggle Key Priority":
 					ToggleKeyPriority();
@@ -351,7 +351,8 @@ namespace BizHawk.Client.EmuHawk
 						{
 							x.Toggle();
 						}
-						GlobalWin.OSD.AddMessage($"Cheats toggled{type}");
+
+						AddOnScreenMessage($"Cheats toggled{type}");
 					}
 
 					break;
@@ -705,22 +706,22 @@ namespace BizHawk.Client.EmuHawk
 
 				// GB
 				case "GB Toggle BG":
-					if (Emulator is Gameboy)
+					if (Emulator is Gameboy gb)
 					{
-						var s = ((Gameboy)Emulator).GetSettings();
+						var s = gb.GetSettings();
 						s.DisplayBG ^= true;
-						((Gameboy)Emulator).PutSettings(s);
-						GlobalWin.OSD.AddMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
+						gb.PutSettings(s);
+						AddOnScreenMessage($"BG toggled {(s.DisplayBG ? "on" : "off")}");
 					}
 
 					break;
 				case "GB Toggle Obj":
-					if (Emulator is Gameboy)
+					if (Emulator is Gameboy gb2)
 					{
-						var s = ((Gameboy)Emulator).GetSettings();
+						var s = gb2.GetSettings();
 						s.DisplayOBJ ^= true;
-						((Gameboy)Emulator).PutSettings(s);
-						GlobalWin.OSD.AddMessage($"OBJ toggled {(s.DisplayBG ? "on" : "off")}");
+						gb2.PutSettings(s);
+						AddOnScreenMessage($"OBJ toggled {(s.DisplayBG ? "on" : "off")}");
 					}
 
 					break;

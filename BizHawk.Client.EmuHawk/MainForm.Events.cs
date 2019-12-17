@@ -1313,7 +1313,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveConfig();
-			GlobalWin.OSD.AddMessage("Saved settings");
+			AddOnScreenMessage("Saved settings");
 		}
 
 		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
@@ -1329,7 +1329,7 @@ namespace BizHawk.Client.EmuHawk
 			if (sfd.ShowHawkDialog().IsOk())
 			{
 				SaveConfig(sfd.FileName);
-				GlobalWin.OSD.AddMessage("Copied settings");
+				AddOnScreenMessage("Copied settings");
 			}
 		}
 
@@ -1338,7 +1338,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
-			GlobalWin.OSD.AddMessage($"Config file loaded: {PathManager.DefaultIniPath}");
+			AddOnScreenMessage($"Config file loaded: {PathManager.DefaultIniPath}");
 		}
 
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
@@ -1356,7 +1356,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
 				InitControls(); // rebind hotkeys
-				GlobalWin.OSD.AddMessage($"Config file loaded: {ofd.FileName}");
+				AddOnScreenMessage($"Config file loaded: {ofd.FileName}");
 			}
 		}
 
@@ -1636,7 +1636,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 			{
 				Global.ClickyVirtualPadController.Click("FDS Eject");
-				GlobalWin.OSD.AddMessage("FDS disk ejected.");
+				AddOnScreenMessage("FDS disk ejected.");
 			}
 		}
 
@@ -1648,7 +1648,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Insert Coin P1");
-					GlobalWin.OSD.AddMessage("P1 Coin Inserted");
+					AddOnScreenMessage("P1 Coin Inserted");
 				}
 			}
 		}
@@ -1661,7 +1661,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Insert Coin P2");
-					GlobalWin.OSD.AddMessage("P2 Coin Inserted");
+					AddOnScreenMessage("P2 Coin Inserted");
 				}
 			}
 		}
@@ -1674,7 +1674,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Service Switch");
-					GlobalWin.OSD.AddMessage("Service Switch Pressed");
+					AddOnScreenMessage("Service Switch Pressed");
 				}
 			}
 		}
@@ -2333,7 +2333,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.IsNull())
 				{
-					GlobalWin.OSD.AddMessage("Plugin settings saved");
+					AddOnScreenMessage("Plugin settings saved");
 				}
 				else
 				{
@@ -2342,7 +2342,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.OSD.AddMessage("Plugin settings aborted");
+				AddOnScreenMessage("Plugin settings aborted");
 			}
 		}
 
@@ -3079,7 +3079,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.MovieSession.Movie.SaveBackup();
-			GlobalWin.OSD.AddMessage("Backup movie saved.");
+			AddOnScreenMessage("Backup movie saved.");
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
@@ -3141,8 +3141,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
 			_stateSlots.SwapBackupSavestate($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{Global.Config.SaveSlot}.State");
-
-			GlobalWin.OSD.AddMessage($"Save slot {Global.Config.SaveSlot} restored.");
+			AddOnScreenMessage($"Save slot {Global.Config.SaveSlot} restored.");
 		}
 
 		private void ClearSramContextMenuItem_Click(object sender, EventArgs e)

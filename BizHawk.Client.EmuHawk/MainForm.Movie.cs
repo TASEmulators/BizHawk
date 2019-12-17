@@ -90,15 +90,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.Movie.Hash != Global.Game.Hash)
 			{
-				GlobalWin.OSD.AddMessage("Warning: Movie hash does not match the ROM");
+				AddOnScreenMessage("Warning: Movie hash does not match the ROM");
 			}
 
-			if (Emulator is NullEmulator)
-			{
-				return false;
-			}
-
-			return true;
+			return !(Emulator is NullEmulator);
 		}
 
 		public void SetMainformMovieInfo()
@@ -137,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.MovieSession.Movie.IsActive)
 				{
 					StartNewMovie(Global.MovieSession.Movie, false);
-					GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
+					AddOnScreenMessage("Replaying movie file in read-only mode");
 				}
 			}
 		}
