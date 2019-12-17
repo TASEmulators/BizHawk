@@ -10,10 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HotkeyConfig : Form
 	{
-		public HotkeyConfig()
-		{
-			InitializeComponent();
+		private readonly Config _config;
 
+		public HotkeyConfig(Config config)
+		{
+			_config = config;
+			InitializeComponent();
 			tabPage1.Focus();
 		}
 
@@ -32,12 +34,12 @@ namespace BizHawk.Client.EmuHawk
 		private void HotkeyConfig_Load(object sender, EventArgs e)
 		{
 			var source = new AutoCompleteStringCollection();
-			source.AddRange(Global.Config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
+			source.AddRange(_config.HotkeyBindings.Select(x => x.DisplayName).ToArray());
 
 			SearchBox.AutoCompleteCustomSource = source;
 			SearchBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
-			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
+			AutoTabCheckBox.Checked = _config.HotkeyConfigAutoTab;
 			DoTabs();
 			DoFocus();
 		}
@@ -49,14 +51,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IDB_CANCEL_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Hotkey config aborted");
 			Close();
 		}
 
 		private void IDB_SAVE_Click(object sender, EventArgs e)
 		{
 			Save();
-			GlobalWin.OSD.AddMessage("Hotkey settings saved");
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -68,11 +68,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Save()
 		{
-			Global.Config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
+			_config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
 
 			foreach (var w in InputWidgets)
 			{
-				var b = Global.Config.HotkeyBindings.First(x => x.DisplayName == w.WidgetName);
+				var b = _config.HotkeyBindings.First(x => x.DisplayName == w.WidgetName);
 				b.Bindings = w.Bindings;
 			}
 		}
@@ -86,12 +86,12 @@ namespace BizHawk.Client.EmuHawk
 			HotkeyTabControl.TabPages.Clear();
 
 			// Buckets
-			var tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct();
+			var tabs = _config.HotkeyBindings.Select(x => x.TabGroup).Distinct();
 
 			foreach (var tab in tabs)
 			{
 				var tb = new TabPage { Name = tab, Text = tab };
-				var bindings = Global.Config.HotkeyBindings.Where(n => n.TabGroup == tab).OrderBy(n => n.Ordinal).ThenBy(n => n.DisplayName);
+				var bindings = _config.HotkeyBindings.Where(n => n.TabGroup == tab).OrderBy(n => n.Ordinal).ThenBy(n => n.DisplayName);
 				int x = UIHelper.ScaleX(6);
 				int y = UIHelper.ScaleY(14);
 				int iwOffsetX = UIHelper.ScaleX(110);
@@ -154,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var w in InputWidgets)
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
+				var b = _config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
 				if (b != null)
 				{
 					w.Bindings = b.DefaultBinding;
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!e.Control && !e.Alt && !e.Shift &&
 				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName, SearchBox.Text, true) == 0);
+				var b = _config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName, SearchBox.Text, true) == 0);
 
 				// Found
 				if (b != null)

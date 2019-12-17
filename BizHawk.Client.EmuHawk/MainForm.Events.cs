@@ -959,11 +959,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			using var hotkeyConfig = new HotkeyConfig();
+			using var hotkeyConfig = new HotkeyConfig(Global.Config);
 			if (hotkeyConfig.ShowDialog() == DialogResult.OK)
 			{
+				AddOnScreenMessage("Hotkey settings saved");
 				InitControls();
 				InputManager.SyncControls();
+			}
+			else
+			{
+				AddOnScreenMessage("Hotkey config aborted");
 			}
 		}
 
