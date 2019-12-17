@@ -3218,8 +3218,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), this,
-					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, ref _dumpaudiosync);
+				aw = VideoWriterChooserForm.DoVideoWriterChooserDlg(
+					VideoWriterInventory.GetAllWriters(),
+					this,
+					Emulator,
+					Global.Config,
+					out _avwriterResizew,
+					out _avwriterResizeh,
+					out _avwriterpad,
+					ref _dumpaudiosync);
 			}
 
 			if (aw == null)

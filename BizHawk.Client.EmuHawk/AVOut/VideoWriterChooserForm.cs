@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,16 +12,18 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class VideoWriterChooserForm : Form
 	{
-		private VideoWriterChooserForm()
+		private readonly int _captureWidth, _captureHeight;
+
+		private VideoWriterChooserForm(MainForm mainForm, IEmulator emulator, Config config)
 		{
 			InitializeComponent();
 
-			_captureWidth = Global.Emulator.CoreComm.NominalWidth;
-			_captureHeight = Global.Emulator.CoreComm.NominalHeight;
+			_captureWidth = emulator.CoreComm.NominalWidth;
+			_captureHeight = emulator.CoreComm.NominalHeight;
 
-			if (Global.Config.AVI_CaptureOSD)
+			if (config.AVI_CaptureOSD)
 			{
-				using var bb = GlobalWin.MainForm.CaptureOSD();
+				using var bb = mainForm.CaptureOSD();
 				_captureWidth = bb.Width;
 				_captureHeight = bb.Height;
 			}
@@ -37,17 +40,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly int _captureWidth, _captureHeight;
-
 		/// <summary>
 		/// chose an IVideoWriter
 		/// </summary>
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
+		/// <param name="emulator">The current emulator</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChooserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizeW, out int resizeH, out bool pad, ref bool audioSync)
+		public static IVideoWriter DoVideoWriterChooserDlg(
+			IEnumerable<VideoWriterInfo> list,
+			MainForm owner,
+			IEmulator emulator,
+			Config config,
+			out int resizeW,
+			out int resizeH,
+			out bool pad,
+			ref bool audioSync)
 		{
-			var dlg = new VideoWriterChooserForm
+			var dlg = new VideoWriterChooserForm(owner, emulator, config)
 			{
 				labelDescriptionBody = { Text = "" }
 			};
@@ -58,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var vw in list)
 			{
 				dlg.listBox1.Items.Add(vw);
-				if (vw.Attribs.ShortName == Global.Config.VideoWriter)
+				if (vw.Attribs.ShortName == config.VideoWriter)
 				{
 					idxSelect = idx;
 				}
@@ -83,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var vwi = (VideoWriterInfo)dlg.listBox1.SelectedItem;
 				ret = vwi.Create();
-				Global.Config.VideoWriter = vwi.Attribs.ShortName;
+				config.VideoWriter = vwi.Attribs.ShortName;
 			}
 			else
 			{
