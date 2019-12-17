@@ -300,12 +300,6 @@
     <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
       <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\DisplayConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\DisplayConfig.Designer.cs">
-      <DependentUpon>DisplayConfig.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\GB\BmpView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1333,9 +1327,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\DisplayConfig.resx">
-      <DependentUpon>DisplayConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\DisplayConfigLite.resx">
       <DependentUpon>DisplayConfigLite.cs</DependentUpon>
