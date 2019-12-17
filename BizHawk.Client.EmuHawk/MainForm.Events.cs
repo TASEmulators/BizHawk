@@ -1040,7 +1040,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ProfileConfig();
+			using var form = new ProfileConfig(this, Emulator, Global.Config);
 			if (form.ShowDialog() == DialogResult.OK)
 			{
 				GlobalWin.OSD.AddMessage("Profile settings saved");
@@ -3246,7 +3246,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// We do not check if the user is actually setting a profile here.
 			// This is intentional.
-			using var profileForm = new ProfileConfig();
+			using var profileForm = new ProfileConfig(this, Emulator, Global.Config);
 			profileForm.ShowDialog();
 			Global.Config.FirstBoot = false;
 			ProfileFirstBootLabel.Visible = false;

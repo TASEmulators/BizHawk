@@ -15,8 +15,18 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ProfileConfig : Form
 	{
-		public ProfileConfig()
+		private readonly MainForm _mainForm;
+		private readonly IEmulator _emulator;
+		private readonly Config _config;
+
+		public ProfileConfig(
+			MainForm mainForm,
+			IEmulator emulator,
+			Config config)
 		{
+			_mainForm = mainForm;
+			_emulator = emulator;
+			_config = config;
 			InitializeComponent();
 		}
 
@@ -27,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 				ProfileSelectComboBox.Items.Remove("Custom Profile");
 			}
 
-			switch (Global.Config.SelectedProfile)
+			switch (_config.SelectedProfile)
 			{
 				default:
 				case Config.ClientProfile.Custom: // For now
@@ -45,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			AutoCheckForUpdates.Checked = Global.Config.Update_AutoCheckEnabled;
+			AutoCheckForUpdates.Checked = _config.Update_AutoCheckEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -55,42 +65,42 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case "Custom Profile": // For now
 				case "Casual Gaming":
-					Global.Config.SelectedProfile = Config.ClientProfile.Casual;
+					_config.SelectedProfile = Config.ClientProfile.Casual;
 					break;
 				case "Longplays":
-					Global.Config.SelectedProfile = Config.ClientProfile.Longplay;
+					_config.SelectedProfile = Config.ClientProfile.Longplay;
 					break;
 				case "Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.Tas;
+					_config.SelectedProfile = Config.ClientProfile.Tas;
 					break;
 				case "N64 Tool-assisted Speedruns":
-					Global.Config.SelectedProfile = Config.ClientProfile.N64Tas;
+					_config.SelectedProfile = Config.ClientProfile.N64Tas;
 					break;
 			}
 
-			if (Global.Config.SelectedProfile == Config.ClientProfile.Casual)
+			if (_config.SelectedProfile == Config.ClientProfile.Casual)
 			{
 				DisplayProfileSettingBoxes(false);
-				Global.Config.NoLowResLargeScreenshotWithStates = false;
-				Global.Config.SaveScreenshotWithStates = false;
-				Global.Config.AllowUD_LR = false;
-				Global.Config.BackupSavestates = false;
+				_config.NoLowResLargeScreenshotWithStates = false;
+				_config.SaveScreenshotWithStates = false;
+				_config.AllowUD_LR = false;
+				_config.BackupSavestates = false;
 
-				Global.Config.SaveStateCompressionLevelNormal = 0;
-				Global.Config.RewindEnabledLarge = false;
-				Global.Config.RewindEnabledMedium = false;
-				Global.Config.RewindEnabledSmall = true;
-				Global.Config.SkipLagFrame = false;
+				_config.SaveStateCompressionLevelNormal = 0;
+				_config.RewindEnabledLarge = false;
+				_config.RewindEnabledMedium = false;
+				_config.RewindEnabledSmall = true;
+				_config.SkipLagFrame = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
 				n64Settings.Core = N64SyncSettings.CoreType.Interpret;
-				Global.Config.N64UseCircularAnalogConstraint = true;
+				_config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				Global.Config.SNES_InSnes9x = true;
+				_config.SNES_InSnes9x = true;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -115,30 +125,30 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				Global.Config.NES_InQuickNES = true;
+				_config.NES_InQuickNES = true;
 			}
-			else if (Global.Config.SelectedProfile == Config.ClientProfile.Longplay)
+			else if (_config.SelectedProfile == Config.ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
-				Global.Config.NoLowResLargeScreenshotWithStates = false;
-				Global.Config.SaveScreenshotWithStates = false;
-				Global.Config.AllowUD_LR = false;
-				Global.Config.BackupSavestates = false;
-				Global.Config.SkipLagFrame = false;
-				Global.Config.SaveStateCompressionLevelNormal = 5;
+				_config.NoLowResLargeScreenshotWithStates = false;
+				_config.SaveScreenshotWithStates = false;
+				_config.AllowUD_LR = false;
+				_config.BackupSavestates = false;
+				_config.SkipLagFrame = false;
+				_config.SaveStateCompressionLevelNormal = 5;
 
-				Global.Config.RewindEnabledLarge = false;
-				Global.Config.RewindEnabledMedium = false;
-				Global.Config.RewindEnabledSmall = true;
+				_config.RewindEnabledLarge = false;
+				_config.RewindEnabledMedium = false;
+				_config.RewindEnabledSmall = true;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				Global.Config.N64UseCircularAnalogConstraint = true;
+				_config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				Global.Config.SNES_InSnes9x = false;
+				_config.SNES_InSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -163,33 +173,33 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				Global.Config.NES_InQuickNES = true;
+				_config.NES_InQuickNES = true;
 			}
-			else if (Global.Config.SelectedProfile == Config.ClientProfile.Tas)
+			else if (_config.SelectedProfile == Config.ClientProfile.Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
 				// General
-				Global.Config.NoLowResLargeScreenshotWithStates = false;
-				Global.Config.SaveScreenshotWithStates = true;
-				Global.Config.AllowUD_LR = true;
-				Global.Config.BackupSavestates = true;
-				Global.Config.SkipLagFrame = false;
-				Global.Config.SaveStateCompressionLevelNormal = 5;
+				_config.NoLowResLargeScreenshotWithStates = false;
+				_config.SaveScreenshotWithStates = true;
+				_config.AllowUD_LR = true;
+				_config.BackupSavestates = true;
+				_config.SkipLagFrame = false;
+				_config.SaveStateCompressionLevelNormal = 5;
 
 				// Rewind
-				Global.Config.RewindEnabledLarge = false;
-				Global.Config.RewindEnabledMedium = false;
-				Global.Config.RewindEnabledSmall = false;
+				_config.RewindEnabledLarge = false;
+				_config.RewindEnabledMedium = false;
+				_config.RewindEnabledSmall = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				Global.Config.N64UseCircularAnalogConstraint = false;
+				_config.N64UseCircularAnalogConstraint = false;
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				Global.Config.SNES_InSnes9x = false;
+				_config.SNES_InSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -214,34 +224,34 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				Global.Config.NES_InQuickNES = true;
+				_config.NES_InQuickNES = true;
 			}
-			else if (Global.Config.SelectedProfile == Config.ClientProfile.N64Tas)
+			else if (_config.SelectedProfile == Config.ClientProfile.N64Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
 				// General
-				Global.Config.NoLowResLargeScreenshotWithStates = false;
-				Global.Config.SaveScreenshotWithStates = true;
-				Global.Config.AllowUD_LR = true;
-				Global.Config.BackupSavestates = false;
-				Global.Config.SkipLagFrame = true;
-				Global.Config.SaveStateCompressionLevelNormal = 0;
+				_config.NoLowResLargeScreenshotWithStates = false;
+				_config.SaveScreenshotWithStates = true;
+				_config.AllowUD_LR = true;
+				_config.BackupSavestates = false;
+				_config.SkipLagFrame = true;
+				_config.SaveStateCompressionLevelNormal = 0;
 
 				// Rewind
-				Global.Config.RewindEnabledLarge = false;
-				Global.Config.RewindEnabledMedium = false;
-				Global.Config.RewindEnabledSmall = false;
+				_config.RewindEnabledLarge = false;
+				_config.RewindEnabledMedium = false;
+				_config.RewindEnabledSmall = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
 				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				Global.Config.N64UseCircularAnalogConstraint = false;
+				_config.N64UseCircularAnalogConstraint = false;
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				Global.Config.SNES_InSnes9x = false;
+				_config.SNES_InSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -266,19 +276,19 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				Global.Config.NES_InQuickNES = true;
+				_config.NES_InQuickNES = true;
 			}
-			else if (Global.Config.SelectedProfile == Config.ClientProfile.Custom)
+			else if (_config.SelectedProfile == Config.ClientProfile.Custom)
 			{
 				// Disabled for now
 				////DisplayProfileSettingBoxes(true);
 			}
 
-			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
-			Global.Config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
-			if (Global.Config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
+			bool oldUpdateAutoCheckEnabled = _config.Update_AutoCheckEnabled;
+			_config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
+			if (_config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
 			{
-				if (!Global.Config.Update_AutoCheckEnabled)
+				if (!_config.Update_AutoCheckEnabled)
 				{
 					UpdateChecker.ResetHistory();
 				}
@@ -334,33 +344,33 @@ namespace BizHawk.Client.EmuHawk
 			ProfileDialogHelpTexBox.Text = "All Up+Down or Left+Right: \r\n * Useful for TASing \r\n * Unchecked for Casual Gaming \r\n * Unknown for longplays";
 		}
 
-		private static TSetting GetSyncSettings<TEmulator, TSetting>()
+		private TSetting GetSyncSettings<TEmulator, TSetting>()
 			where TSetting : class, new()
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
 			object fromCore = null;
-			var settable = new SettingsAdapter(Global.Emulator);
+			var settable = new SettingsAdapter(_emulator);
 			if (settable.HasSyncSettings)
 			{
 				fromCore = settable.GetSyncSettings();
 			}
 
 			return fromCore as TSetting
-				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
+				?? _config.GetCoreSyncSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
 		}
 
-		private static void PutSyncSettings<TEmulator>(object o)
+		private void PutSyncSettings<TEmulator>(object o)
 			where TEmulator : IEmulator
 		{
-			if (Global.Emulator is TEmulator)
+			if (_emulator is TEmulator)
 			{
-				GlobalWin.MainForm.PutCoreSyncSettings(o);
+				_mainForm.PutCoreSyncSettings(o);
 			}
 			else
 			{
-				Global.Config.PutCoreSyncSettings<TEmulator>(o);
+				_config.PutCoreSyncSettings<TEmulator>(o);
 			}
 		}
 	}
