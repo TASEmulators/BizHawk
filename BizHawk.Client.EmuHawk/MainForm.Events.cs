@@ -949,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
-			using var controller = new ControllerConfig(Emulator.ControllerDefinition);
+			using var controller = new ControllerConfig(Emulator, Global.Config);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
