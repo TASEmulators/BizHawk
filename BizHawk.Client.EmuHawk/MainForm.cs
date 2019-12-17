@@ -980,40 +980,32 @@ namespace BizHawk.Client.EmuHawk
 
 		public byte[] CurrentFrameBuffer(bool captureOSD)
 		{
-			using (var bb = captureOSD ? CaptureOSD() : MakeScreenshotImage())
-			{
-				using (var img = bb.ToSysdrawingBitmap())
-				{
-					ImageConverter converter = new ImageConverter();
-					return (byte[])converter.ConvertTo(img, typeof(byte[]));
-				}
-			}
+			using var bb = captureOSD ? CaptureOSD() : MakeScreenshotImage();
+			using var img = bb.ToSysdrawingBitmap();
+			ImageConverter converter = new ImageConverter();
+			return (byte[])converter.ConvertTo(img, typeof(byte[]));
 		}
 
 		public void TakeScreenshotToClipboard()
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using (var img = bb.ToSysdrawingBitmap())
-				{
-					Clipboard.SetImage(img);
-				}
+				using var img = bb.ToSysdrawingBitmap();
+				Clipboard.SetImage(img);
 			}
 
-			GlobalWin.OSD.AddMessage("Screenshot (raw) saved to clipboard.");
+			AddOnScreenMessage("Screenshot (raw) saved to clipboard.");
 		}
 
 		private void TakeScreenshotClientToClipboard()
 		{
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, Global.Config.Screenshot_CaptureOSD))
 			{
-				using (var img = bb.ToSysdrawingBitmap())
-				{
-					Clipboard.SetImage(img);
-				}
+				using var img = bb.ToSysdrawingBitmap();
+				Clipboard.SetImage(img);
 			}
 
-			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+			AddOnScreenMessage("Screenshot (client) saved to clipboard.");
 		}
 
 		public void TakeScreenshot()
@@ -1048,17 +1040,15 @@ namespace BizHawk.Client.EmuHawk
 
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using (var img = bb.ToSysdrawingBitmap())
-				{
-					img.Save(fi.FullName, ImageFormat.Png);
-				}
+				using var img = bb.ToSysdrawingBitmap();
+				img.Save(fi.FullName, ImageFormat.Png);
 			}
 
 			/*
 			using (var fs = new FileStream($"{path}_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
 				QuickBmpFile.Save(Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
 			*/
-			GlobalWin.OSD.AddMessage($"{fi.Name} saved.");
+			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
 		public void FrameBufferResized()
@@ -1262,12 +1252,12 @@ namespace BizHawk.Client.EmuHawk
 			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
 			string msg = $"{xtype}{ttype} ";
 
-			GlobalWin.OSD.AddMessage(msg);
+			AddOnScreenMessage(msg);
 		}
 
 		public void FrameSkipMessage()
 		{
-			GlobalWin.OSD.AddMessage($"Frameskipping set to {Global.Config.FrameSkip}");
+			AddOnScreenMessage($"Frameskipping set to {Global.Config.FrameSkip}");
 		}
 
 		public void UpdateCheatStatus()
@@ -1342,7 +1332,7 @@ namespace BizHawk.Client.EmuHawk
 				((Snes9x)Emulator).PutSettings(s);
 			}
 
-			GlobalWin.OSD.AddMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
+			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
 		}
 
 		private void SNES_ToggleObj(int layer)
@@ -1378,11 +1368,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				((LibsnesCore)Emulator).PutSettings(s);
-				GlobalWin.OSD.AddMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
+				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
-			else if (Emulator is Snes9x)
+			else if (Emulator is Snes9x snes9X)
 			{
-				var s = ((Snes9x)Emulator).GetSettings();
+				var s = snes9X.GetSettings();
 				switch (layer)
 				{
 					case 1:
@@ -1399,8 +1389,8 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				((Snes9x)Emulator).PutSettings(s);
-				GlobalWin.OSD.AddMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
+				snes9X.PutSettings(s);
+				AddOnScreenMessage($"Sprite {layer} Layer {(result ? "On" : "Off")}");
 			}
 		}
 
@@ -1568,7 +1558,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearAutohold()
 		{
 			ClearHolds();
-			GlobalWin.OSD.AddMessage("Autohold keys cleared");
+			AddOnScreenMessage("Autohold keys cleared");
 		}
 
 		private static void UpdateToolsLoadstate()
@@ -1663,7 +1653,7 @@ namespace BizHawk.Client.EmuHawk
 						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Global.Game));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
-							GlobalWin.OSD.AddMessage("AutoSaveRAM is newer than last saved SaveRAM");
+							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
 						}
 					}
 
@@ -1700,7 +1690,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (IOException)
 				{
-					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
+					AddOnScreenMessage("An error occurred while loading Sram");
 				}
 			}
 		}
@@ -1732,7 +1722,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch
 					{
-						GlobalWin.OSD.AddMessage($"Unable to flush SaveRAM to: {newFile.Directory}");
+						AddOnScreenMessage($"Unable to flush SaveRAM to: {newFile.Directory}");
 						return false;
 					}
 				}
@@ -2072,14 +2062,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SpeedPercentAlternate = value;
 			SyncThrottle();
-			GlobalWin.OSD.AddMessage($"Alternate Speed: {value}%");
+			AddOnScreenMessage($"Alternate Speed: {value}%");
 		}
 
 		private void SetSpeedPercent(int value)
 		{
 			Global.Config.SpeedPercent = value;
 			SyncThrottle();
-			GlobalWin.OSD.AddMessage($"Speed: {value}%");
+			AddOnScreenMessage($"Speed: {value}%");
 		}
 
 		private void Shutdown()
@@ -2126,7 +2116,7 @@ namespace BizHawk.Client.EmuHawk
 			int slot = Global.Config.SaveSlot;
 			string emptyPart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
 			string message = $"Slot {slot}{emptyPart} selected.";
-			GlobalWin.OSD.AddMessage(message);
+			AddOnScreenMessage(message);
 		}
 
 		private void Render()
@@ -2374,7 +2364,7 @@ namespace BizHawk.Client.EmuHawk
 			var settable = new SettingsAdapter(Emulator);
 			if (Global.MovieSession.Movie.IsActive)
 			{
-				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
+				AddOnScreenMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
 			else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
@@ -2442,7 +2432,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.StartSound();
 		}
 
-		private static void VolumeUp()
+		private void VolumeUp()
 		{
 			Global.Config.SoundVolume += 10;
 			if (Global.Config.SoundVolume > 100)
@@ -2450,10 +2440,10 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 100;
 			}
 
-			GlobalWin.OSD.AddMessage($"Volume {Global.Config.SoundVolume}");
+			AddOnScreenMessage($"Volume {Global.Config.SoundVolume}");
 		}
 
-		private static void VolumeDown()
+		private void VolumeDown()
 		{
 			Global.Config.SoundVolume -= 10;
 			if (Global.Config.SoundVolume < 0)
@@ -2461,7 +2451,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 0;
 			}
 
-			GlobalWin.OSD.AddMessage($"Volume {Global.Config.SoundVolume}");
+			AddOnScreenMessage($"Volume {Global.Config.SoundVolume}");
 		}
 
 		private void SoftReset()
@@ -2472,7 +2462,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Reset");
-					GlobalWin.OSD.AddMessage("Reset button pressed.");
+					AddOnScreenMessage("Reset button pressed.");
 				}
 			}
 		}
@@ -2485,7 +2475,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
 					Global.ClickyVirtualPadController.Click("Power");
-					GlobalWin.OSD.AddMessage("Power button pressed.");
+					AddOnScreenMessage("Power button pressed.");
 				}
 			}
 		}
@@ -2576,7 +2566,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
 
@@ -2603,7 +2593,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
+			AddOnScreenMessage($"Screensize set to {Global.Config.TargetZoomFactors[Emulator.SystemId]}x");
 			FrameBufferResized();
 		}
 
@@ -2613,7 +2603,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.ClockThrottle)
 			{
-				GlobalWin.OSD.AddMessage("Unable to change speed, please switch to clock throttle");
+				AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
 				return;
 			}
 
@@ -2635,7 +2625,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.ClockThrottle)
 			{
-				GlobalWin.OSD.AddMessage("Unable to change speed, please switch to clock throttle");
+				AddOnScreenMessage("Unable to change speed, please switch to clock throttle");
 				return;
 			}
 
@@ -2653,12 +2643,12 @@ namespace BizHawk.Client.EmuHawk
 			SetSpeedPercent(newp);
 		}
 
-		private static void SaveMovie()
+		private void SaveMovie()
 		{
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				Global.MovieSession.Movie.Save();
-				GlobalWin.OSD.AddMessage($"{Global.MovieSession.Movie.Filename} saved.");
+				AddOnScreenMessage($"{Global.MovieSession.Movie.Filename} saved.");
 			}
 		}
 
@@ -2730,21 +2720,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void ToggleModePokeMode()
+		private void ToggleModePokeMode()
 		{
 			Global.Config.MoviePlaybackPokeMode ^= true;
-			GlobalWin.OSD.AddMessage($"Movie Poke mode {(Global.Config.MoviePlaybackPokeMode ? "enabled" : "disabled")}");
+			AddOnScreenMessage($"Movie Poke mode {(Global.Config.MoviePlaybackPokeMode ? "enabled" : "disabled")}");
 		}
 
-		private static void ToggleBackgroundInput()
+		private void ToggleBackgroundInput()
 		{
 			Global.Config.AcceptBackgroundInput ^= true;
-			GlobalWin.OSD.AddMessage($"Background Input {(Global.Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
+			AddOnScreenMessage($"Background Input {(Global.Config.AcceptBackgroundInput ? "enabled" : "disabled")}");
 		}
 
-		private static void VsyncMessage()
+		private void VsyncMessage()
 		{
-			GlobalWin.OSD.AddMessage($"Display Vsync set to {(Global.Config.VSync ? "on" : "off")}");
+			AddOnScreenMessage($"Display Vsync set to {(Global.Config.VSync ? "on" : "off")}");
 		}
 
 		private static bool StateErrorAskUser(string title, string message)
@@ -2767,7 +2757,7 @@ namespace BizHawk.Client.EmuHawk
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 					{
 						Global.ClickyVirtualPadController.Click(button);
-						GlobalWin.OSD.AddMessage(msg);
+						AddOnScreenMessage(msg);
 					}
 				}
 			});
@@ -2845,13 +2835,13 @@ namespace BizHawk.Client.EmuHawk
 			switch (Global.Config.Input_Hotkey_OverrideOptions)
 			{
 				case 0:
-					GlobalWin.OSD.AddMessage("Key priority set to Both Hotkey and Input");
+					AddOnScreenMessage("Key priority set to Both Hotkey and Input");
 					break;
 				case 1:
-					GlobalWin.OSD.AddMessage("Key priority set to Input over Hotkey");
+					AddOnScreenMessage("Key priority set to Input over Hotkey");
 					break;
 				case 2:
-					GlobalWin.OSD.AddMessage("Key priority set to Input");
+					AddOnScreenMessage("Key priority set to Input");
 					break;
 			}
 		}
@@ -3231,7 +3221,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (aw == null)
 			{
-				GlobalWin.OSD.AddMessage(
+				AddOnScreenMessage(
 					unattended ? $"Couldn't start video writer \"{videoWriterName}\"" : "A/V capture canceled.");
 
 				return;
@@ -3280,7 +3270,7 @@ namespace BizHawk.Client.EmuHawk
 					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
-						GlobalWin.OSD.AddMessage("A/V capture canceled.");
+						AddOnScreenMessage("A/V capture canceled.");
 						aw.Dispose();
 						return;
 					}
@@ -3341,14 +3331,14 @@ namespace BizHawk.Client.EmuHawk
 
 				// commit the avi writing last, in case there were any errors earlier
 				_currAviWriter = aw;
-				GlobalWin.OSD.AddMessage("A/V capture started");
+				AddOnScreenMessage("A/V capture started");
 				AVIStatusLabel.Image = Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "A/V capture in progress";
 				AVIStatusLabel.Visible = true;
 			}
 			catch
 			{
-				GlobalWin.OSD.AddMessage("A/V capture failed!");
+				AddOnScreenMessage("A/V capture failed!");
 				aw.Dispose();
 				throw;
 			}
@@ -3386,7 +3376,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_currAviWriter.Dispose();
 			_currAviWriter = null;
-			GlobalWin.OSD.AddMessage("A/V capture aborted");
+			AddOnScreenMessage("A/V capture aborted");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -3407,7 +3397,7 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter.CloseFile();
 			_currAviWriter.Dispose();
 			_currAviWriter = null;
-			GlobalWin.OSD.AddMessage("A/V capture stopped");
+			AddOnScreenMessage("A/V capture stopped");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
@@ -3579,7 +3569,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NotifyCoreComm(string message)
 		{
-			GlobalWin.OSD.AddMessage(message);
+			AddOnScreenMessage(message);
 		}
 
 		private string ChoosePlatformForRom(RomGame rom)
@@ -3819,7 +3809,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else if (Global.Config.AutosaveSaveRAM && File.Exists(PathManager.AutoSaveRamPath(loader.Game)))
 						{
-							GlobalWin.OSD.AddMessage("AutoSaveRAM found, but SaveRAM was not saved");
+							AddOnScreenMessage("AutoSaveRAM found, but SaveRAM was not saved");
 						}
 					}
 
@@ -3831,7 +3821,7 @@ namespace BizHawk.Client.EmuHawk
 						Global.CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
 						if (Global.CheatList.AttemptToLoadCheatFile())
 						{
-							GlobalWin.OSD.AddMessage("Cheats file loaded");
+							AddOnScreenMessage("Cheats file loaded");
 						}
 						else if (Global.CheatList.Any())
 						{
@@ -3934,7 +3924,7 @@ namespace BizHawk.Client.EmuHawk
 				if (File.Exists(path))
 				{
 					File.Delete(path);
-					GlobalWin.OSD.AddMessage("SRAM cleared.");
+					AddOnScreenMessage("SRAM cleared.");
 				}
 			}
 			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
@@ -4016,10 +4006,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.Warnings.Any())
 			{
-				GlobalWin.OSD.AddMessage(result.Warnings.First()); // For now, just show the first warning
+				AddOnScreenMessage(result.Warnings.First()); // For now, just show the first warning
 			}
 
-			GlobalWin.OSD.AddMessage($"{Path.GetFileName(fn)} imported as {result.Movie.Filename}");
+			AddOnScreenMessage($"{Path.GetFileName(fn)} imported as {result.Movie.Filename}");
 
 			if (start)
 			{
@@ -4031,7 +4021,7 @@ namespace BizHawk.Client.EmuHawk
 		public void EnableRewind(bool enabled)
 		{
 			Global.Rewinder.SuspendRewind = !enabled;
-			GlobalWin.OSD.AddMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
+			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 
 		public void ClearRewindData()
@@ -4111,12 +4101,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!suppressOSD)
 				{
-					GlobalWin.OSD.AddMessage($"Loaded state: {userFriendlyStateName}");
+					AddOnScreenMessage($"Loaded state: {userFriendlyStateName}");
 				}
 			}
 			else
 			{
-				GlobalWin.OSD.AddMessage("Loadstate error!");
+				AddOnScreenMessage("Loadstate error!");
 			}
 
 			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
@@ -4144,7 +4134,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = $"{PathManager.SaveStatePrefix(Global.Game)}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
-				GlobalWin.OSD.AddMessage($"Unable to load {quickSlotName}.State");
+				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
 
 				return;
 			}
@@ -4173,12 +4163,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!suppressOSD)
 				{
-					GlobalWin.OSD.AddMessage($"Saved state: {userFriendlyStateName}");
+					AddOnScreenMessage($"Saved state: {userFriendlyStateName}");
 				}
 			}
 			catch (IOException)
 			{
-				GlobalWin.OSD.AddMessage($"Unable to save state {path}");
+				AddOnScreenMessage($"Unable to save state {path}");
 			}
 
 			if (!fromLua)
@@ -4404,11 +4394,11 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.MovieSession.Movie.IsActive)
 				{
 					Global.MovieSession.ReadOnly ^= true;
-					GlobalWin.OSD.AddMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+					AddOnScreenMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
 				}
 				else
 				{
-					GlobalWin.OSD.AddMessage("No movie active");
+					AddOnScreenMessage("No movie active");
 				}
 			}
 		}
