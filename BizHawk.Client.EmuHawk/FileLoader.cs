@@ -63,12 +63,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadLegacyMovie(string filename, string archive = null)
 		{
-			if (Global.Emulator.IsNull())
+			if (Emulator.IsNull())
 			{
 				OpenRom();
 			}
 
-			if (Global.Emulator.IsNull())
+			if (Emulator.IsNull())
 			{
 				return;
 			}
@@ -97,12 +97,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadMovie(string filename, string archive = null)
 		{
-			if (Global.Emulator.IsNull())
+			if (Emulator.IsNull())
 			{
 				OpenRom();
 			}
 
-			if (Global.Emulator.IsNull())
+			if (Emulator.IsNull())
 			{
 				return;
 			}
