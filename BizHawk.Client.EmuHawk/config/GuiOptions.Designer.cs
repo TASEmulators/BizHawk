@@ -385,7 +385,7 @@
             this.AutosaveSRAMradioButton3.TabIndex = 4;
             this.AutosaveSRAMradioButton3.TabStop = true;
             this.AutosaveSRAMradioButton3.UseVisualStyleBackColor = true;
-            this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMradioButton3_CheckedChanged);
+            this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMRadioButton3_CheckedChanged);
             // 
             // AutosaveSRAMCheckbox
             // 

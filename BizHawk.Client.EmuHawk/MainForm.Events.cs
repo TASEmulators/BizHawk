@@ -1029,7 +1029,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new EmuHawkOptions();
+			using var form = new EmuHawkOptions(this, Global.Config);
 			form.ShowDialog();
 		}
 

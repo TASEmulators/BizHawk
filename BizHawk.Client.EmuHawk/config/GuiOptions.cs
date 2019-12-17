@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class EmuHawkOptions : Form
 	{
+		private readonly MainForm _mainForm;
+		private readonly Config _config;
+
+		public EmuHawkOptions(MainForm mainForm, Config config)
+		{
+			_mainForm = mainForm;
+			_config = config;
+			InitializeComponent();
+		}
+
 		public int AutosaveSaveRAMSeconds {
 			get {
 				if (AutosaveSRAMradioButton1.Checked)
@@ -35,36 +44,31 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public EmuHawkOptions()
-		{
-			InitializeComponent();
-		}
-
 		private void GuiOptions_Load(object sender, EventArgs e)
 		{
-			StartFullScreenCheckbox.Checked = Global.Config.StartFullscreen;
-			StartPausedCheckbox.Checked = Global.Config.StartPaused;
-			PauseWhenMenuActivatedCheckbox.Checked = Global.Config.PauseWhenMenuActivated;
-			EnableContextMenuCheckbox.Checked = Global.Config.ShowContextMenu;
-			SaveWindowPositionCheckbox.Checked = Global.Config.SaveWindowPosition;
-			RunInBackgroundCheckbox.Checked = Global.Config.RunInBackground;
-			AcceptBackgroundInputCheckbox.Checked = Global.Config.AcceptBackgroundInput;
-			AcceptBackgroundInputControllerOnlyCheckBox.Checked = Global.Config.AcceptBackgroundInputControllerOnly;
-			HandleAlternateKeyboardLayoutsCheckBox.Checked = Global.Config.HandleAlternateKeyboardLayouts;
-			NeverAskSaveCheckbox.Checked = Global.Config.SuppressAskSave;
-			SingleInstanceModeCheckbox.Checked = Global.Config.SingleInstanceMode;
+			StartFullScreenCheckbox.Checked = _config.StartFullscreen;
+			StartPausedCheckbox.Checked = _config.StartPaused;
+			PauseWhenMenuActivatedCheckbox.Checked = _config.PauseWhenMenuActivated;
+			EnableContextMenuCheckbox.Checked = _config.ShowContextMenu;
+			SaveWindowPositionCheckbox.Checked = _config.SaveWindowPosition;
+			RunInBackgroundCheckbox.Checked = _config.RunInBackground;
+			AcceptBackgroundInputCheckbox.Checked = _config.AcceptBackgroundInput;
+			AcceptBackgroundInputControllerOnlyCheckBox.Checked = _config.AcceptBackgroundInputControllerOnly;
+			HandleAlternateKeyboardLayoutsCheckBox.Checked = _config.HandleAlternateKeyboardLayouts;
+			NeverAskSaveCheckbox.Checked = _config.SuppressAskSave;
+			SingleInstanceModeCheckbox.Checked = _config.SingleInstanceMode;
 
-			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
-			AutosaveSRAMCheckbox.Checked = Global.Config.AutosaveSaveRAM;
+			BackupSRamCheckbox.Checked = _config.BackupSaveram;
+			AutosaveSRAMCheckbox.Checked = _config.AutosaveSaveRAM;
 			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
-			AutosaveSaveRAMSeconds = Global.Config.FlushSaveRamFrames / 60;
-			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
-			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
-			LuaDuringTurboCheckbox.Checked = Global.Config.RunLuaDuringTurbo;
-			cbMoviesOnDisk.Checked = Global.Config.MoviesOnDisk;
-			cbMoviesInAWE.Checked = Global.Config.MoviesInAWE;
+			AutosaveSaveRAMSeconds = _config.FlushSaveRamFrames / 60;
+			FrameAdvSkipLagCheckbox.Checked = _config.SkipLagFrame;
+			LogWindowAsConsoleCheckbox.Checked = _config.WIN32_CONSOLE;
+			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
+			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
+			cbMoviesInAWE.Checked = _config.MoviesInAWE;
 
-			switch (Global.Config.LuaEngine)
+			switch (_config.LuaEngine)
 			{
 				case Config.ELuaEngine.LuaPlusLuaInterface:
 					LuaInterfaceRadio.Checked = true;
@@ -87,44 +91,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			Global.Config.StartFullscreen = StartFullScreenCheckbox.Checked;
-			Global.Config.StartPaused = StartPausedCheckbox.Checked;
-			Global.Config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
-			Global.Config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
-			Global.Config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
-			Global.Config.RunInBackground = RunInBackgroundCheckbox.Checked;
-			Global.Config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
-			Global.Config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
-			Global.Config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
-			Global.Config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
-			Global.Config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
+			_config.StartFullscreen = StartFullScreenCheckbox.Checked;
+			_config.StartPaused = StartPausedCheckbox.Checked;
+			_config.PauseWhenMenuActivated = PauseWhenMenuActivatedCheckbox.Checked;
+			_config.ShowContextMenu = EnableContextMenuCheckbox.Checked;
+			_config.SaveWindowPosition = SaveWindowPositionCheckbox.Checked;
+			_config.RunInBackground = RunInBackgroundCheckbox.Checked;
+			_config.AcceptBackgroundInput = AcceptBackgroundInputCheckbox.Checked;
+			_config.AcceptBackgroundInputControllerOnly = AcceptBackgroundInputControllerOnlyCheckBox.Checked;
+			_config.HandleAlternateKeyboardLayouts = HandleAlternateKeyboardLayoutsCheckBox.Checked;
+			_config.SuppressAskSave = NeverAskSaveCheckbox.Checked;
+			_config.SingleInstanceMode = SingleInstanceModeCheckbox.Checked;
 
-			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
-			Global.Config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
-			Global.Config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
-			if (GlobalWin.MainForm.AutoFlushSaveRamIn > Global.Config.FlushSaveRamFrames)
-				GlobalWin.MainForm.AutoFlushSaveRamIn = Global.Config.FlushSaveRamFrames;
-			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
-			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
-			Global.Config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
-			Global.Config.MoviesOnDisk = cbMoviesOnDisk.Checked;
-			Global.Config.MoviesInAWE = cbMoviesInAWE.Checked;
+			_config.BackupSaveram = BackupSRamCheckbox.Checked;
+			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
+			_config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
+			if (_mainForm.AutoFlushSaveRamIn > _config.FlushSaveRamFrames)
+				_mainForm.AutoFlushSaveRamIn = _config.FlushSaveRamFrames;
+			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
+			_config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
+			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
+			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
+			_config.MoviesInAWE = cbMoviesInAWE.Checked;
 
-			var prevLuaEngine = Global.Config.LuaEngine;
-			if (LuaInterfaceRadio.Checked) Global.Config.LuaEngine = Config.ELuaEngine.LuaPlusLuaInterface;
-			else if (NLuaRadio.Checked) Global.Config.LuaEngine = Config.ELuaEngine.NLuaPlusKopiLua;
+			var prevLuaEngine = _config.LuaEngine;
+			if (LuaInterfaceRadio.Checked) _config.LuaEngine = Config.ELuaEngine.LuaPlusLuaInterface;
+			else if (NLuaRadio.Checked) _config.LuaEngine = Config.ELuaEngine.NLuaPlusKopiLua;
 
 			Close();
 			DialogResult = DialogResult.OK;
-			GlobalWin.OSD.AddMessage("Custom configurations saved.");
-			if (prevLuaEngine != Global.Config.LuaEngine) GlobalWin.OSD.AddMessage("Restart emulator for Lua change to take effect");
+			_mainForm.AddOnScreenMessage("Custom configurations saved.");
+			if (prevLuaEngine != _config.LuaEngine)
+			{
+				_mainForm.AddOnScreenMessage("Restart emulator for Lua change to take effect");
+			}
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
 			Close();
 			DialogResult = DialogResult.Cancel;
-			GlobalWin.OSD.AddMessage("Customizing aborted.");
+			_mainForm.AddOnScreenMessage("Customizing aborted.");
 		}
 
 		private void AcceptBackgroundInputCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -137,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
 		}
 
-		private void AutosaveSRAMradioButton3_CheckedChanged(object sender, EventArgs e)
+		private void AutosaveSRAMRadioButton3_CheckedChanged(object sender, EventArgs e)
 		{
 			AutosaveSRAMtextBox.Enabled = AutosaveSRAMradioButton3.Checked;
 		}
