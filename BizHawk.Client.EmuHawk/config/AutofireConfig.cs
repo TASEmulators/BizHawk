@@ -1,62 +1,69 @@
 ﻿using System;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class AutofireConfig : Form
 	{
-		public AutofireConfig()
+		private readonly Config _config;
+		private readonly AutofireController _autoFireController;
+		private readonly AutoFireStickyXorAdapter _stickyXorAdapter;
+
+		public AutofireConfig(
+			Config config,
+			AutofireController autoFireController,
+			AutoFireStickyXorAdapter stickyXorAdapter)
 		{
+			_config = config;
+			_autoFireController = autoFireController;
+			_stickyXorAdapter = stickyXorAdapter;
 			InitializeComponent();
 		}
 
 		private void AutofireConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.AutofireOn < OnNumeric.Minimum)
+			if (_config.AutofireOn < OnNumeric.Minimum)
 			{
 				OnNumeric.Value = OnNumeric.Minimum;
 			}
-			else if (Global.Config.AutofireOn > OnNumeric.Maximum)
+			else if (_config.AutofireOn > OnNumeric.Maximum)
 			{
 				OnNumeric.Value = OnNumeric.Maximum;
 			}
 			else
 			{
-				OnNumeric.Value = Global.Config.AutofireOn;
+				OnNumeric.Value = _config.AutofireOn;
 			}
 
-			if (Global.Config.AutofireOff < OffNumeric.Minimum)
+			if (_config.AutofireOff < OffNumeric.Minimum)
 			{
 				OffNumeric.Value = OffNumeric.Minimum;
 			}
-			else if (Global.Config.AutofireOff > OffNumeric.Maximum)
+			else if (_config.AutofireOff > OffNumeric.Maximum)
 			{
 				OffNumeric.Value = OffNumeric.Maximum;
 			}
 			else
 			{
-				OffNumeric.Value = Global.Config.AutofireOff;
+				OffNumeric.Value = _config.AutofireOff;
 			}
 
-			LagFrameCheck.Checked = Global.Config.AutofireLagFrames;
+			LagFrameCheck.Checked = _config.AutofireLagFrames;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
-			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
-			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
-			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+			_autoFireController.On = _config.AutofireOn = (int)OnNumeric.Value;
+			_autoFireController.Off = _config.AutofireOff = (int)OffNumeric.Value;
+			_config.AutofireLagFrames = LagFrameCheck.Checked;
+			_stickyXorAdapter.SetOnOffPatternFromConfig();
 
-			GlobalWin.OSD.AddMessage("Autofire settings saved");
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Autofire config aborted");
 			Close();
 		}
 	}

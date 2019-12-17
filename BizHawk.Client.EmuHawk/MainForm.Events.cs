@@ -1005,8 +1005,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AutofireConfig();
-			form.ShowDialog();
+			using var form = new AutofireConfig(Global.Config, Global.AutoFireController, Global.AutofireStickyXORAdapter);
+			var result = form.ShowDialog();
+			AddOnScreenMessage(result == DialogResult.OK
+				? "Autofire settings saved"
+				: "Autofire config aborted");
 		}
 
 		private void RewindOptionsMenuItem_Click(object sender, EventArgs e)
