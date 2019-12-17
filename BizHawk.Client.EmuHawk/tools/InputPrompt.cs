@@ -27,11 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string Message
 		{
-			get
-			{
-				return PromptLabel.Text;
-			}
-
+			get => PromptLabel.Text;
 			set
 			{
 				PromptLabel.Text = value ?? "";
@@ -41,14 +37,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InitialValue
 		{
-			get { return PromptBox.Text; }
-			set { PromptBox.Text = value ?? ""; }
+			get => PromptBox.Text;
+			set => PromptBox.Text = value ?? "";
 		}
 
-		public string PromptText
-		{
-			get { return PromptBox.Text ?? ""; }
-		}
+		public string PromptText => PromptBox.Text ?? "";
 
 		private void InputPrompt_Load(object sender, EventArgs e)
 		{

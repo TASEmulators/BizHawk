@@ -2930,11 +2930,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OpenRomContextMenuItem.Visible = Emulator.IsNull() || _inFullscreen;
 
-			bool showMenuVisible = _inFullscreen;
-			if (!MainMenuStrip.Visible)
-			{
-				showMenuVisible = true; // need to always be able to restore this as an emergency measure
-			}
+			bool showMenuVisible = _inFullscreen || !MainMenuStrip.Visible; // need to always be able to restore this as an emergency measure
 
 			if (_argParser._chromeless)
 			{
@@ -3364,10 +3360,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_windowClosedAndSafeToExitProcess = true;
 			base.OnClosed(e);
-		}
-
-		private void MainformMenu_Leave(object sender, EventArgs e)
-		{
 		}
 
 		private void MainformMenu_MenuActivate(object sender, EventArgs e)
