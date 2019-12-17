@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Linq;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
@@ -365,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
+			if (result.IsOk())
 			{
 				return;
 			}
@@ -519,8 +518,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = false
 			};
 
-			var result = ofd.ShowHawkDialog();
-			if (result == DialogResult.OK)
+			if (ofd.ShowHawkDialog().IsOk())
 			{
 				foreach (var fn in ofd.FileNames)
 				{
@@ -637,8 +635,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = "PNG File (*.png)|*.png"
 			};
 
-			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
+			if (sfd.ShowHawkDialog().IsOk())
 			{
 				TakeScreenshot(sfd.FileName);
 			}
@@ -950,7 +947,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			using var controller = new ControllerConfig(Emulator, Global.Config);
-			if (controller.ShowDialog() == DialogResult.OK)
+			if (controller.ShowDialog().IsOk())
 			{
 				AddOnScreenMessage("Controller settings saved");
 				InitControls();
@@ -965,7 +962,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HotkeysMenuItem_Click(object sender, EventArgs e)
 		{
 			using var hotkeyConfig = new HotkeyConfig(Global.Config);
-			if (hotkeyConfig.ShowDialog() == DialogResult.OK)
+			if (hotkeyConfig.ShowDialog().IsOk())
 			{
 				AddOnScreenMessage("Hotkey settings saved");
 				InitControls();
@@ -996,7 +993,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var form = new MessageConfig();
 			var result = form.ShowDialog();
-			AddOnScreenMessage(result == DialogResult.OK
+			AddOnScreenMessage(result.IsOk()
 				? "Message settings saved"
 				: "Message config aborted");
 		}
@@ -1010,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new SoundConfig(Global.Config);
-			if (form.ShowDialog() == DialogResult.OK)
+			if (form.ShowDialog().IsOk())
 			{
 				RewireSound();
 			}
@@ -1020,7 +1017,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var form = new AutofireConfig(Global.Config, Global.AutoFireController, Global.AutofireStickyXORAdapter);
 			var result = form.ShowDialog();
-			AddOnScreenMessage(result == DialogResult.OK
+			AddOnScreenMessage(result.IsOk()
 				? "Autofire settings saved"
 				: "Autofire config aborted");
 		}
@@ -1035,7 +1032,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var form = new FileExtensionPreferences(Global.Config);
 			var result = form.ShowDialog();
-			AddOnScreenMessage(result == DialogResult.OK
+			AddOnScreenMessage(result.IsOk()
 				? "Rom Extension Preferences changed"
 				: "Rom Extension Preferences cancelled");
 		}
@@ -1049,9 +1046,9 @@ namespace BizHawk.Client.EmuHawk
 		private void ProfilesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new ProfileConfig(this, Emulator, Global.Config);
-			if (form.ShowDialog() == DialogResult.OK)
+			if (form.ShowDialog().IsOk())
 			{
-				GlobalWin.OSD.AddMessage("Profile settings saved");
+				AddOnScreenMessage("Profile settings saved");
 
 				// We hide the FirstBoot items since the user setup a Profile
 				// Is it a bad thing to do this constantly?
@@ -1060,7 +1057,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				GlobalWin.OSD.AddMessage("Profile config aborted");
+				AddOnScreenMessage("Profile config aborted");
 			}
 		}
 
@@ -1326,8 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = "Config File (*.ini)|*.ini"
 			};
 
-			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
+			if (sfd.ShowHawkDialog().IsOk())
 			{
 				SaveConfig(sfd.FileName);
 				GlobalWin.OSD.AddMessage("Copied settings");
@@ -1352,8 +1348,7 @@ namespace BizHawk.Client.EmuHawk
 				Filter = "Config File (*.ini)|*.ini"
 			};
 
-			var result = ofd.ShowHawkDialog();
-			if (result == DialogResult.OK)
+			if (ofd.ShowHawkDialog().IsOk())
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
@@ -2037,7 +2032,7 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			};
 
-			if (ofd.ShowDialog() == DialogResult.OK)
+			if (ofd.ShowDialog().IsOk())
 			{
 				try
 				{
@@ -2060,7 +2055,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is TI83 ti83)
 			{
 				using var form = new TI83PaletteConfig(this, ti83.GetSettings().Clone());
-				GlobalWin.OSD.AddMessage(form.ShowDialog() == DialogResult.OK
+				AddOnScreenMessage(form.ShowDialog().IsOk()
 					? "Palette settings saved"
 					: "Palette config aborted");
 			}
@@ -2198,8 +2193,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is Octoshock psx)
 			{
-				var result = PSXOptions.DoSettingsDialog(this, psx);
-				if (result == DialogResult.OK)
+				if (PSXOptions.DoSettingsDialog(this, psx).IsOk())
 				{
 					FrameBufferResized();
 				}
@@ -2332,7 +2326,7 @@ namespace BizHawk.Client.EmuHawk
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new N64VideoPluginConfig(this, Global.Config, Emulator);
-			if (form.ShowDialog() == DialogResult.OK)
+			if (form.ShowDialog().IsOk())
 			{
 				if (Emulator.IsNull())
 				{
@@ -2748,8 +2742,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				var res = zxSnapExpDialog.ShowDialog();
-				if (res == DialogResult.OK)
+				if (zxSnapExpDialog.ShowDialog().IsOk())
 				{
 					var speccy = (ZXSpectrum)Emulator;
 					var snap = speccy.GetSZXSnapshot();
@@ -3058,8 +3051,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			using var window = new DisplayConfig(Global.Config);
-			var result = window.ShowDialog();
-			if (result == DialogResult.OK)
+			if (window.ShowDialog().IsOk())
 			{
 				GlobalWin.DisplayManager.RefreshUserShader();
 				FrameBufferResized();
@@ -3122,7 +3114,7 @@ namespace BizHawk.Client.EmuHawk
 
 			subForm.Sub = sub;
 
-			if (subForm.ShowDialog() == DialogResult.OK)
+			if (subForm.ShowDialog().IsOk())
 			{
 				if (index >= 0)
 				{

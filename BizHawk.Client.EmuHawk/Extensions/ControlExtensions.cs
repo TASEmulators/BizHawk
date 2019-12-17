@@ -265,5 +265,10 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				}
 			}
 		}
+
+		public static bool IsOk(this DialogResult dialogResult)
+		{
+			return dialogResult == DialogResult.OK;
+		}
 	}
 }
