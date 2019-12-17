@@ -11,21 +11,26 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private object _s;
 		private object _ss;
-		private bool _syncsettingschanged;
-		bool settingschanged = false;
+		private bool _syncSettingsChanged;
+		private bool _settingsChanged;
 
-		private GenericCoreConfig(bool ignoresettings, bool ignoresyncsettings)
+		private GenericCoreConfig()
+			: this(false, false)
+		{
+		}
+
+		private GenericCoreConfig(bool ignoreSettings, bool ignoreSyncSettings)
 		{
 			InitializeComponent();
 
 			var settable = new SettingsAdapter(Global.Emulator);
 
-			if (settable.HasSettings && !ignoresettings)
+			if (settable.HasSettings && !ignoreSettings)
 			{
 				_s = settable.GetSettings();
 			}
 
-			if (settable.HasSyncSettings && !ignoresyncsettings)
+			if (settable.HasSyncSettings && !ignoreSyncSettings)
 			{
 				_ss = settable.GetSyncSettings();
 			}
@@ -56,24 +61,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private GenericCoreConfig()
-			: this(false, false)
-		{
-		}
-
 		private static void ChangeDescriptionHeight(PropertyGrid grid)
 		{
 			if (grid == null)
-				throw new ArgumentNullException("grid");
+			{
+				throw new ArgumentNullException(nameof(grid));
+			}
 
-			int maxlen = 0;
+			int maxLength = 0;
 			string desc = "";
 
 			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
 			{
-				if (property.Description.Length > maxlen)
+				if (property.Description?.Length > maxLength)
 				{
-					maxlen = property.Description.Length;
+					maxLength = property.Description.Length;
 					desc = property.Description;
 				}
 			}
@@ -83,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 				if (control.GetType().Name == "DocComment")
 				{
 					FieldInfo field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
-					field.SetValue(control, true);
+					field?.SetValue(control, true);
 					int height = (int)System.Drawing.Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
 					control.Height = Math.Max(20, height) + 16; // magic for now
 					return;
@@ -93,12 +95,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			if (_s != null && settingschanged)
+			if (_s != null && _settingsChanged)
 			{
 				GlobalWin.MainForm.PutCoreSettings(_s);
 			}
 
-			if (_ss != null && _syncsettingschanged)
+			if (_ss != null && _syncSettingsChanged)
 			{
 				GlobalWin.MainForm.PutCoreSyncSettings(_ss);
 			}
@@ -109,27 +111,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void DoDialog(IWin32Window owner, string title)
 		{
-			using (var dlg = new GenericCoreConfig { Text = title })
-			{
-				dlg.ShowDialog(owner);
-			}
+			using var dlg = new GenericCoreConfig { Text = title };
+			dlg.ShowDialog(owner);
 		}
 
-		public static void DoDialog(IWin32Window owner, string title, bool hidesettings, bool hidesyncsettings)
+		public static void DoDialog(IWin32Window owner, string title, bool hideSettings, bool hideSyncSettings)
 		{
-			using (var dlg = new GenericCoreConfig(hidesettings, hidesyncsettings) { Text = title })
-			{
-				dlg.ShowDialog(owner);
-			}
+			using var dlg = new GenericCoreConfig(hideSettings, hideSyncSettings) { Text = title };
+			dlg.ShowDialog(owner);
 		}
 
 		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			_syncsettingschanged = true;
-		}
-
-		private void GenericCoreConfig_Load(object sender, EventArgs e)
-		{
+			_syncSettingsChanged = true;
 		}
 
 		private void DefaultsBtn_Click(object sender, EventArgs e)
@@ -145,13 +139,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_ss = Activator.CreateInstance(_ss.GetType());
 				propertyGrid2.SelectedObject = _ss;
-				_syncsettingschanged = true;
+				_syncSettingsChanged = true;
 			}
 		}
 
 		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			settingschanged = true;
+			_settingsChanged = true;
 		}
 	}
 }
