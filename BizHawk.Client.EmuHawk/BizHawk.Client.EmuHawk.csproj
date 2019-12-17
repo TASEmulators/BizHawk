@@ -339,11 +339,11 @@
     <Compile Include="config\GenericCoreConfig.Designer.cs">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GuiOptions.cs">
+    <Compile Include="config\EmuHawkOptions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\GuiOptions.Designer.cs">
-      <DependentUpon>GuiOptions.cs</DependentUpon>
+    <Compile Include="config\EmuHawkOptions.Designer.cs">
+      <DependentUpon>EmuHawkOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="config\HotkeyConfig.cs">
       <SubType>Form</SubType>
@@ -1362,8 +1362,8 @@
     <EmbeddedResource Include="config\GenericCoreConfig.resx">
       <DependentUpon>GenericCoreConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\GuiOptions.resx">
-      <DependentUpon>GuiOptions.cs</DependentUpon>
+    <EmbeddedResource Include="config\EmuHawkOptions.resx">
+      <DependentUpon>EmuHawkOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyConfig.resx">
       <DependentUpon>HotkeyConfig.cs</DependentUpon>
