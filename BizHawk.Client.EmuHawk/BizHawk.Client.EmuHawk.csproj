@@ -270,11 +270,11 @@
     <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\DisplayConfigLite.cs">
+    <Compile Include="config\DisplayConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\DisplayConfigLite.Designer.cs">
-      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    <Compile Include="config\DisplayConfig.Designer.cs">
+      <DependentUpon>DisplayConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\FileExtensionPreferences.cs">
       <SubType>Form</SubType>
@@ -1328,8 +1328,8 @@
     <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
       <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\DisplayConfigLite.resx">
-      <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+    <EmbeddedResource Include="config\DisplayConfig.resx">
+      <DependentUpon>DisplayConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="config\FileExtensionPreferences.resx">
