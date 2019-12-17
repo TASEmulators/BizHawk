@@ -6,8 +6,6 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.ColecoVision;
@@ -87,7 +85,6 @@ namespace BizHawk.Client.EmuHawk
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
-				//n64Settings.Core = N64SyncSettings.CoreType.Dynarec;
 				n64Settings.Core = N64SyncSettings.CoreType.Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
@@ -342,47 +339,16 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			object fromcore = null;
+			object fromCore = null;
 			var settable = new SettingsAdapter(Global.Emulator);
 			if (settable.HasSyncSettings)
 			{
-				fromcore = settable.GetSyncSettings();
+				fromCore = settable.GetSyncSettings();
 			}
 
-			return fromcore as TSetting
+			return fromCore as TSetting
 				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
 				?? new TSetting(); // guaranteed to give sensible defaults
-		}
-
-		private static TSetting GetSettings<TEmulator, TSetting>()
-			where TSetting : class, new()
-			where TEmulator : IEmulator
-		{
-			// should we complain if we get a successful object from the config file, but it is the wrong type?
-			object fromcore = null;
-			var settable = new SettingsAdapter(Global.Emulator);
-			if (settable.HasSettings)
-			{
-				fromcore = settable.GetSettings();
-			}
-
-			return fromcore as TSetting
-				?? Global.Config.GetCoreSettings<TEmulator>() as TSetting
-				?? new TSetting(); // guaranteed to give sensible defaults
-		}
-
-		private static void PutSettings<TEmulator>(object o)
-			where TEmulator : IEmulator
-		{
-			if (Global.Emulator is TEmulator)
-			{
-				var settable = new SettingsAdapter(Global.Emulator);
-				settable.PutSettings(o);
-			}
-			else
-			{
-				Global.Config.PutCoreSettings<TEmulator>(o);
-			}
 		}
 
 		private static void PutSyncSettings<TEmulator>(object o)
