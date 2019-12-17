@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 				.Select(kvp => kvp.Key);
 
 			var customSettings = Global.Config.CustomToolSettings
-				.Where(list => list.Value.Any(kvp => kvp.Value is ToolDialogSettings && ((ToolDialogSettings)kvp.Value).AutoLoad))
+				.Where(list => list.Value.Any(kvp => kvp.Value is ToolDialogSettings settings && settings.AutoLoad))
 				.Select(kvp => kvp.Key);
 
 			var typeNames = genericSettings.Concat(customSettings);
@@ -194,7 +194,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void RefreshSettings(Form form, ToolStripItemCollection menu, ToolDialogSettings settings, int idx)
+		private void RefreshSettings(Form form, ToolStripItemCollection menu, ToolDialogSettings settings, int idx)
 		{
 			((ToolStripMenuItem)menu[idx + 0]).Checked = settings.SaveWindowPosition;
 			((ToolStripMenuItem)menu[idx + 1]).Checked = settings.TopMost;
@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			form.TopMost = settings.TopMost;
 
 			// do we need to do this OnShown() as well?
-			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
+			form.Owner = settings.FloatingWindow ? null : _owner;
 		}
 
 		private void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
@@ -492,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			// If Cheat tool is loaded, restarting will restart the list too anyway
-			if (!GlobalWin.Tools.Has<Cheats>())
+			if (!Has<Cheats>())
 			{
 				Global.CheatList.NewList(GenerateDefaultCheatFilename(), autosave: true);
 			}
@@ -689,7 +689,7 @@ namespace BizHawk.Client.EmuHawk
 				LuaConsole.ResumeScripts(true);
 			}
 
-			GlobalWin.Tools.UpdateAfter();
+			UpdateAfter();
 
 			if (Has<LuaConsole>())
 			{
@@ -803,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				// prevent nasty silent corruption
-				if (!GlobalWin.Tools.IsLoaded<TAStudio>())
+				if (!IsLoaded<TAStudio>())
 				{
 					System.Diagnostics.Debug.Fail("TAStudio does not exist!");
 				}
@@ -841,9 +841,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadGameGenieEc()
 		{
-			if (GlobalWin.Tools.IsAvailable<GameShark>())
+			if (IsAvailable<GameShark>())
 			{
-				GlobalWin.Tools.Load<GameShark>();
+				Load<GameShark>();
 			}
 		}
 
