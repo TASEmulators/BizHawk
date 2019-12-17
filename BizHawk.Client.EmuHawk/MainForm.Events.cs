@@ -1001,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new SoundConfig();
+			using var form = new SoundConfig(Global.Config);
 			if (form.ShowDialog() == DialogResult.OK)
 			{
 				RewireSound();

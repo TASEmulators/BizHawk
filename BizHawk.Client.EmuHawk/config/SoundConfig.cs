@@ -10,10 +10,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SoundConfig : Form
 	{
+		private readonly Config _config;
 		private bool _programmaticallyChangingValue;
 
-		public SoundConfig()
+		public SoundConfig(Config config)
 		{
+			_config = config;
 			InitializeComponent();
 		}
 
@@ -21,10 +23,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_programmaticallyChangingValue = true;
 
-			cbEnableMaster.Checked = Global.Config.SoundEnabled;
-			cbEnableNormal.Checked = Global.Config.SoundEnabledNormal;
-			cbEnableRWFF.Checked = Global.Config.SoundEnabledRWFF;
-			cbMuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
+			cbEnableMaster.Checked = _config.SoundEnabled;
+			cbEnableNormal.Checked = _config.SoundEnabledNormal;
+			cbEnableRWFF.Checked = _config.SoundEnabledRWFF;
+			cbMuteFrameAdvance.Checked = _config.MuteFrameAdvance;
 
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -33,14 +35,14 @@ namespace BizHawk.Client.EmuHawk
 				rbOutputMethodXAudio2.Enabled = false;
 			}
 
-			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
-			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
-			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
-			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
-			tbNormal.Value = Global.Config.SoundVolume;
-			nudNormal.Value = Global.Config.SoundVolume;
-			tbRWFF.Value = Global.Config.SoundVolumeRWFF;
-			nudRWFF.Value = Global.Config.SoundVolumeRWFF;
+			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
+			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
+			rbOutputMethodOpenAL.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
+			BufferSizeNumeric.Value = _config.SoundBufferSizeMs;
+			tbNormal.Value = _config.SoundVolume;
+			nudNormal.Value = _config.SoundVolume;
+			tbRWFF.Value = _config.SoundVolumeRWFF;
+			nudRWFF.Value = _config.SoundVolumeRWFF;
 			UpdateSoundDialog();
 
 			_programmaticallyChangingValue = false;
@@ -53,22 +55,22 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			var oldOutputMethod = Global.Config.SoundOutputMethod;
-			var oldDevice = Global.Config.SoundDevice;
-			Global.Config.SoundEnabled = cbEnableMaster.Checked;
-			Global.Config.SoundEnabledNormal = cbEnableNormal.Checked;
-			Global.Config.SoundEnabledRWFF = cbEnableRWFF.Checked;
-			Global.Config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
-			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
-			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
-			if (rbOutputMethodOpenAL.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
-			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
-			Global.Config.SoundVolume = tbNormal.Value;
-			Global.Config.SoundVolumeRWFF = tbRWFF.Value;
-			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
+			var oldOutputMethod = _config.SoundOutputMethod;
+			var oldDevice = _config.SoundDevice;
+			_config.SoundEnabled = cbEnableMaster.Checked;
+			_config.SoundEnabledNormal = cbEnableNormal.Checked;
+			_config.SoundEnabledRWFF = cbEnableRWFF.Checked;
+			_config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
+			if (rbOutputMethodDirectSound.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
+			if (rbOutputMethodXAudio2.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
+			if (rbOutputMethodOpenAL.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
+			_config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
+			_config.SoundVolume = tbNormal.Value;
+			_config.SoundVolumeRWFF = tbRWFF.Value;
+			_config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
-			if (Global.Config.SoundOutputMethod != oldOutputMethod
-				|| Global.Config.SoundDevice != oldDevice)
+			if (_config.SoundOutputMethod != oldOutputMethod
+				|| _config.SoundDevice != oldDevice)
 			{
 				GlobalWin.Sound.Dispose();
 				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
@@ -101,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var name in deviceNames)
 			{
 				listBoxSoundDevices.Items.Add(name);
-				if (name == Global.Config.SoundDevice)
+				if (name == _config.SoundDevice)
 				{
 					listBoxSoundDevices.SelectedItem = name;
 				}

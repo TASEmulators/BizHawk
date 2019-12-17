@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TrackBarCompression_ValueChanged(object sender, EventArgs e)
 		{
-			// TODO - make a UserControl which is trackbar and NUD combined
+			// TODO - make a UserControl which is TrackBar and NUD combined
 			nudCompression.Value = ((TrackBar)sender).Value;
 		}
 
