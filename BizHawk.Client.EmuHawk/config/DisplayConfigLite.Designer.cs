@@ -940,7 +940,7 @@
 			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
 			this.trackbarFrameSizeWindowed.TabIndex = 21;
 			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.TrackBarFrameSizeWindowed_ValueChanged);
 			// 
 			// cbCaptionWindowed
 			// 

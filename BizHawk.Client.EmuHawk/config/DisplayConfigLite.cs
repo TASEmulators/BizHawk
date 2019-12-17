@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public bool NeedReset;
 
-		string PathSelection;
+		string _pathSelection;
 		
 		public DisplayConfigLite()
 		{
@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			rbScanlines.Checked = Global.Config.TargetDisplayFilter == 2;
 			rbUser.Checked = Global.Config.TargetDisplayFilter == 3;
 
-			PathSelection = Global.Config.DispUserFilterPath ?? "";
+			_pathSelection = Global.Config.DispUserFilterPath ?? "";
 			RefreshState();
 
 			rbFinalFilterNone.Checked = Global.Config.DispFinalFilter == 0;
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			cbMenuFullscreen.Checked = Global.Config.DispChrome_MenuFullscreen;
 			trackbarFrameSizeWindowed.Value = Global.Config.DispChrome_FrameWindowed;
 			cbFSAutohideMouse.Checked = Global.Config.DispChrome_Fullscreen_AutohideMouse;
-			SyncTrackbar();
+			SyncTrackBar();
 
 			cbAllowDoubleclickFullscreen.Checked = Global.Config.DispChrome_AllowDoubleClickFullscreen;
 
@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			if (oldDisplayMethod != Global.Config.DispMethod)
 				NeedReset = true;
 
-			Global.Config.DispUserFilterPath = PathSelection;
+			Global.Config.DispUserFilterPath = _pathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
 
 			DialogResult = DialogResult.OK;
@@ -181,14 +181,16 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshState()
 		{
-			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(PathSelection);
+			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
 		}
 
 		private void btnSelectUserFilter_Click(object sender, EventArgs e)
 		{
-			using var ofd = new OpenFileDialog();
-			ofd.Filter = ".CGP (*.cgp)|*.cgp";
-			ofd.FileName = PathSelection;
+			using var ofd = new OpenFileDialog
+			{
+				Filter = ".CGP (*.cgp)|*.cgp",
+				FileName = _pathSelection
+			};
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
 				rbUser.Checked = true;
@@ -222,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				PathSelection = choice;
+				_pathSelection = choice;
 				RefreshState();
 			}
 		}
@@ -260,19 +262,27 @@ namespace BizHawk.Client.EmuHawk
 			lblScanlines.Text = $"{percentage:F2}%";
 		}
 
-		private void trackbarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
+		private void TrackBarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
 		{
-			SyncTrackbar();
+			SyncTrackBar();
 		}
 
-		void SyncTrackbar()
+		void SyncTrackBar()
 		{
 			if (trackbarFrameSizeWindowed.Value == 0)
+			{
 				lblFrameTypeWindowed.Text = "None";
+			}
+
 			if (trackbarFrameSizeWindowed.Value == 1)
+			{
 				lblFrameTypeWindowed.Text = "Thin";
+			}
+
 			if (trackbarFrameSizeWindowed.Value == 2)
+			{
 				lblFrameTypeWindowed.Text = "Thick";
+			}
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -294,6 +304,5 @@ namespace BizHawk.Client.EmuHawk
 			checkLetterbox.Checked = true;
 			rbUseSystem.Checked = true;
 		}
-
 	}
 }
