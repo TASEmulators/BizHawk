@@ -2323,23 +2323,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
-			N64Settings settings;
-			N64SyncSettings syncSettings;
-			if (Global.Emulator is N64 n64)
-			{
-				settings = n64.GetSettings();
-				syncSettings = n64.GetSyncSettings();
-			}
-			else
-			{
-				settings = (N64Settings)Global.Config.GetCoreSettings<N64>()
-					?? new N64Settings();
-				syncSettings = (N64SyncSettings)Global.Config.GetCoreSyncSettings<N64>()
-					?? new N64SyncSettings();
-			}
-
-			using var form = new N64VideoPluginConfig(settings, syncSettings);
+			using var form = new N64VideoPluginConfig(this, Global.Config, Emulator);
 			if (form.ShowDialog() == DialogResult.OK)
 			{
 				if (Emulator.IsNull())

@@ -6,15 +6,20 @@ using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class N64VideoPluginConfig : Form
 	{
-		private N64Settings _s;
-		private N64SyncSettings _ss;
+		private readonly MainForm _mainForm;
+		private readonly Config _config;
+		private readonly IEmulator _emulator;
+		private readonly N64Settings _s;
+		private readonly N64SyncSettings _ss;
 
-		private static string _customResItemName = "Custom";
+		private const string CustomResItemName = "Custom";
+
 		private static readonly string[] ValidResolutions =
 		{
 			"320 x 240",
@@ -31,42 +36,35 @@ namespace BizHawk.Client.EmuHawk
 			"1920 x 1440",
 			"2048 x 1536",
 			"2880 x 2160",
-			_customResItemName
+			CustomResItemName
 		};
 
 		private bool _programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginConfig(
-			N64Settings settings,
-			N64SyncSettings syncSettings)
+			MainForm mainForm,
+			Config config,
+			IEmulator emulator)
 		{
-			_s = settings;
-			_ss = syncSettings;
+			_mainForm = mainForm;
+			_config = config;
+			_emulator = emulator;
+
+			// because mupen is a pile of garbage, this all needs to work even when N64 is not loaded
+			if (_emulator is N64 n64)
+			{
+				_s = n64.GetSettings();
+				_ss = n64.GetSyncSettings();
+			}
+			else
+			{
+				_s = (N64Settings)_config.GetCoreSettings<N64>()
+					?? new N64Settings();
+				_ss = (N64SyncSettings)_config.GetCoreSyncSettings<N64>()
+					?? new N64SyncSettings();
+			}
+
 			InitializeComponent();
-		}
-
-		private static void PutSyncSettings(N64SyncSettings s)
-		{
-			if (Global.Emulator is N64)
-			{
-				GlobalWin.MainForm.PutCoreSyncSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSyncSettings<N64>(s);
-			}
-		}
-
-		private static void PutSettings(N64Settings s)
-		{
-			if (Global.Emulator is N64)
-			{
-				GlobalWin.MainForm.PutCoreSettings(s);
-			}
-			else
-			{
-				Global.Config.PutCoreSettings<N64>(s);
-			}
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -86,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveSettings()
 		{
 			// Global
-			if (VideoResolutionComboBox.Text != _customResItemName)
+			if (VideoResolutionComboBox.Text != CustomResItemName)
 			{
 				var videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
 				var strArr = videoSettings.Split('x');
@@ -483,8 +481,16 @@ namespace BizHawk.Client.EmuHawk
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.RspType>();
 
-			PutSettings(_s);
-			PutSyncSettings(_ss);
+			if (_emulator is N64)
+			{
+				_mainForm.PutCoreSettings(_s);
+				_mainForm.PutCoreSyncSettings(_ss);
+			}
+			else
+			{
+				_config.PutCoreSettings<N64>(_s);
+				_config.PutCoreSyncSettings<N64>(_ss);
+			}
 		} 
 
 		private void N64VideoPluginConfig_Load(object sender, EventArgs e)
@@ -521,7 +527,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (PluginComboBox.SelectedIndex != 4) // wtf
 			{
 				VideoResolutionComboBox.SelectedIndex =
-					VideoResolutionComboBox.Items.IndexOf(_customResItemName);
+					VideoResolutionComboBox.Items.IndexOf(CustomResItemName);
 				ShowCustomVideoResolutionControls();
 			}
 
@@ -1182,7 +1188,7 @@ namespace BizHawk.Client.EmuHawk
 			int oldSizeX, oldSizeY;
 
 			var oldResolution = VideoResolutionComboBox.SelectedItem?.ToString() ?? "";
-			if (oldResolution != _customResItemName)
+			if (oldResolution != CustomResItemName)
 			{
 				strArr = oldResolution.Split('x');
 				oldSizeX = int.Parse(strArr[0].Trim());
@@ -1211,7 +1217,7 @@ namespace BizHawk.Client.EmuHawk
 				int bestFit = -1;
 				for (int i = 0; i < VideoResolutionComboBox.Items.Count; i++)
 				{
-					if ((string)VideoResolutionComboBox.Items[i] != _customResItemName)
+					if ((string)VideoResolutionComboBox.Items[i] != CustomResItemName)
 					{
 						string option = (string)VideoResolutionComboBox.Items[i];
 						strArr = option.Split('x');
@@ -1244,7 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VideoResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (VideoResolutionComboBox.Text == _customResItemName)
+			if (VideoResolutionComboBox.Text == CustomResItemName)
 			{
 				ShowCustomVideoResolutionControls();
 			}
