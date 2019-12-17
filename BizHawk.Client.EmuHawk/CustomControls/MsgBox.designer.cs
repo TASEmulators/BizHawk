@@ -60,7 +60,7 @@
 			this.btn1.Text = "Button1";
 			this.btn1.UseVisualStyleBackColor = true;
 			this.btn1.Visible = false;
-			this.btn1.Click += new System.EventHandler(this.btn_Click);
+			this.btn1.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// btn2
 			// 
@@ -73,7 +73,7 @@
 			this.btn2.Text = "Button2";
 			this.btn2.UseVisualStyleBackColor = true;
 			this.btn2.Visible = false;
-			this.btn2.Click += new System.EventHandler(this.btn_Click);
+			this.btn2.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// messageLbl
 			// 
@@ -96,7 +96,7 @@
 			this.btn3.Text = "Button3";
 			this.btn3.UseVisualStyleBackColor = true;
 			this.btn3.Visible = false;
-			this.btn3.Click += new System.EventHandler(this.btn_Click);
+			this.btn3.Click += new System.EventHandler(this.ButtonClick);
 			// 
 			// DialogBox
 			// 
