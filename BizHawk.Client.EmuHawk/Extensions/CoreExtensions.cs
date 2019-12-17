@@ -3,17 +3,13 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
-using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
-using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Arcades.MAME;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk.CoreExtensions
 {
@@ -32,34 +28,38 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			{
 				return Properties.Resources.QuickNes;
 			}
-			else if (core is LibsnesCore)
+			
+			if (core is LibsnesCore)
 			{
 				return Properties.Resources.bsnes;
 			}
-			else if (core is GPGX)
+			
+			if (core is GPGX)
 			{
 				return Properties.Resources.genplus;
 			}
-			else if (core is PSP)
+			
+			if (core is PSP)
 			{
 				return Properties.Resources.ppsspp;
 			}
-			else if (core is Gameboy)
+			
+			if (core is Gameboy)
 			{
 				return Properties.Resources.gambatte;
 			}
-			else if (core is Snes9x)
+			
+			if (core is Snes9x)
 			{
 				return Properties.Resources.snes9x;
 			}
-			else if (core is MAME)
+			
+			if (core is MAME)
 			{
 				return Properties.Resources.mame;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public static string DisplayName(this IEmulator core)
