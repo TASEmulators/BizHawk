@@ -14,15 +14,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _maxX = 127;
 		private int _maxY = 127;
-		private bool _radial = false;
+		private bool _radial;
 
 		public int MaxX
 		{
-			get
-			{
-				return _maxX;
-			}
-
+			get => _maxX;
 			set
 			{
 				_maxX = value;
@@ -33,11 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxY
 		{
-			get
-			{
-				return _maxY;
-			}
-
+			get => _maxY;
 			set
 			{
 				_maxY = value;
@@ -48,11 +40,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Radial
 		{
-			get
-			{
-				return _radial;
-			}
-
+			get => _radial;
 			set
 			{
 				_radial = value;
@@ -123,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			base.OnPaint(e);
 		}
 
-		private bool _isDragging = false;
+		private bool _isDragging;
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -157,11 +145,11 @@ namespace BizHawk.Client.EmuHawk
 				var centerX = Size.Width / 2;
 				var centerY = Size.Height / 2;
 
-				var offsetx = Math.Abs(centerX - x) * ScaleFactor;
-				var offsety = Math.Abs(centerY - y) * ScaleFactor;
+				var offsetX = Math.Abs(centerX - x) * ScaleFactor;
+				var offsetY = Math.Abs(centerY - y) * ScaleFactor;
 
-				MaxX = Math.Min(offsetx, sbyte.MaxValue);
-				MaxY = Math.Min(offsety, sbyte.MaxValue);
+				MaxX = Math.Min(offsetX, sbyte.MaxValue);
+				MaxY = Math.Min(offsetY, sbyte.MaxValue);
 			}
 		}
 

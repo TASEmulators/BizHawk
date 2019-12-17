@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
