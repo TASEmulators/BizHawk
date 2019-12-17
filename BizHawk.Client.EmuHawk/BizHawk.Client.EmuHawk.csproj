@@ -357,7 +357,7 @@
     <Compile Include="config\InputCompositeWidget.Designer.cs">
       <DependentUpon>InputCompositeWidget.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\InputWidget.cs">
+    <Compile Include="CustomControls\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="config\ColecoVision\ColecoControllerSettings.cs">
