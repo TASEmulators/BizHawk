@@ -9,18 +9,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
+		private readonly MainForm _mainForm;
 		private object _s;
 		private object _ss;
 		private bool _syncSettingsChanged;
 		private bool _settingsChanged;
 
-		private GenericCoreConfig()
-			: this(false, false)
+		private GenericCoreConfig(MainForm mainForm, bool ignoreSettings = false, bool ignoreSyncSettings = false)
 		{
-		}
-
-		private GenericCoreConfig(bool ignoreSettings, bool ignoreSyncSettings)
-		{
+			_mainForm = mainForm;
 			InitializeComponent();
 
 			var settable = new SettingsAdapter(Global.Emulator);
@@ -97,27 +94,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_s != null && _settingsChanged)
 			{
-				GlobalWin.MainForm.PutCoreSettings(_s);
+				_mainForm.PutCoreSettings(_s);
 			}
 
 			if (_ss != null && _syncSettingsChanged)
 			{
-				GlobalWin.MainForm.PutCoreSyncSettings(_ss);
+				_mainForm.PutCoreSyncSettings(_ss);
 			}
 
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
-		public static void DoDialog(IWin32Window owner, string title)
+		public static void DoDialog(MainForm owner, string title)
 		{
-			using var dlg = new GenericCoreConfig { Text = title };
+			using var dlg = new GenericCoreConfig(owner) { Text = title };
 			dlg.ShowDialog(owner);
 		}
 
-		public static void DoDialog(IWin32Window owner, string title, bool hideSettings, bool hideSyncSettings)
+		public static void DoDialog(MainForm owner, string title, bool hideSettings, bool hideSyncSettings)
 		{
-			using var dlg = new GenericCoreConfig(hideSettings, hideSyncSettings) { Text = title };
+			using var dlg = new GenericCoreConfig(owner, hideSettings, hideSyncSettings) { Text = title };
 			dlg.ShowDialog(owner);
 		}
 
