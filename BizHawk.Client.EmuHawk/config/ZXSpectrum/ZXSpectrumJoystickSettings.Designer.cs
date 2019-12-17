@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class ZXSpectrumJoystickSettings
+    partial class ZxSpectrumJoystickSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZXSpectrumJoystickSettings));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZxSpectrumJoystickSettings));
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -160,7 +160,7 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
-            this.Name = "ZXSpectrumJoystickSettings";
+            this.Name = "ZxSpectrumJoystickSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Joystick Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);

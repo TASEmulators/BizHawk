@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class ZXSpectrumPokeMemory
+    partial class ZxSpectrumPokeMemory
     {
         /// <summary>
         /// Required designer variable.
@@ -140,7 +140,7 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
-            this.Name = "ZXSpectrumPokeMemory";
+            this.Name = "ZxSpectrumPokeMemory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Poke Memory";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAddress)).EndInit();

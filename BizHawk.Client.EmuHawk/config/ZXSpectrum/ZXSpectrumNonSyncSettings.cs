@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZXSpectrumNonSyncSettings : Form
+	public partial class ZxSpectrumNonSyncSettings : Form
 	{
 		private ZXSpectrum.ZXSpectrumSettings _settings;
-		private int bgColor;
+		private int _bgColor;
 
-		public ZXSpectrumNonSyncSettings()
+		public ZxSpectrumNonSyncSettings()
 		{
 			InitializeComponent();
 		}
@@ -22,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings = ((ZXSpectrum)Global.Emulator).GetSettings().Clone();
 
-			bgColor = _settings.BackgroundColor;
+			_bgColor = _settings.BackgroundColor;
 
 			SetBtnColor();
 
@@ -40,22 +38,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetBtnColor()
 		{
-			var c = System.Drawing.Color.FromArgb(bgColor);
+			var c = System.Drawing.Color.FromArgb(_bgColor);
 			buttonChooseBGColor.ForeColor = c;
 			buttonChooseBGColor.BackColor = c;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			bool changed =                
+			bool changed =
 				_settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString() ||
-				_settings.BackgroundColor != bgColor ||
+				_settings.BackgroundColor != _bgColor ||
 				_settings.UseCoreBorderForBackground != checkBoxShowCoreBrdColor.Checked;
 
 			if (changed)
 			{
 				_settings.OSDMessageVerbosity = (ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
-				_settings.BackgroundColor = bgColor;
+				_settings.BackgroundColor = _bgColor;
 				_settings.UseCoreBorderForBackground = checkBoxShowCoreBrdColor.Checked;
 
 				GlobalWin.MainForm.PutCoreSettings(_settings);
@@ -95,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), cb.SelectedItem.ToString()));
 		}
 
@@ -105,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			System.Drawing.Color c = System.Drawing.Color.FromArgb(currColor);
 			using var cd = new ColorDialog();
 
-			System.Drawing.Color[] colors = new System.Drawing.Color[]
+			System.Drawing.Color[] colors =
 			{
 				System.Drawing.Color.FromArgb(0x00, 0x00, 0x00),
 				System.Drawing.Color.FromArgb(0x00, 0x00, 0xD7),
@@ -125,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 				System.Drawing.Color.FromArgb(0xFF, 0xFF, 0xFF),
 			};
 
-			cd.CustomColors = new int[]
+			cd.CustomColors = new[]
 			{
 				System.Drawing.ColorTranslator.ToOle(colors[0]),
 				System.Drawing.ColorTranslator.ToOle(colors[1]),
@@ -151,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var color = cd.Color;
 				var col = color.ToArgb();
-				bgColor = col;
+				_bgColor = col;
 
 				SetBtnColor();
 			}

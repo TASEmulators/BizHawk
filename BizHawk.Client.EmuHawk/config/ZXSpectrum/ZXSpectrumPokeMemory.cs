@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZXSpectrumPokeMemory : Form
+	public partial class ZxSpectrumPokeMemory : Form
 	{
-		public ZXSpectrumPokeMemory()
+		public ZxSpectrumPokeMemory()
 		{
 			InitializeComponent();
 		}
@@ -24,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			speccy.PokeMemory(addr, val);
 
 			DialogResult = DialogResult.OK;
-			Close();            
+			Close();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

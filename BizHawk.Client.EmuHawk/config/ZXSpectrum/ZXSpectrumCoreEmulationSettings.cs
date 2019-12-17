@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZXSpectrumCoreEmulationSettings : Form
+	public partial class ZxSpectrumCoreEmulationSettings : Form
 	{
 		private ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
-		public ZXSpectrumCoreEmulationSettings()
+		public ZxSpectrumCoreEmulationSettings()
 		{
 			InitializeComponent();
 		}
@@ -30,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			MachineSelectionComboBox.SelectedItem = _syncSettings.MachineType.ToString();
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString()));
 
-			// border selecton
+			// border selection
 			var borderTypes = Enum.GetNames(typeof(ZXSpectrum.BorderType));
 			foreach (var val in borderTypes)
 			{
@@ -82,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MachineSelectionComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), cb.SelectedItem.ToString()));
 		}
 
@@ -91,9 +89,9 @@ namespace BizHawk.Client.EmuHawk
 			textBoxCoreDetails.Text = ZXMachineMetaData.GetMetaString(type);
 		}
 
-		private void borderTypecomboBox1_SelectedIndexChanged(object sender, EventArgs e)
+		private void BorderTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ComboBox cb = sender as ComboBox;
+			var cb = (ComboBox)sender;
 			UpdateBorderNotes((ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), cb.SelectedItem.ToString()));
 		}
 

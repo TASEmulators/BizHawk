@@ -7,24 +7,23 @@ using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZXSpectrumJoystickSettings : Form
+	public partial class ZxSpectrumJoystickSettings : Form
 	{
 		private ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
+		private string[] _possibleControllers;
 
-		public ZXSpectrumJoystickSettings()
+		public ZxSpectrumJoystickSettings()
 		{
 			InitializeComponent();
 		}
-
-		private string[] possibleControllers;
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
 			_syncSettings = ((ZXSpectrum)Global.Emulator).GetSyncSettings().Clone();
 
-			possibleControllers = Enum.GetNames(typeof(JoystickType));
+			_possibleControllers = Enum.GetNames(typeof(JoystickType));
 
-			foreach (var val in possibleControllers)
+			foreach (var val in _possibleControllers)
 			{
 				Port1ComboBox.Items.Add(val);
 				Port2ComboBox.Items.Add(val);
@@ -50,46 +49,46 @@ namespace BizHawk.Client.EmuHawk
 				bool selectionValid = true;
 
 				var j1 = Port1ComboBox.SelectedItem.ToString();
-				if (j1 != possibleControllers.First())
+				if (j1 != _possibleControllers.First())
 				{
 					if (j1 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 					if (j1 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 				}
 
 				var j2 = Port2ComboBox.SelectedItem.ToString();
-				if (j2 != possibleControllers.First())
+				if (j2 != _possibleControllers.First())
 				{
 					if (j2 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 					if (j2 == Port3ComboBox.SelectedItem.ToString())
 					{
-						Port3ComboBox.SelectedItem = possibleControllers.First();
+						Port3ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 				}   
 
 				var j3 = Port3ComboBox.SelectedItem.ToString();
-				if (j3 != possibleControllers.First())
+				if (j3 != _possibleControllers.First())
 				{
 					if (j3 == Port1ComboBox.SelectedItem.ToString())
 					{
-						Port1ComboBox.SelectedItem = possibleControllers.First();
+						Port1ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 					if (j3 == Port2ComboBox.SelectedItem.ToString())
 					{
-						Port2ComboBox.SelectedItem = possibleControllers.First();
+						Port2ComboBox.SelectedItem = _possibleControllers.First();
 						selectionValid = false;
 					}
 				}

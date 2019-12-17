@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ZXSpectrumAudioSettings : Form
+	public partial class ZxSpectrumAudioSettings : Form
 	{
 		private ZXSpectrum.ZXSpectrumSettings _settings;
 
-		public ZXSpectrumAudioSettings()
+		public ZxSpectrumAudioSettings()
 		{
 			InitializeComponent();
 		}
@@ -37,8 +35,6 @@ namespace BizHawk.Client.EmuHawk
 
 			// ay volume
 			ayVolumetrackBar.Value = _settings.AYVolume;
-
-			
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

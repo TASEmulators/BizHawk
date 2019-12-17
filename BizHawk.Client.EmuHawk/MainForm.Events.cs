@@ -2612,31 +2612,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZXSpectrumJoystickSettings();
+			using var form = new ZxSpectrumJoystickSettings();
 			form.ShowDialog();
 		}
 
 		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZXSpectrumCoreEmulationSettings();
+			using var form = new ZxSpectrumCoreEmulationSettings();
 			form.ShowDialog();
 		}
 
 		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZXSpectrumNonSyncSettings();
+			using var form = new ZxSpectrumNonSyncSettings();
 			form.ShowDialog();
 		}
 
 		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZXSpectrumAudioSettings();
+			using var form = new ZxSpectrumAudioSettings();
 			form.ShowDialog();
 		}
 
 		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZXSpectrumPokeMemory();
+			using var form = new ZxSpectrumPokeMemory();
 			form.ShowDialog();
 		}
 

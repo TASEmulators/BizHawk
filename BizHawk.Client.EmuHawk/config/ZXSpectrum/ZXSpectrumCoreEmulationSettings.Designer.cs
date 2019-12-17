@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-    partial class ZXSpectrumCoreEmulationSettings
+    partial class ZxSpectrumCoreEmulationSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -124,7 +124,7 @@
             this.borderTypecomboBox1.Name = "borderTypecomboBox1";
             this.borderTypecomboBox1.Size = new System.Drawing.Size(220, 21);
             this.borderTypecomboBox1.TabIndex = 22;
-            this.borderTypecomboBox1.SelectedIndexChanged += new System.EventHandler(this.borderTypecomboBox1_SelectedIndexChanged);
+            this.borderTypecomboBox1.SelectedIndexChanged += new System.EventHandler(this.BorderTypeComboBox_SelectedIndexChanged);
             // 
             // lblBorderInfo
             // 
@@ -191,7 +191,7 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController_MultiSize;
-            this.Name = "ZXSpectrumCoreEmulationSettings";
+            this.Name = "ZxSpectrumCoreEmulationSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Core Emulation Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
