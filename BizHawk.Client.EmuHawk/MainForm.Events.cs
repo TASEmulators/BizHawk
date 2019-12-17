@@ -3061,15 +3061,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			using var window = new DisplayConfig();
+			using var window = new DisplayConfig(Global.Config);
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
+				GlobalWin.DisplayManager.RefreshUserShader();
 				FrameBufferResized();
 				SynchChrome();
 				if (window.NeedReset)
 				{
-					GlobalWin.OSD.AddMessage("Restart program for changed settings");
+					AddOnScreenMessage("Restart program for changed settings");
 				}
 			}
 		}
