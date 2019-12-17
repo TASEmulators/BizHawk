@@ -13,12 +13,12 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
-// it will be implemented by emuhawk, and use firmware keys to fetch the firmware content.
+// it will be implemented by EmuHawk, and use firmware keys to fetch the firmware content.
 // however, for now, the cores are using strings from the config class. so we have the `configMember` which is 
 // used by reflection to set the configuration for firmwares which were found
 
 // TODO - we may eventually need to add a progress dialog for this. we should have one for other reasons.
-// I started making one in Bizhawk.Util as QuickProgressPopup but ran out of time
+// I started making one in BizHawk.Util as QuickProgressPopup but ran out of time
 
 // IDEA: show current path in tooltip (esp. for custom resolved)
 // IDEA: prepop set customization to dir of current custom
@@ -32,71 +32,71 @@ namespace BizHawk.Client.EmuHawk
 		// Redundant with SystemLookup? Not so fast. That datadrives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
-			{ "NES", "NES" },
-			{ "SNES", "SNES" },
-			{ "PCECD", "PCE-CD" },
-			{ "SAT", "Saturn" },
-			{ "A78", "Atari 7800" },
-			{ "Coleco", "Colecovision" },
-			{ "GBA", "GBA" },
-			{ "TI83", "TI-83" },
-			{ "INTV", "Intellivision" },
-			{ "C64", "C64" },
-			{ "GEN", "Genesis" },
-			{ "SMS", "Sega Master System" },
-			{ "PSX", "PlayStation" },
-			{ "Lynx", "Lynx" },
-			{ "AppleII", "Apple II" },
-			{ "O2", "Odyssey 2" },
-			{ "GB", "Game Boy" },
-			{ "GBC", "Game Boy Color" },
-			{ "PCFX", "PC-FX" },
-			{ "32X", "32X" },
-			{ "ZXSpectrum", "ZX Spectrum" },
-			{ "AmstradCPC", "Amstrad CPC" },
-			{ "ChannelF", "Channel F" },
-			{ "Vectrex", "Vectrex" }
+			["NES"] = "NES",
+			["SNES"] = "SNES",
+			["PCECD"] = "PCE-CD",
+			["SAT"] = "Saturn",
+			["A78"] = "Atari 7800",
+			["Coleco"] = "Colecovision",
+			["GBA"] = "GBA",
+			["TI83"] = "TI-83",
+			["INTV"] = "Intellivision",
+			["C64"] = "C64",
+			["GEN"] = "Genesis",
+			["SMS"] = "Sega Master System",
+			["PSX"] = "PlayStation",
+			["Lynx"] = "Lynx",
+			["AppleII"] = "Apple II",
+			["O2"] = "Odyssey 2",
+			["GB"] = "Game Boy",
+			["GBC"] = "Game Boy Color",
+			["PCFX"] = "PC-FX",
+			["32X"] = "32X",
+			["ZXSpectrum"] = "ZX Spectrum",
+			["AmstradCPC"] = "Amstrad CPC",
+			["ChannelF"] = "Channel F",
+			["Vectrex"] = "Vectrex"
 		};
 
-		public string TargetSystem = null;
+		public string TargetSystem { get; set; }
 
-		private CheckBox cbAllowImport;
+		private CheckBox _cbAllowImport;
 
-		private const int idUnsure = 0;
-		private const int idMissing = 1;
-		private const int idOk = 2;
+		private const int IdUnsure = 0;
+		private const int IdMissing = 1;
+		private const int IdOk = 2;
 
-		private Font fixedFont, boldFont, boldFixedFont;
+		private Font _fixedFont, _boldFont, _boldFixedFont;
 
 		private class ListViewSorter : IComparer
 		{
-			public FirmwaresConfig dialog;
-			public int column;
-			public int sign;
-			public ListViewSorter(FirmwaresConfig dialog, int column)
+			public int Column { get; set; }
+			public int Sign { get; set; }
+
+			public ListViewSorter(int column)
 			{
-				this.dialog = dialog;
-				this.column = column;
+				Column = column;
 			}
+
 			public int Compare(object a, object b)
 			{
 				var lva = (ListViewItem)a;
 				var lvb = (ListViewItem)b;
-				return sign * string.Compare(lva.SubItems[column].Text, lvb.SubItems[column].Text);
+				return Sign * string.Compare(lva.SubItems[Column].Text, lvb.SubItems[Column].Text);
 			}
 		}
 
-		private string currSelectorDir;
-		private readonly ListViewSorter listviewSorter;
+		private string _currSelectorDir;
+		private readonly ListViewSorter _listViewSorter;
 
 		public FirmwaresConfig(bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			InitializeComponent();
 
-			// prep imagelist for listview with 3 item states for {idUnsure, idMissing, idOk}
+			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
 			imageList1.Images.AddRange(new[] { Properties.Resources.RetroQuestion, Properties.Resources.ExclamationRed, Properties.Resources.GreenCheck });
 
-			listviewSorter = new ListViewSorter(this, -1);
+			_listViewSorter = new ListViewSorter(-1);
 
 			if (retryLoadRom)
 			{
@@ -105,25 +105,19 @@ namespace BizHawk.Client.EmuHawk
 				tbbCloseReload.Enabled = true;
 
 
-				if (string.IsNullOrWhiteSpace(reloadRomPath))
-				{
-					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload ROM";
-				}
-				else
-				{
-					tbbCloseReload.ToolTipText = $"Close Firmware Manager and reload {reloadRomPath}";
-				}
-
+				tbbCloseReload.ToolTipText = string.IsNullOrWhiteSpace(reloadRomPath)
+					? "Close Firmware Manager and reload ROM"
+					: $"Close Firmware Manager and reload {reloadRomPath}";
 			}
 		}
 
 		// makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
-		private void WarpToSystemId(string sysid)
+		private void WarpToSystemId(string sysId)
 		{
 			bool selectedFirst = false;
 			foreach (ListViewItem lvi in lvFirmwares.Items)
 			{
-				if (lvi.SubItems[1].Text == sysid)
+				if (lvi.SubItems[1].Text == sysId)
 				{
 					if(!selectedFirst) lvi.Selected = true;
 					lvi.EnsureVisible();
@@ -134,20 +128,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresConfig_Load(object sender, EventArgs e)
 		{
-			// we'll use this font for displaying the hash, so they dont look all jagged in a long list
-			fixedFont = new Font(new FontFamily("Courier New"), 8);
-			boldFont = new Font(lvFirmwares.Font, FontStyle.Bold);
-			boldFixedFont = new Font(fixedFont, FontStyle.Bold);
+			// we'll use this font for displaying the hash, so they don't look all jagged in a long list
+			_fixedFont = new Font(new FontFamily("Courier New"), 8);
+			_boldFont = new Font(lvFirmwares.Font, FontStyle.Bold);
+			_boldFixedFont = new Font(_fixedFont, FontStyle.Bold);
 
-			// populate listview from firmware DB
+			// populate ListView from firmware DB
 			var groups = new Dictionary<string, ListViewGroup>();
 			foreach (var fr in FirmwareDatabase.FirmwareRecords)
 			{
-				var lvi = new ListViewItem();
-				lvi.Tag = fr;
-				lvi.UseItemStyleForSubItems = false;
-				lvi.ImageIndex = idUnsure;
-				lvi.ToolTipText = null;
+				var lvi = new ListViewItem
+				{
+					Tag = fr,
+					UseItemStyleForSubItems = false,
+					ImageIndex = IdUnsure,
+					ToolTipText = null
+				};
 				lvi.SubItems.Add(fr.SystemId);
 				lvi.SubItems.Add(fr.FirmwareId);
 				lvi.SubItems.Add(fr.Descr);
@@ -155,15 +151,14 @@ namespace BizHawk.Client.EmuHawk
 				lvi.SubItems.Add(""); // location
 				lvi.SubItems.Add(""); // size
 				lvi.SubItems.Add(""); // hash
-				lvi.SubItems[6].Font = fixedFont; // would be used for hash and size
-				lvi.SubItems[7].Font = fixedFont; // would be used for hash and size
+				lvi.SubItems[6].Font = _fixedFont; // would be used for hash and size
+				lvi.SubItems[7].Font = _fixedFont; // would be used for hash and size
 				lvFirmwares.Items.Add(lvi);
 
-				// build the groups in the listview as we go:
+				// build the groups in the ListView as we go:
 				if (!groups.ContainsKey(fr.SystemId))
 				{
-					string name;
-					if (!SystemGroupNames.TryGetValue(fr.SystemId, out name))
+					if (!SystemGroupNames.TryGetValue(fr.SystemId, out var name))
 						name = "FIX ME (FirmwaresConfig.cs)";
 					lvFirmwares.Groups.Add(fr.SystemId, name);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
@@ -172,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 				lvi.Group = groups[fr.SystemId];
 			}
 
-			// now that we have some items in the listview, we can size some columns to sensible widths
+			// now that we have some items in the ListView, we can size some columns to sensible widths
 			lvFirmwares.AutoResizeColumn(1, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
 			lvFirmwares.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -184,14 +179,16 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshBasePath();
 
-			cbAllowImport = new CheckBox();
-			cbAllowImport.Text = "Allow Importing of Unknown Files";
-			cbAllowImport.BackColor = Color.Transparent;
-			cbAllowImport.CheckAlign = ContentAlignment.MiddleLeft;
-			cbAllowImport.TextAlign = ContentAlignment.MiddleLeft;
-			cbAllowImport.Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false);
-			cbAllowImport.Checked = false;
-			ToolStripControlHost host = new ToolStripControlHost(cbAllowImport);
+			_cbAllowImport = new CheckBox
+			{
+				Text = "Allow Importing of Unknown Files"
+				, BackColor = Color.Transparent
+				, CheckAlign = ContentAlignment.MiddleLeft
+				, TextAlign = ContentAlignment.MiddleLeft
+				, Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false)
+				, Checked = false
+			};
+			ToolStripControlHost host = new ToolStripControlHost(_cbAllowImport);
 			toolStrip1.Items.Add(host);
 		}
 
@@ -210,9 +207,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresConfig_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			fixedFont.Dispose();
-			boldFont.Dispose();
-			boldFixedFont.Dispose();
+			_fixedFont.Dispose();
+			_boldFont.Dispose();
+			_boldFixedFont.Dispose();
 		}
 
 		private void tbbGroup_Click(object sender, EventArgs e)
@@ -223,14 +220,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvFirmwares_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
-			if (listviewSorter.column != e.Column)
+			if (_listViewSorter.Column != e.Column)
 			{
-				listviewSorter.column = e.Column;
-				listviewSorter.sign = 1;
+				_listViewSorter.Column = e.Column;
+				_listViewSorter.Sign = 1;
 			}
-			else listviewSorter.sign *= -1;
-			lvFirmwares.ListViewItemSorter = listviewSorter;
-			lvFirmwares.SetSortIcon(e.Column, listviewSorter.sign == 1 ? SortOrder.Descending : SortOrder.Ascending);
+			else _listViewSorter.Sign *= -1;
+			lvFirmwares.ListViewItemSorter = _listViewSorter;
+			lvFirmwares.SetSortIcon(e.Column, _listViewSorter.Sign == 1 ? SortOrder.Descending : SortOrder.Ascending);
 			lvFirmwares.Sort();
 		}
 
@@ -257,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (ri == null)
 				{
-					lvi.ImageIndex = idMissing;
+					lvi.ImageIndex = IdMissing;
 					lvi.ToolTipText = "No file bound for this firmware!";
 				}
 				else
@@ -273,13 +270,13 @@ namespace BizHawk.Client.EmuHawk
 					// set columns based on whether it was a known file
 					if (ri.KnownFirmwareFile == null)
 					{
-						lvi.ImageIndex = idUnsure;
+						lvi.ImageIndex = IdUnsure;
 						lvi.ToolTipText = "You've bound a custom choice here. Hope you know what you're doing.";
 						lvi.SubItems[4].Text = "-custom-";
 					}
 					else
 					{
-						lvi.ImageIndex = idOk;
+						lvi.ImageIndex = IdOk;
 						lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Description;
 					}
@@ -287,26 +284,26 @@ namespace BizHawk.Client.EmuHawk
 					// bolden the item if necessary
 					if (bolden)
 					{
-						foreach (ListViewItem.ListViewSubItem lvsi in lvi.SubItems) lvsi.Font = boldFont;
-						lvi.SubItems[6].Font = boldFixedFont;
+						foreach (ListViewItem.ListViewSubItem lvsi in lvi.SubItems) lvsi.Font = _boldFont;
+						lvi.SubItems[6].Font = _boldFixedFont;
 					}
 					else
 					{
 						foreach (ListViewItem.ListViewSubItem lvsi in lvi.SubItems) lvsi.Font = lvFirmwares.Font;
-						lvi.SubItems[6].Font = fixedFont;
+						lvi.SubItems[6].Font = _fixedFont;
 					}
 
 					// if the user specified a file but its missing, mark it as such
 					if (ri.Missing)
 					{
-						lvi.ImageIndex = idMissing;
+						lvi.ImageIndex = IdMissing;
 						lvi.ToolTipText = "The file that's specified is missing!";
 					}
 
 					// if the user specified a known firmware file but its for some other firmware, it was probably a mistake. mark it as suspicious
 					if (ri.KnownMismatching)
 					{
-						lvi.ImageIndex = idUnsure;
+						lvi.ImageIndex = IdUnsure;
 						lvi.ToolTipText = "You've manually specified a firmware file, and we're sure it's wrong. Hope you know what you're doing.";
 					}
 
@@ -349,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 				catch
 				{
 				  // sometimes moves fail. especially in newer versions of windows with explorers more fragile than your great-grandma.
-				  // I am embarassed that I know that. about windows, not your great-grandma.
+				  // I am embarrassed that I know that. about windows, not your great-grandma.
 				}
 			}
 
@@ -380,86 +377,84 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tsmiSetCustomization_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using var ofd = new OpenFileDialog
 			{
-				ofd.InitialDirectory = currSelectorDir;
-				ofd.RestoreDirectory = true;
-				string frmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+				InitialDirectory = _currSelectorDir,
+				RestoreDirectory = true
+			};
+			string firmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 
-				if (ofd.ShowDialog() == DialogResult.OK)
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				// remember the location we selected this firmware from, maybe there are others
+				_currSelectorDir = Path.GetDirectoryName(ofd.FileName);
+
+				try
 				{
-					// remember the location we selected this firmware from, maybe there are others
-					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
-
-					try
+					using var hf = new HawkFile(ofd.FileName);
+					// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
+					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 					{
-						using (var hf = new HawkFile(ofd.FileName))
+						var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+						string filePath = ofd.FileName;
+
+						// if the selected file is an archive, allow the user to pick the inside file
+						// to always be copied to the global firmwares directory
+						if (hf.IsArchive)
 						{
-							// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
-							foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
+							var ac = new ArchiveChooser(new HawkFile(filePath));
+							int memIdx;
+
+							if (ac.ShowDialog(this) == DialogResult.OK)
 							{
-								var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-								string filePath = ofd.FileName;
+								memIdx = ac.SelectedMemberIndex;
+							}
+							else
+							{
+								return;
+							}
 
-								// if the selected file is an archive, allow the user to pick the inside file
-								// to always be copied to the global firmwares directory                            
-								if (hf.IsArchive)
+							var insideFile = hf.BindArchiveMember(memIdx);
+							var fileData = insideFile.ReadAllBytes();
+
+							// write to file in the firmwares folder
+							File.WriteAllBytes(Path.Combine(firmwarePath, insideFile.Name), fileData);
+							filePath = Path.Combine(firmwarePath, insideFile.Name);
+						}
+						else
+						{
+							// selected file is not an archive
+							// check whether this file is currently outside of the global firmware directory
+							if (_currSelectorDir != firmwarePath)
+							{
+								var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
+								if (askMoveResult == DialogResult.Yes)
 								{
-									var ac = new ArchiveChooser(new HawkFile(filePath));
-									int memIdx = -1;
-
-									if (ac.ShowDialog(this) == DialogResult.OK)
+									try
 									{
-										memIdx = ac.SelectedMemberIndex;
+										var fi = new FileInfo(filePath);
+										filePath = Path.Combine(firmwarePath, fi.Name);
+										File.Copy(ofd.FileName, filePath);
 									}
-									else
+									catch (Exception ex)
 									{
-										return;
-									}
-
-									var insideFile = hf.BindArchiveMember(memIdx);
-									var fileData = insideFile.ReadAllBytes();
-
-									// write to file in the firmwares folder
-									File.WriteAllBytes(Path.Combine(frmwarePath, insideFile.Name), fileData);
-									filePath = Path.Combine(frmwarePath, insideFile.Name);
-								}
-								else
-								{
-									// selected file is not an archive
-									// check whether this file is currently outside of the global firmware directory
-									if (currSelectorDir != frmwarePath)
-									{
-										var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
-										if (askMoveResult == DialogResult.Yes)
-										{
-											try
-											{
-												FileInfo fi = new FileInfo(filePath);
-												filePath = Path.Combine(frmwarePath, fi.Name);
-												File.Copy(ofd.FileName, filePath);
-											}
-											catch (Exception ex)
-											{
-												MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
-												continue;
-											}
-										}
+										MessageBox.Show(this, $"There was an issue copying the file. The customization has NOT been set.\n\n{ex.StackTrace}");
+										continue;
 									}
 								}
-
-								Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
 							}
 						}
-					}
-					catch (Exception ex)
-					{
-						MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
-						return;
-					}
 
-					DoScan();
+						Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
+					}
 				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(this, $"There was an issue during the process. The customization has NOT been set.\n\n{ex.StackTrace}");
+					return;
+				}
+
+				DoScan();
 			}
 		}
 
@@ -486,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 				where fo.SystemId == fr.SystemId && fo.FirmwareId == fr.FirmwareId
 				select fo;
 
-			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo
+			var fciDialog = new FirmwaresConfigInfo
 			{
 				lblFirmware =
 				{
@@ -523,15 +518,15 @@ namespace BizHawk.Client.EmuHawk
 					olvi.ToolTipText = FirmwaresConfigInfo.ttBad;
 				}
 				olvi.SubItems[0].Text = ff.Size.ToString();
-				olvi.SubItems[0].Font = this.Font; // why doesnt this work?
+				olvi.SubItems[0].Font = Font; // why doesn't this work?
 				olvi.SubItems[1].Text = $"sha1:{o.Hash}";
-				olvi.SubItems[1].Font = fixedFont;
+				olvi.SubItems[1].Font = _fixedFont;
 				olvi.SubItems[2].Text = ff.RecommendedName;
-				olvi.SubItems[2].Font = this.Font; // why doesnt this work?
+				olvi.SubItems[2].Font = Font; // why doesn't this work?
 				olvi.SubItems[3].Text = ff.Description;
-				olvi.SubItems[3].Font = this.Font; // why doesnt this work?
+				olvi.SubItems[3].Font = Font; // why doesn't this work?
 				olvi.SubItems[4].Text = ff.Info;
-				olvi.SubItems[4].Font = this.Font; // why doesnt this work?
+				olvi.SubItems[4].Font = Font; // why doesn't this work?
 				fciDialog.lvOptions.Items.Add(olvi);
 			}
 
@@ -545,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvFirmwaresContextMenuStrip_Opening(object sender, CancelEventArgs e)
 		{
-			// hide menu items that arent appropriate for multi-select
+			// hide menu items that aren't appropriate for multi-select
 			tsmiSetCustomization.Visible = lvFirmwares.SelectedItems.Count == 1;
 			tsmiInfo.Visible = lvFirmwares.SelectedItems.Count == 1;
 		}
@@ -570,9 +565,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshBasePath()
 		{
-			string oldBasePath = currSelectorDir;
-			linkBasePath.Text = currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
-			if (oldBasePath != currSelectorDir)
+			string oldBasePath = _currSelectorDir;
+			linkBasePath.Text = _currSelectorDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (oldBasePath != _currSelectorDir)
 			{
 				DoScan();
 			}
@@ -580,19 +575,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tbbImport_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using var ofd = new OpenFileDialog { Multiselect = true };
+			if (ofd.ShowDialog() != DialogResult.OK)
 			{
-				ofd.Multiselect = true;
-				if (ofd.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-
-				RunImportJob(ofd.FileNames);
+				return;
 			}
+
+			RunImportJob(ofd.FileNames);
 		}
 
-		private bool RunImportJobSingle(string basepath, string f, ref string errors)
+		private bool RunImportJobSingle(string basePath, string f, ref string errors)
 		{
 			try
 			{
@@ -602,16 +594,16 @@ namespace BizHawk.Client.EmuHawk
 					return false;
 				}
 
-				string target = Path.Combine(basepath, fi.Name);
+				string target = Path.Combine(basePath, fi.Name);
 				if (new FileInfo(target).Exists)
 				{
-					// compare the files, if theyre the same. dont do anything
+					// compare the files, if they're the same. don't do anything
 					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))
 					{
 						return false;
 					}
 
-					// hmm theyre different. import but rename it
+					// hmm they're different. import but rename it
 					string dir = Path.GetDirectoryName(target);
 					string ext = Path.GetExtension(target);
 					string name = Path.GetFileNameWithoutExtension(target);
@@ -638,50 +630,48 @@ namespace BizHawk.Client.EmuHawk
 		private void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
-			var basepath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 			string errors = "";
 			foreach(var f in files)
 			{
-				using (var hf = new HawkFile(f))
+				using var hf = new HawkFile(f);
+				if (hf.IsArchive)
 				{
-					if (hf.IsArchive)
+					// blech. the worst extraction code in the universe.
+					string extractPath = $"{Path.GetTempFileName()}.dir";
+					DirectoryInfo di = Directory.CreateDirectory(extractPath);
+
+					try
 					{
-						// blech. the worst extraction code in the universe.
-						string extractpath = $"{Path.GetTempFileName()}.dir";
-						DirectoryInfo di = Directory.CreateDirectory(extractpath);
-
-						try
+						foreach (var ai in hf.ArchiveItems)
 						{
-							foreach (var ai in hf.ArchiveItems)
-							{
-								hf.BindArchiveMember(ai);
-								var stream = hf.GetStream();
-								var ms = new MemoryStream();
-								Util.CopyStream(hf.GetStream(), ms, stream.Length);
-								string outfile = ai.Name;
-								string myname = Path.GetFileName(outfile);
-								outfile = Path.Combine(extractpath, myname);
-								File.WriteAllBytes(outfile, ms.ToArray());
-								hf.Unbind();
+							hf.BindArchiveMember(ai);
+							var stream = hf.GetStream();
+							var ms = new MemoryStream();
+							Util.CopyStream(hf.GetStream(), ms, stream.Length);
+							string outfile = ai.Name;
+							string myname = Path.GetFileName(outfile);
+							outfile = Path.Combine(extractPath, myname);
+							File.WriteAllBytes(outfile, ms.ToArray());
+							hf.Unbind();
 
-								if (cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
-								{
-									didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
-								}
+							if (_cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
+							{
+								didSomething |= RunImportJobSingle(basePath, outfile, ref errors);
 							}
 						}
-						finally
-						{
-							di.Delete(true);
-						}
 					}
-					else
+					finally
 					{
-						if (cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
-						{
-							didSomething |= RunImportJobSingle(basepath, f, ref errors);
-						} 
+						di.Delete(true);
 					}
+				}
+				else
+				{
+					if (_cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
+					{
+						didSomething |= RunImportJobSingle(basePath, f, ref errors);
+					} 
 				}
 			}
 
@@ -720,5 +710,5 @@ namespace BizHawk.Client.EmuHawk
 				RunImportJob(files);
 			}
 		}
-	} // class FirmwaresConfig
+	}
 }
