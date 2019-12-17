@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
+		private readonly MainForm _mainForm;
 		private readonly PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
 
 		private List<IMovie> _movieList = new List<IMovie>();
@@ -24,8 +25,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortDetailsReverse;
 		private string _sortedDetailsCol;
 
-		public PlayMovie()
+		public PlayMovie(MainForm mainForm)
 		{
+			_mainForm = mainForm;
 			InitializeComponent();
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
@@ -59,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			var indices = MovieView.SelectedIndices;
 			if (indices.Count > 0) // Import file if necessary
 			{
-				GlobalWin.MainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
+				_mainForm.StartNewMovie(_movieList[MovieView.SelectedIndices[0]], false);
 			}
 		}
 
@@ -607,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 			if (StopOnFrameCheckbox.Checked && 
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
-				GlobalWin.MainForm.PauseOnFrame = LastFrameCheckbox.Checked
+				_mainForm.PauseOnFrame = LastFrameCheckbox.Checked
 					? Global.MovieSession.Movie.InputLogLength
 					: StopOnFrameTextBox.ToRawInt();
 			}

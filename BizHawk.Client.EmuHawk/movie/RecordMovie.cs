@@ -12,16 +12,17 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	// TODO - Allow relative paths in record textbox
+	// TODO - Allow relative paths in record TextBox
 	public partial class RecordMovie : Form
 	{
+		private readonly MainForm _mainForm;
 		private readonly IEmulator _emulator;
 
-		public RecordMovie(IEmulator core)
+		public RecordMovie(MainForm mainForm, IEmulator core)
 		{
-			InitializeComponent();
-
+			_mainForm = mainForm;
 			_emulator = core;
+			InitializeComponent();
 
 			if (!_emulator.HasSavestates())
 			{
@@ -126,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 				movieToRecord.PopulateWithDefaultHeaderValues(AuthorBox.Text);
 				movieToRecord.Save();
-				GlobalWin.MainForm.StartNewMovie(movieToRecord, true);
+				_mainForm.StartNewMovie(movieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)

@@ -489,13 +489,13 @@ namespace BizHawk.Client.EmuHawk
 				// Inaccurate core but allow the user to continue anyway
 			}
 
-			using var form = new RecordMovie(Emulator);
+			using var form = new RecordMovie(this, Emulator);
 			form.ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PlayMovie();
+			using var form = new PlayMovie(this);
 			form.ShowDialog();
 		}
 
