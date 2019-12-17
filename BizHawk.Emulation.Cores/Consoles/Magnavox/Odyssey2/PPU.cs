@@ -58,7 +58,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				ret = VDC_col_ret;
 				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
 			}
-			else if(addr == 0xA3)
+			else if(addr == 0xA4)
+			{
+				ret = (byte)LY;
+			}
+			else if (addr == 0xA5)
+			{
+				ret = (byte)(cycle - 43);
+			}
+			else if (addr == 0xA3)
 			{
 				ret = VDC_color;
 			}
@@ -105,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA0)
 			{
 				VDC_ctrl = value;
-				//Console.WriteLine(value + " " + Core.cpu.TotalExecutedCycles);
+				//Console.WriteLine("VDC_ctrl: " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA1)
 			{
@@ -118,6 +126,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA3)
 			{
 				VDC_color = value;
+			}
+			else if (addr == 0xA4)
+			{
+				// writing has no effect
+			}
+			else if (addr == 0xA5)
+			{
+				// writing has no effect
 			}
 			else if (addr <= 0xAA)
 			{
@@ -559,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				case 0xA9: ret = shift_reg_2; break;
 				case 0xAA: ret = aud_ctrl; break;
 			}
-
+			//Console.WriteLine("aud read: " + (addr - 0xA7) + " " + ret + " " + Core.cpu.TotalExecutedCycles);
 			return ret;
 		}
 
@@ -573,7 +589,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				case 0xAA: aud_ctrl = value; break;
 			}
 
-			//Console.WriteLine((addr - 0xA7) + " " + value);
+			//Console.WriteLine("aud write: " + (addr - 0xA7) + " " + value + " " + Core.cpu.TotalExecutedCycles);
 		}
 
 		public void Audio_tick()

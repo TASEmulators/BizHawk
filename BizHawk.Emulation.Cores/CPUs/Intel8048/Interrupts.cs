@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 							IDLE,
 							PUSH,
 							IDLE,
-							SET_ADDR, PC, ALU, 0);
+							TR, PC, ALU);
 
 			IRQS = 10;
 		}

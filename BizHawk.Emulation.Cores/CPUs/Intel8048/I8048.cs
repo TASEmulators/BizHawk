@@ -358,7 +358,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[PC] = (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8] & 0xFF);
 					Regs[PC] |= (ushort)((Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF) << 8);
 					Regs[PSW] &= 0xF;
-					Regs[PSW] |= (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF0);				
+					Regs[PSW] |= (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF0);
+					RB = (ushort)(FlagBS ? 24 : 0);
 					break;
 				case PULL_PC:
 					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) - 1) & 0x7) | (Regs[PSW] & 0xF8));

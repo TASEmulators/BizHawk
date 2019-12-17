@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				cpu.Regs[i] = (byte)i;
 			}
-			*/
+			
 
 			for (int j = 0; j < 0x80; j++)
 			{
@@ -119,6 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				ppu.WriteReg(k, (byte)k);
 			}
+			*/
 		}
 
 		public DisplayType Region => DisplayType.NTSC;
