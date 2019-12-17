@@ -237,7 +237,11 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
-			GlobalWin.OSD.AddMessage("Message settings saved");
+			Close();
+		}
+
+		private void Cancel_Click(object sender, EventArgs e)
+		{
 			Close();
 		}
 
@@ -258,12 +262,6 @@ namespace BizHawk.Client.EmuHawk
 			_py = (int)YNumeric.Value;
 			SetPositionLabels();
 			PositionPanel.Refresh();
-		}
-
-		private void Cancel_Click(object sender, EventArgs e)
-		{
-			GlobalWin.OSD.AddMessage("Message config aborted");
-			Close();
 		}
 
 		private void PositionPanel_MouseEnter(object sender, EventArgs e)

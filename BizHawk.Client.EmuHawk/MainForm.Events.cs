@@ -995,7 +995,10 @@ namespace BizHawk.Client.EmuHawk
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new MessageConfig();
-			form.ShowDialog();
+			var result = form.ShowDialog();
+			AddOnScreenMessage(result == DialogResult.OK
+				? "Message settings saved"
+				: "Message config aborted");
 		}
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
