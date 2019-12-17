@@ -2612,40 +2612,55 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZxSpectrumJoystickSettings();
-			form.ShowDialog();
+			if (Emulator is ZXSpectrum zxs)
+			{
+				using var form = new ZxSpectrumJoystickSettings(this, zxs.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZxSpectrumCoreEmulationSettings();
-			form.ShowDialog();
+			if (Emulator is ZXSpectrum speccy)
+			{
+				using var form = new ZxSpectrumCoreEmulationSettings(this, speccy.GetSyncSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZxSpectrumNonSyncSettings();
-			form.ShowDialog();
+			if (Emulator is ZXSpectrum speccy)
+			{
+				using var form = new ZxSpectrumNonSyncSettings(this, speccy.GetSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZxSpectrumAudioSettings();
-			form.ShowDialog();
+			if (Emulator is ZXSpectrum speccy)
+			{
+				using var form = new ZxSpectrumAudioSettings(this, speccy.GetSettings().Clone());
+				form.ShowDialog();
+			}
 		}
 
 		private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new ZxSpectrumPokeMemory();
-			form.ShowDialog();
+			if (Emulator is ZXSpectrum speccy)
+			{
+				using var form = new ZxSpectrumPokeMemory(this, speccy);
+				form.ShowDialog();
+			}
 		}
 
 		private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is ZXSpectrum)
+			if (Emulator is ZXSpectrum speccy)
 			{
-				ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
-				ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
+				ZXSpectrumTapesSubMenu.Enabled = speccy._tapeInfo.Count > 0;
+				ZXSpectrumDisksSubMenu.Enabled = speccy._diskInfo.Count > 0;
 			}
 		}
 
@@ -2653,7 +2668,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
-			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+			var items = new List<ToolStripMenuItem>();
 
 			if (Emulator is ZXSpectrum speccy)
 			{

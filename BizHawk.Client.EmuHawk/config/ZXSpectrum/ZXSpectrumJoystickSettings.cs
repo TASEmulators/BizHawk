@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumJoystickSettings : Form
 	{
-		private ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
+		private readonly MainForm _mainForm;
+		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 		private string[] _possibleControllers;
 
-		public ZxSpectrumJoystickSettings()
+		public ZxSpectrumJoystickSettings(
+			MainForm mainForm,
+			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = ((ZXSpectrum)Global.Emulator).GetSyncSettings().Clone();
-
 			_possibleControllers = Enum.GetNames(typeof(JoystickType));
 
 			foreach (var val in _possibleControllers)
@@ -99,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 					_syncSettings.JoystickType2 = (JoystickType)Enum.Parse(typeof(JoystickType), Port2ComboBox.SelectedItem.ToString());
 					_syncSettings.JoystickType3 = (JoystickType)Enum.Parse(typeof(JoystickType), Port3ComboBox.SelectedItem.ToString());
 
-					GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+					_mainForm.PutCoreSyncSettings(_syncSettings);
 
 					DialogResult = DialogResult.OK;
 					Close();
@@ -118,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Joystick settings aborted");
+			_mainForm.AddOnScreenMessage("Joystick settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

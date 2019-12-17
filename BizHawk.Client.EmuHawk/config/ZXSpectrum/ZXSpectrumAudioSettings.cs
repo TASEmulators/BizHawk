@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumAudioSettings : Form
 	{
-		private ZXSpectrum.ZXSpectrumSettings _settings;
+		private readonly MainForm _mainForm;
+		private readonly ZXSpectrum.ZXSpectrumSettings _settings;
 
-		public ZxSpectrumAudioSettings()
+		public ZxSpectrumAudioSettings(
+			MainForm mainForm,
+			ZXSpectrum.ZXSpectrumSettings settings)
 		{
+			_mainForm = mainForm;
+			_settings = settings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_settings = ((ZXSpectrum)Global.Emulator).GetSettings().Clone();
-
 			// AY panning config
 			var panTypes = Enum.GetNames(typeof(AY38912.AYPanConfig));
 			foreach (var val in panTypes)
@@ -53,8 +54,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.EarVolume = earVolumetrackBar.Value;
 				_settings.AYVolume = ayVolumetrackBar.Value;
 
-				GlobalWin.MainForm.PutCoreSettings(_settings);
-
+				_mainForm.PutCoreSettings(_settings);
 				DialogResult = DialogResult.OK;
 				Close();
 			}
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Misc settings aborted");
+			_mainForm.AddOnScreenMessage("Misc settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

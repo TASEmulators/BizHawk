@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class ZxSpectrumCoreEmulationSettings : Form
 	{
-		private ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
+		private readonly MainForm _mainForm;
+		private readonly ZXSpectrum.ZXSpectrumSyncSettings _syncSettings;
 
-		public ZxSpectrumCoreEmulationSettings()
+		public ZxSpectrumCoreEmulationSettings(
+			MainForm mainForm,
+			ZXSpectrum.ZXSpectrumSyncSettings syncSettings)
 		{
+			_mainForm = mainForm;
+			_syncSettings = syncSettings;
 			InitializeComponent();
 		}
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = ((ZXSpectrum)Global.Emulator).GetSyncSettings().Clone();
-
 			// machine selection
 			var machineTypes = Enum.GetNames(typeof(MachineType));
 			foreach (var val in machineTypes)
@@ -59,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				_syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
 				_syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
-				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
+				_mainForm.PutCoreSyncSettings(_syncSettings);
 
 				DialogResult = DialogResult.OK;
 				Close();
@@ -73,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Core emulator settings aborted");
+			_mainForm.AddOnScreenMessage("Core emulator settings aborted");
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
