@@ -12,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PathConfig : Form
 	{
+		private readonly Config _config;
+
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
 		private void LockDownCores()
@@ -39,16 +41,17 @@ namespace BizHawk.Client.EmuHawk
 			"..\\",
 		};
 
-		public PathConfig()
+		public PathConfig(Config config)
 		{
+			_config = config;
 			InitializeComponent();
 		}
 
 		private void LoadSettings()
 		{
-			RecentForROMs.Checked = Global.Config.UseRecentForROMs;
+			RecentForROMs.Checked = _config.UseRecentForROMs;
 
-			DoTabs(Global.Config.PathEntries.ToList());
+			DoTabs(_config.PathEntries.ToList());
 			SetDefaultFocusedTab();
 			DoRomToggle();
 		}
@@ -80,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.TabPages.Clear();
 
 			// Separate by system
-			var systems = Global.Config.PathEntries
+			var systems = _config.PathEntries
 				.Select(s => s.SystemDisplayName)
 				.Distinct()
 				.ToList();
@@ -104,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var systemDisplayName in systems)
 			{
-				var systemId = Global.Config.PathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
+				var systemId = _config.PathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
 				var t = new TabPage
 				{
 					Text = systemDisplayName,
@@ -249,11 +252,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
-			Global.Config.UseRecentForROMs = RecentForROMs.Checked;
+			_config.UseRecentForROMs = RecentForROMs.Checked;
 
 			foreach (var t in AllPathBoxes)
 			{
-				var pathEntry = Global.Config.PathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
+				var pathEntry = _config.PathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
 			}
 		}
