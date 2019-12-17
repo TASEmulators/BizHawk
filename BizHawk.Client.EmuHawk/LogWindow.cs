@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		//TODO: only show add to game db when this is a Rom details dialog
 		//Let user decide what type (instead of always adding it as a good dump)
-		private readonly List<string> Lines = new List<string>();
+		private readonly List<string> _lines = new List<string>();
 
 		public LogWindow()
 		{
@@ -29,21 +29,22 @@ namespace BizHawk.Client.EmuHawk
 				LogConsole.notifyLogWindowClosing();
 				SaveConfigSettings();
 			};
-			virtualListView1_ClientSizeChanged(null, null);
+			ListView_ClientSizeChanged(null, null);
 		}
 
 		public static void ShowReport(string title, string report, IWin32Window parent)
 		{
-			using (var dlg = new LogWindow())
+			using var dlg = new LogWindow();
+			var ss = report.Split('\n');
+			foreach (var s in ss)
 			{
-				var ss = report.Split('\n');
-				foreach (var s in ss)
-					dlg.Lines.Add(s.TrimEnd('\r'));
-				dlg.virtualListView1.VirtualListSize = ss.Length;
-				dlg.Text = title;
-				dlg.btnClear.Visible = false;
-				dlg.ShowDialog(parent);
+				dlg._lines.Add(s.TrimEnd('\r'));
 			}
+
+			dlg.virtualListView1.VirtualListSize = ss.Length;
+			dlg.Text = title;
+			dlg.btnClear.Visible = false;
+			dlg.ShowDialog(parent);
 		}
 
 		public void Append(string str)
@@ -53,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!string.IsNullOrWhiteSpace(s))
 				{
-					Lines.Add(s.TrimEnd('\r'));
+					_lines.Add(s.TrimEnd('\r'));
 					virtualListView1.VirtualListSize++;
 				}
 			}
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnClear_Click(object sender, EventArgs e)
 		{
-			Lines.Clear();
+			_lines.Clear();
 			virtualListView1.VirtualListSize = 0;
 			virtualListView1.SelectedIndices.Clear();
 		}
@@ -98,40 +99,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void virtualListView1_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
+		private void ListView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
 		{
-			e.Item = new ListViewItem(Lines[e.ItemIndex]);
+			e.Item = new ListViewItem(_lines[e.ItemIndex]);
 		}
 
-		private void virtualListView1_ClientSizeChanged(object sender, EventArgs e)
+		private void ListView_ClientSizeChanged(object sender, EventArgs e)
 		{
 			virtualListView1.Columns[0].Width = virtualListView1.ClientSize.Width;
 		}
 
-		private void buttonCopy_Click(object sender, EventArgs e)
-		{
-			var sb = new StringBuilder();
-			foreach (int i in virtualListView1.SelectedIndices)
-				sb.AppendLine(Lines[i]);
-			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
-		}
-
-		private void buttonCopyAll_Click(object sender, EventArgs e)
-		{
-			var sb = new StringBuilder();
-			foreach (var s in Lines)
-				sb.AppendLine(s);
-			if (sb.Length > 0)
-				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
-		}
-
-		private void virtualListView1_KeyDown(object sender, KeyEventArgs e)
+		private void ListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
 			{
-				buttonCopy_Click(null, null);
+				ButtonCopy_Click(null, null);
 			}
+		}
+
+		private void ButtonCopy_Click(object sender, EventArgs e)
+		{
+			var sb = new StringBuilder();
+			foreach (int i in virtualListView1.SelectedIndices)
+				sb.AppendLine(_lines[i]);
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
+		}
+
+		private void ButtonCopyAll_Click(object sender, EventArgs e)
+		{
+			var sb = new StringBuilder();
+			foreach (var s in _lines)
+				sb.AppendLine(s);
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString(), TextDataFormat.Text);
 		}
 
 		private void HideShowGameDbButton()

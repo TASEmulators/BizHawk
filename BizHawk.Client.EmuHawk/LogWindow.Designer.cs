@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 			this.buttonCopy.TabIndex = 3;
 			this.buttonCopy.Text = "Copy Sel.";
 			this.buttonCopy.UseVisualStyleBackColor = true;
-			this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
+			this.buttonCopy.Click += new System.EventHandler(this.ButtonCopy_Click);
 			// 
 			// buttonCopyAll
 			// 
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			this.buttonCopyAll.TabIndex = 4;
 			this.buttonCopyAll.Text = "Copy All";
 			this.buttonCopyAll.UseVisualStyleBackColor = true;
-			this.buttonCopyAll.Click += new System.EventHandler(this.buttonCopyAll_Click);
+			this.buttonCopyAll.Click += new System.EventHandler(this.ButtonCopyAll_Click);
 			// 
 			// AddToGameDbBtn
 			// 
@@ -133,9 +133,9 @@ namespace BizHawk.Client.EmuHawk
 			this.virtualListView1.UseCompatibleStateImageBehavior = false;
 			this.virtualListView1.View = System.Windows.Forms.View.Details;
 			this.virtualListView1.VirtualMode = true;
-			this.virtualListView1.RetrieveVirtualItem += new RetrieveVirtualItemEventHandler(this.virtualListView1_QueryItemText);
-			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.virtualListView1_ClientSizeChanged);
-			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.virtualListView1_KeyDown);
+			this.virtualListView1.RetrieveVirtualItem += new RetrieveVirtualItemEventHandler(this.ListView_QueryItemText);
+			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.ListView_ClientSizeChanged);
+			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListView_KeyDown);
 			// 
 			// LogWindow
 			// 
