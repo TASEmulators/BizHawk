@@ -20,12 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_col_ret, VDC_color;
 		public byte Frame_Col, Pixel_Stat;
 
-
-		// register variables
 		public int LY;
-		public byte LY_actual;
-		public byte LY_inc;
-		public byte LYC;
 		public int cycle;
 		public bool VBL;
 		public bool HBL;
@@ -152,8 +147,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (cycle == 43)
 				{
 					HBL = false;
-					// trigger timer tick if enabled
-					if (Core.cpu.counter_en) { Core.cpu.T1 = false; }
+					// Send T1 pulses
+					Core.cpu.T1 = false;
 					//if (VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
 					
 					if (LY == 240) { VDC_status |= 0x08; }
@@ -356,8 +351,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				HBL = true;
 				
 
-				// trigger timer tick if enabled
-				if (Core.cpu.counter_en) { Core.cpu.T1 = true; }
+				// send T1 pulses
+				Core.cpu.T1 = true;
 
 				LY++;
 				if (LY == 240)
@@ -470,7 +465,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x38, 0x38, 0x30, 0x3C, 0x30, 0x68, 0x4C, 00, // (runner R)		0x33
 															0x38, 0x38, 0x18, 0x78, 0x18, 0x2C, 0x64, 00, // (runner L)		0x34
 															0x38, 0x38, 0x18, 0x78, 0x18, 0x18, 0x38, 00, // (person L)		0x35
-															0x00, 0x18, 0xC0, 0xF7, 0xC0, 0x18, 0x00, 00, // (arrow R)		0x36
+															0x00, 0x18, 0x0C, 0xFE, 0x0C, 0x18, 0x00, 00, // (arrow R)		0x36
 															0x18, 0x3C, 0x7E, 0xFF, 0xFF, 0x18, 0x18, 00, // (tree)			0x37
 															0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 00, // (ramp R)		0x38
 															0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 00, // (ramp L)		0x39
@@ -533,9 +528,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 
 			ser.Sync(nameof(LY), ref LY);
-			ser.Sync(nameof(LY_actual), ref LY_actual);
-			ser.Sync(nameof(LY_inc), ref LY_inc);
-			ser.Sync(nameof(LYC), ref LYC);
 			ser.Sync(nameof(cycle), ref cycle);
 			ser.Sync(nameof(VBL), ref VBL);
 			ser.Sync(nameof(HBL), ref HBL);

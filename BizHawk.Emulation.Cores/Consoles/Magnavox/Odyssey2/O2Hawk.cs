@@ -19,14 +19,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		// memory domains
 		public byte[] RAM = new byte[0x80];
 
-		public byte[] OAM = new byte[0xA0];
-
-		public int RAM_Bank;
 		public byte addr_latch;
 		public byte kb_byte;
 		public bool ppu_en, RAM_en, kybrd_en, copy_en, lum_en, cart_b0, cart_b1;
 		public ushort rom_bank;
-		public const bool P15 = true;
 
 		public byte[] _bios;
 		public readonly byte[] _rom;		
@@ -134,9 +130,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
-			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
-
+			// bank switching carts expect to be in upper bank on boot up, so can't have 0 at ports
 			WritePort(1, 0xFF);
+			WritePort(2, 0xFF);
 
 			ppu.Reset();
 			serialport.Reset();

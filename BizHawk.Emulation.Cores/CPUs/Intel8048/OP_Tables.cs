@@ -406,8 +406,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
-							IDLE,
-							MEM_ALU, A,
+							SET_ADDR_8, PC, A,
+							RD, ALU, PC,
 							IDLE,
 							IDLE,
 							IDLE,

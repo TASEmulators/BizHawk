@@ -76,9 +76,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			// memory domains
 			ser.Sync(nameof(RAM), ref RAM, false);
-			ser.Sync(nameof(OAM), ref OAM, false);
 			ser.Sync(nameof(_bios), ref _bios, false);
-			ser.Sync(nameof(RAM_Bank), ref RAM_Bank);
 			ser.Sync(nameof(addr_latch), ref addr_latch);
 			ser.Sync(nameof(kb_byte), ref kb_byte);
 			ser.Sync(nameof(kb_state_row), ref kb_state_row);

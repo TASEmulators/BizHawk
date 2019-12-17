@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			"MOV   @R0,i8", // b0
 			"MOV   @R1,i8", // b1
 			"JPB   5,i8", // b2
-			"JPP   A,i8", // b3
+			"JPP   A", // b3
 			"CALL  5,i8", // b4
 			"COM   F1", // b5
 			"JP    F0,i8", // b6

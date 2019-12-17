@@ -78,8 +78,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort SET_ADDR_M3 = 65;
 		public const ushort MOVT_RAM_D = 66;
 
-		public ushort test;
-
 		public I8048()
 		{
 			Reset();
@@ -100,6 +98,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			IRQS = 5;
 			instr_pntr = irq_pntr = 0;
 			Regs[PX + 1] = 0xFF;
+			Regs[PX + 2] = 0xFF;
 		}
 
 		// Memory Access 
@@ -165,7 +164,9 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					if (OnExecFetch != null) OnExecFetch(PC);
 					if (TraceCallback != null) TraceCallback(State());
 					if (CDLCallback != null) CDLCallback(PC, eCDLogMemFlags.FetchFirst);
-					FetchInstruction(ReadMemory(Regs[PC]++));
+					FetchInstruction(ReadMemory(Regs[PC]));
+					Regs[ALU2] = (ushort)(Regs[PC] & 0x800);
+					Regs[PC] = (ushort)(((Regs[PC] + 1) & 0x7FF) | Regs[ALU2]);
 					instr_pntr = 0;
 					irq_pntr = -1;
 					break;
@@ -530,8 +531,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		/// </summary>	
 		private void PopulateCURINSTR(ushort d0 = 0, ushort d1 = 0, ushort d2 = 0, ushort d3 = 0, ushort d4 = 0, ushort d5 = 0, ushort d6 = 0, ushort d7 = 0, ushort d8 = 0,
 			ushort d9 = 0, ushort d10 = 0, ushort d11 = 0, ushort d12 = 0, ushort d13 = 0, ushort d14 = 0, ushort d15 = 0, ushort d16 = 0, ushort d17 = 0, ushort d18 = 0,
-			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0, ushort d27 = 0, ushort d28 = 0,
-			ushort d29 = 0, ushort d30 = 0, ushort d31 = 0, ushort d32 = 0, ushort d33 = 0, ushort d34 = 0, ushort d35 = 0, ushort d36 = 0, ushort d37 = 0, ushort d38 = 0)
+			ushort d19 = 0, ushort d20 = 0, ushort d21 = 0, ushort d22 = 0, ushort d23 = 0, ushort d24 = 0, ushort d25 = 0, ushort d26 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;
@@ -542,16 +542,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 			cur_instr[18] = d18; cur_instr[19] = d19; cur_instr[20] = d20;
 			cur_instr[21] = d21; cur_instr[22] = d22; cur_instr[23] = d23;
 			cur_instr[24] = d24; cur_instr[25] = d25; cur_instr[26] = d26;
-			cur_instr[27] = d27; cur_instr[28] = d28; cur_instr[29] = d29;
-			cur_instr[30] = d30; cur_instr[31] = d31; cur_instr[32] = d32;
-			cur_instr[33] = d33; cur_instr[34] = d34; cur_instr[35] = d35;
-			cur_instr[36] = d36; cur_instr[37] = d37; cur_instr[38] = d38;
 		}
 
 		// State Save/Load
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("MC6809");
+			ser.BeginSection("I8048");
 
 			ser.Sync(nameof(IntEn), ref IntEn);
 			ser.Sync(nameof(TimIntEn), ref TimIntEn);
