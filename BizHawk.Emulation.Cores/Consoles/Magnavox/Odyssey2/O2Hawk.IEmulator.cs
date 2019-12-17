@@ -190,16 +190,24 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public void SendVideoBuffer()
 		{
-			for (int j = 0; j < frame_buffer.Length; j++) 
-			{ 
-				frame_buffer[j] = _vidbuffer[j];
-				_vidbuffer[j] = 0;
+			for (int j = 0; j < 240; j++) 
+			{
+				for (int i = 0; i < 160; i++)
+				{
+					frame_buffer[j * 160 + i] = _vidbuffer[j * 186 + i];
+					_vidbuffer[j * 186 + i] = 0;
+				}
+
+				for (int k = 160; k < 186; k++)
+				{
+					_vidbuffer[j * 186 + k] = 0;
+				}
 			}
 		}
 
-		public int VirtualWidth => 372;
+		public int VirtualWidth => 320;
 		public int VirtualHeight => 240;
-		public int BufferWidth => 186;
+		public int BufferWidth => 160;
 		public int BufferHeight => 240;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;

@@ -742,8 +742,6 @@
     <Compile Include="Consoles\Magnavox\Odyssey2\MemoryMap.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\PPU.cs" />
     <Compile Include="Consoles\Magnavox\Odyssey2\SerialPort.cs" />
-    <Compile Include="Consoles\Magnavox\LibO2Em.cs" />
-    <Compile Include="Consoles\Magnavox\O2Em.cs" />
     <Compile Include="Consoles\NEC\PCFX\LibTst.cs" />
     <Compile Include="Consoles\NEC\PCFX\Tst.cs" />
     <Compile Include="Consoles\NEC\PCFX\TstControllerDeck.cs" />

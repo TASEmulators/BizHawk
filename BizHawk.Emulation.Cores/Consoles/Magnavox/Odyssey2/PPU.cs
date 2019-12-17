@@ -14,10 +14,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte[] Sprite_Shapes = new byte[32];
 		public byte[] Foreground = new byte[48];
 		public byte[] Quad_Chars = new byte[64];
-		public byte[] Grid_H = new byte[16];
-		public byte[] Grid_V = new byte[8];
+		public byte[] Grid_H = new byte[18];
+		public byte[] Grid_V = new byte[10];
 
-		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_color;
+		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_col_ret, VDC_color;
 		public byte Frame_Col, Pixel_Stat;
 
 
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			}
 			else if (addr == 0xA2)
 			{
-				ret = 0;//VDC_collision;
+				ret = VDC_col_ret;
 				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if(addr == 0xA3)
@@ -71,15 +71,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				ret = AudioReadReg(addr);
 			}
-			else if ((addr >= 0xC0) && (addr < 0xC8))
+			else if ((addr >= 0xC0) && (addr <= 0xC8))
 			{
 				ret = Grid_H[addr - 0xC0];
 			}
-			else if ((addr >= 0xD0) && (addr < 0xD8))
+			else if ((addr >= 0xD0) && (addr <= 0xD8))
 			{
-				ret = Grid_H[addr - 0xD0 + 8];
+				ret = Grid_H[addr - 0xD0 + 9];
 			}
-			else if ((addr >= 0xE0) && (addr < 0xE8))
+			else if ((addr >= 0xE0) && (addr <= 0xE9))
 			{
 				ret = Grid_V[addr - 0xE0];
 			}
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr < 0x80)
 			{
 				Quad_Chars[addr - 0x40] = value;
-				//Quad_Chars[0x0E] = 0x7;
+				//Console.WriteLine("quad: " + (addr - 0x40) + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0xA0)
 			{
@@ -128,15 +128,15 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				AudioWriteReg(addr, value);
 			}
-			else if ((addr >= 0xC0) && (addr < 0xC8))
+			else if ((addr >= 0xC0) && (addr <= 0xC8))
 			{
 				Grid_H[addr - 0xC0] = value;
 			}
-			else if ((addr >= 0xD0) && (addr < 0xD8))
+			else if ((addr >= 0xD0) && (addr <= 0xD8))
 			{
-				Grid_H[addr - 0xD0 + 8] = value;
+				Grid_H[addr - 0xD0 + 9] = value;
 			}
-			else if ((addr >= 0xE0) && (addr < 0xE8))
+			else if ((addr >= 0xE0) && (addr <= 0xE9))
 			{
 				Grid_V[addr - 0xE0] = value;
 			}
@@ -163,6 +163,48 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				// draw a pixel
 				if (LY < 240)
 				{
+					// background
+					if ((((cycle - 43) % 16) == 8) && ((LY - 24) >= 0))
+					{
+						int k = (int)Math.Floor((cycle - 43) / 16.0);
+						int j = (int)Math.Floor((LY - 24) / 24.0);
+						if ((k < 10) && (j < 8))
+						{
+							if (Grid_V[k].Bit(j))
+							{
+								Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_BG[VDC_color & 0x7];
+								Pixel_Stat |= 0x10;
+							}
+						}
+					}
+
+					if (((LY % 24) < 3) && ((cycle - 43 - 8) >= 0) && ((LY - 24) >= 0))
+					{
+						int k = (int)Math.Floor((cycle - 43 - 8) / 16.0);
+						int j = (int)Math.Floor((LY - 24) / 24.0);
+						//Console.WriteLine(k + " " + j);
+						if ((k < 9) && (j < 9))
+						{
+							if (j == 8)
+							{
+								if (Grid_H[k + 9].Bit(0))
+								{
+									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_BG[VDC_color & 0x7];
+									Pixel_Stat |= 0x20;
+								}
+							}
+							else
+							{
+								if (Grid_H[k].Bit(j))
+								{
+									Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_BG[VDC_color & 0x7];
+									Pixel_Stat |= 0x20;
+								}
+							}
+
+						}
+					}
+
 					// sprites
 					for (int i = 3; i >= 0; i--)
 					{
@@ -185,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 										Core._vidbuffer[LY * 186 + (cycle - 43)] = (int) Color_Palette_SPR[(Sprites[i * 4 + 2] >> 3) & 0x7];
 									}
 
-									Pixel_Stat |= (byte)(i << 1);
+									Pixel_Stat |= (byte)(1 << i);
 								}
 							}
 						}
@@ -194,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// single characters
 					for (int i = 0; i < 12; i++)
 					{
-						if ((LY >= Foreground[i * 4]) && (LY < (Foreground[i * 4] + 8 * 2)))
+						if ((LY >= Foreground[i * 4]) && (LY < (Foreground[i * 4] + 7 * 2)))
 						{
 							if (((cycle - 43) >= Foreground[i * 4 + 1]) && ((cycle - 43) < (Foreground[i * 4 + 1] + 8)))
 							{
@@ -208,20 +250,22 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 								if (char_pick < 0)
 								{
 									char_pick &= 0xFF;
-									char_pick = char_pick >> 1;
-									char_pick |= (Foreground[i * 4 + 3] & 1) << 7;
-									char_pick = char_pick << 1;
+									char_pick |= (Foreground[i * 4 + 3] & 1) << 8;
 								}
 								else
 								{
 									char_pick &= 0xFF;
-									char_pick = char_pick >> 1;
-									char_pick |= (~(Foreground[i * 4 + 3] & 1)) << 7;
-									char_pick &= 0xFF;
-									char_pick = char_pick << 1;
+									char_pick |= (~(Foreground[i * 4 + 3] & 1)) << 8;
+									char_pick &= 0x1FF;
 								}
+								
+								// don't display past the end of a character
+								int pixel_pick = 0;
 
-								int pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
+								if ((char_pick & 7) + offset_y < 7)
+								{
+									pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
+								}
 
 								if (pixel_pick == 1)
 								{
@@ -239,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// quads
 					for (int i = 0; i < 4; i++)
 					{
-						if ((LY >= Quad_Chars[i * 16]) && (LY < (Quad_Chars[i * 16] + 8 * 2)))
+						if ((LY >= Quad_Chars[i * 16]) && (LY < (Quad_Chars[i * 16] + 7 * 2)))
 						{
 							if (((cycle - 43) >= Quad_Chars[i * 16 + 1]) && ((cycle - 43) < (Quad_Chars[i * 16 + 1] + 64)))
 							{
@@ -264,17 +308,13 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 									if (char_pick < 0)
 									{
 										char_pick &= 0xFF;
-										char_pick = char_pick >> 1;
 										char_pick |= (Quad_Chars[i * 16 + 4 * quad_num + 3] & 1) << 7;
-										char_pick = char_pick << 1;
 									}
 									else
 									{
 										char_pick &= 0xFF;
-										char_pick = char_pick >> 1;
-										char_pick |= (~(Quad_Chars[i * 16 + 4 * quad_num + 3] & 1)) << 7;
-										char_pick &= 0xFF;
-										char_pick = char_pick << 1;
+										char_pick |= (~(Quad_Chars[i * 16 + 4 * quad_num + 3] & 1)) << 8;
+										char_pick &= 0x1FF;
 									}
 
 									int pixel_pick = (Internal_Graphics[(char_pick + offset_y) % 0x200] >> offset_x) & 1;
@@ -289,10 +329,23 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 
-					// background
-
 					// calculate collision
+					int col_bit = 0;
+					for (int i = 7; i >= 0; i--)
+					{
+						if (VDC_collision.Bit(i))
+						{
+							col_bit = i;
+						}
+					}
 
+					for (int i = 0; i < 8; i++)
+					{
+						if (Pixel_Stat.Bit(i) & Pixel_Stat.Bit(col_bit) && (i != col_bit))
+						{
+							VDC_col_ret |= (byte)(1 << i);
+						}
+					}
 				}
 			}
 
@@ -322,6 +375,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					LY = 0;
 					HBL = false;
 					VBL = false;
+					VDC_col_ret = 0;
 					Core.in_vblank = false;
 					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
 					Frame_Col = 0;
@@ -432,7 +486,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			0xFF676767, // grey
 			0xFF790000, // red
-			0xFF006D07, //green
+			0xFF006D07, // green
 			0xFFC75151, // light red
 			0xFF1A37BE, // blue
 			0xFF94309F, // violet
@@ -442,21 +496,21 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public static readonly uint[] Color_Palette_BG =
 		{
-			0xFF006D07, //green
+			0xFF000000, // black
+			0xFF1A37BE, // blue
+			0xFF006D07, // green
 			0xFF56C469, // light green
+			0xFF790000, // red
+			0xFF94309F, // violet
+			0xFFC75151, // light red
+			0xFF676767, // grey
+			0xFFC6B869, // light yellow
+			0xFFCECECE, // light grey
 			0xFF2AAABE, // blue-green
 			0xFF77E6EB, // light blue-green
-			0xFF1A37BE, // blue
 			0xFF5C80F6, // light blue
-			0xFF94309F, // violet
 			0xFFDC84D4, // light violet
-			0xFF790000, // red
-			0xFFC75151, // light red
 			0xFF77670B, // yellow
-			0xFFC6B869, // light yellow
-			0xFF676767, // grey
-			0xFFCECECE, // light grey
-			0xFF000000, // black
 			0xFFFFFFFF, // white
 		};
 
@@ -473,6 +527,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(VDC_ctrl), ref VDC_ctrl);
 			ser.Sync(nameof(VDC_status), ref VDC_status);
 			ser.Sync(nameof(VDC_collision), ref VDC_collision);
+			ser.Sync(nameof(VDC_col_ret), ref VDC_col_ret);
 			ser.Sync(nameof(VDC_color), ref VDC_color);
 			ser.Sync(nameof(Frame_Col), ref Frame_Col);
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);

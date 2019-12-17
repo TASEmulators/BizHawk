@@ -107,10 +107,12 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			SetupMemoryDomains();
 			HardReset();
 
+			/*
 			for (int i = 0; i < 64; i++)
 			{
 				cpu.Regs[i] = (byte)i;
 			}
+			*/
 
 			for (int j = 0; j < 0x80; j++)
 			{
@@ -141,8 +143,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-			frame_buffer = new int[VirtualWidth * VirtualHeight];
+			_vidbuffer = new int[186 * 240];
+			frame_buffer = new int[160 * 240];
 		}
 
 		private void ExecFetch(ushort addr)
