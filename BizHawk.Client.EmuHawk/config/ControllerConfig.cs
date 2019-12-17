@@ -95,14 +95,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
 		{
-			Dictionary<string, T> settings;
-			if (!settingsblock.TryGetValue(controllerName, out settings))
+			if (!settingsblock.TryGetValue(controllerName, out var settings))
 			{
 				settings = new Dictionary<string, T>();
 				settingsblock[controllerName] = settings;
 			}
 
-			// check to make sure that the settings object has all of the appropriate boolbuttons
+			// check to make sure that the settings object has all of the appropriate bool buttons
 			foreach (var button in controllerButtons)
 			{
 				if (!settings.Keys.Contains(button))
@@ -163,28 +162,31 @@ namespace BizHawk.Client.EmuHawk
 				// create multiple player tabs
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
-				int pageidx = 0;
+				int pageIdx = 0;
 				for (int i = 1; i <= MaxPlayers; i++)
 				{
 					if (buckets[i].Count > 0)
 					{
-						string tabname = Global.Emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
-						tt.TabPages.Add(tabname);
-						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
-						pageidx++;
+						string tabName = Global.Emulator.SystemId != "WSWAN" ? $"Player {i}" : i == 1 ? "Normal" : "Rotated"; // hack
+						tt.TabPages.Add(tabName);
+						tt.TabPages[pageIdx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
+						pageIdx++;
 					}
 				}
 
 				foreach (var cat in categoryBuckets)
 				{
-					string tabname = cat.Key;
-					tt.TabPages.Add(tabname);
-					tt.TabPages[pageidx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
+					string tabName = cat.Key;
+					tt.TabPages.Add(tabName);
+					tt.TabPages[pageIdx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
 
-					// zxhawk hack - it uses multiple categoryLabels
-					if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
-						pageidx++;
-
+					// ZxHawk hack - it uses multiple categoryLabels
+					if (Global.Emulator.SystemId == "ZXSpectrum"
+						|| Global.Emulator.SystemId == "AmstradCPC"
+						|| Global.Emulator.SystemId == "ChannelF")
+					{
+						pageIdx++;
+					}
 				}
 
 				if (buckets[0].Count > 0)
@@ -193,12 +195,12 @@ namespace BizHawk.Client.EmuHawk
 					if (Global.Emulator.SystemId == "ZXSpectrum" || Global.Emulator.SystemId == "AmstradCPC" || Global.Emulator.SystemId == "ChannelF")
 						return;
 
-					string tabname =
+					string tabName =
 						(Global.Emulator.SystemId == "C64") ? "Keyboard" :
 						(Global.Emulator.SystemId == "MAME") ? "Misc" :
 						"Console"; // hack
-					tt.TabPages.Add(tabname);
-					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
+					tt.TabPages.Add(tabName);
+					tt.TabPages[pageIdx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 				}
 			}
 		}
@@ -216,9 +218,6 @@ namespace BizHawk.Client.EmuHawk
 			checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
 
 			SetControllerPicture(def.Name);
-
-			var analog = tabControl1.TabPages[0];
-
 			ResumeLayout();
 		}
 
@@ -299,9 +298,9 @@ namespace BizHawk.Client.EmuHawk
 		// tracking all of the ControllerConfigPanels wouldn't be simpler
 		private static void SetAutoTab(Control c, bool value)
 		{
-			if (c is ControllerConfigPanel)
+			if (c is ControllerConfigPanel panel)
 			{
-				(c as ControllerConfigPanel).SetAutoTab(value);
+				panel.SetAutoTab(value);
 			}
 			else if (c is AnalogBindPanel)
 			{
@@ -333,9 +332,9 @@ namespace BizHawk.Client.EmuHawk
 		private static void ActOnControlCollection<T>(Control c, Action<T> proc)
 			where T : Control
 		{
-			if (c is T)
+			if (c is T control)
 			{
-				proc(c as T);
+				proc(control);
 			}
 			else if (c.HasChildren)
 			{
@@ -372,15 +371,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static TabControl GetTabControl(IEnumerable controls)
 		{
-			if (controls != null)
-			{
-				return controls
-					.OfType<TabControl>()
-					.Select(c => c)
-					.FirstOrDefault();
-			}
-
-			return null;
+			return controls?.OfType<TabControl>()
+				.Select(c => c)
+				.FirstOrDefault();
 		}
 
 		private void ButtonLoadDefaults_Click(object sender, EventArgs e)
@@ -395,9 +388,9 @@ namespace BizHawk.Client.EmuHawk
 			int? wasTabbedPage2 = null;
 			int? wasTabbedPage3 = null;
 
-			if (tb1 != null && tb1.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
-			if (tb2 != null && tb2.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
-			if (tb3 != null && tb3.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
+			if (tb1?.SelectedTab != null) { wasTabbedPage1 = tb1.SelectedIndex; }
+			if (tb2?.SelectedTab != null) { wasTabbedPage2 = tb2.SelectedIndex; }
+			if (tb3?.SelectedTab != null) { wasTabbedPage3 = tb3.SelectedIndex; }
 
 			NormalControlsTab.Controls.Clear();
 			AutofireControlsTab.Controls.Clear();
@@ -414,28 +407,19 @@ namespace BizHawk.Client.EmuHawk
 			if (wasTabbedPage1.HasValue)
 			{
 				var newTb1 = GetTabControl(NormalControlsTab.Controls);
-				if (newTb1 != null)
-				{
-					newTb1.SelectTab(wasTabbedPage1.Value);
-				}
+				newTb1?.SelectTab(wasTabbedPage1.Value);
 			}
 
 			if (wasTabbedPage2.HasValue)
 			{
 				var newTb2 = GetTabControl(AutofireControlsTab.Controls);
-				if (newTb2 != null)
-				{
-					newTb2.SelectTab(wasTabbedPage2.Value);
-				}
+				newTb2?.SelectTab(wasTabbedPage2.Value);
 			}
 
 			if (wasTabbedPage3.HasValue)
 			{
 				var newTb3 = GetTabControl(AnalogControlsTab.Controls);
-				if (newTb3 != null)
-				{
-					newTb3.SelectTab(wasTabbedPage3.Value);
-				}
+				newTb3?.SelectTab(wasTabbedPage3.Value);
 			}
 
 			tabControl1.ResumeLayout();
@@ -461,19 +445,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearWidgetAndChildren(Control c)
 		{
-			if (c is InputCompositeWidget)
+			if (c is InputCompositeWidget widget)
 			{
-				(c as InputCompositeWidget).Clear();
+				widget.Clear();
 			}
 
-			if (c is InputWidget)
+			if (c is InputWidget inputWidget)
 			{
-				(c as InputWidget).ClearAll();
+				inputWidget.ClearAll();
 			}
 
-			if (c is AnalogBindControl)
+			if (c is AnalogBindControl control)
 			{
-				(c as AnalogBindControl).Unbind_Click(null, null);
+				control.Unbind_Click(null, null);
 			}
 
 			if (c.Controls().Any())
