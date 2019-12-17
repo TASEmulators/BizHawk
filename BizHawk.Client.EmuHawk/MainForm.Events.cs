@@ -1020,8 +1020,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileExtensionsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new FileExtensionPreferences();
-			form.ShowDialog();
+			using var form = new FileExtensionPreferences(Global.Config);
+			var result = form.ShowDialog();
+			AddOnScreenMessage(result == DialogResult.OK
+				? "Rom Extension Preferences changed"
+				: "Rom Extension Preferences cancelled");
 		}
 
 		private void CustomizeMenuItem_Click(object sender, EventArgs e)

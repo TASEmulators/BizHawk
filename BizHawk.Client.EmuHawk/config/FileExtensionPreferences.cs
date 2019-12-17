@@ -9,8 +9,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FileExtensionPreferences : Form
 	{
-		public FileExtensionPreferences()
+		private readonly Config _config;
+
+		public FileExtensionPreferences(Config config)
 		{
+			_config = config;
 			InitializeComponent();
 		}
 
@@ -18,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int spacing = UIHelper.ScaleY(30);
 			int count = 0;
-			foreach (var kvp in Global.Config.PreferredPlatformsForExtensions)
+			foreach (var kvp in _config.PreferredPlatformsForExtensions)
 			{
 				var picker = new FileExtensionPreferencesPicker
 				{
@@ -36,16 +39,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var picker in PrefPanel.Controls.OfType<FileExtensionPreferencesPicker>())
 			{
-				Global.Config.PreferredPlatformsForExtensions[picker.FileExtension] = picker.CurrentlySelectedSystemId;
+				_config.PreferredPlatformsForExtensions[picker.FileExtension] = picker.CurrentlySelectedSystemId;
 			}
 
-			GlobalWin.OSD.AddMessage("Rom Extension Preferences changed");
 			Close();
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Rom Extension Preferences cancelled");
 			Close();
 		}
 	}
