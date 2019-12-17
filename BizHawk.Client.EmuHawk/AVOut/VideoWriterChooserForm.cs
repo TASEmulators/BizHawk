@@ -15,21 +15,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			CaptureWidth = Global.Emulator.CoreComm.NominalWidth;
-			CaptureHeight = Global.Emulator.CoreComm.NominalHeight;
+			_captureWidth = Global.Emulator.CoreComm.NominalWidth;
+			_captureHeight = Global.Emulator.CoreComm.NominalHeight;
 
 			if (Global.Config.AVI_CaptureOSD)
 			{
-				using (var bb = GlobalWin.MainForm.CaptureOSD())
-				{
-					CaptureWidth = bb.Width;
-					CaptureHeight = bb.Height;
-				}
+				using var bb = GlobalWin.MainForm.CaptureOSD();
+				_captureWidth = bb.Width;
+				_captureHeight = bb.Height;
 			}
 
-			lblSize.Text = $"Size:\r\n{CaptureWidth}x{CaptureHeight}";
+			lblSize.Text = $"Size:\r\n{_captureWidth}x{_captureHeight}";
 
-			if (CaptureWidth % 4 != 0 || CaptureHeight % 4 != 0)
+			if (_captureWidth % 4 != 0 || _captureHeight % 4 != 0)
 			{
 				lblResolutionWarning.Visible = true;
 			}
@@ -39,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int CaptureWidth, CaptureHeight;
+		private readonly int _captureWidth, _captureHeight;
 
 		/// <summary>
 		/// chose an IVideoWriter
@@ -47,28 +45,28 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad, ref bool audiosync)
+		public static IVideoWriter DoVideoWriterChooserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizeW, out int resizeH, out bool pad, ref bool audioSync)
 		{
-			VideoWriterChooserForm dlg = new VideoWriterChooserForm
+			var dlg = new VideoWriterChooserForm
 			{
 				labelDescriptionBody = { Text = "" }
 			};
 
 			int idx = 0;
-			int idx_select = -1;
+			int idxSelect = -1;
 			dlg.listBox1.BeginUpdate();
 			foreach (var vw in list)
 			{
 				dlg.listBox1.Items.Add(vw);
 				if (vw.Attribs.ShortName == Global.Config.VideoWriter)
 				{
-					idx_select = idx;
+					idxSelect = idx;
 				}
 
 				idx++;
 			}
 
-			dlg.listBox1.SelectedIndex = idx_select;
+			dlg.listBox1.SelectedIndex = idxSelect;
 			dlg.listBox1.EndUpdate();
 
 			foreach (Control c in dlg.panelSizeSelect.Controls)
@@ -76,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				c.Enabled = false;
 			}
 
-			dlg.checkBoxASync.Checked = audiosync;
+			dlg.checkBoxASync.Checked = audioSync;
 			DialogResult result = dlg.ShowDialog(owner);
 
 			IVideoWriter ret;
@@ -94,17 +92,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ret != null && dlg.checkBoxResize.Checked)
 			{
-				resizew = dlg.numericTextBoxW.IntValue;
-				resizeh = dlg.numericTextBoxH.IntValue;
+				resizeW = dlg.numericTextBoxW.IntValue;
+				resizeH = dlg.numericTextBoxH.IntValue;
 			}
 			else
 			{
-				resizew = -1;
-				resizeh = -1;
+				resizeW = -1;
+				resizeH = -1;
 			}
 
 			pad = dlg.checkBoxPad.Checked;
-			audiosync = dlg.checkBoxASync.Checked;
+			audioSync = dlg.checkBoxASync.Checked;
 
 			dlg.Dispose();
 			return ret;
@@ -127,8 +125,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonAuto_Click(object sender, EventArgs e)
 		{
-			numericTextBoxW.Text = CaptureWidth.ToString();
-			numericTextBoxH.Text = CaptureHeight.ToString();
+			numericTextBoxW.Text = _captureWidth.ToString();
+			numericTextBoxH.Text = _captureHeight.ToString();
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
