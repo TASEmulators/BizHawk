@@ -3,7 +3,6 @@ using System.Text;
 using System;
 using System.Windows.Forms;
 using System.ComponentModel;
-using System.Security.Permissions;
 
 //I believe this code is from http://support.microsoft.com/kb/306285
 //The license is assumed to be effectively public domain.
@@ -54,10 +53,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Helper function that returns the IMalloc interface used by the shell.
 		/// </summary>
-		private static Win32API.IMalloc GetSHMalloc()
+		private static Win32API.IMalloc GetShMalloc()
 		{
-			Win32API.IMalloc malloc;
-			Win32API.Shell32.SHGetMalloc(out malloc);
+			Win32API.Shell32.SHGetMalloc(out var malloc);
 			return malloc;
 		}
 
@@ -69,20 +67,18 @@ namespace BizHawk.Client.EmuHawk
 			return ShowDialog(null);
 		}
 
-
-		private int callback(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData)
+		private int Callback(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData)
 		{
 			switch (uMsg)
 			{
 				case 1:
-					{
-						IntPtr str = Marshal.StringToHGlobalUni(SelectedPath);
-						Win32.SendMessage(hwnd, (0x400 + 103), (IntPtr)1, str);
-						Marshal.FreeHGlobal(str);
-						break;
-					}
+					IntPtr str = Marshal.StringToHGlobalUni(SelectedPath);
+					Win32.SendMessage(hwnd, 0x400 + 103, (IntPtr)1, str);
+					Marshal.FreeHGlobal(str);
+					break;
 
 			}
+
 			return 0;
 		}
 
@@ -95,16 +91,8 @@ namespace BizHawk.Client.EmuHawk
 			IntPtr pidlRoot = IntPtr.Zero;
 
 			// Get/find an owner HWND for this dialog.
-			IntPtr hWndOwner;
 
-			if (owner != null)
-			{
-				hWndOwner = owner.Handle;
-			}
-			else
-			{
-				hWndOwner = Win32API.GetActiveWindow();
-			}
+			var hWndOwner = owner?.Handle ?? Win32API.GetActiveWindow();
 
 			// Get the IDL for the specific startLocation.
 			Win32API.Shell32.SHGetSpecialFolderLocation(hWndOwner, (int) startLocation, out pidlRoot);
@@ -114,12 +102,14 @@ namespace BizHawk.Client.EmuHawk
 				return DialogResult.Cancel;
 			}
 
-			int mergedOptions = (int) publicOptions | (int) privateOptions;
+			int mergedOptions = publicOptions | privateOptions;
 
 			if ((mergedOptions & (int) Win32API.Shell32.BffStyles.NewDialogStyle) != 0)
 			{
 				if (System.Threading.ApartmentState.MTA == Application.OleRequired())
+				{
 					mergedOptions = mergedOptions & (~(int) Win32API.Shell32.BffStyles.NewDialogStyle);
+				}
 			}
 
 			IntPtr pidlRet = IntPtr.Zero;
@@ -135,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 				bi.pszDisplayName = buffer;
 				bi.lpszTitle = Description;
 				bi.ulFlags = mergedOptions;
-				bi.lpfn = new Win32API.Shell32.BFFCALLBACK(callback);
+				bi.lpfn = Callback;
 				// The rest of the fields are initialized to zero by the constructor.
 				// bi.lParam = IntPtr.Zero;    bi.iImage = 0;
 
@@ -152,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Then retrieve the path from the IDList.
-				StringBuilder sb = new StringBuilder(MAX_PATH);
+				var sb = new StringBuilder(MAX_PATH);
 				if (0 == Win32API.Shell32.SHGetPathFromIDList(pidlRet, sb))
 				{
 					return DialogResult.Cancel;
@@ -163,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
-				Win32API.IMalloc malloc = GetSHMalloc();
+				Win32API.IMalloc malloc = GetShMalloc();
 				malloc.Free(pidlRoot);
 
 				if (pidlRet != IntPtr.Zero)
@@ -175,58 +165,8 @@ namespace BizHawk.Client.EmuHawk
 			return DialogResult.OK;
 		}
 
-		/// <summary>
-		/// Helper function used to set and reset bits in the publicOptions bitfield.
-		/// </summary>
-		private void SetOptionField(int mask, bool turnOn)
-		{
-			if (turnOn)
-				publicOptions |= mask;
-			else
-				publicOptions &= ~mask;
-		}
-
-		/// <summary>
-		/// Only return file system directories. If the user selects folders
-		/// that are not part of the file system, the OK button is unavailable.
-		/// </summary>
-		[Category("Navigation")]
-		[Description("Only return file system directories. If the user selects folders " +
-		             "that are not part of the file system, the OK button is unavailable.")]
-		[DefaultValue(true)]
-		public bool OnlyFilesystem
-		{
-			get { return (publicOptions & (int) Win32API.Shell32.BffStyles.RestrictToFilesystem) != 0; }
-			set { SetOptionField((int) Win32API.Shell32.BffStyles.RestrictToFilesystem, value); }
-		}
-
-		/// <summary>
-		/// Location of the root folder from which to start browsing. Only the specified
-		/// folder and any folders beneath it in the namespace hierarchy  appear
-		/// in the dialog box.
-		/// </summary>
-		[Category("Navigation")]
-		[Description("Location of the root folder from which to start browsing. Only the specified " +
-		             "folder and any folders beneath it in the namespace hierarchy appear " +
-		             "in the dialog box.")]
-		[DefaultValue(typeof (FolderID), "0")]
-		public FolderID StartLocation
-		{
-			get { return startLocation; }
-			set
-			{
-				new UIPermission(UIPermissionWindow.AllWindows).Demand();
-				startLocation = value;
-			}
-		}
-
 		public string SelectedPath;
-
 	}
-
-
-
-
 
 	internal class Win32API
 	{
@@ -305,7 +245,4 @@ namespace BizHawk.Client.EmuHawk
 			public static extern IntPtr SHBrowseForFolder(ref BROWSEINFO bi);
 		}
 	}
-
-
-
 }
