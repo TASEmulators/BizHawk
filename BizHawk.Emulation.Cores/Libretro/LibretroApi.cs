@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public LibretroApi(string dllPath, string corePath)
 		{
+			T GetTypedDelegate<T>(string proc) where T : Delegate => (T) Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddrOrThrow(proc), typeof(T));
+
 			InstanceName = "libretro_" + Guid.NewGuid().ToString();
 
 			var pipeName = InstanceName;
@@ -56,11 +58,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			instanceDll = new InstanceDll(dllPath);
 			instanceDllCore = new InstanceDll(corePath);
 
-			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
-			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
-			_copyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
-			_setBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
-			SetVariable = (SetVariableApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetVariable"), typeof(SetVariableApi));
+			var dllinit = GetTypedDelegate<DllInit>("DllInit");
+			Message = GetTypedDelegate<MessageApi>("Message");
+			_copyBuffer = GetTypedDelegate<BufferApi>("CopyBuffer");
+			_setBuffer = GetTypedDelegate<BufferApi>("SetBuffer");
+			SetVariable = GetTypedDelegate<SetVariableApi>("SetVariable");
 
 			comm = (CommStruct*)dllinit(instanceDllCore.HModule).ToPointer();
 

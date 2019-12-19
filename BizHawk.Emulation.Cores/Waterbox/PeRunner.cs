@@ -97,19 +97,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var imports = _parent._exports[moduleName];
 				var pointers = entries.Select(e =>
 				{
-					var ptr = imports.Resolve(e);
-					if (ptr == IntPtr.Zero)
+					var ptr = imports.GetProcAddrOrNull(e);
+					if (ptr != null) return ptr.Value;
+					var s = $"Trapped on unimplemented function {moduleName}:{e}";
+					Action del = () =>
 					{
-						var s = $"Trapped on unimplemented function {moduleName}:{e}";
-						Action del = () =>
-						{
-							Console.WriteLine(s);
-							throw new InvalidOperationException(s);
-						};
-						_traps.Add(del);
-						ptr = CallingConventionAdapters.Waterbox.GetFunctionPointerForDelegate(del);
-					}
-					return ptr;
+						Console.WriteLine(s);
+						throw new InvalidOperationException(s);
+					};
+					_traps.Add(del);
+					return CallingConventionAdapters.Waterbox.GetFunctionPointerForDelegate(del);
 				}).ToArray();
 				Marshal.Copy(pointers, 0, table, pointers.Length);
 			}
@@ -1071,8 +1068,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				// run unmanaged init code
-				var libcEnter = _exports["libc.so"].SafeResolve("__libc_entry_routine");
-				var psxInit = _exports["libpsxscl.so"].SafeResolve("__psx_init");
+				var libcEnter = _exports["libc.so"].GetProcAddrOrThrow("__libc_entry_routine");
+				var psxInit = _exports["libpsxscl.so"].GetProcAddrOrThrow("__psx_init");
 
 				var del = (LibcEntryRoutineD)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(libcEnter, typeof(LibcEntryRoutineD));
 				// the current mmglue code doesn't use the main pointer at all, and this just returns
@@ -1101,11 +1098,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public IntPtr Resolve(string entryPoint)
-		{
-			// modules[0] is always the main module
-			return _modules[0].Resolve(entryPoint);
-		}
+		public IntPtr? GetProcAddrOrNull(string entryPoint) => _modules[0].GetProcAddrOrNull(entryPoint); // _modules[0] is always the main module
+
+		public IntPtr GetProcAddrOrThrow(string entryPoint) => _modules[0].GetProcAddrOrThrow(entryPoint);
 
 		public void Seal()
 		{
@@ -1121,7 +1116,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (_exports.TryGetValue("libco.so", out libco))
 				{
 					Console.WriteLine("Calling co_clean()...");
-					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(libco.SafeResolve("co_clean"))();
+					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(libco.GetProcAddrOrThrow("co_clean"))();
 				}
 
 				_sealedheap.Seal();

@@ -7,9 +7,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static unsafe class Win32
 	{
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(string dllToLoad);
-
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct RECT
 		{

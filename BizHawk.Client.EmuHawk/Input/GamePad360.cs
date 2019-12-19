@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
+using BizHawk.Common;
+
 using SlimDX.XInput;
 
 #pragma warning disable 169
@@ -43,32 +46,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				//some users wont even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
-				HasGetInputStateEx = true;
-				LibraryHandle = Win32.LoadLibrary("xinput1_3.dll");
-				if(LibraryHandle == IntPtr.Zero)
-					LibraryHandle = Win32.LoadLibrary("xinput1_4.dll");
-				if(LibraryHandle == IntPtr.Zero)
+				// some users won't even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
+				var llManager = OSTailoredCode.LinkedLibManager;
+				var libraryHandle = llManager.LoadOrNull("xinput1_3.dll") ?? llManager.LoadOrNull("xinput1_4.dll");
+				if (libraryHandle != null)
 				{
-					LibraryHandle = Win32.LoadLibrary("xinput9_1_0.dll");
+					HasGetInputStateEx = true;
+					XInputGetStateExProc = (XInputGetStateExProcDelegate) Marshal.GetDelegateForFunctionPointer(
+						Win32Imports.GetProcAddressOrdinal(libraryHandle.Value, new IntPtr(100)),
+						typeof(XInputGetStateExProcDelegate)
+					);
+				}
+				else
+				{
 					HasGetInputStateEx = false;
+					libraryHandle = llManager.LoadOrNull("xinput9_1_0.dll");
 				}
+				_isAvailable = libraryHandle != null;
+				LibraryHandle = libraryHandle ?? IntPtr.Zero;
 
-				if (LibraryHandle != IntPtr.Zero)
-				{
-					if (HasGetInputStateEx)
-					{
-						var proc = BizHawk.Common.Win32Imports.GetProcAddressOrdinal(LibraryHandle, new IntPtr(100));
-						XInputGetStateExProc = (XInputGetStateExProcDelegate)Marshal.GetDelegateForFunctionPointer(proc, typeof(XInputGetStateExProcDelegate));
-					}
-
-					//don't remove this code. it's important to catch errors on systems with broken xinput installs.
-					//(probably, checking for the library was adequate, but lets not get rid of this anyway)
-					var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
-					_isAvailable = true;
-				}
+				// don't remove this code. it's important to catch errors on systems with broken xinput installs.
+				// (probably, checking for the library was adequate, but let's not get rid of this anyway)
+				if (_isAvailable) _ = new Controller(UserIndex.One).IsConnected;
 			}
-			catch { }
+			catch
+			{
+				// ignored
+			}
 		}
 
 		public static void Initialize()

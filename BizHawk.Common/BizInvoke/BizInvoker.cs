@@ -268,7 +268,7 @@ namespace BizHawk.Common.BizInvoke
 
 			return (o, dll, adapter) =>
 			{
-				var entryPtr = dll.SafeResolve(entryPointName);
+				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
 				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
 				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
 			};
@@ -357,7 +357,7 @@ namespace BizHawk.Common.BizInvoke
 
 			return (o, dll, adapter) =>
 			{
-				var entryPtr = dll.SafeResolve(entryPointName);
+				var entryPtr = dll.GetProcAddrOrThrow(entryPointName);
 				o.GetType().GetField(field.Name).SetValue(
 					o, adapter.GetDepartureFunctionPointer(entryPtr, new ParameterInfo(returnType, paramTypes), o));
 			};

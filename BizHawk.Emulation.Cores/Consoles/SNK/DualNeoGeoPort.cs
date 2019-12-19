@@ -210,9 +210,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				_push = push;
 				_pull = pull;
 				_exporter = BizExvoker.GetExvoker(this, CallingConventionAdapters.Waterbox);
-				_readcb = _exporter.SafeResolve("CommsReadCallback");
-				_pollcb = _exporter.SafeResolve("CommsPollCallback");
-				_writecb = _exporter.SafeResolve("CommsWriteCallback");
+				_readcb = _exporter.GetProcAddrOrThrow("CommsReadCallback");
+				_pollcb = _exporter.GetProcAddrOrThrow("CommsPollCallback");
+				_writecb = _exporter.GetProcAddrOrThrow("CommsWriteCallback");
 				ConnectPointers();
 			}
 

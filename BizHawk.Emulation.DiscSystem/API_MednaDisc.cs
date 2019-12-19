@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -92,19 +94,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		static void CheckLibrary()
 		{
-			IntPtr lib = LoadLibrary("mednadisc.dll");
-			if (lib == IntPtr.Zero)
-			{
-				_IsLibraryAvailable = false;
-				return;
-			}
-			IntPtr addr = GetProcAddress(lib, "mednadisc_LoadCD");
-			FreeLibrary(lib);
-			if (addr == IntPtr.Zero)
-			{
-				_IsLibraryAvailable = false;
-			}
-			_IsLibraryAvailable = true;
+			var lib = OSTailoredCode.LinkedLibManager.LoadOrNull("mednadisc.dll");
+			_IsLibraryAvailable = lib != null
+				&& OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(lib.Value, "mednadisc_LoadCD") != null;
+			if (lib != null) OSTailoredCode.LinkedLibManager.FreeByPtr(lib.Value);
 		}
 
 		static MednaDisc()
@@ -141,13 +134,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public bool Valid { get { return _validByte != 0; } }
 		};
-
-		[DllImport("kernel32.dll")]
-		static extern IntPtr LoadLibrary(string dllToLoad);
-		[DllImport("kernel32.dll")]
-		static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-		[DllImport("kernel32.dll")]
-		static extern bool FreeLibrary(IntPtr hModule);
 
 		[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr mednadisc_LoadCD(string path);

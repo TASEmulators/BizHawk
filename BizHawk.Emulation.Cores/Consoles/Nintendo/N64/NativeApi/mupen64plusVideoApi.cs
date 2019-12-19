@@ -6,14 +6,13 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
 	class mupen64plusVideoApi
 	{
-		IntPtr GfxDll;// Graphics plugin specific
-
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+		IntPtr GfxDll;
 
 		/// <summary>
 		/// Fills a provided buffer with the mupen64plus framebuffer
@@ -64,10 +63,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			GfxDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_GFX,
 				videoplugin);
-			GFXReadScreen2 = (ReadScreen2)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2));
-			GFXReadScreen2Res = (ReadScreen2Res)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "ReadScreen2"), typeof(ReadScreen2Res));
-			if(GetProcAddress(GfxDll, "GetScreenTextureID") != IntPtr.Zero)
-				GFXGetScreenTextureID = (GetScreenTextureID)Marshal.GetDelegateForFunctionPointer(GetProcAddress(GfxDll, "GetScreenTextureID"), typeof(GetScreenTextureID));
+			GFXReadScreen2 = mupen64plusApi.GetTypedDelegate<ReadScreen2>(GfxDll, "ReadScreen2");
+			GFXReadScreen2Res = mupen64plusApi.GetTypedDelegate<ReadScreen2Res>(GfxDll, "ReadScreen2");
+			var funcPtr = OSTailoredCode.LinkedLibManager.GetProcAddrOrNull(GfxDll, "GetScreenTextureID");
+			if (funcPtr != null) GFXGetScreenTextureID = (GetScreenTextureID) Marshal.GetDelegateForFunctionPointer(funcPtr.Value, typeof(GetScreenTextureID));
 		}
 
 		public void GetScreenDimensions(ref int width, ref int height)
