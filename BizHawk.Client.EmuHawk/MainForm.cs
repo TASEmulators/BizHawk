@@ -544,7 +544,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
-				Global.ClientControls.LatchFromPhysical(_hotkeyCoalescer);
+				ClientControls.LatchFromPhysical(_hotkeyCoalescer);
 
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
@@ -554,12 +554,12 @@ namespace BizHawk.Client.EmuHawk
 				Global.ActiveController.OR_FromLogical(ClickyVirtualPadController);
 				AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				if (Global.ClientControls["Autohold"])
+				if (ClientControls["Autohold"])
 				{
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(AutoFireController.PressedButtons);
 				}
-				else if (Global.ClientControls["Autofire"])
+				else if (ClientControls["Autofire"])
 				{
 					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
 				}
@@ -715,7 +715,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsSeeking => PauseOnFrame.HasValue;
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Config.TurboSeek;
-		public bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
+		public bool IsTurboing => ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
 
@@ -836,6 +836,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private FirmwareManager FirmwareManager => Global.FirmwareManager;
+		private Controller ClientControls => Global.ClientControls;
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -868,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 				// TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				// look for hotkey bindings for this key
-				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				var triggers = ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
 					// Maybe it is a system alt-key which hasn't been overridden
@@ -2066,8 +2067,8 @@ namespace BizHawk.Client.EmuHawk
 			// skips outputting the audio. There's also a third way which is when no throttle
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
-			var rewind = Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
-			var fastForward = Global.ClientControls["Fast Forward"] || FastForward;
+			var rewind = Rewinder.RewindActive && (ClientControls["Rewind"] || PressRewind);
+			var fastForward = ClientControls["Fast Forward"] || FastForward;
 			var turbo = IsTurboing;
 
 			int speedPercent = fastForward ? Config.SpeedPercentAlternate : Config.SpeedPercent;
@@ -2928,7 +2929,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
+			if (ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
 				_runloopFrameAdvance = true;
 
@@ -2973,7 +2974,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (runFrame || force)
 			{
-				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
+				var isFastForwarding = ClientControls["Fast Forward"] || IsTurboing || InvisibleEmulation;
 				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
@@ -3131,7 +3132,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Global.ClientControls["Rewind"] || PressRewind)
+			if (ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
 			}
@@ -4466,7 +4467,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (IsRewindSlave)
 			{
-				if (Global.ClientControls["Rewind"] || PressRewind)
+				if (ClientControls["Rewind"] || PressRewind)
 				{
 					if (_frameRewindTimestamp == 0)
 					{
@@ -4514,7 +4515,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
+			if (Rewinder.RewindActive && (ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
