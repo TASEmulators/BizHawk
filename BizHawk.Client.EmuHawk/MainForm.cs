@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			Global.CheatList = new CheatCollection();
-			Global.CheatList.Changed += ToolFormBase.UpdateCheatRelatedTools;
+			CheatList.Changed += ToolFormBase.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Tools.AskSave())
 				{
 					// zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
-					Global.MovieSession.Movie.Stop();
+					MovieSession.Movie.Stop();
 					Tools.Close();
 					CloseGame();
 
@@ -306,10 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			ResizeBegin += (o, e) =>
 			{
 				_inResizeLoop = true;
-				if (GlobalWin.Sound != null)
-				{
-					GlobalWin.Sound.StopSound();
-				}
+				Sound?.StopSound();
 			};
 
 			Resize += (o, e) =>
@@ -327,10 +324,7 @@ namespace BizHawk.Client.EmuHawk
 					PresentationPanel.Resized = true;
 				}
 
-				if (GlobalWin.Sound != null)
-				{
-					GlobalWin.Sound.StartSound();
-				}
+				Sound?.StartSound();
 			};
 
 			Input.Initialize();
@@ -360,7 +354,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound = new Sound(Handle);
 			}
 
-			GlobalWin.Sound.StartSound();
+			Sound.StartSound();
 			InputManager.RewireInputChain();
 			GlobalWin.Tools = new ToolManager(this);
 			RewireSound();
@@ -386,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 				// Commandline should always override auto-load
 				var ioa = OpenAdvancedSerializer.ParseWithLegacy(_argParser.cmdRom);
 				LoadRom(_argParser.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
-				if (Global.Game == null)
+				if (Game == null)
 				{
 					MessageBox.Show($"Failed to load {_argParser.cmdRom} specified on commandline");
 				}
@@ -404,16 +398,16 @@ namespace BizHawk.Client.EmuHawk
 			if (_argParser.cmdMovie != null)
 			{
 				_suppressSyncSettingsWarning = true; // We don't want to be nagged if we are attempting to automate
-				if (Global.Game == null)
+				if (Game == null)
 				{
 					OpenRom();
 				}
 
 				// If user picked a game, then do the commandline logic
-				if (!Global.Game.IsNullInstance())
+				if (!Game.IsNullInstance())
 				{
 					var movie = MovieService.Get(_argParser.cmdMovie);
-					Global.MovieSession.ReadOnly = true;
+					MovieSession.ReadOnly = true;
 
 					// if user is dumping and didn't supply dump length, make it as long as the loaded movie
 					if (_argParser._autoDumpLength == 0)
@@ -437,13 +431,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Config.RecentMovies.AutoLoad && !Config.RecentMovies.Empty)
 			{
-				if (Global.Game.IsNullInstance())
+				if (Game.IsNullInstance())
 				{
 					OpenRom();
 				}
 
 				// If user picked a game, then do the autoload logic
-				if (!Global.Game.IsNullInstance())
+				if (!Game.IsNullInstance())
 				{
 					if (File.Exists(Config.RecentMovies.MostRecent))
 					{
@@ -461,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 				_needsFullscreenOnLoad = true;
 			}
 
-			if (!Global.Game.IsNullInstance())
+			if (!Game.IsNullInstance())
 			{
 				if (_argParser.cmdLoadState != null)
 				{
@@ -557,13 +551,13 @@ namespace BizHawk.Client.EmuHawk
 				Global.ActiveController.ApplyAxisConstraints(
 					(Emulator is N64 && Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
-				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+				Global.ActiveController.OR_FromLogical(ClickyVirtualPadController);
+				AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				if (Global.ClientControls["Autohold"])
 				{
 					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+					Global.AutofireStickyXORAdapter.MassToggleStickyState(AutoFireController.PressedButtons);
 				}
 				else if (Global.ClientControls["Autofire"])
 				{
@@ -613,9 +607,9 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			// NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
-			if (GlobalWin.DisplayManager != null)
+			if (DisplayManager != null)
 			{
-				GlobalWin.DisplayManager.Dispose();
+				DisplayManager.Dispose();
 				GlobalWin.DisplayManager = null;
 			}
 
@@ -808,6 +802,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private Config Config => Global.Config;
 		private ToolManager Tools => GlobalWin.Tools;
+		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
+		private IMovieSession MovieSession => Global.MovieSession;
+		private GameInfo Game => Global.Game;
+		private Sound Sound => GlobalWin.Sound;
+		private CheatCollection CheatList => Global.CheatList;
+		private AutofireController AutoFireController => Global.AutoFireController;
+		private AutoFireStickyXorAdapter AutofireStickyXORAdapter => Global.AutofireStickyXORAdapter;
+		private ClickyVirtualPadController ClickyVirtualPadController => Global.ClickyVirtualPadController;
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -935,14 +937,14 @@ namespace BizHawk.Client.EmuHawk
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
-					var p = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
+					var p = DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
 					float x = p.X / (float)_currentVideoProvider.BufferWidth;
 					return new Tuple<string, float>("WMouse X", (x * 20000) - 10000);
 				}
 
 				if (o.Item1 == "WMouse Y")
 				{
-					var p = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
+					var p = DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 					float y = p.Y / (float)_currentVideoProvider.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", (y * 20000) - 10000);
 				}
@@ -1002,7 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, Config.Screenshot_CaptureOSD))
+			using (var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, Config.Screenshot_CaptureOSD))
 			{
 				using var img = bb.ToSysdrawingBitmap();
 				Clipboard.SetImage(img);
@@ -1013,7 +1015,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshot()
 		{
-			var basename = $"{PathManager.ScreenshotPrefix(Global.Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
+			var basename = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}";
 
 			var fnameBare = $"{basename}.png";
 			var fname = $"{basename} (0).png";
@@ -1069,7 +1071,7 @@ namespace BizHawk.Client.EmuHawk
 				Size lastComputedSize = new Size(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
-					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(_currentVideoProvider, zoom);
+					lastComputedSize = DisplayManager.CalculateClientSize(_currentVideoProvider, zoom);
 					if (lastComputedSize.Width + borderWidth < area.Width
 						&& lastComputedSize.Height + borderHeight < area.Height)
 					{
@@ -1265,7 +1267,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateCheatStatus()
 		{
-			if (Global.CheatList.ActiveCount > 0)
+			if (CheatList.ActiveCount > 0)
 			{
 				CheatStatusButton.ToolTipText = "Cheats are currently active";
 				CheatStatusButton.Image = Properties.Resources.Freeze;
@@ -1542,11 +1544,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Emulator.IsNull())
 			{
-				str += $" - {Global.Game.Name}";
+				str += $" - {Game.Name}";
 
-				if (Global.MovieSession.Movie.IsActive)
+				if (MovieSession.Movie.IsActive)
 				{
-					str += $" - {Path.GetFileName(Global.MovieSession.Movie.Filename)}";
+					str += $" - {Path.GetFileName(MovieSession.Movie.Filename)}";
 				}
 			}
 
@@ -1583,12 +1585,12 @@ namespace BizHawk.Client.EmuHawk
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = "";
 
-			if (Emulator.IsNull() || Global.Game == null)
+			if (Emulator.IsNull() || Game == null)
 			{
 				return;
 			}
 
-			var status = Global.Game.Status;
+			var status = Game.Status;
 			string annotation;
 			if (status == RomStatus.BadDump)
 			{
@@ -1615,12 +1617,12 @@ namespace BizHawk.Client.EmuHawk
 				DumpStatusButton.Image = Properties.Resources.HomeBrew;
 				annotation = "Homebrew ROM";
 			}
-			else if (Global.Game.Status == RomStatus.Hack)
+			else if (Game.Status == RomStatus.Hack)
 			{
 				DumpStatusButton.Image = Properties.Resources.Hack;
 				annotation = "Hacked ROM";
 			}
-			else if (Global.Game.Status == RomStatus.Unknown)
+			else if (Game.Status == RomStatus.Unknown)
 			{
 				DumpStatusButton.Image = Properties.Resources.Hack;
 				annotation = "Warning: ROM of Unknown Character";
@@ -1652,8 +1654,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Config.AutosaveSaveRAM)
 					{
-						var saveram = new FileInfo(PathManager.SaveRamPath(Global.Game));
-						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Global.Game));
+						var saveram = new FileInfo(PathManager.SaveRamPath(Game));
+						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Game));
 						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
 						{
 							AddOnScreenMessage("AutoSaveRAM is newer than last saved SaveRAM");
@@ -1666,7 +1668,7 @@ namespace BizHawk.Client.EmuHawk
 					// GBA vba-next core will try to eat anything, regardless of size
 					if (Emulator is VBANext || Emulator is MGBAHawk || Emulator is NeoGeoPort)
 					{
-						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
+						sram = File.ReadAllBytes(PathManager.SaveRamPath(Game));
 					}
 					else
 					{
@@ -1682,7 +1684,7 @@ namespace BizHawk.Client.EmuHawk
 						// why do we silently truncate\pad here instead of warning\erroring?
 						sram = new byte[oldRam.Length];
 						using (var reader = new BinaryReader(
-								new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+								new FileStream(PathManager.SaveRamPath(Game), FileMode.Open, FileAccess.Read)))
 						{
 							reader.Read(sram, 0, sram.Length);
 						}
@@ -1705,12 +1707,12 @@ namespace BizHawk.Client.EmuHawk
 				string path;
 				if (autosave)
 				{
-					path = PathManager.AutoSaveRamPath(Global.Game);
+					path = PathManager.AutoSaveRamPath(Game);
 					AutoFlushSaveRamIn = Config.FlushSaveRamFrames;
 				}
 				else
 				{
-					path = PathManager.SaveRamPath(Global.Game);
+					path = PathManager.SaveRamPath(Game);
 				}
 				var file = new FileInfo(path);
 				var newPath = $"{path}.new";
@@ -1768,20 +1770,20 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWin.Sound.SetInputPin(_dumpProxy);
+				Sound.SetInputPin(_dumpProxy);
 			}
 			else
 			{
 				bool useAsyncMode = _currentSoundProvider.CanProvideAsync && !Config.SoundThrottle;
 				_currentSoundProvider.SetSyncMode(useAsyncMode ? SyncSoundMode.Async : SyncSoundMode.Sync);
-				GlobalWin.Sound.SetInputPin(_currentSoundProvider);
+				Sound.SetInputPin(_currentSoundProvider);
 			}
 		}
 
 		private void HandlePlatformMenus()
 		{
 			var system = "";
-			if (!Global.Game.IsNullInstance())
+			if (!Game.IsNullInstance())
 			{
 				system = Emulator.SystemId;
 			}
@@ -1974,7 +1976,7 @@ namespace BizHawk.Client.EmuHawk
 			if (File.Exists(path))
 			{
 				var movie = MovieService.Get(path);
-				Global.MovieSession.ReadOnly = true;
+				MovieSession.ReadOnly = true;
 				StartNewMovie(movie, false);
 			}
 			else
@@ -2111,7 +2113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer MakeScreenshotImage()
 		{
-			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
+			return DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -2154,9 +2156,9 @@ namespace BizHawk.Client.EmuHawk
 			//rendering flakes out egregiously if we have a zero size
 			//can we fix it later not to?
 			if (isZero)
-				GlobalWin.DisplayManager.Blank();
+				DisplayManager.Blank();
 			else
-				GlobalWin.DisplayManager.UpdateSource(video);
+				DisplayManager.UpdateSource(video);
 		}
 
 		// sends a simulation of a plain alt key keystroke
@@ -2314,11 +2316,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
 		{
-			if (Global.MovieSession.QueuedMovie != null)
+			if (MovieSession.QueuedMovie != null)
 			{
-				if (!string.IsNullOrWhiteSpace(Global.MovieSession.QueuedMovie.SyncSettingsJson))
+				if (!string.IsNullOrWhiteSpace(MovieSession.QueuedMovie.SyncSettingsJson))
 				{
-					e.Settings = ConfigService.LoadWithType(Global.MovieSession.QueuedMovie.SyncSettingsJson);
+					e.Settings = ConfigService.LoadWithType(MovieSession.QueuedMovie.SyncSettingsJson);
 				}
 				else
 				{
@@ -2365,7 +2367,7 @@ namespace BizHawk.Client.EmuHawk
 		public void PutCoreSyncSettings(object o)
 		{
 			var settable = new SettingsAdapter(Emulator);
-			if (Global.MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive)
 			{
 				AddOnScreenMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
@@ -2431,8 +2433,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleSound()
 		{
 			Config.SoundEnabled ^= true;
-			GlobalWin.Sound.StopSound();
-			GlobalWin.Sound.StartSound();
+			Sound.StopSound();
+			Sound.StartSound();
 		}
 
 		private void VolumeUp()
@@ -2462,9 +2464,9 @@ namespace BizHawk.Client.EmuHawk
 			// is it enough to run this for one frame? maybe..
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 				{
-					Global.ClickyVirtualPadController.Click("Reset");
+					ClickyVirtualPadController.Click("Reset");
 					AddOnScreenMessage("Reset button pressed.");
 				}
 			}
@@ -2475,9 +2477,9 @@ namespace BizHawk.Client.EmuHawk
 			// is it enough to run this for one frame? maybe..
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 				{
-					Global.ClickyVirtualPadController.Click("Power");
+					ClickyVirtualPadController.Click("Power");
 					AddOnScreenMessage("Power button pressed.");
 				}
 			}
@@ -2541,7 +2543,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, true);
+			var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, true);
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -2648,10 +2650,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMovie()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive)
 			{
-				Global.MovieSession.Movie.Save();
-				AddOnScreenMessage($"{Global.MovieSession.Movie.Filename} saved.");
+				MovieSession.Movie.Save();
+				AddOnScreenMessage($"{MovieSession.Movie.Filename} saved.");
 			}
 		}
 
@@ -2757,9 +2759,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
-					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+					if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 					{
-						Global.ClickyVirtualPadController.Click(button);
+						ClickyVirtualPadController.Click(button);
 						AddOnScreenMessage(msg);
 					}
 				}
@@ -2960,10 +2962,10 @@ namespace BizHawk.Client.EmuHawk
 				// client input-related duties
 				GlobalWin.OSD.ClearGuiText();
 
-				Global.CheatList.Pulse();
+				CheatList.Pulse();
 
 				// zero 03-may-2014 - moved this before call to UpdateToolsBefore(), since it seems to clear the state which a lua event.framestart is going to want to alter
-				Global.ClickyVirtualPadController.FrameTick();
+				ClickyVirtualPadController.FrameTick();
 				Global.ButtonOverrideAdaptor.FrameTick();
 
 				if (Tools.Has<LuaConsole>() && !SuppressLua)
@@ -3009,7 +3011,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				Global.MovieSession.HandleMovieOnFrameLoop();
+				MovieSession.HandleMovieOnFrameLoop();
 
 				if (Config.AutosaveSaveRAM)
 				{
@@ -3029,23 +3031,23 @@ namespace BizHawk.Client.EmuHawk
 				bool render = !InvisibleEmulation && (!_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false));
 				bool newFrame = Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
-				Global.MovieSession.HandleMovieAfterFrameLoop();
+				MovieSession.HandleMovieAfterFrameLoop();
 
 				if (returnToRecording)
 				{
-					Global.MovieSession.Movie.SwitchToRecord();
+					MovieSession.Movie.SwitchToRecord();
 				}
 
-				if (isRewinding && !IsRewindSlave && Global.MovieSession.Movie.IsRecording)
+				if (isRewinding && !IsRewindSlave && MovieSession.Movie.IsRecording)
 				{
-					Global.MovieSession.Movie.Truncate(Global.Emulator.Frame);
+					MovieSession.Movie.Truncate(Global.Emulator.Frame);
 				}
 
-				Global.CheatList.Pulse();
+				CheatList.Pulse();
 
 				if (IsLagFrame && Config.AutofireLagFrames)
 				{
-					Global.AutoFireController.IncrementStarts();
+					AutoFireController.IncrementStarts();
 				}
 
 				Global.AutofireStickyXORAdapter.IncrementLoops(IsLagFrame);
@@ -3084,7 +3086,7 @@ namespace BizHawk.Client.EmuHawk
 					if (PauseOnFrame.HasValue &&
 						PauseOnFrame.Value <= Tools.TAStudio.LastPositionFrame)
 					{
-						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Emulator.Frame];
+						TasMovieRecord record = (MovieSession.Movie as TasMovie)[Emulator.Frame];
 						if (!record.Lagged.HasValue && IsSeeking)
 						{
 							// haven't yet greenzoned the frame, hence it's after editing
@@ -3110,7 +3112,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter();
 			}
 
-			GlobalWin.Sound.UpdateSound(atten);
+			Sound.UpdateSound(atten);
 		}
 
 		private void UpdateFpsDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)
@@ -3306,9 +3308,9 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						using var sfd = new SaveFileDialog();
-						if (Global.Game != null)
+						if (Game != null)
 						{
-							sfd.FileName = $"{PathManager.FilesystemSafeName(Global.Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
+							sfd.FileName = $"{PathManager.FilesystemSafeName(Game)}.{ext}"; // don't use Path.ChangeExtension, it might wreck game names with dots in them
 							sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.AvPathFragment, null);
 						}
 						else
@@ -3636,7 +3638,7 @@ namespace BizHawk.Client.EmuHawk
 				// movies should require deterministic emulation in ALL cases
 				// if the core is managing its own DE through SyncSettings a 'deterministic' bool can be passed into the core's constructor
 				// it is then up to the core itself to override its own local DeterministicEmulation setting
-				bool deterministic = args.Deterministic ?? Global.MovieSession.QueuedMovie != null;
+				bool deterministic = args.Deterministic ?? MovieSession.QueuedMovie != null;
 
 				if (!Tools.AskSave())
 				{
@@ -3760,21 +3762,21 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (!string.IsNullOrWhiteSpace(nes.GameName))
 						{
-							Global.Game.Name = nes.GameName;
+							Game.Name = nes.GameName;
 						}
 
-						Global.Game.Status = nes.RomStatus;
+						Game.Status = nes.RomStatus;
 					}
 					else if (loader.LoadedEmulator is QuickNES qns)
 					{
 						if (!string.IsNullOrWhiteSpace(qns.BootGodName))
 						{
-							Global.Game.Name = qns.BootGodName;
+							Game.Name = qns.BootGodName;
 						}
 
 						if (qns.BootGodStatus.HasValue)
 						{
-							Global.Game.Status = qns.BootGodStatus.Value;
+							Game.Status = qns.BootGodStatus.Value;
 						}
 					}
 
@@ -3804,7 +3806,7 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(openAdvancedArgs, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
-					if (!Global.MovieSession.MovieIsQueued)
+					if (!MovieSession.MovieIsQueued)
 					{
 						if (File.Exists(PathManager.SaveRamPath(loader.Game)))
 						{
@@ -3821,21 +3823,21 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Config.LoadCheatFileByGame)
 					{
-						Global.CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
-						if (Global.CheatList.AttemptToLoadCheatFile())
+						CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
+						if (CheatList.AttemptToLoadCheatFile())
 						{
 							AddOnScreenMessage("Cheats file loaded");
 						}
-						else if (Global.CheatList.Any())
+						else if (CheatList.Any())
 						{
-							Global.CheatList.Clear();
+							CheatList.Clear();
 						}
 					}
 
 					CurrentlyOpenRom = oa_openrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
-					GlobalWin.DisplayManager.Blank();
+					DisplayManager.Blank();
 
 					Global.Rewinder.Initialize();
 
@@ -3907,7 +3909,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PutCoreSettings(settable.GetSettings(), t);
 			}
 
-			if (settable.HasSyncSettings && !Global.MovieSession.Movie.IsActive)
+			if (settable.HasSyncSettings && !MovieSession.Movie.IsActive)
 			{
 				// don't trample config with loaded-from-movie settings
 				Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
@@ -3923,7 +3925,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = true;
 			if (clearSram)
 			{
-				var path = PathManager.SaveRamPath(Global.Game);
+				var path = PathManager.SaveRamPath(Game);
 				if (File.Exists(path))
 				{
 					File.Delete(path);
@@ -3947,7 +3949,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 
 			CommitCoreSettingsToConfig();
-			if (Global.MovieSession.Movie.IsActive) // Note: this must be called after CommitCoreSettingsToConfig()
+			if (MovieSession.Movie.IsActive) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
 				StopMovie();
 			}
@@ -3959,7 +3961,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Get<TraceLogger>().Restart();
 			}
 
-			Global.CheatList.SaveOnClose();
+			CheatList.SaveOnClose();
 			Emulator.Dispose();
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
@@ -4074,11 +4076,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// If from lua, disable counting rerecords
-			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			bool wasCountingRerecords = MovieSession.Movie.IsCountingRerecords;
 
 			if (fromLua)
 			{
-				Global.MovieSession.Movie.IsCountingRerecords = false;
+				MovieSession.Movie.IsCountingRerecords = false;
 			}
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
@@ -4095,9 +4097,9 @@ namespace BizHawk.Client.EmuHawk
 				Tools.UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
-				Global.AutoFireController.ClearStarts();
+				AutoFireController.ClearStarts();
 
-				if (!IsRewindSlave && Global.MovieSession.Movie.IsActive)
+				if (!IsRewindSlave && MovieSession.Movie.IsActive)
 				{
 					ClearRewindData();
 				}
@@ -4112,7 +4114,7 @@ namespace BizHawk.Client.EmuHawk
 				AddOnScreenMessage("Loadstate error!");
 			}
 
-			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+			MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 		}
 
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool suppressOSD = false)
@@ -4134,7 +4136,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Global.Game)}.{quickSlotName}.State";
+			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
 			if (!File.Exists(path))
 			{
 				AddOnScreenMessage($"Unable to load {quickSlotName}.State");
@@ -4200,7 +4202,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = $"{PathManager.SaveStatePrefix(Global.Game)}.{quickSlotName}.State";
+			var path = $"{PathManager.SaveStatePrefix(Game)}.{quickSlotName}.State";
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4242,7 +4244,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var path = PathManager.GetSaveStatePath(Global.Game);
+			var path = PathManager.GetSaveStatePath(Game);
 
 			var file = new FileInfo(path);
 			if (file.Directory != null && !file.Directory.Exists)
@@ -4256,7 +4258,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultExt = "State",
 				Filter = "Save States (*.State)|*.State|All Files|*.*",
 				InitialDirectory = path,
-				FileName = $"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave0.State"
+				FileName = $"{PathManager.SaveStatePrefix(Game)}.QuickSave0.State"
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -4286,7 +4288,7 @@ namespace BizHawk.Client.EmuHawk
 
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
+				InitialDirectory = PathManager.GetSaveStatePath(Game),
 				Filter = "Save States (*.State)|*.State|All Files|*.*",
 				RestoreDirectory = true
 			};
@@ -4394,10 +4396,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (Global.MovieSession.Movie.IsActive)
+				if (MovieSession.Movie.IsActive)
 				{
-					Global.MovieSession.ReadOnly ^= true;
-					AddOnScreenMessage(Global.MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
+					MovieSession.ReadOnly ^= true;
+					AddOnScreenMessage(MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
 				}
 				else
 				{
@@ -4414,7 +4416,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Global.MovieSession.StopMovie(saveChanges);
+				MovieSession.StopMovie(saveChanges);
 				SetMainformMovieInfo();
 				UpdateStatusSlots();
 			}
@@ -4512,9 +4514,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					runFrame = Global.Rewinder.Rewind(1) && Emulator.Frame > 1;
 
-					if (runFrame && Global.MovieSession.Movie.IsRecording)
+					if (runFrame && MovieSession.Movie.IsRecording)
 					{
-						Global.MovieSession.Movie.SwitchToPlay();
+						MovieSession.Movie.SwitchToPlay();
 						returnToRecording = true;
 					}
 				}

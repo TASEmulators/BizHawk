@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
@@ -297,19 +295,19 @@ namespace BizHawk.Client.EmuHawk
 					SaveMovie(); 
 					break;
 				case "Toggle MultiTrack":
-					Global.MovieSession.ToggleMultitrack();
+					MovieSession.ToggleMultitrack();
 					break;
 				case "MT Select All":
-					Global.MovieSession.MultiTrack.SelectAll();
+					MovieSession.MultiTrack.SelectAll();
 					break;
 				case "MT Select None":
-					Global.MovieSession.MultiTrack.SelectNone();
+					MovieSession.MultiTrack.SelectNone();
 					break;
 				case "MT Increment Player":
-					Global.MovieSession.MultiTrack.Increment();
+					MovieSession.MultiTrack.Increment();
 					break;
 				case "MT Decrement Player":
-					Global.MovieSession.MultiTrack.Decrement();
+					MovieSession.MultiTrack.Decrement();
 					break;
 				case "Movie Poke": 
 					ToggleModePokeMode(); 
@@ -335,19 +333,19 @@ namespace BizHawk.Client.EmuHawk
 					Tools.Load<Cheats>();
 					break;
 				case "Toggle All Cheats":
-					if (Global.CheatList.Any())
+					if (CheatList.Any())
 					{
 						string type = " (mixed)";
-						if (Global.CheatList.All(c => c.Enabled))
+						if (CheatList.All(c => c.Enabled))
 						{
 							type = " (off)";
 						}
-						else if (Global.CheatList.All(c => !c.Enabled))
+						else if (CheatList.All(c => !c.Enabled))
 						{
 							type = " (on)";
 						}
 
-						foreach (var x in Global.CheatList)
+						foreach (var x in CheatList)
 						{
 							x.Toggle();
 						}

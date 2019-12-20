@@ -236,15 +236,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FullMovieLoadstatesMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
-			StopMovieWithoutSavingMenuItem.Enabled = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
+			FullMovieLoadstatesMenuItem.Enabled = !MovieSession.MultiTrack.IsActive;
+			StopMovieWithoutSavingMenuItem.Enabled = MovieSession.Movie.IsActive && MovieSession.Movie.Changes;
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
 				= SaveMovieAsMenuItem.Enabled
-				= Global.MovieSession.Movie.IsActive;
+				= MovieSession.Movie.IsActive;
 
-			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
+			ReadonlyMenuItem.Checked = MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Config.EnableBackupMovies;
 			FullMovieLoadstatesMenuItem.Checked = Config.VBAStyleMovieLoadState;
 
@@ -534,22 +534,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMovieAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var filename = Global.MovieSession.Movie.Filename;
+			var filename = MovieSession.Movie.Filename;
 			if (string.IsNullOrWhiteSpace(filename))
 			{
-				filename = PathManager.FilesystemSafeName(Global.Game);
+				filename = PathManager.FilesystemSafeName(Game);
 			}
 
 			var file = ToolFormBase.SaveFileDialog(
 				filename,
 				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
 				"Movie Files",
-				Global.MovieSession.Movie.PreferredExtension);
+				MovieSession.Movie.PreferredExtension);
 
 			if (file != null)
 			{
-				Global.MovieSession.Movie.Filename = file.FullName;
-				Config.RecentMovies.Add(Global.MovieSession.Movie.Filename);
+				MovieSession.Movie.Filename = file.FullName;
+				Config.RecentMovies.Add(MovieSession.Movie.Filename);
 				SaveMovie();
 			}
 		}
@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Config.EnableBackupMovies)
 			{
-				Global.MovieSession.Movie.SaveBackup();
+				MovieSession.Movie.SaveBackup();
 			}
 
 			StopMovie(saveChanges: false);
@@ -626,7 +626,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = $"{PathManager.ScreenshotPrefix(Global.Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
+			var path = $"{PathManager.ScreenshotPrefix(Game)}.{DateTime.Now:yyyy-MM-dd HH.mm.ss}.png";
 
 			using var sfd = new SaveFileDialog
 			{
@@ -684,10 +684,10 @@ namespace BizHawk.Client.EmuHawk
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
 			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
-					(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
+					(!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished);
 
 			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
-				(!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished);
+				(!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished);
 
 			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"].Bindings;
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"].Bindings;
@@ -1015,7 +1015,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutofireMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new AutofireConfig(Config, Global.AutoFireController, Global.AutofireStickyXORAdapter);
+			using var form = new AutofireConfig(Config, AutoFireController, AutofireStickyXORAdapter);
 			var result = form.ShowDialog();
 			AddOnScreenMessage(result.IsOk()
 				? "Autofire settings saved"
@@ -1543,10 +1543,10 @@ namespace BizHawk.Client.EmuHawk
 
 			NESSoundChannelsMenuItem.Enabled = Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = (Emulator is NES || Emulator is SubNESHawk)
-				&& !Global.MovieSession.Movie.IsActive;
+				&& !MovieSession.Movie.IsActive;
 
 			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>()
-				&& !Global.MovieSession.Movie.IsActive;
+				&& !MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
 
@@ -1633,9 +1633,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 			{
-				Global.ClickyVirtualPadController.Click("FDS Eject");
+				ClickyVirtualPadController.Click("FDS Eject");
 				AddOnScreenMessage("FDS disk ejected.");
 			}
 		}
@@ -1645,9 +1645,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 			|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 				{
-					Global.ClickyVirtualPadController.Click("Insert Coin P1");
+					ClickyVirtualPadController.Click("Insert Coin P1");
 					AddOnScreenMessage("P1 Coin Inserted");
 				}
 			}
@@ -1658,9 +1658,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 				{
-					Global.ClickyVirtualPadController.Click("Insert Coin P2");
+					ClickyVirtualPadController.Click("Insert Coin P2");
 					AddOnScreenMessage("P2 Coin Inserted");
 				}
 			}
@@ -1671,9 +1671,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 				{
-					Global.ClickyVirtualPadController.Click("Service Switch");
+					ClickyVirtualPadController.Click("Service Switch");
 					AddOnScreenMessage("Service Switch Pressed");
 				}
 			}
@@ -1725,7 +1725,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((PCEngine)Emulator).GetSettings();
 
-			PceControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			PceControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
 
 			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
@@ -1819,25 +1819,25 @@ namespace BizHawk.Client.EmuHawk
 			SMSEnableFMChipMenuItem.Visible =
 				SMSFix3DGameDisplayToolStripMenuItem.Visible =
 				SMSenableBIOSToolStripMenuItem.Visible =
-				Global.Game.System == "SMS";
+				Game.System == "SMS";
 
 			SMSDisplayOverscanMenuItem.Visible =
-				Global.Game.System == "SMS" || Global.Game.System == "SG";
+				Game.System == "SMS" || Game.System == "SG";
 
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMSdisplayToolStripMenuItem.Visible =
-				Global.Game.System != "GG";
+				Game.System != "GG";
 
 			ShowClippedRegionsMenuItem.Visible =
 				HighlightActiveDisplayRegionMenuItem.Visible =
 				GGGameGenieMenuItem.Visible =
-				Global.Game.System == "GG";
+				Game.System == "GG";
 
 			SMSOverclockMenuItem.Visible =
 				SMSVDPViewerToolStripMenuItem.Visible =
 				toolStripSeparator24.Visible =
-				Global.Game.System != "SG";
+				Game.System != "SG";
 		}
 
 		private void SMS_RegionExport_Click(object sender, EventArgs e)
@@ -2079,8 +2079,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
-			A7800FilterSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			A7800ControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			A7800FilterSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
 		}
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2112,7 +2112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy gb)
+			if (Emulator is Gameboy gb)
 			{
 				GBPrefs.DoGBPrefsDialog(this, gb);
 			}
@@ -2180,7 +2180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			PSXControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			PSXControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
 		}
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2230,7 +2230,7 @@ namespace BizHawk.Client.EmuHawk
 				SnesGBInSGBMenuItem.Visible = false;
 			}
 
-			SNESControllerConfigurationMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			SNESControllerConfigurationMenuItem.Enabled = !MovieSession.Movie.IsActive;
 		}
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
@@ -2280,7 +2280,7 @@ namespace BizHawk.Client.EmuHawk
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
 			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
-			ColecoControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			ColecoControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
@@ -2315,7 +2315,7 @@ namespace BizHawk.Client.EmuHawk
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
 				N64ExpansionSlotMenuItem.Enabled =
-				!Global.MovieSession.Movie.IsActive;
+				!MovieSession.Movie.IsActive;
 
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
 
@@ -2568,7 +2568,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			IntVControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			IntVControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
 		}
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2959,7 +2959,7 @@ namespace BizHawk.Client.EmuHawk
 			RecordMovieContextMenuItem.Visible =
 				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
-				!Emulator.IsNull() && !Global.MovieSession.Movie.IsActive;
+				!Emulator.IsNull() && !MovieSession.Movie.IsActive;
 
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
@@ -2967,26 +2967,26 @@ namespace BizHawk.Client.EmuHawk
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
 				SaveMovieAsContextMenuItem.Visible =
-				Global.MovieSession.Movie.IsActive;
+				MovieSession.Movie.IsActive;
 
-			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;
+			BackupMovieContextMenuItem.Visible = MovieSession.Movie.IsActive;
 
-			StopNoSaveContextMenuItem.Visible = Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.Changes;
+			StopNoSaveContextMenuItem.Visible = MovieSession.Movie.IsActive && MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && Global.MovieSession.Movie.IsActive && !Global.MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && MovieSession.Movie.IsActive && !MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Global.Game));
+			ClearSRAMContextMenuItem.Visible = File.Exists(PathManager.SaveRamPath(Game));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 
 			LoadLastRomContextMenuItem.Enabled = !Config.RecentRoms.Empty;
 			LoadLastMovieContextMenuItem.Enabled = !Config.RecentMovies.Empty;
 
-			if (Global.MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive)
 			{
-				if (Global.MovieSession.ReadOnly)
+				if (MovieSession.ReadOnly)
 				{
 					ViewSubtitlesContextMenuItem.Text = "View Subtitles";
 					ViewCommentsContextMenuItem.Text = "View Comments";
@@ -2998,7 +2998,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var file = new FileInfo($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{Config.SaveSlot}.State.bak");
+			var file = new FileInfo($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State.bak");
 
 			if (file.Exists)
 			{
@@ -3056,7 +3056,7 @@ namespace BizHawk.Client.EmuHawk
 			using var window = new DisplayConfig(Config);
 			if (window.ShowDialog().IsOk())
 			{
-				GlobalWin.DisplayManager.RefreshUserShader();
+				DisplayManager.RefreshUserShader();
 				FrameBufferResized();
 				SynchChrome();
 				if (window.NeedReset)
@@ -3078,16 +3078,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BackupMovieContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.SaveBackup();
+			MovieSession.Movie.SaveBackup();
 			AddOnScreenMessage("Backup movie saved.");
 		}
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive)
 			{
-				using var form = new EditSubtitlesForm { ReadOnly = Global.MovieSession.ReadOnly };
-				form.GetMovie(Global.MovieSession.Movie);
+				using var form = new EditSubtitlesForm { ReadOnly = MovieSession.ReadOnly };
+				form.GetMovie(MovieSession.Movie);
 				form.ShowDialog();
 			}
 		}
@@ -3100,9 +3100,9 @@ namespace BizHawk.Client.EmuHawk
 
 			int index = -1;
 			var sub = new Subtitle();
-			for (int i = 0; i < Global.MovieSession.Movie.Subtitles.Count; i++)
+			for (int i = 0; i < MovieSession.Movie.Subtitles.Count; i++)
 			{
-				sub = Global.MovieSession.Movie.Subtitles[i];
+				sub = MovieSession.Movie.Subtitles[i];
 				if (Emulator.Frame == sub.Frame)
 				{
 					index = i;
@@ -3121,26 +3121,26 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (index >= 0)
 				{
-					Global.MovieSession.Movie.Subtitles.RemoveAt(index);
+					MovieSession.Movie.Subtitles.RemoveAt(index);
 				}
 
-				Global.MovieSession.Movie.Subtitles.Add(subForm.Sub);
+				MovieSession.Movie.Subtitles.Add(subForm.Sub);
 			}
 		}
 
 		private void ViewCommentsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive)
 			{
 				using var form = new EditCommentsForm();
-				form.GetMovie(Global.MovieSession.Movie);
+				form.GetMovie(MovieSession.Movie);
 				form.ShowDialog();
 			}
 		}
 
 		private void UndoSavestateContextMenuItem_Click(object sender, EventArgs e)
 		{
-			_stateSlots.SwapBackupSavestate($"{PathManager.SaveStatePrefix(Global.Game)}.QuickSave{Config.SaveSlot}.State");
+			_stateSlots.SwapBackupSavestate($"{PathManager.SaveStatePrefix(Game)}.QuickSave{Config.SaveSlot}.State");
 			AddOnScreenMessage($"Save slot {Config.SaveSlot} restored.");
 		}
 
@@ -3164,9 +3164,9 @@ namespace BizHawk.Client.EmuHawk
 			string details = Emulator.CoreComm.RomStatusDetails;
 			if (!string.IsNullOrEmpty(details))
 			{
-				GlobalWin.Sound.StopSound();
+				Sound.StopSound();
 				LogWindow.ShowReport("Dump Status Report", details, this);
-				GlobalWin.Sound.StartSound();
+				Sound.StartSound();
 			}
 		}
 
@@ -3237,7 +3237,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
 		{
 			// toggle Link status (only outside of a movie session)
-			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+			if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
 			{
 				Emulator.AsLinkable().LinkConnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);
@@ -3246,11 +3246,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateNotification_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Sound.StopSound();
+			Sound.StopSound();
 			DialogResult result = MessageBox.Show(this,
 				$"Version {Config.Update_LatestVersion} is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
 				"New Version Available", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-			GlobalWin.Sound.StartSound();
+			Sound.StartSound();
 
 			if (result == DialogResult.Yes)
 			{
