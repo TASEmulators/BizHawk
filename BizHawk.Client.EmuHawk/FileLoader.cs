@@ -48,17 +48,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadCdl(string filename, string archive = null)
 		{
-			if (GlobalWin.Tools.IsAvailable<CDL>())
+			if (Tools.IsAvailable<CDL>())
 			{
-				CDL cdl = GlobalWin.Tools.Load<CDL>();
+				CDL cdl = Tools.Load<CDL>();
 				cdl.LoadFile(filename);
 			}
 		}
 
 		private void LoadCheats(string filename, string archive = null)
 		{
-			Global.CheatList.Load(filename, false);
-			GlobalWin.Tools.Load<Cheats>();
+			CheatList.Load(filename, false);
+			Tools.Load<Cheats>();
 		}
 
 		private void LoadLegacyMovie(string filename, string archive = null)
@@ -79,19 +79,19 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadLuaFile(string filename, string archive = null)
 		{
 			OpenLuaConsole();
-			if (GlobalWin.Tools.Has<LuaConsole>())
+			if (Tools.Has<LuaConsole>())
 			{
 				if (OSTailoredCode.IsUnixHost) Console.WriteLine($"The Lua environment can currently only be created on Windows, {filename} will not be loaded.");
-				else GlobalWin.Tools.LuaConsole.LoadLuaFile(filename);
+				else Tools.LuaConsole.LoadLuaFile(filename);
 			}
 		}
 
 		private void LoadLuaSession(string filename, string archive = null)
 		{
 			OpenLuaConsole();
-			if (GlobalWin.Tools.Has<LuaConsole>())
+			if (Tools.Has<LuaConsole>())
 			{
-				GlobalWin.Tools.LuaConsole.LoadLuaSession(filename);
+				Tools.LuaConsole.LoadLuaSession(filename);
 			}
 		}
 
@@ -126,8 +126,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadWatch(string filename, string archive = null)
 		{
-			GlobalWin.Tools.LoadRamWatch(true);
-			((RamWatch) GlobalWin.Tools.Get<RamWatch>()).LoadWatchFile(new FileInfo(filename), false);
+			Tools.LoadRamWatch(true);
+			((RamWatch) Tools.Get<RamWatch>()).LoadWatchFile(new FileInfo(filename), false);
 		}
 
 		#endregion
