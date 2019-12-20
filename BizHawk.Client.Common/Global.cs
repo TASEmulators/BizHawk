@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 // ReSharper disable StyleCop.SA1401

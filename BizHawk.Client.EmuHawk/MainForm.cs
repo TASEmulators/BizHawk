@@ -88,10 +88,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return new CoreComm(ShowMessageCoreComm, NotifyCoreComm)
 			{
-				ReleaseGLContext = o => GlobalWin.GLManager.ReleaseGLContext(o),
-				RequestGLContext = (major, minor, forward) => GlobalWin.GLManager.CreateGLContext(major, minor, forward),
-				ActivateGLContext = gl => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl),
-				DeactivateGLContext = () => GlobalWin.GLManager.Deactivate()
+				ReleaseGLContext = o => GLManager.ReleaseGLContext(o),
+				RequestGLContext = (major, minor, forward) => GLManager.CreateGLContext(major, minor, forward),
+				ActivateGLContext = gl => GLManager.Activate((GLManager.ContextRef)gl),
+				DeactivateGLContext = () => GLManager.Deactivate()
 			};
 		}
 
@@ -202,14 +202,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm = this;
-			Global.Rewinder = new Rewinder
+			Rewinder = new Rewinder
 			{
 				MessageCallback = GlobalWin.OSD.AddMessage
 			};
 
 			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
-			Global.MovieSession = new MovieSession
+			MovieSession = new MovieSession
 			{
 				Movie = MovieService.DefaultInstance,
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
 			SetImages();
-			Global.Game = GameInfo.NullInstance;
+			Game = GameInfo.NullInstance;
 			if (Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -808,13 +808,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private ToolManager Tools => GlobalWin.Tools;
 		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
-		private IMovieSession MovieSession => Global.MovieSession;
-		private GameInfo Game => Global.Game;
+
+		private IMovieSession MovieSession
+		{
+			get => Global. MovieSession;
+			set => Global.MovieSession = value;
+		}
+
+		private GameInfo Game
+		{
+			get => Global.Game;
+			set => Global.Game = value;
+		}
+
+		private GLManager GLManager => GlobalWin.GLManager;
+
 		private Sound Sound => GlobalWin.Sound;
 		private CheatCollection CheatList => Global.CheatList;
 		private AutofireController AutoFireController => Global.AutoFireController;
 		private AutoFireStickyXorAdapter AutofireStickyXORAdapter => Global.AutofireStickyXORAdapter;
 		private ClickyVirtualPadController ClickyVirtualPadController => Global.ClickyVirtualPadController;
+
+		private Rewinder Rewinder
+		{
+			get => Global.Rewinder;
+			set => Global.Rewinder = value;
+		}
+
+		private FirmwareManager FirmwareManager => Global.FirmwareManager;
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -2045,7 +2066,7 @@ namespace BizHawk.Client.EmuHawk
 			// skips outputting the audio. There's also a third way which is when no throttle
 			// method is selected, but the clock throttle determines that by itself and
 			// everything appears normal here.
-			var rewind = Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
+			var rewind = Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind);
 			var fastForward = Global.ClientControls["Fast Forward"] || FastForward;
 			var turbo = IsTurboing;
 
@@ -2053,7 +2074,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (rewind)
 			{
-				speedPercent = Math.Max(speedPercent * Config.RewindSpeedMultiplier / Global.Rewinder.RewindFrequency, 5);
+				speedPercent = Math.Max(speedPercent * Config.RewindSpeedMultiplier / Rewinder.RewindFrequency, 5);
 			}
 
 			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
@@ -3844,7 +3865,7 @@ namespace BizHawk.Client.EmuHawk
 					OnRomChanged();
 					DisplayManager.Blank();
 
-					Global.Rewinder.Initialize();
+					Rewinder.Initialize();
 
 					Global.StickyXORAdapter.ClearStickies();
 					Global.StickyXORAdapter.ClearStickyFloats();
@@ -3857,10 +3878,10 @@ namespace BizHawk.Client.EmuHawk
 						LoadQuickSave($"QuickSave{Config.SaveSlot}");
 					}
 
-					if (Global.FirmwareManager.RecentlyServed.Count > 0)
+					if (FirmwareManager.RecentlyServed.Count > 0)
 					{
 						Console.WriteLine("Active Firmwares:");
-						foreach (var f in Global.FirmwareManager.RecentlyServed)
+						foreach (var f in FirmwareManager.RecentlyServed)
 						{
 							Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
 						}
@@ -3959,7 +3980,7 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie();
 			}
 
-			Global.Rewinder.Uninitialize();
+			Rewinder.Uninitialize();
 
 			if (Tools.IsLoaded<TraceLogger>())
 			{
@@ -4030,13 +4051,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EnableRewind(bool enabled)
 		{
-			Global.Rewinder.SuspendRewind = !enabled;
+			Rewinder.SuspendRewind = !enabled;
 			AddOnScreenMessage($"Rewind {(enabled ? "enabled" : "suspended")}");
 		}
 
 		public void ClearRewindData()
 		{
-			Global.Rewinder.Clear();
+			Rewinder.Clear();
 		}
 
 		#endregion
@@ -4433,9 +4454,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Master.CaptureRewind();
 			}
-			else if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
+			else if (!suppressCaptureRewind && Rewinder.RewindActive)
 			{
-				Global.Rewinder.Capture();
+				Rewinder.Capture();
 			}
 		}
 
@@ -4495,7 +4516,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
+			if (Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
@@ -4517,7 +4538,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Global.Rewinder.Rewind(1) && Emulator.Frame > 1;
+					runFrame = Rewinder.Rewind(1) && Emulator.Frame > 1;
 
 					if (runFrame && MovieSession.Movie.IsRecording)
 					{
