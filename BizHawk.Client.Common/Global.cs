@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
-		// the movie will be spliced inbetween these if it is present
+		// the movie will be spliced in between these if it is present
 		public static readonly CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static readonly CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 		public static readonly MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
@@ -86,12 +86,12 @@ namespace BizHawk.Client.Common
 					case "SG":
 						return SystemInfo.SG;
 					case "SMS":
-						if ((Emulator as SMS).IsGameGear)
+						if (Emulator is SMS gg && gg.IsGameGear)
 						{
 							return SystemInfo.GG;
 						}
 
-						if ((Emulator as SMS).IsSG1000)
+						if (Emulator is SMS sg && sg.IsSG1000)
 						{
 							return SystemInfo.SG;
 						}
