@@ -1335,7 +1335,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+			Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Config.ResolveDefaults();
 			InitControls(); // rebind hotkeys
 			AddOnScreenMessage($"Config file loaded: {PathManager.DefaultIniPath}");
@@ -1353,7 +1353,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (ofd.ShowHawkDialog().IsOk())
 			{
-				Global.Config = ConfigService.Load<Config>(ofd.FileName);
+				Config = ConfigService.Load<Config>(ofd.FileName);
 				Config.ResolveDefaults();
 				InitControls(); // rebind hotkeys
 				AddOnScreenMessage($"Config file loaded: {ofd.FileName}");

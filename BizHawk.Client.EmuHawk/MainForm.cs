@@ -800,7 +800,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
-		private Config Config => Global.Config;
+		private Config Config
+		{
+			get => Global.Config;
+			set => Global.Config = value;
+		}
+
 		private ToolManager Tools => GlobalWin.Tools;
 		private DisplayManager DisplayManager => GlobalWin.DisplayManager;
 		private IMovieSession MovieSession => Global.MovieSession;
