@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputDevice.StopSound();
 
-			if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
+			_bufferedProvider?.DiscardSamples();
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
-				if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
+				_bufferedProvider?.DiscardSamples();
 				return;
 			}
 

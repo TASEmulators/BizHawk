@@ -502,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 
 			PresentationPanel.Control.Paint += (o, e) =>
 			{
-				// I would like to trigger a repaint here, but this isnt done yet
+				// I would like to trigger a repaint here, but this isn't done yet
 			};
 		}
 
@@ -680,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <item><description>Updating the screen</description></item>
 		/// <item><description>Loading the no-framebuffer state from RAM</description></item>
 		/// </list>
-		/// The most common usecase is CamHack for Sonic games.
+		/// The most common use case is CamHack for Sonic games.
 		/// Accessing this from Lua allows to keep internal code hacks to minimum.
 		/// <list type="bullet">
 		/// <item><description><see cref="EmuHawkLuaLibrary.InvisibleEmulation(bool)"/></description></item>
@@ -871,7 +871,7 @@ namespace BizHawk.Client.EmuHawk
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
-					// Maybe it is a system alt-key which hasnt been overridden
+					// Maybe it is a system alt-key which hasn't been overridden
 					if (ie.EventType == Input.InputEventType.Press)
 					{
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
@@ -895,7 +895,6 @@ namespace BizHawk.Client.EmuHawk
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts. This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
 				bool handled;
 				switch (Config.Input_Hotkey_OverrideOptions)
 				{
@@ -923,7 +922,7 @@ namespace BizHawk.Client.EmuHawk
 							handled = false;
 							if (ie.EventType == Input.InputEventType.Press)
 							{
-								handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+								handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 							}
 
 							// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
@@ -938,7 +937,7 @@ namespace BizHawk.Client.EmuHawk
 						handled = false;
 						if (ie.EventType == Input.InputEventType.Press)
 						{
-							handled = triggers.Aggregate(handled, (current, trigger) => current | CheckHotkey(trigger));
+							handled = triggers.Aggregate(false, (current, trigger) => current | CheckHotkey(trigger));
 						}
 
 						// hotkeys which aren't handled as actions get coalesced as pollable virtual client buttons
@@ -1264,24 +1263,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ThrottleMessage()
 		{
-			string ttype = ":(none)";
+			string type = ":(none)";
 			if (Config.SoundThrottle)
 			{
-				ttype = ":Sound";
+				type = ":Sound";
 			}
 
 			if (Config.VSyncThrottle)
 			{
-				ttype = $":Vsync{(Config.VSync ? "[ena]" : "[dis]")}";
+				type = $":Vsync{(Config.VSync ? "[ena]" : "[dis]")}";
 			}
 
 			if (Config.ClockThrottle)
 			{
-				ttype = ":Clock";
+				type = ":Clock";
 			}
 
-			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
-			string msg = $"{xtype}{ttype} ";
+			string throttled = _unthrottled ? "Unthrottled" : "Throttled";
+			string msg = $"{throttled}{type} ";
 
 			AddOnScreenMessage(msg);
 		}
@@ -1320,9 +1319,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool result = false;
-			if (Emulator is LibsnesCore)
+			if (Emulator is LibsnesCore bsnes)
 			{
-				var s = ((LibsnesCore)Emulator).GetSettings();
+				var s = bsnes.GetSettings();
 				switch (layer)
 				{
 					case 1:
@@ -1339,11 +1338,11 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				((LibsnesCore)Emulator).PutSettings(s);
+				bsnes.PutSettings(s);
 			}
-			else if (Emulator is Snes9x)
+			else if (Emulator is Snes9x snes9X)
 			{
-				var s = ((Snes9x)Emulator).GetSettings();
+				var s = snes9X.GetSettings();
 				switch (layer)
 				{
 					case 1:
@@ -1360,7 +1359,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				((Snes9x)Emulator).PutSettings(s);
+				snes9X.PutSettings(s);
 			}
 
 			AddOnScreenMessage($"BG {layer} Layer {(result ? "On" : "Off")}");
@@ -1379,9 +1378,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool result = false;
-			if (Emulator is LibsnesCore)
+			if (Emulator is LibsnesCore bsnes)
 			{
-				var s = ((LibsnesCore)Emulator).GetSettings();
+				var s = bsnes.GetSettings();
 				switch (layer)
 				{
 					case 1:
@@ -1398,7 +1397,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				((LibsnesCore)Emulator).PutSettings(s);
+				bsnes.PutSettings(s);
 				AddOnScreenMessage($"Obj {layer} Layer {(result ? "On" : "Off")}");
 			}
 			else if (Emulator is Snes9x snes9X)
@@ -2041,6 +2040,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Lightning;
 				PauseStatusButton.Visible = true;
+				// ReSharper disable once PossibleInvalidOperationException
 				PauseStatusButton.ToolTipText = $"Emulator is turbo seeking to frame {PauseOnFrame.Value} click to stop seek";
 			}
 			else if (PauseOnFrame.HasValue)
@@ -2306,9 +2306,7 @@ namespace BizHawk.Client.EmuHawk
 					return string.Join(";", values.OrderBy(n => n));
 				}
 
-				var allFilters = new List<FileFilterEntry>();
-
-				allFilters.Add(new FileFilterEntry("Rom Files", GetRomFilterStrings()));
+				var allFilters = new List<FileFilterEntry> { new FileFilterEntry("Rom Files", GetRomFilterStrings()) };
 				allFilters.AddRange(RomFilterEntries.Where(f => f.EffectiveFilters.Any()));
 				allFilters.Add(new FileFilterEntry("Savestate", "*.state"));
 				allFilters.Add(new FileFilterEntry("All Files", "*.*"));
@@ -2628,7 +2626,7 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
-		private static readonly int[] _speedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
+		private static readonly int[] SpeedPercents = { 1, 3, 6, 12, 25, 50, 75, 100, 150, 200, 300, 400, 800, 1600, 3200, 6400 };
 
 		private void IncreaseSpeed()
 		{
@@ -2638,18 +2636,18 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var oldp = Config.SpeedPercent;
-			int newp;
+			var oldPercent = Config.SpeedPercent;
+			int newPercent;
 
 			int i = 0;
 			do
 			{
 				i++;
-				newp = _speedPercents[i];
+				newPercent = SpeedPercents[i];
 			}
-			while (newp <= oldp && i < _speedPercents.Length - 1);
+			while (newPercent <= oldPercent && i < SpeedPercents.Length - 1);
 
-			SetSpeedPercent(newp);
+			SetSpeedPercent(newPercent);
 		}
 
 		private void DecreaseSpeed()
@@ -2660,18 +2658,18 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var oldp = Config.SpeedPercent;
-			int newp;
+			var oldPercent = Config.SpeedPercent;
+			int newPercent;
 
-			int i = _speedPercents.Length - 1;
+			int i = SpeedPercents.Length - 1;
 			do
 			{
 				i--;
-				newp = _speedPercents[i];
+				newPercent = SpeedPercents[i];
 			}
-			while (newp >= oldp && i > 0);
+			while (newPercent >= oldPercent && i > 0);
 
-			SetSpeedPercent(newp);
+			SetSpeedPercent(newPercent);
 		}
 
 		private void SaveMovie()
@@ -2794,14 +2792,14 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		private const int WmDevicechange = 0x0219;
+		private const int WmDeviceChange = 0x0219;
 
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
 			switch (m.Msg)
 			{
-				case WmDevicechange:
+				case WmDeviceChange:
 					GamePad.Initialize();
 					GamePad360.Initialize();
 					break;
@@ -3116,7 +3114,7 @@ namespace BizHawk.Client.EmuHawk
 						if (!record.Lagged.HasValue && IsSeeking)
 						{
 							// haven't yet greenzoned the frame, hence it's after editing
-							// then we want to pause here. taseditor fasion
+							// then we want to pause here. taseditor fashion
 							PauseEmulator();
 						}
 					}
@@ -3457,40 +3455,40 @@ namespace BizHawk.Client.EmuHawk
 					IDisposable disposableOutput = null;
 					if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 					{
-						BitmapBuffer bbin = null;
-						Bitmap bmpin = null;
+						BitmapBuffer bbIn = null;
+						Bitmap bmpIn = null;
 						try
 						{
-							bbin = Config.AVI_CaptureOSD
+							bbIn = Config.AVI_CaptureOSD
 								? CaptureOSD()
 								: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
 
-							bbin.DiscardAlpha();
+							bbIn.DiscardAlpha();
 
-							var bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
-							bmpin = bbin.ToSysdrawingBitmap();
-							using (var g = Graphics.FromImage(bmpout))
+							var bmpOut = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
+							bmpIn = bbIn.ToSysdrawingBitmap();
+							using (var g = Graphics.FromImage(bmpOut))
 							{
 								if (_avwriterpad)
 								{
 									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
-									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
+									g.DrawImageUnscaled(bmpIn, (bmpOut.Width - bmpIn.Width) / 2, (bmpOut.Height - bmpIn.Height) / 2);
 								}
 								else
 								{
 									g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 									g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-									g.DrawImage(bmpin, new Rectangle(0, 0, bmpout.Width, bmpout.Height));
+									g.DrawImage(bmpIn, new Rectangle(0, 0, bmpOut.Width, bmpOut.Height));
 								}
 							}
 
-							output = new BmpVideoProvider(bmpout, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
+							output = new BmpVideoProvider(bmpOut, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
 							disposableOutput = (IDisposable)output;
 						}
 						finally
 						{
-							bbin?.Dispose();
-							bmpin?.Dispose();
+							bbIn?.Dispose();
+							bmpIn?.Dispose();
 						}
 					}
 					else
@@ -3631,7 +3629,7 @@ namespace BizHawk.Client.EmuHawk
 			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
 			{
 				var leftPart = path.Split('|')[0];
-				Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart));
+				Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftPart) ?? "");
 			}
 
 			return true;
@@ -3694,29 +3692,29 @@ namespace BizHawk.Client.EmuHawk
 				var nextComm = CreateCoreComm();
 
 				IOpenAdvanced ioa = args.OpenAdvanced;
-				var oa_openrom = ioa as OpenAdvanced_OpenRom;
-				var oa_mame = ioa as OpenAdvanced_MAME;
-				var oa_retro = ioa as OpenAdvanced_Libretro;
-				var ioa_retro = ioa as IOpenAdvancedLibretro;
+				var oaOpenrom = ioa as OpenAdvanced_OpenRom;
+				var oaMame = ioa as OpenAdvanced_MAME;
+				var oaRetro = ioa as OpenAdvanced_Libretro;
+				var ioaRetro = ioa as IOpenAdvancedLibretro;
 
 				// we need to inform LoadRom which Libretro core to use...
-				if (ioa_retro != null)
+				if (ioaRetro != null)
 				{
 					// prepare a core specification
 					// if it wasn't already specified, use the current default
-					if (ioa_retro.CorePath == null)
+					if (ioaRetro.CorePath == null)
 					{
-						ioa_retro.CorePath = Config.LibretroCore;
+						ioaRetro.CorePath = Config.LibretroCore;
 					}
 
-					nextComm.LaunchLibretroCore = ioa_retro.CorePath;
+					nextComm.LaunchLibretroCore = ioaRetro.CorePath;
 					if (nextComm.LaunchLibretroCore == null)
 					{
 						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
 					}
 				}
 
-				if (oa_openrom != null)
+				if (oaOpenrom != null)
 				{
 					// path already has the right value, while ioa.Path is null (interestingly, these are swapped below)
 					// I doubt null is meant to be assigned here, and it just prevents game load
@@ -3729,19 +3727,19 @@ namespace BizHawk.Client.EmuHawk
 				// we need to replace the path in the OpenAdvanced with the canonical one the user chose.
 				// It can't be done until loader.LoadRom happens (for CanonicalFullPath)
 				// i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
-				if (oa_retro != null)
+				if (oaRetro != null)
 				{
-					oa_retro.token.Path = loader.CanonicalFullPath;
+					oaRetro.token.Path = loader.CanonicalFullPath;
 				}
 
-				if (oa_openrom != null)
+				if (oaOpenrom != null)
 				{
-					oa_openrom.Path = loader.CanonicalFullPath;
+					oaOpenrom.Path = loader.CanonicalFullPath;
 				}
 
-				if (oa_mame != null)
+				if (oaMame != null)
 				{
-					oa_mame.Path = loader.CanonicalFullPath;
+					oaMame.Path = loader.CanonicalFullPath;
 				}
 
 				if (result)
@@ -3752,17 +3750,17 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-					if (oa_openrom != null && Path.GetExtension(oa_openrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
+					if (oaOpenrom != null && Path.GetExtension(oaOpenrom.Path.Replace("|", "")).ToLowerInvariant() == ".xml" && !(Emulator is LibsnesCore))
 					{
 						// this is a multi-disk bundler file
 						// determine the xml assets and create RomStatusDetails for all of them
-						var xmlGame = XmlGame.Create(new HawkFile(oa_openrom.Path));
+						var xmlGame = XmlGame.Create(new HawkFile(oaOpenrom.Path));
 
 						using var xSw = new StringWriter();
 
 						for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
 						{
-							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLowerInvariant();
+							var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg])?.ToLowerInvariant();
 
 							if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
 							{
@@ -3860,7 +3858,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					CurrentlyOpenRom = oa_openrom?.Path ?? openAdvancedArgs;
+					CurrentlyOpenRom = oaOpenrom?.Path ?? openAdvancedArgs;
 					CurrentlyOpenRomArgs = args;
 					OnRomChanged();
 					DisplayManager.Blank();
