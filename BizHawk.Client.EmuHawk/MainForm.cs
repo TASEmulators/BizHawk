@@ -1561,7 +1561,7 @@ namespace BizHawk.Client.EmuHawk
 				str += $"{VersionInfo.CustomBuildString} ";
 			}
 
-			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+			str += Emulator.IsNull() ? "BizHawk" : Emulator.System().DisplayName;
 
 			if (VersionInfo.DeveloperBuild)
 			{
