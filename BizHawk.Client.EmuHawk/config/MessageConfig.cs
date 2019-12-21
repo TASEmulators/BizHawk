@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMaxXy()
 		{
-			var video = Global.Emulator.AsVideoProvider(); // TODO: this is objectively wrong, these are core agnostic settings, why is the current core used here? Also this will crash on a core without a video provider
+			var video = NullVideo.Instance; // Good enough
 			XNumeric.Maximum = video.BufferWidth - 12;
 			YNumeric.Maximum = video.BufferHeight - 12;
 			PositionPanel.Size = new Size(video.BufferWidth + 2, video.BufferHeight + 2);

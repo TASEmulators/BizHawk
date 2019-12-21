@@ -1075,10 +1075,6 @@ namespace BizHawk.Client.EmuHawk
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
 
-			/*
-			using (var fs = new FileStream($"{path}_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
-				QuickBmpFile.Save(Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
-			*/
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
