@@ -90,11 +90,6 @@ namespace BizHawk.Client.EmuHawk
 				return sb.ToString();
 			}
 			
-			if (Global.MovieSession.Movie.IsRecording)
-			{
-				return Global.Emulator.Frame.ToString();
-			}
-			
 			return Global.Emulator.Frame.ToString();
 		}
 

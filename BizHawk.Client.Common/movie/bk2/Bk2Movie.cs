@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 			Filename = "";
 			IsCountingRerecords = true;
-			Mode = Moviemode.Inactive;
+			Mode = MovieMode.Inactive;
 			MakeBackup = true;
 
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
