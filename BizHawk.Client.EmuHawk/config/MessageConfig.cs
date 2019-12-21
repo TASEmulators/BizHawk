@@ -203,20 +203,6 @@ namespace BizHawk.Client.EmuHawk
 			SetPositionInfo();
 		}
 
-		private void XNumericChange()
-		{
-			_px = (int)XNumeric.Value;
-			SetPositionLabels();
-			PositionPanel.Refresh();
-		}
-
-		private void YNumericChange()
-		{
-			_py = (int)YNumeric.Value;
-			SetPositionLabels();
-			PositionPanel.Refresh();
-		}
-
 		private void PositionPanel_MouseEnter(object sender, EventArgs e)
 		{
 			Cursor = Cursors.Hand;
@@ -484,14 +470,18 @@ namespace BizHawk.Client.EmuHawk
 			PositionPanel.Refresh();
 		}
 
-		private void XNumeric_Click(object sender, EventArgs e)
+		private void XNumeric_Changed(object sender, EventArgs e)
 		{
-			XNumericChange();
+			_px = (int)XNumeric.Value;
+			SetPositionLabels();
+			PositionPanel.Refresh();
 		}
 
-		private void YNumeric_Click(object sender, EventArgs e)
+		private void YNumeric_Changed(object sender, EventArgs e)
 		{
-			YNumericChange();
+			_py = (int)YNumeric.Value;
+			SetPositionLabels();
+			PositionPanel.Refresh();
 		}
 
 		private void ColorPanel_Click(object sender, EventArgs e)
@@ -524,16 +514,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetColorBox();
 			}
-		}
-
-		private void XNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			XNumericChange();
-		}
-
-		private void YNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			YNumericChange();
 		}
 	}
 }
