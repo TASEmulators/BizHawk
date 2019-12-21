@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		private const JoypadButton UpDownLeftRight = JoypadButton.Up | JoypadButton.Down | JoypadButton.Left | JoypadButton.Right;
 		private const JoypadButton StandardButtons = JoypadButton.A | JoypadButton.B | JoypadButton.Start | JoypadButton.Select | UpDownLeftRight;
 
-		private static readonly List<SystemInfo> _allSystemInfos = new List<SystemInfo>();
+		private static readonly List<SystemInfo> AllSystemInfos = new List<SystemInfo>();
 
 		#endregion
 
@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			MaxControllers = maxControllers;
 			AvailableButtons = availableButtons;
 
-			_allSystemInfos.Add(this);
+			AllSystemInfos.Add(this);
 		}
 
 		#endregion
@@ -184,7 +184,7 @@ namespace BizHawk.Client.Common
 		public static SystemInfo TI83 { get; } = new SystemInfo("TI - 83", CoreSystem.TI83, 1);
 
 		/// <summary>
-		/// Gets the <see cref="SystemInfo"/> instance for Wonderswan
+		/// Gets the <see cref="SystemInfo"/> instance for WonderSwan
 		/// </summary>
 		public static SystemInfo WonderSwan { get; } = new SystemInfo("WonderSwan", CoreSystem.WonderSwan, 1);
 
@@ -196,7 +196,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Vectrex
 		/// </summary>
-		public static SystemInfo Vectrex { get; } = new SystemInfo("Vextrex", CoreSystem.Vectrex, 2);
+		public static SystemInfo Vectrex { get; } = new SystemInfo("Vectrex", CoreSystem.Vectrex, 2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for TI-83
@@ -206,12 +206,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for ZXSpectrum
 		/// </summary>
-		public static SystemInfo ZXSpectrum { get; } = new SystemInfo("ZX Spectrum", CoreSystem.ZXSpectrum, 2);
+		public static SystemInfo ZxSpectrum { get; } = new SystemInfo("ZX Spectrum", CoreSystem.ZXSpectrum, 2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for AmstradCPC
 		/// </summary>
-		public static SystemInfo AmstradCPC { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
+		public static SystemInfo AmstradCpc { get; } = new SystemInfo("Amstrad CPC", CoreSystem.AmstradCPC, 2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for GGL
@@ -231,7 +231,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for MAME
 		/// </summary>
-		public static SystemInfo MAME { get; } = new SystemInfo("MAME", CoreSystem.MAME, 4);
+		public static SystemInfo Mame { get; } = new SystemInfo("MAME", CoreSystem.MAME, 4);
 
 		#endregion Get SystemInfo
 
@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common
 		/// <returns><see cref="SystemInfo"/></returns>
 		public static SystemInfo FindByCoreSystem(CoreSystem system)
 		{
-			return _allSystemInfos.Find(s => s.System == system);
+			return AllSystemInfos.Find(s => s.System == system);
 		}
 
 		/// <summary>
@@ -252,16 +252,16 @@ namespace BizHawk.Client.Common
 		/// <returns>True if object is equal to this instance; otherwise, false</returns>
 		public override bool Equals(object obj)
 		{
-			if (obj is SystemInfo)
+			if (obj is SystemInfo info)
 			{
-				return this == (SystemInfo)obj;
+				return this == info;
 			}
 
 			return base.Equals(obj);
 		}
 
 		/// <summary>
-		/// Gets the haschode for current instance
+		/// Gets the hashcode for current instance
 		/// </summary>
 		/// <returns>This instance hashcode</returns>
 		public override int GetHashCode()

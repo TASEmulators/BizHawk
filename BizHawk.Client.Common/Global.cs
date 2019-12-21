@@ -154,15 +154,15 @@ namespace BizHawk.Client.Common
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
 					case "ZXSpectrum":
-						return SystemInfo.ZXSpectrum;
+						return SystemInfo.ZxSpectrum;
 					case "AmstradCPC":
-						return SystemInfo.AmstradCPC;
+						return SystemInfo.AmstradCpc;
 					case "ChannelF":
 						return SystemInfo.ChannelF;
 					case "O2":
 						return SystemInfo.O2;
 					case "MAME":
-						return SystemInfo.MAME;
+						return SystemInfo.Mame;
 				}
 			}
 		}
