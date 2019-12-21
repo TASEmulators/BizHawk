@@ -120,6 +120,7 @@
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigPersistAttribute.cs" />
     <Compile Include="config\ConfigService.cs" />
+    <Compile Include="config\DefaultMessageOptions.cs" />
     <Compile Include="config\PathEntry.cs" />
     <Compile Include="config\RestoreDefaultsAttribute.cs" />
     <Compile Include="config\ToolDialogSettings.cs" />

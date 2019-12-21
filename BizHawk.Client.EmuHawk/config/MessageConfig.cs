@@ -13,32 +13,32 @@ namespace BizHawk.Client.EmuHawk
 		private int _dispFpSy = Global.Config.DispFPSy;
 		private int _dispFrameCx = Global.Config.DispFrameCx;
 		private int _dispFrameCy = Global.Config.DispFrameCy;
-		private int _dispLagx = Global.Config.DispLagx;
-		private int _dispLagy = Global.Config.DispLagy;
-		private int _dispInpx = Global.Config.DispInpx;
-		private int _dispInpy = Global.Config.DispInpy;
-		private int _dispWatchesx = Global.Config.DispRamWatchx;
-		private int _dispWatchesy = Global.Config.DispRamWatchy;
+		private int _dispLagX = Global.Config.DispLagx;
+		private int _dispLagY = Global.Config.DispLagy;
+		private int _dispInpX = Global.Config.DispInpx;
+		private int _dispInpY = Global.Config.DispInpy;
+		private int _dispWatchesX = Global.Config.DispRamWatchx;
+		private int _dispWatchesY = Global.Config.DispRamWatchy;
 		private int _lastInputColor = Global.Config.LastInputColor;
-		private int _dispRecx = Global.Config.DispRecx;
-		private int _dispRecy = Global.Config.DispRecy;
-		private int _dispMultix = Global.Config.DispMultix;
-		private int _dispMultiy = Global.Config.DispMultiy;
-		private int _dispMessagex = Global.Config.DispMessagex;
-		private int _dispMessagey = Global.Config.DispMessagey;
-		private int _dispAutoholdx = Global.Config.DispAutoholdx;
-		private int _dispAutoholdy = Global.Config.DispAutoholdy;
+		private int _dispRecX = Global.Config.DispRecx;
+		private int _dispRecY = Global.Config.DispRecy;
+		private int _dispMultiX = Global.Config.DispMultix;
+		private int _dispMultiY = Global.Config.DispMultiy;
+		private int _dispMessageX = Global.Config.DispMessagex;
+		private int _dispMessageY = Global.Config.DispMessagey;
+		private int _dispAutoholdX = Global.Config.DispAutoholdx;
+		private int _dispAutoholdY = Global.Config.DispAutoholdy;
 
 		private int _messageColor = Global.Config.MessagesColor;
 		private int _alertColor = Global.Config.AlertMessageColor;
 		private int _movieInput = Global.Config.MovieInput;
 		
-		private int _dispFpSanchor = Global.Config.DispFPSanchor;
-		private int _dispFrameanchor = Global.Config.DispFrameanchor;
-		private int _dispLaganchor = Global.Config.DispLaganchor;
-		private int _dispInputanchor = Global.Config.DispInpanchor;
-		private int _dispWatchesanchor = Global.Config.DispWatchesanchor;
-		private int _dispRecanchor = Global.Config.DispRecanchor;
+		private int _dispFpsAnchor = Global.Config.DispFPSanchor;
+		private int _dispFrameAnchor = Global.Config.DispFrameanchor;
+		private int _dispLagAnchor = Global.Config.DispLaganchor;
+		private int _dispInputAnchor = Global.Config.DispInpanchor;
+		private int _dispWatchesAnchor = Global.Config.DispWatchesanchor;
+		private int _dispRecAnchor = Global.Config.DispRecanchor;
 		private int _dispMultiAnchor = Global.Config.DispMultianchor;
 		private int _dispMessageAnchor = Global.Config.DispMessageanchor;
 		private int _dispAutoholdAnchor = Global.Config.DispAutoholdanchor;
@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 				YNumeric.Value = _dispFpSy;
 				_px = _dispFpSx;
 				_py = _dispFpSy;
-				SetAnchorRadio(_dispFpSanchor);
+				SetAnchorRadio(_dispFpsAnchor);
 			}
 			else if (FrameCounterRadio.Checked)
 			{
@@ -132,62 +132,62 @@ namespace BizHawk.Client.EmuHawk
 				YNumeric.Value = _dispFrameCy;
 				_px = _dispFrameCx;
 				_py = _dispFrameCy;
-				SetAnchorRadio(_dispFrameanchor);
+				SetAnchorRadio(_dispFrameAnchor);
 			}
 			else if (LagCounterRadio.Checked)
 			{
-				XNumeric.Value = _dispLagx;
-				YNumeric.Value = _dispLagy;
-				_px = _dispLagx;
-				_py = _dispLagy;
-				SetAnchorRadio(_dispLaganchor);
+				XNumeric.Value = _dispLagX;
+				YNumeric.Value = _dispLagY;
+				_px = _dispLagX;
+				_py = _dispLagY;
+				SetAnchorRadio(_dispLagAnchor);
 			}
 			else if (InputDisplayRadio.Checked)
 			{
-				XNumeric.Value = _dispInpx;
-				XNumeric.Value = _dispInpy;
-				_px = _dispInpx;
-				_py = _dispInpy;
-				SetAnchorRadio(_dispInputanchor);
+				XNumeric.Value = _dispInpX;
+				XNumeric.Value = _dispInpY;
+				_px = _dispInpX;
+				_py = _dispInpY;
+				SetAnchorRadio(_dispInputAnchor);
 			}
 			else if (WatchesRadio.Checked)
 			{
-				XNumeric.Value = _dispWatchesx;
-				XNumeric.Value = _dispWatchesy;
-				_px = _dispWatchesx;
-				_py = _dispWatchesy;
-				SetAnchorRadio(_dispWatchesanchor);
+				XNumeric.Value = _dispWatchesX;
+				XNumeric.Value = _dispWatchesY;
+				_px = _dispWatchesX;
+				_py = _dispWatchesY;
+				SetAnchorRadio(_dispWatchesAnchor);
 			}
 			else if (MessagesRadio.Checked)
 			{
-				XNumeric.Value = _dispMessagex;
-				YNumeric.Value = _dispMessagey;
-				_px = _dispMessagex;
-				_py = _dispMessagey;
+				XNumeric.Value = _dispMessageX;
+				YNumeric.Value = _dispMessageY;
+				_px = _dispMessageX;
+				_py = _dispMessageY;
 				SetAnchorRadio(_dispMessageAnchor);
 			}
 			else if (RerecordsRadio.Checked)
 			{
-				XNumeric.Value = _dispRecx;
-				YNumeric.Value = _dispRecy;
-				_px = _dispRecx;
-				_py = _dispRecy;
-				SetAnchorRadio(_dispRecanchor);
+				XNumeric.Value = _dispRecX;
+				YNumeric.Value = _dispRecY;
+				_px = _dispRecX;
+				_py = _dispRecY;
+				SetAnchorRadio(_dispRecAnchor);
 			}
 			else if (MultitrackRadio.Checked)
 			{
-				XNumeric.Value = _dispMultix;
-				YNumeric.Value = _dispMultiy;
-				_px = _dispMultix;
-				_py = _dispMultiy;
+				XNumeric.Value = _dispMultiX;
+				YNumeric.Value = _dispMultiY;
+				_px = _dispMultiX;
+				_py = _dispMultiY;
 				SetAnchorRadio(_dispMultiAnchor);
 			}
 			else if (AutoholdRadio.Checked)
 			{
-				XNumeric.Value = _dispAutoholdx;
-				YNumeric.Value = _dispAutoholdy;
-				_px = _dispAutoholdx;
-				_py = _dispAutoholdy;
+				XNumeric.Value = _dispAutoholdX;
+				YNumeric.Value = _dispAutoholdY;
+				_px = _dispAutoholdX;
+				_py = _dispAutoholdY;
 				SetAnchorRadio(_dispAutoholdAnchor);
 			}
 
@@ -203,30 +203,30 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DispFPSy = _dispFpSy;
 			Global.Config.DispFrameCx = _dispFrameCx;
 			Global.Config.DispFrameCy = _dispFrameCy;
-			Global.Config.DispLagx = _dispLagx;
-			Global.Config.DispLagy = _dispLagy;
-			Global.Config.DispInpx = _dispInpx;
-			Global.Config.DispInpy = _dispInpy;
-			Global.Config.DispRamWatchx = _dispWatchesx;
-			Global.Config.DispRamWatchy = _dispWatchesy;
-			Global.Config.DispRecx = _dispRecx;
-			Global.Config.DispRecy = _dispRecy;
-			Global.Config.DispMultix = _dispMultix;
-			Global.Config.DispMultiy = _dispMultiy;
-			Global.Config.DispMessagex = _dispMessagex;
-			Global.Config.DispMessagey = _dispMessagey;
-			Global.Config.DispAutoholdx = _dispAutoholdx;
-			Global.Config.DispAutoholdy = _dispAutoholdy;
+			Global.Config.DispLagx = _dispLagX;
+			Global.Config.DispLagy = _dispLagY;
+			Global.Config.DispInpx = _dispInpX;
+			Global.Config.DispInpy = _dispInpY;
+			Global.Config.DispRamWatchx = _dispWatchesX;
+			Global.Config.DispRamWatchy = _dispWatchesY;
+			Global.Config.DispRecx = _dispRecX;
+			Global.Config.DispRecy = _dispRecY;
+			Global.Config.DispMultix = _dispMultiX;
+			Global.Config.DispMultiy = _dispMultiY;
+			Global.Config.DispMessagex = _dispMessageX;
+			Global.Config.DispMessagey = _dispMessageY;
+			Global.Config.DispAutoholdx = _dispAutoholdX;
+			Global.Config.DispAutoholdy = _dispAutoholdY;
 
 			Global.Config.MessagesColor = _messageColor;
 			Global.Config.AlertMessageColor = _alertColor;
 			Global.Config.LastInputColor = _lastInputColor;
 			Global.Config.MovieInput = _movieInput;
-			Global.Config.DispFPSanchor = _dispFpSanchor;
-			Global.Config.DispFrameanchor = _dispFrameanchor;
-			Global.Config.DispLaganchor = _dispLaganchor;
-			Global.Config.DispInpanchor = _dispInputanchor;
-			Global.Config.DispRecanchor = _dispRecanchor;
+			Global.Config.DispFPSanchor = _dispFpsAnchor;
+			Global.Config.DispFrameanchor = _dispFrameAnchor;
+			Global.Config.DispLaganchor = _dispLagAnchor;
+			Global.Config.DispInpanchor = _dispInputAnchor;
+			Global.Config.DispRecanchor = _dispRecAnchor;
 			Global.Config.DispMultianchor = _dispMultiAnchor;
 			Global.Config.DispMessageanchor = _dispMessageAnchor;
 			Global.Config.DispAutoholdanchor = _dispAutoholdAnchor;
@@ -375,106 +375,106 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (LagCounterRadio.Checked)
 			{
-				_dispLagx = _px;
-				_dispLagy = _py;
+				_dispLagX = _px;
+				_dispLagY = _py;
 			}
 			else if (InputDisplayRadio.Checked)
 			{
-				_dispInpx = _px;
-				_dispInpy = _py;
+				_dispInpX = _px;
+				_dispInpY = _py;
 			}
 			else if (WatchesRadio.Checked)
 			{
-				_dispWatchesx = _px;
-				_dispWatchesy = _py;
+				_dispWatchesX = _px;
+				_dispWatchesY = _py;
 			}
 			else if (RerecordsRadio.Checked)
 			{
-				_dispRecx = _px;
-				_dispRecy = _py;
+				_dispRecX = _px;
+				_dispRecY = _py;
 			}
 			else if (MultitrackRadio.Checked)
 			{
-				_dispMultix = _px;
-				_dispMultiy = _py;
+				_dispMultiX = _px;
+				_dispMultiY = _py;
 			}
 			else if (MessagesRadio.Checked)
 			{
-				_dispMessagex = _px;
-				_dispMessagey = _py;
+				_dispMessageX = _px;
+				_dispMessageY = _py;
 			}
 			else if (AutoholdRadio.Checked)
 			{
-				_dispAutoholdx = _px;
-				_dispAutoholdy = _py;
+				_dispAutoholdX = _px;
+				_dispAutoholdY = _py;
 			}
 
 			FpsPosLabel.Text = $"{_dispFpSx}, {_dispFpSy}";
 			FCLabel.Text = $"{_dispFrameCx}, {_dispFrameCy}";
-			LagLabel.Text = $"{_dispLagx}, {_dispLagy}";
-			InpLabel.Text = $"{_dispInpx}, {_dispInpy}";
-			WatchesLabel.Text = $"{_dispWatchesx}, {_dispWatchesy}";
-			RerecLabel.Text = $"{_dispRecx}, {_dispRecy}";
-			MultitrackLabel.Text = $"{_dispMultix}, {_dispMultiy}";
-			MessLabel.Text = $"{_dispMessagex}, {_dispMessagey}";
-			AutoholdLabel.Text = $"{_dispAutoholdx}, {_dispAutoholdy}";
+			LagLabel.Text = $"{_dispLagX}, {_dispLagY}";
+			InpLabel.Text = $"{_dispInpX}, {_dispInpY}";
+			WatchesLabel.Text = $"{_dispWatchesX}, {_dispWatchesY}";
+			RerecLabel.Text = $"{_dispRecX}, {_dispRecY}";
+			MultitrackLabel.Text = $"{_dispMultiX}, {_dispMultiY}";
+			MessLabel.Text = $"{_dispMessageX}, {_dispMessageY}";
+			AutoholdLabel.Text = $"{_dispAutoholdX}, {_dispAutoholdY}";
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			Global.Config.DispFPSx = Config.DefaultMessageOptions.DispFPSx;
-			Global.Config.DispFPSy = Config.DefaultMessageOptions.DispFPSy;
-			Global.Config.DispFrameCx = Config.DefaultMessageOptions.DispFrameCx;
-			Global.Config.DispFrameCy = Config.DefaultMessageOptions.DispFrameCy;
-			Global.Config.DispLagx = Config.DefaultMessageOptions.DispLagx;
-			Global.Config.DispLagy = Config.DefaultMessageOptions.DispLagy;
-			Global.Config.DispInpx = Config.DefaultMessageOptions.DispInpx;
-			Global.Config.DispInpy = Config.DefaultMessageOptions.DispInpy;
-			Global.Config.DispRecx = Config.DefaultMessageOptions.DispRecx;
-			Global.Config.DispRecy = Config.DefaultMessageOptions.DispRecy;
-			Global.Config.DispMultix = Config.DefaultMessageOptions.DispMultix;
-			Global.Config.DispMultiy = Config.DefaultMessageOptions.DispMultiy;
-			Global.Config.DispMessagex = Config.DefaultMessageOptions.DispMessagex;
-			Global.Config.DispMessagey = Config.DefaultMessageOptions.DispMessagey;
-			Global.Config.DispAutoholdx = Config.DefaultMessageOptions.DispAutoholdx;
-			Global.Config.DispAutoholdy = Config.DefaultMessageOptions.DispAutoholdy;
+			Global.Config.DispFPSx = DefaultMessageOptions.DispFPSx;
+			Global.Config.DispFPSy = DefaultMessageOptions.DispFPSy;
+			Global.Config.DispFrameCx = DefaultMessageOptions.DispFrameCx;
+			Global.Config.DispFrameCy = DefaultMessageOptions.DispFrameCy;
+			Global.Config.DispLagx = DefaultMessageOptions.DispLagx;
+			Global.Config.DispLagy = DefaultMessageOptions.DispLagy;
+			Global.Config.DispInpx = DefaultMessageOptions.DispInpx;
+			Global.Config.DispInpy = DefaultMessageOptions.DispInpy;
+			Global.Config.DispRecx = DefaultMessageOptions.DispRecx;
+			Global.Config.DispRecy = DefaultMessageOptions.DispRecy;
+			Global.Config.DispMultix = DefaultMessageOptions.DispMultix;
+			Global.Config.DispMultiy = DefaultMessageOptions.DispMultiy;
+			Global.Config.DispMessagex = DefaultMessageOptions.DispMessagex;
+			Global.Config.DispMessagey = DefaultMessageOptions.DispMessagey;
+			Global.Config.DispAutoholdx = DefaultMessageOptions.DispAutoholdx;
+			Global.Config.DispAutoholdy = DefaultMessageOptions.DispAutoholdy;
 
-			Global.Config.DispFPSanchor = Config.DefaultMessageOptions.DispFPSanchor;
-			Global.Config.DispFrameanchor = Config.DefaultMessageOptions.DispFrameanchor;
-			Global.Config.DispLaganchor = Config.DefaultMessageOptions.DispLaganchor;
-			Global.Config.DispInpanchor = Config.DefaultMessageOptions.DispInpanchor;
-			Global.Config.DispRecanchor = Config.DefaultMessageOptions.DispRecanchor;
-			Global.Config.DispMultianchor = Config.DefaultMessageOptions.DispMultianchor;
-			Global.Config.DispMessageanchor = Config.DefaultMessageOptions.DispMessageanchor;
-			Global.Config.DispAutoholdanchor = Config.DefaultMessageOptions.DispAutoholdanchor;
+			Global.Config.DispFPSanchor = DefaultMessageOptions.DispFPSanchor;
+			Global.Config.DispFrameanchor = DefaultMessageOptions.DispFrameanchor;
+			Global.Config.DispLaganchor = DefaultMessageOptions.DispLaganchor;
+			Global.Config.DispInpanchor = DefaultMessageOptions.DispInpanchor;
+			Global.Config.DispRecanchor = DefaultMessageOptions.DispRecanchor;
+			Global.Config.DispMultianchor = DefaultMessageOptions.DispMultianchor;
+			Global.Config.DispMessageanchor = DefaultMessageOptions.DispMessageanchor;
+			Global.Config.DispAutoholdanchor = DefaultMessageOptions.DispAutoholdanchor;
 
-			Global.Config.MessagesColor = Config.DefaultMessageOptions.MessagesColor;
-			Global.Config.AlertMessageColor = Config.DefaultMessageOptions.AlertMessageColor;
-			Global.Config.LastInputColor = Config.DefaultMessageOptions.LastInputColor;
-			Global.Config.MovieInput = Config.DefaultMessageOptions.MovieInput;
+			Global.Config.MessagesColor = DefaultMessageOptions.MessagesColor;
+			Global.Config.AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
+			Global.Config.LastInputColor = DefaultMessageOptions.LastInputColor;
+			Global.Config.MovieInput = DefaultMessageOptions.MovieInput;
 
 			_dispFpSx = Global.Config.DispFPSx;
 			_dispFpSy = Global.Config.DispFPSy;
 			_dispFrameCx = Global.Config.DispFrameCx;
 			_dispFrameCy = Global.Config.DispFrameCy;
-			_dispLagx = Global.Config.DispLagx;
-			_dispLagy = Global.Config.DispLagy;
-			_dispInpx = Global.Config.DispInpx;
-			_dispInpy = Global.Config.DispInpy;
-			_dispRecx = Global.Config.DispRecx;
-			_dispRecy = Global.Config.DispRecy;
-			_dispMultix = Global.Config.DispMultix;
-			_dispMultiy = Global.Config.DispMultiy;
-			_dispMessagex = Global.Config.DispMessagex;
-			_dispMessagey = Global.Config.DispMessagey;
-			_dispAutoholdx = Global.Config.DispAutoholdx;
-			_dispAutoholdy = Global.Config.DispAutoholdy;
+			_dispLagX = Global.Config.DispLagx;
+			_dispLagY = Global.Config.DispLagy;
+			_dispInpX = Global.Config.DispInpx;
+			_dispInpY = Global.Config.DispInpy;
+			_dispRecX = Global.Config.DispRecx;
+			_dispRecY = Global.Config.DispRecy;
+			_dispMultiX = Global.Config.DispMultix;
+			_dispMultiY = Global.Config.DispMultiy;
+			_dispMessageX = Global.Config.DispMessagex;
+			_dispMessageY = Global.Config.DispMessagey;
+			_dispAutoholdX = Global.Config.DispAutoholdx;
+			_dispAutoholdY = Global.Config.DispAutoholdy;
 
-			_dispFpSanchor = Global.Config.DispFPSanchor;
-			_dispFrameanchor = Global.Config.DispFrameanchor;
-			_dispLaganchor = Global.Config.DispLaganchor;
-			_dispInputanchor = Global.Config.DispInpanchor;
-			_dispRecanchor = Global.Config.DispRecanchor;
+			_dispFpsAnchor = Global.Config.DispFPSanchor;
+			_dispFrameAnchor = Global.Config.DispFrameanchor;
+			_dispLagAnchor = Global.Config.DispLaganchor;
+			_dispInputAnchor = Global.Config.DispInpanchor;
+			_dispRecAnchor = Global.Config.DispRecanchor;
 			_dispMultiAnchor = Global.Config.DispMultianchor;
 			_dispMessageAnchor = Global.Config.DispMessageanchor;
 			_dispAutoholdAnchor = Global.Config.DispAutoholdanchor;
@@ -500,23 +500,23 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (FPSRadio.Checked)
 			{
-				_dispFpSanchor = value;
+				_dispFpsAnchor = value;
 			}
 			else if (FrameCounterRadio.Checked)
 			{
-				_dispFrameanchor = value;
+				_dispFrameAnchor = value;
 			}
 			else if (LagCounterRadio.Checked)
 			{
-				_dispLaganchor = value;
+				_dispLagAnchor = value;
 			}
 			else if (InputDisplayRadio.Checked)
 			{
-				_dispInputanchor = value;
+				_dispInputAnchor = value;
 			}
 			else if (WatchesRadio.Checked)
 			{
-				_dispWatchesanchor = value;
+				_dispWatchesAnchor = value;
 			}
 			else if (MessagesRadio.Checked)
 			{
@@ -524,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (RerecordsRadio.Checked)
 			{
-				_dispRecanchor = value;
+				_dispRecAnchor = value;
 			}
 			else if (MultitrackRadio.Checked)
 			{
