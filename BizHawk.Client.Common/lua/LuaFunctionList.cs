@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void ClearAll()
+		public new void Clear()
 		{
 			if (Global.Emulator.InputCallbacksAvailable())
 			{
@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 				memoryCallbacks.RemoveAll(this.Select(w => w.MemCallback));
 			}
 
-			Clear();
+			base.Clear();
 		}
 	}
 

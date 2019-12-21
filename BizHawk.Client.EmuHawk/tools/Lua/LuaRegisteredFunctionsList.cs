@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.ClearAll();
+			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Clear();
 			PopulateListView();
 		}
 
