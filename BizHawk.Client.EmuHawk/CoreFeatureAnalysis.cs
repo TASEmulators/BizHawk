@@ -7,7 +7,6 @@ using System.Reflection;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,7 +17,6 @@ namespace BizHawk.Client.EmuHawk
 		private class CoreInfo
 		{
 			public string CoreName { get; set; }
-			public string TypeName { get; set; }
 			public bool Released { get; set; }
 			public Dictionary<string, ServiceInfo> Services { get; set; }
 			public List<string> NotApplicableTypes { get; set; }
@@ -26,7 +24,6 @@ namespace BizHawk.Client.EmuHawk
 			public CoreInfo() { }
 			public CoreInfo(IEmulator emu)
 			{
-				TypeName = emu.GetType().ToString();
 				CoreName = emu.Attributes().CoreName;
 				Released = emu.Attributes().Released;
 				Services = new Dictionary<string, ServiceInfo>();
@@ -37,12 +34,12 @@ namespace BizHawk.Client.EmuHawk
 					Services.Add(si.TypeName, si);
 				}
 
-				var notapplicableAttr = ((ServiceNotApplicableAttribute)Attribute
+				var notApplicableAttribute = ((ServiceNotApplicableAttribute)Attribute
 					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicableAttribute)));
 
-				if (notapplicableAttr != null)
+				if (notApplicableAttribute != null)
 				{
-					NotApplicableTypes = notapplicableAttr.NotApplicableTypes
+					NotApplicableTypes = notApplicableAttribute.NotApplicableTypes
 					.Select(x => x.ToString())
 					.ToList();
 				}
@@ -60,23 +57,19 @@ namespace BizHawk.Client.EmuHawk
 			public List<FunctionInfo> Functions { get; set; }
 
 			public ServiceInfo() { }
-			public ServiceInfo(Type servicetype, object service)
+			public ServiceInfo(Type serviceType, object service)
 			{
-				if (servicetype.IsGenericType)
-				{
-					TypeName = servicetype.GetGenericTypeDefinition().ToString();
-				}
-				else
-				{
-					TypeName = servicetype.ToString();
-				}
+				TypeName = serviceType.IsGenericType
+					? serviceType.GetGenericTypeDefinition().ToString()
+					: serviceType.ToString();
+
 				Functions = new List<FunctionInfo>();
 
-				IEnumerable<MethodInfo> methods = servicetype.GetMethods(); // .Concat(servicetype.GetProperties().Select(p => p.GetGetMethod()));
+				IEnumerable<MethodInfo> methods = serviceType.GetMethods();
 
-				if (servicetype.IsInterface)
+				if (serviceType.IsInterface)
 				{
-					var map = service.GetType().GetInterfaceMap(servicetype);
+					var map = service.GetType().GetInterfaceMap(serviceType);
 					// project interface methods to actual implementations
 					methods = methods.Select(
 						m => map.TargetMethods[Array.IndexOf(map.InterfaceMethods, m)]);
@@ -115,18 +108,14 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		[RequiredService]
-		IEmulator emu { get; set; }
+		IEmulator Emulator { get; set; }
 
 		public CoreFeatureAnalysis()
 		{
 			InitializeComponent();
 			KnownCores = new Dictionary<string, CoreInfo>();
-		}
-
-		private void OkBtn_Click(object sender, EventArgs e)
-		{
-			Close();
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
@@ -167,13 +156,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			var knownServies = Assembly.GetAssembly(typeof(IEmulator))
+			var knownServices = Assembly.GetAssembly(typeof(IEmulator))
 				.GetTypes()
 				.Where(t => typeof(IEmulatorService).IsAssignableFrom(t))
 				.Where(t => t != typeof(IEmulatorService))
 				.Where(t => t.IsInterface);
 
-			var additionalServices = knownServies
+			var additionalServices = knownServices
 				.Where(t => !ci.Services.ContainsKey(t.ToString()))
 				.Where(t => !ci.NotApplicableTypes.Contains(t.ToString()))
 				.Where(t => !typeof(ISpecializedEmulatorService).IsAssignableFrom(t)); // We don't want to show these as unimplemented, they aren't expected services
@@ -215,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreTree.ImageList.Images.Add("Bad", Properties.Resources.ExclamationRed);
 			CoreTree.ImageList.Images.Add("Unknown", Properties.Resources.RetroQuestion);
 
-			var possiblecoretypes =
+			var possibleCoreTypes =
 				Assembly
 				.Load("BizHawk.Emulation.Cores")
 				.GetTypes()
@@ -229,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 				.ThenBy(t => t.CoreAttributes.CoreName)
 				.ToList();
 
-			toolStripStatusLabel1.Text = $"Total: {possiblecoretypes.Count} Released: {KnownCores.Values.Count(c => c.Released)} Profiled: {KnownCores.Count}";
+			toolStripStatusLabel1.Text = $"Total: {possibleCoreTypes.Count} Released: {KnownCores.Values.Count(c => c.Released)} Profiled: {KnownCores.Count}";
 
 			CoreTree.Nodes.Clear();
 			CoreTree.BeginUpdate();
@@ -245,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 				CoreTree.Nodes.Add(coreNode);
 			}
 
-			foreach (var t in possiblecoretypes)
+			foreach (var t in possibleCoreTypes)
 			{
 				if (!KnownCores.ContainsKey(t.CoreAttributes.CoreName))
 				{
@@ -277,22 +266,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			var ci = new CoreInfo(emu);
+			var ci = new CoreInfo(Emulator);
 			KnownCores[ci.CoreName] = ci;
 
 			DoCurrentCoreTree(ci);
 			DoAllCoresTree(ci);
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 
 		#endregion
 	}
