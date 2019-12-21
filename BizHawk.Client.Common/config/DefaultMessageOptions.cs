@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.Common
 {
-	public class MessageOption
+	public class MessagePosition
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
@@ -14,38 +14,38 @@
 			BottomRight = 3
 		}
 
-		public MessageOption Clone()
+		public MessagePosition Clone()
 		{
-			return (MessageOption)MemberwiseClone();
+			return (MessagePosition)MemberwiseClone();
 		}
 	}
 
 	public static class MessageOptionExtensions
 	{
-		public static bool IsTop(this MessageOption.AnchorType type)
+		public static bool IsTop(this MessagePosition.AnchorType type)
 		{
-			return type == MessageOption.AnchorType.TopLeft
-				|| type == MessageOption.AnchorType.TopRight;
+			return type == MessagePosition.AnchorType.TopLeft
+				|| type == MessagePosition.AnchorType.TopRight;
 		}
 
-		public static bool IsLeft(this MessageOption.AnchorType type)
+		public static bool IsLeft(this MessagePosition.AnchorType type)
 		{
-			return type == MessageOption.AnchorType.TopLeft
-				|| type == MessageOption.AnchorType.BottomLeft;
+			return type == MessagePosition.AnchorType.TopLeft
+				|| type == MessagePosition.AnchorType.BottomLeft;
 		}
 	}
 
-	public static class DefaultMessageOptions
+	public static class DefaultMessagePositions
 	{
-		public static MessageOption Fps = new MessageOption { X = 0, Y = 0 };
-		public static MessageOption FrameCounter = new MessageOption { X = 0, Y = 14 };
-		public static MessageOption LagCounter = new MessageOption { X = 0, Y = 42 };
-		public static MessageOption InputDisplay = new MessageOption { X = 0, Y = 28 };
-		public static MessageOption ReRecordCounter = new MessageOption { X = 0, Y = 56 };
-		public static MessageOption MultitrackRecorder = new MessageOption { X = 0, Y = 14, Anchor = MessageOption.AnchorType.TopRight };
-		public static MessageOption Messages = new MessageOption { X = 0, Y = 0, Anchor = MessageOption.AnchorType.BottomLeft };
-		public static MessageOption Autohold = new MessageOption { X = 0, Y = 0, Anchor = MessageOption.AnchorType.TopRight };
-		public static MessageOption RamWatches = new MessageOption { X = 0, Y = 70 };
+		public static MessagePosition Fps = new MessagePosition { X = 0, Y = 0 };
+		public static MessagePosition FrameCounter = new MessagePosition { X = 0, Y = 14 };
+		public static MessagePosition LagCounter = new MessagePosition { X = 0, Y = 42 };
+		public static MessagePosition InputDisplay = new MessagePosition { X = 0, Y = 28 };
+		public static MessagePosition ReRecordCounter = new MessagePosition { X = 0, Y = 56 };
+		public static MessagePosition MultitrackRecorder = new MessagePosition { X = 0, Y = 14, Anchor = MessagePosition.AnchorType.TopRight };
+		public static MessagePosition Messages = new MessagePosition { X = 0, Y = 0, Anchor = MessagePosition.AnchorType.BottomLeft };
+		public static MessagePosition Autohold = new MessagePosition { X = 0, Y = 0, Anchor = MessagePosition.AnchorType.TopRight };
+		public static MessagePosition RamWatches = new MessagePosition { X = 0, Y = 70 };
 
 		public const int
 			MessagesColor = -1,

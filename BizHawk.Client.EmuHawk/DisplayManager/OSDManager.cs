@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public string Message;
 		public int X;
 		public int Y;
-		public MessageOption.AnchorType Anchor;
+		public MessagePosition.AnchorType Anchor;
 		public Color ForeColor;
 		public Color BackGround;
 	}
@@ -53,16 +53,16 @@ namespace BizHawk.Client.EmuHawk
 		public Color FixedMessagesColor => Color.FromArgb(Global.Config.MessagesColor);
 		public Color FixedAlertMessageColor => Color.FromArgb(Global.Config.AlertMessageColor);
 
-		private PointF GetCoordinates(IBlitter g, MessageOption option, string message)
+		private PointF GetCoordinates(IBlitter g, MessagePosition position, string message)
 		{
 			var size = g.MeasureString(message, MessageFont);
-			float x = option.Anchor.IsLeft()
-				? option.X
-				: g.ClipBounds.Width - option.X - size.Width;
+			float x = position.Anchor.IsLeft()
+				? position.X
+				: g.ClipBounds.Width - position.X - size.Width;
 
-			float y = option.Anchor.IsTop()
-				? option.Y
-				: g.ClipBounds.Height - option.Y - size.Height;
+			float y = position.Anchor.IsTop()
+				? position.Y
+				: g.ClipBounds.Height - position.Y - size.Height;
 			
 
 			return new PointF(x, y);
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, MessageOption.AnchorType anchor)
+		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, MessagePosition.AnchorType anchor)
 		{
 			_guiTextList.Add(new UIDisplay
 			{
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var point = GetCoordinates(g, new MessageOption {X = text.X, Y = text.Y, Anchor = text.Anchor}, text.Message);
+					var point = GetCoordinates(g, new MessagePosition {X = text.X, Y = text.Y, Anchor = text.Anchor}, text.Message);
 					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)

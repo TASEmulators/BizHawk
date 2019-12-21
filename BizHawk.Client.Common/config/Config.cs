@@ -253,20 +253,20 @@ namespace BizHawk.Client.Common
 		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
-		public MessageOption Fps = DefaultMessageOptions.Fps.Clone();
-		public MessageOption FrameCounter = DefaultMessageOptions.FrameCounter.Clone();
-		public MessageOption LagCounter = DefaultMessageOptions.LagCounter.Clone();
-		public MessageOption InputDisplay = DefaultMessageOptions.InputDisplay.Clone();
-		public MessageOption ReRecordCounter = DefaultMessageOptions.ReRecordCounter.Clone();
-		public MessageOption MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder.Clone();
-		public MessageOption Messages = DefaultMessageOptions.Messages.Clone();
-		public MessageOption Autohold = DefaultMessageOptions.Autohold.Clone();
-		public MessageOption RamWatches = DefaultMessageOptions.RamWatches.Clone();
+		public MessagePosition Fps = DefaultMessagePositions.Fps.Clone();
+		public MessagePosition FrameCounter = DefaultMessagePositions.FrameCounter.Clone();
+		public MessagePosition LagCounter = DefaultMessagePositions.LagCounter.Clone();
+		public MessagePosition InputDisplay = DefaultMessagePositions.InputDisplay.Clone();
+		public MessagePosition ReRecordCounter = DefaultMessagePositions.ReRecordCounter.Clone();
+		public MessagePosition MultitrackRecorder = DefaultMessagePositions.MultitrackRecorder.Clone();
+		public MessagePosition Messages = DefaultMessagePositions.Messages.Clone();
+		public MessagePosition Autohold = DefaultMessagePositions.Autohold.Clone();
+		public MessagePosition RamWatches = DefaultMessagePositions.RamWatches.Clone();
 
-		public int MessagesColor = DefaultMessageOptions.MessagesColor;
-		public int AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
-		public int LastInputColor = DefaultMessageOptions.LastInputColor;
-		public int MovieInput = DefaultMessageOptions.MovieInput;
+		public int MessagesColor = DefaultMessagePositions.MessagesColor;
+		public int AlertMessageColor = DefaultMessagePositions.AlertMessageColor;
+		public int LastInputColor = DefaultMessagePositions.LastInputColor;
+		public int MovieInput = DefaultMessagePositions.MovieInput;
 		
 		public int DispPrescale = 1;
 

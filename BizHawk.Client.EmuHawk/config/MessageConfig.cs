@@ -12,15 +12,15 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private readonly Config _config;
 
-		private MessageOption _fps;
-		private MessageOption _frameCounter;
-		private MessageOption _lagCounter;
-		private MessageOption _inputDisplay;
-		private MessageOption _reRecordCounter;
-		private MessageOption _multitrackRecorder;
-		private MessageOption _messages;
-		private MessageOption _autohold;
-		private MessageOption _ramWatches;
+		private MessagePosition _fps;
+		private MessagePosition _frameCounter;
+		private MessagePosition _lagCounter;
+		private MessagePosition _inputDisplay;
+		private MessagePosition _reRecordCounter;
+		private MessagePosition _multitrackRecorder;
+		private MessagePosition _messages;
+		private MessagePosition _autohold;
+		private MessagePosition _ramWatches;
 
 		private int _messageColor;
 		private int _alertColor;
@@ -97,27 +97,27 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputText.Text = $"{_movieInput:X8}";
 		}
 
-		private void SetFromOption(MessageOption option)
+		private void SetFromOption(MessagePosition position)
 		{
 			_programmaticallyChangingValues = true;
-			XNumeric.Value = option.X;
-			YNumeric.Value = option.Y;
-			_px = option.X;
-			_py = option.Y;
+			XNumeric.Value = position.X;
+			YNumeric.Value = position.Y;
+			_px = position.X;
+			_py = position.Y;
 
-			switch (option.Anchor)
+			switch (position.Anchor)
 			{
 				default:
-				case MessageOption.AnchorType.TopLeft:
+				case MessagePosition.AnchorType.TopLeft:
 					TL.Checked = true;
 					break;
-				case MessageOption.AnchorType.TopRight:
+				case MessagePosition.AnchorType.TopRight:
 					TR.Checked = true;
 					break;
-				case MessageOption.AnchorType.BottomLeft:
+				case MessagePosition.AnchorType.BottomLeft:
 					BL.Checked = true;
 					break;
-				case MessageOption.AnchorType.BottomRight:
+				case MessagePosition.AnchorType.BottomRight:
 					BR.Checked = true;
 					break;
 			}
@@ -302,10 +302,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetOptionPosition(MessageOption option)
+		private void SetOptionPosition(MessagePosition position)
 		{
-			option.X = _px;
-			option.Y = _py;
+			position.X = _px;
+			position.Y = _py;
 		}
 
 		private void SetPositionLabels()
@@ -358,27 +358,27 @@ namespace BizHawk.Client.EmuHawk
 			AutoholdLabel.Text = ToCoordinateStr(_autohold);
 		}
 
-		private string ToCoordinateStr(MessageOption option)
+		private string ToCoordinateStr(MessagePosition position)
 		{
-			return $"{option.X}, {option.Y}";
+			return $"{position.X}, {position.Y}";
 		}
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			_fps = _config.Fps = DefaultMessageOptions.Fps.Clone();
-			_frameCounter = _config.FrameCounter = DefaultMessageOptions.FrameCounter.Clone();
-			_lagCounter = _config.LagCounter = DefaultMessageOptions.LagCounter.Clone();
-			_inputDisplay = _config.InputDisplay = DefaultMessageOptions.InputDisplay.Clone();
-			_reRecordCounter = _config.ReRecordCounter = DefaultMessageOptions.ReRecordCounter.Clone();
-			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder.Clone();
-			_messages = _config.Messages = DefaultMessageOptions.Messages.Clone();
-			_autohold = _config.Autohold = DefaultMessageOptions.Autohold.Clone();
-			_ramWatches = _config.RamWatches = DefaultMessageOptions.RamWatches.Clone();
+			_fps = _config.Fps = DefaultMessagePositions.Fps.Clone();
+			_frameCounter = _config.FrameCounter = DefaultMessagePositions.FrameCounter.Clone();
+			_lagCounter = _config.LagCounter = DefaultMessagePositions.LagCounter.Clone();
+			_inputDisplay = _config.InputDisplay = DefaultMessagePositions.InputDisplay.Clone();
+			_reRecordCounter = _config.ReRecordCounter = DefaultMessagePositions.ReRecordCounter.Clone();
+			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessagePositions.MultitrackRecorder.Clone();
+			_messages = _config.Messages = DefaultMessagePositions.Messages.Clone();
+			_autohold = _config.Autohold = DefaultMessagePositions.Autohold.Clone();
+			_ramWatches = _config.RamWatches = DefaultMessagePositions.RamWatches.Clone();
 
-			_messageColor = _config.MessagesColor = DefaultMessageOptions.MessagesColor;
-			_alertColor = _config.AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
-			_lastInputColor = _config.LastInputColor = DefaultMessageOptions.LastInputColor;
-			_movieInput = _config.MovieInput = DefaultMessageOptions.MovieInput;
+			_messageColor = _config.MessagesColor = DefaultMessagePositions.MessagesColor;
+			_alertColor = _config.AlertMessageColor = DefaultMessagePositions.AlertMessageColor;
+			_lastInputColor = _config.LastInputColor = DefaultMessagePositions.LastInputColor;
+			_movieInput = _config.MovieInput = DefaultMessagePositions.MovieInput;
 
 			MessageColorDialog.Color = Color.FromArgb(_messageColor);
 			AlertColorDialog.Color = Color.FromArgb(_alertColor);
@@ -392,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
 
-		private void SetAnchorValue(MessageOption.AnchorType value)
+		private void SetAnchorValue(MessagePosition.AnchorType value)
 		{
 			if (FPSRadio.Checked)
 			{
@@ -436,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TL.Checked)
 			{
-				SetAnchorValue(MessageOption.AnchorType.TopLeft);
+				SetAnchorValue(MessagePosition.AnchorType.TopLeft);
 			}
 
 			PositionPanel.Refresh();
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TR.Checked)
 			{
-				SetAnchorValue(MessageOption.AnchorType.TopRight);
+				SetAnchorValue(MessagePosition.AnchorType.TopRight);
 			}
 
 			PositionPanel.Refresh();
@@ -456,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BL.Checked)
 			{
-				SetAnchorValue(MessageOption.AnchorType.BottomLeft);
+				SetAnchorValue(MessagePosition.AnchorType.BottomLeft);
 			}
 
 			PositionPanel.Refresh();
@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BR.Checked)
 			{
-				SetAnchorValue(MessageOption.AnchorType.BottomRight);
+				SetAnchorValue(MessagePosition.AnchorType.BottomRight);
 			}
 
 			PositionPanel.Refresh();
