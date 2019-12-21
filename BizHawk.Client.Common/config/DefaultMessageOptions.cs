@@ -4,11 +4,28 @@
 	{
 		public int X { get; set; }
 		public int Y { get; set; }
-		public int Anchor { get; set; } // TODO: make an enum 0 = UL, 1 = UR, 2 = DL, 3 = DR
+		public AnchorType Anchor { get; set; }
+
+		public enum AnchorType
+		{
+			TopLeft = 0,
+			TopRight = 1,
+			BottomLeft = 2,
+			BottomRight = 3
+		}
 
 		public MessageOption Clone()
 		{
 			return (MessageOption)MemberwiseClone();
+		}
+	}
+
+	public static class MessageOptionExtensions
+	{
+		public static bool IsTop(this MessageOption.AnchorType type)
+		{
+			return type == MessageOption.AnchorType.TopLeft
+				|| type == MessageOption.AnchorType.TopRight;
 		}
 	}
 
@@ -19,9 +36,9 @@
 		public static MessageOption LagCounter = new MessageOption { X = 0, Y = 42 };
 		public static MessageOption InputDisplay = new MessageOption { X = 0, Y = 28 };
 		public static MessageOption ReRecordCounter = new MessageOption { X = 0, Y = 56 };
-		public static MessageOption MultitrackRecorder = new MessageOption { X = 0, Y = 14, Anchor = 1 };
-		public static MessageOption Messages = new MessageOption { X = 0, Y = 0, Anchor = 2 };
-		public static MessageOption Autohold = new MessageOption { X = 0, Y = 0, Anchor = 1 };
+		public static MessageOption MultitrackRecorder = new MessageOption { X = 0, Y = 14, Anchor = MessageOption.AnchorType.TopRight };
+		public static MessageOption Messages = new MessageOption { X = 0, Y = 0, Anchor = MessageOption.AnchorType.BottomLeft };
+		public static MessageOption Autohold = new MessageOption { X = 0, Y = 0, Anchor = MessageOption.AnchorType.TopRight };
 		public static MessageOption RamWatches = new MessageOption { X = 0, Y = 70 };
 
 		public const int

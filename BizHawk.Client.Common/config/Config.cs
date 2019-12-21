@@ -253,15 +253,15 @@ namespace BizHawk.Client.Common
 		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
-		public MessageOption Fps = DefaultMessageOptions.Fps;
-		public MessageOption FrameCounter = DefaultMessageOptions.FrameCounter;
-		public MessageOption LagCounter = DefaultMessageOptions.LagCounter;
-		public MessageOption InputDisplay = DefaultMessageOptions.InputDisplay;
-		public MessageOption ReRecordCounter = DefaultMessageOptions.ReRecordCounter;
-		public MessageOption MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder;
-		public MessageOption Messages = DefaultMessageOptions.Messages;
-		public MessageOption Autohold = DefaultMessageOptions.Autohold;
-		public MessageOption RamWatches = DefaultMessageOptions.RamWatches;
+		public MessageOption Fps = DefaultMessageOptions.Fps.Clone();
+		public MessageOption FrameCounter = DefaultMessageOptions.FrameCounter.Clone();
+		public MessageOption LagCounter = DefaultMessageOptions.LagCounter.Clone();
+		public MessageOption InputDisplay = DefaultMessageOptions.InputDisplay.Clone();
+		public MessageOption ReRecordCounter = DefaultMessageOptions.ReRecordCounter.Clone();
+		public MessageOption MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder.Clone();
+		public MessageOption Messages = DefaultMessageOptions.Messages.Clone();
+		public MessageOption Autohold = DefaultMessageOptions.Autohold.Clone();
+		public MessageOption RamWatches = DefaultMessageOptions.RamWatches.Clone();
 
 		public int MessagesColor = DefaultMessageOptions.MessagesColor;
 		public int AlertMessageColor = DefaultMessageOptions.AlertMessageColor;

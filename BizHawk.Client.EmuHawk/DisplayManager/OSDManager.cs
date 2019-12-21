@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public string Message;
 		public int X;
 		public int Y;
-		public int Anchor;
+		public MessageOption.AnchorType Anchor;
 		public Color ForeColor;
 		public Color BackGround;
 	}
@@ -53,34 +53,34 @@ namespace BizHawk.Client.EmuHawk
 		public Color FixedMessagesColor => Color.FromArgb(Global.Config.MessagesColor);
 		public Color FixedAlertMessageColor => Color.FromArgb(Global.Config.AlertMessageColor);
 
-		private float GetX(IBlitter g, int x, int anchor, string message)
+		private float GetX(IBlitter g, int x, MessageOption.AnchorType anchor, string message)
 		{
 			var size = g.MeasureString(message, MessageFont);
 
 			switch (anchor)
 			{
 				default:
-				case 0: //Top Left
-				case 2: //Bottom Left
+				case MessageOption.AnchorType.TopLeft:
+				case MessageOption.AnchorType.BottomLeft:
 					return x;
-				case 1: //Top Right
-				case 3: //Bottom Right
+				case MessageOption.AnchorType.TopRight:
+				case MessageOption.AnchorType.BottomRight:
 					return g.ClipBounds.Width - x - size.Width;
 			}
 		}
 
-		private float GetY(IBlitter g, int y, int anchor, string message)
+		private float GetY(IBlitter g, int y, MessageOption.AnchorType anchor, string message)
 		{
 			var size = g.MeasureString(message, MessageFont);
 
 			switch (anchor)
 			{
 				default:
-				case 0: //Top Left
-				case 1: //Top Right
+				case MessageOption.AnchorType.TopLeft:
+				case MessageOption.AnchorType.TopRight:
 					return y;
-				case 2: //Bottom Left
-				case 3: //Bottom Right
+				case MessageOption.AnchorType.BottomLeft:
+				case MessageOption.AnchorType.BottomRight:
 					return g.ClipBounds.Height - y - size.Height;
 			}
 		}
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
+		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, MessageOption.AnchorType anchor)
 		{
 			_guiTextList.Add(new UIDisplay
 			{
@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
 					float y = GetY(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
-					if (Global.Config.Messages.Anchor < 2)
+					if (Global.Config.Messages.Anchor.IsTop())
 					{
 						y += (line - 1) * 18;
 					}
@@ -178,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 
 					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
 					float y = GetY(g, Global.Config.Messages.Y, Global.Config.Messages.Anchor, _messages[i].Message);
-					if (Global.Config.Messages.Anchor < 2)
+					if (Global.Config.Messages.Anchor.IsTop())
 					{
 						y += (line - 1) * 18;
 					}

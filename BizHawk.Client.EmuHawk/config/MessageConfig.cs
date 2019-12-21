@@ -30,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _px;
 		private int _py;
 		private bool _mousedown;
+		private bool _programmaticallyChangingValues;
 
 		public MessageConfig(Config config)
 		{
@@ -96,33 +97,32 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputText.Text = $"{_movieInput:X8}";
 		}
 
-		private void SetAnchorRadio(int anchor)
-		{
-			switch (anchor)
-			{
-				default:
-				case 0:
-					TL.Checked = true;
-					break;
-				case 1:
-					TR.Checked = true;
-					break;
-				case 2:
-					BL.Checked = true;
-					break;
-				case 3:
-					BR.Checked = true;
-					break;
-			}
-		}
-
 		private void SetFromOption(MessageOption option)
 		{
+			_programmaticallyChangingValues = true;
 			XNumeric.Value = option.X;
 			YNumeric.Value = option.Y;
 			_px = option.X;
 			_py = option.Y;
-			SetAnchorRadio(option.Anchor);
+
+			switch (option.Anchor)
+			{
+				default:
+				case MessageOption.AnchorType.TopLeft:
+					TL.Checked = true;
+					break;
+				case MessageOption.AnchorType.TopRight:
+					TR.Checked = true;
+					break;
+				case MessageOption.AnchorType.BottomLeft:
+					BL.Checked = true;
+					break;
+				case MessageOption.AnchorType.BottomRight:
+					BR.Checked = true;
+					break;
+			}
+
+			_programmaticallyChangingValues = false;
 		}
 
 		private void SetPositionInfo()
@@ -259,6 +259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetNewPosition(int mx, int my)
 		{
+			_programmaticallyChangingValues = true;
 			if (mx < 0) mx = 0;
 			if (my < 0) my = 0;
 			if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
@@ -289,6 +290,8 @@ namespace BizHawk.Client.EmuHawk
 
 			PositionPanel.Refresh();
 			SetPositionLabels();
+
+			_programmaticallyChangingValues = false;
 		}
 
 		private void PositionPanel_MouseMove(object sender, MouseEventArgs e)
@@ -362,15 +365,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			_fps = _config.Fps = DefaultMessageOptions.Fps;
-			_frameCounter = _config.FrameCounter = DefaultMessageOptions.FrameCounter;
-			_lagCounter = _config.LagCounter = DefaultMessageOptions.LagCounter;
-			_inputDisplay = _config.InputDisplay = DefaultMessageOptions.InputDisplay;
-			_reRecordCounter = _config.ReRecordCounter = DefaultMessageOptions.ReRecordCounter;
-			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder;
-			_messages = _config.Messages = DefaultMessageOptions.Messages;
-			_autohold = _config.Autohold = DefaultMessageOptions.Autohold;
-			_ramWatches = _config.RamWatches = DefaultMessageOptions.RamWatches;
+			_fps = _config.Fps = DefaultMessageOptions.Fps.Clone();
+			_frameCounter = _config.FrameCounter = DefaultMessageOptions.FrameCounter.Clone();
+			_lagCounter = _config.LagCounter = DefaultMessageOptions.LagCounter.Clone();
+			_inputDisplay = _config.InputDisplay = DefaultMessageOptions.InputDisplay.Clone();
+			_reRecordCounter = _config.ReRecordCounter = DefaultMessageOptions.ReRecordCounter.Clone();
+			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder.Clone();
+			_messages = _config.Messages = DefaultMessageOptions.Messages.Clone();
+			_autohold = _config.Autohold = DefaultMessageOptions.Autohold.Clone();
+			_ramWatches = _config.RamWatches = DefaultMessageOptions.RamWatches.Clone();
 
 			_messageColor = _config.MessagesColor = DefaultMessageOptions.MessagesColor;
 			_alertColor = _config.AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
@@ -389,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
 
-		private void SetAnchorValue(int value)
+		private void SetAnchorValue(MessageOption.AnchorType value)
 		{
 			if (FPSRadio.Checked)
 			{
@@ -433,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TL.Checked)
 			{
-				SetAnchorValue(0);
+				SetAnchorValue(MessageOption.AnchorType.TopLeft);
 			}
 
 			PositionPanel.Refresh();
@@ -443,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TR.Checked)
 			{
-				SetAnchorValue(1);
+				SetAnchorValue(MessageOption.AnchorType.TopRight);
 			}
 
 			PositionPanel.Refresh();
@@ -453,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BL.Checked)
 			{
-				SetAnchorValue(2);
+				SetAnchorValue(MessageOption.AnchorType.BottomLeft);
 			}
 
 			PositionPanel.Refresh();
@@ -463,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BR.Checked)
 			{
-				SetAnchorValue(3);
+				SetAnchorValue(MessageOption.AnchorType.BottomRight);
 			}
 
 			PositionPanel.Refresh();
@@ -471,16 +474,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void XNumeric_Changed(object sender, EventArgs e)
 		{
-			_px = (int)XNumeric.Value;
-			SetPositionLabels();
-			PositionPanel.Refresh();
+			if (!_programmaticallyChangingValues)
+			{
+				_px = (int)XNumeric.Value;
+				SetPositionLabels();
+				PositionPanel.Refresh();	
+			}
 		}
 
 		private void YNumeric_Changed(object sender, EventArgs e)
 		{
-			_py = (int)YNumeric.Value;
-			SetPositionLabels();
-			PositionPanel.Refresh();
+			if (!_programmaticallyChangingValues)
+			{
+				_py = (int)YNumeric.Value;
+				SetPositionLabels();
+				PositionPanel.Refresh();
+			}
 		}
 
 		private void ColorPanel_Click(object sender, EventArgs e)
