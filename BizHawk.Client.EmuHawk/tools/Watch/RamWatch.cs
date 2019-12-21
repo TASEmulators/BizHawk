@@ -253,8 +253,8 @@ namespace BizHawk.Client.EmuHawk
 						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGuiText(
 							_watches[i].ToDisplayString(),
-							Global.Config.DispRamWatchx,
-							Global.Config.DispRamWatchy + (i * 14),
+							Global.Config.RamWatches.X,
+							Global.Config.RamWatches.Y + (i * 14),
 							Color.Black,
 							frozen ? Color.Cyan : Color.White,
 							0);
@@ -293,8 +293,8 @@ namespace BizHawk.Client.EmuHawk
 						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGuiText(
 							_watches[i].ToDisplayString(),
-							Global.Config.DispRamWatchx,
-							Global.Config.DispRamWatchy + (i * 14),
+							Global.Config.RamWatches.X,
+							Global.Config.RamWatches.Y + (i * 14),
 							Color.Black,
 							frozen ? Color.Cyan : Color.White,
 							0);

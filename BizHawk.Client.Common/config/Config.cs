@@ -253,34 +253,15 @@ namespace BizHawk.Client.Common
 		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
-		public int DispFPSx = DefaultMessageOptions.DispFPSx;
-		public int DispFPSy = DefaultMessageOptions.DispFPSy;
-		public int DispFrameCx = DefaultMessageOptions.DispFrameCx;
-		public int DispFrameCy = DefaultMessageOptions.DispFrameCy;
-		public int DispLagx = DefaultMessageOptions.DispLagx;
-		public int DispLagy = DefaultMessageOptions.DispLagy;
-		public int DispInpx = DefaultMessageOptions.DispInpx;
-		public int DispInpy = DefaultMessageOptions.DispInpy;
-		public int DispRecx = DefaultMessageOptions.DispRecx;
-		public int DispRecy = DefaultMessageOptions.DispRecy;
-		public int DispMultix = DefaultMessageOptions.DispMultix;
-		public int DispMultiy = DefaultMessageOptions.DispMultiy;
-		public int DispRamWatchx = DefaultMessageOptions.DispRamWatchx;
-		public int DispRamWatchy = DefaultMessageOptions.DispRamWatchy;
-		public int DispMessagex = DefaultMessageOptions.DispMessagex;
-		public int DispMessagey = DefaultMessageOptions.DispMessagey;
-		public int DispAutoholdx = DefaultMessageOptions.DispAutoholdx;
-		public int DispAutoholdy = DefaultMessageOptions.DispAutoholdy;
-
-		public int DispFPSanchor = DefaultMessageOptions.DispFPSanchor;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
-		public int DispFrameanchor = DefaultMessageOptions.DispFrameanchor;
-		public int DispLaganchor = DefaultMessageOptions.DispLaganchor;
-		public int DispInpanchor = DefaultMessageOptions.DispInpanchor;
-		public int DispWatchesanchor = DefaultMessageOptions.DispWatchAnchor;
-		public int DispRecanchor = DefaultMessageOptions.DispRecanchor;
-		public int DispMultianchor = DefaultMessageOptions.DispMultianchor;
-		public int DispMessageanchor = DefaultMessageOptions.DispMessageanchor;
-		public int DispAutoholdanchor = DefaultMessageOptions.DispAutoholdanchor;
+		public MessageOption Fps = DefaultMessageOptions.Fps;
+		public MessageOption FrameCounter = DefaultMessageOptions.FrameCounter;
+		public MessageOption LagCounter = DefaultMessageOptions.LagCounter;
+		public MessageOption InputDisplay = DefaultMessageOptions.InputDisplay;
+		public MessageOption ReRecordCounter = DefaultMessageOptions.ReRecordCounter;
+		public MessageOption MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder;
+		public MessageOption Messages = DefaultMessageOptions.Messages;
+		public MessageOption Autohold = DefaultMessageOptions.Autohold;
+		public MessageOption RamWatches = DefaultMessageOptions.RamWatches;
 
 		public int MessagesColor = DefaultMessageOptions.MessagesColor;
 		public int AlertMessageColor = DefaultMessageOptions.AlertMessageColor;

@@ -1,40 +1,33 @@
 ﻿namespace BizHawk.Client.Common
 {
+	public class MessageOption
+	{
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Anchor { get; set; } // TODO: make an enum 0 = UL, 1 = UR, 2 = DL, 3 = DR
+
+		public MessageOption Clone()
+		{
+			return (MessageOption)MemberwiseClone();
+		}
+	}
+
 	public static class DefaultMessageOptions
 	{
-		public const int
-			DispFPSx = 0,
-			DispFPSy = 0,
-			DispFrameCx = 0,
-			DispFrameCy = 14,
-			DispLagx = 0,
-			DispLagy = 42,
-			DispInpx = 0,
-			DispInpy = 28,
-			DispRecx = 0,
-			DispRecy = 56,
-			DispMultix = 0,
-			DispMultiy = 14,
-			DispMessagex = 3,
-			DispMessagey = 0,
-			DispAutoholdx = 0,
-			DispAutoholdy = 0,
-			DispRamWatchx = 0,
-			DispRamWatchy = 70,
+		public static MessageOption Fps = new MessageOption { X = 0, Y = 0 };
+		public static MessageOption FrameCounter = new MessageOption { X = 0, Y = 14 };
+		public static MessageOption LagCounter = new MessageOption { X = 0, Y = 42 };
+		public static MessageOption InputDisplay = new MessageOption { X = 0, Y = 28 };
+		public static MessageOption ReRecordCounter = new MessageOption { X = 0, Y = 56 };
+		public static MessageOption MultitrackRecorder = new MessageOption { X = 0, Y = 14, Anchor = 1 };
+		public static MessageOption Messages = new MessageOption { X = 0, Y = 0, Anchor = 2 };
+		public static MessageOption Autohold = new MessageOption { X = 0, Y = 0, Anchor = 1 };
+		public static MessageOption RamWatches = new MessageOption { X = 0, Y = 70 };
 
+		public const int
 			MessagesColor = -1,
 			AlertMessageColor = -65536,
 			LastInputColor = -23296,
-			MovieInput = -8355712,
-
-			DispFPSanchor = 0,	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
-			DispFrameanchor = 0,
-			DispLaganchor = 0,
-			DispInpanchor = 0,
-			DispWatchAnchor = 0,
-			DispRecanchor = 0,
-			DispMultianchor = 1,
-			DispMessageanchor = 2,
-			DispAutoholdanchor = 1;
+			MovieInput = -8355712;
 	}
 }

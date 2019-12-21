@@ -156,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = _messages.Count - 1; i >= 0; i--, line++)
 				{
-					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, _messages[i].Message);
-					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, _messages[i].Message);
-					if (Global.Config.DispMessageanchor < 2)
+					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
+					float y = GetY(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
+					if (Global.Config.Messages.Anchor < 2)
 					{
 						y += (line - 1) * 18;
 					}
@@ -176,9 +176,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int i = _messages.Count - 1;
 
-					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, _messages[i].Message);
-					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, _messages[i].Message);
-					if (Global.Config.DispMessageanchor < 2)
+					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
+					float y = GetY(g, Global.Config.Messages.Y, Global.Config.Messages.Anchor, _messages[i].Message);
+					if (Global.Config.Messages.Anchor < 2)
 					{
 						y += (line - 1) * 18;
 					}
@@ -296,8 +296,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DisplayFrameCounter && !Global.Game.IsNullInstance())
 			{
 				string message = MakeFrameCounter();
-				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
-				float y = GetY(g, Global.Config.DispFrameCy, Global.Config.DispFrameanchor, message);
+				float x = GetX(g, Global.Config.FrameCounter.X, Global.Config.FrameCounter.Anchor, message);
+				float y = GetY(g, Global.Config.FrameCounter.Y, Global.Config.FrameCounter.Anchor, message);
 
 				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
 
@@ -313,8 +313,8 @@ namespace BizHawk.Client.EmuHawk
 					|| (Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
-					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
-					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
+					var x = GetX(g, Global.Config.InputDisplay.X, Global.Config.InputDisplay.Anchor, input);
+					var y = GetY(g, Global.Config.InputDisplay.Y, Global.Config.InputDisplay.Anchor, input);
 					Color c = Color.FromArgb(Global.Config.MovieInput);
 					g.DrawString(input, MessageFont, c, x, y);
 				}
@@ -328,8 +328,8 @@ namespace BizHawk.Client.EmuHawk
 
 					//we need some kind of string for calculating position when right-anchoring, of something like that
 					var bgStr = InputStrOrAll();
-					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, bgStr);
-					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, bgStr);
+					var x = GetX(g, Global.Config.InputDisplay.X, Global.Config.InputDisplay.Anchor, bgStr);
+					var y = GetY(g, Global.Config.InputDisplay.Y, Global.Config.InputDisplay.Anchor, bgStr);
 
 					// now, we're going to render these repeatedly, with higher-priority things overriding
 
@@ -361,16 +361,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.DispMultix, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.Status);
-				float y = GetY(g, Global.Config.DispMultiy, Global.Config.DispMultianchor, Global.MovieSession.MultiTrack.Status);
+				float x = GetX(g, Global.Config.MultitrackRecorder.X, Global.Config.MultitrackRecorder.Anchor, Global.MovieSession.MultiTrack.Status);
+				float y = GetY(g, Global.Config.MultitrackRecorder.Y, Global.Config.MultitrackRecorder.Anchor, Global.MovieSession.MultiTrack.Status);
 
 				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, x, y);
 			}
 
 			if (Global.Config.DisplayFPS && Fps != null)
 			{
-				float x = GetX(g, Global.Config.DispFPSx, Global.Config.DispFPSanchor, Fps);
-				float y = GetY(g, Global.Config.DispFPSy, Global.Config.DispFPSanchor, Fps);
+				float x = GetX(g, Global.Config.Fps.X, Global.Config.Fps.Anchor, Fps);
+				float y = GetY(g, Global.Config.Fps.Y, Global.Config.Fps.Anchor, Fps);
 
 				DrawOsdMessage(g, Fps, FixedMessagesColor, x, y);
 			}
@@ -378,8 +378,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
 			{
 				var counter = Global.Emulator.AsInputPollable().LagCount.ToString();
-				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
-				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
+				var x = GetX(g, Global.Config.LagCounter.X, Global.Config.LagCounter.Anchor, counter);
+				var y = GetY(g, Global.Config.LagCounter.Y, Global.Config.LagCounter.Anchor, counter);
 
 				DrawOsdMessage(g, counter, FixedAlertMessageColor, x, y);
 			}
@@ -387,8 +387,8 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DisplayRerecordCount)
 			{
 				string rerecordCount = MakeRerecordCount();
-				float x = GetX(g, Global.Config.DispRecx, Global.Config.DispRecanchor, rerecordCount);
-				float y = GetY(g, Global.Config.DispRecy, Global.Config.DispRecanchor, rerecordCount);
+				float x = GetX(g, Global.Config.ReRecordCounter.X, Global.Config.ReRecordCounter.Anchor, rerecordCount);
+				float y = GetY(g, Global.Config.ReRecordCounter.Y, Global.Config.ReRecordCounter.Anchor, rerecordCount);
 
 				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, x, y);
 			}
@@ -416,8 +416,8 @@ namespace BizHawk.Client.EmuHawk
 					message,
 					MessageFont,
 					Color.White,
-					GetX(g, Global.Config.DispAutoholdx, Global.Config.DispAutoholdanchor, message),
-					GetY(g, Global.Config.DispAutoholdy, Global.Config.DispAutoholdanchor, message));
+					GetX(g, Global.Config.Autohold.X, Global.Config.Autohold.Anchor, message),
+					GetY(g, Global.Config.Autohold.Y, Global.Config.Autohold.Anchor, message));
 			}
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
