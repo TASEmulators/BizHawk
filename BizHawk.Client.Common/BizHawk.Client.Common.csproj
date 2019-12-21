@@ -208,10 +208,10 @@
     <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
-    <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
-    <Compile Include="movie\bkm\BkmHeader.cs" />
-    <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
-    <Compile Include="movie\bkm\BkmMovie.cs" />
+    <Compile Include="movie\import\bkm\BkmControllerAdapter.cs" />
+    <Compile Include="movie\import\bkm\BkmHeader.cs" />
+    <Compile Include="movie\import\bkm\BkmMnemonicConstants.cs" />
+    <Compile Include="movie\import\bkm\BkmMovie.cs" />
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
     <Compile Include="movie\import\Fm2Import.cs" />
