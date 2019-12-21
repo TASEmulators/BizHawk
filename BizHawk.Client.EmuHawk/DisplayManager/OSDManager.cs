@@ -33,9 +33,7 @@ namespace BizHawk.Client.EmuHawk
 	class UIDisplay
 	{
 		public string Message;
-		public int X;
-		public int Y;
-		public MessagePosition.AnchorType Anchor;
+		public MessagePosition Position;
 		public Color ForeColor;
 		public Color BackGround;
 	}
@@ -108,16 +106,14 @@ namespace BizHawk.Client.EmuHawk
 			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGuiText(string message, int x, int y, Color backGround, Color foreColor, MessagePosition.AnchorType anchor)
+		public void AddGuiText(string message, MessagePosition pos, Color backGround, Color foreColor)
 		{
 			_guiTextList.Add(new UIDisplay
 			{
 				Message = message,
-				X = x,
-				Y = y,
+				Position = pos,
 				BackGround = backGround,
-				ForeColor = foreColor,
-				Anchor = anchor
+				ForeColor = foreColor
 			});
 		}
 
@@ -177,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					var point = GetCoordinates(g, new MessagePosition {X = text.X, Y = text.Y, Anchor = text.Anchor}, text.Message);
+					var point = GetCoordinates(g, text.Position, text.Message);
 					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)

@@ -229,6 +229,27 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
+		private void DisplayOnScreenWatches()
+		{
+			if (Global.Config.DisplayRamWatch)
+			{
+				for (var i = 0; i < _watches.Count; i++)
+				{
+					var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
+					GlobalWin.OSD.AddGuiText(
+						_watches[i].ToDisplayString(),
+						new MessagePosition
+						{
+							X = Global.Config.RamWatches.X,
+							Y = Global.Config.RamWatches.Y + (i * 14),
+							Anchor = Global.Config.RamWatches.Anchor
+						},
+						Color.Black,
+						frozen ? Color.Cyan : Color.White);
+				}
+			}
+		}
+
 		public void UpdateValues()
 		{
 			if (_paused)
@@ -245,21 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_watches.Any())
 			{
 				_watches.UpdateValues();
-
-				if (Global.Config.DisplayRamWatch)
-				{
-					for (var i = 0; i < _watches.Count; i++)
-					{
-						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
-						GlobalWin.OSD.AddGuiText(
-							_watches[i].ToDisplayString(),
-							Global.Config.RamWatches.X,
-							Global.Config.RamWatches.Y + (i * 14),
-							Color.Black,
-							frozen ? Color.Cyan : Color.White,
-							0);
-					}
-				}
+				DisplayOnScreenWatches();
 
 				if (!IsHandleCreated || IsDisposed)
 				{
@@ -285,21 +292,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_watches.Any())
 			{
 				_watches.UpdateValues();
-
-				if (Global.Config.DisplayRamWatch)
-				{
-					for (var i = 0; i < _watches.Count; i++)
-					{
-						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
-						GlobalWin.OSD.AddGuiText(
-							_watches[i].ToDisplayString(),
-							Global.Config.RamWatches.X,
-							Global.Config.RamWatches.Y + (i * 14),
-							Color.Black,
-							frozen ? Color.Cyan : Color.White,
-							0);
-					}
-				}
+				DisplayOnScreenWatches();
 			}
 		}
 

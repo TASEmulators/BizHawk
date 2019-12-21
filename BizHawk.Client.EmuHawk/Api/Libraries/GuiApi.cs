@@ -491,7 +491,9 @@ namespace BizHawk.Client.EmuHawk
 				x -= Emulator.CoreComm.ScreenLogicalOffsetX;
 				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
-			GlobalWin.OSD.AddGuiText(message, x, y, Color.Black, forecolor ?? Color.White, (MessagePosition.AnchorType)a);
+
+			var pos = new MessagePosition{ X = x, Y = y, Anchor = (MessagePosition.AnchorType)a };
+			GlobalWin.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 
 		public void Dispose()
