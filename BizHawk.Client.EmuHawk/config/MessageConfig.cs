@@ -27,7 +27,6 @@ namespace BizHawk.Client.EmuHawk
 		private int _lastInputColor;
 		private int _movieInput;
 		
-		private readonly Brush _brush = Brushes.Black;
 		private int _px;
 		private int _py;
 		private bool _mousedown;
@@ -239,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 				y = (int)YNumeric.Maximum - _py;
 			}
 
-			using var p = new Pen(_brush);
+			using var p = new Pen(Color.Black);
 			e.Graphics.DrawLine(p, new Point(x, y), new Point(x + 8, y + 8));
 			e.Graphics.DrawLine(p, new Point(x + 8, y), new Point(x, y + 8));
 			e.Graphics.DrawRectangle(p, new Rectangle(x, y, 8, 8));
