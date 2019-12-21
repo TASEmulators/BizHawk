@@ -10,28 +10,47 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class MessageConfig : Form
 	{
-		private MessageOption _fps = Global.Config.Fps.Clone();
-		private MessageOption _frameCounter = Global.Config.FrameCounter.Clone();
-		private MessageOption _lagCounter = Global.Config.LagCounter.Clone();
-		private MessageOption _inputDisplay = Global.Config.InputDisplay.Clone();
-		private MessageOption _reRecordCounter = Global.Config.ReRecordCounter.Clone();
-		private MessageOption _multitrackRecorder = Global.Config.MultitrackRecorder.Clone();
-		private MessageOption _messages = Global.Config.Messages.Clone();
-		private MessageOption _autohold = Global.Config.Autohold.Clone();
-		private MessageOption _ramWatches = Global.Config.RamWatches.Clone();
+		private readonly Config _config;
 
-		private int _messageColor = Global.Config.MessagesColor;
-		private int _alertColor = Global.Config.AlertMessageColor;
-		private int _lastInputColor = Global.Config.LastInputColor;
-		private int _movieInput = Global.Config.MovieInput;
+		private MessageOption _fps;
+		private MessageOption _frameCounter;
+		private MessageOption _lagCounter;
+		private MessageOption _inputDisplay;
+		private MessageOption _reRecordCounter;
+		private MessageOption _multitrackRecorder;
+		private MessageOption _messages;
+		private MessageOption _autohold;
+		private MessageOption _ramWatches;
+
+		private int _messageColor;
+		private int _alertColor;
+		private int _lastInputColor;
+		private int _movieInput;
 		
 		private readonly Brush _brush = Brushes.Black;
 		private int _px;
 		private int _py;
 		private bool _mousedown;
 
-		public MessageConfig()
+		public MessageConfig(Config config)
 		{
+			_config = config;
+
+			_fps = _config.Fps.Clone();
+			_frameCounter = _config.FrameCounter.Clone();
+			_lagCounter = _config.LagCounter.Clone();
+			_inputDisplay = _config.InputDisplay.Clone();
+			_reRecordCounter = _config.ReRecordCounter.Clone();
+			_multitrackRecorder = _config.MultitrackRecorder.Clone();
+			_messages = _config.Messages.Clone();
+			_autohold = _config.Autohold.Clone();
+			_ramWatches = _config.RamWatches.Clone();
+
+			_messageColor = _config.MessagesColor;
+			_alertColor = _config.AlertMessageColor;
+			_lastInputColor = _config.LastInputColor;
+			_movieInput = _config.MovieInput;
+
 			InitializeComponent();
 		}
 
@@ -44,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 			SetColorBox();
 			SetPositionInfo();
-			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages;
+			StackMessagesCheckbox.Checked = _config.StackOSDMessages;
 		}
 
 		private void SetMaxXy()
@@ -152,29 +171,25 @@ namespace BizHawk.Client.EmuHawk
 			SetPositionLabels();
 		}
 
-		private void SaveSettings()
-		{
-			Global.Config.Fps = _fps;
-			Global.Config.FrameCounter = _frameCounter;
-			Global.Config.LagCounter = _lagCounter;
-			Global.Config.InputDisplay = _inputDisplay;
-			Global.Config.ReRecordCounter = _reRecordCounter;
-			Global.Config.MultitrackRecorder = _multitrackRecorder;
-			Global.Config.Messages = _messages;
-			Global.Config.Autohold = _autohold;
-			Global.Config.RamWatches = _ramWatches;
-
-			Global.Config.MessagesColor = _messageColor;
-			Global.Config.AlertMessageColor = _alertColor;
-			Global.Config.LastInputColor = _lastInputColor;
-			Global.Config.MovieInput = _movieInput;
-
-			Global.Config.StackOSDMessages = StackMessagesCheckbox.Checked;
-		}
-
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			SaveSettings();
+			_config.Fps = _fps;
+			_config.FrameCounter = _frameCounter;
+			_config.LagCounter = _lagCounter;
+			_config.InputDisplay = _inputDisplay;
+			_config.ReRecordCounter = _reRecordCounter;
+			_config.MultitrackRecorder = _multitrackRecorder;
+			_config.Messages = _messages;
+			_config.Autohold = _autohold;
+			_config.RamWatches = _ramWatches;
+
+			_config.MessagesColor = _messageColor;
+			_config.AlertMessageColor = _alertColor;
+			_config.LastInputColor = _lastInputColor;
+			_config.MovieInput = _movieInput;
+
+			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
+
 			Close();
 		}
 
@@ -362,20 +377,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			_fps = Global.Config.Fps = DefaultMessageOptions.Fps;
-			_frameCounter = Global.Config.FrameCounter = DefaultMessageOptions.FrameCounter;
-			_lagCounter = Global.Config.LagCounter = DefaultMessageOptions.LagCounter;
-			_inputDisplay = Global.Config.InputDisplay = DefaultMessageOptions.InputDisplay;
-			_reRecordCounter = Global.Config.ReRecordCounter = DefaultMessageOptions.ReRecordCounter;
-			_multitrackRecorder = Global.Config.MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder;
-			_messages = Global.Config.Messages = DefaultMessageOptions.Messages;
-			_autohold = Global.Config.Autohold = DefaultMessageOptions.Autohold;
-			_ramWatches = Global.Config.RamWatches = DefaultMessageOptions.RamWatches;
+			_fps = _config.Fps = DefaultMessageOptions.Fps;
+			_frameCounter = _config.FrameCounter = DefaultMessageOptions.FrameCounter;
+			_lagCounter = _config.LagCounter = DefaultMessageOptions.LagCounter;
+			_inputDisplay = _config.InputDisplay = DefaultMessageOptions.InputDisplay;
+			_reRecordCounter = _config.ReRecordCounter = DefaultMessageOptions.ReRecordCounter;
+			_multitrackRecorder = _config.MultitrackRecorder = DefaultMessageOptions.MultitrackRecorder;
+			_messages = _config.Messages = DefaultMessageOptions.Messages;
+			_autohold = _config.Autohold = DefaultMessageOptions.Autohold;
+			_ramWatches = _config.RamWatches = DefaultMessageOptions.RamWatches;
 
-			_messageColor = Global.Config.MessagesColor = DefaultMessageOptions.MessagesColor;
-			_alertColor = Global.Config.AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
-			_lastInputColor = Global.Config.LastInputColor = DefaultMessageOptions.LastInputColor;
-			_movieInput = Global.Config.MovieInput = DefaultMessageOptions.MovieInput;
+			_messageColor = _config.MessagesColor = DefaultMessageOptions.MessagesColor;
+			_alertColor = _config.AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
+			_lastInputColor = _config.LastInputColor = DefaultMessageOptions.LastInputColor;
+			_movieInput = _config.MovieInput = DefaultMessageOptions.MovieInput;
 
 			MessageColorDialog.Color = Color.FromArgb(_messageColor);
 			AlertColorDialog.Color = Color.FromArgb(_alertColor);
@@ -386,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 			SetColorBox();
 			SetPositionInfo();
 
-			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages = true;
+			StackMessagesCheckbox.Checked = _config.StackOSDMessages = true;
 		}
 
 		private void SetAnchorValue(int value)

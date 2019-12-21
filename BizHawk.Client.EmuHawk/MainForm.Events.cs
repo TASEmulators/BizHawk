@@ -991,7 +991,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new MessageConfig();
+			using var form = new MessageConfig(Config);
 			var result = form.ShowDialog();
 			AddOnScreenMessage(result.IsOk()
 				? "Message settings saved"
