@@ -342,8 +342,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var prop in props)
 			{
-				object val;
-				if (data.TryGetValue(prop.Name, out val))
+				if (data.TryGetValue(prop.Name, out var val))
 				{
 					if (val is string str && prop.PropertyType != typeof(string))
 					{
@@ -417,19 +416,13 @@ namespace BizHawk.Client.EmuHawk
 			return Load<T>(false);
 		}
 
-		public IEnumerable<Type> AvailableTools
-		{
-			get
-			{
-				return Assembly
-					.GetAssembly(typeof(IToolForm))
-					.GetTypes()
-					.Where(t => typeof(IToolForm).IsAssignableFrom(t))
-					.Where(t => !t.IsInterface)
-					.Where(IsAvailable);
-			}
-		}
-
+		public IEnumerable<Type> AvailableTools => Assembly
+			.GetAssembly(typeof(IToolForm))
+			.GetTypes()
+			.Where(t => typeof(IToolForm).IsAssignableFrom(t))
+			.Where(t => !t.IsInterface)
+			.Where(IsAvailable);
+		
 		public void UpdateBefore()
 		{
 			var beforeList = _tools.Where(t => t.UpdateBefore);
@@ -564,12 +557,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var tool = _tools.FirstOrDefault(t => t is T);
-			if (tool != null)
-			{
-				return tool.AskSaveChanges();
-			}
-
-			return false;
+			return tool != null && tool.AskSaveChanges();
 		}
 
 		/// <summary>
@@ -736,17 +724,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static readonly Lazy<List<string>> lazyAsmTypes = new Lazy<List<string>>(() =>
+		private static readonly Lazy<List<string>> LazyAsmTypes = new Lazy<List<string>>(() =>
 			Assembly.GetAssembly(typeof(ToolManager)) // Confining the search to only EmuHawk, for now at least, we may want to broaden for ApiHawk one day
 				.GetTypes()
 				.Select(t => t.AssemblyQualifiedName)
-				.ToList()
-		);
+				.ToList());
 
 		public bool IsAvailable(Type tool)
 		{
 			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool)
-				|| !lazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
+				|| !LazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
 			{
 				return false;
 			}
@@ -798,19 +785,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public LuaConsole LuaConsole => GetTool<LuaConsole>();
 
-		public TAStudio TAStudio
-		{
-			get
-			{
-				// prevent nasty silent corruption
-				if (!IsLoaded<TAStudio>())
-				{
-					System.Diagnostics.Debug.Fail("TAStudio does not exist!");
-				}
-
-				return GetTool<TAStudio>();
-			}
-		}
+		public TAStudio TAStudio => GetTool<TAStudio>();
 
 		#endregion
 
