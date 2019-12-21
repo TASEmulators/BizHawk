@@ -620,7 +620,6 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
     <Compile Include="DisplayManager\FilterManager.cs" />

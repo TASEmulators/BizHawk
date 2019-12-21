@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk
 			public int width, height;
 			public int pitch; //in bytes
 			public int pitch_add;
-			public void PopulateBITMAPINFOHEADER24(ref Win32.BITMAPINFOHEADER bmih)
+			public void PopulateBITMAPINFOHEADER24(ref AVIWriterImports.BITMAPINFOHEADER bmih)
 			{
 				bmih.Init();
 				bmih.biPlanes = 1;
@@ -303,7 +303,7 @@ namespace BizHawk.Client.EmuHawk
 				bmih.biSizeImage = (uint)(pitch * height);
 			}
 
-			public void PopulateBITMAPINFOHEADER32(ref Win32.BITMAPINFOHEADER bmih)
+			public void PopulateBITMAPINFOHEADER32(ref AVIWriterImports.BITMAPINFOHEADER bmih)
 			{
 				bmih.Init();
 				bmih.biPlanes = 1;
@@ -316,8 +316,9 @@ namespace BizHawk.Client.EmuHawk
 
 			public bool has_audio;
 			public int a_samplerate, a_channels, a_bits;
-			public void PopulateWAVEFORMATEX(ref Win32.WAVEFORMATEX wfex)
+			public void PopulateWAVEFORMATEX(ref AVIWriterImports.WAVEFORMATEX wfex)
 			{
+				const int WAVE_FORMAT_PCM = 1;
 				int bytes = 0;
 				if (a_bits == 16) bytes = 2;
 				else if (a_bits == 8) bytes = 1;
@@ -329,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 				wfex.nBlockAlign = (ushort)(bytes * a_channels);
 				wfex.nChannels = (ushort)a_channels;
 				wfex.wBitsPerSample = (ushort)a_bits;
-				wfex.wFormatTag = Win32.WAVE_FORMAT_PCM;
+				wfex.wFormatTag = WAVE_FORMAT_PCM;
 				wfex.nSamplesPerSec = (uint)a_samplerate;
 				wfex.nAvgBytesPerSec = (uint)(wfex.nBlockAlign * a_samplerate);
 			}
@@ -407,17 +408,30 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public void Dispose() { }
 			private CodecToken() { }
-			private Win32.AVICOMPRESSOPTIONS comprOptions;
+			private AVIWriterImports.AVICOMPRESSOPTIONS comprOptions;
 			public string codec;
 			public byte[] Format = new byte[0];
 			public byte[] Parms = new byte[0];
 
-			public static CodecToken CreateFromAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
+			private static string decode_mmioFOURCC(int code)
+			{
+				char[] chs = new char[4];
+
+				for (int i = 0; i < 4; i++)
+				{
+					chs[i] = (char)(byte)((code >> (i << 3)) & 0xFF);
+					if (!char.IsLetterOrDigit(chs[i]))
+						chs[i] = ' ';
+				}
+				return new string(chs);
+			}
+
+			public static CodecToken CreateFromAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
 				var ret = new CodecToken
 				{
 					comprOptions = opts,
-					codec = Win32.decode_mmioFOURCC(opts.fccHandler),
+					codec = decode_mmioFOURCC(opts.fccHandler),
 					Format = new byte[opts.cbFormat],
 					Parms = new byte[opts.cbParms]
 				};
@@ -435,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 				return ret;
 			}
 
-			public static void DeallocateAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
+			public static void DeallocateAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
 #if false // test: increase stability by never freeing anything, ever
 				if (opts.lpParms != IntPtr.Zero) Win32Imports.HeapFree(Win32Imports.GetProcessHeap(), 0, opts.lpParms);
@@ -445,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 				opts.lpFormat = IntPtr.Zero;
 			}
 
-			public void AllocateToAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
+			public void AllocateToAVICOMPRESSOPTIONS(ref AVIWriterImports.AVICOMPRESSOPTIONS opts)
 			{
 				opts = comprOptions;
 				if (opts.cbParms != 0)
@@ -487,7 +501,7 @@ namespace BizHawk.Client.EmuHawk
 				var m = new MemoryStream(data, false);
 				var b = new BinaryReader(m);
 
-				Win32.AVICOMPRESSOPTIONS comprOptions = new Win32.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
 
 				byte[] Format;
 				byte[] Parms;
@@ -525,7 +539,7 @@ namespace BizHawk.Client.EmuHawk
 					comprOptions = comprOptions,
 					Format = Format,
 					Parms = Parms,
-					codec = Win32.decode_mmioFOURCC(comprOptions.fccHandler)
+					codec = decode_mmioFOURCC(comprOptions.fccHandler)
 				};
 				return ret;
 			}
@@ -553,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			static AviWriterSegment()
 			{
-				Win32.AVIFileInit();
+				AVIWriterImports.AVIFileInit();
 			}
 
 			public AviWriterSegment()
@@ -612,20 +626,29 @@ namespace BizHawk.Client.EmuHawk
 				return outStatus.video_bytes + outStatus.audio_bytes;
 			}
 
-			static unsafe int AVISaveOptions(IntPtr stream, ref Win32.AVICOMPRESSOPTIONS opts, IntPtr owner)
+			private static bool FAILED(int hr) => hr < 0;
+
+			static unsafe int AVISaveOptions(IntPtr stream, ref AVIWriterImports.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
-				fixed (Win32.AVICOMPRESSOPTIONS* _popts = &opts)
+				fixed (AVIWriterImports.AVICOMPRESSOPTIONS* _popts = &opts)
 				{
 					IntPtr* pStream = &stream;
-					Win32.AVICOMPRESSOPTIONS* popts = _popts;
-					Win32.AVICOMPRESSOPTIONS** ppopts = &popts;
-					return Win32.AVISaveOptions(owner, 0, 1, (void*)pStream, (void*)ppopts);
+					AVIWriterImports.AVICOMPRESSOPTIONS* popts = _popts;
+					AVIWriterImports.AVICOMPRESSOPTIONS** ppopts = &popts;
+					return AVIWriterImports.AVISaveOptions(owner, 0, 1, (void*)pStream, (void*)ppopts);
 				}
 			}
 
 			Parameters parameters;
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
 			{
+				static int mmioFOURCC(string str) => (
+					((int)(byte)(str[0]))
+					| ((int)(byte)(str[1]) << 8)
+					| ((int)(byte)(str[2]) << 16)
+					| ((int)(byte)(str[3]) << 24)
+				);
+
 				this.parameters = parameters;
 				this.currVideoCodecToken = videoCodecToken;
 
@@ -637,36 +660,36 @@ namespace BizHawk.Client.EmuHawk
 					File.Delete(destPath);
 				}
 
-				if (Win32.FAILED(Win32.AVIFileOpenW(ref pAviFile, destPath, Win32.OpenFileStyle.OF_CREATE | Win32.OpenFileStyle.OF_WRITE, 0)))
+				if (FAILED(AVIWriterImports.AVIFileOpenW(ref pAviFile, destPath, AVIWriterImports.OpenFileStyle.OF_CREATE | AVIWriterImports.OpenFileStyle.OF_WRITE, 0)))
 				{
 					throw new InvalidOperationException($"Couldnt open dest path for avi file: {destPath}");
 				}
 
 				// initialize the video stream
-				Win32.AVISTREAMINFOW vidstream_header = new Win32.AVISTREAMINFOW();
-				Win32.BITMAPINFOHEADER bmih = new Win32.BITMAPINFOHEADER();
+				AVIWriterImports.AVISTREAMINFOW vidstream_header = new AVIWriterImports.AVISTREAMINFOW();
+				AVIWriterImports.BITMAPINFOHEADER bmih = new AVIWriterImports.BITMAPINFOHEADER();
 				parameters.PopulateBITMAPINFOHEADER24(ref bmih);
-				vidstream_header.fccType = Win32.mmioFOURCC("vids");
+				vidstream_header.fccType = mmioFOURCC("vids");
 				vidstream_header.dwRate = parameters.fps;
 				vidstream_header.dwScale = parameters.fps_scale;
 				vidstream_header.dwSuggestedBufferSize = (int)bmih.biSizeImage;
-				if (Win32.FAILED(Win32.AVIFileCreateStreamW(pAviFile, out pAviRawVideoStream, ref vidstream_header)))
+				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(pAviFile, out pAviRawVideoStream, ref vidstream_header)))
 				{
 					CloseFile();
 					throw new InvalidOperationException("Failed opening raw video stream. Not sure how this could happen");
 				}
 
 				// initialize audio stream
-				Win32.AVISTREAMINFOW audstream_header = new Win32.AVISTREAMINFOW();
-				Win32.WAVEFORMATEX wfex = new Win32.WAVEFORMATEX();
+				AVIWriterImports.AVISTREAMINFOW audstream_header = new AVIWriterImports.AVISTREAMINFOW();
+				AVIWriterImports.WAVEFORMATEX wfex = new AVIWriterImports.WAVEFORMATEX();
 				parameters.PopulateWAVEFORMATEX(ref wfex);
-				audstream_header.fccType = Win32.mmioFOURCC("auds");
+				audstream_header.fccType = mmioFOURCC("auds");
 				audstream_header.dwQuality = -1;
 				audstream_header.dwScale = wfex.nBlockAlign;
 				audstream_header.dwRate = (int)wfex.nAvgBytesPerSec;
 				audstream_header.dwSampleSize = wfex.nBlockAlign;
 				audstream_header.dwInitialFrames = 1; // ??? optimal value?
-				if (Win32.FAILED(Win32.AVIFileCreateStreamW(pAviFile, out pAviRawAudioStream, ref audstream_header)))
+				if (FAILED(AVIWriterImports.AVIFileCreateStreamW(pAviFile, out pAviRawAudioStream, ref audstream_header)))
 				{
 					CloseFile();
 					throw new InvalidOperationException("Failed opening raw audio stream. Not sure how this could happen");
@@ -693,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// encoder params
-				Win32.AVICOMPRESSOPTIONS comprOptions = new Win32.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS comprOptions = new AVIWriterImports.AVICOMPRESSOPTIONS();
 				currVideoCodecToken?.AllocateToAVICOMPRESSOPTIONS(ref comprOptions);
 
 				bool result = AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0;
@@ -729,9 +752,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// open compressed video stream
-				Win32.AVICOMPRESSOPTIONS opts = new Win32.AVICOMPRESSOPTIONS();
+				AVIWriterImports.AVICOMPRESSOPTIONS opts = new AVIWriterImports.AVICOMPRESSOPTIONS();
 				currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
-				bool failed = Win32.FAILED(Win32.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref opts, IntPtr.Zero));
+				bool failed = FAILED(AVIWriterImports.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref opts, IntPtr.Zero));
 				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
 				
 				if (failed)
@@ -741,7 +764,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// set the compressed video stream input format
-				Win32.BITMAPINFOHEADER bmih = new Win32.BITMAPINFOHEADER();
+				AVIWriterImports.BITMAPINFOHEADER bmih = new AVIWriterImports.BITMAPINFOHEADER();
 				if (bit32)
 				{
 					parameters.PopulateBITMAPINFOHEADER32(ref bmih);
@@ -751,7 +774,7 @@ namespace BizHawk.Client.EmuHawk
 					parameters.PopulateBITMAPINFOHEADER24(ref bmih);
 				}
 
-				if (Win32.FAILED(Win32.AVIStreamSetFormat(pAviCompressedVideoStream, 0, ref bmih, Marshal.SizeOf(bmih))))
+				if (FAILED(AVIWriterImports.AVIStreamSetFormat(pAviCompressedVideoStream, 0, ref bmih, Marshal.SizeOf(bmih))))
 				{
 					bit32 = true; // we'll try again
 					CloseStreams();
@@ -759,9 +782,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// set audio stream input format
-				Win32.WAVEFORMATEX wfex = new Win32.WAVEFORMATEX();
+				AVIWriterImports.WAVEFORMATEX wfex = new AVIWriterImports.WAVEFORMATEX();
 				parameters.PopulateWAVEFORMATEX(ref wfex);
-				if (Win32.FAILED(Win32.AVIStreamSetFormat(pAviRawAudioStream, 0, ref wfex, Marshal.SizeOf(wfex))))
+				if (FAILED(AVIWriterImports.AVIStreamSetFormat(pAviRawAudioStream, 0, ref wfex, Marshal.SizeOf(wfex))))
 				{
 					CloseStreams();
 					throw new InvalidOperationException("Failed setting raw audio stream input format");
@@ -776,19 +799,19 @@ namespace BizHawk.Client.EmuHawk
 				CloseStreams();
 				if (pAviRawAudioStream != IntPtr.Zero)
 				{
-					Win32.AVIStreamRelease(pAviRawAudioStream);
+					AVIWriterImports.AVIStreamRelease(pAviRawAudioStream);
 					pAviRawAudioStream = IntPtr.Zero;
 				}
 
 				if (pAviRawVideoStream != IntPtr.Zero)
 				{
-					Win32.AVIStreamRelease(pAviRawVideoStream);
+					AVIWriterImports.AVIStreamRelease(pAviRawVideoStream);
 					pAviRawVideoStream = IntPtr.Zero;
 				}
 
 				if (pAviFile != IntPtr.Zero)
 				{
-					Win32.AVIFileRelease(pAviFile);
+					AVIWriterImports.AVIFileRelease(pAviFile);
 					pAviFile = IntPtr.Zero;
 				}
 
@@ -812,7 +835,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (pAviCompressedVideoStream != IntPtr.Zero)
 				{
-					Win32.AVIStreamRelease(pAviCompressedVideoStream);
+					AVIWriterImports.AVIStreamRelease(pAviCompressedVideoStream);
 					pAviCompressedVideoStream = IntPtr.Zero;
 				}
 			}
@@ -853,7 +876,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// (TODO - inefficient- build directly in a buffer)
 				int bytes_written;
-				Win32.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out bytes_written);
+				AVIWriterImports.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out bytes_written);
 				outStatus.audio_samples += todo_realsamples;
 				outStatus.audio_bytes += bytes_written;
 				outStatus.audio_buffered_shorts = 0;
@@ -861,6 +884,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public unsafe void AddFrame(IVideoProvider source)
 			{
+				const int AVIIF_KEYFRAME = 0x00000010;
+
 				if (parameters.width != source.BufferWidth
 					|| parameters.height != source.BufferHeight)
 					throw new InvalidOperationException("video buffer changed between start and now");
@@ -899,7 +924,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							int bytes_written;
-							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo, AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
 							outStatus.video_bytes += bytes_written;
 							outStatus.video_frames++;
 						}
@@ -931,7 +956,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							int bytes_written;
-							int ret = Win32.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, Win32.AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
+							int ret = AVIWriterImports.AVIStreamWrite(pAviCompressedVideoStream, outStatus.video_frames, 1, new IntPtr(bytes_ptr), todo * 3, AVIIF_KEYFRAME, IntPtr.Zero, out bytes_written);
 							outStatus.video_bytes += bytes_written;
 							outStatus.video_frames++;
 						}

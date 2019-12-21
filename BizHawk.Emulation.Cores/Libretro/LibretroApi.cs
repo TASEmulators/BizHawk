@@ -23,9 +23,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		//YUCK
 		public LibretroCore core;
 
-		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
-
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate IntPtr DllInit(IntPtr dllModule);
 

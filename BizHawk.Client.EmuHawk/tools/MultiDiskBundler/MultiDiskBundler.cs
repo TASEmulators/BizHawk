@@ -289,28 +289,26 @@ namespace BizHawk.Client.EmuHawk
 #endif
 			}
 
+			static FileAttributes GetPathAttribute(string path1)
+			{
+				var di = new DirectoryInfo(path1.Split('|').First());
+				if (di.Exists)
+				{
+					return FileAttributes.Directory;
+				}
+
+				var fi = new FileInfo(path1.Split('|').First());
+				if (fi.Exists)
+				{
+					return FileAttributes.Normal;
+				}
+
+				throw new FileNotFoundException();
+			}
 			var path = new StringBuilder(260 /* = MAX_PATH */);
-			return Win32.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
+			return Win32Imports.PathRelativePathTo(path, fromPath, GetPathAttribute(fromPath), toPath, GetPathAttribute(toPath))
 				? path.ToString()
 				: throw new ArgumentException("Paths must have a common prefix");
-		}
-
-		/// <seealso cref="GetRelativePath"/>
-		private static Win32.FileAttributes GetPathAttribute(string path)
-		{
-			var di = new DirectoryInfo(path.Split('|').First());
-			if (di.Exists)
-			{
-				return Win32.FileAttributes.Directory;
-			}
-
-			var fi = new FileInfo(path.Split('|').First());
-			if (fi.Exists)
-			{
-				return Win32.FileAttributes.Normal;
-			}
-
-			throw new FileNotFoundException();
 		}
 
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
