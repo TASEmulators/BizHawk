@@ -53,36 +53,19 @@ namespace BizHawk.Client.EmuHawk
 		public Color FixedMessagesColor => Color.FromArgb(Global.Config.MessagesColor);
 		public Color FixedAlertMessageColor => Color.FromArgb(Global.Config.AlertMessageColor);
 
-		private float GetX(IBlitter g, int x, MessageOption.AnchorType anchor, string message)
+		private PointF GetCoordinates(IBlitter g, MessageOption option, string message)
 		{
 			var size = g.MeasureString(message, MessageFont);
+			float x = option.Anchor.IsLeft()
+				? option.X
+				: g.ClipBounds.Width - option.X - size.Width;
 
-			switch (anchor)
-			{
-				default:
-				case MessageOption.AnchorType.TopLeft:
-				case MessageOption.AnchorType.BottomLeft:
-					return x;
-				case MessageOption.AnchorType.TopRight:
-				case MessageOption.AnchorType.BottomRight:
-					return g.ClipBounds.Width - x - size.Width;
-			}
-		}
+			float y = option.Anchor.IsTop()
+				? option.Y
+				: g.ClipBounds.Height - option.Y - size.Height;
+			
 
-		private float GetY(IBlitter g, int y, MessageOption.AnchorType anchor, string message)
-		{
-			var size = g.MeasureString(message, MessageFont);
-
-			switch (anchor)
-			{
-				default:
-				case MessageOption.AnchorType.TopLeft:
-				case MessageOption.AnchorType.TopRight:
-					return y;
-				case MessageOption.AnchorType.BottomLeft:
-				case MessageOption.AnchorType.BottomRight:
-					return g.ClipBounds.Height - y - size.Height;
-			}
+			return new PointF(x, y);
 		}
 
 		private string MakeFrameCounter()
@@ -156,8 +139,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int i = _messages.Count - 1; i >= 0; i--, line++)
 				{
-					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
-					float y = GetY(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
+					var point = GetCoordinates(g, Global.Config.Messages, _messages[i].Message);
+					var y = point.Y; // TODO: clean me up
 					if (Global.Config.Messages.Anchor.IsTop())
 					{
 						y += (line - 1) * 18;
@@ -167,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 						y -= (line - 1) * 18;
 					}
 
-					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, point.X, y);
 				}
 			}
 			else
@@ -175,8 +158,8 @@ namespace BizHawk.Client.EmuHawk
 				if (_messages.Any())
 				{
 					var message = _messages.Last();
-					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, message.Message);
-					float y = GetY(g, Global.Config.Messages.Y, Global.Config.Messages.Anchor, message.Message);
+					var point = GetCoordinates(g, Global.Config.Messages, message.Message);
+					var y = point.Y;
 					if (Global.Config.Messages.Anchor.IsTop())
 					{
 						y += (line - 1) * 18;
@@ -186,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 						y -= (line - 1) * 18;
 					}
 
-					g.DrawString(message.Message, MessageFont, FixedMessagesColor, x, y);
+					g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
 				}
 			}
 
@@ -194,10 +177,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					float posX = GetX(g, text.X, text.Anchor, text.Message);
-					float posY = GetY(g, text.Y, text.Anchor, text.Message);
-
-					g.DrawString(text.Message, MessageFont, text.ForeColor, posX, posY);
+					var point = GetCoordinates(g, new MessageOption {X = text.X, Y = text.Y, Anchor = text.Anchor}, text.Message);
+					g.DrawString(text.Message, MessageFont, text.ForeColor, point.X, point.Y);
 				}
 				catch (Exception)
 				{
@@ -295,14 +276,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DisplayFrameCounter && !Global.Game.IsNullInstance())
 			{
 				string message = MakeFrameCounter();
-				float x = GetX(g, Global.Config.FrameCounter.X, Global.Config.FrameCounter.Anchor, message);
-				float y = GetY(g, Global.Config.FrameCounter.Y, Global.Config.FrameCounter.Anchor, message);
-
-				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
+				var point = GetCoordinates(g, Global.Config.FrameCounter, message);
+				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), point.X, point.Y);
 
 				if (GlobalWin.MainForm.IsLagFrame)
 				{
-					DrawOsdMessage(g, Global.Emulator.Frame.ToString(), FixedAlertMessageColor, x, y);
+					DrawOsdMessage(g, Global.Emulator.Frame.ToString(), FixedAlertMessageColor, point.X, point.Y);
 				}
 			}
 
@@ -312,10 +291,9 @@ namespace BizHawk.Client.EmuHawk
 					|| (Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
-					var x = GetX(g, Global.Config.InputDisplay.X, Global.Config.InputDisplay.Anchor, input);
-					var y = GetY(g, Global.Config.InputDisplay.Y, Global.Config.InputDisplay.Anchor, input);
+					var point = GetCoordinates(g, Global.Config.InputDisplay, input);
 					Color c = Color.FromArgb(Global.Config.MovieInput);
-					g.DrawString(input, MessageFont, c, x, y);
+					g.DrawString(input, MessageFont, c, point.X, point.Y);
 				}
 
 				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
@@ -327,22 +305,21 @@ namespace BizHawk.Client.EmuHawk
 
 					//we need some kind of string for calculating position when right-anchoring, of something like that
 					var bgStr = InputStrOrAll();
-					var x = GetX(g, Global.Config.InputDisplay.X, Global.Config.InputDisplay.Anchor, bgStr);
-					var y = GetY(g, Global.Config.InputDisplay.Y, Global.Config.InputDisplay.Anchor, bgStr);
+					var point = GetCoordinates(g, Global.Config.InputDisplay, bgStr);
 
 					// now, we're going to render these repeatedly, with higher-priority things overriding
 
 					// first display previous frame's input.
 					// note: that's only available in case we're working on a movie
 					var previousStr = InputPrevious();
-					g.DrawString(previousStr, MessageFont, previousColor, x, y);
+					g.DrawString(previousStr, MessageFont, previousColor, point.X, point.Y);
 
 					// next, draw the immediate input.
 					// that is, whatever is being held down interactively right this moment even if the game is paused
 					// this includes things held down due to autohold or autofire
 					// I know, this is all really confusing
 					var immediate = InputStrImmediate();
-					g.DrawString(immediate, MessageFont, immediateColor, x, y);
+					g.DrawString(immediate, MessageFont, immediateColor, point.X, point.Y);
 
 					// next draw anything that's pressed because it's sticky.
 					// this applies to autofire and autohold both. somehow. I don't understand it.
@@ -350,46 +327,38 @@ namespace BizHawk.Client.EmuHawk
 					// in order to achieve this we want to avoid drawing anything pink that isn't actually held down right now
 					// so we make an AND adapter and combine it using immediate & sticky
 					var autoString = MakeStringFor(Global.StickyXORAdapter.Source.Xor(Global.AutofireStickyXORAdapter).And(Global.AutofireStickyXORAdapter));
-					g.DrawString(autoString, MessageFont, autoColor, x, y);
+					g.DrawString(autoString, MessageFont, autoColor, point.X, point.Y);
 
 					//recolor everything that's changed from the previous input
 					var immediateOverlay = MakeIntersectImmediatePrevious();
-					g.DrawString(immediateOverlay, MessageFont, changedColor, x, y);
+					g.DrawString(immediateOverlay, MessageFont, changedColor, point.X, point.Y);
 				}
 			}
 
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
-				float x = GetX(g, Global.Config.MultitrackRecorder.X, Global.Config.MultitrackRecorder.Anchor, Global.MovieSession.MultiTrack.Status);
-				float y = GetY(g, Global.Config.MultitrackRecorder.Y, Global.Config.MultitrackRecorder.Anchor, Global.MovieSession.MultiTrack.Status);
-
-				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, x, y);
+				var point = GetCoordinates(g, Global.Config.MultitrackRecorder, Global.MovieSession.MultiTrack.Status);
+				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
 			}
 
 			if (Global.Config.DisplayFPS && Fps != null)
 			{
-				float x = GetX(g, Global.Config.Fps.X, Global.Config.Fps.Anchor, Fps);
-				float y = GetY(g, Global.Config.Fps.Y, Global.Config.Fps.Anchor, Fps);
-
-				DrawOsdMessage(g, Fps, FixedMessagesColor, x, y);
+				var point = GetCoordinates(g, Global.Config.Fps, Fps);
+				DrawOsdMessage(g, Fps, FixedMessagesColor, point.X, point.Y);
 			}
 
 			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
 			{
 				var counter = Global.Emulator.AsInputPollable().LagCount.ToString();
-				var x = GetX(g, Global.Config.LagCounter.X, Global.Config.LagCounter.Anchor, counter);
-				var y = GetY(g, Global.Config.LagCounter.Y, Global.Config.LagCounter.Anchor, counter);
-
-				DrawOsdMessage(g, counter, FixedAlertMessageColor, x, y);
+				var point = GetCoordinates(g, Global.Config.LagCounter, counter);
+				DrawOsdMessage(g, counter, FixedAlertMessageColor, point.X, point.Y);
 			}
 
 			if (Global.Config.DisplayRerecordCount)
 			{
 				string rerecordCount = MakeRerecordCount();
-				float x = GetX(g, Global.Config.ReRecordCounter.X, Global.Config.ReRecordCounter.Anchor, rerecordCount);
-				float y = GetY(g, Global.Config.ReRecordCounter.Y, Global.Config.ReRecordCounter.Anchor, rerecordCount);
-
-				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, x, y);
+				var point = GetCoordinates(g, Global.Config.ReRecordCounter, rerecordCount);
+				DrawOsdMessage(g, rerecordCount, FixedMessagesColor, point.X, point.Y);
 			}
 
 			if (Global.ClientControls["Autohold"] || Global.ClientControls["Autofire"])
@@ -410,13 +379,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var message = sb.ToString();
-
-				g.DrawString(
-					message,
-					MessageFont,
-					Color.White,
-					GetX(g, Global.Config.Autohold.X, Global.Config.Autohold.Anchor, message),
-					GetY(g, Global.Config.Autohold.Y, Global.Config.Autohold.Anchor, message));
+				var point = GetCoordinates(g, Global.Config.Autohold, message);
+				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
 			}
 
 			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)

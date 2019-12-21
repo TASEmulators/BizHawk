@@ -27,6 +27,12 @@
 			return type == MessageOption.AnchorType.TopLeft
 				|| type == MessageOption.AnchorType.TopRight;
 		}
+
+		public static bool IsLeft(this MessageOption.AnchorType type)
+		{
+			return type == MessageOption.AnchorType.TopLeft
+				|| type == MessageOption.AnchorType.BottomLeft;
+		}
 	}
 
 	public static class DefaultMessageOptions
