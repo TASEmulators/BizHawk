@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.MovieInput = _movieInput;
 
 			_config.StackOSDMessages = StackMessagesCheckbox.Checked;
-
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 

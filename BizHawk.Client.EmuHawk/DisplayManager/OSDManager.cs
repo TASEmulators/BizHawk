@@ -24,18 +24,18 @@ namespace BizHawk.Client.EmuHawk
 		Rectangle ClipBounds { get; set; }
 	}
 
-	class UIMessage
+	public class UIMessage
 	{
-		public string Message;
-		public DateTime ExpireAt;
+		public string Message { get; set; }
+		public DateTime ExpireAt { get; set; }
 	}
 
-	class UIDisplay
+	public class UIDisplay
 	{
-		public string Message;
-		public MessagePosition Position;
-		public Color ForeColor;
-		public Color BackGround;
+		public string Message { get; set; }
+		public MessagePosition Position { get; set; }
+		public Color ForeColor { get; set; }
+		public Color BackGround { get; set; }
 	}
 
 	public class OSDManager
@@ -122,6 +122,13 @@ namespace BizHawk.Client.EmuHawk
 			_guiTextList.Clear();
 		}
 
+		private void DrawMessage(IBlitter g, UIMessage message, int yOffset)
+		{
+			var point = GetCoordinates(g, Global.Config.Messages, message.Message);
+			var y = point.Y + yOffset; // TODO: clean me up
+			g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
+		}
+
 		public void DrawMessages(IBlitter g)
 		{
 			if (!Global.Config.DisplayMessages)
@@ -130,42 +137,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-			int line = 1;
-			if (Global.Config.StackOSDMessages)
-			{
-				for (int i = _messages.Count - 1; i >= 0; i--, line++)
-				{
-					var point = GetCoordinates(g, Global.Config.Messages, _messages[i].Message);
-					var y = point.Y; // TODO: clean me up
-					if (Global.Config.Messages.Anchor.IsTop())
-					{
-						y += (line - 1) * 18;
-					}
-					else
-					{
-						y -= (line - 1) * 18;
-					}
 
-					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, point.X, y);
-				}
-			}
-			else
+			if (_messages.Any())
 			{
-				if (_messages.Any())
+				if (Global.Config.StackOSDMessages)
+				{
+					int line = 1;
+					for (int i = _messages.Count - 1; i >= 0; i--, line++)
+					{
+						int yOffset = (line - 1) * 18;
+						if (!Global.Config.Messages.Anchor.IsTop())
+						{
+							yOffset = 0 - yOffset;
+						}
+
+						DrawMessage(g, _messages[i], yOffset);
+					}
+				}
+				else
 				{
 					var message = _messages.Last();
-					var point = GetCoordinates(g, Global.Config.Messages, message.Message);
-					var y = point.Y;
-					if (Global.Config.Messages.Anchor.IsTop())
-					{
-						y += (line - 1) * 18;
-					}
-					else
-					{
-						y -= (line - 1) * 18;
-					}
-
-					g.DrawString(message.Message, MessageFont, FixedMessagesColor, point.X, y);
+					DrawMessage(g, message, 0);
 				}
 			}
 
