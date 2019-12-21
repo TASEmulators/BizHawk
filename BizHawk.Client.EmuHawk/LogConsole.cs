@@ -6,55 +6,39 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
-#pragma warning disable 162
-
-//thanks! - http://sharp-developer.net/ru/CodeBank/WinForms/GuiConsole.aspx
-
-//todo - quit using Console.WriteLine (well, we can leave it hooked up as a backstop)
-//use a different method instead, so we can collect unicode data
-//also, collect log data independently of whether the log window is open
-//we also need to dice it into lines so that we can have a backlog policy
+// thanks! - http://sharp-developer.net/ru/CodeBank/WinForms/GuiConsole.aspx
+// todo - quit using Console.WriteLine (well, we can leave it hooked up as a backstop)
+// use a different method instead, so we can collect unicode data
+// also, collect log data independently of whether the log window is open
+// we also need to dice it into lines so that we can have a backlog policy
 
 namespace BizHawk.Client.EmuHawk
 {
-	static class LogConsole
+	internal static class LogConsole
 	{
-		public static bool ConsoleVisible
-		{
-			get;
-			private set;
-		}
+		public static bool ConsoleVisible { get; private set; }
 
-		static LogWindow window;
-		static LogStream logStream;
-		static bool NeedToRelease;
+		private static LogWindow _window;
+		private static LogStream _logStream;
+		private static bool _needToRelease;
 
-		class LogStream : Stream
+		private class LogStream : Stream
 		{
-			public override bool CanRead { get { return false; } }
-			public override bool CanSeek { get { return false; } }
-			public override bool CanWrite { get { return true; } }
+			public override bool CanRead => false;
+			public override bool CanSeek => false;
+			public override bool CanWrite => true;
 
 			public override void Flush()
 			{
 				//TODO - maybe this will help with decoding
 			}
 
-			public override long Length
-			{
-				get { throw new NotImplementedException(); }
-			}
+			public override long Length => throw new NotImplementedException();
 
 			public override long Position
 			{
-				get
-				{
-					throw new NotImplementedException();
-				}
-				set
-				{
-					throw new NotImplementedException();
-				}
+				get => throw new NotImplementedException();
+				set => throw new NotImplementedException();
 			}
 
 			public override int Read(byte[] buffer, int offset, int count)
@@ -77,18 +61,16 @@ namespace BizHawk.Client.EmuHawk
 				//TODO - buffer undecoded characters (this may be important)
 				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
 				string str = Encoding.ASCII.GetString(buffer, offset, count);
-				if (Emit != null)
-					Emit(str);
+				Emit?.Invoke(str);
 			}
 
 			public Action<string> Emit;
 		}
 
-
 		static string SkipEverythingButProgramInCommandLine(string cmdLine)
 		{
-			//skip past the program name. can anyone think of a better way to do this?
-			//we could use CommandLineToArgvW (commented out below) but then we would just have to re-assemble and potentially re-quote it
+			// skip past the program name. can anyone think of a better way to do this?
+			// we could use CommandLineToArgvW (commented out below) but then we would just have to re-assemble and potentially re-quote it
 			int childCmdLine = 0;
 			int lastSlash = 0;
 			int lastGood = 0;
@@ -100,7 +82,10 @@ namespace BizHawk.Client.EmuHawk
 				if (childCmdLine == cmdLine.Length) break;
 				bool thisIsQuote = (cur == '\"');
 				if (cur == '\\' || cur == '/')
+				{
 					lastSlash = childCmdLine;
+				}
+
 				if (quote)
 				{
 					if (thisIsQuote)
@@ -121,10 +106,10 @@ namespace BizHawk.Client.EmuHawk
 			return $"{path} {remainder}";
 		}
 
-		static IntPtr oldOut, conOut;
-		static bool hasConsole;
-		static bool attachedConsole;
-		static bool shouldRedirectStdout;
+		private static IntPtr oldOut, conOut;
+		private static bool hasConsole;
+		private static bool attachedConsole;
+		private static bool shouldRedirectStdout;
 		public static void CreateConsole()
 		{
 			//(see desmume for the basis of some of this logic)
@@ -135,15 +120,15 @@ namespace BizHawk.Client.EmuHawk
 			if (oldOut == IntPtr.Zero)
 				oldOut = Win32.GetStdHandle( -11 ); //STD_OUTPUT_HANDLE
 
-			Win32.FileType fileType = Win32.GetFileType(oldOut);
+			var fileType = Win32.GetFileType(oldOut);
 
-			//stdout is already connected to something. keep using it and dont let the console interfere
+			//stdout is already connected to something. keep using it and don't let the console interfere
 			shouldRedirectStdout = (fileType == Win32.FileType.FileTypeUnknown || fileType == Win32.FileType.FileTypePipe);
 
 			//attach to an existing console
 			attachedConsole = false;
 
-			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and theres no console to attach to.
+			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and there's no console to attach to.
 			if (Environment.OSVersion.Version.Major != 5)
 			{
 				if (Win32.AttachConsole(-1))
@@ -164,10 +149,12 @@ namespace BizHawk.Client.EmuHawk
 					hasConsole = true;
 				}
 				else
+				{
 					System.Windows.Forms.MessageBox.Show($"Couldn't allocate win32 console: {Marshal.GetLastWin32Error()}");
+				}
 			}
 
-			if(hasConsole)
+			if (hasConsole)
 			{
 				IntPtr ptr = Win32.GetCommandLine();
 				string commandLine = Marshal.PtrToStringAuto(ptr);
@@ -195,10 +182,20 @@ namespace BizHawk.Client.EmuHawk
 		static void ReleaseConsole()
 		{
 			if (!hasConsole)
+			{
 				return;
+			}
 
-			if(shouldRedirectStdout) Win32.CloseHandle(conOut);
-			if(!attachedConsole) Win32.FreeConsole();
+			if (shouldRedirectStdout)
+			{
+				Win32.CloseHandle(conOut);
+			}
+
+			if (!attachedConsole)
+			{
+				Win32.FreeConsole();
+			}
+
 			Win32.SetStdHandle(-11, oldOut);
 
 			conOut = IntPtr.Zero;
@@ -209,11 +206,15 @@ namespace BizHawk.Client.EmuHawk
 		/// pops the console in front of the main window (where it should probably go after booting up the game).
 		/// maybe this should be optional, or maybe we can somehow position the console sensibly.
 		/// sometimes it annoys me, but i really need it on top while debugging or else i will be annoyed.
-		/// best of all would be to position it beneath the bizhawk main window somehow.
+		/// best of all would be to position it beneath the BizHawk main window somehow.
 		/// </summary>
 		public static void PositionConsole()
 		{
-			if (ConsoleVisible == false) return;
+			if (ConsoleVisible == false)
+			{
+				return;
+			}
+
 			if (Global.Config.WIN32_CONSOLE)
 			{
 				IntPtr x = Win32.GetConsoleWindow();
@@ -228,61 +229,58 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.WIN32_CONSOLE)
 			{
-				NeedToRelease = true;
+				_needToRelease = true;
 				CreateConsole();
-				//not sure whether we need to set a buffer size here
-				//var sout = new StreamWriter(Console.OpenStandardOutput(),Encoding.ASCII,1) { AutoFlush = true };
-				//var sout = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
-				//Console.SetOut(sout);
-				//Console.Title = "BizHawk Message Log";
-				//System.Runtime.InteropServices.SafeFi
-				//new Microsoft.Win32.SafeHandles.SafeFileHandle(
 			}
 			else
 			{
-				logStream = new LogStream();
-				Log.HACK_LOG_STREAM = logStream;
-				var sout = new StreamWriter(logStream) { AutoFlush = true };
-				new StringBuilder(); //not using this right now
-				Console.SetOut(sout);
-				window = new LogWindow();
-				window.Show();
-				logStream.Emit = (str) => { window.Append(str); };
+				_logStream = new LogStream();
+				Log.HACK_LOG_STREAM = _logStream;
+				Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
+				_window = new LogWindow();
+				_window.Show();
+				_logStream.Emit = str => { _window.Append(str); };
 			}
 		}
 
 		public static void HideConsole()
 		{
-			if (ConsoleVisible == false) return;
+			if (ConsoleVisible == false)
+			{
+				return;
+			}
+
 			Console.SetOut(TextWriter.Null);
 			ConsoleVisible = false;
-			if (NeedToRelease)
+			if (_needToRelease)
 			{
 				ReleaseConsole();
-				NeedToRelease = false;
+				_needToRelease = false;
 			}
 			else
 			{
-				logStream.Close();
-				logStream = null;
+				_logStream.Close();
+				_logStream = null;
 				Log.HACK_LOG_STREAM = null;
-				window.Close();
-				window = null;
+				_window.Close();
+				_window = null;
 			}
 		}
 
-		public static void notifyLogWindowClosing()
+		public static void NotifyLogWindowClosing()
 		{
 			Console.SetOut(TextWriter.Null);
 			ConsoleVisible = false;
-			if(logStream != null) logStream.Close();
+			_logStream?.Close();
 			Log.HACK_LOG_STREAM = null;
 		}
 
 		public static void SaveConfigSettings()
 		{
-			if (window != null && window.IsHandleCreated)
-				window.SaveConfigSettings();
+			if (_window != null && _window.IsHandleCreated)
+			{
+				_window.SaveConfigSettings();
+			}
 		}
 	}
 }
