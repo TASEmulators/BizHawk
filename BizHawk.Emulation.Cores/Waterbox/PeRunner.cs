@@ -1063,7 +1063,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_syscalls.Init();
 
 				Console.WriteLine("About to enter unmanaged code");
-				if (Win32Hacks.IsDebuggerReallyPresent() && !System.Diagnostics.Debugger.IsAttached)
+				if (!OSTailoredCode.IsUnixHost && !System.Diagnostics.Debugger.IsAttached && Win32Imports.IsDebuggerPresent())
 				{
 					// this means that GDB or another unconventional debugger is attached.
 					// if that's the case, and it's observing this core, it probably wants a break

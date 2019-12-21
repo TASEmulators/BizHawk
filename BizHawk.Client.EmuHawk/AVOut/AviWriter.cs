@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 // some helpful p/invoke from http://www.codeproject.com/KB/audio-video/Motion_Detection.aspx?msg=1142967
@@ -434,20 +435,12 @@ namespace BizHawk.Client.EmuHawk
 				return ret;
 			}
 
-			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
-
-			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern IntPtr GetProcessHeap();
-
-			[DllImport("kernel32.dll", SetLastError = false)]
-			public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, int dwBytes);
-
 			public static void DeallocateAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
 			{
-				// test: increase stability by never freeing anything, ever
-				// if (opts.lpParms != IntPtr.Zero) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpParms);
-				// if (opts.lpFormat != IntPtr.Zero) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpFormat);
+#if false // test: increase stability by never freeing anything, ever
+				if (opts.lpParms != IntPtr.Zero) Win32Imports.HeapFree(Win32Imports.GetProcessHeap(), 0, opts.lpParms);
+				if (opts.lpFormat != IntPtr.Zero) Win32Imports.HeapFree(Win32Imports.GetProcessHeap(), 0, opts.lpFormat);
+#endif
 				opts.lpParms = IntPtr.Zero;
 				opts.lpFormat = IntPtr.Zero;
 			}
@@ -457,12 +450,12 @@ namespace BizHawk.Client.EmuHawk
 				opts = comprOptions;
 				if (opts.cbParms != 0)
 				{
-					opts.lpParms = HeapAlloc(GetProcessHeap(), 0, opts.cbParms);
+					opts.lpParms = Win32Imports.HeapAlloc(Win32Imports.GetProcessHeap(), 0, opts.cbParms);
 					Marshal.Copy(Parms, 0, opts.lpParms, opts.cbParms);
 				}
 				if (opts.cbFormat != 0)
 				{
-					opts.lpFormat = HeapAlloc(GetProcessHeap(), 0, opts.cbFormat);
+					opts.lpFormat = Win32Imports.HeapAlloc(Win32Imports.GetProcessHeap(), 0, opts.cbFormat);
 					Marshal.Copy(Format, 0, opts.lpFormat, opts.cbFormat);
 				}
 			}

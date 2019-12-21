@@ -97,7 +97,11 @@
     <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Win32Hacks.cs" />
+    <Compile Include="Win32/MotWHack.cs" />
+    <Compile Include="Win32/ProcessorFeatureImports.cs" />
+    <Compile Include="Win32/ShellLinkImports.cs" />
+    <Compile Include="Win32/ThreadHacks.cs" />
+    <Compile Include="Win32/Win32Imports.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -3644,7 +3644,7 @@ namespace BizHawk.Client.EmuHawk
 			if (args == null)
 				throw new ArgumentNullException(nameof(args));
 
-			path = HawkFile.Util_ResolveLink(path);
+			path = EmuHawkUtil.ResolveShortcut(path);
 
 			// if this is the first call to LoadRom (they will come in recursively) then stash the args
 			bool firstCall = false;

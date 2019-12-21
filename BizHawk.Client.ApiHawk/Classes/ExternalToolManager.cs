@@ -85,7 +85,7 @@ namespace BizHawk.Client.ApiHawk
 
 			try
 			{
-				BizHawk.Common.Win32Hacks.RemoveMOTW(fileName);
+				BizHawk.Common.MotWHack.RemoveMOTW(fileName);
 				var externalToolFile = Assembly.LoadFrom(fileName);
 				object[] attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolAttribute), false);
 				if (attributes != null && attributes.Count() == 1)

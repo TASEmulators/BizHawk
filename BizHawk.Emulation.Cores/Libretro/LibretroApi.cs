@@ -68,10 +68,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//ALSO: this should be done by the core, I think, not the API. No smarts should be in here
 			comm->env.retro_perf_callback.get_cpu_features = IntPtr.Zero;
 			//retro_perf_callback.get_cpu_features = new LibRetro.retro_get_cpu_features_t(() => (ulong)(
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMIAvailable) ? LibRetro.RETRO_SIMD.SSE : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMI64Available) ? LibRetro.RETRO_SIMD.SSE2 : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsSSE3Available) ? LibRetro.RETRO_SIMD.SSE3 : 0) |
-			//		(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsMMXAvailable) ? LibRetro.RETRO_SIMD.MMX : 0)
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsXMMIAvailable) ? LibRetro.RETRO_SIMD.SSE : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsXMMI64Available) ? LibRetro.RETRO_SIMD.SSE2 : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsSSE3Available) ? LibRetro.RETRO_SIMD.SSE3 : 0) |
+			//		(ProcessorFeatureImports.IsProcessorFeaturePresent(ProcessorFeatureImports.ProcessorFeature.InstructionsMMXAvailable) ? LibRetro.RETRO_SIMD.MMX : 0)
 			//	));
 			//retro_perf_callback.get_perf_counter = new LibRetro.retro_perf_get_counter_t(() => System.Diagnostics.Stopwatch.GetTimestamp());
 			//retro_perf_callback.get_time_usec = new LibRetro.retro_perf_get_time_usec_t(() => DateTime.Now.Ticks / 10);

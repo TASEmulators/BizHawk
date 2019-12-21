@@ -16,9 +16,6 @@ namespace BizHawk.Client.EmuHawk
 		private static readonly List<GamePad360> _devices = new List<GamePad360>();
 		private static readonly bool _isAvailable;
 
-		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
-		static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
-
 		delegate uint XInputGetStateExProcDelegate(uint dwUserIndex, out XINPUT_STATE state);
 
 		static bool HasGetInputStateEx;
@@ -61,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (HasGetInputStateEx)
 					{
-						IntPtr proc = GetProcAddressOrdinal(LibraryHandle, new IntPtr(100));
+						var proc = BizHawk.Common.Win32Imports.GetProcAddressOrdinal(LibraryHandle, new IntPtr(100));
 						XInputGetStateExProc = (XInputGetStateExProcDelegate)Marshal.GetDelegateForFunctionPointer(proc, typeof(XInputGetStateExProcDelegate));
 					}
 

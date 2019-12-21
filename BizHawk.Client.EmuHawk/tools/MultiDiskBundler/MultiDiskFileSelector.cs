@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				var file = new FileInfo(ofd.FileName);
-				var path = BizHawk.Common.HawkFile.Util_ResolveLink(file.FullName);
+				var path = EmuHawkUtil.ResolveShortcut(file.FullName);
 
 				using (var hf = new BizHawk.Common.HawkFile(path))
 				{

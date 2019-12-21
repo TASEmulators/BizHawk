@@ -711,28 +711,81 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		public void frame_advance()
 		{
-			if (!emulator_running)
-				return;
+#if false // for alt. method #2 below
+		static bool IsNativeWaitSuccessful(uint count, uint nativeResult, out int managedResult)
+		{
+			const uint WAIT_OBJECT_0 = 0x00000000U;
+			const uint WAIT_ABANDONED_0 = 0x00000080U;
+			const uint WAIT_TIMEOUT = 0x00000102U;
+			if (/* WAIT_OBJECT_0 <= nativeResult && */ nativeResult < WAIT_OBJECT_0 + count)
+			{
+				managedResult = unchecked((int) (nativeResult - WAIT_OBJECT_0));
+				return true;
+			}
+			else if (nativeResult == WAIT_OBJECT_0 + count)
+			{
+				// a is message pending, only valid for MsgWaitForMultipleObjectsEx
+				managedResult = unchecked((int) nativeResult);
+				return false;
+			}
+			else if (WAIT_ABANDONED_0 <= nativeResult && nativeResult < WAIT_ABANDONED_0 + count)
+			{
+				managedResult = unchecked((int) (nativeResult - WAIT_ABANDONED_0));
+				throw new AbandonedMutexException();
+			}
+			else if (nativeResult == WAIT_TIMEOUT)
+			{
+				managedResult = WaitHandle.WaitTimeout;
+				return false;
+			}
+			else
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+		static void HackyComWaitOne(WaitHandle handle)
+		{
+			IntPtr[] waitHandles = { handle.SafeWaitHandle.DangerousGetHandle() };
+			const uint count = 1;
+			var QS_MASK = ThreadHacks.QS_ALLINPUT; // message queue status
+			QS_MASK = 0; //bizhawk edit?? did we need any messages here?? apparently not???
+			uint nativeResult;
+			ThreadHacks.MSG msg;
+			while (true)
+			{
+				// MsgWaitForMultipleObjectsEx with MWMO_INPUTAVAILABLE returns,
+				// even if there's a message already seen but not removed in the message queue
+				nativeResult = ThreadHacks.MsgWaitForMultipleObjectsEx(count, waitHandles, 0xFFFFFFFF, QS_MASK, ThreadHacks.MWMO_INPUTAVAILABLE);
+				if (IsNativeWaitSuccessful(count, nativeResult, out int managedResult) || WaitHandle.WaitTimeout == managedResult) break;
+				// there is a message, pump and dispatch it
+				if (ThreadHacks.PeekMessage(out msg, IntPtr.Zero, 0, 0, ThreadHacks.PM_REMOVE))
+				{
+					ThreadHacks.TranslateMessage(ref msg);
+					ThreadHacks.DispatchMessage(ref msg);
+				}
+			}
+//			handle.WaitOne();
+		}
+#endif
+
+			if (!emulator_running) return;
 
 			event_frameend = false;
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 
-			//the way we should be able to do it:
-			//m64pFrameComplete.WaitOne();
-			
-			//however. since this is probably an STAThread, this call results in message pumps running.
-			//those message pumps are only supposed to respond to critical COM stuff, but in fact they interfere with other things.
-			//so here are two workaround methods.
-
-			//method 1.
-			//BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
-
-			//method 2.
-			//BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
-
 			for(;;)
 			{
-				BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pEvent, 200);
+#if false // the way we should be able to do it
+				m64pEvent.WaitOne();
+				// however. since this is probably an STAThread, this call results in message pumps running.
+				// those message pumps are only supposed to respond to critical COM stuff, but in fact they interfere with other things.
+				// so here are two workaround methods:
+#elif true // alt. method #1 - functionally the same as WaitOne, but does not message pump
+				ThreadHacks.WaitForSingleObject(m64pEvent.SafeWaitHandle, 200);
+#else // alt. method #2 - functionally the same as WaitOne(), but pumps com messages
+				HackyComWaitOne(m64pEvent);
+#endif
 				if (event_frameend)
 					break;
 				if (event_breakpoint)
