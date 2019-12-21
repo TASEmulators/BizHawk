@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -14,41 +11,32 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlatformChooser : Form
 	{
+		private readonly Config _config;
+		private readonly List<SystemLookup.SystemInfo> _availableSystems = new SystemLookup().AllSystems.ToList();
+		
+
+		public PlatformChooser(Config config)
+		{
+			_config = config;
+			InitializeComponent();
+		}
+
 		public RomGame RomGame { get; set; }
 		public string PlatformChoice { get; set; }
 
-		private RadioButton SelectedRadio
-		{
-			get
-			{
-				return PlatformsGroupBox.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
-			}
-		}
-
-		public PlatformChooser()
-		{
-			InitializeComponent();
-			AvailableSystems = new SystemLookup().AllSystems.ToList();
-		}
-
-		private readonly List<SystemLookup.SystemInfo> AvailableSystems;
+		private RadioButton SelectedRadio => PlatformsGroupBox.Controls.OfType<RadioButton>().FirstOrDefault(x => x.Checked);
 
 		private void PlatformChooser_Load(object sender, EventArgs e)
 		{
-			if (RomGame.RomData.Length > 10 * 1024 * 1024) // If 10mb, show in megabytes
-			{
-				RomSizeLabel.Text = $"{RomGame.RomData.Length / 1024 / 1024:n0}mb";
-			}
-			else
-			{
-				RomSizeLabel.Text = $"{RomGame.RomData.Length / 1024:n0}kb";
-			}
+			RomSizeLabel.Text = RomGame.RomData.Length > 10 * 1024 * 1024
+				? $"{RomGame.RomData.Length / 1024 / 1024:n0}mb"
+				: $"{RomGame.RomData.Length / 1024:n0}kb";
 
 			ExtensionLabel.Text = RomGame.Extension.ToLower();
 			HashBox.Text = RomGame.GameInfo.Hash;
 			int count = 0;
 			int spacing = 25;
-			foreach (var platform in AvailableSystems)
+			foreach (var platform in _availableSystems)
 			{
 				var radio = new RadioButton
 				{
@@ -75,11 +63,11 @@ namespace BizHawk.Client.EmuHawk
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : "";
-			PlatformChoice = AvailableSystems.FirstOrDefault(x => x.FullName == selectedValue).SystemId;
+			PlatformChoice = _availableSystems.First(x => x.FullName == selectedValue).SystemId;
 
 			if (AlwaysCheckbox.Checked)
 			{
-				Global.Config.PreferredPlatformsForExtensions[RomGame.Extension.ToLower()] = PlatformChoice;
+				_config.PreferredPlatformsForExtensions[RomGame.Extension.ToLower()] = PlatformChoice;
 			}
 
 			Close();
