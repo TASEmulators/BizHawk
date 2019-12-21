@@ -174,10 +174,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_messages.Any())
 				{
-					int i = _messages.Count - 1;
-
-					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, _messages[i].Message);
-					float y = GetY(g, Global.Config.Messages.Y, Global.Config.Messages.Anchor, _messages[i].Message);
+					var message = _messages.Last();
+					float x = GetX(g, Global.Config.Messages.X, Global.Config.Messages.Anchor, message.Message);
+					float y = GetY(g, Global.Config.Messages.Y, Global.Config.Messages.Anchor, message.Message);
 					if (Global.Config.Messages.Anchor.IsTop())
 					{
 						y += (line - 1) * 18;
@@ -187,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 						y -= (line - 1) * 18;
 					}
 
-					g.DrawString(_messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+					g.DrawString(message.Message, MessageFont, FixedMessagesColor, x, y);
 				}
 			}
 
