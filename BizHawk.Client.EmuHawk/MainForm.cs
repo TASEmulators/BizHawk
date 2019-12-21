@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			SetImages();
 			Game = GameInfo.NullInstance;
-			if (Config.ShowLogWindow)
+			if (Config.ShowLogWindow && !OSTailoredCode.IsUnixHost)
 			{
 				LogConsole.ShowConsole();
 				DisplayLogWindowMenuItem.Checked = true;
@@ -493,7 +493,8 @@ namespace BizHawk.Client.EmuHawk
 			// start dumping, if appropriate
 			if (_argParser.cmdDumpType != null && _argParser.cmdDumpName != null)
 			{
-				RecordAv(_argParser.cmdDumpType, _argParser.cmdDumpName);
+				if (OSTailoredCode.IsUnixHost) Console.WriteLine("A/V dump requires Win32 API calls, ignored");
+				else RecordAv(_argParser.cmdDumpType, _argParser.cmdDumpName);
 			}
 
 			SetMainformMovieInfo();
@@ -511,7 +512,7 @@ namespace BizHawk.Client.EmuHawk
 		public int ProgramRunLoop()
 		{
 			CheckMessages(); // can someone leave a note about why this is needed?
-			LogConsole.PositionConsole();
+			if (!OSTailoredCode.IsUnixHost) LogConsole.PositionConsole();
 
 			// needs to be done late, after the log console snaps on top
 			// fullscreen should snap on top even harder!
@@ -3218,10 +3219,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void RecordAvBase(string videoWriterName, string filename, bool unattended)
 		{
-			if (_currAviWriter != null)
-			{
-				return;
-			}
+			if (_currAviWriter != null || OSTailoredCode.IsUnixHost) return;
 
 			// select IVideoWriter to use
 			IVideoWriter aw;

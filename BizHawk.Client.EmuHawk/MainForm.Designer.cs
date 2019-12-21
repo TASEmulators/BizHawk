@@ -2865,6 +2865,7 @@
 			this.GBASubMenu.Name = "GBASubMenu";
 			this.GBASubMenu.Size = new System.Drawing.Size(39, 17);
 			this.GBASubMenu.Text = "GBA";
+			this.GBASubMenu.DropDownOpened += new System.EventHandler(this.GBASubMenu_DropDownOpened);
 			// 
 			// GBACoreSelectionSubMenu
 			// 

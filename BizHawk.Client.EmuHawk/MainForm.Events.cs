@@ -284,11 +284,12 @@ namespace BizHawk.Client.EmuHawk
 			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Config.AVI_CaptureOSD;
 
-			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Config.VideoWriter) && _currAviWriter == null;
+			RecordAVMenuItem.Enabled = OSTailoredCode.IsUnixHost || !string.IsNullOrEmpty(Global.Config.VideoWriter) && _currAviWriter == null;
+			SynclessRecordingMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 
 			if (_currAviWriter == null)
 			{
-				ConfigAndRecordAVMenuItem.Enabled = true;
+				ConfigAndRecordAVMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 				StopAVIMenuItem.Enabled = false;
 			}
 			else
@@ -751,6 +752,8 @@ namespace BizHawk.Client.EmuHawk
 			DisplayLagCounterMenuItem.Enabled = Emulator.CanPollInput();
 
 			DisplayMessagesMenuItem.Checked = Config.DisplayMessages;
+
+			DisplayLogWindowMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2108,6 +2111,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			LoadGBInSGBMenuItem.Checked = Config.GB_AsSGB;
+			GBGPUViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2166,6 +2170,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Config.GBA_UsemGBA = false;
 			FlagNeedsReboot();
+		}
+
+		private void GBASubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GbaGpuViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
 		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -2231,6 +2240,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SNESControllerConfigurationMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			SnesGfxDebuggerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)

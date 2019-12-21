@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Component wrapping access to the Browse For Folder common dialog box.
 	/// Call the ShowDialog() method to bring the dialog box up.
 	/// </summary>
-	public sealed class FolderBrowserEx : Component
+	public sealed class FolderBrowserEx : Component //TODO inherit CommonDialog
 	{
 		private const int MAX_PATH = 260;
 

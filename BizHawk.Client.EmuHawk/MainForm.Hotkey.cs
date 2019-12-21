@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
@@ -102,7 +104,8 @@ namespace BizHawk.Client.EmuHawk
 					_exitRequestPending = true;
 					break;
 				case "Record A/V":
-					RecordAv();
+					if (OSTailoredCode.IsUnixHost) GlobalWin.OSD.AddMessage("(A/V only available on Windows for now)");
+					else RecordAv();
 					break;
 				case "Stop A/V":
 					StopAv();
