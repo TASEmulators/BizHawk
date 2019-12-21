@@ -146,13 +146,15 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2, 0, false);
 
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			GLManager.CreateInstance(GlobalWin.IGL_GL);
+			GLManager.CreateInstance();
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+			{
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			}
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
 			{
 				try
@@ -172,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.GL = GlobalWin.IGL_GL;
 
-				// check the opengl version and dont even try to boot this crap up if its too old
+				// check the opengl version and don't even try to boot this crap up if its too old
 				if (GlobalWin.IGL_GL.Version < 200)
 				{
 					// fallback
