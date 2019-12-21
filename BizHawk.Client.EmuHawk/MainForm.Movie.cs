@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// SuuperW: Check changes. adelikat: this could break bk2 movies
 			// TODO: Clean up the saving process
-			if (movie.IsActive && (movie.Changes || !(movie is TasMovie)))
+			if (movie.IsActive() && (movie.Changes || !(movie is TasMovie)))
 			{
 				movie.Save();
 			}
@@ -98,19 +98,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetMainformMovieInfo()
 		{
-			if (MovieSession.Movie.IsPlaying)
+			if (MovieSession.Movie.IsPlaying())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Play;
 				PlayRecordStatusButton.ToolTipText = "Movie is in playback mode";
 				PlayRecordStatusButton.Visible = true;
 			}
-			else if (MovieSession.Movie.IsRecording)
+			else if (MovieSession.Movie.IsRecording())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.RecordHS;
 				PlayRecordStatusButton.ToolTipText = "Movie is in record mode";
 				PlayRecordStatusButton.Visible = true;
 			}
-			else if (!MovieSession.Movie.IsActive)
+			else if (!MovieSession.Movie.IsActive())
 			{
 				PlayRecordStatusButton.Image = Properties.Resources.Blank;
 				PlayRecordStatusButton.ToolTipText = "No movie is active";
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (MovieSession.Movie.IsActive)
+				if (MovieSession.Movie.IsActive())
 				{
 					StartNewMovie(MovieSession.Movie, false);
 					AddOnScreenMessage("Replaying movie file in read-only mode");

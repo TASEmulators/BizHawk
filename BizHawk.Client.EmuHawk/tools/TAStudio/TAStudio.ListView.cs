@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			Mainform.UnpauseEmulator();
 
@@ -541,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int frame = TasView.CurrentCell.RowIndex.Value;
 			string buttonName = TasView.CurrentCell.Column.Name;
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -953,7 +953,7 @@ namespace BizHawk.Client.EmuHawk
 			// skip rerecord counting on drawing entirely, mouse down is enough
 			// avoid introducing another global
 			bool wasCountingRerecords = CurrentTasMovie.IsCountingRerecords;
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;

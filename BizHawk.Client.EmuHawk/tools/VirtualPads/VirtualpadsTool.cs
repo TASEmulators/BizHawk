@@ -29,11 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Readonly
 		{
-			get
-			{
-				return _readOnly;
-			}
-
+			get => _readOnly;
 			set
 			{
 				_readOnly = value;
@@ -149,8 +145,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IToolForm Implementation
 
-		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => false;
 
 		public void Restart()
 		{
@@ -173,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Pads.ForEach(p => p.SetPrevious(null)); // Not the cleanest way to clear this every frame
 
-			if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.Mode == MovieMode.Play)
 			{
 				Readonly = true;
 				if (Global.MovieSession.CurrentInput != null)
@@ -183,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (Global.MovieSession.Movie.IsRecording)
+				if (Global.MovieSession.Movie.IsRecording())
 				{
 					Pads.ForEach(p => p.SetPrevious(Global.MovieSession.PreviousFrame));
 				}

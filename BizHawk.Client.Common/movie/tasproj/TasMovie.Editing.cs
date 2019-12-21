@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			TasLagLog.RemoveFrom(frame);
 			TasLagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			if (IsRecording)
+			if (this.IsRecording())
 			{
 				TasStateManager.Invalidate(frame + 1);
 			}

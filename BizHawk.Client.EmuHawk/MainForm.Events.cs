@@ -237,12 +237,12 @@ namespace BizHawk.Client.EmuHawk
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FullMovieLoadstatesMenuItem.Enabled = !MovieSession.MultiTrack.IsActive;
-			StopMovieWithoutSavingMenuItem.Enabled = MovieSession.Movie.IsActive && MovieSession.Movie.Changes;
+			StopMovieWithoutSavingMenuItem.Enabled = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
 				= SaveMovieAsMenuItem.Enabled
-				= MovieSession.Movie.IsActive;
+				= MovieSession.Movie.IsActive();
 
 			ReadonlyMenuItem.Checked = MovieSession.ReadOnly;
 			AutomaticallyBackupMoviesMenuItem.Checked = Config.EnableBackupMovies;
@@ -683,11 +683,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			PauseMenuItem.Checked = _didMenuPause ? _wasPaused : EmulatorPaused;
 
-			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset") &&
-					(!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished);
+			SoftResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Reset")
+				&& MovieSession.Movie.Mode != MovieMode.Play;
 
-			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power") &&
-				(!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished);
+			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power")
+				&& MovieSession.Movie.Mode != MovieMode.Play;;
 
 			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"].Bindings;
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"].Bindings;
@@ -1543,10 +1543,10 @@ namespace BizHawk.Client.EmuHawk
 
 			NESSoundChannelsMenuItem.Enabled = Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = (Emulator is NES || Emulator is SubNESHawk)
-				&& !MovieSession.Movie.IsActive;
+				&& !MovieSession.Movie.IsActive();
 
 			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>()
-				&& !MovieSession.Movie.IsActive;
+				&& !MovieSession.Movie.IsActive();
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
 
@@ -1633,7 +1633,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+			if (MovieSession.Movie.Mode != MovieMode.Play)
 			{
 				ClickyVirtualPadController.Click("FDS Eject");
 				AddOnScreenMessage("FDS disk ejected.");
@@ -1645,7 +1645,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 			|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
 					ClickyVirtualPadController.Click("Insert Coin P1");
 					AddOnScreenMessage("P1 Coin Inserted");
@@ -1658,7 +1658,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
 					ClickyVirtualPadController.Click("Insert Coin P2");
 					AddOnScreenMessage("P2 Coin Inserted");
@@ -1671,7 +1671,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is NES nes && nes.IsVS
 				|| Emulator is SubNESHawk sub && sub.IsVs)
 			{
-				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
 					ClickyVirtualPadController.Click("Service Switch");
 					AddOnScreenMessage("Service Switch Pressed");
@@ -1725,8 +1725,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((PCEngine)Emulator).GetSettings();
 
-			PceControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
-
+			PceControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 			PCEAlwaysPerformSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			PCEAlwaysEqualizeVolumesMenuItem.Checked = s.EqualizeVolume;
 			PCEArcadeCardRewindEnableMenuItem.Checked = s.ArcadeCardRewindHack;
@@ -2079,8 +2078,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			A7800ControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
-			A7800FilterSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			A7800ControllerSettingsMenuItem.Enabled
+				= A7800FilterSettingsMenuItem.Enabled
+				= MovieSession.Movie.NotActive();
 		}
 
 		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2180,7 +2180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			PSXControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2230,7 +2230,7 @@ namespace BizHawk.Client.EmuHawk
 				SnesGBInSGBMenuItem.Visible = false;
 			}
 
-			SNESControllerConfigurationMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			SNESControllerConfigurationMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
@@ -2280,7 +2280,7 @@ namespace BizHawk.Client.EmuHawk
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
 			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
-			ColecoControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
@@ -2314,8 +2314,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			N64PluginSettingsMenuItem.Enabled =
 				N64ControllerSettingsMenuItem.Enabled =
-				N64ExpansionSlotMenuItem.Enabled =
-				!MovieSession.Movie.IsActive;
+				N64ExpansionSlotMenuItem.Enabled = 
+				MovieSession.Movie.NotActive();
 
 			N64CircularAnalogRangeMenuItem.Checked = Config.N64UseCircularAnalogConstraint;
 
@@ -2568,7 +2568,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			IntVControllerSettingsMenuItem.Enabled = !MovieSession.Movie.IsActive;
+			IntVControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2959,7 +2959,7 @@ namespace BizHawk.Client.EmuHawk
 			RecordMovieContextMenuItem.Visible =
 				PlayMovieContextMenuItem.Visible =
 				LoadLastMovieContextMenuItem.Visible =
-				!Emulator.IsNull() && !MovieSession.Movie.IsActive;
+				!Emulator.IsNull() && MovieSession.Movie.NotActive();
 
 			RestartMovieContextMenuItem.Visible =
 				StopMovieContextMenuItem.Visible =
@@ -2967,13 +2967,13 @@ namespace BizHawk.Client.EmuHawk
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
 				SaveMovieAsContextMenuItem.Visible =
-				MovieSession.Movie.IsActive;
+				MovieSession.Movie.IsActive();
 
-			BackupMovieContextMenuItem.Visible = MovieSession.Movie.IsActive;
+			BackupMovieContextMenuItem.Visible = MovieSession.Movie.IsActive();
 
-			StopNoSaveContextMenuItem.Visible = MovieSession.Movie.IsActive && MovieSession.Movie.Changes;
+			StopNoSaveContextMenuItem.Visible = MovieSession.Movie.IsActive() && MovieSession.Movie.Changes;
 
-			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && MovieSession.Movie.IsActive && !MovieSession.ReadOnly;
+			AddSubtitleContextMenuItem.Visible = !Emulator.IsNull() && MovieSession.Movie.IsActive() && !MovieSession.ReadOnly;
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
@@ -2984,7 +2984,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadLastRomContextMenuItem.Enabled = !Config.RecentRoms.Empty;
 			LoadLastMovieContextMenuItem.Enabled = !Config.RecentMovies.Empty;
 
-			if (MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive())
 			{
 				if (MovieSession.ReadOnly)
 				{
@@ -3084,7 +3084,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewSubtitlesContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive())
 			{
 				using var form = new EditSubtitlesForm { ReadOnly = MovieSession.ReadOnly };
 				form.GetMovie(MovieSession.Movie);
@@ -3130,7 +3130,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewCommentsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive())
 			{
 				using var form = new EditCommentsForm();
 				form.GetMovie(MovieSession.Movie);
@@ -3237,7 +3237,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
 		{
 			// toggle Link status (only outside of a movie session)
-			if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+			if (MovieSession.Movie.Mode != MovieMode.Play)
 			{
 				Emulator.AsLinkable().LinkConnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", Emulator.AsLinkable().LinkConnected);

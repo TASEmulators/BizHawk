@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 0)
+				if (Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 0)
 				{
 					return Movie.GetInputState(Global.Emulator.Frame - 1);
 				}
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Movie.IsActive && !Movie.IsFinished && Global.Emulator.Frame > 1)
+				if (Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 1)
 				{
 					return Movie.GetInputState(Global.Emulator.Frame - 2);
 				}
@@ -170,18 +170,18 @@ namespace BizHawk.Client.Common
 		public void StopMovie(bool saveChanges = true)
 		{
 			var message = "Movie ";
-			if (Movie.IsRecording)
+			if (Movie.IsRecording())
 			{
 				message += "recording ";
 			}
-			else if (Movie.IsPlaying)
+			else if (Movie.IsPlaying())
 			{
 				message += "playback ";
 			}
 
 			message += "stopped.";
 
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				var result = Movie.Stop(saveChanges);
 				if (result)
@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieSaveState(TextWriter writer)
 		{
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				Movie.WriteInputLog(writer);
 			}
@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 
 		public void ClearFrame()
 		{
-			if (Movie.IsPlaying)
+			if (Movie.IsPlaying())
 			{
 				Movie.ClearFrame(Global.Emulator.Frame);
 				Output($"Scrubbed input at frame {Global.Emulator.Frame}");
@@ -216,11 +216,11 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
-			if (!Movie.IsActive)
+			if (!Movie.IsActive())
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 			}
-			else if (Movie.IsFinished)
+			else if (Movie.IsFinished())
 			{
 				if (Global.Emulator.Frame < Movie.FrameCount) // This scenario can happen from rewinding (suddenly we are back in the movie, so hook back up to the movie
 				{
@@ -232,18 +232,18 @@ namespace BizHawk.Client.Common
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
-			else if (Movie.IsPlaying)
+			else if (Movie.IsPlaying())
 			{
 				LatchInputFromLog();
 
-				if (Movie.IsRecording) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
+				if (Movie.IsRecording()) // The movie end situation can cause the switch to record mode, in that case we need to capture some input for this frame
 				{
 					HandleFrameLoopForRecordMode();
 				}
 				else
 				{
 					// Movie may go into finished mode as a result from latching
-					if (!Movie.IsFinished)
+					if (!Movie.IsFinished())
 					{
 						if (Global.ClientControls.IsPressed("Scrub Input"))
 						{
@@ -269,7 +269,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			else if (Movie.IsRecording)
+			else if (Movie.IsRecording())
 			{
 				HandleFrameLoopForRecordMode();
 			}
@@ -278,7 +278,7 @@ namespace BizHawk.Client.Common
 		private void HandleFrameLoopForRecordMode()
 		{
 			// we don't want TasMovie to latch user input outside its internal recording mode, so limit it to autohold
-			if (Movie is TasMovie && Movie.IsPlaying)
+			if (Movie is TasMovie && Movie.IsPlaying())
 			{
 				MovieControllerAdapter.LatchSticky();
 			}
@@ -304,12 +304,12 @@ namespace BizHawk.Client.Common
 			if (Movie is TasMovie tasMovie)
 			{
 				tasMovie.GreenzoneCurrentFrame();
-				if (tasMovie.IsPlaying && Global.Emulator.Frame >= tasMovie.InputLogLength)
+				if (tasMovie.IsPlaying() && Global.Emulator.Frame >= tasMovie.InputLogLength)
 				{
 					HandleFrameLoopForRecordMode();
 				}
 			}
-			else if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
+			else if (Movie.Mode == MovieMode.Play && Global.Emulator.Frame >= Movie.InputLogLength)
 			{
 				HandlePlaybackEnd();
 			}
@@ -324,7 +324,7 @@ namespace BizHawk.Client.Common
 		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
 		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
 		{
-			if (!Movie.IsActive)
+			if (Movie.NotActive())
 			{
 				return true;
 			}
@@ -361,7 +361,7 @@ namespace BizHawk.Client.Common
 
 		public bool HandleMovieLoadState_HackyStep1(TextReader reader)
 		{
-			if (!Movie.IsActive)
+			if (!Movie.IsActive())
 			{
 				return true;
 			}
@@ -375,22 +375,22 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				if (Movie.IsRecording)
+				if (Movie.IsRecording())
 				{
 					Movie.SwitchToPlay();
 				}
-				else if (Movie.IsFinished)
+				else if (Movie.IsFinished())
 				{
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 			}
 			else
 			{
-				if (Movie.IsFinished)
+				if (Movie.IsFinished())
 				{
 					Movie.StartNewRecording(); 
 				}
-				else if (Movie.IsPlaying)
+				else if (Movie.IsPlaying())
 				{
 					Movie.SwitchToRecord();
 				}
@@ -401,7 +401,7 @@ namespace BizHawk.Client.Common
 
 		public void ToggleMultitrack()
 		{
-			if (Movie.IsActive)
+			if (Movie.IsActive())
 			{
 				if (Global.Config.VBAStyleMovieLoadState)
 				{

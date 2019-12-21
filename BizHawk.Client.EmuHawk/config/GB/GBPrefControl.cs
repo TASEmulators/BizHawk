@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 			_s = s ?? new Gameboy.GambatteSettings();
 			_ss = ss ?? new Gameboy.GambatteSyncSettings();
 			propertyGrid1.SelectedObject = _ss;
-			propertyGrid1.Enabled = !Global.MovieSession.Movie.IsActive;
+			propertyGrid1.Enabled = Global.MovieSession.Movie.NotActive();
 			checkBoxMuted.Checked = _s.Muted;
 			cbDisplayBG.Checked = _s.DisplayBG;
 			cbDisplayOBJ.Checked = _s.DisplayOBJ;
@@ -43,8 +43,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonDefaults_Click(object sender, EventArgs e)
 		{
-			PutSettings(null, Global.MovieSession.Movie.IsActive ? _ss : null);
-			if (!Global.MovieSession.Movie.IsActive)
+			PutSettings(null, Global.MovieSession.Movie.IsActive() ? _ss : null);
+			if (Global.MovieSession.Movie.NotActive())
 			{
 				SyncSettingsChanged = true;
 			}

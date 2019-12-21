@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 
 			if (Log.Count < stateFrame)
 			{
-				if (IsFinished)
+				if (this.IsFinished())
 				{
 					return true;
 				}

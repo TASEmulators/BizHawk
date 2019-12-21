@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 		public static string SaveRamPath(GameInfo game)
 		{
 			var name = FilesystemSafeName(game);
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive())
 			{
 				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}
@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 				name = FilesystemSafeName(game);
 			}
 
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive())
 			{
 				name = Path.Combine(name, $"movie-{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}");
 			}
@@ -363,7 +363,7 @@ namespace BizHawk.Client.Common
 				name += $".{Global.Emulator.Attributes().CoreName}";
 			}
 
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive())
 			{
 				name += $".{Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename)}";
 			}

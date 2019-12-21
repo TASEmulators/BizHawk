@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.Client.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IControlMainform
 	{
@@ -60,11 +62,11 @@
 
 		public void ToggleReadOnly()
 		{
-			if (CurrentTasMovie.IsPlaying)
+			if (CurrentTasMovie.IsPlaying())
 			{
 				TastudioRecordMode();
 			}
-			else if (CurrentTasMovie.IsRecording)
+			else if (CurrentTasMovie.IsRecording())
 			{
 				TastudioPlayMode();
 			}

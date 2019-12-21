@@ -4,20 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected enum MovieMode
-		{
-			Inactive, Play, Record, Finished
-		}
-
-		protected MovieMode Mode { get; set; } = MovieMode.Inactive;
-
-		public bool IsActive => Mode != MovieMode.Inactive;
-
-		public bool IsPlaying => Mode == MovieMode.Play || Mode == MovieMode.Finished;
-
-		public bool IsRecording => Mode == MovieMode.Record;
-
-		public bool IsFinished => Mode == MovieMode.Finished;
+		public MovieMode Mode { get; protected set; } = MovieMode.Inactive;
 
 		public virtual void StartNewRecording()
 		{
@@ -51,7 +38,7 @@ namespace BizHawk.Client.Common
 			bool saved = false;
 			if (saveChanges)
 			{
-				if (Mode == MovieMode.Record || (IsActive && Changes))
+				if (Mode == MovieMode.Record || (this.IsActive() && Changes))
 				{
 					Save();
 					saved = true;

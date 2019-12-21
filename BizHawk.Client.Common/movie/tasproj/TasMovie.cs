@@ -115,12 +115,12 @@ namespace BizHawk.Client.Common
 
 		public override void SwitchToPlay()
 		{
-			Mode = Moviemode.Play;
+			Mode = MovieMode.Play;
 		}
 
 		public override void SwitchToRecord()
 		{
-			Mode = Moviemode.Record;
+			Mode = MovieMode.Record;
 		}
 
 		/// <summary>
@@ -379,7 +379,7 @@ namespace BizHawk.Client.Common
 					Truncate(Log.Count);
 				}
 
-				Mode = Moviemode.Finished;
+				Mode = MovieMode.Finished;
 			}
 
 			if (IsCountingRerecords)

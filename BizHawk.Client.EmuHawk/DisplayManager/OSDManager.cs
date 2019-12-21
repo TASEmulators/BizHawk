@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsFinished())
 			{
 				var sb = new StringBuilder();
 				sb
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 				return sb.ToString();
 			}
 
-			if (Global.MovieSession.Movie.IsPlaying)
+			if (Global.MovieSession.Movie.IsPlaying())
 			{
 				var sb = new StringBuilder();
 				sb
@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputPrevious()
 		{
-			if (Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished)
+			if (Global.MovieSession.Movie.IsPlayingOrRecording())
 			{
 				var lg = Global.MovieSession.LogGeneratorInstance();
 				var state = Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1);
@@ -204,11 +204,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public string InputStrOrAll()
 		{
-			var m = (Global.MovieSession.Movie.IsActive && 
-				!Global.MovieSession.Movie.IsFinished &&
-				Global.Emulator.Frame > 0) ?
-				Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
-				Global.MovieSession.MovieControllerInstance();
+			var m = Global.MovieSession.Movie.IsPlayingOrRecording() && Global.Emulator.Frame > 0
+				? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
+				: Global.MovieSession.MovieControllerInstance();
 
 			var lg = Global.MovieSession.LogGeneratorInstance();
 
@@ -225,11 +223,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeIntersectImmediatePrevious()
 		{
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive())
 			{
-				var m = Global.MovieSession.Movie.IsActive && !Global.MovieSession.Movie.IsFinished ?
-					Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1) :
-					Global.MovieSession.MovieControllerInstance();
+				var m = Global.MovieSession.Movie.IsPlayingOrRecording()
+					? Global.MovieSession.Movie.GetInputState(Global.Emulator.Frame - 1)
+					: Global.MovieSession.MovieControllerInstance();
 
 				var lg = Global.MovieSession.LogGeneratorInstance();
 				lg.SetSource(Global.AutofireStickyXORAdapter.And(m));
@@ -241,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string MakeRerecordCount()
 		{
-			return Global.MovieSession.Movie.IsActive
+			return Global.MovieSession.Movie.IsActive()
 				? Global.MovieSession.Movie.Rerecords.ToString()
 				: "";
 		}
@@ -270,8 +268,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance())
 			{
-				if ((Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
-					|| (Global.MovieSession.Movie.IsFinished && Global.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
+				if (Global.MovieSession.Movie.Mode == MovieMode.Play
+					|| (Global.MovieSession.Movie.IsFinished() && Global.Emulator.Frame == Global.MovieSession.Movie.InputLogLength)) // Account for the last frame of the movie, the movie state is immediately "Finished" here but we still want to show the input
 				{
 					var input = InputStrMovie();
 					var point = GetCoordinates(g, Global.Config.InputDisplay, input);
@@ -366,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 				g.DrawString(message, MessageFont, Color.White, point.X, point.Y);
 			}
 
-			if (Global.MovieSession.Movie.IsActive && Global.Config.DisplaySubtitles)
+			if (Global.MovieSession.Movie.IsActive() && Global.Config.DisplaySubtitles)
 			{
 				var subList = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
 
