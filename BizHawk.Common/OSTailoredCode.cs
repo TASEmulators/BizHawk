@@ -56,7 +56,7 @@ namespace BizHawk.Common
 			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
 			{
 				var p = dlsym(hModule, procName);
-				return p == IntPtr.Zero ? default : p;
+				return p == IntPtr.Zero ? (IntPtr?) null : p;
 			}
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
@@ -72,7 +72,7 @@ namespace BizHawk.Common
 			{
 				const int RTLD_NOW = 2;
 				var p = dlopen(dllToLoad, RTLD_NOW);
-				return p == IntPtr.Zero ? default : p;
+				return p == IntPtr.Zero ? (IntPtr?) null : p;
 			}
 
 			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
@@ -99,7 +99,7 @@ namespace BizHawk.Common
 			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
 			{
 				var p = GetProcAddress(hModule, procName);
-				return p == IntPtr.Zero ? default : p;
+				return p == IntPtr.Zero ? (IntPtr?) null : p;
 			}
 
 			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName) => GetProcAddrOrNull(hModule, procName) ?? throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
@@ -107,7 +107,7 @@ namespace BizHawk.Common
 			public IntPtr? LoadOrNull(string dllToLoad)
 			{
 				var p = LoadLibrary(dllToLoad);
-				return p == IntPtr.Zero ? default : p;
+				return p == IntPtr.Zero ? (IntPtr?) null : p;
 			}
 
 			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");

@@ -68,7 +68,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Global.ActiveController.Definition.BoolButtons)
 			{
-				Set(button, buttons.TryGetValue(button, out var state) ? state : default, controller);
+				Set(button, buttons.TryGetValue(button, out var state) ? state : (bool?) null, controller);
 			}
 		}
 

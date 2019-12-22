@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		#endregion
 
-		public IntPtr? GetProcAddrOrNull(string entryPoint) => _symdict.TryGetValue(entryPoint, out var sym) ? Z.SS(sym.Value + _loadoffset) : default;
+		public IntPtr? GetProcAddrOrNull(string entryPoint) => _symdict.TryGetValue(entryPoint, out var sym) ? Z.SS(sym.Value + _loadoffset) : (IntPtr?) null;
 
 		public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"could not find {entryPoint} in exports");
 

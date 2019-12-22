@@ -95,7 +95,7 @@ namespace BizHawk.Common.BizInvoke
 				}
 			}
 
-			public IntPtr? GetProcAddrOrNull(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : default;
+			public IntPtr? GetProcAddrOrNull(string entryPoint) => EntryPoints.TryGetValue(entryPoint, out var ret) ? ret : (IntPtr?) null;
 
 			public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"could not find {entryPoint} in exports");
 		}
