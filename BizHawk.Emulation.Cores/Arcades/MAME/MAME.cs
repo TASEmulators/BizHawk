@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		name: "MAME",
 		author: "MAMEDev",
 		isPorted: true,
-		portedVersion: "0.214",
+		portedVersion: "0.216",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>
@@ -67,8 +67,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private Thread MAMEThread;
 		private ManualResetEvent MAMEStartupComplete = new ManualResetEvent(false);
 		private ManualResetEvent MAMEFrameComplete = new ManualResetEvent(false);
+		private AutoResetEvent MAMEPeriodicComplete = new AutoResetEvent(false);
+		private AutoResetEvent MemoryAccessComplete = new AutoResetEvent(false);
 		private SortedDictionary<string, string> fieldsPorts = new SortedDictionary<string, string>();
 		private IController Controller = NullController.Instance;
+		private IMemoryDomains _memoryDomains;
+		private int systemBusAddressShift = 0;
 		private int[] frameBuffer = new int[0];
 		private Queue<short> audioSamples = new Queue<short>();
 		private decimal dAudioSamples = 0;
@@ -76,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private bool paused = true;
 		private bool exiting = false;
 		private bool frameDone = true;
+		private bool memAccess = false;
 		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
@@ -226,6 +231,69 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public void DiscardSamples()
 		{
 			audioSamples.Clear();
+		}
+
+		#endregion
+
+		#region IMemoryDomains
+
+		private void InitMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>();
+
+			systemBusAddressShift = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceAddressShift);
+			var size = (long)LibMAME.mame_lua_get_double(MAMELuaCommand.GetSpaceAddressMask) + 1;
+			var dataWidth = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceDataWidth) >> 3;
+			IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSpaceEndianness, out var lengthInBytes);
+			string endianString = Marshal.PtrToStringAnsi(ptr, lengthInBytes);
+
+			if (!LibMAME.mame_lua_free_string(ptr))
+			{
+				Console.WriteLine("LibMAME ERROR: string buffer wasn't freed");
+			}
+
+			MemoryDomain.Endian endian = MemoryDomain.Endian.Unknown;
+
+			if (endianString == "little")
+			{
+				endian = MemoryDomain.Endian.Little;
+			}
+			else if (endianString == "big")
+			{
+				endian = MemoryDomain.Endian.Big;
+			}
+
+			domains.Add(new MemoryDomainDelegate("System Bus", size, endian,
+				delegate (long addr)
+				{
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					memAccess = true;
+					MAMEPeriodicComplete.WaitOne();
+					var val = (byte)LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpace + $":read_u8({ addr << systemBusAddressShift })");
+					MemoryAccessComplete.Set();
+					memAccess = false;
+					return val;
+				},
+				delegate (long addr, byte val)
+				{
+					if (addr < 0 || addr >= size)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					memAccess = true;
+					MAMEPeriodicComplete.WaitOne();
+					LibMAME.mame_lua_execute(MAMELuaCommand.GetSpace + $":write_u8({ addr << systemBusAddressShift }, { val })");
+					MemoryAccessComplete.Set();
+					memAccess = false;
+				}, dataWidth));
+
+			_memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 		}
 
 		#endregion
@@ -419,8 +487,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				LibMAME.mame_lua_execute(MAMELuaCommand.Exit);
 				exiting = false;
 			}
+			
+			if (memAccess)
+			{
+				MAMEPeriodicComplete.Set();
+				MemoryAccessComplete.WaitOne();
+				return;
+			}
 
-			int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
+			//int MAMEFrame = LibMAME.mame_lua_get_int(MAMELuaCommand.GetFrameNumber);
 
 			if (!paused)
 			{
@@ -473,13 +548,20 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			GetInputFields();
 			Update();
 			UpdateGameName();
+			InitMemoryDomains();
 
 			MAMEStartupComplete.Set();
 		}
 		
 		private void MAMELogCallback(LibMAME.OutputChannel channel, int size, string data)
 		{
-			// mame sends osd_output_channel casted to int, we implicitly cast is back
+			if (data.Contains("NOT FOUND"))
+			{
+				MAMEStartupComplete.Set();
+				throw new Exception(data);
+			}
+
+			// mame sends osd_output_channel casted to int, we implicitly cast it back
 			if (!data.Contains("pause = "))
 			{
 				Console.WriteLine(
@@ -549,6 +631,11 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetRefresh = "return select(2, next(manager:machine().screens)):refresh_attoseconds()";
 			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
 			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
+			public const string GetSpace = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"]";
+			public const string GetSpaceAddressMask = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].address_mask";
+			public const string GetSpaceAddressShift = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].shift";
+			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
+			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
 			public const string GetBoundX =
 				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
 				"return x1-x0";
