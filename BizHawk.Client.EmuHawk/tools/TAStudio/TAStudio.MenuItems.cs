@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.FirstSelectedIndex ?? 0,
 				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
 
-			MacroInputTool.SaveMacroAs(macro);
+			new MacroInputTool().SaveMacroAs(macro);
 		}
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var macro = MacroInputTool.LoadMacro();
+			var macro = new MacroInputTool().LoadMacro();
 			if (macro != null)
 			{
 				macro.Start = TasView.FirstSelectedIndex ?? 0;
