@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -19,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		public byte[] Grid_V = new byte[10];
 
 		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_col_ret, VDC_color;
-		public byte Frame_Col, Pixel_Stat;
+		public byte Pixel_Stat;
 
 		public int grid_fill;
 		public byte grid_fill_col;
@@ -129,6 +130,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA3)
 			{
 				VDC_color = value;
+				//Console.WriteLine("VDC_color: " + value + " " + Core.cpu.TotalExecutedCycles);
+				//VDC_color &= 0xF8;
+				//VDC_color |= 3;
 			}
 			else if (addr == 0xA4)
 			{
@@ -178,6 +182,9 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				if (LY < 240)
 				{
 					// background
+					Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_BG[(VDC_color >> 3) & 0x7];
+
+					// grid
 					if (grid_fill > 0)
 					{
 						Core._vidbuffer[LY * 186 + (cycle - 43)] = (int)Color_Palette_BG[VDC_color & 0x7];
@@ -389,12 +396,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				cycle = 0;
 				HBL = true;
-				
-
-				// send T1 pulses
-				Core.cpu.T1 = true;
 
 				LY++;
+
+
 				if (LY == 240)
 				{
 					VBL = true;
@@ -412,8 +417,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					VBL = false;
 					VDC_col_ret = 0;
 					Core.in_vblank = false;
-					if (!VDC_ctrl.Bit(0)) { Core.cpu.IRQPending = false; }
-					Frame_Col = 0;
+				}
+				if (LY < 240)
+				{
+					// send T1 pulses
+					Core.cpu.T1 = true;
 				}
 			}
 		}
@@ -424,24 +432,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		}
 
-		public void render(int render_cycle)
-		{
-
-		}
-
 		public void process_sprite()
-		{
-
-		}
-
-		// normal DMA moves twice as fast in double speed mode on GBC
-		// So give it it's own function so we can seperate it from PPU tick
-		public void DMA_tick()
-		{
-
-		}
-
-		public void OAM_scan(int OAM_cycle)
 		{
 
 		}
@@ -564,7 +555,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(VDC_collision), ref VDC_collision);
 			ser.Sync(nameof(VDC_col_ret), ref VDC_col_ret);
 			ser.Sync(nameof(VDC_color), ref VDC_color);
-			ser.Sync(nameof(Frame_Col), ref Frame_Col);
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 
 			ser.Sync(nameof(grid_fill), ref grid_fill);

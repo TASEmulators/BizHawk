@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			// Console.WriteLine("-----------------------FRAME-----------------------");
+			//Console.WriteLine("-----------------------FRAME-----------------------");
 
 			if (_tracer.Enabled)
 			{
@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				ppu.tick();
 				ppu.tick();
-				ppu.DMA_tick();
 				serialport.serial_transfer_tick();
 				ppu.Audio_tick();
 				cpu.ExecuteOne();
@@ -80,10 +79,10 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 		{
 			ppu.tick();
 			ppu.tick();
-			ppu.DMA_tick();
 			serialport.serial_transfer_tick();
 			ppu.Audio_tick();
 			cpu.ExecuteOne();
+			
 		}
 
 		public void GetControllerState(IController controller)

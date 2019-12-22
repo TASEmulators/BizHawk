@@ -184,7 +184,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					reg_l_ad = cur_instr[instr_pntr++];
 					reg_h_ad = cur_instr[instr_pntr++]; // direct value
 
-					Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
+					// bit 11 held low during interrupt
+					if (INT_MSTR)
+					{
+						Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
+					}
+					else
+					{
+						Regs[reg_d_ad] = (ushort)((reg_h_ad << 8) | Regs[reg_l_ad]);
+					}
+					
 					break;
 				case CLRA:
 					Regs[A] = 0;

@@ -129,14 +129,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public void BUS_PORT_OUT()
 		{
 			PopulateCURINSTR(IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				WR_P, 0, A);
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							WR_P, 0, A);
 
 			IRQS = 9;
 			Console.WriteLine("OUT");
