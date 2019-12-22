@@ -62,12 +62,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[DllImport("user32")]
-		private static extern bool HideCaret(IntPtr hWnd);
-
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if (!OSTailoredCode.IsUnixHost) HideCaret(Handle);
+			if (!OSTailoredCode.IsUnixHost) Win32Imports.HideCaret(Handle);
 			base.OnMouseClick(e);
 		}
 
@@ -259,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			if (!OSTailoredCode.IsUnixHost) HideCaret(Handle);
+			if (!OSTailoredCode.IsUnixHost) Win32Imports.HideCaret(Handle);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

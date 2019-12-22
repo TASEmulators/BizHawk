@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -84,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Clear()
 		{
 			var lockBits = BMP.LockBits(new Rectangle(0, 0, BMP.Width, BMP.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			Win32.MemSet(lockBits.Scan0, 0xff, (uint)(lockBits.Height * lockBits.Stride));
+			Win32Imports.MemSet(lockBits.Scan0, 0xff, (uint)(lockBits.Height * lockBits.Stride));
 			BMP.UnlockBits(lockBits);
 			Refresh();
 		}

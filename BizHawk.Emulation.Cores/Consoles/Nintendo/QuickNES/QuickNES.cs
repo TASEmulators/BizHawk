@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -90,40 +91,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			IDisposable Save();
 		}
 
-
 		private class Win32_FPCtrl : IFPCtrl
 		{
-			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern uint _control87(uint @new, uint mask);
+			[Conditional("DEBUG")]
+			public static void PrintCurrentFP() => Console.WriteLine($"Current FP word: 0x{Win32Imports._control87(0, 0):X8}");
 
-			public static void PrintCurrentFP()
-			{
-				uint curr = _control87(0, 0);
-				Console.WriteLine("Current FP word: 0x{0:x8}", curr);
-			}
-
-			uint cw;
+			private uint cw;
 
 			public IDisposable Save()
 			{
-				cw = _control87(0, 0);
-				_control87(0x00000, 0x30000);
+				cw = Win32Imports._control87(0, 0);
+				Win32Imports._control87(0x00000, 0x30000);
 				return this;
 			}
+
 			public void Dispose()
 			{
-				_control87(cw, 0x30000);
+				Win32Imports._control87(cw, 0x30000);
 			}
 		}
 
 		private class Unix_FPCtrl : IFPCtrl
 		{
-			public IDisposable Save()
-			{
-				return this;
-			}
-			public void Dispose()
-			{ }
+			public IDisposable Save() => this;
+
+			public void Dispose() {}
 		}
 
 		IFPCtrl FP;

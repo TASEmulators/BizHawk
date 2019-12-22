@@ -118,12 +118,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			if (oldOut == IntPtr.Zero)
-				oldOut = Win32.GetStdHandle( -11 ); //STD_OUTPUT_HANDLE
+				oldOut = ConsoleImports.GetStdHandle( -11 ); //STD_OUTPUT_HANDLE
 
-			var fileType = Win32.GetFileType(oldOut);
+			var fileType = ConsoleImports.GetFileType(oldOut);
 
 			//stdout is already connected to something. keep using it and don't let the console interfere
-			shouldRedirectStdout = (fileType == Win32.FileType.FileTypeUnknown || fileType == Win32.FileType.FileTypePipe);
+			shouldRedirectStdout = (fileType == ConsoleImports.FileType.FileTypeUnknown || fileType == ConsoleImports.FileType.FileTypePipe);
 
 			//attach to an existing console
 			attachedConsole = false;
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and there's no console to attach to.
 			if (Environment.OSVersion.Version.Major != 5)
 			{
-				if (Win32.AttachConsole(-1))
+				if (ConsoleImports.AttachConsole(-1))
 				{
 				  hasConsole = true;
 				  attachedConsole = true;
@@ -140,12 +140,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!attachedConsole)
 			{
-				Win32.FreeConsole();
-				if (Win32.AllocConsole())
+				ConsoleImports.FreeConsole();
+				if (ConsoleImports.AllocConsole())
 				{
 					//set icons for the console so we can tell them apart from the main window
-					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)0/*ICON_SMALL*/, Properties.Resources.console16x16.GetHicon());
-					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)1/*ICON_LARGE*/, Properties.Resources.console32x32.GetHicon());
+					Win32Imports.SendMessage(ConsoleImports.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)0/*ICON_SMALL*/, Properties.Resources.console16x16.GetHicon());
+					Win32Imports.SendMessage(ConsoleImports.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)1/*ICON_LARGE*/, Properties.Resources.console32x32.GetHicon());
 					hasConsole = true;
 				}
 				else
@@ -156,17 +156,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (hasConsole)
 			{
-				IntPtr ptr = Win32.GetCommandLine();
+				IntPtr ptr = ConsoleImports.GetCommandLine();
 				string commandLine = Marshal.PtrToStringAuto(ptr);
 				Console.Title = SkipEverythingButProgramInCommandLine(commandLine);
 			}
 
 			if (shouldRedirectStdout)
 			{
-				conOut = Win32.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
+				conOut = ConsoleImports.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
 
-				if (!Win32.SetStdHandle(-11, conOut))
-				  throw new Exception($"{nameof(Win32.SetStdHandle)}() failed");
+				if (!ConsoleImports.SetStdHandle(-11, conOut))
+				  throw new Exception($"{nameof(ConsoleImports.SetStdHandle)}() failed");
 			}
 
 			//DotNetRewireConout();
@@ -188,15 +188,15 @@ namespace BizHawk.Client.EmuHawk
 
 			if (shouldRedirectStdout)
 			{
-				Win32.CloseHandle(conOut);
+				ConsoleImports.CloseHandle(conOut);
 			}
 
 			if (!attachedConsole)
 			{
-				Win32.FreeConsole();
+				ConsoleImports.FreeConsole();
 			}
 
-			Win32.SetStdHandle(-11, oldOut);
+			ConsoleImports.SetStdHandle(-11, oldOut);
 
 			conOut = IntPtr.Zero;
 			hasConsole = false;
@@ -217,8 +217,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.WIN32_CONSOLE)
 			{
-				IntPtr x = Win32.GetConsoleWindow();
-				Win32.SetForegroundWindow(x);
+				IntPtr x = ConsoleImports.GetConsoleWindow();
+				ConsoleImports.SetForegroundWindow(x);
 			}
 		}
 

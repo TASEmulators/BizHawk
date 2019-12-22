@@ -19,7 +19,9 @@ namespace BizHawk.Client.Common
 
 			if (DefaultToAWE)
 			{
-				return new StreamStringLog(false);
+				return OSTailoredCode.IsUnixHost
+					? throw new InvalidOperationException("logging to AWE is only available on Windows for now")
+					: new StreamStringLog(false);
 			}
 
 			return new ListStringLog();

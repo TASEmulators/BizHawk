@@ -21,13 +21,18 @@ namespace BizHawk.Client.Common
 
 		private string _currentDirectory;
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool SetCurrentDirectoryW(byte* lpPathName);
-		[DllImport("kernel32.dll", SetLastError=true)]
-		static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
-
 		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
+			static string CoolGetCurrentDirectory()
+			{
+				if (OSTailoredCode.IsUnixHost) return Environment.CurrentDirectory;
+
+				//HACK to bypass Windows security checks triggered by *getting* the current directory (why), which only slow us down
+				var buf = new byte[32768];
+				fixed (byte* pBuf = &buf[0])
+					return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) Win32Imports.GetCurrentDirectoryW(32767, pBuf));
+			}
+
 			string target = $"{_currentDirectory}\\";
 
 			// first we'll bypass it with a general hack: don't do any setting if the value's already there (even at the OS level, setting the directory can be slow)
@@ -56,17 +61,7 @@ namespace BizHawk.Client.Common
 
 			//HACK to bypass Windows security checks triggered by setting the current directory, which only slow us down
 			fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes($"{target}\0")[0])
-				return SetCurrentDirectoryW(pstr);
-		}
-
-		private string CoolGetCurrentDirectory()
-		{
-			if (OSTailoredCode.IsUnixHost) return Environment.CurrentDirectory;
-
-			//HACK to bypass Windows security checks triggered by *getting* the current directory (why), which only slow us down
-			var buf = new byte[32768];
-			fixed (byte* pBuf = &buf[0])
-				return System.Text.Encoding.Unicode.GetString(buf, 0, 2 * (int) GetCurrentDirectoryW(32767, pBuf));
+				return Win32Imports.SetCurrentDirectoryW(pstr);
 		}
 
 		private void Sandbox(Action callback, Action exceptionCallback)

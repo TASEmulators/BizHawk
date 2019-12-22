@@ -10,27 +10,19 @@ namespace BizHawk.Common
 {
 	public static class OSTailoredCode
 	{
-		/// <remarks>
-		/// macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see>
-		/// </remarks>
+		/// <remarks>macOS doesn't use <see cref="PlatformID.MacOSX">PlatformID.MacOSX</see></remarks>
 		public static readonly DistinctOS CurrentOS = Environment.OSVersion.Platform == PlatformID.Unix
 			? SimpleSubshell("uname", "-s", "Can't determine OS") == "Darwin" ? DistinctOS.macOS : DistinctOS.Linux
 			: DistinctOS.Windows;
 
 		public static readonly bool IsUnixHost = CurrentOS != DistinctOS.Windows;
 
-		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() =>
+		private static readonly Lazy<ILinkedLibManager> _LinkedLibManager = new Lazy<ILinkedLibManager>(() => CurrentOS switch
 		{
-			switch (CurrentOS)
-			{
-				case DistinctOS.Linux:
-				case DistinctOS.macOS:
-					return new UnixMonoLLManager();
-				case DistinctOS.Windows:
-					return new WindowsLLManager();
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+			DistinctOS.Linux => (ILinkedLibManager) new UnixMonoLLManager(),
+			DistinctOS.macOS => new UnixMonoLLManager(),
+			DistinctOS.Windows => new WindowsLLManager(),
+			_ => throw new ArgumentOutOfRangeException()
 		});
 
 		public static ILinkedLibManager LinkedLibManager => _LinkedLibManager.Value;
@@ -38,78 +30,87 @@ namespace BizHawk.Common
 		/// <remarks>this interface's inheritors hide OS-specific implementation details</remarks>
 		public interface ILinkedLibManager
 		{
+			int FreeByPtr(IntPtr hModule);
+			IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName);
+			IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName);
 			IntPtr? LoadOrNull(string dllToLoad);
 			IntPtr LoadOrThrow(string dllToLoad);
-			IntPtr GetProcAddr(IntPtr hModule, string procName); //TODO also split into nullable and throwing?
-			int FreeByPtr(IntPtr hModule);
 		}
 
-		/// <remarks>This class is copied from a tutorial, so don't git blame and then email me expecting insight.</remarks>
 		private class UnixMonoLLManager : ILinkedLibManager
 		{
-			private const int RTLD_NOW = 2;
 			[DllImport("libdl.so.2")]
 			private static extern int dlclose(IntPtr handle);
+
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlerror();
+
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlopen(string fileName, int flags);
+
 			[DllImport("libdl.so.2")]
 			private static extern IntPtr dlsym(IntPtr handle, string symbol);
 
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
+			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
+
+			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
 			{
-				dlerror();
-				var res = dlsym(hModule, procName);
-				var errPtr = dlerror();
-				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in {nameof(dlsym)}: {Marshal.PtrToStringAnsi(errPtr)}");
-				return res;
+				var p = dlsym(hModule, procName);
+				return p == IntPtr.Zero ? default : p;
 			}
 
-			public int FreeByPtr(IntPtr hModule) => dlclose(hModule);
+			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName)
+			{
+				_ = dlerror(); // the Internet said to do this
+				var p = GetProcAddrOrNull(hModule, procName);
+				if (p != null) return p.Value;
+				var errCharPtr = dlerror();
+				throw new InvalidOperationException($"error in {nameof(dlsym)}{(errCharPtr == IntPtr.Zero ? string.Empty : $": {Marshal.PtrToStringAnsi(errCharPtr)}")}");
+			}
 
 			public IntPtr? LoadOrNull(string dllToLoad)
 			{
+				const int RTLD_NOW = 2;
 				var p = dlopen(dllToLoad, RTLD_NOW);
-				return p == IntPtr.Zero ? default(IntPtr?) : p;
+				return p == IntPtr.Zero ? default : p;
 			}
 
-			public IntPtr LoadOrThrow(string dllToLoad)
-			{
-				var p = LoadOrNull(dllToLoad);
-				if (!p.HasValue) throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
-				return p.Value;
-			}
+			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(dlopen)}, error: {Marshal.PtrToStringAnsi(dlerror())}");
 		}
 
 		private class WindowsLLManager : ILinkedLibManager
 		{
 			// comments reference extern functions removed from SevenZip.NativeMethods
+
 			[DllImport("kernel32.dll")]
 			private static extern bool FreeLibrary(IntPtr hModule); // return type was annotated MarshalAs(UnmanagedType.Bool)
+
 			[DllImport("kernel32.dll")]
 			private static extern uint GetLastError();
-			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
+
+			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName); // param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]`
-			[DllImport("kernel32.dll")] // had BestFitMapping = false, ThrowOnUnmappableChar = true
+
+			[DllImport("kernel32.dll", SetLastError = true)] // had BestFitMapping = false, ThrowOnUnmappableChar = true
 			private static extern IntPtr LoadLibrary(string dllToLoad); // param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]`
 
-			public IntPtr GetProcAddr(IntPtr hModule, string procName) => GetProcAddress(hModule, procName);
+			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 0 : 1;
 
-			public int FreeByPtr(IntPtr hModule) => FreeLibrary(hModule) ? 1 : 0;
+			public IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName)
+			{
+				var p = GetProcAddress(hModule, procName);
+				return p == IntPtr.Zero ? default : p;
+			}
+
+			public IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName) => GetProcAddrOrNull(hModule, procName) ?? throw new InvalidOperationException($"got null pointer from {nameof(GetProcAddress)}, error code: {GetLastError()}");
 
 			public IntPtr? LoadOrNull(string dllToLoad)
 			{
 				var p = LoadLibrary(dllToLoad);
-				return p == IntPtr.Zero ? default(IntPtr?) : p;
+				return p == IntPtr.Zero ? default : p;
 			}
 
-			public IntPtr LoadOrThrow(string dllToLoad)
-			{
-				var p = LoadOrNull(dllToLoad);
-				if (!p.HasValue) throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
-				return p.Value;
-			}
+			public IntPtr LoadOrThrow(string dllToLoad) => LoadOrNull(dllToLoad) ?? throw new InvalidOperationException($"got null pointer from {nameof(LoadLibrary)}, error code: {GetLastError()}");
 		}
 
 		public enum DistinctOS : byte

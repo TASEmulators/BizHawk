@@ -65,7 +65,6 @@
     <Compile Include="BizInvoke\BizInvokeUtilities.cs" />
     <Compile Include="BizInvoke\CallingConventionAdapter.cs" />
     <Compile Include="BizInvoke\POSIXLibC.cs" />
-    <Compile Include="BizInvoke\DynamicLibraryImportResolver.cs" />
     <Compile Include="BizInvoke\MemoryBlock.cs" />
     <Compile Include="BizInvoke\MemoryBlockBase.cs" />
     <Compile Include="BizInvoke\MemoryBlockUnix.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="HawkFile.cs" />
     <Compile Include="IImportResolver.cs" />
     <Compile Include="IMonitor.cs" />
-    <Compile Include="InstanceDll.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MutableIntRange.cs" />
     <Compile Include="OSTailoredCode.cs" />
@@ -97,7 +95,13 @@
     <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Win32Hacks.cs" />
+    <Compile Include="Win32/MotWHack.cs" />
+    <Compile Include="Win32/ProcessorFeatureImports.cs" />
+    <Compile Include="Win32/ShellLinkImports.cs" />
+    <Compile Include="Win32/ThreadHacks.cs" />
+    <Compile Include="Win32/Win32Imports.cs" />
+    <Compile Include="Win32\AVIWriterImports.cs" />
+    <Compile Include="Win32\ConsoleImports.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

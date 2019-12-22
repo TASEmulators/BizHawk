@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(HawkFile.Util_ResolveLinks(filePaths), ref sortedFiles);
+			ProcessFileList(filePaths.Select(EmuHawkUtil.ResolveShortcut), ref sortedFiles);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.

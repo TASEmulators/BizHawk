@@ -7,6 +7,8 @@ using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using System.Collections.Generic;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -409,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 			Bitmap bmp = mbv.BmpView.BMP;
 			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			// Clear()
-			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
+			Win32Imports.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
 
 			int* pixels = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
@@ -501,7 +503,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (tophalfonly)
 			{
-				Win32.MemSet(lockdata.Scan0, 0xff, (uint)(128 * lockdata.Stride));
+				Win32Imports.MemSet(lockdata.Scan0, 0xff, (uint)(128 * lockdata.Stride));
 				pixels += 128 * pitch;
 				tiles += 16384;
 			}

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using SlimDX.DirectInput;
@@ -9,16 +8,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	internal static class KeyboardMapping
 	{
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
 		private const uint MAPVK_VSC_TO_VK_EX = 0x03;
 
 		public static Key Handle(Key key)
 		{
 			if (!Global.Config.HandleAlternateKeyboardLayouts) return key;
 			ScanCode inputScanCode = SlimDXScanCodeMap[(int)key];
-			Keys virtualKey = (Keys)MapVirtualKey((uint)inputScanCode, MAPVK_VSC_TO_VK_EX);
+			Keys virtualKey = (Keys)BizHawk.Common.Win32Imports.MapVirtualKey((uint)inputScanCode, MAPVK_VSC_TO_VK_EX);
 			ScanCode standardScanCode = GetStandardScanCode(virtualKey);
 			if (standardScanCode == 0)
 				standardScanCode = inputScanCode;

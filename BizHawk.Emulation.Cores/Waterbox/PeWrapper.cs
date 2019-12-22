@@ -301,12 +301,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public IntPtr Resolve(string entryPoint)
-		{
-			IntPtr ret;
-			ExportsByName.TryGetValue(entryPoint, out ret);
-			return ret;
-		}
+		public IntPtr? GetProcAddrOrNull(string entryPoint) => ExportsByName.TryGetValue(entryPoint, out var ret) ? ret : default;
+
+		public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"could not find {entryPoint} in exports");
 
 		public void ConnectImports(string moduleName, IImportResolver module)
 		{
@@ -321,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				foreach (var kvp in imports)
 				{
-					var valueArray = new IntPtr[] { module.SafeResolve(kvp.Key) };
+					var valueArray = new IntPtr[] { module.GetProcAddrOrThrow(kvp.Key) };
 					Marshal.Copy(valueArray, 0, kvp.Value, 1);
 				}
 			}

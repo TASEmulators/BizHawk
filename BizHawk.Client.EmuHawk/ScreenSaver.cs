@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,25 +15,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private class Win32ScreenBlankTimer : IScreenBlankTimer
 		{
-			[DllImport("user32.dll", CharSet = CharSet.Auto)]
-			private static extern bool SystemParametersInfo(int uAction, int uParam, ref int lpvParam, int flags);
-
-			private const int SPI_GETSCREENSAVERTIMEOUT = 14;
-			private const int SPI_SETSCREENSAVERTIMEOUT = 15;
-			private const int SPIF_SENDWININICHANGE = 2;
-
 			public int Duration
 			{
 				get
 				{
-					var value = 0;
-					SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
+					const int SPI_GETSCREENSAVERTIMEOUT = 14;
+					int value = default;
+					Win32Imports.SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
 					return value;
 				}
 				set
 				{
-					var nullVar = 0;
-					SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
+					const int SPI_SETSCREENSAVERTIMEOUT = 15;
+					const int SPIF_SENDWININICHANGE = 2;
+					int nullVar = default;
+					Win32Imports.SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, value, ref nullVar, SPIF_SENDWININICHANGE);
 				}
 			}
 		}

@@ -59,9 +59,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-
 		static void ThreadProc()
 		{
 			//squirrely logic, trying not to create garbage
@@ -99,7 +96,7 @@ namespace BizHawk.Common
 								}
 								else
 								{
-									DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
+									Win32Imports.DeleteFileW(fi.FullName); // SHUT. UP. THE. EXCEPTIONS.
 								}
 							}
 							catch

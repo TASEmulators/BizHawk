@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.EmuHawk.WinFormExtensions
@@ -140,53 +140,6 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 
 	public static class ListViewExtensions
 	{
-		[StructLayout(LayoutKind.Sequential)]
-		public struct HDITEM
-		{
-			public Mask mask;
-			public int cxy;
-			[MarshalAs(UnmanagedType.LPTStr)]
-			public string pszText;
-			public IntPtr hbm;
-			public int cchTextMax;
-			public Format fmt;
-			public IntPtr lParam;
-			// _WIN32_IE >= 0x0300 
-			public int iImage;
-			public int iOrder;
-			// _WIN32_IE >= 0x0500
-			public uint type;
-			public IntPtr pvFilter;
-			// _WIN32_WINNT >= 0x0600
-			public uint state;
-
-			[Flags]
-			public enum Mask
-			{
-				Format = 0x4,       // HDI_FORMAT
-			};
-
-			[Flags]
-			public enum Format
-			{
-				SortDown = 0x200,   // HDF_SORTDOWN
-				SortUp = 0x400,     // HDF_SORTUP
-			};
-		};
-
-		public const int LVM_FIRST = 0x1000;
-		public const int LVM_GETHEADER = LVM_FIRST + 31;
-
-		public const int HDM_FIRST = 0x1200;
-		public const int HDM_GETITEM = HDM_FIRST + 11;
-		public const int HDM_SETITEM = HDM_FIRST + 12;
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM lParam);
-
 		/// <summary>
 		/// Dumps the contents of the ListView into a tab separated list of lines
 		/// </summary>
@@ -226,43 +179,30 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
-			IntPtr columnHeader = SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
-			for (int columnNumber = 0; columnNumber <= listViewControl.Columns.Count - 1; columnNumber++)
+			const int LVM_GETHEADER = 4127;
+			const int HDM_GETITEM = 4619;
+			const int HDM_SETITEM = 4620;
+			var columnHeader = Win32Imports.SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+			for (int columnNumber = 0, l = listViewControl.Columns.Count; columnNumber < l; columnNumber++)
 			{
 				var columnPtr = new IntPtr(columnNumber);
-				var item = new HDITEM
+				var item = new Win32Imports.HDITEM { mask = Win32Imports.HDITEM.Mask.Format };
+				if (Win32Imports.SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
+				if (columnNumber != columnIndex || order == SortOrder.None)
 				{
-					mask = HDITEM.Mask.Format
-				};
-
-				if (SendMessage(columnHeader, HDM_GETITEM, columnPtr, ref item) == IntPtr.Zero)
-				{
-					throw new Win32Exception();
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown & ~Win32Imports.HDITEM.Format.SortUp;
 				}
-
-				if (order != SortOrder.None && columnNumber == columnIndex)
+				else if (order == SortOrder.Ascending)
 				{
-					switch (order)
-					{
-						case SortOrder.Ascending:
-							item.fmt &= ~HDITEM.Format.SortDown;
-							item.fmt |= HDITEM.Format.SortUp;
-							break;
-						case SortOrder.Descending:
-							item.fmt &= ~HDITEM.Format.SortUp;
-							item.fmt |= HDITEM.Format.SortDown;
-							break;
-					}
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortDown;
+					item.fmt |= Win32Imports.HDITEM.Format.SortUp;
 				}
-				else
+				else if (order == SortOrder.Descending)
 				{
-					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
+					item.fmt &= ~Win32Imports.HDITEM.Format.SortUp;
+					item.fmt |= Win32Imports.HDITEM.Format.SortDown;
 				}
-
-				if (SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero)
-				{
-					throw new Win32Exception();
-				}
+				if (Win32Imports.SendMessage(columnHeader, HDM_SETITEM, columnPtr, ref item) == IntPtr.Zero) throw new Win32Exception();
 			}
 		}
 
