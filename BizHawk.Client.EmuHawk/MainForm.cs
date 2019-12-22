@@ -3835,7 +3835,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Config.LoadCheatFileByGame)
 					{
-						CheatList.SetDefaultFileName(GlobalWin.Tools.GenerateDefaultCheatFilename());
+						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
 						if (CheatList.AttemptToLoadCheatFile())
 						{
 							AddOnScreenMessage("Cheats file loaded");
@@ -3876,18 +3876,18 @@ namespace BizHawk.Client.EmuHawk
 					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
-				else if (!(Emulator is NullEmulator))
-				{
-					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					ClientApi.OnRomLoaded(Emulator);
-					return true;
-				}
-				else
+				else if (Emulator.IsNull())
 				{
 					// This shows up if there's a problem
 					ClientApi.UpdateEmulatorAndVP(Emulator);
 					OnRomChanged();
 					return false;
+				}
+				else
+				{
+					// The ROM has been loaded by a recursive invocation of the LoadROM method.
+					ClientApi.OnRomLoaded(Emulator);
+					return true;
 				}
 			}
 			finally
