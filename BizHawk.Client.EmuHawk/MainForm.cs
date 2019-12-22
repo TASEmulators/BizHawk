@@ -830,11 +830,7 @@ namespace BizHawk.Client.EmuHawk
 		private AutoFireStickyXorAdapter AutofireStickyXORAdapter => Global.AutofireStickyXORAdapter;
 		private ClickyVirtualPadController ClickyVirtualPadController => Global.ClickyVirtualPadController;
 
-		private Rewinder Rewinder
-		{
-			get => Global.Rewinder;
-			set => Global.Rewinder = value;
-		}
+		private Rewinder Rewinder { get; }
 
 		private FirmwareManager FirmwareManager => Global.FirmwareManager;
 		private Controller ClientControls => Global.ClientControls;
