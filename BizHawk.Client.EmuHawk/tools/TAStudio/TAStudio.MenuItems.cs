@@ -1106,7 +1106,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new MovieHeaderEditor(CurrentTasMovie)
 			{
-				Owner = Mainform,
+				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			}.Show();
 			UpdateChangesIndicator();
@@ -1116,9 +1116,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new StateHistorySettingsForm(CurrentTasMovie.TasStateManager.Settings)
 			{
-				Owner = Mainform,
+				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView),
-				Statable = this.StatableEmulator
+				Statable = StatableEmulator
 			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
