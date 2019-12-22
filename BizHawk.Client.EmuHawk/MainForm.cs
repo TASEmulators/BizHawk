@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusBarIcon();
-			ToolFormBase.UpdateCheatRelatedTools(null, null);
+			Tools.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
 			UpdateNotification.Visible = false;
 			_statusBarDiskLightOnImage = Properties.Resources.LightOn;
@@ -231,8 +231,11 @@ namespace BizHawk.Client.EmuHawk
 
 			_throttle = new Throttle();
 
+			var comm = CreateCoreComm();
+			Emulator = new NullEmulator(comm);
+			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			Global.CheatList = new CheatCollection();
-			CheatList.Changed += ToolFormBase.UpdateCheatRelatedTools;
+			CheatList.Changed += Tools.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -330,9 +333,7 @@ namespace BizHawk.Client.EmuHawk
 			Input.Initialize();
 			InitControls();
 
-			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
-			Emulator = new NullEmulator(comm);
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = _autofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -356,7 +357,6 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.RewireInputChain();
-			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -3856,7 +3856,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.AutofireStickyXORAdapter.ClearStickies();
 
 					RewireSound();
-					ToolFormBase.UpdateCheatRelatedTools(null, null);
+					Tools.UpdateCheatRelatedTools(null, null);
 					if (Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Config.SaveSlot))
 					{
 						LoadQuickSave($"QuickSave{Config.SaveSlot}");
@@ -4001,7 +4001,7 @@ namespace BizHawk.Client.EmuHawk
 				Tools.Restart(Emulator);
 				RewireSound();
 				ClearHolds();
-				ToolFormBase.UpdateCheatRelatedTools(null, null);
+				Tools.UpdateCheatRelatedTools(null, null);
 				PauseOnFrame = null;
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;

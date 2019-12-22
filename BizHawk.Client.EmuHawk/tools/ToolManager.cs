@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -858,6 +859,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return Path.Combine(path, $"{PathManager.FilesystemSafeName(Global.Game)}.cht");
+		}
+
+		public void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
+		{
+			if (!_emulator.HasMemoryDomains())
+			{
+				return;
+			}
+
+			UpdateValues<RamWatch>();
+			UpdateValues<RamSearch>();
+			UpdateValues<HexEditor>();
+
+			if (Has<Cheats>())
+			{
+				Cheats.UpdateDialog();
+			}
+
+			_owner.UpdateCheatStatus();
 		}
 	}
 }

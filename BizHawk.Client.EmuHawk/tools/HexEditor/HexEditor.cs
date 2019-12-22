@@ -1622,7 +1622,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			UpdateCheatRelatedTools(null, null);
+			Tools.UpdateCheatRelatedTools(null, null);
 			MemoryViewerBox.Refresh();
 		}
 

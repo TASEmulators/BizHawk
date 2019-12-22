@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -77,23 +76,6 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
 			return SaveFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
-		}
-
-		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
-		{
-			if (Global.Emulator.HasMemoryDomains())
-			{
-				GlobalWin.Tools.UpdateValues<RamWatch>();
-				GlobalWin.Tools.UpdateValues<RamSearch>();
-				GlobalWin.Tools.UpdateValues<HexEditor>();
-
-				if (GlobalWin.Tools.Has<Cheats>())
-				{
-					GlobalWin.Tools.Cheats.UpdateDialog();
-				}
-
-				GlobalWin.MainForm.UpdateCheatStatus();
-			}
 		}
 
 		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)
