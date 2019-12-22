@@ -10,10 +10,18 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaFunctionsForm : Form
 	{
+		private readonly LuaDocumentation _docs;
 		private readonly Sorting _columnSort = new Sorting();
 
 		private List<LibraryFunction> _functionList = new List<LibraryFunction>();
 		private List<LibraryFunction> _filteredList = new List<LibraryFunction>();
+
+		public LuaFunctionsForm(LuaDocumentation docs)
+		{
+			_docs = docs;
+			InitializeComponent();
+			FunctionView.RetrieveVirtualItem += FunctionView_QueryItemText;
+		}
 
 		private void GenerateFilteredList()
 		{
@@ -29,15 +37,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public LuaFunctionsForm()
-		{
-			InitializeComponent();
-			FunctionView.RetrieveVirtualItem += FunctionView_QueryItemText;
-		}
-
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
-			_functionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
+			_functionList = _docs
 				.OrderBy(l => l.Library)
 				.ThenBy(l => l.Name)
 				.ToList();
@@ -183,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToWikiMarkupButton_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetDataObject(GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToTASVideosWikiMarkup());
+			Clipboard.SetDataObject(_docs.ToTASVideosWikiMarkup());
 		}
 	}
 }

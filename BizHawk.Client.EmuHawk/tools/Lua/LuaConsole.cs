@@ -1161,7 +1161,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionsListMenuItem_Click(object sender, EventArgs e)
 		{
-			new LuaFunctionsForm().Show();
+			new LuaFunctionsForm(LuaImp.Docs).Show();
 		}
 
 		private void OnlineDocsMenuItem_Click(object sender, EventArgs e)
