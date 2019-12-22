@@ -16,12 +16,23 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RecordMovie : Form
 	{
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
+		private readonly GameInfo _game;
 		private readonly IEmulator _emulator;
+		private readonly IMovieSession _movieSession;
 
-		public RecordMovie(MainForm mainForm, IEmulator core)
+		public RecordMovie(
+			MainForm mainForm,
+			Config config,
+			GameInfo game,
+			IEmulator core,
+			IMovieSession movieSession)
 		{
 			_mainForm = mainForm;
+			_config = config;
+			_game = game;
 			_emulator = core;
+			_movieSession = movieSession;
 			InitializeComponent();
 
 			if (!_emulator.HasSavestates())
@@ -56,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 						path = path.Insert(0, Path.DirectorySeparatorChar.ToString());
 					}
 
-					path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
+					path = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null) + path;
 
 					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
@@ -129,10 +140,10 @@ namespace BizHawk.Client.EmuHawk
 				movieToRecord.Save();
 				_mainForm.StartNewMovie(movieToRecord, true);
 
-				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
+				_config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
 				if (DefaultAuthorCheckBox.Checked)
 				{
-					Global.Config.DefaultAuthor = AuthorBox.Text;
+					_config.DefaultAuthor = AuthorBox.Text;
 				}
 
 				Close();
@@ -150,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			string movieFolderPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			string movieFolderPath = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
 			
 			// Create movie folder if it doesn't already exist
 			try
@@ -173,10 +184,10 @@ namespace BizHawk.Client.EmuHawk
 			using var sfd = new SaveFileDialog
 			{
 				InitialDirectory = movieFolderPath,
-				DefaultExt = $".{Global.MovieSession.Movie.PreferredExtension}",
+				DefaultExt = $".{_movieSession.Movie.PreferredExtension}",
 				FileName = RecordBox.Text,
 				OverwritePrompt = false,
-				Filter = $"Movie Files (*.{Global.MovieSession.Movie.PreferredExtension})|*.{Global.MovieSession.Movie.PreferredExtension}|All Files|*.*"
+				Filter = $"Movie Files (*.{_movieSession.Movie.PreferredExtension})|*.{_movieSession.Movie.PreferredExtension}|All Files|*.*"
 			};
 
 			var result = sfd.ShowHawkDialog();
@@ -189,12 +200,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
-			RecordBox.Text = PathManager.FilesystemSafeName(Global.Game);
+			RecordBox.Text = PathManager.FilesystemSafeName(_game);
 			StartFromCombo.SelectedIndex = 0;
-			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
-			if (Global.Config.UseDefaultAuthor)
+			DefaultAuthorCheckBox.Checked = _config.UseDefaultAuthor;
+			if (_config.UseDefaultAuthor)
 			{
-				AuthorBox.Text = Global.Config.DefaultAuthor;
+				AuthorBox.Text = _config.DefaultAuthor;
 			}
 		}
 

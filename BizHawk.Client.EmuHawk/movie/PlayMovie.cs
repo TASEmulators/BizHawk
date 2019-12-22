@@ -10,12 +10,17 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlayMovie : Form
 	{
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
+		private readonly GameInfo _game;
+		private readonly IEmulator _emulator;
+		private readonly IMovieSession _movieSession;
 		private readonly PlatformFrameRates _platformFrameRates = new PlatformFrameRates();
 
 		private List<IMovie> _movieList = new List<IMovie>();
@@ -25,9 +30,18 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortDetailsReverse;
 		private string _sortedDetailsCol;
 
-		public PlayMovie(MainForm mainForm)
+		public PlayMovie(
+			MainForm mainForm,
+			Config config,
+			GameInfo game,
+			IEmulator emulator,
+			IMovieSession movieSession)
 		{
 			_mainForm = mainForm;
+			_config = config;
+			_game = game;
+			_emulator = emulator;
+			_movieSession = movieSession;
 			InitializeComponent();
 			MovieView.RetrieveVirtualItem += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
@@ -40,11 +54,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
-			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
-			MatchHashCheckBox.Checked = Global.Config.PlayMovie_MatchHash;
+			IncludeSubDirectories.Checked = _config.PlayMovie_IncludeSubdir;
+			MatchHashCheckBox.Checked = _config.PlayMovie_MatchHash;
 			ScanFiles();
 			PreHighlightMovie();
-			TurboCheckbox.Checked = Global.Config.TurboSeek;
+			TurboCheckbox.Checked = _config.TurboSeek;
 		}
 
 		private void MovieView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
@@ -121,8 +135,8 @@ namespace BizHawk.Client.EmuHawk
 				movie.PreLoadHeaderAndLength(hf);
 
 				// Don't do this from browse
-				if (movie.Hash == Global.Game.Hash ||
-					Global.Config.PlayMovie_MatchHash == false || force)
+				if (movie.Hash == _game.Hash
+					|| _config.PlayMovie_MatchHash == false || force)
 				{
 					return movie;
 				}
@@ -144,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PreHighlightMovie()
 		{
-			if (Global.Game == null)
+			if (_game.IsNullInstance())
 			{
 				return;
 			}
@@ -154,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			// Pull out matching names
 			for (var i = 0; i < _movieList.Count; i++)
 			{
-				if (PathManager.FilesystemSafeName(Global.Game) == _movieList[i].GameName)
+				if (PathManager.FilesystemSafeName(_game) == _movieList[i].GameName)
 				{
 					indices.Add(i);
 				}
@@ -224,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieView.VirtualListSize = 0;
 			MovieView.Update();
 
-			var directory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			var directory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null);
 			if (!Directory.Exists(directory))
 			{
 				Directory.CreateDirectory(directory);
@@ -240,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 				string dp = dpTodo.Dequeue();
 				
 				// enqueue subdirectories if appropriate
-				if (Global.Config.PlayMovie_IncludeSubdir)
+				if (_config.PlayMovie_IncludeSubdir)
 				{
 					foreach (var subDir in Directory.GetDirectories(dp))
 					{
@@ -398,10 +412,10 @@ namespace BizHawk.Client.EmuHawk
 				switch (kvp.Key)
 				{
 					case HeaderKeys.SHA1:
-						if (kvp.Value != Global.Game.Hash)
+						if (kvp.Value != _game.Hash)
 						{
 							item.BackColor = Color.Pink;
-							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {Global.Game.Hash}");
+							toolTip1.SetToolTip(DetailsView, $"Current SHA1: {_game.Hash}");
 						}
 						break;
 					case HeaderKeys.EMULATIONVERSION:
@@ -411,13 +425,13 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.PLATFORM:
-						// feos: previously it was compared against Global.Game.System, but when the movie is created
-						// its platform is copied from Global.Emulator.SystemId, see PopulateWithDefaultHeaderValues()
+						// feos: previously it was compared against _game.System, but when the movie is created
+						// its platform is copied from _emulator.SystemId, see PopulateWithDefaultHeaderValues()
 						// the problem is that for GameGear and SG100, those mismatch, resulting in false positive here
 						// I have a patch to make GG and SG appear as platforms in movie header (issue #1246)
 						// but even with it, for all the old movies, this false positive would have to be worked around anyway
 						// TODO: actually check header flags like "IsGGMode" and "IsSegaCDMode" (those are never parsed by BizHawk)
-						if (kvp.Value != Global.Emulator.SystemId)
+						if (kvp.Value != _emulator.SystemId)
 						{
 							item.BackColor = Color.Pink;
 						}
@@ -558,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			using var ofd = new OpenFileDialog
 			{
 				Filter = $"Movie Files (*.{MovieService.DefaultExtension})|*.{MovieService.DefaultExtension}|TAS project Files (*.{TasMovie.Extension})|*.{TasMovie.Extension}|All Files|*.*",
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null)
+				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries.MoviesPathFragment, null)
 			};
 
 			var result = ofd.ShowHawkDialog();
@@ -588,29 +602,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
+			_config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}
 
 		private void MatchHashCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.Config.PlayMovie_MatchHash = MatchHashCheckBox.Checked;
+			_config.PlayMovie_MatchHash = MatchHashCheckBox.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
-			Global.Config.TurboSeek = TurboCheckbox.Checked;
+			_config.TurboSeek = TurboCheckbox.Checked;
 			Run();
-			Global.MovieSession.ReadOnly = ReadOnlyCheckBox.Checked;
+			_movieSession.ReadOnly = ReadOnlyCheckBox.Checked;
 
 			if (StopOnFrameCheckbox.Checked && 
 				(StopOnFrameTextBox.ToRawInt().HasValue || LastFrameCheckbox.Checked))
 			{
 				_mainForm.PauseOnFrame = LastFrameCheckbox.Checked
-					? Global.MovieSession.Movie.InputLogLength
+					? _movieSession.Movie.InputLogLength
 					: StopOnFrameTextBox.ToRawInt();
 			}
 
