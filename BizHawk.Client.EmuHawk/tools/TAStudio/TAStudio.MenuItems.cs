@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Mainform.GameIsClosing)
+			if (!MainForm.GameIsClosing)
 			{
 				StartNewTasMovie();
 			}
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 						if (result1 == DialogResult.OK)
 						{
-							Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
+							MainForm.StartNewMovie(MovieService.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							StartNewMovieWrapper(false);
 							SetUpColumns();
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
-			Mainform.SetWindowText();
+			MainForm.SetWindowText();
 			GlobalWin.Sound.StartSound();
 		}
 
@@ -865,7 +865,7 @@ namespace BizHawk.Client.EmuHawk
 			int goToFrame = CurrentTasMovie.LastStatedFrame;
 			do
 			{
-				Mainform.FrameAdvance();
+				MainForm.FrameAdvance();
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
@@ -1488,7 +1488,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-			CancelSeekContextMenuItem.Enabled = Mainform.PauseOnFrame.HasValue;
+			CancelSeekContextMenuItem.Enabled = MainForm.PauseOnFrame.HasValue;
 			BranchContextMenuItem.Visible = TasView.CurrentCell?.RowIndex == Emulator.Frame;
 
 			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
@@ -1501,7 +1501,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Mainform.PauseOnFrame = null;
+			MainForm.PauseOnFrame = null;
 			RefreshTasView();
 		}
 
@@ -1519,7 +1519,7 @@ namespace BizHawk.Client.EmuHawk
 				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
-				Mainform.PauseEmulator();
+				MainForm.PauseEmulator();
 				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
@@ -1539,7 +1539,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(index);
 					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
-					Mainform.PauseEmulator();
+					MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename), true);
 				}
 				else

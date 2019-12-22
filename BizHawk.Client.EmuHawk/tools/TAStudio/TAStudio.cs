@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
-		private MainForm Mainform => GlobalWin.MainForm;
 
 		public bool IsInMenuLoop { get; private set; }
 		public string StatesPath => PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
@@ -212,14 +211,14 @@ namespace BizHawk.Client.EmuHawk
 				this.Invoke(() => SavingProgressBar.Visible = true);
 				for (;;)
 				{
-					if (_seekBackgroundWorker.CancellationPending || !IsHandleCreated || !Mainform.PauseOnFrame.HasValue)
+					if (_seekBackgroundWorker.CancellationPending || !IsHandleCreated || !MainForm.PauseOnFrame.HasValue)
 					{
 						e.Cancel = true;
 						break;
 					}
 
 					int diff = Emulator.Frame - _seekStartFrame.Value;
-					int unit = Mainform.PauseOnFrame.Value - _seekStartFrame.Value;
+					int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
 					double progress = 0;
 
 					if (diff != 0 && unit != 0)
@@ -323,8 +322,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool InitializeOnLoad()
 		{
-			Mainform.PauseOnFrame = null;
-			Mainform.PauseEmulator();
+			MainForm.PauseOnFrame = null;
+			MainForm.PauseEmulator();
 
 			// Start Scenario 0: core needs a nag
 			// But do not nag if auto-loading
@@ -526,11 +525,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			SetTasMovieCallbacks();
 			SetTextProperty();
-			Mainform.RelinquishControl(this);
+			MainForm.RelinquishControl(this);
 			_originalEndAction = Global.Config.MovieEndAction;
-			Mainform.ClearRewindData();
+			MainForm.ClearRewindData();
 			Global.Config.MovieEndAction = MovieEndAction.Record;
-			Mainform.SetMainformMovieInfo();
+			MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
 			SetSplicer();
 		}
@@ -681,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			SetTasMovieCallbacks(movie as TasMovie);
 
-			bool result = Mainform.StartNewMovie(movie, record);
+			bool result = MainForm.StartNewMovie(movie, record);
 			if (result)
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
@@ -744,17 +743,17 @@ namespace BizHawk.Client.EmuHawk
 		private void TastudioStopMovie()
 		{
 			Global.MovieSession.StopMovie(false);
-			Mainform.SetMainformMovieInfo();
+			MainForm.SetMainformMovieInfo();
 		}
 
 		private void DisengageTastudio()
 		{
-			Mainform.PauseOnFrame = null;
-			Mainform.AddOnScreenMessage("TAStudio disengaged");
+			MainForm.PauseOnFrame = null;
+			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
-			Mainform.TakeBackControl();
+			MainForm.TakeBackControl();
 			Global.Config.MovieEndAction = _originalEndAction;
-			Mainform.SetMainformMovieInfo();
+			MainForm.SetMainformMovieInfo();
 
 			// Do not keep TAStudio's disk save states.
 			// if (Directory.Exists(statesPath)) Directory.Delete(statesPath, true);
@@ -849,7 +848,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
 				{
 					// this happens when we're holding the left button while unpaused - view scrolls down, new input gets drawn, seek pauses
-					Mainform.UnpauseEmulator();
+					MainForm.UnpauseEmulator();
 				}
 
 				_autoRestorePaused = null;
@@ -863,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
+			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
 			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -873,24 +872,24 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 			{
-				bool wasPaused = Mainform.EmulatorPaused; 
+				bool wasPaused = MainForm.EmulatorPaused; 
 				
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
 				// PauseOnFrame = frame;
 				
 				// can't re-enter lua while doing this
-				Mainform.SuppressLua = true;
+				MainForm.SuppressLua = true;
 				while (Emulator.Frame != frame)
 				{
-					Mainform.SeekFrameAdvance();
+					MainForm.SeekFrameAdvance();
 				}
 
-				Mainform.SuppressLua = false;
+				MainForm.SuppressLua = false;
 
 				if (!wasPaused)
 				{
-					Mainform.UnpauseEmulator();
+					MainForm.UnpauseEmulator();
 				}
 
 				// lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
@@ -906,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 			if (frame > Emulator.Frame)
 			{
 				// make seek frame keep up with emulation on fast scrolls
-				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding || WasRecording)
+				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
 				{
 					StartSeeking(frame);
 				}
@@ -956,7 +955,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TogglePause()
 		{
-			Mainform.TogglePause();
+			MainForm.TogglePause();
 		}
 
 		private void SetSplicer()

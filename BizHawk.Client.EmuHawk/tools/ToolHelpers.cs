@@ -13,6 +13,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolFormBase : Form
 	{
+		public ToolManager Tools { get; set; }
+		public Config Config { get; set; }
+		public MainForm MainForm { get; set; }
+
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
 			if (!Directory.Exists(path))
@@ -92,10 +96,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)
+		public void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, WatchSize size)
 		{
-			GlobalWin.Tools.Load<HexEditor>();
-			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);
+			Tools.Load<HexEditor>();
+			Tools.HexEditor.SetToAddresses(addresses, domain, size);
 		}
 
 		protected void GenericDragEnter(object sender, DragEventArgs e)
@@ -110,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected bool IsOnScreen(Point topLeft)
 		{
-			return ToolManager.IsOnScreen(topLeft);
+			return Tools.IsOnScreen(topLeft);
 		}
 	}
 }

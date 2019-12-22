@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
-		private readonly Form _owner;
+		private readonly MainForm _owner;
 		private readonly Config _config;
 		private IExternalApiProvider _apiProvider;
 		private IEmulator _emulator;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
 		/// </summary>
-		public ToolManager(Form owner, Config config, IEmulator emulator)
+		public ToolManager(MainForm owner, Config config, IEmulator emulator)
 		{
 			_owner = owner;
 			_config = config;
@@ -58,6 +58,17 @@ namespace BizHawk.Client.EmuHawk
 			// The type[] in parameter is used to avoid an ambiguous name exception
 			MethodInfo method = GetType().GetMethod("Load", new Type[] { typeof(bool) }).MakeGenericMethod(toolType);
 			return (IToolForm)method.Invoke(this, new object[] { focus });
+		}
+
+		// If the form inherits ToolFormBase, it will set base properties such as Tools, Config, etc
+		private void SetBaseProperties(IToolForm form)
+		{
+			if (form is ToolFormBase tool)
+			{
+				tool.Tools = this;
+				tool.Config = _config;
+				tool.MainForm = _owner;
+			}
 		}
 
 		/// <summary>
@@ -135,6 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			SetBaseProperties(newTool);
 			string toolType = typeof(T).ToString();
 
 			// auto settings
@@ -398,7 +410,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		public static bool IsOnScreen(Point topLeft)
+		public bool IsOnScreen(Point topLeft)
 		{
 			return Screen.AllScreens.Any(
 				screen => screen.WorkingArea.Contains(topLeft));

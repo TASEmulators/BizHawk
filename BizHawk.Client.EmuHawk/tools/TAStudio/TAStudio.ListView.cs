@@ -81,19 +81,19 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!fromMiddleClick)
 			{
-				if (Mainform.PauseOnFrame != null)
+				if (MainForm.PauseOnFrame != null)
 				{
 					StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
 				}
 				_seekStartFrame = Emulator.Frame;
 			}
 
-			Mainform.PauseOnFrame = frame.Value;
-			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
+			MainForm.PauseOnFrame = frame.Value;
+			int? diff = MainForm.PauseOnFrame - _seekStartFrame;
 
 			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
-			Mainform.UnpauseEmulator();
+			MainForm.UnpauseEmulator();
 
 			if (!_seekBackgroundWorker.IsBusy && diff > TasView.VisibleRows)
 			{
@@ -110,10 +110,10 @@ namespace BizHawk.Client.EmuHawk
 				WasRecording = false;
 			}
 
-			Mainform.PauseOnFrame = null;
+			MainForm.PauseOnFrame = null;
 			if (_unpauseAfterSeeking)
 			{
-				Mainform.UnpauseEmulator();
+				MainForm.UnpauseEmulator();
 				_unpauseAfterSeeking = false;
 			}
 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 					offsetY = 5;
 				}
 
-				if (index == Emulator.Frame && index == Mainform.PauseOnFrame)
+				if (index == Emulator.Frame && index == MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
 						ts_v_arrow_green_blue :
@@ -262,11 +262,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasMovieRecord record = CurrentTasMovie[index];
 
-			if (Mainform.IsSeeking && Mainform.PauseOnFrame == index)
+			if (MainForm.IsSeeking && MainForm.PauseOnFrame == index)
 			{
 				color = CurrentFrame_InputLog;
 			}
-			else if (!Mainform.IsSeeking && Emulator.Frame == index)
+			else if (!MainForm.IsSeeking && Emulator.Frame == index)
 			{
 				color = CurrentFrame_InputLog;
 			}
@@ -514,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Middle)
 			{
-				if (Mainform.EmulatorPaused)
+				if (MainForm.EmulatorPaused)
 				{
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
 					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
@@ -523,12 +523,12 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						Mainform.UnpauseEmulator();
+						MainForm.UnpauseEmulator();
 					}
 				}
 				else
 				{
-					Mainform.PauseEmulator();
+					MainForm.PauseEmulator();
 				}
 
 				return;
@@ -604,7 +604,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Type != ColumnType.Text) // User changed input
 				{
-					bool wasPaused = Mainform.EmulatorPaused;
+					bool wasPaused = MainForm.EmulatorPaused;
 
 					if (ControllerType.BoolButtons.Contains(buttonName))
 					{
@@ -713,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 					// taseditor behavior
 					if (!wasPaused)
 					{
-						Mainform.UnpauseEmulator();
+						MainForm.UnpauseEmulator();
 					}
 				}
 			}
@@ -877,15 +877,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// warning: tastudio rewind hotkey/button logic is copy pasted from here!
-				if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
+				if (MainForm.IsSeeking && !MainForm.EmulatorPaused)
 				{
-					Mainform.PauseOnFrame -= notch;
+					MainForm.PauseOnFrame -= notch;
 
 					// that's a weird condition here, but for whatever reason it works best
-					if (notch > 0 && Emulator.Frame >= Mainform.PauseOnFrame)
+					if (notch > 0 && Emulator.Frame >= MainForm.PauseOnFrame)
 					{
-						Mainform.PauseEmulator();
-						Mainform.PauseOnFrame = null;
+						MainForm.PauseEmulator();
+						MainForm.PauseOnFrame = null;
 						StopSeeking();
 						GoToFrame(Emulator.Frame - notch);
 					}
@@ -976,7 +976,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (_startCursorDrag && !Mainform.IsSeeking)
+			if (_startCursorDrag && !MainForm.IsSeeking)
 			{
 				GoToFrame(e.NewCell.RowIndex.Value);
 			}

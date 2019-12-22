@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame <= Emulator.Frame)
 				{
-					if ((Mainform.EmulatorPaused || !Mainform.IsSeeking)
+					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
 						&& !CurrentTasMovie.LastPositionStable)
 					{
 						LastPositionFrame = Emulator.Frame;
@@ -42,11 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
-					bool wasPaused = Mainform.EmulatorPaused;
-					Mainform.FrameAdvance();
+					bool wasPaused = MainForm.EmulatorPaused;
+					MainForm.FrameAdvance();
 					if (!wasPaused)
 					{
-						Mainform.UnpauseEmulator();
+						MainForm.UnpauseEmulator();
 					}
 				}
 				else
