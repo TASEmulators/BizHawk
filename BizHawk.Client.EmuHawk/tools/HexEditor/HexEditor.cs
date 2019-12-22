@@ -148,17 +148,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			using (var file = new HawkFile(MainForm.CurrentlyOpenRom.Split('*').Last()))
+			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME))
 			{
-				if (!file.IsArchive)
-				{
-					_rom = GetRomBytes();
-					_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
+				_rom = GetRomBytes();
+				_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
 
-					if (_domain.Name == _romDomain.Name)
-					{
-						_domain = _romDomain;
-					}
+				if (_domain.Name == _romDomain.Name)
+				{
+					_domain = _romDomain;
 				}
 			}
 			
