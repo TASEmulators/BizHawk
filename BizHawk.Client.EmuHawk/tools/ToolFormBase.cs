@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void RefreshFloatingWindowControl(bool floatingWindow)
 		{
-			Owner = floatingWindow ? null : GlobalWin.MainForm;
+			Owner = floatingWindow ? null : MainForm;
 		}
 
 		protected bool IsOnScreen(Point topLeft)

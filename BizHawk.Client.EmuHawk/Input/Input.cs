@@ -166,9 +166,9 @@ namespace BizHawk.Client.EmuHawk
 			public readonly string Button;
 			public readonly ModifierKey Modifiers;
 
-			public bool Alt { get { return ((Modifiers & ModifierKey.Alt) != 0); } }
-			public bool Control { get { return ((Modifiers & ModifierKey.Control) != 0); } }
-			public bool Shift { get { return ((Modifiers & ModifierKey.Shift) != 0); } }
+			public bool Alt => (Modifiers & ModifierKey.Alt) != 0;
+			public bool Control => (Modifiers & ModifierKey.Control) != 0;
+			public bool Shift => (Modifiers & ModifierKey.Shift) != 0;
 
 			public override string ToString()
 			{
@@ -257,8 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LogicalButton buttonModifierState;
-				if (ModifierState.TryGetValue(button, out buttonModifierState))
+				if (ModifierState.TryGetValue(button, out var buttonModifierState))
 				{
 					if (buttonModifierState != ie.LogicalButton && !IgnoreEventsNextPoll)
 					{
@@ -312,8 +311,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			lock (this)
 			{
-				if (InputEvents.Count == 0) return null;
-				else return InputEvents.Dequeue();
+				return InputEvents.Count == 0 ? null : InputEvents.Dequeue();
 			}
 		}
 		void EnqueueEvent(InputEvent ie)
