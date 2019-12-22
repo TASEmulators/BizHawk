@@ -15,13 +15,13 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		public bool StartsFromSavestate() => Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSavestate;
+		public bool StartsFromSavestate() => Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.StartsFromSavestate;
 
-		public bool StartsFromSaveram() => Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSaveRam;
+		public bool StartsFromSaveram() => Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.StartsFromSaveRam;
 
 		public Dictionary<string, dynamic> GetInput(int frame)
 		{
-			if (!Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.NotActive())
 			{
 				LogCallback("No movie loaded");
 				return null;
@@ -40,7 +40,10 @@ namespace BizHawk.Client.Common
 
 		public string GetInputAsMnemonic(int frame)
 		{
-			if (!Global.MovieSession.Movie.IsActive || frame >= Global.MovieSession.Movie.InputLogLength) return string.Empty;
+			if (Global.MovieSession.Movie.NotActive() || frame >= Global.MovieSession.Movie.InputLogLength)
+			{
+				return string.Empty;
+			}
 			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.Movie.GetInputState(frame));
 			return lg.GenerateLogEntry();
@@ -48,7 +51,11 @@ namespace BizHawk.Client.Common
 
 		public void Save(string filename = null)
 		{
-			if (!Global.MovieSession.Movie.IsActive) return;
+			if (Global.MovieSession.Movie.NotActive())
+			{
+				return;
+			}
+
 			if (!string.IsNullOrEmpty(filename))
 			{
 				filename += $".{Global.MovieSession.Movie.PreferredExtension}";
@@ -65,7 +72,10 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> GetHeader()
 		{
 			var table = new Dictionary<string, string>();
-			if (!Global.MovieSession.Movie.IsActive) return table;
+			if (Global.MovieSession.Movie.NotActive())
+			{
+				return table;
+			}
 			foreach (var kvp in Global.MovieSession.Movie.HeaderEntries) table[kvp.Key] = kvp.Value;
 			return table;
 		}
@@ -73,7 +83,11 @@ namespace BizHawk.Client.Common
 		public List<string> GetComments()
 		{
 			var list = new List<string>(Global.MovieSession.Movie.Comments.Count);
-			if (!Global.MovieSession.Movie.IsActive) return list;
+			if (Global.MovieSession.Movie.NotActive())
+			{
+				return list;
+			}
+
 			for (var i = 0; i < Global.MovieSession.Movie.Comments.Count; i++) list[i] = Global.MovieSession.Movie.Comments[i];
 			return list;
 		}
@@ -81,7 +95,11 @@ namespace BizHawk.Client.Common
 		public List<string> GetSubtitles()
 		{
 			var list = new List<string>(Global.MovieSession.Movie.Subtitles.Count);
-			if (!Global.MovieSession.Movie.IsActive) return list;
+			if (Global.MovieSession.Movie.NotActive())
+			{
+				return list;
+			}
+
 			for (var i = 0; i < Global.MovieSession.Movie.Subtitles.Count; i++) list[i] = Global.MovieSession.Movie.Subtitles[i].ToString();
 			return list;
 		}
@@ -94,17 +112,11 @@ namespace BizHawk.Client.Common
 
 		public bool GetRerecordCounting() => Global.MovieSession.Movie.IsCountingRerecords;
 
-		public bool IsLoaded() => Global.MovieSession.Movie.IsActive;
+		public bool IsLoaded() => Global.MovieSession.Movie.IsActive();
 
 		public double Length() => Global.MovieSession.Movie.FrameCount;
 
-		public string Mode() => Global.MovieSession.Movie.IsFinished
-			? "FINISHED"
-			: Global.MovieSession.Movie.IsPlaying
-				? "PLAY"
-				: Global.MovieSession.Movie.IsRecording
-					? "RECORD"
-					: "INACTIVE";
+		public string Mode() => Global.MovieSession.Movie.Mode.ToString().ToUpper();
 
 		public void SetReadOnly(bool readOnly) => Global.MovieSession.ReadOnly = readOnly;
 
@@ -117,7 +129,11 @@ namespace BizHawk.Client.Common
 		public double GetFps()
 		{
 			var movie = Global.MovieSession.Movie;
-			if (!movie.IsActive) return default;
+			if (movie.NotActive())
+			{
+				return default;
+			}
+
 			return new PlatformFrameRates()[
 				movie.HeaderEntries[HeaderKeys.PLATFORM],
 				movie.HeaderEntries.TryGetValue(HeaderKeys.PAL, out var isPal) && isPal == "1"

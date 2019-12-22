@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using BizHawk.Client.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
@@ -11,7 +13,7 @@
 			{
 				if (frame <= Emulator.Frame)
 				{
-					if ((Mainform.EmulatorPaused || !Mainform.IsSeeking)
+					if ((MainForm.EmulatorPaused || !MainForm.IsSeeking)
 						&& !CurrentTasMovie.LastPositionStable)
 					{
 						LastPositionFrame = Emulator.Frame;
@@ -27,7 +29,7 @@
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			WasRecording = CurrentTasMovie.IsRecording() || WasRecording;
 
 			if (frame <= CurrentTasMovie.InputLogLength)
 			{
@@ -40,11 +42,11 @@
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
-					bool wasPaused = Mainform.EmulatorPaused;
-					Mainform.FrameAdvance();
+					bool wasPaused = MainForm.EmulatorPaused;
+					MainForm.FrameAdvance();
 					if (!wasPaused)
 					{
-						Mainform.UnpauseEmulator();
+						MainForm.UnpauseEmulator();
 					}
 				}
 				else

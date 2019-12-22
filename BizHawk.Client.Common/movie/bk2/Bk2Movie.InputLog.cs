@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 					Truncate(Log.Count);
 				}
 
-				Mode = Moviemode.Finished;
+				Mode = MovieMode.Finished;
 			}
 
 			if (IsCountingRerecords)
@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 
 			if (Log.Count < stateFrame)
 			{
-				if (IsFinished)
+				if (this.IsFinished())
 				{
 					return true;
 				}
@@ -267,18 +267,18 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (Mode == Moviemode.Play || Mode == Moviemode.Finished)
+				if (Mode == MovieMode.Play || Mode == MovieMode.Finished)
 				{
-					Mode = Moviemode.Finished;
+					Mode = MovieMode.Finished;
 					return true;
 				}
 
 				return false;
 			}
 
-			if (Mode == Moviemode.Finished)
+			if (Mode == MovieMode.Finished)
 			{
-				Mode = Moviemode.Play;
+				Mode = MovieMode.Play;
 			}
 
 			return true;

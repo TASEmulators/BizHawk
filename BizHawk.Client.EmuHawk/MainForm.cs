@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.RewireInputChain();
-			GlobalWin.Tools = new ToolManager(this);
+			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -1010,14 +1010,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public byte[] CurrentFrameBuffer(bool captureOSD)
-		{
-			using var bb = captureOSD ? CaptureOSD() : MakeScreenshotImage();
-			using var img = bb.ToSysdrawingBitmap();
-			ImageConverter converter = new ImageConverter();
-			return (byte[])converter.ConvertTo(img, typeof(byte[]));
-		}
-
 		public void TakeScreenshotToClipboard()
 		{
 			using (var bb = Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
@@ -1076,10 +1068,6 @@ namespace BizHawk.Client.EmuHawk
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
 
-			/*
-			using (var fs = new FileStream($"{path}_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
-				QuickBmpFile.Save(Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
-			*/
 			AddOnScreenMessage($"{fi.Name} saved.");
 		}
 
@@ -1562,7 +1550,7 @@ namespace BizHawk.Client.EmuHawk
 				str += $"{VersionInfo.CustomBuildString} ";
 			}
 
-			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+			str += Emulator.IsNull() ? "BizHawk" : Emulator.System().DisplayName;
 
 			if (VersionInfo.DeveloperBuild)
 			{
@@ -1573,7 +1561,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				str += $" - {Game.Name}";
 
-				if (MovieSession.Movie.IsActive)
+				if (MovieSession.Movie.IsActive())
 				{
 					str += $" - {Path.GetFileName(MovieSession.Movie.Filename)}";
 				}
@@ -2393,7 +2381,7 @@ namespace BizHawk.Client.EmuHawk
 		public void PutCoreSyncSettings(object o)
 		{
 			var settable = new SettingsAdapter(Emulator);
-			if (MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive())
 			{
 				AddOnScreenMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
@@ -2490,7 +2478,7 @@ namespace BizHawk.Client.EmuHawk
 			// is it enough to run this for one frame? maybe..
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
-				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
 					ClickyVirtualPadController.Click("Reset");
 					AddOnScreenMessage("Reset button pressed.");
@@ -2503,7 +2491,7 @@ namespace BizHawk.Client.EmuHawk
 			// is it enough to run this for one frame? maybe..
 			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
-				if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+				if (MovieSession.Movie.Mode != MovieMode.Play)
 				{
 					ClickyVirtualPadController.Click("Power");
 					AddOnScreenMessage("Power button pressed.");
@@ -2676,7 +2664,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMovie()
 		{
-			if (MovieSession.Movie.IsActive)
+			if (MovieSession.Movie.IsActive())
 			{
 				MovieSession.Movie.Save();
 				AddOnScreenMessage($"{MovieSession.Movie.Filename} saved.");
@@ -2785,7 +2773,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
-					if (!MovieSession.Movie.IsPlaying || MovieSession.Movie.IsFinished)
+					if (MovieSession.Movie.Mode != MovieMode.Play)
 					{
 						ClickyVirtualPadController.Click(button);
 						AddOnScreenMessage(msg);
@@ -3064,7 +3052,7 @@ namespace BizHawk.Client.EmuHawk
 					MovieSession.Movie.SwitchToRecord();
 				}
 
-				if (isRewinding && !IsRewindSlave && MovieSession.Movie.IsRecording)
+				if (isRewinding && !IsRewindSlave && MovieSession.Movie.IsRecording())
 				{
 					MovieSession.Movie.Truncate(Global.Emulator.Frame);
 				}
@@ -3602,7 +3590,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string ChoosePlatformForRom(RomGame rom)
 		{
-			using var platformChooser = new PlatformChooser
+			using var platformChooser = new PlatformChooser(Config)
 			{
 				RomGame = rom
 			};
@@ -3841,12 +3829,11 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					ApiManager.Restart(Emulator.ServiceProvider);
-					Tools.Restart();
+					Tools.Restart(Emulator);
 
 					if (Config.LoadCheatFileByGame)
 					{
-						CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
+						CheatList.SetDefaultFileName(Tools.GenerateDefaultCheatFilename());
 						if (CheatList.AttemptToLoadCheatFile())
 						{
 							AddOnScreenMessage("Cheats file loaded");
@@ -3887,18 +3874,18 @@ namespace BizHawk.Client.EmuHawk
 					ClientApi.OnRomLoaded(Emulator);
 					return true;
 				}
-				else if (!(Emulator is NullEmulator))
-				{
-					// The ROM has been loaded by a recursive invocation of the LoadROM method.
-					ClientApi.OnRomLoaded(Emulator);
-					return true;
-				}
-				else
+				else if (Emulator.IsNull())
 				{
 					// This shows up if there's a problem
 					ClientApi.UpdateEmulatorAndVP(Emulator);
 					OnRomChanged();
 					return false;
+				}
+				else
+				{
+					// The ROM has been loaded by a recursive invocation of the LoadROM method.
+					ClientApi.OnRomLoaded(Emulator);
+					return true;
 				}
 			}
 			finally
@@ -3932,7 +3919,7 @@ namespace BizHawk.Client.EmuHawk
 				Config.PutCoreSettings(settable.GetSettings(), t);
 			}
 
-			if (settable.HasSyncSettings && !MovieSession.Movie.IsActive)
+			if (settable.HasSyncSettings && !MovieSession.Movie.IsActive())
 			{
 				// don't trample config with loaded-from-movie settings
 				Config.PutCoreSyncSettings(settable.GetSyncSettings(), t);
@@ -3972,7 +3959,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAv();
 
 			CommitCoreSettingsToConfig();
-			if (MovieSession.Movie.IsActive) // Note: this must be called after CommitCoreSettingsToConfig()
+			if (MovieSession.Movie.IsActive()) // Note: this must be called after CommitCoreSettingsToConfig()
 			{
 				StopMovie();
 			}
@@ -4011,8 +3998,7 @@ namespace BizHawk.Client.EmuHawk
 				Emulator = new NullEmulator(coreComm);
 				Global.Game = GameInfo.NullInstance;
 
-				Tools.Restart();
-				ApiManager.Restart(Emulator.ServiceProvider);
+				Tools.Restart(Emulator);
 				RewireSound();
 				ClearHolds();
 				ToolFormBase.UpdateCheatRelatedTools(null, null);
@@ -4122,7 +4108,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsLoadstate();
 				AutoFireController.ClearStarts();
 
-				if (!IsRewindSlave && MovieSession.Movie.IsActive)
+				if (!IsRewindSlave && MovieSession.Movie.IsActive())
 				{
 					ClearRewindData();
 				}
@@ -4419,7 +4405,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (MovieSession.Movie.IsActive)
+				if (MovieSession.Movie.IsActive())
 				{
 					MovieSession.ReadOnly ^= true;
 					AddOnScreenMessage(MovieSession.ReadOnly ? "Movie read-only mode" : "Movie read+write mode");
@@ -4537,7 +4523,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					runFrame = Rewinder.Rewind(1) && Emulator.Frame > 1;
 
-					if (runFrame && MovieSession.Movie.IsRecording)
+					if (runFrame && MovieSession.Movie.IsRecording())
 					{
 						MovieSession.Movie.SwitchToPlay();
 						returnToRecording = true;

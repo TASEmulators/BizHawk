@@ -169,9 +169,9 @@ namespace BizHawk.Client.EmuHawk
 			_maxRow = _domain.Size / 2;
 
 			// Don't reset scroll bar if restarting the same rom
-			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
+			if (_lastRom != MainForm.CurrentlyOpenRom)
 			{
-				_lastRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				_lastRom = MainForm.CurrentlyOpenRom;
 				ResetScrollBar();
 			}
 			
@@ -365,9 +365,9 @@ namespace BizHawk.Client.EmuHawk
 			return (char)val;
 		}
 
-		private static bool CurrentRomIsArchive()
+		private bool CurrentRomIsArchive()
 		{
-			var path = GlobalWin.MainForm.CurrentlyOpenRom;
+			var path = MainForm.CurrentlyOpenRom;
 			if (path == null)
 			{
 				return false;
@@ -384,9 +384,9 @@ namespace BizHawk.Client.EmuHawk
 			return file.IsArchive;
 		}
 
-		private static byte[] GetRomBytes()
+		private byte[] GetRomBytes()
 		{
-			var path = GlobalWin.MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
+			var path = MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
 			if (string.IsNullOrEmpty(path))
 			{
 				return new byte[] { 0xFF };
@@ -460,11 +460,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadConfigSettings()
 		{
-			HexMenuStrip.BackColor = Global.Config.HexMenubarColor;
-			MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
-			MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
-			Header.BackColor = Global.Config.HexBackgrndColor;
-			Header.ForeColor = Global.Config.HexForegrndColor;
+			HexMenuStrip.BackColor = Config.HexMenubarColor;
+			MemoryViewerBox.BackColor = Config.HexBackgrndColor;
+			MemoryViewerBox.ForeColor = Config.HexForegrndColor;
+			Header.BackColor = Config.HexBackgrndColor;
+			Header.ForeColor = Config.HexForegrndColor;
 		}
 
 		private void CloseHexFind()
@@ -842,7 +842,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Global.Config.RecentRoms.MostRecent;
+				string path = Config.RecentRoms.MostRecent;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -862,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				string path = Global.Config.RecentRoms.MostRecent;
+				string path = Config.RecentRoms.MostRecent;
 
 				if (string.IsNullOrWhiteSpace(path))
 				{
@@ -1213,7 +1213,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!CurrentRomIsArchive())
 			{
-				SaveFileBinary(GlobalWin.MainForm.CurrentlyOpenRom);
+				SaveFileBinary(MainForm.CurrentlyOpenRom);
 			}
 		}
 
@@ -1281,10 +1281,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null);
-			var romName = Global.Config.RecentRoms.MostRecent.Contains('|')
-				? Global.Config.RecentRoms.MostRecent.Split('|').Last()
-				: Global.Config.RecentRoms.MostRecent;
+			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null);
+			var romName = Config.RecentRoms.MostRecent.Contains('|')
+				? Config.RecentRoms.MostRecent.Split('|').Last()
+				: Config.RecentRoms.MostRecent;
 
 			using var ofd = new OpenFileDialog
 			{
@@ -1587,16 +1587,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_highlightedAddress.HasValue || _secondaryHighlightedAddresses.Any())
 			{
-				GlobalWin.Tools.LoadRamWatch(true);
+				Tools.LoadRamWatch(true);
 			}
 
 			if (_highlightedAddress.HasValue)
 			{
-				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(_highlightedAddress.Value));
+				Tools.RamWatch.AddWatch(MakeWatch(_highlightedAddress.Value));
 			}
 
 			_secondaryHighlightedAddresses.ForEach(addr =>
-				GlobalWin.Tools.RamWatch.AddWatch(MakeWatch(addr)));
+				Tools.RamWatch.AddWatch(MakeWatch(addr)));
 		}
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
@@ -1684,15 +1684,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MemoryViewerBox.BackColor = Color.FromName("Control");
 			MemoryViewerBox.ForeColor = Color.FromName("ControlText");
-			this.HexMenuStrip.BackColor = Color.FromName("Control");
+			HexMenuStrip.BackColor = Color.FromName("Control");
 			Header.BackColor = Color.FromName("Control");
 			Header.ForeColor = Color.FromName("ControlText");
-			Global.Config.HexMenubarColor = Color.FromName("Control");
-			Global.Config.HexForegrndColor = Color.FromName("ControlText");
-			Global.Config.HexBackgrndColor = Color.FromName("Control");
-			Global.Config.HexFreezeColor = Color.LightBlue;
-			Global.Config.HexHighlightColor = Color.Pink;
-			Global.Config.HexHighlightFreezeColor = Color.Violet;
+			Config.HexMenubarColor = Color.FromName("Control");
+			Config.HexForegrndColor = Color.FromName("ControlText");
+			Config.HexBackgrndColor = Color.FromName("Control");
+			Config.HexFreezeColor = Color.LightBlue;
+			Config.HexHighlightColor = Color.Pink;
+			Config.HexHighlightFreezeColor = Color.Violet;
 		}
 
 		#endregion
@@ -2097,7 +2097,7 @@ namespace BizHawk.Client.EmuHawk
 
 						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));
 						e.Graphics.DrawRectangle(_blackPen, rect);
-						_freezeBrush.Color = Global.Config.HexFreezeColor;
+						_freezeBrush.Color = Config.HexFreezeColor;
 						e.Graphics.FillRectangle(_freezeBrush, rect);
 					}
 				}
@@ -2119,13 +2119,13 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.CheatList.IsActive(_domain, addressHighlighted))
 				{
-					_freezeHighlightBrush.Color = Global.Config.HexHighlightFreezeColor;
+					_freezeHighlightBrush.Color = Config.HexHighlightFreezeColor;
 					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
 					e.Graphics.FillRectangle(_freezeHighlightBrush, textRect);
 				}
 				else
 				{
-					_highlightBrush.Color = Global.Config.HexHighlightColor;
+					_highlightBrush.Color = Config.HexHighlightColor;
 					e.Graphics.FillRectangle(_highlightBrush, rect);
 					e.Graphics.FillRectangle(_highlightBrush, textRect);
 				}
@@ -2146,13 +2146,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.CheatList.IsActive(_domain, address))
 					{
-						_freezeHighlightBrush.Color = Global.Config.HexHighlightFreezeColor;
+						_freezeHighlightBrush.Color = Config.HexHighlightFreezeColor;
 						e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
 						e.Graphics.FillRectangle(_freezeHighlightBrush, textRect);
 					}
 					else
 					{
-						_secondaryHighlightBrush.Color = Color.FromArgb(0x44, Global.Config.HexHighlightColor);
+						_secondaryHighlightBrush.Color = Color.FromArgb(0x44, Config.HexHighlightColor);
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, rect);
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, textRect);
 					}

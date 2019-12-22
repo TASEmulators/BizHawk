@@ -76,14 +76,11 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
 			}
 
-			GlobalWin.Sound.StartSound();
-			GlobalWin.OSD.AddMessage("Sound settings saved");
 			DialogResult = DialogResult.OK;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Sound config aborted");
 			Close();
 		}
 

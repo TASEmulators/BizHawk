@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			[DefaultValue(true)]
 			public bool Show_Chars { get; set; }
 
+			[DisplayName("Display Quad Characters")]
+			[Description("When true, displays quad character.")]
+			[DefaultValue(true)]
+			public bool Show_Quads { get; set; }
+
 			[DisplayName("Display Sprites")]
 			[Description("When true, displays sprites.")]
 			[DefaultValue(true)]

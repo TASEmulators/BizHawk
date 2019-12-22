@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
@@ -14,8 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ApiManager
 	{
-		private static ApiContainer container;
-		private static void Register(IEmulatorServiceProvider serviceProvider)
+		private static ApiContainer _container;
+		private static IExternalApiProvider Register(IEmulatorServiceProvider serviceProvider)
 		{
 			foreach (var api in Assembly.Load("BizHawk.Client.Common").GetTypes()
 				.Concat(Assembly.Load("BizHawk.Client.ApiHawk").GetTypes())
@@ -26,14 +24,15 @@ namespace BizHawk.Client.EmuHawk
 				ServiceInjector.UpdateServices(serviceProvider, instance);
 				Libraries.Add(api, instance);
 			}
-			container = new ApiContainer(Libraries);
-			GlobalWin.ApiProvider = new BasicApiProvider(container);
+			_container = new ApiContainer(Libraries);
+			return new BasicApiProvider(_container);
 		}
+
 		private static readonly Dictionary<Type, IExternalApi> Libraries = new Dictionary<Type, IExternalApi>();
-		public static void Restart(IEmulatorServiceProvider newServiceProvider)
+		public static IExternalApiProvider Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			Libraries.Clear();
-			Register(newServiceProvider);
+			return Register(newServiceProvider);
 		}
 	}
 }

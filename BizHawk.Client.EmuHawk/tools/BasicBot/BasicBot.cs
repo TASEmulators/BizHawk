@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
+					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
 					"bot"
 				);
@@ -504,7 +504,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 					CurrentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
+					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
 					"bot"
 				);
@@ -1099,7 +1099,7 @@ namespace BizHawk.Client.EmuHawk
 			GoalGroupBox.Enabled = false;
 			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 
-			if (Global.MovieSession.Movie.IsRecording)
+			if (Global.MovieSession.Movie.IsRecording())
 			{
 				_oldCountingSetting = Global.MovieSession.Movie.IsCountingRerecords;
 				Global.MovieSession.Movie.IsCountingRerecords = false;
@@ -1156,7 +1156,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentBotAttempt = null;
 			GoalGroupBox.Enabled = true;
 
-			if (Global.MovieSession.Movie.IsRecording)
+			if (Global.MovieSession.Movie.IsRecording())
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
 			}

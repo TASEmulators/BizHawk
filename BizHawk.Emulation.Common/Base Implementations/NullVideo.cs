@@ -7,10 +7,7 @@
 	/// <seealso cref="IVideoProvider" />
 	public class NullVideo : IVideoProvider
 	{
-		public int[] GetVideoBuffer()
-		{
-			return new int[BufferWidth * BufferHeight];
-		}
+		public int[] GetVideoBuffer() => new int[BufferWidth * BufferHeight];
 
 		public static NullVideo Instance { get; } = new NullVideo();
 

@@ -91,11 +91,11 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					Global.Config.RecentCheats.HandleLoadError(path);
+					Config.RecentCheats.HandleLoadError(path);
 				}
 				else
 				{
-					Global.Config.RecentCheats.Add(path);
+					Config.RecentCheats.Add(path);
 					UpdateDialog();
 					UpdateMessageLabel();
 				}
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Load(file.FullName, append);
 					UpdateDialog();
 					UpdateMessageLabel();
-					Global.Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
+					Config.RecentCheats.Add(Global.CheatList.CurrentFileName);
 				}
 			}
 		}
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				GlobalWin.Tools.IsAvailable<GameShark>();
+				Tools.IsAvailable<GameShark>();
 		}
 
 		private void AddCheat()
@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = !Global.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
-				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(Tools.GenerateDefaultCheatFilename());
 				UpdateDialog();
 				UpdateMessageLabel();
 				ToggleGameGenieButton();
@@ -381,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSubMenu.DropDownItems.Clear();
 			RecentSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentCheats.RecentMenu(LoadFileFromRecent));
+				Config.RecentCheats.RecentMenu(LoadFileFromRecent));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -445,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
-				GlobalWin.Tools.IsAvailable<GameShark>();
+				Tools.IsAvailable<GameShark>();
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenGameGenieEncoderDecoderMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LoadGameGenieEc();
+			Tools.LoadGameGenieEc();
 		}
 
 		#endregion
@@ -563,10 +563,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AlwaysLoadCheatsMenuItem.Checked = Global.Config.LoadCheatFileByGame;
-			AutoSaveCheatsMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
-			DisableCheatsOnLoadMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
-			AutoloadMenuItem.Checked = Global.Config.RecentCheats.AutoLoad;
+			AlwaysLoadCheatsMenuItem.Checked = Config.LoadCheatFileByGame;
+			AutoSaveCheatsMenuItem.Checked = Config.CheatsAutoSaveOnClose;
+			DisableCheatsOnLoadMenuItem.Checked = Config.DisableCheatsOnLoad;
+			AutoloadMenuItem.Checked = Config.RecentCheats.AutoLoad;
 			SaveWindowPositionMenuItem.Checked = Settings.SaveWindowPosition;
 			AlwaysOnTopMenuItem.Checked = Settings.TopMost;
 			FloatingWindowMenuItem.Checked = Settings.FloatingWindow;
@@ -574,22 +574,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AlwaysLoadCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.LoadCheatFileByGame ^= true;
+			Config.LoadCheatFileByGame ^= true;
 		}
 
 		private void AutoSaveCheatsMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.CheatsAutoSaveOnClose ^= true;
+			Config.CheatsAutoSaveOnClose ^= true;
 		}
 
 		private void CheatsOnOffLoadMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisableCheatsOnLoad ^= true;
+			Config.DisableCheatsOnLoad ^= true;
 		}
 
 		private void AutoloadMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RecentCheats.AutoLoad ^= true;
+			Config.RecentCheats.AutoLoad ^= true;
 		}
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
@@ -620,9 +620,9 @@ namespace BizHawk.Client.EmuHawk
 
 			CheatsMenu.Items.Add(CheatListView.ToColumnsMenu(ColumnToggleCallback));
 
-			Global.Config.DisableCheatsOnLoad = false;
-			Global.Config.LoadCheatFileByGame = true;
-			Global.Config.CheatsAutoSaveOnClose = true;
+			Config.DisableCheatsOnLoad = false;
+			Config.LoadCheatFileByGame = true;
+			Config.CheatsAutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			CheatListView.AllColumns.Clear();
@@ -700,7 +700,7 @@ namespace BizHawk.Client.EmuHawk
 			var selected = SelectedCheats.ToList();
 			if (selected.Any())
 			{
-				GlobalWin.Tools.Load<HexEditor>();
+				Tools.Load<HexEditor>();
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{

@@ -20,10 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<int> _unsavedZones = new List<int>();
 		private bool _selecting = false;
 
-		private IMovie CurrentMovie
-		{
-			get { return Global.MovieSession.Movie; }
-		}
+		private IMovie CurrentMovie => Global.MovieSession.Movie;
 
 		// Still need to make sure the user can't load and use macros that 
 		// have options only available for TasMovie
@@ -39,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
 			// which resets tools before the movie session becomes active)
-			if (!Global.MovieSession.Movie.IsActive && !GlobalWin.Tools.IsLoaded<TAStudio>())
+			if (!Global.MovieSession.Movie.IsActive() && !GlobalWin.Tools.IsLoaded<TAStudio>())
 			{
 				MessageBox.Show("In order to use this tool you must be recording a movie.");
 				Close();

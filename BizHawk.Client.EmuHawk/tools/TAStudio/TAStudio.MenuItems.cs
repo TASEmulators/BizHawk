@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Mainform.GameIsClosing)
+			if (!MainForm.GameIsClosing)
 			{
 				StartNewTasMovie();
 			}
@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 				var ofd = new OpenFileDialog
 				{
 					FileName = filename,
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
 					Filter = string.Format(
 						"All Available Files ({0})|{0}|TAS Project Files (*.{1})|*.{1}|Movie Files (*.{2})|*.{2}|All Files|*.*",
 						all, TasMovie.Extension, MovieService.DefaultExtension)
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 						if (result1 == DialogResult.OK)
 						{
-							Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
+							MainForm.StartNewMovie(MovieService.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							StartNewMovieWrapper(false);
 							SetUpColumns();
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var file = SaveFileDialog(
 				filename,
-				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
 				"Tas Project Files",
 				"tasproj");
 
@@ -168,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 				_autosaveTimer.Start();
 			}
 
-			Mainform.SetWindowText();
+			MainForm.SetWindowText();
 			GlobalWin.Sound.StartSound();
 		}
 
@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentMacrosMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			recentMacrosToolStripMenuItem.DropDownItems.Clear();
-			recentMacrosToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentMacros.RecentMenu(DummyLoadMacro));
+			recentMacrosToolStripMenuItem.DropDownItems.AddRange(Config.RecentMacros.RecentMenu(DummyLoadMacro));
 		}
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
@@ -357,16 +357,16 @@ namespace BizHawk.Client.EmuHawk
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
 
-			UndoMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Undo"].Bindings;
-			RedoMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Redo"].Bindings;
-			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select between Markers"].Bindings;
-			SelectAllMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Select All"].Bindings;
-			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Reselect Clip."].Bindings;
-			ClearFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
-			InsertFrameMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
-			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert # Frames"].Bindings;
-			DeleteFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;
-			CloneFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clone Frames"].Bindings;
+			UndoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Undo"].Bindings;
+			RedoMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Redo"].Bindings;
+			SelectBetweenMarkersMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select between Markers"].Bindings;
+			SelectAllMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Select All"].Bindings;
+			ReselectClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reselect Clip."].Bindings;
+			ClearFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"].Bindings;
+			InsertFrameMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"].Bindings;
+			InsertNumFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"].Bindings;
+			DeleteFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"].Bindings;
+			CloneFramesMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"].Bindings;
 		}
 
 		public void ClearFramesExternal()
@@ -865,7 +865,7 @@ namespace BizHawk.Client.EmuHawk
 			int goToFrame = CurrentTasMovie.LastStatedFrame;
 			do
 			{
-				Mainform.FrameAdvance();
+				MainForm.FrameAdvance();
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
@@ -1106,7 +1106,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new MovieHeaderEditor(CurrentTasMovie)
 			{
-				Owner = Mainform,
+				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView)
 			}.Show();
 			UpdateChangesIndicator();
@@ -1116,9 +1116,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			new StateHistorySettingsForm(CurrentTasMovie.TasStateManager.Settings)
 			{
-				Owner = Mainform,
+				Owner = Owner,
 				Location = this.ChildPointToScreen(TasView),
-				Statable = this.StatableEmulator
+				Statable = StatableEmulator
 			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			UpdateChangesIndicator();
@@ -1488,20 +1488,20 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromNowSeparator.Visible = StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-			CancelSeekContextMenuItem.Enabled = Mainform.PauseOnFrame.HasValue;
+			CancelSeekContextMenuItem.Enabled = MainForm.PauseOnFrame.HasValue;
 			BranchContextMenuItem.Visible = TasView.CurrentCell?.RowIndex == Emulator.Frame;
 
-			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
-			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert # Frames"].Bindings;
-			ClearContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
-			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
-			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;
-			CloneContextMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clone Frames"].Bindings;
+			SelectBetweenMarkersContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Sel. bet. Markers"].Bindings;
+			InsertNumFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert # Frames"].Bindings;
+			ClearContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clear Frames"].Bindings;
+			InsertFrameContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Insert Frame"].Bindings;
+			DeleteFramesContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Delete Frames"].Bindings;
+			CloneContextMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Clone Frames"].Bindings;
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Mainform.PauseOnFrame = null;
+			MainForm.PauseOnFrame = null;
 			RefreshTasView();
 		}
 
@@ -1519,7 +1519,7 @@ namespace BizHawk.Client.EmuHawk
 				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
-				Mainform.PauseEmulator();
+				MainForm.PauseEmulator();
 				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
@@ -1539,7 +1539,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(index);
 					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
 						SaveRamEmulator.CloneSaveRam());
-					Mainform.PauseEmulator();
+					MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename), true);
 				}
 				else

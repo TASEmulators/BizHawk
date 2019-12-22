@@ -6,8 +6,6 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.ApiHawk;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -31,8 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
-		public bool AskSaveChanges() { return true;  }
-		public bool UpdateBefore { get { return false; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => false;
 		public void UpdateValues() { }
 
 		public void FastUpdate()

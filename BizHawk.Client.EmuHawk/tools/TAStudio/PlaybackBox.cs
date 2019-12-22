@@ -40,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RecordingMode
 		{
-			get => Global.MovieSession.Movie.IsRecording;
+			get => Global.MovieSession.Movie.IsRecording();
 			set
 			{
 				RecordingModeCheckbox.Checked = value;

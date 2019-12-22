@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.ShowLogWindow = false;
 				GlobalWin.MainForm.NotifyLogWindowClosing();
-				LogConsole.notifyLogWindowClosing();
+				LogConsole.NotifyLogWindowClosing();
 				SaveConfigSettings();
 			};
 			ListView_ClientSizeChanged(null, null);

@@ -21,10 +21,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
-		private MainForm Mainform => GlobalWin.MainForm;
 
 		public bool IsInMenuLoop { get; private set; }
-		public string StatesPath => PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+		public string StatesPath => PathManager.MakeAbsolutePath(Config.PathEntries["Global", "TAStudio states"].Path, null);
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
@@ -212,14 +211,14 @@ namespace BizHawk.Client.EmuHawk
 				this.Invoke(() => SavingProgressBar.Visible = true);
 				for (;;)
 				{
-					if (_seekBackgroundWorker.CancellationPending || !IsHandleCreated || !Mainform.PauseOnFrame.HasValue)
+					if (_seekBackgroundWorker.CancellationPending || !IsHandleCreated || !MainForm.PauseOnFrame.HasValue)
 					{
 						e.Cancel = true;
 						break;
 					}
 
 					int diff = Emulator.Frame - _seekStartFrame.Value;
-					int unit = Mainform.PauseOnFrame.Value - _seekStartFrame.Value;
+					int unit = MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
 					double progress = 0;
 
 					if (diff != 0 && unit != 0)
@@ -323,8 +322,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool InitializeOnLoad()
 		{
-			Mainform.PauseOnFrame = null;
-			Mainform.PauseEmulator();
+			MainForm.PauseOnFrame = null;
+			MainForm.PauseEmulator();
 
 			// Start Scenario 0: core needs a nag
 			// But do not nag if auto-loading
@@ -334,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 1: A regular movie is active
-			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
+			if (Global.MovieSession.Movie.IsActive() && !(Global.MovieSession.Movie is TasMovie))
 			{
 				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result == DialogResult.OK)
@@ -350,7 +349,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// Start Scenario 2: A tasproj is already active
-			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			else if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
 			{
 				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
 				if (!result)
@@ -489,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
 			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
-				Global.Config.AutofireOn, Global.Config.AutofireOff);
+				Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < FloatPatterns.Length - 2; i++)
 			{
@@ -498,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 
 			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new[] { 1f });
 			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
-				1f, Global.Config.AutofireOn, 0f, Global.Config.AutofireOff);
+				1f, Config.AutofireOn, 0f, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}
@@ -523,14 +522,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageTastudio()
 		{
-			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks();
 			SetTextProperty();
-			Mainform.RelinquishControl(this);
-			_originalEndAction = Global.Config.MovieEndAction;
-			Mainform.ClearRewindData();
-			Global.Config.MovieEndAction = MovieEndAction.Record;
-			Mainform.SetMainformMovieInfo();
+			MainForm.RelinquishControl(this);
+			_originalEndAction = Config.MovieEndAction;
+			MainForm.ClearRewindData();
+			Config.MovieEndAction = MovieEndAction.Record;
+			MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
 			SetSplicer();
 		}
@@ -681,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			SetTasMovieCallbacks(movie as TasMovie);
 
-			bool result = Mainform.StartNewMovie(movie, record);
+			bool result = MainForm.StartNewMovie(movie, record);
 			if (result)
 			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
@@ -744,17 +743,17 @@ namespace BizHawk.Client.EmuHawk
 		private void TastudioStopMovie()
 		{
 			Global.MovieSession.StopMovie(false);
-			Mainform.SetMainformMovieInfo();
+			MainForm.SetMainformMovieInfo();
 		}
 
 		private void DisengageTastudio()
 		{
-			Mainform.PauseOnFrame = null;
-			GlobalWin.OSD.AddMessage("TAStudio disengaged");
+			MainForm.PauseOnFrame = null;
+			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
-			Mainform.TakeBackControl();
-			Global.Config.MovieEndAction = _originalEndAction;
-			Mainform.SetMainformMovieInfo();
+			MainForm.TakeBackControl();
+			Config.MovieEndAction = _originalEndAction;
+			MainForm.SetMainformMovieInfo();
 
 			// Do not keep TAStudio's disk save states.
 			// if (Directory.Exists(statesPath)) Directory.Delete(statesPath, true);
@@ -849,7 +848,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
 				{
 					// this happens when we're holding the left button while unpaused - view scrolls down, new input gets drawn, seek pauses
-					Mainform.UnpauseEmulator();
+					MainForm.UnpauseEmulator();
 				}
 
 				_autoRestorePaused = null;
@@ -863,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
+			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !MainForm.EmulatorPaused;
 			TastudioPlayMode();
 			var closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value.Length > 0 && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -873,24 +872,24 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 			{
-				bool wasPaused = Mainform.EmulatorPaused; 
+				bool wasPaused = MainForm.EmulatorPaused; 
 				
 				// why not use this? because I'm not letting the form freely run. it all has to be under this loop.
 				// i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
 				// PauseOnFrame = frame;
 				
 				// can't re-enter lua while doing this
-				Mainform.SuppressLua = true;
+				MainForm.SuppressLua = true;
 				while (Emulator.Frame != frame)
 				{
-					Mainform.SeekFrameAdvance();
+					MainForm.SeekFrameAdvance();
 				}
 
-				Mainform.SuppressLua = false;
+				MainForm.SuppressLua = false;
 
 				if (!wasPaused)
 				{
-					Mainform.UnpauseEmulator();
+					MainForm.UnpauseEmulator();
 				}
 
 				// lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
@@ -906,7 +905,7 @@ namespace BizHawk.Client.EmuHawk
 			if (frame > Emulator.Frame)
 			{
 				// make seek frame keep up with emulation on fast scrolls
-				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding || WasRecording)
+				if (MainForm.EmulatorPaused || MainForm.IsSeeking || fromRewinding || WasRecording)
 				{
 					StartSeeking(frame);
 				}
@@ -931,8 +930,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_hackyDontUpdate = true;
-			GlobalWin.Tools.UpdateBefore();
-			GlobalWin.Tools.UpdateAfter();
+			Tools.UpdateBefore();
+			Tools.UpdateAfter();
 			_hackyDontUpdate = false;
 		}
 
@@ -949,14 +948,14 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
 		{
 			_hackyDontUpdate = true;
-			GlobalWin.Tools.UpdateBefore();
-			GlobalWin.Tools.UpdateAfter();
+			Tools.UpdateBefore();
+			Tools.UpdateAfter();
 			_hackyDontUpdate = false;
 		}
 
 		public void TogglePause()
 		{
-			Mainform.TogglePause();
+			MainForm.TogglePause();
 		}
 
 		private void SetSplicer()

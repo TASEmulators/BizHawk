@@ -14,22 +14,22 @@ namespace BizHawk.Client.EmuHawk
 		public TI83KeyPad()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.TI83KeypadSettings.TopMost;
+			TopMost = Config.TI83KeypadSettings.TopMost;
 			Closing += (o, e) =>
 				{
-					Global.Config.TI83KeypadSettings.Wndx = Location.X;
-					Global.Config.TI83KeypadSettings.Wndy = Location.Y;
+					Config.TI83KeypadSettings.Wndx = Location.X;
+					Config.TI83KeypadSettings.Wndy = Location.Y;
 				};
 		}
 
 		private void TI83KeyPad_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.TI83KeypadSettings.UseWindowPosition && IsOnScreen(Global.Config.TI83KeypadSettings.TopLeft))
+			if (Config.TI83KeypadSettings.UseWindowPosition && IsOnScreen(Config.TI83KeypadSettings.TopLeft))
 			{
-				Location = Global.Config.TI83KeypadSettings.WindowPosition;
+				Location = Config.TI83KeypadSettings.WindowPosition;
 			}
 
-			if (Global.Config.TI83ToolTips)
+			if (Config.TI83ToolTips)
 			{
 				SetToolTips();
 			}
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetToolTips()
 		{
 			// Set button hotkey mapping into tooltips
-			var mappings = Global.Config.AllTrollers["TI83 Controller"];
+			var mappings = Config.AllTrollers["TI83 Controller"];
 			KeyPadToolTips.SetToolTip(ZeroButton, mappings["0"]);
 			KeyPadToolTips.SetToolTip(OneButton, mappings["1"]);
 			KeyPadToolTips.SetToolTip(TwoButton, mappings["2"]);
@@ -131,17 +131,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ShowHotkeysMenuItem.Checked = Global.Config.TI83ToolTips;
-			SaveWindowPositionMenuItem.Checked = Global.Config.TI83KeypadSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.TI83KeypadSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.TI83KeypadSettings.FloatingWindow;
+			ShowHotkeysMenuItem.Checked = Config.TI83ToolTips;
+			SaveWindowPositionMenuItem.Checked = Config.TI83KeypadSettings.SaveWindowPosition;
+			AlwaysOnTopMenuItem.Checked = Config.TI83KeypadSettings.TopMost;
+			FloatingWindowMenuItem.Checked = Config.TI83KeypadSettings.FloatingWindow;
 		}
 
 		private void ShowHotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TI83ToolTips ^= true;
+			Config.TI83ToolTips ^= true;
 
-			if (Global.Config.TI83ToolTips)
+			if (Config.TI83ToolTips)
 			{
 				SetToolTips();
 			}
@@ -153,19 +153,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TI83KeypadSettings.SaveWindowPosition ^= true;
+			Config.TI83KeypadSettings.SaveWindowPosition ^= true;
 		}
 
 		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TI83KeypadSettings.TopMost ^= true;
-			TopMost = Global.Config.TI83KeypadSettings.TopMost;
+			Config.TI83KeypadSettings.TopMost ^= true;
+			TopMost = Config.TI83KeypadSettings.TopMost;
 		}
 
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TI83KeypadSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Global.Config.TI83KeypadSettings.FloatingWindow);
+			Config.TI83KeypadSettings.FloatingWindow ^= true;
+			RefreshFloatingWindowControl(Config.TI83KeypadSettings.FloatingWindow);
 		}
 
 		#endregion
@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl(Global.Config.TI83KeypadSettings.FloatingWindow);
+			RefreshFloatingWindowControl(Config.TI83KeypadSettings.FloatingWindow);
 			base.OnShown(e);
 		}
 

@@ -882,8 +882,8 @@ namespace BizHawk.Client.EmuHawk
 			var watches = SelectedWatches.ToList();
 			if (watches.Any())
 			{
-				GlobalWin.Tools.LoadRamWatch(true);
-				watches.ForEach(GlobalWin.Tools.RamWatch.AddWatch);
+				Tools.LoadRamWatch(true);
+				watches.ForEach(Tools.RamWatch.AddWatch);
 				if (Settings.AlwaysExcludeRamWatch)
 				{
 					RemoveRamWatchesFromList();
@@ -909,9 +909,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveRamWatchesFromList()
 		{
-			if (GlobalWin.Tools.Has<RamWatch>())
+			if (Tools.Has<RamWatch>())
 			{
-				_searches.RemoveSmallWatchRange(GlobalWin.Tools.RamWatch.Watches);
+				_searches.RemoveSmallWatchRange(Tools.RamWatch.Watches);
 				UpdateList();
 			}
 		}

@@ -97,11 +97,11 @@ namespace BizHawk.Client.EmuHawk
 			var tabPages = new List<TabPage>(systems.Count);
 
 			int x = UIHelper.ScaleX(6);
-			int textboxWidth = UIHelper.ScaleX(70);
+			int textBoxWidth = UIHelper.ScaleX(70);
 			int padding = UIHelper.ScaleX(5);
 			int buttonWidth = UIHelper.ScaleX(26);
 			int buttonHeight = UIHelper.ScaleY(23);
-			int buttonOffsetY = -1; // To align the top with the textbox I guess? Always 1 pixel regardless of scaling.
+			int buttonOffsetY = -1; // To align the top with the TextBox I guess? Always 1 pixel regardless of scaling.
 			int widgetOffset = UIHelper.ScaleX(85);
 			int rowHeight = UIHelper.ScaleY(30);
 
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = path.Path,
 						Location = new Point(x, y),
-						Width = textboxWidth,
+						Width = textBoxWidth,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 						MinimumSize = new Size(UIHelper.ScaleX(26), UIHelper.ScaleY(23)),
@@ -198,12 +198,6 @@ namespace BizHawk.Client.EmuHawk
 					t.Controls.Add(box);
 
 					y += rowHeight;
-				}
-
-				var sys = systemDisplayName;
-				if (systemDisplayName == "PCE") // Hack
-				{
-					sys = "PCECD";
 				}
 
 				tabPages.Add(t);

@@ -717,12 +717,6 @@
     <Compile Include="movie\SubtitleMaker.Designer.cs">
       <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </Compile>
-    <Compile Include="NameStateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NameStateForm.Designer.cs">
-      <DependentUpon>NameStateForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="OpenAdvancedChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1172,7 +1166,7 @@
     <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\ToolHelpers.cs">
+    <Compile Include="tools\ToolFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\ToolManager.cs" />
@@ -1681,10 +1675,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="movie\RecordMovie.resx">
       <DependentUpon>RecordMovie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="NameStateForm.resx">
-      <DependentUpon>NameStateForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="OpenAdvancedChooser.resx">
       <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>

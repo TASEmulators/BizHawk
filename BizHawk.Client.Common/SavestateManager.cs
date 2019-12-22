@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			if (Global.MovieSession.Movie.IsActive)
+			if (Global.MovieSession.Movie.IsActive())
 			{
 				bs.PutLump(BinaryStateLump.Input,
 					delegate(TextWriter tw)
@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 					});
 			}
 
-			if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
 			{
 				bs.PutLump(BinaryStateLump.LagLog,
 					delegate(TextWriter tw)
@@ -139,7 +139,7 @@ namespace BizHawk.Client.Common
 				{
 					var succeed = false;
 
-					if (Global.MovieSession.Movie.IsActive)
+					if (Global.MovieSession.Movie.IsActive())
 					{
 						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep1(tr));
 						if (!succeed)
@@ -179,7 +179,7 @@ namespace BizHawk.Client.Common
 						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
 					}
 
-					if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+					if (Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie is TasMovie)
 					{
 						bl.GetLump(BinaryStateLump.LagLog, false, delegate(TextReader tr)
 						{

@@ -146,13 +146,15 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2, 0, false);
 
 			// setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			GLManager.CreateInstance(GlobalWin.IGL_GL);
+			GLManager.CreateInstance();
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+			{
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			}
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
 			{
 				try
@@ -172,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.GL = GlobalWin.IGL_GL;
 
-				// check the opengl version and dont even try to boot this crap up if its too old
+				// check the opengl version and don't even try to boot this crap up if its too old
 				if (GlobalWin.IGL_GL.Version < 200)
 				{
 					// fallback
@@ -221,27 +223,25 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					using (var mf = new MainForm(args))
+					using var mf = new MainForm(args);
+					var title = mf.Text;
+					mf.Show();
+					mf.Text = title;
+					try
 					{
-						var title = mf.Text;
-						mf.Show();
-						mf.Text = title;
-						try
+						GlobalWin.ExitCode = mf.ProgramRunLoop();
+					}
+					catch (Exception e) when (Global.MovieSession.Movie.IsActive() && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
+					{
+						var result = MessageBox.Show(
+							"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+							$"Fatal error: {e.GetType().Name}",
+							MessageBoxButtons.YesNo,
+							MessageBoxIcon.Exclamation
+						);
+						if (result == DialogResult.Yes)
 						{
-							GlobalWin.ExitCode = mf.ProgramRunLoop();
-						}
-						catch (Exception e) when (Global.MovieSession.Movie.IsActive && !(Debugger.IsAttached || VersionInfo.DeveloperBuild))
-						{
-							var result = MessageBox.Show(
-								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-								$"Fatal error: {e.GetType().Name}",
-								MessageBoxButtons.YesNo,
-								MessageBoxIcon.Exclamation
-							);
-							if (result == DialogResult.Yes)
-							{
-								Global.MovieSession.Movie.Save();
-							}
+							Global.MovieSession.Movie.Save();
 						}
 					}
 				}
