@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var fileType = ConsoleImports.GetFileType(oldOut);
 
-			//stdout is already connected to something. keep using it and dont let the console interfere
+			//stdout is already connected to something. keep using it and don't let the console interfere
 			shouldRedirectStdout = (fileType == ConsoleImports.FileType.FileTypeUnknown || fileType == ConsoleImports.FileType.FileTypePipe);
 
 			//attach to an existing console
@@ -196,8 +196,6 @@ namespace BizHawk.Client.EmuHawk
 				ConsoleImports.FreeConsole();
 			}
 
-			if(shouldRedirectStdout) ConsoleImports.CloseHandle(conOut);
-			if(!attachedConsole) ConsoleImports.FreeConsole();
 			ConsoleImports.SetStdHandle(-11, oldOut);
 
 			conOut = IntPtr.Zero;
