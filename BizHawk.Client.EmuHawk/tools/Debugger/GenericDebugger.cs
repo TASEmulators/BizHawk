@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
+	public partial class GenericDebugger : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		private const string AddressColumnName = "Address";
 		private const string InstructionColumnName = "Instruction";
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		private void EngageDebugger()
 		{
 			_disassemblyLines.Clear();
-			GlobalWin.MainForm.OnPauseChanged += OnPauseChanged;
+			MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
 			{
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageDebugger()
 		{
 			BreakPointControl1.Shutdown();
-			GlobalWin.MainForm.OnPauseChanged -= OnPauseChanged;
+			MainForm.OnPauseChanged -= OnPauseChanged;
 		}
 
 		public void DisableRegisterBox()
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.UnpauseEmulator();
+			MainForm.UnpauseEmulator();
 		}
 
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)

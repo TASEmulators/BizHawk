@@ -14,7 +14,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MultiDiskBundler : Form, IToolFormAutoConfig
+	public partial class MultiDiskBundler : ToolFormBase, IToolFormAutoConfig
 	{
 		private XElement _currentXml;
 
@@ -31,11 +31,11 @@ namespace BizHawk.Client.EmuHawk
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
 
-			if (!Global.Game.IsNullInstance() &&  !GlobalWin.MainForm.CurrentlyOpenRom.EndsWith(".xml"))
+			if (!Global.Game.IsNullInstance() &&  !MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
-				if (GlobalWin.MainForm.CurrentlyOpenRom.Contains("|"))
+				if (MainForm.CurrentlyOpenRom.Contains("|"))
 				{
-					var pieces = GlobalWin.MainForm.CurrentlyOpenRom.Split('|');
+					var pieces = MainForm.CurrentlyOpenRom.Split('|');
 
 					var directory = Path.GetDirectoryName(pieces[0]);
 					var filename = Path.ChangeExtension(pieces[1], ".xml");
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
+					NameBox.Text = Path.ChangeExtension(MainForm.CurrentlyOpenRom, ".xml");
 				}
 
 				if (SystemDropDown.Items.Contains(Emulator.SystemId))
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					SystemDropDown.SelectedItem = Emulator.SystemId;
 				}
 
-				FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+				FileSelectors.First().SetName(MainForm.CurrentlyOpenRom);
 			}
 		}
 
@@ -62,23 +62,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-
 		}
 
 		public void FastUpdate()
 		{
-
 		}
 
 		public void Restart()
 		{
-
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public bool UpdateBefore => true;
 
@@ -110,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 
 				var lra = new MainForm.LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = fileInfo.FullName } };
-				GlobalWin.MainForm.LoadRom(fileInfo.FullName, lra);
+				MainForm.LoadRom(fileInfo.FullName, lra);
 			}
 		}
 
@@ -166,15 +160,10 @@ namespace BizHawk.Client.EmuHawk
 			Recalculate();
 		}
 
-		private IEnumerable<MultiDiskFileSelector> FileSelectors
-		{
-			get
-			{
-				return FileSelectorPanel.Controls
-					.OfType<GroupBox>()
-					.SelectMany(g => g.Controls.OfType<MultiDiskFileSelector>());
-			}
-		}
+		private IEnumerable<MultiDiskFileSelector> FileSelectors =>
+			FileSelectorPanel.Controls
+				.OfType<GroupBox>()
+				.SelectMany(g => g.Controls.OfType<MultiDiskFileSelector>());
 
 		private bool Recalculate()
 		{
@@ -189,17 +178,18 @@ namespace BizHawk.Client.EmuHawk
 					throw new Exception("Xml Filename can not be blank");
 				}
 
-				if (names.Any(n => string.IsNullOrWhiteSpace(n)))
+				if (names.Any(string.IsNullOrWhiteSpace))
 				{
 					throw new Exception("Rom Names can not be blank");
 				}
 
-				var system = SystemDropDown.SelectedItem.ToString();
+				var system = SystemDropDown.SelectedItem?.ToString();
 
-				if (system == null)
+				if (string.IsNullOrWhiteSpace(system))
 				{
 					throw new Exception("System Id can not be blank");
 				}
+
 				var basePath = Path.GetDirectoryName(name.Split('|').First());
 
 				if (string.IsNullOrEmpty(basePath))
@@ -238,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = "";
-			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
+			string initialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
 
 			if (!Global.Game.IsNullInstance())
 			{
