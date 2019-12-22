@@ -102,7 +102,6 @@
 			this.DebugSubMenu.Name = "DebugSubMenu";
 			this.DebugSubMenu.Size = new System.Drawing.Size(50, 20);
 			this.DebugSubMenu.Text = "&Debug";
-			this.DebugSubMenu.DropDownOpened += new System.EventHandler(this.DebugSubMenu_DropDownOpened);
 			// 
 			// StepIntoMenuItem
 			// 
@@ -367,7 +366,6 @@
 			this.Name = "GenericDebugger";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Debugger";
-			this.Load += new System.EventHandler(this.GenericDebugger_Load);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GenericDebugger_MouseMove);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

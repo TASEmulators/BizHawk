@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -38,10 +37,6 @@ namespace BizHawk.Client.EmuHawk
 					Type = ColumnType.Text
 				}
 			});
-		}
-
-		private void GenericDebugger_Load(object sender, EventArgs e)
-		{
 		}
 
 		private void EngageDebugger()
@@ -185,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnCpuDropDownIndexChanged(object sender, EventArgs e)
 		{
-			Disassembler.Cpu = (sender as ComboBox).SelectedItem.ToString();
+			Disassembler.Cpu = ((ComboBox) sender).SelectedItem.ToString();
 		}
 
 		#region File
@@ -198,10 +193,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Debug
-
-		private void DebugSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-		}
 
 		private void RunBtn_Click(object sender, EventArgs e)
 		{

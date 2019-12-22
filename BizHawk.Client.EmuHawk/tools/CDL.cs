@@ -19,13 +19,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : ToolFormBase, IToolFormAutoConfig
 	{
-		private RecentFiles _recent_fld = new RecentFiles();
+		private RecentFiles _recentFld = new RecentFiles();
 
 		[ConfigPersist]
 		private RecentFiles _recent
 		{
-			get => _recent_fld;
-			set => _recent_fld = value;
+			get => _recentFld;
+			set => _recentFld = value;
 		}
 
 		void SetCurrentFilename(string fname)
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private ICodeDataLogger CodeDataLogger { get; set; }
 
-		private string _currentFilename = null;
+		private string _currentFilename;
 		private CodeDataLog _cdl;
 
 		public CDL()
@@ -95,12 +95,12 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDisplay(true);
 		}
 
-		void SetLoggingActiveCheck(bool value)
+		private void SetLoggingActiveCheck(bool value)
 		{
 			tsbLoggingActive.Checked = value;
 		}
 
-		string[][] listContents = new string[0][];
+		private string[][] _listContents = new string[0][];
 
 		private void UpdateDisplay(bool force)
 		{
@@ -114,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			listContents = new string[_cdl.Count][];
+			_listContents = new string[_cdl.Count][];
 
 			int idx = 0;
 			foreach (var kvp in _cdl)
@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				var bm = _cdl.GetBlockMap();
 				long addr = bm[kvp.Key];
 
-				var lvi = listContents[idx++] = new string[13];
+				var lvi = _listContents[idx++] = new string[13];
 				lvi[0] = $"{addr:X8}";
 				lvi[1] = kvp.Key;
 				lvi[2] = $"{total / (float)kvp.Value.Length * 100f:0.00}%";
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		bool autoloading = false;
+		private bool _autoloading;
 		public void LoadFile(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -242,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.NewCDL(testCDL);
 				if (!newCDL.Check(testCDL))
 				{
-					if(!autoloading)
+					if(!_autoloading)
 						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
 					return;
 				}
@@ -483,31 +483,33 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					autoloading = true;
-					var autoresume_file = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
-					var autoresume_dir = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
-					var autoresume_path = Path.Combine(autoresume_dir, autoresume_file);
-					if (File.Exists(autoresume_path))
-						LoadFile(autoresume_path);
+					_autoloading = true;
+					var autoResumeFile = $"{PathManager.FilesystemSafeName(Global.Game)}.cdl";
+					var autoResumeDir = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
+					var autoResumePath = Path.Combine(autoResumeDir, autoResumeFile);
+					if (File.Exists(autoResumePath))
+					{
+						LoadFile(autoResumePath);
+					}
 				}
 				finally
 				{
-					autoloading = false;
+					_autoloading = false;
 				}
 			}
 
-			if (_recent_fld.AutoLoad && !_recent_fld.Empty)
+			if (_recentFld.AutoLoad && !_recentFld.Empty)
 			{
 				if (File.Exists(_recent.MostRecent))
 				{
 					try
 					{
-						autoloading = true;
+						_autoloading = true;
 						LoadFile(_recent.MostRecent);
 					}
 					finally
 					{
-						autoloading = false;
+						_autoloading = false;
 					}
 					SetCurrentFilename(_recent.MostRecent);
 				}
@@ -552,13 +554,13 @@ namespace BizHawk.Client.EmuHawk
 		private void lvCDL_QueryItemText(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var subItem = lvCDL.AllColumns.IndexOf(column);
-			text = listContents[index][subItem];
+			text = _listContents[index][subItem];
 		}
 
 		private void tsbExportText_Click(object sender, EventArgs e)
 		{
 			using var sw = new StringWriter();
-			foreach(var line in listContents)
+			foreach(var line in _listContents)
 			{
 				foreach (var entry in line)
 					sw.Write("{0} |", entry);

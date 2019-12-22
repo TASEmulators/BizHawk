@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
@@ -15,8 +10,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BatchRun : Form
 	{
-		Thread thread = null;
-		List<BatchRunner.Result> MostRecentResults = null;
+		private Thread _thread;
+		private List<BatchRunner.Result> _mostRecentResults;
 
 		public BatchRun()
 		{
@@ -25,10 +20,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void listBox1_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop))
-				e.Effect = DragDropEffects.Link;
-			else
-				e.Effect = DragDropEffects.None;
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+				? DragDropEffects.Link
+				: DragDropEffects.None;
 		}
 
 		private void SetCount()
@@ -54,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonGo_Click(object sender, EventArgs e)
 		{
-			if (thread != null)
+			if (_thread != null)
 			{
 				MessageBox.Show("Old one still running!");
 			}
@@ -67,23 +61,26 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					label3.Text = "Status: Running...";
-					int nframes = (int)numericUpDownFrames.Value;
+					int numFrames = (int)numericUpDownFrames.Value;
 					List<string> files = new List<string>(listBox1.Items.Count);
 					foreach (string s in listBox1.Items)
+					{
 						files.Add(s);
-					thread = new Thread(ThreadProc);
-					thread.Start(new Tuple<int, List<string>>(nframes, files));
+					}
+
+					_thread = new Thread(ThreadProc);
+					_thread.Start(new Tuple<int, List<string>>(numFrames, files));
 				}
 			}
 		}
 
-		void ProgressUpdate(int curr, int max)
+		private void ProgressUpdate(int curr, int max)
 		{
 			progressBar1.Maximum = max;
 			progressBar1.Value = curr;
 		}
 
-		void ThreadProc(object o)
+		private void ThreadProc(object o)
 		{
 			try
 			{
@@ -91,14 +88,14 @@ namespace BizHawk.Client.EmuHawk
 				BatchRunner br = new BatchRunner(pp.Item2, pp.Item1);
 				br.OnProgress += br_OnProgress;
 				var results = br.Run();
-				this.Invoke(() => { label3.Text = "Status: Finished!"; MostRecentResults = results; });
+				this.Invoke(() => { label3.Text = "Status: Finished!"; _mostRecentResults = results; });
 			}
 			catch (Exception e)
 			{
 				MessageBox.Show(e.ToString(), "The Whole Thing Died!");
 				this.Invoke(() => label3.Text = "Deaded!");
 			}
-			this.Invoke(() => thread = null);
+			this.Invoke(() => _thread = null);
 		}
 
 		void br_OnProgress(object sender, BatchRunner.ProgressEventArgs e)
@@ -109,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BatchRun_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (thread != null)
+			if (_thread != null)
 			{
 				MessageBox.Show("Can't close while task is running!");
 				e.Cancel = true;
@@ -118,18 +115,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonDump_Click(object sender, EventArgs e)
 		{
-			if (MostRecentResults != null)
+			if (_mostRecentResults != null)
 			{
-				using (var sfd = new SaveFileDialog())
+				using var sfd = new SaveFileDialog();
+				var result = sfd.ShowDialog(this);
+				if (result == DialogResult.OK)
 				{
-					var result = sfd.ShowDialog(this);
-					if (result == DialogResult.OK)
+					using TextWriter tw = new StreamWriter(sfd.FileName);
+					foreach (var r in _mostRecentResults)
 					{
-						using (TextWriter tw = new StreamWriter(sfd.FileName))
-						{
-							foreach (var r in MostRecentResults)
-								r.DumpToTW(tw);
-						}
+						r.DumpTo(tw);
 					}
 				}
 			}
