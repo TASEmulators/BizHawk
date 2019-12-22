@@ -750,7 +750,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DisengageTastudio()
 		{
 			Mainform.PauseOnFrame = null;
-			GlobalWin.OSD.AddMessage("TAStudio disengaged");
+			Mainform.AddOnScreenMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
 			Mainform.TakeBackControl();
 			Global.Config.MovieEndAction = _originalEndAction;
