@@ -1677,7 +1677,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new HexColorsForm();
+			using var form = new HexColorsForm(this, Config);
 			form.ShowHawkDialog();
 		}
 

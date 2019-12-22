@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,37 +21,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private string CurrentFileName
 		{
-			get { return _currentFileName; }
+			get => _currentFileName;
 			set
 			{
 				_currentFileName = value;
 
-				if (!string.IsNullOrWhiteSpace(_currentFileName))
-				{
-					Text = $"{DialogTitle} - {Path.GetFileNameWithoutExtension(_currentFileName)}";
-				}
-				else
-				{
-					Text = DialogTitle;
-				}
+				Text = !string.IsNullOrWhiteSpace(_currentFileName)
+					? $"{DialogTitle} - {Path.GetFileNameWithoutExtension(_currentFileName)}"
+					: DialogTitle;
 			}
 
 		}
 
-		private bool _isBotting = false;
+		private bool _isBotting;
 		private long _attempts = 1;
-		private long _frames = 0;
-		private int _targetFrame = 0;
-		private bool _oldCountingSetting = false;
-		private BotAttempt _currentBotAttempt = null;
-		private BotAttempt _bestBotAttempt = null;
-		private BotAttempt _comparisonBotAttempt = null;
-		private bool _replayMode = false;
-		private int _startFrame = 0;
+		private long _frames;
+		private int _targetFrame;
+		private bool _oldCountingSetting;
+		private BotAttempt _currentBotAttempt;
+		private BotAttempt _bestBotAttempt;
+		private readonly BotAttempt _comparisonBotAttempt;
+		private bool _replayMode;
+		private int _startFrame;
 		private string _lastRom = "";
-		private int _lastFrameAdvanced { get; set; }
+		private int _lastFrameAdvanced;
 
-		private bool _dontUpdateValues = false;
+		private bool _doNotUpdateValues;
 
 		private MemoryDomain _currentDomain;
 		private bool _bigEndian;
@@ -88,8 +84,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Initialize
-
 		public BasicBot()
 		{
 			InitializeComponent();
@@ -99,25 +93,13 @@ namespace BizHawk.Client.EmuHawk
 			_comparisonBotAttempt = new BotAttempt();
 		}
 
-		private void BasicBot_Load(object sender, EventArgs e)
-		{
-
-		}
-
-		#endregion
-
 		#region UI Bindings
 
-		private Dictionary<string, double> ControlProbabilities
-		{
-			get
-			{
-				return ControlProbabilityPanel.Controls
-					.OfType<BotControlsRow>()
-					.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
-			}
-		}
-
+		private Dictionary<string, double> ControlProbabilities =>
+			ControlProbabilityPanel.Controls
+				.OfType<BotControlsRow>()
+				.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
+		
 		private string SelectedSlot
 		{
 			get
@@ -132,7 +114,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long Attempts
 		{
-			get { return _attempts; }
+			get => _attempts;
 			set
 			{
 				_attempts = value;
@@ -142,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long Frames
 		{
-			get { return _frames; }
+			get => _frames;
 			set
 			{
 				_frames = value;
@@ -152,8 +134,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private int FrameLength
 		{
-			get { return (int)FrameLengthNumeric.Value; }
-			set { FrameLengthNumeric.Value = value; }
+			get => (int)FrameLengthNumeric.Value;
+			set => FrameLengthNumeric.Value = value;
 		}
 
 		public int MaximizeAddress
@@ -169,10 +151,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			set
-			{
-				MaximizeAddressBox.SetFromRawInt(value);
-			}
+			set => MaximizeAddressBox.SetFromRawInt(value);
 		}
 
 		public int MaximizeValue
@@ -182,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 				int? addr = MaximizeAddressBox.ToRawInt();
 				if (addr.HasValue)
 				{
-					return GetRamvalue(addr.Value);
+					return GetRamValue(addr.Value);
 				}
 
 				return 0;
@@ -202,10 +181,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			set
-			{
-				TieBreaker1Box.SetFromRawInt(value);
-			}
+			set => TieBreaker1Box.SetFromRawInt(value);
 		}
 
 		public int TieBreaker1Value
@@ -215,7 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				int? addr = TieBreaker1Box.ToRawInt();
 				if (addr.HasValue)
 				{
-					return GetRamvalue(addr.Value);
+					return GetRamValue(addr.Value);
 				}
 
 				return 0;
@@ -235,10 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			set
-			{
-				TieBreaker2Box.SetFromRawInt(value);
-			}
+			set => TieBreaker2Box.SetFromRawInt(value);
 		}
 
 		public int TieBreaker2Value
@@ -248,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 				int? addr = TieBreaker2Box.ToRawInt();
 				if (addr.HasValue)
 				{
-					return GetRamvalue(addr.Value);
+					return GetRamValue(addr.Value);
 				}
 
 				return 0;
@@ -268,10 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			set
-			{
-				TieBreaker3Box.SetFromRawInt(value);
-			}
+			set => TieBreaker3Box.SetFromRawInt(value);
 		}
 
 		public int TieBreaker3Value
@@ -281,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				int? addr = TieBreaker3Box.ToRawInt();
 				if (addr.HasValue)
 				{
-					return GetRamvalue(addr.Value);
+					return GetRamValue(addr.Value);
 				}
 
 				return 0;
@@ -290,10 +260,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public byte MainComparisonType
 		{
-			get
-			{
-				return (byte)MainOperator.SelectedIndex;
-			}
+			get => (byte)MainOperator.SelectedIndex;
 			set
 			{
 				if (value < 5) MainOperator.SelectedIndex = value;
@@ -303,51 +270,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public byte Tie1ComparisonType
 		{
-			get
-			{
-				return (byte)Tiebreak1Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak1Operator.SelectedIndex = value;
-				else Tiebreak1Operator.SelectedIndex = 0;
-			}
+			get => (byte)Tiebreak1Operator.SelectedIndex;
+			set => Tiebreak1Operator.SelectedIndex = value < 5 ? value : 0;
 		}
 
 		public byte Tie2ComparisonType
 		{
-			get
-			{
-				return (byte)Tiebreak2Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak2Operator.SelectedIndex = value;
-				else Tiebreak2Operator.SelectedIndex = 0;
-			}
+			get => (byte)Tiebreak2Operator.SelectedIndex;
+			set => Tiebreak2Operator.SelectedIndex = value < 5 ? value : 0;
 		}
 
 		public byte Tie3ComparisonType
 		{
-			get
-			{
-				return (byte)Tiebreak3Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak3Operator.SelectedIndex = value;
-				else Tiebreak3Operator.SelectedIndex = 0;
-			}
+			get => (byte)Tiebreak3Operator.SelectedIndex;
+			set => Tiebreak3Operator.SelectedIndex = value < 5 ? value : 0;
 		}
 
 		public string FromSlot
 		{
-			get
-			{
-				return StartFromSlotBox.SelectedItem != null
-					? StartFromSlotBox.SelectedItem.ToString()
-					: "";
-			}
+			get => StartFromSlotBox.SelectedItem != null
+				? StartFromSlotBox.SelectedItem.ToString()
+				: "";
 
 			set
 			{
@@ -355,31 +298,23 @@ namespace BizHawk.Client.EmuHawk
 					.OfType<object>()
 					.FirstOrDefault(o => o.ToString() == value);
 
-				if (item != null)
-				{
-					StartFromSlotBox.SelectedItem = item;
-				}
-				else
-				{
-					StartFromSlotBox.SelectedItem = null;
-				}
+				StartFromSlotBox.SelectedItem = item;
 			}
 		}
 
 
-		//Upon Load State, TASStudio uses GlobalWin.Tools.UpdateBefore(); as well as GlobalWin.Tools.UpdateAfter(); 
-		//Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.  
-		//By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
-		//However this also causes a problem with ramwatch not being up to date since that TOO gets called.
-		//Need to find out if having RamWatch open while TasStudio is open causes issues.
-		//there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the ramwatch is ahead too much..
+		// Upon Load State, TAStudio uses GlobalWin.Tools.UpdateBefore(); as well as GlobalWin.Tools.UpdateAfter(); 
+		// Both of which will Call UpdateValues() and Update() which both end up in the Update() function.  Calling Update() will cause the Log to add an additional log.  
+		// By not handling both of those calls the _currentBotAttempt.Log.Count will be 2 more than expected.
+		// However this also causes a problem with RamWatch not being up to date since that TOO gets called.
+		// Need to find out if having RamWatch open while TasStudio is open causes issues.
+		// there appears to be  "hack"(?) line in ToolManager.UpdateBefore that seems to refresh the RamWatch.  Not sure that is causing any issue since it does look like the RamWatch is ahead too much..
 		
-		public int LastFrameAdvanced { get; set; }
 		#endregion
 
 		#region IToolForm Implementation
 
-		public bool UpdateBefore { get { return true; } }
+		public bool UpdateBefore => true;
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
@@ -387,7 +322,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Update(fast: false);
 		}
-
 
 		public void FastUpdate()
 		{
@@ -414,17 +348,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
+			if (_lastRom != MainForm.CurrentlyOpenRom)
 			{
-				_lastRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				_lastRom = MainForm.CurrentlyOpenRom;
 				SetupControlsAndProperties();
 			}
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		#endregion
 
@@ -596,14 +527,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			StopBot();
 			_replayMode = true;
-			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
-			_dontUpdateValues = false;
+			_doNotUpdateValues = true;
+			MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
+			_doNotUpdateValues = false;
 			_startFrame = Emulator.Frame;
 			SetNormalSpeed();
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Replaying";
-			GlobalWin.MainForm.UnpauseEmulator();
+			MainForm.UnpauseEmulator();
 		}
 
 		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
@@ -623,11 +554,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BotAttempt
 		{
-			public BotAttempt()
-			{
-				Log = new List<string>();
-			}
-
 			public long Attempt { get; set; }
 			public int Maximize { get; set; }
 			public int TieBreak1 { get; set; }
@@ -638,19 +564,11 @@ namespace BizHawk.Client.EmuHawk
 			public byte ComparisonTypeTie2 { get; set; }
 			public byte ComparisonTypeTie3 { get; set; }
 
-			public List<string> Log { get; set; }
+			public List<string> Log { get; } = new List<string>();
 		}
 
 		private class BotData
 		{
-			public BotData()
-			{
-				MainCompareToBest = true;
-				TieBreaker1CompareToBest = true;
-				TieBreaker2CompareToBest = true;
-				TieBreaker3CompareToBest = true;
-			}
-
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
 			public int Maximize { get; set; }
@@ -661,10 +579,10 @@ namespace BizHawk.Client.EmuHawk
 			public byte ComparisonTypeTie1 { get; set; }
 			public byte ComparisonTypeTie2 { get; set; }
 			public byte ComparisonTypeTie3 { get; set; }
-			public bool MainCompareToBest { get; set; }
-			public bool TieBreaker1CompareToBest { get; set; }
-			public bool TieBreaker2CompareToBest { get; set; }
-			public bool TieBreaker3CompareToBest { get; set; }
+			public bool MainCompareToBest { get; set; } = true;
+			public bool TieBreaker1CompareToBest { get; set; } = true;
+			public bool TieBreaker2CompareToBest { get; set; } = true;
+			public bool TieBreaker3CompareToBest { get; set; } = true;
 			public int MainCompareToValue { get; set; }
 			public int TieBreaker1CompareToValue { get; set; }
 			public int TieBreaker2CompareToValue { get; set; }
@@ -845,10 +763,10 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromSlotBox.SelectedIndex = 0;
 
-			const int starty = 0;
+			const int startY = 0;
 			const int lineHeight = 30;
 			const int marginLeft = 15;
-			int accumulatedy = 0;
+			int accumulatedY = 0;
 			int count = 0;
 
 			ControlProbabilityPanel.SuspendLayout();
@@ -859,16 +777,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ButtonName = button,
 					Probability = 0.0,
-					Location = new Point(marginLeft, starty + accumulatedy),
+					Location = new Point(marginLeft, startY + accumulatedY),
 					TabIndex = count + 1,
 					ProbabilityChangedCallback = AssessRunButtonStatus
 				};
 				control.Scale(UIHelper.AutoScaleFactor);
 
 				ControlProbabilityPanel.Controls.Add(control);
-				accumulatedy += lineHeight;
+				accumulatedY += lineHeight;
 				count++;
 			}
+
 			ControlProbabilityPanel.ResumeLayout();
 
 			if (Settings.RecentBotFiles.AutoLoad)
@@ -890,7 +809,7 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker3Box.SetHexProperties(_currentDomain.Size);
 		}
 
-		private int GetRamvalue(int addr)
+		private int GetRamValue(int addr)
 		{
 			int val;
 			switch (_dataSize)
@@ -912,7 +831,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Update(bool fast)
 		{
-			if (_dontUpdateValues)
+			if (_doNotUpdateValues)
 			{
 				return;
 			}
@@ -964,9 +883,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
-					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
+					MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
-				//Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
+
+				// Before this would have 2 additional hits before the frame even advanced, making the amount of inputs greater than the number of frames to test.
 				if (_currentBotAttempt.Log.Count < FrameLength) //aka do not Add more inputs than there are Frames to test
 				{
 					PressButtons();
@@ -977,7 +897,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FinishReplay()
 		{
-			GlobalWin.MainForm.PauseEmulator();
+			MainForm.PauseEmulator();
 			_startFrame = 0;
 			_replayMode = false;
 			UpdateBotStatusIcon();
@@ -990,19 +910,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return false;
 			}
-			else if (current.Maximize == comparison.Maximize)
+
+			if (current.Maximize == comparison.Maximize)
 			{
 				if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1))
 				{
 					return false;
 				}
-				else if (current.TieBreak1 == comparison.TieBreak1)
+
+				if (current.TieBreak1 == comparison.TieBreak1)
 				{
 					if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2))
 					{
 						return false;
 					}
-					else if (current.TieBreak2 == comparison.TieBreak2)
+
+					if (current.TieBreak2 == comparison.TieBreak2)
 					{
 						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
 						{
@@ -1069,14 +992,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var rand = new Random((int)DateTime.Now.Ticks);
 
-			var buttonLog = new Dictionary<string, bool>();
-
 			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
 			{
 				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
 
-				buttonLog.Add(button, pressed);
 				Global.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 
@@ -1105,13 +1025,13 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.IsCountingRerecords = false;
 			}
 
-			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
-			_dontUpdateValues = false;
+			_doNotUpdateValues = true;
+			MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
+			_doNotUpdateValues = false;
 
 			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
-			GlobalWin.MainForm.UnpauseEmulator();
+			MainForm.UnpauseEmulator();
 			if (Settings.TurboWhenBotting)
 			{
 				SetMaxSpeed();
@@ -1161,7 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
 			}
 
-			GlobalWin.MainForm.PauseEmulator();
+			MainForm.PauseEmulator();
 			SetNormalSpeed();
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Bot stopped";
@@ -1188,12 +1108,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMaxSpeed()
 		{
-			GlobalWin.MainForm.Unthrottle();
+			MainForm.Unthrottle();
 		}
 
 		private void SetNormalSpeed()
 		{
-			GlobalWin.MainForm.Throttle();
+			MainForm.Throttle();
 		}
 
 		private void AssessRunButtonStatus()
@@ -1260,8 +1180,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.MainValueNumeric.Enabled = false;
-				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
+				MainValueNumeric.Enabled = false;
+				_comparisonBotAttempt.Maximize = _bestBotAttempt?.Maximize ?? 0;
 			}
 		}
 
@@ -1270,8 +1190,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak1Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak1;
+				TieBreak1Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt?.TieBreak1 ?? 0;
 			}
 		}
 
@@ -1280,8 +1200,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak2Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak2;
+				TieBreak2Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt?.TieBreak2 ?? 0;
 			}
 		}
 
@@ -1290,8 +1210,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak3Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak3;
+				TieBreak3Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt?.TieBreak3 ?? 0;
 			}
 		}
 
@@ -1300,8 +1220,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.MainValueNumeric.Enabled = true;
-				_comparisonBotAttempt.Maximize = (int)this.MainValueNumeric.Value;
+				MainValueNumeric.Enabled = true;
+				_comparisonBotAttempt.Maximize = (int)MainValueNumeric.Value;
 			}
 		}
 
@@ -1310,8 +1230,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak1Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak1 = (int)this.TieBreak1Numeric.Value;
+				TieBreak1Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak1 = (int)TieBreak1Numeric.Value;
 			}
 		}
 
@@ -1320,8 +1240,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak2Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak2 = (int)this.TieBreak2Numeric.Value;
+				TieBreak2Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak2 = (int)TieBreak2Numeric.Value;
 			}
 		}
 
@@ -1330,45 +1250,44 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.TieBreak3Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak3 = (int)this.TieBreak3Numeric.Value;
+				TieBreak3Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak3 = (int)TieBreak3Numeric.Value;
 			}
 		}
 
 		private void MainValueNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.Maximize = (int)numericUpDown.Value;
+			_comparisonBotAttempt.Maximize = (int)numericUpDown.Value;
 		}
 
 		private void TieBreak1Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak1 = (int)numericUpDown.Value;
+			_comparisonBotAttempt.TieBreak1 = (int)numericUpDown.Value;
 		}
 
 		private void TieBreak2Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak2 = (int)numericUpDown.Value;
+			_comparisonBotAttempt.TieBreak2 = (int)numericUpDown.Value;
 		}
 
 		private void TieBreak3Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
+			_comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
 		}		
 
 		//Copy to Clipboard
 		private void btnCopyBestInput_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetText(BestAttemptLogLabel.Text);			
+			Clipboard.SetText(BestAttemptLogLabel.Text);
 		}
 
 		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
-
+			Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
 		}
 	}
 }
