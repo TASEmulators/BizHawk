@@ -187,9 +187,10 @@
 			this.BreakPointControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.BreakPointControl1.MainForm = null;
 			this.BreakPointControl1.Core = null;
 			this.BreakPointControl1.Location = new System.Drawing.Point(8, 19);
-			this.BreakPointControl1.MCS = null;
+			this.BreakPointControl1.Mcs = null;
 			this.BreakPointControl1.MemoryDomains = null;
 			this.BreakPointControl1.Name = "BreakPointControl1";
 			this.BreakPointControl1.ParentDebugger = null;

@@ -107,8 +107,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CanUseMemoryCallbacks)
 			{
+				BreakPointControl1.MainForm = MainForm;
 				BreakPointControl1.Core = Debuggable;
-				BreakPointControl1.MCS = MemoryCallbacks;
+				BreakPointControl1.Mcs = MemoryCallbacks;
 				BreakPointControl1.ParentDebugger = this;
 				BreakPointControl1.MemoryDomains = MemoryDomains;
 				BreakPointControl1.GenerateUI();

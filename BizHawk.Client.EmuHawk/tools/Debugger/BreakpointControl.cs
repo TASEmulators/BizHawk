@@ -12,8 +12,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BreakpointControl : UserControl
 	{
+		public MainForm MainForm { get; set; }
 		public IDebuggable Core { get; set; }
-		public IMemoryCallbackSystem MCS { get; set; }
+		public IMemoryCallbackSystem Mcs { get; set; }
 		public GenericDebugger ParentDebugger { get; set; }
 		public IMemoryDomains MemoryDomains { get; set; }
 
@@ -47,9 +48,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BreakpointCallback(uint addr, uint value, uint flags)
 		{
-			GlobalWin.MainForm.PauseEmulator();
+			MainForm.PauseEmulator();
 			UpdateValues();
-			GlobalWin.OSD.AddMessage("Breakpoint hit");
+			MainForm.AddOnScreenMessage("Breakpoint hit");
 		}
 
 		private void SeekCallback(uint addr, uint value, uint flags)
@@ -67,8 +68,6 @@ namespace BizHawk.Client.EmuHawk
 			ParentDebugger.DisableCancelSeekBtn();
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
-
 		public void UpdateValues()
 		{
 			if (Enabled)
@@ -83,9 +82,9 @@ namespace BizHawk.Client.EmuHawk
 		// Did any breakpoints get added from other sources such as lua?
 		private void CheckForNewBreakpoints()
 		{
-			if (MCS != null)
+			if (Mcs != null)
 			{
-				foreach (var callback in MCS)
+				foreach (var callback in Mcs)
 				{
 					if (!_breakpoints.Any(b =>
 						b.Type == callback.Type &&
@@ -102,9 +101,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void GenerateUI()
 		{
-			if (MCS != null)
+			if (Mcs != null)
 			{
-				foreach (var callback in MCS)
+				foreach (var callback in Mcs)
 				{
 					_breakpoints.Add(new Breakpoint(Core, callback));
 				}
@@ -170,16 +169,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private IEnumerable<int> SelectedIndices => BreakpointView.SelectedIndices.Cast<int>();
+		
+		private IEnumerable<Breakpoint> SelectedItems => SelectedIndices.Select(index => _breakpoints[index]);
 
-		private IEnumerable<Breakpoint> SelectedItems
-		{
-			get { return SelectedIndices.Select(index => _breakpoints[index]); }
-		}
-
-		private IEnumerable<Breakpoint> EditableItems
-		{
-			get { return SelectedItems.Where(item => !item.ReadOnly); }
-		}
+		private IEnumerable<Breakpoint> EditableItems => SelectedItems.Where(item => !item.ReadOnly);
 
 		private void RemoveBreakpointButton_Click(object sender, EventArgs e)
 		{
@@ -324,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 				b.AddressMask = (uint)mask;
 			}
 
-			if (!MCS.ExecuteCallbacksAvailable)
+			if (!Mcs.ExecuteCallbacksAvailable)
 			{
 				b.DisableExecuteOption();
 			}
