@@ -1616,7 +1616,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator is QuickNES quickNes)
 			{
-				using var form = new QuickNesConfig(this, quickNes.GetSettings().Clone());
+				using var form = new QuickNesConfig(this, Config, quickNes.GetSettings().Clone());
 				form.ShowDialog(this);
 			}
 		}
@@ -2211,7 +2211,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is Octoshock psx)
 			{
-				if (PSXOptions.DoSettingsDialog(this, psx).IsOk())
+				if (PSXOptions.DoSettingsDialog(this, Config, psx).IsOk())
 				{
 					FrameBufferResized();
 				}

@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		
 		private PSXOptions(
 			MainForm mainForm,
+			Config config,
 			Octoshock.Settings settings,
 			Octoshock.SyncSettings syncSettings,
 			OctoshockDll.eVidStandard vidStandard,
@@ -21,6 +22,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			_mainForm = mainForm;
+			_config = config;
 			_settings = settings;
 			_syncSettings = syncSettings;
 			_previewVideoStandard = vidStandard;
@@ -62,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Size _previewVideoSize;
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
 		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
 		private readonly Octoshock.Settings _settings;
 		private readonly Octoshock.SyncSettings _syncSettings;
@@ -73,13 +76,13 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show("Finetuned Display Options will take effect if you OK from PSX Options");
 		}
 
-		public static DialogResult DoSettingsDialog(MainForm mainForm, Octoshock psx)
+		public static DialogResult DoSettingsDialog(MainForm mainForm, Config config, Octoshock psx)
 		{
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
 			var size = psx.CurrentVideoSize; 
-			using var dlg = new PSXOptions(mainForm, s, ss, vid, size);
+			using var dlg = new PSXOptions(mainForm, config, s, ss, vid, size);
 
 			var result = dlg.ShowDialog(mainForm);
 			return result;
@@ -114,10 +117,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_dispSettingsSet)
 			{
-				Global.Config.DispManagerAR = Config.EDispManagerAR.System;
-				Global.Config.DispFixAspectRatio = true;
-				Global.Config.DispFixScaleInteger = false;
-				Global.Config.DispFinalFilter = 1; // bilinear, I hope
+				_config.DispManagerAR = Config.EDispManagerAR.System;
+				_config.DispFixAspectRatio = true;
+				_config.DispFixScaleInteger = false;
+				_config.DispFinalFilter = 1; // bilinear, I hope
 			}
 
 			SyncSettingsFromGui(_settings, _syncSettings);
@@ -186,10 +189,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MessageBox.Show($@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
 
-{nameof(Global.Config.DispManagerAR)} = System (Use emulator-recommended AR)
-{nameof(Global.Config.DispFixAspectRatio)} = true (Maintain aspect ratio [letterbox main window as needed])
-{nameof(Global.Config.DispFinalFilter)} = bilinear (Like Mednafen)
-{nameof(Global.Config.DispFixScaleInteger)} = false (Generally unwanted with bilinear filtering)
+{nameof(_config.DispManagerAR)} = System (Use emulator-recommended AR)
+{nameof(_config.DispFixAspectRatio)} = true (Maintain aspect ratio [letterbox main window as needed])
+{nameof(_config.DispFinalFilter)} = bilinear (Like Mednafen)
+{nameof(_config.DispFixScaleInteger)} = false (Generally unwanted with bilinear filtering)
 
 This is a good place to write that Mednafen's default behaviour is fantastic for gaming!
 But: 1. we think we improved on it a tiny bit with the tweaked mode

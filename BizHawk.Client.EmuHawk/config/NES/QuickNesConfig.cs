@@ -11,13 +11,16 @@ namespace BizHawk.Client.EmuHawk
 	public partial class QuickNesConfig : Form
 	{
 		private readonly MainForm _mainForm;
+		private readonly Config _config;
 		private readonly QuickNES.QuickNESSettings _settings;
 
 		public QuickNesConfig(
 			MainForm mainForm,
+			Config config,
 			QuickNES.QuickNESSettings settings)
 		{
 			_mainForm = mainForm;
+			_config = config;
 			_settings = settings;
 			InitializeComponent();
 		}
@@ -78,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var ofd = new OpenFileDialog
 			{
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
+				InitialDirectory = PathManager.MakeAbsolutePath(_config.PathEntries["NES", "Palettes"].Path, "NES"),
 				Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
 				RestoreDirectory = true
 			};
