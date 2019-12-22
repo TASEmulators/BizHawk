@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
 
 		public bool IsInMenuLoop { get; private set; }
-		public string StatesPath => PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+		public string StatesPath => PathManager.MakeAbsolutePath(Config.PathEntries["Global", "TAStudio states"].Path, null);
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
@@ -488,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
 			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
-				Global.Config.AutofireOn, Global.Config.AutofireOff);
+				Config.AutofireOn, Config.AutofireOff);
 
 			for (int i = fStart; i < FloatPatterns.Length - 2; i++)
 			{
@@ -497,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 
 			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new[] { 1f });
 			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
-				1f, Global.Config.AutofireOn, 0f, Global.Config.AutofireOff);
+				1f, Config.AutofireOn, 0f, Config.AutofireOff);
 
 			SetUpToolStripColumns();
 		}
@@ -522,13 +522,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageTastudio()
 		{
-			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			MainForm.AddOnScreenMessage("TAStudio engaged");
 			SetTasMovieCallbacks();
 			SetTextProperty();
 			MainForm.RelinquishControl(this);
-			_originalEndAction = Global.Config.MovieEndAction;
+			_originalEndAction = Config.MovieEndAction;
 			MainForm.ClearRewindData();
-			Global.Config.MovieEndAction = MovieEndAction.Record;
+			Config.MovieEndAction = MovieEndAction.Record;
 			MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
 			SetSplicer();
@@ -752,7 +752,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.AddOnScreenMessage("TAStudio disengaged");
 			Global.MovieSession.Movie = MovieService.DefaultInstance;
 			MainForm.TakeBackControl();
-			Global.Config.MovieEndAction = _originalEndAction;
+			Config.MovieEndAction = _originalEndAction;
 			MainForm.SetMainformMovieInfo();
 
 			// Do not keep TAStudio's disk save states.
@@ -930,8 +930,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_hackyDontUpdate = true;
-			GlobalWin.Tools.UpdateBefore();
-			GlobalWin.Tools.UpdateAfter();
+			Tools.UpdateBefore();
+			Tools.UpdateAfter();
 			_hackyDontUpdate = false;
 		}
 
@@ -948,8 +948,8 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
 		{
 			_hackyDontUpdate = true;
-			GlobalWin.Tools.UpdateBefore();
-			GlobalWin.Tools.UpdateAfter();
+			Tools.UpdateBefore();
+			Tools.UpdateAfter();
 			_hackyDontUpdate = false;
 		}
 

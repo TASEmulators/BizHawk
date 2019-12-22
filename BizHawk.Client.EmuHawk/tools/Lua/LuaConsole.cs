@@ -74,13 +74,13 @@ namespace BizHawk.Client.EmuHawk
 					if (GlobalWin.DisplayManager.ClientExtraPadding != Padding.Empty)
 					{
 						GlobalWin.DisplayManager.ClientExtraPadding = new Padding(0);
-						GlobalWin.MainForm.FrameBufferResized();
+						MainForm.FrameBufferResized();
 					}
 
 					if (GlobalWin.DisplayManager.GameExtraPadding != Padding.Empty)
 					{
 						GlobalWin.DisplayManager.GameExtraPadding = new Padding(0);
-						GlobalWin.MainForm.FrameBufferResized();
+						MainForm.FrameBufferResized();
 					}
 
 					LuaImp.GuiLibrary.DrawFinish();
@@ -131,15 +131,15 @@ namespace BizHawk.Client.EmuHawk
 			LuaImp.ScriptList.ChangedCallback = SessionChangedCallback;
 			LuaImp.ScriptList.LoadCallback = ClearOutputWindow;
 
-			if (Global.Config.RecentLuaSession.AutoLoad && !Global.Config.RecentLuaSession.Empty)
+			if (Config.RecentLuaSession.AutoLoad && !Config.RecentLuaSession.Empty)
 			{
-				LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
+				LoadSessionFromRecent(Config.RecentLuaSession.MostRecent);
 			}
-			else if (Global.Config.RecentLua.AutoLoad)
+			else if (Config.RecentLua.AutoLoad)
 			{
-				if (!Global.Config.RecentLua.Empty)
+				if (!Config.RecentLua.Empty)
 				{
-					LoadLuaFile(Global.Config.RecentLua.MostRecent);
+					LoadLuaFile(Config.RecentLua.MostRecent);
 				}
 			}
 
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddFileWatches()
 		{
-			if (Global.Config.LuaReloadOnScriptFileChange)
+			if (Config.LuaReloadOnScriptFileChange)
 			{
 				_watches.Clear();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
@@ -285,7 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var file in LuaImp.ScriptList
 					.Where(file => processedPath == file.Path
 						&& file.Enabled == false
-						&& !Global.Config.DisableLuaScriptsOnLoad))
+						&& !Config.DisableLuaScriptsOnLoad))
 				{
 					if (file.Thread != null)
 					{
@@ -303,9 +303,9 @@ namespace BizHawk.Client.EmuHawk
 
 				LuaImp.ScriptList.Add(luaFile);
 				LuaListView.RowCount = LuaImp.ScriptList.Count;
-				Global.Config.RecentLua.Add(processedPath);
+				Config.RecentLua.Add(processedPath);
 
-				if (!Global.Config.DisableLuaScriptsOnLoad)
+				if (!Config.DisableLuaScriptsOnLoad)
 				{
 					luaFile.State = LuaFile.RunState.Running;
 					EnableLuaFile(luaFile);
@@ -315,7 +315,7 @@ namespace BizHawk.Client.EmuHawk
 					luaFile.State = LuaFile.RunState.Disabled;
 				}
 
-				if (Global.Config.LuaReloadOnScriptFileChange)
+				if (Config.LuaReloadOnScriptFileChange)
 				{
 					CreateFileWatcher(processedPath);
 				}
@@ -612,7 +612,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!LuaImp.ScriptList.LoadLuaSession(path))
 				{
-					Global.Config.RecentLuaSession.HandleLoadError(path);
+					Config.RecentLuaSession.HandleLoadError(path);
 				}
 				else
 				{
@@ -682,14 +682,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent, true));
+				Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent, true));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLua.RecentMenu(LoadLuaFile, true));
+				Config.RecentLua.RecentMenu(LoadLuaFile, true));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
@@ -784,7 +784,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				InitialDirectory = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetDirectoryName(LuaImp.ScriptList.Filename) :
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null),
+					PathManager.MakeAbsolutePath(Config.PathEntries.LuaPathFragment, null),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(LuaImp.ScriptList.Filename) ?
 					Path.GetFileNameWithoutExtension(LuaImp.ScriptList.Filename) :
@@ -839,7 +839,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			var files = !SelectedFiles.Any() && Global.Config.ToggleAllIfNoneSelected
+			var files = !SelectedFiles.Any() && Config.ToggleAllIfNoneSelected
 				? LuaImp.ScriptList
 				: SelectedFiles;
 			foreach (var file in files)
@@ -870,7 +870,7 @@ namespace BizHawk.Client.EmuHawk
 				// Shenanigans
 				// We want any gui.text messages from a script to immediately update even when paused
 				GlobalWin.OSD.ClearGuiText();
-				GlobalWin.Tools.UpdateToolsAfter();
+				Tools.UpdateToolsAfter();
 				LuaImp.EndLuaDrawing();
 				LuaImp.StartLuaDrawing();
 			}
@@ -1066,26 +1066,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
-			ReturnAllIfNoneSelectedMenuItem.Checked = Global.Config.ToggleAllIfNoneSelected;
-			ReloadWhenScriptFileChangesMenuItem.Checked = Global.Config.LuaReloadOnScriptFileChange;
+			DisableScriptsOnLoadMenuItem.Checked = Config.DisableLuaScriptsOnLoad;
+			ReturnAllIfNoneSelectedMenuItem.Checked = Config.ToggleAllIfNoneSelected;
+			ReloadWhenScriptFileChangesMenuItem.Checked = Config.LuaReloadOnScriptFileChange;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisableLuaScriptsOnLoad ^= true;
+			Config.DisableLuaScriptsOnLoad ^= true;
 		}
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.ToggleAllIfNoneSelected ^= true;
+			Config.ToggleAllIfNoneSelected ^= true;
 		}
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.LuaReloadOnScriptFileChange ^= true;
+			Config.LuaReloadOnScriptFileChange ^= true;
 
-			if (Global.Config.LuaReloadOnScriptFileChange)
+			if (Config.LuaReloadOnScriptFileChange)
 			{
 				AddFileWatches();
 			}
