@@ -24,22 +24,22 @@ namespace BizHawk.Client.EmuHawk
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
-			{ 'D', 0 },  // 0000
-			{ 'F', 1 },  // 0001
-			{ '4', 2 },  // 0010
-			{ '7', 3 },  // 0011
-			{ '0', 4 },  // 0100
-			{ '9', 5 },  // 0101
-			{ '1', 6 },  // 0110
-			{ '5', 7 },  // 0111
-			{ '6', 8 },  // 1000
-			{ 'B', 9 },  // 1001
-			{ 'C', 10 }, // 1010 
-			{ '8', 11 }, // 1011 
-			{ 'A', 12 }, // 1100 
-			{ '2', 13 }, // 1101 
-			{ '3', 14 }, // 1110 
-			{ 'E', 15 }  // 1111 
+			['D'] = 0,  // 0000
+			['F'] = 1,  // 0001
+			['4'] = 2,  // 0010
+			['7'] = 3,  // 0011
+			['0'] = 4,  // 0100
+			['9'] = 5,  // 0101
+			['1'] = 6,  // 0110
+			['5'] = 7,  // 0111
+			['6'] = 8,  // 1000
+			['B'] = 9,  // 1001
+			['C'] = 10, // 1010 
+			['8'] = 11, // 1011 
+			['A'] = 12, // 1100 
+			['2'] = 13, // 1101 
+			['3'] = 14, // 1110 
+			['E'] = 15  // 1111 
 		};
 
 		private bool _processing;
@@ -56,8 +56,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public API
 
-		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => false;
+
 		public void Restart()
 		{
 			// Do nothing
@@ -216,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains["System Bus"],
 				address,
 				WatchSize.Byte,
-				Client.Common.DisplayType.Hex,
+				Common.DisplayType.Hex,
 				false,
 				name
 			);

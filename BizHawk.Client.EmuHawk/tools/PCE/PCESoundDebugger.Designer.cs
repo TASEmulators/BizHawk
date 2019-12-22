@@ -93,7 +93,7 @@
 			this.btnExport.TabIndex = 0;
 			this.btnExport.Text = "Export";
 			this.btnExport.UseVisualStyleBackColor = true;
-			this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+			this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
 			// 
 			// groupBox1
 			// 
@@ -127,7 +127,6 @@
 			this.lvPsgWaveforms.UseCompatibleStateImageBehavior = false;
 			this.lvPsgWaveforms.View = System.Windows.Forms.View.Details;
 			this.lvPsgWaveforms.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.lvPsgWaveforms_AfterLabelEdit);
-			this.lvPsgWaveforms.ItemActivate += new System.EventHandler(this.lvPsgWaveforms_ItemActivate);
 			this.lvPsgWaveforms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvPsgWaveforms_KeyDown);
 			// 
 			// colName
@@ -149,7 +148,7 @@
 			this.btnReset.TabIndex = 1;
 			this.btnReset.Text = "Reset";
 			this.btnReset.UseVisualStyleBackColor = true;
-			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+			this.btnReset.Click += new System.EventHandler(this.BtnReset_Click);
 			// 
 			// groupBox2
 			// 
@@ -186,7 +185,6 @@
 			this.lvChEn.UseCompatibleStateImageBehavior = false;
 			this.lvChEn.View = System.Windows.Forms.View.List;
 			this.lvChEn.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvChEn_ItemChecked);
-			this.lvChEn.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvChEn_ItemSelectionChanged);
 			// 
 			// groupBox3
 			// 

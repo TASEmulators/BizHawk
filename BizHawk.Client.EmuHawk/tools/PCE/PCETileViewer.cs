@@ -8,18 +8,18 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCETileViewer : Form, IToolFormAutoConfig
+	public partial class PceTileViewer : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		public PCEngine emu { get; private set; }
+		public PCEngine Emu { get; private set; }
 
-		private VDC vdc;
-		private VCE vce;
+		private VDC _vdc;
+		private VCE _vce;
 
-		private int bgpalnum;
-		private int sppalnum;
+		private int _bgPalNum;
+		private int _spPalNum;
 
-		public PCETileViewer()
+		public PceTileViewer()
 		{
 			InitializeComponent();
 			bmpViewBG.ChangeBitmapSize(512, 256);
@@ -74,49 +74,50 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawSprites()
 		{
-			var lockdata = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* dest = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
-			fixed (byte* src = vdc.SpriteBuffer)
-			fixed (int* pal = &vce.Palette[256 + sppalnum * 16])
+			int* dest = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
+			fixed (byte* src = _vdc.SpriteBuffer)
+			fixed (int* pal = &_vce.Palette[256 + _spPalNum * 16])
 			{
 				for (int tile = 0; tile < 512; tile++)
 				{
-					int srcaddr = tile * 256;
+					int srcAddr = tile * 256;
 					int tx = tile & 31;
 					int ty = tile >> 5;
-					int destaddr = ty * 16 * pitch + tx * 16;
-					Draw16x16(src + srcaddr, dest + destaddr, pitch, pal);
+					int destAddr = ty * 16 * pitch + tx * 16;
+					Draw16x16(src + srcAddr, dest + destAddr, pitch, pal);
 				}
 			}
-			bmpViewSP.BMP.UnlockBits(lockdata);
+
+			bmpViewSP.BMP.UnlockBits(lockData);
 		}
 
 		unsafe void DrawBacks()
 		{
-			var lockdata = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* dest = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
-			fixed (byte* src = vdc.PatternBuffer)
-			fixed (int* pal = &vce.Palette[0 + bgpalnum * 16])
+			int* dest = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
+			fixed (byte* src = _vdc.PatternBuffer)
+			fixed (int* pal = &_vce.Palette[0 + _bgPalNum * 16])
 			{
 				for (int tile = 0; tile < 2048; tile++)
 				{
-					int srcaddr = tile * 64;
+					int srcAddr = tile * 64;
 					int tx = tile & 63;
 					int ty = tile >> 6;
-					int destaddr = ty * 8 * pitch + tx * 8;
-					Draw8x8(src + srcaddr, dest + destaddr, pitch, pal);
+					int destAddr = ty * 8 * pitch + tx * 8;
+					Draw8x8(src + srcAddr, dest + destAddr, pitch, pal);
 				}
 			}
-			bmpViewBG.BMP.UnlockBits(lockdata);
+			bmpViewBG.BMP.UnlockBits(lockData);
 		}
 
 		unsafe void DrawPalettes()
 		{
-			fixed (int* pal = vce.Palette)
+			fixed (int* pal = _vce.Palette)
 			{
 				DrawPalette(bmpViewBGPal.BMP, pal);
 				DrawPalette(bmpViewSPPal.BMP, pal + 256);
@@ -125,28 +126,30 @@ namespace BizHawk.Client.EmuHawk
 
 		static unsafe void DrawPalette(Bitmap bmp, int* pal)
 		{
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* dest = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* dest = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 			int inc = pitch - 256;
 			for (int j = 0; j < 256; j++)
 			{
 				for (int i = 0; i < 256; i++)
 				{
-					int pindex = j & 0xf0 | i >> 4;
-					*dest++ = pal[pindex];
+					int pIndex = j & 0xf0 | i >> 4;
+					*dest++ = pal[pIndex];
 				}
+
 				dest += inc;
 			}
-			bmp.UnlockBits(lockdata);
+
+			bmp.UnlockBits(lockData);
 		}
 
 		public void Restart()
 		{
-			vce = emu.VCE;
+			_vce = Emu.VCE;
 
-			if (emu.SystemId == "SGX")
+			if (Emu.SystemId == "SGX")
 			{
 				checkBoxVDC2.Enabled = true;
 			}
@@ -155,41 +158,39 @@ namespace BizHawk.Client.EmuHawk
 				checkBoxVDC2.Enabled = false;
 				checkBoxVDC2.Checked = false;
 			}
-			checkBoxVDC2_CheckedChanged(null, null);
+
+			CheckBoxVDC2_CheckedChanged(null, null);
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public bool UpdateBefore => true;
 
 		#endregion
 
-		private void checkBoxVDC2_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxVDC2_CheckedChanged(object sender, EventArgs e)
 		{
-			vdc = checkBoxVDC2.Checked ? emu.VDC2 : emu.VDC1;
+			_vdc = checkBoxVDC2.Checked ? Emu.VDC2 : Emu.VDC1;
 			UpdateValues();
 		}
 
-		private void bmpViewBGPal_MouseClick(object sender, MouseEventArgs e)
+		private void BmpViewBGPal_MouseClick(object sender, MouseEventArgs e)
 		{
 			int p = Math.Min(Math.Max(e.Y / 16, 0), 15);
-			bgpalnum = p;
+			_bgPalNum = p;
 			DrawBacks();
 			bmpViewBG.Refresh();
 		}
 
-		private void bmpViewSPPal_MouseClick(object sender, MouseEventArgs e)
+		private void BmpViewSPPal_MouseClick(object sender, MouseEventArgs e)
 		{
 			int p = Math.Min(Math.Max(e.Y / 16, 0), 15);
-			sppalnum = p;
+			_spPalNum = p;
 			DrawSprites();
 			bmpViewSP.Refresh();
 		}
 
-		private void PCETileViewer_KeyDown(object sender, KeyEventArgs e)
+		private void PceTileViewer_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
@@ -203,32 +204,31 @@ namespace BizHawk.Client.EmuHawk
 					top = found;
 				} while (found != null && found.HasChildren);
 
-				if (found is BmpView)
+				if (found is BmpView bv)
 				{
-					var bv = found as BmpView;
 					Clipboard.SetImage(bv.BMP);
 				}
 			}
 		}
 
-		private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void CloseMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void saveBackgroundScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveBackgroundScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewBG.SaveFile();
 		}
 
-		private void saveSpriteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SaveSpriteScreenshotMenuItem_Click(object sender, EventArgs e)
 		{
 			bmpViewSP.SaveFile();
 		}
 
-		private void PCETileViewer_Load(object sender, EventArgs e)
+		private void PceTileViewer_Load(object sender, EventArgs e)
 		{
-			vce = emu.VCE;
+			_vce = Emu.VCE;
 		}
 	}
 }

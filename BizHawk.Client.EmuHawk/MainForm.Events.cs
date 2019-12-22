@@ -1767,7 +1767,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PceTileViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.Load<PCETileViewer>();
+			Tools.Load<PceTileViewer>();
 		}
 
 		private void PceSoundDebuggerMenuItem_Click(object sender, EventArgs e)
@@ -1978,7 +1978,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.Load<SmsVDPViewer>();
+			Tools.Load<SmsVdpViewer>();
 		}
 
 		private void SMSControllerStandardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2141,7 +2141,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.Load<GBGPUView>();
+			Tools.Load<GbGpuView>();
 		}
 
 		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
@@ -2165,7 +2165,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.Load<GBAGPUView>();
+			Tools.Load<GbaGpuView>();
 		}
 
 		private void UsemGBAMenuItem_Click(object sender, EventArgs e)
@@ -2472,7 +2472,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
-			Tools.Load<GenVDPViewer>();
+			Tools.Load<GenVdpViewer>();
 		}
 
 		private void GenesisSettingsMenuItem_Click(object sender, EventArgs e)

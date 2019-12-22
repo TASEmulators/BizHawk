@@ -4,14 +4,14 @@ using System.Drawing.Imaging;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public class PCEBGCanvas : Control
+	public class PceBgCanvas : Control
 	{
-		public Bitmap Bat;
+		public Bitmap Bat { get; set; }
 
 		private const int BAT_WIDTH = 1024;
 		private const int BAT_HEIGHT = 512;
 
-		public PCEBGCanvas()
+		public PceBgCanvas()
 		{
 			Bat = new Bitmap(BAT_WIDTH, BAT_HEIGHT, PixelFormat.Format32bppArgb);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);

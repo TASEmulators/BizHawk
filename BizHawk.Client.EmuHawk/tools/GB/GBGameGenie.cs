@@ -22,10 +22,10 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>();
 		private bool _processing;
 
-		public bool AskSaveChanges() { return true; }
+		public bool AskSaveChanges() => true;
 
-		public bool UpdateBefore { get { return false; } }
-		
+		public bool UpdateBefore => false;
+
 		public void Restart()
 		{
 			if ((Emulator.SystemId != "GB") && (Global.Game.System != "GG"))
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private string GBGGEncode(int val, int add, int cmp)
+		private string GbGgEncode(int val, int add, int cmp)
 		{
 			char[] letters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 			string code = "";
@@ -186,14 +186,9 @@ namespace BizHawk.Client.EmuHawk
 			addcheatbt.Enabled = false;
 
 			//"Game Boy/Game Gear Game Genie Encoder / Decoder"
-			if (Emulator.SystemId == "GB")
-			{
-				Text = "Game Boy Game Genie Encoder/Decoder";
-			}
-			else
-			{
-				Text = "Game Gear Game Genie Encoder/Decoder";
-			}
+			Text = Emulator.SystemId == "GB"
+				? "Game Boy Game Genie Encoder/Decoder"
+				: "Game Gear Game Genie Encoder/Decoder";
 		}
 
 		#region Dialog and Control Events
@@ -300,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 							cmp = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
 						}
 
-						GGCodeMaskBox.Text = GBGGEncode(val, add, cmp);
+						GGCodeMaskBox.Text = GbGgEncode(val, add, cmp);
 						addcheatbt.Enabled = true;
 					}
 					else
@@ -346,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 						cmp = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					}
 
-					GGCodeMaskBox.Text = GBGGEncode(val, add, cmp);
+					GGCodeMaskBox.Text = GbGgEncode(val, add, cmp);
 					addcheatbt.Enabled = true;
 				}
 				else
@@ -391,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 						cmp = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
 					}
 
-					GGCodeMaskBox.Text = GBGGEncode(val, add, cmp);
+					GGCodeMaskBox.Text = GbGgEncode(val, add, cmp);
 					addcheatbt.Enabled = true;
 				}
 				else

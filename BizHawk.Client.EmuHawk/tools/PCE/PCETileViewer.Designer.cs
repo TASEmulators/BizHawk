@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class PCETileViewer
+	partial class PceTileViewer
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -65,7 +65,7 @@
 			this.bmpViewBGPal.Size = new System.Drawing.Size(256, 256);
 			this.bmpViewBGPal.TabIndex = 3;
 			this.bmpViewBGPal.Text = "bmpView2";
-			this.bmpViewBGPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewBGPal_MouseClick);
+			this.bmpViewBGPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BmpViewBGPal_MouseClick);
 			// 
 			// bmpViewBG
 			// 
@@ -93,7 +93,7 @@
 			this.bmpViewSPPal.Size = new System.Drawing.Size(256, 256);
 			this.bmpViewSPPal.TabIndex = 1;
 			this.bmpViewSPPal.Text = "bmpView4";
-			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.bmpViewSPPal_MouseClick);
+			this.bmpViewSPPal.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BmpViewSPPal_MouseClick);
 			// 
 			// bmpViewSP
 			// 
@@ -112,7 +112,7 @@
 			this.checkBoxVDC2.TabIndex = 6;
 			this.checkBoxVDC2.Text = "VDC 2";
 			this.checkBoxVDC2.UseVisualStyleBackColor = true;
-			this.checkBoxVDC2.CheckedChanged += new System.EventHandler(this.checkBoxVDC2_CheckedChanged);
+			this.checkBoxVDC2.CheckedChanged += new System.EventHandler(this.CheckBoxVDC2_CheckedChanged);
 			// 
 			// label1
 			// 
@@ -150,14 +150,14 @@
 			this.saveBackgroundScreenshotToolStripMenuItem.Name = "saveBackgroundScreenshotToolStripMenuItem";
 			this.saveBackgroundScreenshotToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.saveBackgroundScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
-			this.saveBackgroundScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBackgroundScreenshotToolStripMenuItem_Click);
+			this.saveBackgroundScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveBackgroundScreenshotMenuItem_Click);
 			// 
 			// saveSpriteScreenshotToolStripMenuItem
 			// 
 			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
 			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
-			this.saveSpriteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveSpriteScreenshotToolStripMenuItem_Click);
+			this.saveSpriteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveSpriteScreenshotMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -170,7 +170,7 @@
 			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.closeToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.closeToolStripMenuItem.Text = "&Close";
-			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
 			// PCETileViewer
 			// 
@@ -185,10 +185,10 @@
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.pce_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "PCETileViewer";
+			this.Name = "PceTileViewer";
 			this.Text = "Tile Viewer";
-			this.Load += new System.EventHandler(this.PCETileViewer_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PCETileViewer_KeyDown);
+			this.Load += new System.EventHandler(this.PceTileViewer_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PceTileViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);

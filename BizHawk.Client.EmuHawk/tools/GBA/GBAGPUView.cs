@@ -1,47 +1,45 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-using System.Collections.Generic;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBAGPUView : Form, IToolFormAutoConfig
+	public partial class GbaGpuView : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		IGBAGPUViewable gba { get; set; }
+		private IGBAGPUViewable GBA { get; set; }
 
 		// emulator memory areas
-		private IntPtr vram;
-		private IntPtr oam;
-		private IntPtr mmio;
-		private IntPtr palram;
+		private IntPtr _vram;
+		private IntPtr _oam;
+		private IntPtr _mmio;
+		private IntPtr _palRam;
 		// color conversion to RGB888
-		private readonly int[] ColorConversion;
+		private readonly int[] _colorConversion;
 
-		MobileBmpView bg0, bg1, bg2, bg3, bgpal, sppal, sprites, bgtiles16, bgtiles256, sptiles16, sptiles256;
+		private MobileBmpView _bg0, _bg1, _bg2, _bg3, _bgPal, _spPal, _sprites, _bgTiles16, _bgTiles256, _spTiles16, _spTiles256;
 
 		// MobileDetailView memory;
 
-		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return true; } }
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => true;
 
-		public GBAGPUView()
+		public GbaGpuView()
 		{
 			InitializeComponent();
 			// TODO: hook up something
 			// we do this twice to avoid having to & 0x7fff with every color
 			int[] tmp = GBColors.GetLut(GBColors.ColorType.vivid);
-			ColorConversion = new int[65536];
-			Buffer.BlockCopy(tmp, 0, ColorConversion, 0, sizeof(int) * tmp.Length);
-			Buffer.BlockCopy(tmp, 0, ColorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
+			_colorConversion = new int[65536];
+			Buffer.BlockCopy(tmp, 0, _colorConversion, 0, sizeof(int) * tmp.Length);
+			Buffer.BlockCopy(tmp, 0, _colorConversion, sizeof(int) * tmp.Length, sizeof(int) * tmp.Length);
 			radioButtonManual.Checked = true;
 			GenerateWidgets();
 			hScrollBar1_ValueChanged(null, null);
@@ -50,22 +48,22 @@ namespace BizHawk.Client.EmuHawk
 
 		#region drawing primitives
 
-		unsafe void DrawTile256(int* dest, int pitch, byte* tile, ushort* palette, bool hflip, bool vflip)
+		private unsafe void DrawTile256(int* dest, int pitch, byte* tile, ushort* palette, bool hFlip, bool vFlip)
 		{
-			if (vflip)
+			if (vFlip)
 			{
 				dest += pitch * 7;
 				pitch = -pitch;
 			}
 
-			if (hflip)
+			if (hFlip)
 			{
 				dest += 7;
 				for (int y = 0; y < 8; y++)
 				{
 					for (int x = 0; x < 8; x++)
 					{
-						*dest-- = ColorConversion[palette[*tile++]];
+						*dest-- = _colorConversion[palette[*tile++]];
 					}
 					dest += 8;
 					dest += pitch;
@@ -77,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (int x = 0; x < 8; x++)
 					{
-						*dest++ = ColorConversion[palette[*tile++]];
+						*dest++ = _colorConversion[palette[*tile++]];
 					}
 					dest -= 8;
 					dest += pitch;
@@ -85,22 +83,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort* palette, bool hflip, bool vflip)
+		private unsafe void DrawTile16(int* dest, int pitch, byte* tile, ushort* palette, bool hFlip, bool vFlip)
 		{
-			if (vflip)
+			if (vFlip)
 			{
 				dest += pitch * 7;
 				pitch = -pitch;
 			}
-			if (hflip)
+			if (hFlip)
 			{
 				dest += 7;
 				for (int y = 0; y < 8; y++)
 				{
 					for (int i = 0; i < 4; i++)
 					{
-						*dest-- = ColorConversion[palette[*tile & 15]];
-						*dest-- = ColorConversion[palette[*tile >> 4]];
+						*dest-- = _colorConversion[palette[*tile & 15]];
+						*dest-- = _colorConversion[palette[*tile >> 4]];
 						tile++;
 					}
 					dest += 8;
@@ -113,8 +111,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (int i = 0; i < 4; i++)
 					{
-						*dest++ = ColorConversion[palette[*tile & 15]];
-						*dest++ = ColorConversion[palette[*tile >> 4]];
+						*dest++ = _colorConversion[palette[*tile & 15]];
+						*dest++ = _colorConversion[palette[*tile >> 4]];
 						tile++;
 					}
 					dest -= 8;
@@ -130,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int tx = 0; tx < 32; tx++)
 				{
 					ushort ntent = *nametable++;
-					DrawTile16(dest, pitch, tiles + (ntent & 1023) * 32, (ushort*)palram + (ntent >> 12 << 4), ntent.Bit(10), ntent.Bit(11));
+					DrawTile16(dest, pitch, tiles + (ntent & 1023) * 32, (ushort*)_palRam + (ntent >> 12 << 4), ntent.Bit(10), ntent.Bit(11));
 					dest += 8;
 				}
 				dest -= 256;
@@ -145,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int tx = 0; tx < 32; tx++)
 				{
 					ushort ntent = *nametable++;
-					DrawTile256(dest, pitch, tiles + (ntent & 1023) * 64, (ushort*)palram, ntent.Bit(10), ntent.Bit(11));
+					DrawTile256(dest, pitch, tiles + (ntent & 1023) * 64, (ushort*)_palRam, ntent.Bit(10), ntent.Bit(11));
 					dest += 8;
 				}
 				dest -= 256;
@@ -163,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawTextBG(int n, MobileBmpView mbv)
 		{
-			ushort bgcnt = ((ushort*)mmio)[4 + n];
+			ushort bgcnt = ((ushort*)_mmio)[4 + n];
 			int ssize = bgcnt >> 14;
 			switch (ssize)
 			{
@@ -173,56 +171,56 @@ namespace BizHawk.Client.EmuHawk
 				case 3: mbv.ChangeAllSizes(512, 512); break;
 			}
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			byte* tiles = (byte*)vram + ((bgcnt & 0xc) << 12);
+			byte* tiles = (byte*)_vram + ((bgcnt & 0xc) << 12);
 
-			ushort* nametable = (ushort*)vram + ((bgcnt & 0x1f00) << 2);
+			ushort* nametable = (ushort*)_vram + ((bgcnt & 0x1f00) << 2);
 
-			bool eightbit = bgcnt.Bit(7);
+			bool eighthBit = bgcnt.Bit(7);
 
 			switch (ssize)
 			{
 				case 0:
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					break;
 				case 1:
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					pixels += 256;
 					nametable += 1024;
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					break;
 				case 2:
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					pixels += pitch * 256;
 					nametable += 1024;
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					break;
 				case 3:
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					pixels += 256;
 					nametable += 1024;
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					pixels -= 256;
 					pixels += pitch * 256;
 					nametable += 1024;
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					pixels += 256;
 					nametable += 1024;
-					DrawTextNameTable(pixels, pitch, nametable, tiles, eightbit);
+					DrawTextNameTable(pixels, pitch, nametable, tiles, eighthBit);
 					break;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
 		unsafe void DrawAffineBG(int n, MobileBmpView mbv)
 		{
-			ushort bgcnt = ((ushort*)mmio)[4 + n];
+			ushort bgcnt = ((ushort*)_mmio)[4 + n];
 			int ssize = bgcnt >> 14;
 			switch (ssize)
 			{
@@ -232,27 +230,27 @@ namespace BizHawk.Client.EmuHawk
 				case 3: mbv.ChangeAllSizes(1024, 1024); break;
 			}
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			byte* tiles = (byte*)vram + ((bgcnt & 0xc) << 12);
+			byte* tiles = (byte*)_vram + ((bgcnt & 0xc) << 12);
 
-			byte* nametable = (byte*)vram + ((bgcnt & 0x1f00) << 3);
+			byte* nametable = (byte*)_vram + ((bgcnt & 0x1f00) << 3);
 
 			for (int ty = 0; ty < bmp.Height / 8; ty++)
 			{
 				for (int tx = 0; tx < bmp.Width / 8; tx++)
 				{
-					DrawTile256(pixels, pitch, tiles + *nametable++ * 64, (ushort*)palram, false, false);
+					DrawTile256(pixels, pitch, tiles + *nametable++ * 64, (ushort*)_palRam, false, false);
 					pixels += 8;
 				}
 				pixels -= bmp.Width;
 				pixels += 8 * pitch;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
@@ -260,73 +258,79 @@ namespace BizHawk.Client.EmuHawk
 		{
 			mbv.ChangeAllSizes(240, 160);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			ushort* frame = (ushort*)vram;
+			ushort* frame = (ushort*)_vram;
 
 			for (int y = 0; y < 160; y++)
 			{
 				for (int x = 0; x < 240; x++)
-					*pixels++ = ColorConversion[*frame++];
+				{
+					*pixels++ = _colorConversion[*frame++];
+				}
+
 				pixels -= 240;
 				pixels += pitch;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawM4BG(MobileBmpView mbv, bool secondframe)
+		unsafe void DrawM4BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(240, 160);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			byte* frame = (byte*)vram + (secondframe ? 40960 : 0);
-			ushort* palette = (ushort*)palram;
+			byte* frame = (byte*)_vram + (secondFrame ? 40960 : 0);
+			ushort* palette = (ushort*)_palRam;
 
 			for (int y = 0; y < 160; y++)
 			{
 				for (int x = 0; x < 240; x++)
-					*pixels++ = ColorConversion[palette[*frame++]];
+				{
+					*pixels++ = _colorConversion[palette[*frame++]];
+				}
+
 				pixels -= 240;
 				pixels += pitch;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
-		unsafe void DrawM5BG(MobileBmpView mbv, bool secondframe)
+		unsafe void DrawM5BG(MobileBmpView mbv, bool secondFrame)
 		{
 			mbv.ChangeAllSizes(160, 128);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			ushort* frame = (ushort*)vram + (secondframe ? 20480 : 0);
+			ushort* frame = (ushort*)_vram + (secondFrame ? 20480 : 0);
 
 			for (int y = 0; y < 128; y++)
 			{
 				for (int x = 0; x < 160; x++)
-					*pixels++ = ColorConversion[*frame++];
+					*pixels++ = _colorConversion[*frame++];
 				pixels -= 160;
 				pixels += pitch;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
-		static readonly int[, ,] spritesizes = { { { 1, 1 }, { 2, 2 }, { 4, 4 }, { 8, 8 } }, { { 2, 1 }, { 4, 1 }, { 4, 2 }, { 8, 4 } }, { { 1, 2 }, { 1, 4 }, { 2, 4 }, { 4, 8 } } };
+		private static readonly int[, ,] SpriteSizes = { { { 1, 1 }, { 2, 2 }, { 4, 4 }, { 8, 8 } }, { { 2, 1 }, { 4, 1 }, { 4, 2 }, { 8, 4 } }, { { 1, 2 }, { 1, 4 }, { 2, 4 }, { 4, 8 } } };
 
 		unsafe void DrawSprite(int* dest, int pitch, ushort* sprite, byte* tiles, bool twodee)
 		{
@@ -341,67 +345,67 @@ namespace BizHawk.Client.EmuHawk
 			if (shape == 3)
 				return;
 			int size = attr1 >> 14;
-			int tw = spritesizes[shape, size, 0];
-			int th = spritesizes[shape, size, 1];
+			int tw = SpriteSizes[shape, size, 0];
+			int th = SpriteSizes[shape, size, 1];
 
-			bool eightbit = attr0.Bit(13);
-			bool hflip = attr1.Bit(12);
-			bool vflip = attr1.Bit(13);
+			bool eighthBit = attr0.Bit(13);
+			bool hFlip = attr1.Bit(12);
+			bool vFlip = attr1.Bit(13);
 
-			ushort* palette = (ushort*)palram + 256;
-			if (!eightbit)
+			ushort* palette = (ushort*)_palRam + 256;
+			if (!eighthBit)
 				palette += attr2 >> 12 << 4;
 
-			int tileindex = eightbit ? attr2 & 1022 : attr2 & 1023;
-			int tilestride = twodee ? 1024 - tw * (eightbit ? 64 : 32) : 0;
+			int tileIndex = eighthBit ? attr2 & 1022 : attr2 & 1023;
+			int tileStride = twodee ? 1024 - tw * (eighthBit ? 64 : 32) : 0;
 
 			// see if the sprite would read past the end of vram, and skip it if it would
 			{
-				int tileend;
+				int tileEnd;
 
 				if (!twodee)
-					tileend = tileindex + tw * th * (eightbit ? 2 : 1);
+					tileEnd = tileIndex + tw * th * (eighthBit ? 2 : 1);
 				else
-					tileend = tileindex + tw * (eightbit ? 2 : 1) + (th - 1) * 32;
+					tileEnd = tileIndex + tw * (eighthBit ? 2 : 1) + (th - 1) * 32;
 
-				if (tileend > 1024)
+				if (tileEnd > 1024)
 					return;
 			}
 
-			tiles += 32 * tileindex;
+			tiles += 32 * tileIndex;
 
-			if (vflip)
+			if (vFlip)
 				dest += pitch * 8 * (th - 1);
-			if (hflip)
+			if (hFlip)
 				dest += 8 * (tw - 1);
 			for (int ty = 0; ty < th; ty++)
 			{
 				for (int tx = 0; tx < tw; tx++)
 				{
-					if (eightbit)
+					if (eighthBit)
 					{
-						DrawTile256(dest, pitch, tiles, palette, hflip, vflip);
+						DrawTile256(dest, pitch, tiles, palette, hFlip, vFlip);
 						tiles += 64;
 					}
 					else
 					{
-						DrawTile16(dest, pitch, tiles, palette, hflip, vflip);
+						DrawTile16(dest, pitch, tiles, palette, hFlip, vFlip);
 						tiles += 32;
 					}
-					if (hflip)
+					if (hFlip)
 						dest -= 8;
 					else
 						dest += 8;
 				}
-				if (hflip)
+				if (hFlip)
 					dest += tw * 8;
 				else
 					dest -= tw * 8;
-				if (vflip)
+				if (vFlip)
 					dest -= pitch * 8;
 				else
 					dest += pitch * 8;
-				tiles += tilestride;
+				tiles += tileStride;
 			}
 		}
 
@@ -409,17 +413,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			mbv.BmpView.ChangeBitmapSize(1024, 512);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			// Clear()
-			Win32Imports.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			Win32Imports.MemSet(lockData.Scan0, 0xff, (uint)(lockData.Height * lockData.Stride));
 
-			ushort* sprites = (ushort*)oam;
-			byte* tiles = (byte*)vram + 65536;
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			ushort dispcnt = ((ushort*)mmio)[0];
+			ushort* sprites = (ushort*)_oam;
+			byte* tiles = (byte*)_vram + 65536;
+
+			ushort dispcnt = ((ushort*)_mmio)[0];
 			bool twodee = !dispcnt.Bit(6);
 
 			for (int sy = 0; sy < 8; sy++)
@@ -434,7 +438,7 @@ namespace BizHawk.Client.EmuHawk
 				pixels += pitch * 64;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
@@ -442,22 +446,22 @@ namespace BizHawk.Client.EmuHawk
 		{
 			mbv.BmpView.ChangeBitmapSize(16, 16);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			ushort* palette = (ushort*)palram + (sprite ? 256 : 0);
+			ushort* palette = (ushort*)_palRam + (sprite ? 256 : 0);
 
 			for (int j = 0; j < 16; j++)
 			{
 				for (int i = 0; i < 16; i++)
-					*pixels++ = ColorConversion[*palette++];
+					*pixels++ = _colorConversion[*palette++];
 				pixels -= 16;
 				pixels += pitch;
 			}
 
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
@@ -492,23 +496,23 @@ namespace BizHawk.Client.EmuHawk
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, 256);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			byte* tiles = (byte*)vram + 65536;
+			byte* tiles = (byte*)_vram + 65536;
 			// TODO: palette changing (in 4 bit mode anyway)
-			ushort* palette = (ushort*)palram + 256;
+			ushort* palette = (ushort*)_palRam + 256;
 
 			if (tophalfonly)
 			{
-				Win32Imports.MemSet(lockdata.Scan0, 0xff, (uint)(128 * lockdata.Stride));
+				Win32Imports.MemSet(lockData.Scan0, 0xff, (uint)(128 * lockData.Stride));
 				pixels += 128 * pitch;
 				tiles += 16384;
 			}
 			DrawTileRange(pixels, pitch, tiles, palette, tw, th, eightbit);
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
@@ -519,16 +523,16 @@ namespace BizHawk.Client.EmuHawk
 
 			mbv.BmpView.ChangeBitmapSize(tw * 8, th * 8);
 			Bitmap bmp = mbv.BmpView.BMP;
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var lockData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			int* pixels = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
+			int* pixels = (int*)lockData.Scan0;
+			int pitch = lockData.Stride / sizeof(int);
 
-			byte* tiles = (byte*)vram;
+			byte* tiles = (byte*)_vram;
 			// TODO: palette changing (in 4 bit mode anyway)
-			ushort* palette = (ushort*)palram;
+			ushort* palette = (ushort*)_palRam;
 			DrawTileRange(pixels, pitch, tiles, palette, tw, th, eightbit);
-			bmp.UnlockBits(lockdata);
+			bmp.UnlockBits(lockData);
 			mbv.BmpView.Refresh();
 		}
 
@@ -537,98 +541,97 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawEverything()
 		{
-			ushort dispcnt = ((ushort*)mmio)[0];
+			ushort dispcnt = ((ushort*)_mmio)[0];
 
-			int bgmode = dispcnt & 7;
-			switch (bgmode)
+			int bgMode = dispcnt & 7;
+			switch (bgMode)
 			{
 				case 0:
-					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
-					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
-					if (bg2.ShouldDraw) DrawTextBG(2, bg2);
-					if (bg3.ShouldDraw) DrawTextBG(3, bg3);
-					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
-					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
+					if (_bg0.ShouldDraw) DrawTextBG(0, _bg0);
+					if (_bg1.ShouldDraw) DrawTextBG(1, _bg1);
+					if (_bg2.ShouldDraw) DrawTextBG(2, _bg2);
+					if (_bg3.ShouldDraw) DrawTextBG(3, _bg3);
+					if (_bgTiles16.ShouldDraw) DrawBGTiles(_bgTiles16, false);
+					if (_bgTiles256.ShouldDraw) DrawBGTiles(_bgTiles256, true);
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, false, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, false, true);
 					break;
 				case 1:
-					if (bg0.ShouldDraw) DrawTextBG(0, bg0);
-					if (bg1.ShouldDraw) DrawTextBG(1, bg1);
-					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
-					if (bg3.ShouldDraw) bg3.BmpView.Clear();
-					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
-					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
+					if (_bg0.ShouldDraw) DrawTextBG(0, _bg0);
+					if (_bg1.ShouldDraw) DrawTextBG(1, _bg1);
+					if (_bg2.ShouldDraw) DrawAffineBG(2, _bg2);
+					if (_bg3.ShouldDraw) _bg3.BmpView.Clear();
+					if (_bgTiles16.ShouldDraw) DrawBGTiles(_bgTiles16, false);
+					if (_bgTiles256.ShouldDraw) DrawBGTiles(_bgTiles256, true);
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, false, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, false, true);
 					break;
 				case 2:
-					if (bg0.ShouldDraw) bg0.BmpView.Clear();
-					if (bg1.ShouldDraw) bg1.BmpView.Clear();
-					if (bg2.ShouldDraw) DrawAffineBG(2, bg2);
-					if (bg3.ShouldDraw) DrawAffineBG(3, bg3);
+					if (_bg0.ShouldDraw) _bg0.BmpView.Clear();
+					if (_bg1.ShouldDraw) _bg1.BmpView.Clear();
+					if (_bg2.ShouldDraw) DrawAffineBG(2, _bg2);
+					if (_bg3.ShouldDraw) DrawAffineBG(3, _bg3);
 					// while there are no 4bpp tiles possible in mode 2, there might be some in memory
 					// due to midframe mode switching.  no real reason not to display them if that's
 					// what the user wants to see
-					if (bgtiles16.ShouldDraw) DrawBGTiles(bgtiles16, false);
-					if (bgtiles256.ShouldDraw) DrawBGTiles(bgtiles256, true);
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, false, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, false, true);
+					if (_bgTiles16.ShouldDraw) DrawBGTiles(_bgTiles16, false);
+					if (_bgTiles256.ShouldDraw) DrawBGTiles(_bgTiles256, true);
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, false, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, false, true);
 					break;
 				case 3:
-					if (bg0.ShouldDraw) bg0.BmpView.Clear();
-					if (bg1.ShouldDraw) bg1.BmpView.Clear();
-					if (bg2.ShouldDraw) DrawM3BG(bg2);
-					if (bg3.ShouldDraw) bg3.BmpView.Clear();
-					if (bgtiles16.ShouldDraw) bgtiles16.BmpView.Clear();
-					if (bgtiles256.ShouldDraw) bgtiles256.BmpView.Clear();
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
+					if (_bg0.ShouldDraw) _bg0.BmpView.Clear();
+					if (_bg1.ShouldDraw) _bg1.BmpView.Clear();
+					if (_bg2.ShouldDraw) DrawM3BG(_bg2);
+					if (_bg3.ShouldDraw) _bg3.BmpView.Clear();
+					if (_bgTiles16.ShouldDraw) _bgTiles16.BmpView.Clear();
+					if (_bgTiles256.ShouldDraw) _bgTiles256.BmpView.Clear();
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, true, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, true, true);
 					break;
 				//in modes 4, 5, bg3 is repurposed as bg2 invisible frame
 				case 4:
-					if (bg0.ShouldDraw) bg0.BmpView.Clear();
-					if (bg1.ShouldDraw) bg1.BmpView.Clear();
-					if (bg2.ShouldDraw) DrawM4BG(bg2, dispcnt.Bit(4));
-					if (bg3.ShouldDraw) DrawM4BG(bg3, !dispcnt.Bit(4));
-					if (bgtiles16.ShouldDraw) bgtiles16.BmpView.Clear();
-					if (bgtiles256.ShouldDraw) bgtiles256.BmpView.Clear();
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
+					if (_bg0.ShouldDraw) _bg0.BmpView.Clear();
+					if (_bg1.ShouldDraw) _bg1.BmpView.Clear();
+					if (_bg2.ShouldDraw) DrawM4BG(_bg2, dispcnt.Bit(4));
+					if (_bg3.ShouldDraw) DrawM4BG(_bg3, !dispcnt.Bit(4));
+					if (_bgTiles16.ShouldDraw) _bgTiles16.BmpView.Clear();
+					if (_bgTiles256.ShouldDraw) _bgTiles256.BmpView.Clear();
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, true, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, true, true);
 					break;
 				case 5:
-					if (bg0.ShouldDraw) bg0.BmpView.Clear();
-					if (bg1.ShouldDraw) bg1.BmpView.Clear();
-					if (bg2.ShouldDraw) DrawM5BG(bg2, dispcnt.Bit(4));
-					if (bg3.ShouldDraw) DrawM5BG(bg3, !dispcnt.Bit(4));
-					if (bgtiles16.ShouldDraw) bgtiles16.BmpView.Clear();
-					if (bgtiles256.ShouldDraw) bgtiles256.BmpView.Clear();
-					if (sptiles16.ShouldDraw) DrawSpriteTiles(sptiles16, true, false);
-					if (sptiles256.ShouldDraw) DrawSpriteTiles(sptiles256, true, true);
+					if (_bg0.ShouldDraw) _bg0.BmpView.Clear();
+					if (_bg1.ShouldDraw) _bg1.BmpView.Clear();
+					if (_bg2.ShouldDraw) DrawM5BG(_bg2, dispcnt.Bit(4));
+					if (_bg3.ShouldDraw) DrawM5BG(_bg3, !dispcnt.Bit(4));
+					if (_bgTiles16.ShouldDraw) _bgTiles16.BmpView.Clear();
+					if (_bgTiles256.ShouldDraw) _bgTiles256.BmpView.Clear();
+					if (_spTiles16.ShouldDraw) DrawSpriteTiles(_spTiles16, true, false);
+					if (_spTiles256.ShouldDraw) DrawSpriteTiles(_spTiles256, true, true);
 					break;
 				default:
 					// shouldn't happen, but shouldn't be our problem either
-					if (bg0.ShouldDraw) bg0.BmpView.Clear();
-					if (bg1.ShouldDraw) bg1.BmpView.Clear();
-					if (bg2.ShouldDraw) bg2.BmpView.Clear();
-					if (bg3.ShouldDraw) bg3.BmpView.Clear();
-					if (bgtiles16.ShouldDraw) bgtiles16.BmpView.Clear();
-					if (bgtiles256.ShouldDraw) bgtiles256.BmpView.Clear();
-					if (sptiles16.ShouldDraw) sptiles16.BmpView.Clear();
-					if (sptiles256.ShouldDraw) sptiles256.BmpView.Clear();
+					if (_bg0.ShouldDraw) _bg0.BmpView.Clear();
+					if (_bg1.ShouldDraw) _bg1.BmpView.Clear();
+					if (_bg2.ShouldDraw) _bg2.BmpView.Clear();
+					if (_bg3.ShouldDraw) _bg3.BmpView.Clear();
+					if (_bgTiles16.ShouldDraw) _bgTiles16.BmpView.Clear();
+					if (_bgTiles256.ShouldDraw) _bgTiles256.BmpView.Clear();
+					if (_spTiles16.ShouldDraw) _spTiles16.BmpView.Clear();
+					if (_spTiles256.ShouldDraw) _spTiles256.BmpView.Clear();
 					break;
 			}
 
-			if (bgpal.ShouldDraw) DrawPalette(bgpal, false);
-			if (sppal.ShouldDraw) DrawPalette(sppal, true);
+			if (_bgPal.ShouldDraw) DrawPalette(_bgPal, false);
+			if (_spPal.ShouldDraw) DrawPalette(_spPal, true);
 
-			if (sprites.ShouldDraw) DrawSprites(sprites);
+			if (_sprites.ShouldDraw) DrawSprites(_sprites);
 		}
 
-		MobileBmpView MakeMBVWidget(string text, int w, int h)
+		private MobileBmpView MakeMBVWidget(string text, int w, int h)
 		{
-			var mbv = new MobileBmpView();
-			mbv.Text = text;
+			var mbv = new MobileBmpView { Text = text };
 			mbv.BmpView.Text = text;
 			mbv.TopLevel = false;
 			mbv.ChangeViewSize(w, h);
@@ -638,10 +641,9 @@ namespace BizHawk.Client.EmuHawk
 			return mbv;
 		}
 
-		MobileDetailView MakeMDVWidget(string text, int w, int h)
+		private MobileDetailView MakeMDVWidget(string text, int w, int h)
 		{
-			var mdv = new MobileDetailView();
-			mdv.Text = text;
+			var mdv = new MobileDetailView { Text = text };
 			mdv.BmpView.Text = text;
 			mdv.TopLevel = false;
 			mdv.ClientSize = new Size(w, h);
@@ -654,17 +656,17 @@ namespace BizHawk.Client.EmuHawk
 		void GenerateWidgets()
 		{
 			listBoxWidgets.BeginUpdate();
-			bg0 = MakeMBVWidget("Background 0", 256, 256);
-			bg1 = MakeMBVWidget("Background 1", 256, 256);
-			bg2 = MakeMBVWidget("Background 2", 256, 256);
-			bg3 = MakeMBVWidget("Background 3", 256, 256);
-			bgpal = MakeMBVWidget("Background Palettes", 256, 256);
-			sppal = MakeMBVWidget("Sprite Palettes", 256, 256);
-			sprites = MakeMBVWidget("Sprites", 1024, 512);
-			sptiles16 = MakeMBVWidget("Sprite Tiles (4bpp)", 256, 256);
-			sptiles256 = MakeMBVWidget("Sprite Tiles (8bpp)", 128, 256);
-			bgtiles16 = MakeMBVWidget("Background Tiles (4bpp)", 512, 256);
-			bgtiles256 = MakeMBVWidget("Background Tiles (8bpp)", 256, 256);
+			_bg0 = MakeMBVWidget("Background 0", 256, 256);
+			_bg1 = MakeMBVWidget("Background 1", 256, 256);
+			_bg2 = MakeMBVWidget("Background 2", 256, 256);
+			_bg3 = MakeMBVWidget("Background 3", 256, 256);
+			_bgPal = MakeMBVWidget("Background Palettes", 256, 256);
+			_spPal = MakeMBVWidget("Sprite Palettes", 256, 256);
+			_sprites = MakeMBVWidget("Sprites", 1024, 512);
+			_spTiles16 = MakeMBVWidget("Sprite Tiles (4bpp)", 256, 256);
+			_spTiles256 = MakeMBVWidget("Sprite Tiles (8bpp)", 128, 256);
+			_bgTiles16 = MakeMBVWidget("Background Tiles (4bpp)", 512, 256);
+			_bgTiles256 = MakeMBVWidget("Background Tiles (8bpp)", 256, 256);
 			// todo: finish these
 			// MakeMDVWidget("Details", 128, 192);
 			// memory = MakeMDVWidget("Details - Memory", 128, 192);
@@ -689,20 +691,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			c.Click += (o, e) => top.BringToFront();
 			if (c.HasChildren)
+			{
 				foreach (Control cc in c.Controls)
+				{
 					BringToFrontHack(cc, top);
+				}
+			}
 		}
 
 
 		public void Restart()
 		{
-			var mem = gba.GetMemoryAreas();
-			vram = mem.vram;
-			palram = mem.palram;
-			oam = mem.oam;
-			mmio = mem.mmio;
+			var mem = GBA.GetMemoryAreas();
+			_vram = mem.vram;
+			_palRam = mem.palram;
+			_oam = mem.oam;
+			_mmio = mem.mmio;
 
-			_cbscanlineEmu = 500; // force an update
+			_cbScanlineEmu = 500; // force an update
 			UpdateValues();
 		}
 
@@ -712,18 +718,20 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed)
-				return;
-
-			if (_cbscanlineEmu != _cbscanline)
 			{
-				_cbscanlineEmu = _cbscanline;
-				if (!_cbscanline.HasValue) // manual, deactivate callback
+				return;
+			}
+
+			if (_cbScanlineEmu != _cbScanline)
+			{
+				_cbScanlineEmu = _cbScanline;
+				if (!_cbScanline.HasValue) // manual, deactivate callback
 				{
-					gba.SetScanlineCallback(null, 0);
+					GBA.SetScanlineCallback(null, 0);
 				}
 				else
 				{
-					gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
+					GBA.SetScanlineCallback(DrawEverything, _cbScanline.Value);
 				}
 			}
 		}
@@ -731,10 +739,6 @@ namespace BizHawk.Client.EmuHawk
 		public void FastUpdate()
 		{
 			// Do nothing
-		}
-
-		private void GBAGPUView_Load(object sender, EventArgs e)
-		{
 		}
 
 		void ShowSelectedWidget()
@@ -760,8 +764,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region refresh control
 
-		private int? _cbscanline = null;
-		private int? _cbscanlineEmu = 500;
+		private int? _cbScanline;
+		private int? _cbScanlineEmu = 500;
 
 		private void RecomputeRefresh()
 		{
@@ -769,19 +773,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				hScrollBar1.Enabled = true;
 				buttonRefresh.Enabled = false;
-				_cbscanline = (hScrollBar1.Value + 160) % 228;
+				_cbScanline = (hScrollBar1.Value + 160) % 228;
 			}
 			else if (radioButtonManual.Checked)
 			{
 				hScrollBar1.Enabled = false;
 				buttonRefresh.Enabled = true;
-				_cbscanline = null;
+				_cbScanline = null;
 			}
-		}
-
-		private void radioButtonFrame_CheckedChanged(object sender, EventArgs e)
-		{
-			RecomputeRefresh();
 		}
 
 		private void radioButtonScanline_CheckedChanged(object sender, EventArgs e)
@@ -791,8 +790,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void hScrollBar1_ValueChanged(object sender, EventArgs e)
 		{
-			_cbscanline = (hScrollBar1.Value + 160) % 228;
-			radioButtonScanline.Text = $"Scanline {_cbscanline}";
+			_cbScanline = (hScrollBar1.Value + 160) % 228;
+			radioButtonScanline.Text = $"Scanline {_cbScanline}";
 		}
 
 		private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
@@ -807,12 +806,9 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void GBAGPUView_FormClosed(object sender, FormClosedEventArgs e)
+		private void GbaGpuView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (gba != null)
-			{
-				gba.SetScanlineCallback(null, 0);
-			}
+			GBA?.SetScanlineCallback(null, 0);
 		}
 
 		#region copy to clipboard
@@ -823,7 +819,7 @@ namespace BizHawk.Client.EmuHawk
 			labelClipboard.Text = "CTRL + C: Copy under mouse to clipboard.";
 		}
 
-		private void GBAGPUView_KeyDown(object sender, KeyEventArgs e)
+		private void GbaGpuView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && e.KeyCode == Keys.C)
 			{
@@ -837,10 +833,10 @@ namespace BizHawk.Client.EmuHawk
 					top = found;
 				} while (found != null && found.HasChildren);
 
-				if (found is BmpView)
+				if (found is BmpView view)
 				{
-					Clipboard.SetImage((found as BmpView).BMP);
-					labelClipboard.Text = $"{found.Text} copied to clipboard.";
+					Clipboard.SetImage(view.BMP);
+					labelClipboard.Text = $"{view.Text} copied to clipboard.";
 					timerMessage.Stop();
 					timerMessage.Start();
 				}

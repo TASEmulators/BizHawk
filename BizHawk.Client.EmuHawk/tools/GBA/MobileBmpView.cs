@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,10 +11,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public BmpView BmpView { get { return bmpView1; } }
+		public BmpView BmpView => bmpView1;
 
 		[Browsable(false)]
-		public bool ShouldDraw { get { return this.Visible; } }
+		public bool ShouldDraw => Visible;
 
 		public override string ToString()
 		{
@@ -31,19 +26,16 @@ namespace BizHawk.Client.EmuHawk
 			bmpView1.Size = size;
 			this.ClientSize = size;
 		}
+
 		public void ChangeViewSize(int w, int h)
 		{
 			ChangeViewSize(new Size(w, h));
 		}
+
 		public void ChangeAllSizes(int w, int h)
 		{
 			ChangeViewSize(w, h);
 			bmpView1.ChangeBitmapSize(w, h);
-		}
-		public void ChangeAllSizes(Size size)
-		{
-			ChangeViewSize(size);
-			bmpView1.ChangeBitmapSize(size);
 		}
 	}
 }

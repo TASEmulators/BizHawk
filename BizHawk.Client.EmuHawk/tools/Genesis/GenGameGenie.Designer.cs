@@ -229,7 +229,6 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Genesis Game Genie Encoder / Decoder";
-			this.Load += new System.EventHandler(this.GenGameGenie_Load);
 			this.GameGenieCodeBox.ResumeLayout(false);
 			this.GameGenieCodeBox.PerformLayout();
 			this.groupBox1.ResumeLayout(false);

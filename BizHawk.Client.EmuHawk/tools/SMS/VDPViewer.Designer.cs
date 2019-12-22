@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class SmsVDPViewer
+	partial class SmsVdpViewer
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -147,14 +147,14 @@
 			this.savePalettesScrenshotToolStripMenuItem.Name = "savePalettesScrenshotToolStripMenuItem";
 			this.savePalettesScrenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.savePalettesScrenshotToolStripMenuItem.Text = "Save Palettes Screnshot...";
-			this.savePalettesScrenshotToolStripMenuItem.Click += new System.EventHandler(this.savePalettesScrenshotToolStripMenuItem_Click);
+			this.savePalettesScrenshotToolStripMenuItem.Click += new System.EventHandler(this.SavePalettesScreenshotMenuItem_Click);
 			// 
 			// saveBGScreenshotToolStripMenuItem
 			// 
 			this.saveBGScreenshotToolStripMenuItem.Name = "saveBGScreenshotToolStripMenuItem";
 			this.saveBGScreenshotToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.saveBGScreenshotToolStripMenuItem.Text = "Save BG Screenshot...";
-			this.saveBGScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGScreenshotToolStripMenuItem_Click);
+			this.saveBGScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveBgScreenshotMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -183,9 +183,8 @@
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.sms_MultiSize;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "SmsVDPViewer";
+			this.Name = "SmsVdpViewer";
 			this.Text = "VDP Viewer";
-			this.Load += new System.EventHandler(this.VDPViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);

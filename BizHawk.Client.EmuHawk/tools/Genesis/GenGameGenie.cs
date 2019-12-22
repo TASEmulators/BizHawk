@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -18,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		#pragma warning disable 675
 
 		/// <summary>
-		/// For now this is is an unecessary restriction to make sure it doesn't show up as available for non-genesis cores
+		/// For now this is is an unnecessary restriction to make sure it doesn't show up as available for non-genesis cores
 		/// Note: this unnecessarily prevents it from being on the Genesis core, but that's okay it isn't released
 		/// Eventually we want a generic game genie tool and a hack like this won't be necessary
 		/// </summary>
@@ -30,52 +29,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
-			{ 'A', 0 },
-			{ 'B', 1 },
-			{ 'C', 2 },
-			{ 'D', 3 },
-			{ 'E', 4 },
-			{ 'F', 5 },
-			{ 'G', 6 },
-			{ 'H', 7 },
-			{ 'J', 8 },
-			{ 'K', 9 },
-			{ 'L', 10 },
-			{ 'M', 11 },
-			{ 'N', 12 },
-			{ 'P', 13 },
-			{ 'R', 14 },
-			{ 'S', 15 },
-			{ 'T', 16 },
-			{ 'V', 17 },
-			{ 'W', 18 },
-			{ 'X', 19 },
-			{ 'Y', 20 },
-			{ 'Z', 21 },
-			{ '0', 22 },
-			{ '1', 23 },
-			{ '2', 24 },
-			{ '3', 25 },
-			{ '4', 26 },
-			{ '5', 27 },
-			{ '6', 28 },
-			{ '7', 29 },
-			{ '8', 30 },
-			{ '9', 31 }
+			['A'] = 0,
+			['B'] = 1,
+			['C'] = 2,
+			['D'] = 3,
+			['E'] = 4,
+			['F'] = 5,
+			['G'] = 6,
+			['H'] = 7,
+			['J'] = 8,
+			['K'] = 9,
+			['L'] = 10,
+			['M'] = 11,
+			['N'] = 12,
+			['P'] = 13,
+			['R'] = 14,
+			['S'] = 15,
+			['T'] = 16,
+			['V'] = 17,
+			['W'] = 18,
+			['X'] = 19,
+			['Y'] = 20,
+			['Z'] = 21,
+			['0'] = 22,
+			['1'] = 23,
+			['2'] = 24,
+			['3'] = 25,
+			['4'] = 26,
+			['5'] = 27,
+			['6'] = 28,
+			['7'] = 29,
+			['8'] = 30,
+			['9'] = 31
 		};
 
 		private bool _processing;
 
-		private void GenGameGenie_Load(object sender, EventArgs e)
-		{
-
-		}
-
 		#region Public API
 
-		public bool AskSaveChanges() { return true; }
+		public bool AskSaveChanges() => true;
 
-		public bool UpdateBefore { get { return false; } }
+		public bool UpdateBefore => false;
 
 		public void Restart()
 		{
@@ -110,23 +104,22 @@ namespace BizHawk.Client.EmuHawk
 		// code is code to be converted, val is pointer to value, add is pointer to address
 		private void GenGGDecode(string code, ref int val, ref int add)
 		{
-			long hexcode = 0;
+			long hexCode = 0;
 
 			// convert code to a long binary string
 			foreach (var t in code)
 			{
-				hexcode <<= 5;
-				int y;
-				_gameGenieTable.TryGetValue(t, out y);
-				hexcode |= y;
+				hexCode <<= 5;
+				_gameGenieTable.TryGetValue(t, out var y);
+				hexCode |= y;
 			}
 
-			long decoded = (hexcode & 0xFF00000000) >> 32;
-			decoded |= hexcode & 0x00FF000000;
-			decoded |= (hexcode & 0x0000FF0000) << 16;
-			decoded |= (hexcode & 0x00000000700) << 5;
-			decoded |= (hexcode & 0x000000F800) >> 3;
-			decoded |= (hexcode & 0x00000000FF) << 16;
+			long decoded = (hexCode & 0xFF00000000) >> 32;
+			decoded |= hexCode & 0x00FF000000;
+			decoded |= (hexCode & 0x0000FF0000) << 16;
+			decoded |= (hexCode & 0x00000000700) << 5;
+			decoded |= (hexCode & 0x000000F800) >> 3;
+			decoded |= (hexCode & 0x00000000FF) << 16;
 
 			val = (int)(decoded & 0x000000FFFF);
 			add = (int)((decoded & 0xFFFFFF0000) >> 16);
@@ -134,10 +127,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GenGGEncode(int val, int add)
 		{
-			long encoded;
 			string code = null;
 
-			encoded = (long)(val & 0x00FF) << 32;
+			var encoded = (long)(val & 0x00FF) << 32;
 			encoded |= (val & 0xE000) >> 5;
 			encoded |= (val & 0x1F00) << 3;
 			encoded |= add & 0xFF0000;
@@ -320,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains["M68K BUS"],
 				address,
 				WatchSize.Word,
-				Client.Common.DisplayType.Hex,
+				Common.DisplayType.Hex,
 				true,
 				name
 			);

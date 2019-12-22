@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -86,6 +87,41 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			var col = color.ToArgb();
 			col += val;
 			return Color.FromArgb(col);
+		}
+
+		public static T Clone<T>(this T controlToClone)
+			where T : Control
+		{
+			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			Type t = controlToClone.GetType();
+			T instance = Activator.CreateInstance(t) as T;
+
+			t.GetProperty("AutoSize")?.SetValue(instance, false, null);
+
+			for (int i = 0; i < 3; i++)
+			{
+				foreach (var propInfo in controlProperties)
+				{
+					if (!propInfo.CanWrite)
+					{
+						continue;
+					}
+
+					if (propInfo.Name != "AutoSize" && propInfo.Name != "WindowTarget")
+					{
+						propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+					}
+				}
+			}
+
+			if (instance is RetainedViewportPanel panel)
+			{
+				var cloneBmp = (controlToClone as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
+				panel.SetBitmap(cloneBmp);
+			}
+
+			return instance;
 		}
 
 		#region Enumerable to Enumerable<T>

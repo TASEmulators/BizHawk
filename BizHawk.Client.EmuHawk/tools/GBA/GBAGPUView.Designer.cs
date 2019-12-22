@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class GBAGPUView
+	partial class GbaGpuView
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -177,13 +177,12 @@
 			this.Icon = global::BizHawk.Client.EmuHawk.Properties.Resources.gba_MultiSize.Value;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "GBAGPUView";
+			this.Name = "GbaGpuView";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GBA GPU Viewer";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GBAGPUView_FormClosed);
-			this.Load += new System.EventHandler(this.GBAGPUView_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GBAGPUView_KeyDown);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GbaGpuView_FormClosed);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GbaGpuView_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);

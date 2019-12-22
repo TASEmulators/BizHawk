@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class GenVDPViewer
+	partial class GenVdpViewer
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -186,35 +186,35 @@
 			this.saveBGAScreenshotToolStripMenuItem.Name = "saveBGAScreenshotToolStripMenuItem";
 			this.saveBGAScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveBGAScreenshotToolStripMenuItem.Text = "Save BG A Screenshot...";
-			this.saveBGAScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGAScreenshotToolStripMenuItem_Click);
+			this.saveBGAScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveBGAScreenshotToolStripMenuItem_Click);
 			// 
 			// saveBGBScreenshotToolStripMenuItem
 			// 
 			this.saveBGBScreenshotToolStripMenuItem.Name = "saveBGBScreenshotToolStripMenuItem";
 			this.saveBGBScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveBGBScreenshotToolStripMenuItem.Text = "Save BG B Screenshot...";
-			this.saveBGBScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveBGBScreenshotToolStripMenuItem_Click);
+			this.saveBGBScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveBGBScreenshotToolStripMenuItem_Click);
 			// 
 			// saveTilesScreenshotToolStripMenuItem
 			// 
 			this.saveTilesScreenshotToolStripMenuItem.Name = "saveTilesScreenshotToolStripMenuItem";
 			this.saveTilesScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveTilesScreenshotToolStripMenuItem.Text = "Save Tiles Screenshot...";
-			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveTilesScreenshotToolStripMenuItem_Click);
+			this.saveTilesScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveTilesScreenshotToolStripMenuItem_Click);
 			// 
 			// saveWindowScreenshotToolStripMenuItem
 			// 
 			this.saveWindowScreenshotToolStripMenuItem.Name = "saveWindowScreenshotToolStripMenuItem";
 			this.saveWindowScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.saveWindowScreenshotToolStripMenuItem.Text = "Save Window Screenshot...";
-			this.saveWindowScreenshotToolStripMenuItem.Click += new System.EventHandler(this.saveWindowScreenshotToolStripMenuItem_Click);
+			this.saveWindowScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SaveWindowScreenshotToolStripMenuItem_Click);
 			// 
 			// savePaletteScreenshotToolStripMenuItem
 			// 
 			this.savePaletteScreenshotToolStripMenuItem.Name = "savePaletteScreenshotToolStripMenuItem";
 			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
-			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.savePaletteScreenshotToolStripMenuItem_Click);
+			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.SavePaletteScreenshotToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -227,7 +227,7 @@
 			this.closeToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.closeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.closeToolStripMenuItem.Text = "&Close";
-			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseMenuItem_Click);
 			// 
 			// GenVDPViewer
 			// 
@@ -244,10 +244,9 @@
 			this.Controls.Add(this.menuStrip1);
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "GenVDPViewer";
+			this.Name = "GenVdpViewer";
 			this.ShowIcon = false;
 			this.Text = "VDP Viewer";
-			this.Load += new System.EventHandler(this.GenVDPViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VDPViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);

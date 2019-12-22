@@ -35,7 +35,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.canvas = new BizHawk.Client.EmuHawk.PCEBGCanvas();
+			this.canvas = new BizHawk.Client.EmuHawk.PceBgCanvas();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
@@ -259,7 +259,6 @@
 			this.Name = "PceBgViewer";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Background Viewer";
-			this.Load += new System.EventHandler(this.PceBgViewer_Load);
 			this.PceBgViewerMenu.ResumeLayout(false);
 			this.PceBgViewerMenu.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
@@ -275,7 +274,7 @@
 
 		#endregion
 
-		private PCEBGCanvas canvas;
+		private PceBgCanvas canvas;
         private MenuStripEx PceBgViewerMenu;
 		private System.Windows.Forms.ToolStripMenuItem ViewerSubMenu;
         private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;

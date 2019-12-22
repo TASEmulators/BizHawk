@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PCESoundDebugger : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private PCEngine _pce { get; set; }
+		private PCEngine PCE { get; set; }
 
 		public PCESoundDebugger()
 		{
@@ -25,12 +25,15 @@ namespace BizHawk.Client.EmuHawk
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 		}
 
-		readonly byte[] waveformTemp = new byte[32 * 2];
+		private readonly byte[] _waveformTemp = new byte[32 * 2];
 
 		protected override void OnShown(EventArgs e)
 		{
 			for (int i = 0; i < lvChEn.Items.Count; i++)
+			{
 				lvChEn.Items[i].Checked = true;
+			}
+
 			base.OnShown(e);
 		}
 
@@ -38,10 +41,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			foreach (var entry in PSGEntries)
+			foreach (var entry in _psgEntries)
 			{
-				entry.wasactive = entry.active;
-				entry.active = false;
+				entry.WasActive = entry.Active;
+				entry.Active = false;
 			}
 
 			bool sync = false;
@@ -50,9 +53,9 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 0; i < 6; i++)
 			{
-				var ch = _pce.PSG.Channels[i];
+				var ch = PCE.PSG.Channels[i];
 
-				//these conditions mean a sample isnt playing
+				// these conditions mean a sample isn't playing
 				if (!ch.Enabled)
 				{
 					lvChannels.Items[i].SubItems[1].Text = "-";
@@ -79,57 +82,62 @@ namespace BizHawk.Client.EmuHawk
 
 				lvChannels.Items[i].SubItems[3].Text = "-";
 
-				//ok, a sample is playing. copy out the waveform
+				// ok, a sample is playing. copy out the waveform
 				short[] waveform = (short[])ch.Wave.Clone();
-				//hash it
-				var ms = new MemoryStream(waveformTemp);
+
+				// hash it
+				var ms = new MemoryStream(_waveformTemp);
 				var bw = new BinaryWriter(ms);
 				foreach (var s in waveform)
-					bw.Write(s);
-				bw.Flush();
-				string md5 = waveformTemp.HashMD5();
-
-				if (!PSGEntryTable.ContainsKey(md5))
 				{
-					var entry = new PSGEntry()
+					bw.Write(s);
+				}
+
+				bw.Flush();
+				string md5 = _waveformTemp.HashMD5();
+
+				if (!_psgEntryTable.ContainsKey(md5))
+				{
+					var entry = new PsgEntry
 					{
-						hash = md5,
-						name = md5,
-						waveform = waveform,
-						active = true,
-						hitcount = 1,
-						index = PSGEntries.Count
+						Name = md5,
+						WaveForm = waveform,
+						Active = true,
+						HitCount = 1,
+						Index = _psgEntries.Count
 					};
-					PSGEntries.Add(entry);
-					PSGEntryTable[md5] = entry;
+					_psgEntries.Add(entry);
+					_psgEntryTable[md5] = entry;
 					sync = true;
-					LastSamples[i] = entry;
+					_lastSamples[i] = entry;
 				}
 				else
 				{
-					PSGEntry entry = PSGEntryTable[md5];
-					entry.active = true;
+					PsgEntry entry = _psgEntryTable[md5];
+					entry.Active = true;
 
-					//are we playing the same sample as before?
-					if (LastSamples[i] == entry) { }
-					else
-					//if (!entry.wasactive)
+					// are we playing the same sample as before?
+					if (_lastSamples[i] != entry)
 					{
-						LastSamples[i] = entry;
-						entry.hitcount++;
-						if (entry.index < lvPsgWaveforms.Items.Count)
-							lvPsgWaveforms.Items[entry.index].SubItems[1].Text = entry.hitcount.ToString();
+						_lastSamples[i] = entry;
+						entry.HitCount++;
+						if (entry.Index < lvPsgWaveforms.Items.Count)
+						{
+							lvPsgWaveforms.Items[entry.Index].SubItems[1].Text = entry.HitCount.ToString();
+						}
 						else
+						{
 							sync = true;
+						}
 					}
 				}
 
-				lvChannels.Items[i].SubItems[3].Text = PSGEntryTable[md5].name;
+				lvChannels.Items[i].SubItems[3].Text = _psgEntryTable[md5].Name;
 
 				continue;
 
 			DEAD:
-				LastSamples[i] = null;
+				_lastSamples[i] = null;
 			}
 
 			if (sync)
@@ -143,44 +151,41 @@ namespace BizHawk.Client.EmuHawk
 			// Todo
 		}
 
-		class PSGEntry
+		private class PsgEntry
 		{
-			public int index;
-			public bool active, wasactive;
-			public int hitcount;
-			public string hash;
-			public string name;
-			public short[] waveform;
+			public int Index { get; set; }
+			public bool Active { get; set; }
+			public bool WasActive { get; set; }
+			public int HitCount { get; set; }
+			public string Name { get; set; }
+			public short[] WaveForm { get; set; }
 		}
 
-		readonly PSGEntry[] LastSamples = new PSGEntry[8];
-		readonly List<PSGEntry> PSGEntries = new List<PSGEntry>();
-		readonly Dictionary<string, PSGEntry> PSGEntryTable = new Dictionary<string, PSGEntry>();
+		private readonly PsgEntry[] _lastSamples = new PsgEntry[8];
+		private readonly List<PsgEntry> _psgEntries = new List<PsgEntry>();
+		private readonly Dictionary<string, PsgEntry> _psgEntryTable = new Dictionary<string, PsgEntry>();
 
 		public void Restart()
 		{
 		}
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public bool UpdateBefore => false;
 
 
-		//32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
-		static readonly byte[] emptyWav = {
+		// 32*16 samples, 16bit, mono, 8khz (but we'll change the sample rate)
+		private static readonly byte[] EmptyWav = {
 			0x52, 0x49, 0x46, 0x46, 0x24, 0x04, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45, 0x66, 0x6D, 0x74, 0x20, 
 			0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0xE0, 0x2E, 0x00, 0x00, 0xC0, 0x5D, 0x00, 0x00, 
 			0x02, 0x00, 0x10, 0x00, 0x64, 0x61, 0x74, 0x61, 0x00, 0x04, 0x00, 0x00, 
 		};
 
 
-		private void btnExport_Click(object sender, EventArgs e)
+		private void BtnExport_Click(object sender, EventArgs e)
 		{
-			string tmpf = $"{Path.GetTempFileName()}.zip";
-			using (var stream = new FileStream(tmpf, FileMode.Create, FileAccess.Write, FileShare.Read))
+			string tmpFilename = $"{Path.GetTempFileName()}.zip";
+			using (var stream = new FileStream(tmpFilename, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{
 				var zip = new ZipOutputStream(stream)
 				{
@@ -188,55 +193,54 @@ namespace BizHawk.Client.EmuHawk
 					UseZip64 = UseZip64.Off
 				};
 
-				foreach (var entry in PSGEntries)
+				foreach (var entry in _psgEntries)
 				{
-					var ze = new ZipEntry($"{entry.name}.wav") { CompressionMethod = CompressionMethod.Deflated };
+					var ze = new ZipEntry($"{entry.Name}.wav") { CompressionMethod = CompressionMethod.Deflated };
 					zip.PutNextEntry(ze);
 					var ms = new MemoryStream();
 					var bw = new BinaryWriter(ms);
-					bw.Write(emptyWav, 0, emptyWav.Length);
-					ms.Position = 0x18; //samplerate and avgbytespersecond
+					bw.Write(EmptyWav, 0, EmptyWav.Length);
+					ms.Position = 0x18; // samplerate and avgbytespersecond
 					bw.Write(20000);
 					bw.Write(20000 * 2);
 					bw.Flush();
 					ms.Position = 0x2C;
 					for (int i = 0; i < 32; i++)
+					{
 						for (int j = 0; j < 16; j++)
-							bw.Write(entry.waveform[i]);
+						{
+							bw.Write(entry.WaveForm[i]);
+						}
+					}
+
 					bw.Flush();
 					var buf = ms.GetBuffer();
 					zip.Write(buf, 0, (int)ms.Length);
 					zip.Flush();
 					zip.CloseEntry();
 				}
+
 				zip.Close();
 				stream.Flush();
 			}
-			System.Diagnostics.Process.Start(tmpf);
+			System.Diagnostics.Process.Start(tmpFilename);
 		}
 
-		class ZipDataSource : IStaticDataSource
+		private void BtnReset_Click(object sender, EventArgs e)
 		{
-			public ZipDataSource(byte[] data) { this.data = data; }
-			byte[] data;
-			public Stream GetSource() { return new MemoryStream(data); }
-		}
-
-		private void btnReset_Click(object sender, EventArgs e)
-		{
-			PSGEntryTable.Clear();
-			PSGEntries.Clear();
-			for (int i = 0; i < 8; i++) LastSamples[i] = null;
+			_psgEntryTable.Clear();
+			_psgEntries.Clear();
+			for (int i = 0; i < 8; i++) _lastSamples[i] = null;
 			SyncLists();
 		}
 
-		void SyncLists()
+		private void SyncLists()
 		{
 			lvPsgWaveforms.Items.Clear();
-			foreach (var entry in PSGEntries)
+			foreach (var entry in _psgEntries)
 			{
-				var lvi = new ListViewItem(entry.name);
-				lvi.SubItems.Add(entry.hitcount.ToString());
+				var lvi = new ListViewItem(entry.Name);
+				lvi.SubItems.Add(entry.HitCount.ToString());
 				lvPsgWaveforms.Items.Add(lvi);
 			}
 		}
@@ -249,26 +253,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void lvPsgWaveforms_ItemActivate(object sender, EventArgs e)
-		{
-
-		}
-
 		private void lvPsgWaveforms_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
-			var entry = PSGEntries[e.Item];
-			entry.name = e.Label;
-		}
-
-		private void lvChEn_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-		{
-
+			var entry = _psgEntries[e.Item];
+			entry.Name = e.Label;
 		}
 
 		private void lvChEn_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
 			for (int i = 0; i < 6; i++)
-				_pce.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
+			{
+				PCE.PSG.UserMute[i] = !lvChEn.Items[i].Checked;
+			}
 		}
 	}
 }
