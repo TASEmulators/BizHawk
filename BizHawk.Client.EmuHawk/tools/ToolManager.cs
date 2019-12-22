@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 	public class ToolManager
 	{
 		private readonly Form _owner;
+		private IExternalApiProvider _apiProvider;
+		private IEmulator _emulator;
 
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
@@ -28,10 +30,11 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ToolManager"/> class.
 		/// </summary>
-		/// <param name="owner">Form that handle the ToolManager</param>
-		public ToolManager(Form owner)
+		public ToolManager(Form owner, IEmulator emulator)
 		{
 			_owner = owner;
+			_emulator = emulator;
+			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider);
 		}
 
 		/// <summary>
@@ -125,10 +128,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (isExternal)
 			{
-				ApiInjector.UpdateApis(GlobalWin.ApiProvider, newTool);
+				ApiInjector.UpdateApis(_apiProvider, newTool);
 			}
 
-			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
+			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
 			string toolType = typeof(T).ToString();
 
 			// auto settings
@@ -482,8 +485,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Restart()
+		public void Restart(IEmulator emulator)
 		{
+			_emulator = emulator;
+			_apiProvider = ApiManager.Restart(_emulator.ServiceProvider);
 			// If Cheat tool is loaded, restarting will restart the list too anyway
 			if (!Has<Cheats>())
 			{
@@ -494,14 +499,14 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
+				if (ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool.GetType()))
 				{
-					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
+					ServiceInjector.UpdateServices(_emulator.ServiceProvider, tool);
 					
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
 						if (tool is IExternalToolForm)
-							ApiInjector.UpdateApis(GlobalWin.ApiProvider, tool);
+							ApiInjector.UpdateApis(_apiProvider, tool);
 						tool.Restart();
 					}
 				}
@@ -732,7 +737,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsAvailable(Type tool)
 		{
-			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool)
+			if (!ServiceInjector.IsAvailable(_emulator.ServiceProvider, tool)
 				|| !LazyAsmTypes.Value.Contains(tool.AssemblyQualifiedName)) // not a tool
 			{
 				return false;
@@ -744,8 +749,8 @@ namespace BizHawk.Client.EmuHawk
 				return true; // no ToolAttribute on given type -> assumed all supported
 			}
 
-			var displayName = Global.Emulator.DisplayName();
-			var systemId = Global.Emulator.SystemId;
+			var displayName = _emulator.DisplayName();
+			var systemId = _emulator.SystemId;
 			return !attr.UnsupportedCores.Contains(displayName) // not unsupported
 				&& (!attr.SupportedSystems.Any() || attr.SupportedSystems.Contains(systemId)); // supported (no supported list -> assumed all supported)
 		}
