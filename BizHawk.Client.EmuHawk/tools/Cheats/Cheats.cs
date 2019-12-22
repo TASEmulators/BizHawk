@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = !Global.CheatList.Changes || AskSaveChanges();
 			if (result)
 			{
-				Global.CheatList.NewList(ToolManager.GenerateDefaultCheatFilename());
+				Global.CheatList.NewList(GlobalWin.Tools.GenerateDefaultCheatFilename());
 				UpdateDialog();
 				UpdateMessageLabel();
 				ToggleGameGenieButton();

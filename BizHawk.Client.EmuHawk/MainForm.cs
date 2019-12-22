@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Sound.StartSound();
 			InputManager.RewireInputChain();
-			GlobalWin.Tools = new ToolManager(this, Emulator);
+			GlobalWin.Tools = new ToolManager(this, Config, Emulator);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -3835,7 +3835,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Config.LoadCheatFileByGame)
 					{
-						CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
+						CheatList.SetDefaultFileName(GlobalWin.Tools.GenerateDefaultCheatFilename());
 						if (CheatList.AttemptToLoadCheatFile())
 						{
 							AddOnScreenMessage("Cheats file loaded");
