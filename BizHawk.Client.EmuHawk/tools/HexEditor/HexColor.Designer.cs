@@ -126,7 +126,7 @@
             this.HexForegrnd.Name = "HexForegrnd";
             this.HexForegrnd.Size = new System.Drawing.Size(20, 20);
             this.HexForegrnd.TabIndex = 7;
-            this.HexForegrnd.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexForegrnd_Click);
+            this.HexForegrnd.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexForeground_Click);
             // 
             // label1
             // 
@@ -153,7 +153,7 @@
             this.HexMenubar.Name = "HexMenubar";
             this.HexMenubar.Size = new System.Drawing.Size(20, 20);
             this.HexMenubar.TabIndex = 8;
-            this.HexMenubar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexMenubar_Click);
+            this.HexMenubar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexMenuBar_Click);
             // 
             // label2
             // 
@@ -171,7 +171,7 @@
             this.HexBackgrnd.Name = "HexBackgrnd";
             this.HexBackgrnd.Size = new System.Drawing.Size(20, 20);
             this.HexBackgrnd.TabIndex = 6;
-            this.HexBackgrnd.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexBackgrnd_Click);
+            this.HexBackgrnd.MouseClick += new System.Windows.Forms.MouseEventHandler(this.HexBackground_Click);
             // 
             // HexColors_Form
             // 

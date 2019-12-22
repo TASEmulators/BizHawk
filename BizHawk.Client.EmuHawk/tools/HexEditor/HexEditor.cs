@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _mouseIsDown;
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
-		private HexFind _hexFind = new HexFind();
+		private HexFind _hexFind;
 
 		[ConfigPersist]
 		private string LastDomain { get; set; }
@@ -92,6 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public HexEditor()
 		{
+			_hexFind = new HexFind(this);
 			RecentTables = new RecentFiles(8);
 			DataSize = 1;
 
@@ -106,7 +107,6 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeComponent();
 			AddressesLabel.BackColor = Color.Transparent;
-			LoadConfigSettings();
 			SetHeader();
 			Closing += (o, e) => CloseHexFind();
 
@@ -441,6 +441,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
+			LoadConfigSettings();
 			DataSize = _domain.WordSize;
 			SetDataSize(DataSize);
 
@@ -1465,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 			_findStr = GetFindValues();
 			if (!_hexFind.IsHandleCreated || _hexFind.IsDisposed)
 			{
-				_hexFind = new HexFind
+				_hexFind = new HexFind(this)
 				{
 					InitialLocation = PointToScreen(AddressesLabel.Location),
 					InitialValue = _findStr,
