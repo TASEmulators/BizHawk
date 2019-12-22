@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using NLua;
-
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -12,24 +10,22 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
+		private readonly PlatformEmuLuaLibrary _luaImp;
 		private readonly string _currentDirectory = Environment.CurrentDirectory;
 		private readonly LuaFile _ownerFile;
 
-		public LuaWinform(LuaFile ownerFile)
+		public LuaWinform(LuaFile ownerFile, PlatformEmuLuaLibrary luaImp)
 		{
-			InitializeComponent();
 			_ownerFile = ownerFile;
+			_luaImp = luaImp;
+			InitializeComponent();
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
 
-		private void LuaWinform_Load(object sender, EventArgs e)
-		{
-		}
-
 		private void CloseThis()
 		{
-			GlobalWin.Tools.LuaConsole.LuaImp.WindowClosed(Handle);
+			_luaImp.WindowClosed(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)

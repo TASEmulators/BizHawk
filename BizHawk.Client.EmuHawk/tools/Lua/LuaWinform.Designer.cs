@@ -39,9 +39,7 @@
             this.Name = "LuaWinform";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Lua Dialog";
-            this.Load += new System.EventHandler(this.LuaWinform_Load);
             this.ResumeLayout(false);
-
 		}
 
 		#endregion
