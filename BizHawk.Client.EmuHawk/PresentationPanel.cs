@@ -11,11 +11,15 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public class PresentationPanel
 	{
-		public PresentationPanel()
-		{
-			GL = GlobalWin.GL;
+		private readonly MainForm _mainForm;
+		private readonly Config _config;
 
-			GraphicsControl = new GraphicsControl(GL)
+		public PresentationPanel(MainForm mainForm, Config config, IGL gl)
+		{
+			_mainForm = mainForm;
+			_config = config;
+
+			GraphicsControl = new GraphicsControl(gl)
 			{
 				Dock = DockStyle.Fill,
 				BackColor = Color.Black
@@ -24,9 +28,9 @@ namespace BizHawk.Client.EmuHawk
 			// pass through these events to the form. we might need a more scalable solution for mousedown etc. for zapper and whatnot.
 			// http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
 			GraphicsControl.MouseDoubleClick += HandleFullscreenToggle;
-			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
-			GraphicsControl.MouseMove += (o, e) => GlobalWin.MainForm.MainForm_MouseMove(o, e);
-			GraphicsControl.MouseWheel += (o, e) => GlobalWin.MainForm.MainForm_MouseWheel(o, e);
+			GraphicsControl.MouseClick += (o, e) => _mainForm.MainForm_MouseClick(o, e);
+			GraphicsControl.MouseMove += (o, e) => _mainForm.MainForm_MouseMove(o, e);
+			GraphicsControl.MouseWheel += (o, e) => _mainForm.MainForm_MouseWheel(o, e);
 		}
 
 		private bool _isDisposed;
@@ -38,7 +42,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		//graphics resources
-		IGL GL;
 		public GraphicsControl GraphicsControl;
 
 		public Control Control => GraphicsControl;
@@ -50,9 +53,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// allow suppression of the toggle.. but if shift is pressed, always do the toggle
 				bool allowSuppress = Control.ModifierKeys != Keys.Shift;
-				if (Global.Config.DispChrome_AllowDoubleClickFullscreen || !allowSuppress)
+				if (_config.DispChrome_AllowDoubleClickFullscreen || !allowSuppress)
 				{
-					GlobalWin.MainForm.ToggleFullscreen(allowSuppress);
+					_mainForm.ToggleFullscreen(allowSuppress);
 				}
 			}
 		}
