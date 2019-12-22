@@ -1147,12 +1147,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisterSublimeText2MenuItem_Click(object sender, EventArgs e)
 		{
-			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.Sublime2);
+			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.Sublime2, LuaImp.Docs);
 		}
 
 		private void RegisterNotePadMenuItem_Click(object sender, EventArgs e)
 		{
-			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad);
+			_luaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad, LuaImp.Docs);
 		}
 
 		#endregion

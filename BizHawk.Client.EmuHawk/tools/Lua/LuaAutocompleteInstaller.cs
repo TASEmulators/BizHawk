@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -35,15 +36,15 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		public void InstallBizLua(TextEditors editor)
+		public void InstallBizLua(TextEditors editor, LuaDocumentation docs)
 		{
 			switch (editor)
 			{
 				case TextEditors.Sublime2:
-					InstallBizLuaToSublime2();
+					InstallBizLuaToSublime2(docs);
 					break;
 				case TextEditors.NotePad:
-					InstallBizLuaToNotepad();
+					InstallBizLuaToNotepad(docs);
 					break;
 			}
 		}
@@ -108,19 +109,19 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		private void InstallBizLuaToSublime2()
+		private void InstallBizLuaToSublime2(LuaDocumentation docs)
 		{
 			var bizCompletions = Path.Combine(AppDataFolder, SublimeLuaPath, SublimeCompletionsFilename);
 
-			var text = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToSublime2CompletionList();
+			var text = docs.ToSublime2CompletionList();
 			File.WriteAllText(bizCompletions, text);
 		}
 
-		private void InstallBizLuaToNotepad()
+		private void InstallBizLuaToNotepad(LuaDocumentation docs)
 		{
 			var bizAutocomplete = Path.Combine(AppDataFolder, NotepadPath, NotepadAutoCompleteFileName);
 
-			var text = GlobalWin.Tools.LuaConsole.LuaImp.Docs.ToNotepadPlusPlusAutoComplete();
+			var text = docs.ToNotepadPlusPlusAutoComplete();
 
 			// TODO
 			//File.WriteAllText(bizCompletions, text);
