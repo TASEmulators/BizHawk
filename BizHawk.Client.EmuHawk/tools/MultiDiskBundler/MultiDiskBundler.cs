@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var pieces = MainForm.CurrentlyOpenRom.Split('|');
 
-					var directory = Path.GetDirectoryName(pieces[0]);
+					var directory = Path.GetDirectoryName(pieces[0]) ?? "";
 					var filename = Path.ChangeExtension(pieces[1], ".xml");
 
 					NameBox.Text = Path.Combine(directory, filename);
@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 					SystemDropDown.SelectedItem = Emulator.SystemId;
 				}
 
-				FileSelectors.First().SetName(MainForm.CurrentlyOpenRom);
+				FileSelectors.First().Path = MainForm.CurrentlyOpenRom;
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			var mdf = new MultiDiskFileSelector
+			var mdf = new MultiDiskFileSelector(this)
 			{
 				Location = UIHelper.Scale(new Point(7, 12)),
 				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				var names = FileSelectors.Select(f => f.GetName());
+				var names = FileSelectors.Select(f => f.Path).ToList();
 
 				var name = NameBox.Text;
 
