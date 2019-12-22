@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ToolBox : Form, IToolForm
+	public partial class ToolBox : ToolFormBase, IToolForm
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 				tsb.Click += (o, e) =>
 				{
-					GlobalWin.Tools.Load(t);
+					Tools.Load(t);
 					Close();
 				};
 
