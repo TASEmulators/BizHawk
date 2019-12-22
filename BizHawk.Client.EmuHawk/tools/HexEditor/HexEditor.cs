@@ -148,14 +148,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			_rom = GetRomBytes();
-			_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
-
-			if (_domain.Name == _romDomain.Name)
+			using (var file = new HawkFile(MainForm.CurrentlyOpenRom.Split('*').Last()))
 			{
-				_domain = _romDomain;
+				if (!file.IsArchive)
+				{
+					_rom = GetRomBytes();
+					_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
+
+					if (_domain.Name == _romDomain.Name)
+					{
+						_domain = _romDomain;
+					}
+				}
 			}
-			else if (MemoryDomains.Any(x => x.Name == _domain.Name))
+			
+			if (MemoryDomains.Any(x => x.Name == _domain.Name))
 			{
 				_domain = MemoryDomains[_domain.Name];
 			}
@@ -1531,17 +1538,19 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains.MenuItems(SetMemoryDomain, _domain.Name)
 				.ToArray());
 
-			
-			var romMenuItem = new ToolStripMenuItem
+			if (_romDomain != null)
 			{
-				Text = _romDomain.Name,
-				Checked = _domain.Name == _romDomain.Name
-			};
+				var romMenuItem = new ToolStripMenuItem
+				{
+					Text = _romDomain.Name,
+					Checked = _domain.Name == _romDomain.Name
+				};
 
-			MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
-			MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
+				MemoryDomainsMenuItem.DropDownItems.Add(new ToolStripSeparator());
+				MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
 
-			romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
+				romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
+			}
 		}
 
 		private void DataSizeByteMenuItem_Click(object sender, EventArgs e)
