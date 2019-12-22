@@ -1167,7 +1167,7 @@
     <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\ToolHelpers.cs">
+    <Compile Include="tools\ToolFormBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\ToolManager.cs" />
