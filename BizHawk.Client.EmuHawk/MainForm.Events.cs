@@ -1009,7 +1009,13 @@ namespace BizHawk.Client.EmuHawk
 			using var form = new SoundConfig(Config);
 			if (form.ShowDialog().IsOk())
 			{
+				Sound.StartSound();
+				AddOnScreenMessage("Sound settings saved");
 				RewireSound();
+			}
+			else
+			{
+				AddOnScreenMessage("Sound config aborted");
 			}
 		}
 
