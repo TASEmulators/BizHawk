@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			OverlayBox.Enabled = CurrentMovie is TasMovie;
 			PlaceNum.Enabled = CurrentMovie is TasMovie;
 
-			var main = new MovieZone(CurrentMovie, 0, CurrentMovie.InputLogLength)
+			var main = new MovieZone(CurrentMovie, Emulator, Tools, 0, CurrentMovie.InputLogLength)
 			{
 				Name = "Entire Movie"
 			};
@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var newZone = new MovieZone(CurrentMovie, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
+			var newZone = new MovieZone(CurrentMovie, Emulator, Tools, (int) StartNum.Value, (int) (EndNum.Value - StartNum.Value + 1))
 			{
 				Name = $"Zone {_zones.Count}"
 			};

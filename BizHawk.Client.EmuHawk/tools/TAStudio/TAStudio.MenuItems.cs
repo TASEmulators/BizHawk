@@ -240,6 +240,8 @@ namespace BizHawk.Client.EmuHawk
 
 			var macro = new MovieZone(
 				CurrentTasMovie,
+				Emulator,
+				Tools,
 				TasView.FirstSelectedIndex ?? 0,
 				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
 

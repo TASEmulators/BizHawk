@@ -9,30 +9,20 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class MovieZone
 	{
-		public string Name { get; set; }
-		public int Start { get; set; }
-		public int Length { get; set; }
-
-		private string _inputKey;
-		public string InputKey
-		{
-			get => _inputKey;
-			set { _inputKey = value; ReSetLog(); }
-		}
-
+		private readonly IEmulator _emulator;
+		private readonly ToolManager _tools;
 		private readonly string[] _log;
-
-		public bool Replace { get; set; } = true;
-		public bool Overlay { get; set; }
-
 		private readonly Bk2ControllerAdapter _targetController;
+		private string _inputKey;
 		private Bk2ControllerAdapter _controller;
 
-		public MovieZone(IMovie movie, int start, int length, string key = "")
+		public MovieZone(IMovie movie, IEmulator emulator, ToolManager tools, int start, int length, string key = "")
 		{
-			var lg = (Bk2LogEntryGenerator)Global.MovieSession.LogGeneratorInstance();
+			_emulator = emulator;
+			_tools = tools;
+			var lg = (Bk2LogEntryGenerator)movie.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-			_targetController = new Bk2ControllerAdapter { Definition = Global.Emulator.ControllerDefinition };
+			_targetController = new Bk2ControllerAdapter { Definition = _emulator.ControllerDefinition };
 			_targetController.LatchFromSource(_targetController); // Reference and create all buttons
 
 			if (key == "")
@@ -52,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			var d = new ControllerDefinition();
 			foreach (var k in keys)
 			{
-				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(k))
+				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
 				{
 					d.BoolButtons.Add(k);
 				}
@@ -86,6 +76,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public string Name { get; set; }
+		public int Start { get; set; }
+		public int Length { get; set; }
+
+		public bool Replace { get; set; } = true;
+		public bool Overlay { get; set; }
+
+		public string InputKey
+		{
+			get => _inputKey;
+			set { _inputKey = value; ReSetLog(); }
+		}
+
 		private void ReSetLog()
 		{
 			// Get a IController that only contains buttons in key.
@@ -93,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			var d = new ControllerDefinition();
 			foreach (var key in keys)
 			{
-				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(key))
+				if (_emulator.ControllerDefinition.BoolButtons.Contains(key))
 				{
 					d.BoolButtons.Add(key);
 				}
@@ -165,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			if (movie is TasMovie tasMovie3) // Assume TAStudio is open?
 			{
 				tasMovie3.ChangeLog.EndBatch();
-				if (Global.Emulator.Frame > Start)
+				if (_emulator.Frame > Start)
 				{
 					// TODO: Go to start of macro? Ask TAStudio to do that?
 
@@ -173,21 +176,21 @@ namespace BizHawk.Client.EmuHawk
 					// Load last state, Emulate to Start
 
 					// Or do this, if TAStudio has to be open.
-					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					if (_tools.IsLoaded<TAStudio>())
 					{
-						(GlobalWin.Tools.Get<TAStudio>() as TAStudio).GoToFrame(Start);
+						_tools.TAStudio.GoToFrame(Start);
 					}
 
-					GlobalWin.Tools.UpdateBefore();
-					GlobalWin.Tools.UpdateAfter();
+					_tools.UpdateBefore();
+					_tools.UpdateAfter();
 				}
-				else if (GlobalWin.Tools.IsLoaded<TAStudio>())
+				else if (_tools.IsLoaded<TAStudio>())
 				{
-					GlobalWin.Tools.Get<TAStudio>().UpdateValues();
+					_tools.TAStudio.UpdateValues();
 				}
 			}
 
-			if (movie.InputLogLength >= Global.Emulator.Frame)
+			if (movie.InputLogLength >= _emulator.Frame)
 			{
 				movie.SwitchToPlay();
 				Global.Config.MovieEndAction = MovieEndAction.Record;
@@ -201,8 +204,8 @@ namespace BizHawk.Client.EmuHawk
 			// Save whether or not the macro should use overlay input, and/or replace
 			string[] header = new string[4];
 			header[0] = InputKey;
-			header[1] = Global.Emulator.ControllerDefinition.Name;
-			header[2] = Global.Emulator.ControllerDefinition.PlayerCount.ToString();
+			header[1] = _emulator.ControllerDefinition.Name;
+			header[2] = _emulator.ControllerDefinition.PlayerCount.ToString();
 			header[3] = $"{Overlay},{Replace}";
 
 			File.WriteAllLines(fileName, header);
@@ -250,13 +253,13 @@ namespace BizHawk.Client.EmuHawk
 			Name = Path.GetFileNameWithoutExtension(fileName);
 
 			// Adapters
-			_targetController = new Bk2ControllerAdapter { Definition = Global.Emulator.ControllerDefinition };
+			_targetController = new Bk2ControllerAdapter { Definition = _emulator.ControllerDefinition };
 			_targetController.LatchFromSource(_targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			var d = new ControllerDefinition();
 			foreach (var k in keys)
 			{
-				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(k))
+				if (_emulator.ControllerDefinition.BoolButtons.Contains(k))
 				{
 					d.BoolButtons.Add(k);
 				}
