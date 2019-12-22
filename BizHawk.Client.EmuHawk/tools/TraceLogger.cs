@@ -12,7 +12,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TraceLogger : Form, IToolFormAutoConfig
+	public partial class TraceLogger : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private ITraceable Tracer { get; set; }
@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			MaxLines = 10000;
-			FileSizeCap = 150; // make 1 frame of tracelog for n64/psx fit in
+			FileSizeCap = 150; // make 1 frame of trace log for n64/psx fit in
 			_splitFile = FileSizeCap != 0;
 
 			TraceView.AllColumns.Clear();
@@ -96,10 +96,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		private void SaveConfigSettings()
 		{
@@ -136,10 +133,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public void Put(TraceInfo info)
 			{
-				putter(info);
+				Putter(info);
 			}
 
-			public Action<TraceInfo> putter;
+			public Action<TraceInfo> Putter { get; set; }
 		}
 
 		public void UpdateValues() { }
@@ -167,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Tracer.Sink = new CallbackSink
 						{
-							putter = info =>
+							Putter = info =>
 							{
 								if (_instructions.Count >= MaxLines)
 								{
@@ -185,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 							StartLogFile(true);
 						}
 						Tracer.Sink = new CallbackSink {
-							putter = (info) =>
+							Putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
 								var data = $"{info.Disassembly} {info.RegisterInfo}";
@@ -292,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 			if (LogFile == null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + _extension;
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
 			}
 			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
@@ -302,20 +299,13 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Config.PathEntries.LogPathFragment, null);
 			}
 
 			sfd.Filter = "Log Files (*.log)|*.log|Text Files (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
-			{
-				return new FileInfo(sfd.FileName);
-			}
-			else
-			{
-				return null;
-			}
+			return result.IsOk() ? new FileInfo(sfd.FileName) : null;
 		}
 
 		#region Events
@@ -329,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StartLogFile();
 				DumpToDisk();
-				GlobalWin.OSD.AddMessage($"Log dumped to {LogFile.FullName}");
+				MainForm.AddOnScreenMessage($"Log dumped to {LogFile.FullName}");
 				CloseFile();
 			}
 		}
