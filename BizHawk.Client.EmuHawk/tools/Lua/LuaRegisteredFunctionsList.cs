@@ -2,16 +2,21 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
-		public Point StartLocation { get; set; } = new Point(0, 0);
-		public LuaRegisteredFunctionsList()
+		private readonly LuaFunctionList _registeredFunctions;
+
+		public LuaRegisteredFunctionsList(LuaFunctionList registeredFunctions)
 		{
+			_registeredFunctions = registeredFunctions;
 			InitializeComponent();
 		}
+
+		public Point StartLocation { get; set; } = new Point(0, 0);
 
 		public void UpdateValues()
 		{
@@ -37,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FunctionView.Items.Clear();
 			
-			var functions = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions
+			var functions = _registeredFunctions
 				.OrderBy(f => f.Event)
 				.ThenBy(f => f.Name);
 			foreach (var nlf in functions)
@@ -69,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
-					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid].Call();
+					_registeredFunctions[guid].Call();
 				}
 			}
 		}
@@ -82,8 +87,8 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					var guid = FunctionView.Items[index].SubItems[2].Text;
-					var nlf = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions[guid];
-					GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Remove(nlf);
+					var nlf = _registeredFunctions[guid];
+					_registeredFunctions.Remove(nlf);
 				}
 
 				PopulateListView();
@@ -102,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveAllBtn_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Clear();
+			_registeredFunctions.Clear();
 			PopulateListView();
 		}
 
@@ -111,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			var indexes = FunctionView.SelectedIndices;
 			CallButton.Enabled = indexes.Count > 0;
 			RemoveButton.Enabled = indexes.Count > 0;
-			RemoveAllBtn.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
+			RemoveAllBtn.Enabled = _registeredFunctions.Any();
 		}
 
 		private void FunctionView_KeyDown(object sender, KeyEventArgs e)

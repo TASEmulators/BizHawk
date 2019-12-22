@@ -1052,7 +1052,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!alreadyOpen)
 				{
-					new LuaRegisteredFunctionsList
+					new LuaRegisteredFunctionsList(LuaImp.RegisteredFunctions)
 					{
 						StartLocation = this.ChildPointToScreen(LuaListView)
 					}.Show();
