@@ -2,29 +2,36 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class RewindConfig : Form
 	{
+		private readonly Rewinder _rewinder;
+		private readonly Config _config;
+		private readonly IStatable _statableCore;
+
 		private long _stateSize;
 		private int _mediumStateSize;
 		private int _largeStateSize;
 		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = larg //TODO: enum
 
-		public RewindConfig()
+		public RewindConfig(Rewinder rewinder, Config config, IStatable statableCore)
 		{
+			_rewinder = rewinder;
+			_config = config;
+			_statableCore = statableCore;
 			InitializeComponent();
 		}
 
 		private void RewindConfig_Load(object sender, EventArgs e)
 		{
-			if (Global.Rewinder.HasBuffer)
+			if (_rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = $"{Global.Rewinder.FullnessRatio * 100:0.00}%";
-				RewindFramesUsedLabel.Text = Global.Rewinder.Count.ToString();
+				FullnessLabel.Text = $"{_rewinder.FullnessRatio * 100:0.00}%";
+				RewindFramesUsedLabel.Text = _rewinder.Count.ToString();
 			}
 			else
 			{
@@ -32,24 +39,24 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-			RewindSpeedNumeric.Value = Global.Config.RewindSpeedMultiplier;
-			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
-			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
-			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
-			BufferSizeUpDown.Value = Math.Max(Global.Config.Rewind_BufferSize, BufferSizeUpDown.Minimum);
+			RewindSpeedNumeric.Value = _config.RewindSpeedMultiplier;
+			DiskBufferCheckbox.Checked = _config.Rewind_OnDisk;
+			RewindIsThreadedCheckbox.Checked = _config.Rewind_IsThreaded;
+			_stateSize = _statableCore.SaveStateBinary().Length;
+			BufferSizeUpDown.Value = Math.Max(_config.Rewind_BufferSize, BufferSizeUpDown.Minimum);
 
-			_mediumStateSize = Global.Config.Rewind_MediumStateSize;
-			_largeStateSize = Global.Config.Rewind_LargeStateSize;
+			_mediumStateSize = _config.Rewind_MediumStateSize;
+			_largeStateSize = _config.Rewind_LargeStateSize;
 
-			UseDeltaCompression.Checked = Global.Config.Rewind_UseDelta;
+			UseDeltaCompression.Checked = _config.Rewind_UseDelta;
 
-			SmallSavestateNumeric.Value = Global.Config.RewindFrequencySmall;
-			MediumSavestateNumeric.Value = Global.Config.RewindFrequencyMedium;
-			LargeSavestateNumeric.Value = Global.Config.RewindFrequencyLarge;
+			SmallSavestateNumeric.Value = _config.RewindFrequencySmall;
+			MediumSavestateNumeric.Value = _config.RewindFrequencyMedium;
+			LargeSavestateNumeric.Value = _config.RewindFrequencyLarge;
 
-			SmallStateEnabledBox.Checked = Global.Config.RewindEnabledSmall;
-			MediumStateEnabledBox.Checked = Global.Config.RewindEnabledMedium;
-			LargeStateEnabledBox.Checked = Global.Config.RewindEnabledLarge;
+			SmallStateEnabledBox.Checked = _config.RewindEnabledSmall;
+			MediumStateEnabledBox.Checked = _config.RewindEnabledMedium;
+			LargeStateEnabledBox.Checked = _config.RewindEnabledLarge;
 
 			SetSmallEnabled();
 			SetMediumEnabled();
@@ -57,24 +64,24 @@ namespace BizHawk.Client.EmuHawk
 
 			SetStateSize();
 
-			var mediumStateSizeKb = Global.Config.Rewind_MediumStateSize / 1024;
-			var largeStateSizeKb = Global.Config.Rewind_LargeStateSize / 1024;
+			var mediumStateSizeKb = _config.Rewind_MediumStateSize / 1024;
+			var largeStateSizeKb = _config.Rewind_LargeStateSize / 1024;
 
 			MediumStateTrackbar.Value = mediumStateSizeKb;
 			MediumStateUpDown.Value = mediumStateSizeKb;
 			LargeStateTrackbar.Value = largeStateSizeKb;
 			LargeStateUpDown.Value = largeStateSizeKb;
 
-			nudCompression.Value = Global.Config.SaveStateCompressionLevelNormal;
+			nudCompression.Value = _config.SaveStateCompressionLevelNormal;
 
-			rbStatesDefault.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Default;
-			rbStatesBinary.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Binary;
-			rbStatesText.Checked = Global.Config.SaveStateType == Config.SaveStateTypeE.Text;
+			rbStatesDefault.Checked = _config.SaveStateType == Config.SaveStateTypeE.Default;
+			rbStatesBinary.Checked = _config.SaveStateType == Config.SaveStateTypeE.Binary;
+			rbStatesText.Checked = _config.SaveStateType == Config.SaveStateTypeE.Text;
 
-			BackupSavestatesCheckbox.Checked = Global.Config.BackupSavestates;
-			ScreenshotInStatesCheckbox.Checked = Global.Config.SaveScreenshotWithStates;
-			LowResLargeScreenshotsCheckbox.Checked = !Global.Config.NoLowResLargeScreenshotWithStates;
-			BigScreenshotNumeric.Value = Global.Config.BigScreenshotSize / 1024;
+			BackupSavestatesCheckbox.Checked = _config.BackupSavestates;
+			ScreenshotInStatesCheckbox.Checked = _config.SaveScreenshotWithStates;
+			LowResLargeScreenshotsCheckbox.Checked = !_config.NoLowResLargeScreenshotWithStates;
+			BigScreenshotNumeric.Value = _config.BigScreenshotSize / 1024;
 
 			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
 		}
@@ -156,33 +163,33 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
-			PutRewindSetting(ref Global.Config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindEnabledMedium, MediumStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindEnabledLarge, LargeStateEnabledBox.Checked);
-			PutRewindSetting(ref Global.Config.RewindFrequencySmall, (int)SmallSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.RewindFrequencyMedium, (int)MediumSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.RewindFrequencyLarge, (int)LargeSavestateNumeric.Value);
-			PutRewindSetting(ref Global.Config.Rewind_OnDisk, DiskBufferCheckbox.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_UseDelta, UseDeltaCompression.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_IsThreaded, RewindIsThreadedCheckbox.Checked);
-			PutRewindSetting(ref Global.Config.Rewind_BufferSize, (int)BufferSizeUpDown.Value);
-			PutRewindSetting(ref Global.Config.Rewind_MediumStateSize, (int)MediumStateUpDown.Value * 1024);
-			PutRewindSetting(ref Global.Config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			PutRewindSetting(ref _config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
+			PutRewindSetting(ref _config.RewindEnabledMedium, MediumStateEnabledBox.Checked);
+			PutRewindSetting(ref _config.RewindEnabledLarge, LargeStateEnabledBox.Checked);
+			PutRewindSetting(ref _config.RewindFrequencySmall, (int)SmallSavestateNumeric.Value);
+			PutRewindSetting(ref _config.RewindFrequencyMedium, (int)MediumSavestateNumeric.Value);
+			PutRewindSetting(ref _config.RewindFrequencyLarge, (int)LargeSavestateNumeric.Value);
+			PutRewindSetting(ref _config.Rewind_OnDisk, DiskBufferCheckbox.Checked);
+			PutRewindSetting(ref _config.Rewind_UseDelta, UseDeltaCompression.Checked);
+			PutRewindSetting(ref _config.Rewind_IsThreaded, RewindIsThreadedCheckbox.Checked);
+			PutRewindSetting(ref _config.Rewind_BufferSize, (int)BufferSizeUpDown.Value);
+			PutRewindSetting(ref _config.Rewind_MediumStateSize, (int)MediumStateUpDown.Value * 1024);
+			PutRewindSetting(ref _config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
 			if (TriggerRewindSettingsReload)
 			{
-				Global.Rewinder.Initialize();
+				_rewinder.Initialize();
 			}
 
 			// These settings are not used by DoRewindSettings
-			Global.Config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
-			Global.Config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
-			if (rbStatesDefault.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Default;
-			if (rbStatesBinary.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Binary;
-			if (rbStatesText.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
-			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
-			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
-			Global.Config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
-			Global.Config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
+			_config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
+			_config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
+			if (rbStatesDefault.Checked) _config.SaveStateType = Config.SaveStateTypeE.Default;
+			if (rbStatesBinary.Checked) _config.SaveStateType = Config.SaveStateTypeE.Binary;
+			if (rbStatesText.Checked) _config.SaveStateType = Config.SaveStateTypeE.Text;
+			_config.BackupSavestates = BackupSavestatesCheckbox.Checked;
+			_config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
+			_config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
+			_config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
 			Close();
 		}
@@ -306,9 +313,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
-				if (Global.Rewinder.Count > 0)
+				if (_rewinder.Count > 0)
 				{
-					avgStateSize = Global.Rewinder.Size / Global.Rewinder.Count;
+					avgStateSize = _rewinder.Size / _rewinder.Count;
 				}
 				else
 				{
