@@ -44,8 +44,7 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", 16384, "NDS", "bios7", "bios7.bin", "ARM7 BIOS");
 			FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", 4096, "NDS", "bios9", "bios9.bin", "ARM9 BIOS");
-			// NDS firmware dump contains user settings, so hashes are not expected to match
-			FirmwareAndOption("0000000000000000000000000000000000000000", 262144, "NDS", "firmware", "firmware.bin", "NDS Firmware");
+			FirmwareAndOption("DDDDA2447AE84A77385497D8889516E8BC090418", 262144, "NDS", "firmware", "firmware.bin", "NDS Firmware (note: given hash is with blank user data)");
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "lynxboot.img", "Boot Rom");
 

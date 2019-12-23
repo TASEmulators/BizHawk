@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
 	[Core("MelonDS", "Arisotura")]
-	unsafe partial class MelonDS : IEmulator
+	unsafe public partial class MelonDS : IEmulator
 	{
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
@@ -138,6 +138,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			else
 				File.Delete("melon/firmware.bin");
+		}
+
+		/// <summary>
+		/// Creates a modified copy of the given firmware file, with the user settings erased.
+		/// </summary>
+		/// <returns>Returns a path to the new file.</returns>
+		public static string CreateModifiedFirmware(string firmwarePath)
+		{
+			const string newPath = "melon/tohash.bin";
+			byte[] bytes = File.ReadAllBytes(firmwarePath);
+
+			// There are two regions for user settings
+			int settingsLength = getUserSettingsLength();
+			for (int i = bytes.Length - 0x200; i < bytes.Length - 0x200 + settingsLength; i++)
+				bytes[i] = 0xFF;
+			for (int i = bytes.Length - 0x100; i < bytes.Length - 0x100 + settingsLength; i++)
+				bytes[i] = 0xFF;
+
+
+			File.WriteAllBytes(newPath, bytes);
+			return newPath;
 		}
 	}
 }
