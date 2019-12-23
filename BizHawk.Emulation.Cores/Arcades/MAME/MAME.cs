@@ -36,8 +36,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			_syncSettings.ExpandoSettings = new ExpandoObject();
 			var dynamicObject = (IDictionary<string, object>)_syncSettings.ExpandoSettings;
 			dynamicObject.Add("OKAY", 1);
-
 			gamename = _gameName;
+
+			if (_loadFailure != "")
+			{
+				Dispose();
+				throw new Exception(_loadFailure);
+			}
 		}
 
 		#region Properties
@@ -73,18 +78,19 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private IController Controller = NullController.Instance;
 		private IMemoryDomains _memoryDomains;
 		private int systemBusAddressShift = 0;
+		private bool memAccess = false;
 		private int[] frameBuffer = new int[0];
 		private Queue<short> audioSamples = new Queue<short>();
 		private decimal dAudioSamples = 0;
 		private int sampleRate = 44100;
+		private int numSamples = 0;
 		private bool paused = true;
 		private bool exiting = false;
 		private bool frameDone = true;
-		private bool memAccess = false;
-		private int numSamples = 0;
 		private string gameDirectory;
 		private string gameFilename;
 		private string _gameName = "Arcade";
+		private string _loadFailure = "";
 		private LibMAME.PeriodicCallbackDelegate periodicCallback;
 		private LibMAME.SoundCallbackDelegate soundCallback;
 		private LibMAME.BootCallbackDelegate bootCallback;
@@ -558,7 +564,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (data.Contains("NOT FOUND"))
 			{
 				MAMEStartupComplete.Set();
-				throw new Exception(data);
+				_loadFailure = data;
 			}
 
 			// mame sends osd_output_channel casted to int, we implicitly cast it back
