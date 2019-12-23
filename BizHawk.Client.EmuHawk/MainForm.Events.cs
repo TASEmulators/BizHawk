@@ -365,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = ofd.ShowHawkDialog();
-			if (result.IsOk())
+			if (!result.IsOk())
 			{
 				return;
 			}
