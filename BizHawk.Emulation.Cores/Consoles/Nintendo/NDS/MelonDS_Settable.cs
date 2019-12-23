@@ -31,17 +31,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
-			fixed (byte* ptr = o.data)
-				SetUserSettings(ptr);
-
+			// At present, no sync settings can be modified without requiring a reboot.
+			// Also all sync settings are in the firmware file, which is modified upon core construction.
+			// So there's nothing to actually do here.
 			return true;
 		}
 
 		[DllImport(dllPath)]
 		private static extern bool GetUserSettings(byte* dst);
-		[DllImport(dllPath)]
-		private static extern bool SetUserSettings(byte* src);
-
 		[DllImport(dllPath)]
 		private static extern int getUserSettingsLength();
 		static int userSettingsLength = getUserSettingsLength();

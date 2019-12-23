@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void FrameAdvance(short buttons, byte touchX, byte touchY);
 
 		[CoreConstructor("NDS")]
-		public MelonDS(byte[] file, CoreComm comm)
+		public MelonDS(byte[] file, CoreComm comm, object settings, object syncsettings)
 		{
 			_serviceProvider = new BasicServiceProvider(this);
 			ControllerDefinition = new ControllerDefinition();
@@ -100,23 +100,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			CoreComm = comm;
 			CoreComm.NominalWidth = 256;
 			CoreComm.NominalHeight = 192;
-			// MelonDS will look for bios + firmware files at specific locations
-			byte[] fwBytes;
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
-			if (fwBytes != null)
-				File.WriteAllBytes("melon/bios7.bin", fwBytes);
-			else
-				File.Delete("melon/bios7.bin");
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios9", false);
-			if (fwBytes != null)
-				File.WriteAllBytes("melon/bios9.bin", fwBytes);
-			else
-				File.Delete("melon/bios9.bin");
-			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
-			if (fwBytes != null)
-				File.WriteAllBytes("melon/firmware.bin", fwBytes);
-			else
-				File.Delete("melon/firmware.bin");
+
+			SetUpFiles(syncsettings as MelonSyncSettings);
 
 			if (!Init())
 				throw new Exception("Failed to init NDS.");
@@ -125,6 +110,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			{
 				LoadROM(f, file.Length);
 			}
+		}
+
+		/// <summary>
+		/// MelonDS expects bios and firmware files at a specific location.
+		/// </summary>
+		private void SetUpFiles(MelonSyncSettings ss)
+		{
+			byte[] fwBytes;
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
+			if (fwBytes != null)
+				File.WriteAllBytes("melon/bios7.bin", fwBytes);
+			else
+				File.Delete("melon/bios7.bin");
+
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios9", false);
+			if (fwBytes != null)
+				File.WriteAllBytes("melon/bios9.bin", fwBytes);
+			else
+				File.Delete("melon/bios9.bin");
+
+			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
+			if (fwBytes != null)
+			{
+				ss.data.CopyTo(fwBytes, fwBytes.Length - 0x200); // NDS user settings are included in the firmware file.
+				File.WriteAllBytes("melon/firmware.bin", fwBytes);
+			}
+			else
+				File.Delete("melon/firmware.bin");
 		}
 	}
 }
