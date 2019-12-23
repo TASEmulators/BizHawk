@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			if (_loadFailure != "")
 			{
 				Dispose();
-				throw new Exception(_loadFailure);
+				throw new Exception("\n\n" + _loadFailure);
 			}
 		}
 
@@ -563,8 +563,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		{
 			if (data.Contains("NOT FOUND"))
 			{
-				MAMEStartupComplete.Set();
 				_loadFailure = data;
+			}
+
+			if (data.Contains("Fatal error"))
+			{
+				MAMEStartupComplete.Set();
+				_loadFailure += data;
 			}
 
 			// mame sends osd_output_channel casted to int, we implicitly cast it back
