@@ -69,21 +69,39 @@
     <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
     <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <Reference
+      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Name="Newtonsoft.Json"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="SharpZipLib" Version="1.1.0" />
+    <Reference
+      FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+      Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+      Name="ICSharpCode.SharpZipLib"
+      Private="true"
+      SpecificVersion="true" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <Reference
+      HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Private="true" />
+    <Reference
+      HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+      Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+      Private="true" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="GongShell">
       <HintPath>..\References\GongShell.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
-      <HintPath>../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <!--<Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />-->
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>

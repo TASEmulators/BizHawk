@@ -43,26 +43,58 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
+    <Reference
+      FusionName="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c"
+      Include="$(MachineNuGetPackageDir)/ionic.zip/1.9.1.8/lib/Ionic.Zip.dll"
+      Name="Ionic.Zip"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <Reference
+      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Name="Newtonsoft.Json"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="SharpCompress" Version="0.24.0" />
+    <Reference
+      FusionName="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96"
+      Include="$(MachineNuGetPackageDir)/sharpcompress/0.24.0/lib/net45/SharpCompress.dll"
+      Name="SharpCompress"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="SharpZipLib" Version="1.1.0" />
+    <Reference
+      FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+      Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+      Name="ICSharpCode.SharpZipLib"
+      Private="true"
+      SpecificVersion="true" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <Reference
+      HintPath="../packages/Ionic.Zip.1.9.1.8/lib/Ionic.Zip.dll"
+      Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c"
+      Private="true" />
+    <Reference
+      HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Private="true" />
+    <Reference
+      HintPath="../packages/SharpCompress.0.24.0/lib/net45/SharpCompress.dll"
+      Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96"
+      Private="true" />
+    <Reference
+      HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+      Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+      Private="true" />
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
-      <HintPath>../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c">
-      <HintPath>../packages/Ionic.Zip.1.9.1.8/lib/Ionic.Zip.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NLua">
       <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96">
-      <HintPath>../packages/SharpCompress.0.24.0/lib/net45/SharpCompress.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -315,9 +347,6 @@
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

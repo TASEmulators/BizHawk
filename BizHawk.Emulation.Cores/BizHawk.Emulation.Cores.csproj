@@ -63,19 +63,44 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <PackageReference Include="ELFSharp" Version="0.1.0" />
+    <Reference
+      FusionName="ELFSharp, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+      Include="$(MachineNuGetPackageDir)/elfsharp/0.1.0/lib/net40/ELFSharp.dll"
+      Name="ELFSharp"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <Reference
+      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Name="Newtonsoft.Json"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="OpenTK" Version="3.0.1" />
+    <Reference
+      FusionName="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
+      Include="$(MachineNuGetPackageDir)/opentk/3.0.1/lib/net20/OpenTK.dll"
+      Name="OpenTK"
+      Private="true"
+      SpecificVersion="true" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <Reference
+      HintPath="../packages/ELFSharp.0.1/lib/net40/ELFSharp.dll"
+      Include="ELFSharp, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+      Private="true" />
+    <Reference
+      HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Private="true" />
+    <Reference
+      HintPath="../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll"
+      Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
+      Private="true" />
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="ELFSharp, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../packages/ELFSharp.0.1/lib/net40/ELFSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
-      <HintPath>../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="PeNet">
       <HintPath>..\References\PeNet.dll</HintPath>
     </Reference>
