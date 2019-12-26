@@ -18,4 +18,4 @@ if [ -z "$libpath" ]; then
 	libpath="/usr/lib/wine"
 fi
 export LD_LIBRARY_PATH="$libpath"
-mono ./EmuHawk.exe >EmuHawkMono_laststdout.txt
+mono ./EmuHawk.exe "$@" >EmuHawkMono_laststdout.txt
