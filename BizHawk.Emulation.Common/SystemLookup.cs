@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Common
 
 			new SystemInfo { SystemId = "SMS", FullName = "Sega Master System" },
 			new SystemInfo { SystemId = "GEN", FullName = "Sega Genesis/Mega Drive" },
+			new SystemInfo { SystemId = "32X", FullName = "Sega Genesis 32X/Mega Drive 32X" },
 			new SystemInfo { SystemId = "SAT", FullName = "Sega Saturn" },
 
 			new SystemInfo { SystemId = "PCE", FullName = "PC Engine/TurboGrafx 16" },
