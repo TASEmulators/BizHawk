@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Common
 			_poke?.Invoke(addr, val);
 		}
 
-		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize)
+		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize, Action<bool> bulkAccess = null)
 		{
 			Name = name;
 			EndianType = endian;
@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Common
 			_poke = poke;
 			Writable = poke != null;
 			WordSize = wordSize;
+			SetBulkAccess = bulkAccess;
 		}
 	}
 

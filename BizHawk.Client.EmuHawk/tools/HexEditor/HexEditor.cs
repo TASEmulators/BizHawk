@@ -512,6 +512,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var rowStr = new StringBuilder();
 
+			_domain.SetBulkAccess?.Invoke(true);
+
 			for (var i = 0; i < _rowsVisible; i++)
 			{
 				_row = i + HexScrollBar.Value;
@@ -568,6 +570,7 @@ namespace BizHawk.Client.EmuHawk
 				rowStr.AppendLine();
 			}
 
+			_domain.SetBulkAccess?.Invoke(false);
 			return rowStr.ToString();
 		}
 

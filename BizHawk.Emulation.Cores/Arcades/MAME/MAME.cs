@@ -118,6 +118,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		private IMemoryDomains _memoryDomains;
 		private int _systemBusAddressShift = 0;
 		private bool _memAccess = false;
+		private bool _bulkMemAccess = false;
 		private int[] _frameBuffer = new int[0];
 		private Queue<short> _audioSamples = new Queue<short>();
 		private decimal _dAudioSamples = 0;
@@ -323,12 +324,21 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 								throw new ArgumentOutOfRangeException();
 							}
 
-							_memAccess = true;
-							_mamePeriodicComplete.WaitOne();
+							if (!_bulkMemAccess)
+							{
+								_memAccess = true;
+								_mamePeriodicComplete.WaitOne();
+							}
+
 							addr += firstOffset;
 							var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
-							_memoryAccessComplete.Set();
-							_memAccess = false;
+
+							if (!_bulkMemAccess)
+							{
+								_memoryAccessComplete.Set();
+								_memAccess = false;
+							}
+
 							return val;
 						},
 						read == "rom" ? (Action<long, byte>)null : delegate (long addr, byte val)
@@ -338,13 +348,34 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 								throw new ArgumentOutOfRangeException();
 							}
 
-							_memAccess = true;
-							_mamePeriodicComplete.WaitOne();
+							if (!_bulkMemAccess)
+							{
+								_memAccess = true;
+								_mamePeriodicComplete.WaitOne();
+							}
+
 							addr += firstOffset;
 							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
-							_memoryAccessComplete.Set();
-							_memAccess = false;
-						}, dataWidth));
+
+							if (!_bulkMemAccess)
+							{
+								_memoryAccessComplete.Set();
+								_memAccess = false;
+							}
+						}, dataWidth,
+						delegate (bool enabled)
+						{
+							_bulkMemAccess = enabled;
+
+							if (enabled)
+							{
+								_mamePeriodicComplete.WaitOne();
+							}
+							else
+							{
+								_memoryAccessComplete.Set();
+							}
+						}));
 				}
 			}
 
@@ -356,14 +387,36 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 						throw new ArgumentOutOfRangeException();
 					}
 
-					_memAccess = true;
-					_mamePeriodicComplete.WaitOne();
+					if (!_bulkMemAccess)
+					{
+						_memAccess = true;
+						_mamePeriodicComplete.WaitOne();
+					}
+
 					var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
-					_memoryAccessComplete.Set();
-					_memAccess = false;
+
+					if (!_bulkMemAccess)
+					{
+						_memoryAccessComplete.Set();
+						_memAccess = false;
+					}
+
 					return val;
 				},
-				null, dataWidth));
+				null, dataWidth,
+				delegate (bool enabled)
+				{
+					_bulkMemAccess = enabled;
+
+					if (enabled)
+					{
+						_mamePeriodicComplete.WaitOne();
+					}
+					else
+					{
+						_memoryAccessComplete.Set();
+					}
+				}));
 
 			_memoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
@@ -395,18 +448,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			string[] args =
 			{
-				 "mame"                                 // dummy, internally discarded by index, so has to go first
+				 "mame"                                // dummy, internally discarded by index, so has to go first
 				, _gameFilename                         // no dash for rom names
-				, "-noreadconfig"                       // forbid reading any config files
-				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
-				, "-nothrottle"                         // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                    // ^ including frame-advancing
+				, "-noreadconfig"                      // forbid reading any config files
+				, "-norewind"                          // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"                     // forbid this blocking screen that requires user input
+				, "-nothrottle"                        // forbid throttling to "real" speed of the device
+				, "-update_in_pause"                   // ^ including frame-advancing
 				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
-				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
-				, "-output",                 "console"  // print everything to hawk console
+				, "-volume",                     "-32" // lowest attenuation means mame osd remains silent
+				, "-output",                 "console" // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-video",                     "none"  // forbid mame window altogether
+				, "-video",                     "none" // forbid mame window altogether
 				, "-keyboardprovider",          "none"
 				, "-mouseprovider",             "none"
 				, "-lightgunprovider",          "none"
@@ -548,7 +601,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				_exiting = false;
 			}
 			
-			if (_memAccess)
+			if (_memAccess || _bulkMemAccess)
 			{
 				_mamePeriodicComplete.Set();
 				_memoryAccessComplete.WaitOne();

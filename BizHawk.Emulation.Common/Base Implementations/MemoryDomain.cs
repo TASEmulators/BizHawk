@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A memory region and the functionality to read/write from it
@@ -21,6 +23,8 @@
 		public Endian EndianType { get; protected set; }
 
 		public bool Writable { get; protected set; }
+
+		public Action<bool> SetBulkAccess { get; set; }
 
 		public abstract byte PeekByte(long addr);
 
