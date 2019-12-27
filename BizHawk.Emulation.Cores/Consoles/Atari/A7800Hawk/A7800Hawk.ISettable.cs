@@ -40,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				return (A7800Settings)MemberwiseClone();
 			}
+
+			public A7800Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class A7800SyncSettings
@@ -91,6 +96,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			public A7800SyncSettings Clone()
 			{
 				return (A7800SyncSettings)MemberwiseClone();
+			}
+
+			public A7800SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(A7800SyncSettings x, A7800SyncSettings y)

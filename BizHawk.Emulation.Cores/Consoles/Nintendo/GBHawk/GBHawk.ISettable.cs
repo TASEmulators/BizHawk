@@ -54,6 +54,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return (GBSettings)MemberwiseClone();
 			}
+
+			public GBSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class GBSyncSettings
@@ -146,6 +151,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			public GBSyncSettings Clone()
 			{
 				return (GBSyncSettings)MemberwiseClone();
+			}
+
+			public GBSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(GBSyncSettings x, GBSyncSettings y)

@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			{
 				return (VectrexSettings)MemberwiseClone();
 			}
+
+			public VectrexSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class VectrexSyncSettings
@@ -94,6 +99,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			public VectrexSyncSettings Clone()
 			{
 				return (VectrexSyncSettings)MemberwiseClone();
+			}
+
+			public VectrexSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(VectrexSyncSettings x, VectrexSyncSettings y)
