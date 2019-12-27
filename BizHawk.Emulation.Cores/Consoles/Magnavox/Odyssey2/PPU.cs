@@ -23,7 +23,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 		public byte VDC_ctrl, VDC_status, VDC_collision, VDC_col_ret, VDC_color;
 		public byte Pixel_Stat;
-		public int bg_brightness;
+		public int bg_brightness, grid_brightness;
+		public byte A4_latch, A5_latch;
 
 		public int grid_fill;
 		public byte grid_fill_col;
@@ -55,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA0)
 			{
 				ret = VDC_ctrl;
+				Core.cpu.IRQPending = false;
 			}
 			else if (addr == 0xA1)
 			{
@@ -65,17 +67,19 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				ret = VDC_col_ret;
 				//Console.WriteLine("col: " + ret + " " + Core.cpu.TotalExecutedCycles);
 			}
-			else if(addr == 0xA4)
-			{
-				ret = (byte)LY;
-			}
-			else if (addr == 0xA5)
-			{
-				ret = (byte)(cycle - HBL_CNT);
-			}
 			else if (addr == 0xA3)
 			{
 				ret = VDC_color;
+			}
+			else if(addr == 0xA4)
+			{
+				if (VDC_ctrl.Bit(1)) { ret = A4_latch; }
+				else { ret = (byte)LY; }
+			}
+			else if (addr == 0xA5)
+			{
+				if (VDC_ctrl.Bit(1)) { ret = A5_latch; }
+				else { ret = (byte)(cycle - HBL_CNT); }
 			}
 			else if (addr <= 0xAA)
 			{
@@ -126,10 +130,18 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_ctrl = value;
 				//Console.WriteLine("VDC_ctrl: " + value + " " + Core.cpu.TotalExecutedCycles);
+				if (VDC_ctrl.Bit(1)) 
+				{ 
+					VDC_status &= 0xFD;
+					A4_latch = (byte)LY;
+					A5_latch = (byte)(cycle - HBL_CNT);
+				}
+				else { VDC_status |= 0x2; }
 			}
 			else if (addr == 0xA1)
 			{
-				VDC_status = value;
+				// not writable
+				// VDC_status = value;
 			}
 			else if (addr == 0xA2)
 			{
@@ -139,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				VDC_color = value;
 				//Console.WriteLine("VDC_color: " + value + " " + Core.cpu.TotalExecutedCycles);
-				bg_brightness = VDC_color.Bit(6) ? 8 : 0;
-				//VDC_color |= 3;
+				bg_brightness = VDC_color.Bit(7) ? 8 : 0;
+				grid_brightness = VDC_color.Bit(6) ? 8 : 0;
 			}
 			else if (addr == 0xA4)
 			{
@@ -174,22 +186,23 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			// drawing cycles
 			if (cycle >= HBL_CNT)
 			{
-				if (cycle == HBL_CNT)
-				{
-					HBL = false;
-					// Send T1 pulses
-					Core.cpu.T1 = false;
-				}
-
 				// draw a pixel
 				if (LY < 240)
 				{
+					if (cycle == HBL_CNT)
+					{
+						HBL = false;
+						VDC_status |= 0x01;
+						// Send T1 pulses
+						Core.cpu.T1 = false;
+					}
+
 					// background
 					Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[((VDC_color >> 3) & 0x7) + bg_brightness];
 
 					if (grid_fill > 0)
 					{
-						Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + bg_brightness];
+						Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 						Pixel_Stat |= grid_fill_col;
 						grid_fill--;
 					}
@@ -202,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						{
 							if (Grid_V[k].Bit(j))
 							{
-								Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + bg_brightness];
+								Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 								Pixel_Stat |= 0x10;
 								if (VDC_ctrl.Bit(7)) { grid_fill = 15; }
 								else { grid_fill = 1; }
@@ -222,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							{
 								if (Grid_H[k + 9].Bit(0))
 								{
-									Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + bg_brightness];
+									Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 									Pixel_Stat |= 0x20;
 
 									if (((cycle - HBL_CNT - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
@@ -232,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							{
 								if (Grid_H[k].Bit(j))
 								{
-									Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + bg_brightness];
+									Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 									Pixel_Stat |= 0x20;
 									if (((cycle - HBL_CNT - 8) % 16) == 15) { grid_fill = 2; grid_fill_col = 0x20; }
 								}
@@ -250,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							int j = (int)Math.Floor((LY - 24) / 24.0);
 							if ((k < 10) && (j < 9))
 							{
-								Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + bg_brightness];
+								Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 								Pixel_Stat |= 0x20;
 							}
 						}
@@ -416,10 +429,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			if (cycle == 228)
 			{
 				cycle = 0;
-				HBL = true;
 
 				LY++;
-
 
 				if (LY == 240)
 				{
@@ -429,20 +440,18 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					Core.cpu.IRQPending = true;
 					Core.cpu.T1 = true;
 				}
-				if (LY == 241)
-				{
-					Core.cpu.IRQPending = false;
-				}
 				if (LY == 262)
 				{
 					LY = 0;
 					VBL = false;
+					Core.in_vblank = false;
 					VDC_status &= 0xF7;
 					VDC_col_ret = 0;
-					Core.in_vblank = false;
 				}
 				if (LY < 240)
 				{
+					HBL = true;
+					VDC_status &= 0xFE;
 					// send T1 pulses
 					Core.cpu.T1 = true;
 				}
@@ -579,6 +588,8 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(Quad_Chars), ref Quad_Chars, false);
 			ser.Sync(nameof(Grid_H), ref Grid_H, false);
 			ser.Sync(nameof(Grid_V), ref Grid_V, false);
+			ser.Sync(nameof(A4_latch), ref A4_latch);
+			ser.Sync(nameof(A5_latch), ref A5_latch);
 
 			ser.Sync(nameof(VDC_ctrl), ref VDC_ctrl);
 			ser.Sync(nameof(VDC_status), ref VDC_status);
@@ -587,6 +598,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			ser.Sync(nameof(VDC_color), ref VDC_color);
 			ser.Sync(nameof(Pixel_Stat), ref Pixel_Stat);
 			ser.Sync(nameof(bg_brightness), ref bg_brightness);
+			ser.Sync(nameof(grid_brightness), ref grid_brightness);
 
 			ser.Sync(nameof(grid_fill), ref grid_fill);
 			ser.Sync(nameof(grid_fill_col), ref grid_fill_col);

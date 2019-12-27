@@ -44,19 +44,19 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort EN = 31;
 		public const ushort DI = 32;
 		public const ushort DN = 33;
-		public const ushort ABX = 34;
-		public const ushort JPE = 35;
-		public const ushort MSK = 36;
-		public const ushort CLK_OUT = 37;
-		public const ushort XCH = 38;
-		public const ushort XCH_RAM = 39;
-		public const ushort XCHD_RAM = 40;
-		public const ushort SEL_MB0 = 41;
-		public const ushort SEL_MB1 = 42;
-		public const ushort SEL_RB0 = 43;
-		public const ushort SEL_RB1 = 44;
-		public const ushort INC_RAM = 45;
-		public const ushort RES_TF = 46;
+		public const ushort MSK = 34;
+		public const ushort CLK_OUT = 35;
+		public const ushort XCH = 36;
+		public const ushort XCH_RAM = 37;
+		public const ushort XCHD_RAM = 38;
+		public const ushort SEL_MB0 = 39;
+		public const ushort SEL_MB1 = 40;
+		public const ushort SEL_RB0 = 41;
+		public const ushort SEL_RB1 = 42;
+		public const ushort INC_RAM = 43;
+		public const ushort RES_TF = 44;
+		public const ushort SET_ADDR_M3 = 45;
+		public const ushort MOVT_RAM_D = 46;
 		public const ushort MOV = 47;
 		public const ushort MOVT = 48;
 		public const ushort MOVAR = 49;
@@ -74,9 +74,8 @@ namespace BizHawk.Emulation.Common.Components.I8048
 		public const ushort RD_P = 61;
 		public const ushort WR_P = 62;
 		public const ushort EM = 63;
-		public const ushort DM = 64;
-		public const ushort SET_ADDR_M3 = 65;
-		public const ushort MOVT_RAM_D = 66;
+		public const ushort DM = 64;	
+		public const ushort TEST_COND = 65;
 
 		public I8048()
 		{
@@ -179,33 +178,10 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case SET_ADDR:
+				case INC11:
 					reg_d_ad = cur_instr[instr_pntr++];
-					reg_l_ad = cur_instr[instr_pntr++];
-					reg_h_ad = cur_instr[instr_pntr++]; // direct value
-
-					// bit 11 held low during interrupt
-					if (INT_MSTR)
-					{
-						Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
-					}
-					else
-					{
-						Regs[reg_d_ad] = (ushort)((reg_h_ad << 8) | Regs[reg_l_ad]);
-					}
-					
-					break;
-				case CLRA:
-					Regs[A] = 0;
-					break;
-				case CLC:
-					FlagC = false;
-					break;
-				case CL0:
-					FlagF0 = false;
-					break;
-				case CL1:
-					F1 = false;
+					Regs[ALU2] = (ushort)(Regs[reg_d_ad] & 0x800);
+					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | Regs[ALU2]);
 					break;
 				case ADD8:
 					ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -213,16 +189,26 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case ADC8:
 					ADC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case INC11:
-					reg_d_ad = cur_instr[instr_pntr++];
-					Regs[ALU2] = (ushort) (Regs[reg_d_ad] & 0x800);
-					Regs[reg_d_ad] = (ushort)(((Regs[reg_d_ad] + 1) & 0x7FF) | Regs[ALU2]);
+				case AND8:
+					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case XOR8:
+					XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case OR8:
+					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case INC8:
 					INC8_Func(cur_instr[instr_pntr++]);
 					break;
+				case INCA:
+					INC8_Func(A);
+					break;
 				case DEC8:
 					DEC8_Func(cur_instr[instr_pntr++]);
+					break;
+				case DECA:
+					DEC8_Func(A);
 					break;
 				case ROL:
 					ROL_Func(A);
@@ -235,6 +221,14 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case RRC:
 					RRC_Func(A);
+					break;
+				case CLRA:
+					Regs[A] = 0;
+					break;
+				case SWP:
+					reg_d_ad = Regs[A];
+					Regs[A] = (ushort)(Regs[A] >> 4);
+					Regs[A] |= (ushort)((reg_d_ad << 4) & 0xF0);
 					break;
 				case COMA:
 					Regs[A] = (ushort)((~Regs[A]) & 0xFF);
@@ -251,14 +245,45 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case DA:
 					DA_Func(A);
 					break;
-				case AND8:
-					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case SET_ADDR:
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_l_ad = cur_instr[instr_pntr++];
+					reg_h_ad = cur_instr[instr_pntr++]; // direct value
+
+					// bit 11 held low during interrupt
+					if (INT_MSTR)
+					{
+						Regs[reg_d_ad] = (ushort)(MB | (reg_h_ad << 8) | Regs[reg_l_ad]);
+					}
+					else
+					{
+						Regs[reg_d_ad] = (ushort)((reg_h_ad << 8) | Regs[reg_l_ad]);
+					}				
+					break;			
+				case CLC:
+					FlagC = false;
 					break;
-				case XOR8:
-					XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case CL0:
+					FlagF0 = false;
 					break;
-				case OR8:
-					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case CL1:
+					F1 = false;
+					break;
+				case EI:
+					IntEn = true;
+					break;
+				case EN:
+					TimIntEn = true;
+					break;
+				case DI:
+					IntEn = false;
+					break;
+				case DN:
+					TimIntEn = false;
+					TIRQPending = false;
+					break;
+				case MSK:
+
 					break;
 				case CLK_OUT:
 
@@ -304,6 +329,16 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				case RES_TF:
 					TF = false;
 					break;
+				case SET_ADDR_M3:
+					Regs[ALU] &= 0xFF;
+					Regs[ALU] |= 0x300;
+					break;
+				case MOVT_RAM_D:
+					reg_d_ad = cur_instr[instr_pntr++];
+					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
+					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
+					//Console.WriteLine(reg_d_ad + " " + Regs[reg_d_ad] + " " + Regs[ALU] + " " + TotalExecutedCycles);
+					break;
 				case MOV:
 					reg_d_ad = cur_instr[instr_pntr++];
 					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
@@ -330,25 +365,6 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					timer_en = true;
 					timer_prescale = 0;
 					break;
-				case EI:
-					IntEn = true;
-					break;
-				case EN:
-					TimIntEn = true;
-					break;
-				case DI:
-					IntEn = false;
-					break;
-				case DN:
-					TimIntEn = false;
-					TIRQPending = false;
-					break;
-				case INCA:
-					INC8_Func(A);
-					break;
-				case DECA:
-					DEC8_Func(A);
-					break;
 				case SET_ADDR_8:
 					reg_d_ad = cur_instr[instr_pntr++];
 					Regs[reg_d_ad] &= 0xFF00;
@@ -374,15 +390,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					Regs[PSW] = (ushort)((((Regs[PSW] & 0x7) - 1) & 0x7) | (Regs[PSW] & 0xF8));
 					Regs[PC] = (ushort)(Regs[(Regs[PSW] & 0x7) * 2 + 8] & 0xFF);
 					Regs[PC] |= (ushort)((Regs[(Regs[PSW] & 0x7) * 2 + 8 + 1] & 0xF) << 8);
-					break;
-				case MSK:
-
-					break;
-				case SWP:
-					reg_d_ad = Regs[A];
-					Regs[A] = (ushort)(Regs[A] >> 4);
-					Regs[A] |= (ushort)((reg_d_ad << 4) & 0xF0);
-					break;
+					break;	
 				case EEA:
 					EA = true;
 					break;
@@ -408,16 +416,21 @@ namespace BizHawk.Emulation.Common.Components.I8048
 					break;
 				case DM:
 					INT_MSTR = false;
-					break;
-				case SET_ADDR_M3:
-					Regs[ALU] &= 0xFF;
-					Regs[ALU] |= 0x300;
-					break;
-				case MOVT_RAM_D:
+					break;		
+				case TEST_COND:
 					reg_d_ad = cur_instr[instr_pntr++];
-					reg_d_ad = (ushort)(Regs[reg_d_ad] & 0x3F);
-					Regs[reg_d_ad] = Regs[cur_instr[instr_pntr++]];
-					//Console.WriteLine(reg_d_ad + " " + Regs[reg_d_ad] + " " + Regs[ALU] + " " + TotalExecutedCycles);
+					if ((reg_d_ad == 0) && !TF) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 1) && T0) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 2) && !T0) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 3) && T1) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 4) && !T1) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 5) && !F1) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 6) && IRQPending) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 7) && (Regs[A] == 0)) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 8) && !FlagF0) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 9) && (Regs[A] != 0)) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 10) && FlagC) { cur_instr[instr_pntr + 9] = IDLE; }
+					if ((reg_d_ad == 11) && !FlagC) { cur_instr[instr_pntr + 9] = IDLE; }
 					break;
 			}
 
@@ -483,6 +496,7 @@ namespace BizHawk.Emulation.Common.Components.I8048
 						if (TimIntEn)
 						{
 							TIRQPending = true;
+							//Console.WriteLine(TotalExecutedCycles);
 						}
 					}
 					Regs[TIM] = (ushort)((Regs[TIM] + 1) & 0xFF);
