@@ -410,7 +410,7 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "VEC", SystemDisplayName = "VEC", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "VEC", SystemDisplayName = "VEC", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-			new PathEntry { System = "O2", SystemDisplayName = "VEC", Type = "Base", Path = Path.Combine(".", "O2"), Ordinal = 0 },
+			new PathEntry { System = "O2", SystemDisplayName = "O2", Type = "Base", Path = Path.Combine(".", "O2"), Ordinal = 0 },
 			new PathEntry { System = "O2", SystemDisplayName = "O2", Type = "ROM", Path = ".", Ordinal = 1 },
 			new PathEntry { System = "O2", SystemDisplayName = "O2", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
 			new PathEntry { System = "O2", SystemDisplayName = "O2", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
