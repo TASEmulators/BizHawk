@@ -52,6 +52,7 @@ namespace BizHawk.Common
 
 		public int Count => size;
 
+		/// <exception cref="Exception">called while at capacity</exception>
 		public void Enqueue(T item)
 		{
 			if (size >= buffer.Length)
@@ -76,6 +77,7 @@ namespace BizHawk.Common
 			return ret;
 		}
 
+		/// <exception cref="Exception">called while empty</exception>
 		public T Dequeue()
 		{
 			if (size == 0)
@@ -117,6 +119,7 @@ namespace BizHawk.Common
 			dict = dictionary;
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void Add(TKey key, TValue value)
 		{
 			throw new InvalidOperationException();
@@ -129,6 +132,7 @@ namespace BizHawk.Common
 
 		public ICollection<TKey> Keys => dict.Keys;
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public bool Remove(TKey key)
 		{
 			throw new InvalidOperationException();
@@ -141,17 +145,20 @@ namespace BizHawk.Common
 
 		public ICollection<TValue> Values => dict.Values;
 
+		/// <exception cref="InvalidOperationException">(from setter) always</exception>
 		public TValue this[TKey key]
 		{
 			get => dict[key];
 			set => throw new InvalidOperationException();
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void Add(KeyValuePair<TKey, TValue> item)
 		{
 			throw new InvalidOperationException();
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void Clear()
 		{
 			throw new InvalidOperationException();
@@ -171,6 +178,7 @@ namespace BizHawk.Common
 
 		public bool IsReadOnly => true;
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public bool Remove(KeyValuePair<TKey, TValue> item)
 		{
 			throw new InvalidOperationException();

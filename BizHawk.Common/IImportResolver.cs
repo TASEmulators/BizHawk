@@ -12,6 +12,8 @@ namespace BizHawk.Common
 	public interface IImportResolver
 	{
 		IntPtr? GetProcAddrOrNull(string entryPoint);
+
+		/// <exception cref="InvalidOperationException">could not find symbol</exception>
 		IntPtr GetProcAddrOrThrow(string entryPoint);
 	}
 
@@ -117,6 +119,6 @@ namespace BizHawk.Common
 			return null;
 		}
 
-		public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new IOException($"{entryPoint} was not found in any of the aggregated resolvers");
+		public IntPtr GetProcAddrOrThrow(string entryPoint) => GetProcAddrOrNull(entryPoint) ?? throw new InvalidOperationException($"{entryPoint} was not found in any of the aggregated resolvers");
 	}
 }

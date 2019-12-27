@@ -47,6 +47,7 @@ namespace BizHawk.Common.BizInvoke
 		protected ulong GetStartAddr(int page) => ((ulong) page << WaterboxUtils.PageShift) + Start;
 
 		/// <summary>Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!</summary>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside bounds of memory block (<see cref="Start"/> and <see cref="End"/>)</exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start));
@@ -55,6 +56,8 @@ namespace BizHawk.Common.BizInvoke
 		}
 
 		/// <summary>get a stream that can be used to read or write from part of the block. both reads and writes will be XORed against an earlier recorded snapshot</summary>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside bounds of memory block (<see cref="Start"/> and <see cref="End"/>)</exception>
+		/// <exception cref="InvalidOperationException">no snapshot taken (haven't called <see cref="SaveXorSnapshot"/>)</exception>
 		public Stream GetXorStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start));

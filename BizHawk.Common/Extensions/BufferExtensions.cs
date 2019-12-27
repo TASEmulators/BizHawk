@@ -29,6 +29,7 @@ namespace BizHawk.Common.BufferExtensions
 			writer.WriteLine();
 		}
 
+		/// <exception cref="Exception"><paramref name="hex"/> has an odd number of chars</exception>
 		public static void ReadFromHex(this byte[] buffer, string hex)
 		{
 			if (hex.Length % 2 != 0)
@@ -43,6 +44,7 @@ namespace BizHawk.Common.BufferExtensions
 			}
 		}
 
+		/// <exception cref="Exception"><paramref name="buffer"/> can't hold the same number of bytes as <paramref name="hex"/></exception>
 		public static unsafe void ReadFromHexFast(this byte[] buffer, string hex)
 		{
 			if (buffer.Length * 2 != hex.Length)

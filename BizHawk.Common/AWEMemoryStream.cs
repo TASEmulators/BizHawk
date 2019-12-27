@@ -383,6 +383,7 @@ namespace BizHawk.Common
 				}
 			}
 
+			/// <exception cref="InvalidOperationException"><paramref name="byteSize"/> is equivalent to more than <see cref="UInt32.MaxValue">uint.MaxValue</see> pages</exception>
 			public bool Allocate(int byteSize)
 			{
 				if (!TryAcquirePrivilege())

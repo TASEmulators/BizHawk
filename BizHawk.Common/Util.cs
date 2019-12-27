@@ -89,7 +89,8 @@ namespace BizHawk.Common
 			return TryWaitForFileToVanish(pathWant);
 		}
 
-		// Could be extension method
+		/// <exception cref="ArgumentException"><paramref name="str"/> has an odd number of chars or contains a char not in <c>[0-9A-Fa-f]</c></exception>
+		/// <remarks>could be extension method</remarks>
 		public static byte[] HexStringToBytes(string str)
 		{
 			var ms = new MemoryStream();
@@ -421,6 +422,7 @@ namespace BizHawk.Common
 			return true;
 		}
 
+		/// <exception cref="InvalidOperationException">issues with parsing <paramref name="src"/></exception>
 		public static byte[] DecompressGzipFile(Stream src)
 		{
 			var tmp = new byte[4];

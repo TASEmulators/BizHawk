@@ -7,6 +7,7 @@ namespace BizHawk.Common
 		private int _min;
 		private int _max;
 
+		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> > <see cref="Max"/></exception>
 		public int Min
 		{
 			get => _min;
@@ -17,6 +18,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> &lt; <see cref="Min"/></exception>
 		public int Max
 		{
 			get => _max;
@@ -30,7 +32,7 @@ namespace BizHawk.Common
 		public MutableIntRange(int min, int max)
 		{
 			_min = min;
-			Max = max; // setter may throw ArgumentException
+			Max = max; // set property instead of field to validate and possibly throw an ArgumentException
 		}
 
 		public int Constrain(int i) => i < _min ? _min : i > _max ? _max : i;

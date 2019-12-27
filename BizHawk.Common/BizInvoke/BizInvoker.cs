@@ -60,6 +60,7 @@ namespace BizHawk.Common.BizInvoke
 		/// get an implementation proxy for an interop class
 		/// </summary>
 		/// <typeparam name="T">The class type that represents the DLL</typeparam>
+		/// <exception cref="InvalidOperationException"><see cref="GetInvoker{T}(BizHawk.Common.IImportResolver,BizHawk.Common.IMonitor,BizHawk.Common.BizInvoke.ICallingConventionAdapter)"/> previously called with <paramref name="dll"/></exception>
 		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{
@@ -82,6 +83,7 @@ namespace BizHawk.Common.BizInvoke
 			return (T)impl.Create(dll, null, adapter);
 		}
 
+		/// <exception cref="InvalidOperationException">this method was previously called with <paramref name="dll"/></exception>
 		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			where T : class
 		{

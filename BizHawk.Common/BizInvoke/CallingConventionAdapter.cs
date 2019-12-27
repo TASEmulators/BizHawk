@@ -38,6 +38,7 @@ namespace BizHawk.Common.BizInvoke
 			ParameterTypes = parameterTypes.ToList().AsReadOnly();
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="delegateType"/> does not inherit <see cref="Delegate"/></exception>
 		public ParameterInfo(Type delegateType)
 		{
 			if (!typeof(Delegate).IsAssignableFrom(delegateType))

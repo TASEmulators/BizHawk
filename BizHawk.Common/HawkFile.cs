@@ -111,22 +111,13 @@ namespace BizHawk.Common
 		/// </summary>
 		public bool IsArchiveMember => IsArchive && IsBound;
 
-		public IList<HawkFileArchiveItem> ArchiveItems
-		{
-			get
-			{
-				if (!IsArchive)
-				{
-					throw new InvalidOperationException("Cant get archive items from non-archive");
-				}
+		/// <exception cref="InvalidOperationException"><see cref="IsArchive"/> is <see langword="false"/></exception>
+		public IList<HawkFileArchiveItem> ArchiveItems => IsArchive
+			? _archiveItems
+			: throw new InvalidOperationException("Cant get archive items from non-archive");
 
-				return _archiveItems;
-			}
-		}
-
-		/// <summary>
-		/// returns a stream for the currently bound file
-		/// </summary>
+		/// <returns>a stream for the currently bound file</returns>
+		/// <exception cref="InvalidOperationException">no stream bound (haven't called <see cref="BindArchiveMember(int)"/> or overload)</exception>
 		public Stream GetStream()
 		{
 			if (_boundStream == null)
@@ -151,9 +142,8 @@ namespace BizHawk.Common
 			return file.Exists;
 		}
 
-		/// <summary>
-		/// Utility: attempts to read all the content from the provided path.
-		/// </summary>
+		/// <summary>reads all the contents of the file at <paramref name="path"/></summary>
+		/// <exception cref="FileNotFoundException">could not find <paramref name="path"/></exception>
 		public static byte[] ReadAllBytes(string path)
 		{
 			using var file = new HawkFile(path);
@@ -204,9 +194,8 @@ namespace BizHawk.Common
 			_rootPath = path;
 		}
 
-		/// <summary>
-		/// Parses the given filename and then opens it. This may take a while (the archive may be accessed and scanned).
-		/// </summary>
+		/// <summary>Opens the file at <paramref name="path"/>. This may take a while if the file is an archive, as it may be accessed and scanned.</summary>
+		/// <exception cref="InvalidOperationException">already opened via <see cref="HawkFile(string)"/>, this method, or <see cref="Parse"/></exception>
 		public void Open(string path)
 		{
 			if (_rootPath != null)
@@ -308,9 +297,8 @@ namespace BizHawk.Common
 			return BindArchiveMember(ai);
 		}
 
-		/// <summary>
-		/// binds the selected archive index
-		/// </summary>
+		/// <summary>binds the selected archive index</summary>
+		/// <exception cref="InvalidOperationException">stream already bound</exception>
 		public HawkFile BindArchiveMember(int index)
 		{
 			if (!_rootExists)
@@ -383,6 +371,7 @@ namespace BizHawk.Common
 			return BindByExtensionCore(true, extensions);
 		}
 
+		/// <exception cref="InvalidOperationException">stream already bound</exception>
 		private HawkFile BindByExtensionCore(bool first, params string[] extensions)
 		{
 			if (!_rootExists)

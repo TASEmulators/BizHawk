@@ -31,9 +31,15 @@ namespace BizHawk.Common
 		public interface ILinkedLibManager
 		{
 			int FreeByPtr(IntPtr hModule);
+
 			IntPtr? GetProcAddrOrNull(IntPtr hModule, string procName);
+
+			/// <exception cref="InvalidOperationException">could not find symbol</exception>
 			IntPtr GetProcAddrOrThrow(IntPtr hModule, string procName);
+
 			IntPtr? LoadOrNull(string dllToLoad);
+
+			/// <exception cref="InvalidOperationException">could not find library</exception>
 			IntPtr LoadOrThrow(string dllToLoad);
 		}
 
@@ -142,7 +148,7 @@ namespace BizHawk.Common
 		/// <param name="args">POSIX <c>$*</c> (space-delimited)</param>
 		/// <param name="noOutputMsg">used in exception</param>
 		/// <returns>first line of stdout</returns>
-		/// <exception cref="Exception">thrown if stdout is empty</exception>
+		/// <exception cref="Exception">stdout is empty</exception>
 		/// <remarks>OS is implicit and needs to be checked at callsite</remarks>
 		public static string SimpleSubshell(string cmd, string args, string noOutputMsg)
 		{

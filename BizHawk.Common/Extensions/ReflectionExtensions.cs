@@ -81,10 +81,11 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <summary>
 		/// Gets an enum from a description attribute
 		/// </summary>
-		/// <typeparam name="T">The type of the enum</typeparam>
 		/// <param name="description">The description attribute value</param>
+		/// <typeparam name="T">The type of the enum</typeparam>
 		/// <returns>An enum value with the given description attribute, if no suitable description is found then a default value of the enum is returned</returns>
-		/// <remarks>http://stackoverflow.com/questions/4367723/get-enum-from-description-attribute</remarks>
+		/// <exception cref="InvalidOperationException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
+		/// <remarks>implementation from https://stackoverflow.com/a/4367868/7467292</remarks>
 		public static T GetEnumFromDescription<T>(this string description)
 		{
 			var type = typeof(T);

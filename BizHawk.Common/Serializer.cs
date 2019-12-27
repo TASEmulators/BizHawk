@@ -128,6 +128,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <exception cref="InvalidOperationException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public void SyncEnum<T>(string name, ref T val) where T : struct
 		{
 			if (typeof(T).BaseType != typeof(Enum))
@@ -707,6 +708,7 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="IsReader"/> is <see langword="false"/> and <paramref name="name"/> is longer than <paramref name="length"/> chars</exception>
 		public void SyncFixedString(string name, ref string val, int length)
 		{
 			// TODO - this could be made more efficient perhaps just by writing values right out of the string..

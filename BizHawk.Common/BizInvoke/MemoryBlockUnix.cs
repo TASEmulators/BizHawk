@@ -11,6 +11,8 @@ namespace BizHawk.Common.BizInvoke
 		private int _fd;
 
 		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
+		/// <exception cref="InvalidOperationException">failed to get file descriptor (never thrown as <see cref="NotImplementedException"/> is thrown first)</exception>
+		/// <exception cref="NotImplementedException">always</exception>
 		public MemoryBlockUnix(ulong start, ulong size) : base(start, size)
 		{
 			throw new NotImplementedException($"{nameof(MemoryBlockUnix)} ctor");
@@ -18,6 +20,7 @@ namespace BizHawk.Common.BizInvoke
 			if (_fd == -1) throw new InvalidOperationException($"{nameof(memfd_create)}() returned -1");
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="true"/> or failed to map memory</exception>
 		public override void Activate()
 		{
 			if (Active) throw new InvalidOperationException("Already active");
@@ -29,6 +32,7 @@ namespace BizHawk.Common.BizInvoke
 			Active = true;
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to unmap memory</exception>
 		public override void Deactivate()
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
@@ -39,6 +43,7 @@ namespace BizHawk.Common.BizInvoke
 			Active = false;
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
 		public override byte[] FullHash()
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
@@ -52,6 +57,7 @@ namespace BizHawk.Common.BizInvoke
 			return ret;
 		}
 
+		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
 		public override void Protect(ulong start, ulong length, Protection prot)
 		{
 			if (length == 0) return;
@@ -92,6 +98,7 @@ namespace BizHawk.Common.BizInvoke
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlockBase.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
 		public override void SaveXorSnapshot()
 		{
 			if (_snapshot != null) throw new InvalidOperationException("Snapshot already taken");

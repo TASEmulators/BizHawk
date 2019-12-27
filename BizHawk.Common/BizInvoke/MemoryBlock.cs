@@ -11,9 +11,8 @@ namespace BizHawk.Common.BizInvoke
 		/// </summary>
 		private IntPtr _handle;
 
-		/// <summary>
-		/// allocate size bytes starting at a particular address
-		/// </summary>
+		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
+		/// <exception cref="InvalidOperationException">failed to create file mapping</exception>
 		public MemoryBlock(ulong start, ulong size) : base(start, size)
 		{
 			_handle = Kernel32.CreateFileMapping(
@@ -27,6 +26,7 @@ namespace BizHawk.Common.BizInvoke
 			if (_handle == IntPtr.Zero) throw new InvalidOperationException($"{nameof(Kernel32.CreateFileMapping)}() returned NULL");
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="true"/> or failed to map file view</exception>
 		public override void Activate()
 		{
 			if (Active)
@@ -40,6 +40,7 @@ namespace BizHawk.Common.BizInvoke
 			Active = true;
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to unmap file view</exception>
 		public override void Deactivate()
 		{
 			if (!Active)
@@ -49,6 +50,7 @@ namespace BizHawk.Common.BizInvoke
 			Active = false;
 		}
 
+		/// <exception cref="InvalidOperationException">snapshot already taken, <see cref="MemoryBlockBase.Active"/> is <see langword="false"/>, or failed to make memory read-only</exception>
 		public override void SaveXorSnapshot()
 		{
 			if (_snapshot != null)
@@ -71,6 +73,7 @@ namespace BizHawk.Common.BizInvoke
 			ProtectAll();
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="MemoryBlockBase.Active"/> is <see langword="false"/> or failed to make memory read-only</exception>
 		public override byte[] FullHash()
 		{
 			if (!Active)
@@ -116,6 +119,7 @@ namespace BizHawk.Common.BizInvoke
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">failed to protect memory</exception>
 		public override void Protect(ulong start, ulong length, Protection prot)
 		{
 			if (length == 0)
