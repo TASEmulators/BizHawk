@@ -42,15 +42,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <PackageReference Include="OpenTK" Version="3.0.1" />
-    <Reference
-      FusionName="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
-      Include="$(MachineNuGetPackageDir)/opentk/3.0.1/lib/net20/OpenTK.dll"
-      Name="OpenTK"
-      Private="true"
-      SpecificVersion="true" />
-  </ItemGroup>
+  <Import Project="DotNetBuild.NuGet.targets" Condition=" '$(OS)' != 'Windows_NT' " />
   <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <Reference
       HintPath="../../packages/OpenTK.3.0.1/lib/net20/OpenTK.dll"

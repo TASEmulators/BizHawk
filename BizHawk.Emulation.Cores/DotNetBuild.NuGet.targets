@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageReference Include="ELFSharp" Version="0.1.0" />
+    <Reference
+      FusionName="ELFSharp, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
+      Include="$(MachineNuGetPackageDir)/elfsharp/0.1.0/lib/net40/ELFSharp.dll"
+      Name="ELFSharp"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <Reference
+      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Name="Newtonsoft.Json"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="OpenTK" Version="3.0.1" />
+    <Reference
+      FusionName="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4"
+      Include="$(MachineNuGetPackageDir)/opentk/3.0.1/lib/net20/OpenTK.dll"
+      Name="OpenTK"
+      Private="true"
+      SpecificVersion="true" />
+  </ItemGroup>
+</Project>

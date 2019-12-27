@@ -69,22 +69,7 @@
     <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
     <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <Reference
-      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
-      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
-      Name="Newtonsoft.Json"
-      Private="true"
-      SpecificVersion="true" />
-    <PackageReference Include="SharpZipLib" Version="1.1.0" />
-    <Reference
-      FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
-      Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
-      Name="ICSharpCode.SharpZipLib"
-      Private="true"
-      SpecificVersion="true" />
-  </ItemGroup>
+  <Import Project="DotNetBuild.NuGet.targets" Condition=" '$(OS)' != 'Windows_NT' " />
   <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <Reference
       HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"

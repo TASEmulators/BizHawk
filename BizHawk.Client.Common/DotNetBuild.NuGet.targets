@@ -1,0 +1,32 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
+    <Reference
+      FusionName="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c"
+      Include="$(MachineNuGetPackageDir)/ionic.zip/1.9.1.8/lib/Ionic.Zip.dll"
+      Name="Ionic.Zip"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <Reference
+      FusionName="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+      Include="$(MachineNuGetPackageDir)/newtonsoft.json/12.0.3/lib/net45/Newtonsoft.Json.dll"
+      Name="Newtonsoft.Json"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="SharpCompress" Version="0.24.0" />
+    <Reference
+      FusionName="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96"
+      Include="$(MachineNuGetPackageDir)/sharpcompress/0.24.0/lib/net45/SharpCompress.dll"
+      Name="SharpCompress"
+      Private="true"
+      SpecificVersion="true" />
+    <PackageReference Include="SharpZipLib" Version="1.1.0" />
+    <Reference
+      FusionName="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+      Include="$(MachineNuGetPackageDir)/sharpziplib/1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+      Name="ICSharpCode.SharpZipLib"
+      Private="true"
+      SpecificVersion="true" />
+  </ItemGroup>
+</Project>
