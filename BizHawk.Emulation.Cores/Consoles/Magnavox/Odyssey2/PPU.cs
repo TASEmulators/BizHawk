@@ -146,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else if (addr == 0xA2)
 			{
 				VDC_collision = value;
+				//Console.WriteLine("VDC_collide: " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr == 0xA3)
 			{
@@ -404,7 +405,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					}
 
 					// calculate collision
-					int col_bit = 0;
+					int col_bit = -1;
 					for (int i = 7; i >= 0; i--)
 					{
 						if (VDC_collision.Bit(i))
@@ -413,11 +414,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 						}
 					}
 
-					for (int i = 0; i < 8; i++)
+					if (col_bit >= 0)
 					{
-						if (Pixel_Stat.Bit(i) & Pixel_Stat.Bit(col_bit) && (i != col_bit))
+						for (int i = 0; i < 8; i++)
 						{
-							VDC_col_ret |= (byte)(1 << i);
+							if (Pixel_Stat.Bit(i) & Pixel_Stat.Bit(col_bit) && (i != col_bit))
+							{
+								VDC_col_ret |= (byte)(1 << i);
+							}
 						}
 					}
 				}
