@@ -57,6 +57,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			{
 				return (O2Settings)MemberwiseClone();
 			}
+
+			public O2Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public class O2SyncSettings
@@ -69,6 +74,11 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			public O2SyncSettings Clone()
 			{
 				return (O2SyncSettings)MemberwiseClone();
+			}
+
+			public O2SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool NeedsReboot(O2SyncSettings x, O2SyncSettings y)
