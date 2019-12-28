@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			MelonSyncSettings ret = new MelonSyncSettings();
 			fixed (byte* ptr = ret.userSettings)
 				GetUserSettings(ptr);
+			ret.bootToFirmware = !GetDirectBoot();
 			return ret;
 		}
 
@@ -32,9 +33,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
+			SetDirectBoot(!o.bootToFirmware);
 			// At present, no sync settings can be modified without requiring a reboot.
-			// Also all sync settings are in the firmware file, which is modified upon core construction.
-			// So there's nothing to actually do here.
 			return true;
 		}
 
@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern int getUserSettingsLength();
 		static int userSettingsLength = getUserSettingsLength();
+
+		[DllImport(dllPath)]
+		private static extern bool GetDirectBoot();
+		[DllImport(dllPath)]
+		private static extern void SetDirectBoot(bool value);
 
 		unsafe public class MelonSettings
 		{
