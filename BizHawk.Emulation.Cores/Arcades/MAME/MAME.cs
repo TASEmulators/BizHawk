@@ -671,11 +671,13 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 		private class MAMELuaCommand
 		{
+			// commands
 			public const string Step = "emu.step()";
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
 			public const string Exit = "manager:machine():exit()";
 
+			// getters
 			public const string GetVersion = "return emu.app_version()";
 			public const string GetGameName = "return manager:machine():system().description";
 			public const string GetPixels = "return manager:machine():video():pixels()";
@@ -685,6 +687,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
 			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
 
+			// memory space
 			public const string GetSpace = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"]";
 			public const string GetSpaceMapCount = "return #manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
 			public const string SpaceMap = "manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
@@ -693,6 +696,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
 			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
 
+			// complex stuff
 			public const string GetBoundX =
 				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
 				"return x1-x0";
