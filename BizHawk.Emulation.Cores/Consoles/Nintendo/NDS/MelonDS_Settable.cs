@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 {
@@ -19,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public MelonSyncSettings GetSyncSettings()
 		{
 			MelonSyncSettings ret = new MelonSyncSettings();
-			fixed (byte* ptr = ret.data)
+			fixed (byte* ptr = ret.userSettings)
 				GetUserSettings(ptr);
 			return ret;
 		}
@@ -51,20 +52,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			public MelonSyncSettings()
 			{
-				data = new byte[userSettingsLength];
+				userSettings = new byte[userSettingsLength];
 			}
 
-			public byte[] data;
+			public bool bootToFirmware;
+			public byte[] userSettings;
 
-			public byte favoriteColor => data[2];
-			public byte birthdayMonth => data[3];
-			public byte birthdayDay => data[4];
+			[JsonIgnore]
+			public byte favoriteColor => userSettings[2];
+			[JsonIgnore]
+			public byte birthdayMonth => userSettings[3];
+			[JsonIgnore]
+			public byte birthdayDay => userSettings[4];
 			const int maxNicknameLength = 10;
+			[JsonIgnore]
 			public string nickname
 			{
 				get
 				{
-					fixed (byte* ptr = data)
+					fixed (byte* ptr = userSettings)
 						return Encoding.Unicode.GetString(ptr + 6, nicknameLength * 2);
 				}
 				set
@@ -76,11 +82,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					if (Encoding.Unicode.GetBytes(value, 0, value.Length, nick, 0) != value.Length * 2)
 						return;
 					// The extra 2 bytes on the end will overwrite nickname length, which is set immediately after
-					nick.CopyTo(data, 6);
-					data[0x1A] = (byte)value.Length;
+					nick.CopyTo(userSettings, 6);
+					userSettings[0x1A] = (byte)value.Length;
 				}
 			}
-			public short nicknameLength { get => data[0x1A]; }
+			[JsonIgnore]
+			public short nicknameLength { get => userSettings[0x1A]; }
 		}
 	}
 }

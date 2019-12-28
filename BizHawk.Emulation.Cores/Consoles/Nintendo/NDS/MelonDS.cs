@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
 			if (fwBytes != null)
 			{
-				ss.data.CopyTo(fwBytes, fwBytes.Length - 0x200); // NDS user settings are included in the firmware file.
+				ss.userSettings.CopyTo(fwBytes, fwBytes.Length - 0x200); // NDS user settings are included in the firmware file.
 				File.WriteAllBytes("melon/firmware.bin", fwBytes);
 			}
 			else

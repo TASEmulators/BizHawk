@@ -1720,6 +1720,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSSubMenu.Visible = false;
 			GBSubMenu.Visible = false;
 			GBASubMenu.Visible = false;
+			NDSSubMenu.Visible = false;
 			AtariSubMenu.Visible = false;
 			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
@@ -1778,6 +1779,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "GBA":
 					GBASubMenu.Visible = true;
+					break;
+				case "NDS":
+					NDSSubMenu.Visible = true;
 					break;
 				case "A26":
 					AtariSubMenu.Visible = true;
