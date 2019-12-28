@@ -298,6 +298,64 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				endian = MemoryDomain.Endian.Big;
 			}
 
+			if (LibMAME.mame_lua_get_bool("return true"))
+			{
+				int i = 0;
+			}
+			if (LibMAME.mame_lua_get_bool("return false"))
+			{
+				int i = 1;
+			}
+
+			var mapCount = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
+
+			for (int i = 1; i <= mapCount; i++)
+			{
+				var read = MameGetString($"{ MAMELuaCommand.SpaceMap }[{ i }].readtype");
+				var write = MameGetString($"{ MAMELuaCommand.SpaceMap }[{ i }].writetype");
+
+
+				if (LibMAME.mame_lua_get_bool(
+					$"local entry = { MAMELuaCommand.SpaceMap }[{ i }] " +
+					"return (entry.readtype == \"ram\" and entry.writetype == \"ram\")"))
+				{
+					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].offset");
+					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].endoff");
+					var name = $"RAM { firstOffset:X}-{ lastOffset:X}";
+
+					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
+						delegate (long addr)
+						{
+							if (addr < 0 || addr >= size)
+							{
+								throw new ArgumentOutOfRangeException();
+							}
+
+							_memAccess = true;
+							_mamePeriodicComplete.WaitOne();
+							addr += firstOffset;
+							var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
+							_memoryAccessComplete.Set();
+							_memAccess = false;
+							return val;
+						},
+						delegate (long addr, byte val)
+						{
+							if (addr < 0 || addr >= size)
+							{
+								throw new ArgumentOutOfRangeException();
+							}
+
+							_memAccess = true;
+							_mamePeriodicComplete.WaitOne();
+							addr += firstOffset;
+							LibMAME.mame_lua_execute($"{ MAMELuaCommand.GetSpace }:write_u8({ addr << _systemBusAddressShift }, { val })");
+							_memoryAccessComplete.Set();
+							_memAccess = false;
+						}, dataWidth));
+				}
+			}
+
 			domains.Add(new MemoryDomainDelegate("System Bus", size, endian,
 				delegate (long addr)
 				{
@@ -308,24 +366,12 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 					_memAccess = true;
 					_mamePeriodicComplete.WaitOne();
-					var val = (byte)LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpace + $":read_u8({ addr << _systemBusAddressShift })");
+					var val = (byte)LibMAME.mame_lua_get_int($"{ MAMELuaCommand.GetSpace }:read_u8({ addr << _systemBusAddressShift })");
 					_memoryAccessComplete.Set();
 					_memAccess = false;
 					return val;
 				},
-				delegate (long addr, byte val)
-				{
-					if (addr < 0 || addr >= size)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-					_memAccess = true;
-					_mamePeriodicComplete.WaitOne();
-					LibMAME.mame_lua_execute(MAMELuaCommand.GetSpace + $":write_u8({ addr << _systemBusAddressShift }, { val })");
-					_memoryAccessComplete.Set();
-					_memAccess = false;
-				}, dataWidth));
+				null, dataWidth));
 
 			_memoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
@@ -357,18 +403,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			// https://docs.mamedev.org/commandline/commandline-index.html
 			string[] args =
 			{
-				 "mame"                                // dummy, internally discarded by index, so has to go first
+				 "mame"                                 // dummy, internally discarded by index, so has to go first
 				, _gameFilename                         // no dash for rom names
-				, "-noreadconfig"                      // forbid reading any config files
-				, "-norewind"                          // forbid rewind savestates (captured upon frame advance)
-				, "-skip_gameinfo"                     // forbid this blocking screen that requires user input
-				, "-nothrottle"                        // forbid throttling to "real" speed of the device
-				, "-update_in_pause"                   // ^ including frame-advancing
+				, "-noreadconfig"                       // forbid reading any config files
+				, "-norewind"                           // forbid rewind savestates (captured upon frame advance)
+				, "-skip_gameinfo"                      // forbid this blocking screen that requires user input
+				, "-nothrottle"                         // forbid throttling to "real" speed of the device
+				, "-update_in_pause"                    // ^ including frame-advancing
 				, "-rompath",            _gameDirectory // mame doesn't load roms from full paths, only from dirs to scan
-				, "-volume",                     "-32" // lowest attenuation means mame osd remains silent
-				, "-output",                 "console" // print everything to hawk console
+				, "-volume",                     "-32"  // lowest attenuation means mame osd remains silent
+				, "-output",                 "console"  // print everything to hawk console
 				, "-samplerate", _sampleRate.ToString() // match hawk samplerate
-				, "-video",                     "none" // forbid mame window altogether
+				, "-video",                     "none"  // forbid mame window altogether
 				, "-keyboardprovider",          "none"
 				, "-mouseprovider",             "none"
 				, "-lightgunprovider",          "none"
@@ -637,6 +683,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string Pause = "emu.pause()";
 			public const string Unpause = "emu.unpause()";
 			public const string Exit = "manager:machine():exit()";
+
 			public const string GetVersion = "return emu.app_version()";
 			public const string GetGameName = "return manager:machine():system().description";
 			public const string GetPixels = "return manager:machine():video():pixels()";
@@ -645,11 +692,15 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetRefresh = "return select(2, next(manager:machine().screens)):refresh_attoseconds()";
 			public const string GetWidth = "return (select(1, manager:machine():video():size()))";
 			public const string GetHeight = "return (select(2, manager:machine():video():size()))";
+
 			public const string GetSpace = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"]";
+			public const string GetSpaceMapCount = "return #manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
+			public const string SpaceMap = "manager:machine().devices[\":maincpu\"].spaces[\"program\"].map";
 			public const string GetSpaceAddressMask = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].address_mask";
 			public const string GetSpaceAddressShift = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].shift";
 			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
 			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
+
 			public const string GetBoundX =
 				"local x0,x1,y0,y1 = manager:machine():render():ui_target():view_bounds() " +
 				"return x1-x0";
