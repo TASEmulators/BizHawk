@@ -106,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			if (!Init())
 				throw new Exception("Failed to init NDS.");
+			InitMemoryDomains();
 
 			fixed (byte* f = file)
 			{
