@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 		}
 
+		#region Utility
+
 		/* strings and MAME
 		 * 
 		 * MAME's luaengine uses lua strings to return C strings as well as
@@ -79,6 +81,8 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 
 			return ret;
 		}
+
+		#endregion
 
 		#region Properties
 
