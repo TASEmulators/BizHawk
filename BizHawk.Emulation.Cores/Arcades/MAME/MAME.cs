@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		name: "MAME",
 		author: "MAMEDev",
 		isPorted: true,
-		portedVersion: "0.216",
+		portedVersion: "0.217",
 		portedUrl: "https://github.com/mamedev/mame.git",
 		singleInstance: false)]
 	public partial class MAME : IEmulator, IVideoProvider, ISoundProvider, ISettable<object, MAME.SyncSettings>
@@ -298,30 +298,18 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 				endian = MemoryDomain.Endian.Big;
 			}
 
-			if (LibMAME.mame_lua_get_bool("return true"))
-			{
-				int i = 0;
-			}
-			if (LibMAME.mame_lua_get_bool("return false"))
-			{
-				int i = 1;
-			}
-
 			var mapCount = LibMAME.mame_lua_get_int(MAMELuaCommand.GetSpaceMapCount);
 
 			for (int i = 1; i <= mapCount; i++)
 			{
-				var read = MameGetString($"{ MAMELuaCommand.SpaceMap }[{ i }].readtype");
-				var write = MameGetString($"{ MAMELuaCommand.SpaceMap }[{ i }].writetype");
+				var read = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].readtype");
+				var write = MameGetString($"return { MAMELuaCommand.SpaceMap }[{ i }].writetype");
 
-
-				if (LibMAME.mame_lua_get_bool(
-					$"local entry = { MAMELuaCommand.SpaceMap }[{ i }] " +
-					"return (entry.readtype == \"ram\" and entry.writetype == \"ram\")"))
+				if (read == "ram" && write == "ram" /* || read == "rom" */)
 				{
 					var firstOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].offset");
 					var lastOffset = LibMAME.mame_lua_get_int($"return { MAMELuaCommand.SpaceMap }[{ i }].endoff");
-					var name = $"RAM { firstOffset:X}-{ lastOffset:X}";
+					var name = $"{ read.ToUpper() } { firstOffset:X}-{ lastOffset:X}";
 
 					domains.Add(new MemoryDomainDelegate(name, lastOffset - firstOffset + 1, endian,
 						delegate (long addr)
@@ -339,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 							_memAccess = false;
 							return val;
 						},
-						delegate (long addr, byte val)
+						read == "rom" ? (Action<long, byte>)null : delegate (long addr, byte val)
 						{
 							if (addr < 0 || addr >= size)
 							{
