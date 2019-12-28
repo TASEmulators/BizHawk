@@ -54,9 +54,8 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// This controller's definition changes to that of source
-		/// </summary>
+		/// <summary>replace this controller's definition with that of <paramref name="source"/></summary>
+		/// <exception cref="Exception">definition of <paramref name="source"/> has a button and an analog control with the same name</exception>
 		public void CopyFrom(IController source)
 		{
 			Definition = source.Definition;

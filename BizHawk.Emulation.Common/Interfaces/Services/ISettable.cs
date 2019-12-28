@@ -103,6 +103,7 @@ namespace BizHawk.Emulation.Common
 		private readonly MethodInfo _getss;
 		private readonly MethodInfo _putss;
 
+		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
 		public object GetSettings()
 		{
 			if (!HasSettings)
@@ -113,6 +114,7 @@ namespace BizHawk.Emulation.Common
 			return _gets.Invoke(_emu, _tmp0);
 		}
 
+		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
 		public object GetSyncSettings()
 		{
 			if (!HasSyncSettings)
@@ -123,6 +125,7 @@ namespace BizHawk.Emulation.Common
 			return _getss.Invoke(_emu, _tmp0);
 		}
 
+		/// <exception cref="InvalidOperationException">does not have non-sync settings</exception>
 		public bool PutSettings(object o)
 		{
 			if (!HasSettings)
@@ -134,6 +137,7 @@ namespace BizHawk.Emulation.Common
 			return (bool)_puts.Invoke(_emu, _tmp1);
 		}
 
+		/// <exception cref="InvalidOperationException">does not have sync settings</exception>
 		public bool PutSyncSettings(object o)
 		{
 			if (!HasSyncSettings)

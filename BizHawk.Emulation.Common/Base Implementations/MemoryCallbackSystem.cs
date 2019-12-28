@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Common
 
 		public string[] AvailableScopes { get; }
 
+		/// <exception cref="InvalidOperationException">scope of <paramref name="callback"/> isn't available</exception>
 		public void Add(IMemoryCallback callback)
 		{
 			if (!AvailableScopes.Contains(callback.Scope))

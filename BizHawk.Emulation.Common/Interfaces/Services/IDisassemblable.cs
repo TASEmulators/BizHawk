@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Common
 	{
 		private string _cpu;
 
+		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> isn't the name of an available CPU</exception>
 		public virtual string Cpu
 		{
 			get => _cpu;

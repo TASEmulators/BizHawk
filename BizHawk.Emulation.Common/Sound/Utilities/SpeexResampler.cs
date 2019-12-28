@@ -288,9 +288,6 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SpeexResampler"/> class
-		/// </summary>
 		/// <param name="quality">0 to 10</param>
 		/// <param name="rationum">numerator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
@@ -298,6 +295,8 @@ namespace BizHawk.Emulation.Common
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
 		/// <param name="drainer">function which accepts output as produced. if null, act as an <seealso cref="ISoundProvider"/></param>
 		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
+		/// <exception cref="ArgumentException"><paramref name="drainer"/> and <paramref name="input"/> are both non-null</exception>
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 			if (drainer != null && input != null)
@@ -369,9 +368,8 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// flush as many input samples as possible, generating output samples right now
-		/// </summary>
+		/// <summary>flush as many input samples as possible, generating output samples right now</summary>
+		/// <exception cref="Exception">unmanaged call failed</exception>
 		public void Flush()
 		{
 			uint inal = (uint)_inbufpos / 2;
@@ -448,11 +446,13 @@ namespace BizHawk.Emulation.Common
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="SyncSoundMode.Async"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode == SyncSoundMode.Async)

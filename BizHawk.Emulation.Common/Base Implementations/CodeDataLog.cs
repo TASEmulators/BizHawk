@@ -17,9 +17,8 @@ namespace BizHawk.Emulation.Common
 			Active = true;
 		}
 
-		/// <summary>
-		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing thish ere will remind us to check for the pin condition and abort
-		/// </summary>
+		/// <summary>Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing this here will remind us to check for the pin condition and abort</summary>
+		/// <exception cref="InvalidOperationException">if called more than once per instantiation</exception>
 		public void Pin()
 		{
 			if (_pins.Count != 0)
@@ -112,6 +111,10 @@ namespace BizHawk.Emulation.Common
 			return true;
 		}
 
+		/// <exception cref="InvalidDataException">
+		/// <paramref name="other"/> is not the same length as <see langword="this"/>, or
+		/// any value differs in size from the corresponding value in <paramref name="other"/>
+		/// </exception>
 		public void LogicalOrFrom(ICodeDataLog other)
 		{
 			if (Count != other.Count)
@@ -187,6 +190,7 @@ namespace BizHawk.Emulation.Common
 			return SaveInternal(new MemoryStream(), false);
 		}
 
+		/// <exception cref="InvalidDataException">contents of <paramref name="s"/> do not begin with valid file header</exception>
 		public void Load(Stream s)
 		{
 			var br = new BinaryReader(s);

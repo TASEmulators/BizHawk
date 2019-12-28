@@ -25,6 +25,7 @@
 		/// If a core can not provide async sound and the mode is set to sync,
 		/// an NotSupportedException should be thrown
 		/// </summary>
+		/// <exception cref="NotSupportedException"></exception>
 		void SetSyncMode(SyncSoundMode mode);
 
 		/// <summary>
@@ -36,12 +37,14 @@
 		/// Provides samples in sync mode
 		/// If the core is not in sync mode, this should throw an InvalidOperationException
 		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
 		void GetSamplesSync(out short[] samples, out int nsamp);
 
 		/// <summary>
 		/// Provides samples in async mode
 		/// If the core is not in async mode, this should throw an InvalidOperationException
 		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
 		void GetSamplesAsync(short[] samples);
 
 		/// <summary>

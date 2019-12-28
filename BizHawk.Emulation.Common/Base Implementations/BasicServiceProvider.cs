@@ -43,10 +43,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		/// <summary>
-		/// the core can call this to register an additional service
-		/// </summary>
-		/// <typeparam name="T">The <seealso cref="IEmulatorService"/> to register</typeparam>
+		/// <summary>the core can call this to register an additional service</summary>
+		/// <typeparam name="T">The <see cref="IEmulatorService"/> to register</typeparam>
+		/// <exception cref="ArgumentNullException"><paramref name="provider"/> is null</exception>
 		public void Register<T>(T provider) 
 			where T : IEmulatorService
 		{

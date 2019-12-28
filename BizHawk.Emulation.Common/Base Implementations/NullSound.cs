@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Common
 
 		public SyncSoundMode SyncMode { get; private set; }
 
+		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Sync"/> (call <see cref="SetSyncMode"/>)</exception>
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			if (SyncMode != SyncSoundMode.Sync)
@@ -72,6 +73,7 @@ namespace BizHawk.Emulation.Common
 			SyncMode = mode;
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="SyncMode"/> is not <see cref="SyncSoundMode.Async"/> (call <see cref="SetSyncMode"/>)</exception>
 		public void GetSamplesAsync(short[] samples)
 		{
 			if (SyncMode != SyncSoundMode.Async)

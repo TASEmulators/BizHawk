@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Common
 		public ulong Value { get; }
 		public byte BitSize { get; }
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bitSize"/> not in 1..64</exception>
 		public RegisterValue(ulong val, byte bitSize)
 		{
 			if (bitSize == 64)

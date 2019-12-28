@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
+		/// <exception cref="InvalidOperationException"><paramref name="debuggableCore"/> does not provide memory callback support or does not implement <see cref="IDebuggable.GetCpuFlagsAndRegisters"/></exception>
 		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())

@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Common
 			Current.Data.Add(name, d); // will except for us if the key is already present
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="length"/> does not match the length of the data saved as <paramref name="name"/></exception>
 		public void Load(IntPtr data, int length, string name)
 		{
 			byte[] d = Current.Data[name];
@@ -93,6 +94,7 @@ namespace BizHawk.Emulation.Common
 			Nodes.Push(next);
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="name"/> doesn't match the section being closed</exception>
 		public void ExitSection(string name)
 		{
 			Node last = Nodes.Pop();

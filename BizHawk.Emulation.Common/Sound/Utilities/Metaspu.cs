@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Common
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is not <see cref="SyncSoundMode.Async"/></exception>
 		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Async)
@@ -62,6 +63,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			throw new InvalidOperationException("Sync mode not supported");

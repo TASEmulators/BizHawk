@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
+		/// <exception cref="ArgumentNullException"><paramref name="input"/> is null</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="filterWidth"/> is not in 8..65536</exception>
 		public DCFilter(ISoundProvider input, int filterWidth)
 		{
 			if (input == null)
@@ -44,7 +46,8 @@ namespace BizHawk.Emulation.Common
 			_soundProvider = input;
 		}
 
-		// Detached mode
+		/// <summary>detached mode</summary>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="filterWidth"/> is not in 8..65536</exception>
 		public DCFilter(int filterWidth)
 		{
 			if (filterWidth < 8 || filterWidth > 65536)

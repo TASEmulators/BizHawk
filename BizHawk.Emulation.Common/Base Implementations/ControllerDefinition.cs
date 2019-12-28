@@ -122,7 +122,8 @@ namespace BizHawk.Emulation.Common
 				Max = max;
 			}
 
-			// for terse construction
+			/// <summary>for terse construction</summary>
+			/// <exception cref="ArgumentException">length <paramref name="f"/> is not <c>3</c></exception>
 			public static implicit operator FloatRange(float[] f)
 			{
 				if (f.Length != 3)
