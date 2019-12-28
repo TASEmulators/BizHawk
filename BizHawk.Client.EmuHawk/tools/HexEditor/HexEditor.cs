@@ -599,9 +599,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_domain = name == _romDomain.Name
-				? _romDomain
-				: MemoryDomains[name];
+			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME) && name == _romDomain.Name)
+			{
+				_domain = _romDomain;
+			}
+			else
+			{
+				_domain = MemoryDomains[name];
+			}
 
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = _domain.Size / 2;
