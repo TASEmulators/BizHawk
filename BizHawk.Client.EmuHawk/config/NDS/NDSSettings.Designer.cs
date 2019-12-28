@@ -33,6 +33,17 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.ttipFirmware = new System.Windows.Forms.ToolTip(this.components);
+			this.txtName = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.cbxFavColor = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.numBirthMonth = new System.Windows.Forms.NumericUpDown();
+			this.numBirthDay = new System.Windows.Forms.NumericUpDown();
+			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numBirthMonth)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.numBirthDay)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// chkBootToFirmware
@@ -50,7 +61,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.Location = new System.Drawing.Point(138, 40);
+			this.btnCancel.Location = new System.Drawing.Point(138, 147);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(66, 23);
 			this.btnCancel.TabIndex = 1;
@@ -61,7 +72,7 @@
 			// btnSave
 			// 
 			this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSave.Location = new System.Drawing.Point(66, 40);
+			this.btnSave.Location = new System.Drawing.Point(66, 147);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(66, 23);
 			this.btnSave.TabIndex = 1;
@@ -69,17 +80,143 @@
 			this.btnSave.UseVisualStyleBackColor = true;
 			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
+			// txtName
+			// 
+			this.txtName.Location = new System.Drawing.Point(50, 16);
+			this.txtName.MaxLength = 10;
+			this.txtName.Name = "txtName";
+			this.txtName.Size = new System.Drawing.Size(94, 20);
+			this.txtName.TabIndex = 2;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(38, 13);
+			this.label1.TabIndex = 3;
+			this.label1.Text = "Name:";
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.numBirthDay);
+			this.groupBox1.Controls.Add(this.numBirthMonth);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.cbxFavColor);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.txtName);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(12, 35);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(192, 106);
+			this.groupBox1.TabIndex = 4;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "groupBox1";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 45);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(34, 13);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Color:";
+			// 
+			// cbxFavColor
+			// 
+			this.cbxFavColor.FormattingEnabled = true;
+			this.cbxFavColor.Items.AddRange(new object[] {
+            "Gray",
+            "Brown",
+            "Red",
+            "Pink",
+            "Orange",
+            "Yellow",
+            "Lime Green",
+            "Green",
+            "Dark Green",
+            "Sea Green",
+            "Turquoise",
+            "Blue",
+            "Dark Blue",
+            "Dark Purple",
+            "Violet",
+            "Magenta"});
+			this.cbxFavColor.Location = new System.Drawing.Point(50, 42);
+			this.cbxFavColor.Name = "cbxFavColor";
+			this.cbxFavColor.Size = new System.Drawing.Size(94, 21);
+			this.cbxFavColor.TabIndex = 5;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 71);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(79, 13);
+			this.label3.TabIndex = 6;
+			this.label3.Text = "Birthday (M/D):";
+			// 
+			// numBirthMonth
+			// 
+			this.numBirthMonth.Location = new System.Drawing.Point(91, 69);
+			this.numBirthMonth.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+			this.numBirthMonth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numBirthMonth.Name = "numBirthMonth";
+			this.numBirthMonth.Size = new System.Drawing.Size(36, 20);
+			this.numBirthMonth.TabIndex = 6;
+			this.numBirthMonth.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numBirthMonth.ValueChanged += new System.EventHandler(this.numBirthMonth_ValueChanged);
+			// 
+			// numBirthDay
+			// 
+			this.numBirthDay.Location = new System.Drawing.Point(133, 69);
+			this.numBirthDay.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+			this.numBirthDay.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.numBirthDay.Name = "numBirthDay";
+			this.numBirthDay.Size = new System.Drawing.Size(36, 20);
+			this.numBirthDay.TabIndex = 7;
+			this.numBirthDay.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
 			// NDSSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(216, 75);
+			this.ClientSize = new System.Drawing.Size(216, 182);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnSave);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.chkBootToFirmware);
 			this.Name = "NDSSettings";
 			this.Text = "NDSSettings";
 			this.Load += new System.EventHandler(this.NDSSettings_Load);
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.numBirthMonth)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.numBirthDay)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -91,5 +228,13 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnSave;
 		private System.Windows.Forms.ToolTip ttipFirmware;
+		private System.Windows.Forms.TextBox txtName;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox cbxFavColor;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.NumericUpDown numBirthDay;
+		private System.Windows.Forms.NumericUpDown numBirthMonth;
 	}
 }

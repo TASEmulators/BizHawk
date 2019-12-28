@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
 			SetDirectBoot(!o.bootToFirmware);
+			fixed (byte* ptr = o.userSettings)
+				SetUserSettings(ptr);
 			// At present, no sync settings can be modified without requiring a reboot.
 			return true;
 		}
@@ -43,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern int getUserSettingsLength();
 		static int userSettingsLength = getUserSettingsLength();
+		[DllImport(dllPath)]
+		private static extern int SetUserSettings(byte* src);
 
 		[DllImport(dllPath)]
 		private static extern bool GetDirectBoot();
@@ -64,11 +68,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public byte[] userSettings;
 
 			[JsonIgnore]
-			public byte favoriteColor => userSettings[2];
+			public byte favoriteColor
+			{
+				get => userSettings[2];
+				set { userSettings[2] = value; }
+			}
 			[JsonIgnore]
-			public byte birthdayMonth => userSettings[3];
+			public byte birthdayMonth
+			{
+				get => userSettings[3];
+				set { userSettings[3] = value; }
+			}
 			[JsonIgnore]
-			public byte birthdayDay => userSettings[4];
+			public byte birthdayDay
+			{
+				get => userSettings[4];
+				set { userSettings[4] = value; }
+			}
 			const int maxNicknameLength = 10;
 			[JsonIgnore]
 			public string nickname
