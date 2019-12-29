@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.DiscSystem
 				Load(stream);
 			}
 
+			/// <exception cref="Blob_WaveFile_Exception">not a valid RIFF WAVE file with exactly one data chunk containing two 16-bit PCM channels at 44.1 kHz</exception>
 			public void Load(Stream stream)
 			{
 				try

@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.DiscSystem
 		int cachedSector;
 		DiscSectorReader dsr;
 
+		/// <exception cref="NotSupportedException"><paramref name="view"/> is not <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1"/> or <see cref="DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode2_Form1"/></exception>
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)
 		{
 			SectorSize = 2048;

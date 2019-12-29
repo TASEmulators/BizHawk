@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public bool OUT_SlowLoadAborted;
 
+		/// <exception cref="NotSupportedException"><see cref="IN_DiscInterface"/> is <see cref="DiscInterface.LibMirage"/></exception>
 		public void Run()
 		{
 			switch (IN_DiscInterface)

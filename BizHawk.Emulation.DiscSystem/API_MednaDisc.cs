@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// </summary>
 	public unsafe class MednaDisc : IDisposable
 	{
+		/// <exception cref="InvalidOperationException"><see cref="IsLibraryAvailable"/> is <see langword="false"/> (could not load <c>mednadisc.dll</c>), or unmanaged call failed</exception>
 		public MednaDisc(string pathToDisc)
 		{
 			if (!IsLibraryAvailable)

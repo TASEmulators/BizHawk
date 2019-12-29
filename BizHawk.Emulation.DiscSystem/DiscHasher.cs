@@ -123,6 +123,11 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			uint current = 0xFFFFFFFF;
+
+			/// <exception cref="ArgumentOutOfRangeException">
+			/// <paramref name="offset"/> is negative, or
+			/// end index (<paramref name="offset"/> + <paramref name="size"/>) is beyond the end of <paramref name="data"/>
+			/// </exception>
 			public unsafe void Add(byte[] data, int offset, int size)
 			{
 				if (offset + size > data.Length)

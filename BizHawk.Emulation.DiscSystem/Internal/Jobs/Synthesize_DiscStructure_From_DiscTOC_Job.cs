@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscTOC TOCRaw;
 		public DiscStructure Result;
 
+		/// <exception cref="InvalidOperationException">first track of <see cref="TOCRaw"/> is not <c>1</c></exception>
 		public void Run()
 		{
 			var dsr = new DiscSectorReader(IN_Disc);

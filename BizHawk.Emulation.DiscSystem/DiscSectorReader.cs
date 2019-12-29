@@ -196,6 +196,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// If any console is trying to do that, we'll have to add a policy for it, or handle it in the console.
 		/// (We can add a method to this API that checks the type of a sector to make that easier)
 		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
 		public int ReadLBA_2048(int lba, byte[] buffer, int offset)
 		{
 			if (Policy.UserData2048Mode == DiscSectorReaderPolicy.EUserData2048Mode.AssumeMode1)

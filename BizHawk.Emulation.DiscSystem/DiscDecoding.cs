@@ -85,6 +85,7 @@ namespace BizHawk.Emulation.DiscSystem
 			};
 		}
 
+		/// <exception cref="InvalidOperationException">FFmpeg exited with non-zero exit code or produced no output</exception>
 		public byte[] DecodeAudio(string path)
 		{
 			string tempfile = Path.GetTempFileName();
@@ -158,6 +159,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return null;
 		}
 
+		/// <exception cref="AudioDecoder_Exception">could not find source audio for <paramref name="audioPath"/></exception>
 		public byte[] AcquireWaveData(string audioPath)
 		{
 			string path = FindAudio(audioPath);

@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.DiscSystem.SBI
 		/// </summary>
 		public SubQPatchData OUT_Data;
 
+		/// <exception cref="SBIParseException">file at <see cref="IN_Path"/> does not contain valid header or contains misformatted record</exception>
 		public void Run()
 		{
 			using (var fs = File.OpenRead(IN_Path))

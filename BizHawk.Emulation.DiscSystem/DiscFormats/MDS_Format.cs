@@ -289,6 +289,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public int BlobIndex;
 		}
 
+		/// <exception cref="MDSParseException">header is malformed or identifies file as MDS 2.x, or any track has a DVD mode</exception>
 		public AFile Parse(Stream stream)
 		{
 			EndianBitConverter bc = EndianBitConverter.CreateForLittleEndian();
@@ -580,7 +581,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public List<RawTOCEntry> RawTOCEntries;
 			public AFile ParsedMDSFile;
 			public bool Valid;
-			public Exception FailureException;
+			public MDSParseException FailureException;
 			public string MdsPath;
 		}
 
@@ -609,6 +610,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
+		/// <exception cref="MDSParseException">path reference no longer points to file</exception>
 		Dictionary<int, IBlob> MountBlobs(AFile mdsf, Disc disc)
 		{
 			Dictionary<int, IBlob> BlobIndex = new Dictionary<int, IBlob>();
@@ -690,10 +692,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return new RawTOCEntry { QData = q };
 		}
 
-
-		/// <summary>
-		/// Loads a MDS at the specified path to a Disc object
-		/// </summary>
+		/// <exception cref="MDSParseException">no file found at <paramref name="mdsPath"/> or BLOB error</exception>
 		public Disc LoadMDSToDisc(string mdsPath, DiscMountPolicy IN_DiscMountPolicy)
 		{
 			var loadResults = LoadMDSPath(mdsPath);
