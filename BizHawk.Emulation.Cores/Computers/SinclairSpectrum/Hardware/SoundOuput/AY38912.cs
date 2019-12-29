@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
@@ -57,38 +58,54 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		#region IPortIODevice
 
+		/// <summary>
+		/// |11-- ---- ---- --0-|	-	IN	-	Read value of currently selected register	
+		/// </summary>
+		/// <returns></returns>
 		public bool ReadPort(ushort port, ref int value)
 		{
-			if (port != 0xfffd)
+			if (!port.Bit(1))
 			{
-				// port read is not addressing this device
-				return false;
+				if ((port >> 14) == 3)
+				{
+					// port read is addressing this device
+					value = PortRead();
+					return true;
+				}
 			}
 
-			value = PortRead();
-
-			return true;
+			// port read is not addressing this device
+			return false;			
 		}
 
+		/// <summary>
+		/// |11-- ---- ---- --0-|	-	OUT	-	Register Select
+		/// |10-- ---- ---- --0-|	-	OUT	-	Write value to currently selected register
+		/// </summary>
+		/// <returns></returns>
 		public bool WritePort(ushort port, int value)
 		{
-			if (port == 0xfffd)
+			if (!port.Bit(1))
 			{
-				// register select
-				SelectedRegister = value & 0x0f;
-				return true;
-			}
-			else if (port == 0xbffd)
-			{
-				// Update the audiobuffer based on the current CPU cycle
-				// (this process the previous data BEFORE writing to the currently selected register)                
-				int d = (int)(_machine.CurrentFrameCycle);
-				BufferUpdate(d);
+				if ((port >> 14) == 3)
+				{
+					// register select
+					SelectedRegister = value & 0x0f;
+					return true;
+				}
+				else if ((port >> 14) == 2)
+				{
+					// Update the audiobuffer based on the current CPU cycle
+					// (this process the previous data BEFORE writing to the currently selected register)                
+					int d = (int)(_machine.CurrentFrameCycle);
+					BufferUpdate(d);
 
-				// write to register
-				PortWrite(value);
-				return true;
+					// write to register
+					PortWrite(value);
+					return true;
+				}
 			}
+
 			return false;
 		}
 
