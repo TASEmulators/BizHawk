@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			Game = GameInfo.NullInstance;
 			if (Config.ShowLogWindow && !OSTailoredCode.IsUnixHost)
 			{
-				LogConsole.ShowConsole();
+				LogConsole.ShowConsole(this);
 				DisplayLogWindowMenuItem.Checked = true;
 			}
 

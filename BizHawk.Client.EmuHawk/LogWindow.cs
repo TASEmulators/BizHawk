@@ -18,23 +18,25 @@ namespace BizHawk.Client.EmuHawk
 		//TODO: only show add to game db when this is a Rom details dialog
 		//Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
+		private readonly MainForm _mainForm;
 
-		public LogWindow()
+		public LogWindow(MainForm mainForm)
 		{
+			_mainForm = mainForm;
 			InitializeComponent();
 			Closing += (o, e) =>
 			{
 				Global.Config.ShowLogWindow = false;
-				GlobalWin.MainForm.NotifyLogWindowClosing();
+				mainForm.NotifyLogWindowClosing();
 				LogConsole.NotifyLogWindowClosing();
 				SaveConfigSettings();
 			};
 			ListView_ClientSizeChanged(null, null);
 		}
 
-		public static void ShowReport(string title, string report, IWin32Window parent)
+		public static void ShowReport(string title, string report, MainForm parent)
 		{
-			using var dlg = new LogWindow();
+			using var dlg = new LogWindow(parent);
 			var ss = report.Split('\n');
 			foreach (var s in ss)
 			{
@@ -151,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 				var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
 				Global.Game.Status = gameDbEntry.Status = picker.PickedStatus;
 				Database.SaveDatabaseEntry(userDb, gameDbEntry);
-				GlobalWin.MainForm.UpdateDumpIcon();
+				_mainForm.UpdateDumpIcon();
 				HideShowGameDbButton();
 			}
 		}

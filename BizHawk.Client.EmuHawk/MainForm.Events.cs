@@ -851,7 +851,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Config.ShowLogWindow)
 			{
-				LogConsole.ShowConsole();
+				LogConsole.ShowConsole(this);
 			}
 			else
 			{

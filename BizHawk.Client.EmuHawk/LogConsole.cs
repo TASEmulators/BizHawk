@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void ShowConsole()
+		public static void ShowConsole(MainForm parent)
 		{
 			if (ConsoleVisible) return;
 			ConsoleVisible = true;
@@ -241,7 +241,7 @@ namespace BizHawk.Client.EmuHawk
 				_logStream = new LogStream();
 				Log.HACK_LOG_STREAM = _logStream;
 				Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
-				_window = new LogWindow();
+				_window = new LogWindow(parent);
 				_window.Show();
 				_logStream.Emit = str => { _window.Append(str); };
 			}
