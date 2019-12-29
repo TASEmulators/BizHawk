@@ -2,6 +2,7 @@
 using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -58,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public override void Write(byte[] buffer, int offset, int count)
 			{
-				//TODO - buffer undecoded characters (this may be important)
+				// TODO - buffer undecoded characters (this may be important)
 				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
 				string str = Encoding.ASCII.GetString(buffer, offset, count);
 				Emit?.Invoke(str);
@@ -67,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 			public Action<string> Emit;
 		}
 
-		static string SkipEverythingButProgramInCommandLine(string cmdLine)
+		internal static string SkipEverythingButProgramInCommandLine(string cmdLine)
 		{
 			// skip past the program name. can anyone think of a better way to do this?
 			// we could use CommandLineToArgvW (commented out below) but then we would just have to re-assemble and potentially re-quote it
@@ -106,39 +107,42 @@ namespace BizHawk.Client.EmuHawk
 			return $"{path} {remainder}";
 		}
 
-		private static IntPtr oldOut, conOut;
-		private static bool hasConsole;
-		private static bool attachedConsole;
-		private static bool shouldRedirectStdout;
+		private static IntPtr _oldOut, _conOut;
+		private static bool _hasConsole;
+		private static bool _attachedConsole;
+		private static bool _shouldRedirectStdout;
 		public static void CreateConsole()
 		{
-			//(see desmume for the basis of some of this logic)
-
-			if (hasConsole)
+			// (see desmume for the basis of some of this logic)
+			if (_hasConsole)
+			{
 				return;
+			}
 
-			if (oldOut == IntPtr.Zero)
-				oldOut = ConsoleImports.GetStdHandle( -11 ); //STD_OUTPUT_HANDLE
+			if (_oldOut == IntPtr.Zero)
+			{
+				_oldOut = ConsoleImports.GetStdHandle( -11 ); // STD_OUTPUT_HANDLE
+			}
 
-			var fileType = ConsoleImports.GetFileType(oldOut);
+			var fileType = ConsoleImports.GetFileType(_oldOut);
 
-			//stdout is already connected to something. keep using it and don't let the console interfere
-			shouldRedirectStdout = (fileType == ConsoleImports.FileType.FileTypeUnknown || fileType == ConsoleImports.FileType.FileTypePipe);
+			// stdout is already connected to something. keep using it and don't let the console interfere
+			_shouldRedirectStdout = (fileType == ConsoleImports.FileType.FileTypeUnknown || fileType == ConsoleImports.FileType.FileTypePipe);
 
-			//attach to an existing console
-			attachedConsole = false;
+			// attach to an existing console
+			_attachedConsole = false;
 
-			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and there's no console to attach to.
+			// ever since a recent KB, XP-based systems glitch out when AttachConsole is called and there's no console to attach to.
 			if (Environment.OSVersion.Version.Major != 5)
 			{
 				if (ConsoleImports.AttachConsole(-1))
 				{
-				  hasConsole = true;
-				  attachedConsole = true;
+				  _hasConsole = true;
+				  _attachedConsole = true;
 				}
 			}
 
-			if (!attachedConsole)
+			if (!_attachedConsole)
 			{
 				ConsoleImports.FreeConsole();
 				if (ConsoleImports.AllocConsole())
@@ -146,33 +150,33 @@ namespace BizHawk.Client.EmuHawk
 					//set icons for the console so we can tell them apart from the main window
 					Win32Imports.SendMessage(ConsoleImports.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)0/*ICON_SMALL*/, Properties.Resources.console16x16.GetHicon());
 					Win32Imports.SendMessage(ConsoleImports.GetConsoleWindow(), 0x0080/*WM_SETICON*/, (IntPtr)1/*ICON_LARGE*/, Properties.Resources.console32x32.GetHicon());
-					hasConsole = true;
+					_hasConsole = true;
 				}
 				else
 				{
-					System.Windows.Forms.MessageBox.Show($"Couldn't allocate win32 console: {Marshal.GetLastWin32Error()}");
+					MessageBox.Show($"Couldn't allocate win32 console: {Marshal.GetLastWin32Error()}");
 				}
 			}
 
-			if (hasConsole)
+			if (_hasConsole)
 			{
 				IntPtr ptr = ConsoleImports.GetCommandLine();
 				string commandLine = Marshal.PtrToStringAuto(ptr);
 				Console.Title = SkipEverythingButProgramInCommandLine(commandLine);
 			}
 
-			if (shouldRedirectStdout)
+			if (_shouldRedirectStdout)
 			{
-				conOut = ConsoleImports.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
+				_conOut = ConsoleImports.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
 
-				if (!ConsoleImports.SetStdHandle(-11, conOut))
+				if (!ConsoleImports.SetStdHandle(-11, _conOut))
 				  throw new Exception($"{nameof(ConsoleImports.SetStdHandle)}() failed");
 			}
 
 			//DotNetRewireConout();
-			hasConsole = true;
+			_hasConsole = true;
 
-			if (attachedConsole)
+			if (_attachedConsole)
 			{
 				Console.WriteLine();
 				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", Path.GetFileName(PathManager.GetGlobalBasePathAbsolute()));
@@ -181,25 +185,25 @@ namespace BizHawk.Client.EmuHawk
 
 		static void ReleaseConsole()
 		{
-			if (!hasConsole)
+			if (!_hasConsole)
 			{
 				return;
 			}
 
-			if (shouldRedirectStdout)
+			if (_shouldRedirectStdout)
 			{
-				ConsoleImports.CloseHandle(conOut);
+				ConsoleImports.CloseHandle(_conOut);
 			}
 
-			if (!attachedConsole)
+			if (!_attachedConsole)
 			{
 				ConsoleImports.FreeConsole();
 			}
 
-			ConsoleImports.SetStdHandle(-11, oldOut);
+			ConsoleImports.SetStdHandle(-11, _oldOut);
 
-			conOut = IntPtr.Zero;
-			hasConsole = false;
+			_conOut = IntPtr.Zero;
+			_hasConsole = false;
 		}
 
 		/// <summary>
