@@ -69,8 +69,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
             this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -307,8 +305,6 @@
             this.tabPage3.Controls.Add(this.label13);
             this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
             this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
-            this.tabPage3.Controls.Add(this.label4);
-            this.tabPage3.Controls.Add(this.LogWindowAsConsoleCheckbox);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(386, 376);
@@ -527,25 +523,6 @@
             this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 23);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(234, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "If off, the log window will be a dialog box instead";
-            // 
-            // LogWindowAsConsoleCheckbox
-            // 
-            this.LogWindowAsConsoleCheckbox.AutoSize = true;
-            this.LogWindowAsConsoleCheckbox.Location = new System.Drawing.Point(6, 3);
-            this.LogWindowAsConsoleCheckbox.Name = "LogWindowAsConsoleCheckbox";
-            this.LogWindowAsConsoleCheckbox.Size = new System.Drawing.Size(233, 17);
-            this.LogWindowAsConsoleCheckbox.TabIndex = 1;
-            this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
-            this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
-            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -624,8 +601,6 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox SingleInstanceModeCheckbox;
 		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.CheckBox LogWindowAsConsoleCheckbox;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox BackupSRamCheckbox;
 		private System.Windows.Forms.CheckBox FrameAdvSkipLagCheckbox;

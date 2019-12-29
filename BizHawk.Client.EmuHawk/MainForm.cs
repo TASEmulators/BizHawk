@@ -512,7 +512,6 @@ namespace BizHawk.Client.EmuHawk
 		public int ProgramRunLoop()
 		{
 			CheckMessages(); // can someone leave a note about why this is needed?
-			if (!OSTailoredCode.IsUnixHost) LogConsole.PositionConsole();
 
 			// needs to be done late, after the log console snaps on top
 			// fullscreen should snap on top even harder!

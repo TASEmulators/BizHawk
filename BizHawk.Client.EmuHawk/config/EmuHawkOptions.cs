@@ -63,7 +63,6 @@ namespace BizHawk.Client.EmuHawk
 			groupBox2.Enabled = AutosaveSRAMCheckbox.Checked;
 			AutosaveSaveRAMSeconds = _config.FlushSaveRamFrames / 60;
 			FrameAdvSkipLagCheckbox.Checked = _config.SkipLagFrame;
-			LogWindowAsConsoleCheckbox.Checked = _config.WIN32_CONSOLE;
 			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
 			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
 			cbMoviesInAWE.Checked = _config.MoviesInAWE;
@@ -78,14 +77,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
-			}
-
-			if (LogConsole.ConsoleVisible)
-			{
-				LogWindowAsConsoleCheckbox.Enabled = false;
-				toolTip1.SetToolTip(
-					LogWindowAsConsoleCheckbox,
-					"This can not be changed while the log window is open. I know, it's annoying.");
 			}
 		}
 
@@ -109,7 +100,6 @@ namespace BizHawk.Client.EmuHawk
 			if (_mainForm.AutoFlushSaveRamIn > _config.FlushSaveRamFrames)
 				_mainForm.AutoFlushSaveRamIn = _config.FlushSaveRamFrames;
 			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
-			_config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.MoviesInAWE = cbMoviesInAWE.Checked;

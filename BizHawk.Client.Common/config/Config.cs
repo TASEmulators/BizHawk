@@ -115,7 +115,6 @@ namespace BizHawk.Client.Common
 		public bool AutofireLagFrames = true;
 		public int SaveSlot = 0; // currently selected savestate slot
 		public bool AutoLoadLastSaveSlot = false;
-		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
 		public bool SuppressAskSave = false;
 		public bool AVI_CaptureOSD = false;
