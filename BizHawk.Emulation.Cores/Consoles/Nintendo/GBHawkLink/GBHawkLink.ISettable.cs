@@ -56,10 +56,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 				Both
 			}
 
+			public enum VideoSrc
+			{
+				Left,
+				Right,
+				Both
+			}
+
 			[DisplayName("Audio Selection")]
 			[Description("Choose Audio Source. Both will produce Stereo sound.")]
 			[DefaultValue(AudioSrc.Left)]
 			public AudioSrc AudioSet { get; set; }
+
+			[DisplayName("Video Selection")]
+			[Description("Choose Video Source.")]
+			[DefaultValue(VideoSrc.Both)]
+			public VideoSrc VideoSet { get; set; }
 
 			public GBLinkSettings Clone()
 			{

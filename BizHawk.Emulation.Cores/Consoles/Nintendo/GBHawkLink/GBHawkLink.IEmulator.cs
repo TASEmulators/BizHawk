@@ -242,21 +242,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public void FillVideoBuffer()
 		{
-			// combine the 2 video buffers from the instances
-			for (int i = 0; i < 144; i++)
+			if (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both)
 			{
-				for (int j = 0; j < 160; j++)
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
 				{
-					_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
-					_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 320 + j] = L.frame_buffer[i * 160 + j];
+						_vidbuffer[i * 320 + j + 160] = R.frame_buffer[i * 160 + j];
+					}
+				}
+			}
+			else if (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Left)
+			{
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
+				{
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 160 + j] = L.frame_buffer[i * 160 + j];
+					}
+				}
+			}
+			else
+			{
+				// combine the 2 video buffers from the instances
+				for (int i = 0; i < 144; i++)
+				{
+					for (int j = 0; j < 160; j++)
+					{
+						_vidbuffer[i * 160 + j] = R.frame_buffer[i * 160 + j];
+					}
 				}
 			}
 		}
 
-		public int VirtualWidth => 160 * 2;
+		public int VirtualWidth => (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both) ? 160 * 2 : 160;
 		public int VirtualHeight => 144;
-		public int BufferWidth => 160 * 2;
+		public int BufferWidth => (linkSettings.VideoSet == GBLinkSettings.VideoSrc.Both) ? 160 * 2 : 160;
 		public int BufferHeight => 144;
+
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
