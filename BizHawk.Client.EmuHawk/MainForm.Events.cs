@@ -1211,9 +1211,20 @@ namespace BizHawk.Client.EmuHawk
 			SubNesHawkMenuItem.Checked = Config.UseSubNESHawk;
 		}
 
+		private void QuickNesCorePick_Click(object sender, EventArgs e)
+		{
+			Config.NES_InQuickNES = true;
+			Config.UseSubNESHawk = false;
+
+			if (Emulator.SystemId == "NES")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
 		private void NesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.NES_InQuickNES ^= true;
+			Config.NES_InQuickNES = false;
 			Config.UseSubNESHawk = false;
 
 			if (Emulator.SystemId == "NES")

@@ -1855,7 +1855,7 @@
 			this.QuicknesCoreMenuItem.Name = "QuicknesCoreMenuItem";
 			this.QuicknesCoreMenuItem.Size = new System.Drawing.Size(209, 22);
 			this.QuicknesCoreMenuItem.Text = "QuickNES";
-			this.QuicknesCoreMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
+			this.QuicknesCoreMenuItem.Click += new System.EventHandler(this.QuickNesCorePick_Click);
 			// 
 			// NesCoreMenuItem
 			// 
