@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UserRangePercentageX = (sbyte) rx;
 			UserRangePercentageY = (sbyte) ry;
+
 			Rerange();
 			Refresh();
 		}
@@ -57,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ActualRangeX.Min = (int) range[0];
 			ActualRangeX.Max = (int) range[2];
+
 			Rerange();
 		}
 
@@ -64,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ActualRangeY.Min = (int) range[0];
 			ActualRangeY.Max = (int) range[2];
+
 			Rerange();
 		}
 
@@ -79,13 +82,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ReverseX = UserRangePercentageX < 0;
 			ReverseY = UserRangePercentageY < 0;
-			
-			var midX = (ActualRangeX.Min + ActualRangeX.Max) / 2;
+
+			var midX = (ActualRangeX.Min + ActualRangeX.Max) / 2.0;
 			var halfRangeX = (ReverseX ? -1 : 1) * (ActualRangeX.Max - ActualRangeX.Min) * UserRangePercentageX / 200.0;
 			RangeX.Min = (int) (midX - halfRangeX);
 			RangeX.Max = (int) (midX + halfRangeX);
 
-			var midY = (ActualRangeY.Min + ActualRangeY.Max) / 2;
+			var midY = (ActualRangeY.Min + ActualRangeY.Max) / 2.0;
 			var halfRangeY = (ReverseY ? -1 : 1) * (ActualRangeY.Max - ActualRangeY.Min) * UserRangePercentageY / 200.0;
 			RangeY.Min = (int) (midY - halfRangeY);
 			RangeY.Max = (int) (midY + halfRangeY);
