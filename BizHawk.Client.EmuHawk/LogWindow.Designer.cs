@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace BizHawk.Client.EmuHawk
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class LogWindow
 	{

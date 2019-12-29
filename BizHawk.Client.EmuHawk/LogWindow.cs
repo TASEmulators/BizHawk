@@ -8,6 +8,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 // todo - perks - pause, copy to clipboard, backlog length limiting
 
@@ -19,6 +20,9 @@ namespace BizHawk.Client.EmuHawk
 		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
 		private LogStream _logStream;
+
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
 
 		public LogWindow()
 		{
@@ -139,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HideShowGameDbButton()
 		{
-			AddToGameDbBtn.Visible = Global.Emulator.CanGenerateGameDBEntries()
+			AddToGameDbBtn.Visible = Emulator.CanGenerateGameDBEntries()
 				&& (Global.Game.Status == RomStatus.Unknown || Global.Game.Status == RomStatus.NotInDatabase);
 		}
 
@@ -147,9 +151,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using var picker = new RomStatusPicker();
 			var result = picker.ShowDialog();
-			if (result == DialogResult.OK)
+			if (result.IsOk())
 			{
-				var gameDbEntry = Global.Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
+				var gameDbEntry = Emulator.AsGameDBEntryGenerator().GenerateGameDbEntry();
 				var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
 				Global.Game.Status = gameDbEntry.Status = picker.PickedStatus;
 				Database.SaveDatabaseEntry(userDb, gameDbEntry);
