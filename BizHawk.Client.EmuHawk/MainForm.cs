@@ -223,11 +223,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			SetImages();
 			Game = GameInfo.NullInstance;
-			if (Config.ShowLogWindow && !OSTailoredCode.IsUnixHost)
-			{
-				LogConsole.ShowConsole(this);
-				DisplayLogWindowMenuItem.Checked = true;
-			}
 
 			_throttle = new Throttle();
 
@@ -1217,11 +1212,6 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenLuaConsole()
 		{
 			Tools.Load<LuaConsole>();
-		}
-
-		public void NotifyLogWindowClosing()
-		{
-			DisplayLogWindowMenuItem.Checked = false;
 		}
 
 		public void ClickSpeedItem(int num)
@@ -2404,11 +2394,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Config.MainWndx = -1;
 				Config.MainWndy = -1;
-			}
-
-			if (Config.ShowLogWindow)
-			{
-				LogConsole.SaveConfigSettings();
 			}
 
 			if (string.IsNullOrEmpty(path))

@@ -658,7 +658,6 @@
     <Compile Include="IControlMainform.cs" />
     <Compile Include="Input\IPCKeyInput.cs" />
     <Compile Include="JumpLists.cs" />
-    <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>

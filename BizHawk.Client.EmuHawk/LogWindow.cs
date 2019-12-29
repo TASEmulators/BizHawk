@@ -1,52 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
-//todo - perks - pause, copy to clipboard, backlog length limiting
+// todo - perks - pause, copy to clipboard, backlog length limiting
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LogWindow : Form
+	public partial class LogWindow : ToolFormBase, IToolFormAutoConfig
 	{
-		//TODO: only show add to game db when this is a Rom details dialog
-		//Let user decide what type (instead of always adding it as a good dump)
+		// TODO: only show add to game db when this is a Rom details dialog
+		// Let user decide what type (instead of always adding it as a good dump)
 		private readonly List<string> _lines = new List<string>();
-		private readonly MainForm _mainForm;
+		private LogStream _logStream;
 
-		public LogWindow(MainForm mainForm)
+		public LogWindow()
 		{
-			_mainForm = mainForm;
 			InitializeComponent();
 			Closing += (o, e) =>
 			{
-				Global.Config.ShowLogWindow = false;
-				mainForm.NotifyLogWindowClosing();
-				LogConsole.NotifyLogWindowClosing();
-				SaveConfigSettings();
+				Detach();
 			};
 			ListView_ClientSizeChanged(null, null);
+			Attach();
 		}
 
-		public static void ShowReport(string title, string report, MainForm parent)
+		public void UpdateValues() { } // TODO
+
+		public void NewUpdate(ToolFormUpdateType type) { }
+
+		public void FastUpdate() { }
+
+		public void Restart() { }
+
+		public bool AskSaveChanges() => true;
+		public bool UpdateBefore => true;
+
+		private void Attach()
 		{
-			using var dlg = new LogWindow(parent);
+			_logStream = new LogStream();
+			Log.HACK_LOG_STREAM = _logStream;
+			Console.SetOut(new StreamWriter(_logStream) { AutoFlush = true });
+			_logStream.Emit = Append;
+		}
+
+		private void Detach()
+		{
+			Console.SetOut(TextWriter.Null);
+			_logStream.Close();
+			_logStream = null;
+			Log.HACK_LOG_STREAM = null;
+		}
+
+		public void ShowReport(string title, string report)
+		{
 			var ss = report.Split('\n');
 			foreach (var s in ss)
 			{
-				dlg._lines.Add(s.TrimEnd('\r'));
+				_lines.Add(s.TrimEnd('\r'));
 			}
 
-			dlg.virtualListView1.VirtualListSize = ss.Length;
-			dlg.Text = title;
-			dlg.btnClear.Visible = false;
-			dlg.ShowDialog(parent);
+			virtualListView1.VirtualListSize = ss.Length;
+			Text = title;
+			btnClear.Visible = false;
 		}
 
 		public void Append(string str)
@@ -76,29 +98,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LogWindow_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.LogWindowSaveWindowPosition)
-			{
-				if (Global.Config.LogWindowSaveWindowPosition && Global.Config.LogWindowWndx >= 0 && Global.Config.LogWindowWndy >= 0)
-					Location = new Point(Global.Config.LogWindowWndx, Global.Config.LogWindowWndy);
-
-				if (Global.Config.LogWindowWidth >= 0 && Global.Config.LogWindowHeight >= 0)
-				{
-					Size = new Size(Global.Config.LogWindowWidth, Global.Config.LogWindowHeight);
-				}
-			}
-
 			HideShowGameDbButton();
-		}
-
-		public void SaveConfigSettings()
-		{
-			if (Global.Config.LogWindowSaveWindowPosition)
-			{
-				Global.Config.LogWindowWndx = Location.X;
-				Global.Config.LogWindowWndy = Location.Y;
-				Global.Config.LogWindowWidth = Right - Left;
-				Global.Config.LogWindowHeight = Bottom - Top;
-			}
 		}
 
 		private void ListView_QueryItemText(object sender, RetrieveVirtualItemEventArgs e)
@@ -153,9 +153,54 @@ namespace BizHawk.Client.EmuHawk
 				var userDb = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_user.txt");
 				Global.Game.Status = gameDbEntry.Status = picker.PickedStatus;
 				Database.SaveDatabaseEntry(userDb, gameDbEntry);
-				_mainForm.UpdateDumpIcon();
+				MainForm.UpdateDumpIcon();
 				HideShowGameDbButton();
 			}
+		}
+
+		private class LogStream : Stream
+		{
+			public override bool CanRead => false;
+			public override bool CanSeek => false;
+			public override bool CanWrite => true;
+
+			public override void Flush()
+			{
+				//TODO - maybe this will help with decoding
+			}
+
+			public override long Length => throw new NotImplementedException();
+
+			public override long Position
+			{
+				get => throw new NotImplementedException();
+				set => throw new NotImplementedException();
+			}
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override long Seek(long offset, SeekOrigin origin)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override void SetLength(long value)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				// TODO - buffer undecoded characters (this may be important)
+				//(use decoder = System.Text.Encoding.Unicode.GetDecoder())
+				string str = Encoding.ASCII.GetString(buffer, offset, count);
+				Emit?.Invoke(str);
+			}
+
+			public Action<string> Emit;
 		}
 	}
 }

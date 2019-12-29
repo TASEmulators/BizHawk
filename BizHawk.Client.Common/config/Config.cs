@@ -105,7 +105,6 @@ namespace BizHawk.Client.Common
 		public bool MoviesInAWE = false;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
-		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
 		public bool SaveScreenshotWithStates = true;
 		public int BigScreenshotSize = 128 * 1024;
@@ -311,13 +310,6 @@ namespace BizHawk.Client.Common
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
 		public int SoundBufferSizeMs = 100;
-
-		// Log Window
-		public bool LogWindowSaveWindowPosition = true;
-		public int LogWindowWndx = -1;
-		public int LogWindowWndy = -1;
-		public int LogWindowWidth = -1;
-		public int LogWindowHeight = -1;
 
 		// Lua
 		public RecentFiles RecentLua = new RecentFiles(8);

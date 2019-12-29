@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AddToGameDbBtn = new System.Windows.Forms.Button();
 			this.virtualListView1 = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.MenuStrip = new MenuStripEx();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -107,7 +108,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// AddToGameDbBtn
 			// 
-			this.AddToGameDbBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RetroQuestion;
 			this.AddToGameDbBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.AddToGameDbBtn.Location = new System.Drawing.Point(246, 3);
 			this.AddToGameDbBtn.Name = "AddToGameDbBtn";
@@ -125,17 +125,25 @@ namespace BizHawk.Client.EmuHawk
 			this.virtualListView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.virtualListView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.virtualListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.virtualListView1.VirtualListSize = 0;
-			this.virtualListView1.Location = new System.Drawing.Point(0, 0);
+			this.virtualListView1.HideSelection = false;
+			this.virtualListView1.Location = new System.Drawing.Point(0, 24);
 			this.virtualListView1.Name = "virtualListView1";
-			this.virtualListView1.Size = new System.Drawing.Size(675, 367);
+			this.virtualListView1.Size = new System.Drawing.Size(675, 343);
 			this.virtualListView1.TabIndex = 8;
 			this.virtualListView1.UseCompatibleStateImageBehavior = false;
 			this.virtualListView1.View = System.Windows.Forms.View.Details;
 			this.virtualListView1.VirtualMode = true;
-			this.virtualListView1.RetrieveVirtualItem += new RetrieveVirtualItemEventHandler(this.ListView_QueryItemText);
+			this.virtualListView1.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListView_QueryItemText);
 			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.ListView_ClientSizeChanged);
 			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListView_KeyDown);
+			// 
+			// MenuStrip
+			// 
+			this.MenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.MenuStrip.Name = "MenuStrip";
+			this.MenuStrip.Size = new System.Drawing.Size(675, 24);
+			this.MenuStrip.TabIndex = 9;
+			this.MenuStrip.Text = "menuStrip1";
 			// 
 			// LogWindow
 			// 
@@ -145,6 +153,8 @@ namespace BizHawk.Client.EmuHawk
 			this.ClientSize = new System.Drawing.Size(675, 397);
 			this.Controls.Add(this.virtualListView1);
 			this.Controls.Add(this.tableLayoutPanel1);
+			this.Controls.Add(this.MenuStrip);
+			this.MainMenuStrip = this.MenuStrip;
 			this.MinimumSize = new System.Drawing.Size(171, 97);
 			this.Name = "LogWindow";
 			this.ShowIcon = false;
@@ -167,5 +177,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.Button buttonCopy;
 		private System.Windows.Forms.Button buttonCopyAll;
 		private System.Windows.Forms.Button AddToGameDbBtn;
+		private MenuStripEx MenuStrip;
 	}
 }
