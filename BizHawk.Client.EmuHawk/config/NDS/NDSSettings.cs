@@ -77,5 +77,17 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 		}
+
+		private void btnDefault_Click(object sender, EventArgs e)
+		{
+			if (MessageBox.Show("Revert to and save default settings?", "default settings", MessageBoxButtons.OKCancel) == DialogResult.OK)
+			{
+				bool reboot = (Global.Emulator as MelonDS).PutSyncSettings(null);
+				syncSettings = (Global.Emulator as MelonDS).GetSyncSettings();
+				Global.Config.PutCoreSyncSettings<MelonDS>(syncSettings);
+				DialogResult = reboot ? DialogResult.Yes : DialogResult.OK;
+				Close();
+			}
+		}
 	}
 }
