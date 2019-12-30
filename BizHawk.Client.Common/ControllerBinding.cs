@@ -84,10 +84,18 @@ namespace BizHawk.Client.Common
 						absInput /= 10000.0f - zeroPoint;
 						input = absInput * Math.Sign(input);
 					}
-					
 
 					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
-					var output = (((input * multiplier) + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f) + range.Min;
+					float output = 0;
+
+					if (range.Max < range.Min)
+					{
+						output = (((input * multiplier) + 10000.0f) * (range.Min - range.Max + 1) / 20000.0f) + range.Max;
+					}
+					else
+					{
+						output = (((input * multiplier) + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f) + range.Min;
+					}
 
 					// zero 09-mar-2015 - at this point, we should only have integers, since that's all 100% of consoles ever see
 					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
