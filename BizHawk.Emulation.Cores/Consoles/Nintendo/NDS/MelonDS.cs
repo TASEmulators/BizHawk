@@ -121,23 +121,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private void SetUpFiles()
 		{
 			byte[] fwBytes;
+			bool missingAny = false;
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/bios7.bin", fwBytes);
 			else
+			{
 				File.Delete("melon/bios7.bin");
+				missingAny = true;
+			}
 
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios9", false);
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/bios9.bin", fwBytes);
 			else
+			{
 				File.Delete("melon/bios9.bin");
+				missingAny = true;
+			}
 
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
 			if (fwBytes != null)
 				File.WriteAllBytes("melon/firmware.bin", fwBytes);
 			else
+			{
 				File.Delete("melon/firmware.bin");
+				missingAny = true;
+			}
+
+			if (missingAny)
+				CoreComm.Notify("NDS bios and firmware files are recommended; at least one is missing.");
 		}
 
 		/// <summary>
