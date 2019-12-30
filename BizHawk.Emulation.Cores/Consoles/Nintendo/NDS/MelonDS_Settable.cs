@@ -21,7 +21,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		{
 			MelonSyncSettings ret = new MelonSyncSettings();
 			fixed (byte* ptr = ret.userSettings)
-				GetUserSettings(ptr);
+			{
+				if (!GetUserSettings(ptr))
+					return null;
+			}
 			ret.bootToFirmware = !GetDirectBoot();
 			return ret;
 		}
@@ -33,9 +36,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		public bool PutSyncSettings(MelonSyncSettings o)
 		{
+			if (o == null)
+			{
+				o = new MelonSyncSettings();
+				SetUserSettings(null);
+			}
+			else
+			{
+				fixed (byte* ptr = o.userSettings)
+					SetUserSettings(ptr);
+			}
+
 			SetDirectBoot(!o.bootToFirmware);
-			fixed (byte* ptr = o.userSettings)
-				SetUserSettings(ptr);
+
 			// At present, no sync settings can be modified without requiring a reboot.
 			return true;
 		}
@@ -64,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				userSettings = new byte[userSettingsLength];
 			}
 
-			public bool bootToFirmware;
+			public bool bootToFirmware = false;
 			public byte[] userSettings;
 
 			[JsonIgnore]

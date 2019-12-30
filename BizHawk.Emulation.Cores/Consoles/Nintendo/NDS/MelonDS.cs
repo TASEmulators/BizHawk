@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			CoreComm.NominalWidth = 256;
 			CoreComm.NominalHeight = 192;
 
-			SetUpFiles(syncsettings as MelonSyncSettings);
+			SetUpFiles();
 			PutSyncSettings(syncsettings as MelonSyncSettings);
 
 			if (!Init())
@@ -116,8 +116,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 		/// <summary>
 		/// MelonDS expects bios and firmware files at a specific location.
+		/// This should never be called without an accompanying call to PutSyncSettings.
 		/// </summary>
-		private void SetUpFiles(MelonSyncSettings ss)
+		private void SetUpFiles()
 		{
 			byte[] fwBytes;
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
@@ -134,10 +135,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "firmware", false);
 			if (fwBytes != null)
-			{
-				ss.userSettings.CopyTo(fwBytes, fwBytes.Length - 0x200); // NDS user settings are included in the firmware file.
 				File.WriteAllBytes("melon/firmware.bin", fwBytes);
-			}
 			else
 				File.Delete("melon/firmware.bin");
 		}
