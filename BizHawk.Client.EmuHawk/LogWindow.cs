@@ -56,7 +56,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Detach()
 		{
-			Console.SetOut(TextWriter.Null);
+			Console.SetOut(new StreamWriter(Console.OpenStandardOutput())
+			{
+				AutoFlush = true
+			});
 			_logStream.Close();
 			_logStream = null;
 			Log.HACK_LOG_STREAM = null;
