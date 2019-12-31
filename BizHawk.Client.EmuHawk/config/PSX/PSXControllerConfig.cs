@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Sony.PSX;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {

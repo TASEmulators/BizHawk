@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using OpenTK.Input;
 
 namespace BizHawk.Client.EmuHawk
@@ -25,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			{Key.Keypad0, SlimDX.DirectInput.Key.NumberPad0}, {Key.Keypad1, SlimDX.DirectInput.Key.NumberPad1}, {Key.Keypad2, SlimDX.DirectInput.Key.NumberPad2}, {Key.Keypad3, SlimDX.DirectInput.Key.NumberPad3}, {Key.Keypad4, SlimDX.DirectInput.Key.NumberPad4}, {Key.Keypad5, SlimDX.DirectInput.Key.NumberPad5}, {Key.Keypad6, SlimDX.DirectInput.Key.NumberPad6}, {Key.Keypad7, SlimDX.DirectInput.Key.NumberPad7}, {Key.Keypad8, SlimDX.DirectInput.Key.NumberPad8}, {Key.Keypad9, SlimDX.DirectInput.Key.NumberPad9}, {Key.KeypadAdd, SlimDX.DirectInput.Key.NumberPadPlus}, {Key.KeypadDecimal, SlimDX.DirectInput.Key.NumberPadPeriod}, {Key.KeypadDivide, SlimDX.DirectInput.Key.NumberPadSlash}, {Key.KeypadEnter, SlimDX.DirectInput.Key.NumberPadEnter}, {Key.KeypadMultiply, SlimDX.DirectInput.Key.NumberPadStar}, {Key.KeypadSubtract, SlimDX.DirectInput.Key.NumberPadMinus}
 		};
 
-		private static readonly List<KeyInput.KeyEvent> _eventList = new List<KeyInput.KeyEvent>();
+		private static readonly List<KeyInput.KeyEvent> EventList = new List<KeyInput.KeyEvent>();
 		private static KeyboardState _kbState;
 
 		public static void Initialize ()
@@ -35,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<KeyInput.KeyEvent> Update ()
 		{
-			_eventList.Clear();
+			EventList.Clear();
 			var lastState = _kbState;
 			try
 			{
@@ -43,49 +42,37 @@ namespace BizHawk.Client.EmuHawk
 				foreach (KeyValuePair<Key, SlimDX.DirectInput.Key> entry in KeyEnumMap)
 				{
 					if (lastState.IsKeyUp(entry.Key) && _kbState.IsKeyDown(entry.Key))
-						_eventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = true });
+						EventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = true });
 					else if (lastState.IsKeyDown(entry.Key) && _kbState.IsKeyUp(entry.Key))
-						_eventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = false });
+						EventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = false });
 				}
 			}
 			catch
 			{
-				//OpenTK's keyboard class isn't thread safe.
-				//In rare cases (sometimes it takes up to 10 minutes to occur) it will
-				//be updating the keyboard state when we call GetState() and choke.
-				//Until I fix OpenTK, it's fine to just swallow it because input continues working.
-				if(System.Diagnostics.Debugger.IsAttached)
+				// OpenTK's keyboard class isn't thread safe.
+				// In rare cases (sometimes it takes up to 10 minutes to occur) it will
+				// be updating the keyboard state when we call GetState() and choke.
+				// Until I fix OpenTK, it's fine to just swallow it because input continues working.
+				if (System.Diagnostics.Debugger.IsAttached)
 				{
 					System.Console.WriteLine("OpenTK Keyboard thread is angry.");
 				}
 			}
-			return _eventList;
+			return EventList;
 		}
 
-		public static bool IsPressed (Key key)
+		public static bool IsPressed(Key key)
 		{
 			return _kbState.IsKeyDown(key);
 		}
 
-		public static bool ShiftModifier {
-			get {
-				return IsPressed(Key.ShiftLeft) || IsPressed(Key.ShiftRight);
-			}
-		}
+		public static bool ShiftModifier => IsPressed(Key.ShiftLeft) || IsPressed(Key.ShiftRight);
 
-		public static bool CtrlModifier {
-			get {
-				return IsPressed(Key.ControlLeft) || IsPressed(Key.ControlRight);
-			}
-		}
+		public static bool CtrlModifier => IsPressed(Key.ControlLeft) || IsPressed(Key.ControlRight);
 
-		public static bool AltModifier {
-			get {
-				return IsPressed(Key.AltLeft) || IsPressed(Key.AltRight);
-			}
-		}
+		public static bool AltModifier => IsPressed(Key.AltLeft) || IsPressed(Key.AltRight);
 
-		public static Input.ModifierKey GetModifierKeysAsKeys ()
+		public static Input.ModifierKey GetModifierKeysAsKeys()
 		{
 			Input.ModifierKey ret = Input.ModifierKey.None;
 			if (ShiftModifier)

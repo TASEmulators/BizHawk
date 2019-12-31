@@ -13,7 +13,6 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
