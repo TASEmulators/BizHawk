@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("Coleco")]
+	// ReSharper disable once UnusedMember.Global
 	public class ColecoSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

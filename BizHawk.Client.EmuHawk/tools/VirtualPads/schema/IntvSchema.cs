@@ -8,6 +8,7 @@ using BizHawk.Emulation.Cores.Intellivision;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("INTV")]
+	// ReSharper disable once UnusedMember.Global
 	public class IntvSchema : IVirtualPadSchema
 	{
 		private string StandardControllerName => typeof(StandardController).DisplayName();

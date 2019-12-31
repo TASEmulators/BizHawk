@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PCECD")]
+	// ReSharper disable once UnusedMember.Global
 	public class PceCdSchema : PceSchema { }
 
 	[Schema("PCE")]

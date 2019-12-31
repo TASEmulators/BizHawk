@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("SMS")]
+	// ReSharper disable once UnusedMember.Global
 	public class SmsSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

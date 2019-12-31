@@ -6,12 +6,12 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("Lynx")]
+	// ReSharper disable once UnusedMember.Global
 	public class LynxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return StandardController();
-			//yield return ConsoleButtons();
 		}
 
 		private static PadSchema StandardController()

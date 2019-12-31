@@ -9,6 +9,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("SAT")]
+	// ReSharper disable once UnusedMember.Global
 	public class SaturnSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
@@ -17,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int totalPorts = (ss.Port1Multitap ? 6 : 1) + (ss.Port2Multitap ? 6 : 1);
 
-			var padSchemas = new SaturnusControllerDeck.Device[]
+			var padSchemas = new[]
 			{
 				ss.Port1,
 				ss.Port2,

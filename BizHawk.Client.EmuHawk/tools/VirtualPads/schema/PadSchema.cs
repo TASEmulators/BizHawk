@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 			Boolean,		// A single on/off button
 			AnalogStick,	// An analog stick X,Y Pair
 			FloatSingle,	// A single analog button (pressure sensitive button for instance)
-			TargetedPair,	// A X,Y pair intended to be a screen cooridnate (for zappers, mouse, stylus, etc)
+			TargetedPair,	// A X,Y pair intended to be a screen coordinate (for zappers, mouse, stylus, etc)
 			DiscManager
 		}
 
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			public int MinValueSec { get; set; }
 			public object OwnerEmulator { get; set; }
 
-			public Orientation Orientation { get; set; } // For Single Flaot controls
+			public Orientation Orientation { get; set; } // For Single Float controls
 		}
 	}
 }

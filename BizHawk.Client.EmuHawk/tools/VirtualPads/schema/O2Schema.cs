@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("O2")]
+	// ReSharper disable once UnusedMember.Global
 	public class O2Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

@@ -2,12 +2,12 @@
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
-using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[Schema("ZXSpectrum")]
-	class ZXSpectrumSchema : IVirtualPadSchema
+	// ReSharper disable once UnusedMember.Global
+	class ZxSpectrumSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayName = $"Joystick {controller}",
 				IsConsole = false,
 				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),                
+				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonSchema
@@ -77,12 +77,12 @@ namespace BizHawk.Client.EmuHawk
 			public string DisName { get; set; }
 			public double WidthFactor { get; set; }
 			public int Row { get; set; }
-			public bool IsActive = true;
+			public bool IsActive { get; } = true;
 		}
 
 		private static PadSchema Keyboard()
 		{
-			List<ButtonLayout> bls = new List<ButtonLayout>
+			var bls = new List<ButtonLayout>
 			{
 				new ButtonLayout { Name = "Key True Video", DisName = "TV", Row = 0, WidthFactor = 1 },
 				new ButtonLayout { Name = "Key Inv Video", DisName = "IV", Row = 0, WidthFactor = 1 },
@@ -148,14 +148,14 @@ namespace BizHawk.Client.EmuHawk
 				new ButtonLayout { Name = "Key Symbol Shift", DisName = "SS", Row = 4, WidthFactor = 1 },
 			};
 
-			PadSchema ps = new PadSchema
+			var ps = new PadSchema
 			{
 				DisplayName = "Keyboard",
 				IsConsole = false,
 				DefaultSize = new Size(500, 170)
 			};
 
-			List<PadSchema.ButtonSchema> btns = new List<PadSchema.ButtonSchema>();
+			var btns = new List<PadSchema.ButtonSchema>();
 
 			int rowHeight = 29; //24
 			int stdButtonWidth = 29; //24
@@ -186,18 +186,19 @@ namespace BizHawk.Client.EmuHawk
 					case "I": disp = $" {disp} "; break;
 					case "W": disp = b.DisName; break;
 				}
-				
-					
+
 				if (b.IsActive)
 				{
-					PadSchema.ButtonSchema btn = new PadSchema.ButtonSchema();
-					btn.Name = b.Name;
-					btn.DisplayName = disp;
-					btn.Location = new Point(xPos, yPos);
-					btn.Type = PadSchema.PadInputType.Boolean;
+					var btn = new PadSchema.ButtonSchema
+					{
+						Name = b.Name,
+						DisplayName = disp,
+						Location = new Point(xPos, yPos),
+						Type = PadSchema.PadInputType.Boolean
+					};
 					btns.Add(btn);
 				}
-								
+
 				xPos += btnSize;
 			}
 

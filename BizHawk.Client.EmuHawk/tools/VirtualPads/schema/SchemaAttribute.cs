@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets the system id associated with this schema
 		/// </summary>
-		public string SystemId { get; private set; }
+		public string SystemId { get; }
 
 		public SchemaAttribute(string systemId)
 		{
