@@ -15,15 +15,18 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class EmuLuaLibrary : PlatformEmuLuaLibrary
 	{
+		private readonly MainForm _mainForm;
 		public EmuLuaLibrary()
 		{
 //			if (NLua.Lua.WhichLua == "NLua")
 				_lua["keepalives"] = _lua.NewTable();
 		}
 
-		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
+		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider, MainForm mainForm)
 			: this()
 		{
+			_mainForm = mainForm;
+
 			static ApiContainer InitApiHawkContainerInstance(IEmulatorServiceProvider sp, Action<string> logCallback)
 			{
 				var ctorParamTypes = new[] { typeof(Action<string>) };
@@ -62,6 +65,13 @@ namespace BizHawk.Client.EmuHawk
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
 					ServiceInjector.UpdateServices(serviceProvider, instance);
+
+					// TODO: make EmuHawk libraries have a base class with common properties such as this
+					// and inject them here
+					if (instance is EmuHawkLuaLibrary emuHawkLibrary)
+					{
+						emuHawkLibrary.MainForm = _mainForm;
+					}
 
 					ApiHawkContainerInstance ??= InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
 					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiHawkContainerInstance; // this is necessary as the property has the `new` modifier
