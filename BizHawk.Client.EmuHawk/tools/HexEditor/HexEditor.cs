@@ -77,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
 		private HexFind _hexFind;
+		private string _lastRom = "";
 
 		[ConfigPersist]
 		private string LastDomain { get; set; }
@@ -121,10 +122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		public bool AskSaveChanges()
-		{
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
@@ -143,8 +141,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Do nothing
 		}
-
-		private string _lastRom = "";
 
 		public void Restart()
 		{
@@ -192,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			var addrList = addresses.ToList();
 			if (addrList.Any())
 			{
-				SetDomain(domain);
+				SetMemoryDomain(domain.Name);
 				SetHighlighted(addrList[0]);
 				_secondaryHighlightedAddresses.Clear();
 				_secondaryHighlightedAddresses.AddRange(addrList.Where(addr => addr != addrList[0]));
@@ -216,28 +212,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return str.Select(Convert.ToByte).ToArray();
-		}
-
-		public byte[] ConvertHexStringToByteArray(string str)
-		{
-			if (string.IsNullOrWhiteSpace(str)) {
-				return new byte[0];
-			}
-
-			// TODO: Better method of handling this?
-			if (str.Length % 2 == 1)
-			{
-				str += "0";
-			}
-
-			byte[] bytes = new byte[str.Length / 2];
-			
-			for (int i = 0; i < str.Length; i += 2)
-			{
-				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
-			}
-			
-			return bytes;
 		}
 
 		public void FindNext(string value, bool wrap)
@@ -348,6 +322,28 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private byte[] ConvertHexStringToByteArray(string str)
+		{
+			if (string.IsNullOrWhiteSpace(str)) {
+				return new byte[0];
+			}
+
+			// TODO: Better method of handling this?
+			if (str.Length % 2 == 1)
+			{
+				str += "0";
+			}
+
+			byte[] bytes = new byte[str.Length / 2];
+			
+			for (int i = 0; i < str.Length; i += 2)
+			{
+				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+			}
+			
+			return bytes;
+		}
 
 		private char Remap(byte val)
 		{
@@ -626,11 +622,6 @@ namespace BizHawk.Client.EmuHawk
 			SetHeader();
 			FullUpdate();
 			LastDomain = _domain.Name;
-		}
-
-		private void SetDomain(MemoryDomain domain)
-		{
-			SetMemoryDomain(domain.Name);
 		}
 
 		private void UpdateGroupBoxTitle()
