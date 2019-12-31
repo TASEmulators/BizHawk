@@ -246,11 +246,11 @@ namespace BizHawk.Client.Common
 
 	public static class MovieExtensions
 	{
-		public static bool IsActive(this IMovie movie) => movie.Mode != MovieMode.Inactive;
-		public static bool NotActive(this IMovie movie) => movie.Mode == MovieMode.Inactive;
-		public static bool IsPlaying(this IMovie movie) => movie.Mode == MovieMode.Play || movie.Mode == MovieMode.Finished;
-		public static bool IsRecording(this IMovie movie) => movie.Mode == MovieMode.Record;
+		public static bool IsActive(this IMovie movie) => movie?.Mode != MovieMode.Inactive;
+		public static bool NotActive(this IMovie movie) => movie == null || movie.Mode == MovieMode.Inactive;
+		public static bool IsPlaying(this IMovie movie) => movie?.Mode == MovieMode.Play || movie?.Mode == MovieMode.Finished;
+		public static bool IsRecording(this IMovie movie) => movie?.Mode == MovieMode.Record;
 		public static bool IsFinished(this IMovie movie) => movie.Mode == MovieMode.Finished;
-		public static bool IsPlayingOrRecording(this IMovie movie) => movie.Mode == MovieMode.Play && movie.Mode == MovieMode.Record;
+		public static bool IsPlayingOrRecording(this IMovie movie) => movie?.Mode == MovieMode.Play && movie.Mode == MovieMode.Record;
 	}
 }

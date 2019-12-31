@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly ScreenshotForm _screenshot = new ScreenshotForm();
 
 		private TasMovie Movie => Tastudio.CurrentTasMovie;
-		private MainForm MainForm => GlobalWin.MainForm; // TODO: pass this in
+		private MainForm MainForm => Tastudio.MainForm;
 		private TasBranch _backupBranch;
 		private BranchUndo _branchUndo = BranchUndo.None;
 
