@@ -592,11 +592,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int MakeValue(long address)
-		{
-			return MakeValue(DataSize, address);
-		}
-
 		private void SetMemoryDomain(string name)
 		{
 			if (!(MainForm.CurrentlyOpenRomArgs.OpenAdvanced is OpenAdvanced_MAME) && name == _romDomain.Name)
@@ -1135,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (address != -1)
 			{
-				return string.Format(_digitFormatString, MakeValue(address)).Trim();
+				return string.Format(_digitFormatString, MakeValue(DataSize, address)).Trim();
 			}
 			
 			return "";
