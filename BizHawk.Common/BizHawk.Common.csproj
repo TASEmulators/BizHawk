@@ -101,7 +101,6 @@
     <Compile Include="Win32/ThreadHacks.cs" />
     <Compile Include="Win32/Win32Imports.cs" />
     <Compile Include="Win32\AVIWriterImports.cs" />
-    <Compile Include="Win32\ConsoleImports.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

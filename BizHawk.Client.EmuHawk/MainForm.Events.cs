@@ -747,13 +747,11 @@ namespace BizHawk.Client.EmuHawk
 			SwitchToFullscreenMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Full Screen"].Bindings;
 
 			DisplayStatusBarMenuItem.Checked = Config.DispChrome_StatusBarWindowed;
-			DisplayLogWindowMenuItem.Checked = Config.ShowLogWindow;
+			DisplayLogWindowMenuItem.Checked = Tools.IsLoaded<LogWindow>();
 
 			DisplayLagCounterMenuItem.Enabled = Emulator.CanPollInput();
 
 			DisplayMessagesMenuItem.Checked = Config.DisplayMessages;
-
-			DisplayLogWindowMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -847,16 +845,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayLogWindowMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.ShowLogWindow ^= true;
-
-			if (Config.ShowLogWindow)
-			{
-				LogConsole.ShowConsole(this);
-			}
-			else
-			{
-				LogConsole.HideConsole();
-			}
+			Tools.Load<LogWindow>();
 		}
 
 		#endregion
@@ -3194,7 +3183,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrEmpty(details))
 			{
 				Sound.StopSound();
-				LogWindow.ShowReport("Dump Status Report", details, this);
+				Tools.Load<LogWindow>();
+				((LogWindow) Tools.Get<LogWindow>()).ShowReport("Dump Status Report", details);
 				Sound.StartSound();
 			}
 		}
