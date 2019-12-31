@@ -1,4 +1,8 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A memory region and the functionality to read/write from it
@@ -98,6 +102,39 @@
 					PokeByte(addr + 2, (byte)(val >> 16));
 					PokeByte(addr + 3, (byte)(val >> 24));
 					break;
+			}
+		}
+
+		public virtual IEnumerable<byte> BulkPeekByte(ICollection<long> addresses)
+		{
+			if (addresses != null)
+			{
+				foreach (var address in addresses)
+				{
+					yield return PeekByte(address);
+				}
+			}
+		}
+
+		public virtual IEnumerable<ushort> BulkPeekUshort(ICollection<long> addresses, bool bigEndian)
+		{
+			if (addresses != null)
+			{
+				foreach (var address in addresses)
+				{
+					yield return PeekUshort(address, bigEndian);
+				}
+			}
+		}
+
+		public virtual IEnumerable<uint> BulkPeekUint(ICollection<long> addresses, bool bigEndian)
+		{
+			if (addresses != null)
+			{
+				foreach (var address in addresses)
+				{
+					yield return PeekUint(address, bigEndian);
+				}
 			}
 		}
 	}
