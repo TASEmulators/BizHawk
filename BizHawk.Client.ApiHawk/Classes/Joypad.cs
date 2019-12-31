@@ -25,6 +25,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="system">What <see cref="SystemInfo"/> this <see cref="Joypad"/> is used for</param>
 		/// <param name="player">Which player this controller is assigned to</param>
+		/// <exception cref="IndexOutOfRangeException"><paramref name="player"/> not in range <c>1..max</c> where <c>max</c> is <paramref name="system"/>.<see cref="SystemInfo.MaxControllers"/></exception>
 		internal Joypad(SystemInfo system, int player)
 		{
 			if (player < 1 || player > system.MaxControllers)

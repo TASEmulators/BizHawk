@@ -11,12 +11,10 @@ namespace BizHawk.Client.ApiHawk
 	{
 		#region cTor(s)
 
-		/// <summary>
-		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
-		/// </summary>
-		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
-		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>
-		/// <param name="gameHash">The game hash, unique game ID (see in the game database)</param>
+		/// <exception cref="InvalidOperationException">
+		/// <paramref name="usage"/> is <see cref="BizHawkExternalToolUsage.EmulatorSpecific"/> and <paramref name="system"/> is <see cref="CoreSystem.Null"/>, or
+		/// usage is <see cref="BizHawkExternalToolUsage.GameSpecific"/> and <paramref name="gameHash"/> is blank
+		/// </exception>
 		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, CoreSystem system, string gameHash)
 		{
 			if (usage == BizHawkExternalToolUsage.EmulatorSpecific && system == CoreSystem.Null)

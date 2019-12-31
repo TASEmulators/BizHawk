@@ -30,10 +30,9 @@ namespace BizHawk.Client.ApiHawk
 			_apis = libs;
 		}
 
-		/// <summary>
-		/// the client can call this to register an additional Api
-		/// </summary>
-		/// <typeparam name="T">The <seealso cref="IExternalApi"/> to register</typeparam>
+		/// <summary>the client can call this to register an additional API</summary>
+		/// <typeparam name="T">the type, inheriting <see cref="IExternalApi"/>, to be registered</typeparam>
+		/// <exception cref="ArgumentNullException"><paramref name="api"/> is null</exception>
 		public void Register<T>(T api)
 			where T : IExternalApi
 		{
