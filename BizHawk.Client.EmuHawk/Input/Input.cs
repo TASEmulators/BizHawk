@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateThread.Start();
 		}
 
-		public static void Initialize()
+		public static void Initialize(Control parent)
 		{
 			if (OSTailoredCode.IsUnixHost)
 			{
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				KeyInput.Initialize();
+				KeyInput.Initialize(parent);
 				IPCKeyInput.Initialize();
 				GamePad.Initialize();
 				GamePad360.Initialize();

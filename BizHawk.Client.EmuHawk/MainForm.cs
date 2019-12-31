@@ -325,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 				Sound?.StartSound();
 			};
 
-			Input.Initialize();
+			Input.Initialize(this);
 			InitControls();
 
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
