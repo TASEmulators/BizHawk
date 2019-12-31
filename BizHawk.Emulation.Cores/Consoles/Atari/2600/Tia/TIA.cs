@@ -982,6 +982,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					coll = 0x80;
 				}
+				else if (_core.ReadPot1(0) == -2)
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					{
+						if (_core.ReadControls1(peek) == 0x1) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					{
+						if (_core.ReadControls1(peek) == 0x4) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					{
+						if (_core.ReadControls1(peek) == 0x7) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					{
+						if (_core.ReadControls1(peek) == 0xA) { coll |= 0x80; }
+					}
+				}
 				else
 				{
 					coll = 0x00;
@@ -995,6 +1014,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (_core.ReadPot1(1) > 0 && _capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= _core.ReadPot1(1))
 				{
 					coll = 0x80;
+				}
+				else if (_core.ReadPot1(1) == -2)
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					{
+						if (_core.ReadControls1(peek) == 0x2) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					{
+						if (_core.ReadControls1(peek) == 0x5) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					{
+						if (_core.ReadControls1(peek) == 0x8) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					{
+						if (_core.ReadControls1(peek) == 0x0) { coll |= 0x80; }
+					}
 				}
 				else
 				{
@@ -1010,6 +1048,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					coll = 0x80;
 				}
+				else if (_core.ReadPot2(0) == -2)
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					{
+						if (_core.ReadControls2(peek) == 0x1) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					{
+						if (_core.ReadControls2(peek) == 0x4) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					{
+						if (_core.ReadControls2(peek) == 0x7) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					{
+						if (_core.ReadControls2(peek) == 0xA) { coll |= 0x80; }
+					}
+				}
 				else
 				{
 					coll = 0x00;
@@ -1024,6 +1081,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					coll = 0x80;
 				}
+				else if (_core.ReadPot2(1) == -2)
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					{
+						if (_core.ReadControls2(peek) == 0x2) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					{
+						if (_core.ReadControls2(peek) == 0x5) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					{
+						if (_core.ReadControls2(peek) == 0x8) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					{
+						if (_core.ReadControls2(peek) == 0x0) { coll |= 0x80; }
+					}
+				}
 				else
 				{
 					coll = 0x00;
@@ -1034,13 +1110,59 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (maskedAddr == 0x0C) // INPT4
 			{
-				coll = (byte)((_core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
+				if (_core.ReadPot1(0) != -2)
+				{
+					coll = (byte)((_core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
+				}
+				else
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					{
+						if (_core.ReadControls1(peek) == 0x3) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					{
+						if (_core.ReadControls1(peek) == 0x6) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					{
+						if (_core.ReadControls1(peek) == 0x9) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					{
+						if (_core.ReadControls1(peek) == 0xB) { coll |= 0x80; }
+					}
+				}
+					
 				mask = 0x7f;
 			}
 
 			if (maskedAddr == 0x0D) // INPT5
 			{
-				coll = (byte)((_core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
+				if (_core.ReadPot2(0) != -2)
+				{
+					coll = (byte)((_core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
+				}
+				else
+				{
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					{
+						if (_core.ReadControls2(peek) == 0x3) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					{
+						if (_core.ReadControls2(peek) == 0x6) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					{
+						if (_core.ReadControls2(peek) == 0x9) { coll |= 0x80; }
+					}
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					{
+						if (_core.ReadControls2(peek) == 0xB) { coll |= 0x80; }
+					}
+				}
+
 				mask = 0x7f;
 			}
 

@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private readonly Atari2600 _core;
 
-		private byte _ddRa = 0x00;
-		private byte _ddRb = 0x00;
-		private byte _outputA = 0x00;
+		public byte _ddRa = 0x00;
+		public byte _ddRb = 0x00;
+		public byte _outputA = 0x00;
 
 		public TimerData Timer;
 

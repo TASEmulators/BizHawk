@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		Joystick,
 		Paddle,
 		BoostGrip,
-		Driving
+		Driving,
+		Keyboard
 	}
 
 	/// <summary>
@@ -319,5 +320,61 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			return angle;
 		}
+	}
+
+	public class KeyboardController : IPort
+	{
+		public KeyboardController(int portNum)
+		{
+			PortNum = portNum;
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = BaseDefinition
+				.Select(b => $"P{PortNum} " + b)
+				.ToList()
+			};
+		}
+
+		public ControllerDefinition Definition { get; }
+
+		public void SyncState(Serializer ser)
+		{
+			// Nothing todo, I think
+		}
+
+		public int PortNum { get; }
+
+		public byte Read(IController c)
+		{
+			byte result = 0xFF;
+
+			if (c.IsPressed($"P{PortNum} 0")) { result = 0x00; }
+			if (c.IsPressed($"P{PortNum} 1")) { result = 0x01; }
+			if (c.IsPressed($"P{PortNum} 2")) { result = 0x02; }
+			if (c.IsPressed($"P{PortNum} 3")) { result = 0x03; }
+			if (c.IsPressed($"P{PortNum} 4")) { result = 0x04; }
+			if (c.IsPressed($"P{PortNum} 5")) { result = 0x05; }
+			if (c.IsPressed($"P{PortNum} 6")) { result = 0x06; }
+			if (c.IsPressed($"P{PortNum} 7")) { result = 0x07; }
+			if (c.IsPressed($"P{PortNum} 8")) { result = 0x08; }
+			if (c.IsPressed($"P{PortNum} 9")) { result = 0x09; }
+			if (c.IsPressed($"P{PortNum} *")) { result = 0x0A; }
+			if (c.IsPressed($"P{PortNum} #")) { result = 0x0B; }
+
+			return result;
+		}
+
+		public int Read_Pot(IController c, int pot)
+		{
+			return -2; // indicates keyboard
+		}
+
+		private static readonly string[] BaseDefinition =
+		{
+			"1", "2", "3",
+			"4", "5", "6",
+			"7", "8", "9",
+			"*", "0", "#"
+		};
 	}
 }
