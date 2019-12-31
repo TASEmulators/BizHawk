@@ -998,7 +998,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new SoundConfig(Config);
+			using var form = new SoundConfig(Config) { Owner = this };
 			if (form.ShowDialog().IsOk())
 			{
 				Sound.StartSound();

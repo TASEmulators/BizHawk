@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 				|| _config.SoundDevice != oldDevice)
 			{
 				GlobalWin.Sound.Dispose();
-				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
+				GlobalWin.Sound = new Sound(Owner.Handle);
 			}
 
 			DialogResult = DialogResult.OK;
