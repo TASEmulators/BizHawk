@@ -14,11 +14,12 @@
 
 // Based on: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnaspp/html/colorquant.asp
 
-//Bizhawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
+//BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
 
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -27,35 +28,9 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Flag used to indicate whether a single pass or two passes are needed for quantization.
 		/// </summary>
-		private bool _singlePass;
+		private readonly bool _singlePass;
 
-		protected bool highquality;
-		public bool HighQuality
-		{
-			get
-			{
-				return highquality;
-			}
-
-			set
-			{
-				highquality = value;
-			}
-		}
-
-		protected int ditherLevel;
-		public int DitherLevel
-		{
-			get
-			{
-				return ditherLevel;
-			}
-
-			set
-			{
-				ditherLevel = value;
-			}
-		}
+		protected int DitherLevel;
 
 		/// <summary>
 		/// Construct the quantizer
@@ -66,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 		/// only call the 'QuantizeImage' function. If two passes are required, the code will call 'InitialQuantizeImage'
 		/// and then 'QuantizeImage'.
 		/// </remarks>
-		public Quantizer(bool singlePass)
+		protected Quantizer(bool singlePass)
 		{
 			_singlePass = singlePass;
 		}
@@ -83,32 +58,30 @@ namespace BizHawk.Client.EmuHawk
 			int width = source.Width;
 
 			// And construct a rectangle from these dimensions
-			Rectangle bounds = new Rectangle(0, 0, width, height);
+			var bounds = new Rectangle(0, 0, width, height);
 
 			// First off take a 32bpp copy of the image
 			Bitmap copy;
 
-			if (source is Bitmap && source.PixelFormat == PixelFormat.Format32bppArgb)
+			if (source is Bitmap bitmap && bitmap.PixelFormat == PixelFormat.Format32bppArgb)
 			{
-				copy = (Bitmap)source;
+				copy = bitmap;
 			}
 			else
 			{
 				copy = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
 				// Now lock the bitmap into memory
-				using (Graphics g = Graphics.FromImage(copy))
-				{
-					g.PageUnit = GraphicsUnit.Pixel;
+				using Graphics g = Graphics.FromImage(copy);
+				g.PageUnit = GraphicsUnit.Pixel;
 
-					// Draw the source image onto the copy bitmap,
-					// which will effect a widening as appropriate.
-					g.DrawImage(source, 0, 0, bounds.Width, bounds.Height);
-				}
+				// Draw the source image onto the copy bitmap,
+				// which will effect a widening as appropriate.
+				g.DrawImage(source, 0, 0, bounds.Width, bounds.Height);
 			}
 
 			// And construct an 8bpp version
-			Bitmap output = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
+			var output = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
 
 			// Define a pointer to the bitmap data
 			BitmapData sourceData = null;
@@ -128,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Then set the color palette on the output bitmap. I'm passing in the current palette 
 				// as there's no way to construct a new, empty palette.
-				output.Palette = this.GetPalette(output.Palette);
+				output.Palette = GetPalette(output.Palette);
 
 				// Then call the second pass which actually does the conversion
 				SecondPass(sourceData, output, width, height, bounds);
@@ -160,13 +133,12 @@ namespace BizHawk.Client.EmuHawk
 			// Define the source data pointers. The source row is a byte to
 			// keep addition of the stride value easier (as this is in bytes)
 			byte* pSourceRow = (byte*)sourceData.Scan0.ToPointer();
-			int* pSourcePixel;
 
 			// Loop through each row
 			for (int row = 0; row < height; row++)
 			{
 				// Set the source pixel to the first pixel in this row
-				pSourcePixel = (Int32*)pSourceRow;
+				var pSourcePixel = (int*)pSourceRow;
 
 				// And loop through each column
 				for (int col = 0; col < width; col++, pSourcePixel++)
@@ -176,15 +148,22 @@ namespace BizHawk.Client.EmuHawk
 
 				// Add the stride to the source row
 				pSourceRow += sourceData.Stride;
-
 			}
 		}
 
-		int ClampToByte(int val)
+		private int ClampToByte(int val)
 		{
-			if (val < 0) return 0;
-			else if (val > 255) return 255;
-			else return val;
+			if (val < 0)
+			{
+				return 0;
+			}
+
+			if (val > 255)
+			{
+				return 255;
+			}
+
+			return val;
 		}
 
 		/// <summary>
@@ -198,8 +177,8 @@ namespace BizHawk.Client.EmuHawk
 		protected virtual void SecondPass(BitmapData sourceData, Bitmap output, int width, int height, Rectangle bounds)
 		{
 			BitmapData outputData = null;
-			Color[] pallete = output.Palette.Entries;
-			int weight = ditherLevel;
+			Color[] palettes = output.Palette.Entries;
+			int weight = DitherLevel;
 
 			try
 			{
@@ -209,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				// Define the source data pointers. The source row is a byte to
 				// keep addition of the stride value easier (as this is in bytes)
 				byte* pSourceRow = (byte*)sourceData.Scan0.ToPointer();
-				Int32* pSourcePixel = (Int32*)pSourceRow;
+				int* pSourcePixel = (int*)pSourceRow;
 
 				// Now define the destination data pointers
 				byte* pDestinationRow = (byte*)outputData.Scan0.ToPointer();
@@ -229,13 +208,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if ((row & 1) == 0)
 					{
-						pSourcePixel = (Int32*)pSourceRow;
+						pSourcePixel = (int*)pSourceRow;
 						pDestinationPixel = pDestinationRow;
 						ptrInc = +1;
 					}
 					else
 					{
-						pSourcePixel = (Int32*)pSourceRow + width - 1;
+						pSourcePixel = (int*)pSourceRow + width - 1;
 						pDestinationPixel = pDestinationRow + width - 1;
 						ptrInc = -1;
 					}
@@ -261,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 						byte pixelValue = QuantizePixel(target);
 						*pDestinationPixel = pixelValue;
 
-						int actual = pallete[pixelValue].ToArgb();
+						int actual = palettes[pixelValue].ToArgb();
 
 						int actualR = actual & 0xFF;
 						int actualG = (actual >> 8) & 0xFF;
@@ -314,11 +293,8 @@ namespace BizHawk.Client.EmuHawk
 						errorNextRowG[width - (col + 1)] += errorGd;
 						errorNextRowB[width - (col + 1)] += errorBd;
 
-						unchecked
-						{
-							pSourcePixel += ptrInc;
-							pDestinationPixel += ptrInc;
-						}
+						pSourcePixel += ptrInc;
+						pDestinationPixel += ptrInc;
 					}
 
 					// Add the stride to the source row
@@ -362,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the palette for the quantized image
 		/// </summary>
-		/// <param name="original">Any old palette, this is overrwritten</param>
+		/// <param name="original">Any old palette, this is overwritten</param>
 		/// <returns>The new color palette</returns>
 		protected abstract ColorPalette GetPalette(ColorPalette original);
 	}
