@@ -759,23 +759,18 @@ namespace BizHawk.Client.EmuHawk
 			return Global.CheatList.IsActive(_domain, address);
 		}
 
-		private void UnFreezeAddress(long address)
+		private void FreezeHighlighted()
 		{
-			if (address >= 0) 
+			if (!_highlightedAddress.HasValue && !_secondaryHighlightedAddresses.Any())
 			{
-				Global.CheatList.RemoveRange(Global.CheatList.Where(x => x.Contains(address)));
+				return;
 			}
 
-			MemoryViewerBox.Refresh();
-		}
-
-		private void FreezeAddress(long address)
-		{
-			if (address >= 0)
+			if (_highlightedAddress >= 0)
 			{
 				var watch = Watch.GenerateWatch(
 					_domain,
-					address,
+					_highlightedAddress.Value,
 					WatchSize,
 					Common.DisplayType.Hex,
 					BigEndian);
@@ -784,33 +779,51 @@ namespace BizHawk.Client.EmuHawk
 					watch,
 					watch.Value));
 			}
-		}
 
-		private void FreezeSecondaries()
-		{
-			var cheats = new List<Cheat>();
-			foreach (var address in _secondaryHighlightedAddresses)
+			if (_secondaryHighlightedAddresses.Any())
 			{
-				var watch = Watch.GenerateWatch(
-					_domain,
-					address,
-					WatchSize,
-					Common.DisplayType.Hex,
-					BigEndian);
+				var cheats = new List<Cheat>();
+				foreach (var address in _secondaryHighlightedAddresses)
+				{
+					var watch = Watch.GenerateWatch(
+						_domain,
+						address,
+						WatchSize,
+						Common.DisplayType.Hex,
+						BigEndian);
 
-				cheats.Add(new Cheat(
-					watch,
-					watch.Value));
+					cheats.Add(new Cheat(
+						watch,
+						watch.Value));
+				}
+
+				Global.CheatList.AddRange(cheats);
 			}
 
-			Global.CheatList.AddRange(cheats);
+			MemoryViewerBox.Refresh();
 		}
 
-		private void UnfreezeSecondaries()
+		private void UnfreezeHighlighted()
 		{
-			Global.CheatList.RemoveRange(
-				Global.CheatList.Where(
-					cheat => !cheat.IsSeparator && cheat.Domain == _domain && _secondaryHighlightedAddresses.Contains(cheat.Address.Value)));
+			if (!_highlightedAddress.HasValue && !_secondaryHighlightedAddresses.Any())
+			{
+				return;
+			}
+
+			if (_highlightedAddress >= 0)
+			{
+				Global.CheatList.RemoveRange(Global.CheatList.Where(x => x.Contains(_highlightedAddress.Value)));
+			}
+
+			if (_secondaryHighlightedAddresses.Any())
+			{
+				Global.CheatList.RemoveRange(
+					Global.CheatList.Where(
+						cheat => !cheat.IsSeparator && cheat.Domain == _domain &&
+							_secondaryHighlightedAddresses.Contains(cheat.Address ?? 0)));
+			}
+
+			MemoryViewerBox.Refresh();
 		}
 
 		private void SaveFileBinary(string path)
@@ -1609,13 +1622,11 @@ namespace BizHawk.Client.EmuHawk
 				var highlighted = _highlightedAddress.Value;
 				if (IsFrozen(highlighted))
 				{
-					UnFreezeAddress(highlighted);
-					UnfreezeSecondaries();
+					UnfreezeHighlighted();
 				}
 				else
 				{
-					FreezeAddress(highlighted);
-					FreezeSecondaries();
+					FreezeHighlighted();
 				}
 			}
 
@@ -1889,10 +1900,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (_highlightedAddress.HasValue)
-						{
-							UnFreezeAddress(_highlightedAddress.Value);
-						}
+						UnfreezeHighlighted();
 					}
 
 					break;
