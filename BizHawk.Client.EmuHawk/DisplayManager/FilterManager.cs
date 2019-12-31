@@ -1,19 +1,10 @@
-using System;
-using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.Filters;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk.FilterManager
 {
@@ -24,8 +15,8 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 	public class SurfaceFormat
 	{
-		public SurfaceFormat(Size size) { this.Size = size; }
-		public Size Size { get; private set; }
+		public SurfaceFormat(Size size) { Size = size; }
+		public Size Size { get; }
 	}
 
 	public class SurfaceState
@@ -33,9 +24,10 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		public SurfaceState() { }
 		public SurfaceState(SurfaceFormat surfaceFormat, SurfaceDisposition surfaceDisposition = SurfaceDisposition.Unspecified)
 		{
-			this.SurfaceFormat = surfaceFormat;
-			this.SurfaceDisposition = surfaceDisposition;
+			SurfaceFormat = surfaceFormat;
+			SurfaceDisposition = surfaceDisposition;
 		}
+
 		public SurfaceFormat SurfaceFormat;
 		public SurfaceDisposition SurfaceDisposition;
 	}
@@ -47,16 +39,16 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 
 	public class FilterProgram
 	{
+		private readonly Dictionary<string, BaseFilter> FilterNameIndex = new Dictionary<string, BaseFilter>();
+
 		public List<BaseFilter> Filters = new List<BaseFilter>();
-		Dictionary<string, BaseFilter> FilterNameIndex = new Dictionary<string, BaseFilter>();
 		public List<ProgramStep> Program = new List<ProgramStep>();
 
 		public BaseFilter this[string name]
 		{
 			get
 			{
-				BaseFilter ret;
-				FilterNameIndex.TryGetValue(name, out ret);
+				FilterNameIndex.TryGetValue(name, out var ret);
 				return ret;
 			}
 		}
@@ -79,7 +71,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		{
 			return RenderTargetProvider.Get(new Size(width, height));
 		}
-				
+
 		public void AddFilter(BaseFilter filter, string name = "")
 		{
 			Filters.Add(filter);
@@ -128,10 +120,11 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 		{
 			public ProgramStep(ProgramStepType type, object args, string comment = null)
 			{
-				this.Type = type;
-				this.Args = args;
-				this.Comment = comment;
+				Type = type;
+				Args = args;
+				Comment = comment;
 			}
+
 			public ProgramStepType Type;
 			public object Args;
 			public string Comment;
@@ -218,9 +211,11 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				{
 					if (currState == null)
 					{
-						currState = new SurfaceState();
-						currState.SurfaceFormat = iosi.SurfaceFormat;
-						currState.SurfaceDisposition = iosi.SurfaceDisposition;
+						currState = new SurfaceState
+						{
+							SurfaceFormat = iosi.SurfaceFormat,
+							SurfaceDisposition = iosi.SurfaceDisposition
+						};
 					}
 					else
 					{

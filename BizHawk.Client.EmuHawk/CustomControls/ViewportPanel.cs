@@ -25,8 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ActivateThreaded()
 		{
 			ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
-			threadPaint = new Thread(PaintProc);
-			threadPaint.IsBackground = true;
+			threadPaint = new Thread(PaintProc) { IsBackground = true };
 			threadPaint.Start();
 		}
 
@@ -62,27 +61,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (bmp != null)
 			{
-				using (Graphics g = CreateGraphics())
+				using Graphics g = CreateGraphics();
+				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+				g.CompositingMode = CompositingMode.SourceCopy;
+				g.CompositingQuality = CompositingQuality.HighSpeed;
+				if (ScaleImage)
 				{
-					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
 					g.InterpolationMode = InterpolationMode.NearestNeighbor;
-					g.CompositingMode = CompositingMode.SourceCopy;
-					g.CompositingQuality = CompositingQuality.HighSpeed;
-					if (ScaleImage)
+					g.PixelOffsetMode = PixelOffsetMode.Half;
+					g.DrawImage(bmp, 0, 0, Width, Height);
+				}
+				else
+				{
+					using (var sb = new SolidBrush(Color.Black))
 					{
-						g.InterpolationMode = InterpolationMode.NearestNeighbor;
-						g.PixelOffsetMode = PixelOffsetMode.Half;
-						g.DrawImage(bmp, 0, 0, Width, Height);
+						g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
+						g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
 					}
-					else
-					{
-						using (var sb = new SolidBrush(Color.Black))
-						{
-							g.FillRectangle(sb, bmp.Width, 0, Width - bmp.Width, Height);
-							g.FillRectangle(sb, 0, bmp.Height, bmp.Width, Height - bmp.Height);
-						}
-						g.DrawImageUnscaled(bmp, 0, 0);
-					}
+					g.DrawImageUnscaled(bmp, 0, 0);
 				}
 			}
 
@@ -153,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaintBackground(PaintEventArgs pevent)
 		{
-
 		}
 
 

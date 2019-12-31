@@ -1,20 +1,9 @@
 using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk.Filters
 {
@@ -486,8 +475,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void Run()
 		{
-			if (RenderCallback == null) return;
-			RenderCallback();
+			RenderCallback?.Invoke();
 		}
 	}
 }

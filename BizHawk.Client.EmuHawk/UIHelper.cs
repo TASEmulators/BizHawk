@@ -40,10 +40,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static SizeF GetCurrentAutoScaleSize(AutoScaleMode autoScaleMode)
 		{
-			using (var form = new Form { AutoScaleMode = autoScaleMode })
-			{
-				return form.CurrentAutoScaleDimensions;
-			}
+			using var form = new Form { AutoScaleMode = autoScaleMode };
+			return form.CurrentAutoScaleDimensions;
 		}
 	}
 }

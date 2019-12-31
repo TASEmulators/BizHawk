@@ -1,27 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System;
 using System.Threading;
 using System.IO.Pipes;
-using SlimDX;
 using SlimDX.DirectInput;
 
-//this is not a very safe or pretty protocol, I'm not proud of it
-
+// this is not a very safe or pretty protocol, I'm not proud of it
 namespace BizHawk.Client.EmuHawk
 {
 	public static class IPCKeyInput
 	{
 		public static void Initialize()
 		{
-			var t = new Thread(IPCThread);
-			t.IsBackground = true;
+			var t = new Thread(IPCThread) { IsBackground = true };
 			t.Start();
 		}
 
 
-		static List<KeyInput.KeyEvent> PendingEventList = new List<KeyInput.KeyEvent>();
-		static List<KeyInput.KeyEvent> EventList = new List<KeyInput.KeyEvent>();
+		private static readonly List<KeyInput.KeyEvent> PendingEventList = new List<KeyInput.KeyEvent>();
+		private static readonly List<KeyInput.KeyEvent> EventList = new List<KeyInput.KeyEvent>();
 
 		static void IPCThread()
 		{
@@ -30,24 +26,22 @@ namespace BizHawk.Client.EmuHawk
 
 			for (; ; )
 			{
-				using (NamedPipeServerStream pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024))
+				using var pipe = new NamedPipeServerStream(pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024, 1024);
+				try
 				{
-					try
+					pipe.WaitForConnection();
+
+					BinaryReader br = new BinaryReader(pipe);
+
+					for (; ; )
 					{
-						pipe.WaitForConnection();
-
-						BinaryReader br = new BinaryReader(pipe);
-
-						for (; ; )
-						{
-							int e = br.ReadInt32();
-							bool pressed = (e & 0x80000000) != 0;
-							lock (PendingEventList)
-								PendingEventList.Add(new KeyInput.KeyEvent { Key = (Key)(e & 0x7FFFFFFF), Pressed = pressed });
-						}
+						int e = br.ReadInt32();
+						bool pressed = (e & 0x80000000) != 0;
+						lock (PendingEventList)
+							PendingEventList.Add(new KeyInput.KeyEvent { Key = (Key)(e & 0x7FFFFFFF), Pressed = pressed });
 					}
-					catch { }
 				}
+				catch { }
 			}
 		}
 

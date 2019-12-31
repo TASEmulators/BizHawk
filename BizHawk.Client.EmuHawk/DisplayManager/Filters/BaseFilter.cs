@@ -1,19 +1,10 @@
 using System;
-using System.Linq;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
 using OpenTK;
-using OpenTK.Graphics;
 
 //Here's how to make a filter:
 //1. Reset your state entirely in Initialize(). 
@@ -37,7 +28,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public virtual Size PresizeOutput(string channel, Size size) { return size; }
 		public virtual void SetInputFormat(string channel, SurfaceState state) { } //TODO - why a different param order than DeclareOutput?
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
-		public bool IsNOP { get { return _IsNop; } protected set { _IsNop = value; } }
+		public bool IsNOP { get => _IsNop; protected set => _IsNop = value; }
 		private Boolean _IsNop = false;
 
 		//runtime signals
@@ -111,10 +102,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 			return iosi;
 		}
 
-		List<IOSurfaceInfo> IOSurfaceInfos = new List<IOSurfaceInfo>();
+		private readonly List<IOSurfaceInfo> IOSurfaceInfos = new List<IOSurfaceInfo>();
 
 
-		IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction)
+		private IOSurfaceInfo FindIOSurfaceInfo(string channel, SurfaceDirection direction)
 		{
 			foreach (var iosi in IOSurfaceInfos)
 				if (iosi.Channel == channel && iosi.SurfaceDirection == direction)
@@ -135,5 +126,4 @@ namespace BizHawk.Client.EmuHawk.Filters
 			Input, Output
 		}
 	}
-
 }

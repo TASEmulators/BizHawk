@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
+﻿using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BizBoxInfoControl : UserControl
 	{
-		private string url = "";
+		private readonly string _url = "";
 
 		public BizBoxInfoControl(CoreAttribute attributes)
 		{
@@ -39,19 +31,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CoreUrlLink.Visible = true;
 				CoreUrlLink.Text = attributes.PortedVersion;
-				url = attributes.PortedUrl;
+				_url = attributes.PortedUrl;
 			}
-		}
-
-		private void BizBoxInfoControl_Load(object sender, EventArgs e)
-		{
-
 		}
 
 		private void CoreUrlLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			CoreUrlLink.LinkVisited = true;
-			System.Diagnostics.Process.Start(url);
+			System.Diagnostics.Process.Start(_url);
 		}
 	}
 }

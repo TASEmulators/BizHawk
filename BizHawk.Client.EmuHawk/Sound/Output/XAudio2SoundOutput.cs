@@ -47,12 +47,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public static IEnumerable<string> GetDeviceNames()
 		{
-			using (XAudio2 device = new XAudio2())
-			{
-				return Enumerable.Range(0, device.DeviceCount)
-					.Select(n => device.GetDeviceDetails(n).DisplayName)
-					.ToList(); // enumerate before local var device is disposed
-			}
+			using XAudio2 device = new XAudio2();
+			return Enumerable.Range(0, device.DeviceCount)
+				.Select(n => device.GetDeviceDetails(n).DisplayName)
+				.ToList(); // enumerate before local var device is disposed
 		}
 
 		private int BufferSizeSamples { get; set; }
@@ -126,8 +124,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BufferPool : IDisposable
 		{
-			private List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
-			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
+			private readonly List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
+			private readonly Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
 
 			public void Dispose()
 			{

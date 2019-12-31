@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class NESMusicRipper : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private NES nes { get; set; }
+		private NES Nes { get; set; }
 
 		public NESMusicRipper()
 		{
@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			SyncContents();
 		}
 
-		public bool AskSaveChanges() { return true; }
+		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => true;
 
 		public void Restart()
@@ -113,8 +113,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Filter = "XRNS (*.xrns)|*.xrns"
 			};
-			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+			if (sfd.ShowDialog() != DialogResult.OK)
+			{
 				return;
+			}
 
 			//configuration:
 			var outPath = sfd.FileName;
@@ -127,13 +129,11 @@ namespace BizHawk.Client.EmuHawk
 			var zfTemplate = new ICSharpCode.SharpZipLib.Zip.ZipFile(templatePath);
 			{
 				int zfSongXmlIndex = zfTemplate.FindEntry("Song.xml", true);
-				using (var zis = zfTemplate.GetInputStream(zfTemplate.GetEntry("Song.xml")))
-				{
-					byte[] buffer = new byte[4096];     // 4K is optimum
-					ICSharpCode.SharpZipLib.Core.StreamUtils.Copy(zis, msSongXml, buffer);
-				}
+				using var zis = zfTemplate.GetInputStream(zfTemplate.GetEntry("Song.xml"));
+				byte[] buffer = new byte[4096];     // 4K is optimum
+				ICSharpCode.SharpZipLib.Core.StreamUtils.Copy(zis, msSongXml, buffer);
 			}
-			XElement templateRoot = XElement.Parse(System.Text.Encoding.UTF8.GetString(msSongXml.ToArray()));
+			var templateRoot = XElement.Parse(System.Text.Encoding.UTF8.GetString(msSongXml.ToArray()));
 
 			//get the pattern pool, and whack the child nodes
 			var xPatterns = templateRoot.XPathSelectElement("//Patterns");
@@ -424,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 			//fpulse = fCPU/(16*(t+1)) (where fCPU is 1.789773 MHz for NTSC, 1.662607 MHz for PAL, and 1.773448 MHz for Dendy)
 			//ftriangle = fCPU/(32*(tval + 1))
 
-			var apu = nes.apu;
+			var apu = Nes.apu;
 			
 			//evaluate the pitches
 			int pulse0_period = apu.pulse[0].timer_reload_value;
@@ -475,16 +475,16 @@ namespace BizHawk.Client.EmuHawk
 			if(IsRunning)
 			{
 				SyncContents();
-				nes.apu.DebugCallback = null;
-				nes.apu.DebugCallbackDivider = 0;
+				Nes.apu.DebugCallback = null;
+				Nes.apu.DebugCallbackDivider = 0;
 				IsRunning = false;
 				btnControl.Text = "Start";
 			}
 			else
 			{
 				Log.Clear();
-				nes.apu.DebugCallback = DebugCallback;
-				nes.apu.DebugCallbackDivider = int.Parse(txtDivider.Text);
+				Nes.apu.DebugCallback = DebugCallback;
+				Nes.apu.DebugCallbackDivider = int.Parse(txtDivider.Text);
 				IsRunning = true;
 				btnControl.Text = "Stop";
 			}
@@ -497,15 +497,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESMusicRipper_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			var apu = nes.apu;
+			var apu = Nes.apu;
 			apu.DebugCallbackDivider = 0;
 			apu.DebugCallbackTimer = 0;
 			apu.DebugCallback = null;
-		}
-
-		private void NESMusicRipper_Load(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

@@ -19,11 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public int Frameskip
 			{
-				get
-				{
-					return _frameskip;
-				}
-
+				get => _frameskip;
 				private set
 				{
 					if (value < 0)
@@ -46,11 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public int FrameDelay
 			{
-				get
-				{
-					return _framedelay;
-				}
-
+				get => _framedelay;
 				private set
 				{
 					if (value < -1)
@@ -81,10 +73,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			private GifToken(int frameskip, int framedelay)
+			private GifToken(int frameskip, int frameDelay)
 			{
 				Frameskip = frameskip;
-				FrameDelay = framedelay;
+				FrameDelay = frameDelay;
 			}
 		}
 
@@ -92,9 +84,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetVideoCodecToken(IDisposable token)
 		{
-			if (token is GifToken)
+			if (token is GifToken gifToken)
 			{
-				_token = (GifToken)token;
+				_token = gifToken;
 				CalcDelay();
 			}
 			else
@@ -169,35 +161,31 @@ namespace BizHawk.Client.EmuHawk
 				return; // skip this frame
 			}
 
-			using (var bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+			using var bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			System.Runtime.InteropServices.Marshal.Copy(source.GetVideoBuffer(), 0, data.Scan0, bmp.Width * bmp.Height);
+			bmp.UnlockBits(data);
+
+			using var qBmp = new OctreeQuantizer(255, 8).Quantize(bmp);
+			MemoryStream ms = new MemoryStream();
+			qBmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+			byte[] b = ms.GetBuffer();
+			if (!firstdone)
 			{
-				var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				System.Runtime.InteropServices.Marshal.Copy(source.GetVideoBuffer(), 0, data.Scan0, bmp.Width * bmp.Height);
-				bmp.UnlockBits(data);
-
-				using (var qBmp = new OctreeQuantizer(255, 8).Quantize(bmp))
-				{
-					MemoryStream ms = new MemoryStream();
-					qBmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-					byte[] b = ms.GetBuffer();
-					if (!firstdone)
-					{
-						firstdone = true;
-						b[10] = (byte)(b[10] & 0x78); // no global color table
-						f.Write(b, 0, 13);
-						f.Write(GifAnimation, 0, GifAnimation.Length);
-					}
-
-					b[785] = Delay[0];
-					b[786] = Delay[1];
-					b[798] = (byte)(b[798] | 0x87);
-					f.Write(b, 781, 18);
-					f.Write(b, 13, 768);
-					f.Write(b, 799, (int)(ms.Length - 800));
-
-					lastbyte = b[ms.Length - 1];
-				}
+				firstdone = true;
+				b[10] = (byte)(b[10] & 0x78); // no global color table
+				f.Write(b, 0, 13);
+				f.Write(GifAnimation, 0, GifAnimation.Length);
 			}
+
+			b[785] = Delay[0];
+			b[786] = Delay[1];
+			b[798] = (byte)(b[798] | 0x87);
+			f.Write(b, 781, 18);
+			f.Write(b, 13, 768);
+			f.Write(b, 799, (int)(ms.Length - 800));
+
+			lastbyte = b[ms.Length - 1];
 		}
 
 		public void AddSamples(short[] samples)

@@ -1,11 +1,4 @@
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -13,11 +6,11 @@ namespace BizHawk.Client.EmuHawk
 	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
 	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
 	/// </summary>
-	class SwappableDisplaySurfaceSet
+	public class SwappableDisplaySurfaceSet
 	{
-		DisplaySurface Pending, Current;
-		bool IsPending;
-		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
+		private DisplaySurface Pending, Current;
+		private bool IsPending;
+		private readonly Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
 
 		/// <summary>
 		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
@@ -78,5 +71,4 @@ namespace BizHawk.Client.EmuHawk
 			return Current;
 		}
 	}
-
 }

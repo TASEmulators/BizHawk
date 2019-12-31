@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,23 +15,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public static GifWriter.GifToken DoTokenForm(IWin32Window parent)
 		{
-			using (var dlg = new GifWriterForm())
+			using var dlg = new GifWriterForm
 			{
-				dlg.numericUpDown1.Value = Global.Config.GifWriterFrameskip;
-				dlg.numericUpDown2.Value = Global.Config.GifWriterDelay;
-				dlg.NumericUpDown2_ValueChanged(null, null);
+				numericUpDown1 = { Value = Global.Config.GifWriterFrameskip },
+				numericUpDown2 = { Value = Global.Config.GifWriterDelay }
+			};
+			dlg.NumericUpDown2_ValueChanged(null, null);
 
-				var result = dlg.ShowDialog(parent);
-				if (result == DialogResult.OK)
-				{
-					Global.Config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
-					Global.Config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
+			var result = dlg.ShowDialog(parent);
+			if (result.IsOk())
+			{
+				Global.Config.GifWriterFrameskip = (int)dlg.numericUpDown1.Value;
+				Global.Config.GifWriterDelay = (int)dlg.numericUpDown2.Value;
 
-					return GifWriter.GifToken.LoadFromConfig();
-				}
-				
-				return null;
+				return GifWriter.GifToken.LoadFromConfig();
 			}
+
+			return null;
 		}
 
 		private void NumericUpDown2_ValueChanged(object sender, EventArgs e)

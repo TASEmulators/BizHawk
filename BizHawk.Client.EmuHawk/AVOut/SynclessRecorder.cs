@@ -52,18 +52,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			using (var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer()))
-			{
-				string subpath = GetAndCreatePathForFrameNum(mCurrFrame);
-				string path = $"{subpath}.png";
-				bb.ToSysdrawingBitmap().Save(path, System.Drawing.Imaging.ImageFormat.Png);
-			}
+			using var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			string subPath = GetAndCreatePathForFrameNum(mCurrFrame);
+			string path = $"{subPath}.png";
+			bb.ToSysdrawingBitmap().Save(path, System.Drawing.Imaging.ImageFormat.Png);
 		}
 
 		public void AddSamples(short[] samples)
 		{
-			string subpath = GetAndCreatePathForFrameNum(mCurrFrame);
-			string path = $"{subpath}.wav";
+			string subPath = GetAndCreatePathForFrameNum(mCurrFrame);
+			string path = $"{subPath}.wav";
 			WavWriterV wwv = new WavWriterV();
 			wwv.SetAudioParameters(paramSampleRate, paramChannels, paramBits);
 			wwv.OpenFile(path);
@@ -107,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			paramBits = bits;
 		}
 
-		public void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
 		{
 			// not needed
 		}
@@ -146,9 +144,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetAndCreatePathForFrameNum(int index)
 		{
-			string subpath = GetPathFragmentForFrameNum(index);
+			string subPath = GetPathFragmentForFrameNum(index);
 			string path = mFramesDirectory;
-			path = Path.Combine(path, subpath);
+			path = Path.Combine(path, subPath);
 			string fpath = $"{path}.nothing";
 			Directory.CreateDirectory(Path.GetDirectoryName(fpath));
 			return path;

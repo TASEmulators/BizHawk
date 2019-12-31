@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			get => _x;
 			set
 			{
-				_x = RangeX.Constrain(value);
+				_x = _rangeX.Constrain(value);
 				SetAnalog();
 			}
 		}
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			get => _y;
 			set
 			{
-				_y = RangeY.Constrain(value);
+				_y = _rangeY.Constrain(value);
 				SetAnalog();
 			}
 		}
@@ -42,13 +42,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private IController _previous;
 
-		private sbyte UserRangePercentageX = 100;
-		private sbyte UserRangePercentageY = 100;
+		private sbyte _userRangePercentageX = 100;
+		private sbyte _userRangePercentageY = 100;
 
 		public void SetUserRange(decimal rx, decimal ry)
 		{
-			UserRangePercentageX = (sbyte) rx;
-			UserRangePercentageY = (sbyte) ry;
+			_userRangePercentageX = (sbyte) rx;
+			_userRangePercentageY = (sbyte) ry;
 
 			Rerange();
 			Refresh();
@@ -56,42 +56,42 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetRangeX(float[] range)
 		{
-			ActualRangeX.Min = (int) range[0];
-			ActualRangeX.Max = (int) range[2];
+			_actualRangeX.Min = (int) range[0];
+			_actualRangeX.Max = (int) range[2];
 
 			Rerange();
 		}
 
 		public void SetRangeY(float[] range)
 		{
-			ActualRangeY.Min = (int) range[0];
-			ActualRangeY.Max = (int) range[2];
+			_actualRangeY.Min = (int) range[0];
+			_actualRangeY.Max = (int) range[2];
 
 			Rerange();
 		}
 
-		private readonly MutableIntRange RangeX = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange RangeY = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange ActualRangeX = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange ActualRangeY = new MutableIntRange(-128, 127);
+		private readonly MutableIntRange _rangeX = new MutableIntRange(-128, 127);
+		private readonly MutableIntRange _rangeY = new MutableIntRange(-128, 127);
+		private readonly MutableIntRange _actualRangeX = new MutableIntRange(-128, 127);
+		private readonly MutableIntRange _actualRangeY = new MutableIntRange(-128, 127);
 
-		private bool ReverseX;
-		private bool ReverseY;
+		private bool _reverseX;
+		private bool _reverseY;
 
 		private void Rerange()
 		{
-			ReverseX = UserRangePercentageX < 0;
-			ReverseY = UserRangePercentageY < 0;
+			_reverseX = _userRangePercentageX < 0;
+			_reverseY = _userRangePercentageY < 0;
 
-			var midX = (ActualRangeX.Min + ActualRangeX.Max) / 2.0;
-			var halfRangeX = (ReverseX ? -1 : 1) * (ActualRangeX.Max - ActualRangeX.Min) * UserRangePercentageX / 200.0;
-			RangeX.Min = (int) (midX - halfRangeX);
-			RangeX.Max = (int) (midX + halfRangeX);
+			var midX = (_actualRangeX.Min + _actualRangeX.Max) / 2.0;
+			var halfRangeX = (_reverseX ? -1 : 1) * (_actualRangeX.Max - _actualRangeX.Min) * _userRangePercentageX / 200.0;
+			_rangeX.Min = (int) (midX - halfRangeX);
+			_rangeX.Max = (int) (midX + halfRangeX);
 
-			var midY = (ActualRangeY.Min + ActualRangeY.Max) / 2.0;
-			var halfRangeY = (ReverseY ? -1 : 1) * (ActualRangeY.Max - ActualRangeY.Min) * UserRangePercentageY / 200.0;
-			RangeY.Min = (int) (midY - halfRangeY);
-			RangeY.Max = (int) (midY + halfRangeY);
+			var midY = (_actualRangeY.Min + _actualRangeY.Max) / 2.0;
+			var halfRangeY = (_reverseY ? -1 : 1) * (_actualRangeY.Max - _actualRangeY.Min) * _userRangePercentageY / 200.0;
+			_rangeY.Min = (int) (midY - halfRangeY);
+			_rangeY.Max = (int) (midY + halfRangeY);
 			
 			// re-constrain after changing ranges
 			X = X;
@@ -108,12 +108,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>
 		/// min + (max - i) == max - (i - min) == min + max - i
 		/// </remarks>
-		private int MaybeReversedInX(int i) => ReverseX ? RangeX.Min + RangeX.Max - i : i;
+		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Min + _rangeX.Max - i : i;
 		/// <inheritdoc cref="MaybeReversedInX"/>
-		private int MaybeReversedInY(int i) => ReverseY ? RangeY.Min + RangeY.Max - i : i;
+		private int MaybeReversedInY(int i) => _reverseY ? _rangeY.Min + _rangeY.Max - i : i;
 
-		private int PixelSizeX => (int)(RangeX.GetCount() * ScaleX);
-		private int PixelSizeY => (int)(RangeY.GetCount() * ScaleY);
+		private int PixelSizeX => (int)(_rangeX.GetCount() * ScaleX);
+		private int PixelSizeY => (int)(_rangeY.GetCount() * ScaleY);
 		private int PixelMinX => (Size.Width - PixelSizeX) / 2;
 		private int PixelMinY => (Size.Height - PixelSizeY) / 2;
 		private int PixelMidX => PixelMinX + PixelSizeX / 2;
@@ -122,23 +122,23 @@ namespace BizHawk.Client.EmuHawk
 		private int PixelMaxY => PixelMinY + PixelSizeY - 1;
 
 		private int RealToGfxX(int val) =>
-			PixelMinX + ((MaybeReversedInX(RangeX.Constrain(val)) - RangeX.Min) * ScaleX).RoundToInt();
+			PixelMinX + ((MaybeReversedInX(_rangeX.Constrain(val)) - _rangeX.Min) * ScaleX).RoundToInt();
 
 		private int RealToGfxY(int val) =>
-			PixelMinY + ((MaybeReversedInY(RangeY.Constrain(val)) - RangeY.Min) * ScaleY).RoundToInt();
+			PixelMinY + ((MaybeReversedInY(_rangeY.Constrain(val)) - _rangeY.Min) * ScaleY).RoundToInt();
 
 		private int GfxToRealX(int val) =>
-			MaybeReversedInX(RangeX.Constrain(RangeX.Min + ((val - PixelMinX) / ScaleX).RoundToInt()));
+			MaybeReversedInX(_rangeX.Constrain(_rangeX.Min + ((val - PixelMinX) / ScaleX).RoundToInt()));
 
 		private int GfxToRealY(int val) =>
-			MaybeReversedInY(RangeY.Constrain(RangeY.Min + ((val - PixelMinY) / ScaleY).RoundToInt()));
+			MaybeReversedInY(_rangeY.Constrain(_rangeY.Min + ((val - PixelMinY) / ScaleY).RoundToInt()));
 
-		private readonly Pen BlackPen = new Pen(Brushes.Black);
-		private readonly Pen BluePen = new Pen(Brushes.Blue, 2);
-		private readonly Pen GrayPen = new Pen(Brushes.Gray, 2);
+		private readonly Pen _blackPen = new Pen(Brushes.Black);
+		private readonly Pen _bluePen = new Pen(Brushes.Blue, 2);
+		private readonly Pen _grayPen = new Pen(Brushes.Gray, 2);
 
-		private readonly Bitmap Dot = new Bitmap(7, 7);
-		private readonly Bitmap GrayDot = new Bitmap(7, 7);
+		private readonly Bitmap _dot = new Bitmap(7, 7);
+		private readonly Bitmap _grayDot = new Bitmap(7, 7);
 
 		public Action ClearCallback { private get; set; }
 
@@ -160,22 +160,18 @@ namespace BizHawk.Client.EmuHawk
 			BorderStyle = BorderStyle.Fixed3D;
 
 			// Draw the dot into a bitmap
-			using (var g = Graphics.FromImage(Dot))
-			{
-				g.Clear(Color.Transparent);
-				var redBrush = Brushes.Red;
-				g.FillRectangle(redBrush, 2, 0, 3, 7);
-				g.FillRectangle(redBrush, 1, 1, 5, 5);
-				g.FillRectangle(redBrush, 0, 2, 7, 3);
-			}
+			using var g = Graphics.FromImage(_dot);
+			g.Clear(Color.Transparent);
+			var redBrush = Brushes.Red;
+			g.FillRectangle(redBrush, 2, 0, 3, 7);
+			g.FillRectangle(redBrush, 1, 1, 5, 5);
+			g.FillRectangle(redBrush, 0, 2, 7, 3);
 
-			using (var gg = Graphics.FromImage(GrayDot))
-			{
-				gg.Clear(Color.Transparent);
-				gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
-				gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
-				gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
-			}
+			using var gg = Graphics.FromImage(_grayDot);
+			gg.Clear(Color.Transparent);
+			gg.FillRectangle(Brushes.Gray, 2, 0, 3, 7);
+			gg.FillRectangle(Brushes.Gray, 1, 1, 5, 5);
+			gg.FillRectangle(Brushes.Gray, 0, 2, 7, 3);
 		}
 
 		private void SetAnalog()
@@ -194,24 +190,24 @@ namespace BizHawk.Client.EmuHawk
 
 				e.Graphics.FillRectangle(Brushes.LightGray, PixelMinX, PixelMinY, PixelMaxX - PixelMinX, PixelMaxY - PixelMinY);
 				e.Graphics.FillEllipse(ReadOnly ? Brushes.Beige : Brushes.White, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);
-				e.Graphics.DrawEllipse(BlackPen, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);
-				e.Graphics.DrawLine(BlackPen, PixelMidX, 0, PixelMidX, PixelMaxY);
-				e.Graphics.DrawLine(BlackPen, 0, PixelMidY, PixelMaxX, PixelMidY);
+				e.Graphics.DrawEllipse(_blackPen, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);
+				e.Graphics.DrawLine(_blackPen, PixelMidX, 0, PixelMidX, PixelMaxY);
+				e.Graphics.DrawLine(_blackPen, 0, PixelMidY, PixelMaxX, PixelMidY);
 
 				// Previous frame
 				if (_previous != null)
 				{
 					var pX = (int)_previous.GetFloat(XName);
 					var pY = (int)_previous.GetFloat(YName);
-					e.Graphics.DrawLine(GrayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
-					e.Graphics.DrawImage(GrayDot, RealToGfxX(pX) - 3, RealToGfxY(RangeY.Max) - RealToGfxY(pY) - 3);
+					e.Graphics.DrawLine(_grayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
+					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.Max) - RealToGfxY(pY) - 3);
 				}
 
 				// Line
 				if (HasValue)
 				{
-					e.Graphics.DrawLine(BluePen, PixelMidX, PixelMidY, RealToGfxX(X), RealToGfxY(Y));
-					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfxX(X) - 3, RealToGfxY(Y) - 3);
+					e.Graphics.DrawLine(_bluePen, PixelMidX, PixelMidY, RealToGfxX(X), RealToGfxY(Y));
+					e.Graphics.DrawImage(ReadOnly ? _grayDot : _dot, RealToGfxX(X) - 3, RealToGfxY(Y) - 3);
 				}
 			}
 		}

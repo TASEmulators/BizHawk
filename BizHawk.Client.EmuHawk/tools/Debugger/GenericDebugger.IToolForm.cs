@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,13 +14,10 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
-		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
+		private IMemoryCallbackSystem MemoryCallbacks => Debuggable.MemoryCallbacks;
 
 
-		private RegisterValue PCRegister
-		{
-			get { return Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
-		}
+		private RegisterValue PCRegister => Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName];
 
 		#region Implementation checking
 
@@ -161,15 +154,8 @@ namespace BizHawk.Client.EmuHawk
 			EngageDebugger();
 		}
 
-		public bool AskSaveChanges()
-		{
-			// TODO
-			return true;
-		}
+		public bool AskSaveChanges() => true;
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
+		public bool UpdateBefore => false;
 	}
 }

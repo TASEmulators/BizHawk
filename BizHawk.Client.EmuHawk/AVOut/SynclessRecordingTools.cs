@@ -18,9 +18,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GetPaths(int index, out string png, out string wav)
 		{
-			string subpath = SynclessRecorder.GetPathFragmentForFrameNum(index);
+			string subPath = SynclessRecorder.GetPathFragmentForFrameNum(index);
 			string path = mFramesDirectory;
-			path = Path.Combine(path, subpath);
+			path = Path.Combine(path, subPath);
 			png = $"{path}.png";
 			wav = $"{path}.wav";
 		}
@@ -64,8 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			int frame = 1; // hacky! skip frame 0, because we have a problem with dumping that frame somehow
 			for (;;)
 			{
-				string wav, png;
-				GetPaths(frame, out png, out wav);
+				GetPaths(frame, out var png, out var wav);
 				if (!File.Exists(png) || !File.Exists(wav))
 				{
 					break;
@@ -115,37 +114,35 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using (var avw = new AviWriter())
+			using var avw = new AviWriter();
+			avw.SetAudioParameters(44100, 2, 16); // hacky
+			avw.SetMovieParameters(60, 1); // hacky
+			avw.SetVideoParameters(width, height);
+			var token = avw.AcquireVideoCodecToken(this);
+			avw.SetVideoCodecToken(token);
+			avw.OpenFile(sfd.FileName);
+			foreach (var fi in mFrameInfos)
 			{
-				avw.SetAudioParameters(44100, 2, 16); // hacky
-				avw.SetMovieParameters(60, 1); // hacky
-				avw.SetVideoParameters(width, height);
-				var token = avw.AcquireVideoCodecToken(this);
-				avw.SetVideoCodecToken(token);
-				avw.OpenFile(sfd.FileName);
-				foreach (var fi in mFrameInfos)
+				using (var bb = new BitmapBuffer(fi.pngPath, new BitmapLoadOptions()))
 				{
-					using (var bb = new BitmapBuffer(fi.pngPath, new BitmapLoadOptions()))
-					{
-						var bbvp = new BitmapBufferVideoProvider(bb);
-						avw.AddFrame(bbvp);
-					}
-
-					// offset = 44 dec
-					var wavBytes = File.ReadAllBytes(fi.wavPath);
-					var ms = new MemoryStream(wavBytes) { Position = 44 };
-					var br = new BinaryReader(ms);
-					var sampledata = new List<short>();
-					while (br.BaseStream.Position != br.BaseStream.Length)
-					{
-						sampledata.Add(br.ReadInt16());
-					}
-
-					avw.AddSamples(sampledata.ToArray());
+					var bbvp = new BitmapBufferVideoProvider(bb);
+					avw.AddFrame(bbvp);
 				}
 
-				avw.CloseFile();
+				// offset = 44 dec
+				var wavBytes = File.ReadAllBytes(fi.wavPath);
+				var ms = new MemoryStream(wavBytes) { Position = 44 };
+				var br = new BinaryReader(ms);
+				var sampledata = new List<short>();
+				while (br.BaseStream.Position != br.BaseStream.Length)
+				{
+					sampledata.Add(br.ReadInt16());
+				}
+
+				avw.AddSamples(sampledata.ToArray());
 			}
+
+			avw.CloseFile();
 		}
 	}
 }

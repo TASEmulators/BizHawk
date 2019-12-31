@@ -1,15 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Client.Common;
 
@@ -19,35 +13,29 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class OpenAdvancedChooser : Form
 	{
-		MainForm mainForm;
+		private readonly MainForm _mainForm;
 
 		public AdvancedRomLoaderType Result;
 		public string SuggestedExtensionFilter;
 
 		public OpenAdvancedChooser(MainForm mainForm)
 		{
-			this.mainForm = mainForm;
+			_mainForm = mainForm;
 
 			InitializeComponent();
 
 			RefreshLibretroCore(true);
 		}
 
-		private void btnOK_Click(object sender, EventArgs e)
-		{
-			DialogResult = System.Windows.Forms.DialogResult.OK;
-			Close();
-		}
-
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 
 		private void btnSetLibretroCore_Click(object sender, EventArgs e)
 		{
-			if(mainForm.RunLibretroCoreChooser())
+			if(_mainForm.RunLibretroCoreChooser())
 				RefreshLibretroCore(false);
 		}
 
@@ -73,26 +61,24 @@ namespace BizHawk.Client.EmuHawk
 				////LibRetroEmulator should be able to survive having this stub corecomm
 				//NEW COMMENTS:
 				//nope, we need to navigate to the dll path. this was a bad idea anyway. so many dlls get loaded, something to resolve them is needed
-				var coreComm = new BizHawk.Emulation.Common.CoreComm(null, null);
+				var coreComm = new CoreComm(null, null);
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				using (var retro = new LibretroCore(coreComm, core))
-				{
-					btnLibretroLaunchGame.Enabled = true;
-					if (retro.Description.SupportsNoGame)
-						btnLibretroLaunchNoGame.Enabled = true;
+				using var retro = new LibretroCore(coreComm, core);
+				btnLibretroLaunchGame.Enabled = true;
+				if (retro.Description.SupportsNoGame)
+					btnLibretroLaunchNoGame.Enabled = true;
 
-					//print descriptive information
-					var descr = retro.Description;
-					CurrentDescription = descr;
-					Console.WriteLine($"core name: {descr.LibraryName} version {descr.LibraryVersion}");
-					Console.WriteLine($"extensions: {descr.ValidExtensions}");
-					Console.WriteLine($"{nameof(descr.NeedsRomAsPath)}: {descr.NeedsRomAsPath}");
-					Console.WriteLine($"{nameof(descr.NeedsArchives)}: {descr.NeedsArchives}");
-					Console.WriteLine($"{nameof(descr.SupportsNoGame)}: {descr.SupportsNoGame}");
+				//print descriptive information
+				var descr = retro.Description;
+				CurrentDescription = descr;
+				Console.WriteLine($"core name: {descr.LibraryName} version {descr.LibraryVersion}");
+				Console.WriteLine($"extensions: {descr.ValidExtensions}");
+				Console.WriteLine($"{nameof(descr.NeedsRomAsPath)}: {descr.NeedsRomAsPath}");
+				Console.WriteLine($"{nameof(descr.NeedsArchives)}: {descr.NeedsArchives}");
+				Console.WriteLine($"{nameof(descr.SupportsNoGame)}: {descr.SupportsNoGame}");
 					
-					foreach (var v in descr.Variables.Values)
-						Console.WriteLine(v);
-				}
+				foreach (var v in descr.Variables.Values)
+					Console.WriteLine(v);
 			}
 			catch (Exception ex)
 			{
@@ -111,8 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				sw.Write("*.{0};",ext);
 			var filter = sw.ToString();
 			filter = filter.Substring(0,filter.Length-1); //remove last semicolon
-			List<string> args = new List<string>();
-			args.Add("Rom Files");
+			var args = new List<string> { "Rom Files" };
 			if (!CurrentDescription.NeedsArchives)
 				filter += ";%ARCH%";
 			args.Add(filter);
