@@ -446,6 +446,7 @@ namespace BizHawk.Client.Common
 		public bool? PreviousSNES_InSnes9x { get; set; }
 		public bool? PreviousGBA_UsemGBA { get; set; }
 
+		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode

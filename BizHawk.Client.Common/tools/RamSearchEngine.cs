@@ -223,6 +223,7 @@ namespace BizHawk.Client.Common
 
 		public MemoryDomain Domain => _settings.Domain;
 
+		/// <exception cref="InvalidOperationException">(from setter) <see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="value"/> is not <see cref="Compare.Changes"/></exception>
 		public Compare CompareTo
 		{
 			get => _compareTo;
@@ -268,6 +269,7 @@ namespace BizHawk.Client.Common
 			_settings.BigEndian = bigEndian;
 		}
 
+		/// <exception cref="InvalidOperationException"><see cref="Mode"/> is <see cref="Settings.SearchMode.Fast"/> and <paramref name="type"/> is <see cref="PreviousType.LastFrame"/></exception>
 		public void SetPreviousType(PreviousType type)
 		{
 			if (_settings.Mode == Settings.SearchMode.Fast)

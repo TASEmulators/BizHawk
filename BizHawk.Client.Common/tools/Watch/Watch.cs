@@ -620,9 +620,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Gets the current <see cref="MemoryDomain"/>
-		/// </summary>
+		/// <value>the domain of <see cref="Address"/></value>
+		/// <exception cref="InvalidOperationException">(from setter) <paramref name="value"/> does not have the same name as this property's value</exception>
 		public MemoryDomain Domain
 		{
 			get

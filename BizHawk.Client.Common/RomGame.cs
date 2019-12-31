@@ -25,6 +25,7 @@ namespace BizHawk.Client.Common
 		{
 		}
 
+		/// <exception cref="Exception"><paramref name="file"/> does not exist</exception>
 		public RomGame(HawkFile file, string patch)
 		{
 			if (!file.Exists)

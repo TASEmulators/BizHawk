@@ -186,6 +186,7 @@ namespace BizHawk.Client.Common
 			return _mHead.Value.Index;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Pop()
 		{
 			if (_mHead == null)
@@ -207,6 +208,7 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Peek()
 		{
 			if (_mHead == null)
@@ -217,6 +219,7 @@ namespace BizHawk.Client.Common
 			return _mHead.Value;
 		}
 
+		/// <exception cref="InvalidOperationException">empty</exception>
 		public ListItem Dequeue()
 		{
 			if (_mTail == null)

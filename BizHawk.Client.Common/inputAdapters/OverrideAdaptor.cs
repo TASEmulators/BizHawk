@@ -17,6 +17,7 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<string, float> _floatOverrides = new Dictionary<string, float>();
 		private readonly List<string> _inverses = new List<string>();
 
+		/// <exception cref="InvalidOperationException"><paramref name="button"/> not overridden</exception>
 		public bool IsPressed(string button)
 		{
 			if (_overrides.ContainsKey(button))

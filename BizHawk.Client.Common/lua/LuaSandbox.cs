@@ -101,6 +101,7 @@ namespace BizHawk.Client.Common
 			return sandbox;
 		}
 
+		/// <exception cref="InvalidOperationException">could not get sandbox reference for thread (<see cref="CreateSandbox"/> has not been called)</exception>
 		public static LuaSandbox GetSandbox(Lua thread)
 		{
 			// this is just placeholder.

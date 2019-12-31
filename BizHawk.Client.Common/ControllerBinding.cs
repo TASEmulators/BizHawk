@@ -265,6 +265,7 @@ namespace BizHawk.Client.Common
 			_buttonStarts.Clear();
 		}
 
+		/// <exception cref="NotImplementedException">always</exception>
 		public float GetFloat(string name)
 		{
 			throw new NotImplementedException();

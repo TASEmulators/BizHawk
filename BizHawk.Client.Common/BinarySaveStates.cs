@@ -235,13 +235,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		/// <summary>
-		/// Gets a lump
-		/// </summary>
-		/// <param name="lump">lump to retriever</param>
-		/// <param name="abort">true to throw exception on failure</param>
+		/// <param name="lump">lump to retrieve</param>
+		/// <param name="abort">pass true to throw exception instead of returning false</param>
 		/// <param name="callback">function to call with the desired stream</param>
-		/// <returns>true if callback was called and stream was loaded</returns>
+		/// <returns>true iff stream was loaded</returns>
+		/// <exception cref="Exception">stream not found and <paramref name="abort"/> is <see langword="true"/></exception>
 		public bool GetLump(BinaryStateLump lump, bool abort, Action<Stream, long> callback)
 		{
 			ZipEntry e;
@@ -290,6 +288,7 @@ namespace BizHawk.Client.Common
 			});
 		}
 
+		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
@@ -299,6 +298,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <exception cref="Exception">couldn't find Binary or Text savestate</exception>
 		public void GetCoreState(Action<BinaryReader> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)

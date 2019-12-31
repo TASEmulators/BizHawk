@@ -190,6 +190,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException">range defined by <paramref name="addr"/> and <paramref name="count"/> extends beyond the bound of <paramref name="domain"/> (or <see cref="Domain"/> if null)</exception>
 		public string HashRegion(long addr, int count, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);

@@ -46,6 +46,7 @@ namespace BizHawk.Client.Common
 			WasLagged = TasLagLog.History(index + 1)
 		};
 
+		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		public TasMovie(string path, bool startsFromSavestate = false)
 			: base(path)
 		{
@@ -66,6 +67,7 @@ namespace BizHawk.Client.Common
 			CurrentBranch = -1;
 		}
 
+		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
 		public TasMovie(bool startsFromSavestate = false)
 		{
 			if (!Global.Emulator.HasSavestates())

@@ -4,6 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public sealed class UserDataApi : IUserData
 	{
+		/// <exception cref="InvalidOperationException">type of <paramref name="value"/> cannot be used in userdata</exception>
 		public void Set(string name, object value)
 		{
 			if (value != null)

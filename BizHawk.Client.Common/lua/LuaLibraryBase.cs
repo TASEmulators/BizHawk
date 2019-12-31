@@ -38,6 +38,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <exception cref="InvalidOperationException">attempted to have Lua running in two host threads at once</exception>
 		public static void SetCurrentThread(LuaFile luaFile)
 		{
 			lock (ThreadMutex)

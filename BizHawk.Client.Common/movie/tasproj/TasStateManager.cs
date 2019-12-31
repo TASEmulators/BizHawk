@@ -33,6 +33,7 @@ namespace BizHawk.Client.Common
 			(int)((ulong)Settings.DiskCapacityMb * 1024 * 1024 / _expectedStateSize);
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
+		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;

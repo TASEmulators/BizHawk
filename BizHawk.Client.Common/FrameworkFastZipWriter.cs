@@ -130,6 +130,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <exception cref="NotImplementedException"><paramref name="compressionlevel"/> is <c>0</c></exception>
 		public FrameworkFastZipWriter(string path, int compressionlevel)
 		{
 			_output = new FileStream(path, FileMode.Create, FileAccess.Write);

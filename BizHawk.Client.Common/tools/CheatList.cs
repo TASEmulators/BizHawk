@@ -109,6 +109,7 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
+		/// <exception cref="ArgumentNullException"><paramref name="cheat"/> is null</exception>
 		public void Add(Cheat cheat)
 		{
 			if (cheat is null)

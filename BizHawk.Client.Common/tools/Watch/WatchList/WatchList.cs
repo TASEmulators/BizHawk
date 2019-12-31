@@ -114,9 +114,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="array">The one-dimension <see cref="Array"/> that will serve as destination to copy</param>
 		/// <param name="arrayIndex">Zero-based index where the copy should starts</param>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		/// <exception cref="ArgumentException"></exception>
 		public void CopyTo(Watch[] array, int arrayIndex)
 		{
 			_watchList.CopyTo(array, arrayIndex);
@@ -158,7 +155,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="index">The zero-base index where the <see cref="Watch"/> should be inserted</param>
 		/// <param name="watch"><see cref="Watch"/> to insert</param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void Insert(int index, Watch watch)
 		{
 			_watchList.Insert(index, watch);
@@ -168,7 +164,6 @@ namespace BizHawk.Client.Common
 		/// Removes item at the specified index
 		/// </summary>
 		/// <param name="index">Zero-based index of the <see cref="Watch"/> to remove</param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		public void RemoveAt(int index)
 		{
 			_watchList.RemoveAt(index);

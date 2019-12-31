@@ -30,6 +30,7 @@ namespace BizHawk.Client.Common
 			};
 		}
 
+		/// <exception cref="InvalidOperationException">internal error</exception>
 		public static T Load<T>(string filepath) where T : new()
 		{
 			T config = default(T);

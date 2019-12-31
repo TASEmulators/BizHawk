@@ -9,7 +9,10 @@ namespace BizHawk.Client.Common
 	public static class StringLogUtil
 	{
 		public static bool DefaultToDisk { get; set; }
+
 		public static bool DefaultToAWE { get; set; }
+
+		/// <exception cref="InvalidOperationException"><see cref="DefaultToAWE"/> is <see langword="true"/> but not running on Windows host</exception>
 		public static IStringLog MakeStringLog()
 		{
 			if (DefaultToDisk)

@@ -18,6 +18,7 @@ namespace BizHawk.Client.Common
 		public IList<KeyValuePair<string, byte[]>> Assets { get; } = new List<KeyValuePair<string, byte[]>>();
 		public IList<string> AssetFullPaths { get; } = new List<string>(); // TODO: Hack work around, to avoid having to refactor Assets into a object array, should be refactored!
 
+		/// <exception cref="InvalidOperationException">internal error</exception>
 		public static XmlGame Create(HawkFile f)
 		{
 			try
