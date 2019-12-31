@@ -1,36 +1,27 @@
-//https://github.com/Themaister/RetroArch/wiki/GLSL-shaders
-//https://github.com/Themaister/Emulator-Shader-Pack/blob/master/Cg/README
-//https://github.com/libretro/common-shaders/
+// https://github.com/Themaister/RetroArch/wiki/GLSL-shaders
+// https://github.com/Themaister/Emulator-Shader-Pack/blob/master/Cg/README
+// https://github.com/libretro/common-shaders/
 
 using System;
-using System.Linq;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Drawing;
-
-using BizHawk.Common;
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.FilterManager;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
-
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace BizHawk.Client.EmuHawk.Filters
 {
 	public class RetroShaderChain : IDisposable
 	{
-		static System.Text.RegularExpressions.Regex rxInclude = new Regex(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+		private static readonly Regex RxInclude = new Regex(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 		static string ResolveIncludes(string content, string baseDirectory)
 		{
 			for (; ; )
 			{
-				var match = rxInclude.Match(content);
+				var match = RxInclude.Match(content);
 				if(match.Value == "") break;
 				string fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
@@ -43,7 +34,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public RetroShaderChain(IGL owner, RetroShaderPreset preset, string baseDirectory, bool debug = false)
 		{
 			Owner = owner;
-			this.Preset = preset;
+			Preset = preset;
 			Passes = preset.Passes.ToArray();
 			Errors = "";
 
@@ -82,9 +73,16 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public void Dispose()
 		{
-			if (_isDisposed) return;
+			if (_isDisposed)
+			{
+				return;
+			}
+
 			foreach (var s in Shaders)
+			{
 				s.Dispose();
+			}
+
 			_isDisposed = true;
 		}
 
@@ -107,13 +105,13 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public RetroShaderPreset(Stream stream)
 		{
 			var content = new StreamReader(stream).ReadToEnd();
-			Dictionary<string, string> dict = new Dictionary<string, string>();
+			var dict = new Dictionary<string, string>();
 
 			//parse the key-value-pair format of the file
 			content = content.Replace("\r", "");
-			foreach (var _line in content.Split('\n'))
+			foreach (var splitLine in content.Split('\n'))
 			{
-				var line = _line.Trim();
+				var line = splitLine.Trim();
 				if (line.StartsWith("#")) continue; //lines that are solely comments
 				if (line == "") continue; //empty line
 				int eq = line.IndexOf('=');
@@ -133,12 +131,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 				dict[key.ToLower()] = value;
 			}
 
-			//process the keys
+			// process the keys
 			int nShaders = FetchInt(dict, "shaders", 0);
 			for (int i = 0; i < nShaders; i++)
 			{
-				ShaderPass sp = new ShaderPass();
-				sp.Index = i;
+				var sp = new ShaderPass { Index = i };
 				Passes.Add(sp);
 
 				sp.InputFilterLinear = FetchBool(dict, $"filter_linear{i}", false); //Should this value not be defined, the filtering option is implementation defined.
@@ -146,37 +143,44 @@ namespace BizHawk.Client.EmuHawk.Filters
 				sp.FrameCountMod = FetchInt(dict, $"frame_count_mod{i}", 1);
 				sp.ShaderPath = FetchString(dict, $"shader{i}", "?"); //todo - change extension to .cg for better compatibility? just change .cg to .glsl transparently at last second?
 
-				//If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
-				//It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
+				// If no scale type is assumed, it is assumed that it is set to "source" with scaleN set to 1.0.
+				// It is possible to set scale_type_xN and scale_type_yN to specialize the scaling type in either direction. scale_typeN however overrides both of these.
 				sp.ScaleTypeX = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_x{i}", "Source"), true);
 				sp.ScaleTypeY = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type_y{i}", "Source"), true);
 				ScaleType st = (ScaleType)Enum.Parse(typeof(ScaleType), FetchString(dict, $"scale_type{i}", "NotSet"), true);
 				if (st != ScaleType.NotSet)
 					sp.ScaleTypeX = sp.ScaleTypeY = st;
 
-				//scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
+				// scaleN controls both scaling type in horizontal and vertical directions. If scaleN is defined, scale_xN and scale_yN have no effect.
 				sp.Scale.X = FetchFloat(dict, $"scale_x{i}", 1);
 				sp.Scale.Y = FetchFloat(dict, $"scale_y{i}", 1);
 				float scale = FetchFloat(dict, $"scale{i}", -999);
 				if (scale != -999)
+				{
 					sp.Scale.X = sp.Scale.Y = FetchFloat(dict, $"scale{i}", 1);
+				}
 
 				//TODO - LUTs
 			}
 		}
 
-		public List<ShaderPass> Passes = new List<ShaderPass>();
+		public List<ShaderPass> Passes { get; set; } = new List<ShaderPass>();
 
 		/// <summary>
 		/// Indicates whether any of the passes contain GLSL filenames (these are invalid now)
 		/// </summary>
-		public bool ContainsGLSL
+		public bool ContainsGlsl
 		{
 			get
 			{
 				foreach (var pass in Passes)
-					if (Path.GetExtension(pass.ShaderPath).ToLowerInvariant() == ".glsl")
+				{
+					if (Path.GetExtension(pass.ShaderPath)?.ToLowerInvariant() == ".glsl")
+					{
 						return true;
+					}
+				}
+
 				return false;
 			}
 		}
@@ -198,64 +202,51 @@ namespace BizHawk.Client.EmuHawk.Filters
 			public Vector2 Scale;
 		}
 
-		string FetchString(Dictionary<string, string> dict, string key, string @default)
+		private string FetchString(IDictionary<string, string> dict, string key, string @default)
 		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return str;
-			else return @default;
+			return dict.TryGetValue(key, out var str) ? str : @default;
 		}
 
-		int FetchInt(Dictionary<string, string> dict, string key, int @default)
+		private int FetchInt(IDictionary<string, string> dict, string key, int @default)
 		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return int.Parse(str);
-			else return @default;
+			return dict.TryGetValue(key, out var str) ? int.Parse(str) : @default;
 		}
 
-		float FetchFloat(Dictionary<string, string> dict, string key, float @default)
+		private float FetchFloat(IDictionary<string, string> dict, string key, float @default)
 		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return float.Parse(str);
-			else return @default;
+			return dict.TryGetValue(key, out var str) ? float.Parse(str) : @default;
 		}
 
-		bool FetchBool(Dictionary<string, string> dict, string key, bool @default)
+		private bool FetchBool(IDictionary<string, string> dict, string key, bool @default)
 		{
-			string str;
-			if (dict.TryGetValue(key, out str))
-				return ParseBool(str);
-			else return @default;
+			return dict.TryGetValue(key, out var str) ? ParseBool(str) : @default;
 		}
 
-
-		bool ParseBool(string value)
+		private bool ParseBool(string value)
 		{
 			if (value == "1") return true;
 			if (value == "0") return false;
 			value = value.ToLower();
 			if (value == "true") return true;
 			if (value == "false") return false;
-			throw new InvalidOperationException("Unparseable bool in CGP file content");
+			throw new InvalidOperationException("Unparsable bool in CGP file content");
 		}
 	}
 
 	public class RetroShaderPass : BaseFilter
 	{
-		RetroShaderChain RSC;
-		RetroShaderPreset.ShaderPass SP;
-		int RSI;
-		Size OutputSize;
+		private readonly RetroShaderChain _rsc;
+		private readonly RetroShaderPreset.ShaderPass _sp;
+		private readonly int _rsi;
+		private Size _outputSize;
 
-		public override string ToString() => $"{nameof(RetroShaderPass)}[#{RSI}]";
+		public override string ToString() => $"{nameof(RetroShaderPass)}[#{_rsi}]";
 
-		public RetroShaderPass(RetroShaderChain RSC, int index)
+		public RetroShaderPass(RetroShaderChain rsc, int index)
 		{
-			this.RSC = RSC;
-			this.RSI = index;
-			this.SP = RSC.Passes[index];
+			_rsc = rsc;
+			_rsi = index;
+			_sp = _rsc.Passes[index];
 		}
 
 		public override void Initialize()
@@ -265,59 +256,66 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void SetInputFormat(string channel, SurfaceState state)
 		{
-			Size insize = state.SurfaceFormat.Size;
-			if (SP.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) OutputSize.Width = (int)SP.Scale.X;
-			if (SP.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) OutputSize.Width = (int)SP.Scale.Y;
-			if (SP.ScaleTypeX == RetroShaderPreset.ScaleType.Source) OutputSize.Width = (int)(insize.Width * SP.Scale.X);
-			if (SP.ScaleTypeY == RetroShaderPreset.ScaleType.Source) OutputSize.Height = (int)(insize.Height * SP.Scale.Y);
+			Size inSize = state.SurfaceFormat.Size;
+			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) _outputSize.Width = (int)_sp.Scale.X;
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) _outputSize.Width = (int)_sp.Scale.Y;
+			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) _outputSize.Width = (int)(inSize.Width * _sp.Scale.X);
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) _outputSize.Height = (int)(inSize.Height * _sp.Scale.Y);
 
-			var outState = new SurfaceState();
-			outState.SurfaceFormat = new SurfaceFormat(OutputSize);
-			outState.SurfaceDisposition = SurfaceDisposition.RenderTarget;
-			DeclareOutput(outState);
+			DeclareOutput(new SurfaceState
+			{
+				SurfaceFormat = new SurfaceFormat(_outputSize),
+				SurfaceDisposition = SurfaceDisposition.RenderTarget
+			});
 		}
 
 		public override Size PresizeOutput(string channel, Size size)
 		{
-			OutputSize = size;
+			_outputSize = size;
 			return size;
 		}
 
-		public override Size PresizeInput(string channel, Size insize)
+		public override Size PresizeInput(string channel, Size inSize)
 		{
-			Size outsize = insize;
-			if (SP.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)SP.Scale.X;
-			if (SP.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)SP.Scale.Y;
-			if (SP.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(insize.Width * SP.Scale.X);
-			if (SP.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(insize.Height * SP.Scale.Y);
+			Size outsize = inSize;
+			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)_sp.Scale.X;
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Absolute) outsize.Width = (int)_sp.Scale.Y;
+			if (_sp.ScaleTypeX == RetroShaderPreset.ScaleType.Source) outsize.Width = (int)(inSize.Width * _sp.Scale.X);
+			if (_sp.ScaleTypeY == RetroShaderPreset.ScaleType.Source) outsize.Height = (int)(inSize.Height * _sp.Scale.Y);
 			return outsize;
 		}
 
 		public override void Run()
 		{
-			var shader = RSC.Shaders[RSI];
-
+			var shader = _rsc.Shaders[_rsi];
 			shader.Bind();
 
-			//apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
+			// apply all parameters to this shader.. even if it was meant for other shaders. kind of lame.
 			if(Parameters != null)
+			{ 
 				foreach (var kvp in Parameters)
 				{
-					if (kvp.Value is float)
-						shader.Pipeline[kvp.Key].Set((float)kvp.Value);
+					if (kvp.Value is float value)
+					{
+						shader.Pipeline[kvp.Key].Set(value);
+					}
 				}
+			}
 
 			var input = InputTexture;
-			if (SP.InputFilterLinear)
+			if (_sp.InputFilterLinear)
+			{
 				InputTexture.SetFilterLinear();
+			}
 			else
+			{
 				InputTexture.SetFilterNearest();
-			RSC.Shaders[RSI].Run(input, input.Size, OutputSize, InputTexture.IsUpsideDown);
+			}
 
-			//maintain invariant.. i think.
+			_rsc.Shaders[_rsi].Run(input, input.Size, _outputSize, InputTexture.IsUpsideDown);
+
+			// maintain invariant.. i think.
 			InputTexture.SetFilterNearest();
 		}
 	}
-
-
 }

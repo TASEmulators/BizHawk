@@ -12,13 +12,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public TextureFrugalizer(IGL gl)
 		{
-			GL = gl;
+			_gl = gl;
 			ResetList();
 		}
 
 		public void Dispose()
 		{
-			foreach (var ct in CurrentTextures)
+			foreach (var ct in _currentTextures)
 			{
 				ct?.Dispose();
 			}
@@ -26,13 +26,13 @@ namespace BizHawk.Client.EmuHawk
 			ResetList();
 		}
 
-		void ResetList()
+		private void ResetList()
 		{
-			CurrentTextures = new List<Texture2d> { null, null };
+			_currentTextures = new List<Texture2d> { null, null };
 		}
 
-		private readonly IGL GL;
-		private List<Texture2d> CurrentTextures;
+		private readonly IGL _gl;
+		private List<Texture2d> _currentTextures;
 
 		public Texture2d Get(DisplaySurface ds)
 		{
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 		public Texture2d Get(BitmapBuffer bb)
 		{
 			//get the current entry
-			Texture2d currentTexture = CurrentTextures[0];
+			Texture2d currentTexture = _currentTextures[0];
 
 			// TODO - its a bit cruddy here that we dont respect the current texture HasAlpha condition (in fact, there's no such concept)
 			// we might need to deal with that in the future to fix some bugs.
@@ -53,17 +53,17 @@ namespace BizHawk.Client.EmuHawk
 				//needs recreating. be sure to kill the old one...
 				currentTexture?.Dispose();
 				//and make a new one
-				currentTexture = GL.LoadTexture(bb);
+				currentTexture = _gl.LoadTexture(bb);
 			}
 			else
 			{
 				//its good! just load in the data
-				GL.LoadTextureData(currentTexture, bb);
+				_gl.LoadTextureData(currentTexture, bb);
 			}
 
 			//now shuffle the buffers
-			CurrentTextures[0] = CurrentTextures[1];
-			CurrentTextures[1] = currentTexture;
+			_currentTextures[0] = _currentTextures[1];
+			_currentTextures[1] = currentTexture;
 
 			//deterministic state, i guess
 			currentTexture.SetFilterNearest();

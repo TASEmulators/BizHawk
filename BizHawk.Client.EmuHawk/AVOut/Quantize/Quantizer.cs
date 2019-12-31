@@ -16,10 +16,8 @@
 
 //BizHawk says: adapted from https://github.com/inexorabletash/PcxFileType/blob/master/Quantize
 
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

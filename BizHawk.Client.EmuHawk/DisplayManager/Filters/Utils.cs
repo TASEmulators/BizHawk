@@ -9,12 +9,12 @@ namespace BizHawk.Client.EmuHawk.Filters
 	{
 		public SourceImage(Size size)
 		{
-			Size = size;
+			_size = size;
 		}
 
-		private readonly Size Size;
+		private readonly Size _size;
 
-		public Texture2d Texture;
+		public Texture2d Texture { get; set; }
 
 		public override void Run()
 		{
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public override void Initialize()
 		{
-			DeclareOutput(new SurfaceState(new SurfaceFormat(Size), SurfaceDisposition.Texture));
+			DeclareOutput(new SurfaceState(new SurfaceFormat(_size), SurfaceDisposition.Texture));
 		}
 
 		public override void SetInputFormat(string channel, SurfaceState format)
@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 	/// <summary>
 	/// transforms an input texture to an output render target (by rendering it)
 	/// </summary>
-	class Render : BaseFilter
+	public class Render : BaseFilter
 	{
 		public override void Initialize()
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		}
 	}
 
-	class Resolve : BaseFilter
+	public class Resolve : BaseFilter
 	{
 		public override void Initialize()
 		{

@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 
 using BizHawk.Bizware.BizwareGL;
@@ -7,59 +8,64 @@ namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// Recycles a pair of temporary render targets, as long as the dimensions match.
-	/// When the dimensions dont match, a new one will be allocated
+	/// When the dimensions don't match, a new one will be allocated
 	/// </summary>
 	public class RenderTargetFrugalizer : IDisposable
 	{
 		public RenderTargetFrugalizer(IGL gl)
 		{
-			GL = gl;
+			_gl = gl;
 			ResetList();
 		}
 
 		public void Dispose()
 		{
-			foreach (var ct in CurrentRenderTargets)
-				if (ct != null)
-					ct.Dispose();
+			foreach (var ct in _currentRenderTargets)
+			{
+				ct?.Dispose();
+			}
+
 			ResetList();
 		}
 
-		void ResetList()
+		private void ResetList()
 		{
-			CurrentRenderTargets = new List<RenderTarget>();
-			CurrentRenderTargets.Add(null);
-			CurrentRenderTargets.Add(null);
+			_currentRenderTargets = new List<RenderTarget> { null, null };
 		}
 
-		IGL GL;
-		List<RenderTarget> CurrentRenderTargets;
+		private readonly IGL _gl;
+		private List<RenderTarget> _currentRenderTargets;
 
-		public RenderTarget Get(System.Drawing.Size dimensions) { return Get(dimensions.Width, dimensions.Height); }
+		public RenderTarget Get(Size dimensions)
+		{
+			return Get(dimensions.Width, dimensions.Height);
+		}
+
 		public RenderTarget Get(int width, int height)
 		{
 			//get the current entry
-			RenderTarget CurrentRenderTarget = CurrentRenderTargets[0];
+			RenderTarget currentRenderTarget = _currentRenderTargets[0];
 
 			//check if its rotten and needs recreating
-			if (CurrentRenderTarget == null || CurrentRenderTarget.Texture2d.IntWidth != width || CurrentRenderTarget.Texture2d.IntHeight != height)
+			if (currentRenderTarget == null
+				|| currentRenderTarget.Texture2d.IntWidth != width
+				|| currentRenderTarget.Texture2d.IntHeight != height)
 			{
-				//needs recreating. be sure to kill the old one...
-				if (CurrentRenderTarget != null)
-					CurrentRenderTarget.Dispose();
-				//and make a new one
-				CurrentRenderTarget = GL.CreateRenderTarget(width, height);
+				// needs recreating. be sure to kill the old one...
+				currentRenderTarget?.Dispose();
+				// and make a new one
+				currentRenderTarget = _gl.CreateRenderTarget(width, height);
 			}
 			else
 			{
-				//its good! nothing more to do
+				// its good! nothing more to do
 			}
 
-			//now shuffle the buffers
-			CurrentRenderTargets[0] = CurrentRenderTargets[1];
-			CurrentRenderTargets[1] = CurrentRenderTarget;
+			// now shuffle the buffers
+			_currentRenderTargets[0] = _currentRenderTargets[1];
+			_currentRenderTargets[1] = currentRenderTarget;
 
-			return CurrentRenderTarget;
+			return currentRenderTarget;
 		}
 	}
 }

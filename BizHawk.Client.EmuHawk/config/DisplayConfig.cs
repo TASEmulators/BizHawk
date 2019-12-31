@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 				using (var stream = File.OpenRead(choice))
 				{
 					var cgp = new BizHawk.Client.EmuHawk.Filters.RetroShaderPreset(stream);
-					if (cgp.ContainsGLSL)
+					if (cgp.ContainsGlsl)
 					{
 						MessageBox.Show("Specified CGP contains references to .glsl files. This is illegal. Use .cg");
 						return;

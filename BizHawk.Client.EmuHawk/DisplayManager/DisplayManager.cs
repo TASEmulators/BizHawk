@@ -1,5 +1,5 @@
-﻿//TODO
-//we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
+﻿// TODO
+// we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
 using System;
 using System.IO;
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
 		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
 		/// </summary>
-		int currEmuWidth, currEmuHeight;
+		private int currEmuWidth, currEmuHeight;
 
 		/// <summary>
 		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
@@ -906,7 +906,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					case FilterProgram.ProgramStepType.FinalTarget:
 						{
-							var size = (Size)step.Args;
 							inFinalTarget = true;
 							rtCurr = null;
 							_currentFilterProgram.CurrRenderTarget = null;
@@ -927,17 +926,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Debug.Assert(inFinalTarget);
 
-				//wait for vsync to begin
+				// wait for vsync to begin
 				if (alternateVsync) dx9.AlternateVsyncPass(0);
 
-				//present and conclude drawing
+				// present and conclude drawing
 				presentationPanel.GraphicsControl.SwapBuffers();
 
-				//wait for vsync to end
+				// wait for vsync to end
 				if (alternateVsync) dx9.AlternateVsyncPass(1);
 
-				//nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
-				//presentationPanel.GraphicsControl.End();
+				// nope. don't do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
+				// presentationPanel.GraphicsControl.End();
 			}
 		}
 
@@ -955,9 +954,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool? LastVsyncSetting;
 		private GraphicsControl LastVsyncSettingGraphicsControl;
 
-		private Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
-		private Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
-		private Dictionary<string, SwappableDisplaySurfaceSet> LuaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
+		private readonly Dictionary<string, DisplaySurface> MapNameToLuaSurface = new Dictionary<string,DisplaySurface>();
+		private readonly Dictionary<DisplaySurface, string> MapLuaSurfaceToName = new Dictionary<DisplaySurface, string>();
+		private readonly Dictionary<string, SwappableDisplaySurfaceSet> LuaSurfaceSets = new Dictionary<string, SwappableDisplaySurfaceSet>();
 
 		/// <summary>
 		/// Peeks a locked lua surface, or returns null if it isn't locked
@@ -993,13 +992,17 @@ namespace BizHawk.Client.EmuHawk
 			currNativeHeight += ClientExtraPadding.Vertical;
 
 			int width,height;
-			if(name == "emu") {
+			if (name == "emu")
+			{
 				width = currEmuWidth;
 				height = currEmuHeight;
 				width += GameExtraPadding.Horizontal;
 				height += GameExtraPadding.Vertical;
 			}
-			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
+			else if (name == "native")
+			{
+				width = currNativeWidth; height = currNativeHeight;
+			}
 			else throw new InvalidOperationException($"Unknown lua surface name: {name}");
 
 			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
@@ -1018,7 +1021,7 @@ namespace BizHawk.Client.EmuHawk
 					DisplaySurface surfLocked = null;
 					if (surf == null)
 					{
-						surfLocked = LockLuaSurface(kvp.Key,true);
+						surfLocked = LockLuaSurface(kvp.Key, true);
 					}
 
 					if (surfLocked != null)

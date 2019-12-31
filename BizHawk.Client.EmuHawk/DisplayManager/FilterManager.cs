@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 					iosi.SurfaceFormat = currState.SurfaceFormat;
 					f.SetInputFormat(channel, currState);
 
-					if (f.IsNOP)
+					if (f.IsNop)
 					{
 						continue;
 					}
