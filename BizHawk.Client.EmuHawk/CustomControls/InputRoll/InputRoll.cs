@@ -1076,13 +1076,23 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseLeave(EventArgs e)
 		{
+			bool refresh = false;
 			_currentX = null;
 			_currentY = null;
+			if (IsHoveringOnColumnCell)
+			{
+				refresh = true;
+			}
+
 			CurrentCell = null;
 			IsPaintDown = false;
 			_columnResizing = null;
 			_hoverTimer.Stop();
-			Refresh();
+			if (refresh)
+			{
+				Refresh();
+			}
+
 			base.OnMouseLeave(e);
 		}
 
