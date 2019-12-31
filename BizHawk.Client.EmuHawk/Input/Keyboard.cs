@@ -6,20 +6,20 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class KeyInput
 	{
-		private static readonly object _syncObj = new object();
-		private static readonly List<KeyEvent> _eventList = new List<KeyEvent>();
-		private static DirectInput _dinput;
+		private static readonly object SyncObj = new object();
+		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
+		private static DirectInput _directInput;
 		private static Keyboard _keyboard;
 
 		public static void Initialize()
 		{
-			lock (_syncObj)
+			lock (SyncObj)
 			{
 				Cleanup();
 
-				_dinput = new DirectInput();
+				_directInput = new DirectInput();
 
-				_keyboard = new Keyboard(_dinput);
+				_keyboard = new Keyboard(_directInput);
 				_keyboard.SetCooperativeLevel(GlobalWin.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 				_keyboard.Properties.BufferSize = 8;
 			}
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Cleanup()
 		{
-			lock (_syncObj)
+			lock (SyncObj)
 			{
 				if (_keyboard != null)
 				{
@@ -35,22 +35,22 @@ namespace BizHawk.Client.EmuHawk
 					_keyboard = null;
 				}
 
-				if (_dinput != null)
+				if (_directInput != null)
 				{
-					_dinput.Dispose();
-					_dinput = null;
+					_directInput.Dispose();
+					_directInput = null;
 				}
 			}
 		}
 
 		public static IEnumerable<KeyEvent> Update()
 		{
-			lock (_syncObj)
+			lock (SyncObj)
 			{
-				_eventList.Clear();
+				EventList.Clear();
 
 				if (_keyboard == null || _keyboard.Acquire().IsFailure || _keyboard.Poll().IsFailure)
-					return _eventList;
+					return EventList;
 
 				for (; ; )
 				{
@@ -60,13 +60,13 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var e in events)
 					{
 						foreach (var k in e.PressedKeys)
-							_eventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = true });
+							EventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = true });
 						foreach (var k in e.ReleasedKeys)
-							_eventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = false });
+							EventList.Add(new KeyEvent { Key = KeyboardMapping.Handle(k), Pressed = false });
 					}
 				}
 
-				return _eventList;
+				return EventList;
 			}
 		}
 
