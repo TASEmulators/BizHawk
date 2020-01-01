@@ -33,7 +33,9 @@ namespace BizHawk.Bizware.BizwareGL
 		private GCHandle CurrLockHandle;
 		private BitmapData CurrLock;
 
-		public BitmapData LockBits() //TODO - add read/write semantic, for wraps
+		/// <exception cref="InvalidOperationException">already locked</exception>
+		/// <remarks>TODO add read/write semantic, for wraps</remarks>
+		public BitmapData LockBits()
 		{
 			if(CurrLock != null)
 				throw new InvalidOperationException($"{nameof(BitmapBuffer)} can only be locked once!");

@@ -43,6 +43,7 @@ namespace BizHawk.Bizware.BizwareGL
 			RefCount++;
 		}
 
+		/// <exception cref="InvalidOperationException">already closed (by call to <see cref="Close"/>)</exception>
 		public void DefineVertexAttribute(string name, int index, int components, VertexAttribPointerType attribType, AttributeUsage usage, bool normalized, int stride, int offset = 0)
 		{
 			if (Closed)

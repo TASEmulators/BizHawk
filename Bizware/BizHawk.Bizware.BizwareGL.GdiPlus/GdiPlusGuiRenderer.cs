@@ -30,7 +30,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			CornerColors[which] = color;
 		}
 
-
+		/// <exception cref="ArgumentException"><paramref name="colors"/> does not have exactly <c>4</c> elements</exception>
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
 			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
@@ -142,7 +142,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			//no batching, nothing to do here yet
 		}
 
-
+		/// <exception cref="InvalidOperationException"><see cref="IsActive"/> is <see langword="false"/></exception>
 		public void End()
 		{
 			if (!IsActive)

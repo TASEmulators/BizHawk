@@ -178,6 +178,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			public List<int> SamplerLocs;
 		}
 
+		/// <exception cref="InvalidOperationException">
+		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or
+		/// <c>glLinkProgram</c> call did not produce expected result
+		/// </exception>
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
 			//if the shaders arent available, the pipeline isn't either
@@ -362,6 +366,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.DeleteShader(sw.sid);
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="pipeline"/>.<see cref="Pipeline.Available"/> is <see langword="false"/></exception>
 		public void BindPipeline(Pipeline pipeline)
 		{
 			_CurrPipeline = pipeline;
@@ -525,6 +530,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			GL.Ext.DeleteFramebuffer((int)rt.Opaque);
 		}
 
+		/// <exception cref="InvalidOperationException">framebuffer creation unsuccessful</exception>
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			//create a texture for it

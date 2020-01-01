@@ -26,9 +26,8 @@ namespace BizHawk.Bizware.BizwareGL
 		public IEnumerable<UniformInfo> UniformInfos { get { return _UniformInfos; } }
 		List<UniformInfo> _UniformInfos = new List<UniformInfo>();
 
-		/// <summary>
-		/// Returns the sole UniformInfo or throws an exception if there's more than one
-		/// </summary>
+		/// <returns>the first and only <see cref="UniformInfo"/></returns>
+		/// <exception cref="InvalidOperationException">more than one <see cref="UniformInfo"/> exists</exception>
 		public UniformInfo Sole
 		{
 			get

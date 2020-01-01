@@ -173,6 +173,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public Dictionary<string, string> MapNativeToCode;
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
 			try
@@ -231,6 +232,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			}
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="required"/> is <see langword="true"/> and compilation error occurred</exception>
 		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
 		{
 			try
@@ -371,6 +373,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
+		/// <exception cref="InvalidOperationException">
+		/// <paramref name="required"/> is <see langword="true"/> and either <paramref name="vertexShader"/> or <paramref name="fragmentShader"/> is unavailable (their <see cref="Shader.Available"/> property is <see langword="false"/>), or
+		/// one of <paramref name="vertexLayout"/>'s items has an unsupported value in <see cref="LayoutItem.AttribType"/>, <see cref="LayoutItem.Components"/>, or <see cref="LayoutItem.Usage"/>
+		/// </exception>
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
 			if (!vertexShader.Available || !fragmentShader.Available)
@@ -712,6 +718,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			return null;
 		}
 
+		/// <exception cref="InvalidOperationException">GDI+ call returned unexpected data</exception>
 		public unsafe void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
 			sdi.BitmapData bmp_data = bmp.LockBits();
@@ -739,6 +746,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			return ret;
 		}
 
+		/// <exception cref="InvalidOperationException">SlimDX call returned unexpected data</exception>
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			//TODO - lazy create and cache resolving target in RT
@@ -824,6 +832,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			surface.Dispose();
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="control"/> does not match control passed to <see cref="BeginControl"/></exception>
 		public void EndControl(GLControlWrapper_SlimDX9 control)
 		{
 			if (control != _CurrentControl)
@@ -949,6 +958,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			return ret;
 		}
 
+		/// <exception cref="NotSupportedException"><paramref name="mode"/> is <see cref="gl.PrimitiveType.TriangleStrip"/></exception>
 		public unsafe void DrawArrays(gl.PrimitiveType mode, int first, int count)
 		{
 			PrimitiveType pt = PrimitiveType.TriangleStrip;
