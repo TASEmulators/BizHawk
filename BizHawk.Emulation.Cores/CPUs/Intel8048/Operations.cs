@@ -35,6 +35,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 
 			ushort ans = (ushort)(Reg16_d & 0xFF);
 
+			// redo for aux carry flag
+			Reg16_d = Regs[dest] & 0xF;
+			Reg16_d += (Regs[src] & 0xF);
+
+			FlagAC = Reg16_d.Bit(4);
+
 			Regs[dest] = ans;
 		}
 
@@ -122,15 +128,12 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				a += 0x60;
 			}
 
+			// FlagAC is not reset, nor is FlagC reset
 			if (a > 0xFF)
 			{
 				FlagC = true;
 			}
-			else
-			{
-				FlagC = false;
-			}
-			
+
 			Regs[src] = (byte)a;
 		}
 	}
