@@ -602,12 +602,38 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// TODO: other sizes
-			var vals = _domain.BulkPeekByte(addresses).ToList();
 			Dictionary<long, long> dict = new Dictionary<long, long>();
-			for (var i = 0; i < addresses.Count; i++)
+
+			switch (DataSize)
 			{
-				dict.Add(addresses[i], vals[i]);
+				default:
+				case 1:
+					{
+						var vals = _domain.BulkPeekByte(addresses).ToList();
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
+				case 2:
+					{
+						var vals = _domain.BulkPeekUshort(addresses, BigEndian).ToList();
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
+				case 4:
+					{
+						var vals = _domain.BulkPeekUint(addresses, BigEndian).ToList();
+						for (var i = 0; i < addresses.Count; i++)
+						{
+							dict.Add(addresses[i], vals[i]);
+						}
+						break;
+					}
 			}
 
 			return dict;
