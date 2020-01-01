@@ -57,18 +57,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		/// <param name="names">Array of button names. Must of length 1-3.</param>
 		/// <param name="results">Array of DialogResult values. Must be same length as names.</param>
-		public void SetButtons(string[] names, DialogResult[] results)
-		{
-			SetButtons(names, results, 1);
-		}
-
-		/// <summary>
-		/// Create up to 3 buttons with given DialogResult values.
-		/// </summary>
-		/// <param name="names">Array of button names. Must of length 1-3.</param>
-		/// <param name="results">Array of DialogResult values. Must be same length as names.</param>
 		/// <param name="def">Default Button number. Must be 1-3.</param>
-		public void SetButtons(string[] names, DialogResult[] results, int def)
+		/// <exception cref="ArgumentException">length of <paramref name="names"/> is not in range <c>1..3</c></exception>
+		/// <exception cref="ArgumentNullException"><paramref name="names"/> is null</exception>
+		public void SetButtons(string[] names, DialogResult[] results, int def = 1)
 		{
 			if (names == null)
 			{

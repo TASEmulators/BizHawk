@@ -66,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				return GetBufferInternal(length, zerofill, a => a.Length >= length && a.Length / (float)length <= 2.0f);
 			}
 
+			/// <exception cref="ArgumentException"><paramref name="buffer"/> is not in use</exception>
 			public void ReleaseBuffer(T[] buffer)
 			{
 				if (!_inuse.Remove(buffer))
@@ -580,16 +581,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// write a video frame to the stream
-		/// </summary>
+		/// <summary>write a video frame to the stream</summary>
 		/// <param name="data">raw video data; if length 0, write EOR</param>
+		/// <exception cref="Exception">internal error, possible A/V desync</exception>
+		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteVideoFrame(int[] video)
 		{
 			if (videodone)
 				throw new InvalidOperationException("Can't write data after end of relevance!");
 			if (audioqueue.Count > 5)
-				throw new Exception("A\\V Desync?");
+				throw new Exception("A/V Desync?");
 			int datalen = video.Length * sizeof(int);
 			byte[] data = _bufferpool.GetBufferAtLeast(datalen);
 			Buffer.BlockCopy(video, 0, data, 0, datalen);
@@ -603,16 +604,16 @@ namespace BizHawk.Client.EmuHawk
 				audioqueue.Dequeue().WriteData(output);
 		}
 
-		/// <summary>
-		/// write an audio frame to the stream
-		/// </summary>
+		/// <summary>write an audio frame to the stream</summary>
 		/// <param name="data">raw audio data; if length 0, write EOR</param>
+		/// <exception cref="Exception">internal error, possible A/V desync</exception>
+		/// <exception cref="InvalidOperationException">already written EOR</exception>
 		public void WriteAudioFrame(short[] samples)
 		{
 			if (audiodone)
 				throw new Exception("Can't write audio after end of relevance!");
 			if (videoqueue.Count > 5)
-				throw new Exception("A\\V Desync?");
+				throw new Exception("A/V Desync?");
 			int datalen = samples.Length * sizeof(short);
 			byte[] data = _bufferpool.GetBufferAtLeast(datalen);
 			Buffer.BlockCopy(samples, 0, data, 0, datalen);

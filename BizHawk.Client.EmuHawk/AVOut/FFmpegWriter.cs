@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 			return s.ToString();
 		}
 
-
+		/// <exception cref="Exception">FFmpeg call failed</exception>
 		public void AddFrame(IVideoProvider source)
 		{
 			if (source.BufferWidth != width || source.BufferHeight != height)
@@ -206,7 +206,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
 		}
-	
+
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="FFmpegWriterForm.FormatPreset"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is FFmpegWriterForm.FormatPreset)
@@ -261,6 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="Exception">FFmpeg call failed</exception>
 		public void AddSamples(short[] samples)
 		{
 			if (_ffmpeg.HasExited)
@@ -285,6 +287,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			if (bits != 16)

@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		public string URL_post = null;
 		public bool? audiosync = null;
 
+		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
 		public void ParseArguments(string[] args)
 		{
 			for (int i = 0; i < args.Length; i++)

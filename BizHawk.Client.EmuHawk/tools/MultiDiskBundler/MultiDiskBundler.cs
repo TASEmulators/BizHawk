@@ -255,6 +255,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="ArgumentException">running on Windows host, and unmanaged call failed</exception>
+		/// <exception cref="FileNotFoundException">running on Windows host, and either path is not a regular file or directory</exception>
 		/// <remarks>Algorithm for Windows taken from https://stackoverflow.com/a/485516/7467292</remarks>
 		public static string GetRelativePath(string fromPath, string toPath)
 		{

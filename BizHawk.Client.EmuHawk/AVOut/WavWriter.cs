@@ -184,6 +184,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="ss">WavWriter now owns any of these streams that it enumerates</param>
 		/// <param name="samplerate">sampling rate in HZ</param>
 		/// <param name="numchannels">number of audio channels</param>
+		/// <exception cref="ArgumentException"><paramref name="ss"/> cannot be progressed</exception>
 		public WavWriter(IEnumerator<Stream> ss, int samplerate, int numchannels)
 		{
 			this.samplerate = samplerate;
@@ -228,6 +229,7 @@ namespace BizHawk.Client.EmuHawk
 			return new WavWriterVToken();
 		}
 
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			this.sampleRate = sampleRate;

@@ -38,17 +38,11 @@ namespace BizHawk.Client.EmuHawk
         /// </summary>
         private int _maxColors;
 
-        /// <summary>
-        /// Construct the octree quantizer
-        /// </summary>
-        /// <remarks>
-        /// The Octree quantizer is a two pass algorithm. The initial pass sets up the octree,
-        /// the second pass quantizes a color based on the nodes in the tree
-        /// </remarks>
         /// <param name="maxColors">The maximum number of colors to return</param>
         /// <param name="maxColorBits">The number of significant bits</param>
-        public OctreeQuantizer(int maxColors, int maxColorBits) 
-            : base(false)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxColors"/> &ge; <c>256</c> or <paramref name="maxColorBits"/> outside range <c>1..8</c></exception>
+        /// <remarks>The Octree quantizer is a two pass algorithm. The initial pass sets up the octree, the second pass quantizes a color based on the nodes in the tree.</remarks>
+        public OctreeQuantizer(int maxColors, int maxColorBits) : base(false)
         {
             if (maxColors > 255)
                 throw new ArgumentOutOfRangeException(nameof(maxColors), maxColors, "The number of colors should be less than 256");

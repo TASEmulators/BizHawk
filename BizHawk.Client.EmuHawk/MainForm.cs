@@ -2208,6 +2208,7 @@ namespace BizHawk.Client.EmuHawk
 			return FormatFilter(items.ToArray());
 		}
 
+		/// <exception cref="ArgumentException"><paramref name="args"/> contains unpaired element</exception>
 		public static string FormatFilter(params string[] args)
 		{
 			var sb = new StringBuilder();

@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 {
 	public static class ControlExtensions
 	{
+		/// <exception cref="ArgumentException"><typeparamref name="T"/> does not inherit <see cref="Enum"/></exception>
 		public static void PopulateFromEnum<T>(this ComboBox box, object enumVal)
 			where T : struct, IConvertible
 		{
@@ -213,6 +214,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			return sb.ToString();
 		}
 
+		/// <exception cref="Win32Exception">unmanaged call failed</exception>
 		public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
 		{
 			const int LVM_GETHEADER = 4127;

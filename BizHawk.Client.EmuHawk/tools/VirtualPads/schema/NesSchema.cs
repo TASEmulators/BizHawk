@@ -14,6 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	// ReSharper disable once UnusedMember.Global
 	public class NesSchema : IVirtualPadSchema
 	{
+		/// <exception cref="Exception">found <c>ControllerSNES</c></exception>
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			if (core is NES || core is SubNESHawk)

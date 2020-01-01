@@ -483,8 +483,10 @@ namespace BizHawk.Client.EmuHawk
 			public int BufferHeight { get; set; }
 			public int BackgroundColor { get; set; }
 
+			/// <exception cref="InvalidOperationException">always</exception>
 			public int VsyncNumerator => throw new InvalidOperationException();
 
+			/// <exception cref="InvalidOperationException">always</exception>
 			public int VsyncDenominator => throw new InvalidOperationException();
 		}
 
@@ -968,9 +970,8 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		/// <summary>
-		/// Locks the requested lua surface name
-		/// </summary>
+		/// <summary>locks the lua surface called <paramref name="name"/></summary>
+		/// <exception cref="InvalidOperationException">already locked, or unknown surface</exception>
 		public DisplaySurface LockLuaSurface(string name, bool clear=true)
 		{
 			if (MapNameToLuaSurface.ContainsKey(name))
@@ -1037,9 +1038,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// Unlocks this DisplaySurface which had better have been locked as a lua surface
-		/// </summary>
+		/// <summary>unlocks this DisplaySurface which had better have been locked as a lua surface</summary>
+		/// <exception cref="InvalidOperationException">already unlocked</exception>
 		public void UnlockLuaSurface(DisplaySurface surface)
 		{
 			if (!MapLuaSurfaceToName.ContainsKey(surface))

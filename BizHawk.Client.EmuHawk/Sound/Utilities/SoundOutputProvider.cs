@@ -63,6 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			ResetBuffer();
 		}
 
+		/// <exception cref="InvalidOperationException">(from setter) constructed in standalone mode</exception>
 		public int MaxSamplesDeficit
 		{
 			get { return _maxSamplesDeficit; }
@@ -124,6 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return SampleRate / Global.Emulator.VsyncRate(); }
 		}
 
+		/// <exception cref="InvalidOperationException">not constructed in standalone mode</exception>
 		public void GetSamples(short[] samples)
 		{
 			if (!_standaloneMode) throw new InvalidOperationException();
@@ -132,6 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			GetSamplesFromBuffer(samples, returnSampleCount);
 		}
 
+		/// <exception cref="InvalidOperationException">constructed in standalone mode</exception>
 		public void GetSamples(int idealSampleCount, out short[] samples, out int sampleCount)
 		{
 			if (_standaloneMode) throw new InvalidOperationException();

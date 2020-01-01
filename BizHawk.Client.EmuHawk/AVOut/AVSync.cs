@@ -14,6 +14,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private long _soundRemainder; // audio timekeeping for video dumping
 
+		/// <exception cref="InvalidOperationException">
+		/// <paramref name="asyncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Async"/>, or
+		/// A/V parameters haven't been set (need to call <see cref="SetAudioParameters"/> and <see cref="SetMovieParameters"/>)
+		/// </exception>
 		public void DumpAV(IVideoProvider v, ISoundProvider asyncSoundProvider, out short[] samples, out int samplesprovided)
 		{
 			// Sound refactor TODO: we could try set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
@@ -78,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="InvalidOperationException"><paramref name="syncSoundProvider"/>'s mode is not <see cref="SyncSoundMode.Sync"/></exception>
 		public void DumpAV(IVideoProvider v, ISoundProvider syncSoundProvider, out short[] samples, out int samplesprovided)
 		{
 			// Sound refactor TODO: we could just set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
@@ -140,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		protected int bits;
 		protected bool aset = false;
 
-
+		/// <exception cref="InvalidOperationException">already set</exception>
 		public new virtual void SetMovieParameters(int fpsnum, int fpsden)
 		{
 			if (vset)
@@ -155,6 +160,7 @@ namespace BizHawk.Client.EmuHawk
 			base.SetMovieParameters(fpsnum, fpsden);
 		}
 
+		/// <exception cref="InvalidOperationException">already set, or <paramref name="bits"/> is not <c>16</c></exception>
 		public new virtual void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			if (aset)
@@ -180,11 +186,13 @@ namespace BizHawk.Client.EmuHawk
 			// this writer will never support this capability
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public new virtual void AddFrame(IVideoProvider source)
 		{
 			throw new InvalidOperationException("Must call AddAV()!");
 		}
 
+		/// <exception cref="InvalidOperationException">always</exception>
 		public new virtual void AddSamples(short[] samples)
 		{
 			throw new InvalidOperationException("Must call AddAV()!");

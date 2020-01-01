@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static GLManager Instance { get; private set; }
 
+		/// <exception cref="InvalidOperationException">instance already created</exception>
 		public static void CreateInstance()
 		{
 			if (Instance != null)

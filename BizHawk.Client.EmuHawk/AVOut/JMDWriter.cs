@@ -178,6 +178,8 @@ namespace BizHawk.Client.EmuHawk
 			/// underlying bytestream that is being written to
 			/// </summary>
 			Stream f;
+
+			/// <exception cref="ArgumentException"><paramref name="f"/> cannot be written to</exception>
 			public JMDfile(Stream f, int fpsnum, int fpsden, int audiosamplerate, bool stereo)
 			{
 				if (!f.CanWrite)
@@ -535,9 +537,8 @@ namespace BizHawk.Client.EmuHawk
 			// we have no unmanaged resources
 		}
 
-		/// <summary>
-		/// sets the codec token to be used for video compression
-		/// </summary>
+		/// <summary>sets the codec token to be used for video compression</summary>
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="JMDWriter.CodecToken"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is CodecToken)
@@ -589,9 +590,8 @@ namespace BizHawk.Client.EmuHawk
 			// each frame is dumped independently with its own resolution tag, so we don't care to store this
 		}
 
-		/// <summary>
-		/// set audio parameters.  cannot change later
-		/// </summary>
+		/// <summary>set audio parameters, cannot change later</summary>
+		/// <exception cref="ArgumentException"><paramref name="sampleRate"/> is outside range <c>8000..96000</c>, <paramref name="channels"/> is outside range <c>1..2</c>, or <paramref name="bits"/> is not <c>16</c></exception>
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			// the sampleRate limits are arbitrary, just to catch things which are probably silly-wrong

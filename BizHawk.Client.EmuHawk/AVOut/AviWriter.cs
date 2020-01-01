@@ -30,9 +30,8 @@ namespace BizHawk.Client.EmuHawk
 			_currSegment?.Dispose();
 		}
 
-		/// <summary>
-		/// sets the codec token to be used for video compression
-		/// </summary>
+		/// <summary>sets the codec token to be used for video compression</summary>
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="AviWriter.CodecToken"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is CodecToken)
@@ -133,10 +132,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		/// <summary>
-		/// opens an avi file for recording with the supplied enumerator used to name files.
-		/// set a video codec token first.
-		/// </summary>
+		/// <summary>opens an avi file for recording, with <paramref name="nameProvider"/> being used to name files</summary>
+		/// <exception cref="InvalidOperationException">no video codec token set</exception>
 		public void OpenFile(IEnumerator<string> nameProvider)
 		{
 			_nameProvider = nameProvider;
@@ -158,6 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			_currSegment = null;
 		}
 
+		/// <exception cref="Exception">worker thrread died</exception>
 		public void AddFrame(IVideoProvider source)
 		{
 			while (!threadQ.TryAdd(new VideoCopy(source), 1000))
@@ -181,6 +179,7 @@ namespace BizHawk.Client.EmuHawk
 			_currSegment.AddFrame(source);
 		}
 
+		/// <exception cref="Exception">worker thrread died</exception>
 		public void AddSamples(short[] samples)
 		{
 			// as MainForm.cs is written now, samples is all ours (nothing else will use it for anything)
@@ -316,6 +315,8 @@ namespace BizHawk.Client.EmuHawk
 
 			public bool has_audio;
 			public int a_samplerate, a_channels, a_bits;
+
+			/// <exception cref="InvalidOperationException"><see cref="a_bits"/> is not <c>8</c> or <c>16</c>, or <see cref="a_channels"/> is not in range <c>1..2</c></exception>
 			public void PopulateWAVEFORMATEX(ref AVIWriterImports.WAVEFORMATEX wfex)
 			{
 				const int WAVE_FORMAT_PCM = 1;
@@ -640,6 +641,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Parameters parameters;
+
+			/// <exception cref="InvalidOperationException">unmanaged call failed</exception>
 			public void OpenFile(string destPath, Parameters parameters, CodecToken videoCodecToken)
 			{
 				static int mmioFOURCC(string str) => (
@@ -700,9 +703,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			/// <summary>
-			/// Acquires a video codec configuration from the user
-			/// </summary>
+			/// <summary>acquires a video codec configuration from the user</summary>
+			/// <exception cref="InvalidOperationException">no file open (need to call <see cref="OpenFile"/>)</exception>
 			public IDisposable AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
 			{
 				if (!IsOpen)
@@ -741,9 +743,8 @@ namespace BizHawk.Client.EmuHawk
 				return null;
 			}
 
-			/// <summary>
-			/// begin recording
-			/// </summary>
+			/// <summary>begin recording</summary>
+			/// <exception cref="InvalidOperationException">no video codec token set (need to call <see cref="OpenFile"/>), or unmanaged call failed</exception>
 			public void OpenStreams()
 			{
 				if (currVideoCodecToken == null)
@@ -882,6 +883,7 @@ namespace BizHawk.Client.EmuHawk
 				outStatus.audio_buffered_shorts = 0;
 			}
 
+			/// <exception cref="InvalidOperationException">attempted frame resize during encoding</exception>
 			public unsafe void AddFrame(IVideoProvider source)
 			{
 				const int AVIIF_KEYFRAME = 0x00000010;
@@ -965,6 +967,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <exception cref="Exception">no default codec token in config</exception>
 		public void SetDefaultVideoCodecToken()
 		{
 			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);

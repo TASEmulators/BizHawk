@@ -82,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private GifToken _token;
 
+		/// <exception cref="ArgumentException"><paramref name="token"/> does not inherit <see cref="GifWriter.GifToken"/></exception>
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is GifToken gifToken)
