@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("movie.save( \"C:\\moviename.ext\" );")]
 		[LuaMethod("save", "Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten.")]
-		public void Save(string filename = "") => APIs.Movie.Save();
+		public void Save(string filename = "") => APIs.Movie.Save(filename);
 
 		[LuaMethodExample("movie.setreadonly( false );")]
 		[LuaMethod("setreadonly", "Sets the read-only state to the given value. true for read only, false for read+write")]
