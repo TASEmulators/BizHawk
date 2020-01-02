@@ -84,10 +84,10 @@
     <Compile Include="IImportResolver.cs" />
     <Compile Include="IMonitor.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="MutableIntRange.cs" />
     <Compile Include="OSTailoredCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickCollections.cs" />
+    <Compile Include="Ranges.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SimpleTime.cs" />

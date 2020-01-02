@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 			get => _x;
 			set
 			{
-				_x = _rangeX.Constrain(value);
+				_x = value.ConstrainWithin(_rangeX);
 				SetAnalog();
 			}
 		}
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 			get => _y;
 			set
 			{
-				_y = _rangeY.Constrain(value);
+				_y = value.ConstrainWithin(_rangeY);
 				SetAnalog();
 			}
 		}
@@ -56,24 +56,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetRangeX(float[] range)
 		{
-			_actualRangeX.Min = (int) range[0];
-			_actualRangeX.Max = (int) range[2];
-
+			_actualRangeX.Start = (int) range[0];
+			_actualRangeX.EndInclusive = (int) range[2];
 			Rerange();
 		}
 
 		public void SetRangeY(float[] range)
 		{
-			_actualRangeY.Min = (int) range[0];
-			_actualRangeY.Max = (int) range[2];
-
+			_actualRangeY.Start = (int) range[0];
+			_actualRangeY.EndInclusive = (int) range[2];
 			Rerange();
 		}
 
-		private readonly MutableIntRange _rangeX = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange _rangeY = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange _actualRangeX = new MutableIntRange(-128, 127);
-		private readonly MutableIntRange _actualRangeY = new MutableIntRange(-128, 127);
+		private readonly MutableRange<int> _rangeX = new MutableRange<int>(-128, 127);
+		private readonly MutableRange<int> _rangeY = new MutableRange<int>(-128, 127);
+		private RangeStruct<int> _actualRangeX = new RangeStruct<int> { Start = -128, EndInclusive = 127 };
+		private RangeStruct<int> _actualRangeY = new RangeStruct<int> { Start = -128, EndInclusive = 127 };
 
 		private bool _reverseX;
 		private bool _reverseY;
@@ -83,15 +81,13 @@ namespace BizHawk.Client.EmuHawk
 			_reverseX = _userRangePercentageX < 0;
 			_reverseY = _userRangePercentageY < 0;
 
-			var midX = (_actualRangeX.Min + _actualRangeX.Max) / 2.0;
-			var halfRangeX = (_reverseX ? -1 : 1) * (_actualRangeX.Max - _actualRangeX.Min) * _userRangePercentageX / 200.0;
-			_rangeX.Min = (int) (midX - halfRangeX);
-			_rangeX.Max = (int) (midX + halfRangeX);
+			var midX = (_actualRangeX.Start + _actualRangeX.EndInclusive) / 2.0;
+			var halfRangeX = (_reverseX ? -1 : 1) * (_actualRangeX.EndInclusive - _actualRangeX.Start) * _userRangePercentageX / 200.0;
+			_rangeX.Overwrite((int) (midX - halfRangeX), (int) (midX + halfRangeX));
 
-			var midY = (_actualRangeY.Min + _actualRangeY.Max) / 2.0;
-			var halfRangeY = (_reverseY ? -1 : 1) * (_actualRangeY.Max - _actualRangeY.Min) * _userRangePercentageY / 200.0;
-			_rangeY.Min = (int) (midY - halfRangeY);
-			_rangeY.Max = (int) (midY + halfRangeY);
+			var midY = (_actualRangeY.Start + _actualRangeY.EndInclusive) / 2.0;
+			var halfRangeY = (_reverseY ? -1 : 1) * (_actualRangeY.EndInclusive - _actualRangeY.Start) * _userRangePercentageY / 200.0;
+			_rangeY.Overwrite((int) (midY - halfRangeY), (int) (midY + halfRangeY));
 			
 			// re-constrain after changing ranges
 			X = X;
@@ -108,12 +104,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <remarks>
 		/// min + (max - i) == max - (i - min) == min + max - i
 		/// </remarks>
-		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Min + _rangeX.Max - i : i;
+		private int MaybeReversedInX(int i) => _reverseX ? _rangeX.Start + _rangeX.EndInclusive - i : i;
 		/// <inheritdoc cref="MaybeReversedInX"/>
-		private int MaybeReversedInY(int i) => _reverseY ? _rangeY.Min + _rangeY.Max - i : i;
+		private int MaybeReversedInY(int i) => _reverseY ? _rangeY.Start + _rangeY.EndInclusive - i : i;
 
-		private int PixelSizeX => (int)(_rangeX.GetCount() * ScaleX);
-		private int PixelSizeY => (int)(_rangeY.GetCount() * ScaleY);
+		private int PixelSizeX => (int)(_rangeX.Count() * ScaleX);
+		private int PixelSizeY => (int)(_rangeY.Count() * ScaleY);
 		private int PixelMinX => (Size.Width - PixelSizeX) / 2;
 		private int PixelMinY => (Size.Height - PixelSizeY) / 2;
 		private int PixelMidX => PixelMinX + PixelSizeX / 2;
@@ -122,16 +118,16 @@ namespace BizHawk.Client.EmuHawk
 		private int PixelMaxY => PixelMinY + PixelSizeY - 1;
 
 		private int RealToGfxX(int val) =>
-			PixelMinX + ((MaybeReversedInX(_rangeX.Constrain(val)) - _rangeX.Min) * ScaleX).RoundToInt();
+			PixelMinX + ((MaybeReversedInX(val.ConstrainWithin(_rangeX)) - _rangeX.Start) * ScaleX).RoundToInt();
 
 		private int RealToGfxY(int val) =>
-			PixelMinY + ((MaybeReversedInY(_rangeY.Constrain(val)) - _rangeY.Min) * ScaleY).RoundToInt();
+			PixelMinY + ((MaybeReversedInY(val.ConstrainWithin(_rangeY)) - _rangeY.Start) * ScaleY).RoundToInt();
 
 		private int GfxToRealX(int val) =>
-			MaybeReversedInX(_rangeX.Constrain(_rangeX.Min + ((val - PixelMinX) / ScaleX).RoundToInt()));
+			MaybeReversedInX((_rangeX.Start + ((val - PixelMinX) / ScaleX).RoundToInt()).ConstrainWithin(_rangeX));
 
 		private int GfxToRealY(int val) =>
-			MaybeReversedInY(_rangeY.Constrain(_rangeY.Min + ((val - PixelMinY) / ScaleY).RoundToInt()));
+			MaybeReversedInY((_rangeY.Start + ((val - PixelMinY) / ScaleY).RoundToInt()).ConstrainWithin(_rangeY));
 
 		private readonly Pen _blackPen = new Pen(Brushes.Black);
 		private readonly Pen _bluePen = new Pen(Brushes.Blue, 2);
@@ -200,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 					var pX = (int)_previous.GetFloat(XName);
 					var pY = (int)_previous.GetFloat(YName);
 					e.Graphics.DrawLine(_grayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
-					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.Max) - RealToGfxY(pY) - 3);
+					e.Graphics.DrawImage(_grayDot, RealToGfxX(pX) - 3, RealToGfxY(_rangeY.EndInclusive) - RealToGfxY(pY) - 3);
 				}
 
 				// Line

@@ -122,5 +122,17 @@ namespace BizHawk.Common.NumberExtensions
 		}
 		
 		public static int RoundToInt(this float f) => (int) Math.Round(f);
+
+		/// <summary>2^-53</summary>
+		private const double ExtremelySmallNumber = 1.1102230246251565E-16;
+
+		/// <inheritdoc cref="HawkFloatEquality(float,float,float)"/>
+		public static bool HawkFloatEquality(this double d, double other, double ε = ExtremelySmallNumber) => Math.Abs(other - d) < ε;
+
+		/// <summary>2^-24</summary>
+		private const float ReallySmallNumber = 5.96046448E-08f;
+
+		/// <remarks>don't use this in cores without picking a suitable ε</remarks>
+		public static bool HawkFloatEquality(this float f, float other, float ε = ReallySmallNumber) => Math.Abs(other - f) < ε;
 	}
 }
