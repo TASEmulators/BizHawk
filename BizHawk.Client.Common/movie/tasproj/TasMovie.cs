@@ -47,28 +47,7 @@ namespace BizHawk.Client.Common
 		};
 
 		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		public TasMovie(string path, bool startsFromSavestate = false)
-			: base(path)
-		{
-			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-			if (!Global.Emulator.HasSavestates())
-			{
-				throw new InvalidOperationException($"Cannot create a {nameof(TasMovie)} against a core that does not implement {nameof(IStatable)}");
-			}
-
-			ChangeLog = new TasMovieChangeLog(this);
-			TasStateManager = new TasStateManager(this);
-			Session = new TasSession(this);
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
-			Markers = new TasMovieMarkerList(this);
-			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			BindMarkersToInput = false;
-			CurrentBranch = -1;
-		}
-
-		/// <exception cref="InvalidOperationException">loaded core does not implement <see cref="IStatable"/></exception>
-		public TasMovie(bool startsFromSavestate = false)
+		public TasMovie(string path = null, bool startsFromSavestate = false) : base(path)
 		{
 			if (!Global.Emulator.HasSavestates())
 			{

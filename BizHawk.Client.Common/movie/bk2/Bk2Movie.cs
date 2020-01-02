@@ -9,20 +9,14 @@ namespace BizHawk.Client.Common
 	{
 		private Bk2ControllerAdapter _adapter;
 
-		public Bk2Movie(string filename)
-			: this()
-		{
-			Rerecords = 0;
-			Filename = filename;
-		}
-
-		public Bk2Movie()
+		public Bk2Movie(string filename = null)
 		{
 			Subtitles = new SubtitleList();
 			Comments = new List<string>();
 
-			Filename = "";
+			Filename = filename ?? string.Empty;
 			IsCountingRerecords = true;
+			if (filename != null) Rerecords = 0;
 			Mode = MovieMode.Inactive;
 			MakeBackup = true;
 

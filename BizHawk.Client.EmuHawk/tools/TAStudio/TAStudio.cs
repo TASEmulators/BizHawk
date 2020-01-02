@@ -555,7 +555,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			TasMovie newMovie = new TasMovie(startsFromSavestate);
+			TasMovie newMovie = new TasMovie(startsFromSavestate: startsFromSavestate);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
