@@ -923,7 +923,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
 			byte coll = 0;
-			int mask = 0;
+			int mask = 0xFF;
 
 			if (maskedAddr == 0x00) // CXM0P
 			{
