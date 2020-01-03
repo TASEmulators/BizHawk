@@ -120,18 +120,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							One5_L();
 							on_L = One4_L();
 							break;
-
 						case 0x01:
 							// Both run, but the 5 bit is ignored
 							on_L = Run4_L();
-							//Run5();
+							Run5_L();
 							break;
 						case 0x02:
-							if ((sr5_L & 0x0f) == 0 || (sr5_L & 0x0f) == 0x0f)
+							if (((sr5_L & 0x0f) == 0) || ((sr5_L & 0x0f) == 0x0f))
 							{
 								on_L = Run4_L();
+								Run5_L();
 							}
-
 							Run5_L();
 							break;
 						case 0x03:
@@ -139,21 +138,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							{
 								on_L = Run4_L();
 							}
-
 							break;
-
 						case 0x04:
 							Run5_L();
 							One4_L();
 							on_L = Run1_L();
 							break;
-
 						case 0x05:
 							One5_L();
 							Run4_L();
 							on_L = Run1_L();
-							break;
-							
+							break;			
 						case 0x06:
 						case 0x0a:
 							Run5_L();
@@ -165,14 +160,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							{
 								on_L = true;
 							}
-
 							break;
-
 						case 0x07:
 						case 0x09:
 							on_L = Run5_L();
-							break;
-							
+							break;					
 						case 0x08:
 							on_L = Run9_L();
 							break;
@@ -182,14 +174,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							{
 								on_L = Run1_L();
 							}
-
 							break;
 						case 0x0e:
 							if (Run3_L())
 							{
 								goto case 0x06;
 							}
-
 							break;
 						case 0x0f:
 							// poly5 output to div 6
@@ -280,18 +270,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							One5_R();
 							on_R = One4_R();
 							break;
-
 						case 0x01:
 							// Both run, but the 5 bit is ignored
 							on_R = Run4_R();
-							//Run5();
+							Run5_R();
 							break;
 						case 0x02:
-							if ((sr5_R & 0x0f) == 0 || (sr5_R & 0x0f) == 0x0f)
+							if (((sr5_R & 0x0f) == 0) || ((sr5_R & 0x0f) == 0x0f))
 							{
 								on_R = Run4_R();
+								Run5_R();
 							}
-
 							Run5_R();
 							break;
 						case 0x03:
@@ -299,21 +288,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							{
 								on_R = Run4_R();
 							}
-
 							break;
-
 						case 0x04:
 							Run5_R();
 							One4_R();
 							on_R = Run1_R();
 							break;
-
 						case 0x05:
 							One5_R();
 							Run4_R();
 							on_R = Run1_R();
 							break;
-
 						case 0x06:
 						case 0x0a:
 							Run5_R();
@@ -327,12 +312,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							}
 
 							break;
-
 						case 0x07:
 						case 0x09:
 							on_R = Run5_R();
 							break;
-
 						case 0x08:
 							on_R = Run9_R();
 							break;
@@ -342,14 +325,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							{
 								on_R = Run1_R();
 							}
-
 							break;
 						case 0x0e:
 							if (Run3_R())
 							{
 								goto case 0x06;
 							}
-
 							break;
 						case 0x0f:
 							// poly5 output to div 6
