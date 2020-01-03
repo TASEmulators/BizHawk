@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
-				GlobalWin.OSD.AddMessage($"Loaded branch {Movie.CurrentBranch}");
+				Tastudio.MainForm.AddOnScreenMessage($"Loaded branch {Movie.CurrentBranch}");
 			}
 		}
 
@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Branch();
 			SavedCallback?.Invoke(Movie.Branches.Count - 1);
-			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
+			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
 			SavedCallback?.Invoke(Movie.Branches.Count - 1);
-			GlobalWin.OSD.AddMessage($"Added branch {Movie.CurrentBranch}");
+			Tastudio.MainForm.AddOnScreenMessage($"Added branch {Movie.CurrentBranch}");
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateBranch(SelectedBranch);
 			SavedCallback?.Invoke(Movie.CurrentBranch);
-			GlobalWin.OSD.AddMessage($"Saved branch {Movie.CurrentBranch}");
+			Tastudio.MainForm.AddOnScreenMessage($"Saved branch {Movie.CurrentBranch}");
 		}
 
 		private void EditBranchTextToolStripMenuItem_Click(object sender, EventArgs e)
@@ -298,7 +298,7 @@ namespace BizHawk.Client.EmuHawk
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
 				_branchUndo = BranchUndo.Text;
 
-				GlobalWin.OSD.AddMessage($"Edited branch {index}");
+				Tastudio.MainForm.AddOnScreenMessage($"Edited branch {index}");
 			}
 		}
 
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RemovedCallback?.Invoke(index);
 			Tastudio.RefreshDialog();
-			GlobalWin.OSD.AddMessage($"Removed branch {index}");
+			Tastudio.MainForm.AddOnScreenMessage($"Removed branch {index}");
 			MainForm.UpdateStatusSlots();
 		}
 
@@ -358,25 +358,25 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadBranch(_backupBranch);
 				LoadedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
-				GlobalWin.OSD.AddMessage("Branch Load canceled");
+				Tastudio.MainForm.AddOnScreenMessage("Branch Load canceled");
 			}
 			else if (_branchUndo == BranchUndo.Update)
 			{
 				Movie.UpdateBranch(Movie.GetBranch(_backupBranch.UniqueIdentifier), _backupBranch);
 				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
-				GlobalWin.OSD.AddMessage("Branch Update canceled");
+				Tastudio.MainForm.AddOnScreenMessage("Branch Update canceled");
 			}
 			else if (_branchUndo == BranchUndo.Text)
 			{
 				Movie.GetBranch(_backupBranch.UniqueIdentifier).UserText = _backupBranch.UserText;
-				GlobalWin.OSD.AddMessage("Branch Text Edit canceled");
+				Tastudio.MainForm.AddOnScreenMessage("Branch Text Edit canceled");
 			}
 			else if (_branchUndo == BranchUndo.Remove)
 			{
 				Movie.AddBranch(_backupBranch);
 				BranchView.RowCount = Movie.Branches.Count;
 				SavedCallback?.Invoke(Movie.Branches.IndexOf(_backupBranch));
-				GlobalWin.OSD.AddMessage("Branch Removal canceled");
+				Tastudio.MainForm.AddOnScreenMessage("Branch Removal canceled");
 			}
 
 			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = false;
@@ -508,8 +508,8 @@ namespace BizHawk.Client.EmuHawk
 		public void NonExistentBranchMessage(int slot)
 		{
 			string binding = Global.Config.HotkeyBindings.First(x => x.DisplayName == "Add Branch").Bindings;
-			GlobalWin.OSD.AddMessage($"Branch {slot} does not exist");
-			GlobalWin.OSD.AddMessage($"Use {binding} to add branches");
+			Tastudio.MainForm.AddOnScreenMessage($"Branch {slot} does not exist");
+			Tastudio.MainForm.AddOnScreenMessage($"Use {binding} to add branches");
 		}
 
 		public void UpdateValues()
