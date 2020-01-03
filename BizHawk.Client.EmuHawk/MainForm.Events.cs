@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Config.AVI_CaptureOSD;
 
-			RecordAVMenuItem.Enabled = !OSTailoredCode.IsUnixHost && !string.IsNullOrEmpty(Global.Config.VideoWriter) && _currAviWriter == null;
+			RecordAVMenuItem.Enabled = !OSTailoredCode.IsUnixHost && !string.IsNullOrEmpty(Config.VideoWriter) && _currAviWriter == null;
 			SynclessRecordingMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 
 			if (_currAviWriter == null)
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
-			using var oac = new OpenAdvancedChooser(this);
+			using var oac = new OpenAdvancedChooser(this, Config);
 			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 			{
 				return;
