@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 					_exitRequestPending = true;
 					break;
 				case "Record A/V":
-					if (OSTailoredCode.IsUnixHost) GlobalWin.OSD.AddMessage("(A/V only available on Windows for now)");
+					if (OSTailoredCode.IsUnixHost) AddOnScreenMessage("(A/V only available on Windows for now)");
 					else RecordAv();
 					break;
 				case "Stop A/V":

@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm = this;
 			Rewinder = new Rewinder
 			{
-				MessageCallback = GlobalWin.OSD.AddMessage
+				MessageCallback = AddOnScreenMessage
 			};
 
 			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie = MovieService.DefaultInstance,
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
-				MessageCallback = GlobalWin.OSD.AddMessage,
+				MessageCallback = AddOnScreenMessage,
 				AskYesNoCallback = StateErrorAskUser,
 				PauseCallback = PauseEmulator,
 				ModeChangedCallback = SetMainformMovieInfo
