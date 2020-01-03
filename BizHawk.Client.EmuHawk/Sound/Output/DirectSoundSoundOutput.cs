@@ -12,8 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class DirectSoundSoundOutput : ISoundOutput
 	{
+		private readonly Sound _sound;
 		private bool _disposed;
-		private Sound _sound;
 		private DirectSound _device;
 		private SecondarySoundBuffer _deviceBuffer;
 		private int _actualWriteOffsetBytes = -1;
@@ -21,11 +21,11 @@ namespace BizHawk.Client.EmuHawk
 		private long _lastWriteTime;
 		private int _lastWriteCursor;
 
-		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle)
+		public DirectSoundSoundOutput(Sound sound, IntPtr mainWindowHandle, string soundDevice)
 		{
 			_sound = sound;
 
-			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == Global.Config.SoundDevice);
+			var deviceInfo = DirectSound.GetDevices().FirstOrDefault(d => d.Description == soundDevice);
 			_device = deviceInfo != null ? new DirectSound(deviceInfo.DriverGuid) : new DirectSound();
 			_device.SetCooperativeLevel(mainWindowHandle, CooperativeLevel.Priority);
 		}
@@ -47,10 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int BufferSizeSamples { get; set; }
 
-		private int BufferSizeBytes
-		{
-			get { return BufferSizeSamples * Sound.BlockAlign; }
-		}
+		private int BufferSizeBytes => BufferSizeSamples * Sound.BlockAlign;
 
 		public int MaxSamplesDeficit { get; private set; }
 
