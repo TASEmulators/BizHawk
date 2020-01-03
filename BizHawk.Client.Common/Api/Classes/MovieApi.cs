@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public bool StartsFromSaveram() => Global.MovieSession.Movie.IsActive() && Global.MovieSession.Movie.StartsFromSaveRam;
 
-		public Dictionary<string, dynamic> GetInput(int frame)
+		public IDictionary<string, dynamic> GetInput(int frame, int? controller = null)
 		{
 			if (Global.MovieSession.Movie.NotActive())
 			{
@@ -32,10 +32,8 @@ namespace BizHawk.Client.Common
 				LogCallback("Can't get input of the last frame of the movie. Use the previous frame");
 				return null;
 			}
-			var input = new Dictionary<string, dynamic>();
-			foreach (var button in adapter.Definition.BoolButtons) input[button] = adapter.IsPressed(button);
-			foreach (var button in adapter.Definition.FloatControls) input[button] = adapter.GetFloat(button);
-			return input;
+
+			return adapter.ToDictionary(controller);
 		}
 
 		public string GetInputAsMnemonic(int frame)

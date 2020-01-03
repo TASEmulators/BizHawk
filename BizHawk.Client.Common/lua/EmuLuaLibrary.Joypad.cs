@@ -29,10 +29,10 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
-		public LuaTable GetImmediate()
+		public LuaTable GetImmediate(int? controller = null)
 		{
 			return APIs.Joypad
-				.GetImmediate()
+				.GetImmediate(controller)
 				.ToLuaTable(Lua);
 		}
 

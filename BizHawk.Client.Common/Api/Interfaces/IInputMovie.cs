@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 		bool StartsFromSavestate();
 		bool StartsFromSaveram();
 		string Filename();
-		Dictionary<string, dynamic> GetInput(int frame);
+		IDictionary<string, dynamic> GetInput(int frame, int? controller = null);
 		string GetInputAsMnemonic(int frame);
 		bool GetReadOnly();
 		ulong GetRerecordCount();

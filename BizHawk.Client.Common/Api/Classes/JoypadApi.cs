@@ -14,38 +14,14 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
-		public Dictionary<string, dynamic> Get(int? controller = null)
+		public IDictionary<string, dynamic> Get(int? controller = null)
 		{
-			var adapter = Global.AutofireStickyXORAdapter;
-			var buttons = new Dictionary<string, dynamic>();
-			foreach (var button in adapter.Source.Definition.BoolButtons)
-			{
-				if (controller == null) buttons[button] = adapter.IsPressed(button);
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controller}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = adapter.IsPressed($"P{controller} {sub}");
-				}
-			}
-			foreach (var button in adapter.Source.Definition.FloatControls)
-			{
-				if (controller == null) buttons[button] = adapter.GetFloat(button);
-				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controller}")
-				{
-					var sub = button.Substring(3);
-					buttons[sub] = adapter.GetFloat($"P{controller} {sub}");
-				}
-			}
-			return buttons;
+			return Global.AutofireStickyXORAdapter.ToDictionary(controller);
 		}
 
-		public Dictionary<string, dynamic> GetImmediate()
+		public IDictionary<string, dynamic> GetImmediate(int? controller = null)
 		{
-			var adapter = Global.ActiveController;
-			var buttons = new Dictionary<string, dynamic>();
-			foreach (var button in adapter.Definition.BoolButtons) buttons[button] = adapter.IsPressed(button);
-			foreach (var button in adapter.Definition.FloatControls) buttons[button] = adapter.GetFloat(button);
-			return buttons;
+			return Global.ActiveController.ToDictionary(controller);
 		}
 
 		public void SetFromMnemonicStr(string inputLogEntry)

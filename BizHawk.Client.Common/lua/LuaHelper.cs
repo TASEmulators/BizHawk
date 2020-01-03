@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using BizHawk.Emulation.Common;
 using NLua;
 
 namespace BizHawk.Client.Common
@@ -58,6 +58,38 @@ namespace BizHawk.Client.Common
 				);
 			}
 			return table;
+		}
+
+		public static IDictionary<string, dynamic> ToDictionary(this IController controller, int? controllerNum = null)
+		{
+			var buttons = new Dictionary<string, dynamic>();
+
+			foreach (var button in controller.Definition.BoolButtons)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.IsPressed(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.IsPressed($"P{controllerNum} {sub}");
+				}
+			}
+			foreach (var button in controller.Definition.FloatControls)
+			{
+				if (controllerNum == null)
+				{
+					buttons[button] = controller.GetFloat(button);
+				}
+				else if (button.Length > 2 && button.Substring(0, 2) == $"P{controllerNum}")
+				{
+					var sub = button.Substring(3);
+					buttons[sub] = controller.GetFloat($"P{controllerNum} {sub}");
+				}
+			}
+
+			return buttons;
 		}
 	}
 }
