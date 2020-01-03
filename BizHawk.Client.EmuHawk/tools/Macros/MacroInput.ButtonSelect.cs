@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -12,18 +10,18 @@ namespace BizHawk.Client.EmuHawk
 		private CheckBox[] _buttonBoxes;
 		private void SetUpButtonBoxes()
 		{
-			ControllerDefinition def = Global.Emulator.ControllerDefinition;
+			var def = Emulator.ControllerDefinition;
 			int count = def.BoolButtons.Count + def.FloatControls.Count;
 			_buttonBoxes = new CheckBox[count];
 
 			for (int i = 0; i < def.FloatControls.Count; i++)
 			{
-				CheckBox box = new CheckBox {Text = def.FloatControls[i]};
+				var box = new CheckBox { Text = def.FloatControls[i] };
 				_buttonBoxes[i] = box;
 			}
 			for (int i = 0; i < def.BoolButtons.Count; i++)
 			{
-				CheckBox box = new CheckBox {Text = def.BoolButtons[i]};
+				var box = new CheckBox { Text = def.BoolButtons[i] };
 				_buttonBoxes[i + def.FloatControls.Count] = box;
 			}
 
