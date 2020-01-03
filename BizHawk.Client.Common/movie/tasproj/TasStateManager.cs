@@ -172,29 +172,15 @@ namespace BizHawk.Client.Common
 			return _states.ContainsKey(frame);
 		}
 
+		/// <returns>true iff any frames were invalidated</returns>
 		public bool Invalidate(int frame)
 		{
-			bool anyInvalidated = false;
-
-			if (Any())
-			{
-				if (frame == 0) // Never invalidate frame 0
-				{
-					frame = 1;
-				}
-
-				List<KeyValuePair<int, byte[]>> statesToRemove = _states.Where(s => s.Key >= frame).ToList();
-				anyInvalidated = statesToRemove.Any();
-
-				foreach (var state in statesToRemove)
-				{
-					Remove(state.Key);
-				}
-
-				InvalidateCallback?.Invoke(frame);
-			}
-
-			return anyInvalidated;
+			if (!Any()) return false;
+			if (frame == 0) frame = 1; // Never invalidate frame 0
+			var statesToRemove = _states.Where(s => s.Key >= frame).ToList();
+			foreach (var state in statesToRemove) Remove(state.Key);
+			InvalidateCallback?.Invoke(frame);
+			return statesToRemove.Count != 0;
 		}
 
 		public bool Remove(int frame)
