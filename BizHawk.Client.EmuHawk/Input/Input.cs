@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				KeyInput.Initialize(parent);
 				IPCKeyInput.Initialize();
-				GamePad.Initialize();
+				GamePad.Initialize(parent);
 				GamePad360.Initialize();
 			}
 			Instance = new Input();

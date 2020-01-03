@@ -2769,7 +2769,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case WmDeviceChange:
-					GamePad.Initialize();
+					GamePad.Initialize(this);
 					GamePad360.Initialize();
 					break;
 			}
