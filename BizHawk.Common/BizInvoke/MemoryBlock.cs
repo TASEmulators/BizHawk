@@ -11,7 +11,7 @@ namespace BizHawk.Common.BizInvoke
 		/// </summary>
 		private IntPtr _handle;
 
-		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
+		/// <inheritdoc cref="MemoryBlockBase(ulong,ulong)"/>
 		/// <exception cref="InvalidOperationException">failed to create file mapping</exception>
 		public MemoryBlock(ulong start, ulong size) : base(start, size)
 		{
@@ -31,8 +31,14 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (Active)
 				throw new InvalidOperationException("Already active");
-			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
-				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
+			if (Kernel32.MapViewOfFileEx(
+					_handle,
+					Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
+					0,
+					0,
+					Z.UU(Size),
+					Z.US(AddressRange.Start)
+				) != Z.US(AddressRange.Start))
 			{
 				throw new InvalidOperationException($"{nameof(Kernel32.MapViewOfFileEx)}() returned NULL");
 			}
@@ -45,7 +51,7 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (!Active)
 				throw new InvalidOperationException("Not active");
-			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
+			if (!Kernel32.UnmapViewOfFile(Z.US(AddressRange.Start)))
 				throw new InvalidOperationException($"{nameof(Kernel32.UnmapViewOfFile)}() returned NULL");
 			Active = false;
 		}
@@ -61,12 +67,12 @@ namespace BizHawk.Common.BizInvoke
 			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want
 			// that to complicate things
 			Kernel32.MemoryProtection old;
-			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
+			if (!Kernel32.VirtualProtect(Z.UU(AddressRange.Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
 
 			_snapshot = new byte[Size];
 			var ds = new MemoryStream(_snapshot, true);
-			var ss = GetStream(Start, Size, false);
+			var ss = GetStream(AddressRange.Start, Size, false);
 			ss.CopyTo(ds);
 			XorHash = WaterboxUtils.Hash(_snapshot);
 
@@ -80,9 +86,9 @@ namespace BizHawk.Common.BizInvoke
 				throw new InvalidOperationException("Not active");
 			// temporarily switch the entire block to `R`
 			Kernel32.MemoryProtection old;
-			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
+			if (!Kernel32.VirtualProtect(Z.UU(AddressRange.Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
 				throw new InvalidOperationException($"{nameof(Kernel32.VirtualProtect)}() returned FALSE!");
-			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
+			var ret = WaterboxUtils.Hash(GetStream(AddressRange.Start, Size, false));
 			ProtectAll();
 			return ret;
 		}

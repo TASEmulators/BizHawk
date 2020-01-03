@@ -6,27 +6,25 @@ namespace BizHawk.Common.BizInvoke
 {
 	public abstract class MemoryBlockBase : IDisposable
 	{
+		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is not aligned or <paramref name="size"/> is <c>0</c></exception>
 		protected MemoryBlockBase(ulong start, ulong size)
 		{
-			if (!WaterboxUtils.Aligned(start)) throw new ArgumentOutOfRangeException();
-			if (size == 0) throw new ArgumentOutOfRangeException();
-			Start = start;
+			if (!WaterboxUtils.Aligned(start)) throw new ArgumentOutOfRangeException(nameof(start), start, "start address must be aligned");
+			if (size == 0) throw new ArgumentOutOfRangeException(nameof(size), size, "cannot create 0-length block");
 			Size = WaterboxUtils.AlignUp(size);
-			End = Start + Size;
-			_pageData = new Protection[GetPage(End - 1) + 1];
+			AddressRange = start.RangeToExclusive(start + Size);
+			_pageData = new Protection[1 + GetPage(AddressRange.EndInclusive)];
 		}
 
 		/// <summary>stores last set memory protection value for each page</summary>
 		protected readonly Protection[] _pageData;
 
-		/// <summary>ending address of the memory block; equal to <see cref="Start"/> + <see cref="Size"/></summary>
-		public readonly ulong End;
+		/// <summary>valid address range of the memory block</summary>
+		public readonly Range<ulong> AddressRange;
 
 		/// <summary>total size of the memory block</summary>
 		public readonly ulong Size;
-
-		/// <summary>starting address of the memory block</summary>
-		public readonly ulong Start;
 
 		/// <summary>snapshot for XOR buffer</summary>
 		protected byte[] _snapshot;
@@ -37,33 +35,31 @@ namespace BizHawk.Common.BizInvoke
 		public byte[] XorHash { get; protected set; }
 
 		/// <summary>get a page index within the block</summary>
-		protected int GetPage(ulong addr)
-		{
-			if (addr < Start || End <= addr) throw new ArgumentOutOfRangeException();
-			return (int) ((addr - Start) >> WaterboxUtils.PageShift);
-		}
+		protected int GetPage(ulong addr) => AddressRange.Contains(addr)
+			? (int) ((addr - AddressRange.Start) >> WaterboxUtils.PageShift)
+			: throw new ArgumentOutOfRangeException(nameof(addr), addr, "invalid address");
 
 		/// <summary>get a start address for a page index within the block</summary>
-		protected ulong GetStartAddr(int page) => ((ulong) page << WaterboxUtils.PageShift) + Start;
+		protected ulong GetStartAddr(int page) => AddressRange.Start + ((ulong) page << WaterboxUtils.PageShift);
 
 		/// <summary>Get a stream that can be used to read or write from part of the block. Does not check for or change <see cref="Protect"/>!</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside bounds of memory block (<see cref="Start"/> and <see cref="End"/>)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside <see cref="AddressRange"/></exception>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
-			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start));
-			if (End < start + length) throw new ArgumentOutOfRangeException(nameof(length));
+			if (start < AddressRange.Start) throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (AddressRange.EndInclusive < start + length - 1) throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
 			return new MemoryViewStream(!writer, writer, (long) start, (long) length, this);
 		}
 
 		/// <summary>get a stream that can be used to read or write from part of the block. both reads and writes will be XORed against an earlier recorded snapshot</summary>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside bounds of memory block (<see cref="Start"/> and <see cref="End"/>)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or end (= <paramref name="start"/> + <paramref name="length"/>) are outside <see cref="AddressRange"/></exception>
 		/// <exception cref="InvalidOperationException">no snapshot taken (haven't called <see cref="SaveXorSnapshot"/>)</exception>
 		public Stream GetXorStream(ulong start, ulong length, bool writer)
 		{
-			if (start < Start) throw new ArgumentOutOfRangeException(nameof(start));
-			if (End < start + length) throw new ArgumentOutOfRangeException(nameof(length));
+			if (start < AddressRange.Start) throw new ArgumentOutOfRangeException(nameof(start), start, "invalid address");
+			if (AddressRange.EndInclusive < start + length - 1) throw new ArgumentOutOfRangeException(nameof(length), length, "requested length implies invalid end address");
 			if (_snapshot == null) throw new InvalidOperationException("No snapshot taken!");
-			return new MemoryViewXorStream(!writer, writer, (long) start, (long) length, this, _snapshot, (long) (start - Start));
+			return new MemoryViewXorStream(!writer, writer, (long) start, (long) length, this, _snapshot, (long) (start - AddressRange.Start));
 		}
 
 		/// <summary>activate the memory block, swapping it in at the pre-specified address</summary>
@@ -144,10 +140,9 @@ namespace BizHawk.Common.BizInvoke
 
 			private void EnsureNotDisposed()
 			{
-				if (_owner.Start == 0) throw new ObjectDisposedException("MemoryBlockBase");
+				if (_owner.AddressRange.Start == 0) throw new ObjectDisposedException(nameof(MemoryBlockBase)); //TODO bug?
 			}
 
-			/// <remarks>TODO should this call base.Flush()? --yoshi</remarks>
 			public override void Flush() {}
 
 			public override int Read(byte[] buffer, int offset, int count)

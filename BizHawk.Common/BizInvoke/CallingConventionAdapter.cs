@@ -185,20 +185,20 @@ namespace BizHawk.Common.BizInvoke
 
 			private void WriteThunk(byte[] data, int placeholderIndex, IntPtr p, int index)
 			{
-				_memory.Protect(_memory.Start, _memory.Size, MemoryBlockBase.Protection.RW);
-				var ss = _memory.GetStream(_memory.Start + (ulong)index * BlockSize, BlockSize, true);
+				_memory.Protect(_memory.AddressRange.Start, _memory.Size, MemoryBlockBase.Protection.RW);
+				var ss = _memory.GetStream(_memory.AddressRange.Start + BlockSize * (ulong) index, BlockSize, true);
 				ss.Write(data, 0, data.Length);
 				for (int i = data.Length; i < BlockSize; i++)
 					ss.WriteByte(Padding);
 				ss.Position = placeholderIndex;
 				var bw = new BinaryWriter(ss);
 				bw.Write((long)p);
-				_memory.Protect(_memory.Start, _memory.Size, MemoryBlockBase.Protection.RX);
+				_memory.Protect(_memory.AddressRange.Start, _memory.Size, MemoryBlockBase.Protection.RX);
 			}
 
 			private IntPtr GetThunkAddress(int index)
 			{
-				return Z.US(_memory.Start + (ulong)index * BlockSize);
+				return Z.US(_memory.AddressRange.Start + BlockSize * (ulong) index);
 			}
 
 			private void SetLifetime(int index, object lifetime)

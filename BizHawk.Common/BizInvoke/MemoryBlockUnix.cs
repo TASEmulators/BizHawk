@@ -10,7 +10,7 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>handle returned by <see cref="memfd_create"/></summary>
 		private int _fd;
 
-		/// <summary>allocate <paramref name="size"/> bytes starting at a particular address <paramref name="start"/></summary>
+		/// <inheritdoc cref="MemoryBlockBase(ulong,ulong)"/>
 		/// <exception cref="InvalidOperationException">failed to get file descriptor (never thrown as <see cref="NotImplementedException"/> is thrown first)</exception>
 		/// <exception cref="NotImplementedException">always</exception>
 		public MemoryBlockUnix(ulong start, ulong size) : base(start, size)
@@ -25,8 +25,8 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (Active) throw new InvalidOperationException("Already active");
 
-			var ptr = mmap(Z.US(Start), Z.UU(Size), MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute, 16, _fd, IntPtr.Zero);
-			if (ptr != Z.US(Start)) throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
+			var ptr = mmap(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read | MemoryProtection.Write | MemoryProtection.Execute, 16, _fd, IntPtr.Zero);
+			if (ptr != Z.US(AddressRange.Start)) throw new InvalidOperationException($"{nameof(mmap)}() returned NULL or the wrong pointer");
 
 			ProtectAll();
 			Active = true;
@@ -37,7 +37,7 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (!Active) throw new InvalidOperationException("Not active");
 
-			var exitCode = munmap(Z.US(Start), Z.UU(Size));
+			var exitCode = munmap(Z.US(AddressRange.Start), Z.UU(Size));
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(munmap)}() returned {exitCode}");
 
 			Active = false;
@@ -49,10 +49,10 @@ namespace BizHawk.Common.BizInvoke
 			if (!Active) throw new InvalidOperationException("Not active");
 
 			// temporarily switch the entire block to `R`
-			var exitCode = mprotect(Z.US(Start), Z.UU(Size), MemoryProtection.Read);
+			var exitCode = mprotect(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read);
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(mprotect)}() returned {exitCode}!");
 
-			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
+			var ret = WaterboxUtils.Hash(GetStream(AddressRange.Start, Size, false));
 			ProtectAll();
 			return ret;
 		}
@@ -105,11 +105,11 @@ namespace BizHawk.Common.BizInvoke
 			if (!Active) throw new InvalidOperationException("Not active");
 
 			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want that to complicate things
-			var exitCode = mprotect(Z.US(Start), Z.UU(Size), MemoryProtection.Read);
+			var exitCode = mprotect(Z.US(AddressRange.Start), Z.UU(Size), MemoryProtection.Read);
 			if (exitCode != 0) throw new InvalidOperationException($"{nameof(mprotect)}() returned {exitCode}!");
 
 			_snapshot = new byte[Size];
-			GetStream(Start, Size, false).CopyTo(new MemoryStream(_snapshot, true));
+			GetStream(AddressRange.Start, Size, false).CopyTo(new MemoryStream(_snapshot, true));
 			XorHash = WaterboxUtils.Hash(_snapshot);
 			ProtectAll();
 		}

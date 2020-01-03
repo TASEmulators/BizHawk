@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (HasRelocations())
 			{
 				_base = MemoryBlockBase.CallPlatformCtor((ulong)(orig_end - orig_start));
-				_loadoffset = (long)_base.Start - orig_start;
+				_loadoffset = (long) _base.AddressRange.Start - orig_start;
 				Initialize(0);
 			}
 			else
@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_disposeList.Add(_base);
 				AddMemoryBlock(_base, "elf");
 				_base.Activate();
-				_base.Protect(_base.Start, _base.Size, MemoryBlockBase.Protection.RW);
+				_base.Protect(_base.AddressRange.Start, _base.Size, MemoryBlockBase.Protection.RW);
 
 				foreach (var seg in loadsegs)
 				{
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				RegisterSymbols();
 				ProcessRelocations();
 
-				_base.Protect(_base.Start, _base.Size, MemoryBlockBase.Protection.R);
+				_base.Protect(_base.AddressRange.Start, _base.Size, MemoryBlockBase.Protection.R);
 
 				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 				{
@@ -114,13 +114,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlockBase.Protection.RW);
 				}
 
-				ulong end = _base.End;
+				ulong end = _base.AddressRange.EndInclusive + 1;
 
 				if (heapsize > 0)
 				{
 					_heap = new Heap(GetHeapStart(end), (ulong)heapsize, "sbrk-heap");
 					_heap.Memory.Activate();
-					end = _heap.Memory.End;
+					end = _heap.Memory.AddressRange.EndInclusive + 1;
 					_disposeList.Add(_heap);
 					AddMemoryBlock(_heap.Memory, "sbrk - heap");
 				}
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					_sealedheap = new Heap(GetHeapStart(end), (ulong)sealedheapsize, "sealed-heap");
 					_sealedheap.Memory.Activate();
-					end = _sealedheap.Memory.End;
+					end = _sealedheap.Memory.AddressRange.EndInclusive + 1;
 					_disposeList.Add(_sealedheap);
 					AddMemoryBlock(_sealedheap.Memory, "sealed-heap");
 				}
@@ -138,13 +138,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					_invisibleheap = new Heap(GetHeapStart(end), (ulong)invisibleheapsize, "invisible-heap");
 					_invisibleheap.Memory.Activate();
-					end = _invisibleheap.Memory.End;
+					end = _invisibleheap.Memory.AddressRange.EndInclusive + 1;
 					_disposeList.Add(_invisibleheap);
 					AddMemoryBlock(_invisibleheap.Memory, "invisible-heap");
 				}
 
 				ConnectAllClibPatches();
-				Console.WriteLine("Loaded {0}@{1:X16}", filename, _base.Start);
+				Console.WriteLine($"Loaded {filename}@{_base.AddressRange.Start:X16}");
 				foreach (var sec in _elf.Sections.Where(s => s.LoadAddress != 0))
 				{
 					Console.WriteLine("  {0}@{1:X16}, size {2}", sec.Name.PadLeft(20), sec.LoadAddress + _loadoffset, sec.Size.ToString().PadLeft(12));

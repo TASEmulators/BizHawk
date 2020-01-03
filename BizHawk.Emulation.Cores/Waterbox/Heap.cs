@@ -63,8 +63,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				throw new InvalidOperationException($"Failed to allocate {size} bytes from heap {Name}");
 			}
-			ulong ret = Memory.Start + allocstart;
-			Memory.Protect(Memory.Start + Used, newused - Used, MemoryBlockBase.Protection.RW);
+			ulong ret = Memory.AddressRange.Start + allocstart;
+			Memory.Protect(Memory.AddressRange.Start + Used, newused - Used, MemoryBlockBase.Protection.RW);
 			Used = newused;
 			Console.WriteLine($"Allocated {size} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			return ret;
@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!Sealed)
 			{
-				Memory.Protect(Memory.Start, Used, MemoryBlockBase.Protection.R);
-				_hash = WaterboxUtils.Hash(Memory.GetStream(Memory.Start, Used, false));
+				Memory.Protect(Memory.AddressRange.Start, Used, MemoryBlockBase.Protection.R);
+				_hash = WaterboxUtils.Hash(Memory.GetStream(Memory.AddressRange.Start, Used, false));
 				Sealed = true;
 			}
 			else
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (!Sealed)
 			{
 				bw.Write(Memory.XorHash);
-				var ms = Memory.GetXorStream(Memory.Start, WaterboxUtils.AlignUp(Used), false);
+				var ms = Memory.GetXorStream(Memory.AddressRange.Start, WaterboxUtils.AlignUp(Used), false);
 				ms.CopyTo(bw.BaseStream);
 			}
 			else
@@ -118,9 +118,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 				var usedAligned = WaterboxUtils.AlignUp(used);
 
-				Memory.Protect(Memory.Start, Memory.Size, MemoryBlockBase.Protection.None);
-				Memory.Protect(Memory.Start, used, MemoryBlockBase.Protection.RW);
-				var ms = Memory.GetXorStream(Memory.Start, usedAligned, true);
+				Memory.Protect(Memory.AddressRange.Start, Memory.Size, MemoryBlockBase.Protection.None);
+				Memory.Protect(Memory.AddressRange.Start, used, MemoryBlockBase.Protection.RW);
+				var ms = Memory.GetXorStream(Memory.AddressRange.Start, usedAligned, true);
 				WaterboxUtils.CopySome(br.BaseStream, ms, (long)usedAligned);
 				Used = used;
 			}

@@ -420,13 +420,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var heap = _parent._heap;
 
-				var start = heap.Memory.Start;
+				var start = heap.Memory.AddressRange.Start;
 				var end = start + heap.Used;
-				var max = heap.Memory.End;
+				var max = heap.Memory.AddressRange.EndInclusive;
 
 				var p = (ulong)_p;
 
-				if (p < start || p > max)
+				if (p < start || max + 1 < p) //TODO bug?
 				{
 					// failure: return current break
 					return Z.UU(end);
