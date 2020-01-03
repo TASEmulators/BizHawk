@@ -2227,8 +2227,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PSXHashDiscs();
-			form.ShowDialog();
+			if (Emulator is Octoshock psx)
+			{
+				using var form = new PSXHashDiscs(psx);
+				form.ShowDialog();
+			}
 		}
 
 		#endregion
