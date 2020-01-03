@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					// onto the bus, but only if they are enabled correctly using port 2
 					if (kybrd_en)
 					{
+						_islag = false;
 						if ((kb_byte & 7) == 1)
 						{
 							return controller_state_1;
@@ -117,6 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 			else
 			{
 				// keyboard
+				_islag = false;
 				return kb_byte;
 			}
 		}

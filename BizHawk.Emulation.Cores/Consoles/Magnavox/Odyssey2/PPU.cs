@@ -113,13 +113,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 				// chars position is not effected by last bit
 				if ((addr % 4) == 0) { value &= 0xFE; }
 				if (!VDC_ctrl.Bit(5)) { Foreground[addr - 0x10] = value; }
+				//Console.WriteLine("char: " + addr + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0x80)
 			{
 				// chars position is not effected by last bit
 				if ((addr % 4) == 0) { value &= 0xFE; }
 				if (!VDC_ctrl.Bit(5)) { Quad_Chars[addr - 0x40] = value; }
-				
+
 				//Console.WriteLine("quad: " + (addr - 0x40) + " " + value + " " + Core.cpu.TotalExecutedCycles);
 			}
 			else if (addr < 0xA0)
@@ -200,14 +201,14 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 
 					// background
 					Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[((VDC_color >> 3) & 0x7) + bg_brightness];
-
+					
 					if (grid_fill > 0)
 					{
 						Core._vidbuffer[LY * 186 + (cycle - HBL_CNT)] = (int)Color_Palette_BG[(VDC_color & 0x7) + grid_brightness];
 						Pixel_Stat |= grid_fill_col;
 						grid_fill--;
 					}
-
+					
 					if ((((cycle - HBL_CNT) % 16) == 8) && ((LY - 24) >= 0))
 					{
 						int k = (int)Math.Floor((cycle - HBL_CNT) / 16.0);
@@ -253,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							}
 						}
 					}
-
+					
 					// grid
 					if (VDC_ctrl.Bit(6) && ((LY - 24) >= 0) && ((LY % 24) < 3))
 					{
@@ -269,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 							}
 						}
 					}
-
+					
 					// single characters
 					for (int i = 0; i < 12; i++)
 					{
@@ -532,7 +533,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 															0x66, 0x66, 0x66, 0x3C, 0x18, 0x18, 0x18, 00, // Y				0x2C
 															0xC6, 0xE6, 0xF6, 0xFE, 0xDE, 0xCE, 0xC6, 00, // N				0x2D
 															0x03, 0x06, 0x0C, 0x18, 0x30, 0x60, 0xC0, 00, // /				0x2E
-															0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 00, // (box)			0x2F
+															0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 00, // (box)			0x2F
 															0xCE, 0xDB, 0xDB, 0xDB, 0xDB, 0xDB, 0xCE, 00, // 10				0x30
 															0x00, 0x00, 0x3C, 0x7E, 0x7E, 0x7E, 0x3C, 00, // (ball)			0x31
 															0x38, 0x38, 0x30, 0x3C, 0x30, 0x30, 0x38, 00, // (person R)		0x32

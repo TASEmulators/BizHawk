@@ -123,16 +123,15 @@ namespace BizHawk.Emulation.Common.Components.I8048
 				a += 0x6;
 			}
 
+			if (a > 0xFF) { FlagC = true; }
+
 			if ((((a >> 4) & 0xF) > 9) | FlagC)
 			{
 				a += 0x60;
 			}
 
 			// FlagAC is not reset, nor is FlagC reset
-			if (a > 0xFF)
-			{
-				FlagC = true;
-			}
+			if (a > 0xFF) { FlagC = true; }
 
 			Regs[src] = (byte)a;
 		}
