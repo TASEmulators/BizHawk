@@ -5,35 +5,35 @@ using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
+	// parses command line arguments and adds the values to a class attribute
+	// default values are null for strings and false for boolean
+	// the last value will overwrite previously set values
+	// unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
 	public class ArgParser
-	//parses command line arguments and adds the values to a class attribute
-	//default values are null for strings and false for boolean
-	//the last value will overwrite previously set values
-	//unrecognized parameters are simply ignored or in the worst case assumed to be a ROM name [cmdRom]
 	{
-		public string cmdRom = null;
-		public string cmdLoadSlot = null;
-		public string cmdLoadState = null;
-		public string cmdConfigPath = null;
-		public string cmdConfigFile = null;
-		public string cmdMovie = null;
-		public string cmdDumpType = null;
-		public string cmdDumpName = null;
-		public HashSet<int> _currAviWriterFrameList;
-		public int _autoDumpLength;
-		public bool _autoCloseOnDump = false;
+		public string CmdRom { get; set; }
+		public string CmdLoadSlot { get; set; }
+		public string CmdLoadState { get; set; }
+		public string CmdConfigFile { get; set; }
+		public string CmdMovie { get; set; }
+		public string CmdDumpType { get; set; }
+		public string CmdDumpName { get; set; }
+		public HashSet<int> CurrAviWriterFrameList { get; set; } = new HashSet<int>();
+		public int AutoDumpLength { get; set; }
+		public bool AutoCloseOnDump { get; set; }
+
 		// chrome is never shown, even in windowed mode
-		public bool _chromeless = false;
-		public bool startFullscreen = false;
-		public string luaScript = null;
-		public bool luaConsole = false;
-		public bool printVersion = false;
-		public int socket_port = 0;
-		public string socket_ip = null;
-		public string mmf_filename = null;
-		public string URL_get = null;
-		public string URL_post = null;
-		public bool? audiosync = null;
+		public bool Chromeless { get; set; }
+		public bool StartFullscreen { get; set; }
+		public string LuaScript { get; set; }
+		public bool LuaConsole { get; set; }
+		public bool PrintVersion { get; set; }
+		public int SocketPort { get; set; }
+		public string SocketIp { get; set; }
+		public string MmfFilename { get; set; }
+		public string UrlGet { get; set; }
+		public string UrlPost { get; set; }
+		public bool? AudioSync { get; set; }
 
 		/// <exception cref="ArgParserException"><c>--socket_ip</c> passed without specifying <c>--socket_port</c> or vice-versa</exception>
 		public void ParseArguments(string[] args)
@@ -52,131 +52,139 @@ namespace BizHawk.Client.EmuHawk
 				var arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
 				{
-					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+					CmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
 				}
 
 				if (arg.StartsWith("--load-state="))
 				{
-					cmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
+					CmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				if (arg.StartsWith("--config="))
 				{
-					cmdConfigFile = args[i].Substring(args[i].IndexOf('=') + 1);
+					CmdConfigFile = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--movie="))
 				{
-					cmdMovie = args[i].Substring(args[i].IndexOf('=') + 1);
+					CmdMovie = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-type="))
 				{
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
+					CmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-frames="))
 				{
 					string list = arg.Substring(arg.IndexOf('=') + 1);
 					string[] items = list.Split(',');
-					_currAviWriterFrameList = new HashSet<int>();
+					CurrAviWriterFrameList = new HashSet<int>();
 					foreach (string item in items)
 					{
-						_currAviWriterFrameList.Add(int.Parse(item));
+						CurrAviWriterFrameList.Add(int.Parse(item));
 					}
 
 					// automatically set dump length to maximum frame
-					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
+					AutoDumpLength = CurrAviWriterFrameList.OrderBy(x => x).Last();
 				}
 				else if (arg.StartsWith("--version"))
 				{
-					printVersion = true;
+					PrintVersion = true;
 				}
 				else if (arg.StartsWith("--dump-name="))
 				{
-					cmdDumpName = args[i].Substring(args[i].IndexOf('=') + 1);
+					CmdDumpName = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-length="))
 				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
+					if (int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out int autoDumpLength))
+					{
+						AutoDumpLength = autoDumpLength;
+					}
 				}
 				else if (arg.StartsWith("--dump-close"))
 				{
-					_autoCloseOnDump = true;
+					AutoCloseOnDump = true;
 				}
 				else if (arg.StartsWith("--chromeless"))
 				{
-					_chromeless = true;
+					Chromeless = true;
 				}
 				else if (arg.StartsWith("--fullscreen"))
 				{
-					startFullscreen = true;
+					StartFullscreen = true;
 				}
 				else if (arg.StartsWith("--lua="))
 				{
-					luaScript = args[i].Substring(args[i].IndexOf('=') + 1);
-					luaConsole = true;
+					LuaScript = args[i].Substring(args[i].IndexOf('=') + 1);
+					LuaConsole = true;
 				}
 				else if (arg.StartsWith("--luaconsole"))
 				{
-					luaConsole = true;
+					LuaConsole = true;
 				}
 				else if (arg.StartsWith("--socket_port="))
 				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out socket_port);
+					if (int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out int socketPort))
+					{
+						SocketPort = socketPort;
+					}
 				}
 				else if (arg.StartsWith("--socket_ip="))
 				{
-					socket_ip = arg.Substring(arg.IndexOf('=') + 1);
+					SocketIp = arg.Substring(arg.IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--mmf="))
 				{
-					mmf_filename = args[i].Substring(args[i].IndexOf('=') + 1);
+					MmfFilename = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--url_get="))
 				{
-					URL_get = args[i].Substring(args[i].IndexOf('=') + 1);
+					UrlGet = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--url_post="))
 				{
-					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
+					UrlPost = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--audiosync="))
 				{
-					audiosync = arg.Substring(arg.IndexOf('=') + 1) == "true";
+					AudioSync = arg.Substring(arg.IndexOf('=') + 1) == "true";
 				}
 				else
 				{
-					cmdRom = args[i];
+					CmdRom = args[i];
 				}
 			}
 
-			//initialize HTTP communication
-			if (URL_get != null || URL_post != null)
+			// initialize HTTP communication
+			if (UrlGet != null || UrlPost != null)
 			{
 				GlobalWin.httpCommunication = new Communication.HttpCommunication();
-				if (URL_get != null)
+				if (UrlGet != null)
 				{
-					GlobalWin.httpCommunication.GetUrl = URL_get;
+					GlobalWin.httpCommunication.GetUrl = UrlGet;
 				}
-				if (URL_post != null)
+				if (UrlPost != null)
 				{
-					GlobalWin.httpCommunication.PostUrl = URL_post;
+					GlobalWin.httpCommunication.PostUrl = UrlPost;
 				}
 			}
 
 			// initialize socket server
-			if (socket_ip != null && socket_port > 0)
+			if (SocketIp != null && SocketPort > 0)
 			{
 				GlobalWin.socketServer = new Communication.SocketServer();
-				GlobalWin.socketServer.SetIp(socket_ip, socket_port);
+				GlobalWin.socketServer.SetIp(SocketIp, SocketPort);
 			}
-			else if (socket_ip == null ^ socket_port == 0)
+			else if (SocketIp == null ^ SocketPort == 0)
 			{
 				throw new ArgParserException("Socket server needs both --socket_ip and --socket_port. Socket server was not started");
 			}
 
-			//initialize mapped memory files
-			if (mmf_filename != null)
+			// initialize mapped memory files
+			if (MmfFilename != null)
 			{
-				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles();
-				GlobalWin.memoryMappedFiles.Filename = mmf_filename;
+				GlobalWin.memoryMappedFiles = new Communication.MemoryMappedFiles
+				{
+					Filename = MmfFilename
+				};
 			}
 		}
 
@@ -185,6 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			return args.FirstOrDefault(arg => arg.StartsWith("--config=", StringComparison.InvariantCultureIgnoreCase))?.Substring(9);
 		}
 	}
+
 	public class ArgParserException : Exception
 	{
 		public ArgParserException(string message) : base(message)
