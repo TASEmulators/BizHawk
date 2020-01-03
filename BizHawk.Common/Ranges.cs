@@ -30,29 +30,30 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="Overwrite"/>
 		public MutableRange(T start, T endInclusive) => Overwrite(start, endInclusive);
 
-		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> > <see cref="EndInclusive"/></exception>
+		/// <exception cref="ArgumentOutOfRangeException">(from setter) <paramref name="value"/> > <see cref="EndInclusive"/></exception>
 		public T Start
 		{
 			get => r.Start;
 			set => r.Start = r.EndInclusive.CompareTo(value) < 0
-				? throw new ArgumentException("attempted to set start > end", nameof(value))
+				? throw new ArgumentOutOfRangeException(nameof(value), value, "attempted to set start > end")
 				: value;
 		}
 
-		/// <exception cref="ArgumentException">(from setter) <paramref name="value"/> &lt; <see cref="Start"/></exception>
+		/// <exception cref="ArgumentOutOfRangeException">(from setter) <paramref name="value"/> &lt; <see cref="Start"/></exception>
 		public T EndInclusive
 		{
 			get => r.EndInclusive;
 			set => r.EndInclusive = value.CompareTo(r.Start) < 0
-				? throw new ArgumentException("attempted to set end < start", nameof(value))
+				? throw new ArgumentOutOfRangeException(nameof(value), value, "attempted to set end < start")
 				: value;
 		}
 
-		/// <exception cref="ArgumentException"><paramref name="endInclusive"/> &lt; <paramref name="start"/>, or <typeparamref name="T"/> is <see langword="float"/>/<see langword="double"/> and either bound is <see cref="float.NaN"/></exception>
+		/// <exception cref="ArgumentException"><typeparamref name="T"/> is <see langword="float"/>/<see langword="double"/> and either bound is <see cref="float.NaN"/></exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/></exception>
 		public void Overwrite(T start, T endInclusive)
 		{
 			var range = new RangeStruct<T> { Start = start, EndInclusive = endInclusive };
-			if (range.EndInclusive.CompareTo(range.Start) < 0) throw new ArgumentException("range end < start", nameof(range));
+			if (range.EndInclusive.CompareTo(range.Start) < 0) throw new ArgumentOutOfRangeException(nameof(range), range, "range end < start");
 			if (range is RangeStruct<float> fr && (float.IsNaN(fr.Start) || float.IsNaN(fr.EndInclusive))
 				|| range is RangeStruct<double> dr && (double.IsNaN(dr.Start) || double.IsNaN(dr.EndInclusive)))
 			{
@@ -69,9 +70,9 @@ namespace BizHawk.Common
 	/// </remarks>
 	public static class RangeExtensions
 	{
-		private const string EXCL_RANGE_ARITH_EXC_TEXT = "exclusive range end is min value of integral type";
-
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
+
+		private static readonly ArithmeticException ExclusiveRangeMinValExc = new ArithmeticException("exclusive range end is min value of integral type");
 
 		/// <returns><paramref name="value"/> if it's contained in <paramref name="range"/>, or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/></returns>
 		public static T ConstrainWithin<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => value.CompareTo(range.Start) < 0
@@ -176,42 +177,42 @@ namespace BizHawk.Common
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<byte> MutableRangeToExclusive(this byte start, byte endExclusive) => endExclusive == byte.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<byte>(start, (byte) (endExclusive - 1U));
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<int> MutableRangeToExclusive(this int start, int endExclusive) => endExclusive == int.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<int>(start, endExclusive - 1);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<long> MutableRangeToExclusive(this long start, long endExclusive) => endExclusive == long.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<long>(start, endExclusive - 1L);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<sbyte> MutableRangeToExclusive(this sbyte start, sbyte endExclusive) => endExclusive == sbyte.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<sbyte>(start, (sbyte) (endExclusive - 1));
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<short> MutableRangeToExclusive(this short start, short endExclusive) => endExclusive == short.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<short>(start, (short) (endExclusive - 1));
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<uint> MutableRangeToExclusive(this uint start, uint endExclusive) => endExclusive == uint.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<uint>(start, endExclusive - 1U);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<ulong> MutableRangeToExclusive(this ulong start, ulong endExclusive) => endExclusive == ulong.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<ulong>(start, endExclusive - 1UL);
 
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static MutableRange<ushort> MutableRangeToExclusive(this ushort start, ushort endExclusive) => endExclusive == ushort.MinValue
-			? throw new ArgumentException(EXCL_RANGE_ARITH_EXC_TEXT, nameof(endExclusive))
+			? throw ExclusiveRangeMinValExc
 			: new MutableRange<ushort>(start, (ushort) (endExclusive - 1U));
 
 		/// <inheritdoc cref="MutableRange{T}(T,T)"/>
@@ -220,7 +221,7 @@ namespace BizHawk.Common
 		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
 		public static Range<byte> RangeToExclusive(this byte start, byte endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
-		/// <exception cref="ArgumentException"><paramref name="endExclusive"/> &le; <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> &le; <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
 		/// <exception cref="ArithmeticException"><paramref name="endExclusive"/> is min value of integral type (therefore <paramref name="endExclusive"/> &le; <paramref name="start"/>)</exception>
 		public static Range<int> RangeToExclusive(this int start, int endExclusive) => MutableRangeToExclusive(start, endExclusive);
 
