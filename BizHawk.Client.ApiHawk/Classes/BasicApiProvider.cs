@@ -16,7 +16,7 @@ namespace BizHawk.Client.ApiHawk
 	/// <seealso cref="IExternalApiProvider"/> 
 	public class BasicApiProvider : IExternalApiProvider
 	{
-		private readonly Dictionary<Type, IExternalApi> _apis = new Dictionary<Type, IExternalApi>();
+		private readonly Dictionary<Type, IExternalApi> _apis;
 
 		public BasicApiProvider(IApiContainer container)
 		{
@@ -52,13 +52,8 @@ namespace BizHawk.Client.ApiHawk
 
 		public object GetApi(Type t)
 		{
-			KeyValuePair<Type, IExternalApi>[] k = _apis.Where(kvp => t.IsAssignableFrom(kvp.Key)).ToArray();
-			if (k.Length > 0)
-			{
-				return k[0].Value;
-			}
-
-			return null;
+			var k = _apis.Where(kvp => t.IsAssignableFrom(kvp.Key)).ToArray();
+			return k.Length > 0 ? k[0].Value : null;
 		}
 
 		public bool HasApi<T>()
@@ -67,10 +62,7 @@ namespace BizHawk.Client.ApiHawk
 			return HasApi(typeof(T));
 		}
 
-		public bool HasApi(Type t)
-		{
-			return _apis.ContainsKey(t);
-		}
+		public bool HasApi(Type t) => _apis.ContainsKey(t);
 
 		public IEnumerable<Type> AvailableApis => _apis.Select(d => d.Key);
 	}
