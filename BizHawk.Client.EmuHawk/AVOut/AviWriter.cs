@@ -345,15 +345,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// set basic movie timing parameters for the avi file. must be set before the file is opened.
 		/// </summary>
-		public void SetMovieParameters(int fps, int fps_scale)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
 			bool change = false;
 
-			change |= fps != parameters.fps;
-			parameters.fps = fps;
+			change |= fpsNum != parameters.fps;
+			parameters.fps = fpsNum;
 
-			change |= parameters.fps_scale != fps_scale;
-			parameters.fps_scale = fps_scale;
+			change |= parameters.fps_scale != fpsDen;
+			parameters.fps_scale = fpsDen;
 
 			if (change)
 			{

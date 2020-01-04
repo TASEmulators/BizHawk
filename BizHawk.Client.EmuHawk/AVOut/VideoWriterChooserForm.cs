@@ -118,14 +118,14 @@ namespace BizHawk.Client.EmuHawk
 			return ret;
 		}
 
-		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+		private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			labelDescriptionBody.Text = listBox1.SelectedIndex != -1
 				? ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description
 				: "";
 		}
 
-		private void checkBoxResize_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxResize_CheckedChanged(object sender, EventArgs e)
 		{
 			foreach (Control c in panelSizeSelect.Controls)
 			{
@@ -133,13 +133,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void buttonAuto_Click(object sender, EventArgs e)
+		private void ButtonAuto_Click(object sender, EventArgs e)
 		{
 			numericTextBoxW.Text = _captureWidth.ToString();
 			numericTextBoxH.Text = _captureHeight.ToString();
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
+		private void ButtonOK_Click(object sender, EventArgs e)
 		{
 			if (checkBoxResize.Checked)
 			{

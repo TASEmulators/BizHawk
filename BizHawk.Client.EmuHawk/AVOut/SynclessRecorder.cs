@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Text;
 using System.Windows.Forms;
 
@@ -26,24 +27,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFrame(int frame)
 		{
-			mCurrFrame = frame;
+			_mCurrFrame = frame;
 		}
 
-		private int mCurrFrame;
-		private string mBaseDirectory, mFramesDirectory;
-		private string mProjectFile;
+		private int _mCurrFrame;
+		private string _mBaseDirectory, _mFramesDirectory;
+		private string _mProjectFile;
 
 		public void OpenFile(string projFile)
 		{
-			mProjectFile = projFile;
-			mBaseDirectory = Path.GetDirectoryName(mProjectFile);
+			_mProjectFile = projFile;
+			_mBaseDirectory = Path.GetDirectoryName(_mProjectFile) ?? "";
 			string basename = Path.GetFileNameWithoutExtension(projFile);
 			string framesDirFragment = $"{basename}_frames";
-			mFramesDirectory = Path.Combine(mBaseDirectory, framesDirFragment);
-			StringBuilder sb = new StringBuilder();
+			_mFramesDirectory = Path.Combine(_mBaseDirectory, framesDirFragment);
+			var sb = new StringBuilder();
 			sb.AppendLine("version=1");
 			sb.AppendLine($"framesdir={framesDirFragment}");
-			File.WriteAllText(mProjectFile, sb.ToString());
+			File.WriteAllText(_mProjectFile, sb.ToString());
 		}
 
 		public void CloseFile()
@@ -53,17 +54,17 @@ namespace BizHawk.Client.EmuHawk
 		public void AddFrame(IVideoProvider source)
 		{
 			using var bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
-			string subPath = GetAndCreatePathForFrameNum(mCurrFrame);
+			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.png";
-			bb.ToSysdrawingBitmap().Save(path, System.Drawing.Imaging.ImageFormat.Png);
+			bb.ToSysdrawingBitmap().Save(path, ImageFormat.Png);
 		}
 
 		public void AddSamples(short[] samples)
 		{
-			string subPath = GetAndCreatePathForFrameNum(mCurrFrame);
+			string subPath = GetAndCreatePathForFrameNum(_mCurrFrame);
 			string path = $"{subPath}.wav";
-			WavWriterV wwv = new WavWriterV();
-			wwv.SetAudioParameters(paramSampleRate, paramChannels, paramBits);
+			var wwv = new WavWriterV();
+			wwv.SetAudioParameters(_paramSampleRate, _paramChannels, _paramBits);
 			wwv.OpenFile(path);
 			wwv.AddSamples(samples);
 			wwv.CloseFile();
@@ -86,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			return new DummyDisposable();
 		}
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
 			//should probably todo in here
 		}
@@ -96,24 +97,21 @@ namespace BizHawk.Client.EmuHawk
 			// may want to todo
 		}
 
-		private int paramSampleRate, paramChannels, paramBits;
+		private int _paramSampleRate, _paramChannels, _paramBits;
 
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
-			paramSampleRate = sampleRate;
-			paramChannels = channels;
-			paramBits = bits;
+			_paramSampleRate = sampleRate;
+			_paramChannels = channels;
+			_paramBits = bits;
 		}
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
 			// not needed
 		}
 
-		public string DesiredExtension()
-		{
-			return "syncless.txt";
-		}
+		public string DesiredExtension() => "syncless.txt";
 
 		/// <summary>
 		/// splits the string into chunks of length s
@@ -145,18 +143,18 @@ namespace BizHawk.Client.EmuHawk
 		private string GetAndCreatePathForFrameNum(int index)
 		{
 			string subPath = GetPathFragmentForFrameNum(index);
-			string path = mFramesDirectory;
+			string path = _mFramesDirectory;
 			path = Path.Combine(path, subPath);
-			string fpath = $"{path}.nothing";
-			Directory.CreateDirectory(Path.GetDirectoryName(fpath));
+			string fPath = $"{path}.nothing";
+			Directory.CreateDirectory(Path.GetDirectoryName(fPath) ?? "");
 			return path;
 		}
 
 		public static string GetPathFragmentForFrameNum(int index)
 		{
 			var chunks = StringChunkSplit(index.ToString(), 2);
-			string subpath = string.Join("/", chunks);
-			return subpath;
+			string subPath = string.Join("/", chunks);
+			return subPath;
 		}
 	}
 }

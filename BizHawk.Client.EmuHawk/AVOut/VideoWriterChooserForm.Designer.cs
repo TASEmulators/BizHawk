@@ -62,7 +62,7 @@
 			this.checkBoxResize.TabIndex = 9;
 			this.checkBoxResize.Text = "Resize Video";
 			this.checkBoxResize.UseVisualStyleBackColor = true;
-			this.checkBoxResize.CheckedChanged += new System.EventHandler(this.checkBoxResize_CheckedChanged);
+			this.checkBoxResize.CheckedChanged += new System.EventHandler(this.CheckBoxResize_CheckedChanged);
 			// 
 			// listBox1
 			// 
@@ -73,7 +73,7 @@
 			this.listBox1.Name = "listBox1";
 			this.listBox1.Size = new System.Drawing.Size(329, 202);
 			this.listBox1.TabIndex = 0;
-			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
 			// 
 			// buttonOK
 			// 
@@ -85,7 +85,7 @@
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 			// 
 			// buttonCancel
 			// 
@@ -161,7 +161,7 @@
 			this.buttonAuto.TabIndex = 14;
 			this.buttonAuto.Text = "/\\ Set As Resize";
 			this.buttonAuto.UseVisualStyleBackColor = true;
-			this.buttonAuto.Click += new System.EventHandler(this.buttonAuto_Click);
+			this.buttonAuto.Click += new System.EventHandler(this.ButtonAuto_Click);
 			// 
 			// panelSizeSelect
 			// 

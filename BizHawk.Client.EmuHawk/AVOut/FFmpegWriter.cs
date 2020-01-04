@@ -225,10 +225,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private int fpsnum, fpsden, width, height, sampleRate, channels;
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			this.fpsnum = fpsnum;
-			this.fpsden = fpsden;
+			this.fpsnum = fpsNum;
+			this.fpsden = fpsDen;
 		}
 
 		public void SetVideoParameters(int width, int height)

@@ -220,10 +220,10 @@ namespace BizHawk.Client.EmuHawk
 			Delay[1] = (byte)(delay >> 8 & 0xff);
 		}
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			this.fpsnum = fpsnum;
-			this.fpsden = fpsden;
+			this.fpsnum = fpsNum;
+			this.fpsden = fpsDen;
 			CalcDelay();
 		}
 

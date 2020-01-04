@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -12,11 +14,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private Bitmap _bmp;
 
-		public BmpVideoProvider(Bitmap bmp, int vsyncnum, int vsyncden)
+		public BmpVideoProvider(Bitmap bmp, int vsyncNum, int vsyncDen)
 		{
 			_bmp = bmp;
-			VsyncNumerator = vsyncnum;
-			VsyncDenominator = vsyncden;
+			VsyncNumerator = vsyncNum;
+			VsyncDenominator = vsyncDen;
 		}
 
 		public void Dispose()
@@ -31,12 +33,12 @@ namespace BizHawk.Client.EmuHawk
 		public int[] GetVideoBuffer()
 		{
 			// is there a faster way to do this?
-			var data = _bmp.LockBits(new Rectangle(0, 0, _bmp.Width, _bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var data = _bmp.LockBits(new Rectangle(0, 0, _bmp.Width, _bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
 			int[] ret = new int[_bmp.Width * _bmp.Height];
 
 			// won't work if stride is messed up
-			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, ret, 0, _bmp.Width * _bmp.Height);
+			Marshal.Copy(data.Scan0, ret, 0, _bmp.Width * _bmp.Height);
 			_bmp.UnlockBits(data);
 			return ret;
 		}
@@ -52,8 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int BackgroundColor => 0;
 
-		public int VsyncNumerator { get; private set; }
+		public int VsyncNumerator { get; }
 
-		public int VsyncDenominator { get; private set; }
+		public int VsyncDenominator { get; }
 	}
 }

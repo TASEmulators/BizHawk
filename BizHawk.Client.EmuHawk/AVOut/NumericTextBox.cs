@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Globalization;
 
 namespace BizHawk.Client.EmuHawk
@@ -20,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 			string keyInput = e.KeyChar.ToString();
 
-			if (Char.IsDigit(e.KeyChar))
+			if (char.IsDigit(e.KeyChar))
 			{
 				// Digits are OK
 			}
@@ -34,16 +33,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (keyInput.Equals(groupSeparator))
 			{
-				// group seperator is ok
+				// group separator is ok
 			}
 			else if (e.KeyChar == '\b')
 			{
 				// Backspace key is OK
 			}
-			//    else if ((ModifierKeys & (Keys.Control | Keys.Alt)) != 0)
-			//    {
-			//     // Let the edit control handle control and alt key combinations
-			//    }
 			else if (AllowSpace && e.KeyChar == ' ')
 			{
 
@@ -57,8 +52,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public int IntValue => int.Parse(Text);
-
-		public decimal DecimalValue => decimal.Parse(Text);
 
 		public bool AllowSpace { get; set; }
 

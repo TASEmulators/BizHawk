@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
@@ -44,19 +45,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddFrame(IVideoProvider source)
 		{
-			string ext = Path.GetExtension(_baseName);
-			var name = Path.Combine(Path.GetDirectoryName(_baseName), $"{Path.GetFileNameWithoutExtension(_baseName)}_{_frame}{ext}");
+			string ext = Path.GetExtension(_baseName) ?? "";
+			var name = Path.Combine(Path.GetDirectoryName(_baseName) ?? "", $"{Path.GetFileNameWithoutExtension(_baseName)}_{_frame}{ext}");
 			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
-			using (var bmp = bb.ToSysdrawingBitmap())
+			using var bmp = bb.ToSysdrawingBitmap();
+			if (ext.ToUpper() == ".PNG")
 			{
-				if (ext.ToUpper() == ".PNG")
-				{
-					bmp.Save(name, System.Drawing.Imaging.ImageFormat.Png);
-				}
-				else if (ext.ToUpper() == ".JPG")
-				{
-					bmp.Save(name, System.Drawing.Imaging.ImageFormat.Jpeg);
-				}
+				bmp.Save(name, ImageFormat.Png);
+			}
+			else if (ext.ToUpper() == ".JPG")
+			{
+				bmp.Save(name, ImageFormat.Jpeg);
 			}
 
 			_frame++;
@@ -78,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			return new CodecToken();
 		}
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
 		}
 
@@ -90,14 +89,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
 		}
 
-		public string DesiredExtension()
-		{
-			return "png";
-		}
+		public string DesiredExtension() => "png";
 
 		public void Dispose()
 		{

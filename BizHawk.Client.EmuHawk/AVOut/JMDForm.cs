@@ -1,34 +1,25 @@
 ﻿using System;
 using System.Windows.Forms;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// implements a minimal dialog for configuring JMDWriter
 	/// </summary>
-	public partial class JMDForm : Form
+	public partial class JmdForm : Form
 	{
-		public JMDForm()
+		public JmdForm()
 		{
 			InitializeComponent();
 		}
 
-		private void okButton_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void cancelButton_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void threadsBar_Scroll(object sender, EventArgs e)
+		private void ThreadsBar_Scroll(object sender, EventArgs e)
 		{
 			threadTop.Text = $"Number of compression threads: {threadsBar.Value}";
 		}
 
-		private void compressionBar_Scroll(object sender, EventArgs e)
+		private void CompressionBar_Scroll(object sender, EventArgs e)
 		{
 			compressionTop.Text = compressionBar.Value == compressionBar.Minimum
 				? "Compression Level: NONE"
@@ -39,43 +30,37 @@ namespace BizHawk.Client.EmuHawk
 		/// Show a configuration dialog (modal) for JMDWriter
 		/// </summary>
 		/// <param name="threads">number of threads</param>
-		/// <param name="complevel">compression level</param>
-		/// <param name="tmin">minimum possible number of threads</param>
-		/// <param name="tmax">maximum possible number of threads</param>
-		/// <param name="cmin">minimum compression level, assumed to be "no compression"</param>
-		/// <param name="cmax">maximum compression level</param>
+		/// <param name="compLevel">compression level</param>
+		/// <param name="tMin">minimum possible number of threads</param>
+		/// <param name="tMax">maximum possible number of threads</param>
+		/// <param name="cMin">minimum compression level, assumed to be "no compression"</param>
+		/// <param name="cMax">maximum compression level</param>
 		/// <param name="hwnd">hwnd of parent</param>
 		/// <returns>false if user canceled; true if user consented</returns>
-		public static bool DoCompressionDlg(ref int threads, ref int complevel, int tmin, int tmax, int cmin, int cmax, IWin32Window hwnd)
+		public static bool DoCompressionDlg(ref int threads, ref int compLevel, int tMin, int tMax, int cMin, int cMax, IWin32Window hwnd)
 		{
-			JMDForm j = new JMDForm();
-			j.threadsBar.Minimum = tmin;
-			j.threadsBar.Maximum = tmax;
-			j.compressionBar.Minimum = cmin;
-			j.compressionBar.Maximum = cmax;
+			var j = new JmdForm
+			{
+				threadsBar = { Minimum = tMin, Maximum = tMax },
+				compressionBar = { Minimum = cMin, Maximum = cMax }
+			};
+
 			j.threadsBar.Value = threads;
-			j.compressionBar.Value = complevel;
-			j.threadsBar_Scroll(null, null);
-			j.compressionBar_Scroll(null, null);
-			j.threadLeft.Text = $"{tmin}";
-			j.threadRight.Text = $"{tmax}";
-			j.compressionLeft.Text = $"{cmin}";
-			j.compressionRight.Text = $"{cmax}";
+			j.compressionBar.Value = compLevel;
+			j.ThreadsBar_Scroll(null, null);
+			j.CompressionBar_Scroll(null, null);
+			j.threadLeft.Text = $"{tMin}";
+			j.threadRight.Text = $"{tMax}";
+			j.compressionLeft.Text = $"{cMin}";
+			j.compressionRight.Text = $"{cMax}";
 
 			DialogResult d = j.ShowDialog(hwnd);
 
 			threads = j.threadsBar.Value;
-			complevel = j.compressionBar.Value;
+			compLevel = j.compressionBar.Value;
 
 			j.Dispose();
-			if (d == DialogResult.OK)
-			{
-				return true;
-			}
-			
-			return false;
+			return d.IsOk();
 		}
-
-
 	}
 }

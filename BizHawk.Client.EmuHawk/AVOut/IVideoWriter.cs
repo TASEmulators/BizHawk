@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using BizHawk.Emulation.Common;
-using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,12 +17,12 @@ namespace BizHawk.Client.EmuHawk
 		void SetDefaultVideoCodecToken();
 
 		/// <summary>
-		/// Returns whether this videowriter dumps audio
+		/// Returns whether this VideoWriter dumps audio
 		/// </summary>
 		bool UsesAudio { get; }
 
 		/// <summary>
-		/// Returns whether this videowriter dumps video
+		/// Returns whether this VideoWriter dumps video
 		/// </summary>
 		bool UsesVideo { get; }
 
@@ -67,9 +65,9 @@ namespace BizHawk.Client.EmuHawk
 		IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd);
 
 		/// <summary>
-		/// set framerate to fpsnum/fpsden (assumed to be unchanging over the life of the stream)
+		/// set framerate to fpsNum/fpsDen (assumed to be unchanging over the life of the stream)
 		/// </summary>
-		void SetMovieParameters(int fpsnum, int fpsden);
+		void SetMovieParameters(int fpsNum, int fpsDen);
 
 		/// <summary>
 		/// set resolution parameters (width x height)
@@ -90,42 +88,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="gameName">The name of the game loaded</param>
 		/// <param name="authors">Authors on movie file</param>
-		/// <param name="lengthMS">Length of movie file in milliseconds</param>
+		/// <param name="lengthMs">Length of movie file in milliseconds</param>
 		/// <param name="rerecords">Number of rerecords on movie file</param>
-		void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords);
+		void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords);
 
-//		/// <summary>
-//		/// short description of this IVideoWriter
-//		/// </summary>
-//		string WriterDescription();
 		/// <summary>
 		/// what default extension this writer would like to put on its output
 		/// </summary>
 		string DesiredExtension();
-//		/// <summary>
-//		/// name that command line parameters can refer to
-//		/// </summary>
-//		string ShortName();
 	}
-
-	public static class VideoWriterExtensions
-	{
-		public static string WriterDescription(this IVideoWriter w)
-		{
-			return w.GetAttribute<VideoWriterAttribute>().Description;
-		}
-
-		public static string ShortName(this IVideoWriter w)
-		{
-			return w.GetAttribute<VideoWriterAttribute>().ShortName;
-		}
-
-		public static string LongName(this IVideoWriter w)
-		{
-			return w.GetAttribute<VideoWriterAttribute>().Name;
-		}
-	}
-
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class VideoWriterAttribute : Attribute
@@ -150,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 	public class VideoWriterInfo
 	{
 		public VideoWriterAttribute Attribs { get; }
-		private Type _type;
+		private readonly Type _type;
 
 		public VideoWriterInfo(VideoWriterAttribute attribs, Type type)
 		{
@@ -158,15 +129,9 @@ namespace BizHawk.Client.EmuHawk
 			Attribs = attribs;
 		}
 
-		public IVideoWriter Create()
-		{
-			return (IVideoWriter)Activator.CreateInstance(_type);
-		}
+		public IVideoWriter Create() => (IVideoWriter)Activator.CreateInstance(_type);
 
-		public override string ToString()
-		{
-			return Attribs.Name;
-		}
+		public override string ToString() => Attribs.Name;
 	}
 
 	/// <summary>
@@ -174,7 +139,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public static class VideoWriterInventory
 	{
-		private static Dictionary<string, VideoWriterInfo> vws = new Dictionary<string, VideoWriterInfo>();
+		private static readonly Dictionary<string, VideoWriterInfo> VideoWriters = new Dictionary<string, VideoWriterInfo>();
 
 		static VideoWriterInventory()
 		{
@@ -186,28 +151,21 @@ namespace BizHawk.Client.EmuHawk
 					&& t.GetCustomAttributes(typeof(VideoWriterIgnoreAttribute), false).Length == 0)
 				{
 					var a = (VideoWriterAttribute)t.GetCustomAttributes(typeof(VideoWriterAttribute), false)[0];
-					vws.Add(a.ShortName, new VideoWriterInfo(a, t));
+					VideoWriters.Add(a.ShortName, new VideoWriterInfo(a, t));
 				}
 			}
 		}
 
-		public static IEnumerable<VideoWriterInfo> GetAllWriters()
-		{
-			return vws.Values;
-		}
+		public static IEnumerable<VideoWriterInfo> GetAllWriters() => VideoWriters.Values;
 
 		/// <summary>
 		/// find an IVideoWriter by its short name
 		/// </summary>
 		public static IVideoWriter GetVideoWriter(string name)
 		{
-			VideoWriterInfo ret;
-			if (vws.TryGetValue(name, out ret))
-			{
-				return ret.Create();
-			}
-
-			return null;
+			return VideoWriters.TryGetValue(name, out var ret)
+				? ret.Create()
+				: null;
 		}
 	}
 }

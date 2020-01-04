@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 
@@ -10,12 +11,12 @@ namespace BizHawk.Client.EmuHawk
 	/// uncompressed video and audio
 	/// </summary>
 	[VideoWriter("nut", "NUT writer", "Writes a series of .nut files to disk, a container format which can be opened by ffmpeg.  All data is uncompressed.  Splits occur on resolution changes.  NOT RECCOMENDED FOR USE.")]
-	class NutWriter : IVideoWriter
+	public class NutWriter : IVideoWriter
 	{
 		/// <summary>
 		/// dummy codec token class
 		/// </summary>
-		class NutWriterToken : IDisposable
+		private class NutWriterToken : IDisposable
 		{
 			public void Dispose()
 			{
@@ -28,37 +29,36 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// ignored
 		}
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
 			return new NutWriterToken();
 		}
 
-		/// <summary>
-		/// avparams
-		/// </summary>
-		private int fpsnum, fpsden, width, height, sampleRate, channels;
 
-		private NutMuxer _current = null;
+		// avParams
+		private int _fpsNum, _fpsDen, _width, _height, _sampleRate, _channels;
+
+		private NutMuxer _current;
 		private string _baseName;
 		private int _segment;
 
 		public void OpenFile(string baseName)
 		{
 			_baseName = Path.Combine(
-				Path.GetDirectoryName(baseName),
-				Path.GetFileNameWithoutExtension(baseName));
+				Path.GetDirectoryName(baseName) ?? "",
+				Path.GetFileNameWithoutExtension(baseName) ?? "");
 			_segment = 0;
 
-			startsegment();
+			StartSegment();
 		}
 
-		private void startsegment()
+		private void StartSegment()
 		{
-			var currentfile = File.Open($"{_baseName}_{_segment,4:D4}.nut", FileMode.Create, FileAccess.Write);
-			_current = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, currentfile);
+			var currentFile = File.Open($"{_baseName}_{_segment,4:D4}.nut", FileMode.Create, FileAccess.Write);
+			_current = new NutMuxer(_width, _height, _fpsNum, _fpsDen, _sampleRate, _channels, currentFile);
 		}
 
-		private void endsegment()
+		private void EndSegment()
 		{
 			_current.Finish();
 			_current = null;
@@ -66,12 +66,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseFile()
 		{
-			endsegment();
+			EndSegment();
 		}
 
 		public void AddFrame(IVideoProvider source)
 		{
-			if (source.BufferHeight != height || source.BufferWidth != width)
+			if (source.BufferHeight != _height || source.BufferWidth != _width)
 			{
 				SetVideoParameters(source.BufferWidth, source.BufferHeight);
 			}
@@ -84,27 +84,27 @@ namespace BizHawk.Client.EmuHawk
 			_current.WriteAudioFrame(samples);
 		}
 
-		public void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsNum, int fpsDen)
 		{
-			this.fpsnum = fpsnum;
-			this.fpsden = fpsden;
+			_fpsNum = fpsNum;
+			_fpsDen = fpsDen;
 			if (_current != null)
 			{
-				endsegment();
+				EndSegment();
 				_segment++;
-				startsegment();
+				StartSegment();
 			}
 		}
 
 		public void SetVideoParameters(int width, int height)
 		{
-			this.width = width;
-			this.height = height;
+			_width = width;
+			_height = height;
 			if (_current != null)
 			{
-				endsegment();
+				EndSegment();
 				_segment++;
-				startsegment();
+				StartSegment();
 			}
 		}
 
@@ -116,11 +116,11 @@ namespace BizHawk.Client.EmuHawk
 				throw new ArgumentOutOfRangeException(nameof(bits), "Audio depth must be 16 bit!");
 			}
 
-			this.sampleRate = sampleRate;
-			this.channels = channels;
+			_sampleRate = sampleRate;
+			_channels = channels;
 		}
 
-		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMs, ulong rerecords)
 		{
 			// could be implemented?
 		}
@@ -129,16 +129,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_current != null)
 			{
-				endsegment();
+				EndSegment();
 			}
 
 			_baseName = null;
 		}
 
-		public string DesiredExtension()
-		{
-			return "nut";
-		}
+		public string DesiredExtension() => "nut";
 
 		public void SetDefaultVideoCodecToken()
 		{
