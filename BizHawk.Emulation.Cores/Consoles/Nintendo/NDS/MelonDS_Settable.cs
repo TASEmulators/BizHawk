@@ -59,12 +59,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern int getUserSettingsLength();
 		static int userSettingsLength = getUserSettingsLength();
 		[DllImport(dllPath)]
-		private static extern int SetUserSettings(byte* src);
+		private static extern void SetUserSettings(byte* src);
 
 		[DllImport(dllPath)]
 		private static extern bool GetDirectBoot();
 		[DllImport(dllPath)]
 		private static extern void SetDirectBoot(bool value);
+
+		[DllImport(dllPath)]
+		private static extern void SetUseRealTime(bool value);
+		[DllImport(dllPath)]
+		private static extern void GetUseRealTime(bool value);
 
 		unsafe public class MelonSettings
 		{
@@ -122,6 +127,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 			[JsonIgnore]
 			public short nicknameLength { get => userSettings[0x1A]; }
+			[JsonIgnore]
+			public long rtcOffset
+			{
+				get => BitConverter.ToInt64(userSettings, 0x68);
+				set
+				{
+					BitConverter.GetBytes(value).CopyTo(userSettings, 0x68);
+					const int time0 = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
+					userSettings[0x66] = (byte)(DateTimeOffset.FromUnixTimeSeconds(value + time0).Year - 2000);
+				}
+			}
 		}
 	}
 }

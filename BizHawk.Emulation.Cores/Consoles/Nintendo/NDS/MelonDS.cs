@@ -101,11 +101,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			CoreComm.NominalWidth = 256;
 			CoreComm.NominalHeight = 192;
 
-			SetUpFiles();
-			PutSyncSettings(syncsettings as MelonSyncSettings);
-
 			if (!Init())
 				throw new Exception("Failed to init NDS.");
+
+			SetUpFiles();
+			PutSyncSettings(syncsettings as MelonSyncSettings);
+			SetUseRealTime(false);
+
 			InitMemoryDomains();
 
 			fixed (byte* f = file)
