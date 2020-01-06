@@ -31,7 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			if (length == -1) length = data.Length;
 			fixed (byte* ptr = data)
 			{
-				UseSavestate(ptr, length);
+				if (!UseSavestate(ptr, length))
+					CoreComm.Notify("Savestate load failed! See log window for details.");
 			}
 		}
 
@@ -59,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		}
 
 		[DllImport(dllPath)]
-		private static extern void UseSavestate(byte* data, int len);
+		private static extern bool UseSavestate(byte* data, int len);
 		[DllImport(dllPath)]
 		private static extern int GetSavestateSize();
 		[DllImport(dllPath)]
