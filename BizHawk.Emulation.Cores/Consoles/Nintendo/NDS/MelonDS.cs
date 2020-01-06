@@ -106,7 +106,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 
 			SetUpFiles();
 			PutSyncSettings(syncsettings as MelonSyncSettings);
-			SetUseRealTime(false);
 
 			InitMemoryDomains();
 

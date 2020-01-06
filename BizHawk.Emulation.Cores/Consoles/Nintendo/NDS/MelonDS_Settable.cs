@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 					return null;
 			}
 			ret.bootToFirmware = !GetDirectBoot();
+			ret.timeAtBoot = GetTimeAtBoot();
 			return ret;
 		}
 
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			SetDirectBoot(!o.bootToFirmware);
+			SetTimeAtBoot(o.timeAtBoot);
 
 			// At present, no sync settings can be modified without requiring a reboot.
 			return true;
@@ -67,9 +69,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		private static extern void SetDirectBoot(bool value);
 
 		[DllImport(dllPath)]
-		private static extern void SetUseRealTime(bool value);
+		private static extern void SetTimeAtBoot(uint value);
 		[DllImport(dllPath)]
-		private static extern void GetUseRealTime(bool value);
+		private static extern uint GetTimeAtBoot();
 
 		unsafe public class MelonSettings
 		{
@@ -83,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			}
 
 			public bool bootToFirmware = false;
+			public uint timeAtBoot = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
 			public byte[] userSettings;
 
 			[JsonIgnore]
@@ -131,12 +134,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 			public long rtcOffset
 			{
 				get => BitConverter.ToInt64(userSettings, 0x68);
-				set
-				{
-					BitConverter.GetBytes(value).CopyTo(userSettings, 0x68);
-					const int time0 = 946684800; // 2000-01-01 00:00:00 (earliest date possible on a DS)
-					userSettings[0x66] = (byte)(DateTimeOffset.FromUnixTimeSeconds(value + time0).Year - 2000);
-				}
+				set { BitConverter.GetBytes(value).CopyTo(userSettings, 0x68); }
 			}
 		}
 	}
