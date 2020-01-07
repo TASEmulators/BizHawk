@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -28,14 +29,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadSlot(int slotNum, bool suppressOSD)
 		{
-			if (0 <= slotNum && slotNum <= 9) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.LoadQuickSave($"QuickSave{slotNum}", true, suppressOSD);
 		}
 
 		public void Save(string path, bool suppressOSD) => GlobalWin.MainForm.SaveState(path, path, true, suppressOSD);
 
 		public void SaveSlot(int slotNum, bool suppressOSD)
 		{
-			if (0 <= slotNum && slotNum <= 9) GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
+			if (0.RangeTo(9).Contains(slotNum)) GlobalWin.MainForm.SaveQuickSave($"QuickSave{slotNum}", true, suppressOSD);
 		}
 	}
 }

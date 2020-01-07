@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Client.ApiHawk.Classes.Events;
 using System.IO;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Common;
 
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.ApiHawk
@@ -147,7 +148,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
 		public static Joypad GetInput(int player)
 		{
-			if (player < 1 || player > RunningSystem.MaxControllers)
+			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
 			{
 				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
@@ -352,7 +353,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <remarks>Still have some strange behaviour with multiple inputs; so this feature is still in beta</remarks>
 		public static void SetInput(int player, Joypad joypad)
 		{
-			if (player < 1 || player > RunningSystem.MaxControllers)
+			if (!1.RangeTo(RunningSystem.MaxControllers).Contains(player))
 			{
 				throw new IndexOutOfRangeException($"{RunningSystem.DisplayName} does not support {player} controller(s)");
 			}
@@ -650,7 +651,7 @@ namespace BizHawk.Client.ApiHawk
 
 		public static void SpeedMode(int percent)
 		{
-			if (percent > 0 && percent < 6400)
+			if (percent.StrictlyBoundedBy(0.RangeTo(6400)))
 			{
 				InvokeMainFormMethod("ClickSpeedItem", new object[] {percent});
 			}

@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.ApiHawk
 {
@@ -27,7 +28,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <exception cref="IndexOutOfRangeException"><paramref name="player"/> not in range <c>1..max</c> where <c>max</c> is <paramref name="system"/>.<see cref="SystemInfo.MaxControllers"/></exception>
 		internal Joypad(SystemInfo system, int player)
 		{
-			if (player < 1 || player > system.MaxControllers)
+			if (!1.RangeTo(system.MaxControllers).Contains(player))
 			{
 				throw new InvalidOperationException($"{player} is invalid for {system.DisplayName}");
 			}

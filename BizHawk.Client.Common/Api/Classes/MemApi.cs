@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -194,7 +195,7 @@ namespace BizHawk.Client.Common
 		public string HashRegion(long addr, int count, string domain = null)
 		{
 			var d = NamedDomainOrCurrent(domain);
-			if (addr < 0 || addr >= d.Size)
+			if (!0L.RangeToExclusive(d.Size).Contains(addr))
 			{
 				var error = $"Address {addr} is outside the bounds of domain {d.Name}";
 				LogCallback(error);

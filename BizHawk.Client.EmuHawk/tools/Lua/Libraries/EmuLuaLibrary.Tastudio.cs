@@ -6,6 +6,7 @@ using System.Linq;
 
 using NLua;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable StringLiteralTypo
@@ -151,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
 				}
 
-				if (f < Tastudio.CurrentTasMovie.InputLogLength && f >= 0)
+				if (0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(f))
 				{
 					Tastudio.GoToFrame(f, true);
 				}
@@ -240,17 +241,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("submitinsertframes", "")]
 		public void SubmitInsertFrames(int frame, int number)
 		{
-			if (Engaged())
+			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
 			{
-				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
+				_changeList.Add(new PendingChanges
 				{
-					_changeList.Add(new PendingChanges
-					{
-						Type = LuaChangeTypes.InsertFrames,
-						Frame = frame,
-						Number = number
-					});
-				}
+					Type = LuaChangeTypes.InsertFrames,
+					Frame = frame,
+					Number = number
+				});
 			}
 		}
 
@@ -258,17 +256,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("submitdeleteframes", "")]
 		public void SubmitDeleteFrames(int frame, int number)
 		{
-			if (Engaged())
+			if (Engaged() && 0.RangeToExclusive(Tastudio.CurrentTasMovie.InputLogLength).Contains(frame) && number > 0)
 			{
-				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
+				_changeList.Add(new PendingChanges
 				{
-					_changeList.Add(new PendingChanges
-					{
-						Type = LuaChangeTypes.DeleteFrames,
-						Frame = frame,
-						Number = number
-					});
-				}
+					Type = LuaChangeTypes.DeleteFrames,
+					Frame = frame,
+					Number = number
+				});
 			}
 		}
 

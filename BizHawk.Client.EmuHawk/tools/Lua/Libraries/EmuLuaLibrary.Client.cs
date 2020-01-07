@@ -8,6 +8,8 @@ using BizHawk.Client.Common;
 using System.Threading;
 using System.Diagnostics;
 
+using BizHawk.Common;
+
 // ReSharper disable StringLiteralTypo
 // ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
@@ -342,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("speedmode", "Sets the speed of the emulator (in terms of percent)")]
 		public void SpeedMode(int percent)
 		{
-			if (percent > 0 && percent < 6400)
+			if (percent.StrictlyBoundedBy(0.RangeTo(6400)))
 			{
 				MainForm.ClickSpeedItem(percent);
 			}
