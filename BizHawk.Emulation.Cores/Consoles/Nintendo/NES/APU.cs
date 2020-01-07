@@ -43,8 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			
 			noise = new NoiseUnit(this, pal);
 			triangle = new TriangleUnit(this);
-			pulse[0] = new PulseUnit(this, 0);
-			pulse[1] = new PulseUnit(this, 1);
+			pulse[0] = new PulseUnit(this, 1);
+			pulse[1] = new PulseUnit(this, 0);
 			if (old != null)
 			{
 				m_vol = old.m_vol;
@@ -156,10 +156,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 3:
 						if (apu.len_clock_active)
 						{
-							if (len_cnt==0)
+							if (len_cnt == 0)
 							{
-								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F]+1;
-							}						
+								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F] + 1;
+							}
 						} else
 						{
 							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
-						duty_step = 0; 
+						duty_step = 0;
 						env_start_flag = 1;
 
 						// allow the lenctr_en to kill the len_cnt
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this should be optimized to update only when `timer_reload_value` changes
 				int sweep_shifter = timer_reload_value >> sweep_shiftcount;
 				if (sweep_negate == 1)
-					sweep_shifter = -sweep_shifter + unit;
+					sweep_shifter = -sweep_shifter - unit;
 				sweep_shifter += timer_reload_value;
 
 				// this sweep logic is always enabled:
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				// env_loopdoubles as "halt length counter"
+				// env_loop doubles as "halt length counter"
 				if ((env_loop == 0 || len_halt) && len_cnt > 0)
 					len_cnt--;
 			}
