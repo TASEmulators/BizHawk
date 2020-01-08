@@ -11,6 +11,8 @@ using Microsoft.VisualBasic.ApplicationServices;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 
+using OSTC = EXE_PROJECT.OSTailoredCode;
+
 namespace BizHawk.Client.EmuHawk
 {
 	internal static class Program
@@ -21,61 +23,47 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			if (EXE_PROJECT.OSTailoredCode.IsUnixHost)
+			if (OSTC.IsUnixHost)
 			{
 				// for Unix, skip everything else and just wire up the event handler
 				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+				return;
 			}
-			else
+
+			static void CheckLib(string dllToLoad, string desc)
 			{
-				var libLoader = EXE_PROJECT.OSTailoredCode.LinkedLibManager;
-
-				//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
-
-				//try loading libraries we know we'll need
-				//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
-				//but oddly it lets us proceed and we'll then catch it here
-				var d3dx9 = libLoader.LoadOrNull("d3dx9_43.dll");
-				var vc2015 = libLoader.LoadOrNull("vcruntime140.dll");
-				var vc2012 = libLoader.LoadOrNull("msvcr120.dll"); //TODO - check version?
-				var vc2010 = libLoader.LoadOrNull("msvcr100.dll"); //TODO - check version?
-				var vc2010p = libLoader.LoadOrNull("msvcp100.dll");
-				var reqPresent = vc2015.HasValue && vc2010.HasValue && vc2012.HasValue && vc2010p.HasValue;
-				var optPresent = d3dx9.HasValue;
-				if (!reqPresent || !optPresent)
+				var p = OSTC.LinkedLibManager.LoadOrNull(dllToLoad);
+				if (p == null)
 				{
-					var alertLines = new[]
-					{
-						"[ OK ] .NET CLR (You wouldn't even get here without it)",
-						$"[{(d3dx9.HasValue ? " OK " : "WARN")}] Direct3d 9",
-						$"[{(vc2010.HasValue && vc2010p.HasValue ? " OK " : "FAIL")}] Visual C++ 2010 SP1 Runtime",
-						$"[{(vc2012.HasValue ? " OK " : "FAIL")}] Visual C++ 2012 Runtime",
-						$"[{(vc2015.HasValue ? " OK " : "FAIL")}] Visual C++ 2015 Runtime"
-					};
-					using var box = new CustomControls.PrereqsAlert(reqPresent)
-					{
-						textBox1 = { Text = string.Join(Environment.NewLine, alertLines) }
-					};
-					box.ShowDialog();
-					if (!reqPresent) Process.GetCurrentProcess().Kill();
+					using (var box = new ExceptionBox($"EmuHawk needs {desc} in order to run! See the readme for more info. (EmuHawk will now close.)")) box.ShowDialog();
+					Process.GetCurrentProcess().Kill();
+					return;
 				}
+				OSTC.LinkedLibManager.FreeByPtr(p.Value);
+			}
+			CheckLib("vcruntime140.dll", "Microsoft's Universal CRT (MSVC 14.0+ / VS 2015+)");
+			CheckLib("msvcr120.dll", "Microsoft's Visual C++ Runtime 12.0 (VS 2013)"); // for Mupen64Plus
+			CheckLib("msvcr100.dll", "Microsoft's Visual C++ Runtime 10.0 (VS 2010)"); // for BSNES and Mupen64Plus
 
-				foreach (var p in new[] { d3dx9, vc2015, vc2012, vc2010, vc2010p })
-					if (p.HasValue) libLoader.FreeByPtr(p.Value);
+			// this will look in subdirectory "dll" to load pinvoked stuff
+			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+			SetDllDirectory(dllDir);
 
-				// this will look in subdirectory "dll" to load pinvoked stuff
-				var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
-				SetDllDirectory(dllDir);
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-				//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-				AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-
-				//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-				//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-				//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
-				WhackAllMOTW(dllDir);
-
-				//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
+			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+			static void RemoveMOTW(string path) => DeleteFileW($"{path}:Zone.Identifier");
+			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
+			while (todo.Count != 0)
+			{
+				var di = todo.Dequeue();
+				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+				foreach (var fi in di.GetFiles("*.dll")) RemoveMOTW(fi.FullName);
+				foreach (var fi in di.GetFiles("*.exe")) RemoveMOTW(fi.FullName);
 			}
 		}
 
@@ -83,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		private static int Main(string[] args)
 		{
 			var exitCode = SubMain(args);
-			if (EXE_PROJECT.OSTailoredCode.IsUnixHost)
+			if (OSTC.IsUnixHost)
 			{
 				Console.WriteLine("BizHawk has completed its shutdown routines, killing process...");
 				Process.GetCurrentProcess().Kill();
@@ -99,7 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
 			// and don't bother when installed from a package manager i.e. not Windows --yoshi
-			if (!VersionInfo.DeveloperBuild && !EXE_PROJECT.OSTailoredCode.IsUnixHost)
+			if (!VersionInfo.DeveloperBuild && !OSTC.IsUnixHost)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
 				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
@@ -197,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			if (!EXE_PROJECT.OSTailoredCode.IsUnixHost)
+			if (!OSTC.IsUnixHost)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".
@@ -279,25 +267,7 @@ namespace BizHawk.Client.EmuHawk
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
 
-		private static void RemoveMOTW(string path)
-		{
-			DeleteFileW($"{path}:Zone.Identifier");
-		}
-
-		private static void WhackAllMOTW(string dllDir)
-		{
-			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
-			while (todo.Count > 0)
-			{
-				var di = todo.Dequeue();
-				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
-				foreach (var fi in di.GetFiles("*.dll"))
-					RemoveMOTW(fi.FullName);
-				foreach (var fi in di.GetFiles("*.exe"))
-					RemoveMOTW(fi.FullName);
-			}
-		}
-
+		/// <remarks>http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips</remarks>
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			var requested = args.Name;
@@ -316,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 				//so.. we're going to resort to something really bad.
 				//avert your eyes.
 				var configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-				if (!EXE_PROJECT.OSTailoredCode.IsUnixHost // LuaInterface is not currently working on Mono
+				if (!OSTC.IsUnixHost // LuaInterface is not currently working on Mono
 					&& File.Exists(configPath)
 					&& (Array.Find(File.ReadAllLines(configPath), line => line.Contains("  \"LuaEngine\": ")) ?? string.Empty)
 						.Contains("0"))

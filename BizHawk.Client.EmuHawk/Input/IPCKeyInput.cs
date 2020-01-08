@@ -16,8 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		private static readonly List<KeyInput.KeyEvent> PendingEventList = new List<KeyInput.KeyEvent>();
-		private static readonly List<KeyInput.KeyEvent> EventList = new List<KeyInput.KeyEvent>();
+		private static readonly List<KeyEvent> PendingEventList = new List<KeyEvent>();
+		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
 
 		static void IPCThread()
 		{
@@ -38,14 +38,14 @@ namespace BizHawk.Client.EmuHawk
 						int e = br.ReadInt32();
 						bool pressed = (e & 0x80000000) != 0;
 						lock (PendingEventList)
-							PendingEventList.Add(new KeyInput.KeyEvent { Key = (Key)(e & 0x7FFFFFFF), Pressed = pressed });
+							PendingEventList.Add(new KeyEvent { Key = KeyInput.KeyEnumMap[(Key)(e & 0x7FFFFFFF)], Pressed = pressed });
 					}
 				}
 				catch { }
 			}
 		}
 
-		public static IEnumerable<KeyInput.KeyEvent> Update()
+		public static IEnumerable<KeyEvent> Update()
 		{
 			EventList.Clear();
 

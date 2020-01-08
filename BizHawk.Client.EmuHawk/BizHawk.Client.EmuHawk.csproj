@@ -605,12 +605,6 @@
     <Compile Include="CustomControls\MsgBox.designer.cs">
       <DependentUpon>MsgBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\PrereqsAlert.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\PrereqsAlert.Designer.cs">
-      <DependentUpon>PrereqsAlert.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControls\RepeatButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1468,9 +1462,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\MsgBox.resx">
       <DependentUpon>MsgBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\PrereqsAlert.resx">
-      <DependentUpon>PrereqsAlert.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="images/AboutBox/mom1.png" />
     <EmbeddedResource Include="images/AboutBox/mom2.png" />

@@ -129,6 +129,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize(Control parent)
 		{
+#if true
+			OTK_Keyboard.Initialize();
+			OTK_GamePad.Initialize();
+#else
 			if (OSTailoredCode.IsUnixHost)
 			{
 				OTK_Keyboard.Initialize();
@@ -141,16 +145,19 @@ namespace BizHawk.Client.EmuHawk
 				GamePad.Initialize(parent);
 				GamePad360.Initialize();
 			}
+#endif
 			Instance = new Input();
 		}
 
 		public static void Cleanup()
 		{
+#if false
 			if (!OSTailoredCode.IsUnixHost)
 			{
 				KeyInput.Cleanup();
 				GamePad.Cleanup();
 			}
+#endif
 		}
 
 		public enum InputEventType
@@ -346,6 +353,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			while (true)
 			{
+#if true
+				var keyEvents = OTK_Keyboard.Update();
+				OTK_GamePad.UpdateAll();
+#else
 				var keyEvents = OSTailoredCode.IsUnixHost
 					? OTK_Keyboard.Update()
 					: KeyInput.Update().Concat(IPCKeyInput.Update());
@@ -358,6 +369,7 @@ namespace BizHawk.Client.EmuHawk
 					GamePad.UpdateAll();
 					GamePad360.UpdateAll();
 				}
+#endif
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -388,6 +400,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 
+#if false
 						// analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())
 						{
@@ -421,6 +434,7 @@ namespace BizHawk.Client.EmuHawk
 								_floatValues[n] = f;
 							}
 						}
+#endif
 
 						// analyze moose
 						// other sorts of mouse api (raw input) could easily be added as a separate listing under a different class

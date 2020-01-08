@@ -123,6 +123,7 @@ namespace BizHawk.Client.Common
 		public DateTime? Update_LastCheckTimeUTC = null;
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
+		public bool SkipOutdatedOSCheck = false;
 		public bool CDLAutoSave = true, CDLAutoStart = true, CDLAutoResume = true;
 
 		/// <summary>
@@ -268,11 +269,8 @@ namespace BizHawk.Client.Common
 		
 		public int DispPrescale = 1;
 
-		/// <remarks>
-		/// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
-		/// force DX for Windows and OpenGL for Unix when a new config is generated
-		/// </remarks>
-		public EDispMethod DispMethod = OSTailoredCode.IsUnixHost ? EDispMethod.OpenGL : EDispMethod.SlimDX9;
+		/// <remarks>warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.</remarks>
+		public EDispMethod DispMethod = EDispMethod.OpenGL;
 
 		public int DispChrome_FrameWindowed = 2;
 		public bool DispChrome_StatusBarWindowed = true;
@@ -300,7 +298,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod = OSTailoredCode.IsUnixHost ? ESoundOutputMethod.OpenAL : ESoundOutputMethod.DirectSound; // force OpenAL for Unix when config is generated
+		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
 		public bool SoundEnabled = true;
 		public bool SoundEnabledNormal = true;
 		public bool SoundEnabledRWFF = true;
