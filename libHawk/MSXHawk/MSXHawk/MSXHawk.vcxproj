@@ -159,6 +159,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="VDP.h" />
+    <ClInclude Include="PSG.h" />
     <ClInclude Include="Z80A.h" />
     <ClInclude Include="MSXHawk.h" />
     <ClInclude Include="pch.h" />

@@ -15,10 +15,10 @@ namespace MSXHawk
 
 		#pragma region Variable Declarations
 		
-		int* MemoryMap;
-		int* MemoryMapMask;
-		int* HWMemoryMap;
-		int* HWMemoryMapMask;
+		uint8_t* MemoryMap;
+		uint8_t* MemoryMapMask;
+		uint8_t* HWMemoryMap;
+		uint8_t* HWMemoryMapMask;
 
 		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
 		int ExternalDB;
@@ -35,59 +35,56 @@ namespace MSXHawk
 		int BUSRQ [19] = {};         // fixed size - do not change at runtime
 		int MEMRQ [19] = {};         // fixed size - do not change at runtime
 		int IRQS;
-		char opcode;
 		bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		bool halted;
 		bool I_skip;
+		bool FlagI;
+		bool FlagW; // wait flag, when set to true reads / writes will be delayed
+
+		uint8_t opcode;
+		uint8_t temp_R;
+		uint8_t Regs[36] = {};
 
 		// non-state variables
 		int Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		char temp_R;
+		int Reg16_d, Reg16_s, ans, temp, carry;
 
-		int Regs [36] = {};
 
-		bool FlagI;
+		inline bool FlagCget() { return (Regs[5] & 0x01) != 0; };
+		inline void FlagCset(bool value) { Regs[5] = (int)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
 
-		bool FlagW; // wait flag, when set to true reads / writes will be delayed
+		inline bool FlagNget() { return (Regs[5] & 0x02) != 0; };
+		inline void FlagNset(bool value) { Regs[5] = (int)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
 
-		bool FlagCget() { return (Regs[5] & 0x01) != 0; };
-		void FlagCset(bool value) { Regs[5] = (int)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
+		inline bool FlagPget() { return (Regs[5] & 0x04) != 0; };
+		inline void FlagPset(bool value) { Regs[5] = (int)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
 
-		bool FlagNget() { return (Regs[5] & 0x02) != 0; };
-		void FlagNset(bool value) { Regs[5] = (int)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
+		inline bool Flag3get() { return (Regs[5] & 0x08) != 0; };
+		inline void Flag3set(bool value) { Regs[5] = (int)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
 
-		bool FlagPget() { return (Regs[5] & 0x04) != 0; };
-		void FlagPset(bool value) { Regs[5] = (int)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
+		inline bool FlagHget() { return (Regs[5] & 0x10) != 0; };
+		inline void FlagHset(bool value) { Regs[5] = (int)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
 
-		bool Flag3get() { return (Regs[5] & 0x08) != 0; };
-		void Flag3set(bool value) { Regs[5] = (int)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
+		inline bool Flag5get() { return (Regs[5] & 0x20) != 0; };
+		inline void Flag5set(bool value) { Regs[5] = (int)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
 
-		bool FlagHget() { return (Regs[5] & 0x10) != 0; };
-		void FlagHset(bool value) { Regs[5] = (int)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+		inline bool FlagZget() { return (Regs[5] & 0x40) != 0; };
+		inline void FlagZset(bool value) { Regs[5] = (int)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
 
-		bool Flag5get() { return (Regs[5] & 0x20) != 0; };
-		void Flag5set(bool value) { Regs[5] = (int)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+		inline bool FlagSget() { return (Regs[5] & 0x80) != 0; };
+		inline void FlagSset(bool value) { Regs[5] = (int)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
 
-		bool FlagZget() { return (Regs[5] & 0x40) != 0; };
-		void FlagZset(bool value) { Regs[5] = (int)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
-
-		bool FlagSget() { return (Regs[5] & 0x80) != 0; };
-		void FlagSset(bool value) { Regs[5] = (int)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
-
-		int RegPCget() { return (int)(Regs[0] | (Regs[1] << 8)); }
-		void RegPCset(int value) { Regs[0] = (int)(value & 0xFF); Regs[1] = (int)((value >> 8) & 0xFF); }
+		inline int RegPCget() { return (int)(Regs[0] | (Regs[1] << 8)); }
+		inline void RegPCset(int value) { Regs[0] = (int)(value & 0xFF); Regs[1] = (int)((value >> 8) & 0xFF); }
 
 		bool TableParity [256] = {};
-
 		bool IFF1;
-
 		bool IFF2;
-
 		bool nonMaskableInterrupt;
 		bool nonMaskableInterruptPending;
 
-		bool NonMaskableInterruptget() { return nonMaskableInterrupt; };
-		void NonMaskableInterruptset(bool value) 
+		inline bool NonMaskableInterruptget() { return nonMaskableInterrupt; };
+		inline void NonMaskableInterruptset(bool value)
 		{ 
 			if (value && !nonMaskableInterrupt) nonMaskableInterruptPending = true; 
 			nonMaskableInterrupt = value; 
@@ -95,8 +92,8 @@ namespace MSXHawk
 
 		int interruptMode;
 
-		int InterruptModeget() { return interruptMode; };
-		void InterruptModeset(int value)
+		inline int InterruptModeget() { return interruptMode; };
+		inline void InterruptModeset(int value)
 		{
 			if (value < 0 || value > 2) { /* add exception here */ }
 			interruptMode = value;
@@ -1027,18 +1024,17 @@ namespace MSXHawk
 		#pragma region Interrupts
 		void NMI_()
 		{
-			PopulateCURINSTR
-			(IDLE,
-				IDLE,
-				IDLE,
-				IDLE,
-				DEC16, SPl, SPh,
-				TR, ALU, PCl,
-				WAIT,
-				WR_DEC, SPl, SPh, PCh,
-				TR16, PCl, PCh, NMI_V, ZERO,
-				WAIT,
-				WR, SPl, SPh, ALU);
+			PopulateCURINSTR(IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							DEC16, SPl, SPh,
+							TR, ALU, PCl,
+							WAIT,
+							WR_DEC, SPl, SPh, PCh,
+							TR16, PCl, PCh, NMI_V, ZERO,
+							WAIT,
+							WR, SPl, SPh, ALU);
 
 			PopulateBUSRQ(0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0);
 			PopulateMEMRQ(0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0);
@@ -3750,9 +3746,9 @@ namespace MSXHawk
 
 		void ADD16_Func(int dest_l, int dest_h, int src_l, int src_h)
 		{
-			int Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
-			int Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
-			int temp = Reg16_d + Reg16_s;
+			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
+			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
+			temp = Reg16_d + Reg16_s;
 
 			FlagCset((temp & 0x10000) > 0);
 			FlagHset(((Reg16_d & 0xFFF) + (Reg16_s & 0xFFF)) > 0xFFF);
@@ -3760,19 +3756,19 @@ namespace MSXHawk
 			Flag3set((temp & 0x0800) != 0);
 			Flag5set((temp & 0x2000) != 0);
 
-			Regs[dest_l] = (int)(temp & 0xFF);
-			Regs[dest_h] = (int)((temp & 0xFF00) >> 8);
+			Regs[dest_l] = (uint8_t)(temp & 0xFF);
+			Regs[dest_h] = (uint8_t)((temp & 0xFF00) >> 8);
 		}
 
 		void ADD8_Func(int dest, int src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d += Regs[src];
 
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -3785,18 +3781,18 @@ namespace MSXHawk
 			FlagPset(((Regs[dest] & 0x80) == (Regs[src] & 0x80)) && ((Regs[dest] & 0x80) != (ans & 0x80)));
 			FlagSset(ans > 127);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void SUB8_Func(int dest, int src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
 
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -3809,7 +3805,7 @@ namespace MSXHawk
 			FlagPset(((Regs[dest] & 0x80) != (Regs[src] & 0x80)) && ((Regs[dest] & 0x80) != (ans & 0x80)));
 			FlagSset(ans > 127);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void BIT_Func(int bit, int src)
@@ -3886,9 +3882,9 @@ namespace MSXHawk
 		{
 			FlagCset((Regs[src] & 0x01) > 0);
 
-			int temp = (int)(Regs[src] & 0x80); // MSB doesn't change in this operation
+			temp = (int)(Regs[src] & 0x80); // MSB doesn't change in this operation
 
-			Regs[src] = (int)((Regs[src] >> 1) | temp);
+			Regs[src] = (uint8_t)((Regs[src] >> 1) | temp);
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagZset(Regs[src] == 0);
@@ -3903,7 +3899,7 @@ namespace MSXHawk
 		{
 			FlagCset((Regs[src] & 0x01) > 0);
 
-			Regs[src] = (int)(Regs[src] >> 1);
+			Regs[src] = (uint8_t)(Regs[src] >> 1);
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagZset(Regs[src] == 0);
@@ -3916,7 +3912,7 @@ namespace MSXHawk
 
 		void CPL_Func(int src)
 		{
-			Regs[src] = (int)((~Regs[src]) & 0xFF);
+			Regs[src] = (uint8_t)((~Regs[src]) & 0xFF);
 
 			FlagHset(true);
 			FlagNset(true);
@@ -3944,7 +3940,7 @@ namespace MSXHawk
 
 		void AND8_Func(int dest, int src)
 		{
-			Regs[dest] = (int)(Regs[dest] & Regs[src]);
+			Regs[dest] = (uint8_t)(Regs[dest] & Regs[src]);
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -3958,7 +3954,7 @@ namespace MSXHawk
 
 		void OR8_Func(int dest, int src)
 		{
-			Regs[dest] = (int)(Regs[dest] | Regs[src]);
+			Regs[dest] = (uint8_t)(Regs[dest] | Regs[src]);
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -3972,7 +3968,7 @@ namespace MSXHawk
 
 		void XOR8_Func(int dest, int src)
 		{
-			Regs[dest] = (int)((Regs[dest] ^ Regs[src]));
+			Regs[dest] = (uint8_t)((Regs[dest] ^ Regs[src]));
 
 			FlagZset(Regs[dest] == 0);
 			FlagCset(false);
@@ -3986,13 +3982,13 @@ namespace MSXHawk
 
 		void CP8_Func(int dest, int src)
 		{
-			int Reg16_d = Regs[dest];
+			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
 
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -4013,7 +4009,7 @@ namespace MSXHawk
 
 			FlagCset((Regs[src] & 0x01) > 0);
 
-			Regs[src] = (int)((FlagCget() ? 0x80 : 0) | (Regs[src] >> 1));
+			Regs[src] = (uint8_t)((FlagCget() ? 0x80 : 0) | (Regs[src] >> 1));
 
 			if (!imm)
 			{
@@ -4033,11 +4029,11 @@ namespace MSXHawk
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			int c = (int)(FlagCget() ? 0x80 : 0);
+			carry = (int)(FlagCget() ? 0x80 : 0);
 
 			FlagCset((Regs[src] & 0x01) > 0);
 
-			Regs[src] = (int)(c | (Regs[src] >> 1));
+			Regs[src] = (uint8_t)(carry | (Regs[src] >> 1));
 
 			if (!imm)
 			{
@@ -4057,10 +4053,10 @@ namespace MSXHawk
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			int c = (int)(((Regs[src] & 0x80) > 0) ? 1 : 0);
+			carry = (int)(((Regs[src] & 0x80) > 0) ? 1 : 0);
 			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (int)(((Regs[src] << 1) & 0xFF) | c);
+			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | carry);
 
 			if (!imm)
 			{
@@ -4080,10 +4076,10 @@ namespace MSXHawk
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			int c = (int)(FlagCget() ? 1 : 0);
+			carry = (int)(FlagCget() ? 1 : 0);
 			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (int)(((Regs[src] << 1) & 0xFF) | c);
+			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | carry);
 
 			if (!imm)
 			{
@@ -4100,12 +4096,12 @@ namespace MSXHawk
 
 		void INC8_Func(int src)
 		{
-			int Reg16_d = Regs[src];
+			Reg16_d = Regs[src];
 			Reg16_d += 1;
 
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -4114,7 +4110,7 @@ namespace MSXHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(false);
 
-			Regs[src] = ans;
+			Regs[src] = (uint8_t)ans;
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagPset(Regs[src] == 0x80);
@@ -4124,12 +4120,12 @@ namespace MSXHawk
 
 		void DEC8_Func(int src)
 		{
-			int Reg16_d = Regs[src];
+			Reg16_d = Regs[src];
 			Reg16_d -= 1;
 
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -4138,7 +4134,7 @@ namespace MSXHawk
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(true);
 
-			Regs[src] = ans;
+			Regs[src] = (uint8_t)ans;
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagPset(Regs[src] == 0x7F);
@@ -4148,39 +4144,39 @@ namespace MSXHawk
 
 		void INC16_Func(int src_l, int src_h)
 		{
-			int Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
 			Reg16_d += 1;
 
-			Regs[src_l] = (int)(Reg16_d & 0xFF);
-			Regs[src_h] = (int)((Reg16_d & 0xFF00) >> 8);
+			Regs[src_l] = (uint8_t)(Reg16_d & 0xFF);
+			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
 		void DEC16_Func(int src_l, int src_h)
 		{
-			int Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
 			Reg16_d -= 1;
 
-			Regs[src_l] = (int)(Reg16_d & 0xFF);
-			Regs[src_h] = (int)((Reg16_d & 0xFF00) >> 8);
+			Regs[src_l] = (uint8_t)(Reg16_d & 0xFF);
+			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
 		void ADC8_Func(int dest, int src)
 		{
-			int Reg16_d = Regs[dest];
-			int c = FlagCget() ? 1 : 0;
+			Reg16_d = Regs[dest];
+			carry = FlagCget() ? 1 : 0;
 
-			Reg16_d += (Regs[src] + c);
+			Reg16_d += (Regs[src] + carry);
 
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d += ((Regs[src] & 0xF) + c);
+			Reg16_d += ((Regs[src] & 0xF) + carry);
 
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(false);
@@ -4189,24 +4185,24 @@ namespace MSXHawk
 			FlagPset(((Regs[dest] & 0x80) == (Regs[src] & 0x80)) && ((Regs[dest] & 0x80) != (ans & 0x80)));
 			FlagSset(ans > 127);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void SBC8_Func(int dest, int src)
 		{
-			int Reg16_d = Regs[dest];
-			int c = FlagCget() ? 1 : 0;
+			Reg16_d = Regs[dest];
+			carry = FlagCget() ? 1 : 0;
 
-			Reg16_d -= (Regs[src] + c);
+			Reg16_d -= (Regs[src] + carry);
 
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
-			Reg16_d -= ((Regs[src] & 0xF) + c);
+			Reg16_d -= ((Regs[src] & 0xF) + carry);
 
 			FlagHset((Reg16_d & 0x10) > 0);
 			FlagNset(true);
@@ -4215,13 +4211,13 @@ namespace MSXHawk
 			FlagPset(((Regs[dest] & 0x80) != (Regs[src] & 0x80)) && ((Regs[dest] & 0x80) != (ans & 0x80)));
 			FlagSset(ans > 127);
 
-			Regs[dest] = ans;
+			Regs[dest] = (uint8_t)ans;
 		}
 
 		void DA_Func(int src)
 		{
 			int a = (Regs[src] & 0xFF);
-			int temp = a;
+			temp = a;
 
 			if (FlagNget())
 			{
@@ -4244,18 +4240,18 @@ namespace MSXHawk
 			Flag3set((temp & 0x08) != 0);
 			Flag5set((temp & 0x20) != 0);
 
-			Regs[src] = temp;
+			Regs[src] = (uint8_t)temp;
 		}
 
 		// used for signed operations
 		void ADDS_Func(int dest_l, int dest_h, int src_l, int src_h)
 		{
-			int Reg16_d = Regs[dest_l];
-			int Reg16_s = Regs[src_l];
+			Reg16_d = Regs[dest_l];
+			Reg16_s = Regs[src_l];
 
 			Reg16_d += Reg16_s;
 
-			int temp = 0;
+			temp = 0;
 
 			// since this is signed addition, calculate the high byte carry appropriately
 			// note that flags are unaffected by this operation
@@ -4277,29 +4273,29 @@ namespace MSXHawk
 
 			int ans_l = (int)(Reg16_d & 0xFF);
 
-			Regs[dest_l] = ans_l;
-			Regs[dest_h] += temp;
+			Regs[dest_l] = (uint8_t)ans_l;
+			Regs[dest_h] += (uint8_t)temp;
 			Regs[dest_h] &= 0xFF;
 		}
 
 		void EXCH_16_Func(int dest_l, int dest_h, int src_l, int src_h)
 		{
-			int temp = Regs[dest_l];
+			temp = Regs[dest_l];
 			Regs[dest_l] = Regs[src_l];
-			Regs[src_l] = temp;
+			Regs[src_l] = (uint8_t)temp;
 
 			temp = Regs[dest_h];
 			Regs[dest_h] = Regs[src_h];
-			Regs[src_h] = temp;
+			Regs[src_h] = (uint8_t)temp;
 		}
 
 		void SBC_16_Func(int dest_l, int dest_h, int src_l, int src_h)
 		{
-			int Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
-			int Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
-			int c = FlagCget() ? 1 : 0;
+			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
+			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
+			carry = FlagCget() ? 1 : 0;
 
-			int ans = Reg16_d - Reg16_s - c;
+			ans = Reg16_d - Reg16_s - carry;
 
 			FlagNset(true);
 			FlagCset((ans & 0x10000) > 0);
@@ -4311,20 +4307,20 @@ namespace MSXHawk
 
 			// redo for half carry flag
 			Reg16_d &= 0xFFF;
-			Reg16_d -= ((Reg16_s & 0xFFF) + c);
+			Reg16_d -= ((Reg16_s & 0xFFF) + carry);
 
 			FlagHset((Reg16_d & 0x1000) > 0);
 
-			Regs[dest_l] = (int)(ans & 0xFF);
-			Regs[dest_h] = (int)((ans >> 8) & 0xFF);
+			Regs[dest_l] = (uint8_t)(ans & 0xFF);
+			Regs[dest_h] = (uint8_t)((ans >> 8) & 0xFF);
 		}
 
 		void ADC_16_Func(int dest_l, int dest_h, int src_l, int src_h)
 		{
-			int Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
-			int Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
+			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
+			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
 
-			int ans = Reg16_d + Reg16_s + (FlagCget() ? 1 : 0);
+			ans = Reg16_d + Reg16_s + (FlagCget() ? 1 : 0);
 
 			FlagHset(((Reg16_d & 0xFFF) + (Reg16_s & 0xFFF) + (FlagCget() ? 1 : 0)) > 0xFFF);
 			FlagNset(false);
@@ -4335,13 +4331,13 @@ namespace MSXHawk
 			Flag3set((ans & 0x0800) != 0);
 			Flag5set((ans & 0x2000) != 0);
 
-			Regs[dest_l] = (int)(ans & 0xFF);
-			Regs[dest_h] = (int)((ans >> 8) & 0xFF);
+			Regs[dest_l] = (uint8_t)(ans & 0xFF);
+			Regs[dest_h] = (uint8_t)((ans >> 8) & 0xFF);
 		}
 
 		void NEG_8_Func(int src)
 		{
-			int Reg16_d = 0;
+			Reg16_d = 0;
 			Reg16_d -= Regs[src];
 
 			FlagCset(Regs[src] != 0);
@@ -4349,12 +4345,12 @@ namespace MSXHawk
 			FlagPset(Regs[src] == 0x80);
 			FlagSset((Reg16_d & 0xFF) > 127);
 
-			int ans = (int)(Reg16_d & 0xFF);
+			ans = (int)(Reg16_d & 0xFF);
 			// redo for half carry flag
 			Reg16_d = 0;
 			Reg16_d -= (Regs[src] & 0xF);
 			FlagHset((Reg16_d & 0x10) > 0);
-			Regs[src] = ans;
+			Regs[src] = (uint8_t)ans;
 			FlagNset(true);
 			Flag3set((ans & 0x08) != 0);
 			Flag5set((ans & 0x20) != 0);
@@ -4362,36 +4358,36 @@ namespace MSXHawk
 
 		void RRD_Func(int dest, int src)
 		{
-			int temp1 = Regs[src];
-			int temp2 = Regs[dest];
-			Regs[dest] = (int)(((temp1 & 0x0F) << 4) + ((temp2 & 0xF0) >> 4));
-			Regs[src] = (int)((temp1 & 0xF0) + (temp2 & 0x0F));
+			Reg16_s = Regs[src];
+			Reg16_d = Regs[dest];
+			Regs[dest] = (uint8_t)(((Reg16_s & 0x0F) << 4) + ((Reg16_d & 0xF0) >> 4));
+			Regs[src] = (uint8_t)((Reg16_s & 0xF0) + (Reg16_d & 0x0F));
 
-			temp1 = Regs[src];
-			FlagSset(temp1 > 127);
-			FlagZset(temp1 == 0);
+			Reg16_s = Regs[src];
+			FlagSset(Reg16_s > 127);
+			FlagZset(Reg16_s == 0);
 			FlagHset(false);
-			FlagPset(TableParity[temp1]);
+			FlagPset(TableParity[Reg16_s]);
 			FlagNset(false);
-			Flag3set((temp1 & 0x08) != 0);
-			Flag5set((temp1 & 0x20) != 0);
+			Flag3set((Reg16_s & 0x08) != 0);
+			Flag5set((Reg16_s & 0x20) != 0);
 		}
 
 		void RLD_Func(int dest, int src)
 		{
-			int temp1 = Regs[src];
-			int temp2 = Regs[dest];
-			Regs[dest] = (int)((temp1 & 0x0F) + ((temp2 & 0x0F) << 4));
-			Regs[src] = (int)((temp1 & 0xF0) + ((temp2 & 0xF0) >> 4));
+			Reg16_s = Regs[src];
+			Reg16_d = Regs[dest];
+			Regs[dest] = (uint8_t)((Reg16_s & 0x0F) + ((Reg16_d & 0x0F) << 4));
+			Regs[src] = (uint8_t)((Reg16_s & 0xF0) + ((Reg16_d & 0xF0) >> 4));
 
-			temp1 = Regs[src];
-			FlagSset(temp1 > 127);
-			FlagZset(temp1 == 0);
+			Reg16_s = Regs[src];
+			FlagSset(Reg16_s > 127);
+			FlagZset(Reg16_s == 0);
 			FlagHset(false);
-			FlagPset(TableParity[temp1]);
+			FlagPset(TableParity[Reg16_s]);
 			FlagNset(false);
-			Flag3set((temp1 & 0x08) != 0);
-			Flag5set((temp1 & 0x20) != 0);
+			Flag3set((Reg16_s & 0x08) != 0);
+			Flag5set((Reg16_s & 0x20) != 0);
 		}
 
 		// sets flags for LD/R 
