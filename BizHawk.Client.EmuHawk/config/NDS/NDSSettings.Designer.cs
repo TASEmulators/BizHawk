@@ -42,6 +42,8 @@
 			this.cbxFavColor = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnDefault = new System.Windows.Forms.Button();
+			this.dtpStartupTime = new System.Windows.Forms.DateTimePicker();
+			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numBirthDay)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numBirthMonth)).BeginInit();
@@ -62,7 +64,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCancel.Location = new System.Drawing.Point(144, 147);
+			this.btnCancel.Location = new System.Drawing.Point(144, 175);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(60, 23);
 			this.btnCancel.TabIndex = 1;
@@ -73,7 +75,7 @@
 			// btnSave
 			// 
 			this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSave.Location = new System.Drawing.Point(78, 147);
+			this.btnSave.Location = new System.Drawing.Point(78, 175);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(60, 23);
 			this.btnSave.TabIndex = 1;
@@ -112,7 +114,7 @@
 			this.groupBox1.Size = new System.Drawing.Size(192, 106);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "groupBox1";
+			this.groupBox1.Text = "Firmware settings";
 			// 
 			// numBirthDay
 			// 
@@ -205,7 +207,7 @@
 			// btnDefault
 			// 
 			this.btnDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnDefault.Location = new System.Drawing.Point(12, 147);
+			this.btnDefault.Location = new System.Drawing.Point(12, 175);
 			this.btnDefault.Name = "btnDefault";
 			this.btnDefault.Size = new System.Drawing.Size(60, 23);
 			this.btnDefault.TabIndex = 1;
@@ -213,11 +215,34 @@
 			this.btnDefault.UseVisualStyleBackColor = true;
 			this.btnDefault.Click += new System.EventHandler(this.btnDefault_Click);
 			// 
+			// dtpStartupTime
+			// 
+			this.dtpStartupTime.CustomFormat = "yyyy-MM-dd HH:mm:ss";
+			this.dtpStartupTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+			this.dtpStartupTime.Location = new System.Drawing.Point(68, 147);
+			this.dtpStartupTime.MaxDate = new System.DateTime(2099, 12, 31, 23, 59, 59, 0);
+			this.dtpStartupTime.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
+			this.dtpStartupTime.Name = "dtpStartupTime";
+			this.dtpStartupTime.Size = new System.Drawing.Size(136, 20);
+			this.dtpStartupTime.TabIndex = 5;
+			this.dtpStartupTime.Value = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(12, 150);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(57, 13);
+			this.label4.TabIndex = 6;
+			this.label4.Text = "Date/time:";
+			// 
 			// NDSSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(216, 182);
+			this.ClientSize = new System.Drawing.Size(216, 210);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.dtpStartupTime);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnDefault);
 			this.Controls.Add(this.btnSave);
@@ -250,5 +275,7 @@
 		private System.Windows.Forms.NumericUpDown numBirthDay;
 		private System.Windows.Forms.NumericUpDown numBirthMonth;
 		private System.Windows.Forms.Button btnDefault;
+		private System.Windows.Forms.DateTimePicker dtpStartupTime;
+		private System.Windows.Forms.Label label4;
 	}
 }

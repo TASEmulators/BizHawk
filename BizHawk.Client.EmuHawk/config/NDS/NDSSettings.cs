@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			cbxFavColor.SelectedIndex = syncSettings.favoriteColor;
 			numBirthDay.Value = syncSettings.birthdayDay;
 			numBirthMonth.Value = syncSettings.birthdayMonth;
+			dtpStartupTime.Value = DateTimeOffset.FromUnixTimeSeconds(syncSettings.timeAtBoot).UtcDateTime;
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)
@@ -46,6 +47,9 @@ namespace BizHawk.Client.EmuHawk
 			syncSettings.favoriteColor = (byte)cbxFavColor.SelectedIndex;
 			syncSettings.birthdayDay = (byte)numBirthDay.Value;
 			syncSettings.birthdayMonth = (byte)numBirthMonth.Value;
+			// Converting to local time is necessary, because user-set values are "unspecified" which ToUnixTimeSeconds assumes are local.
+			// But ToLocalTime assumes these are UTC. So here we are adding and then subtracting the UTC-to-local offset.
+			syncSettings.timeAtBoot = (uint)new DateTimeOffset(dtpStartupTime.Value.ToLocalTime()).ToUnixTimeSeconds();
 
 			Global.Config.PutCoreSyncSettings<MelonDS>(syncSettings);
 			bool reboot = (Global.Emulator as MelonDS).PutSyncSettings(syncSettings);
