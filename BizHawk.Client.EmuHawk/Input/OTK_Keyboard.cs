@@ -5,26 +5,25 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class OTK_Keyboard
 	{
-		private static readonly Dictionary<Key, SlimDX.DirectInput.Key> KeyEnumMap = new Dictionary<Key, SlimDX.DirectInput.Key>
-		{
+		private static readonly Key[] KeyList = {
 			// A-Z
-			{Key.A, SlimDX.DirectInput.Key.A}, {Key.B, SlimDX.DirectInput.Key.B}, {Key.C, SlimDX.DirectInput.Key.C}, {Key.D, SlimDX.DirectInput.Key.D}, {Key.E, SlimDX.DirectInput.Key.E}, {Key.F, SlimDX.DirectInput.Key.F}, {Key.G, SlimDX.DirectInput.Key.G}, {Key.H, SlimDX.DirectInput.Key.H}, {Key.I, SlimDX.DirectInput.Key.I}, {Key.J, SlimDX.DirectInput.Key.J}, {Key.K, SlimDX.DirectInput.Key.K}, {Key.L, SlimDX.DirectInput.Key.L}, {Key.M, SlimDX.DirectInput.Key.M}, {Key.N, SlimDX.DirectInput.Key.N}, {Key.O, SlimDX.DirectInput.Key.O}, {Key.P, SlimDX.DirectInput.Key.P}, {Key.Q, SlimDX.DirectInput.Key.Q}, {Key.R, SlimDX.DirectInput.Key.R}, {Key.S, SlimDX.DirectInput.Key.S}, {Key.T, SlimDX.DirectInput.Key.T}, {Key.U, SlimDX.DirectInput.Key.U}, {Key.V, SlimDX.DirectInput.Key.V}, {Key.W, SlimDX.DirectInput.Key.W}, {Key.X, SlimDX.DirectInput.Key.X}, {Key.Y, SlimDX.DirectInput.Key.Y}, {Key.Z, SlimDX.DirectInput.Key.Z},
+			Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G, Key.H, Key.I, Key.J, Key.K, Key.L, Key.M, Key.N, Key.O, Key.P, Key.Q, Key.R, Key.S, Key.T, Key.U, Key.V, Key.W, Key.X, Key.Y, Key.Z,
 			// 0-9
-			{Key.Number1, SlimDX.DirectInput.Key.D1}, {Key.Number2, SlimDX.DirectInput.Key.D2}, {Key.Number3, SlimDX.DirectInput.Key.D3}, {Key.Number4, SlimDX.DirectInput.Key.D4}, {Key.Number5, SlimDX.DirectInput.Key.D5}, {Key.Number6, SlimDX.DirectInput.Key.D6}, {Key.Number7, SlimDX.DirectInput.Key.D7}, {Key.Number8, SlimDX.DirectInput.Key.D8}, {Key.Number9, SlimDX.DirectInput.Key.D9}, {Key.Number0, SlimDX.DirectInput.Key.D0},
+			Key.Number1, Key.Number2, Key.Number3, Key.Number4, Key.Number5, Key.Number6, Key.Number7, Key.Number8, Key.Number9, Key.Number0,
 			// misc. printables (ASCII order)
-			{Key.Space, SlimDX.DirectInput.Key.Space}, {Key.Quote, SlimDX.DirectInput.Key.Apostrophe}, {Key.Comma, SlimDX.DirectInput.Key.Comma}, {Key.Minus, SlimDX.DirectInput.Key.Minus}, {Key.Period, SlimDX.DirectInput.Key.Period}, {Key.Slash, SlimDX.DirectInput.Key.Slash}, {Key.Semicolon, SlimDX.DirectInput.Key.Semicolon}, {Key.Plus, SlimDX.DirectInput.Key.Equals}, {Key.BracketLeft, SlimDX.DirectInput.Key.LeftBracket}, {Key.BackSlash, SlimDX.DirectInput.Key.Backslash}, {Key.BracketRight, SlimDX.DirectInput.Key.RightBracket}, {Key.Tilde, SlimDX.DirectInput.Key.Grave},
+			Key.Space, Key.Quote, Key.Comma, Key.Minus, Key.Period, Key.Slash, Key.Semicolon, Key.Plus, Key.BracketLeft, Key.BackSlash, Key.BracketRight, Key.Tilde,
 			// misc. (alphabetically)
-			{Key.BackSpace, SlimDX.DirectInput.Key.Backspace}, {Key.CapsLock, SlimDX.DirectInput.Key.CapsLock}, {Key.Delete, SlimDX.DirectInput.Key.Delete}, {Key.Down, SlimDX.DirectInput.Key.DownArrow}, {Key.End, SlimDX.DirectInput.Key.End}, {Key.Enter, SlimDX.DirectInput.Key.Return}, {Key.Escape, SlimDX.DirectInput.Key.Escape}, {Key.Home, SlimDX.DirectInput.Key.Home}, {Key.Insert, SlimDX.DirectInput.Key.Insert}, {Key.Left, SlimDX.DirectInput.Key.LeftArrow}, {Key.PageDown, SlimDX.DirectInput.Key.PageDown}, {Key.PageUp, SlimDX.DirectInput.Key.PageUp}, {Key.Pause, SlimDX.DirectInput.Key.Pause}, {Key.Right, SlimDX.DirectInput.Key.RightArrow}, {Key.ScrollLock, SlimDX.DirectInput.Key.ScrollLock}, {Key.Tab, SlimDX.DirectInput.Key.Tab}, {Key.Up, SlimDX.DirectInput.Key.UpArrow},
+			Key.BackSpace, Key.CapsLock, Key.Delete, Key.Down, Key.End, Key.Enter, Key.Escape, Key.Home, Key.Insert, Key.Left, Key.PageDown, Key.PageUp, Key.Pause, Key.Right, Key.ScrollLock, Key.Tab, Key.Up,
 			// modifier
-			{Key.WinLeft, SlimDX.DirectInput.Key.LeftWindowsKey}, {Key.WinRight, SlimDX.DirectInput.Key.RightWindowsKey}, {Key.ControlLeft, SlimDX.DirectInput.Key.LeftControl}, {Key.ControlRight, SlimDX.DirectInput.Key.RightControl}, {Key.AltLeft, SlimDX.DirectInput.Key.LeftAlt}, {Key.AltRight, SlimDX.DirectInput.Key.RightAlt}, {Key.ShiftLeft, SlimDX.DirectInput.Key.LeftShift}, {Key.ShiftRight, SlimDX.DirectInput.Key.RightShift},
+			Key.WinLeft, Key.WinRight, Key.ControlLeft, Key.ControlRight, Key.AltLeft, Key.AltRight, Key.ShiftLeft, Key.ShiftRight,
 
 			// function
-			{Key.F1, SlimDX.DirectInput.Key.F1}, {Key.F2, SlimDX.DirectInput.Key.F2}, {Key.F3, SlimDX.DirectInput.Key.F3}, {Key.F4, SlimDX.DirectInput.Key.F4}, {Key.F5, SlimDX.DirectInput.Key.F5}, {Key.F6, SlimDX.DirectInput.Key.F6}, {Key.F7, SlimDX.DirectInput.Key.F7}, {Key.F8, SlimDX.DirectInput.Key.F8}, {Key.F9, SlimDX.DirectInput.Key.F9}, {Key.F10, SlimDX.DirectInput.Key.F10}, {Key.F11, SlimDX.DirectInput.Key.F11}, {Key.F12, SlimDX.DirectInput.Key.F12},
+			Key.F1, Key.F2, Key.F3, Key.F4, Key.F5, Key.F6, Key.F7, Key.F8, Key.F9, Key.F10, Key.F11, Key.F12,
 			// keypad (alphabetically)
-			{Key.Keypad0, SlimDX.DirectInput.Key.NumberPad0}, {Key.Keypad1, SlimDX.DirectInput.Key.NumberPad1}, {Key.Keypad2, SlimDX.DirectInput.Key.NumberPad2}, {Key.Keypad3, SlimDX.DirectInput.Key.NumberPad3}, {Key.Keypad4, SlimDX.DirectInput.Key.NumberPad4}, {Key.Keypad5, SlimDX.DirectInput.Key.NumberPad5}, {Key.Keypad6, SlimDX.DirectInput.Key.NumberPad6}, {Key.Keypad7, SlimDX.DirectInput.Key.NumberPad7}, {Key.Keypad8, SlimDX.DirectInput.Key.NumberPad8}, {Key.Keypad9, SlimDX.DirectInput.Key.NumberPad9}, {Key.KeypadAdd, SlimDX.DirectInput.Key.NumberPadPlus}, {Key.KeypadDecimal, SlimDX.DirectInput.Key.NumberPadPeriod}, {Key.KeypadDivide, SlimDX.DirectInput.Key.NumberPadSlash}, {Key.KeypadEnter, SlimDX.DirectInput.Key.NumberPadEnter}, {Key.KeypadMultiply, SlimDX.DirectInput.Key.NumberPadStar}, {Key.KeypadSubtract, SlimDX.DirectInput.Key.NumberPadMinus}
+			Key.Keypad0, Key.Keypad1, Key.Keypad2, Key.Keypad3, Key.Keypad4, Key.Keypad5, Key.Keypad6, Key.Keypad7, Key.Keypad8, Key.Keypad9, Key.KeypadAdd, Key.KeypadDecimal, Key.KeypadDivide, Key.KeypadEnter, Key.KeypadMultiply, Key.KeypadSubtract
 		};
 
-		private static readonly List<KeyInput.KeyEvent> EventList = new List<KeyInput.KeyEvent>();
+		private static readonly List<KeyEvent> EventList = new List<KeyEvent>();
 		private static KeyboardState _kbState;
 
 		public static void Initialize ()
@@ -32,19 +31,19 @@ namespace BizHawk.Client.EmuHawk
 			_kbState = Keyboard.GetState();
 		}
 
-		public static IEnumerable<KeyInput.KeyEvent> Update ()
+		public static IEnumerable<KeyEvent> Update()
 		{
 			EventList.Clear();
 			var lastState = _kbState;
 			try
 			{
 				_kbState = Keyboard.GetState();
-				foreach (KeyValuePair<Key, SlimDX.DirectInput.Key> entry in KeyEnumMap)
+				foreach (var key in KeyList)
 				{
-					if (lastState.IsKeyUp(entry.Key) && _kbState.IsKeyDown(entry.Key))
-						EventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = true });
-					else if (lastState.IsKeyDown(entry.Key) && _kbState.IsKeyUp(entry.Key))
-						EventList.Add(new KeyInput.KeyEvent { Key = entry.Value, Pressed = false });
+					if (lastState.IsKeyUp(key) && _kbState.IsKeyDown(key))
+						EventList.Add(new KeyEvent { Key = key, Pressed = true });
+					else if (lastState.IsKeyDown(key) && _kbState.IsKeyUp(key))
+						EventList.Add(new KeyEvent { Key = key, Pressed = false });
 				}
 			}
 			catch
@@ -103,5 +102,11 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			return false;
 		}
+	}
+
+	public struct KeyEvent
+	{
+		public Key Key;
+		public bool Pressed;
 	}
 }
