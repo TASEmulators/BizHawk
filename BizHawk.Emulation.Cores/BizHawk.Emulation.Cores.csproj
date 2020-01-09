@@ -325,6 +325,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
+    <Compile Include="Computers\MSX\LibMSX.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IFDDHost.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
@@ -468,6 +469,28 @@
     </Compile>
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs">
       <DependentUpon>ZXSpectrum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.cs" />
+    <Compile Include="Computers\MSX\MSX.IEmulator.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.IInputPollable.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.IMemoryDomains.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.Input.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.ISaveRam.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.ISettable.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\MSX\MSX.IStatable.cs">
+      <DependentUpon>MSX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
