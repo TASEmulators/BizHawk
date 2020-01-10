@@ -406,7 +406,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					I_skip = true;
 					
 					// for prefetched case, the PC stays on the BUS one cycle longer
-					if ((src_t == IXCBpre) || (src_t == IXCBpre)) { BUSRQ[0] = PCh; }
+					if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
 
 					break;
 				case ASGN:

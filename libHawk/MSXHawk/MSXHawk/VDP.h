@@ -57,23 +57,23 @@ namespace MSXHawk
 		int FrameHeight = 192;
 		int ScanLine;
 		uint8_t HCounter = 0x90;
-		int FrameBuffer[256 * 240];
+		int FrameBuffer[256 * 244];
 		int GameGearFrameBuffer[160 * 144];
 		int OverscanFrameBuffer[1];
 
-		bool Mode1Bit() { return (Registers[1] & 16) > 0; }
-		bool Mode2Bit() {return (Registers[0] & 2) > 0; }
-		bool Mode3Bit() {return (Registers[1] & 8) > 0; }
-		bool Mode4Bit() {return (Registers[0] & 4) > 0; }
-		bool ShiftSpritesLeft8Pixels() { return (Registers[0] & 8) > 0; }
-		bool EnableLineInterrupts() { return (Registers[0] & 16) > 0; }
-		bool LeftBlanking() { return (Registers[0] & 32) > 0; }
-		bool HorizScrollLock() { return (Registers[0] & 64) > 0; }
-		bool VerticalScrollLock() { return (Registers[0] & 128) > 0; }
-		bool EnableDoubledSprites() { return (Registers[1] & 1) > 0; }
-		bool EnableLargeSprites() { return (Registers[1] & 2) > 0; }
-		bool EnableFrameInterrupts() { return (Registers[1] & 32) > 0; }
-		bool DisplayOn() { return (Registers[1] & 64) > 0; }
+		inline bool Mode1Bit() { return (Registers[1] & 16) > 0; }
+		inline bool Mode2Bit() {return (Registers[0] & 2) > 0; }
+		inline bool Mode3Bit() {return (Registers[1] & 8) > 0; }
+		inline bool Mode4Bit() {return (Registers[0] & 4) > 0; }
+		inline bool ShiftSpritesLeft8Pixels() { return (Registers[0] & 8) > 0; }
+		inline bool EnableLineInterrupts() { return (Registers[0] & 16) > 0; }
+		inline bool LeftBlanking() { return (Registers[0] & 32) > 0; }
+		inline bool HorizScrollLock() { return (Registers[0] & 64) > 0; }
+		inline bool VerticalScrollLock() { return (Registers[0] & 128) > 0; }
+		inline bool EnableDoubledSprites() { return (Registers[1] & 1) > 0; }
+		inline bool EnableLargeSprites() { return (Registers[1] & 2) > 0; }
+		inline bool EnableFrameInterrupts() { return (Registers[1] & 32) > 0; }
+		inline bool DisplayOn() { return (Registers[1] & 64) > 0; }
 		int SpriteAttributeTableBase() { return ((Registers[5] >> 1) << 8) & 0x3FFF; }
 		int SpriteTileBase() { return (Registers[6] & 4) > 0 ? 256 : 0; }
 		uint8_t BackdropColor() { return (uint8_t)(16 + (Registers[7] & 15)); }
@@ -95,11 +95,11 @@ namespace MSXHawk
 		const uint8_t SMSPalXlatTable[4] = { 0, 85, 170, 255 };
 		const uint8_t GGPalXlatTable[16] = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-		VDP(int vdp_mode, int displayType)
+		VDP()
 		{
-			mode = vdp_mode;
+			mode = MODE_GG;
 
-			DisplayType = displayType;
+			DisplayType = DISP_TYPE_NTSC;
 			NameTableBase = CalcNameTableBase();
 		}
 
@@ -172,8 +172,7 @@ namespace MSXHawk
 				break;
 			case 0x80: // VDP register write
 				VdpCommand = Command_RegisterWrite;
-				int reg = value & 0x0F;
-				WriteRegister(reg, VdpLatch);
+				WriteRegister(value & 0x0F, VdpLatch);
 				break;
 			case 0xC0: // write CRAM / modify palette
 				VdpCommand = Command_CramWrite;
@@ -241,15 +240,15 @@ namespace MSXHawk
 
 		void CheckVideoMode()
 		{
-			if (Mode4Bit == false) // check old TMS modes
+			if (Mode4Bit() == false) // check old TMS modes
 			{
-				if (Mode1Bit) TmsMode = 1;
-				else if (Mode2Bit) TmsMode = 2;
-				else if (Mode3Bit) TmsMode = 3;
+				if (Mode1Bit()) TmsMode = 1;
+				else if (Mode2Bit()) TmsMode = 2;
+				else if (Mode3Bit()) TmsMode = 3;
 				else TmsMode = 0;
 			}
 
-			else if (Mode4Bit && Mode2Bit) // if Mode4 and Mode2 set, then check extension modes
+			else if (Mode4Bit() && Mode2Bit()) // if Mode4 and Mode2 set, then check extension modes
 			{
 				TmsMode = 4;
 				switch (Registers[1] & 0x18)
@@ -298,13 +297,13 @@ namespace MSXHawk
 			{
 			case 0: // Mode Control Register 1
 				CheckVideoMode();
-				INT_FLAG[0] = (EnableLineInterrupts && HIntPending);
-				INT_FLAG[0] |= (EnableFrameInterrupts && VIntPending);
+				INT_FLAG[0] = (EnableLineInterrupts() && HIntPending);
+				INT_FLAG[0] |= (EnableFrameInterrupts() && VIntPending);
 				break;
 			case 1: // Mode Control Register 2
 				CheckVideoMode();
-				INT_FLAG[0] = (EnableFrameInterrupts && VIntPending);
-				INT_FLAG[0] |= (EnableLineInterrupts && HIntPending);
+				INT_FLAG[0] = (EnableFrameInterrupts() && VIntPending);
+				INT_FLAG[0] |= (EnableLineInterrupts() && HIntPending);
 				break;
 			case 2: // Name Table Base Address
 				NameTableBase = CalcNameTableBase();
@@ -352,7 +351,7 @@ namespace MSXHawk
 				VIntPending = true;
 			}
 
-			if (VIntPending && EnableFrameInterrupts)
+			if (VIntPending && EnableFrameInterrupts())
 			{
 				INT_FLAG[0] = true;
 			}
@@ -366,7 +365,7 @@ namespace MSXHawk
 				if (lineIntLinesRemaining-- <= 0)
 				{
 					HIntPending = true;
-					if (EnableLineInterrupts)
+					if (EnableLineInterrupts())
 					{
 						INT_FLAG[0] = true;
 					}
@@ -386,7 +385,7 @@ namespace MSXHawk
 				if (render)
 					RenderBackgroundCurrentLine(SHOW_BG);
 
-				if (EnableDoubledSprites)
+				if (EnableDoubledSprites())
 					RenderSpritesCurrentLineDoubleSize(SHOW_SPRITES & render);
 				else
 					RenderSpritesCurrentLine(SHOW_SPRITES & render);
@@ -454,7 +453,7 @@ namespace MSXHawk
 			if (ScanLine >= FrameHeight)
 				return;
 
-			if (DisplayOn == false)
+			if (DisplayOn() == false)
 			{
 				for (int x = 0; x < 256; x++)
 					FrameBuffer[(ScanLine * 256) + x] = Palette[BackdropColor()];
@@ -480,13 +479,13 @@ namespace MSXHawk
 				if (vertOffset >= 256)
 					vertOffset -= 256;
 			}
-			uint8_t horzOffset = (HorizScrollLock && ScanLine < 16) ? (uint8_t)0 : Registers[8];
+			uint8_t horzOffset = (HorizScrollLock() && ScanLine < 16) ? (uint8_t)0 : Registers[8];
 
 			int yTile = vertOffset / 8;
 
 			for (int xTile = 0; xTile < 32; xTile++)
 			{
-				if (xTile == 24 && VerticalScrollLock)
+				if (xTile == 24 && VerticalScrollLock())
 				{
 					vertOffset = ScanLine;
 					yTile = vertOffset / 8;
@@ -558,7 +557,7 @@ namespace MSXHawk
 			bool collisionHappens = true;
 			bool renderHappens = show;
 
-			if (!DisplayOn)
+			if (!DisplayOn())
 			{
 				renderHappens = false;
 				collisionHappens = false;
@@ -570,7 +569,7 @@ namespace MSXHawk
 			}
 
 			int SpriteBase = SpriteAttributeTableBase();
-			int SpriteHeight = EnableLargeSprites ? 16 : 8;
+			int SpriteHeight = EnableLargeSprites() ? 16 : 8;
 
 			// Clear the sprite collision buffer for this scanline
 			for (int i = 0; i < 256; i++)
@@ -583,13 +582,13 @@ namespace MSXHawk
 			for (int i = 0; i < 64; i++)
 			{
 				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
-				if (ShiftSpritesLeft8Pixels)
+				if (ShiftSpritesLeft8Pixels())
 					x -= 8;
 
 				int y = VRAM[SpriteBase + i] + 1;
 				if (y == 209 && FrameHeight == 192)
 					break; // 208 is special terminator sprite (in 192-line mode)
-				if (y >= (EnableLargeSprites ? 240 : 248))
+				if (y >= (EnableLargeSprites() ? 240 : 248))
 					y -= 256;
 
 				if (y + SpriteHeight <= ScanLine || y > ScanLine)
@@ -605,7 +604,7 @@ namespace MSXHawk
 				}
 
 				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
-				if (EnableLargeSprites)
+				if (EnableLargeSprites())
 					tileNo &= 0xFE;
 				tileNo += SpriteTileBase();
 
@@ -638,7 +637,7 @@ namespace MSXHawk
 			bool collisionHappens = true;
 			bool renderHappens = show;
 
-			if (!DisplayOn)
+			if (!DisplayOn())
 			{
 				renderHappens = false;
 				collisionHappens = false;
@@ -650,7 +649,7 @@ namespace MSXHawk
 			}
 
 			int SpriteBase = SpriteAttributeTableBase();
-			int SpriteHeight = EnableLargeSprites ? 16 : 8;
+			int SpriteHeight = EnableLargeSprites() ? 16 : 8;
 
 			// Clear the sprite collision buffer for this scanline
 			for (int i = 0; i < 256; i++)
@@ -663,13 +662,13 @@ namespace MSXHawk
 			for (int i = 0; i < 64; i++)
 			{
 				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
-				if (ShiftSpritesLeft8Pixels)
+				if (ShiftSpritesLeft8Pixels())
 					x -= 8;
 
 				int y = VRAM[SpriteBase + i] + 1;
 				if (y == 209 && FrameHeight == 192)
 					break; // terminator sprite
-				if (y >= (EnableLargeSprites ? 240 : 248))
+				if (y >= (EnableLargeSprites() ? 240 : 248))
 					y -= 256;
 
 				if (y + (SpriteHeight * 2) <= ScanLine || y > ScanLine)
@@ -685,7 +684,7 @@ namespace MSXHawk
 				}
 
 				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
-				if (EnableLargeSprites)
+				if (EnableLargeSprites())
 					tileNo &= 0xFE;
 				tileNo += SpriteTileBase();
 
@@ -715,7 +714,7 @@ namespace MSXHawk
 		// Renders left-blanking. Should be done per scanline, not per-frame.
 		void RenderLineBlanking(bool render)
 		{
-			if (!LeftBlanking || ScanLine >= FrameHeight || !render)
+			if (!LeftBlanking() || ScanLine >= FrameHeight || !render)
 				return;
 
 			int ofs = ScanLine * 256;
@@ -870,7 +869,7 @@ namespace MSXHawk
 			if (ScanLine >= FrameHeight)
 				return;
 
-			if (DisplayOn == false)
+			if (DisplayOn() == false)
 			{
 				for (int i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
 				{
@@ -911,7 +910,7 @@ namespace MSXHawk
 			if (ScanLine >= FrameHeight)
 				return;
 
-			if (DisplayOn == false)
+			if (DisplayOn() == false)
 			{
 				for (int i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
 				{
@@ -951,10 +950,10 @@ namespace MSXHawk
 
 		void RenderTmsSprites(bool show)
 		{
-			if (ScanLine >= FrameHeight || DisplayOn == false)
+			if (ScanLine >= FrameHeight || DisplayOn() == false)
 				return;
 
-			if (EnableDoubledSprites == false)
+			if (EnableDoubledSprites() == false)
 				RenderTmsSpritesStandard(show);
 			else
 				RenderTmsSpritesDouble(show);
@@ -971,7 +970,7 @@ namespace MSXHawk
 				SpriteCollisionBuffer[i] = 0;
 			}
 
-			bool LargeSprites = EnableLargeSprites;
+			bool LargeSprites = EnableLargeSprites();
 
 			int SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;
@@ -1043,7 +1042,7 @@ namespace MSXHawk
 				SpriteCollisionBuffer[i] = 0;
 			}
 
-			bool LargeSprites = EnableLargeSprites;
+			bool LargeSprites = EnableLargeSprites();
 
 			int SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;

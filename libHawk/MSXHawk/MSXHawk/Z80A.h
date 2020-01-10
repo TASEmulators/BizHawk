@@ -47,7 +47,7 @@ namespace MSXHawk
 
 		// non-state variables
 		int Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		int Reg16_d, Reg16_s, ans, temp, carry;
+		int Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
 
 
 		inline bool FlagCget() { return (Regs[5] & 0x01) != 0; };
@@ -489,7 +489,7 @@ namespace MSXHawk
 				EXCH_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 				break;
 			case PREFIX:
-				int src_t = PRE_SRC;
+				src_t = PRE_SRC;
 
 				NO_prefix = false;
 				if (PRE_SRC == CBpre) { CB_prefix = true; }
@@ -515,7 +515,7 @@ namespace MSXHawk
 				I_skip = true;
 
 				// for prefetched case, the PC stays on the BUS one cycle longer
-				if ((src_t == IXCBpre) || (src_t == IXCBpre)) { BUSRQ[0] = PCh; }
+				if ((src_t == IXCBpre) || (src_t == IYCBpre)) { BUSRQ[0] = PCh; }
 
 				break;
 			case ASGN:
@@ -618,7 +618,7 @@ namespace MSXHawk
 				}
 				break;
 			case SET_FL_IR:
-				int dest_t = cur_instr[instr_pntr++];
+				dest_t = cur_instr[instr_pntr++];
 				TR_Func(dest_t, cur_instr[instr_pntr++]);
 				SET_FL_IR_Func(dest_t);
 				break;
