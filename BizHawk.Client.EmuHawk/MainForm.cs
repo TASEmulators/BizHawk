@@ -1816,6 +1816,7 @@ namespace BizHawk.Client.EmuHawk
 			zXSpectrumToolStripMenuItem.Visible = false;
 			amstradCPCToolStripMenuItem.Visible = false;
 			VectrexSubMenu.Visible = false;
+			MSXSubMenu.Visible = false;
 			O2HawkSubMenu.Visible = false;
 			arcadeToolStripMenuItem.Visible = false;
 
@@ -1935,6 +1936,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "VEC":
 					VectrexSubMenu.Visible = true;
+					break;
+				case "MSX":
+					MSXSubMenu.Visible = true;
 					break;
 				case "O2":
 					O2HawkSubMenu.Visible = true;

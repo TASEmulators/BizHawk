@@ -219,6 +219,7 @@ namespace BizHawk.Client.DBMan
 		VEC,
 		GB3x,
 		GB4x,
-		O2
+		O2,
+		MSX
 	}
 }

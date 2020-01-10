@@ -6,10 +6,15 @@
 
 using namespace MSXHawk;
 
-// This is an example of an exported variable
-MSXHAWK_EXPORT int nMSXHawk=0;
-
-// This is an example of an exported function.
-MSXHAWK_EXPORT MSXCore* MSX_create() {
+// Create pointer to a core instance
+MSXHAWK_EXPORT MSXCore* MSX_create() 
+{
 	return new MSXCore();
 }
+
+// free the memory from the core pointer
+MSXHAWK_EXPORT void MSX_destroy(MSXCore* p)
+{
+	std::free(p);
+}
+

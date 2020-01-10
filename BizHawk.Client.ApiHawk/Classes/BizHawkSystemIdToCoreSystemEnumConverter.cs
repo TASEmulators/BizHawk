@@ -123,6 +123,9 @@ namespace BizHawk.Client.ApiHawk
 				case "O2":
 					return CoreSystem.Odyssey2;
 
+				case "MSX":
+					return CoreSystem.MSX;
+
 				case "VB":
 				case "NGP":
 				case "DNGP":

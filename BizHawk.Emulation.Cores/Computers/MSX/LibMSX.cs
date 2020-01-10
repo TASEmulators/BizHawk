@@ -10,11 +10,11 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	public static class LibMSX
 	{
 		/// <returns>opaque state pointer</returns>
-		[DllImport("libMSX.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr MSX_create();
 
 		/// <param name="core">opaque state pointer</param>
-		[DllImport("libMSX.dll", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_destroy(IntPtr core);
 	}
 }

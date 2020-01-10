@@ -1,4 +1,10 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using System.ComponentModel;
+
+using Newtonsoft.Json;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
@@ -34,8 +40,15 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public class MSXSettings
 		{
 			// graphics settings
-			public bool DispBG = true;
-			public bool DispOBJ = true;
+			[DisplayName("Show Background")]
+			[Description("Display BG Layer")]
+			[DefaultValue(true)]
+			public bool DispBG { get; set; }
+
+			[DisplayName("Show Sprites")]
+			[Description("Display Sprites")]
+			[DefaultValue(true)]
+			public bool DispOBJ { get; set; }
 
 			public MSXSettings Clone()
 			{

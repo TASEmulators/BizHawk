@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class MSX : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
+	public partial class MSX : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
 		[CoreConstructor("MSX")]
 		public MSX(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			}
 
+			MSX_Pntr = LibMSX.MSX_create();
+
 			blip_L.SetRates(3579545, 44100);
 			blip_R.SetRates(3579545, 44100);
 
@@ -34,19 +36,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			SetupMemoryDomains();
 
-			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
-			((ICodeDataLogger)this).SetCDL(null);
-
 			InputCallbacks = new InputCallbackSystem();
 
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
-			serviceProvider.Register<ITraceable>(Tracer);
+			//var serviceProvider = ServiceProvider as BasicServiceProvider;
+			//serviceProvider.Register<ITraceable>(Tracer);
 		}
 
 		public void HardReset()
 		{
 
 		}
+
+		IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
 
 		// Constants
 		private const int BankSize = 16384;

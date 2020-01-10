@@ -232,6 +232,10 @@ namespace BizHawk.Client.Common
 		/// Gets the <see cref="SystemInfo"/> instance for MAME
 		/// </summary>
 		public static SystemInfo Mame { get; } = new SystemInfo("MAME", CoreSystem.MAME, 4);
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for MSX
+		/// </summary>
+		public static SystemInfo MSX { get; } = new SystemInfo("MSX", CoreSystem.MSX, 2);
 
 		#endregion Get SystemInfo
 

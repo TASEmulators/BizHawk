@@ -3,7 +3,7 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
-	public partial class MSX : IEmulator, ISoundProvider
+	public partial class MSX : IEmulator, ISoundProvider, IVideoProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			_controller = controller;
 			_lagged = true;
 			_frame++;
-
+			/*
 			if (Tracer.Enabled)
 			{
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			{
 
 			}
-
+			*/
 			if (_lagged)
 			{
 				_lagCount++;
@@ -63,6 +63,12 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public void Dispose()
 		{
+			if (MSX_Pntr != IntPtr.Zero)
+			{
+				LibMSX.MSX_destroy(MSX_Pntr);
+				MSX_Pntr = IntPtr.Zero;
+			}
+
 			if (blip_L != null)
 			{
 				blip_L.Dispose();
@@ -129,5 +135,31 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		#endregion
 
+		#region Video
+		public int _frameHz = 60;
+
+		public int[] _vidbuffer;
+
+		public int[] frame_buffer = new int[160 * 144];
+
+		public int[] GetVideoBuffer()
+		{
+			return frame_buffer;
+		}
+
+		public int VirtualWidth => 160;
+		public int VirtualHeight => 144;
+		public int BufferWidth => 160;
+		public int BufferHeight => 144;
+		public int BackgroundColor => unchecked((int)0xFF000000);
+		public int VsyncNumerator => _frameHz;
+		public int VsyncDenominator => 1;
+
+		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
+
+		public uint[] color_palette = new uint[4];
+
+		#endregion
 	}
 }

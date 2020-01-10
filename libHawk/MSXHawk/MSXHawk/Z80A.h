@@ -20,6 +20,8 @@ namespace MSXHawk
 		uint8_t* HWMemoryMap;
 		uint8_t* HWMemoryMapMask;
 
+		void (*HW_Write)(uint8_t);
+
 		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
 		int ExternalDB;
 

@@ -2462,6 +2462,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region MSX
+
+		private void MSXSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "MSX Settings");
+		}
+
+		#endregion
+
 		#region O2Hawk
 
 		private void O2HawkSettingsMenuItem_Click(object sender, EventArgs e)

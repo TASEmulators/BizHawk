@@ -38,7 +38,8 @@ namespace BizHawk.Emulation.Common
 			new SystemInfo { SystemId = "AmstradCPC", FullName = "Amstrad CPC" },
 			new SystemInfo { SystemId = "ChannelF", FullName = "Fairchild Channel F"},
 			new SystemInfo { SystemId = "O2", FullName = "Odyssey2"},
-			new SystemInfo { SystemId = "VEC", FullName = "Vectrex"}
+			new SystemInfo { SystemId = "VEC", FullName = "Vectrex"},
+			new SystemInfo { SystemId = "MSX", FullName = "MSX"}
 		};
 
 		public SystemInfo this[string systemId]
