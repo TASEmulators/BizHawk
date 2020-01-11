@@ -121,6 +121,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		/// </summary>
 		private void SetUpFiles()
 		{
+			Directory.CreateDirectory("melon");
+
 			byte[] fwBytes;
 			bool missingAny = false;
 			fwBytes = CoreComm.CoreFileProvider.GetFirmware("NDS", "bios7", false);
