@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		private void SyncState(Serializer ser)
 		{
-			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
+			ser.Sync("IsLag", ref _isLag);
 			ser.Sync(nameof(_cableconnected), ref _cableconnected);
 			ser.Sync(nameof(_cablediscosignal), ref _cablediscosignal);
 			ser.Sync(nameof(do_r_next), ref do_r_next);

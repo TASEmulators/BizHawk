@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync(nameof(ExecutiveRom), ref ExecutiveRom, false);
 			ser.Sync(nameof(GraphicsRom), ref GraphicsRom, false);
 			ser.Sync(nameof(GraphicsRam), ref GraphicsRam, false);
-			ser.Sync("islag", ref _islag);
-			ser.Sync("lagcount", ref _lagcount);
+			ser.Sync("islag", ref _isLag);
+			ser.Sync("lagcount", ref _lagCount);
 
 			_cpu.SyncState(ser);
 			_stic.SyncState(ser);

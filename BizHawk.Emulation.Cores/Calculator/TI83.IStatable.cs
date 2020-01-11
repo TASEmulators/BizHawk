@@ -40,12 +40,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
 			if (ser.IsWriter)
 			{
 				var ms = new MemoryStream();
 				ms.Close();
-				core = ms.ToArray();
+				ms.ToArray();
 			}
 			_cpu.SyncState(ser);
 

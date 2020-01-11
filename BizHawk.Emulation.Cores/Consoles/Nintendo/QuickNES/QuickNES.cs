@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				SetPads(controller, out j1, out j2);
 
 				if (Tracer.Enabled)
-					QN.qn_set_tracecb(Context, _tracecb);
+					QN.qn_set_tracecb(Context, _traceCb);
 				else
 					QN.qn_set_tracecb(Context, null);
 
@@ -221,8 +221,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				if (rendersound)
 					DrainAudio();
 
-				if (CB1 != null) CB1();
-				if (CB2 != null) CB2();
+				if (_callBack1 != null) _callBack1();
+				if (_callBack2 != null) _callBack2();
 
 				return true;
 			}

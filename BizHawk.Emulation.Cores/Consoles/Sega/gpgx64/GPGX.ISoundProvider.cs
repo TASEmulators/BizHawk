@@ -7,24 +7,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : ISoundProvider
 	{
-		private short[] samples = new short[4096];
-		private int nsamp = 0;
+		private readonly short[] _samples = new short[4096];
+		private int _nsamp;
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = this.nsamp;
-			samples = this.samples;
-			this.nsamp = 0;
+			nsamp = _nsamp;
+			samples = _samples;
+			_nsamp = 0;
 		}
 
 		public void DiscardSamples()
 		{
-			this.nsamp = 0;
+			_nsamp = 0;
 		}
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -35,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 		}
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{
@@ -48,11 +42,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private void update_audio()
 		{
 			IntPtr src = IntPtr.Zero;
-			Core.gpgx_get_audio(ref nsamp, ref src);
+			Core.gpgx_get_audio(ref _nsamp, ref src);
 			if (src != IntPtr.Zero)
 			{
 				using (_elf.EnterExit())
-					Marshal.Copy(src, samples, 0, nsamp * 2);
+					Marshal.Copy(src, _samples, 0, _nsamp * 2);
 			}
 		}
 	}

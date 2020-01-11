@@ -1,7 +1,5 @@
 ﻿using System;
-
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
@@ -11,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public ControllerDefinition ControllerDefinition => subnes.ControllerDefinition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			if (_tracer.Enabled)
@@ -39,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 			reset_cycle = controller.GetFloat("Reset Cycle");
 			reset_cycle_int = (int)Math.Floor(reset_cycle);
 
-			_islag = true;
+			_isLag = true;
 			subnes.alt_lag = true;
 
 			InputCallbacks.Call();
@@ -55,11 +53,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 				subnes.cpu.ext_ppu_cycle = current_cycle;
 			}
 			
-			_islag = subnes.alt_lag;
+			_isLag = subnes.alt_lag;
 
-			if (_islag)
+			if (_isLag)
 			{
-				_lagcount++;
+				_lagCount++;
 				VBL_CNT++;
 			}
 
@@ -102,8 +100,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
-			_islag = false;
+			_lagCount = 0;
+			_isLag = false;
 		}
 
 		public CoreComm CoreComm { get; }

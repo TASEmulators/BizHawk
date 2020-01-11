@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	partial class WonderSwan: IStatable
 	{
-		void InitIStatable()
+		private void InitIStatable()
 		{
 			savebuff = new byte[BizSwan.bizswan_binstatesize(Core)];
 			savebuff2 = new byte[savebuff.Length + 13];

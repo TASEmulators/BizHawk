@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		private readonly List<MemoryDomain> _memoryDomainList = new List<MemoryDomain>();
 		private IMemoryDomains _memoryDomains;
-		private LibsnesApi.SNES_MAPPER? _mapper = null;
+		private LibsnesApi.SNES_MAPPER? _mapper;
 
 		// works for WRAM, garbage for anything else
 		private static int? FakeBusMap(int addr)
@@ -76,22 +76,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 
 			_memoryDomains = new MemoryDomainList(_memoryDomainList);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 
 		private unsafe void MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
 			int size = Api.QUERY_get_memory_size(id);
 
-			// if this type of memory isnt available, dont make the memory domain (most commonly save ram)
+			// if this type of memory isn't available, don't make the memory domain (most commonly save ram)
 			if (size == 0)
 			{
 				return;
 			}
 
-			byte* blockptr = Api.QUERY_get_memory_data(id);
+			byte* blockPtr = Api.QUERY_get_memory_data(id);
 
-			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size, 
+			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockPtr, size,
 				id != LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, // hack: for just this one memory area, it will be readonly
 				byteSize, Api);
 
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				throw new InvalidOperationException();
 			}
 
-			byte* blockptr = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
+			byte* blockPtr = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
 			var md = new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				addr =>
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						var a = FakeBusMap((int)addr);
 						if (a.HasValue)
 						{
-							return blockptr[a.Value];
+							return blockPtr[a.Value];
 						}
 
 						return FakeBusRead((int)addr);
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					{
 						var a = FakeBusMap((int)addr);
 						if (a.HasValue)
-							blockptr[a.Value] = val;
+							blockPtr[a.Value] = val;
 					}
 				}, wordSize: 2);
 			_memoryDomainList.Add(md);

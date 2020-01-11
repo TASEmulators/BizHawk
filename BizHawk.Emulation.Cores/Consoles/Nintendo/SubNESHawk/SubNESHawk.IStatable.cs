@@ -2,7 +2,6 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 {
@@ -38,8 +37,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			using var ms = new MemoryStream();
+			using var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -49,9 +48,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 
 		private void SyncState(Serializer ser)
 		{
-			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
+			ser.Sync("IsLag", ref _isLag);
 			ser.Sync(nameof(pass_a_frame), ref pass_a_frame);
 			ser.Sync(nameof(reset_frame), ref reset_frame);
 			ser.Sync(nameof(pass_new_input), ref pass_new_input);

@@ -4,10 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : IVideoProvider
 	{
-		public int[] GetVideoBuffer()
-		{
-			return _machine.Video.VideoService.fb;
-		}
+		public int[] GetVideoBuffer() => _machine.Video.VideoService.fb;
 
 		// put together, these describe a metric on the screen
 		// they should define the smallest size that the buffer can be placed inside such that:
@@ -22,19 +19,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public int VsyncNumerator
 		{
 			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get => NullVideo.DefaultVsyncNum;
 		}
 
 		public int VsyncDenominator
 		{
 			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get => NullVideo.DefaultVsyncDen;
 		}
 	}
 }

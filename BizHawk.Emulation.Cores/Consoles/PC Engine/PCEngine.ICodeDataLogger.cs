@@ -102,8 +102,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				CDLMappingApplyRange(mm, "Battery RAM", 0xf7, BRAM.Length);
 			}
 
-			var rammirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
-			mm[0xf9] = mm[0xfa] = mm[0xfb] = rammirrors;
+			var ramMirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
+			mm[0xf9] = mm[0xfa] = mm[0xfb] = ramMirrors;
 
 			CDLMappingApplyRange(mm, "Main Memory", 0xf8, Ram.Length);
 

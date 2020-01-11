@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			[JsonIgnore]
 			public string Port1
 			{
-				get { return _port1; }
+				get => _port1;
 				set
 				{
 					if (!IntellivisionControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			[JsonIgnore]
 			public string Port2
 			{
-				get { return _port2; }
+				get => _port2;
 				set
 				{
 					if (!IntellivisionControllerDeck.ValidControllerTypes.ContainsKey(value))

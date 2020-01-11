@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			var registerAddr = (ushort)(addr & 0x0007);
 			if (registerAddr == 0x00)
 			{
-				Core._islag = false;
+				Core._isLag = false;
 
 				// Read Output reg A
 				// Combine readings from player 1 and player 2
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			
 			if (registerAddr == 0x02)
 			{
-				Core._islag = false;
+				Core._isLag = false;
 
 				// Read Output reg B
 				byte temp = Core.con_state;

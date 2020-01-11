@@ -40,26 +40,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{
-				if (sourceType == typeof(string))
-				{
-					return true;
-				}
-				else
-				{
-					return base.CanConvertFrom(context, sourceType);
-				}
+				return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 			}
 
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 			{
-				if (destinationType == typeof(string))
-				{
-					return true;
-				}
-				else
-				{
-					return base.CanConvertTo(context, destinationType);
-				}
+				return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
 			}
 
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
@@ -68,10 +54,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					return $"0x{value:x8}";
 				}
-				else
-				{
-					return base.ConvertTo(context, culture, value, destinationType);
-				}
+
+				return base.ConvertTo(context, culture, value, destinationType);
 			}
 
 			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
@@ -85,10 +69,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					}
 					return uint.Parse(input, NumberStyles.HexNumber, culture);
 				}
-				else
-				{
-					return base.ConvertFrom(context, culture, value);
-				}
+
+				return base.ConvertFrom(context, culture, value);
 			}
 		}
 
@@ -96,26 +78,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{
-				if (sourceType == typeof(string))
-				{
-					return true;
-				}
-				else
-				{
-					return base.CanConvertFrom(context, sourceType);
-				}
+				return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 			}
 
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 			{
-				if (destinationType == typeof(string))
-				{
-					return true;
-				}
-				else
-				{
-					return base.CanConvertTo(context, destinationType);
-				}
+				return destinationType == typeof(string) || base.CanConvertTo(context, destinationType);
 			}
 
 			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
@@ -124,10 +92,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					return $"0x{value:x4}";
 				}
-				else
-				{
-					return base.ConvertTo(context, culture, value, destinationType);
-				}
+
+				return base.ConvertTo(context, culture, value, destinationType);
 			}
 
 			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
@@ -141,10 +107,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					}
 					return ushort.Parse(input, NumberStyles.HexNumber, culture);
 				}
-				else
-				{
-					return base.ConvertFrom(context, culture, value);
-				}
+
+				return base.ConvertFrom(context, culture, value);
 			}
 		}
 

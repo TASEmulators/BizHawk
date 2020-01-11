@@ -22,19 +22,19 @@ namespace BizHawk.Emulation.Cores.Calculators
 				for (int x = 0; x < 96; x++)
 				{
 					int offset = (y * 96) + x;
-					int bufbyte = offset >> 3;
-					int bufbit = offset & 7;
-					int bit = (_vram[bufbyte] >> (7 - bufbit)) & 1;
+					int buffByte = offset >> 3;
+					int buffBit = offset & 7;
+					int bit = (_vram[buffByte] >> (7 - buffBit)) & 1;
 					if (bit == 0)
 					{
 						unchecked
 						{
-							pixels[i++] = (int)Settings.BGColor;
+							pixels[i++] = (int)_settings.BGColor;
 						}
 					}
 					else
 					{
-						pixels[i++] = (int)Settings.ForeColor;
+						pixels[i++] = (int)_settings.ForeColor;
 					}
 				}
 			}

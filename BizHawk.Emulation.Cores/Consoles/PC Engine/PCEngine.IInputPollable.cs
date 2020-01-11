@@ -6,20 +6,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		public int LagCount
 		{
-			get { return _lagCount; }
-			set { _lagCount = value; }
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get { return _isLag; }
-			set { _isLag = value; }
+			get => _isLag;
+			set => _isLag = value;
 		}
 
-		public IInputCallbackSystem InputCallbacks
-		{
-			get { return _inputCallbacks; }
-		}
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		private int _lagCount;

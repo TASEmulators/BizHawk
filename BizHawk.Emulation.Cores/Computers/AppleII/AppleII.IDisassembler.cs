@@ -9,11 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public string Cpu
 		{
-			get
-			{
-				return "6502";
-			}
-
+			get => "6502";
 			set
 			{
 			}

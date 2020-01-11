@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 			_lagged = true;
@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public int Frame
 		{
-			get { return _frame; }
-			set { _frame = value; }
+			get => _frame;
+			set => _frame = value;
 		}
 
 		public string SystemId { get; }

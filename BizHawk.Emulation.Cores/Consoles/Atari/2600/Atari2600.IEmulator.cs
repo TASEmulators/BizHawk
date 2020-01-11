@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 
@@ -58,20 +58,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else
 					{
 						throw new Exception("ERROR: Unable to resolve Frame. Please Report.");
-					}					
+					}
 				}
 			}
 
 			_tia.New_Frame = false;
 
-			if (rendersound == false)
+			if (renderSound == false)
 			{
 				_tia.AudioClocks = 0; // we need this here since the async sound provider won't check in this case
 			}
 
 			if (_islag)
 			{
-				_lagcount++;
+				_lagCount++;
 			}
 
 			_tia.LineCount = 0;
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
+			_lagCount = 0;
 			_islag = false;
 		}
 

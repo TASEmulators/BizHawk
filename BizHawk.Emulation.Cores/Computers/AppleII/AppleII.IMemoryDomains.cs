@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			domains.Add(systemBusDomain);
 
 			_memoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 
 		private IMemoryDomains _memoryDomains;

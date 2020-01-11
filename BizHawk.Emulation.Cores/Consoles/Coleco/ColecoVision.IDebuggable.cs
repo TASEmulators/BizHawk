@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision

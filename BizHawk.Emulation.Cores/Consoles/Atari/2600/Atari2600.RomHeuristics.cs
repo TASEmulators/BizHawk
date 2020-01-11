@@ -443,12 +443,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static bool ContainsAny(byte[] rom, IEnumerable<byte[]> signatures)
 		{
-			return signatures.Any(signature => rom.FindBytes(signature));
+			return signatures.Any(rom.FindBytes);
 		}
 
 		private static bool ContainsAll(byte[] rom, IEnumerable<byte[]> signatures)
 		{
-			return signatures.All(signature => rom.FindBytes(signature));
+			return signatures.All(rom.FindBytes);
 		}
 	}
 }

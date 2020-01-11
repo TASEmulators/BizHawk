@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public ControllerDefinition ControllerDefinition => TI83Controller;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 			_lagged = true;
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 						TIM_1_int = true;
 						_cpu.FlagI = true;
 					}
-				}				
+				}
 			}
 
 			Frame++;
@@ -65,8 +65,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public int Frame
 		{
-			get { return _frame; }
-			private set { _frame = value; }
+			get => _frame;
+			private set => _frame = value;
 		}
 
 		public string SystemId => "TI83";

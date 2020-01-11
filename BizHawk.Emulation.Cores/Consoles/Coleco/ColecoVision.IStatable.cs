@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 			_cpu.SyncState(ser);
 
-			ser.BeginSection("Coleco");		
+			ser.BeginSection("Coleco");
 			_vdp.SyncState(ser);
 			ControllerDeck.SyncState(ser);
 			PSG.SyncState(ser);

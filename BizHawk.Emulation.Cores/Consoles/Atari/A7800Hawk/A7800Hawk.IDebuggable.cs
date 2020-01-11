@@ -67,9 +67,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			throw new NotImplementedException();
 		}
 
-		public long TotalExecutedCycles
-		{
-			get { return cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => cpu.TotalExecutedCycles;
 	}
 }

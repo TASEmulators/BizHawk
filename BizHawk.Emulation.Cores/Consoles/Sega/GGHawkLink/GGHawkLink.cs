@@ -1,7 +1,4 @@
-﻿using System;
-
-using BizHawk.Emulation.Common;
-
+﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
@@ -81,8 +78,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private void ExecFetch(ushort addr)

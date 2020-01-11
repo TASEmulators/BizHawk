@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
 
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			// speedup when sound rendering is not needed
-			Api.QUERY_set_audio_sample(rendersound ? _soundcb : null);
+			Api.QUERY_set_audio_sample(renderSound ? _soundcb : null);
 
 			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_timeFrameCounter++;
 			Api.CMD_run();
 
-			// once upon a time we forwarded messages frmo bsnes here, by checking for queued text messages, but I don't think it's needed any longer
+			// once upon a time we forwarded messages from bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)
 			{
 				LagCount++;
@@ -86,8 +86,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public int Frame
 		{
-			get { return _timeFrameCounter; }
-			private set { _timeFrameCounter = value; }
+			get => _timeFrameCounter;
+			private set => _timeFrameCounter = value;
 		}
 
 		public string SystemId { get; }

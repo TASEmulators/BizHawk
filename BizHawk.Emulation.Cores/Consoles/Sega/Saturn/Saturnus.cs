@@ -13,7 +13,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
@@ -51,12 +50,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				if (Encoding.ASCII.GetString(buff, 0, 16) != "SEGA SEGASATURN ")
 					return false;
 
-				using (var sha256 = SHA256.Create())
-				{
-					sha256.ComputeHash(buff, 0x100, 0xd00);
-					if (sha256.Hash.BytesToHexString() != "96B8EA48819CFA589F24C40AA149C224C420DCCF38B730F00156EFE25C9BBC8F")
-						return false;
-				}
+				using var sha256 = SHA256.Create();
+				sha256.ComputeHash(buff, 0x100, 0xd00);
+				if (sha256.Hash.BytesToHexString() != "96B8EA48819CFA589F24C40AA149C224C420DCCF38B730F00156EFE25C9BBC8F")
+					return false;
 			}
 			return true;
 		}

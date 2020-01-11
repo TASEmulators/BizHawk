@@ -5,13 +5,10 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	public partial class WonderSwan : ISoundProvider
 	{
-		private short[] sbuff = new short[1536];
+		private readonly short[] sbuff = new short[1536];
 		private int sbuffcontains = 0;
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -32,10 +29,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{

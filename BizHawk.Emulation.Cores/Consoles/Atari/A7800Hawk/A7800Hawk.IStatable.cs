@@ -48,9 +48,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			pokey.SyncState(ser);
 
 			ser.BeginSection("Atari7800");
-			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
-			ser.Sync("IsLag", ref _islag);
+			ser.Sync("IsLag", ref _isLag);
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync(nameof(A7800_control_register), ref A7800_control_register);

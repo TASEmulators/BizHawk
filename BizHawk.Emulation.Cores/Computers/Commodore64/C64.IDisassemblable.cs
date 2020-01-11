@@ -39,9 +39,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				var currentSelectedDisassemblable = _selectedDisassemblable;
 				_selectedDisassemblable = GetAvailableDisassemblables().FirstOrDefault(d => d.Cpu == value) ?? currentSelectedDisassemblable;
-				if (_selectedDisassemblable is IDebuggable)
+				if (_selectedDisassemblable is IDebuggable debuggable)
 				{
-					_selectedDebuggable = _selectedDisassemblable as IDebuggable;
+					_selectedDebuggable = debuggable;
 				}
 			}
 		}

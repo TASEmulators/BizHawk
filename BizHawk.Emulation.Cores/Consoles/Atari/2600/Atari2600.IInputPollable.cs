@@ -6,19 +6,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public int LagCount
 		{
-			get { return _lagcount; }
-			set { _lagcount = value; }
+			get => _lagCount;
+			set => _lagCount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get { return _islag; }
-			set { _islag = value; }
+			get => _islag;
+			set => _islag = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		private bool _islag = true;
-		private int _lagcount;
+		private int _lagCount;
 	}
 }

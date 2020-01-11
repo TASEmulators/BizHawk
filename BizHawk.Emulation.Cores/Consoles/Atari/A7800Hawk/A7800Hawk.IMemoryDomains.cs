@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	public partial class A7800Hawk
 	{
-		private IMemoryDomains MemoryDomains;
+		private IMemoryDomains _memoryDomains;
 
 		public void SetupMemoryDomains()
 		{
@@ -65,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					1)
 			};
 
-			MemoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+			_memoryDomains = new MemoryDomainList(domains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
 
 		private byte PeekSystemBus(long addr)

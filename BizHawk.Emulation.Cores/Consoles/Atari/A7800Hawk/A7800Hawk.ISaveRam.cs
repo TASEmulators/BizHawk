@@ -15,12 +15,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			Buffer.BlockCopy(data, 0, _hsram, 0, data.Length);
 		}
 
-		public bool SaveRamModified
-		{
-			get 
-			{
-				return (_hsbios != null);
-			}	
-		}
+		public bool SaveRamModified => (_hsbios != null);
 	}
 }

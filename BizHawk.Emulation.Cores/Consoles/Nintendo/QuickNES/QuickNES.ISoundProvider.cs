@@ -5,19 +5,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES : ISoundProvider
 	{
-		private short[] MonoBuff = new short[1024];
-		private short[] StereoBuff = new short[2048];
-		private int NumSamples = 0;
+		private readonly short[] _monoBuff = new short[1024];
+		private readonly short[] _stereoBuff = new short[2048];
+		private int _numSamples;
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			samples = StereoBuff;
-			nsamp = NumSamples;
+			samples = _stereoBuff;
+			nsamp = _numSamples;
 		}
 
 		public void DiscardSamples()
@@ -33,10 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{
@@ -50,14 +44,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private void DrainAudio()
 		{
-			NumSamples = QN.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
+			_numSamples = QN.qn_read_audio(Context, _monoBuff, _monoBuff.Length);
 			unsafe
 			{
-				fixed (short* _src = &MonoBuff[0], _dst = &StereoBuff[0])
+				fixed (short* _src = &_monoBuff[0], _dst = &_stereoBuff[0])
 				{
 					short* src = _src;
 					short* dst = _dst;
-					for (int i = 0; i < NumSamples; i++)
+					for (int i = 0; i < _numSamples; i++)
 					{
 						*dst++ = *src;
 						*dst++ = *src++;

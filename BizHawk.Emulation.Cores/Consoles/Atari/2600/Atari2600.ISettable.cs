@@ -101,8 +101,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(24)]
 			public int NTSCTopLine
 			{
-				get { return _ntscTopLine; }
-				set { _ntscTopLine = Math.Min(64, Math.Max(value, 0)); }
+				get => _ntscTopLine;
+				set => _ntscTopLine = Math.Min(64, Math.Max(value, 0));
 			}
 
 			[DisplayName("NTSC Bottom Line")]
@@ -110,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(248)]
 			public int NTSCBottomLine
 			{
-				get { return _ntscBottomLine; }
-				set { _ntscBottomLine = Math.Min(260, Math.Max(value, 192)); }
+				get => _ntscBottomLine;
+				set => _ntscBottomLine = Math.Min(260, Math.Max(value, 192));
 			}
 
 			[DisplayName("PAL Top Line")]
@@ -119,8 +119,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(24)]
 			public int PALTopLine
 			{
-				get { return _palTopLine; }
-				set { _palTopLine = Math.Min(64, Math.Max(value, 0)); }
+				get => _palTopLine;
+				set => _palTopLine = Math.Min(64, Math.Max(value, 0));
 			}
 
 			[DisplayName("PAL Bottom Line")]
@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(296)]
 			public int PALBottomLine
 			{
-				get { return _palBottomLine; }
-				set { _palBottomLine = Math.Min(310, Math.Max(value, 192)); }
+				get => _palBottomLine;
+				set => _palBottomLine = Math.Min(310, Math.Max(value, 192));
 			}
 
 			[DisplayName("Background Color")]

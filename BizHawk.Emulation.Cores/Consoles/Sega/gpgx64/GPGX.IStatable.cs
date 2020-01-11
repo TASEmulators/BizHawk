@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
@@ -35,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			_prevDiskPressed = reader.ReadBoolean();
 			_nextDiskPressed = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
-			Core.gpgx_set_input_callback(InputCallback);
+			Core.gpgx_set_input_callback(_inputCallback);
 			RefreshMemCallbacks();
 			Core.gpgx_set_cdd_callback(cd_callback_handle);
 			Core.gpgx_invalidate_pattern_cache();

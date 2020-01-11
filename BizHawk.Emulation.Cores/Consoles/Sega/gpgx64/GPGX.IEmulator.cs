@@ -5,12 +5,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IEmulator, ISoundProvider
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		// TODO: use render and rendersound
-		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound = true)
 		{
 			if (controller.IsPressed("Reset"))
 				Core.gpgx_reset(false);
@@ -46,8 +45,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// if (!Core.gpgx_get_control(input, inputsize))
 			//	throw new Exception("gpgx_get_control() failed!");
 
-			ControlConverter.ScreenWidth = vwidth;
-			ControlConverter.ScreenHeight = vheight;
+			ControlConverter.ScreenWidth = _vwidth;
+			ControlConverter.ScreenHeight = _vheight;
 			ControlConverter.Convert(controller, input);
 
 			if (!Core.gpgx_put_control(input, inputsize))
@@ -55,36 +54,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			IsLagFrame = true;
 			Frame++;
-			_drivelight = false;
+			_driveLight = false;
 
 			Core.gpgx_advance();
 
 			if (render)
 				UpdateVideo();
 
-			if (rendersound)
+			if (renderSound)
 				update_audio();
 
 			if (IsLagFrame)
 				LagCount++;
 
 			if (_cds != null)
-				DriveLightOn = _drivelight;
+				DriveLightOn = _driveLight;
 
 			return true;
 		}
 
 		public int Frame { get; private set; }
 
-		public string SystemId
-		{
-			get { return "GEN"; }
-		}
+		public string SystemId => "GEN";
 
-		public bool DeterministicEmulation
-		{
-			get { return true; }
-		}
+		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
@@ -93,14 +86,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LagCount = 0;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
 			if (!_disposed)
 			{
-				if (_elf != null)
-					_elf.Dispose();
+				_elf?.Dispose();
 				if (_cds != null)
 					foreach (var cd in _cds)
 						cd.Dispose();

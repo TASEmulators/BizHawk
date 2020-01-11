@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.BeginSection("A2600");
 			Cpu.SyncState(ser);
 			ser.Sync("ram", ref _ram, false);
-			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
 			ser.Sync(nameof(cyc_counter), ref cyc_counter);

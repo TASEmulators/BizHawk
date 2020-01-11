@@ -70,8 +70,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				change2 = -(float)((ControllerDeck.temp_wheel2 + (360 - ControllerDeck.wheel2)) / 1.25);
 			}
 
-			int changes_1 = change1 > 0 ? (int)Math.Floor(change1) : (int)Math.Ceiling(change1);
-			int changes_2 = change2 > 0 ? (int)Math.Floor(change2) : (int)Math.Ceiling(change2);
+			int changes1 = change1 > 0 ? (int)Math.Floor(change1) : (int)Math.Ceiling(change1);
+			int changes2 = change2 > 0 ? (int)Math.Floor(change2) : (int)Math.Ceiling(change2);
 
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
@@ -88,10 +88,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				for (int i = 0; i < 228; i++)
 				{
 					PSG.generate_sound(1);
-					if (use_SGM) { SGM_sound.generate_sound(1); }			
+					if (use_SGM) { SGM_sound.generate_sound(1); }
 					_cpu.ExecuteOne();
 
-					// pick out sound samples from the sound devies twice per scanline
+					// pick out sound samples from the sound devices twice per scanline
 					int v = PSG.Sample();
 
 					if (use_SGM)
@@ -111,31 +111,31 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				// starting from scanline 20, changes to the wheel are added once per scanline (up to 144)
 				if (scanLine > 20)
 				{
-					if (changes_1 != 0)
+					if (changes1 != 0)
 					{
-						if (changes_1 > 0)
+						if (changes1 > 0)
 						{
 							ControllerDeck.temp_wheel1 = (float)((ControllerDeck.temp_wheel1 + 1.25) % 360);
-							changes_1--;
+							changes1--;
 						}
 						else
 						{
 							ControllerDeck.temp_wheel1 = (float)((ControllerDeck.temp_wheel1 - 1.25) % 360);
-							changes_1++;
+							changes1++;
 						}
 					}
 
-					if (changes_2 != 0)
+					if (changes2 != 0)
 					{
-						if (changes_2 > 0)
+						if (changes2 > 0)
 						{
 							ControllerDeck.temp_wheel2 = (float)((ControllerDeck.temp_wheel2 + 1.25) % 360);
-							changes_2--;
+							changes2--;
 						}
 						else
 						{
 							ControllerDeck.temp_wheel2 = (float)((ControllerDeck.temp_wheel2 - 1.25) % 360);
-							changes_2++;
+							changes2++;
 						}
 					}
 				}

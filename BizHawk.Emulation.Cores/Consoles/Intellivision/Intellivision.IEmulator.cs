@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			_cpu.PendingCycles = 14934 - 3791 + _cpu.GetPendingCycles();
 			_stic.Sr1 = true;
-			_islag = true;
+			_isLag = true;
 
 			bool activeDisplay = _stic.active_display;
 
@@ -110,9 +110,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			_stic.in_vb_2 = false;
 
-			if (_islag)
+			if (_isLag)
 			{
-				_lagcount++;
+				_lagCount++;
 			}
 
 			if (controller.IsPressed("Power"))
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
+			_lagCount = 0;
 		}
 
 		public CoreComm CoreComm { get; }

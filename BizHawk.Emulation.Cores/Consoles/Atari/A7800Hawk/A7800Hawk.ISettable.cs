@@ -56,17 +56,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			[JsonIgnore]
 			public string Filter
 			{
-				get { return _Filter; }
-				set
-				{
-					_Filter = value;
-				}
+				get => _Filter;
+				set => _Filter = value;
 			}
 
 			[JsonIgnore]
 			public string Port1
 			{
-				get { return _port1; }
+				get => _port1;
 				set
 				{
 					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -81,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			[JsonIgnore]
 			public string Port2
 			{
-				get { return _port2; }
+				get => _port2;
 				set
 				{
 					if (!A7800HawkControllerDeck.ValidControllerTypes.ContainsKey(value))

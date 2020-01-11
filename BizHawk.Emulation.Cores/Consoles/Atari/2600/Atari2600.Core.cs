@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Core = this;
 
-			_lagcount = 0;
+			_lagCount = 0;
 			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			if (_game["PAL"])

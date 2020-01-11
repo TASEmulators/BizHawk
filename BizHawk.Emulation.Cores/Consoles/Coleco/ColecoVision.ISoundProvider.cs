@@ -6,8 +6,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : ISoundProvider
 	{
-		private SN76489col PSG;
-		private AY_3_8910_SGM SGM_sound;
+		private readonly SN76489col PSG;
+		private readonly AY_3_8910_SGM SGM_sound;
 
 		private readonly BlipBuffer _blip = new BlipBuffer(4096);
 
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			for (int i = 0; i < nsamp * 2; i += 2)
 			{
 				samples[i + 1] = samples[i];
-			}				
+			}
 		}
 
 		public void GetSamples(short[] samples)

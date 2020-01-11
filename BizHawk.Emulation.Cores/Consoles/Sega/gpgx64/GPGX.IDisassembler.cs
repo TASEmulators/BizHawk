@@ -8,19 +8,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public string Cpu
 		{
-			get
-			{
-				return "M68000";
-			}
+			get => "M68000";
 			set
 			{
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "M68K PC"; }
-		}
+		public string PCRegisterName => "M68K PC";
 
 		public IEnumerable<string> AvailableCpus
 		{
@@ -40,6 +34,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		// TODO: refactor MC6800's disassembler to be a static call
-		private MC68000 _disassemblerInstance = new MC68000();
+		private readonly MC68000 _disassemblerInstance = new MC68000();
 	}
 }

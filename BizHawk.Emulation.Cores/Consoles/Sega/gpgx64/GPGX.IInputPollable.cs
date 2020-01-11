@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public bool IsLagFrame { get; set; }
 
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks => _inputCallbacks;
 
-		private LibGPGX.input_cb InputCallback = null;
+		private readonly LibGPGX.input_cb _inputCallback;
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 

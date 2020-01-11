@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
-
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -26,7 +23,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void StoreSaveRam(byte[] data)
 		{
 			if (!Core.gpgx_put_sram(data, data.Length))
+			{
 				throw new Exception("Core rejected saveram");
+			}
 		}
 
 		public bool SaveRamModified

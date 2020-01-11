@@ -7,12 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		private const int Width = 160;
 		private const int Height = 102;
 
-		private readonly int[] _videobuff = new int[Width * Height];
+		private readonly int[] _videoBuff = new int[Width * Height];
 
-		public int[] GetVideoBuffer()
-		{
-			return _videobuff;
-		}
+		public int[] GetVideoBuffer() => _videoBuff;
 
 		public int VirtualWidth => BufferWidth;
 

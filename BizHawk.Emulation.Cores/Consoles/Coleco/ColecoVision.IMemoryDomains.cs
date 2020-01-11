@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision
 	{
-		private MemoryDomainList memoryDomains;
+		private MemoryDomainList _memoryDomains;
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
 		private bool _memoryDomainsInit = false;
 
@@ -48,8 +48,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			SyncAllByteArrayDomains();
 
-			memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
+			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
+			((BasicServiceProvider)ServiceProvider).Register<IMemoryDomains>(_memoryDomains);
 
 			_memoryDomainsInit = true;
 		}

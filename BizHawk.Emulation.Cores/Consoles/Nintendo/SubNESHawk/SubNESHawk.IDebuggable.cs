@@ -64,9 +64,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SubNESHawk
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public long TotalExecutedCycles
-		{
-			get { return subnes.cpu.TotalExecutedCycles; }
-		}
+		public long TotalExecutedCycles => subnes.cpu.TotalExecutedCycles;
 	}
 }

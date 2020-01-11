@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public ControllerDefinition ControllerDefinition => C64ControllerDefinition;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_board.Controller = controller;
 

@@ -5,8 +5,6 @@ using BizHawk.Emulation.Common;
 
 using Jellyfish.Virtu;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
-using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {

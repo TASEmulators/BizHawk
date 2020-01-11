@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 		public int L_NMI_CD, R_NMI_CD;
 
-		public bool FrameAdvance(IController controller, bool render, bool rendersound)
+		public bool FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 			if (_tracer.Enabled)
@@ -31,32 +31,32 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 				HardReset();
 			}
 
-			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
-			if (cablediscosignalNew && !_cablediscosignal)
+			bool cableDiscoSignalNew = controller.IsPressed("Toggle Cable");
+			if (cableDiscoSignalNew && !_cablediscosignal)
 			{
 				_cableconnected ^= true;
 				Console.WriteLine("Cable connect status to {0}", _cableconnected);
 			}
 
-			_cablediscosignal = cablediscosignalNew;
+			_cablediscosignal = cableDiscoSignalNew;
 
-			_islag = true;
+			_isLag = true;
 
 			GetControllerState(controller);
 
-			do_frame(controller, render, rendersound);
+			DoFrame(controller, render, renderSound);
 
-			_islag = L._isLag;
+			_isLag = L._isLag;
 
-			if (_islag)
+			if (_isLag)
 			{
-				_lagcount++;
+				_lagCount++;
 			}
 
 			return true;
 		}
 
-		public void do_frame(IController controller, bool render, bool rendersound)
+		private void DoFrame(IController controller, bool render, bool renderSound)
 		{
 			L.start_pressed = controller.IsPressed("P1 Start");
 			R.start_pressed = controller.IsPressed("P2 Start");
@@ -280,8 +280,8 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 		public void ResetCounters()
 		{
 			_frame = 0;
-			_lagcount = 0;
-			_islag = false;
+			_lagCount = 0;
+			_isLag = false;
 		}
 
 		public CoreComm CoreComm { get; }

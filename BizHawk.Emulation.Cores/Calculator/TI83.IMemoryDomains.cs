@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	{
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
 		private IMemoryDomains _memoryDomains;
-		private bool _memoryDomainsInit = false;
+		private bool _memoryDomainsInit;
 
 		private void SetupMemoryDomains()
 		{
@@ -20,13 +20,19 @@ namespace BizHawk.Emulation.Cores.Calculators
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 65536)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					return _cpu.ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 65536)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					_cpu.WriteMemory((ushort)addr, value);
 				}, 1);
 
@@ -35,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			SyncAllByteArrayDomains();
 
 			_memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 
 			_memoryDomainsInit = true;
 		}
