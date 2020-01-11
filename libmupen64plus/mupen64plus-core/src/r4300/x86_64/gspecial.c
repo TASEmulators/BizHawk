@@ -956,12 +956,37 @@ void gendsubu(void)
 #endif
 }
 
+void gentge(void)
+{
+   gencallinterp((unsigned long long)cached_interpreter_table.TGE, 0);
+}
+
+void gentgeu(void)
+{
+   gencallinterp((unsigned long long)cached_interpreter_table.TGEU, 0);
+}
+
+void gentlt(void)
+{
+   gencallinterp((unsigned long long)cached_interpreter_table.TLT, 0);
+}
+
+void gentltu(void)
+{
+   gencallinterp((unsigned long long)cached_interpreter_table.TLTU, 0);
+}
+
 void genteq(void)
 {
 #if defined(COUNT_INSTR)
    inc_m32rel(&instr_count[96]);
 #endif
    gencallinterp((unsigned long long)cached_interpreter_table.TEQ, 0);
+}
+
+void gentne(void)
+{
+   gencallinterp((unsigned long long)cached_interpreter_table.TNE, 0);
 }
 
 void gendsll(void)
