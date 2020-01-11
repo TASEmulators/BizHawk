@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 				if (R.SaveRAM != null)
 				{
-					for (int i = 0; i < L.SaveRAM.Length; i++)
+					for (int i = 0; i < R.SaveRAM.Length; i++)
 					{
 						temp[index] = R.SaveRAM[i];
 						index++;
