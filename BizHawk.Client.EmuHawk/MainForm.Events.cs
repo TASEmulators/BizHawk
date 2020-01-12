@@ -2966,7 +2966,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool showMenuVisible = _inFullscreen || !MainMenuStrip.Visible; // need to always be able to restore this as an emergency measure
 
-			if (_argParser.Chromeless)
+			if (_argParser._chromeless)
 			{
 				showMenuVisible = true; // I decided this was always possible in chrome-less mode, we'll see what they think
 			}
