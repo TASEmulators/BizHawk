@@ -217,9 +217,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition definition = new ControllerDefinition();
-			definition.Name = "PSX DualShock Controller"; // <-- for compatibility
-														  //ControllerDefinition.Name = "PSX FrontIO"; // TODO - later rename to this, I guess, so it's less misleading. don't want to wreck keybindings yet.
+			var definition = new ControllerDefinition { Name = "PSX Front Panel" };
 
 			var cfg = syncSettings.FIOConfig.ToLogical();
 
