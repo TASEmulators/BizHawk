@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public class SubtitleList : List<Subtitle>
@@ -16,10 +18,7 @@ namespace BizHawk.Client.Common
 			AddColorTag = false;
 		}
 
-		public IEnumerable<Subtitle> GetSubtitles(int frame)
-		{
-			return this.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration);
-		}
+		public IEnumerable<Subtitle> GetSubtitles(int frame) => this.Where(t => t.Frame.RangeTo(t.Frame + t.Duration).Contains(frame));
 
 		public override string ToString()
 		{

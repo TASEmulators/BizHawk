@@ -1027,7 +1027,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int tileStride = pxacross / 8;
 			int tilesTall = pxtall / 8;
-			if (tx < 0 || ty < 0 || tx >= tileStride || ty >= tilesTall)
+			if (!0.RangeToExclusive(tileStride).Contains(tx) || !0.RangeToExclusive(tilesTall).Contains(ty))
 			{
 				return;
 			}
@@ -1060,7 +1060,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandleSpriteMouseOver(int px, int py)
 		{
-			if (px < 0 || py < 0 || px >= 256 || py >= 224) return;
+			if (!0.RangeTo(255).Contains(px) || !0.RangeTo(223).Contains(py)) return;
 
 			int sprite = spriteMap[px,py];
 			if(sprite == 0xFF) return;
@@ -1074,8 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 			int ox = px / si.ObjSizeBounds.Width;
 			int oy = py / si.ObjSizeBounds.Height;
 			
-			if (ox < 0 || oy < 0 || ox >= 8 || oy >= 16)
-				return;
+			if (!0.RangeTo(7).Contains(ox) || !0.RangeTo(15).Contains(oy)) return;
 
 			int objNum = oy * 8 + ox;
 

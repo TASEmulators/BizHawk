@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -519,19 +520,18 @@ namespace BizHawk.Client.EmuHawk
 		private void DoSelectionBG(List<RollColumn> visibleColumns, Rectangle rect)
 		{
 			Color rowColor = Color.White;
-			int firstVisibleRow = FirstVisibleRow;
-			int lastVisibleRow = LastVisibleRow;
+			var visibleRows = FirstVisibleRow.RangeTo(LastVisibleRow);
 			int lastRow = -1;
 			foreach (Cell cell in _selectedItems)
 			{
-				if (!cell.RowIndex.HasValue || cell.RowIndex > lastVisibleRow || cell.RowIndex < firstVisibleRow || !VisibleColumns.Contains(cell.Column))
+				if (!cell.RowIndex.HasValue || !visibleRows.Contains(cell.RowIndex.Value) || !VisibleColumns.Contains(cell.Column))
 				{
 					continue;
 				}
 
 				Cell relativeCell = new Cell
 				{
-					RowIndex = cell.RowIndex - firstVisibleRow,
+					RowIndex = cell.RowIndex - visibleRows.Start,
 					Column = cell.Column,
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);

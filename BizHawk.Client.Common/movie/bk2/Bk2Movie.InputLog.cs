@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.IO;
 
+using BizHawk.Common;
+
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
@@ -162,7 +164,7 @@ namespace BizHawk.Client.Common
 
 			var stateFramei = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < Log.Count)
+			if (stateFramei.StrictlyBoundedBy(0.RangeTo(Log.Count)))
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{

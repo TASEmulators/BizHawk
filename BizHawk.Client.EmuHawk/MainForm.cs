@@ -1311,12 +1311,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleBg(int layer)
 		{
-			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
-			{
-				return;
-			}
-
-			if (layer < 1 || layer > 4)
+			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}
@@ -1370,12 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNES_ToggleObj(int layer)
 		{
-			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
-			{
-				return;
-			}
-
-			if (layer < 1 || layer > 4)
+			if (!(Emulator is LibsnesCore || Emulator is Snes9x) || !1.RangeTo(4).Contains(layer))
 			{
 				return;
 			}

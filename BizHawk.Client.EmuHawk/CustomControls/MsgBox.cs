@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+using BizHawk.Common;
+
 // http://www.codeproject.com/Articles/154680/A-customizable-NET-WinForms-Message-Box
 namespace BizHawk.Client.EmuHawk.CustomControls
 {
@@ -69,7 +71,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 			int count = names.Length;
 
-			if (count < 1 || count > 3)
+			if (!1.RangeTo(3).Contains(count))
 			{
 				throw new ArgumentException("Invalid number of buttons. Must be between 1 and 3.");
 			}

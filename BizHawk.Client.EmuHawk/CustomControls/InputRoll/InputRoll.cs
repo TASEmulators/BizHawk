@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -783,6 +784,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Small jump, more accurate
+					var range = 0.RangeTo(_lagFrames[VisibleRows - halfRow]);
 					int lastVisible = LastFullyVisibleRow;
 					do
 					{
@@ -798,22 +800,16 @@ namespace BizHawk.Client.EmuHawk
 						SetLagFramesArray();
 						lastVisible = LastFullyVisibleRow;
 					}
-					while ((lastVisible - value < 0 || lastVisible - value > _lagFrames[VisibleRows - halfRow]) && FirstVisibleRow != 0);
+					while (!range.Contains(lastVisible - value) && FirstVisibleRow != 0);
 				}
 
 				PointMouseToNewCell();
 			}
 		}
 
-		private bool IsVisible(int index)
-		{
-			return index >= FirstVisibleRow && index <= LastFullyVisibleRow;
-		}
+		private bool IsVisible(int index) => FirstVisibleRow.RangeTo(LastFullyVisibleRow).Contains(index);
 
-		public bool IsPartiallyVisible(int index)
-		{
-			return index >= FirstVisibleRow && index <= LastVisibleRow;
-		}
+		public bool IsPartiallyVisible(int index) => FirstVisibleRow.RangeTo(LastVisibleRow).Contains(index);
 
 		/// <summary>
 		/// Gets the number of rows currently visible including partially visible rows.
@@ -889,6 +885,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						// Small jump, more accurate
+						var range = 0.RangeTo(_lagFrames[VisibleRows]);
 						int lastVisible = FirstVisibleRow + CountLagFramesDisplay(VisibleRows / 2);
 						do
 						{
@@ -904,7 +901,7 @@ namespace BizHawk.Client.EmuHawk
 							SetLagFramesArray();
 							lastVisible = FirstVisibleRow + CountLagFramesDisplay(VisibleRows / 2);
 						}
-						while ((lastVisible - index < 0 || lastVisible - index > _lagFrames[VisibleRows]) && FirstVisibleRow != 0);
+						while (!range.Contains(lastVisible - index) && FirstVisibleRow != 0);
 					}
 				}
 			}
@@ -1819,26 +1816,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool WasHoveringOnColumnCell => _lastCell?.Column != null && !_lastCell.RowIndex.HasValue;
 
-		private bool IsPointingOnCellEdge(int? x)
-		{
-			if (x.HasValue)
-			{
-				if (HorizontalOrientation)
-				{
-					return false; // TODO: support column resize in horizontal orientation
-				}
-
-				foreach (RollColumn column in _columns.VisibleColumns)
-				{
-					if (column.Left - _hBar.Value + (column.Width - column.Width / 6) <= x.Value && column.Right - _hBar.Value >= x.Value)
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
-		}
+		private bool IsPointingOnCellEdge(int? x) => x.HasValue
+			&& !HorizontalOrientation //TODO support column resize in horizontal orientation
+			&& _columns.VisibleColumns.Any(column => (column.Left - _hBar.Value + (column.Width - column.Width / 6)).RangeTo(column.Right - _hBar.Value).Contains(x.Value));
 
 		/// <summary>
 		/// Finds the specific cell that contains the (x, y) coordinate.
@@ -1895,26 +1875,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_horizontalOrientation)
 			{
-				foreach (var item in _columns.VisibleColumns.Select((n, i) => new { Column = n, Index = i }))
-				{
-					if (GetHColTop(item.Index) - _vBar.Value <= pixel && GetHColBottom(item.Index) - _vBar.Value >= pixel)
-					{
-						return item.Column;
-					}
-				}
+				return _columns.VisibleColumns.Select((n, i) => new { Column = n, Index = i })
+					.FirstOrDefault(anonObj => (GetHColTop(anonObj.Index) - _vBar.Value).RangeTo(GetHColBottom(anonObj.Index) - _vBar.Value).Contains(pixel))
+					?.Column;
 			}
-			else
-			{
-				foreach (RollColumn column in _columns.VisibleColumns)
-				{
-					if (column.Left - _hBar.Value <= pixel && column.Right - _hBar.Value >= pixel)
-					{
-						return column;
-					}
-				}
-			}
-
-			return null;
+			return _columns.VisibleColumns.FirstOrDefault(column => (column.Left - _hBar.Value).RangeTo(column.Right - _hBar.Value).Contains(pixel));
 		}
 
 		/// <summary>
@@ -1957,7 +1922,7 @@ namespace BizHawk.Client.EmuHawk
 				return 0;
 			}
 
-			return index >= 0 && index < _horizontalColumnTops.Length
+			return 0.RangeToExclusive(_horizontalColumnTops.Length).Contains(index)
 				? _horizontalColumnTops[index]
 				: _horizontalColumnTops.Last() + CellHeight;
 		}

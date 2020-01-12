@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				if (_mHead.Value.EndExclusive > _mTail.Value.Index && _mHead.Value.Index <= _mTail.Value.Index && _mHead != _mTail)
+				if (_mHead.Value.Index.RangeToExclusive(_mHead.Value.EndExclusive).Contains(_mTail.Value.Index) && _mHead != _mTail)
 				{
 					var nextTail = _mTail.Next;
 					Size -= _mTail.Value.Length;

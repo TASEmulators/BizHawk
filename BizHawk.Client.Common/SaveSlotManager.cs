@@ -1,4 +1,6 @@
 ﻿using System.IO;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -51,7 +53,7 @@ namespace BizHawk.Client.Common
 				return false;
 			}
 
-			if (slot < 0 || slot > 10)
+			if (!0.RangeTo(10).Contains(slot))
 			{
 				return false;
 			}
@@ -70,33 +72,10 @@ namespace BizHawk.Client.Common
 
 		public void ToggleRedo(int slot)
 		{
-			if (slot < 0 || slot > 9)
-			{
-				return;
-			}
-
-			if (Global.MovieSession.Movie is TasMovie tasMovie)
-			{
-				return;
-			}
-
-			_redo[slot] ^= true;
+			if (0.RangeTo(9).Contains(slot) && !(Global.MovieSession.Movie is TasMovie)) _redo[slot] ^= true;
 		}
 
-		public bool IsRedo(int slot)
-		{
-			if (slot < 0 || slot > 9)
-			{
-				return false;
-			}
-
-			if (Global.MovieSession.Movie is TasMovie tasMovie)
-			{
-				return false;
-			}
-
-			return _redo[slot];
-		}
+		public bool IsRedo(int slot) => 0.RangeTo(9).Contains(slot) && !(Global.MovieSession.Movie is TasMovie) && _redo[slot];
 
 		public void SwapBackupSavestate(string path)
 		{

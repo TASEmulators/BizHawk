@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -211,13 +212,10 @@ namespace BizHawk.Client.EmuHawk
 			if (Encoding.Checked && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var val = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
-				if (val > 0 && val < 0x100)
+				if (val.StrictlyBoundedBy(0.RangeTo(0x100)) && !string.IsNullOrWhiteSpace(AddressBox.Text))
 				{
-					if (!string.IsNullOrWhiteSpace(AddressBox.Text))
-					{
-						_value = val;
-						EncodeGameGenie();
-					}
+					_value = val;
+					EncodeGameGenie();
 				}
 			}
 
@@ -273,13 +271,10 @@ namespace BizHawk.Client.EmuHawk
 				if (CompareBox.Text.Length > 0)
 				{
 					var c = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
-					if (c > 0 && c < 0x100)
+					if (c.StrictlyBoundedBy(0.RangeTo(0x100)) && ValueBox.Text.Length > 0 && AddressBox.Text.Length > 0)
 					{
-						if (ValueBox.Text.Length > 0 && AddressBox.Text.Length > 0)
-						{
-							_compare = c;
-							EncodeGameGenie();
-						}
+						_compare = c;
+						EncodeGameGenie();
 					}
 				}
 				else

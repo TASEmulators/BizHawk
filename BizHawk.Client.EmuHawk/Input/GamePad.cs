@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
+using BizHawk.Common;
+
 using SlimDX;
 using SlimDX.DirectInput;
 
@@ -230,14 +233,13 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < _state.GetPointOfViewControllers().Length; i++)
 			{
 				int j = i;
-				AddItem($"POV{i + 1}U",
-					() => { int t = _state.GetPointOfViewControllers()[j]; return (t >= 0 && t <= 4500) || (t >= 31500 && t < 36000); });
-				AddItem($"POV{i + 1}D",
-					() => { int t = _state.GetPointOfViewControllers()[j]; return t >= 13500 && t <= 22500; });
-				AddItem($"POV{i + 1}L",
-					() => { int t = _state.GetPointOfViewControllers()[j]; return t >= 22500 && t <= 31500; });
-				AddItem($"POV{i + 1}R",
-					() => { int t = _state.GetPointOfViewControllers()[j]; return t >= 4500 && t <= 13500; });
+				AddItem($"POV{i + 1}U", () => {
+					var t = _state.GetPointOfViewControllers()[j];
+					return 0.RangeTo(4500).Contains(t) || 31500.RangeToExclusive(36000).Contains(t);
+				});
+				AddItem($"POV{i + 1}D", () => 13500.RangeTo(22500).Contains(_state.GetPointOfViewControllers()[j]));
+				AddItem($"POV{i + 1}L", () => 22500.RangeTo(31500).Contains(_state.GetPointOfViewControllers()[j]));
+				AddItem($"POV{i + 1}R", () => 4500.RangeTo(13500).Contains(_state.GetPointOfViewControllers()[j]));
 			}
 		}
 

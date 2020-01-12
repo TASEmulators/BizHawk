@@ -602,7 +602,7 @@ namespace BizHawk.Client.EmuHawk
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = _domain.Size / 2;
 			SetUpScrollBar();
-			if (0 >= HexScrollBar.Minimum && 0 <= HexScrollBar.Maximum)
+			if (HexScrollBar.Minimum.RangeTo(HexScrollBar.Maximum).Contains(0))
 			{
 				HexScrollBar.Value = 0;
 			}
@@ -702,11 +702,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsVisible(long address)
-		{
-			var i = address >> 4;
-			return i >= HexScrollBar.Value && i < _rowsVisible + HexScrollBar.Value;
-		}
+		private bool IsVisible(long address) => ((long) HexScrollBar.Value).RangeToExclusive(HexScrollBar.Value + _rowsVisible).Contains(address >> 4);
 
 		private void SetHeader()
 		{
@@ -946,8 +942,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private long GetPointedAddress(int x, int y)
 		{
-			long address;
-
 			// Scroll value determines the first row
 			long i = HexScrollBar.Value;
 			var rowOffset = y / _fontHeight;
@@ -963,48 +957,40 @@ namespace BizHawk.Client.EmuHawk
 				column = (x - start) / (_fontWidth * DataSize);
 			}
 
-			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / DataSize))
-			{
-				address = (i * 16) + (column * DataSize);
-			}
-			else
-			{
-				address = -1;
-			}
-
-			return address;
+			return 0L.RangeTo(_maxRow).Contains(i) && 0.RangeTo(16 / DataSize).Contains(column)
+				? i * 16 + column * DataSize
+				: -1;
 		}
 
 		private void DoShiftClick()
 		{
-			if (_addressOver >= 0 && _addressOver < _domain.Size)
+			if (!0L.RangeToExclusive(_domain.Size).Contains(_addressOver)) return;
+
+			_secondaryHighlightedAddresses.Clear();
+			if (_addressOver < _highlightedAddress)
 			{
-				_secondaryHighlightedAddresses.Clear();
-				if (_addressOver < _highlightedAddress)
+				for (var x = _addressOver; x < _highlightedAddress; x += DataSize)
 				{
-					for (var x = _addressOver; x < _highlightedAddress; x += DataSize)
-					{
-						_secondaryHighlightedAddresses.Add(x);
-					}
+					_secondaryHighlightedAddresses.Add(x);
 				}
-				else if (_addressOver > _highlightedAddress)
+			}
+			else if (_addressOver > _highlightedAddress)
+			{
+				for (var x = _highlightedAddress.Value + DataSize; x <= _addressOver; x += DataSize)
 				{
-					for (var x = _highlightedAddress.Value + DataSize; x <= _addressOver; x += DataSize)
-					{
-						_secondaryHighlightedAddresses.Add(x);
-					}
+					_secondaryHighlightedAddresses.Add(x);
+				}
+			}
+
+			if (!IsVisible(_addressOver))
+			{
+				var value = (_addressOver / 16) + 1 - ((_addressOver / 16) < HexScrollBar.Value ? 1 : _rowsVisible);
+				if (value < 0)
+				{
+					value = 0;
 				}
 
-				if (!IsVisible(_addressOver))
-				{
-					var value = (_addressOver / 16) + 1 - ((_addressOver / 16) < HexScrollBar.Value ? 1 : _rowsVisible);
-					if (value < 0)
-					{
-						value = 0;
-					}
-
-					HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
-				}
+				HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
 			}
 		}
 
@@ -1058,7 +1044,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToSecondaryHighlights(long address)
 		{
-			if (address >= 0 && address < _domain.Size && !_secondaryHighlightedAddresses.Contains(address))
+			if (0L.RangeToExclusive(_domain.Size).Contains(address) && !_secondaryHighlightedAddresses.Contains(address))
 			{
 				_secondaryHighlightedAddresses.Add(address);
 			}

@@ -11,6 +11,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -548,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// the sampleRate limits are arbitrary, just to catch things which are probably silly-wrong
 			// if a larger range of sampling rates is needed, it should be supported
-			if (sampleRate < 8000 || sampleRate > 96000 || channels < 1 || channels > 2 || bits != 16)
+			if (!8000.RangeTo(96000).Contains(sampleRate) || !1.RangeTo(2).Contains(channels) || bits != 16)
 			{
 				throw new ArgumentException("Audio parameters out of range!");
 			}

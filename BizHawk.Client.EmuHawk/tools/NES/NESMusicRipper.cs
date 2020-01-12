@@ -4,6 +4,8 @@ using System.Xml.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
 
@@ -65,10 +67,8 @@ namespace BizHawk.Client.EmuHawk
 				float a = freqtbl[i - 1];
 				float b = freqtbl[i];
 				float c = freqtbl[i + 1];
-				float min = (a + b) / 2;
-				float max = (b + c) / 2;
-				if (freq >= min && freq <= max)
-					return i - 1;
+				var range = ((a + b) / 2).RangeTo((b + c) / 2);
+				if (range.Contains(freq)) return i - 1;
 			}
 			return 95; //I guess?
 		}
