@@ -269,8 +269,17 @@ namespace BizHawk.Client.Common
 		
 		public int DispPrescale = 1;
 
+		private static bool DetectDirectX()
+		{
+			if (OSTailoredCode.IsUnixHost) return false;
+			var p = OSTailoredCode.LinkedLibManager.LoadOrNull("d3dx9_43.dll");
+			if (p == null) return false;
+			OSTailoredCode.LinkedLibManager.FreeByPtr(p.Value);
+			return true;
+		}
+
 		/// <remarks>warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.</remarks>
-		public EDispMethod DispMethod = EDispMethod.OpenGL;
+		public EDispMethod DispMethod = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
 		public int DispChrome_FrameWindowed = 2;
 		public bool DispChrome_StatusBarWindowed = true;
@@ -298,7 +307,7 @@ namespace BizHawk.Client.Common
 		public int DispCropBottom = 0;
 
 		// Sound options
-		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
+		public ESoundOutputMethod SoundOutputMethod = DetectDirectX() ? ESoundOutputMethod.DirectSound : ESoundOutputMethod.OpenAL;
 		public bool SoundEnabled = true;
 		public bool SoundEnabledNormal = true;
 		public bool SoundEnabledRWFF = true;
