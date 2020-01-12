@@ -380,8 +380,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Config.RecentCheats.RecentMenu(LoadFileFromRecent));
+			RecentSubMenu.DropDownItems.AddRange(Config.RecentCheats.RecentMenu(LoadFileFromRecent, "Cheats", noAutoload: true));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)

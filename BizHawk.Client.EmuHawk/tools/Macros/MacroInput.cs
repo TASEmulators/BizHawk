@@ -264,8 +264,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentToolStripMenuItem.DropDownItems.Clear();
-			RecentToolStripMenuItem.DropDownItems.AddRange(
-				Config.RecentMacros.RecentMenu(DummyLoadMacro, true));
+			RecentToolStripMenuItem.DropDownItems.AddRange(Config.RecentMacros.RecentMenu(DummyLoadMacro, "Macro"));
 		}
 
 		private void DummyLoadMacro(string path)

@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			dest.Add("Save Window &Position");
 			dest.Add("Stay on &Top");
 			dest.Add("&Float from Parent");
-			dest.Add("&Autoload");
+			dest.Add("&Autoload with EmuHawk");
 			dest.Add("Restore &Defaults");
 
 			RefreshSettings(form, dest, settings, idx);

@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, bool autoload = false, bool romLoading = false)
+		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, string entrySemantic, bool noAutoload = false, bool romLoading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -182,9 +182,9 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			freezeItem.Click += (o, ev) => recent.Frozen ^= true;
 			items.Add(freezeItem);
 
-			if (autoload)
+			if (!noAutoload)
 			{
-				var auto = new ToolStripMenuItem { Text = "&Autoload", Checked = recent.AutoLoad };
+				var auto = new ToolStripMenuItem { Text = $"&Autoload {entrySemantic}", Checked = recent.AutoLoad };
 				auto.Click += (o, ev) => recent.ToggleAutoLoad();
 				items.Add(auto);
 			}

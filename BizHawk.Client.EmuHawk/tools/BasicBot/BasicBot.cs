@@ -371,8 +371,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, true));
+			RecentSubMenu.DropDownItems.AddRange(Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, "Bot Parameters"));
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)

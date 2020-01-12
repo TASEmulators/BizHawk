@@ -1002,8 +1002,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Settings.RecentSearches.RecentMenu(LoadFileFromRecent));
+			RecentSubMenu.DropDownItems.AddRange(Settings.RecentSearches.RecentMenu(LoadFileFromRecent, "Search", noAutoload: true));
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)

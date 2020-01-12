@@ -68,8 +68,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
-			RecentRomSubMenu.DropDownItems.AddRange(
-				Config.RecentRoms.RecentMenu(LoadRomFromRecent, true, true));
+			RecentRomSubMenu.DropDownItems.AddRange(Config.RecentRoms.RecentMenu(LoadRomFromRecent, "ROM", romLoading: true));
 		}
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -259,8 +258,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			RecentMovieSubMenu.DropDownItems.Clear();
-			RecentMovieSubMenu.DropDownItems.AddRange(
-				Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, true));
+			RecentMovieSubMenu.DropDownItems.AddRange(Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, "Movie"));
 		}
 
 		private void MovieEndSubMenu_DropDownOpened(object sender, EventArgs e)
