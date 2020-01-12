@@ -513,16 +513,14 @@ namespace BizHawk.Client.EmuHawk
 				if (winVer < 6.3f)
 				{
 					// less than is just easier than equals
-					using var box = new ExceptionBox($"Quick reminder: Windows {(winVer < 6.2f ? winVer < 6.1f ? winVer < 6.0f ? "XP" : "Vista" : "7" : "8")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro).");
-					box.ShowDialog();
+					string message = ($"Quick reminder: Windows {(winVer < 6.2f ? winVer < 6.1f ? winVer < 6.0f ? "XP" : "Vista" : "7" : "8")} is no longer supported by Microsoft. EmuHawk will continue to work, but please get a new operating system for increased security (either Windows 8.1, Windows 10, or a GNU+Linux distro).");
 				}
 				else if (GetRegValue("ProductName").Contains("Windows 10"))
 				{
 					var win10version = int.Parse(GetRegValue("ReleaseId"));
 					if (win10version < 1809)
 					{
-						using var box = new ExceptionBox($"Quick reminder: version {win10version} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.");
-						box.ShowDialog();
+						string message = ($"Quick reminder: version {win10version} of Windows 10 is no longer supported by Microsoft. EmuHawk will continue to work, but please update to at least 1809 \"Redstone 5\" for increased security.");
 					}
 				}
 				else
