@@ -21,10 +21,6 @@ namespace BizHawk.Client.EmuHawk
 				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
 				(CurrentTasMovie.Filename != DefaultTasProjName());
 
-			SaveTASMenuItem.Enabled =
-				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
-				(CurrentTasMovie.Filename != DefaultTasProjName());
-
 			saveSelectionToMacroToolStripMenuItem.Enabled =
 				placeMacroAtSelectionToolStripMenuItem.Enabled =
 				TasView.AnyRowsSelected;
