@@ -29,7 +29,7 @@ internal static class VersionInfo
 		}
 	}
 
-	// code copied to avoid depending on code in otherp rojects
+	// code copied to avoid depending on code in other projects
 	private static string GetExeDirectoryAbsolute()
 	{
 		var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
