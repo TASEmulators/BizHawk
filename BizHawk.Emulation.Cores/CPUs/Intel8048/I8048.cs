@@ -1,9 +1,10 @@
 using System;
 using BizHawk.Emulation.Cores.Consoles.O2Hawk;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 // Intel Corp 8048
-namespace BizHawk.Emulation.Common.Components.I8048
+namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public sealed partial class I8048
 	{

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;

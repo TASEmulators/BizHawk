@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
 
+using BizHawk.Client.Common;
+
 namespace BizHawk.Client.ApiHawk
 {
 	/// <summary>

@@ -1,9 +1,10 @@
 using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 // Motorola Corp 6809
-namespace BizHawk.Emulation.Common.Components.MC6809
+namespace BizHawk.Emulation.Cores.Components.MC6809
 {
 	public sealed partial class MC6809
 	{

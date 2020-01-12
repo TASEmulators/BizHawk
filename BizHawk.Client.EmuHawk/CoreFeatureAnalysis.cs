@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Reflection;
 
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 

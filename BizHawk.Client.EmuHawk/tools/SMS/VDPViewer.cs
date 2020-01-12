@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using System.Drawing.Imaging;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk

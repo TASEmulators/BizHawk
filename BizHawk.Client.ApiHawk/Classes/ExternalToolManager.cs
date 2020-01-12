@@ -78,7 +78,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="fileName">File that will be reflected</param>
 		/// <returns>A new <see cref="ToolStripMenuItem"/>; assembly path can be found in the Tag property</returns>
-		/// <remarks>For the moment, you could only load a dll that have a form (which implements <see cref="BizHawk.Client.EmuHawk.IExternalToolForm"/>)</remarks>
+		/// <remarks>For the moment, you could only load a dll that have a form (which implements <see cref="IExternalToolForm"/>)</remarks>
 		private static ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
 			ToolStripMenuItem item = null;

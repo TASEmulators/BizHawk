@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BizHawk.Emulation.Common.Components.MC6800
+namespace BizHawk.Emulation.Cores.Components.MC6800
 {
 	public sealed partial class MC6800
 	{

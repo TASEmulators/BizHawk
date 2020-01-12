@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
 // GameBoy CPU (Sharp LR35902)
-namespace BizHawk.Emulation.Common.Components.LR35902
+namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public sealed partial class LR35902
 	{

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.I8048;
+using BizHawk.Emulation.Cores.Components.I8048;
 
 namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 {

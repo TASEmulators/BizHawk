@@ -2,8 +2,6 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
-using BizHawk.Emulation.Common.Components.MC6809;
-
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {
 	// Default mapper with no bank switching

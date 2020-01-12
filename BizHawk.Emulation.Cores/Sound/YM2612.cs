@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Emulation.Cores.Components;
 
-namespace BizHawk.Emulation.Common.Components
+namespace BizHawk.Emulation.Cores.Components
 {
 	// ======================================================================
 	//  Yamaha YM2612 Emulation Core

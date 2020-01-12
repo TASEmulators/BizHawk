@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Common.Components.I8048
+namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public partial class I8048
 	{

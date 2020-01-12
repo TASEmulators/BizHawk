@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Emulation.Common;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BizHawk.Emulation.Common.Components.I8048
+namespace BizHawk.Emulation.Cores.Components.I8048
 {
 	public sealed partial class I8048
 	{

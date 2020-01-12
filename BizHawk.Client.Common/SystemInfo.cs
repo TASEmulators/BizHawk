@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.Common
 {

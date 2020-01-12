@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Common;

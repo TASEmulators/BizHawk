@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System;
 
-namespace BizHawk.Emulation.Common.Components.LR35902
+namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	public partial class LR35902
 	{

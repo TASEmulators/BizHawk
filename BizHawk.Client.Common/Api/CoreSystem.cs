@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.ApiHawk
+﻿namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Enumeration of each system emulated by BizHawk

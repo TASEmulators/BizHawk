@@ -9,7 +9,7 @@ using System;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components;
 
-namespace BizHawk.Emulation.Common.Components
+namespace BizHawk.Emulation.Cores.Components
 {
 	public sealed class YM2413 : IMixedSoundProvider
 	{

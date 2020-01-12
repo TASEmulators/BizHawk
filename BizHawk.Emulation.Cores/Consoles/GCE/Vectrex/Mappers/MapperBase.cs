@@ -1,7 +1,7 @@
 ﻿using BizHawk.Common;
 using System;
 
-using BizHawk.Emulation.Common.Components.MC6809;
+using BizHawk.Emulation.Cores.Components.MC6809;
 
 namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 {

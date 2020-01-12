@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BizHawk.Emulation.Common.Components.LR35902
+namespace BizHawk.Emulation.Cores.Components.LR35902
 {
 	// adapted from the information at http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 	public sealed partial class LR35902

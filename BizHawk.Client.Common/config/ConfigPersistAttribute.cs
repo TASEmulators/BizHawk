@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// Define if the property has to be persisted in config

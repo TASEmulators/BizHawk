@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Common.Components.MC6800
+namespace BizHawk.Emulation.Cores.Components.MC6800
 {
 	public partial class MC6800
 	{

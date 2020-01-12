@@ -2,7 +2,7 @@
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.I8048;
+using BizHawk.Emulation.Cores.Components.I8048;
 
 using System.Runtime.InteropServices;
 
