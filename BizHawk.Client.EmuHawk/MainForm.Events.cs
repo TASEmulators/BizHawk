@@ -1401,6 +1401,8 @@ namespace BizHawk.Client.EmuHawk
 			BasicBotMenuItem.Enabled = Tools.IsAvailable<BasicBot>();
 
 			gameSharkConverterToolStripMenuItem.Enabled = Tools.IsAvailable<GameShark>();
+			MacroToolMenuItem.Enabled = MovieSession.Movie.IsActive() && Tools.IsAvailable<MacroInputTool>();
+			VirtualPadMenuItem.Enabled = Emulator.ControllerDefinition.Any();
 		}
 
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
