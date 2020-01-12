@@ -23,12 +23,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { };
+			string[] coresToHide = { "VEC", "GB4x", "O2", "ChannelF", "AmstradCPC" };
 
 			foreach (var core in coresToHide)
 			{
-				PathTabControl.TabPages.Remove(
-					PathTabControl.TabPages().FirstOrDefault(tp => tp.Name == core) ?? new TabPage());
+				var tabPage = PathTabControl.TabPages().First(tp => tp.Name == core);
+				PathTabControl.TabPages.Remove(tabPage);
 			}
 		}
 
