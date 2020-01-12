@@ -145,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.Branches.Count;
 			Movie.CurrentBranch = Movie.Branches.Count - 1;
+			Movie.Session.UpdateValues(Global.Emulator.Frame, Movie.CurrentBranch); // TODO: pass in emulator dependency
 			BranchView.ScrollToIndex(Movie.CurrentBranch);
 			Select(Movie.CurrentBranch, true);
 			BranchView.Refresh();

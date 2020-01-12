@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		protected override void Write(string fn, bool backup = false)
 		{
 			var file = new FileInfo(fn);
-			if (!file.Directory.Exists)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				Directory.CreateDirectory(file.Directory.ToString());
 			}
@@ -70,7 +70,7 @@ namespace BizHawk.Client.Common
 
 				if (TasStateManager.Settings.SaveStateHistory && !backup)
 				{
-					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => TasStateManager.Save(bw));
+					bs.PutLump(BinaryStateLump.StateHistory, bw => TasStateManager.Save(bw));
 				}
 			}
 
