@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				sbm.AppendLine();
 				sbm.AppendLine("The detected disk image contains multiple sides.");
 				sbm.AppendLine("This is NOT currently supported in CPCHawk.");
-				sbm.AppendLine("Please find an alternate image/dump where each side has been saved as a separate *.dsk image (and use the mutli-disk bundler tool to load into Bizhawk).");
+				sbm.AppendLine("Please find an alternate image/dump where each side has been saved as a separate *.dsk image (and use the multi-disk bundler tool to load into Bizhawk).");
 				throw new System.NotImplementedException(sbm.ToString());
 			}
 

@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 			//Game Genie
 			else if (SingleCheat.Contains("-") == true && SingleCheat.LastIndexOf("-") != 7 && SingleCheat.IndexOf("-") != 3)
 			{
-				MessageBox.Show("All GameBoy Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("All GameBoy Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -2489,7 +2489,7 @@ namespace BizHawk.Client.EmuHawk
 				//Make our Strings get the Hex Values.
 				address = add.ToString("X6");
 				value = val.ToString("X4");
-				//Game Geneie, modifies the "ROM" which is why it says, "MD CART"
+				//Game Genie, modifies the "ROM" which is why it says, "MD CART"
 				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
 				//Add Cheat
 				Global.CheatList.Add(new Cheat(watch, val));
@@ -3040,7 +3040,7 @@ namespace BizHawk.Client.EmuHawk
 			//Game Genie
 			else if (SingleCheat.LastIndexOf("-") != 7 && SingleCheat.IndexOf("-") != 3)
 			{
-				MessageBox.Show("All Master System Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("All Master System Game Genie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			try

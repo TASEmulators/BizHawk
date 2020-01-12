@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// </summary>
 		/// <param name="CoreHandle">The DLL handle for the core DLL</param>
 		/// <param name="Context">Giving a context to the DebugCallback</param>
-		/// <param name="DebugCallback">A function to use when the pluging wants to output debug messages</param>
+		/// <param name="DebugCallback">A function to use when the plugin wants to output debug messages</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate m64p_error PluginStartup(IntPtr CoreHandle, string Context, DebugCallback DebugCallback);
 
