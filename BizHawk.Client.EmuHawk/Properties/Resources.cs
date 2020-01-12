@@ -18,16 +18,9 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		/// <param name="filename">Dir separator is '<c>.</c>'. Filename is relative to <c>&lt;NS>/images</c> and omits <c>.ico</c> extension.</param>
 		private static Icon ReadEmbeddedIcon(string filename) => new Icon(Asm.GetManifestResourceStream($"BizHawk.Client.EmuHawk.images.{filename}.ico"));
 
-		internal static readonly Lazy<Bitmap> mom1 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.mom1"));
-		internal static readonly Lazy<Bitmap> mom2 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.mom2"));
-		internal static readonly Lazy<Bitmap> pictureBox1 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.pictureBox1"));
-		internal static readonly Lazy<Bitmap> pictureBox2 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.pictureBox2"));
-		internal static readonly Lazy<Bitmap> pictureBox3 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.pictureBox3"));
-		internal static readonly Lazy<Bitmap> pictureBox4 = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("AboutBox.pictureBox4"));
 		internal static readonly Bitmap add = ReadEmbeddedBitmap("add");
 		internal static readonly Bitmap AddEdit = ReadEmbeddedBitmap("AddEdit");
 		internal static readonly Bitmap addWatch = ReadEmbeddedBitmapAt("images.addWatch.ico");
-		internal static readonly Bitmap alt_about_image = ReadEmbeddedBitmap("alt_about_image");
 		internal static readonly Bitmap arrow_black_down = ReadEmbeddedBitmap("arrow_black_down");
 		internal static readonly Lazy<Bitmap> atari_controller = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("atari_controller"));
 		internal static readonly Bitmap AudioHS = ReadEmbeddedBitmap("AudioHS");
@@ -53,8 +46,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap Circle = ReadEmbeddedBitmap("Circle");
 		internal static readonly Bitmap Close = ReadEmbeddedBitmap("Close");
 		internal static readonly Bitmap connect_16x16 = ReadEmbeddedBitmap("connect_16x16");
-		internal static readonly Bitmap console16x16 = ReadEmbeddedBitmap("console16x16");
-		internal static readonly Bitmap console32x32 = ReadEmbeddedBitmap("console32x32");
 		internal static readonly Lazy<Bitmap> A78Joystick = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.A78Joystick"));
 		internal static readonly Lazy<Bitmap> AppleIIKeyboard = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.AppleIIKeyboard"));
 		internal static readonly Lazy<Bitmap> ArcadeController = new Lazy<Bitmap>(() => ReadEmbeddedBitmapAt("images.ControllerImages.ArcadeController.jpg"));

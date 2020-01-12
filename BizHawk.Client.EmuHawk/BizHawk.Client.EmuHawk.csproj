@@ -71,14 +71,8 @@
   </PropertyGroup>
   <Import Project="DotNetBuild.NuGet.targets" Condition=" '$(OS)' != 'Windows_NT' " />
   <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <Reference
-      HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
-      Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
-      Private="true" />
-    <Reference
-      HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
-      Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
-      Private="true" />
+    <Reference HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll" Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" Private="true" />
+    <Reference HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll" Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73" Private="true" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GongShell">
@@ -129,12 +123,6 @@
     </Compile>
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="ArchiveChooser.cs">
       <SubType>Form</SubType>
@@ -1463,16 +1451,9 @@
     <EmbeddedResource Include="CustomControls\MsgBox.resx">
       <DependentUpon>MsgBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="images/AboutBox/mom1.png" />
-    <EmbeddedResource Include="images/AboutBox/mom2.png" />
-    <EmbeddedResource Include="images/AboutBox/pictureBox1.png" />
-    <EmbeddedResource Include="images/AboutBox/pictureBox2.png" />
-    <EmbeddedResource Include="images/AboutBox/pictureBox3.png" />
-    <EmbeddedResource Include="images/AboutBox/pictureBox4.png" />
     <EmbeddedResource Include="images/add.png" />
     <EmbeddedResource Include="images/AddEdit.png" />
     <EmbeddedResource Include="images/addWatch.ico" />
-    <EmbeddedResource Include="images/alt_about_image.png" />
     <EmbeddedResource Include="images/arrow_black_down.png" />
     <EmbeddedResource Include="images/atari_controller.png" />
     <EmbeddedResource Include="images/AudioHS.png" />
@@ -1497,8 +1478,6 @@
     <EmbeddedResource Include="images/Circle.png" />
     <EmbeddedResource Include="images/Close.png" />
     <EmbeddedResource Include="images/connect_16x16.png" />
-    <EmbeddedResource Include="images/console16x16.png" />
-    <EmbeddedResource Include="images/console32x32.png" />
     <EmbeddedResource Include="images/ControllerImages/A78Joystick.png" />
     <EmbeddedResource Include="images/ControllerImages/AppleIIKeyboard.png" />
     <EmbeddedResource Include="images/ControllerImages/ArcadeController.jpg" />
@@ -1941,10 +1920,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ArchiveChooser.resx">
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
       <SubType>Designer</SubType>

@@ -2940,16 +2940,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (VersionInfo.DeveloperBuild)
-			{
-				using var form = new AboutBox();
-				form.ShowDialog();
-			}
-			else
-			{
-				using var form = new BizBox();
-				form.ShowDialog();
-			}
+			using var form = new BizBox();
+			form.ShowDialog();
 		}
 
 		#endregion
