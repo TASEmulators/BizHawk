@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			divider_reg = Core._syncSettings._DivInitialTime;
+			divider_reg = 8; // probably always 8 but not confirmed for GB as far as I know
 			timer_reload = 0;
 			timer = 0;
 			timer_old = 0;

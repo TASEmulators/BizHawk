@@ -49,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(PaletteType.BW)]
 			public PaletteType Palette { get; set; }
 
-
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();
@@ -125,20 +124,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				set { _RTCOffset = Math.Max(-127, Math.Min(127, value)); }
 			}
 
-			[DisplayName("Timer Div Initial Time")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime
-			{
-				get { return _DivInitialTime; }
-				set { _DivInitialTime = Math.Min((ushort)65535, (ushort)value); }
-			}
-
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(false)]
 			public bool Use_SRAM { get; set; }
-
 
 			[JsonIgnore]
 			private int _RTCInitialTime;
@@ -146,7 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			private int _RTCOffset;
 			[JsonIgnore]
 			public ushort _DivInitialTime = 8;
-
 
 			public GBSyncSettings Clone()
 			{

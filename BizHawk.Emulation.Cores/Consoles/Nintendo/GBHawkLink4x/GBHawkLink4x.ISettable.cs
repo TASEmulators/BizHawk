@@ -183,42 +183,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				set { _RTCOffset_D = Math.Max(-127, Math.Min(127, value)); }
 			}
 
-			[DisplayName("Timer Div Initial Time A")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_A
-			{
-				get { return _DivInitialTime_A; }
-				set { _DivInitialTime_A = Math.Min((ushort)65535, (ushort)value); }
-			}
-
-			[DisplayName("Timer Div Initial Time B")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_B
-			{
-				get { return _DivInitialTime_B; }
-				set { _DivInitialTime_B = Math.Min((ushort)65535, (ushort)value); }
-			}
-
-			[DisplayName("Timer Div Initial Time C")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_C
-			{
-				get { return _DivInitialTime_C; }
-				set { _DivInitialTime_C = Math.Min((ushort)65535, (ushort)value); }
-			}
-
-			[DisplayName("Timer Div Initial Time D")]
-			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(8)]
-			public int DivInitialTime_D
-			{
-				get { return _DivInitialTime_D; }
-				set { _DivInitialTime_D = Math.Min((ushort)65535, (ushort)value); }
-			}
-
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(false)]
