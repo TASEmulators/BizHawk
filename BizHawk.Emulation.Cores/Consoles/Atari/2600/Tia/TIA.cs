@@ -107,6 +107,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _hmbDelay;
 		private byte _hmbVal;
 
+		private bool _hmp0_no_tick;
+		private bool _hmp1_no_tick;
+		private bool _hmm0_no_tick;
+		private bool _hmm1_no_tick;
+		private bool _hmb_no_tick;
+
 		private int _nusiz0Delay;
 		private byte _nusiz0Val;
 		private int _nusiz1Delay;
@@ -732,7 +738,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_p0Stuff = false;
 
 						// "Clock-Stuffing"
-						if (_doTicks)
+						if (_doTicks && !_hmp0_no_tick)
 						{
 							_player0.Tick();
 						}
@@ -754,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_p1Stuff = false;
 
 						// "Clock-Stuffing"
-						if (_doTicks)
+						if (_doTicks && !_hmp1_no_tick)
 						{
 							_player1.Tick();
 						}
@@ -776,7 +782,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_m0Stuff = false;
 
 						// "Clock-Stuffing"
-						if (_doTicks)
+						if (_doTicks && !_hmm0_no_tick)
 						{
 							_player0.Missile.Tick();
 						}
@@ -798,7 +804,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_m1Stuff = false;
 
 						// "Clock-Stuffing"
-						if (_doTicks)
+						if (_doTicks && !_hmm1_no_tick)
 						{
 							_player1.Missile.Tick();
 						}
@@ -820,7 +826,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						_bStuff = false;
 
 						// "Clock-Stuffing"
-						if (_doTicks)
+						if (_doTicks && !_hmb_no_tick)
 						{
 							_ball.Tick();
 						}
@@ -896,6 +902,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_currentScanLine++;
 				LineCount++;
 			}
+
+			_hmp0_no_tick = false;
+			_hmp1_no_tick = false;
+			_hmm0_no_tick = false;
+			_hmm1_no_tick = false;
+			_hmb_no_tick = false;
 		}
 
 		private void OutputFrame(int validlines)
@@ -1346,7 +1358,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				// RESP delays draw signal clocking
 				_player0.Resp_check();
-
+				//_hmp0_no_tick = true;
 				// Resp depends on HMOVE
 				if (!_hmove.LateHBlankReset)
 				{
@@ -1369,7 +1381,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				// RESP delays draw signal clocking
 				_player1.Resp_check();
-
+				//_hmp1_no_tick = true;
 				// RESP depends on HMOVE
 				if (!_hmove.LateHBlankReset)
 				{
@@ -1393,7 +1405,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// RESP delays draw signal clocking
 				// but only for players? Needs investigation
 				//_player0.Missile.Resp_check();
-
+				_hmm0_no_tick = true;
 				if (!_hmove.LateHBlankReset)
 				{
 					_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
@@ -1416,7 +1428,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// RESP delays draw signal clocking
 				// but only for players? Needs investigation
 				//_player1.Missile.Resp_check();
-
+				_hmm1_no_tick = true;
 				if (!_hmove.LateHBlankReset)
 				{
 					_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
@@ -1439,7 +1451,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// RESP delays draw signal clocking
 				// but only for players? Needs investigation
 				//_ball.Resp_check();
-
+				_hmb_no_tick = true;
 				if (!_hmove.LateHBlankReset)
 				{
 					_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);

@@ -41,6 +41,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("M0_stuff", ref _m0Stuff);
 			ser.Sync("M1_stuf", ref _m1Stuff);
 			ser.Sync("b_stuff", ref _bStuff);
+			
+			ser.Sync("_hmp0_no_tick", ref _hmp0_no_tick);
+			ser.Sync("_hmp1_no_tick", ref _hmp1_no_tick);
+			ser.Sync("_hmm0_no_tick", ref _hmm0_no_tick);
+			ser.Sync("_hmm1_no_tick", ref _hmm1_no_tick);
+			ser.Sync("_hmb_no_tick", ref _hmb_no_tick);
 
 			ser.Sync("hmp0_delay", ref _hmp0Delay);
 			ser.Sync("hmp0_val", ref _hmp0Val);
