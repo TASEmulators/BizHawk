@@ -371,8 +371,9 @@ namespace BizHawk.Client.EmuHawk
 
 				_lcdc = lcdc;
 				// set alpha on all pixels
+#if false
 				// TODO: RE: Spriteback, you can't muck with Sameboy in this way due to how SGB reads stuff...?
-				/*unsafe
+				unsafe
 				{
 					int* p = (int*)_bgpal;
 					for (int i = 0; i < 32; i++)
@@ -383,7 +384,8 @@ namespace BizHawk.Client.EmuHawk
 					int c = Spriteback.ToArgb();
 					for (int i = 0; i < 32; i += 4)
 						p[i] = c;
-				}*/
+				}
+#endif
 
 				// bg maps
 				if (!_cgb)

@@ -139,10 +139,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvDiscs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			//not a valid way to fight unselection, it results in craptons of ping-ponging logic and eventual malfunction
-			//if (lvDiscs.SelectedIndices.Count == 0)
-			//  lvDiscs.SelectedIndices.Add(0);
-			//Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+#if false // not a valid way to fight unselection, it results in craptons of ping-ponging logic and eventual malfunction
+			if (lvDiscs.SelectedIndices.Count == 0) lvDiscs.SelectedIndices.Add(0);
+			Global.StickyXORAdapter.SetFloat(_discSelectName, lvDiscs.SelectedIndices[0]);
+#endif
 
 			//emergency measure: if no selection, set no disc
 			if (lvDiscs.SelectedIndices.Count == 0)

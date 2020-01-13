@@ -987,35 +987,38 @@ namespace BizHawk.Client.EmuHawk
 		public bool UsesAudio => parameters.has_audio;
 
 		public bool UsesVideo => true;
+
+#if false // API has changed
+		private static void TestAVI()
+		{
+			AviWriter aw = new AviWriter();
+			aw.SetVideoParameters(256, 256);
+			aw.SetMovieParameters(60, 1);
+			aw.OpenFile("d:\\bizhawk.avi");
+			CreateHandle();
+			var token = aw.AcquireVideoCodecToken(Handle);
+			aw.SetVideoCodecToken(token);
+			aw.OpenStreams();
+
+			for (int i = 0; i < 100; i++)
+			{
+				TestVideoProvider video = new TestVideoProvider();
+				Bitmap bmp = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				using (Graphics g = Graphics.FromImage(bmp))
+				{
+					g.Clear(Color.Red);
+					using (Font f = new Font(FontFamily.GenericMonospace, 10))
+						g.DrawString(i.ToString(), f, Brushes.Black, 0, 0);
+				}
+//				bmp.Save($"c:\\dump\\{i}.bmp", ImageFormat.Bmp);
+				for (int y = 0, idx = 0; y < 256; y++)
+					for (int x = 0; x < 256; x++)
+						video.buffer[idx++] = bmp.GetPixel(x, y).ToArgb();
+				aw.AddFrame(video);
+			}
+			aw.CloseStreams();
+			aw.CloseFile();
+		}
+#endif
 	}
 }
-
-////TEST AVI
-//AviWriter aw = new AviWriter();
-//aw.SetVideoParameters(256, 256);
-//aw.SetMovieParameters(60, 1);
-//aw.OpenFile("d:\\bizhawk.avi");
-//CreateHandle();
-//var token = aw.AcquireVideoCodecToken(Handle);
-//aw.SetVideoCodecToken(token);
-//aw.OpenStreams();
-
-//for (int i = 0; i < 100; i++)
-//{
-//    TestVideoProvider video = new TestVideoProvider();
-//    Bitmap bmp = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-//    using (Graphics g = Graphics.FromImage(bmp))
-//    {
-//        g.Clear(Color.Red);
-//        using (Font f = new Font(FontFamily.GenericMonospace, 10))
-//            g.DrawString(i.ToString(), f, Brushes.Black, 0, 0);
-//    }
-//    //bmp.Save($"c:\\dump\\{i}.bmp", ImageFormat.Bmp);
-//    for (int y = 0, idx = 0; y < 256; y++)
-//        for (int x = 0; x < 256; x++)
-//            video.buffer[idx++] = bmp.GetPixel(x, y).ToArgb();
-//    aw.AddFrame(video);
-//}
-//aw.CloseStreams();
-//aw.CloseFile();
-////-----

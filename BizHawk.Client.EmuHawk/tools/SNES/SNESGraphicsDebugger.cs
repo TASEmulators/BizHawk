@@ -1205,16 +1205,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SyncBackdropColor()
 		{
+#if false
 			//TODO
-			//if (checkBackdropColor.Checked)
-			//{
-			//  int col = DecodeWinformsColorToSNES(pnBackdropColor.BackColor);
-			//  LibsnesDll.snes_set_backdropColor(col);
-			//}
-			//else
-			//{
-			//  LibsnesDll.snes_set_backdropColor(-1);
-			//}
+			LibsnesApi dll = TODO;
+			dll.QUERY_set_backdropColor(DecodeWinformsColorToSNES(checkBackdropColor.Checked ? pnBackdropColor.BackColor : Color.FromArgb(-1)));
+#endif
 		}
 
 		private void checkBackdropColor_CheckedChanged(object sender, EventArgs e)

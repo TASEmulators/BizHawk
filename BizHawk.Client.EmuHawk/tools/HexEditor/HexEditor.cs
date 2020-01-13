@@ -2257,13 +2257,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 			}
 
-			// if needed
-			////var mat = new SlimDX.Matrix();
-			////mat.M11 = matVals[0, 0]; mat.M12 = matVals[0, 1]; mat.M13 = matVals[0, 2]; mat.M14 = matVals[0, 3];
-			////mat.M21 = matVals[1, 0]; mat.M22 = matVals[1, 1]; mat.M23 = matVals[1, 2]; mat.M24 = matVals[1, 3];
-			////mat.M31 = matVals[2, 0]; mat.M32 = matVals[2, 1]; mat.M33 = matVals[2, 2]; mat.M34 = matVals[2, 3];
-			////mat.M41 = matVals[3, 0]; mat.M42 = matVals[3, 1]; mat.M43 = matVals[3, 2]; mat.M44 = matVals[3, 3];
-			////MessageBox.Show(mat.ToString());
+#if false // if needed
+			MessageBox.Show(new SlimDX.Matrix {
+				M11 = matVals[0, 0], M12 = matVals[0, 1], M13 = matVals[0, 2], M14 = matVals[0, 3],
+				M21 = matVals[1, 0], M22 = matVals[1, 1], M23 = matVals[1, 2], M24 = matVals[1, 3],
+				M31 = matVals[2, 0], M32 = matVals[2, 1], M33 = matVals[2, 2], M34 = matVals[2, 3],
+				M41 = matVals[3, 0], M42 = matVals[3, 1], M43 = matVals[3, 2], M44 = matVals[3, 3]
+			}.ToString());
+#endif
 
 			using var sw = new StringWriter();
 			for (int i = 0; i < 4; i++)

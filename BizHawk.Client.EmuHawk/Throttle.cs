@@ -44,7 +44,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			//heres some ideas for how to begin cleaning this up
+#if false
+			//here's some ideas for how to begin cleaning this up
 			////at this point, its assumed that we're running.
 			////this could be a free run, an unthrottled run, or a 'continuous frame advance' (aka continuous) run
 			////free run: affected by frameskips and throttles
@@ -52,16 +53,15 @@ namespace BizHawk.Client.EmuHawk
 			////continuous run: affected by frameskips and throttles
 			////so continuous and free are the same?
 
-			//bool continuous_run = signal_continuousFrameAdvancing;
-			//bool unthrottled_run = signal_unthrottle;
-			//bool free_run = !continuous_run && !unthrottled_run;
+			bool continuous_run = signal_continuousFrameAdvancing;
+			bool unthrottled_run = signal_unthrottle;
+			bool free_run = !continuous_run && !unthrottled_run;
 
-			//bool do_throttle, do_skip;
-			//if (continuous_run || free_run)
-			//  do_throttle = do_skip = true;
-			//else if (unthrottled_run)
-			//  do_skip = true;
-			//else throw new InvalidOperationException();
+			bool do_throttle, do_skip;
+			if (continuous_run || free_run) do_throttle = do_skip = true;
+			else if (unthrottled_run) do_skip = true;
+			else throw new InvalidOperationException();
+#endif
 
 			int skipRate = (forceFrameSkip < 0) ? Global.Config.FrameSkip : forceFrameSkip;
 			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;

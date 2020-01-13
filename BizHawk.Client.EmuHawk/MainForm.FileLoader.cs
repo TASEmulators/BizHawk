@@ -195,6 +195,7 @@ namespace BizHawk.Client.EmuHawk
 								sortedFiles[LoadOrdering.Rom].Add(fileInformation);
 							}
 
+#if false
 							/*
 							 * This is where handling archives would go.
 							 * Right now, that's going to be a HUGE hassle, because of the problem with
@@ -202,26 +203,16 @@ namespace BizHawk.Client.EmuHawk
 							 * and not streams (also no), so for the purposes of making drag/drop more robust,
 							 * I am not building this out just yet.
 							 * -- Adam Michaud (Invariel)
-							
-							int offset = 0;
-							bool executable = false;
-							var archiveHandler = new SevenZipSharpArchiveHandler();
+							 */
 
 							// Not going to process nested archives at the moment.
-							if (String.IsNullOrEmpty (archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out _, out _))
 							{
-								List<string> fileNames = new List<string>();
-								var openedArchive = archiveHandler.Construct (file);
-
-								foreach (BizHawk.Common.HawkFileArchiveItem item in openedArchive.Scan ())
-									fileNames.Add(item.Name);
-
-								ProcessFileList(fileNames.ToArray(), ref sortedFiles, file);
-
-								openedArchive.Dispose();
+								using var openedArchive = archiveHandler.Construct(file);
+								ProcessFileList(openedArchive.Scan().Select(item => item.Name), ref sortedFiles, file);
 							}
 							archiveHandler.Dispose();
-							 */
+#endif
 						}
 						break;
 				}

@@ -70,30 +70,32 @@ namespace BizHawk.Client.DiscoHawk
 			}
 		}
 
-		//bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
-		//{
-		//  ProgressReport pr = new ProgressReport();
-		//  Thread workThread = new Thread(() =>
-		//  {
-		//    cueBin.Dump(directoryTo, prefs, pr);
-		//  });
+#if false // API has changed
+		bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
+		{
+			ProgressReport pr = new ProgressReport();
+			Thread workThread = new Thread(() =>
+			{
+				cueBin.Dump(directoryTo, prefs, pr);
+			});
 
-		//  ProgressDialog pd = new ProgressDialog(pr);
-		//  pd.Show(this);
-		//  this.Enabled = false;
-		//  workThread.Start();
-		//  for (; ; )
-		//  {
-		//    Application.DoEvents();
-		//    Thread.Sleep(10);
-		//    if (workThread.ThreadState != ThreadState.Running)
-		//      break;
-		//    pd.Update();
-		//  }
-		//  this.Enabled = true;
-		//  pd.Dispose();
-		//  return !pr.CancelSignal;
-		//}
+			ProgressDialog pd = new ProgressDialog(pr);
+			pd.Show(this);
+			this.Enabled = false;
+			workThread.Start();
+			for (; ; )
+			{
+				Application.DoEvents();
+				Thread.Sleep(10);
+				if (workThread.ThreadState != ThreadState.Running)
+					break;
+				pd.Update();
+			}
+			this.Enabled = true;
+			pd.Dispose();
+			return !pr.CancelSignal;
+		}
+#endif
 
 		private void lblMagicDragArea_DragEnter(object sender, DragEventArgs e)
 		{

@@ -380,15 +380,17 @@ namespace BizHawk.Client.ApiHawk
 				}
 
 				//Using this break joypad usage (even in UI); have to figure out why
-				/*if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
+#if false
+				if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
 				{
-					AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
-					for (int i = 1; i <= RunningSystem.MaxControllers; i++)
+					var joypadAdaptor = Global.AutofireStickyXORAdapter;
+					for (var i = 1; i <= RunningSystem.MaxControllers; i++)
 					{
-						joypadAdaptor.SetFloat($"P{i} X Axis", allJoypads[i - 1].AnalogX);
-						joypadAdaptor.SetFloat($"P{i} Y Axis", allJoypads[i - 1].AnalogY);
+						joypadAdaptor.SetFloat($"P{i} X Axis", _allJoyPads[i - 1].AnalogX);
+						joypadAdaptor.SetFloat($"P{i} Y Axis", _allJoyPads[i - 1].AnalogY);
 					}
-				}*/
+				}
+#endif
 			}
 		}
 
