@@ -23,24 +23,15 @@ namespace BizHawk.Client.Common
 
 		#region ILogEntryGenerator Implementation
 
-		public void SetSource(IController source)
-		{
-			_source = source;
-		}
+		public void SetSource(IController source) => _source = source;
 
-		public string GenerateInputDisplay()
-		{
-			return CreateLogEntry(forInputDisplay: true);
-		}
+		public string GenerateInputDisplay() => CreateLogEntry(forInputDisplay: true);
 
 		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
 		public string EmptyEntry => CreateLogEntry(createEmpty: true);
 
-		public string GenerateLogEntry()
-		{
-			return CreateLogEntry();
-		}
+		public string GenerateLogEntry() => CreateLogEntry();
 
 		#endregion
 

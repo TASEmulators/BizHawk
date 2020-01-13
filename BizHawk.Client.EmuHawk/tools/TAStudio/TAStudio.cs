@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-			return ((Bk2LogEntryGenerator)lg).Map();
+			return lg.Map();
 		}
 
 		[ConfigPersist]

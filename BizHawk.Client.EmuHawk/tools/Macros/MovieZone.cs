@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_emulator = emulator;
 			_tools = tools;
-			var lg = (Bk2LogEntryGenerator)movie.LogGeneratorInstance();
+			var lg = movie.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			_targetController = new Bk2ControllerAdapter { Definition = _emulator.ControllerDefinition };
 			_targetController.LatchFromSource(_targetController); // Reference and create all buttons
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
-			Bk2LogEntryGenerator lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
+			var lg = Global.MovieSession.LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
