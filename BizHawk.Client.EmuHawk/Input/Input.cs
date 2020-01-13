@@ -292,19 +292,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static ModifierKey ButtonToModifierKey(string button)
+		private static ModifierKey ButtonToModifierKey(string button) => button switch
 		{
-			switch (button)
-			{
-				case "LeftShift":  return ModifierKey.Shift;
-				case "RightShift": return ModifierKey.Shift;
-				case "LeftControl":  return ModifierKey.Control;
-				case "RightControl": return ModifierKey.Control;
-				case "LeftAlt":  return ModifierKey.Alt;
-				case "RightAlt": return ModifierKey.Alt;
-			}
-			return ModifierKey.None;
-		}
+			"LeftShift" => ModifierKey.Shift,
+			"ShiftLeft" => ModifierKey.Shift,
+			"RightShift" => ModifierKey.Shift,
+			"ShiftRight" => ModifierKey.Shift,
+			"LeftControl" => ModifierKey.Control,
+			"ControlLeft" => ModifierKey.Control,
+			"RightControl" => ModifierKey.Control,
+			"RControl" => ModifierKey.Control, // no idea why this is different
+			"LeftAlt" => ModifierKey.Alt,
+			"LAlt" => ModifierKey.Alt,
+			"RightAlt" => ModifierKey.Alt,
+			"RAlt" => ModifierKey.Alt,
+			_ => ModifierKey.None
+		};
 
 		private ModifierKey _modifiers;
 		private readonly List<InputEvent> _newEvents = new List<InputEvent>();
