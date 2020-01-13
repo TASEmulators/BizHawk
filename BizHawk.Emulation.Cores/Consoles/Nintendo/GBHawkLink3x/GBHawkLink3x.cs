@@ -55,6 +55,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			temp_sync_C.ConsoleMode = Link3xSyncSettings.ConsoleMode_C;
 			temp_sync_R.ConsoleMode = Link3xSyncSettings.ConsoleMode_R;
 
+			temp_sync_L.GBACGB = Link3xSyncSettings.GBACGB;
+			temp_sync_C.GBACGB = Link3xSyncSettings.GBACGB;
+			temp_sync_R.GBACGB = Link3xSyncSettings.GBACGB;
+
 			temp_sync_L.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_L;
 			temp_sync_C.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_C;
 			temp_sync_R.RTCInitialTime = Link3xSyncSettings.RTCInitialTime_R;

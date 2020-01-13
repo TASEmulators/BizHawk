@@ -703,7 +703,7 @@ namespace BizHawk.Client.Common
 									nextEmulator = new GBHawkLink4x(
 									nextComm,
 									A_4x,
-									B_Bytes4x,
+									A_Bytes4x,
 									B_4x,
 									B_Bytes4x,
 									C_4x,

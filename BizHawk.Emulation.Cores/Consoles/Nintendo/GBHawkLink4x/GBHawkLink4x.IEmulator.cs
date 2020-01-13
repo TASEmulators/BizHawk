@@ -584,7 +584,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 				for (int j = 0; j < 160; j++)
 				{
 					_vidbuffer[i * 320 + j] = A.frame_buffer[i * 160 + j];
-					_vidbuffer[(i + 144) * 320 + j] = C.frame_buffer[i * 160 + j];
+					_vidbuffer[(i + 144) * 320 + j] = B.frame_buffer[i * 160 + j];
 					_vidbuffer[(i + 144) * 320 + j + 160] = C.frame_buffer[i * 160 + j];
 					_vidbuffer[i * 320 + j + 160] = D.frame_buffer[i * 160 + j];
 				}
@@ -644,8 +644,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			}
 			else if (Link4xSettings.AudioSet == GBLink4xSettings.AudioSrc.B)
 			{
-				samples = temp_samp_C;
-				nsamp = nsamp_C;
+				samples = temp_samp_B;
+				nsamp = nsamp_B;
 			}
 			else if (Link4xSettings.AudioSet == GBLink4xSettings.AudioSrc.C)
 			{
@@ -672,6 +672,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public void DiscardSamples()
 		{
 			A.audio.DiscardSamples();
+			B.audio.DiscardSamples();
 			C.audio.DiscardSamples();
 			D.audio.DiscardSamples();
 		}
@@ -684,6 +685,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 		public void DisposeSound()
 		{
 			A.audio.DisposeSound();
+			B.audio.DisposeSound();
 			C.audio.DisposeSound();
 			D.audio.DisposeSound();
 		}
