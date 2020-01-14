@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { "VEC", "GB4x", "O2", "ChannelF", "AmstradCPC" };
+			string[] coresToHide = { "GB4x", "O2", "ChannelF", "AmstradCPC" };
 
 			foreach (var core in coresToHide)
 			{
