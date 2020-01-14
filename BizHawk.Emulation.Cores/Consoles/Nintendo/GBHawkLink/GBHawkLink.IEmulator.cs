@@ -231,8 +231,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		#region Video provider
 
-		public int _frameHz = 60;
-
 		public int[] _vidbuffer = new int[160 * 2 * 144];
 
 		public int[] GetVideoBuffer()
@@ -284,8 +282,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 		public int BufferHeight => 144;
 
 		public int BackgroundColor => unchecked((int)0xFF000000);
-		public int VsyncNumerator => _frameHz;
-		public int VsyncDenominator => 1;
+		public int VsyncNumerator => 262144;
+		public int VsyncDenominator => 4389;
 
 		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
 		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };

@@ -174,8 +174,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_rom = rom;
 			Setup_Mapper();
 
-			_frameHz = 60;
-
 			timer.Core = this;
 			audio.Core = this;
 			ppu.Core = this;
