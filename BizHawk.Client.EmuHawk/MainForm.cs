@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLoggerMenuItem.Image = Properties.Resources.cdlogger;
 				VirtualPadMenuItem.Image = Properties.Resources.GameController;
 				CheatsMenuItem.Image = Properties.Resources.Freeze;
-				gameSharkConverterToolStripMenuItem.Image = Properties.Resources.Shark;
+				GameSharkConverterMenuItem.Image = Properties.Resources.Shark;
 				MultiDiskBundlerFileMenuItem.Image = Properties.Resources.SaveConfig;
 				NesControllerSettingsMenuItem.Image = Properties.Resources.GameController;
 				NESGraphicSettingsMenuItem.Image = Properties.Resources.tvIcon;

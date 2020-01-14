@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SaveRamSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Flush SaveRAM"].Bindings;
 		}
@@ -928,10 +928,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CoreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void CoreMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			quickNESToolStripMenuItem.Checked = Config.NES_InQuickNES;
-			nesHawkToolStripMenuItem.Checked = !Config.NES_InQuickNES;
+			quickNESMenuItem.Checked = Config.NES_InQuickNES;
+			nesHawkMenuItem.Checked = !Config.NES_InQuickNES;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -1188,7 +1188,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			GBInSGBMenuItem.Checked = Config.GB_AsSGB;
-			allowGameDBCoreOverridesToolStripMenuItem.Checked = Config.CoreForcingViaGameDB;
+			AllowGameDbCoreOverridesMenuItem.Checked = Config.CoreForcingViaGameDB;
 		}
 
 		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1304,7 +1304,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AllowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AllowGameDBCoreOverridesMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.CoreForcingViaGameDB ^= true;
 		}
@@ -1396,20 +1396,20 @@ namespace BizHawk.Client.EmuHawk
 
 			DebuggerMenuItem.Enabled = Tools.IsAvailable<GenericDebugger>();
 
-			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
+			BatchRunnerMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			BasicBotMenuItem.Enabled = Tools.IsAvailable<BasicBot>();
 
-			gameSharkConverterToolStripMenuItem.Enabled = Tools.IsAvailable<GameShark>();
+			GameSharkConverterMenuItem.Enabled = Tools.IsAvailable<GameShark>();
 			MacroToolMenuItem.Enabled = MovieSession.Movie.IsActive() && Tools.IsAvailable<MacroInputTool>();
 			VirtualPadMenuItem.Enabled = Emulator.ControllerDefinition.Any();
 		}
 
-		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		private void ExternalToolMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			externalToolToolStripMenuItem.DropDownItems.Clear();
+			ExternalToolMenuItem.DropDownItems.Clear();
 
-			foreach (ToolStripMenuItem item in ExternalToolManager.ToolStripMenu)
+			foreach (var item in ExternalToolManager.ToolStripMenu)
 			{
 				if (item.Enabled)
 				{
@@ -1423,12 +1423,12 @@ namespace BizHawk.Client.EmuHawk
 					item.Image = Properties.Resources.ExclamationRed;
 				}
 
-				externalToolToolStripMenuItem.DropDownItems.Add(item);
+				ExternalToolMenuItem.DropDownItems.Add(item);
 			}
 
-			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
+			if (ExternalToolMenuItem.DropDownItems.Count == 0)
 			{
-				externalToolToolStripMenuItem.DropDownItems.Add("None");
+				ExternalToolMenuItem.DropDownItems.Add("None");
 			}
 		}
 
@@ -1520,7 +1520,7 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<MultiDiskBundler>();
 		}
 
-		private void BatchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
+		private void BatchRunnerMenuItem_Click(object sender, EventArgs e)
 		{
 			using var form = new BatchRun();
 			form.ShowDialog();
@@ -1530,19 +1530,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#region NES
 
-		private void QuickNesToolStripMenuItem_Click(object sender, EventArgs e)
+		private void QuickNesMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.NES_InQuickNES = true;
 			FlagNeedsReboot();
 		}
 
-		private void NesHawkToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NesHawkMenuItem_Click(object sender, EventArgs e)
 		{
 			Config.NES_InQuickNES = false;
 			FlagNeedsReboot();
 		}
 
-		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void NesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
 			FDSControlsMenuItem.Enabled = boardName == "FDS";
@@ -1559,9 +1559,9 @@ namespace BizHawk.Client.EmuHawk
 			NesControllerSettingsMenuItem.Enabled = Tools.IsAvailable<NesControllerSettings>()
 				&& !MovieSession.Movie.IsActive();
 
-			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
+			BarcodeReaderMenuItem.Enabled = ServiceInjector.IsAvailable(Emulator.ServiceProvider, typeof(BarcodeEntry));
 
-			musicRipperToolStripMenuItem.Enabled = Tools.IsAvailable<NESMusicRipper>();
+			MusicRipperMenuItem.Enabled = Tools.IsAvailable<NESMusicRipper>();
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1584,12 +1584,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void NesPPUViewerMenuItem_Click(object sender, EventArgs e)
+		private void NesPpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<NesPPU>();
 		}
 
-		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
+		private void NesNametableViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<NESNameTableViewer>();
 		}
@@ -1599,12 +1599,12 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<NESMusicRipper>();
 		}
 
-		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
+		private void NesGameGenieCodesMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.LoadGameGenieEc();
 		}
 
-		private void NESGraphicSettingsMenuItem_Click(object sender, EventArgs e)
+		private void NesGraphicSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is NES nes)
 			{
@@ -1623,7 +1623,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void NESSoundChannelsMenuItem_Click(object sender, EventArgs e)
+		private void NesSoundChannelsMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<NESSoundConfig>();
 		}
@@ -1732,7 +1732,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region PCE
 
-		private void PCESubMenu_DropDownOpened(object sender, EventArgs e)
+		private void PceSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var s = ((PCEngine)Emulator).GetSettings();
 
@@ -1775,194 +1775,251 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<PCESoundDebugger>();
 		}
 
-		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
+		private void PceAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((PCEngine)Emulator).GetSettings();
-			s.SpriteLimit ^= true;
-			PutCoreSettings(s);
+			if (Emulator is PCEngine pce)
+			{
+				var s = pce.GetSettings();
+				s.SpriteLimit ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void PCEAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
+		private void PceAlwaysEqualizeVolumesMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((PCEngine)Emulator).GetSettings();
-			s.EqualizeVolume ^= true;
-			PutCoreSettings(s);
+			if (Emulator is PCEngine pce)
+			{
+				var s = pce.GetSettings();
+				s.EqualizeVolume ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void PCEArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
+		private void PceArcadeCardRewindEnableMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((PCEngine)Emulator).GetSettings();
-			s.ArcadeCardRewindHack ^= true;
-			PutCoreSettings(s);
+			if (Emulator is PCEngine pce)
+			{
+				var s = pce.GetSettings();
+				s.ArcadeCardRewindHack ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
 		#endregion
 
 		#region SMS
 
-		private void SMSSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var s = ((SMS)Emulator).GetSettings();
 			var ss = ((SMS)Emulator).GetSyncSettings();
-			SMSregionExportToolStripMenuItem.Checked = ss.ConsoleRegion == "Export";
-			SMSregionJapanToolStripMenuItem.Checked = ss.ConsoleRegion == "Japan";
-			SMSregionKoreaToolStripMenuItem.Checked = ss.ConsoleRegion == "Korea";
-			SMSregionAutoToolStripMenuItem.Checked = ss.ConsoleRegion == "Auto";
-			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
-			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
-			SMSdisplayAutoToolStripMenuItem.Checked = ss.DisplayType == "Auto";
-			SMSControllerStandardToolStripMenuItem.Checked = ss.ControllerType == "Standard";
-			SMSControllerPaddleToolStripMenuItem.Checked = ss.ControllerType == "Paddle";
-			SMSControllerLightPhaserToolStripMenuItem.Checked = ss.ControllerType == "Light Phaser";
-			SMSControllerSportsPadToolStripMenuItem.Checked = ss.ControllerType == "Sports Pad";
-			SMSControllerKeyboardToolStripMenuItem.Checked = ss.ControllerType == "Keyboard";
-			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
-			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
-			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
-			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
-			SMSSpriteLimitMenuItem.Checked = s.SpriteLimit;
-			SMSDisplayOverscanMenuItem.Checked = s.DisplayOverscan;
-			SMSFix3DGameDisplayToolStripMenuItem.Checked = s.Fix3D;
-			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
-			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
+			SmsRegionExportMenuItem.Checked = ss.ConsoleRegion == "Export";
+			SmsRegionJapanMenuItem.Checked = ss.ConsoleRegion == "Japan";
+			SmsRegionKoreaMenuItem.Checked = ss.ConsoleRegion == "Korea";
+			SmsRegionAutoMenuItem.Checked = ss.ConsoleRegion == "Auto";
+			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == "NTSC";
+			SmsDisplayPalMenuItem.Checked = ss.DisplayType == "PAL";
+			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == "Auto";
+			SmsControllerStandardMenuItem.Checked = ss.ControllerType == "Standard";
+			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == "Paddle";
+			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == "Light Phaser";
+			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == "Sports Pad";
+			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == "Keyboard";
+			SmsEnableBiosMenuItem.Checked = ss.UseBIOS;
+			SmsEnableFMChipMenuItem.Checked = ss.EnableFM;
+			SmsOverclockMenuItem.Checked = ss.AllowOverlock;
+			SmsForceStereoMenuItem.Checked = s.ForceStereoSeparation;
+			SmsSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			SmsDisplayOverscanMenuItem.Checked = s.DisplayOverscan;
+			SmsFix3DGameDisplayMenuItem.Checked = s.Fix3D;
+			SmsShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
+			SmsHighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
 
-			SMSEnableFMChipMenuItem.Visible =
-				SMSFix3DGameDisplayToolStripMenuItem.Visible =
-				SMSenableBIOSToolStripMenuItem.Visible =
+			SmsEnableFMChipMenuItem.Visible =
+				SmsFix3DGameDisplayMenuItem.Visible =
+				SmsEnableBiosMenuItem.Visible =
 				Game.System == "SMS";
 
-			SMSDisplayOverscanMenuItem.Visible =
+			SmsDisplayOverscanMenuItem.Visible =
 				Game.System == "SMS" || Game.System == "SG";
 
-			SMSOverclockMenuItem.Visible =
-				SMSForceStereoMenuItem.Visible =
-				SMSdisplayToolStripMenuItem.Visible =
+			SmsOverclockMenuItem.Visible =
+				SmsForceStereoMenuItem.Visible =
+				SmsDisplayMenuItem.Visible =
 				Game.System != "GG";
 
-			ShowClippedRegionsMenuItem.Visible =
-				HighlightActiveDisplayRegionMenuItem.Visible =
+			SmsShowClippedRegionsMenuItem.Visible =
+				SmsHighlightActiveDisplayRegionMenuItem.Visible =
 				GGGameGenieMenuItem.Visible =
 				Game.System == "GG";
 
-			SMSOverclockMenuItem.Visible =
-				SMSVDPViewerToolStripMenuItem.Visible =
-				toolStripSeparator24.Visible =
+			SmsOverclockMenuItem.Visible =
+				SmsVdpViewerMenuItem.Visible =
+				SmsMenuSeparator.Visible =
 				Game.System != "SG";
 		}
 
-		private void SMS_RegionExport_Click(object sender, EventArgs e)
+		private void SmsRegionExport_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.ConsoleRegion = "Export";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.ConsoleRegion = "Export";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_RegionJapan_Click(object sender, EventArgs e)
+		private void Sms_RegionJapan_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.ConsoleRegion = "Japan";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss =sms.GetSyncSettings();
+				ss.ConsoleRegion = "Japan";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_RegionKorea_Click(object sender, EventArgs e)
+		private void Sms_RegionKorea_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.ConsoleRegion = "Korea";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.ConsoleRegion = "Korea";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_RegionAuto_Click(object sender, EventArgs e)
+		private void Sms_RegionAuto_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.ConsoleRegion = "Auto";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.ConsoleRegion = "Auto";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_DisplayNTSC_Click(object sender, EventArgs e)
+		private void Sms_DisplayNtsc_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.DisplayType = "NTSC";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.DisplayType = "NTSC";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_DisplayPAL_Click(object sender, EventArgs e)
+		private void Sms_DisplayPal_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.DisplayType = "PAL";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.DisplayType = "PAL";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMS_DisplayAuto_Click(object sender, EventArgs e)
+		private void Sms_DisplayAuto_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.DisplayType = "Auto";
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.DisplayType = "Auto";
+				PutCoreSyncSettings(ss);
+			}
 		}
 
 		private void SmsBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.UseBIOS ^= true;
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.UseBIOS ^= true;
+				PutCoreSyncSettings(ss);
+			}
 		}
 
 		private void SmsEnableFmChipMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.EnableFM ^= true;
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.EnableFM ^= true;
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMSOverclockMenuItem_Click(object sender, EventArgs e)
+		private void SmsOverclockMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			ss.AllowOverlock ^= true;
-			PutCoreSyncSettings(ss);
+			if (Emulator is SMS sms)
+			{
+				var ss = sms.GetSyncSettings();
+				ss.AllowOverlock ^= true;
+				PutCoreSyncSettings(ss);
+			}
 		}
 
-		private void SMSForceStereoMenuItem_Click(object sender, EventArgs e)
+		private void SmsForceStereoMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.ForceStereoSeparation ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.ForceStereoSeparation ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void SMSSpriteLimitMenuItem_Click(object sender, EventArgs e)
+		private void SmsSpriteLimitMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.SpriteLimit ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.SpriteLimit ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void SMSDisplayOverscanMenuItem_Click(object sender, EventArgs e)
+		private void SmsDisplayOverscanMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.DisplayOverscan ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.DisplayOverscan ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void SMSFix3DDisplayMenuItem_Click(object sender, EventArgs e)
+		private void SmsFix3DDisplayMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.Fix3D ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.Fix3D ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void ShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
+		private void SmsShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.ShowClippedRegions ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.ShowClippedRegions ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void HighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
+		private void SmsHighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-			s.HighlightActiveDisplayRegion ^= true;
-			PutCoreSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSettings();
+				s.HighlightActiveDisplayRegion ^= true;
+				PutCoreSettings(s);
+			}
 		}
 
-		private void SMSGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
+		private void SmsGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is SMS sms)
 			{
@@ -1971,7 +2028,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GGGameGenieMenuItem_Click(object sender, EventArgs e)
+		private void GgGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.LoadGameGenieEc();
 		}
@@ -1981,51 +2038,66 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<SmsVdpViewer>();
 		}
 
-		private void SMSControllerStandardToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SmsControllerStandardMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSyncSettings();
-			s.ControllerType = "Standard";
-			PutCoreSyncSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSyncSettings();
+				s.ControllerType = "Standard";
+				PutCoreSyncSettings(s);
+			}
 		}
 
-		private void SMSControllerPaddleToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SmsControllerPaddleMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSyncSettings();
-			s.ControllerType = "Paddle";
-			PutCoreSyncSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSyncSettings();
+				s.ControllerType = "Paddle";
+				PutCoreSyncSettings(s);
+			}
 		}
 
-		private void SMSControllerLightPhaserToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SmsControllerLightPhaserMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSyncSettings();
-			s.ControllerType = "Light Phaser";
-			PutCoreSyncSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSyncSettings();
+				s.ControllerType = "Light Phaser";
+				PutCoreSyncSettings(s);
+			}
 		}
 
-		private void SMSControllerSportsPadToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SmsControllerSportsPadMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSyncSettings();
-			s.ControllerType = "Sports Pad";
-			PutCoreSyncSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSyncSettings();
+				s.ControllerType = "Sports Pad";
+				PutCoreSyncSettings(s);
+			}
 		}
 
-		private void SMSControllerKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SmsControllerKeyboardMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSyncSettings();
-			s.ControllerType = "Keyboard";
-			PutCoreSyncSettings(s);
+			if (Emulator is SMS sms)
+			{
+				var s = sms.GetSyncSettings();
+				s.ControllerType = "Keyboard";
+				PutCoreSyncSettings(s);
+			}
 		}
 
 		#endregion
 
 		#region TI83
 
-		private void TI83SubMenu_DropDownOpened(object sender, EventArgs e)
+		private void Ti83SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AutoloadKeypadMenuItem.Checked = Config.TI83autoloadKeyPad;
 		}
 
-		private void KeypadMenuItem_Click(object sender, EventArgs e)
+		private void Ti83KeypadMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<TI83KeyPad>();
 		}
@@ -2035,35 +2107,39 @@ namespace BizHawk.Client.EmuHawk
 			Config.TI83autoloadKeyPad ^= true;
 		}
 
-		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
+		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var ti83 = (TI83)Emulator;
-			using var ofd = new OpenFileDialog
+			if (Emulator is TI83 ti83)
 			{
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
-				Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*",
-				RestoreDirectory = true
-			};
-
-			if (ofd.ShowDialog().IsOk())
-			{
-				try
+				using var ofd = new OpenFileDialog
 				{
-					ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
-				}
-				catch (IOException ex)
-				{
-					var message = $"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
+					InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId)
+					, Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*", RestoreDirectory = true
+				};
 
-					if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+				if (ofd.ShowDialog()
+					.IsOk())
+				{
+					try
 					{
-						ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
+						ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
+					}
+					catch (IOException ex)
+					{
+						var message =
+							$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
+
+						if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel
+							, MessageBoxIcon.Question) == DialogResult.Yes)
+						{
+							ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
+						}
 					}
 				}
 			}
 		}
 
-		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
+		private void Ti83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is TI83 ti83)
 			{
@@ -2078,7 +2154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Atari
 
-		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AtariSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
 		}
@@ -2094,7 +2170,7 @@ namespace BizHawk.Client.EmuHawk
 				= MovieSession.Movie.NotActive();
 		}
 
-		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void A7800ControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is A7800Hawk atari7800Hawk)
 			{
@@ -2103,7 +2179,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void A7800FilterSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is A7800Hawk atari7800Hawk)
 			{
@@ -2116,13 +2192,13 @@ namespace BizHawk.Client.EmuHawk
 
 		#region GB
 
-		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void GbSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			LoadGBInSGBMenuItem.Checked = Config.GB_AsSGB;
 			GBGPUViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
-		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
+		private void GbCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is Gameboy gb)
 			{
@@ -2144,12 +2220,12 @@ namespace BizHawk.Client.EmuHawk
 			Tools.Load<GbGpuView>();
 		}
 
-		private void GBGameGenieMenuItem_Click(object sender, EventArgs e)
+		private void GbGameGenieMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.LoadGameGenieEc();
 		}
 
-		private void GBPrinterViewerMenuItem_Click(object sender, EventArgs e)
+		private void GbPrinterViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<GBPrinterView>();
 		}
@@ -2158,7 +2234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region GBA
 
-		private void GBACoreSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void GbaCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
 		}
@@ -2195,12 +2271,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region PSX
 
-		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void PsxSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			PSXControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
 		}
 
-		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		private void PsxControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is Octoshock psx)
 			{
@@ -2209,7 +2285,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
+		private void PsxOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is Octoshock psx)
 			{
@@ -2220,12 +2296,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void PSXDiscControlsMenuItem_Click(object sender, EventArgs e)
+		private void PsxDiscControlsMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
 		}
 
-		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void PsxHashDiscsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is Octoshock psx)
 			{
@@ -2238,7 +2314,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region SNES
 
-		private void SNESSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SnesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			if (((LibsnesCore)Emulator).IsSGB)
 			{
@@ -2298,24 +2374,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColecoSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var ss = ((ColecoVision)Emulator).GetSyncSettings();
-			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
-			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
-			ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
+			if (Emulator is ColecoVision coleco)
+			{
+				var ss = coleco.GetSyncSettings();
+				ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
+				ColecoUseSGMMenuItem.Checked = ss.UseSGM;
+				ColecoControllerSettingsMenuItem.Enabled = MovieSession.Movie.NotActive();
+			}
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = ((ColecoVision)Emulator).GetSyncSettings();
-			ss.SkipBiosIntro ^= true;
-			PutCoreSyncSettings(ss);
+			if (Emulator is ColecoVision coleco)
+			{
+				var ss = coleco.GetSyncSettings();
+				ss.SkipBiosIntro ^= true;
+				PutCoreSyncSettings(ss);
+			}
 		}
 
 		private void ColecoUseSGMMenuItem_Click(object sender, EventArgs e)
 		{
-			var ss = ((ColecoVision)Emulator).GetSyncSettings();
-			ss.UseSGM ^= true;
-			PutCoreSyncSettings(ss);
+			if (Emulator is ColecoVision coleco)
+			{
+				var ss = coleco.GetSyncSettings();
+				ss.UseSGM ^= true;
+				PutCoreSyncSettings(ss);
+			}
 		}
 
 		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2391,11 +2476,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void N64ExpansionSlotMenuItem_Click(object sender, EventArgs e)
 		{
-			var n64 = (N64)Emulator;
-			var ss = n64.GetSyncSettings();
-			ss.DisableExpansionSlot ^= true;
-			n64.PutSyncSettings(ss);
-			FlagNeedsReboot();
+			if (Emulator is N64 n64)
+			{
+				var ss = n64.GetSyncSettings();
+				ss.DisableExpansionSlot ^= true;
+				n64.PutSyncSettings(ss);
+				FlagNeedsReboot();
+			}
 		}
 
 		#endregion
@@ -2446,7 +2533,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region GGL
 
-		private void GGLSettingsMenuItem_Click(object sender, EventArgs e)
+		private void GgSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Game Gear Settings");
 		}
@@ -2464,7 +2551,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region MSX
 
-		private void MSXSettingsMenuItem_Click(object sender, EventArgs e)
+		private void MsxSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "MSX Settings");
 		}
@@ -2555,9 +2642,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if (Emulator is C64)
+			if (Emulator is C64 c64)
 			{
-				C64DisksSubMenu.Enabled = ((C64)Emulator).DiskCount > 1;
+				C64DisksSubMenu.Enabled = c64.DiskCount > 1;
 			}
 		}
 
@@ -2792,7 +2879,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region AmstradCPC
 
-		private void AmstradCpcCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
 			{
@@ -2801,7 +2888,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AmstradCpcAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcAudioSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
 			{
@@ -2810,7 +2897,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AmstradCpcPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcPokeMemoryMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
 			{
@@ -2819,7 +2906,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void AmstradCpcMediaMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC)
 			{
@@ -2828,7 +2915,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void AmstradCpcTapesSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AmstradCPCTapesSubMenu.DropDownItems.Clear();
 
@@ -2862,7 +2949,7 @@ namespace BizHawk.Client.EmuHawk
 			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-		private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void AmstradCpcDisksSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 
@@ -2896,7 +2983,7 @@ namespace BizHawk.Client.EmuHawk
 			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
 		}
 
-		private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AmstradCpcNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Emulator is AmstradCPC cpc)
 			{
