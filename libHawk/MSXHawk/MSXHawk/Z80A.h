@@ -15,28 +15,40 @@ namespace MSXHawk
 
 		#pragma region Variable Declarations
 		
-		uint8_t* MemoryMap;
-		uint8_t* MemoryMapMask;
-		uint8_t* HWMemoryMap;
-		uint8_t* HWMemoryMapMask;
+		// Memory is usually mostly static, so it is efficient to access it with a pointer and write mask
+		// the size of the pointer matrix and masks is system dependent.
+		// This also assumes a simple relationship between bank and write mask
+		// some systems might require more detailed mask, maybe even the same size as read
+		const uint32_t low_mask = 0x3FF;
+		const uint32_t high_mask = 0x3F;
+		const uint32_t bank_shift = 10;
+		
+		uint32_t bank_num;
+		uint32_t bank_offset;
+		uint8_t* MemoryMap[64];
+		uint8_t MemoryMapMask[64];
 
-		void (*HW_Write)(uint8_t);
+		// Port action is highly variable based on application, typically this will not suitable for a static mapping
+		// uint8_t* HWMemoryMap;
+		// uint8_t* HWMemoryMapMask;
+		void (*HW_Write)(uint32_t, uint8_t);
+		uint8_t (*HW_Read)(uint32_t);
 
 		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
-		int ExternalDB;
+		uint32_t ExternalDB;
 
 		long TotalExecutedCycles;
-		int PRE_SRC;
-		int EI_pending;
+		uint32_t PRE_SRC;
+		uint32_t EI_pending;
 		// variables for executing instructions
-		int instr_pntr = 0;
-		int bus_pntr = 0;
-		int mem_pntr = 0;
-		int irq_pntr = 0;
-		int cur_instr [38] = {};		// fixed size - do not change at runtime
-		int BUSRQ [19] = {};         // fixed size - do not change at runtime
-		int MEMRQ [19] = {};         // fixed size - do not change at runtime
-		int IRQS;
+		uint32_t instr_pntr = 0;
+		uint32_t bus_pntr = 0;
+		uint32_t mem_pntr = 0;
+		uint32_t irq_pntr = 0;
+		uint32_t cur_instr [38] = {};		// fixed size - do not change at runtime
+		uint32_t BUSRQ [19] = {};         // fixed size - do not change at runtime
+		uint32_t MEMRQ [19] = {};         // fixed size - do not change at runtime
+		uint32_t IRQS;
 		bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		bool halted;
 		bool I_skip;
@@ -48,36 +60,36 @@ namespace MSXHawk
 		uint8_t Regs[36] = {};
 
 		// non-state variables
-		int Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		int Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
+		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
+		uint32_t Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
 
 
 		inline bool FlagCget() { return (Regs[5] & 0x01) != 0; };
-		inline void FlagCset(bool value) { Regs[5] = (int)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
+		inline void FlagCset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
 
 		inline bool FlagNget() { return (Regs[5] & 0x02) != 0; };
-		inline void FlagNset(bool value) { Regs[5] = (int)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
+		inline void FlagNset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
 
 		inline bool FlagPget() { return (Regs[5] & 0x04) != 0; };
-		inline void FlagPset(bool value) { Regs[5] = (int)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
+		inline void FlagPset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
 
 		inline bool Flag3get() { return (Regs[5] & 0x08) != 0; };
-		inline void Flag3set(bool value) { Regs[5] = (int)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
+		inline void Flag3set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
 
 		inline bool FlagHget() { return (Regs[5] & 0x10) != 0; };
-		inline void FlagHset(bool value) { Regs[5] = (int)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+		inline void FlagHset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
 
 		inline bool Flag5get() { return (Regs[5] & 0x20) != 0; };
-		inline void Flag5set(bool value) { Regs[5] = (int)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+		inline void Flag5set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
 
 		inline bool FlagZget() { return (Regs[5] & 0x40) != 0; };
-		inline void FlagZset(bool value) { Regs[5] = (int)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
+		inline void FlagZset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
 
 		inline bool FlagSget() { return (Regs[5] & 0x80) != 0; };
-		inline void FlagSset(bool value) { Regs[5] = (int)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
+		inline void FlagSset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
 
-		inline int RegPCget() { return (int)(Regs[0] | (Regs[1] << 8)); }
-		inline void RegPCset(int value) { Regs[0] = (int)(value & 0xFF); Regs[1] = (int)((value >> 8) & 0xFF); }
+		inline uint32_t RegPCget() { return (uint32_t)(Regs[0] | (Regs[1] << 8)); }
+		inline void RegPCset(uint32_t value) { Regs[0] = (uint32_t)(value & 0xFF); Regs[1] = (uint32_t)((value >> 8) & 0xFF); }
 
 		bool TableParity [256] = {};
 		bool IFF1;
@@ -92,10 +104,10 @@ namespace MSXHawk
 			nonMaskableInterrupt = value; 
 		}
 
-		int interruptMode;
+		uint32_t interruptMode;
 
-		inline int InterruptModeget() { return interruptMode; };
-		inline void InterruptModeset(int value)
+		inline uint32_t InterruptModeget() { return interruptMode; };
+		inline void InterruptModeset(uint32_t value)
 		{
 			if (value < 0 || value > 2) { /* add exception here */ }
 			interruptMode = value;
@@ -105,141 +117,141 @@ namespace MSXHawk
 
 		#pragma region Constant Declarations
 		// prefix related
-		const static int CBpre = 0;
-		const static int EXTDpre = 1;
-		const static int IXpre = 2;
-		const static int IYpre = 3;
-		const static int IXCBpre = 4;
-		const static int IYCBpre = 5;
-		const static int IXYprefetch = 6;
+		const static uint32_t CBpre = 0;
+		const static uint32_t EXTDpre = 1;
+		const static uint32_t IXpre = 2;
+		const static uint32_t IYpre = 3;
+		const static uint32_t IXCBpre = 4;
+		const static uint32_t IYCBpre = 5;
+		const static uint32_t IXYprefetch = 6;
 
 		// operations that can take place in an instruction
-		const static int IDLE = 0;
-		const static int OP = 1;
-		const static int OP_F = 2; // used for repeating operations
-		const static int HALT = 3;
-		const static int RD = 4;
-		const static int WR = 5;
-		const static int RD_INC = 6; // read and increment
-		const static int WR_INC = 7; // write and increment
-		const static int WR_DEC = 8; // write and increment (for stack pointer)
-		const static int TR = 9;
-		const static int TR16 = 10;
-		const static int ADD16 = 11;
-		const static int ADD8 = 12;
-		const static int SUB8 = 13;
-		const static int ADC8 = 14;
-		const static int SBC8 = 15;
-		const static int SBC16 = 16;
-		const static int ADC16 = 17;
-		const static int INC16 = 18;
-		const static int INC8 = 19;
-		const static int DEC16 = 20;
-		const static int DEC8 = 21;
-		const static int RLC = 22;
-		const static int RL = 23;
-		const static int RRC = 24;
-		const static int RR = 25;
-		const static int CPL = 26;
-		const static int DA = 27;
-		const static int SCF = 28;
-		const static int CCF = 29;
-		const static int AND8 = 30;
-		const static int XOR8 = 31;
-		const static int OR8 = 32;
-		const static int CP8 = 33;
-		const static int SLA = 34;
-		const static int SRA = 35;
-		const static int SRL = 36;
-		const static int SLL = 37;
-		const static int BIT = 38;
-		const static int RES = 39;
-		const static int SET = 40;
-		const static int EI = 41;
-		const static int DI = 42;
-		const static int EXCH = 43;
-		const static int EXX = 44;
-		const static int EXCH_16 = 45;
-		const static int PREFIX = 46;
-		const static int PREFETCH = 47;
-		const static int ASGN = 48;
-		const static int ADDS = 49; // signed 16 bit operation used in 2 instructions
-		const static int INT_MODE = 50;
-		const static int EI_RETN = 51;
-		const static int EI_RETI = 52; // reti has no delay in interrupt enable
-		const static int OUT = 53;
-		const static int IN = 54;
-		const static int NEG = 55;
-		const static int RRD = 56;
-		const static int RLD = 57;
-		const static int SET_FL_LD_R = 58;
-		const static int SET_FL_CP_R = 59;
-		const static int SET_FL_IR = 60;
-		const static int I_BIT = 61;
-		const static int HL_BIT = 62;
-		const static int FTCH_DB = 63;
-		const static int WAIT = 64; // enterred when reading or writing and FlagW is true
-		const static int RST = 65;
-		const static int REP_OP_I = 66;
-		const static int REP_OP_O = 67;
-		const static int IN_A_N_INC = 68;
-		const static int RD_INC_TR_PC = 69; // transfer WZ to PC after read
-		const static int WR_TR_PC = 70; // transfer WZ to PC after write
-		const static int OUT_INC = 71;
-		const static int IN_INC = 72;
-		const static int WR_INC_WA = 73; // A -> W after WR_INC
-		const static int RD_OP = 74;
-		const static int IORQ = 75;
+		const static uint32_t IDLE = 0;
+		const static uint32_t OP = 1;
+		const static uint32_t OP_F = 2; // used for repeating operations
+		const static uint32_t HALT = 3;
+		const static uint32_t RD = 4;
+		const static uint32_t WR = 5;
+		const static uint32_t RD_INC = 6; // read and increment
+		const static uint32_t WR_INC = 7; // write and increment
+		const static uint32_t WR_DEC = 8; // write and increment (for stack pointer)
+		const static uint32_t TR = 9;
+		const static uint32_t TR16 = 10;
+		const static uint32_t ADD16 = 11;
+		const static uint32_t ADD8 = 12;
+		const static uint32_t SUB8 = 13;
+		const static uint32_t ADC8 = 14;
+		const static uint32_t SBC8 = 15;
+		const static uint32_t SBC16 = 16;
+		const static uint32_t ADC16 = 17;
+		const static uint32_t INC16 = 18;
+		const static uint32_t INC8 = 19;
+		const static uint32_t DEC16 = 20;
+		const static uint32_t DEC8 = 21;
+		const static uint32_t RLC = 22;
+		const static uint32_t RL = 23;
+		const static uint32_t RRC = 24;
+		const static uint32_t RR = 25;
+		const static uint32_t CPL = 26;
+		const static uint32_t DA = 27;
+		const static uint32_t SCF = 28;
+		const static uint32_t CCF = 29;
+		const static uint32_t AND8 = 30;
+		const static uint32_t XOR8 = 31;
+		const static uint32_t OR8 = 32;
+		const static uint32_t CP8 = 33;
+		const static uint32_t SLA = 34;
+		const static uint32_t SRA = 35;
+		const static uint32_t SRL = 36;
+		const static uint32_t SLL = 37;
+		const static uint32_t BIT = 38;
+		const static uint32_t RES = 39;
+		const static uint32_t SET = 40;
+		const static uint32_t EI = 41;
+		const static uint32_t DI = 42;
+		const static uint32_t EXCH = 43;
+		const static uint32_t EXX = 44;
+		const static uint32_t EXCH_16 = 45;
+		const static uint32_t PREFIX = 46;
+		const static uint32_t PREFETCH = 47;
+		const static uint32_t ASGN = 48;
+		const static uint32_t ADDS = 49; // signed 16 bit operation used in 2 instructions
+		const static uint32_t INT_MODE = 50;
+		const static uint32_t EI_RETN = 51;
+		const static uint32_t EI_RETI = 52; // reti has no delay in interrupt enable
+		const static uint32_t OUT = 53;
+		const static uint32_t IN = 54;
+		const static uint32_t NEG = 55;
+		const static uint32_t RRD = 56;
+		const static uint32_t RLD = 57;
+		const static uint32_t SET_FL_LD_R = 58;
+		const static uint32_t SET_FL_CP_R = 59;
+		const static uint32_t SET_FL_IR = 60;
+		const static uint32_t I_BIT = 61;
+		const static uint32_t HL_BIT = 62;
+		const static uint32_t FTCH_DB = 63;
+		const static uint32_t WAIT = 64; // enterred when reading or writing and FlagW is true
+		const static uint32_t RST = 65;
+		const static uint32_t REP_OP_I = 66;
+		const static uint32_t REP_OP_O = 67;
+		const static uint32_t IN_A_N_INC = 68;
+		const static uint32_t RD_INC_TR_PC = 69; // transfer WZ to PC after read
+		const static uint32_t WR_TR_PC = 70; // transfer WZ to PC after write
+		const static uint32_t OUT_INC = 71;
+		const static uint32_t IN_INC = 72;
+		const static uint32_t WR_INC_WA = 73; // A -> W after WR_INC
+		const static uint32_t RD_OP = 74;
+		const static uint32_t IORQ = 75;
 
 		// registers
-		const static int PCl = 0;
-		const static int PCh = 1;
-		const static int SPl = 2;
-		const static int SPh = 3;
-		const static int A = 4;
-		const static int F = 5;
-		const static int B = 6;
-		const static int C = 7;
-		const static int D = 8;
-		const static int E = 9;
-		const static int H = 10;
-		const static int L = 11;
-		const static int W = 12;
-		const static int Z = 13;
-		const static int Aim = 14; // use this indicator for RLCA etc., since the Z flag is reset on those
-		const static int Ixl = 15;
-		const static int Ixh = 16;
-		const static int Iyl = 17;
-		const static int Iyh = 18;
-		const static int Int = 19;
-		const static int R = 20;
-		const static int I = 21;
-		const static int ZERO = 22; // it is convenient to have a register that is always zero, to reuse instructions
-		const static int ALU = 23; // This will be temporary arthimatic storage
+		const static uint32_t PCl = 0;
+		const static uint32_t PCh = 1;
+		const static uint32_t SPl = 2;
+		const static uint32_t SPh = 3;
+		const static uint32_t A = 4;
+		const static uint32_t F = 5;
+		const static uint32_t B = 6;
+		const static uint32_t C = 7;
+		const static uint32_t D = 8;
+		const static uint32_t E = 9;
+		const static uint32_t H = 10;
+		const static uint32_t L = 11;
+		const static uint32_t W = 12;
+		const static uint32_t Z = 13;
+		const static uint32_t Aim = 14; // use this indicator for RLCA etc., since the Z flag is reset on those
+		const static uint32_t Ixl = 15;
+		const static uint32_t Ixh = 16;
+		const static uint32_t Iyl = 17;
+		const static uint32_t Iyh = 18;
+		const static uint32_t INT = 19;
+		const static uint32_t R = 20;
+		const static uint32_t I = 21;
+		const static uint32_t ZERO = 22; // it is convenient to have a register that is always zero, to reuse instructions
+		const static uint32_t ALU = 23; // This will be temporary arthimatic storage
 		// shadow registers
-		const static int A_s = 24;
-		const static int F_s = 25;
-		const static int B_s = 26;
-		const static int C_s = 27;
-		const static int D_s = 28;
-		const static int E_s = 29;
-		const static int H_s = 30;
-		const static int L_s = 31;
-		const static int DB = 32;
-		const static int scratch = 33;
-		const static int IRQ_V = 34; // IRQ mode 1 vector
-		const static int NMI_V = 35; // NMI vector
+		const static uint32_t A_s = 24;
+		const static uint32_t F_s = 25;
+		const static uint32_t B_s = 26;
+		const static uint32_t C_s = 27;
+		const static uint32_t D_s = 28;
+		const static uint32_t E_s = 29;
+		const static uint32_t H_s = 30;
+		const static uint32_t L_s = 31;
+		const static uint32_t DB = 32;
+		const static uint32_t scratch = 33;
+		const static uint32_t IRQ_V = 34; // IRQ mode 1 vector
+		const static uint32_t NMI_V = 35; // NMI vector
 
 		// IO Contention Constants. Need to distinguish port access and normal memory accesses for zx spectrum
-		const static int BIO1 = 100;
-		const static int BIO2 = 101;
-		const static int BIO3 = 102;
-		const static int BIO4 = 103;
+		const static uint32_t BIO1 = 100;
+		const static uint32_t BIO2 = 101;
+		const static uint32_t BIO3 = 102;
+		const static uint32_t BIO4 = 103;
 
-		const static int WIO1 = 105;
-		const static int WIO2 = 106;
-		const static int WIO3 = 107;
-		const static int WIO4 = 108;
+		const static uint32_t WIO1 = 105;
+		const static uint32_t WIO2 = 106;
+		const static uint32_t WIO3 = 107;
+		const static uint32_t WIO4 = 108;
 		#pragma endregion
 
 		#pragma region Z80 functions
@@ -292,7 +304,10 @@ namespace MSXHawk
 				// Read the opcode of the next instruction	
 				//if (OnExecFetch != null) OnExecFetch(RegPC);
 				//if (TraceCallback != null) TraceCallback(State());
-				opcode = MemoryMap[RegPCget()];
+				bank_num = bank_offset = RegPCget();
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				opcode = MemoryMap[bank_num][bank_offset];
 				RegPCset(RegPCget() + 1);
 				FetchInstruction();
 
@@ -510,7 +525,10 @@ namespace MSXHawk
 					Regs[R] = ((Regs[R] & 0x80) | temp_R);
 				}
 
-				opcode = MemoryMap[RegPCget()];
+				bank_num = bank_offset = RegPCget();
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				opcode = MemoryMap[bank_num][bank_offset];
 				RegPCset(RegPCget() + 1);
 				FetchInstruction();
 				instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
@@ -848,16 +866,16 @@ namespace MSXHawk
 			return "";
 
 			/*
-			int bytes_read = 0;
+			uint32_t bytes_read = 0;
 
 			int* bytes_read_ptr = &bytes_read;
 
 			string disasm = disassemble ? Disassemble(RegPCget(), bytes_read_ptr) : "---";
 			string byte_code = "";
 
-			for (int i = 0; i < bytes_read; i++)
+			for (uint32_t i = 0; i < bytes_read; i++)
 			{
-				byte_code += $"{ReadMemory((int)(RegPC + i)):X2}";
+				byte_code += $"{ReadMemory((uint32_t)(RegPC + i)):X2}";
 				if (i < (bytes_read - 1))
 				{
 					byte_code += " ";
@@ -902,8 +920,8 @@ namespace MSXHawk
 		/// <summary>
 		/// Optimization method to set BUSRQ
 		/// </summary>		
-		void PopulateBUSRQ(int d0 = 0, int d1 = 0, int d2 = 0, int d3 = 0, int d4 = 0, int d5 = 0, int d6 = 0, int d7 = 0, int d8 = 0,
-			int d9 = 0, int d10 = 0, int d11 = 0, int d12 = 0, int d13 = 0, int d14 = 0, int d15 = 0, int d16 = 0, int d17 = 0, int d18 = 0)
+		void PopulateBUSRQ(uint32_t d0 = 0, uint32_t d1 = 0, uint32_t d2 = 0, uint32_t d3 = 0, uint32_t d4 = 0, uint32_t d5 = 0, uint32_t d6 = 0, uint32_t d7 = 0, uint32_t d8 = 0,
+			uint32_t d9 = 0, uint32_t d10 = 0, uint32_t d11 = 0, uint32_t d12 = 0, uint32_t d13 = 0, uint32_t d14 = 0, uint32_t d15 = 0, uint32_t d16 = 0, uint32_t d17 = 0, uint32_t d18 = 0)
 		{
 			BUSRQ[0] = d0; BUSRQ[1] = d1; BUSRQ[2] = d2;
 			BUSRQ[3] = d3; BUSRQ[4] = d4; BUSRQ[5] = d5;
@@ -917,8 +935,8 @@ namespace MSXHawk
 		/// <summary>
 		/// Optimization method to set MEMRQ
 		/// </summary>	
-		void PopulateMEMRQ(int d0 = 0, int d1 = 0, int d2 = 0, int d3 = 0, int d4 = 0, int d5 = 0, int d6 = 0, int d7 = 0, int d8 = 0,
-			int d9 = 0, int d10 = 0, int d11 = 0, int d12 = 0, int d13 = 0, int d14 = 0, int d15 = 0, int d16 = 0, int d17 = 0, int d18 = 0)
+		void PopulateMEMRQ(uint32_t d0 = 0, uint32_t d1 = 0, uint32_t d2 = 0, uint32_t d3 = 0, uint32_t d4 = 0, uint32_t d5 = 0, uint32_t d6 = 0, uint32_t d7 = 0, uint32_t d8 = 0,
+			uint32_t d9 = 0, uint32_t d10 = 0, uint32_t d11 = 0, uint32_t d12 = 0, uint32_t d13 = 0, uint32_t d14 = 0, uint32_t d15 = 0, uint32_t d16 = 0, uint32_t d17 = 0, uint32_t d18 = 0)
 		{
 			MEMRQ[0] = d0; MEMRQ[1] = d1; MEMRQ[2] = d2;
 			MEMRQ[3] = d3; MEMRQ[4] = d4; MEMRQ[5] = d5;
@@ -932,10 +950,10 @@ namespace MSXHawk
 		/// <summary>
 		/// Optimization method to set cur_instr
 		/// </summary>	
-		void PopulateCURINSTR(int d0 = 0, int d1 = 0, int d2 = 0, int d3 = 0, int d4 = 0, int d5 = 0, int d6 = 0, int d7 = 0, int d8 = 0,
-			int d9 = 0, int d10 = 0, int d11 = 0, int d12 = 0, int d13 = 0, int d14 = 0, int d15 = 0, int d16 = 0, int d17 = 0, int d18 = 0,
-			int d19 = 0, int d20 = 0, int d21 = 0, int d22 = 0, int d23 = 0, int d24 = 0, int d25 = 0, int d26 = 0, int d27 = 0, int d28 = 0,
-			int d29 = 0, int d30 = 0, int d31 = 0, int d32 = 0, int d33 = 0, int d34 = 0, int d35 = 0, int d36 = 0, int d37 = 0)
+		void PopulateCURINSTR(uint32_t d0 = 0, uint32_t d1 = 0, uint32_t d2 = 0, uint32_t d3 = 0, uint32_t d4 = 0, uint32_t d5 = 0, uint32_t d6 = 0, uint32_t d7 = 0, uint32_t d8 = 0,
+			uint32_t d9 = 0, uint32_t d10 = 0, uint32_t d11 = 0, uint32_t d12 = 0, uint32_t d13 = 0, uint32_t d14 = 0, uint32_t d15 = 0, uint32_t d16 = 0, uint32_t d17 = 0, uint32_t d18 = 0,
+			uint32_t d19 = 0, uint32_t d20 = 0, uint32_t d21 = 0, uint32_t d22 = 0, uint32_t d23 = 0, uint32_t d24 = 0, uint32_t d25 = 0, uint32_t d26 = 0, uint32_t d27 = 0, uint32_t d28 = 0,
+			uint32_t d29 = 0, uint32_t d30 = 0, uint32_t d31 = 0, uint32_t d32 = 0, uint32_t d33 = 0, uint32_t d34 = 0, uint32_t d35 = 0, uint32_t d36 = 0, uint32_t d37 = 0)
 		{
 			cur_instr[0] = d0; cur_instr[1] = d1; cur_instr[2] = d2;
 			cur_instr[3] = d3; cur_instr[4] = d4; cur_instr[5] = d5;
@@ -994,10 +1012,10 @@ namespace MSXHawk
 
 		void InitTableParity()
 		{
-			for (int i = 0; i < 256; ++i)
+			for (uint32_t i = 0; i < 256; ++i)
 			{
-				int Bits = 0;
-				for (int j = 0; j < 8; ++j)
+				uint32_t Bits = 0;
+				for (uint32_t j = 0; j < 8; ++j)
 				{
 					Bits += (i >> j) & 1;
 				}
@@ -1007,7 +1025,7 @@ namespace MSXHawk
 
 		void ResetRegisters()
 		{
-			for (int i = 0; i < 36; i++)
+			for (uint32_t i = 0; i < 36; i++)
 			{
 				Regs[i] = 0;
 			}
@@ -1048,7 +1066,7 @@ namespace MSXHawk
 		// For now assume a NOP is on the data bus, in which case no stack operations occur
 
 		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly 
-		void INTERRUPT_0(int src)
+		void INTERRUPT_0(uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1129,7 +1147,7 @@ namespace MSXHawk
 		// this contains the vectors of instrcution operations
 		// NOTE: This list is NOT confirmed accurate for each individual cycle
 
-		void INT_OP_IND(int operation, int src_l, int src_h)
+		void INT_OP_IND(uint32_t operation, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1145,7 +1163,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void BIT_OP_IND(int operation, int bit, int src_l, int src_h)
+		void BIT_OP_IND(uint32_t operation, uint32_t bit, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1165,7 +1183,7 @@ namespace MSXHawk
 		// This is where the strange behaviour in Flag bits 3 and 5 come from.
 		// normally WZ contain I* + n when doing I_BIT ops, but here we use that code path 
 		// even though WZ is not assigned to, letting it's value from other operations show through
-		void BIT_TE_IND(int operation, int bit, int src_l, int src_h)
+		void BIT_TE_IND(uint32_t operation, uint32_t bit, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1178,7 +1196,7 @@ namespace MSXHawk
 			IRQS = 5;
 		};
 
-		void REG_OP_IND_INC(int operation, int dest, int src_l, int src_h)
+		void REG_OP_IND_INC(uint32_t operation, uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1190,7 +1208,7 @@ namespace MSXHawk
 			IRQS = 4;
 		};
 
-		void REG_OP_IND(int operation, int dest, int src_l, int src_h)
+		void REG_OP_IND(uint32_t operation, uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, src_l, src_h,
@@ -1203,7 +1221,7 @@ namespace MSXHawk
 		};
 
 		// different because HL doesn't effect WZ
-		void REG_OP_IND_HL(int operation, int dest)
+		void REG_OP_IND_HL(uint32_t operation, uint32_t dest)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1215,7 +1233,7 @@ namespace MSXHawk
 			IRQS = 4;
 		};
 
-		void LD_16_IND_nn(int src_l, int src_h)
+		void LD_16_IND_nn(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1236,7 +1254,7 @@ namespace MSXHawk
 			IRQS = 13;
 		};
 
-		void LD_IND_16_nn(int dest_l, int dest_h)
+		void LD_IND_16_nn(uint32_t dest_l, uint32_t dest_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1257,7 +1275,7 @@ namespace MSXHawk
 			IRQS = 13;
 		};
 
-		void LD_8_IND_nn(int src)
+		void LD_8_IND_nn(uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1275,7 +1293,7 @@ namespace MSXHawk
 			IRQS = 10;
 		};
 
-		void LD_IND_8_nn(int dest)
+		void LD_IND_8_nn(uint32_t dest)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1293,7 +1311,7 @@ namespace MSXHawk
 			IRQS = 10;
 		};
 
-		void LD_8_IND(int dest_l, int dest_h, int src)
+		void LD_8_IND(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, dest_l, dest_h,
@@ -1306,7 +1324,7 @@ namespace MSXHawk
 		};
 
 		// seperate HL needed since it doesn't effect the WZ pair
-		void LD_8_IND_HL(int src)
+		void LD_8_IND_HL(uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1318,7 +1336,7 @@ namespace MSXHawk
 			IRQS = 4;
 		};
 
-		void LD_8_IND_IND(int dest_l, int dest_h, int src_l, int src_h)
+		void LD_8_IND_IND(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1333,7 +1351,7 @@ namespace MSXHawk
 			IRQS = 7;
 		};
 
-		void LD_IND_8_INC(int dest, int src_l, int src_h)
+		void LD_IND_8_INC(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1345,7 +1363,7 @@ namespace MSXHawk
 			IRQS = 4;
 		};
 
-		void LD_IND_16(int dest_l, int dest_h, int src_l, int src_h)
+		void LD_IND_16(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1360,7 +1378,7 @@ namespace MSXHawk
 			IRQS = 7;
 		};
 
-		void INC_8_IND(int src_l, int src_h)
+		void INC_8_IND(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1376,7 +1394,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void DEC_8_IND(int src_l, int src_h)
+		void DEC_8_IND(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1393,7 +1411,7 @@ namespace MSXHawk
 		};
 
 		// NOTE: WZ implied for the wollowing 3 functions
-		void I_INT_OP(int operation, int dest)
+		void I_INT_OP(uint32_t operation, uint32_t dest)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1409,7 +1427,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void I_BIT_OP(int operation, int bit, int dest)
+		void I_BIT_OP(uint32_t operation, uint32_t bit, uint32_t dest)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1425,7 +1443,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void I_BIT_TE(int bit)
+		void I_BIT_TE(uint32_t bit)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1438,7 +1456,7 @@ namespace MSXHawk
 			IRQS = 5;
 		};
 
-		void I_OP_n(int operation, int src_l, int src_h)
+		void I_OP_n(uint32_t operation, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1462,7 +1480,7 @@ namespace MSXHawk
 			IRQS = 16;
 		};
 
-		void I_OP_n_n(int src_l, int src_h)
+		void I_OP_n_n(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, src_l, src_h,
@@ -1482,7 +1500,7 @@ namespace MSXHawk
 			IRQS = 12;
 		};
 
-		void I_REG_OP_IND_n(int operation, int dest, int src_l, int src_h)
+		void I_REG_OP_IND_n(uint32_t operation, uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1502,7 +1520,7 @@ namespace MSXHawk
 			IRQS = 12;
 		};
 
-		void I_LD_8_IND_n(int dest_l, int dest_h, int src)
+		void I_LD_8_IND_n(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1522,7 +1540,7 @@ namespace MSXHawk
 			IRQS = 12;
 		};
 
-		void LD_OP_R(int operation, int repeat_instr)
+		void LD_OP_R(uint32_t operation, uint32_t repeat_instr)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1539,7 +1557,7 @@ namespace MSXHawk
 			IRQS = 9;
 		};
 
-		void CP_OP_R(int operation, int repeat_instr)
+		void CP_OP_R(uint32_t operation, uint32_t repeat_instr)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1556,7 +1574,7 @@ namespace MSXHawk
 			IRQS = 9;
 		};
 
-		void IN_OP_R(int operation, int repeat_instr)
+		void IN_OP_R(uint32_t operation, uint32_t repeat_instr)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1573,7 +1591,7 @@ namespace MSXHawk
 			IRQS = 9;
 		};
 
-		void OUT_OP_R(int operation, int repeat_instr)
+		void OUT_OP_R(uint32_t operation, uint32_t repeat_instr)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1591,7 +1609,7 @@ namespace MSXHawk
 		};
 
 		// this is an indirect change of a a 16 bit register with memory
-		void EXCH_16_IND_(int dest_l, int dest_h, int src_l, int src_h)
+		void EXCH_16_IND_(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1648,7 +1666,7 @@ namespace MSXHawk
 		};
 
 		// this exchanges 2 16 bit registers
-		void EXCH_16_(int dest_l, int dest_h, int src_l, int src_h)
+		void EXCH_16_(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(EXCH_16, dest_l, dest_h, src_l, src_h);
 
@@ -1657,7 +1675,7 @@ namespace MSXHawk
 			IRQS = 1;
 		};
 
-		void INC_16(int src_l, int src_h)
+		void INC_16(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(INC16, src_l, src_h,
 							IDLE,
@@ -1669,7 +1687,7 @@ namespace MSXHawk
 		};
 
 
-		void DEC_16(int src_l, int src_h)
+		void DEC_16(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(DEC16, src_l, src_h,
 							IDLE,
@@ -1682,7 +1700,7 @@ namespace MSXHawk
 
 		// this is done in two steps technically, but the flags don't work out using existing funcitons
 		// so let's use a different function since it's an internal operation anyway
-		void ADD_16(int dest_l, int dest_h, int src_l, int src_h)
+		void ADD_16(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, dest_l, dest_h,
@@ -1698,7 +1716,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void REG_OP(int operation, int dest, int src)
+		void REG_OP(uint32_t operation, uint32_t dest, uint32_t src)
 		{
 			PopulateCURINSTR(operation, dest, src);
 
@@ -1708,7 +1726,7 @@ namespace MSXHawk
 		};
 
 		// Operations using the I and R registers take one T-cycle longer
-		void REG_OP_IR(int operation, int dest, int src)
+		void REG_OP_IR(uint32_t operation, uint32_t dest, uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							SET_FL_IR, dest, src);
@@ -1725,7 +1743,7 @@ namespace MSXHawk
 			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
-								ASGN, B, (int)((Regs[B] - 1) & 0xFF),
+								ASGN, B, (uint32_t)((Regs[B] - 1) & 0xFF),
 								WAIT,
 								RD_INC, Z, PCl, PCh,
 								IDLE,
@@ -1742,7 +1760,7 @@ namespace MSXHawk
 			{
 				PopulateCURINSTR(IDLE,
 								IDLE,
-								ASGN, B, (int)((Regs[B] - 1) & 0xFF),
+								ASGN, B, (uint32_t)((Regs[B] - 1) & 0xFF),
 								WAIT,
 								RD_INC, ALU, PCl, PCh);
 
@@ -1938,7 +1956,7 @@ namespace MSXHawk
 			};
 		};
 
-		void INT_OP(int operation, int src)
+		void INT_OP(uint32_t operation, uint32_t src)
 		{
 			PopulateCURINSTR(operation, src);
 
@@ -1947,7 +1965,7 @@ namespace MSXHawk
 			IRQS = 1;
 		};
 
-		void BIT_OP(int operation, int bit, int src)
+		void BIT_OP(uint32_t operation, uint32_t bit, uint32_t src)
 		{
 			PopulateCURINSTR(operation, bit, src);
 
@@ -1956,7 +1974,7 @@ namespace MSXHawk
 			IRQS = 1;
 		};
 
-		void PUSH_(int src_l, int src_h)
+		void PUSH_(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							DEC16, SPl, SPh,
@@ -1973,7 +1991,7 @@ namespace MSXHawk
 		};
 
 
-		void POP_(int src_l, int src_h)
+		void POP_(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -1988,7 +2006,7 @@ namespace MSXHawk
 			IRQS = 7;
 		};
 
-		void RST_(int n)
+		void RST_(uint32_t n)
 		{
 			PopulateCURINSTR(IDLE,
 							DEC16, SPl, SPh,
@@ -2004,7 +2022,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void PREFIX_(int src)
+		void PREFIX_(uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -2018,7 +2036,7 @@ namespace MSXHawk
 			IRQS = -1; // prefix does not get interrupted
 		};
 
-		void PREFETCH_(int src)
+		void PREFETCH_(uint32_t src)
 		{
 			if (src == IXCBpre)
 			{
@@ -2067,7 +2085,7 @@ namespace MSXHawk
 			IRQS = 1;
 		};
 
-		void JP_16(int src_l, int src_h)
+		void JP_16(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(TR16, PCl, PCh, src_l, src_h);
 
@@ -2076,7 +2094,7 @@ namespace MSXHawk
 			IRQS = 1;
 		};
 
-		void LD_SP_16(int src_l, int src_h)
+		void LD_SP_16(uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -2103,7 +2121,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void OUT_REG_(int dest, int src)
+		void OUT_REG_(uint32_t dest, uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, C, B,
@@ -2132,7 +2150,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void IN_REG_(int dest, int src)
+		void IN_REG_(uint32_t dest, uint32_t src)
 		{
 			PopulateCURINSTR(IDLE,
 							TR16, Z, W, C, B,
@@ -2145,7 +2163,7 @@ namespace MSXHawk
 			IRQS = 5;
 		};
 
-		void REG_OP_16_(int op, int dest_l, int dest_h, int src_l, int src_h)
+		void REG_OP_16_(uint32_t op, uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			PopulateCURINSTR(IDLE,
 							IDLE,
@@ -2161,7 +2179,7 @@ namespace MSXHawk
 			IRQS = 8;
 		};
 
-		void INT_MODE_(int src)
+		void INT_MODE_(uint32_t src)
 		{
 			PopulateCURINSTR(INT_MODE, src);
 
@@ -3637,70 +3655,104 @@ namespace MSXHawk
 
 		#pragma region Operations
 
-		void Read_Func(int dest, int src_l, int src_h)
+		void Read_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = MemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			Regs[dest] = MemoryMap[bank_num][bank_offset];
+
 			Regs[DB] = Regs[dest];
 		}
 
-		void Read_INC_Func(int dest, int src_l, int src_h)
+		void Read_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = MemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			Regs[dest] = MemoryMap[bank_num][bank_offset];
+
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
 		}
 
-		void Read_INC_TR_PC_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void Read_INC_TR_PC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest_h] = MemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			bank_num = bank_offset = (uint32_t)(Regs[src_l] | (Regs[src_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			Regs[dest_h] = MemoryMap[bank_num][bank_offset];
+
 			Regs[DB] = Regs[dest_h];
 			INC16_Func(src_l, src_h);
 			TR16_Func(PCl, PCh, dest_l, dest_h);
 		}
 
-		void Write_Func(int dest_l, int dest_h, int src)
+		void Write_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			MemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
+
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
 		}
 
-		void Write_INC_Func(int dest_l, int dest_h, int src)
+		void Write_INC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			MemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] |= (MemoryMapMask[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] & (Regs[src] & 0xFF));
+
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+
 			INC16_Func(dest_l, dest_h);
 		}
 
-		void Write_DEC_Func(int dest_l, int dest_h, int src)
+		void Write_DEC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			MemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] |= (MemoryMapMask[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] & (Regs[src] & 0xFF));
+
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+
 			DEC16_Func(dest_l, dest_h);
 		}
 
-		void Write_TR_PC_Func(int dest_l, int dest_h, int src)
+		void Write_TR_PC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			MemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] |= (MemoryMapMask[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] & (Regs[src] & 0xFF));
+
+			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+
 			TR16_Func(PCl, PCh, Z, W);
 		}
 
-		void OUT_Func(int dest_l, int dest_h, int src)
+		void OUT_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			HWMemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
+			//HWMemoryMap[(uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
+			HW_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 		}
 
-		void OUT_INC_Func(int dest_l, int dest_h, int src)
+		void OUT_INC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			HWMemoryMap[(int)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
+			//HWMemoryMap[(uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
+			HW_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 			INC16_Func(dest_l, dest_h);
 		}
 
-		void IN_Func(int dest, int src_l, int src_h)
+		void IN_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HWMemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
 			FlagZset(Regs[dest] == 0);
@@ -3712,9 +3764,10 @@ namespace MSXHawk
 			Flag3set((Regs[dest] & 0x08) > 0);
 		}
 
-		void IN_INC_Func(int dest, int src_l, int src_h)
+		void IN_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HWMemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
 			FlagZset(Regs[dest] == 0);
@@ -3728,25 +3781,26 @@ namespace MSXHawk
 			INC16_Func(src_l, src_h);
 		}
 
-		void IN_A_N_INC_Func(int dest, int src_l, int src_h)
+		void IN_A_N_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			Regs[dest] = HWMemoryMap[(int)(Regs[src_l] | (Regs[src_h]) << 8)];
+			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
+			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
 		}
 
-		void TR_Func(int dest, int src)
+		void TR_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = Regs[src];
 		}
 
-		void TR16_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void TR16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Regs[dest_l] = Regs[src_l];
 			Regs[dest_h] = Regs[src_h];
 		}
 
-		void ADD16_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void ADD16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
 			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
@@ -3762,7 +3816,7 @@ namespace MSXHawk
 			Regs[dest_h] = (uint8_t)((temp & 0xFF00) >> 8);
 		}
 
-		void ADD8_Func(int dest, int src)
+		void ADD8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d += Regs[src];
@@ -3786,7 +3840,7 @@ namespace MSXHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void SUB8_Func(int dest, int src)
+		void SUB8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
@@ -3810,7 +3864,7 @@ namespace MSXHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void BIT_Func(int bit, int src)
+		void BIT_Func(uint32_t bit, uint32_t src)
 		{
 			FlagZset(!((Regs[src] & (1 << bit)) > 0));
 			FlagPset(FlagZget()); // special case
@@ -3824,7 +3878,7 @@ namespace MSXHawk
 		// When doing I* + n bit tests, flags 3 and 5 come from I* + n
 		// This cooresponds to the high byte of WZ
 		// This is the same for the (HL) bit tests, except that WZ were not assigned to before the test occurs
-		void I_BIT_Func(int bit, int src)
+		void I_BIT_Func(uint32_t bit, uint32_t src)
 		{
 			FlagZset(!((Regs[src] & (1 << bit)) > 0));
 			FlagPset(FlagZget()); // special case
@@ -3835,26 +3889,26 @@ namespace MSXHawk
 			Flag3set((Regs[W] & 0x08) > 0);
 		}
 
-		void SET_Func(int bit, int src)
+		void SET_Func(uint32_t bit, uint32_t src)
 		{
-			Regs[src] |= (int)(1 << bit);
+			Regs[src] |= (uint32_t)(1 << bit);
 		}
 
-		void RES_Func(int bit, int src)
+		void RES_Func(uint32_t bit, uint32_t src)
 		{
-			Regs[src] &= (int)(0xFF - (1 << bit));
+			Regs[src] &= (uint32_t)(0xFF - (1 << bit));
 		}
 
-		void ASGN_Func(int src, int val)
+		void ASGN_Func(uint32_t src, uint32_t val)
 		{
 			Regs[src] = val;
 		}
 
-		void SLL_Func(int src)
+		void SLL_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (int)(((Regs[src] << 1) & 0xFF) | 0x1);
+			Regs[src] = (uint32_t)(((Regs[src] << 1) & 0xFF) | 0x1);
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagZset(Regs[src] == 0);
@@ -3865,11 +3919,11 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void SLA_Func(int src)
+		void SLA_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 0x80) > 0);
 
-			Regs[src] = (int)((Regs[src] << 1) & 0xFF);
+			Regs[src] = (uint32_t)((Regs[src] << 1) & 0xFF);
 
 			FlagSset((Regs[src] & 0x80) > 0);
 			FlagZset(Regs[src] == 0);
@@ -3880,11 +3934,11 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void SRA_Func(int src)
+		void SRA_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 0x01) > 0);
 
-			temp = (int)(Regs[src] & 0x80); // MSB doesn't change in this operation
+			temp = (uint32_t)(Regs[src] & 0x80); // MSB doesn't change in this operation
 
 			Regs[src] = (uint8_t)((Regs[src] >> 1) | temp);
 
@@ -3897,7 +3951,7 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void SRL_Func(int src)
+		void SRL_Func(uint32_t src)
 		{
 			FlagCset((Regs[src] & 0x01) > 0);
 
@@ -3912,7 +3966,7 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void CPL_Func(int src)
+		void CPL_Func(uint32_t src)
 		{
 			Regs[src] = (uint8_t)((~Regs[src]) & 0xFF);
 
@@ -3922,7 +3976,7 @@ namespace MSXHawk
 			Flag5set((Regs[src] & 0x20) != 0);
 		}
 
-		void CCF_Func(int src)
+		void CCF_Func(uint32_t src)
 		{
 			FlagHset(FlagCget());
 			FlagCset(!FlagCget());
@@ -3931,7 +3985,7 @@ namespace MSXHawk
 			Flag5set((Regs[src] & 0x20) != 0);
 		}
 
-		void SCF_Func(int src)
+		void SCF_Func(uint32_t src)
 		{
 			FlagCset(true);
 			FlagHset(false);
@@ -3940,7 +3994,7 @@ namespace MSXHawk
 			Flag5set((Regs[src] & 0x20) != 0);
 		}
 
-		void AND8_Func(int dest, int src)
+		void AND8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)(Regs[dest] & Regs[src]);
 
@@ -3954,7 +4008,7 @@ namespace MSXHawk
 			FlagPset(TableParity[Regs[dest]]);
 		}
 
-		void OR8_Func(int dest, int src)
+		void OR8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)(Regs[dest] | Regs[src]);
 
@@ -3968,7 +4022,7 @@ namespace MSXHawk
 			FlagPset(TableParity[Regs[dest]]);
 		}
 
-		void XOR8_Func(int dest, int src)
+		void XOR8_Func(uint32_t dest, uint32_t src)
 		{
 			Regs[dest] = (uint8_t)((Regs[dest] ^ Regs[src]));
 
@@ -3982,7 +4036,7 @@ namespace MSXHawk
 			FlagPset(TableParity[Regs[dest]]);
 		}
 
-		void CP8_Func(int dest, int src)
+		void CP8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			Reg16_d -= Regs[src];
@@ -3990,7 +4044,7 @@ namespace MSXHawk
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -4004,7 +4058,7 @@ namespace MSXHawk
 			FlagSset(ans > 127);
 		}
 
-		void RRC_Func(int src)
+		void RRC_Func(uint32_t src)
 		{
 			bool imm = src == Aim;
 			if (imm) { src = A; }
@@ -4026,12 +4080,12 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void RR_Func(int src)
+		void RR_Func(uint32_t src)
 		{
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			carry = (int)(FlagCget() ? 0x80 : 0);
+			carry = (uint32_t)(FlagCget() ? 0x80 : 0);
 
 			FlagCset((Regs[src] & 0x01) > 0);
 
@@ -4050,12 +4104,12 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void RLC_Func(int src)
+		void RLC_Func(uint32_t src)
 		{
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			carry = (int)(((Regs[src] & 0x80) > 0) ? 1 : 0);
+			carry = (uint32_t)(((Regs[src] & 0x80) > 0) ? 1 : 0);
 			FlagCset((Regs[src] & 0x80) > 0);
 
 			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | carry);
@@ -4073,12 +4127,12 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void RL_Func(int src)
+		void RL_Func(uint32_t src)
 		{
 			bool imm = src == Aim;
 			if (imm) { src = A; }
 
-			carry = (int)(FlagCget() ? 1 : 0);
+			carry = (uint32_t)(FlagCget() ? 1 : 0);
 			FlagCset((Regs[src] & 0x80) > 0);
 
 			Regs[src] = (uint8_t)(((Regs[src] << 1) & 0xFF) | carry);
@@ -4096,14 +4150,14 @@ namespace MSXHawk
 			FlagNset(false);
 		}
 
-		void INC8_Func(int src)
+		void INC8_Func(uint32_t src)
 		{
 			Reg16_d = Regs[src];
 			Reg16_d += 1;
 
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -4120,14 +4174,14 @@ namespace MSXHawk
 			Flag5set((Regs[src] & 0x20) != 0);
 		}
 
-		void DEC8_Func(int src)
+		void DEC8_Func(uint32_t src)
 		{
 			Reg16_d = Regs[src];
 			Reg16_d -= 1;
 
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[src] & 0xF;
@@ -4144,7 +4198,7 @@ namespace MSXHawk
 			Flag5set((Regs[src] & 0x20) != 0);
 		}
 
-		void INC16_Func(int src_l, int src_h)
+		void INC16_Func(uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
@@ -4154,7 +4208,7 @@ namespace MSXHawk
 			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
-		void DEC16_Func(int src_l, int src_h)
+		void DEC16_Func(uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[src_l] | (Regs[src_h] << 8);
 
@@ -4164,7 +4218,7 @@ namespace MSXHawk
 			Regs[src_h] = (uint8_t)((Reg16_d & 0xFF00) >> 8);
 		}
 
-		void ADC8_Func(int dest, int src)
+		void ADC8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			carry = FlagCget() ? 1 : 0;
@@ -4174,7 +4228,7 @@ namespace MSXHawk
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -4190,7 +4244,7 @@ namespace MSXHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void SBC8_Func(int dest, int src)
+		void SBC8_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_d = Regs[dest];
 			carry = FlagCget() ? 1 : 0;
@@ -4200,7 +4254,7 @@ namespace MSXHawk
 			FlagCset((Reg16_d & 0x100) > 0);
 			FlagZset((Reg16_d & 0xFF) == 0);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 
 			// redo for half carry flag
 			Reg16_d = Regs[dest] & 0xF;
@@ -4216,9 +4270,9 @@ namespace MSXHawk
 			Regs[dest] = (uint8_t)ans;
 		}
 
-		void DA_Func(int src)
+		void DA_Func(uint32_t src)
 		{
-			int a = (Regs[src] & 0xFF);
+			uint32_t a = (Regs[src] & 0xFF);
 			temp = a;
 
 			if (FlagNget())
@@ -4246,7 +4300,7 @@ namespace MSXHawk
 		}
 
 		// used for signed operations
-		void ADDS_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void ADDS_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l];
 			Reg16_s = Regs[src_l];
@@ -4270,17 +4324,17 @@ namespace MSXHawk
 			}
 			else
 			{
-				temp = (int)(((Reg16_d & 0x100) > 0) ? 1 : 0);
+				temp = (uint32_t)(((Reg16_d & 0x100) > 0) ? 1 : 0);
 			}
 
-			int ans_l = (int)(Reg16_d & 0xFF);
+			uint32_t ans_l = (uint32_t)(Reg16_d & 0xFF);
 
 			Regs[dest_l] = (uint8_t)ans_l;
 			Regs[dest_h] += (uint8_t)temp;
 			Regs[dest_h] &= 0xFF;
 		}
 
-		void EXCH_16_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void EXCH_16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			temp = Regs[dest_l];
 			Regs[dest_l] = Regs[src_l];
@@ -4291,7 +4345,7 @@ namespace MSXHawk
 			Regs[src_h] = (uint8_t)temp;
 		}
 
-		void SBC_16_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void SBC_16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
 			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
@@ -4302,7 +4356,7 @@ namespace MSXHawk
 			FlagNset(true);
 			FlagCset((ans & 0x10000) > 0);
 			FlagPset((((Reg16_d & 0x8000) > 0) != ((Reg16_s & 0x8000) > 0)) && (((Reg16_d & 0x8000) > 0) != ((ans & 0x8000) > 0)));
-			FlagSset((int)(ans & 0xFFFF) > 32767);
+			FlagSset((uint32_t)(ans & 0xFFFF) > 32767);
 			FlagZset((ans & 0xFFFF) == 0);
 			Flag3set((ans & 0x0800) != 0);
 			Flag5set((ans & 0x2000) != 0);
@@ -4317,7 +4371,7 @@ namespace MSXHawk
 			Regs[dest_h] = (uint8_t)((ans >> 8) & 0xFF);
 		}
 
-		void ADC_16_Func(int dest_l, int dest_h, int src_l, int src_h)
+		void ADC_16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
 		{
 			Reg16_d = Regs[dest_l] | (Regs[dest_h] << 8);
 			Reg16_s = Regs[src_l] | (Regs[src_h] << 8);
@@ -4337,7 +4391,7 @@ namespace MSXHawk
 			Regs[dest_h] = (uint8_t)((ans >> 8) & 0xFF);
 		}
 
-		void NEG_8_Func(int src)
+		void NEG_8_Func(uint32_t src)
 		{
 			Reg16_d = 0;
 			Reg16_d -= Regs[src];
@@ -4347,7 +4401,7 @@ namespace MSXHawk
 			FlagPset(Regs[src] == 0x80);
 			FlagSset((Reg16_d & 0xFF) > 127);
 
-			ans = (int)(Reg16_d & 0xFF);
+			ans = (uint32_t)(Reg16_d & 0xFF);
 			// redo for half carry flag
 			Reg16_d = 0;
 			Reg16_d -= (Regs[src] & 0xF);
@@ -4358,7 +4412,7 @@ namespace MSXHawk
 			Flag5set((ans & 0x20) != 0);
 		}
 
-		void RRD_Func(int dest, int src)
+		void RRD_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_s = Regs[src];
 			Reg16_d = Regs[dest];
@@ -4375,7 +4429,7 @@ namespace MSXHawk
 			Flag5set((Reg16_s & 0x20) != 0);
 		}
 
-		void RLD_Func(int dest, int src)
+		void RLD_Func(uint32_t dest, uint32_t src)
 		{
 			Reg16_s = Regs[src];
 			Reg16_d = Regs[dest];
@@ -4405,11 +4459,11 @@ namespace MSXHawk
 		// set flags for CP/R
 		void SET_FL_CP_Func()
 		{
-			int Reg8_d = Regs[A];
-			int Reg8_s = Regs[ALU];
+			uint32_t Reg8_d = Regs[A];
+			uint32_t Reg8_s = Regs[ALU];
 
 			// get half carry flag
-			int temp = ((Reg8_d & 0xF) - (Reg8_s & 0xF));
+			uint32_t temp = ((Reg8_d & 0xF) - (Reg8_s & 0xF));
 			FlagHset((temp & 0x10) > 0);
 
 			temp = (Reg8_d - Reg8_s) & 0xFF;
@@ -4424,7 +4478,7 @@ namespace MSXHawk
 		}
 
 		// set flags for LD A, I/R
-		void SET_FL_IR_Func(int dest)
+		void SET_FL_IR_Func(uint32_t dest)
 		{
 			if (dest == A)
 			{
@@ -4447,7 +4501,7 @@ namespace MSXHawk
 
 		#pragma region Disassemble
 
-		static string Result(string format, int addr)
+		static string Result(string format, uint32_t addr)
 		{
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
@@ -4820,38 +4874,86 @@ namespace MSXHawk
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
 
-		string Disassemble(int addr, int* size)
+		string Disassemble(uint32_t addr, int* size)
 		{
-			int start_addr = addr;
-			int extra_inc = 0;
-			int A = opcode = MemoryMap[addr++];
+			uint32_t start_addr = addr;
+			uint32_t extra_inc = 0;
+
+			bank_num = bank_offset = addr & 0xFFFF;
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift)& high_mask;
+			addr++;
+
+			uint32_t A = MemoryMap[bank_num][bank_offset];
 			string format;
 			switch (A)
 			{
 			case 0xCB:
-				A = MemoryMap[addr++];
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
 				format = mnemonicsCB[A];
 				break;
 			case 0xDD:
-				A = MemoryMap[addr++];
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
 				switch (A)
 				{
-				case 0xCB: format = mnemonicsDDCB[MemoryMap[(int)(addr + 1)]]; extra_inc = 1; break;
-				case 0xED: format = mnemonicsED[A]; break;
-				default: format = mnemonicsDD[A]; break;
+				case 0xCB: 
+					bank_num = bank_offset = (addr + 1) & 0xFFFF;
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift)& high_mask;
+
+					format = mnemonicsDDCB[MemoryMap[bank_num][bank_offset]];
+					extra_inc = 1; 
+					break;
+				case 0xED: 
+					format = mnemonicsED[A]; 
+					break;
+				default: 
+					format = mnemonicsDD[A]; 
+					break;
 				}
 				break;
 			case 0xED:
-				A = MemoryMap[addr++];
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
 				format = mnemonicsED[A];
 				break;
 			case 0xFD:
-				A = MemoryMap[addr++];
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
 				switch (A)
 				{
-				case 0xCB: format = mnemonicsFDCB[MemoryMap[(int)(addr + 1)]]; extra_inc = 1; break;
-				case 0xED: format = mnemonicsED[A]; break;
-				default: format = mnemonicsFD[A]; break;
+				case 0xCB: 
+					bank_num = bank_offset = (addr + 1) & 0xFFFF;
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift)& high_mask;
+					
+					format = mnemonicsFDCB[MemoryMap[bank_num][bank_offset]];
+					extra_inc = 1; 
+					break;
+				case 0xED: 
+					format = mnemonicsED[A]; 
+					break;
+				default: 
+					format = mnemonicsFD[A]; 
+					break;
 				}
 				break;
 			default: format = mnemonics[A]; break;
@@ -4871,9 +4973,9 @@ namespace MSXHawk
 			return temp;
 		}
 		/*
-		string Disassemble(MemoryDomain m, uint addr, out int length)
+		string Disassemble(MemoryDomain m, uuint32_t addr, out uint32_t length)
 		{
-			string ret = Disassemble((int)addr, a = > m.PeekByte(a), out length);
+			string ret = Disassemble((uint32_t)addr, a = > m.PeekByte(a), out length);
 			return ret;
 		}
 		*/

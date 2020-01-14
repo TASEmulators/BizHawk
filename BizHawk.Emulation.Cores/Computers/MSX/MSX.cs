@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 
 			MSX_Pntr = LibMSX.MSX_create();
+			LibMSX.MSX_load(MSX_Pntr, RomData, (uint)RomData.Length, 0);
 
 			blip_L.SetRates(3579545, 44100);
 			blip_R.SetRates(3579545, 44100);

@@ -12,8 +12,8 @@ namespace MSXHawk
 	class SN76489sms
 	{
 	public:
-		int current_sample_L;
-		int current_sample_R;
+		uint32_t current_sample_L;
+		uint32_t current_sample_R;
 
 		SN76489sms()
 		{
@@ -23,23 +23,23 @@ namespace MSXHawk
 		uint8_t Chan_vol[4];
 		uint16_t Chan_tone[4];
 
-		int chan_sel;
+		uint32_t chan_sel;
 		bool vol_tone;
 		bool noise_type;
-		int noise_rate;
+		uint32_t noise_rate;
 		bool noise_bit;
 
 		bool A_L, B_L, C_L, noise_L;
 		bool A_R, B_R, C_R, noise_R;
 
-		int psg_clock;
+		uint32_t psg_clock;
 
-		int clock_A, clock_B, clock_C;
+		uint32_t clock_A, clock_B, clock_C;
 
 		bool A_up, B_up, C_up;
 
-		int noise_clock;
-		int noise;
+		uint32_t noise_clock;
+		uint32_t noise;
 
 		uint8_t stereo_panning;
 		const uint8_t LogScale[16] = { 255, 203, 161, 128, 102, 86, 64, 51, 40, 32, 26, 20, 16, 13, 10, 0 };

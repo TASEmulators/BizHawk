@@ -31,40 +31,40 @@ namespace MSXHawk
 
 		}
 
-		const int Command_VramRead = 0x00;
-		const int Command_VramWrite = 0x40;
-		const int Command_RegisterWrite = 0x80;
-		const int Command_CramWrite = 0xC0;
+		const uint32_t Command_VramRead = 0x00;
+		const uint32_t Command_VramWrite = 0x40;
+		const uint32_t Command_RegisterWrite = 0x80;
+		const uint32_t Command_CramWrite = 0xC0;
 
-		const int MODE_SMS = 1;
-		const int MODE_GG = 2;
+		const uint32_t MODE_SMS = 1;
+		const uint32_t MODE_GG = 2;
 
-		const int DISP_TYPE_NTSC = 1;
-		const int DISP_TYPE_PAL = 2;
+		const uint32_t DISP_TYPE_NTSC = 1;
+		const uint32_t DISP_TYPE_PAL = 2;
 
 		bool VdpWaitingForLatchuint8_t = true;
 		uint8_t VdpLatch;
 		uint8_t VdpBuffer;
 		uint16_t VdpAddress;
 		uint8_t VdpCommand;
-		int TmsMode = 4;
+		uint8_t HCounter = 0x90;
+		uint32_t TmsMode = 4;
 
 		bool VIntPending;
 		bool HIntPending;
-		int lineIntLinesRemaining;
+		uint32_t lineIntLinesRemaining;
 
-		int mode;
-		int DisplayType;
+		uint32_t mode;
+		uint32_t DisplayType;
 
 		bool SpriteLimit;
-		int IPeriod = 228;
-
-		int FrameHeight = 192;
-		int ScanLine;
-		uint8_t HCounter = 0x90;
-		int FrameBuffer[256 * 244];
-		int GameGearFrameBuffer[160 * 144];
-		int OverscanFrameBuffer[1];
+		
+		int32_t IPeriod = 228;
+		int32_t FrameHeight = 192;
+		int32_t FrameBuffer[256 * 244];
+		int32_t GameGearFrameBuffer[160 * 144];
+		int32_t OverscanFrameBuffer[1];
+		int32_t ScanLine;
 
 		inline bool Mode1Bit() { return (Registers[1] & 16) > 0; }
 		inline bool Mode2Bit() {return (Registers[0] & 2) > 0; }
@@ -79,19 +79,19 @@ namespace MSXHawk
 		inline bool EnableLargeSprites() { return (Registers[1] & 2) > 0; }
 		inline bool EnableFrameInterrupts() { return (Registers[1] & 32) > 0; }
 		inline bool DisplayOn() { return (Registers[1] & 64) > 0; }
-		int SpriteAttributeTableBase() { return ((Registers[5] >> 1) << 8) & 0x3FFF; }
-		int SpriteTileBase() { return (Registers[6] & 4) > 0 ? 256 : 0; }
+		uint32_t SpriteAttributeTableBase() { return ((Registers[5] >> 1) << 8) & 0x3FFF; }
+		uint32_t SpriteTileBase() { return (Registers[6] & 4) > 0 ? 256 : 0; }
 		uint8_t BackdropColor() { return (uint8_t)(16 + (Registers[7] & 15)); }
 
-		int NameTableBase;
-		int ColorTableBase;
-		int PatternGeneratorBase;
-		int SpritePatternGeneratorBase;
-		int TmsPatternNameTableBase;
-		int TmsSpriteAttributeBase;
+		uint32_t NameTableBase;
+		uint32_t ColorTableBase;
+		uint32_t PatternGeneratorBase;
+		uint32_t SpritePatternGeneratorBase;
+		uint32_t TmsPatternNameTableBase;
+		uint32_t TmsSpriteAttributeBase;
 
 		// preprocessed state assist stuff.
-		int Palette[32];
+		uint32_t Palette[32];
 		uint8_t PatternBuffer[0x8000];
 
 		uint8_t ScanlinePriorityBuffer[256];
@@ -192,7 +192,7 @@ namespace MSXHawk
 			if (VdpCommand == Command_CramWrite)
 			{
 				// Write Palette / CRAM
-				int mask = mode == MODE_SMS ? 0x1F : 0x3F;
+				uint32_t mask = mode == MODE_SMS ? 0x1F : 0x3F;
 				CRAM[VdpAddress & mask] = value;
 				UpdatePrecomputedPalette();
 			}
@@ -209,7 +209,7 @@ namespace MSXHawk
 		{
 			if (mode == MODE_SMS)
 			{
-				for (int i = 0; i < 32; i++)
+				for (uint32_t i = 0; i < 32; i++)
 				{
 					uint8_t value = CRAM[i];
 					uint8_t r = SMSPalXlatTable[(value & 0x03)];
@@ -220,7 +220,7 @@ namespace MSXHawk
 			}
 			else
 			{ // GameGear
-				for (int i = 0; i < 32; i++)
+				for (uint32_t i = 0; i < 32; i++)
 				{
 					uint16_t value = (uint16_t)((CRAM[(i * 2) + 1] << 8) | CRAM[(i * 2) + 0]);
 					uint8_t r = GGPalXlatTable[(value & 0x000F)];
@@ -231,12 +231,12 @@ namespace MSXHawk
 			}
 		}
 
-		int ARGB(uint8_t red, uint8_t green, uint8_t blue)
+		uint32_t ARGB(uint8_t red, uint8_t green, uint8_t blue)
 		{
-			return (int)((red << 0x10) | (green << 8) | blue | (0xFF << 0x18));
+			return (uint32_t)((red << 0x10) | (green << 8) | blue | (0xFF << 0x18));
 		}
 
-		int CalcNameTableBase()
+		uint32_t CalcNameTableBase()
 		{
 			if (FrameHeight == 192)
 				return 1024 * (Registers[2] & 0x0E);
@@ -294,7 +294,7 @@ namespace MSXHawk
 			}
 		}
 
-		void WriteRegister(int reg, uint8_t data)
+		void WriteRegister(uint32_t reg, uint8_t data)
 		{
 			Registers[reg] = data;
 
@@ -336,7 +336,7 @@ namespace MSXHawk
 		void UpdatePatternBuffer(uint16_t address, uint8_t value)
 		{
 			// writing one uint8_t affects 8 pixels due to stupid planar storage.
-			for (int i = 0; i < 8; i++)
+			for (uint32_t i = 0; i < 8; i++)
 			{
 				uint8_t colorBit = pow2[address % 4];
 				uint8_t sourceBit = pow2[7 - i];
@@ -429,7 +429,7 @@ namespace MSXHawk
 
 			if (ser.IsReader)
 			{
-				for (int i = 0; i < Registers.Length; i++)
+				for (uint32_t i = 0; i < Registers.Length; i++)
 					WriteRegister(i, Registers[i]);
 				for (uint16_t i = 0; i < VRAM.Length; i++)
 					UpdatePatternBuffer(i, VRAM[i]);
@@ -438,17 +438,17 @@ namespace MSXHawk
 		}
 		*/
 
-		int VirtualWidth = 160;
+		uint32_t VirtualWidth = 160;
 
-		int VirtualHeight = 160; // GameGear
+		uint32_t VirtualHeight = 160; // GameGear
 
-		int BufferHeight = 144; // GameGear
+		uint32_t BufferHeight = 144; // GameGear
 
-		int BackgroundColor() { return Palette[BackdropColor()]; }
+		uint32_t BackgroundColor() { return Palette[BackdropColor()]; }
 
-		int VsyncNumerator = 60;
+		uint32_t VsyncNumerator = 60;
 
-		int VsyncDenominator = 1;
+		uint32_t VsyncDenominator = 1;
 		#pragma endregion
 
 		#pragma region Mode4
@@ -460,20 +460,20 @@ namespace MSXHawk
 
 			if (DisplayOn() == false)
 			{
-				for (int x = 0; x < 256; x++)
+				for (uint32_t x = 0; x < 256; x++)
 					FrameBuffer[(ScanLine * 256) + x] = Palette[BackdropColor()];
 				return;
 			}
 
 			// Clear the priority buffer for this scanline
-			for (int i = 0; i < 256; i++) 
+			for (uint32_t i = 0; i < 256; i++) 
 			{
 				ScanlinePriorityBuffer[i] = 0;
 			}
 
-			int mapBase = NameTableBase;
+			uint32_t mapBase = NameTableBase;
 
-			int vertOffset = ScanLine + Registers[9];
+			uint32_t vertOffset = ScanLine + Registers[9];
 			if (FrameHeight == 192)
 			{
 				if (vertOffset >= 224)
@@ -486,9 +486,9 @@ namespace MSXHawk
 			}
 			uint8_t horzOffset = (HorizScrollLock() && ScanLine < 16) ? (uint8_t)0 : Registers[8];
 
-			int yTile = vertOffset / 8;
+			uint32_t yTile = vertOffset / 8;
 
-			for (int xTile = 0; xTile < 32; xTile++)
+			for (uint32_t xTile = 0; xTile < 32; xTile++)
 			{
 				if (xTile == 24 && VerticalScrollLock())
 				{
@@ -497,15 +497,15 @@ namespace MSXHawk
 				}
 
 				uint8_t PaletteBase = 0;
-				int tileInfo = VRAM[mapBase + ((yTile * 32) + xTile) * 2] | (VRAM[mapBase + (((yTile * 32) + xTile) * 2) + 1] << 8);
-				int tileNo = tileInfo & 0x01FF;
+				uint32_t tileInfo = VRAM[mapBase + ((yTile * 32) + xTile) * 2] | (VRAM[mapBase + (((yTile * 32) + xTile) * 2) + 1] << 8);
+				uint32_t tileNo = tileInfo & 0x01FF;
 				if ((tileInfo & 0x800) != 0)
 					PaletteBase = 16;
 				bool Priority = (tileInfo & 0x1000) != 0;
 				bool VFlip = (tileInfo & 0x400) != 0;
 				bool HFlip = (tileInfo & 0x200) != 0;
 
-				int yOfs = vertOffset & 7;
+				uint32_t yOfs = vertOffset & 7;
 				if (VFlip)
 					yOfs = 7 - yOfs;
 
@@ -523,7 +523,7 @@ namespace MSXHawk
 					if (Priority)
 					{
 						horzOffset -= 8;
-						for (int k = 0; k < 8; k++)
+						for (uint32_t k = 0; k < 8; k++)
 						{
 							if (PatternBuffer[(tileNo * 64) + (yOfs * 8) + k] != 0)
 								ScanlinePriorityBuffer[horzOffset] = 1;
@@ -545,7 +545,7 @@ namespace MSXHawk
 					if (Priority)
 					{
 						horzOffset -= 8;
-						for (int k = 7; k >= 0; k--)
+						for (int32_t k = 7; k >= 0; k--)
 						{
 							if (PatternBuffer[(tileNo * 64) + (yOfs * 8) + k] != 0)
 								ScanlinePriorityBuffer[horzOffset] = 1;
@@ -573,24 +573,24 @@ namespace MSXHawk
 				overflowHappens = false;
 			}
 
-			int SpriteBase = SpriteAttributeTableBase();
-			int SpriteHeight = EnableLargeSprites() ? 16 : 8;
+			int32_t SpriteBase = SpriteAttributeTableBase();
+			int32_t SpriteHeight = EnableLargeSprites() ? 16 : 8;
 
 			// Clear the sprite collision buffer for this scanline
-			for (int i = 0; i < 256; i++)
+			for (int32_t i = 0; i < 256; i++)
 			{
 				SpriteCollisionBuffer[i] = 0;
 			}
 
 			// Loop through these sprites and render the current scanline
-			int SpritesDrawnThisScanline = 0;
-			for (int i = 0; i < 64; i++)
+			int32_t SpritesDrawnThisScanline = 0;
+			for (int32_t i = 0; i < 64; i++)
 			{
-				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
+				int32_t x = VRAM[SpriteBase + 0x80 + (i * 2)];
 				if (ShiftSpritesLeft8Pixels())
 					x -= 8;
 
-				int y = VRAM[SpriteBase + i] + 1;
+				int32_t y = VRAM[SpriteBase + i] + 1;
 				if (y == 209 && FrameHeight == 192)
 					break; // 208 is special terminator sprite (in 192-line mode)
 				if (y >= (EnableLargeSprites() ? 240 : 248))
@@ -608,14 +608,14 @@ namespace MSXHawk
 						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
 				}
 
-				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
+				int32_t tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
 				if (EnableLargeSprites())
 					tileNo &= 0xFE;
 				tileNo += SpriteTileBase();
 
-				int ys = ScanLine - y;
+				int32_t ys = ScanLine - y;
 
-				for (int xs = 0; xs < 8 && x + xs < 256; xs++)
+				for (int32_t xs = 0; xs < 8 && x + xs < 256; xs++)
 				{
 					uint8_t color = PatternBuffer[(tileNo * 64) + (ys * 8) + xs];
 					if (color != 0 && x + xs >= 0)
@@ -653,24 +653,24 @@ namespace MSXHawk
 				overflowHappens = false;
 			}
 
-			int SpriteBase = SpriteAttributeTableBase();
-			int SpriteHeight = EnableLargeSprites() ? 16 : 8;
+			int32_t SpriteBase = SpriteAttributeTableBase();
+			int32_t SpriteHeight = EnableLargeSprites() ? 16 : 8;
 
 			// Clear the sprite collision buffer for this scanline
-			for (int i = 0; i < 256; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				SpriteCollisionBuffer[i] = 0;
 			}
 
 			// Loop through these sprites and render the current scanline
-			int SpritesDrawnThisScanline = 0;
-			for (int i = 0; i < 64; i++)
+			int32_t SpritesDrawnThisScanline = 0;
+			for (int32_t i = 0; i < 64; i++)
 			{
-				int x = VRAM[SpriteBase + 0x80 + (i * 2)];
+				int32_t x = VRAM[SpriteBase + 0x80 + (i * 2)];
 				if (ShiftSpritesLeft8Pixels())
 					x -= 8;
 
-				int y = VRAM[SpriteBase + i] + 1;
+				int32_t y = VRAM[SpriteBase + i] + 1;
 				if (y == 209 && FrameHeight == 192)
 					break; // terminator sprite
 				if (y >= (EnableLargeSprites() ? 240 : 248))
@@ -688,14 +688,14 @@ namespace MSXHawk
 						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
 				}
 
-				int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
+				int32_t tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
 				if (EnableLargeSprites())
 					tileNo &= 0xFE;
 				tileNo += SpriteTileBase();
 
-				int ys = ScanLine - y;
+				int32_t ys = ScanLine - y;
 
-				for (int xs = 0; xs < 16 && x + xs < 256; xs++)
+				for (int32_t xs = 0; xs < 16 && x + xs < 256; xs++)
 				{
 					uint8_t color = PatternBuffer[(tileNo * 64) + ((ys / 2) * 8) + (xs / 2)];
 					if (color != 0 && x + xs >= 0)
@@ -722,16 +722,16 @@ namespace MSXHawk
 			if (!LeftBlanking() || ScanLine >= FrameHeight || !render)
 				return;
 
-			int ofs = ScanLine * 256;
-			for (int x = 0; x < 8; x++)
+			int32_t ofs = ScanLine * 256;
+			for (int32_t x = 0; x < 8; x++)
 				FrameBuffer[ofs++] = Palette[BackdropColor()];
 		}
 
-		int OverscanFrameWidth, OverscanFrameHeight;
-		int overscanTop;
-		int overscanBottom;
-		int overscanLeft;
-		int overscanRight;
+		int32_t OverscanFrameWidth, OverscanFrameHeight;
+		int32_t overscanTop;
+		int32_t overscanBottom;
+		int32_t overscanLeft;
+		int32_t overscanRight;
 
 		/*
 		void ProcessOverscan()
@@ -762,28 +762,28 @@ namespace MSXHawk
 			}
 
 			// Top overscan
-			for (int y = 0; y < overscanTop; y++)
-				for (int x = 0; x < OverscanFrameWidth; x++)
+			for (uint32_t y = 0; y < overscanTop; y++)
+				for (uint32_t x = 0; x < OverscanFrameWidth; x++)
 					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor();
 
 			// Bottom overscan
-			for (int y = overscanTop + 192; y < OverscanFrameHeight; y++)
-				for (int x = 0; x < OverscanFrameWidth; x++)
+			for (uint32_t y = overscanTop + 192; y < OverscanFrameHeight; y++)
+				for (uint32_t x = 0; x < OverscanFrameWidth; x++)
 					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor();
 
 			// Left overscan
-			for (int y = overscanTop; y < overscanTop + 192; y++)
-				for (int x = 0; x < overscanLeft; x++)
+			for (uint32_t y = overscanTop; y < overscanTop + 192; y++)
+				for (uint32_t x = 0; x < overscanLeft; x++)
 					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor();
 
 			// Right overscan
-			for (int y = overscanTop; y < overscanTop + 192; y++)
-				for (int x = overscanLeft + 256; x < OverscanFrameWidth; x++)
+			for (uint32_t y = overscanTop; y < overscanTop + 192; y++)
+				for (uint32_t x = overscanLeft + 256; x < OverscanFrameWidth; x++)
 					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor();
 
 			// Active display area
-			for (int y = 0; y < 192; y++)
-				for (int x = 0; x < 256; x++)
+			for (uint32_t y = 0; y < 192; y++)
+				for (uint32_t x = 0; x < 256; x++)
 					OverscanFrameBuffer[((y + overscanTop) * OverscanFrameWidth) + overscanLeft + x] = FrameBuffer[y * 256 + x];
 		}
 		*/
@@ -792,54 +792,54 @@ namespace MSXHawk
 		// Handles GG clipping or highlighting
 		void ProcessGGScreen()
 		{
-			int yStart = (FrameHeight - 144) / 2;
-			for (int y = 0; y < 144; y++)
-				for (int x = 0; x < 160; x++)
+			uint32_t yStart = (FrameHeight - 144) / 2;
+			for (uint32_t y = 0; y < 144; y++)
+				for (uint32_t x = 0; x < 160; x++)
 					GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
 			/*
 			if (Sms.Settings.HighlightActiveDisplayRegion && Sms.Settings.ShowClippedRegions)
 			{
 				// Top 24 scanlines
-				for (int y = 0; y < 24; y++)
+				for (uint32_t y = 0; y < 24; y++)
 				{
-					for (int x = 0; x < 256; x++)
+					for (uint32_t x = 0; x < 256; x++)
 					{
-						int frameOffset = (y * 256) + x;
-						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-						FrameBuffer[frameOffset] = (int)(p | 0x80000000);
+						uint32_t frameOffset = (y * 256) + x;
+						uint32_t p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (uint32_t)(p | 0x80000000);
 					}
 				}
 
 				// Bottom 24 scanlines
-				for (int y = 168; y < 192; y++)
+				for (uint32_t y = 168; y < 192; y++)
 				{
-					for (int x = 0; x < 256; x++)
+					for (uint32_t x = 0; x < 256; x++)
 					{
-						int frameOffset = (y * 256) + x;
-						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-						FrameBuffer[frameOffset] = (int)(p | 0x80000000);
+						uint32_t frameOffset = (y * 256) + x;
+						uint32_t p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (uint32_t)(p | 0x80000000);
 					}
 				}
 
 				// Left 48 pixels
-				for (int y = 24; y < 168; y++)
+				for (uint32_t y = 24; y < 168; y++)
 				{
-					for (int x = 0; x < 48; x++)
+					for (uint32_t x = 0; x < 48; x++)
 					{
-						int frameOffset = (y * 256) + x;
-						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-						FrameBuffer[frameOffset] = (int)(p | 0x80000000);
+						uint32_t frameOffset = (y * 256) + x;
+						uint32_t p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (uint32_t)(p | 0x80000000);
 					}
 				}
 
 				// Right 48 pixels
-				for (int y = 24; y < 168; y++)
+				for (uint32_t y = 24; y < 168; y++)
 				{
-					for (int x = 208; x < 256; x++)
+					for (uint32_t x = 208; x < 256; x++)
 					{
-						int frameOffset = (y * 256) + x;
-						int p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
-						FrameBuffer[frameOffset] = (int)(p | 0x80000000);
+						uint32_t frameOffset = (y * 256) + x;
+						uint32_t p = (FrameBuffer[frameOffset] >> 1) & 0x7F7F7F7F;
+						FrameBuffer[frameOffset] = (uint32_t)(p | 0x80000000);
 					}
 				}
 			}
@@ -849,7 +849,7 @@ namespace MSXHawk
 
 		#pragma region ModeTMS
 
-		unsigned int PaletteTMS9918[16]
+		uint32_t PaletteTMS9918[16]
 		{
 			0xFF000000,
 			0xFF000000,
@@ -876,28 +876,28 @@ namespace MSXHawk
 
 			if (DisplayOn() == false)
 			{
-				for (int i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
+				for (int32_t i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
 				{
 					FrameBuffer[i] = 0;
 				}
 				return;
 			}
 
-			int yc = ScanLine / 8;
-			int yofs = ScanLine % 8;
-			int FrameBufferOffset = ScanLine * 256;
-			int PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
-			int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			int32_t yc = ScanLine / 8;
+			int32_t yofs = ScanLine % 8;
+			int32_t FrameBufferOffset = ScanLine * 256;
+			int32_t PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
+			int32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
-			for (int xc = 0; xc < 32; xc++)
+			for (int32_t xc = 0; xc < 32; xc++)
 			{
-				int pn = VRAM[PatternNameOffset++];
-				int pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
-				int colorEntry = VRAM[ColorTableBase + (pn / 8)];
-				int fgIndex = (colorEntry >> 4) & 0x0F;
-				int bgIndex = colorEntry & 0x0F;
-				int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+				int32_t pn = VRAM[PatternNameOffset++];
+				int32_t pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
+				int32_t colorEntry = VRAM[ColorTableBase + (pn / 8)];
+				int32_t fgIndex = (colorEntry >> 4) & 0x0F;
+				int32_t bgIndex = colorEntry & 0x0F;
+				int32_t fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				int32_t bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x80) > 0) ? fgColor : bgColor) : 0;
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x40) > 0) ? fgColor : bgColor) : 0;
@@ -917,30 +917,30 @@ namespace MSXHawk
 
 			if (DisplayOn() == false)
 			{
-				for (int i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
+				for (int32_t i = ScanLine * 256; i < (ScanLine * 256 + 256); i++)
 				{
 					FrameBuffer[i] = 0;
 				}
 				return;
 			}
 
-			int yrow = ScanLine / 8;
-			int yofs = ScanLine % 8;
-			int FrameBufferOffset = ScanLine * 256;
-			int PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
-			int PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);// +((yrow / 8) * 0x100);
-			int ColorOffset = (ColorTableBase & 0x2000);// +((yrow / 8) * 0x100);
-			int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			int32_t yrow = ScanLine / 8;
+			int32_t yofs = ScanLine % 8;
+			int32_t FrameBufferOffset = ScanLine * 256;
+			int32_t PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
+			int32_t PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);// +((yrow / 8) * 0x100);
+			int32_t ColorOffset = (ColorTableBase & 0x2000);// +((yrow / 8) * 0x100);
+			int32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
-			for (int xc = 0; xc < 32; xc++)
+			for (int32_t xc = 0; xc < 32; xc++)
 			{
-				int pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
-				int pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
-				int colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
-				int fgIndex = (colorEntry >> 4) & 0x0F;
-				int bgIndex = colorEntry & 0x0F;
-				int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+				int32_t pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
+				int32_t pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
+				int32_t colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
+				int32_t fgIndex = (colorEntry >> 4) & 0x0F;
+				int32_t bgIndex = colorEntry & 0x0F;
+				int32_t fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				int32_t bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x80) > 0) ? fgColor : bgColor) : 0;
 				FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x40) > 0) ? fgColor : bgColor) : 0;
@@ -966,29 +966,29 @@ namespace MSXHawk
 
 		void RenderTmsSpritesStandard(bool show)
 		{
-			for (int i = 0; i < 256; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				ScanlinePriorityBuffer[i] = 0;
 			}
-			for (int i = 0; i < 256; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				SpriteCollisionBuffer[i] = 0;
 			}
 
 			bool LargeSprites = EnableLargeSprites();
 
-			int SpriteSize = 8;
+			int32_t SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;
-			const int OneCellSize = 8;
+			const int32_t OneCellSize = 8;
 
-			int NumSpritesOnScanline = 0;
-			for (int i = 0; i < 32; i++)
+			int32_t NumSpritesOnScanline = 0;
+			for (int32_t i = 0; i < 32; i++)
 			{
-				int SpriteBase = TmsSpriteAttributeBase + (i * 4);
-				int y = VRAM[SpriteBase++];
-				int x = VRAM[SpriteBase++];
-				int Pattern = VRAM[SpriteBase++];
-				int Color = VRAM[SpriteBase];
+				int32_t SpriteBase = TmsSpriteAttributeBase + (i * 4);
+				int32_t y = VRAM[SpriteBase++];
+				int32_t x = VRAM[SpriteBase++];
+				int32_t Pattern = VRAM[SpriteBase++];
+				int32_t Color = VRAM[SpriteBase];
 
 				if (y == 208) break; // terminator sprite
 				if (y > 224) y -= 256; // sprite Y wrap
@@ -999,13 +999,13 @@ namespace MSXHawk
 				if (++NumSpritesOnScanline == 5)
 				{
 					Statusuint8_t &= 0xE0;    // Clear FS0-FS4 bits
-					Statusuint8_t |= (uint8_t)i; // set 5th sprite index
+					Statusuint8_t |= (int8_t)i; // set 5th sprite index
 					Statusuint8_t |= 0x40;    // set overflow bit
 					break;
 				}
 
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-uint8_t alignment
-				int SpriteLine = ScanLine - y;
+				int32_t SpriteLine = ScanLine - y;
 
 				// pv contains the VRAM uint8_t holding the pattern data for this character at this scanline.
 				// each uint8_t contains the pattern data for each the 8 pixels on this line.
@@ -1013,7 +1013,7 @@ namespace MSXHawk
 
 				uint8_t pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
 
-				for (int xp = 0; xp < SpriteSize && x + xp < 256; xp++)
+				for (int32_t xp = 0; xp < SpriteSize && x + xp < 256; xp++)
 				{
 					if (x + xp < 0) continue;
 					if (LargeSprites && xp == OneCellSize)
@@ -1038,30 +1038,30 @@ namespace MSXHawk
 
 		void RenderTmsSpritesDouble(bool show)
 		{
-			for (int i = 0; i < 256; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				ScanlinePriorityBuffer[i] = 0;
 			}
-			for (int i = 0; i < 256; i++)
+			for (uint32_t i = 0; i < 256; i++)
 			{
 				SpriteCollisionBuffer[i] = 0;
 			}
 
 			bool LargeSprites = EnableLargeSprites();
 
-			int SpriteSize = 8;
+			int32_t SpriteSize = 8;
 			if (LargeSprites) SpriteSize *= 2;
 			SpriteSize *= 2;  // because sprite magnification
-			const int OneCellSize = 16; // once 8-pixel cell, doubled, will take 16 pixels
+			const int32_t OneCellSize = 16; // once 8-pixel cell, doubled, will take 16 pixels
 
-			int NumSpritesOnScanline = 0;
-			for (int i = 0; i < 32; i++)
+			int32_t NumSpritesOnScanline = 0;
+			for (int32_t i = 0; i < 32; i++)
 			{
-				int SpriteBase = TmsSpriteAttributeBase + (i * 4);
-				int y = VRAM[SpriteBase++];
-				int x = VRAM[SpriteBase++];
-				int Pattern = VRAM[SpriteBase++];
-				int Color = VRAM[SpriteBase];
+				int32_t SpriteBase = TmsSpriteAttributeBase + (i * 4);
+				int32_t y = VRAM[SpriteBase++];
+				int32_t x = VRAM[SpriteBase++];
+				int32_t Pattern = VRAM[SpriteBase++];
+				int32_t Color = VRAM[SpriteBase];
 
 				if (y == 208) break; // terminator sprite
 				if (y > 224) y -= 256; // sprite Y wrap
@@ -1078,12 +1078,12 @@ namespace MSXHawk
 				}
 
 				if (LargeSprites) Pattern &= 0xFC; // 16x16 sprites forced to 4-uint8_t alignment
-				int SpriteLine = ScanLine - y;
+				int32_t SpriteLine = ScanLine - y;
 				SpriteLine /= 2; // because of sprite magnification
 
 				uint8_t pv = VRAM[SpritePatternGeneratorBase + (Pattern * 8) + SpriteLine];
 
-				for (int xp = 0; xp < SpriteSize && x + xp < 256; xp++)
+				for (int32_t xp = 0; (xp < SpriteSize) && ((x + xp) < 256); xp++)
 				{
 					if (x + xp < 0) continue;
 					if (LargeSprites && xp == OneCellSize)
