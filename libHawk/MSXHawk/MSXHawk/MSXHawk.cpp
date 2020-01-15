@@ -29,3 +29,9 @@ MSXHAWK_EXPORT void MSX_load(MSXCore* p, uint8_t* rom, unsigned int size, int ma
 	p->Load_ROM(rom, size, mapper);
 }
 
+// advance a frame
+MSXHAWK_EXPORT void MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, bool render, bool sound)
+{
+	p->FrameAdvance(ctrl1, ctrl2, render, sound);
+}
+

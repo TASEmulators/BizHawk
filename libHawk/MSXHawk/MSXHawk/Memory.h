@@ -28,7 +28,24 @@ namespace MSXHawk
 		uint32_t rom_mapper;
 		uint8_t ram[0x2000];
 
+		bool PortDEEnabled = false;
+		bool lagged;
+		bool start_pressed;
+
+		uint8_t controller_byte_1, controller_byte_2;
+
+		uint8_t Port01 = 0xFF;
+		uint8_t Port02 = 0xFF;
+		uint8_t Port03 = 0x00;
+		uint8_t Port04 = 0xFF;
+		uint8_t Port05 = 0x00;
+		uint8_t Port3E = 0xAF;
+		uint8_t Port3F = 0xFF;
+		uint8_t PortDE = 0x00;
+
 		uint8_t cart_ram[0x8000];
+
+		uint8_t reg_FFFC, reg_FFFD, reg_FFFE, reg_FFFF;
 
 		void Load_ROM(uint8_t* ext_rom, uint32_t ext_rom_size, uint32_t ext_rom_mapper)
 		{
@@ -47,15 +64,17 @@ namespace MSXHawk
 			remap_RAM();
 		}
 
-		uint8_t HardwareRead(uint32_t value)
-		{
-			return 0;
-		}
+		uint8_t HardwareRead(uint32_t value);
 
-		void HardwareWrite(uint32_t addr, uint8_t value)
-		{
+		void HardwareWrite(uint32_t addr, uint8_t value);
 
-		}
+		void remap_ROM_0();
+
+		void remap_ROM_1();
+
+		void remap_ROM_2();
+
+		void remap_RAM();
 
 		void MemoryWrite(uint32_t addr, uint8_t value)
 		{
@@ -81,14 +100,51 @@ namespace MSXHawk
 			}
 		}
 
-		uint8_t reg_FFFC, reg_FFFD, reg_FFFE, reg_FFFF;
+		uint8_t ReadPort0()
+		{
+			lagged = false;
 
-		void remap_ROM_0();
+			uint8_t value = 0xFF;
+			if (start_pressed)
+			{
+				value ^= 0x80;
+			}
 
-		void remap_ROM_1();
+			return value;
+		}
 
-		void remap_ROM_2();
+		uint8_t ReadControls1()
+		{
+			lagged = false;
+			uint8_t value = 0xFF;
 
-		void remap_RAM();
+			value &= ~(controller_byte_1 & 0xCF);
+			value &= ~(controller_byte_2 & 0x30);
+
+			return value;
+		}
+
+		uint8_t ReadControls2()
+		{
+			lagged = false;
+			uint8_t value = 0xFF;
+
+			value &= ~(controller_byte_2 & 0xF);
+
+			if ((Port3F & 0x0F) == 5)
+			{
+				if (Port3F >> 4 == 0x0F)
+				{
+					value |= 0xC0;
+				}
+					
+				else
+				{
+					value &= 0x3F;
+				}					
+			}
+
+			return value;
+		}
 	};
 }

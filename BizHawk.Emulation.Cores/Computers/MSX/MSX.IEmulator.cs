@@ -21,29 +21,10 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
-			_lagged = true;
+
 			_frame++;
-			/*
-			if (Tracer.Enabled)
-			{
 
-			}
-			else
-			{
-
-			}
-			*/
-			if (_lagged)
-			{
-				_lagCount++;
-				_isLag = true;
-			}
-			else
-			{
-				_isLag = false;
-			}
-
-			return true;
+			return LibMSX.MSX_frame_advance(MSX_Pntr, 0, 0, true, true);
 		}
 
 		public int Frame => _frame;
@@ -154,11 +135,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
-
-		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
-		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
-
-		public uint[] color_palette = new uint[4];
 
 		#endregion
 	}

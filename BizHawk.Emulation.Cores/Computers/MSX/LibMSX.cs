@@ -27,5 +27,17 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int MSX_load(IntPtr core, byte[] romdata, uint length, int mapper);
+
+		/// <summary>
+		/// Advance a frame and send controller data.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="ctrl1">controller data for player 1</param>
+		/// <param name="ctrl2">controller data for player 2</param>
+		/// <param name="render">length of romdata in bytes</param>
+		/// <param name="sound">Mapper number to load core with</param>
+		/// <returns>0 on success, negative value on failure.</returns>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool MSX_frame_advance(IntPtr core, byte ctrl1, byte ctrl2, bool render, bool sound);
 	}
 }
