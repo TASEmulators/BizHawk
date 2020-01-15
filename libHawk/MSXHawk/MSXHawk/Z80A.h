@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include <cstdint>
 #include <iomanip>
@@ -9,11 +7,17 @@ using namespace std;
 
 namespace MSXHawk
 {
+	class MemoryManager;
+	
 	class Z80A
 	{
 	public:
 
 		#pragma region Variable Declarations
+
+		// pointer to controlling memory manager goes here
+		// this will be iplementation dependent
+		MemoryManager* mem_ctrl;
 		
 		// Memory is usually mostly static, so it is efficient to access it with a pointer and write mask
 		// the size of the pointer matrix and masks is system dependent.
@@ -31,8 +35,9 @@ namespace MSXHawk
 		// Port action is highly variable based on application, typically this will not suitable for a static mapping
 		// uint8_t* HWMemoryMap;
 		// uint8_t* HWMemoryMapMask;
-		void (*HW_Write)(uint32_t, uint8_t);
-		uint8_t (*HW_Read)(uint32_t);
+		void HW_Write(uint32_t, uint8_t);
+		uint8_t HW_Read(uint32_t);
+		void Memory_Write(uint32_t, uint8_t);
 
 		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
 		uint32_t ExternalDB;
@@ -255,13 +260,13 @@ namespace MSXHawk
 		#pragma endregion
 
 		#pragma region Z80 functions
-
+		
 		Z80A()
 		{
-			Reset();
-			InitTableParity();
+			//Reset();
+			//InitTableParity();
 		}
-
+		
 		void Reset()
 		{
 			ResetRegisters();
@@ -3696,6 +3701,8 @@ namespace MSXHawk
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+
+			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 		}
 
 		void Write_INC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
@@ -3706,6 +3713,8 @@ namespace MSXHawk
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+
+			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 
 			INC16_Func(dest_l, dest_h);
 		}
@@ -3719,6 +3728,8 @@ namespace MSXHawk
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
 
+			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
+
 			DEC16_Func(dest_l, dest_h);
 		}
 
@@ -3731,27 +3742,26 @@ namespace MSXHawk
 			bank_num = (bank_num >> bank_shift)& high_mask;
 			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
 
+			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
+
 			TR16_Func(PCl, PCh, Z, W);
 		}
 
 		void OUT_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			//HWMemoryMap[(uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
 			HW_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 		}
 
 		void OUT_INC_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
 		{
 			Regs[DB] = Regs[src];
-			//HWMemoryMap[(uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8))] = (Regs[src] & 0xFF);
 			HW_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 			INC16_Func(dest_l, dest_h);
 		}
 
 		void IN_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
 			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
@@ -3766,7 +3776,6 @@ namespace MSXHawk
 
 		void IN_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
 			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
@@ -3783,7 +3792,6 @@ namespace MSXHawk
 
 		void IN_A_N_INC_Func(uint32_t dest, uint32_t src_l, uint32_t src_h)
 		{
-			// Regs[dest] = HWMemoryMap[(uint32_t)(Regs[src_l] | (Regs[src_h]) << 8)];
 			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);

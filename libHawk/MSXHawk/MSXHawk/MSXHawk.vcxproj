@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Memory.h" />
     <ClInclude Include="VDP.h" />
     <ClInclude Include="PSG.h" />
     <ClInclude Include="Z80A.h" />
@@ -166,6 +167,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MSXHawk.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Z80A.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
