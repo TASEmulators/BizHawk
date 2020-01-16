@@ -168,7 +168,7 @@ namespace BizHawk.Common
 
 		public static IEnumerable<ushort> Enumerate(this Range<ushort> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (ushort) i);
 
-		public static Range<T> GetImmutableCopy<T>(this MutableRange<T> range) where T : unmanaged, IComparable<T> => GetMutableCopy(range);
+		public static Range<T> GetImmutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => GetMutableCopy(range);
 
 		public static MutableRange<T> GetMutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => new MutableRange<T>(range.Start, range.EndInclusive);
 
