@@ -13,7 +13,7 @@ namespace MSXHawk
 		#pragma region VDP
 
 		// external pointers to CPU
-		bool* INT_FLAG;
+		bool* INT_FLAG = nullptr;
 		// external flags to display background or sprites
 		bool SHOW_BG, SHOW_SPRITES;
 

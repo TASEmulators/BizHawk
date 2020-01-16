@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_get_video(IntPtr core, int[] videobuf);
 
+		#region Tracer
 		/// <summary>
 		/// type of the cpu trace callback
 		/// </summary>
@@ -69,22 +70,34 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		public static extern void MSX_settracecallback(IntPtr core, TraceCallback callback);
 
 		/// <summary>
+		/// get the trace logger header length
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int MSX_getheaderlength(IntPtr core);
+		
+		/// <summary>
+		/// get the trace logger disassembly length, a constant
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int MSX_getdisasmlength(IntPtr core);
+
+		/// <summary>
+		/// get the trace logger register string length, a constant
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int MSX_getregstringlength(IntPtr core);
+
+		/// <summary>
 		/// get the trace logger header
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="h">pointer to const char *</param>
 		/// <param name="callback">null to clear</param>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void MSX_getheader(IntPtr core, StringBuilder h);
-
-		/// <summary>
-		/// get the trace logger header length
-		/// </summary>
-		/// <param name="core">opaque state pointer</param>
-		/// <param name="h">pointer to const char *</param>
-		/// <param name="callback">null to clear</param>
-		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int MSX_getheaderlength(IntPtr core);
+		public static extern void MSX_getheader(IntPtr core, StringBuilder h, int l);
 
 		/// <summary>
 		/// get the register state from the cpu
@@ -92,8 +105,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="r">pointer to const char *</param>
 		/// <param name="t">call type</param>
+		/// <param name="l">copy length, must be obtained from appropriate get legnth function</param>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void MSX_getregisterstate(IntPtr core, StringBuilder h, int t);
+		public static extern void MSX_getregisterstate(IntPtr core, StringBuilder h, int t, int l);
 
 		/// <summary>
 		/// get the register state from the cpu
@@ -101,7 +115,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="d">pointer to const char *</param>
 		/// <param name="t">call type</param>
+		/// <param name="l">copy length, must be obtained from appropriate get legnth function</param>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void MSX_getdisassembly(IntPtr core, StringBuilder h, int t);
+		public static extern void MSX_getdisassembly(IntPtr core, StringBuilder h, int t, int l);
+		#endregion
 	}
 }

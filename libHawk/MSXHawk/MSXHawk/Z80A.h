@@ -118,8 +118,6 @@ namespace MSXHawk
 			interruptMode = value;
 		}
 
-		char replacer[32] = {};
-
 		#pragma endregion
 
 		#pragma region Constant Declarations
@@ -339,163 +337,205 @@ namespace MSXHawk
 				Regs[R] = ((Regs[R] & 0x80) | temp_R);
 				break;
 			case RD:
-				Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Read_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case WR:
-				Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case RD_INC:
-				Read_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Read_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case RD_INC_TR_PC:
-				Read_INC_TR_PC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Read_INC_TR_PC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case RD_OP:
-				if (cur_instr[instr_pntr++] == 1) { Read_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]); }
-				else { Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]); }
-
-				switch (cur_instr[instr_pntr++])
+				if (cur_instr[instr_pntr++] == 1) { Read_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]); }
+				else { Read_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]); }
+				instr_pntr += 3;
+				switch (cur_instr[instr_pntr])
 				{
 				case ADD8:
-					ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ADD8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case ADC8:
-					ADC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					ADC8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case SUB8:
-					SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SUB8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case SBC8:
-					SBC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					SBC8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case AND8:
-					AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					AND8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case XOR8:
-					XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					XOR8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case OR8:
-					OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OR8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case CP8:
-					CP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					CP8_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				case TR:
-					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					TR_Func(cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
 					break;
 				}
+				instr_pntr += 3;
 				break;
 			case WR_INC:
-				Write_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case WR_DEC:
-				Write_DEC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_DEC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case WR_TR_PC:
-				Write_TR_PC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_TR_PC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case WR_INC_WA:
-				Write_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				Regs[W] = Regs[A];
 				break;
 			case TR:
-				TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				TR_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case TR16:
-				TR16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				TR16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case ADD16:
-				ADD16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ADD16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case ADD8:
-				ADD8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ADD8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case SUB8:
-				SUB8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				SUB8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case ADC8:
-				ADC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ADC8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case ADC16:
-				ADC_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ADC_16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case SBC8:
-				SBC8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				SBC8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case SBC16:
-				SBC_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				SBC_16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case INC16:
-				INC16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				INC16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case INC8:
-				INC8_Func(cur_instr[instr_pntr++]);
+				INC8_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case DEC16:
-				DEC16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				DEC16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case DEC8:
-				DEC8_Func(cur_instr[instr_pntr++]);
+				DEC8_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case RLC:
-				RLC_Func(cur_instr[instr_pntr++]);
+				RLC_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case RL:
-				RL_Func(cur_instr[instr_pntr++]);
+				RL_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case RRC:
-				RRC_Func(cur_instr[instr_pntr++]);
+				RRC_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case RR:
-				RR_Func(cur_instr[instr_pntr++]);
+				RR_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case CPL:
-				CPL_Func(cur_instr[instr_pntr++]);
+				CPL_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case DA:
-				DA_Func(cur_instr[instr_pntr++]);
+				DA_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case SCF:
-				SCF_Func(cur_instr[instr_pntr++]);
+				SCF_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case CCF:
-				CCF_Func(cur_instr[instr_pntr++]);
+				CCF_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case AND8:
-				AND8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				AND8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case XOR8:
-				XOR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				XOR8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case OR8:
-				OR8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				OR8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case CP8:
-				CP8_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				CP8_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case SLA:
-				SLA_Func(cur_instr[instr_pntr++]);
+				SLA_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case SRA:
-				SRA_Func(cur_instr[instr_pntr++]);
+				SRA_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case SRL:
-				SRL_Func(cur_instr[instr_pntr++]);
+				SRL_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case SLL:
-				SLL_Func(cur_instr[instr_pntr++]);
+				SLL_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case BIT:
-				BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				BIT_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case I_BIT:
-				I_BIT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				I_BIT_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case RES:
-				RES_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				RES_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case SET:
-				SET_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				SET_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case EI:
 				EI_pending = 2;
@@ -512,7 +552,8 @@ namespace MSXHawk
 				EXCH_16_Func(L_s, H_s, L, H);
 				break;
 			case EXCH_16:
-				EXCH_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				EXCH_16_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case PREFIX:
 				src_t = PRE_SRC;
@@ -548,10 +589,12 @@ namespace MSXHawk
 
 				break;
 			case ASGN:
-				ASGN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ASGN_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case ADDS:
-				ADDS_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				ADDS_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2], cur_instr[instr_pntr + 3]);
+				instr_pntr += 4;
 				break;
 			case EI_RETI:
 				// NOTE: This is needed for systems using multiple interrupt sources, it triggers the next interrupt
@@ -562,31 +605,40 @@ namespace MSXHawk
 				IFF1 = IFF2;
 				break;
 			case OUT:
-				OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				OUT_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case OUT_INC:
-				OUT_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				OUT_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case IN:
-				IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				IN_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case IN_INC:
-				IN_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				IN_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case IN_A_N_INC:
-				IN_A_N_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				IN_A_N_INC_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 				break;
 			case NEG:
-				NEG_8_Func(cur_instr[instr_pntr++]);
+				NEG_8_Func(cur_instr[instr_pntr]);
+				instr_pntr += 1;
 				break;
 			case INT_MODE:
-				interruptMode = cur_instr[instr_pntr++];
+				interruptMode = cur_instr[instr_pntr];
+				instr_pntr += 1;
 				break;
 			case RRD:
-				RRD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				RRD_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case RLD:
-				RLD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				RLD_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1]);
+				instr_pntr += 2;
 				break;
 			case SET_FL_LD_R:
 				DEC16_Func(C, B);
@@ -666,7 +718,8 @@ namespace MSXHawk
 				Regs[W] = 0;
 				break;
 			case REP_OP_I:
-				Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				Write_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 
 				Ztemp4 = cur_instr[instr_pntr++];
 				if (Ztemp4 == DEC16)
@@ -722,7 +775,8 @@ namespace MSXHawk
 				}
 				break;
 			case REP_OP_O:
-				OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				OUT_Func(cur_instr[instr_pntr], cur_instr[instr_pntr + 1], cur_instr[instr_pntr + 2]);
+				instr_pntr += 3;
 
 				Ztemp4 = cur_instr[instr_pntr++];
 				if (Ztemp4 == DEC16)
@@ -4449,56 +4503,63 @@ namespace MSXHawk
 
 		#pragma region Disassemble
 
+		// disassemblies will also return strings of the same length
 		const char* TraceHeader = "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
-		const char* NMI_event = "====NMI====";
-		const char* IRQ_event = "====IRQ====";
-		const char* No_Reg = "Q";
+		const char* NMI_event = "                  ====NMI====                  ";
+		const char* IRQ_event = "                  ====IRQ====                  ";
+		const char* No_Reg = "                                                                                     ";
+		const char* Reg_template = "AF:AAFF BC:BBCC DE:DDEE HL:HHLL Ix:IxIx Iy:IyIy SP:SPSP Cy:FEDCBA9876543210 CNP3H5ZSE";
+		const char* Disasm_template = "PCPC: AA BB CC DD   Di Di, XXXXX               ";
+
+		char replacer[32] = {};
+		char* val_char_1 = nullptr;
+		char* val_char_2 = nullptr;
+		int temp_reg;
+
 
 		void (*TraceCallback)(int);
 
 		string CPURegisterState()
-		{
-			string reg_state = " ";
-			
-			char* val_char = replacer;
+		{		
+			val_char_1 = replacer;
 
-			int temp_reg = (Regs[A] << 8) + Regs[F];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
-			
+			string reg_state = "AF:";
+			temp_reg = (Regs[A] << 8) + Regs[F];
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
+
+			reg_state.append(" BC:");			
 			temp_reg = (Regs[B] << 8) + Regs[C];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
-			
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
+
+			reg_state.append(" DE:");			
 			temp_reg = (Regs[D] << 8) + Regs[E];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
 
+			reg_state.append(" HL:");
 			temp_reg = (Regs[H] << 8) + Regs[L];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
 
+			reg_state.append(" Ix:");
 			temp_reg = (Regs[Ixh] << 8) + Regs[Ixl];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
 
+			reg_state.append(" Iy:");
 			temp_reg = (Regs[Iyh] << 8) + Regs[Iyl];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
 
+			reg_state.append(" SP:");
 			temp_reg = (Regs[SPh] << 8) + Regs[SPl];
-			sprintf_s(val_char, 5, "%04X", temp_reg);
-			reg_state.append(val_char, 4);
-			reg_state.append(" ");
-			
-			int tot_long = sprintf_s(val_char, 32, "%16u", TotalExecutedCycles);
-			reg_state.append(val_char, tot_long);
+			sprintf_s(val_char_1, 5, "%04X", temp_reg);
+			reg_state.append(val_char_1, 4);
+
+			reg_state.append(" Cy:");			
+			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", TotalExecutedCycles));
 			reg_state.append(" ");
 			
 			reg_state.append(FlagCget() ? "C" : "c");
@@ -4523,7 +4584,14 @@ namespace MSXHawk
 			string disasm = Disassemble(RegPCget(), bytes_read_ptr);
 			string byte_code = "";
 
-			for (uint32_t i = 0; i < bytes_read; i++)
+			val_char_1 = replacer;
+			sprintf_s(val_char_1, 5, "%04X", RegPCget() & 0xFFFF);
+			byte_code.append(val_char_1, 4);
+			byte_code.append(": ");
+
+			uint32_t i = 0;
+
+			for (i = 0; i < bytes_read; i++)
 			{
 				bank_num = bank_offset = (RegPCget() + i) & 0xFFFF;
 				bank_offset &= low_mask;
@@ -4534,15 +4602,20 @@ namespace MSXHawk
 				string val1(val_char_1, 2);
 				
 				byte_code.append(val1);
-				if (i < (bytes_read - 1))
-				{
-					byte_code.append(" ");
-				}
+				byte_code.append(" ");
 			}
+
+			while (i < 4) 
+			{
+				byte_code.append("   ");
+				i++;
+			}
+
+			byte_code.append("   ");
 
 			byte_code.append(disasm);
 
-			while (byte_code.length() < 32) 
+			while (byte_code.length() < 48) 
 			{
 				byte_code.append(" ");
 			}
@@ -4565,7 +4638,7 @@ namespace MSXHawk
 				bank_num = (bank_num >> bank_shift) & high_mask;
 				addr++;
 				
-				char* val_char_1 = replacer;
+				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
 				string val1(val_char_1, 2);
 
@@ -4574,7 +4647,7 @@ namespace MSXHawk
 				bank_num = (bank_num >> bank_shift)& high_mask;
 				addr++;
 
-				char* val_char_2 = replacer;
+				val_char_2 = replacer;
 				sprintf_s(val_char_2, 5, "%02X", MemoryMap[bank_num][bank_offset]);
 				string val2(val_char_2, 2);
 
@@ -4592,7 +4665,7 @@ namespace MSXHawk
 				bank_num = (bank_num >> bank_shift)& high_mask;
 				addr++;
 
-				char* val_char_1 = replacer;
+				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
 				string val1(val_char_1, 2);
 
@@ -4609,7 +4682,7 @@ namespace MSXHawk
 				bank_num = (bank_num >> bank_shift)& high_mask;
 				addr++;
 
-				char* val_char_1 = replacer;
+				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%u", MemoryMap[bank_num][bank_offset]);
 				string val1(val_char_1, 2);
 
@@ -4627,7 +4700,7 @@ namespace MSXHawk
 
 				int8_t temp = (int8_t)MemoryMap[bank_num][bank_offset];
 
-				char* val_char_1 = replacer;
+				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%d", temp);
 				string val1(val_char_1, 3);
 

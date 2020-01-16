@@ -46,23 +46,36 @@ MSXHAWK_EXPORT void MSX_settracecallback(MSXCore* p, void (*callback)(int)) {
 	p->SetTraceCallback(callback);
 }
 
-// return the cpu trace header
-MSXHAWK_EXPORT void MSX_getheader(MSXCore* p, char* h) {
-	p->GetHeader(h);
-}
+#pragma region Tracer
 
 // return the cpu trace header length
 MSXHAWK_EXPORT int MSX_getheaderlength(MSXCore* p) {
 	return p->GetHeaderLength();
 }
 
+// return the cpu disassembly length
+MSXHAWK_EXPORT int MSX_getdisasmlength(MSXCore* p) {
+	return p->GetDisasmLength();
+}
+
+// return the cpu register string length
+MSXHAWK_EXPORT int MSX_getregstringlength(MSXCore* p) {
+	return p->GetRegStringLength();
+}
+
+// return the cpu trace header
+MSXHAWK_EXPORT void MSX_getheader(MSXCore* p, char* h, int l) {
+	p->GetHeader(h, l);
+}
+
 // return the cpu register state
-MSXHAWK_EXPORT void MSX_getregisterstate(MSXCore* p, char* r, int t) {
-	p->GetRegisterState(r, t);
+MSXHAWK_EXPORT void MSX_getregisterstate(MSXCore* p, char* r, int t, int l) {
+	p->GetRegisterState(r, t, l);
 }
 
 // return the cpu disassembly
-MSXHAWK_EXPORT void MSX_getdisassembly(MSXCore* p, char* d, int t) {
-	p->GetDisassembly(d, t);
+MSXHAWK_EXPORT void MSX_getdisassembly(MSXCore* p, char* d, int t, int l) {
+	p->GetDisassembly(d, t, l);
 }
 
+#pragma endregion

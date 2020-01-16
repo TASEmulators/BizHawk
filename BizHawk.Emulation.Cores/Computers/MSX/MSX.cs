@@ -39,9 +39,16 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			InputCallbacks = new InputCallbackSystem();
 
-			int new_header_size = LibMSX.MSX_getheaderlength(MSX_Pntr);
-			StringBuilder new_header = new StringBuilder(new_header_size);
-			LibMSX.MSX_getheader(MSX_Pntr, new_header);
+			Header_Length = LibMSX.MSX_getheaderlength(MSX_Pntr);
+			Disasm_Length = LibMSX.MSX_getdisasmlength(MSX_Pntr);
+			Reg_String_Length = LibMSX.MSX_getregstringlength(MSX_Pntr);
+
+			StringBuilder new_header = new StringBuilder(Header_Length);
+			LibMSX.MSX_getheader(MSX_Pntr, new_header, Header_Length);
+
+			
+
+			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);
 
 			Tracer = new TraceBuffer { Header = new_header.ToString() };
 
@@ -74,15 +81,18 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private LibMSX.TraceCallback tracecb;
 
+		// these will be constant values assigned during core construction
+		private int Header_Length;
+		private int Disasm_Length;
+		private int Reg_String_Length;
+
 		private void MakeTrace(int t)
 		{
+			StringBuilder new_d = new StringBuilder(Disasm_Length);
+			StringBuilder new_r = new StringBuilder(Reg_String_Length);
 
-
-			StringBuilder new_d = new StringBuilder(500);
-			StringBuilder new_r = new StringBuilder(500);
-
-			LibMSX.MSX_getdisassembly(MSX_Pntr, new_d, t);
-			LibMSX.MSX_getregisterstate(MSX_Pntr, new_r, t);
+			LibMSX.MSX_getdisassembly(MSX_Pntr, new_d, t, Disasm_Length);
+			LibMSX.MSX_getregisterstate(MSX_Pntr, new_r, t, Reg_String_Length);
 
 			Tracer.Put(new TraceInfo
 			{

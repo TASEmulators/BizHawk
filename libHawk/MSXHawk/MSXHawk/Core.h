@@ -19,6 +19,7 @@ namespace MSXHawk
 			MemMap.vdp_pntr = &vdp;
 			MemMap.psg_pntr = &psg;
 			cpu.mem_ctrl = &MemMap;
+			vdp.INT_FLAG = &cpu.FlagI;
 		};
 
 		VDP vdp;
@@ -79,7 +80,11 @@ namespace MSXHawk
 					//vdp.ProcessOverscan();
 				}
 			}
-
+			/*
+			while (cpu.TotalExecutedCycles < 211936) {
+				cpu.ExecuteOne();
+			}
+			*/
 			return MemMap.lagged;
 		}
 
@@ -95,48 +100,64 @@ namespace MSXHawk
 			}
 		}
 
-		void SetTraceCallback(void (*callback)(int)) 
+		#pragma region Tracer
+
+		void SetTraceCallback(void (*callback)(int))
 		{
 			cpu.TraceCallback = callback;
 		}
 
-		void GetHeader(char* h)
-		{
-			memcpy(h, cpu.TraceHeader, *(&cpu.TraceHeader + 1) - cpu.TraceHeader);
-		}
-
 		int GetHeaderLength()
 		{
-			return *(&cpu.TraceHeader + 1) - cpu.TraceHeader;
+			return 105 + 1;
 		}
 
-		void GetRegisterState(char* r, int t)
+		int GetDisasmLength()
 		{
-			if (t == 0) 
-			{
-				memcpy(r, cpu.CPURegisterState().c_str(), cpu.CPURegisterState().length() + 1);
-			}
-			else 
-			{
-				memcpy(r, cpu.No_Reg, *(&cpu.No_Reg + 1) - cpu.No_Reg);
-			}		
+			return 48 + 1;
 		}
 
-		void GetDisassembly(char* d, int t)
+		int GetRegStringLength()
+		{
+			return 86 + 1;
+		}
+
+		void GetHeader(char* h, int l)
+		{
+			memcpy(h, cpu.TraceHeader, l);
+		}
+
+		// the copy length l must be supplied ahead of time from GetRegStrngLength
+		void GetRegisterState(char* r, int t, int l)
 		{
 			if (t == 0)
 			{
-				memcpy(d, cpu.CPUDisassembly().c_str(), cpu.CPUDisassembly().length() + 1);
-			}
-			else if (t == 1)
-			{
-				memcpy(d, cpu.NMI_event, *(&cpu.NMI_event + 1) - cpu.NMI_event);
+				memcpy(r, cpu.CPURegisterState().c_str(), l);
 			}
 			else
 			{
-				memcpy(d, cpu.IRQ_event, *(&cpu.IRQ_event + 1) - cpu.IRQ_event);
+				memcpy(r, cpu.No_Reg, l);
 			}
 		}
+
+		// the copy length l must be supplied ahead of time from GetDisasmLength
+		void GetDisassembly(char* d, int t, int l)
+		{
+			if (t == 0)
+			{
+				memcpy(d, cpu.CPUDisassembly().c_str(), l);
+			}
+			else if (t == 1)
+			{
+				memcpy(d, cpu.NMI_event, l);
+			}
+			else
+			{
+				memcpy(d, cpu.IRQ_event, l);
+			}
+		}
+
+		#pragma endregion		
 	};
 }
 
