@@ -8,6 +8,7 @@ using System.Reflection;
 
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.ApiHawk
 {
@@ -85,7 +86,7 @@ namespace BizHawk.Client.ApiHawk
 
 			try
 			{
-				BizHawk.Common.MotWHack.RemoveMOTW(fileName);
+				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
 				var externalToolFile = Assembly.LoadFrom(fileName);
 				object[] attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolAttribute), false);
 				if (attributes != null && attributes.Count() == 1)
