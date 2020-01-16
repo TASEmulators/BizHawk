@@ -1,2024 +1,233 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\DotNetBuild.Common.targets" Condition=" '$(OS)' != 'Windows_NT' " />
-  <Import Project="..\DotNetBuild.Resources.targets" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
-    <AssemblyName>EmuHawk</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <ApplicationIcon>images\logo.ico</ApplicationIcon>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
-    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output\</OutputPath>
-    <DefineConstants>DEBUG;WINDOWS;EXE_PROJECT</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\output\</OutputPath>
-    <DefineConstants>WINDOWS;EXE_PROJECT</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <Import Project="DotNetBuild.NuGet.targets" Condition=" '$(OS)' != 'Windows_NT' " />
-  <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <Reference HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll" Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" Private="true" />
-    <Reference HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll" Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73" Private="true" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="GongShell">
-      <HintPath>..\References\GongShell.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <!--<Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />-->
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="SlimDX">
-      <HintPath>..\References\x64\SlimDX.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\BizHawk.Common\OSTailoredCode.cs">
-      <Link>OSTailoredCode.cs</Link>
-    </Compile>
-    <Compile Include="..\Version\svnrev.cs">
-      <Link>svnrev.cs</Link>
-    </Compile>
-    <Compile Include="..\Version\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="ArchiveChooser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ArchiveChooser.Designer.cs">
-      <DependentUpon>ArchiveChooser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ArgParser.cs" />
-    <Compile Include="AVOut\AviWriter.cs" />
-    <Compile Include="AVOut\AVSync.cs" />
-    <Compile Include="AVOut\BmpVideoProvder.cs" />
-    <Compile Include="AVOut\FFmpegWriter.cs" />
-    <Compile Include="AVOut\FFmpegWriterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AVOut\FFmpegWriterForm.Designer.cs">
-      <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AVOut\GifWriter.cs" />
-    <Compile Include="AVOut\GifWriterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AVOut\GifWriterForm.Designer.cs">
-      <DependentUpon>GifWriterForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AVOut\IVideoWriter.cs" />
-    <Compile Include="AVOut\JMDForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AVOut\JMDForm.Designer.cs">
-      <DependentUpon>JMDForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AVOut\JMDWriter.cs" />
-    <Compile Include="AVOut\NumericTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="AVOut\NutMuxer.cs" />
-    <Compile Include="AVOut\NutWriter.cs" />
-    <Compile Include="AVOut\ImageSequenceWriter.cs" />
-    <Compile Include="AVOut\Quantize\OctreeQuantizer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AVOut\Quantize\PaletteTable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AVOut\Quantize\Quantizer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AVOut\SynclessRecorder.cs" />
-    <Compile Include="AVOut\SynclessRecordingTools.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AVOut\SynclessRecordingTools.Designer.cs">
-      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AVOut\VideoWriterChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AVOut\VideoWriterChooserForm.Designer.cs">
-      <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AVOut\WavWriter.cs" />
-    <Compile Include="BizBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BizBox.Designer.cs">
-      <DependentUpon>BizBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BizBoxInfoControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BizBoxInfoControl.Designer.cs">
-      <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Communication.cs" />
-    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.Designer.cs">
-      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.Designer.cs">
-      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.Designer.cs">
-      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.Designer.cs">
-      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AnalogRangeConfig.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\AnalogRangeConfig.Designer.cs">
-      <DependentUpon>AnalogRangeConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AnalogRangeConfigControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\AnalogRangeConfigControl.Designer.cs">
-      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\AutofireConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\AutofireConfig.Designer.cs">
-      <DependentUpon>AutofireConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig.Designer.cs">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindControl.Designer.cs">
-      <DependentUpon>AnalogBindControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
-      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\DisplayConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\DisplayConfig.Designer.cs">
-      <DependentUpon>DisplayConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\FileExtensionPreferences.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\FileExtensionPreferences.Designer.cs">
-      <DependentUpon>FileExtensionPreferences.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\FileExtensionPreferencesPicker.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\FileExtensionPreferencesPicker.Designer.cs">
-      <DependentUpon>FileExtensionPreferencesPicker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\FirmwaresConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\FirmwaresConfig.Designer.cs">
-      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\FirmwaresConfigInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\FirmwaresConfigInfo.Designer.cs">
-      <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GB\BmpView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\GB\CGBColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GB\CGBColorChooserForm.Designer.cs">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GB\ColorChooserForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GB\ColorChooserForm.Designer.cs">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GB\DGBPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GB\DGBPrefs.Designer.cs">
-      <DependentUpon>DGBPrefs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GB\GBPrefControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\GB\GBPrefControl.Designer.cs">
-      <DependentUpon>GBPrefControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GB\GBPrefs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GB\GBPrefs.Designer.cs">
-      <DependentUpon>GBPrefs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\GenericCoreConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\GenericCoreConfig.Designer.cs">
-      <DependentUpon>GenericCoreConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\EmuHawkOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\EmuHawkOptions.Designer.cs">
-      <DependentUpon>EmuHawkOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\HotkeyConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\HotkeyConfig.Designer.cs">
-      <DependentUpon>HotkeyConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\InputCompositeWidget.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\InputCompositeWidget.Designer.cs">
-      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\InputWidget.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\ColecoVision\ColecoControllerSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ColecoVision\ColecoControllerSettings.Designer.cs">
-      <DependentUpon>ColecoControllerSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\A7800\A7800ControllerSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\A7800\A7800ControllerSettings.Designer.cs">
-      <DependentUpon>A7800ControllerSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\A7800\A7800FilterSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\A7800\A7800FilterSettings.Designer.cs">
-      <DependentUpon>A7800FilterSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\INTV\IntvControllerSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\INTV\IntvControllerSettings.Designer.cs">
-      <DependentUpon>IntvControllerSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\MessageConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\MessageConfig.Designer.cs">
-      <DependentUpon>MessageConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\N64\N64ControllerSettingControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\N64\N64ControllerSettingControl.Designer.cs">
-      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\N64\N64ControllersSetup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\N64\N64ControllersSetup.Designer.cs">
-      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\N64\N64VideoPluginconfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\DataTableDictionaryBind.cs" />
-    <Compile Include="config\NES\NesControllerSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\NesControllerSettings.Designer.cs">
-      <DependentUpon>NesControllerSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\NESGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\NESGraphicsConfig.Designer.cs">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\NESSoundConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\NESSoundConfig.Designer.cs">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\NESSyncSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
-      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\NESVSSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\NESVSSettings.Designer.cs">
-      <DependentUpon>NESVSSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\NES\QuickNesConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\NES\QuickNesConfig.Designer.cs">
-      <DependentUpon>QuickNesConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PathConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PathConfig.Designer.cs">
-      <DependentUpon>PathConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PathInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PathInfo.Designer.cs">
-      <DependentUpon>PathInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PCE\PCEControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PCE\PCEControllerConfig.Designer.cs">
-      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PCE\PCEGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PCE\PCEGraphicsConfig.Designer.cs">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ProfileConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ProfileConfig.Designer.cs">
-      <DependentUpon>ProfileConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PSX\PSXHashDiscs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PSX\PSXHashDiscs.Designer.cs">
-      <DependentUpon>PSXHashDiscs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\PSX\PSXOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\PSX\PSXOptions.Designer.cs">
-      <DependentUpon>PSXOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\RewindConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\RewindConfig.Designer.cs">
-      <DependentUpon>RewindConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\SMS\SMSGraphicsConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\SMS\SMSGraphicsConfig.Designer.cs">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\SNES\SNESControllerConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\SNES\SNESControllerConfig.Designer.cs">
-      <DependentUpon>SNESControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\SNES\SNESOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\SNES\SNESOptions.Designer.cs">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\SoundConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\SoundConfig.Designer.cs">
-      <DependentUpon>SoundConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\TI83\TI83PaletteConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
-      <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.Designer.cs">
-      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.Designer.cs">
-      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.Designer.cs">
-      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.Designer.cs">
-      <DependentUpon>ZXSpectrumCoreEmulationSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.Designer.cs">
-      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CoreFeatureAnalysis.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CoreFeatureAnalysis.Designer.cs">
-      <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\ControlRenderer\GdiPlusRenderer.cs" />
-    <Compile Include="CustomControls\ControlRenderer\IControlRenderer.cs" />
-    <Compile Include="CustomControls\ExceptionBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\ExceptionBox.designer.cs">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\HexTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\InputRoll\Cell.cs" />
-    <Compile Include="CustomControls\InputRoll\ColumnType.cs" />
-    <Compile Include="CustomControls\InputRoll\InputRoll.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\InputRoll\InputRoll.Drawing.cs">
-      <DependentUpon>InputRoll.cs</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\InputRoll\RollColumn.cs" />
-    <Compile Include="CustomControls\InputRoll\RollColumns.cs" />
-    <Compile Include="CustomControls\MenuButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\MiscControls.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\MsgBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\MsgBox.designer.cs">
-      <DependentUpon>MsgBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\RepeatButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\TransparentTrackbar.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\ToolStripEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomControls\ViewportPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DisplayManager\DisplayManager.cs" />
-    <Compile Include="DisplayManager\DisplaySurface.cs" />
-    <Compile Include="DisplayManager\FilterManager.cs" />
-    <Compile Include="DisplayManager\Filters\BaseFilter.cs" />
-    <Compile Include="DisplayManager\Filters\Gui.cs" />
-    <Compile Include="DisplayManager\Filters\Utils.cs" />
-    <Compile Include="DisplayManager\Filters\Retro.cs" />
-    <Compile Include="DisplayManager\OSDManager.cs" />
-    <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
-    <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
-    <Compile Include="DisplayManager\TextureFrugalizer.cs" />
-    <Compile Include="EmuHawkUtil.cs" />
-    <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="Extensions\CoreExtensions.cs" />
-    <Compile Include="Extensions\ToolExtensions.cs" />
-    <Compile Include="FileFilterEntry.cs" />
-    <Compile Include="GLManager.cs" />
-    <Compile Include="GlobalWin.cs" />
-    <Compile Include="Api\ApiContainer.cs" />
-    <Compile Include="Api\Libraries\ToolApi.cs" />
-    <Compile Include="Api\Libraries\GuiApi.cs" />
-    <Compile Include="Api\Libraries\InputApi.cs" />
-    <Compile Include="Api\Libraries\SaveStateAPI.cs" />
-    <Compile Include="Api\ApiManager.cs" />
-    <Compile Include="Api\Libraries\CommApi.cs" />
-    <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
-    <Compile Include="Input\GamePad.cs" />
-    <Compile Include="Input\GamePad360.cs" />
-    <Compile Include="Input\Input.cs" />
-    <Compile Include="Input\KeyboardMapping.cs" />
-    <Compile Include="Input\OTK_Gamepad.cs" />
-    <Compile Include="Input\OTK_Keyboard.cs" />
-    <Compile Include="IControlMainform.cs" />
-    <Compile Include="Input\IPCKeyInput.cs" />
-    <Compile Include="JumpLists.cs" />
-    <Compile Include="LogWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LogWindow.Designer.cs">
-      <DependentUpon>LogWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.FileLoader.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Hotkey.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Movie.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\EditCommentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\EditCommentsForm.Designer.cs">
-      <DependentUpon>EditCommentsForm.cs</DependentUpon>
-    </Compile>
-    <!--<Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
-    <Compile Include="Input\Keyboard.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.Events.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\EditSubtitlesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\EditSubtitlesForm.Designer.cs">
-      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\MovieDetails.cs" />
-    <Compile Include="movie\PlayMovie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\PlayMovie.Designer.cs">
-      <DependentUpon>PlayMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\RecordMovie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\RecordMovie.Designer.cs">
-      <DependentUpon>RecordMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="movie\SubtitleMaker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="movie\SubtitleMaker.Designer.cs">
-      <DependentUpon>SubtitleMaker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OpenAdvancedChooser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OpenAdvancedChooser.Designer.cs">
-      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PlatformChooser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PlatformChooser.Designer.cs">
-      <DependentUpon>PlatformChooser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PresentationPanel.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="RomStatusPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RomStatusPicker.Designer.cs">
-      <DependentUpon>RomStatusPicker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Sound\Interfaces\IBufferedSoundProvider.cs" />
-    <Compile Include="Sound\Interfaces\ISoundOutput.cs" />
-    <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
-    <Compile Include="Sound\Output\DummySoundOutput.cs" />
-    <Compile Include="Sound\Output\OpenALSoundOutput.cs" />
-    <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
-    <Compile Include="Sound\Sound.cs" />
-    <Compile Include="Sound\Utilities\BufferedAsync.cs" />
-    <Compile Include="Sound\Utilities\SyncToAsyncProvider.cs" />
-    <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
-    <Compile Include="Throttle.cs" />
-    <Compile Include="ToolAttribute.cs" />
-    <Compile Include="tools\BasicBot\BasicBot.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\BasicBot\BasicBot.Designer.cs">
-      <DependentUpon>BasicBot.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\BasicBot\BotControlsRow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\BasicBot\BotControlsRow.Designer.cs">
-      <DependentUpon>BotControlsRow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\BatchRun.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\BatchRun.Designer.cs">
-      <DependentUpon>BatchRun.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\BatchRunner.cs" />
-    <Compile Include="tools\CDL.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\CDL.designer.cs">
-      <DependentUpon>CDL.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Cheats\CheatEdit.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\Cheats\CheatEdit.Designer.cs">
-      <DependentUpon>CheatEdit.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Cheats\Cheats.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Cheats\Cheats.Designer.cs">
-      <DependentUpon>Cheats.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Debugger\AddBreakpointDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\AddBreakpointDialog.Designer.cs">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Debugger\Breakpoint.cs" />
-    <Compile Include="tools\Debugger\BreakpointControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\BreakpointControl.Designer.cs">
-      <DependentUpon>BreakpointControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Debugger\GenericDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\GenericDebugger.Designer.cs">
-      <DependentUpon>GenericDebugger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Debugger\GenericDebugger.Disassembler.cs">
-      <DependentUpon>GenericDebugger.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\GenericDebugger.IControlMainform.cs">
-      <DependentUpon>GenericDebugger.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\GenericDebugger.IToolForm.cs">
-      <DependentUpon>GenericDebugger.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\RegisterBoxControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\Debugger\RegisterBoxControl.Designer.cs">
-      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GameShark.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GameShark.Designer.cs">
-      <DependentUpon>GameShark.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GBA\GBAGPUView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GBA\GBAGPUView.Designer.cs">
-      <DependentUpon>GBAGPUView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GBA\MobileBmpView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GBA\MobileBmpView.Designer.cs">
-      <DependentUpon>MobileBmpView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GBA\MobileDetailView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
-      <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\GBGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\GBGameGenie.Designer.cs">
-      <DependentUpon>GBGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\GBGPUView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\GBGPUView.Designer.cs">
-      <DependentUpon>GBGPUView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\GBPrinterView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\GBPrinterView.Designer.cs">
-      <DependentUpon>GBPrinterView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Genesis\GenDbgWind.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Genesis\GenDbgWind.Designer.cs">
-      <DependentUpon>GenDbgWind.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Genesis\GenGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Genesis\GenGameGenie.Designer.cs">
-      <DependentUpon>GenGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Genesis\VDPViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Genesis\VDPViewer.Designer.cs">
-      <DependentUpon>VDPViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexColor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexColor.Designer.cs">
-      <DependentUpon>HexColor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexEditor.Designer.cs">
-      <DependentUpon>HexEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexFind.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\HexEditor\HexFind.Designer.cs">
-      <DependentUpon>HexFind.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\Libraries\DelegatingLuaLibraryEmu.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Communication.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Forms.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Gui.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
-    <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
-    <Compile Include="tools\Lua\Libraries\NotReallyLuaLibrary.cs" />
-    <Compile Include="tools\Lua\Libraries\PlatformEmuLuaLibrary.cs" />
-    <Compile Include="tools\Lua\LuaAutocompleteInstaller.cs" />
-    <Compile Include="tools\Lua\LuaCanvas.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaCanvas.Designer.cs">
-      <DependentUpon>LuaCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\LuaCheckbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaConsole.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaConsole.Designer.cs">
-      <DependentUpon>LuaConsole.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\LuaDropDown.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaFunctionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaFunctionsForm.Designer.cs">
-      <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\LuaPictureBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
-      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Lua\LuaTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWinform.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Lua\LuaWinform.Designer.cs">
-      <DependentUpon>LuaWinform.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Macros\MacroInput.ButtonSelect.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Macros\MacroInput.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Macros\MacroInput.Designer.cs">
-      <DependentUpon>MacroInput.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Macros\MovieZone.cs" />
-    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.Designer.cs">
-      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.Designer.cs">
-      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\BarcodeEntry.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\BarcodeEntry.Designer.cs">
-      <DependentUpon>BarcodeEntry.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\NameTableViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESGameGenie.Designer.cs">
-      <DependentUpon>NESGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\NESMusicRipper.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESMusicRipper.Designer.cs">
-      <DependentUpon>NESMusicRipper.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\NESNameTableViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESNameTableViewer.Designer.cs">
-      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\NESPPU.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\NES\NESPPU.Designer.cs">
-      <DependentUpon>NESPPU.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\NES\PaletteViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\NES\PatternViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\NES\SpriteViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCEBGCanvas.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCEBGViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
-      <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\PCE\PCESoundDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCESoundDebugger.Designer.cs">
-      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\PCE\PCETileViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCETileViewer.Designer.cs">
-      <DependentUpon>PCETileViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\SMS\VDPViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\SMS\VDPViewer.Designer.cs">
-      <DependentUpon>VDPViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\SNES\SNESGameGenie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\SNES\SNESGameGenie.Designer.cs">
-      <DependentUpon>SNESGameGenie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\SNES\SNESGraphicsDebugger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\SNES\SNESGraphicsDebugger.Designer.cs">
-      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\SNES\SNESGraphicsViewer.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\BookmarksBranchesBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\BookmarksBranchesBox.Designer.cs">
-      <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\DefaultGreenzoneSettings.Designer.cs">
-      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\FramesPrompt.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\FramesPrompt.Designer.cs">
-      <DependentUpon>FramesPrompt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\GreenzoneSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\GreenzoneSettings.Designer.cs">
-      <DependentUpon>GreenzoneSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\HeaderEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\PatternsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\PatternsForm.Designer.cs">
-      <DependentUpon>PatternsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\ScreenshotForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\ScreenshotForm.Designer.cs">
-      <DependentUpon>ScreenshotForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.Callbacks.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.IToolForm.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\MarkerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\MarkerControl.Designer.cs">
-      <DependentUpon>MarkerControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\PlaybackBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\PlaybackBox.Designer.cs">
-      <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.Designer.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.ListView.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.MenuItems.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudio.Navigation.cs">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\TAStudioClipboard.cs" />
-    <Compile Include="tools\TAStudio\UndoHistoryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\UndoHistoryForm.Designer.cs">
-      <DependentUpon>UndoHistoryForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TI83\TI83KeyPad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
-      <DependentUpon>TI83KeyPad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\ToolFormBase.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\ToolManager.cs" />
-    <Compile Include="tools\TraceLogger.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\TraceLogger.Designer.cs">
-      <DependentUpon>TraceLogger.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\components\AnalogStickPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\IVirtualPadControl.cs" />
-    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogButton.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogButton.Designer.cs">
-      <DependentUpon>VirtualPadAnalogButton.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadAnalogStick.Designer.cs">
-      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadDiscManager.Designer.cs">
-      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\controls\VirtualPadTargetScreen.Designer.cs">
-      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\O2Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\VECSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\GGLSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\NgpSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\PcfxSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\N64Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SchemaAttribute.cs" />
-    <Compile Include="tools\VirtualPads\schema\SGBSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\ZXSpectrumSchema.cs" />
-    <Compile Include="tools\VirtualPads\VirtualPad.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualPad.Designer.cs">
-      <DependentUpon>VirtualPad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualpadsTool.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\VirtualPads\VirtualpadsTool.Designer.cs">
-      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\RamPoke.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\RamPoke.Designer.cs">
-      <DependentUpon>RamPoke.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\RamSearch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\RamSearch.Designer.cs">
-      <DependentUpon>RamSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\RamWatch.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\RamWatch.Designer.cs">
-      <DependentUpon>RamWatch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\WatchEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\Watch\WatchEditor.Designer.cs">
-      <DependentUpon>WatchEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\Watch\WatchValueBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="UIHelper.cs" />
-    <Compile Include="UpdateChecker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="AVOut\FFmpegWriterForm.resx">
-      <DependentUpon>FFmpegWriterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AVOut\GifWriterForm.resx">
-      <DependentUpon>GifWriterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AVOut\JMDForm.resx">
-      <DependentUpon>JMDForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AVOut\SynclessRecordingTools.resx">
-      <DependentUpon>SynclessRecordingTools.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AVOut\VideoWriterChooserForm.resx">
-      <DependentUpon>VideoWriterChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BizBoxInfoControl.resx">
-      <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.resx">
-      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCAudioSettings.resx">
-      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCPokeMemory.resx">
-      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCNonSyncSettings.resx">
-      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
-      <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig.resx">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
-      <DependentUpon>AnalogBindControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
-      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\DisplayConfig.resx">
-      <DependentUpon>DisplayConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\FileExtensionPreferences.resx">
-      <DependentUpon>FileExtensionPreferences.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\FileExtensionPreferencesPicker.resx">
-      <DependentUpon>FileExtensionPreferencesPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\FirmwaresConfig.resx">
-      <DependentUpon>FirmwaresConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\FirmwaresConfigInfo.resx">
-      <DependentUpon>FirmwaresConfigInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\CGBColorChooserForm.resx">
-      <DependentUpon>CGBColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\ColorChooserForm.resx">
-      <DependentUpon>ColorChooserForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\DGBPrefs.resx">
-      <DependentUpon>DGBPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\GBPrefControl.resx">
-      <DependentUpon>GBPrefControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\GBPrefs.resx">
-      <DependentUpon>GBPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GenericCoreConfig.resx">
-      <DependentUpon>GenericCoreConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\EmuHawkOptions.resx">
-      <DependentUpon>EmuHawkOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\HotkeyConfig.resx">
-      <DependentUpon>HotkeyConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\InputCompositeWidget.resx">
-      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ColecoVision\ColecoControllerSettings.resx">
-      <DependentUpon>ColecoControllerSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\A7800\A7800ControllerSettings.resx">
-      <DependentUpon>A7800ControllerSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\A7800\A7800FilterSettings.resx">
-      <DependentUpon>A7800FilterSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\INTV\IntvControllerSettings.resx">
-      <DependentUpon>IntvControllerSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\N64\N64ControllerSettingControl.resx">
-      <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\N64\N64ControllersSetup.resx">
-      <DependentUpon>N64ControllersSetup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
-      <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\NesControllerSettings.resx">
-      <DependentUpon>NesControllerSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\NESGraphicsConfig.resx">
-      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\NESSoundConfig.resx">
-      <DependentUpon>NESSoundConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
-      <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\NESVSSettings.resx">
-      <DependentUpon>NESVSSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\NES\QuickNesConfig.resx">
-      <DependentUpon>QuickNesConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PathConfig.resx">
-      <DependentUpon>PathConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PathInfo.resx">
-      <DependentUpon>PathInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PCE\PCEControllerConfig.resx">
-      <DependentUpon>PCEControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PCE\PCEGraphicsConfig.resx">
-      <DependentUpon>PCEGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ProfileConfig.resx">
-      <DependentUpon>ProfileConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PSX\PSXHashDiscs.resx">
-      <DependentUpon>PSXHashDiscs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\PSX\PSXOptions.resx">
-      <DependentUpon>PSXOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\RewindConfig.resx">
-      <DependentUpon>RewindConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\SMS\SMSGraphicsConfig.resx">
-      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\SNES\SNESControllerConfig.resx">
-      <DependentUpon>SNESControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\SNES\SNESOptions.resx">
-      <DependentUpon>SNESOptions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
-      <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumAudioSettings.resx">
-      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumPokeMemory.resx">
-      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.resx">
-      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.resx">
-      <DependentUpon>ZXSpectrumCoreEmulationSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.resx">
-      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CoreFeatureAnalysis.resx">
-      <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\ExceptionBox.resx">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\MsgBox.resx">
-      <DependentUpon>MsgBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images/add.png" />
-    <EmbeddedResource Include="images/AddEdit.png" />
-    <EmbeddedResource Include="images/addWatch.ico" />
-    <EmbeddedResource Include="images/arrow_black_down.png" />
-    <EmbeddedResource Include="images/atari_controller.png" />
-    <EmbeddedResource Include="images/AudioHS.png" />
-    <EmbeddedResource Include="images/AutoSearch.png" />
-    <EmbeddedResource Include="images/AVI.png" />
-    <EmbeddedResource Include="images/Back.png" />
-    <EmbeddedResource Include="images/BackMore.png" />
-    <EmbeddedResource Include="images/basicbot.ico" />
-    <EmbeddedResource Include="images/Blank.png" />
-    <EmbeddedResource Include="images/BlankCursor.cur" />
-    <EmbeddedResource Include="images/BlueDown.png" />
-    <EmbeddedResource Include="images/BlueUp.png" />
-    <EmbeddedResource Include="images/Both.png" />
-    <EmbeddedResource Include="images/bsnes.png" />
-    <EmbeddedResource Include="images/Bug.ico" />
-    <EmbeddedResource Include="images/Bug.png" />
-    <EmbeddedResource Include="images/calculator.ico" />
-    <EmbeddedResource Include="images/calculator.png" />
-    <EmbeddedResource Include="images/camera.png" />
-    <EmbeddedResource Include="images/cdlogger.ico" />
-    <EmbeddedResource Include="images/checkbox.png" />
-    <EmbeddedResource Include="images/Circle.png" />
-    <EmbeddedResource Include="images/Close.png" />
-    <EmbeddedResource Include="images/connect_16x16.png" />
-    <EmbeddedResource Include="images/ControllerImages/A78Joystick.png" />
-    <EmbeddedResource Include="images/ControllerImages/AppleIIKeyboard.png" />
-    <EmbeddedResource Include="images/ControllerImages/ArcadeController.jpg" />
-    <EmbeddedResource Include="images/ControllerImages/C64Joystick.png" />
-    <EmbeddedResource Include="images/ControllerImages/C64Keyboard.png" />
-    <EmbeddedResource Include="images/ControllerImages/colecovisioncontroller.png" />
-    <EmbeddedResource Include="images/ControllerImages/GBA_Controller.png" />
-    <EmbeddedResource Include="images/ControllerImages/GBController.png" />
-    <EmbeddedResource Include="images/ControllerImages/GENController.png" />
-    <EmbeddedResource Include="images/ControllerImages/IntVController.png" />
-    <EmbeddedResource Include="images/ControllerImages/Lynx.png" />
-    <EmbeddedResource Include="images/ControllerImages/N64.png" />
-    <EmbeddedResource Include="images/ControllerImages/NES_Controller.png" />
-    <EmbeddedResource Include="images/ControllerImages/NGPController.png" />
-    <EmbeddedResource Include="images/ControllerImages/PCEngineController.png" />
-    <EmbeddedResource Include="images/ControllerImages/psx_dualshock.png" />
-    <EmbeddedResource Include="images/ControllerImages/PSX-Original-Controller.png" />
-    <EmbeddedResource Include="images/ControllerImages/SaturnController.jpg" />
-    <EmbeddedResource Include="images/ControllerImages/SMSController.png" />
-    <EmbeddedResource Include="images/ControllerImages/SNES_Controller.png" />
-    <EmbeddedResource Include="images/ControllerImages/TI83_Controller.png" />
-    <EmbeddedResource Include="images/ControllerImages/VBoyController.png" />
-    <EmbeddedResource Include="images/ControllerImages/WonderSwanColor.png" />
-    <EmbeddedResource Include="images/ControllerImages/ZXSpectrumKeyboards.png" />
-    <EmbeddedResource Include="images/CopyFolderHS.png" />
-    <EmbeddedResource Include="images/corphawk.jpg" />
-    <EmbeddedResource Include="images/CorpHawkSmall.png" />
-    <EmbeddedResource Include="images/Cross.png" />
-    <EmbeddedResource Include="images/CutHS.png" />
-    <EmbeddedResource Include="images/Debugger.png" />
-    <EmbeddedResource Include="images/Delete.png" />
-    <EmbeddedResource Include="images/dual.ico" />
-    <EmbeddedResource Include="images/Duplicate.png" />
-    <EmbeddedResource Include="images/ENE.png" />
-    <EmbeddedResource Include="images/Erase.png" />
-    <EmbeddedResource Include="images/ESE.png" />
-    <EmbeddedResource Include="images/ExclamationRed.png" />
-    <EmbeddedResource Include="images/FastForward.png" />
-    <EmbeddedResource Include="images/FindHS.png" />
-    <EmbeddedResource Include="images/Forward.png" />
-    <EmbeddedResource Include="images/Freeze.ico" />
-    <EmbeddedResource Include="images/Freeze.png" />
-    <EmbeddedResource Include="images/Fullscreen.png" />
-    <EmbeddedResource Include="images/gambatte.ico" />
-    <EmbeddedResource Include="images/gambatte.png" />
-    <EmbeddedResource Include="images/Gameboy Advance (black) icon.ico" />
-    <EmbeddedResource Include="images/GameController.ico" />
-    <EmbeddedResource Include="images/GameController.png" />
-    <EmbeddedResource Include="images/genplus.png" />
-    <EmbeddedResource Include="images/GreenCheck.png" />
-    <EmbeddedResource Include="images/Hack.png" />
-    <EmbeddedResource Include="images/Help.png" />
-    <EmbeddedResource Include="images/HomeBrew.png" />
-    <EmbeddedResource Include="images/HotKeys.ico" />
-    <EmbeddedResource Include="images/HotKeys.png" />
-    <EmbeddedResource Include="images/Import.png" />
-    <EmbeddedResource Include="images/InsertSeparator.png" />
-    <EmbeddedResource Include="images/JumpTo.png" />
-    <EmbeddedResource Include="images/kitchensink.png" />
-    <EmbeddedResource Include="images/Lightning.ico" />
-    <EmbeddedResource Include="images/Lightning.png" />
-    <EmbeddedResource Include="images/LightOff.png" />
-    <EmbeddedResource Include="images/LightOn.png" />
-    <EmbeddedResource Include="images/LoadConfig.png" />
-    <EmbeddedResource Include="images/logo.ico" />
-    <EmbeddedResource Include="images/Lua.png" />
-    <EmbeddedResource Include="images/luaPictureBox.png" />
-    <EmbeddedResource Include="images/mame.png" />
-    <EmbeddedResource Include="images/MessageConfig.png" />
-    <EmbeddedResource Include="images/monitor.ico" />
-    <EmbeddedResource Include="images/monitor.png" />
-    <EmbeddedResource Include="images/MoveDown.png" />
-    <EmbeddedResource Include="images/MoveLeft.png" />
-    <EmbeddedResource Include="images/MoveRight.png" />
-    <EmbeddedResource Include="images/MoveUp.png" />
-    <EmbeddedResource Include="images/MsgBox.ico" />
-    <EmbeddedResource Include="images/NE.png" />
-    <EmbeddedResource Include="images/NESControllerIcon.ico" />
-    <EmbeddedResource Include="images/NewFile.png" />
-    <EmbeddedResource Include="images/NNE.png" />
-    <EmbeddedResource Include="images/NNW.png" />
-    <EmbeddedResource Include="images/noconnect_16x16.png" />
-    <EmbeddedResource Include="images/NW.png" />
-    <EmbeddedResource Include="images/OpenFile.png" />
-    <EmbeddedResource Include="images/Paste.png" />
-    <EmbeddedResource Include="images/Pause.png" />
-    <EmbeddedResource Include="images/pcb.png" />
-    <EmbeddedResource Include="images/pce.ico" />
-    <EmbeddedResource Include="images/pencil.ico" />
-    <EmbeddedResource Include="images/pencil.png" />
-    <EmbeddedResource Include="images/placeholder_bitmap.png" />
-    <EmbeddedResource Include="images/Play.png" />
-    <EmbeddedResource Include="images/poke.ico" />
-    <EmbeddedResource Include="images/poke.png" />
-    <EmbeddedResource Include="images/ppsspp.png" />
-    <EmbeddedResource Include="images/Previous.ico" />
-    <EmbeddedResource Include="images/Previous.png" />
-    <EmbeddedResource Include="images/QuickNes.ico" />
-    <EmbeddedResource Include="images/QuickNes.png" />
-    <EmbeddedResource Include="images/ReadOnly.png" />
-    <EmbeddedResource Include="images/reboot.png" />
-    <EmbeddedResource Include="images/Recent.png" />
-    <EmbeddedResource Include="images/RecordHS.png" />
-    <EmbeddedResource Include="images/redo.png" />
-    <EmbeddedResource Include="images/Refresh.bmp" />
-    <EmbeddedResource Include="images/Refresh.png" />
-    <EmbeddedResource Include="images/restart.png" />
-    <EmbeddedResource Include="images/RetroQuestion.png" />
-    <EmbeddedResource Include="images/Save.png" />
-    <EmbeddedResource Include="images/SaveAs.png" />
-    <EmbeddedResource Include="images/SaveConfig.png" />
-    <EmbeddedResource Include="images/Scan.png" />
-    <EmbeddedResource Include="images/ScrollTo.png" />
-    <EmbeddedResource Include="images/SE.png" />
-    <EmbeddedResource Include="images/search.ico" />
-    <EmbeddedResource Include="images/search.png" />
-    <EmbeddedResource Include="images/Shark.ico" />
-    <EmbeddedResource Include="images/Shark.png" />
-    <EmbeddedResource Include="images/sms-icon.ico" />
-    <EmbeddedResource Include="images/snes9x.png" />
-    <EmbeddedResource Include="images/Square.png" />
-    <EmbeddedResource Include="images/SSE.png" />
-    <EmbeddedResource Include="images/SSW.png" />
-    <EmbeddedResource Include="images/Stop.png" />
-    <EmbeddedResource Include="images/StopButton.png" />
-    <EmbeddedResource Include="images/SW.png" />
-    <EmbeddedResource Include="images/TAStudio.ico" />
-    <EmbeddedResource Include="images/TAStudio.png" />
-    <EmbeddedResource Include="images/tastudio/icon_anchor.png" />
-    <EmbeddedResource Include="images/tastudio/icon_anchor_lag.png" />
-    <EmbeddedResource Include="images/tastudio/icon_marker.png" />
-    <EmbeddedResource Include="images/tastudio/ts_h_arrow_blue.png" />
-    <EmbeddedResource Include="images/tastudio/ts_h_arrow_green.png" />
-    <EmbeddedResource Include="images/tastudio/ts_h_arrow_green_blue.png" />
-    <EmbeddedResource Include="images/tastudio/ts_v_arrow_blue.png" />
-    <EmbeddedResource Include="images/tastudio/ts_v_arrow_green.png" />
-    <EmbeddedResource Include="images/tastudio/ts_v_arrow_green_blue.png" />
-    <EmbeddedResource Include="images/textdoc.ico" />
-    <EmbeddedResource Include="images/thumbsdown.png" />
-    <EmbeddedResource Include="images/ToolBox.ico" />
-    <EmbeddedResource Include="images/ToolBox.png" />
-    <EmbeddedResource Include="images/Translation.png" />
-    <EmbeddedResource Include="images/Triangle.png" />
-    <EmbeddedResource Include="images/TruncateFromFile.png" />
-    <EmbeddedResource Include="images/tvIcon.png" />
-    <EmbeddedResource Include="images/undo.png" />
-    <EmbeddedResource Include="images/Unfreeze.png" />
-    <EmbeddedResource Include="images/user_blue.ico" />
-    <EmbeddedResource Include="images/user_blue_small.png" />
-    <EmbeddedResource Include="images/watch.ico" />
-    <EmbeddedResource Include="images/whiteTriDown.png" />
-    <EmbeddedResource Include="images/whiteTriLeft.png" />
-    <EmbeddedResource Include="images/whiteTriRight.png" />
-    <EmbeddedResource Include="images/whiteTriUp.png" />
-    <EmbeddedResource Include="images/WNW.png" />
-    <EmbeddedResource Include="images/WSW.png" />
-    <EmbeddedResource Include="images/YellowDown.png" />
-    <EmbeddedResource Include="images/YellowLeft.png" />
-    <EmbeddedResource Include="images/YellowRight.png" />
-    <EmbeddedResource Include="images/YellowUp.png" />
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="movie\PlayMovie.resx">
-      <DependentUpon>PlayMovie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="movie\RecordMovie.resx">
-      <DependentUpon>RecordMovie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OpenAdvancedChooser.resx">
-      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PlatformChooser.resx">
-      <DependentUpon>PlatformChooser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties/Resources.resx" />
-    <EmbeddedResource Include="Resources/courier16px_0.png" />
-    <EmbeddedResource Include="Resources/fceux.ttf" />
-    <EmbeddedResource Include="Resources/gens.ttf" />
-    <EmbeddedResource Include="Resources/MoveBottom.png" />
-    <EmbeddedResource Include="Resources/MoveTop.png" />
-    <EmbeddedResource Include="Resources/nothawk.bin" />
-    <EmbeddedResource Include="RomStatusPicker.resx">
-      <DependentUpon>RomStatusPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
-      <DependentUpon>BasicBot.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\BasicBot\BotControlsRow.resx">
-      <DependentUpon>BotControlsRow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\BatchRun.resx">
-      <DependentUpon>BatchRun.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\CDL.resx">
-      <DependentUpon>CDL.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
-      <DependentUpon>CheatEdit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Cheats\Cheats.resx">
-      <DependentUpon>Cheats.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Debugger\AddBreakpointDialog.resx">
-      <DependentUpon>AddBreakpointDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Debugger\BreakpointControl.resx">
-      <DependentUpon>BreakpointControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Debugger\GenericDebugger.resx">
-      <DependentUpon>GenericDebugger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Debugger\RegisterBoxControl.resx">
-      <DependentUpon>RegisterBoxControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GameShark.resx">
-      <DependentUpon>GameShark.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
-      <DependentUpon>GBAGPUView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GBA\MobileBmpView.resx">
-      <DependentUpon>MobileBmpView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
-      <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
-      <DependentUpon>GBGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\GBGPUView.resx">
-      <DependentUpon>GBGPUView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\GBPrinterView.resx">
-      <DependentUpon>GBPrinterView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Genesis\GenDbgWind.resx">
-      <DependentUpon>GenDbgWind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Genesis\GenGameGenie.resx">
-      <DependentUpon>GenGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Genesis\VDPViewer.resx">
-      <DependentUpon>VDPViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\HexColor.resx">
-      <DependentUpon>HexColor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\HexEditor.resx">
-      <DependentUpon>HexEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
-      <DependentUpon>HexFind.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
-      <DependentUpon>LuaCanvas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
-      <DependentUpon>LuaConsole.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaFunctionsForm.resx">
-      <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaRegisteredFunctionsList.resx">
-      <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
-      <DependentUpon>LuaWinform.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Macros\MacroInput.resx">
-      <DependentUpon>MacroInput.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskFileSelector.resx">
-      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskBundler.resx">
-      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
-      <DependentUpon>BarcodeEntry.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
-      <DependentUpon>NESGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESMusicRipper.resx">
-      <DependentUpon>NESMusicRipper.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESNameTableViewer.resx">
-      <DependentUpon>NESNameTableViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\NESPPU.resx">
-      <DependentUpon>NESPPU.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\NES\PatternViewer.resx">
-      <DependentUpon>PatternViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
-      <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
-      <DependentUpon>PCESoundDebugger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCETileViewer.resx">
-      <DependentUpon>PCETileViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\SMS\VDPViewer.resx">
-      <DependentUpon>VDPViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\SNES\SNESGameGenie.resx">
-      <DependentUpon>SNESGameGenie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\SNES\SNESGraphicsDebugger.resx">
-      <DependentUpon>SNESGraphicsDebugger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\BookmarksBranchesBox.resx">
-      <DependentUpon>BookmarksBranchesBox.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\DefaultGreenzoneSettings.resx">
-      <DependentUpon>DefaultGreenzoneSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\FramesPrompt.resx">
-      <DependentUpon>FramesPrompt.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\GreenzoneSettings.resx">
-      <DependentUpon>GreenzoneSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\HeaderEditor.resx">
-      <DependentUpon>HeaderEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
-      <DependentUpon>MarkerControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\PatternsForm.resx">
-      <DependentUpon>PatternsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
-      <DependentUpon>PlaybackBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\ScreenshotForm.resx">
-      <DependentUpon>ScreenshotForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
-      <DependentUpon>TAStudio.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\UndoHistoryForm.resx">
-      <DependentUpon>UndoHistoryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
-      <DependentUpon>TI83KeyPad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogButton.resx">
-      <DependentUpon>VirtualPadAnalogButton.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadAnalogStick.resx">
-      <DependentUpon>VirtualPadAnalogStick.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadDiscManager.resx">
-      <DependentUpon>VirtualPadDiscManager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\controls\VirtualPadTargetScreen.resx">
-      <DependentUpon>VirtualPadTargetScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualPad.resx">
-      <DependentUpon>VirtualPad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\VirtualPads\VirtualpadsTool.resx">
-      <DependentUpon>VirtualpadsTool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\RamPoke.resx">
-      <DependentUpon>RamPoke.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\RamSearch.resx">
-      <DependentUpon>RamSearch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\RamWatch.resx">
-      <DependentUpon>RamWatch.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
-      <DependentUpon>WatchEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <Compile Include="tools\InputPrompt.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\InputPrompt.Designer.cs">
-      <DependentUpon>InputPrompt.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ScreenSaver.cs" />
-    <Compile Include="tools\ToolBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\ToolBox.Designer.cs">
-      <DependentUpon>ToolBox.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="Resources\courier16px.fnt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj">
-      <Project>{8e2f11f2-3955-4382-8c3a-ceba1276caea}</Project>
-      <Name>BizHawk.Client.ApiHawk</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
-      <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
-      <Name>BizHawk.Client.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
-      <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
-      <Name>BizHawk.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
-      <Name>BizHawk.Emulation.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
-      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
-      <Name>BizHawk.Emulation.Cores</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
-      <Name>BizHawk.Emulation.DiscSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
-      <Project>{337CA23E-65E7-44E1-9411-97EE08BB8116}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
-      <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj">
-      <Project>{E6B436B1-A3CD-4C9A-8F76-5D7154726884}</Project>
-      <Name>BizHawk.Bizware.BizwareGL.SlimDX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
-      <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
-      <Name>BizHawk.Bizware.BizwareGL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ArchiveChooser.resx">
-      <DependentUpon>ArchiveChooser.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BizBox.resx">
-      <DependentUpon>BizBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\AutofireConfig.resx">
-      <DependentUpon>AutofireConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\MessageConfig.resx">
-      <DependentUpon>MessageConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\SoundConfig.resx">
-      <DependentUpon>SoundConfig.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LogWindow.resx">
-      <DependentUpon>LogWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="movie\EditCommentsForm.resx">
-      <DependentUpon>EditCommentsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="movie\EditSubtitlesForm.resx">
-      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="movie\SubtitleMaker.resx">
-      <DependentUpon>SubtitleMaker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\TraceLogger.resx">
-      <DependentUpon>TraceLogger.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\InputPrompt.resx">
-      <DependentUpon>InputPrompt.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\ToolBox.resx">
-      <DependentUpon>ToolBox.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="app.manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="images\logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
-    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent />
-  </PropertyGroup>
-  <Import Project="$(SolutionDir)Build\Common.targets" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<ApplicationIcon>images/logo.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+		<AssemblyName>EmuHawk</AssemblyName>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<ErrorReport>prompt</ErrorReport>
+		<FileAlignment>512</FileAlignment>
+		<FileUpgradeFlags/>
+		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<LangVersion>8.0</LangVersion>
+		<MapFileExtensions>true</MapFileExtensions>
+		<OldToolsVersion>3.5</OldToolsVersion>
+		<OutputPath>../output</OutputPath>
+		<OutputType>WinExe</OutputType>
+		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<Prefer32Bit>false</Prefer32Bit>
+		<ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
+		<ProductVersion>9.0.30729</ProductVersion>
+		<PublishUrl>publish/</PublishUrl>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+		<RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
+		<SchemaVersion>2.0</SchemaVersion>
+		<StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
+		<TargetFrameworkProfile/>
+		<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
+		<UpgradeBackupLocation/>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<UseVSHostingProcess>false</UseVSHostingProcess>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<DefineConstants>DEBUG;EXE_PROJECT</DefineConstants>
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>pdbonly</DebugType>
+		<DefineConstants>EXE_PROJECT</DefineConstants>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<ItemGroup>
+		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5</ProductName>
+			<Install>false</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+			<Visible>False</Visible>
+			<ProductName>.NET Framework 3.5 SP1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+		<BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+			<Visible>False</Visible>
+			<ProductName>Windows Installer 3.1</ProductName>
+			<Install>true</Install>
+		</BootstrapperPackage>
+	</ItemGroup>
+	<Import Project="../CommonRefAssemblies.abs.props" Condition=" '$(OS)' != 'Windows_NT' " />
+	<Import Project="ProjectPkgRefs.abs.props" Condition=" '$(OS)' != 'Windows_NT' " />
+	<ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
+		<Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed"
+			HintPath="../packages/Newtonsoft.Json.12.0.3/lib/net45/Newtonsoft.Json.dll"
+			Private="true" />
+		<Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73"
+			HintPath="../packages/SharpZipLib.1.1.0/lib/net45/ICSharpCode.SharpZipLib.dll"
+			Private="true" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="GongShell"
+			HintPath="../References/GongShell.dll"
+			Private="true" />
+		<Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL"
+			HintPath="../output/dll/nlua/NLua.dll"
+			Private="true"
+			SpecificVersion="false" />
+		<Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL"
+			HintPath="../References/OpenTK.dll"
+			Private="true"
+			SpecificVersion="false" />
+		<Reference Include="SlimDX"
+			HintPath="../References/x64/SlimDX.dll"
+			Private="true" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="Microsoft.VisualBasic" />
+		<Reference Include="System" />
+		<!--<Reference Include="System.Core" RequiredTargetFramework="3.5" />-->
+		<Reference Include="System.Data" />
+		<!--<Reference Include="System.Data.DataSetExtensions" RequiredTargetFramework="3.5" />-->
+		<!--<Reference Include="System.Deployment" Condition=" '$(OS)' == 'Windows_NT' " />-->
+		<Reference Include="System.DirectoryServices" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Windows.Forms" />
+		<!--<Reference Include="System.Xaml" />-->
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Xml.Linq" /><!-- RequiredTargetFramework="3.5" -->
+		<!--<Reference Include="WindowsBase" />-->
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="../BizHawk.Client.ApiHawk/BizHawk.Client.ApiHawk.csproj"
+			Name="BizHawk.Client.ApiHawk"
+			Project="{8e2f11f2-3955-4382-8c3a-ceba1276caea}" />
+		<ProjectReference Include="../BizHawk.Client.Common/BizHawk.Client.Common.csproj"
+			Name="BizHawk.Client.Common"
+			Project="{24A0AA3C-B25F-4197-B23D-476D6462DBA0}" />
+		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj"
+			Name="BizHawk.Common"
+			Project="{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}" />
+		<ProjectReference Include="../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj"
+			Name="BizHawk.Emulation.Common"
+			Project="{e1a23168-b571-411c-b360-2229e7225e0e}" />
+		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj"
+			Name="BizHawk.Emulation.Cores"
+			Project="{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}" />
+		<ProjectReference Include="../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj"
+			Name="BizHawk.Emulation.DiscSystem"
+			Project="{f51946ea-827f-4d82-b841-1f2f6d060312}" />
+		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/BizHawk.Bizware.BizwareGL.GdiPlus.csproj"
+			Name="BizHawk.Bizware.BizwareGL.GdiPlus"
+			Project="{337CA23E-65E7-44E1-9411-97EE08BB8116}" />
+		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.OpenTK/BizHawk.Bizware.BizwareGL.OpenTK.csproj"
+			Name="BizHawk.Bizware.BizwareGL.OpenTK"
+			Project="{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}" />
+		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.SlimDX/BizHawk.Bizware.BizwareGL.SlimDX.csproj"
+			Name="BizHawk.Bizware.BizwareGL.SlimDX"
+			Project="{E6B436B1-A3CD-4C9A-8F76-5D7154726884}" />
+		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj"
+			Name="BizHawk.Bizware.BizwareGL"
+			Project="{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="**/*.cs" />
+		<Compile Include="../BizHawk.Common/OSTailoredCode.cs" Link="OSTailoredCode.cs" />
+		<Compile Include="../Version/svnrev.cs" Link="svnrev.cs" />
+		<Compile Include="../Version/VersionInfo.cs" Link="VersionInfo.cs" />
+		<Compile Remove="DisplayManager/SwappableBitmapBufferSet.cs" />
+		<Compile Remove="ExternalCoreSupport.cs" />
+		<Compile Remove="Global.cs" />
+		<Compile Remove="Properties/AssemblyInfo.cs" />
+		<Compile Remove="Properties/Settings.Designer.cs" />
+		<Compile Remove="Watch.cs" />
+		<Content Include="images/logo.ico" />
+		<EmbeddedResource Include="**/*.resx" />
+		<EmbeddedResource Include="images/**/*" />
+		<EmbeddedResource Include="Resources/**/*" />
+		<EmbeddedResource Remove="images/.ico" />
+		<EmbeddedResource Remove="images/AtariControllerIcon.png" />
+		<EmbeddedResource Remove="images/BuilderDialog_delete.bmp" />
+		<EmbeddedResource Remove="images/BuilderDialog_movedown.bmp" />
+		<EmbeddedResource Remove="images/BuilderDialog_moveup.bmp" />
+		<EmbeddedResource Remove="images/C64Symbol.png" />
+		<EmbeddedResource Remove="images/cheat.png" />
+		<EmbeddedResource Remove="images/Cheats.ico" />
+		<EmbeddedResource Remove="images/ControllerImages/TI83Calculator.png" />
+		<EmbeddedResource Remove="images/corphawk.ico" />
+		<EmbeddedResource Remove="images/Debugger.ico" />
+		<EmbeddedResource Remove="images/dual.png" />
+		<EmbeddedResource Remove="images/ForwardMore.png" />
+		<EmbeddedResource Remove="images/gba-icon.png" />
+		<EmbeddedResource Remove="images/GenesisControllerIcon.png" />
+		<EmbeddedResource Remove="images/InserSeparator.bmp" />
+		<EmbeddedResource Remove="images/Lua.ico" />
+		<EmbeddedResource Remove="images/NESControllerIcon.png" />
+		<EmbeddedResource Remove="images/pcejin1.bmp" />
+		<EmbeddedResource Remove="images/PlayButton.png" />
+		<EmbeddedResource Remove="images/PrintPreviewHS.png" />
+		<EmbeddedResource Remove="images/SaveAllHS.png" />
+		<EmbeddedResource Remove="images/sms-icon.png" />
+		<EmbeddedResource Remove="images/snes9x.ico" />
+		<EmbeddedResource Remove="images/SNESControllerIcon.png" />
+		<EmbeddedResource Remove="images/tastudio/ts_h_piano_*.png" />
+		<EmbeddedResource Remove="images/tastudio/ts_v_piano_*.png" />
+		<EmbeddedResource Remove="images/textdoc.png" />
+		<EmbeddedResource Remove="images/TruncateFromRW.png" />
+		<EmbeddedResource Remove="images/TurboFastForward.png" />
+		<EmbeddedResource Remove="images/user_blue.png" />
+		<EmbeddedResource Remove="images/WarningHS.png" />
+		<EmbeddedResource Remove="Resources/courier16px.bmfc" />
+		<EmbeddedResource Remove="Resources/ZXSpectrumKeyboard.bmp" />
+		<None Include="app.config" />
+		<None Include="app.manifest" />
+		<None Remove="MainForm.resources" />
+		<None Remove="NameStateForm.resources" />
+		<None Remove="packages.config" />
+		<None Remove="ProjectPkgRefs.abs.props" />
+		<None Remove="Properties/Resources.resources" />
+	</ItemGroup>
+	<Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
+	<Import Project="../CommonResourceGen.rel.props" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
+	<Target Name="AfterBuild">
+		<ItemGroup>
+			<AssetFiles Include="$(SolutionDir)Assets/**/*.*" Exclude="$(SolutionDir)Assets/**/.gitempty;$(SolutionDir)Assets/**/.gitignore" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(OutDir)%(RecursiveDir)" SkipUnchangedFiles="true" />
+	</Target>
 </Project>

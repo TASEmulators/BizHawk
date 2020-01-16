@@ -1,112 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\DotNetBuild.Common.targets" Condition=" '$(OS)' != 'Windows_NT' " />
-  <Import Project="..\DotNetBuild.Resources.targets" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>..\output\dll\BizHawk.Client.ApiHawk.XML</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Client.ApiHawk</RootNamespace>
-    <AssemblyName>BizHawk.Client.ApiHawk</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <LangVersion>8.0</LangVersion>
-    <NoWarn>1591</NoWarn>
-    <!-- don't bug us with "Missing XML comment [...]" until we have and enforce .stylecop.json i.e. when we care -->
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Users\uptho\Documents\BizHawk-2.3\dll\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
-    <Compile Include="Attributes\BizHawkExternalToolAttribute.cs" />
-    <Compile Include="Classes\ApiInjector.cs" />
-    <Compile Include="Classes\Api\PluginBase.cs" />
-    <Compile Include="Classes\BasicApiProvider.cs" />
-    <Compile Include="Classes\BizHawkSystemIdToCoreSystemEnumConverter.cs" />
-    <Compile Include="Classes\Events\EventArgs\BeforeQuickLoadEventArgs.cs" />
-    <Compile Include="Classes\Events\EventArgs\BeforeQuickSaveEventArgs.cs" />
-    <Compile Include="Classes\Events\EventArgs\StateSavedEventArgs.cs" />
-    <Compile Include="Classes\Events\EventArgs\StateLoadedEventArgs.cs" />
-    <Compile Include="Classes\Events\EventHandlers\BeforeQuickLoadEventhandler.cs" />
-    <Compile Include="Classes\Events\EventHandlers\BeforeQuickSaveEventhandler.cs" />
-    <Compile Include="Classes\Events\EventHandlers\StateLoadedEventHandler.cs" />
-    <Compile Include="Classes\Events\EventHandlers\StateSavedEventHandler.cs" />
-    <Compile Include="Classes\Joypad.cs" />
-    <Compile Include="Classes\JoypadStringToEnumConverter.cs" />
-    <Compile Include="Enums\BizHawkExternalToolUsage.cs" />
-    <Compile Include="Classes\ClientApi.cs" />
-    <Compile Include="Classes\ExternalToolManager.cs" />
-    <Compile Include="Interfaces\IExternalApiProvider.cs" />
-    <Compile Include="Interfaces\IExternalToolForm.cs" />
-    <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
-      <Project>{24a0aa3c-b25f-4197-b23d-476d6462dba0}</Project>
-      <Name>BizHawk.Client.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
-      <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
-      <Name>BizHawk.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
-      <Name>BizHawk.Emulation.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
-      <Project>{197d4314-8a9f-49ba-977d-54acefaeb6ba}</Project>
-      <Name>BizHawk.Emulation.Cores</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <None Include="Resources\ApiClassDiagram.cd" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../Common.abs.props" />
+	<PropertyGroup>
+		<OutputPath>../output/dll</OutputPath>
+		<TargetFramework>net461</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<Reference Include="Microsoft.CSharp" />
+		<!--<Reference Include="System" />-->
+		<!--<Reference Include="System.Core" />-->
+		<!--<Reference Include="System.Data" />-->
+		<!--<Reference Include="System.Data.DataSetExtensions" />-->
+		<!--<Reference HintPath="../../Users/uptho/Documents/BizHawk-2.3/dll/System.Data.SQLite.dll" Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64" SpecificVersion="false" />-->
+		<!--<Reference Include="System.Drawing" />-->
+		<Reference Include="System.Windows.Forms" />
+		<!--<Reference Include="System.Xml" />-->
+		<!--<Reference Include="System.Xml.Linq" />-->
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+	</ItemGroup>
+	<Import Project="../NamespaceAliasHack.abs.targets" />
 </Project>

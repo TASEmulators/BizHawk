@@ -1,139 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\DotNetBuild.Common.targets" Condition=" '$(OS)' != 'Windows_NT' " />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
-    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{F51946EA-827F-4D82-B841-1F2F6D060312}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BizHawk.Emulation.DiscSystem</RootNamespace>
-    <AssemblyName>BizHawk.Emulation.DiscSystem</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Version\svnrev.cs">
-      <Link>svnrev.cs</Link>
-    </Compile>
-    <Compile Include="..\Version\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="API_MednaDisc.cs" />
-    <Compile Include="CDFS\EndianBitConverter.cs" />
-    <Compile Include="CDFS\ISODirectoryNode.cs" />
-    <Compile Include="CDFS\ISOFile.cs" />
-    <Compile Include="CDFS\ISOFileNode.cs" />
-    <Compile Include="CDFS\ISONode.cs" />
-    <Compile Include="CDFS\ISONodeRecord.cs" />
-    <Compile Include="CDFS\ISOVolumeDescriptor.cs" />
-    <Compile Include="Disc.cs" />
-    <Compile Include="DiscDecoding.cs" />
-    <Compile Include="DiscExceptions.cs" />
-    <Compile Include="DiscFormats\Blobs\Blob_ECM.cs" />
-    <Compile Include="DiscFormats\Blobs\Blob_RawFile.cs" />
-    <Compile Include="DiscFormats\Blobs\Blob_WaveFile.cs" />
-    <Compile Include="DiscFormats\Blobs\Blob_ZeroPadAdapter.cs" />
-    <Compile Include="DiscFormats\Blobs\IBlob.cs" />
-    <Compile Include="DiscFormats\Blobs\RiffMaster.cs" />
-    <Compile Include="DiscFormats\MDS_Format.cs" />
-    <Compile Include="DiscFormats\CCD_format.cs" />
-    <Compile Include="DiscFormats\CUE\CueFileResolver.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Compile.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Context.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_File.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Load.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Parse.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Synths.cs" />
-    <Compile Include="DiscFormats\CUE\CUE_Types.cs" />
-    <Compile Include="DiscFormats\M3U_file.cs" />
-    <Compile Include="DiscFormats\SBI_format.cs" />
-    <Compile Include="DiscFormats\TOC_format.cs" />
-    <Compile Include="DiscHasher.cs" />
-    <Compile Include="DiscIdentifier.cs" />
-    <Compile Include="DiscJob.cs" />
-    <Compile Include="DiscMountJob.cs" />
-    <Compile Include="DiscMountJob.MednaDisc.cs" />
-    <Compile Include="DiscMountPolicy.cs" />
-    <Compile Include="DiscSectorReader.cs" />
-    <Compile Include="DiscStream.cs" />
-    <Compile Include="DiscStructure.cs" />
-    <Compile Include="DiscSubQ.cs" />
-    <Compile Include="DiscTOC.cs" />
-    <Compile Include="DiscTypes.cs" />
-    <Compile Include="DiscUtils.cs" />
-    <Compile Include="Internal\Algorithms\ECM.cs" />
-    <Compile Include="Internal\Algorithms\GPL_ECM.cs" />
-    <Compile Include="Internal\Algorithms\SubQ_CRC.cs" />
-    <Compile Include="Internal\Jobs\ApplySBIJob.cs" />
-    <Compile Include="Internal\Jobs\LoadSBIJob.cs" />
-    <Compile Include="Internal\Jobs\Synthesize_A0A1A2_Job.cs" />
-    <Compile Include="Internal\Jobs\Synthesize_DiscStructure_From_DiscTOC_Job.cs" />
-    <Compile Include="Internal\Jobs\Synthesize_DiscTOC_From_RawTOCEntries_Job.cs" />
-    <Compile Include="Internal\Jobs\Synthesize_Leadout_Job.cs" />
-    <Compile Include="Internal\SectorSynth.cs" />
-    <Compile Include="Internal\SynthUtils.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
-      <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
-      <Name>BizHawk.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CDFS\origin.txt" />
-    <Content Include="docs\notes.txt" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../Common.abs.props" />
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<OutputPath>../output/dll</OutputPath>
+		<TargetFramework>net461</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<!--<Reference Include="Microsoft.CSharp" />-->
+		<!--<Reference Include="System" />-->
+		<!--<Reference Include="System.Core" />-->
+		<!--<Reference Include="System.Data" />-->
+		<!--<Reference Include="System.Data.DataSetExtensions" />-->
+		<!--<Reference Include="System.Xml" />-->
+		<!--<Reference Include="System.Xml.Linq" />-->
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="../Version/svnrev.cs" />
+		<Compile Include="../Version/VersionInfo.cs" />
+	</ItemGroup>
 </Project>
+
