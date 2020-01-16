@@ -21,6 +21,11 @@ namespace MSXHawk
 			cpu.mem_ctrl = &MemMap;
 		};
 
+		VDP vdp;
+		Z80A cpu;
+		SN76489sms psg;
+		MemoryManager MemMap;
+
 		void Load_ROM(uint8_t* ext_rom, uint32_t ext_rom_size, uint32_t ext_rom_mapper)
 		{
 			MemMap.Load_ROM(ext_rom, ext_rom_size, ext_rom_mapper);
@@ -78,10 +83,60 @@ namespace MSXHawk
 			return MemMap.lagged;
 		}
 
-		VDP vdp;
-		Z80A cpu;
-		SN76489sms psg;
-		MemoryManager MemMap;
+		void GetVideo(uint32_t* dest) {
+			uint32_t* src = vdp.GameGearFrameBuffer;
+			uint32_t* dst = dest;
+
+			for (int i = 0; i < 144; i++)
+			{
+				std::memcpy(dst, src, sizeof uint32_t * 160);
+				src += 160;
+				dst += 160;
+			}
+		}
+
+		void SetTraceCallback(void (*callback)(int)) 
+		{
+			cpu.TraceCallback = callback;
+		}
+
+		void GetHeader(char* h)
+		{
+			memcpy(h, cpu.TraceHeader, *(&cpu.TraceHeader + 1) - cpu.TraceHeader);
+		}
+
+		int GetHeaderLength()
+		{
+			return *(&cpu.TraceHeader + 1) - cpu.TraceHeader;
+		}
+
+		void GetRegisterState(char* r, int t)
+		{
+			if (t == 0) 
+			{
+				memcpy(r, cpu.CPURegisterState().c_str(), cpu.CPURegisterState().length() + 1);
+			}
+			else 
+			{
+				memcpy(r, cpu.No_Reg, *(&cpu.No_Reg + 1) - cpu.No_Reg);
+			}		
+		}
+
+		void GetDisassembly(char* d, int t)
+		{
+			if (t == 0)
+			{
+				memcpy(d, cpu.CPUDisassembly().c_str(), cpu.CPUDisassembly().length() + 1);
+			}
+			else if (t == 1)
+			{
+				memcpy(d, cpu.NMI_event, *(&cpu.NMI_event + 1) - cpu.NMI_event);
+			}
+			else
+			{
+				memcpy(d, cpu.IRQ_event, *(&cpu.IRQ_event + 1) - cpu.IRQ_event);
+			}
+		}
 	};
 }
 

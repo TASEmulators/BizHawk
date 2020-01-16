@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.MSX
@@ -39,8 +39,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			InputCallbacks = new InputCallbackSystem();
 
-			//var serviceProvider = ServiceProvider as BasicServiceProvider;
-			//serviceProvider.Register<ITraceable>(Tracer);
+			int new_header_size = LibMSX.MSX_getheaderlength(MSX_Pntr);
+			StringBuilder new_header = new StringBuilder(new_header_size);
+			LibMSX.MSX_getheader(MSX_Pntr, new_header);
+
+			Tracer = new TraceBuffer { Header = new_header.ToString() };
+
+			var serviceProvider = ServiceProvider as BasicServiceProvider;
+			serviceProvider.Register<ITraceable>(Tracer);
 		}
 
 		public void HardReset()
@@ -63,7 +69,29 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public DisplayType Region => DisplayType.NTSC;
 
-		private readonly ITraceable Tracer;
+		#region Trace Logger
+		private ITraceable Tracer;
+
+		private LibMSX.TraceCallback tracecb;
+
+		private void MakeTrace(int t)
+		{
+
+
+			StringBuilder new_d = new StringBuilder(500);
+			StringBuilder new_r = new StringBuilder(500);
+
+			LibMSX.MSX_getdisassembly(MSX_Pntr, new_d, t);
+			LibMSX.MSX_getregisterstate(MSX_Pntr, new_r, t);
+
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = new_d.ToString().PadRight(36),
+				RegisterInfo = new_r.ToString()
+			});
+		}
+
+		#endregion
 
 		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;

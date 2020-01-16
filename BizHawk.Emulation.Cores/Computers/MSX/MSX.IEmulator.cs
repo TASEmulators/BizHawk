@@ -23,8 +23,21 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			_controller = controller;
 
 			_frame++;
+			
+			if (Tracer.Enabled)
+			{
+				tracecb = MakeTrace;
+			}
+			else
+			{
+				tracecb = null;
+			}
 
-			return LibMSX.MSX_frame_advance(MSX_Pntr, 0, 0, true, true);
+			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
+
+			LibMSX.MSX_frame_advance(MSX_Pntr, 0, 0, true, true);
+
+			return true;
 		}
 
 		public int Frame => _frame;
@@ -119,13 +132,12 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		#region Video
 		public int _frameHz = 60;
 
-		public int[] _vidbuffer;
-
-		public int[] frame_buffer = new int[160 * 144];
+		public int[] _vidbuffer = new int[160 * 144];
 
 		public int[] GetVideoBuffer()
 		{
-			return frame_buffer;
+			LibMSX.MSX_get_video(MSX_Pntr, _vidbuffer);
+			return _vidbuffer;
 		}
 
 		public int VirtualWidth => 160;

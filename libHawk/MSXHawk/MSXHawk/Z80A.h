@@ -118,6 +118,8 @@ namespace MSXHawk
 			interruptMode = value;
 		}
 
+		char replacer[32] = {};
+
 		#pragma endregion
 
 		#pragma region Constant Declarations
@@ -263,8 +265,8 @@ namespace MSXHawk
 		
 		Z80A()
 		{
-			//Reset();
-			//InitTableParity();
+			Reset();
+			InitTableParity();
 		}
 		
 		void Reset()
@@ -308,7 +310,9 @@ namespace MSXHawk
 			case OP_F:
 				// Read the opcode of the next instruction	
 				//if (OnExecFetch != null) OnExecFetch(RegPC);
-				//if (TraceCallback != null) TraceCallback(State());
+
+				if (TraceCallback) { TraceCallback(0); }
+
 				bank_num = bank_offset = RegPCget();
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
@@ -786,12 +790,9 @@ namespace MSXHawk
 				if (nonMaskableInterruptPending)
 				{
 					nonMaskableInterruptPending = false;
-					/*
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo{ Disassembly = "====NMI====", RegisterInfo = "" });
-					}
-					*/
+
+					if (TraceCallback) { TraceCallback(1); }
+
 					IFF2 = IFF1;
 					IFF1 = false;
 					NMI_();
@@ -810,12 +811,9 @@ namespace MSXHawk
 				{
 					IFF1 = IFF2 = false;
 					EI_pending = 0;
-					/*
-					if (TraceCallback != null)
-					{
-						TraceCallback(new TraceInfo{ Disassembly = "====IRQ====", RegisterInfo = "" });
-					}
-					*/
+
+					if (TraceCallback) { TraceCallback(2); }
+
 					switch (interruptMode)
 					{
 					case 0:
@@ -862,64 +860,6 @@ namespace MSXHawk
 			}
 
 			TotalExecutedCycles++;
-		}
-
-		const string TraceHeader = "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
-
-		string CPUDisassembly() 
-		{
-			return "";
-
-			/*
-			uint32_t bytes_read = 0;
-
-			int* bytes_read_ptr = &bytes_read;
-
-			string disasm = disassemble ? Disassemble(RegPCget(), bytes_read_ptr) : "---";
-			string byte_code = "";
-
-			for (uint32_t i = 0; i < bytes_read; i++)
-			{
-				byte_code += $"{ReadMemory((uint32_t)(RegPC + i)):X2}";
-				if (i < (bytes_read - 1))
-				{
-					byte_code += " ";
-				}
-			}
-
-			return new TraceInfo
-			{
-				Disassembly = $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
-
-			};
-			*/
-		}
-
-		string CPURegisterState()
-		{
-			return "";
-
-			/*
-			RegisterInfo = string.Join(" ",
-			$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
-			$"BC:{(Regs[B] << 8) + Regs[C]:X4}",
-			$"DE:{(Regs[D] << 8) + Regs[E]:X4}",
-			$"HL:{(Regs[H] << 8) + Regs[L]:X4}",
-			$"IX:{(Regs[Ixh] << 8) + Regs[Ixl]:X4}",
-			$"IY:{(Regs[Iyh] << 8) + Regs[Iyl]:X4}",
-			$"SP:{Regs[SPl] | (Regs[SPh] << 8):X4}",
-			$"Cy:{TotalExecutedCycles}",
-			string.Concat(
-			FlagC ? "C" : "c",
-			FlagN ? "N" : "n",
-			FlagP ? "P" : "p",
-			Flag3 ? "3" : "-",
-			FlagH ? "H" : "h",
-			Flag5 ? "5" : "-",
-			FlagZ ? "Z" : "z",
-			FlagS ? "S" : "s",
-			FlagI ? "E" : "e"))
-			*/
 		}
 
 		/// <summary>
@@ -4509,24 +4449,301 @@ namespace MSXHawk
 
 		#pragma region Disassemble
 
-		static string Result(string format, uint32_t addr)
+		const char* TraceHeader = "Z80A: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)";
+		const char* NMI_event = "====NMI====";
+		const char* IRQ_event = "====IRQ====";
+		const char* No_Reg = "Q";
+
+		void (*TraceCallback)(int);
+
+		string CPURegisterState()
+		{
+			string reg_state = " ";
+			
+			char* val_char = replacer;
+
+			int temp_reg = (Regs[A] << 8) + Regs[F];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+			
+			temp_reg = (Regs[B] << 8) + Regs[C];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+			
+			temp_reg = (Regs[D] << 8) + Regs[E];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+
+			temp_reg = (Regs[H] << 8) + Regs[L];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+
+			temp_reg = (Regs[Ixh] << 8) + Regs[Ixl];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+
+			temp_reg = (Regs[Iyh] << 8) + Regs[Iyl];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+
+			temp_reg = (Regs[SPh] << 8) + Regs[SPl];
+			sprintf_s(val_char, 5, "%04X", temp_reg);
+			reg_state.append(val_char, 4);
+			reg_state.append(" ");
+			
+			int tot_long = sprintf_s(val_char, 32, "%16u", TotalExecutedCycles);
+			reg_state.append(val_char, tot_long);
+			reg_state.append(" ");
+			
+			reg_state.append(FlagCget() ? "C" : "c");
+			reg_state.append(FlagNget() ? "N" : "n");
+			reg_state.append(FlagPget() ? "P" : "p");
+			reg_state.append(Flag3get() ? "3" : "-");
+			reg_state.append(FlagHget() ? "H" : "h");
+			reg_state.append(Flag5get() ? "5" : "-");
+			reg_state.append(FlagZget() ? "Z" : "z");
+			reg_state.append(FlagSget() ? "S" : "s");
+			reg_state.append(FlagI ? "E" : "e");
+
+			return reg_state;
+		}
+
+		string CPUDisassembly()
+		{
+			uint32_t bytes_read = 0;
+
+			uint32_t* bytes_read_ptr = &bytes_read;
+
+			string disasm = Disassemble(RegPCget(), bytes_read_ptr);
+			string byte_code = "";
+
+			for (uint32_t i = 0; i < bytes_read; i++)
+			{
+				bank_num = bank_offset = (RegPCget() + i) & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+
+				char* val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 2);
+				
+				byte_code.append(val1);
+				if (i < (bytes_read - 1))
+				{
+					byte_code.append(" ");
+				}
+			}
+
+			byte_code.append(disasm);
+
+			while (byte_code.length() < 32) 
+			{
+				byte_code.append(" ");
+			}
+
+			return byte_code;
+		}
+
+		string Result(string format, uint32_t addr)
 		{
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
-			/*
-			if (format.IndexOf("nn") != -1) format = format.Replace("nn", $"{read(addr++) + (read(addr++) << 8):X4}h"); // LSB is read first
-			if (format.IndexOf("n") != -1) format = format.Replace("n", $"{read(addr++):X2}h");
 
-			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
-			if (format.IndexOf("d") != -1)
+			if (format.find("nn") != string::npos)
 			{
-				var b = unchecked((sbyte)read(addr++));
-				format = format.Replace("d", $"{(b < 0 ? '-' : '+')}{(b < 0 ? -b : b):X2}h");
+				size_t str_loc = format.find("nn");
+
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift) & high_mask;
+				addr++;
+				
+				char* val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 2);
+
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				char* val_char_2 = replacer;
+				sprintf_s(val_char_2, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				string val2(val_char_2, 2);
+
+				format.erase(str_loc, 2);
+				format.insert(str_loc, val1);
+				format.insert(str_loc, val2);
 			}
-			*/
+			
+			if (format.find("n") != string::npos)
+			{
+				size_t str_loc = format.find("n");
+
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				char* val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 2);
+
+				format.erase(str_loc, 1);
+				format.insert(str_loc, val1);
+			}
+
+			if (format.find("+d") != string::npos)
+			{
+				size_t str_loc = format.find("+d");
+
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				char* val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%u", MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 2);
+
+				format.erase(str_loc + 1, 1);
+				format.insert(str_loc + 1, val1);
+			}
+			if (format.find("d") != string::npos)
+			{
+				size_t str_loc = format.find("d");
+
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift)& high_mask;
+				addr++;
+
+				int8_t temp = (int8_t)MemoryMap[bank_num][bank_offset];
+
+				char* val_char_1 = replacer;
+				sprintf_s(val_char_1, 5, "%d", temp);
+				string val1(val_char_1, 3);
+
+				format.erase(str_loc, 1);
+				format.insert(str_loc, val1);
+			}
+						
 			return format;
 		}
+
+		string Disassemble(uint32_t addr, uint32_t* size)
+		{
+			uint32_t start_addr = addr;
+			uint32_t extra_inc = 0;
+
+			bank_num = bank_offset = addr & 0xFFFF;
+			bank_offset &= low_mask;
+			bank_num = (bank_num >> bank_shift) & high_mask;
+			addr++;
+
+			uint32_t A = MemoryMap[bank_num][bank_offset];
+			string format;
+			switch (A)
+			{
+			case 0xCB:
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift) & high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
+				format = mnemonicsCB[A];
+				break;
+			case 0xDD:
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift) & high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
+				switch (A)
+				{
+				case 0xCB:
+					bank_num = bank_offset = (addr + 1) & 0xFFFF;
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift) & high_mask;
+
+					format = mnemonicsDDCB[MemoryMap[bank_num][bank_offset]];
+					extra_inc = 1;
+					break;
+				case 0xED:
+					format = mnemonicsED[A];
+					break;
+				default:
+					format = mnemonicsDD[A];
+					break;
+				}
+				break;
+			case 0xED:
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift) & high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
+				format = mnemonicsED[A];
+				break;
+			case 0xFD:
+				bank_num = bank_offset = addr & 0xFFFF;
+				bank_offset &= low_mask;
+				bank_num = (bank_num >> bank_shift) & high_mask;
+				addr++;
+
+				A = MemoryMap[bank_num][bank_offset];
+				switch (A)
+				{
+				case 0xCB:
+					bank_num = bank_offset = (addr + 1) & 0xFFFF;
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift)& high_mask;
+
+					format = mnemonicsFDCB[MemoryMap[bank_num][bank_offset]];
+					extra_inc = 1;
+					break;
+				case 0xED:
+					format = mnemonicsED[A];
+					break;
+				default:
+					format = mnemonicsFD[A];
+					break;
+				}
+				break;
+			default: format = mnemonics[A]; break;
+			}
+
+			string temp = Result(format, addr);
+
+			addr += extra_inc;
+
+			size[0] = addr - start_addr;
+			// handle case of addr wrapping around at 16 bit boundary
+			if (addr < start_addr)
+			{
+				size[0] = (0x10000 + addr) - start_addr;
+			}
+
+			return temp;
+		}
+
+		/*
+		string Disassemble(MemoryDomain m, uuint32_t addr, out uint32_t length)
+		{
+			string ret = Disassemble((uint32_t)addr, a = > m.PeekByte(a), out length);
+			return ret;
+		}
+		*/
 
 		const string mnemonics[256] = 
 		{
@@ -4881,112 +5098,6 @@ namespace MSXHawk
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xF0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
-
-		string Disassemble(uint32_t addr, int* size)
-		{
-			uint32_t start_addr = addr;
-			uint32_t extra_inc = 0;
-
-			bank_num = bank_offset = addr & 0xFFFF;
-			bank_offset &= low_mask;
-			bank_num = (bank_num >> bank_shift)& high_mask;
-			addr++;
-
-			uint32_t A = MemoryMap[bank_num][bank_offset];
-			string format;
-			switch (A)
-			{
-			case 0xCB:
-				bank_num = bank_offset = addr & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
-
-				A = MemoryMap[bank_num][bank_offset];
-				format = mnemonicsCB[A];
-				break;
-			case 0xDD:
-				bank_num = bank_offset = addr & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
-
-				A = MemoryMap[bank_num][bank_offset];
-				switch (A)
-				{
-				case 0xCB: 
-					bank_num = bank_offset = (addr + 1) & 0xFFFF;
-					bank_offset &= low_mask;
-					bank_num = (bank_num >> bank_shift)& high_mask;
-
-					format = mnemonicsDDCB[MemoryMap[bank_num][bank_offset]];
-					extra_inc = 1; 
-					break;
-				case 0xED: 
-					format = mnemonicsED[A]; 
-					break;
-				default: 
-					format = mnemonicsDD[A]; 
-					break;
-				}
-				break;
-			case 0xED:
-				bank_num = bank_offset = addr & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
-
-				A = MemoryMap[bank_num][bank_offset];
-				format = mnemonicsED[A];
-				break;
-			case 0xFD:
-				bank_num = bank_offset = addr & 0xFFFF;
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
-
-				A = MemoryMap[bank_num][bank_offset];
-				switch (A)
-				{
-				case 0xCB: 
-					bank_num = bank_offset = (addr + 1) & 0xFFFF;
-					bank_offset &= low_mask;
-					bank_num = (bank_num >> bank_shift)& high_mask;
-					
-					format = mnemonicsFDCB[MemoryMap[bank_num][bank_offset]];
-					extra_inc = 1; 
-					break;
-				case 0xED: 
-					format = mnemonicsED[A]; 
-					break;
-				default: 
-					format = mnemonicsFD[A]; 
-					break;
-				}
-				break;
-			default: format = mnemonics[A]; break;
-			}
-
-			string temp = Result(format, addr);
-
-			addr += extra_inc;
-
-			size[0] = addr - start_addr;
-			// handle case of addr wrapping around at 16 bit boundary
-			if (addr < start_addr)
-			{
-				size[0] = (0x10000 + addr) - start_addr;
-			}
-
-			return temp;
-		}
-		/*
-		string Disassemble(MemoryDomain m, uuint32_t addr, out uint32_t length)
-		{
-			string ret = Disassemble((uint32_t)addr, a = > m.PeekByte(a), out length);
-			return ret;
-		}
-		*/
 		#pragma endregion
 	};
 }

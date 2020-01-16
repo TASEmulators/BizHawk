@@ -59,8 +59,8 @@ namespace MSXHawk
 		
 		int32_t IPeriod = 228;
 		int32_t FrameHeight = 192;
-		int32_t FrameBuffer[256 * 244];
-		int32_t GameGearFrameBuffer[160 * 144];
+		uint32_t FrameBuffer[256 * 244];
+		uint32_t GameGearFrameBuffer[160 * 144];
 		int32_t OverscanFrameBuffer[1];
 		int32_t ScanLine;
 

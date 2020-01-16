@@ -35,3 +35,34 @@ MSXHAWK_EXPORT void MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, 
 	p->FrameAdvance(ctrl1, ctrl2, render, sound);
 }
 
+// send video data to external video provider
+MSXHAWK_EXPORT void MSX_get_video(MSXCore* p, uint32_t* dest)
+{
+	p->GetVideo(dest);
+}
+
+// set tracer callback
+MSXHAWK_EXPORT void MSX_settracecallback(MSXCore* p, void (*callback)(int)) {
+	p->SetTraceCallback(callback);
+}
+
+// return the cpu trace header
+MSXHAWK_EXPORT void MSX_getheader(MSXCore* p, char* h) {
+	p->GetHeader(h);
+}
+
+// return the cpu trace header length
+MSXHAWK_EXPORT int MSX_getheaderlength(MSXCore* p) {
+	return p->GetHeaderLength();
+}
+
+// return the cpu register state
+MSXHAWK_EXPORT void MSX_getregisterstate(MSXCore* p, char* r, int t) {
+	p->GetRegisterState(r, t);
+}
+
+// return the cpu disassembly
+MSXHAWK_EXPORT void MSX_getdisassembly(MSXCore* p, char* d, int t) {
+	p->GetDisassembly(d, t);
+}
+
