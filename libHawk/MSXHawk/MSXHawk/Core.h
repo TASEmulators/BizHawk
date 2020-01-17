@@ -20,6 +20,7 @@ namespace MSXHawk
 			MemMap.psg_pntr = &psg;
 			cpu.mem_ctrl = &MemMap;
 			vdp.INT_FLAG = &cpu.FlagI;
+			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
 		};
 
 		VDP vdp;
