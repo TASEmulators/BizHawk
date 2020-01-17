@@ -60,7 +60,6 @@ namespace BizHawk.Client.EmuHawk
 			public TAStudioSettings()
 			{
 				RecentTas = new RecentFiles(8);
-				DrawInput = true;
 				AutoPause = true;
 				FollowCursor = true;
 				ScrollSpeed = 6;
@@ -84,7 +83,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public RecentFiles RecentTas { get; set; }
-			public bool DrawInput { get; set; }
 			public bool AutoPause { get; set; }
 			public bool AutoRestoreLastPosition { get; set; }
 			public bool FollowCursor { get; set; }
@@ -272,7 +270,6 @@ namespace BizHawk.Client.EmuHawk
 					.Click += (o, ov) => { CurrentTasMovie.FlagChanges(); };
 			}
 
-			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;

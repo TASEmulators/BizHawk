@@ -846,8 +846,6 @@ namespace BizHawk.Client.EmuHawk
 					ClearLeftMouseStates();
 				}
 
-				
-
 				DoTriggeredAutoRestoreIfNeeded();
 			}
 

@@ -889,7 +889,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
 			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
@@ -909,8 +908,8 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Number of Undo Levels to keep",
 				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
 			};
-			DialogResult result = prompt.ShowDialog();
-			if (result == DialogResult.OK)
+
+			if (prompt.ShowDialog().IsOk())
 			{
 				int val = 0;
 				try
@@ -937,8 +936,8 @@ namespace BizHawk.Client.EmuHawk
 				Message = "ScreenshotPopUp Delay",
 				InitialValue = Settings.BranchCellHoverInterval.ToString()
 			};
-			DialogResult result = prompt.ShowDialog();
-			if (result == DialogResult.OK)
+
+			if (prompt.ShowDialog().IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
 				if (val > 0)
@@ -957,8 +956,8 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Seeking Cutoff Interval",
 				InitialValue = Settings.SeekingCutoffInterval.ToString()
 			};
-			DialogResult result = prompt.ShowDialog();
-			if (result == DialogResult.OK)
+
+			if (prompt.ShowDialog().IsOk())
 			{
 				int val = int.Parse(prompt.PromptText);
 				if (val > 0)
@@ -977,8 +976,8 @@ namespace BizHawk.Client.EmuHawk
 				Message = "Autosave Interval in seconds\nSet to 0 to disable",
 				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
 			};
-			DialogResult result = prompt.ShowDialog();
-			if (result == DialogResult.OK)
+
+			if (prompt.ShowDialog().IsOk())
 			{
 				uint val = uint.Parse(prompt.PromptText) * 1000;
 				Settings.AutosaveInterval = val;
@@ -1003,11 +1002,6 @@ namespace BizHawk.Client.EmuHawk
 		private void BackupPerFileSaveMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.BackupPerFileSave ^= true;
-		}
-
-		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
-		{
-			TasView.InputPaintingMode = Settings.DrawInput ^= true;
 		}
 
 		private void ApplyPatternToPaintedInputMenuItem_CheckedChanged(object sender, EventArgs e)

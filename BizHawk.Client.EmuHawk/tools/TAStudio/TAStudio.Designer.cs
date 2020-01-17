@@ -90,7 +90,6 @@
 			this.BackupPerFileSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onlyOnAutoFireColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SingleClickFloatEditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -618,7 +617,6 @@
             this.BackupPerFileSaveMenuItem,
             this.toolStripSeparator9,
             this.AutoadjustInputMenuItem,
-            this.DrawInputByDraggingMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
             this.onlyOnAutoFireColumnsToolStripMenuItem,
             this.SingleClickFloatEditMenuItem,
@@ -715,13 +713,6 @@
 			this.AutoadjustInputMenuItem.Name = "AutoadjustInputMenuItem";
 			this.AutoadjustInputMenuItem.Size = new System.Drawing.Size(244, 22);
 			this.AutoadjustInputMenuItem.Text = "Auto-adjust Input according to Lag";
-			// 
-			// DrawInputByDraggingMenuItem
-			// 
-			this.DrawInputByDraggingMenuItem.Name = "DrawInputByDraggingMenuItem";
-			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(244, 22);
-			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
-			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
 			// 
 			// applyPatternToPaintedInputToolStripMenuItem
 			// 
@@ -1204,6 +1195,7 @@
 			// 
 			// TasView
 			//
+			this.TasView.InputPaintingMode = true;
 			this.TasView.CellWidthPadding = 3;
 			this.TasView.GridLines = true;
 			this.TasView.AllowMassNavigationShortcuts = false;
@@ -1653,7 +1645,6 @@
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetMaxUndoLevelsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoadjustInputMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem DrawInputByDraggingMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UseInputKeysItem;
 		private System.Windows.Forms.ToolStripMenuItem BindMarkersToInputMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem EmptyNewMarkerNotesMenuItem;
