@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -347,7 +346,7 @@ namespace BizHawk.Client.Common
 
 			var stateFrameValue = stateFrame ?? 0;
 
-			if (stateFrameValue.StrictlyBoundedBy(0.RangeTo(Log.Count)))
+			if (stateFrameValue > 0 && stateFrameValue < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
@@ -380,7 +379,15 @@ namespace BizHawk.Client.Common
 
 		#region Branches
 
-		public TasBranch GetBranch(int index) => 0.RangeToExclusive(Branches.Count).Contains(index) ? Branches[index] : null;
+		public TasBranch GetBranch(int index)
+		{
+			if (index >= Branches.Count || index < 0)
+			{
+				return null;
+			}
+
+			return Branches[index];
+		}
 
 		public TasBranch GetBranch(Guid id)
 		{
