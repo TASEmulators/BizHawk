@@ -16,25 +16,20 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		{
 			var domains = new List<MemoryDomain>
 			{
-				new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				(addr) =>
-				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-					return 0;
-				},
-				(addr, value) =>
-				{
-					if (addr < 0 || addr >= 65536)
-					{
-						throw new ArgumentOutOfRangeException();
-					}
-
-
-				}, 1)
+				new MemoryDomainDelegate(
+					"System Bus", 
+					0x10000, 
+					MemoryDomain.Endian.Little,
+					(addr) => LibMSX.MSX_getsysbus(MSX_Pntr, (int)(addr & 0xFFFF)),
+					(addr, value) => { }, 
+					1),
+				new MemoryDomainDelegate(
+					"VRAM",
+					0x4000,
+					MemoryDomain.Endian.Little,
+					(addr) => LibMSX.MSX_getvram(MSX_Pntr, (int)(addr & 0x3FFF)),
+					(addr, value) => { },
+					1),
 			};
 
 			if (SaveRAM != null)

@@ -11,6 +11,7 @@
 
 using namespace MSXHawk;
 
+#pragma region Core
 // Create pointer to a core instance
 MSXHAWK_EXPORT MSXCore* MSX_create()
 {
@@ -45,6 +46,19 @@ MSXHAWK_EXPORT void MSX_get_video(MSXCore* p, uint32_t* dest)
 MSXHAWK_EXPORT void MSX_settracecallback(MSXCore* p, void (*callback)(int)) {
 	p->SetTraceCallback(callback);
 }
+#pragma endregion
+
+#pragma region Memory Domain Functions
+
+MSXHAWK_EXPORT uint8_t MSX_getsysbus(MSXCore* p, uint32_t addr) {
+	return p->GetSysBus(addr);
+}
+
+MSXHAWK_EXPORT uint8_t MSX_getvram(MSXCore* p, uint32_t addr) {
+	return p->GetVRAM(addr);
+}
+#pragma endregion
+
 
 #pragma region Tracer
 

@@ -22,7 +22,7 @@ namespace MSXHawk
 		uint8_t VRAM[0x4000]; //16kb video RAM
 		uint8_t CRAM[64]; // SMS = 32 uint8_ts, GG = 64 uint8_ts CRAM
 		uint8_t Registers[16] = { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
-		uint8_t Statusuint8_t;
+		uint8_t StatusInt;
 
 		static void TO_REGS(uint8_t value) 
 		{
@@ -118,8 +118,8 @@ namespace MSXHawk
 		uint8_t ReadVdpStatus()
 		{
 			VdpWaitingForLatchuint8_t = true;
-			uint8_t returnValue = Statusuint8_t;
-			Statusuint8_t &= 0x1F;
+			uint8_t returnValue = StatusInt;
+			StatusInt &= 0x1F;
 			HIntPending = false;
 			VIntPending = false;
 			INT_FLAG[0] = false;
@@ -350,7 +350,7 @@ namespace MSXHawk
 		{
 			if (ScanLine == FrameHeight + 1)
 			{
-				Statusuint8_t |= 0x80;
+				StatusInt |= 0x80;
 				VIntPending = true;
 			}
 
@@ -410,7 +410,7 @@ namespace MSXHawk
 		void SyncState(Serializer ser)
 		{
 			ser.BeginSection(nameof(VDP));
-			ser.Sync(nameof(Statusuint8_t), ref Statusuint8_t);
+			ser.Sync(nameof(StatusInt), ref StatusInt);
 			ser.Sync("WaitingForLatchuint8_t", ref VdpWaitingForLatchuint8_t);
 			ser.Sync("Latch", ref VdpLatch);
 			ser.Sync("ReadBuffer", ref VdpBuffer);
@@ -601,7 +601,7 @@ namespace MSXHawk
 				{
 					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
 					if (overflowHappens)
-						Statusuint8_t |= 0x40; // Set Overflow bit
+						StatusInt |= 0x40; // Set Overflow bit
 					if (SpriteLimit)
 						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
 				}
@@ -621,7 +621,7 @@ namespace MSXHawk
 						if (SpriteCollisionBuffer[x + xs] != 0)
 						{
 							if (collisionHappens)
-								Statusuint8_t |= 0x20; // Set Collision bit
+								StatusInt |= 0x20; // Set Collision bit
 						}
 						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
 						{
@@ -681,7 +681,7 @@ namespace MSXHawk
 				{
 					collisionHappens = false; // technically the VDP stops processing sprite past this so we would never set the collision bit for sprites past this
 					if (overflowHappens)
-						Statusuint8_t |= 0x40; // Set Overflow bit
+						StatusInt |= 0x40; // Set Overflow bit
 					if (SpriteLimit)
 						renderHappens = false; // should be able to break/return, but to ensure this has no effect on sync we keep processing and disable rendering
 				}
@@ -701,7 +701,7 @@ namespace MSXHawk
 						if (SpriteCollisionBuffer[x + xs] != 0)
 						{
 							if (collisionHappens)
-								Statusuint8_t |= 0x20; // Set Collision bit
+								StatusInt |= 0x20; // Set Collision bit
 						}
 						else if (renderHappens && ScanlinePriorityBuffer[x + xs] == 0)
 						{
@@ -847,7 +847,7 @@ namespace MSXHawk
 
 		#pragma region ModeTMS
 
-		uint32_t PaletteTMS9918[16]
+		uint32_t PaletteTMS9918[16] =
 		{
 			0xFF000000,
 			0xFF000000,
@@ -996,9 +996,9 @@ namespace MSXHawk
 
 				if (++NumSpritesOnScanline == 5)
 				{
-					Statusuint8_t &= 0xE0;    // Clear FS0-FS4 bits
-					Statusuint8_t |= (int8_t)i; // set 5th sprite index
-					Statusuint8_t |= 0x40;    // set overflow bit
+					StatusInt &= 0xE0;    // Clear FS0-FS4 bits
+					StatusInt |= (int8_t)i; // set 5th sprite index
+					StatusInt |= 0x40;    // set overflow bit
 					break;
 				}
 
@@ -1020,7 +1020,7 @@ namespace MSXHawk
 					if (Color != 0 && (pv & (1 << (7 - (xp & 7)))) > 0)
 					{
 						if (SpriteCollisionBuffer[x + xp] != 0)
-							Statusuint8_t |= 0x20; // Set sprite collision flag
+							StatusInt |= 0x20; // Set sprite collision flag
 
 						if (ScanlinePriorityBuffer[x + xp] == 0)
 						{
@@ -1069,9 +1069,9 @@ namespace MSXHawk
 
 				if (++NumSpritesOnScanline == 5)
 				{
-					Statusuint8_t &= 0xE0;    // Clear FS0-FS4 bits
-					Statusuint8_t |= (uint8_t)i; // set 5th sprite index
-					Statusuint8_t |= 0x40;    // set overflow bit
+					StatusInt &= 0xE0;    // Clear FS0-FS4 bits
+					StatusInt |= (uint8_t)i; // set 5th sprite index
+					StatusInt |= 0x40;    // set overflow bit
 					break;
 				}
 
@@ -1090,7 +1090,7 @@ namespace MSXHawk
 					if (Color != 0 && (pv & (1 << (7 - ((xp / 2) & 7)))) > 0)  // xp/2 is due to sprite magnification
 					{
 						if (SpriteCollisionBuffer[x + xp] != 0)
-							Statusuint8_t |= 0x20; // Set sprite collision flag
+							StatusInt |= 0x20; // Set sprite collision flag
 
 						if (ScanlinePriorityBuffer[x + xp] == 0)
 						{

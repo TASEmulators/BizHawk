@@ -4623,7 +4623,7 @@ namespace MSXHawk
 			return byte_code;
 		}
 
-		string Result(string format, uint32_t addr)
+		string Result(string format, uint32_t* addr)
 		{
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
@@ -4633,19 +4633,19 @@ namespace MSXHawk
 			{
 				size_t str_loc = format.find("nn");
 
-				bank_num = bank_offset = addr & 0xFFFF;
+				bank_num = bank_offset = addr[0] & 0xFFFF;
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift) & high_mask;
-				addr++;
+				addr[0]++;
 				
 				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
 				string val1(val_char_1, 2);
 
-				bank_num = bank_offset = addr & 0xFFFF;
+				bank_num = bank_offset = addr[0] & 0xFFFF;
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
+				addr[0]++;
 
 				val_char_2 = replacer;
 				sprintf_s(val_char_2, 5, "%02X", MemoryMap[bank_num][bank_offset]);
@@ -4660,10 +4660,10 @@ namespace MSXHawk
 			{
 				size_t str_loc = format.find("n");
 
-				bank_num = bank_offset = addr & 0xFFFF;
+				bank_num = bank_offset = addr[0] & 0xFFFF;
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
+				addr[0]++;
 
 				val_char_1 = replacer;
 				sprintf_s(val_char_1, 5, "%02X", MemoryMap[bank_num][bank_offset]);
@@ -4677,32 +4677,30 @@ namespace MSXHawk
 			{
 				size_t str_loc = format.find("+d");
 
-				bank_num = bank_offset = addr & 0xFFFF;
+				bank_num = bank_offset = addr[0] & 0xFFFF;
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
+				addr[0]++;
 
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%u", MemoryMap[bank_num][bank_offset]);
-				string val1(val_char_1, 2);
+				sprintf_s(val_char_1, 5, "%+04d", (int8_t)MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 4);
 
-				format.erase(str_loc + 1, 1);
-				format.insert(str_loc + 1, val1);
+				format.erase(str_loc, 2);
+				format.insert(str_loc, val1);
 			}
 			if (format.find("d") != string::npos)
 			{
 				size_t str_loc = format.find("d");
 
-				bank_num = bank_offset = addr & 0xFFFF;
+				bank_num = bank_offset = addr[0] & 0xFFFF;
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
-				addr++;
-
-				int8_t temp = (int8_t)MemoryMap[bank_num][bank_offset];
+				addr[0]++;
 
 				val_char_1 = replacer;
-				sprintf_s(val_char_1, 5, "%d", temp);
-				string val1(val_char_1, 3);
+				sprintf_s(val_char_1, 5, "%+04d", (int8_t)MemoryMap[bank_num][bank_offset]);
+				string val1(val_char_1, 4);
 
 				format.erase(str_loc, 1);
 				format.insert(str_loc, val1);
@@ -4796,7 +4794,8 @@ namespace MSXHawk
 			default: format = mnemonics[A]; break;
 			}
 
-			string temp = Result(format, addr);
+			uint32_t* addr_ptr = &addr;
+			string temp = Result(format, addr_ptr);
 
 			addr += extra_inc;
 

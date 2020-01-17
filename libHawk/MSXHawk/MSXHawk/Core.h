@@ -100,6 +100,24 @@ namespace MSXHawk
 			}
 		}
 
+		#pragma region Memory Domain Functions
+
+		uint8_t GetSysBus(uint32_t addr)
+		{
+			cpu.bank_num = cpu.bank_offset = addr & 0xFFFF;
+			cpu.bank_offset &= cpu.low_mask;
+			cpu.bank_num = (cpu.bank_num >> cpu.bank_shift)& cpu.high_mask;
+
+			return cpu.MemoryMap[cpu.bank_num][cpu.bank_offset];
+		}
+
+		uint8_t GetVRAM(uint32_t addr) 
+		{
+			return vdp.VRAM[addr & 0x3FFF];
+		}
+
+		#pragma endregion
+
 		#pragma region Tracer
 
 		void SetTraceCallback(void (*callback)(int))

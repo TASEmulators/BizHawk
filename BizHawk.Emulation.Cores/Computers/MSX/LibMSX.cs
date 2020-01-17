@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 	/// </summary>
 	public static class LibMSX
 	{
+		# region Core
 		/// <returns>opaque state pointer</returns>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr MSX_create();
@@ -52,6 +53,29 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void MSX_get_video(IntPtr core, int[] videobuf);
+
+		#endregion
+
+		#region Memory Domain Functions
+
+		/// <summary>
+		/// Read the system bus
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">system bus address</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte MSX_getsysbus(IntPtr core, int addr);
+
+		/// <summary>
+		/// Read the VRAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">vram address</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte MSX_getvram(IntPtr core, int addr);
+
+
+		#endregion
 
 		#region Tracer
 		/// <summary>
