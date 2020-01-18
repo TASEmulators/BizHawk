@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		public new const string Extension = "tasproj";
 		public const string DefaultProjectName = "default";
 		public string NewBranchText { get; set; } = "";
-		public int LastEditedFrame { get; set; } = -1;
+		public int LastEditedFrame { get; private set; } = -1;
 		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
 		public bool BindMarkersToInput { get; set; }
