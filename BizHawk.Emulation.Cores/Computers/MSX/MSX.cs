@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class MSX : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
+	public partial class MSX : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ISettable<MSX.MSXSettings, MSX.MSXSyncSettings>
 	{
 		[CoreConstructor("MSX")]
 		public MSX(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -45,8 +45,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			StringBuilder new_header = new StringBuilder(Header_Length);
 			LibMSX.MSX_getheader(MSX_Pntr, new_header, Header_Length);
-
-			
 
 			Console.WriteLine(Header_Length + " " + Disasm_Length + " " + Reg_String_Length);
 

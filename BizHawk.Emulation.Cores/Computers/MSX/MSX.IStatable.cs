@@ -50,10 +50,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			ser.BeginSection("MSX");
 
-			ser.Sync(nameof(sampleclock), ref sampleclock);
-			ser.Sync(nameof(old_s_L), ref old_s_L);
-			ser.Sync(nameof(old_s_R), ref old_s_R);
-
 			if (SaveRAM != null)
 			{
 				ser.Sync(nameof(SaveRAM), ref SaveRAM, false);

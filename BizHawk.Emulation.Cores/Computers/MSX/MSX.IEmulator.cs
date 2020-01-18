@@ -15,9 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			}
 		}
 
-		// not savestated variables
-		int s_L, s_R;
-
 		public bool FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_controller = controller;
@@ -78,13 +75,14 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		#region Audio
 
-		public BlipBuffer blip_L = new BlipBuffer(4096);
-		public BlipBuffer blip_R = new BlipBuffer(4096);
-		const int blipbuffsize = 4096;
+		public BlipBuffer blip_L = new BlipBuffer(4500);
+		public BlipBuffer blip_R = new BlipBuffer(4500);
 
-		public uint sampleclock;
-		public int old_s_L = 0;
-		public int old_s_R = 0;
+		public uint[] Aud_L = new uint [9000];
+		public uint[] Aud_R = new uint[9000];
+		public uint num_samp_L, num_samp_R;
+
+		const int blipbuffsize = 4500;
 
 		public bool CanProvideAsync { get { return false; } }
 
@@ -108,23 +106,32 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			blip_L.EndFrame(sampleclock);
-			blip_R.EndFrame(sampleclock);
+			uint f_clock = LibMSX.MSX_get_audio(MSX_Pntr, Aud_L, Aud_R, ref num_samp_L, ref num_samp_R);
+
+			for (int i = 0; i < num_samp_L;i++)
+			{
+				blip_L.AddDelta(Aud_L[i * 2], (int)Aud_L[i * 2 + 1]);
+			}
+
+			for (int i = 0; i < num_samp_R; i++)
+			{
+				blip_R.AddDelta(Aud_R[i * 2], (int)Aud_R[i * 2 + 1]);
+			}
+
+			blip_L.EndFrame(f_clock);
+			blip_R.EndFrame(f_clock);
 
 			nsamp = Math.Max(Math.Max(blip_L.SamplesAvailable(), blip_R.SamplesAvailable()), 1);
 			samples = new short[nsamp * 2];
 
 			blip_L.ReadSamplesLeft(samples, nsamp);
 			blip_R.ReadSamplesRight(samples, nsamp);
-
-			sampleclock = 0;
 		}
 
 		public void DiscardSamples()
 		{
 			blip_L.Clear();
 			blip_R.Clear();
-			sampleclock = 0;
 		}
 
 		#endregion

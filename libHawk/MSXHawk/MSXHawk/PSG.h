@@ -12,6 +12,13 @@ namespace MSXHawk
 	public:
 		uint32_t current_sample_L;
 		uint32_t current_sample_R;
+		uint32_t old_sample_L;
+		uint32_t old_sample_R;
+		uint32_t sampleclock;
+		uint32_t num_samples_L;
+		uint32_t num_samples_R;
+		uint32_t samples_L[9000] = {};
+		uint32_t samples_R[9000] = {};
 
 		SN76489sms()
 		{
@@ -256,7 +263,25 @@ namespace MSXHawk
 				current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
 
 				current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+
+				if ((current_sample_L != old_sample_L) && (num_samples_L < 4500))
+				{
+					samples_L[num_samples_L * 2] = sampleclock;
+					samples_L[num_samples_L * 2 + 1] = current_sample_L - old_sample_L;
+					num_samples_L++;
+					old_sample_L = current_sample_L;
+				}
+
+				if ((current_sample_R != old_sample_R) && (num_samples_R < 4500))
+				{
+					samples_R[num_samples_R * 2] = sampleclock;
+					samples_R[num_samples_R * 2 + 1] = current_sample_R - old_sample_R;
+					num_samples_R++;
+					old_sample_R = current_sample_R;
+				}				
 			}
+
+			sampleclock++;
 		}
 	};
 }

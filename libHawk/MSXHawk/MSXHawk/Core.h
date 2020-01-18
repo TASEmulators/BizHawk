@@ -41,6 +41,11 @@ namespace MSXHawk
 
 			int scanlinesPerFrame = 262;
 			vdp.SpriteLimit = true;
+
+			psg.num_samples_L = 0;
+			psg.num_samples_R = 0;
+			psg.sampleclock = 0;
+
 			for (int i = 0; i < scanlinesPerFrame; i++)
 			{
 				vdp.ScanLine = i;
@@ -55,24 +60,6 @@ namespace MSXHawk
 					cpu.ExecuteOne();
 
 					psg.generate_sound();
-					/*
-					s_L = psg.current_sample_L;
-					s_R = psg.current_sample_R;
-
-					if (s_L != old_s_L)
-					{
-						blip_L.AddDelta(sampleclock, s_L - old_s_L);
-						old_s_L = s_L;
-					}
-
-					if (s_R != old_s_R)
-					{
-						blip_R.AddDelta(sampleclock, s_R - old_s_R);
-						old_s_R = s_R;
-					}
-
-					sampleclock++;
-					*/
 				}
 
 				if (vdp.ScanLine == scanlinesPerFrame - 1)
@@ -81,11 +68,7 @@ namespace MSXHawk
 					//vdp.ProcessOverscan();
 				}
 			}
-			/*
-			while (cpu.TotalExecutedCycles < 211936) {
-				cpu.ExecuteOne();
-			}
-			*/
+
 			return MemMap.lagged;
 		}
 
@@ -99,6 +82,23 @@ namespace MSXHawk
 				src += 160;
 				dst += 160;
 			}
+		}
+
+		uint32_t GetAudio(uint32_t* dest_L, uint32_t* dest_R, uint32_t* n_samp_L, uint32_t* n_samp_R) 
+		{
+			uint32_t* src_L = psg.samples_L;
+			uint32_t* dst_L = dest_L;
+
+			std::memcpy(dst_L, src_L, sizeof uint32_t * psg.num_samples_L * 2);
+			n_samp_L[0] = psg.num_samples_L;
+
+			uint32_t* src_R = psg.samples_R;
+			uint32_t* dst_R = dest_R;
+
+			std::memcpy(dst_R, src_R, sizeof uint32_t * psg.num_samples_R * 2);
+			n_samp_R[0] = psg.num_samples_R;
+
+			return psg.sampleclock;
 		}
 
 		#pragma region Memory Domain Functions

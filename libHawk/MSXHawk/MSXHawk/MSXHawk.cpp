@@ -42,10 +42,12 @@ MSXHAWK_EXPORT void MSX_get_video(MSXCore* p, uint32_t* dest)
 	p->GetVideo(dest);
 }
 
-// set tracer callback
-MSXHAWK_EXPORT void MSX_settracecallback(MSXCore* p, void (*callback)(int)) {
-	p->SetTraceCallback(callback);
+// send audio data to external audio provider
+MSXHAWK_EXPORT uint32_t MSX_get_audio(MSXCore* p, uint32_t* dest_L, uint32_t* dest_R, uint32_t* n_samp_L, uint32_t* n_samp_R)
+{
+	return p->GetAudio(dest_L, dest_R, n_samp_L, n_samp_R);
 }
+
 #pragma endregion
 
 #pragma region Memory Domain Functions
@@ -61,6 +63,11 @@ MSXHAWK_EXPORT uint8_t MSX_getvram(MSXCore* p, uint32_t addr) {
 
 
 #pragma region Tracer
+
+// set tracer callback
+MSXHAWK_EXPORT void MSX_settracecallback(MSXCore* p, void (*callback)(int)) {
+	p->SetTraceCallback(callback);
+}
 
 // return the cpu trace header length
 MSXHAWK_EXPORT int MSX_getheaderlength(MSXCore* p) {
