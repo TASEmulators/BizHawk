@@ -736,11 +736,12 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.AnyRowsSelected)
 			{
 				var framesToInsert = TasView.SelectedRows;
-				var insertionFrame = Math.Min(TasView.LastSelectedIndex ?? 0 + 1, CurrentTasMovie.InputLogLength);
+				var insertionFrame = Math.Min((TasView.LastSelectedIndex ?? 0) + 1, CurrentTasMovie.InputLogLength);
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				var inputLog = framesToInsert
-					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame));
+					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
+					.ToList();
 
 				CurrentTasMovie.InsertInput(insertionFrame, inputLog);
 

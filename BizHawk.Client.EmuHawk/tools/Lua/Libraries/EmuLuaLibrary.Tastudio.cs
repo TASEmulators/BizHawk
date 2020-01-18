@@ -301,6 +301,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					_changeList.Clear();
+					Tastudio.Refresh();
 					Tastudio.JumpToGreenzone();
 					Tastudio.DoAutoRestore();
 				}
