@@ -465,6 +465,11 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.AllColumns.ColumnsChanged();
 
+			SetupBoolPatterns();
+		}
+
+		private void SetupBoolPatterns()
+		{
 			// Patterns
 			int bStart = 0;
 			int fStart = 0;
@@ -532,6 +537,7 @@ namespace BizHawk.Client.EmuHawk
 			MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
 			SetSplicer();
+			SetupBoolPatterns();
 		}
 
 		#endregion
