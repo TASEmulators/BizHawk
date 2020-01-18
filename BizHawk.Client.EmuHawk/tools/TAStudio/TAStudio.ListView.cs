@@ -24,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _selectionDragState;
 		private bool _suppressContextMenu;
 		private int _startRow;
+		private int _paintingMinFrame = -1;
 
 		// Editing analog input
 		private string _floatEditColumn = "";
@@ -323,6 +324,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
 					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
+					if (_paintingMinFrame >= 0)
+					{
+						text += " " + _paintingMinFrame.ToString();
+					}
 				}
 				else
 				{
@@ -546,6 +551,7 @@ namespace BizHawk.Client.EmuHawk
 			if (e.Button == MouseButtons.Left)
 			{
 				_leftButtonHeld = true;
+				_paintingMinFrame = frame;
 
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
 				if (FloatEditingMode)
@@ -785,6 +791,7 @@ namespace BizHawk.Client.EmuHawk
 			_startSelectionDrag = false;
 			_startBoolDrawColumn = "";
 			_startFloatDrawColumn = "";
+			_paintingMinFrame = -1;
 			TasView.ReleaseCurrentCell();
 
 			// Exit float editing if value was changed with cursor
@@ -839,7 +846,7 @@ namespace BizHawk.Client.EmuHawk
 						// So now we have to ensure that all the edited frames are invalidated
 						if (CurrentTasMovie.LastEditedFrame < Emulator.Frame)
 						{
-							GoToFrame(CurrentTasMovie.LastEditedFrame);
+							GoToFrame(_paintingMinFrame);
 						}
 					}
 
@@ -948,6 +955,11 @@ namespace BizHawk.Client.EmuHawk
 			if (!MouseButtonHeld)
 			{
 				return;
+			}
+
+			if (_paintingMinFrame >= 0)
+			{
+				_paintingMinFrame = Math.Min(_paintingMinFrame, e.NewCell?.RowIndex ?? 0);
 			}
 
 			// skip rerecord counting on drawing entirely, mouse down is enough
