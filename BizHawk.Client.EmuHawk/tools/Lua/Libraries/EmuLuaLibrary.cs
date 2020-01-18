@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 						emuHawkLibrary.MainForm = _mainForm;
 					}
 
-					ApiHawkContainerInstance ??= InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
+					ApiHawkContainerInstance = InitApiHawkContainerInstance(serviceProvider, ConsoleLuaLibrary.LogOutput);
 					if (instance is DelegatingLuaLibraryEmu dlgInstanceEmu) dlgInstanceEmu.APIs = ApiHawkContainerInstance; // this is necessary as the property has the `new` modifier
 					else if (instance is DelegatingLuaLibrary dlgInstance) dlgInstance.APIs = ApiHawkContainerInstance;
 
