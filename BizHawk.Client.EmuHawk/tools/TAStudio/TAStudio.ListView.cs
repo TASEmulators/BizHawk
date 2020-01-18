@@ -324,10 +324,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					offsetX = TasView.HorizontalOrientation ? 2 : 7;
 					text = index.ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
-					if (_paintingMinFrame >= 0)
-					{
-						text += " " + _paintingMinFrame.ToString();
-					}
 				}
 				else
 				{
