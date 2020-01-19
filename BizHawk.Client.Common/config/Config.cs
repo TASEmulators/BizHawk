@@ -41,11 +41,11 @@ namespace BizHawk.Client.Common
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
 		public Dictionary<string, string> PreferredPlatformsForExtensions = new Dictionary<string, string>
 		{
-			{ ".bin", "" },
-			{ ".rom", "" },
-			{ ".iso", "" },
-			{ ".img", "" },
-			{ ".cue", "" }
+			[".bin"] =  "",
+			[".rom"] =  "",
+			[".iso"] =  "",
+			[".img"] = "",
+			[".cue"] =  ""
 		};
 
 		// Path Settings ************************************/
@@ -60,26 +60,7 @@ namespace BizHawk.Client.Common
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 
-		// TODO: move me
-		public class ToomFactors : Dictionary<string, int>
-		{
-			public new int this[string index]
-			{
-				get
-				{
-					if (!ContainsKey(index))
-					{
-						Add(index, 2);
-					}
-
-					return base[index];
-				}
-
-				set => base[index] = value;
-			}
-		}
-
-		public ToomFactors TargetZoomFactors = new ToomFactors();
+		public ZoomFactors TargetZoomFactors = new ZoomFactors();
 
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
@@ -278,7 +259,7 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		/// <remarks>warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.</remarks>
+		/// <remarks>warning: we don't even want to deal with changing this at runtime. but we want it changed here for config purposes. so don't check this variable. check in GlobalWin or something like that.</remarks>
 		public EDispMethod DispMethod = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
 		public int DispChrome_FrameWindowed = 2;
