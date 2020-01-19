@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -40,14 +41,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		private void SyncState(Serializer ser)
 		{
-			byte[] core = null;
-			if (ser.IsWriter)
-			{
-				using var ms = new MemoryStream();
-				ms.Close();
-				core = ms.ToArray();
-			}
-
 			ser.BeginSection("MSX");
 
 			if (SaveRAM != null)
@@ -65,7 +58,15 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			if (ser.IsReader)
 			{
-				SyncAllByteArrayDomains();
+				ser.Sync(nameof(MSX_core), ref MSX_core, false);
+				LibMSX.MSX_load_state(MSX_Pntr, MSX_core);
+				Console.WriteLine("here1");
+			}
+			else
+			{
+				LibMSX.MSX_save_state(MSX_Pntr, MSX_core);
+				ser.Sync(nameof(MSX_core), ref MSX_core, false);
+				Console.WriteLine("here2");
 			}
 		}
 	}

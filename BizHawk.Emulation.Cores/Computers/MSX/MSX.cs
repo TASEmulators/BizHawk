@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		}
 
 		IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
+		byte[] MSX_core = new byte[0x20000];
 
 		// Constants
 		private const int BankSize = 16384;

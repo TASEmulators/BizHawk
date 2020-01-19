@@ -108,6 +108,26 @@ namespace MSXHawk
 			return psg.sampleclock;
 		}
 
+		#pragma region State Save / Load
+
+		void SaveState(uint8_t* saver)
+		{
+			saver = vdp.SaveState(saver);
+			saver = cpu.SaveState(saver);
+			saver = psg.SaveState(saver);
+			saver = MemMap.SaveState(saver);
+		}
+
+		void LoadState(uint8_t* loader)
+		{
+			loader = vdp.LoadState(loader);
+			loader = cpu.LoadState(loader);
+			loader = psg.LoadState(loader);
+			loader = MemMap.LoadState(loader);
+		}
+
+		#pragma endregion
+
 		#pragma region Memory Domain Functions
 
 		uint8_t GetSysBus(uint32_t addr)

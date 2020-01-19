@@ -1201,7 +1201,7 @@ namespace MSXHawk
 
 		#pragma region State Save / Load
 
-		void SaveState(uint8_t* saver)
+		uint8_t* SaveState(uint8_t* saver)
 		{
 			*saver = (uint8_t)(VdpWaitingForLatchInt ? 1 : 0); saver++;
 			*saver = (uint8_t)(VIntPending ? 1 : 0); saver++;
@@ -1249,9 +1249,11 @@ namespace MSXHawk
 
 			*saver = (uint8_t)(ScanLine & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((ScanLine >> 16) & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 24) & 0xFF); saver++;
+
+			return saver;
 		}
 
-		void LoadState(uint8_t* loader)
+		uint8_t* LoadState(uint8_t* loader)
 		{
 			VdpWaitingForLatchInt = *loader == 1; loader++;
 			VIntPending = *loader == 1; loader++;
@@ -1300,11 +1302,11 @@ namespace MSXHawk
 			ScanLine = *loader; loader++; ScanLine |= (*loader << 8); loader++;
 			ScanLine |= (*loader << 16); loader++; ScanLine |= (*loader << 24); loader++;
 
-			for (uint32_t i = 0; i < 16; i++)
-				WriteRegister(i, Registers[i]);
-			for (uint16_t i = 0; i < 0x4000; i++)
-				UpdatePatternBuffer(i, VRAM[i]);
+			for (uint32_t i = 0; i < 16; i++) { WriteRegister(i, Registers[i]); }				
+			for (uint16_t i = 0; i < 0x4000; i++) { UpdatePatternBuffer(i, VRAM[i]); }				
 			UpdatePrecomputedPalette();
+
+			return loader;
 		}
 
 		#pragma endregion

@@ -155,9 +155,4 @@ namespace MSXHawk
 			}
 		}
 	}
-
-
-
-
-
 }

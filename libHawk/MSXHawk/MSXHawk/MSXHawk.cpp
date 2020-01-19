@@ -48,6 +48,20 @@ MSXHAWK_EXPORT uint32_t MSX_get_audio(MSXCore* p, uint32_t* dest_L, uint32_t* de
 	return p->GetAudio(dest_L, dest_R, n_samp_L, n_samp_R);
 }
 
+#pragma region State Save / Load
+
+// save state
+MSXHAWK_EXPORT void MSX_save_state(MSXCore* p, uint8_t* saver)
+{
+	p->SaveState(saver);
+}
+
+// load state
+MSXHAWK_EXPORT void MSX_load_state(MSXCore* p, uint8_t* loader)
+{
+	p->LoadState(loader);
+}
+
 #pragma endregion
 
 #pragma region Memory Domain Functions

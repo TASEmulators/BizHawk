@@ -239,7 +239,7 @@ namespace MSXHawk
 
 		#pragma region State Save / Load
 
-		void SaveState(uint8_t* saver)
+		uint8_t* SaveState(uint8_t* saver)
 		{
 			*saver = (uint8_t)(vol_tone ? 1 : 0); saver++;
 			*saver = (uint8_t)(noise_type ? 1 : 0); saver++;
@@ -292,10 +292,12 @@ namespace MSXHawk
 			*saver = (uint8_t)((old_sample_L >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample_L >> 24) & 0xFF); saver++;
 
 			*saver = (uint8_t)(old_sample_R & 0xFF); saver++; *saver = (uint8_t)((old_sample_R >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((old_sample_R >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample_R >> 24) & 0xFF); saver++;			
+			*saver = (uint8_t)((old_sample_R >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample_R >> 24) & 0xFF); saver++;	
+
+			return saver;
 		}
 
-		void LoadState(uint8_t* loader)
+		uint8_t* LoadState(uint8_t* loader)
 		{
 			vol_tone = *loader == 1; loader++;
 			noise_type = *loader == 1; loader++;
@@ -349,6 +351,8 @@ namespace MSXHawk
 
 			old_sample_R = *loader; loader++; old_sample_R |= (*loader << 8); loader++;
 			old_sample_R |= (*loader << 16); loader++; old_sample_R |= (*loader << 24); loader++;
+
+			return loader;
 		}
 
 		#pragma endregion

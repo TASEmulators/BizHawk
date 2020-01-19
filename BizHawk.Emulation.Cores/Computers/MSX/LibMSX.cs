@@ -63,6 +63,26 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		#endregion
 
+		#region State Save / Load
+
+		/// <summary>
+		/// Save State
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="saver">save buffer</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void MSX_save_state(IntPtr core, byte[] saver);
+
+		/// <summary>
+		/// Load State
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="loader">load buffer</param>
+		[DllImport("MSXHAWK.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void MSX_load_state(IntPtr core, byte[] loader);
+
+		#endregion
+
 		#region Memory Domain Functions
 
 		/// <summary>

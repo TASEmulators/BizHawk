@@ -70,7 +70,7 @@ namespace MSXHawk
 		uint32_t BUSRQ[19] = {};         // fixed size - do not change at runtime
 		uint32_t MEMRQ[19] = {};         // fixed size - do not change at runtime
 		
-		long TotalExecutedCycles;
+		uint64_t TotalExecutedCycles;
 
 		// non-state variables
 		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
@@ -962,46 +962,6 @@ namespace MSXHawk
 			cur_instr[33] = d33; cur_instr[34] = d34; cur_instr[35] = d35;
 			cur_instr[36] = d36; cur_instr[37] = d37;
 		}
-		/*
-		// State Save/Load
-		void SyncState(Serializer ser)
-		{
-			ser.BeginSection(nameof(Z80A));
-			ser.Sync(nameof(Regs), ref Regs, false);
-			ser.Sync("NMI", ref nonMaskableInterrupt);
-			ser.Sync("NMIPending", ref nonMaskableInterruptPending);
-			ser.Sync("IM", ref interruptMode);
-			ser.Sync("IFF1", ref iff1);
-			ser.Sync("IFF2", ref iff2);
-			ser.Sync("Halted", ref halted);
-			ser.Sync(nameof(I_skip), ref I_skip);
-			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
-			ser.Sync(nameof(EI_pending), ref EI_pending);
-
-			ser.Sync(nameof(instr_pntr), ref instr_pntr);
-			ser.Sync(nameof(bus_pntr), ref bus_pntr);
-			ser.Sync(nameof(mem_pntr), ref mem_pntr);
-			ser.Sync(nameof(irq_pntr), ref irq_pntr);
-			ser.Sync(nameof(cur_instr), ref cur_instr, false);
-			ser.Sync(nameof(BUSRQ), ref BUSRQ, false);
-			ser.Sync(nameof(IRQS), ref IRQS);
-			ser.Sync(nameof(MEMRQ), ref MEMRQ, false);
-			ser.Sync(nameof(opcode), ref opcode);
-			ser.Sync(nameof(FlagI), ref FlagI);
-			ser.Sync(nameof(FlagW), ref FlagW);
-
-			ser.Sync(nameof(NO_prefix), ref NO_prefix);
-			ser.Sync(nameof(CB_prefix), ref CB_prefix);
-			ser.Sync(nameof(IX_prefix), ref IX_prefix);
-			ser.Sync(nameof(IY_prefix), ref IY_prefix);
-			ser.Sync(nameof(IXCB_prefix), ref IXCB_prefix);
-			ser.Sync(nameof(IYCB_prefix), ref IYCB_prefix);
-			ser.Sync(nameof(EXTD_prefix), ref EXTD_prefix);
-			ser.Sync(nameof(PRE_SRC), ref PRE_SRC);
-
-			ser.EndSection();
-		}
-		*/
 
 		void InitTableParity()
 		{
@@ -4553,7 +4513,7 @@ namespace MSXHawk
 			reg_state.append(val_char_1, 4);
 
 			reg_state.append(" Cy:");			
-			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", TotalExecutedCycles));
+			reg_state.append(val_char_1, sprintf_s(val_char_1, 32, "%16u", (unsigned int)TotalExecutedCycles));
 			reg_state.append(" ");
 			
 			reg_state.append(FlagCget() ? "C" : "c");
@@ -5168,7 +5128,7 @@ namespace MSXHawk
 
 		#pragma region State Save / Load
 
-		void SaveState(uint8_t* saver)
+		uint8_t* SaveState(uint8_t* saver)
 		{
 			*saver = (uint8_t)(NO_prefix ? 1 : 0); saver++;
 			*saver = (uint8_t)(CB_prefix ? 1 : 0); saver++;
@@ -5229,9 +5189,16 @@ namespace MSXHawk
 				*saver = (uint8_t)(MEMRQ[i] & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 8) & 0xFF); saver++;
 				*saver = (uint8_t)((MEMRQ[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 24) & 0xFF); saver++;
 			}
+
+			*saver = (uint8_t)(TotalExecutedCycles & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 24) & 0xFF); saver++;
+			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0x32); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 40) & 0xFF); saver++;
+			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0x48); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 56) & 0xFF); saver++;
+
+			return saver;
 		}
 
-		void LoadState(uint8_t* loader)
+		uint8_t* LoadState(uint8_t* loader)
 		{
 			NO_prefix = *loader == 1; loader++;
 			CB_prefix = *loader == 1; loader++;
@@ -5292,6 +5259,13 @@ namespace MSXHawk
 				MEMRQ[i] = *loader; loader++; MEMRQ[i] |= (*loader << 8); loader++;
 				MEMRQ[i] |= (*loader << 16); loader++; MEMRQ[i] |= (*loader << 24); loader++;
 			}
+
+			TotalExecutedCycles = *loader; loader++; TotalExecutedCycles |= (*loader << 8); loader++;
+			TotalExecutedCycles |= (*loader << 16); loader++; TotalExecutedCycles |= (*loader << 24); loader++;
+			TotalExecutedCycles |= ((uint64_t)*loader << 32); loader++; TotalExecutedCycles |= ((uint64_t)*loader << 40); loader++;
+			TotalExecutedCycles |= ((uint64_t)*loader << 48); loader++; TotalExecutedCycles |= ((uint64_t)*loader << 56); loader++;
+
+			return loader;
 		}
 
 		#pragma endregion
