@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<DebugType>pdbonly</DebugType>
 		<DefineConstants>TRACE</DefineConstants>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<ErrorReport>prompt</ErrorReport>
 		<Optimize>true</Optimize>
 		<OutputPath>./bin</OutputPath>
@@ -9,10 +10,11 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Include="svnrev.cs" /><!-- Not checked-in, but needs to be added to the compile list which is generated before the pre-build event, so this will make MSBuild pretend it's there when cloning. -->
+		<!-- svnrev.cs / VersionInfo.cs are only used in other projects -->
+		<Compile Include="dummy.cs" /><!-- there was a bug in 1.x when no source files were included, including an empty file fixed it -->
 	</ItemGroup>
 	<Target Name="Build">
-		<!-- when is this called? it's never run and failed on Linux -->
+		<!-- when is this called? it has never run and failed on Linux -->
 		<Exec Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" Condition=" '$(OS)' == 'Windows_NT' " WorkingDirectory="$(MSBuildProjectDirectory)" />
 	</Target>
 	<Target Name="PreBuild" AfterTargets="PreBuildEvent">
