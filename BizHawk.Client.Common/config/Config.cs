@@ -446,9 +446,7 @@ namespace BizHawk.Client.Common
 		public bool PlayMovie_MatchHash = true;
 
 		// TI83
-		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
 		public bool TI83autoloadKeyPad = true;
-		public bool TI83ToolTips = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
 

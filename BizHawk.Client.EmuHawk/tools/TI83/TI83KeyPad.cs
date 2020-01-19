@@ -6,30 +6,23 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TI83KeyPad : ToolFormBase, IToolForm
+	public partial class TI83KeyPad : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
+		// ReSharper disable once UnusedAutoPropertyAccessor.Local
 		public TI83 Emu { get; private set; }
 
 		public TI83KeyPad()
 		{
 			InitializeComponent();
-			TopMost = Config.TI83KeypadSettings.TopMost;
-			Closing += (o, e) =>
-				{
-					Config.TI83KeypadSettings.Wndx = Location.X;
-					Config.TI83KeypadSettings.Wndy = Location.Y;
-				};
 		}
+
+		[ConfigPersist]
+		public bool TI83ToolTips { get; set; } = true;
 
 		private void TI83KeyPad_Load(object sender, EventArgs e)
 		{
-			if (Config.TI83KeypadSettings.UseWindowPosition && IsOnScreen(Config.TI83KeypadSettings.TopLeft))
-			{
-				Location = Config.TI83KeypadSettings.WindowPosition;
-			}
-
-			if (Config.TI83ToolTips)
+			if (TI83ToolTips)
 			{
 				SetToolTips();
 			}
@@ -37,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Public API
 
-		public bool AskSaveChanges() { return true; }
+		public bool AskSaveChanges() => true;
 		public bool UpdateBefore => false;
 
 		public void NewUpdate(ToolFormUpdateType type) { }
@@ -131,17 +124,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			ShowHotkeysMenuItem.Checked = Config.TI83ToolTips;
-			SaveWindowPositionMenuItem.Checked = Config.TI83KeypadSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Config.TI83KeypadSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Config.TI83KeypadSettings.FloatingWindow;
+			ShowHotkeysMenuItem.Checked = TI83ToolTips;
 		}
 
 		private void ShowHotkeysMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.TI83ToolTips ^= true;
+			TI83ToolTips ^= true;
 
-			if (Config.TI83ToolTips)
+			if (TI83ToolTips)
 			{
 				SetToolTips();
 			}
@@ -149,23 +139,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopToolTips();
 			}
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.TI83KeypadSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.TI83KeypadSettings.TopMost ^= true;
-			TopMost = Config.TI83KeypadSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Config.TI83KeypadSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl(Config.TI83KeypadSettings.FloatingWindow);
 		}
 
 		#endregion
@@ -420,12 +393,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ZeroButton_Click(object sender, EventArgs e)
 		{
 			Global.ClickyVirtualPadController.Click("0");
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl(Config.TI83KeypadSettings.FloatingWindow);
-			base.OnShown(e);
 		}
 
 		#endregion
