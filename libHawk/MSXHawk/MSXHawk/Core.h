@@ -38,6 +38,7 @@ namespace MSXHawk
 		{
 			MemMap.controller_byte_1 = controller_1;
 			MemMap.controller_byte_2 = controller_2;
+			MemMap.start_pressed = (controller_1 & 0x80) > 0;
 			MemMap.lagged = true;
 
 			int scanlinesPerFrame = 262;

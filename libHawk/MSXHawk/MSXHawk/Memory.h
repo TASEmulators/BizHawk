@@ -118,8 +118,8 @@ namespace MSXHawk
 			lagged = false;
 			uint8_t value = 0xFF;
 
-			value &= ~(controller_byte_1 & 0xCF);
-			value &= ~(controller_byte_2 & 0x30);
+			value &= ~(controller_byte_1 & 0x3F);
+			value &= ~(controller_byte_2 & 0xC0);
 
 			return value;
 		}
