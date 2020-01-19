@@ -16,58 +16,77 @@ namespace MSXHawk
 		bool* INT_FLAG = nullptr;
 		// external flags to display background or sprites
 		bool SHOW_BG, SHOW_SPRITES;
-
+		bool SpriteLimit;
 
 		// VDP State
+		bool VdpWaitingForLatchInt = true;
+		bool VIntPending;
+		bool HIntPending;
+	
 		uint8_t VRAM[0x4000]; //16kb video RAM
 		uint8_t CRAM[64]; // SMS = 32 uint8_ts, GG = 64 uint8_ts CRAM
 		uint8_t Registers[16] = { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
-		uint8_t StatusInt;
+		uint8_t StatusInt;		
+		uint8_t VdpLatch;
+		uint8_t VdpBuffer;
+		uint8_t VdpCommand;
+		uint8_t HCounter = 0x90;
+		uint8_t TmsMode = 4;
+		uint8_t lineIntLinesRemaining;
+		uint8_t mode_sys;
+		uint8_t DisplayType;
 
-		static void TO_REGS(uint8_t value) 
-		{
+		uint16_t VdpAddress;
+		
+		uint32_t NameTableBase;
+		uint32_t ColorTableBase;
+		uint32_t PatternGeneratorBase;
+		uint32_t SpritePatternGeneratorBase;
+		uint32_t TmsPatternNameTableBase;
+		uint32_t TmsSpriteAttributeBase;
 
-		}
+		int32_t IPeriod = 228;
+		int32_t FrameHeight = 192;
+		int32_t ScanLine;
+
+		// not savestated, only effected on frame boundaries
+		uint32_t FrameBuffer[256 * 244];
+		uint32_t GameGearFrameBuffer[160 * 144];
+
+		// preprocessed state assist stuff, don't need to savestate if saving only on frame boundaries		
+		uint8_t PatternBuffer[0x8000];
+		uint8_t ScanlinePriorityBuffer[256];
+		uint8_t SpriteCollisionBuffer[256];
+
+		uint32_t Palette[32];
 
 		const uint32_t Command_VramRead = 0x00;
 		const uint32_t Command_VramWrite = 0x40;
 		const uint32_t Command_RegisterWrite = 0x80;
 		const uint32_t Command_CramWrite = 0xC0;
 
-		const uint32_t MODE_SMS = 1;
-		const uint32_t MODE_GG = 2;
+		const uint8_t MODE_SMS = 1;
+		const uint8_t MODE_GG = 2;
 
-		const uint32_t DISP_TYPE_NTSC = 1;
-		const uint32_t DISP_TYPE_PAL = 2;
+		const uint8_t DISP_TYPE_NTSC = 1;
+		const uint8_t DISP_TYPE_PAL = 2;
 
-		bool VdpWaitingForLatchuint8_t = true;
-		uint8_t VdpLatch;
-		uint8_t VdpBuffer;
-		uint16_t VdpAddress;
-		uint8_t VdpCommand;
-		uint8_t HCounter = 0x90;
-		uint32_t TmsMode = 4;
+		const uint8_t pow2[8] = { 1, 2, 4, 8, 16, 32, 64, 128 };
+		const uint8_t SMSPalXlatTable[4] = { 0, 85, 170, 255 };
+		const uint8_t GGPalXlatTable[16] = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-		bool VIntPending;
-		bool HIntPending;
-		uint32_t lineIntLinesRemaining;
+		VDP()
+		{
+			mode_sys = MODE_GG;
 
-		uint32_t mode;
-		uint32_t DisplayType;
-
-		bool SpriteLimit;
-		
-		int32_t IPeriod = 228;
-		int32_t FrameHeight = 192;
-		uint32_t FrameBuffer[256 * 244];
-		uint32_t GameGearFrameBuffer[160 * 144];
-		int32_t OverscanFrameBuffer[1];
-		int32_t ScanLine;
+			DisplayType = DISP_TYPE_NTSC;
+			NameTableBase = CalcNameTableBase();
+		}
 
 		inline bool Mode1Bit() { return (Registers[1] & 16) > 0; }
-		inline bool Mode2Bit() {return (Registers[0] & 2) > 0; }
-		inline bool Mode3Bit() {return (Registers[1] & 8) > 0; }
-		inline bool Mode4Bit() {return (Registers[0] & 4) > 0; }
+		inline bool Mode2Bit() { return (Registers[0] & 2) > 0; }
+		inline bool Mode3Bit() { return (Registers[1] & 8) > 0; }
+		inline bool Mode4Bit() { return (Registers[0] & 4) > 0; }
 		inline bool ShiftSpritesLeft8Pixels() { return (Registers[0] & 8) > 0; }
 		inline bool EnableLineInterrupts() { return (Registers[0] & 16) > 0; }
 		inline bool LeftBlanking() { return (Registers[0] & 32) > 0; }
@@ -77,38 +96,14 @@ namespace MSXHawk
 		inline bool EnableLargeSprites() { return (Registers[1] & 2) > 0; }
 		inline bool EnableFrameInterrupts() { return (Registers[1] & 32) > 0; }
 		inline bool DisplayOn() { return (Registers[1] & 64) > 0; }
+
 		uint32_t SpriteAttributeTableBase() { return ((Registers[5] >> 1) << 8) & 0x3FFF; }
 		uint32_t SpriteTileBase() { return (Registers[6] & 4) > 0 ? 256 : 0; }
 		uint8_t BackdropColor() { return (uint8_t)(16 + (Registers[7] & 15)); }
 
-		uint32_t NameTableBase;
-		uint32_t ColorTableBase;
-		uint32_t PatternGeneratorBase;
-		uint32_t SpritePatternGeneratorBase;
-		uint32_t TmsPatternNameTableBase;
-		uint32_t TmsSpriteAttributeBase;
-
-		// preprocessed state assist stuff.
-		uint32_t Palette[32];
-		uint8_t PatternBuffer[0x8000];
-
-		uint8_t ScanlinePriorityBuffer[256];
-		uint8_t SpriteCollisionBuffer[256];
-
-		const uint8_t SMSPalXlatTable[4] = { 0, 85, 170, 255 };
-		const uint8_t GGPalXlatTable[16] = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
-
-		VDP()
-		{
-			mode = MODE_GG;
-
-			DisplayType = DISP_TYPE_NTSC;
-			NameTableBase = CalcNameTableBase();
-		}
-
 		uint8_t ReadData()
 		{
-			VdpWaitingForLatchuint8_t = true;
+			VdpWaitingForLatchInt = true;
 			uint8_t value = VdpBuffer;
 			VdpBuffer = VRAM[VdpAddress & 0x3FFF];
 			VdpAddress++;
@@ -117,7 +112,7 @@ namespace MSXHawk
 
 		uint8_t ReadVdpStatus()
 		{
-			VdpWaitingForLatchuint8_t = true;
+			VdpWaitingForLatchInt = true;
 			uint8_t returnValue = StatusInt;
 			StatusInt &= 0x1F;
 			HIntPending = false;
@@ -153,15 +148,15 @@ namespace MSXHawk
 
 		void WriteVdpControl(uint8_t value)
 		{
-			if (VdpWaitingForLatchuint8_t)
+			if (VdpWaitingForLatchInt)
 			{
 				VdpLatch = value;
-				VdpWaitingForLatchuint8_t = false;
+				VdpWaitingForLatchInt = false;
 				VdpAddress = (uint16_t)((VdpAddress & 0xFF00) | value);
 				return;
 			}
 
-			VdpWaitingForLatchuint8_t = true;
+			VdpWaitingForLatchInt = true;
 			VdpAddress = (uint16_t)(((value & 63) << 8) | VdpLatch);
 			switch (value & 0xC0)
 			{
@@ -185,12 +180,12 @@ namespace MSXHawk
 
 		void WriteVdpData(uint8_t value)
 		{
-			VdpWaitingForLatchuint8_t = true;
+			VdpWaitingForLatchInt = true;
 			VdpBuffer = value;
 			if (VdpCommand == Command_CramWrite)
 			{
 				// Write Palette / CRAM
-				uint32_t mask = mode == MODE_SMS ? 0x1F : 0x3F;
+				uint32_t mask = mode_sys == MODE_SMS ? 0x1F : 0x3F;
 				CRAM[VdpAddress & mask] = value;
 				UpdatePrecomputedPalette();
 			}
@@ -205,7 +200,7 @@ namespace MSXHawk
 
 		void UpdatePrecomputedPalette()
 		{
-			if (mode == MODE_SMS)
+			if (mode_sys == MODE_SMS)
 			{
 				for (uint32_t i = 0; i < 32; i++)
 				{
@@ -329,8 +324,6 @@ namespace MSXHawk
 
 		}
 
-		const uint8_t pow2[8] = { 1, 2, 4, 8, 16, 32, 64, 128 };
-
 		void UpdatePatternBuffer(uint16_t address, uint8_t value)
 		{
 			// writing one uint8_t affects 8 pixels due to stupid planar storage.
@@ -406,51 +399,17 @@ namespace MSXHawk
 				RenderTmsSprites(SHOW_SPRITES);
 			}
 		}
-		/*
-		void SyncState(Serializer ser)
-		{
-			ser.BeginSection(nameof(VDP));
-			ser.Sync(nameof(StatusInt), ref StatusInt);
-			ser.Sync("WaitingForLatchuint8_t", ref VdpWaitingForLatchuint8_t);
-			ser.Sync("Latch", ref VdpLatch);
-			ser.Sync("ReadBuffer", ref VdpBuffer);
-			ser.Sync(nameof(VdpAddress), ref VdpAddress);
-			ser.Sync("Command", ref VdpCommand);
-			ser.Sync(nameof(HIntPending), ref HIntPending);
-			ser.Sync(nameof(VIntPending), ref VIntPending);
-			ser.Sync("LineIntLinesRemaining", ref lineIntLinesRemaining);
-			ser.Sync(nameof(Registers), ref Registers, false);
-			ser.Sync(nameof(CRAM), ref CRAM, false);
-			ser.Sync(nameof(VRAM), ref VRAM, false);
-			ser.Sync(nameof(HCounter), ref HCounter);
-			ser.EndSection();
 
-			if (ser.IsReader)
-			{
-				for (uint32_t i = 0; i < Registers.Length; i++)
-					WriteRegister(i, Registers[i]);
-				for (uint16_t i = 0; i < VRAM.Length; i++)
-					UpdatePatternBuffer(i, VRAM[i]);
-				UpdatePrecomputedPalette();
-			}
-		}
-		*/
-
-		uint32_t VirtualWidth = 160;
-
-		uint32_t VirtualHeight = 160; // GameGear
-
-		uint32_t BufferHeight = 144; // GameGear
-
-		uint32_t BackgroundColor() { return Palette[BackdropColor()]; }
-
-		uint32_t VsyncNumerator = 60;
-
-		uint32_t VsyncDenominator = 1;
 		#pragma endregion
 
 		#pragma region Mode4
 		
+		int32_t OverscanFrameWidth, OverscanFrameHeight;
+		int32_t overscanTop;
+		int32_t overscanBottom;
+		int32_t overscanLeft;
+		int32_t overscanRight;
+
 		void RenderBackgroundCurrentLine(bool show)
 		{
 			if (ScanLine >= FrameHeight)
@@ -724,12 +683,6 @@ namespace MSXHawk
 			for (int32_t x = 0; x < 8; x++)
 				FrameBuffer[ofs++] = Palette[BackdropColor()];
 		}
-
-		int32_t OverscanFrameWidth, OverscanFrameHeight;
-		int32_t overscanTop;
-		int32_t overscanBottom;
-		int32_t overscanLeft;
-		int32_t overscanRight;
 
 		/*
 		void ProcessOverscan()
@@ -1108,7 +1061,7 @@ namespace MSXHawk
 		#pragma region Tables
 
 		// TODO: HCounter
-		uint8_t VLineCounterTableNTSC192[262] =
+		const uint8_t VLineCounterTableNTSC192[262] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1129,7 +1082,7 @@ namespace MSXHawk
 			0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
 		};
 
-		uint8_t VLineCounterTableNTSC224[262] =
+		const uint8_t VLineCounterTableNTSC224[262] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1150,7 +1103,7 @@ namespace MSXHawk
 			0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
 		};
 
-		uint8_t VLineCounterTableNTSC240[262] =
+		const uint8_t VLineCounterTableNTSC240[262] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1171,7 +1124,7 @@ namespace MSXHawk
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05
 		};
 
-		uint8_t VLineCounterTablePAL192[313] =
+		const uint8_t VLineCounterTablePAL192[313] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1196,7 +1149,7 @@ namespace MSXHawk
 			0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF
 		};
 
-		uint8_t VLineCounterTablePAL224[313] =
+		const uint8_t VLineCounterTablePAL224[313] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1221,7 +1174,7 @@ namespace MSXHawk
 			0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF
 		};
 
-		uint8_t VLineCounterTablePAL240[313] =
+		const uint8_t VLineCounterTablePAL240[313] =
 		{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
 			0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
@@ -1244,6 +1197,116 @@ namespace MSXHawk
 			0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xED, 0xEE, 0xEF,
 			0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF
 		};
+		#pragma endregion
+
+		#pragma region State Save / Load
+
+		void SaveState(uint8_t* saver)
+		{
+			*saver = (uint8_t)(VdpWaitingForLatchInt ? 1 : 0); saver++;
+			*saver = (uint8_t)(VIntPending ? 1 : 0); saver++;
+			*saver = (uint8_t)(HIntPending ? 1 : 0); saver++;
+
+			for (int i = 0; i < 0x4000; i++) { *saver = VRAM[i]; saver++; }
+			for (int i = 0; i < 64; i++) { *saver = CRAM[i]; saver++; }
+			for (int i = 0; i < 16; i++) { *saver = Registers[i]; saver++; }
+			
+			*saver = StatusInt; saver++;
+			*saver = VdpLatch; saver++;
+			*saver = VdpBuffer; saver++;
+			*saver = VdpCommand; saver++;
+			*saver = HCounter; saver++;
+			*saver = TmsMode; saver++;
+			*saver = lineIntLinesRemaining; saver++;
+			*saver = mode_sys; saver++;
+			*saver = DisplayType; saver++;
+
+			*saver = (uint8_t)(VdpAddress & 0xFF); saver++; *saver = (uint8_t)((VdpAddress >> 8) & 0xFF); saver++;
+
+			*saver = (uint8_t)(NameTableBase & 0xFF); saver++; *saver = (uint8_t)((NameTableBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((NameTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((NameTableBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(ColorTableBase & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((ColorTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(PatternGeneratorBase & 0xFF); saver++; *saver = (uint8_t)((PatternGeneratorBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((PatternGeneratorBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((PatternGeneratorBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(SpritePatternGeneratorBase & 0xFF); saver++; *saver = (uint8_t)((SpritePatternGeneratorBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((SpritePatternGeneratorBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((SpritePatternGeneratorBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(TmsPatternNameTableBase & 0xFF); saver++; *saver = (uint8_t)((TmsPatternNameTableBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TmsPatternNameTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsPatternNameTableBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(TmsSpriteAttributeBase & 0xFF); saver++; *saver = (uint8_t)((TmsSpriteAttributeBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TmsSpriteAttributeBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsSpriteAttributeBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(IPeriod & 0xFF); saver++; *saver = (uint8_t)((IPeriod >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((IPeriod >> 16) & 0xFF); saver++; *saver = (uint8_t)((IPeriod >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(FrameHeight & 0xFF); saver++; *saver = (uint8_t)((FrameHeight >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((FrameHeight >> 16) & 0xFF); saver++; *saver = (uint8_t)((FrameHeight >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(ScanLine & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((ScanLine >> 16) & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 24) & 0xFF); saver++;
+		}
+
+		void LoadState(uint8_t* loader)
+		{
+			VdpWaitingForLatchInt = *loader == 1; loader++;
+			VIntPending = *loader == 1; loader++;
+			HIntPending = *loader == 1; loader++;
+
+			for (int i = 0; i < 0x4000; i++) { VRAM[i] = *loader; loader++; }
+			for (int i = 0; i < 64; i++) { CRAM[i] = *loader; loader++; }
+			for (int i = 0; i < 16; i++) { Registers[i] = *loader; loader++; }
+
+			StatusInt = *loader; loader++;
+			VdpLatch = *loader; loader++;
+			VdpBuffer = *loader; loader++;
+			VdpCommand = *loader; loader++;
+			HCounter = *loader; loader++;
+			TmsMode = *loader; loader++;
+			lineIntLinesRemaining = *loader; loader++;
+			mode_sys = *loader; loader++;
+			DisplayType = *loader; loader++;
+
+			VdpAddress = *loader; loader++; VdpAddress |= (*loader << 8); loader++;
+
+			NameTableBase = *loader; loader++; NameTableBase |= (*loader << 8); loader++;
+			NameTableBase |= (*loader << 16); loader++; NameTableBase |= (*loader << 24); loader++;
+
+			ColorTableBase = *loader; loader++; ColorTableBase |= (*loader << 8); loader++;
+			ColorTableBase |= (*loader << 16); loader++; ColorTableBase |= (*loader << 24); loader++;
+
+			PatternGeneratorBase = *loader; loader++; PatternGeneratorBase |= (*loader << 8); loader++;
+			PatternGeneratorBase |= (*loader << 16); loader++; PatternGeneratorBase |= (*loader << 24); loader++;
+
+			SpritePatternGeneratorBase = *loader; loader++; SpritePatternGeneratorBase |= (*loader << 8); loader++;
+			SpritePatternGeneratorBase |= (*loader << 16); loader++; SpritePatternGeneratorBase |= (*loader << 24); loader++;
+
+			TmsPatternNameTableBase = *loader; loader++; TmsPatternNameTableBase |= (*loader << 8); loader++;
+			TmsPatternNameTableBase |= (*loader << 16); loader++; TmsPatternNameTableBase |= (*loader << 24); loader++;
+
+			TmsSpriteAttributeBase = *loader; loader++; TmsSpriteAttributeBase |= (*loader << 8); loader++;
+			TmsSpriteAttributeBase |= (*loader << 16); loader++; TmsSpriteAttributeBase |= (*loader << 24); loader++;
+
+			IPeriod = *loader; loader++; IPeriod |= (*loader << 8); loader++;
+			IPeriod |= (*loader << 16); loader++; IPeriod |= (*loader << 24); loader++;
+
+			FrameHeight = *loader; loader++; FrameHeight |= (*loader << 8); loader++;
+			FrameHeight |= (*loader << 16); loader++; FrameHeight |= (*loader << 24); loader++;
+
+			ScanLine = *loader; loader++; ScanLine |= (*loader << 8); loader++;
+			ScanLine |= (*loader << 16); loader++; ScanLine |= (*loader << 24); loader++;
+
+			for (uint32_t i = 0; i < 16; i++)
+				WriteRegister(i, Registers[i]);
+			for (uint16_t i = 0; i < 0x4000; i++)
+				UpdatePatternBuffer(i, VRAM[i]);
+			UpdatePrecomputedPalette();
+		}
+
 		#pragma endregion
 	};
 }

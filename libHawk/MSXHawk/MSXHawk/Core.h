@@ -21,6 +21,7 @@ namespace MSXHawk
 			cpu.mem_ctrl = &MemMap;
 			vdp.INT_FLAG = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
+			psg.Clock_Divider = 16;
 		};
 
 		VDP vdp;
@@ -59,7 +60,13 @@ namespace MSXHawk
 				{
 					cpu.ExecuteOne();
 
-					psg.generate_sound();
+					psg.psg_clock++;
+					if (psg.psg_clock == psg.Clock_Divider) 
+					{
+						psg.generate_sound();
+						psg.psg_clock = 0;
+					}
+					psg.sampleclock++;						
 				}
 
 				if (vdp.ScanLine == scanlinesPerFrame - 1)

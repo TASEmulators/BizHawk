@@ -10,44 +10,47 @@ namespace MSXHawk
 	class SN76489sms
 	{
 	public:
-		uint32_t current_sample_L;
-		uint32_t current_sample_R;
+		
+		#pragma region PSG
+
+		bool vol_tone;
+		bool noise_type;
+		bool noise_bit;
+		bool A_L, B_L, C_L, noise_L;
+		bool A_R, B_R, C_R, noise_R;
+		bool A_up, B_up, C_up;
+
+		uint8_t Chan_vol[4];
+		uint8_t stereo_panning;
+		uint8_t chan_sel;
+		uint8_t noise_rate;
+
+		uint16_t Chan_tone[4];
+				
+		uint32_t psg_clock;
+		uint32_t clock_A, clock_B, clock_C;
+		uint32_t noise_clock;
+		uint32_t noise;
+
+		// only old_sample_L/R is savestated, this only works if savestates are only made at frame boundaries
+		// These would need to be included for subframe states
 		uint32_t old_sample_L;
 		uint32_t old_sample_R;
+		uint32_t current_sample_L;
+		uint32_t current_sample_R;
 		uint32_t sampleclock;
 		uint32_t num_samples_L;
 		uint32_t num_samples_R;
 		uint32_t samples_L[9000] = {};
 		uint32_t samples_R[9000] = {};
+		uint32_t Clock_Divider;
+
+		const uint8_t LogScale[16] = { 255, 203, 161, 128, 102, 86, 64, 51, 40, 32, 26, 20, 16, 13, 10, 0 };
 
 		SN76489sms()
 		{
 			Reset();
 		}
-
-		uint8_t Chan_vol[4];
-		uint16_t Chan_tone[4];
-
-		uint32_t chan_sel;
-		bool vol_tone;
-		bool noise_type;
-		uint32_t noise_rate;
-		bool noise_bit;
-
-		bool A_L, B_L, C_L, noise_L;
-		bool A_R, B_R, C_R, noise_R;
-
-		uint32_t psg_clock;
-
-		uint32_t clock_A, clock_B, clock_C;
-
-		bool A_up, B_up, C_up;
-
-		uint32_t noise_clock;
-		uint32_t noise;
-
-		uint8_t stereo_panning;
-		const uint8_t LogScale[16] = { 255, 203, 161, 128, 102, 86, 64, 51, 40, 32, 26, 20, 16, 13, 10, 0 };
 
 		void Reset()
 		{
@@ -80,48 +83,6 @@ namespace MSXHawk
 			stereo_panning = value;
 		}
 
-		/*
-		void SyncState(Serializer ser)
-		{
-			ser.BeginSection("SN76489");
-
-			ser.Sync(nameof(Chan_vol), ref Chan_vol, false);
-			ser.Sync(nameof(Chan_tone), ref Chan_tone, false);
-
-			ser.Sync(nameof(chan_sel), ref chan_sel);
-			ser.Sync(nameof(vol_tone), ref vol_tone);
-			ser.Sync(nameof(noise_type), ref noise_type);
-			ser.Sync(nameof(noise_rate), ref noise_rate);
-
-			ser.Sync(nameof(clock_A), ref clock_A);
-			ser.Sync(nameof(clock_B), ref clock_B);
-			ser.Sync(nameof(clock_C), ref clock_C);
-			ser.Sync(nameof(noise_clock), ref noise_clock);
-			ser.Sync(nameof(noise_bit), ref noise_bit);
-
-			ser.Sync(nameof(psg_clock), ref psg_clock);
-
-			ser.Sync(nameof(A_up), ref A_up);
-			ser.Sync(nameof(B_up), ref B_up);
-			ser.Sync(nameof(C_up), ref C_up);
-			ser.Sync(nameof(noise), ref noise);
-
-			ser.Sync(nameof(A_L), ref A_L);
-			ser.Sync(nameof(B_L), ref B_L);
-			ser.Sync(nameof(C_L), ref C_L);
-			ser.Sync(nameof(noise_L), ref noise_L);
-			ser.Sync(nameof(A_L), ref A_R);
-			ser.Sync(nameof(B_L), ref B_R);
-			ser.Sync(nameof(C_L), ref C_R);
-			ser.Sync(nameof(noise_L), ref noise_R);
-
-			ser.Sync(nameof(current_sample_L), ref current_sample_L);
-			ser.Sync(nameof(current_sample_R), ref current_sample_R);
-			ser.Sync(nameof(stereo_panning), ref stereo_panning);
-
-			ser.EndSection();
-		}
-		*/
 		uint8_t ReadReg()
 		{
 			// not used, reading not allowed, just return 0xFF
@@ -184,104 +145,212 @@ namespace MSXHawk
 
 		void generate_sound()
 		{
-			// there are 16 cpu cycles for every psg cycle
-			psg_clock++;
+			clock_A--;
+			clock_B--;
+			clock_C--;
+			noise_clock--;
 
-			if (psg_clock == 16)
+			// clock noise
+			if (noise_clock == 0)
 			{
-				psg_clock = 0;
-
-				clock_A--;
-				clock_B--;
-				clock_C--;
-				noise_clock--;
-
-				// clock noise
-				if (noise_clock == 0)
+				noise_bit = ((noise & 1) > 0);
+				if (noise_type)
 				{
-					noise_bit = ((noise & 1) > 0);
-					if (noise_type)
-					{
-						noise = (((noise & 1) ^ ((noise >> 1) & 1)) << 14) | (noise >> 1);
-					}
-					else
-					{
-						noise = ((noise & 1) << 14) | (noise >> 1);
-					}
-
-					if (noise_rate == 0)
-					{
-						noise_clock = 0x10;
-					}
-					else if (noise_rate == 1)
-					{
-						noise_clock = 0x20;
-					}
-					else if (noise_rate == 2)
-					{
-						noise_clock = 0x40;
-					}
-					else
-					{
-						noise_clock = Chan_tone[2] + 1;
-					}
-
-					noise_clock *= 2;
+					noise = (((noise & 1) ^ ((noise >> 1) & 1)) << 14) | (noise >> 1);
+				}
+				else
+				{
+					noise = ((noise & 1) << 14) | (noise >> 1);
 				}
 
-				if (clock_A == 0)
+				if (noise_rate == 0)
 				{
-					A_up = !A_up;
-					clock_A = Chan_tone[0] + 1;
+					noise_clock = 0x10;
+				}
+				else if (noise_rate == 1)
+				{
+					noise_clock = 0x20;
+				}
+				else if (noise_rate == 2)
+				{
+					noise_clock = 0x40;
+				}
+				else
+				{
+					noise_clock = Chan_tone[2] + 1;
 				}
 
-				if (clock_B == 0)
-				{
-					B_up = !B_up;
-					clock_B = Chan_tone[1] + 1;
-				}
-
-				if (clock_C == 0)
-				{
-					C_up = !C_up;
-					clock_C = Chan_tone[2] + 1;
-				}
-
-				// now calculate the volume of each channel and add them together
-				current_sample_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
-
-				current_sample_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
-
-				current_sample_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
-
-				current_sample_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
-
-				current_sample_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
-
-				current_sample_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
-
-				current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
-
-				current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
-
-				if ((current_sample_L != old_sample_L) && (num_samples_L < 4500))
-				{
-					samples_L[num_samples_L * 2] = sampleclock;
-					samples_L[num_samples_L * 2 + 1] = current_sample_L - old_sample_L;
-					num_samples_L++;
-					old_sample_L = current_sample_L;
-				}
-
-				if ((current_sample_R != old_sample_R) && (num_samples_R < 4500))
-				{
-					samples_R[num_samples_R * 2] = sampleclock;
-					samples_R[num_samples_R * 2 + 1] = current_sample_R - old_sample_R;
-					num_samples_R++;
-					old_sample_R = current_sample_R;
-				}				
+				noise_clock *= 2;
 			}
 
-			sampleclock++;
+			if (clock_A == 0)
+			{
+				A_up = !A_up;
+				clock_A = Chan_tone[0] + 1;
+			}
+
+			if (clock_B == 0)
+			{
+				B_up = !B_up;
+				clock_B = Chan_tone[1] + 1;
+			}
+
+			if (clock_C == 0)
+			{
+				C_up = !C_up;
+				clock_C = Chan_tone[2] + 1;
+			}
+
+			// now calculate the volume of each channel and add them together
+			current_sample_L = (A_L ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+
+			current_sample_L += (B_L ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+
+			current_sample_L += (C_L ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+
+			current_sample_L += (noise_L ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+
+			current_sample_R = (A_R ? (A_up ? LogScale[Chan_vol[0]] * 42 : 0) : 0);
+
+			current_sample_R += (B_R ? (B_up ? LogScale[Chan_vol[1]] * 42 : 0) : 0);
+
+			current_sample_R += (C_R ? (C_up ? LogScale[Chan_vol[2]] * 42 : 0) : 0);
+
+			current_sample_R += (noise_R ? (noise_bit ? LogScale[Chan_vol[3]] * 42 : 0) : 0);
+
+			if ((current_sample_L != old_sample_L) && (num_samples_L < 4500))
+			{
+				samples_L[num_samples_L * 2] = sampleclock;
+				samples_L[num_samples_L * 2 + 1] = current_sample_L - old_sample_L;
+				num_samples_L++;
+				old_sample_L = current_sample_L;
+			}
+
+			if ((current_sample_R != old_sample_R) && (num_samples_R < 4500))
+			{
+				samples_R[num_samples_R * 2] = sampleclock;
+				samples_R[num_samples_R * 2 + 1] = current_sample_R - old_sample_R;
+				num_samples_R++;
+				old_sample_R = current_sample_R;
+			}				
 		}
+
+		#pragma endregion
+
+		#pragma region State Save / Load
+
+		void SaveState(uint8_t* saver)
+		{
+			*saver = (uint8_t)(vol_tone ? 1 : 0); saver++;
+			*saver = (uint8_t)(noise_type ? 1 : 0); saver++;
+			*saver = (uint8_t)(noise_bit ? 1 : 0); saver++;
+			*saver = (uint8_t)(A_L ? 1 : 0); saver++;
+			*saver = (uint8_t)(B_L ? 1 : 0); saver++;
+			*saver = (uint8_t)(C_L ? 1 : 0); saver++;
+			*saver = (uint8_t)(noise_L ? 1 : 0); saver++;
+			*saver = (uint8_t)(A_R ? 1 : 0); saver++;
+			*saver = (uint8_t)(B_R ? 1 : 0); saver++;
+			*saver = (uint8_t)(C_R ? 1 : 0); saver++;
+			*saver = (uint8_t)(noise_R ? 1 : 0); saver++;
+			*saver = (uint8_t)(A_up ? 1 : 0); saver++;
+			*saver = (uint8_t)(B_up ? 1 : 0); saver++;
+			*saver = (uint8_t)(C_up ? 1 : 0); saver++;
+
+			*saver = Chan_vol[0]; saver++;
+			*saver = Chan_vol[1]; saver++;
+			*saver = Chan_vol[2]; saver++;
+			*saver = Chan_vol[3]; saver++;
+
+			*saver = stereo_panning; saver++;
+			*saver = chan_sel; saver++;
+			*saver = noise_rate; saver++;
+
+			*saver = (uint8_t)(Chan_tone[0] & 0xFF); saver++; *saver = (uint8_t)((Chan_tone[0] >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(Chan_tone[1] & 0xFF); saver++; *saver = (uint8_t)((Chan_tone[1] >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(Chan_tone[2] & 0xFF); saver++; *saver = (uint8_t)((Chan_tone[2] >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)(Chan_tone[3] & 0xFF); saver++; *saver = (uint8_t)((Chan_tone[3] >> 8) & 0xFF); saver++;
+
+			*saver = (uint8_t)(psg_clock & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 8) & 0xFF); saver++; 
+			*saver = (uint8_t)((psg_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((psg_clock >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(clock_A & 0xFF); saver++; *saver = (uint8_t)((clock_A >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((clock_A >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_A >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(clock_B & 0xFF); saver++; *saver = (uint8_t)((clock_B >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((clock_B >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_B >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(clock_C & 0xFF); saver++; *saver = (uint8_t)((clock_C >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((clock_C >> 16) & 0xFF); saver++; *saver = (uint8_t)((clock_C >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(noise_clock & 0xFF); saver++; *saver = (uint8_t)((noise_clock >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((noise_clock >> 16) & 0xFF); saver++; *saver = (uint8_t)((noise_clock >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(noise & 0xFF); saver++; *saver = (uint8_t)((noise >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((noise >> 16) & 0xFF); saver++; *saver = (uint8_t)((noise >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(old_sample_L & 0xFF); saver++; *saver = (uint8_t)((old_sample_L >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((old_sample_L >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample_L >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(old_sample_R & 0xFF); saver++; *saver = (uint8_t)((old_sample_R >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((old_sample_R >> 16) & 0xFF); saver++; *saver = (uint8_t)((old_sample_R >> 24) & 0xFF); saver++;			
+		}
+
+		void LoadState(uint8_t* loader)
+		{
+			vol_tone = *loader == 1; loader++;
+			noise_type = *loader == 1; loader++;
+			noise_bit = *loader == 1; loader++;
+			A_L = *loader == 1; loader++;
+			B_L = *loader == 1; loader++;
+			C_L = *loader == 1; loader++;
+			noise_L = *loader == 1; loader++;
+			A_R = *loader == 1; loader++;
+			B_R = *loader == 1; loader++;
+			C_R = *loader == 1; loader++;
+			noise_R = *loader == 1; loader++;
+			A_up = *loader == 1; loader++;
+			B_up = *loader == 1; loader++;
+			C_up = *loader == 1; loader++;
+
+			Chan_vol[0] = *loader; loader++;
+			Chan_vol[1] = *loader; loader++;
+			Chan_vol[2] = *loader; loader++;
+			Chan_vol[3] = *loader; loader++;
+
+			stereo_panning = *loader; loader++;
+			chan_sel = *loader; loader++;
+			noise_rate = *loader; loader++;
+
+			Chan_tone[0] = *loader; loader++; Chan_tone[0] |= (*loader << 8); loader++;
+			Chan_tone[1] = *loader; loader++; Chan_tone[1] |= (*loader << 8); loader++;
+			Chan_tone[2] = *loader; loader++; Chan_tone[2] |= (*loader << 8); loader++;
+			Chan_tone[3] = *loader; loader++; Chan_tone[3] |= (*loader << 8); loader++;
+
+			psg_clock = *loader; loader++; psg_clock |= (*loader << 8); loader++;
+			psg_clock |= (*loader << 16); loader++; psg_clock |= (*loader << 24); loader++;
+
+			clock_A = *loader; loader++; clock_A |= (*loader << 8); loader++;
+			clock_A |= (*loader << 16); loader++; clock_A |= (*loader << 24); loader++;
+
+			clock_B = *loader; loader++; clock_B |= (*loader << 8); loader++;
+			clock_B |= (*loader << 16); loader++; clock_B |= (*loader << 24); loader++;
+
+			clock_C = *loader; loader++; clock_C |= (*loader << 8); loader++;
+			clock_C |= (*loader << 16); loader++; clock_C |= (*loader << 24); loader++;
+
+			noise_clock = *loader; loader++; noise_clock |= (*loader << 8); loader++;
+			noise_clock |= (*loader << 16); loader++; noise_clock |= (*loader << 24); loader++;
+
+			noise = *loader; loader++; noise |= (*loader << 8); loader++;
+			noise |= (*loader << 16); loader++; noise |= (*loader << 24); loader++;
+
+			old_sample_L = *loader; loader++; old_sample_L |= (*loader << 8); loader++;
+			old_sample_L |= (*loader << 16); loader++; old_sample_L |= (*loader << 24); loader++;
+
+			old_sample_R = *loader; loader++; old_sample_R |= (*loader << 8); loader++;
+			old_sample_R |= (*loader << 16); loader++; old_sample_R |= (*loader << 24); loader++;
+		}
+
+		#pragma endregion
 	};
 }
