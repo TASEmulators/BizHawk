@@ -354,7 +354,16 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-		private void tbbOpenFolder_Click(object sender, EventArgs e) => System.Diagnostics.Process.Start(PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null));
+		private void tbbOpenFolder_Click(object sender, EventArgs e)
+		{
+			var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+			if (!Directory.Exists(frmWares))
+			{
+				Directory.CreateDirectory(frmWares);
+			}
+
+			System.Diagnostics.Process.Start(frmWares);
+		}
 
 		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
 		{
