@@ -165,8 +165,8 @@ struct CommStruct
 
 	int32 padding3;
 
-	int64 cdl_ptr[4];
-	int32 cdl_size[4];
+	int64 cdl_ptr[8];
+	int32 cdl_size[8];
 
 	CPURegsComm cpuregs;
 	LayerEnablesComm layerEnables;
@@ -623,13 +623,13 @@ EXPORT void* DllInit()
 	T(buf, 88);
 	T(buf_size, 112);
 	T(cdl_ptr, 128);
-	T(cdl_size, 160);
-	T(cpuregs, 176);
-	T(layerEnables, 212);
-	T(region, 224);
-	T(mapper, 228);
+	T(cdl_size, 192);
+	T(cpuregs, 224);
+	T(layerEnables, 260);
+	T(region, 272);
+	T(mapper, 276);
 	// start of private stuff
-	T(privbuf, 232);
+	T(privbuf, 280);
 	#undef T
 
 	memset(&comm, 0, sizeof(comm));
