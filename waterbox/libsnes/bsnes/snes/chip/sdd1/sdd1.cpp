@@ -84,7 +84,9 @@ void SDD1::mmio_write(unsigned addr, uint8 data) {
 }
 
 uint8 SDD1::rom_read(unsigned addr) {
-  return cartridge.rom.read(mmc[(addr >> 20) & 3] + (addr & 0x0fffff));
+	auto myaddr = mmc[(addr >> 20) & 3] + (addr & 0x0fffff);
+  cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+  return cartridge.rom.read(myaddr);
 }
 
 //SDD1::mcu_read() is mapped to $c0-ff:0000-ffff
@@ -132,7 +134,9 @@ uint8 SDD1::mcu_read(unsigned addr) {
   }  //S-DD1 decompressor enabled
 
   //S-DD1 decompression mode inactive; return ROM data
-  return cartridge.rom.read(mmc[(addr >> 20) & 3] + (addr & 0x0fffff));
+  auto myaddr = mmc[(addr >> 20) & 3] + (addr & 0x0fffff);
+  cdlInfo.set(eCDLog_AddrType_CARTROM, myaddr);
+  return cartridge.rom.read(myaddr);
 }
 
 void SDD1::mcu_write(unsigned addr, uint8 data) {

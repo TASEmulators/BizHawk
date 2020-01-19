@@ -14,6 +14,7 @@ uint8 SuperFX::ROM::read(unsigned addr) {
     };
     return data[addr & 15];
   }
+  cdlInfo.set(eCDLog_AddrType_CARTROM, addr);
   return cartridge.rom.read(addr);
 }
 
