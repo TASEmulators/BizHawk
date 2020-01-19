@@ -1,5 +1,5 @@
 alwaysinline uint8_t op_readpcfirst() {
-  return op_read((regs.pc.b << 16) + regs.pc.w++, eCDLog_Flags_ExecFirst);
+  return op_read((regs.pc.b << 16) + regs.pc.w++, (eCDLog_Flags)(eCDLog_Flags_ExecFirst | (regs.p & 0x30)));
 }
 
 alwaysinline uint8_t op_readpc() {
