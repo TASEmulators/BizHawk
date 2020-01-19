@@ -27,6 +27,7 @@ namespace MSXHawk
 		const uint32_t high_mask = 0x3F;
 		const uint32_t bank_shift = 10;
 		
+		// these are not savestated as they are automatically adjusted from the memory map upon load
 		uint32_t bank_num;
 		uint32_t bank_offset;
 		uint8_t* MemoryMap[64];
@@ -39,84 +40,44 @@ namespace MSXHawk
 		uint8_t HW_Read(uint32_t);
 		void Memory_Write(uint32_t, uint8_t);
 
-		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
-		uint32_t ExternalDB;
-
-		long TotalExecutedCycles;
-		uint32_t PRE_SRC;
-		uint32_t EI_pending;
-		// variables for executing instructions
-		uint32_t instr_pntr = 0;
-		uint32_t bus_pntr = 0;
-		uint32_t mem_pntr = 0;
-		uint32_t irq_pntr = 0;
-		uint32_t cur_instr [38] = {};		// fixed size - do not change at runtime
-		uint32_t BUSRQ [19] = {};         // fixed size - do not change at runtime
-		uint32_t MEMRQ [19] = {};         // fixed size - do not change at runtime
-		uint32_t IRQS;
+		// State variables
 		bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		bool halted;
 		bool I_skip;
 		bool FlagI;
 		bool FlagW; // wait flag, when set to true reads / writes will be delayed
-
-		uint8_t opcode;
-		uint8_t temp_R;
-		uint8_t Regs[36] = {};
-
-		// non-state variables
-		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		uint32_t Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
-
-
-		inline bool FlagCget() { return (Regs[5] & 0x01) != 0; };
-		inline void FlagCset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
-
-		inline bool FlagNget() { return (Regs[5] & 0x02) != 0; };
-		inline void FlagNset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
-
-		inline bool FlagPget() { return (Regs[5] & 0x04) != 0; };
-		inline void FlagPset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
-
-		inline bool Flag3get() { return (Regs[5] & 0x08) != 0; };
-		inline void Flag3set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
-
-		inline bool FlagHget() { return (Regs[5] & 0x10) != 0; };
-		inline void FlagHset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
-
-		inline bool Flag5get() { return (Regs[5] & 0x20) != 0; };
-		inline void Flag5set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
-
-		inline bool FlagZget() { return (Regs[5] & 0x40) != 0; };
-		inline void FlagZset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
-
-		inline bool FlagSget() { return (Regs[5] & 0x80) != 0; };
-		inline void FlagSset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
-
-		inline uint32_t RegPCget() { return (uint32_t)(Regs[0] | (Regs[1] << 8)); }
-		inline void RegPCset(uint32_t value) { Regs[0] = (uint32_t)(value & 0xFF); Regs[1] = (uint32_t)((value >> 8) & 0xFF); }
-
-		bool TableParity [256] = {};
 		bool IFF1;
 		bool IFF2;
 		bool nonMaskableInterrupt;
 		bool nonMaskableInterruptPending;
 
-		inline bool NonMaskableInterruptget() { return nonMaskableInterrupt; };
-		inline void NonMaskableInterruptset(bool value)
-		{ 
-			if (value && !nonMaskableInterrupt) nonMaskableInterruptPending = true; 
-			nonMaskableInterrupt = value; 
-		}
+		uint8_t opcode;
+		uint8_t temp_R;
+		uint8_t EI_pending;
+		uint8_t interruptMode;
+		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
+		uint8_t ExternalDB;
+		uint8_t Regs[36] = {};
 
-		uint32_t interruptMode;
+		uint32_t PRE_SRC;		
+		// variables for executing instructions
+		uint32_t instr_pntr = 0;
+		uint32_t bus_pntr = 0;
+		uint32_t mem_pntr = 0;
+		uint32_t irq_pntr = 0;
+		uint32_t IRQS;
+		uint32_t cur_instr[38] = {};		// fixed size - do not change at runtime
+		uint32_t BUSRQ[19] = {};         // fixed size - do not change at runtime
+		uint32_t MEMRQ[19] = {};         // fixed size - do not change at runtime
+		
+		long TotalExecutedCycles;
 
-		inline uint32_t InterruptModeget() { return interruptMode; };
-		inline void InterruptModeset(uint32_t value)
-		{
-			if (value < 0 || value > 2) { /* add exception here */ }
-			interruptMode = value;
-		}
+		// non-state variables
+		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
+		uint32_t Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
+
+		// built on initialization
+		bool TableParity [256] = {};
 
 		#pragma endregion
 
@@ -266,6 +227,47 @@ namespace MSXHawk
 			Reset();
 			InitTableParity();
 		}
+
+		inline bool FlagCget() { return (Regs[5] & 0x01) != 0; };
+		inline void FlagCset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x01) | (value ? 0x01 : 0x00)); }
+
+		inline bool FlagNget() { return (Regs[5] & 0x02) != 0; };
+		inline void FlagNset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x02) | (value ? 0x02 : 0x00)); }
+
+		inline bool FlagPget() { return (Regs[5] & 0x04) != 0; };
+		inline void FlagPset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x04) | (value ? 0x04 : 0x00)); }
+
+		inline bool Flag3get() { return (Regs[5] & 0x08) != 0; };
+		inline void Flag3set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x08) | (value ? 0x08 : 0x00)); }
+
+		inline bool FlagHget() { return (Regs[5] & 0x10) != 0; };
+		inline void FlagHset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+
+		inline bool Flag5get() { return (Regs[5] & 0x20) != 0; };
+		inline void Flag5set(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+
+		inline bool FlagZget() { return (Regs[5] & 0x40) != 0; };
+		inline void FlagZset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
+
+		inline bool FlagSget() { return (Regs[5] & 0x80) != 0; };
+		inline void FlagSset(bool value) { Regs[5] = (uint32_t)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
+
+		inline uint32_t RegPCget() { return (uint32_t)(Regs[0] | (Regs[1] << 8)); }
+		inline void RegPCset(uint32_t value) { Regs[0] = (uint32_t)(value & 0xFF); Regs[1] = (uint32_t)((value >> 8) & 0xFF); }
+
+		inline uint8_t InterruptModeget() { return interruptMode; };
+		inline void InterruptModeset(uint8_t value)
+		{
+			if (value < 0 || value > 2) { /* add exception here */ }
+			interruptMode = value;
+		}
+
+		inline bool NonMaskableInterruptget() { return nonMaskableInterrupt; };
+		inline void NonMaskableInterruptset(bool value)
+		{
+			if (value && !nonMaskableInterrupt) nonMaskableInterruptPending = true;
+			nonMaskableInterrupt = value;
+		}
 		
 		void Reset()
 		{
@@ -283,14 +285,6 @@ namespace MSXHawk
 			instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 			NO_prefix = true;
 		}
-
-		// Memory Access 
-
-		// Data Bus
-		// Interrupting Devices are responsible for putting a value onto the data bus
-		// for as long as the interrupt is valid
-
-		//this only calls when the first byte of an instruction is fetched.
 
 		// Execute instructions
 		void ExecuteOne()
@@ -5170,6 +5164,136 @@ namespace MSXHawk
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0xF0
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
+		#pragma endregion
+
+		#pragma region State Save / Load
+
+		void SaveState(uint8_t* saver)
+		{
+			*saver = (uint8_t)(NO_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(CB_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(IX_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(EXTD_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(IY_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(IXCB_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(IYCB_prefix ? 1 : 0); saver++;
+			*saver = (uint8_t)(halted ? 1 : 0); saver++;
+			*saver = (uint8_t)(I_skip ? 1 : 0); saver++;
+			*saver = (uint8_t)(FlagI ? 1 : 0); saver++;
+			*saver = (uint8_t)(FlagW ? 1 : 0); saver++;
+			*saver = (uint8_t)(IFF1 ? 1 : 0); saver++;
+			*saver = (uint8_t)(IFF2 ? 1 : 0); saver++;
+			*saver = (uint8_t)(nonMaskableInterrupt ? 1 : 0); saver++;
+			*saver = (uint8_t)(nonMaskableInterruptPending ? 1 : 0); saver++;
+
+			*saver = opcode; saver++;
+			*saver = temp_R; saver++;
+			*saver = EI_pending; saver++;
+			*saver = interruptMode; saver++;
+			*saver = ExternalDB; saver++;
+
+			for (int i = 0; i < 36; i++) { *saver = Regs[i]; saver++; }
+
+			*saver = (uint8_t)(PRE_SRC & 0xFF); saver++; *saver = (uint8_t)((PRE_SRC >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((PRE_SRC >> 16) & 0xFF); saver++; *saver = (uint8_t)((PRE_SRC >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(instr_pntr & 0xFF); saver++; *saver = (uint8_t)((instr_pntr >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((instr_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((instr_pntr >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(bus_pntr & 0xFF); saver++; *saver = (uint8_t)((bus_pntr >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((bus_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((bus_pntr >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(mem_pntr & 0xFF); saver++; *saver = (uint8_t)((mem_pntr >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((mem_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((mem_pntr >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(irq_pntr & 0xFF); saver++; *saver = (uint8_t)((irq_pntr >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((irq_pntr >> 16) & 0xFF); saver++; *saver = (uint8_t)((irq_pntr >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(IRQS & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((IRQS >> 16) & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 24) & 0xFF); saver++;
+
+			for (int i = 0; i < 38; i++) 
+			{ 
+				*saver = (uint8_t)(cur_instr[i] & 0xFF); saver++; *saver = (uint8_t)((cur_instr[i] >> 8) & 0xFF); saver++;
+				*saver = (uint8_t)((cur_instr[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((cur_instr[i] >> 24) & 0xFF); saver++;
+			}
+
+			for (int i = 0; i < 19; i++)
+			{
+				*saver = (uint8_t)(BUSRQ[i] & 0xFF); saver++; *saver = (uint8_t)((BUSRQ[i] >> 8) & 0xFF); saver++;
+				*saver = (uint8_t)((BUSRQ[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((BUSRQ[i] >> 24) & 0xFF); saver++;
+			}
+
+			for (int i = 0; i < 19; i++)
+			{
+				*saver = (uint8_t)(MEMRQ[i] & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 8) & 0xFF); saver++;
+				*saver = (uint8_t)((MEMRQ[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 24) & 0xFF); saver++;
+			}
+		}
+
+		void LoadState(uint8_t* loader)
+		{
+			NO_prefix = *loader == 1; loader++;
+			CB_prefix = *loader == 1; loader++;
+			IX_prefix = *loader == 1; loader++;
+			EXTD_prefix = *loader == 1; loader++;
+			IY_prefix = *loader == 1; loader++;
+			IXCB_prefix = *loader == 1; loader++;
+			IYCB_prefix = *loader == 1; loader++;
+			halted = *loader == 1; loader++;
+			I_skip = *loader == 1; loader++;
+			FlagI = *loader == 1; loader++;
+			FlagW = *loader == 1; loader++;
+			IFF1 = *loader == 1; loader++;
+			IFF2 = *loader == 1; loader++;
+			nonMaskableInterrupt = *loader == 1; loader++;
+			nonMaskableInterruptPending = *loader == 1; loader++;
+
+			opcode = *loader; loader++;
+			temp_R = *loader; loader++;
+			EI_pending = *loader; loader++;
+			interruptMode = *loader; loader++;
+			ExternalDB = *loader; loader++;
+
+			for (int i = 0; i < 36; i++) { Regs[i] = *loader; loader++; }
+
+			PRE_SRC = *loader; loader++; PRE_SRC |= (*loader << 8); loader++;
+			PRE_SRC |= (*loader << 16); loader++; PRE_SRC |= (*loader << 24); loader++;
+
+			instr_pntr = *loader; loader++; instr_pntr |= (*loader << 8); loader++;
+			instr_pntr |= (*loader << 16); loader++; instr_pntr |= (*loader << 24); loader++;
+
+			bus_pntr = *loader; loader++; bus_pntr |= (*loader << 8); loader++;
+			bus_pntr |= (*loader << 16); loader++; bus_pntr |= (*loader << 24); loader++;
+
+			mem_pntr = *loader; loader++; mem_pntr |= (*loader << 8); loader++;
+			mem_pntr |= (*loader << 16); loader++; mem_pntr |= (*loader << 24); loader++;
+
+			irq_pntr = *loader; loader++; irq_pntr |= (*loader << 8); loader++;
+			irq_pntr |= (*loader << 16); loader++; irq_pntr |= (*loader << 24); loader++;
+
+			IRQS = *loader; loader++; IRQS |= (*loader << 8); loader++;
+			IRQS |= (*loader << 16); loader++; IRQS |= (*loader << 24); loader++;
+
+			for (int i = 0; i < 38; i++)
+			{
+				cur_instr[i] = *loader; loader++; cur_instr[i] |= (*loader << 8); loader++;
+				cur_instr[i] |= (*loader << 16); loader++; cur_instr[i] |= (*loader << 24); loader++;
+			}
+
+			for (int i = 0; i < 19; i++)
+			{
+				BUSRQ[i] = *loader; loader++; BUSRQ[i] |= (*loader << 8); loader++;
+				BUSRQ[i] |= (*loader << 16); loader++; BUSRQ[i] |= (*loader << 24); loader++;
+			}
+
+			for (int i = 0; i < 19; i++)
+			{
+				MEMRQ[i] = *loader; loader++; MEMRQ[i] |= (*loader << 8); loader++;
+				MEMRQ[i] |= (*loader << 16); loader++; MEMRQ[i] |= (*loader << 24); loader++;
+			}
+		}
+
 		#pragma endregion
 	};
 }
