@@ -15,10 +15,10 @@ namespace MSXHawk
 	{
 	public:
 				
-		VDP* vdp_pntr;
-		SN76489sms* psg_pntr;
-		Z80A* cpu_pntr;
-		uint8_t* rom;
+		VDP* vdp_pntr = nullptr;
+		SN76489sms* psg_pntr = nullptr;
+		Z80A* cpu_pntr = nullptr;
+		uint8_t* rom = nullptr;
 
 		// initialized by core loading, not savestated
 		uint32_t rom_size;
@@ -39,8 +39,8 @@ namespace MSXHawk
 		uint8_t Port3F = 0xFF;
 		uint8_t PortDE = 0x00;		
 		uint8_t reg_FFFC, reg_FFFD, reg_FFFE, reg_FFFF;
-		uint8_t ram[0x2000];
-		uint8_t cart_ram[0x8000];
+		uint8_t ram[0x2000] = {};
+		uint8_t cart_ram[0x8000] = {};
 
 		MemoryManager()
 		{
