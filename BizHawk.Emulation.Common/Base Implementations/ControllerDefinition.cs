@@ -13,11 +13,6 @@ namespace BizHawk.Emulation.Common
 	{
 		public ControllerDefinition()
 		{
-			BoolButtons = new List<string>();
-			FloatControls = new List<string>();
-			FloatRanges = new List<FloatRange>();
-			AxisConstraints = new List<AxisConstraint>();
-			CategoryLabels = new Dictionary<string, string>();
 		}
 
 		public ControllerDefinition(ControllerDefinition source)
@@ -39,30 +34,30 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Gets or sets a list of all button types that have a boolean (on/off) value
 		/// </summary>
-		public List<string> BoolButtons { get; set; }
+		public List<string> BoolButtons { get; set; } = new List<string>();
 
 		/// <summary>
 		/// Gets a list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
 		/// </summary>
-		public List<string> FloatControls { get; }
+		public List<string> FloatControls { get; } = new List<string>();
 
 		/// <summary>
 		/// Gets a list of all float ranges for each float control (must be one to one with FloatControls)
 		/// FloatRanges include the min/max/default values
 		/// </summary>
-		public List<FloatRange> FloatRanges { get; }
+		public List<FloatRange> FloatRanges { get; } = new List<FloatRange>();
 
 		/// <summary>
 		/// Gets the axis constraints that apply artificial constraints to float values
 		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
 		/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
 		/// </summary>
-		public List<AxisConstraint> AxisConstraints { get; }
+		public List<AxisConstraint> AxisConstraints { get; } = new List<AxisConstraint>();
 
 		/// <summary>
 		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
 		/// </summary>
-		public Dictionary<string, string> CategoryLabels { get; }
+		public Dictionary<string, string> CategoryLabels { get; } = new Dictionary<string, string>();
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
 		{
