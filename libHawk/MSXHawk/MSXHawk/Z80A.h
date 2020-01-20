@@ -84,7 +84,7 @@ namespace MSXHawk
 		// non-state variables
 		bool checker;
 		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
-		uint32_t Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
+		uint32_t Reg16_d, Reg16_s, ans, temp, carry;
 		uint32_t cur_instr[38] = {};	 // only used for building
 		uint32_t BUSRQ[19] = {};         // only used for building
 		uint32_t MEMRQ[19] = {};         // only used for building
@@ -667,7 +667,7 @@ namespace MSXHawk
 					CP8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
 					break;
 				case TR:
-					TR_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 2]];
 					break;
 				}
 				instr_pntr += 3;
@@ -690,11 +690,12 @@ namespace MSXHawk
 				Regs[W] = Regs[A];
 				break;
 			case TR:
-				TR_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
 				instr_pntr += 2;
 				break;
 			case TR16:
-				TR16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 2]];
+				Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 3]];
 				instr_pntr += 4;
 				break;
 			case ADD16:
@@ -814,11 +815,11 @@ namespace MSXHawk
 				instr_pntr += 2;
 				break;
 			case RES:
-				RES_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+				Regs[cur_instr_ofst[instr_pntr + 1]] &= (uint32_t)(0xFF - (1 << cur_instr_ofst[instr_pntr]));
 				instr_pntr += 2;
 				break;
 			case SET:
-				SET_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+				Regs[cur_instr_ofst[instr_pntr + 1]] |= (uint32_t)(1 << cur_instr_ofst[instr_pntr]);
 				instr_pntr += 2;
 				break;
 			case EI:
@@ -840,8 +841,6 @@ namespace MSXHawk
 				instr_pntr += 4;
 				break;
 			case PREFIX:
-				src_t = PRE_SRC;
-
 				NO_prefix = false;
 				if (PRE_SRC == CBpre) { CB_prefix = true; }
 				if (PRE_SRC == EXTDpre) { EXTD_prefix = true; }
@@ -869,7 +868,7 @@ namespace MSXHawk
 				I_skip = true;
 				break;
 			case ASGN:
-				ASGN_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+				Regs[cur_instr_ofst[instr_pntr]] = cur_instr_ofst[instr_pntr + 1];
 				instr_pntr += 2;
 				break;
 			case ADDS:
@@ -973,10 +972,10 @@ namespace MSXHawk
 					else { DEC16_Func(L, H); }
 				}
 				break;
-			case SET_FL_IR:
-				dest_t = cur_instr_ofst[instr_pntr++];
-				TR_Func(dest_t, cur_instr_ofst[instr_pntr++]);
-				SET_FL_IR_Func(dest_t);
+			case SET_FL_IR:			
+				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
+				SET_FL_IR_Func(cur_instr_ofst[instr_pntr]);
+				instr_pntr += 2;				
 				break;
 			case FTCH_DB:
 				FTCH_DB_Func();
@@ -999,7 +998,8 @@ namespace MSXHawk
 				Ztemp4 = cur_instr_ofst[instr_pntr++];
 				if (Ztemp4 == DEC16)
 				{
-					TR16_Func(Z, W, C, B);
+					Regs[Z] = Regs[C];
+					Regs[W] = Regs[B];
 					DEC16_Func(Z, W);
 					DEC8_Func(B);
 
@@ -1012,7 +1012,8 @@ namespace MSXHawk
 				}
 				else
 				{
-					TR16_Func(Z, W, C, B);
+					Regs[Z] = Regs[C];
+					Regs[W] = Regs[B];
 					INC16_Func(Z, W);
 					DEC8_Func(B);
 
@@ -1056,14 +1057,16 @@ namespace MSXHawk
 				{
 					DEC16_Func(L, H);
 					DEC8_Func(B);
-					TR16_Func(Z, W, C, B);
+					Regs[Z] = Regs[C];
+					Regs[W] = Regs[B];
 					DEC16_Func(Z, W);
 				}
 				else
 				{
 					INC16_Func(L, H);
 					DEC8_Func(B);
-					TR16_Func(Z, W, C, B);
+					Regs[Z] = Regs[C];
+					Regs[W] = Regs[B];
 					INC16_Func(Z, W);
 				}
 
@@ -1172,30 +1175,11 @@ namespace MSXHawk
 				}
 				else
 				{
+					// 0 = DJNZ, 1 = JR COND, 2 = JP COND, 3 = RET COND, 4 = CALL
 					cond_chk_fail = true;
-					switch (cur_instr_ofst[instr_pntr++])
-					{
-					case 0: // DJNZ
-						cur_irqs_ofst = &False_IRQS[0];
-						IRQS_cond_offset = 0;
-						break;
-					case 1: // JR COND
-						cur_irqs_ofst = &False_IRQS[1];
-						IRQS_cond_offset = 1;
-						break;
-					case 2: // JP COND
-						cur_irqs_ofst = &False_IRQS[2];
-						IRQS_cond_offset = 2;
-						break;
-					case 3: // RET COND
-						cur_irqs_ofst = &False_IRQS[3];
-						IRQS_cond_offset = 3;
-						break;
-					case 4: // CALL
-						cur_irqs_ofst = &False_IRQS[4];
-						IRQS_cond_offset = 4;
-						break;
-					}
+					cur_irqs_ofst = &False_IRQS[cur_instr_ofst[instr_pntr]];
+					IRQS_cond_offset = cur_instr_ofst[instr_pntr];
+					instr_pntr++;
 				}
 
 				jp_cond_chk = checker;
@@ -3882,7 +3866,9 @@ namespace MSXHawk
 
 			Regs[DB] = Regs[dest_h];
 			INC16_Func(src_l, src_h);
-			TR16_Func(PCl, PCh, dest_l, dest_h);
+
+			Regs[PCl] = Regs[dest_l];
+			Regs[PCh] = Regs[dest_h];
 		}
 
 		void Write_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
@@ -3936,7 +3922,8 @@ namespace MSXHawk
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 
-			TR16_Func(PCl, PCh, Z, W);
+			Regs[PCl] = Regs[Z];
+			Regs[PCh] = Regs[W];
 		}
 
 		void OUT_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src)
@@ -3987,17 +3974,6 @@ namespace MSXHawk
 			Regs[dest] = HW_Read((uint32_t)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 			INC16_Func(src_l, src_h);
-		}
-
-		void TR_Func(uint32_t dest, uint32_t src)
-		{
-			Regs[dest] = Regs[src];
-		}
-
-		void TR16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
-		{
-			Regs[dest_l] = Regs[src_l];
-			Regs[dest_h] = Regs[src_h];
 		}
 
 		void ADD16_Func(uint32_t dest_l, uint32_t dest_h, uint32_t src_l, uint32_t src_h)
@@ -4087,21 +4063,6 @@ namespace MSXHawk
 			FlagSset((bit == 7) && (((Regs[src] & (1 << bit)) > 0)));
 			Flag5set((Regs[W] & 0x20) > 0);
 			Flag3set((Regs[W] & 0x08) > 0);
-		}
-
-		void SET_Func(uint32_t bit, uint32_t src)
-		{
-			Regs[src] |= (uint32_t)(1 << bit);
-		}
-
-		void RES_Func(uint32_t bit, uint32_t src)
-		{
-			Regs[src] &= (uint32_t)(0xFF - (1 << bit));
-		}
-
-		void ASGN_Func(uint32_t src, uint32_t val)
-		{
-			Regs[src] = val;
 		}
 
 		void SLL_Func(uint32_t src)

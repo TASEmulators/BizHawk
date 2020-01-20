@@ -68,8 +68,8 @@ namespace MSXHawk
 			// default memory map setup
 			reg_FFFC = 0;
 			reg_FFFD = 0;
-			reg_FFFE = 0;
-			reg_FFFF = 0;
+			reg_FFFE = 1;
+			reg_FFFF = 2;
 			remap_ROM_0();
 			remap_ROM_1();
 			remap_ROM_2();
