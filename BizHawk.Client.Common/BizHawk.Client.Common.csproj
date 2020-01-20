@@ -45,5 +45,13 @@
 		<Compile Remove="lua/LuaExamples.cs" />
 		<Compile Remove="SharpZipWriter.cs" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.InputLog.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.IO.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/bk2/Bk2Movie.ModeApi.cs" DependentUpon="Bk2Movie.cs" />
+		<Compile Update="movie/tasproj/TasMovie.Editing.cs" DependentUpon="TasMovie.cs" />
+		<Compile Update="movie/tasproj/TasMovie.IO.cs" DependentUpon="TasMovie.cs" />
+	</ItemGroup>
 	<Import Project="../NamespaceAliasHack.abs.targets" />
 </Project>

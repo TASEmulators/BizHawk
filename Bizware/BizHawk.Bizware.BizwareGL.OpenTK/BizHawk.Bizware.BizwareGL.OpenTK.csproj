@@ -27,4 +27,7 @@
 	<ItemGroup>
 		<Compile Remove="RetroShader.cs" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="GraphicsControl_TK.cs" SubType="UserControl" />
+	</ItemGroup>
 </Project>

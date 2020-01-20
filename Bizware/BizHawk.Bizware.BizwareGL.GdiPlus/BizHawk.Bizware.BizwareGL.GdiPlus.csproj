@@ -23,4 +23,7 @@
 	<ItemGroup>
 		<ProjectReference Include="../BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="GLControlWrapper_GdiPlus.cs" SubType="Component" />
+	</ItemGroup>
 </Project>

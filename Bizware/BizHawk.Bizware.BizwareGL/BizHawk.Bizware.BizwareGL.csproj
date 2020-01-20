@@ -27,4 +27,9 @@
 		<Compile Remove="CacheBlendState.cs" />
 		<Compile Remove="GuiRendererBase.cs" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="GraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="IGuiRenderer.cs" SubType="Code" />
+		<Compile Update="RetainedGraphicsControl.cs" SubType="UserControl" />
+	</ItemGroup>
 </Project>

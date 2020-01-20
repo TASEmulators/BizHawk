@@ -103,6 +103,17 @@
 		<EmbeddedResource Remove="ProgressDialog.resx" />
 		<None Include="app.config" />
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="About.cs" SubType="Form" />
+		<Compile Update="About.Designer.cs" DependentUpon="About.cs" />
+		<EmbeddedResource Update="About.resx" DependentUpon="About.cs" />
+		<Compile Update="ComparisonResults.cs" SubType="Form" />
+		<Compile Update="ComparisonResults.Designer.cs" DependentUpon="ComparisonResults.cs" />
+		<EmbeddedResource Update="ComparisonResults.resx" DependentUpon="ComparisonResults.cs" />
+		<Compile Update="MainDiscoForm.cs" SubType="Form" />
+		<Compile Update="MainDiscoForm.Designer.cs" DependentUpon="MainDiscoForm.cs" />
+		<EmbeddedResource Update="MainDiscoForm.resx" DependentUpon="MainDiscoForm.cs" SubType="Designer" />
+	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
 	<Import Project="../CommonResourceGen.rel.props" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
 </Project>

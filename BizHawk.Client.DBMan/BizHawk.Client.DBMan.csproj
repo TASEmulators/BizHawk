@@ -66,6 +66,18 @@
 		<Compile Include="**/*.cs" />
 		<EmbeddedResource Include="**/*.resx" />
 		<None Include="app.config" />
+		<None Include="Properties/Settings.settings" LastGenOutput="Settings.Designer.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="DATTools/DATConverter.cs" SubType="Form" />
+		<Compile Update="DATTools/DATConverter.Designer.cs" DependentUpon="DATConverter.cs" />
+		<EmbeddedResource Update="DATTools/DATConverter.resx" DependentUpon="DATConverter.cs" />
+		<Compile Update="DBMan_MainForm.cs" SubType="Form" />
+		<Compile Update="DBMan_MainForm.Designer.cs" DependentUpon="DBMan_MainForm.cs" />
+		<EmbeddedResource Update="DBMan_MainForm.resx" DependentUpon="DBMan_MainForm.cs" />
+		<Compile Update="Properties/Resources.Designer.cs" AutoGen="true" DependentUpon="Reources.resx" DesignTime="true" />
+		<EmbeddedResource Update="Properties/Resources.resx" LastGenOutput="Resources.Designer.cs" SubType="Designer" />
+		<Compile Update="Properties/Settings.Designer.cs" AutoGen="true" DependentUpon="Settings.settings" DesignTime="true" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />
 	<Import Project="../CommonResourceGen.rel.props" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
