@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<OutputPath>../output/dll</OutputPath>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<!-- This stuff was unique to this project and also not mentioned in the tutorial, so I've left them commented here. -->
 	<!--

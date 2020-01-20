@@ -2,7 +2,7 @@
 	<Import Project="../Common.abs.props" />
 	<PropertyGroup>
 		<OutputPath>../output/dll</OutputPath>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />

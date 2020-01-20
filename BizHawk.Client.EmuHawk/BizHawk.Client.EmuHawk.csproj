@@ -34,7 +34,7 @@
 		<SchemaVersion>2.0</SchemaVersion>
 		<StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
 		<TargetFrameworkProfile/>
-		<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 		<UpdateEnabled>false</UpdateEnabled>
 		<UpdateInterval>7</UpdateInterval>
 		<UpdateIntervalUnits>Days</UpdateIntervalUnits>

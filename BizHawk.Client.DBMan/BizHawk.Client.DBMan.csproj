@@ -18,7 +18,7 @@
 		<RootNamespace>BizHawk.Client.DBMan</RootNamespace>
 		<StartupObject/>
 		<TargetFrameworkProfile/>
-		<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 		<UseVSHostingProcess>false</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
