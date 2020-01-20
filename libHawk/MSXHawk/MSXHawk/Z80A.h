@@ -51,6 +51,7 @@ namespace MSXHawk
 		bool nonMaskableInterrupt;
 		bool nonMaskableInterruptPending;
 		bool jp_cond_chk;
+		bool cond_chk_fail;
 
 		uint8_t opcode;
 		uint8_t temp_R;
@@ -58,6 +59,9 @@ namespace MSXHawk
 		uint8_t interruptMode;
 		// when connected devices do not output a value on the BUS, they are responsible for determining open bus behaviour and returning it
 		uint8_t ExternalDB;
+		// since absolute pointer locations are not saved, we need to know where current pointer is looking in order to load it
+		// this combined with opcode and instr_pntr gives the current cpu execution location
+		uint8_t instr_bank;
 		uint8_t Regs[36] = {};
 
 		uint32_t PRE_SRC;		
@@ -67,20 +71,17 @@ namespace MSXHawk
 		uint32_t mem_pntr = 0;
 		uint32_t irq_pntr = 0;
 		uint32_t IRQS;
+		uint32_t Ztemp2_saver = 0;
+		uint32_t IRQS_cond_offset;
 
-		// since absolute pointer locations are not saved, we need to know where current pointer is looking in order to load it
-		// this combined with opcode and instr_pntr gives the current cpu execution location
-		uint8_t instr_bank;
+		uint64_t TotalExecutedCycles;
 		
 		uint32_t* cur_instr_ofst = nullptr;
 		uint32_t* cur_bus_ofst = nullptr;
 		uint32_t* cur_mem_ofst = nullptr;
 		uint32_t* cur_irqs_ofst = nullptr;
 		
-		uint64_t TotalExecutedCycles;
-
 		// non-state variables
-		// EXCEPTION!: Ztemp2 must be stated to restore the instruction vector
 		bool checker;
 		uint32_t Ztemp1, Ztemp2, Ztemp3, Ztemp4;
 		uint32_t Reg16_d, Reg16_s, ans, temp, carry, dest_t, src_t;
@@ -341,6 +342,90 @@ namespace MSXHawk
 		uint32_t REP_OP_O_MEMRQ[5] = { 0, 0, 0, 0, 0 };
 		uint32_t REP_OP_O_IRQS = 5;
 
+		// halt
+		uint32_t HALT_INST[4] = { IDLE,
+								WAIT,
+								OP_F,
+								OP };
+
+		uint32_t HALT_BUSRQ[4] = { PCh, 0, 0, 0 };
+		uint32_t HALT_MEMRQ[4] = { PCh, 0, 0, 0 };
+		uint32_t HALT_IRQS = 4;
+
+		// NMI
+		uint32_t NMI_INST[25] = { IDLE,
+								IDLE,
+								IDLE,
+								IDLE,
+								DEC16, SPl, SPh,
+								TR, ALU, PCl,
+								WAIT,
+								WR_DEC, SPl, SPh, PCh,
+								TR16, PCl, PCh, NMI_V, ZERO,
+								WAIT,
+								WR, SPl, SPh, ALU };
+
+		uint32_t NMI_BUSRQ[11] = { 0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0 };
+		uint32_t NMI_MEMRQ[11] = { 0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0 };
+		uint32_t NMI_IRQS = 11;
+
+		// IRQ0
+		uint32_t IRQ0_INST[10] = { IDLE,
+								IDLE,
+								IORQ,
+								WAIT,
+								IDLE,
+								WAIT,
+								RD_INC, ALU, PCl, PCh };
+
+		uint32_t IRQ0_BUSRQ[7] = { 0, 0, 0, 0, PCh, 0, 0 };
+		uint32_t IRQ0_MEMRQ[7] = { 0, 0, 0, 0, PCh, 0, 0 };
+		uint32_t IRQ0_IRQS = 7;
+
+		// IRQ1
+		uint32_t IRQ1_INST[27] = { IDLE,
+								IDLE,
+								IORQ,
+								WAIT,
+								IDLE,
+								TR, ALU, PCl,
+								DEC16, SPl, SPh,
+								IDLE,
+								WAIT,
+								WR_DEC, SPl, SPh, PCh,
+								TR16, PCl, PCh, IRQ_V, ZERO,
+								WAIT,
+								WR, SPl, SPh, ALU };
+
+		uint32_t IRQ1_BUSRQ[13] = { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
+		uint32_t IRQ1_MEMRQ[13] = { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
+		uint32_t IRQ1_IRQS = 13;
+
+		// IRQ2
+		uint32_t IRQ2_INST[37] = { IDLE,
+								IDLE,
+								IORQ,
+								WAIT,
+								FTCH_DB,
+								IDLE,
+								DEC16, SPl, SPh,
+								TR16, Z, W, DB, I,
+								WAIT,
+								WR_DEC, SPl, SPh, PCh,
+								IDLE,
+								WAIT,
+								WR, SPl, SPh, PCl,
+								IDLE,
+								WAIT,
+								RD_INC, PCl, Z, W,
+								IDLE,
+								WAIT,
+								RD, PCh, Z, W };
+
+		uint32_t IRQ2_BUSRQ[19] = { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0 };
+		uint32_t IRQ2_MEMRQ[19] = { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0 };
+		uint32_t IRQ2_IRQS = 19;
+
 		#pragma endregion
 
 		#pragma region Z80 functions
@@ -413,7 +498,7 @@ namespace MSXHawk
 			NO_prefix = true;
 		}
 
-		void FetchInstruction() 
+		inline void FetchInstruction() 
 		{
 			if (NO_prefix)
 			{
@@ -494,6 +579,7 @@ namespace MSXHawk
 		void ExecuteOne()
 		{
 			bus_pntr++; mem_pntr++;
+
 			switch (cur_instr_ofst[instr_pntr++])
 			{
 			case IDLE:
@@ -845,7 +931,7 @@ namespace MSXHawk
 				if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
 				{
 					cur_instr_ofst = &LD_OP_R_INST[0];
-					cur_instr_ofst[14] = Ztemp2;
+					cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
 					cur_bus_ofst = &LD_OP_R_BUSRQ[0];
 					cur_mem_ofst = &LD_OP_R_MEMRQ[0];
 					cur_irqs_ofst = &LD_OP_R_IRQS;
@@ -871,7 +957,7 @@ namespace MSXHawk
 				if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZget())
 				{
 					cur_instr_ofst = &LD_CP_R_INST[0];
-					cur_instr_ofst[14] = Ztemp2;
+					cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
 					cur_bus_ofst = &LD_CP_R_BUSRQ[0];
 					cur_mem_ofst = &LD_CP_R_MEMRQ[0];
 					cur_irqs_ofst = &LD_CP_R_IRQS;
@@ -945,7 +1031,7 @@ namespace MSXHawk
 				if ((Regs[B] != 0) && (Ztemp3 > 0))
 				{
 					cur_instr_ofst = &REP_OP_I_INST[0];
-					cur_instr_ofst[8] = Ztemp2;
+					cur_instr_ofst[8] = Ztemp2; Ztemp2_saver = Ztemp2;
 					cur_bus_ofst = &REP_OP_I_BUSRQ[0];
 					cur_mem_ofst = &REP_OP_I_MEMRQ[0];
 					cur_irqs_ofst = &REP_OP_I_IRQS;
@@ -1086,22 +1172,28 @@ namespace MSXHawk
 				}
 				else
 				{
+					cond_chk_fail = true;
 					switch (cur_instr_ofst[instr_pntr++])
 					{
 					case 0: // DJNZ
 						cur_irqs_ofst = &False_IRQS[0];
+						IRQS_cond_offset = 0;
 						break;
 					case 1: // JR COND
 						cur_irqs_ofst = &False_IRQS[1];
+						IRQS_cond_offset = 1;
 						break;
 					case 2: // JP COND
 						cur_irqs_ofst = &False_IRQS[2];
+						IRQS_cond_offset = 2;
 						break;
 					case 3: // RET COND
 						cur_irqs_ofst = &False_IRQS[3];
+						IRQS_cond_offset = 3;
 						break;
 					case 4: // CALL
 						cur_irqs_ofst = &False_IRQS[4];
+						IRQS_cond_offset = 4;
 						break;
 					}
 				}
@@ -1116,6 +1208,8 @@ namespace MSXHawk
 			}
 			else if (++irq_pntr == cur_irqs_ofst[0])
 			{
+				cond_chk_fail = false;
+				
 				if (EI_pending > 0)
 				{
 					EI_pending--;
@@ -1177,15 +1271,12 @@ namespace MSXHawk
 				// otherwise start a new normal access
 				else if (!halted)
 				{
-					PopulateCURINSTR
-					(IDLE,
-						WAIT,
-						OP_F,
-						OP);
+					cur_instr_ofst = &HALT_INST[0];
+					cur_bus_ofst = &HALT_BUSRQ[0];
+					cur_mem_ofst = &HALT_MEMRQ[0];
+					cur_irqs_ofst = &HALT_IRQS;
 
-					PopulateBUSRQ(PCh, 0, 0, 0);
-					PopulateMEMRQ(PCh, 0, 0, 0);
-					IRQS = 4;
+					instr_bank = 11;
 
 					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 				}
@@ -1285,21 +1376,12 @@ namespace MSXHawk
 		#pragma region Interrupts
 		void NMI_()
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							DEC16, SPl, SPh,
-							TR, ALU, PCl,
-							WAIT,
-							WR_DEC, SPl, SPh, PCh,
-							TR16, PCl, PCh, NMI_V, ZERO,
-							WAIT,
-							WR, SPl, SPh, ALU);
+			cur_instr_ofst = &NMI_INST[0];
+			cur_bus_ofst = &NMI_BUSRQ[0];
+			cur_mem_ofst = &NMI_MEMRQ[0];
+			cur_irqs_ofst = &NMI_IRQS;
 
-			PopulateBUSRQ(0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0);
-			PopulateMEMRQ(0, 0, 0, 0, 0, SPh, 0, 0, SPh, 0, 0);
-			IRQS = 11;
+			instr_bank = 12;
 		}
 
 		// Mode 0 interrupts only take effect if a CALL or RST is on the data bus
@@ -1309,67 +1391,34 @@ namespace MSXHawk
 		//NOTE: TODO: When a CALL is present on the data bus, adjust WZ accordingly 
 		void INTERRUPT_0(uint32_t src)
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IORQ,
-							WAIT,
-							IDLE,
-							WAIT,
-							RD_INC, ALU, PCl, PCh);
+			cur_instr_ofst = &IRQ0_INST[0];
+			cur_bus_ofst = &IRQ0_BUSRQ[0];
+			cur_mem_ofst = &IRQ0_MEMRQ[0];
+			cur_irqs_ofst = &IRQ0_IRQS;
 
-			PopulateBUSRQ(0, 0, 0, 0, PCh, 0, 0);
-			PopulateMEMRQ(0, 0, 0, 0, PCh, 0, 0);
-			IRQS = 7;
+			instr_bank = 13;
 		}
 
 		// Just jump to $0038
 		void INTERRUPT_1()
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IORQ,
-							WAIT,
-							IDLE,
-							TR, ALU, PCl,
-							DEC16, SPl, SPh,
-							IDLE,
-							WAIT,
-							WR_DEC, SPl, SPh, PCh,
-							TR16, PCl, PCh, IRQ_V, ZERO,
-							WAIT,
-							WR, SPl, SPh, ALU);
+			cur_instr_ofst = &IRQ1_INST[0];
+			cur_bus_ofst = &IRQ1_BUSRQ[0];
+			cur_mem_ofst = &IRQ1_MEMRQ[0];
+			cur_irqs_ofst = &IRQ1_IRQS;
 
-			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
-			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0);
-			IRQS = 13;
+			instr_bank = 14;
 		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
 		void INTERRUPT_2()
 		{
-			PopulateCURINSTR(IDLE,
-							IDLE,
-							IORQ,
-							WAIT,
-							FTCH_DB,
-							IDLE,
-							DEC16, SPl, SPh,
-							TR16, Z, W, DB, I,
-							WAIT,
-							WR_DEC, SPl, SPh, PCh,
-							IDLE,
-							WAIT,
-							WR, SPl, SPh, PCl,
-							IDLE,
-							WAIT,
-							RD_INC, PCl, Z, W,
-							IDLE,
-							WAIT,
-							RD, PCh, Z, W);
+			cur_instr_ofst = &IRQ2_INST[0];
+			cur_bus_ofst = &IRQ2_BUSRQ[0];
+			cur_mem_ofst = &IRQ2_MEMRQ[0];
+			cur_irqs_ofst = &IRQ2_IRQS;
 
-			PopulateBUSRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
-			PopulateMEMRQ(0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0);
-			IRQS = 19;
+			instr_bank = 15;
 		}
 
 		void ResetInterrupts()
@@ -2641,12 +2690,12 @@ namespace MSXHawk
 					case 0xFF: RST_(0x38);								break; // RST 0x38
 				}
 
-				std::memcpy(&NoIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&NoIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&NoIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&NoIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&NoIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&NoIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				NoIndexIRQS[i] = IRQS;
 
-				switch (opcode)
+				switch (i)
 				{
 					case 0x00: INT_OP(RLC, B);							break; // RLC B
 					case 0x01: INT_OP(RLC, C);							break; // RLC C
@@ -2906,12 +2955,12 @@ namespace MSXHawk
 					case 0xFF: BIT_OP(SET, 7, A);						break; // SET 7, A
 				}
 
-				std::memcpy(&CBIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&CBIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&CBIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&CBIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&CBIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&CBIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				CBIndexIRQS[i] = IRQS;
 
-				switch (opcode)
+				switch (i)
 				{
 					case 0x40: IN_REG_(B, C);							break; // IN B, (C)
 					case 0x41: OUT_REG_(C, B);							break; // OUT (C), B
@@ -2997,12 +3046,12 @@ namespace MSXHawk
 
 				}
 
-				std::memcpy(&EXTIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&EXTIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&EXTIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&EXTIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&EXTIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&EXTIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				EXTIndexIRQS[i] = IRQS;
 
-				switch (opcode)
+				switch (i)
 				{
 					case 0x00: NOP_();									break; // NOP
 					case 0x01: LD_IND_16(C, B, PCl, PCh);				break; // LD BC, nn
@@ -3262,12 +3311,12 @@ namespace MSXHawk
 					case 0xFF: RST_(0x38);								break; // RST $38
 				}
 
-				std::memcpy(&IXIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&IXIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&IXIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&IXIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&IXIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&IXIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				IXIndexIRQS[i] = IRQS;
 				
-				switch (opcode)
+				switch (i)
 				{
 					case 0x00: NOP_();									break; // NOP
 					case 0x01: LD_IND_16(C, B, PCl, PCh);				break; // LD BC, nn
@@ -3527,12 +3576,12 @@ namespace MSXHawk
 					case 0xFF: RST_(0x38);								break; // RST $38
 				}
 
-				std::memcpy(&IYIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&IYIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&IYIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&IYIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&IYIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&IYIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				IYIndexIRQS[i] = IRQS;
 
-				switch (opcode)
+				switch (i)
 				{
 					case 0x00: I_INT_OP(RLC, B);						break; // RLC (I* + n) -> B
 					case 0x01: I_INT_OP(RLC, C);						break; // RLC (I* + n) -> C
@@ -3792,9 +3841,9 @@ namespace MSXHawk
 					case 0xFF: I_BIT_OP(SET, 7, A);						break; // SET 7, (I* + n) -> A
 				}
 
-				std::memcpy(&IXYCBIndex[i * 38], &cur_instr, 38);
-				std::memcpy(&IXYCBIndexBUSRQ[i * 19], &BUSRQ, 19);
-				std::memcpy(&IXYCBIndexMEMRQ[i * 19], &MEMRQ, 19);
+				std::memcpy(&IXYCBIndex[i * 38], &cur_instr, sizeof(uint32_t) * 38);
+				std::memcpy(&IXYCBIndexBUSRQ[i * 19], &BUSRQ, sizeof(uint32_t) * 19);
+				std::memcpy(&IXYCBIndexMEMRQ[i * 19], &MEMRQ, sizeof(uint32_t) * 19);
 				IXYCBIndexIRQS[i] = IRQS;
 			}
 		}
@@ -5340,12 +5389,15 @@ namespace MSXHawk
 			*saver = (uint8_t)(IFF2 ? 1 : 0); saver++;
 			*saver = (uint8_t)(nonMaskableInterrupt ? 1 : 0); saver++;
 			*saver = (uint8_t)(nonMaskableInterruptPending ? 1 : 0); saver++;
+			*saver = (uint8_t)(jp_cond_chk ? 1 : 0); saver++;
+			*saver = (uint8_t)(cond_chk_fail ? 1 : 0); saver++;
 
 			*saver = opcode; saver++;
 			*saver = temp_R; saver++;
 			*saver = EI_pending; saver++;
 			*saver = interruptMode; saver++;
 			*saver = ExternalDB; saver++;
+			*saver = instr_bank; saver++;
 
 			for (int i = 0; i < 36; i++) { *saver = Regs[i]; saver++; }
 
@@ -5367,23 +5419,11 @@ namespace MSXHawk
 			*saver = (uint8_t)(IRQS & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((IRQS >> 16) & 0xFF); saver++; *saver = (uint8_t)((IRQS >> 24) & 0xFF); saver++;
 
-			for (int i = 0; i < 38; i++) 
-			{ 
-				*saver = (uint8_t)(cur_instr[i] & 0xFF); saver++; *saver = (uint8_t)((cur_instr[i] >> 8) & 0xFF); saver++;
-				*saver = (uint8_t)((cur_instr[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((cur_instr[i] >> 24) & 0xFF); saver++;
-			}
+			*saver = (uint8_t)(Ztemp2_saver & 0xFF); saver++; *saver = (uint8_t)((Ztemp2_saver >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((Ztemp2_saver >> 16) & 0xFF); saver++; *saver = (uint8_t)((Ztemp2_saver >> 24) & 0xFF); saver++;
 
-			for (int i = 0; i < 19; i++)
-			{
-				*saver = (uint8_t)(BUSRQ[i] & 0xFF); saver++; *saver = (uint8_t)((BUSRQ[i] >> 8) & 0xFF); saver++;
-				*saver = (uint8_t)((BUSRQ[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((BUSRQ[i] >> 24) & 0xFF); saver++;
-			}
-
-			for (int i = 0; i < 19; i++)
-			{
-				*saver = (uint8_t)(MEMRQ[i] & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 8) & 0xFF); saver++;
-				*saver = (uint8_t)((MEMRQ[i] >> 16) & 0xFF); saver++; *saver = (uint8_t)((MEMRQ[i] >> 24) & 0xFF); saver++;
-			}
+			*saver = (uint8_t)(IRQS_cond_offset & 0xFF); saver++; *saver = (uint8_t)((IRQS_cond_offset >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((IRQS_cond_offset >> 16) & 0xFF); saver++; *saver = (uint8_t)((IRQS_cond_offset >> 24) & 0xFF); saver++;
 
 			*saver = (uint8_t)(TotalExecutedCycles & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((TotalExecutedCycles >> 16) & 0xFF); saver++; *saver = (uint8_t)((TotalExecutedCycles >> 24) & 0xFF); saver++;
@@ -5410,12 +5450,15 @@ namespace MSXHawk
 			IFF2 = *loader == 1; loader++;
 			nonMaskableInterrupt = *loader == 1; loader++;
 			nonMaskableInterruptPending = *loader == 1; loader++;
+			jp_cond_chk = *loader == 1; loader++;
+			cond_chk_fail = *loader == 1; loader++;
 
 			opcode = *loader; loader++;
 			temp_R = *loader; loader++;
 			EI_pending = *loader; loader++;
 			interruptMode = *loader; loader++;
 			ExternalDB = *loader; loader++;
+			instr_bank = *loader; loader++;
 
 			for (int i = 0; i < 36; i++) { Regs[i] = *loader; loader++; }
 
@@ -5437,22 +5480,132 @@ namespace MSXHawk
 			IRQS = *loader; loader++; IRQS |= (*loader << 8); loader++;
 			IRQS |= (*loader << 16); loader++; IRQS |= (*loader << 24); loader++;
 
-			for (int i = 0; i < 38; i++)
+			Ztemp2_saver = *loader; loader++; Ztemp2_saver |= (*loader << 8); loader++;
+			Ztemp2_saver |= (*loader << 16); loader++; Ztemp2_saver |= (*loader << 24); loader++;
+
+			IRQS_cond_offset = *loader; loader++; IRQS_cond_offset |= (*loader << 8); loader++;
+			IRQS_cond_offset |= (*loader << 16); loader++; IRQS_cond_offset |= (*loader << 24); loader++;
+
+			// load instruction pointers based on state
+			if (instr_bank == 0) 
 			{
-				cur_instr[i] = *loader; loader++; cur_instr[i] |= (*loader << 8); loader++;
-				cur_instr[i] |= (*loader << 16); loader++; cur_instr[i] |= (*loader << 24); loader++;
+				cur_instr_ofst = &NoIndex[opcode * 38];
+				cur_bus_ofst = &NoIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &NoIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &NoIndexIRQS[opcode];
+			}
+			else if (instr_bank == 1) 
+			{
+				cur_instr_ofst = &CBIndex[opcode * 38];
+				cur_bus_ofst = &CBIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &CBIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &CBIndexIRQS[opcode];
+			}
+			else if (instr_bank == 2)
+			{
+				cur_instr_ofst = &EXTIndex[opcode * 38];
+				cur_bus_ofst = &EXTIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &EXTIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &EXTIndexIRQS[opcode];
+			}
+			else if (instr_bank == 3)
+			{
+				cur_instr_ofst = &IXIndex[opcode * 38];
+				cur_bus_ofst = &IXIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &IXIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &IXIndexIRQS[opcode];
+			}
+			else if (instr_bank == 4)
+			{
+				cur_instr_ofst = &IYIndex[opcode * 38];
+				cur_bus_ofst = &IYIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &IYIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &IYIndexIRQS[opcode];
+			}
+			else if (instr_bank == 5)
+			{
+				cur_instr_ofst = &IXYCBIndex[opcode * 38];
+				cur_bus_ofst = &IXYCBIndexBUSRQ[opcode * 19];
+				cur_mem_ofst = &IXYCBIndexMEMRQ[opcode * 19];
+				cur_irqs_ofst = &IXYCBIndexIRQS[opcode];
+			}
+			else if (instr_bank == 6)
+			{
+				cur_instr_ofst = &Reset_CPU[0];
+				cur_bus_ofst = &Reset_BUSRQ[0];
+				cur_mem_ofst = &Reset_MEMRQ[0];
+				cur_irqs_ofst = &Reset_IRQS;
+			}
+			else if (instr_bank == 7)
+			{
+				cur_instr_ofst = &LD_OP_R_INST[0];
+				cur_instr_ofst[14] = Ztemp2_saver;
+				cur_bus_ofst = &LD_OP_R_BUSRQ[0];
+				cur_mem_ofst = &LD_OP_R_MEMRQ[0];
+				cur_irqs_ofst = &LD_OP_R_IRQS;
+			}
+			else if (instr_bank == 8)
+			{
+				cur_instr_ofst = &LD_CP_R_INST[0];
+				cur_instr_ofst[14] = Ztemp2_saver;
+				cur_bus_ofst = &LD_CP_R_BUSRQ[0];
+				cur_mem_ofst = &LD_CP_R_MEMRQ[0];
+				cur_irqs_ofst = &LD_CP_R_IRQS;
+			}
+			else if (instr_bank == 9)
+			{
+				cur_instr_ofst = &REP_OP_I_INST[0];
+				cur_instr_ofst[8] = Ztemp2_saver;
+				cur_bus_ofst = &REP_OP_I_BUSRQ[0];
+				cur_mem_ofst = &REP_OP_I_MEMRQ[0];
+				cur_irqs_ofst = &REP_OP_I_IRQS;
+			}
+			else if (instr_bank == 10)
+			{
+				cur_instr_ofst = &REP_OP_O_INST[0];
+				cur_bus_ofst = &REP_OP_O_BUSRQ[0];
+				cur_mem_ofst = &REP_OP_O_MEMRQ[0];
+				cur_irqs_ofst = &REP_OP_O_IRQS;
+			}
+			else if (instr_bank == 11)
+			{
+				cur_instr_ofst = &HALT_INST[0];
+				cur_bus_ofst = &HALT_BUSRQ[0];
+				cur_mem_ofst = &HALT_MEMRQ[0];
+				cur_irqs_ofst = &HALT_IRQS;
+			}
+			else if (instr_bank == 12)
+			{
+				cur_instr_ofst = &NMI_INST[0];
+				cur_bus_ofst = &NMI_BUSRQ[0];
+				cur_mem_ofst = &NMI_MEMRQ[0];
+				cur_irqs_ofst = &NMI_IRQS;
+			}
+			else if (instr_bank == 13)
+			{
+				cur_instr_ofst = &IRQ0_INST[0];
+				cur_bus_ofst = &IRQ0_BUSRQ[0];
+				cur_mem_ofst = &IRQ0_MEMRQ[0];
+				cur_irqs_ofst = &IRQ0_IRQS;
+			}
+			else if (instr_bank == 14)
+			{
+				cur_instr_ofst = &IRQ1_INST[0];
+				cur_bus_ofst = &IRQ1_BUSRQ[0];
+				cur_mem_ofst = &IRQ1_MEMRQ[0];
+				cur_irqs_ofst = &IRQ1_IRQS;
+			}
+			else if (instr_bank == 15)
+			{
+				cur_instr_ofst = &IRQ2_INST[0];
+				cur_bus_ofst = &IRQ2_BUSRQ[0];
+				cur_mem_ofst = &IRQ2_MEMRQ[0];
+				cur_irqs_ofst = &IRQ2_IRQS;
 			}
 
-			for (int i = 0; i < 19; i++)
+			if (cond_chk_fail) 
 			{
-				BUSRQ[i] = *loader; loader++; BUSRQ[i] |= (*loader << 8); loader++;
-				BUSRQ[i] |= (*loader << 16); loader++; BUSRQ[i] |= (*loader << 24); loader++;
-			}
-
-			for (int i = 0; i < 19; i++)
-			{
-				MEMRQ[i] = *loader; loader++; MEMRQ[i] |= (*loader << 8); loader++;
-				MEMRQ[i] |= (*loader << 16); loader++; MEMRQ[i] |= (*loader << 24); loader++;
+				cur_irqs_ofst = &False_IRQS[IRQS_cond_offset];
 			}
 
 			TotalExecutedCycles = *loader; loader++; TotalExecutedCycles |= ((uint64_t)*loader << 8); loader++;
