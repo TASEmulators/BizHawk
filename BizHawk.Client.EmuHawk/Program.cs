@@ -42,8 +42,7 @@ namespace BizHawk.Client.EmuHawk
 				OSTC.LinkedLibManager.FreeByPtr(p.Value);
 			}
 			CheckLib("vcruntime140.dll", "Microsoft's Universal CRT (MSVC 14.0+ / VS 2015+)");
-			CheckLib("msvcr120.dll", "Microsoft's Visual C++ Runtime 12.0 (VS 2013)"); // for Mupen64Plus
-			CheckLib("msvcr100.dll", "Microsoft's Visual C++ Runtime 10.0 (VS 2010)"); // for BSNES and Mupen64Plus
+			CheckLib("msvcr100.dll", "Microsoft's Visual C++ Runtime 10.0 (VS 2010)"); // for Mupen64Plus, and some others
 
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			var dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
