@@ -312,14 +312,6 @@ namespace BizHawk.Client.Common
 		public PreviousType RamWatchDefinePrevious = PreviousType.LastFrame;
 		public bool DisplayRamWatch = false;
 
-		// Hex Editor Colors
-		public Color HexBackgrndColor = SystemColors.Control;
-		public Color HexForegrndColor = SystemColors.ControlText;
-		public Color HexMenubarColor = SystemColors.Control;
-		public Color HexFreezeColor = Color.LightBlue;
-		public Color HexHighlightColor = Color.Pink;
-		public Color HexHighlightFreezeColor = Color.Violet;
-
 		// Video dumping settings
 		public string VideoWriter = "";
 		public int JMDCompression = 3;
@@ -344,8 +336,7 @@ namespace BizHawk.Client.Common
 
 		public object GetCoreSettings(Type t)
 		{
-			object ret;
-			CoreSettings.TryGetValue(t.ToString(), out ret);
+			CoreSettings.TryGetValue(t.ToString(), out var ret);
 			return ret;
 		}
 

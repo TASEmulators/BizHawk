@@ -91,6 +91,27 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private RecentFiles RecentTables { get; set; }
 
+		internal class ColorConfig
+		{
+			public Color Background { get; set; } = SystemColors.Control;
+			public Color Foreground { get; set; } = SystemColors.ControlText;
+			public Color MenuBar { get; set; } = SystemColors.Control;
+			public Color Freeze { get; set;  }= Color.LightBlue;
+			public Color Highlight { get; set; } = Color.Pink;
+			public Color HighlightFreeze { get; set; } = Color.Violet;
+		}
+
+		[ConfigPersist]
+		internal ColorConfig Colors { get; set; } = new ColorConfig();
+
+		private WatchSize WatchSize => (WatchSize)DataSize;
+
+		private readonly Pen _blackPen = new Pen(Color.Black);
+		private SolidBrush _freezeBrush;
+		private SolidBrush _freezeHighlightBrush;
+		private SolidBrush _highlightBrush;
+		private SolidBrush _secondaryHighlightBrush;
+
 		public HexEditor()
 		{
 			_hexFind = new HexFind(this);
@@ -116,7 +137,25 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Font = font;
 		}
 
-		private WatchSize WatchSize => (WatchSize)DataSize;
+		private void HexEditor_Load(object sender, EventArgs e)
+		{
+			LoadConfigSettings();
+			DataSize = _domain.WordSize;
+			SetDataSize(DataSize);
+
+			if (!string.IsNullOrWhiteSpace(LastDomain)
+				&& MemoryDomains.Any(m => m.Name == LastDomain))
+			{
+				SetMemoryDomain(LastDomain);
+			}
+
+			if (RecentTables.AutoLoad)
+			{
+				LoadFileFromRecent(RecentTables[0]);
+			}
+
+			FullUpdate();
+		}
 
 		#region API
 
@@ -439,33 +478,18 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		private void HexEditor_Load(object sender, EventArgs e)
-		{
-			LoadConfigSettings();
-			DataSize = _domain.WordSize;
-			SetDataSize(DataSize);
-
-			if (!string.IsNullOrWhiteSpace(LastDomain)
-				&& MemoryDomains.Any(m => m.Name == LastDomain))
-			{
-				SetMemoryDomain(LastDomain);
-			}
-
-			if (RecentTables.AutoLoad)
-			{
-				LoadFileFromRecent(RecentTables[0]);
-			}
-
-			FullUpdate();
-		}
-
 		private void LoadConfigSettings()
 		{
-			HexMenuStrip.BackColor = Config.HexMenubarColor;
-			MemoryViewerBox.BackColor = Config.HexBackgrndColor;
-			MemoryViewerBox.ForeColor = Config.HexForegrndColor;
-			Header.BackColor = Config.HexBackgrndColor;
-			Header.ForeColor = Config.HexForegrndColor;
+			HexMenuStrip.BackColor = Colors.MenuBar;
+			MemoryViewerBox.BackColor = Colors.Background;
+			MemoryViewerBox.ForeColor = Colors.Foreground;
+			Header.BackColor = Colors.Background;
+			Header.ForeColor = Colors.Foreground;
+
+			_freezeBrush = new SolidBrush(Colors.Freeze);
+			_freezeHighlightBrush = new SolidBrush(Colors.HighlightFreeze);
+			_highlightBrush = new SolidBrush(Colors.Highlight);
+			_secondaryHighlightBrush = new SolidBrush(Color.FromArgb(0x44, Colors.Highlight));
 		}
 
 		private void CloseHexFind()
@@ -1670,7 +1694,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetColorsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new HexColorsForm(this, Config);
+			using var form = new HexColorsForm(this);
 			form.ShowHawkDialog();
 		}
 
@@ -1681,12 +1705,7 @@ namespace BizHawk.Client.EmuHawk
 			HexMenuStrip.BackColor = Color.FromName("Control");
 			Header.BackColor = Color.FromName("Control");
 			Header.ForeColor = Color.FromName("ControlText");
-			Config.HexMenubarColor = Color.FromName("Control");
-			Config.HexForegrndColor = Color.FromName("ControlText");
-			Config.HexBackgrndColor = Color.FromName("Control");
-			Config.HexFreezeColor = Color.LightBlue;
-			Config.HexHighlightColor = Color.Pink;
-			Config.HexHighlightFreezeColor = Color.Violet;
+			Colors = new ColorConfig();
 		}
 
 		#endregion
@@ -2060,12 +2079,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly Pen _blackPen = new Pen(Color.Black);
-		private readonly SolidBrush _freezeBrush = new SolidBrush(Global.Config.HexFreezeColor);
-		private readonly SolidBrush _freezeHighlightBrush = new SolidBrush(Global.Config.HexHighlightFreezeColor);
-		private readonly SolidBrush _highlightBrush = new SolidBrush(Global.Config.HexHighlightColor);
-		private readonly SolidBrush _secondaryHighlightBrush = new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor));
-
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			var activeCheats = Global.CheatList.Where(x => x.Enabled);
@@ -2088,7 +2101,7 @@ namespace BizHawk.Client.EmuHawk
 
 						var rect = new Rectangle(GetAddressCoordinates(cheat.Address ?? 0), new Size(width, _fontHeight));
 						e.Graphics.DrawRectangle(_blackPen, rect);
-						_freezeBrush.Color = Config.HexFreezeColor;
+						_freezeBrush.Color = Colors.Freeze;
 						e.Graphics.FillRectangle(_freezeBrush, rect);
 					}
 				}
@@ -2110,13 +2123,13 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.CheatList.IsActive(_domain, addressHighlighted))
 				{
-					_freezeHighlightBrush.Color = Config.HexHighlightFreezeColor;
+					_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 					e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
 					e.Graphics.FillRectangle(_freezeHighlightBrush, textRect);
 				}
 				else
 				{
-					_highlightBrush.Color = Config.HexHighlightColor;
+					_highlightBrush.Color = Colors.Highlight;
 					e.Graphics.FillRectangle(_highlightBrush, rect);
 					e.Graphics.FillRectangle(_highlightBrush, textRect);
 				}
@@ -2137,13 +2150,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.CheatList.IsActive(_domain, address))
 					{
-						_freezeHighlightBrush.Color = Config.HexHighlightFreezeColor;
+						_freezeHighlightBrush.Color = Colors.HighlightFreeze;
 						e.Graphics.FillRectangle(_freezeHighlightBrush, rect);
 						e.Graphics.FillRectangle(_freezeHighlightBrush, textRect);
 					}
 					else
 					{
-						_secondaryHighlightBrush.Color = Color.FromArgb(0x44, Config.HexHighlightColor);
+						_secondaryHighlightBrush.Color = Color.FromArgb(0x44, Colors.Highlight);
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, rect);
 						e.Graphics.FillRectangle(_secondaryHighlightBrush, textRect);
 					}

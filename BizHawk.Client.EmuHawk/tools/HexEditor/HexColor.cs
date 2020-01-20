@@ -9,32 +9,30 @@ namespace BizHawk.Client.EmuHawk
 	public partial class HexColorsForm : Form
 	{
 		private readonly HexEditor _hexEditor;
-		private readonly Config _config;
 
-		public HexColorsForm(HexEditor hexEditor, Config config)
+		public HexColorsForm(HexEditor hexEditor)
 		{
 			_hexEditor = hexEditor;
-			_config = config;
 			InitializeComponent();
 		}
 
 		private void HexColors_Form_Load(object sender, EventArgs e)
 		{
-			HexBackgrnd.BackColor = _config.HexBackgrndColor;
-			HexForegrnd.BackColor = _config.HexForegrndColor;
-			HexMenubar.BackColor = _config.HexMenubarColor;
-			HexFreeze.BackColor = _config.HexFreezeColor;
-			HexFreezeHL.BackColor = _config.HexHighlightFreezeColor;
-			HexHighlight.BackColor = _config.HexHighlightColor;
+			HexBackgrnd.BackColor = _hexEditor.Colors.Background;
+			HexForegrnd.BackColor = _hexEditor.Colors.Foreground;
+			HexMenubar.BackColor = _hexEditor.Colors.MenuBar;
+			HexFreeze.BackColor = _hexEditor.Colors.Freeze;
+			HexFreezeHL.BackColor = _hexEditor.Colors.HighlightFreeze;
+			HexHighlight.BackColor = _hexEditor.Colors.Highlight;
 		}
 
 		private void HexBackground_Click(object sender, MouseEventArgs e)
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
-				_config.HexBackgrndColor = colorDialog1.Color;
+				_hexEditor.Colors.Background = colorDialog1.Color;
 				_hexEditor.Header.BackColor = colorDialog1.Color;
-				_hexEditor.MemoryViewerBox.BackColor = _config.HexBackgrndColor;
+				_hexEditor.MemoryViewerBox.BackColor = _hexEditor.Colors.Background;
 				HexBackgrnd.BackColor = colorDialog1.Color;
 			}
 		}
@@ -43,9 +41,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
-				_config.HexForegrndColor = colorDialog1.Color;
+				_hexEditor.Colors.Foreground = colorDialog1.Color;
 				_hexEditor.Header.ForeColor = colorDialog1.Color;
-				_hexEditor.MemoryViewerBox.ForeColor = _config.HexForegrndColor;
+				_hexEditor.MemoryViewerBox.ForeColor = _hexEditor.Colors.Foreground;
 				HexForegrnd.BackColor = colorDialog1.Color;
 			}
 		}
@@ -54,8 +52,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (colorDialog1.ShowDialog() == DialogResult.OK)
 			{
-				_config.HexMenubarColor = colorDialog1.Color;
-				_hexEditor.HexMenuStrip.BackColor = _config.HexMenubarColor;
+				_hexEditor.Colors.MenuBar = colorDialog1.Color;
+				_hexEditor.HexMenuStrip.BackColor = _hexEditor.Colors.MenuBar;
 				HexMenubar.BackColor = colorDialog1.Color;
 			}
 		}
@@ -64,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (colorDialog1.ShowDialog().IsOk())
 			{
-				_config.HexHighlightColor = colorDialog1.Color;
+				_hexEditor.Colors.Highlight = colorDialog1.Color;
 				HexHighlight.BackColor = colorDialog1.Color;
 			}
 		}
@@ -73,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (colorDialog1.ShowDialog().IsOk())
 			{
-				_config.HexFreezeColor = colorDialog1.Color;
+				_hexEditor.Colors.Freeze = colorDialog1.Color;
 				HexFreeze.BackColor = colorDialog1.Color;
 			}
 		}
@@ -82,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (colorDialog1.ShowDialog().IsOk())
 			{
-				_config.HexHighlightFreezeColor = colorDialog1.Color;
+				_hexEditor.Colors.HighlightFreeze = colorDialog1.Color;
 				HexFreezeHL.BackColor = colorDialog1.Color;
 			}
 		}
