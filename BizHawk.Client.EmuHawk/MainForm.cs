@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -509,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 					proc.Start();
 					return proc.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries)[2];
 				}
-				var winVer = float.Parse(GetRegValue("CurrentVersion"));
+				var winVer = float.Parse(GetRegValue("CurrentVersion"), NumberFormatInfo.InvariantInfo);
 				if (winVer < 6.3f)
 				{
 					// less than is just easier than equals
