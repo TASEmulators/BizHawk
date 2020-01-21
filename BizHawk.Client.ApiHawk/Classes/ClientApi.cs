@@ -9,7 +9,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Client.ApiHawk.Classes.Events;
 using System.IO;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Common;
