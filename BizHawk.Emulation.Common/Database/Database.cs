@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {

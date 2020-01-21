@@ -49,15 +49,9 @@
 		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.Client.Common/BizHawk.Client.Common.csproj"
-			Name="BizHawk.Client.Common"
-			Project="{24a0aa3c-b25f-4197-b23d-476d6462dba0}" />
 		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj"
 			Name="BizHawk.Common"
 			Project="{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}" />
-		<ProjectReference Include="../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj"
-			Name="BizHawk.Emulation.Common"
-			Project="{e1a23168-b571-411c-b360-2229e7225e0e}" />
 		<ProjectReference Include="../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj"
 			Name="BizHawk.Emulation.DiscSystem"
 			Project="{f51946ea-827f-4d82-b841-1f2f6d060312}" />

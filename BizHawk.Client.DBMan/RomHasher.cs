@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BizHawk.Emulation.Common;
+
+using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DBMan
