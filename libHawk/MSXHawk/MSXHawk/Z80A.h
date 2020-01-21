@@ -343,14 +343,14 @@ namespace MSXHawk
 		uint32_t REP_OP_O_IRQS = 5;
 
 		// halt
-		uint32_t HALT_INST[4] = { IDLE,
-								WAIT,
-								OP_F,
-								OP };
+		uint32_t NO_HALT_INST[4] = { IDLE,
+									WAIT,
+									OP_F,
+									OP };
 
-		uint32_t HALT_BUSRQ[4] = { PCh, 0, 0, 0 };
-		uint32_t HALT_MEMRQ[4] = { PCh, 0, 0, 0 };
-		uint32_t HALT_IRQS = 4;
+		uint32_t NO_HALT_BUSRQ[4] = { PCh, 0, 0, 0 };
+		uint32_t NO_HALT_MEMRQ[4] = { PCh, 0, 0, 0 };
+		uint32_t NO_HALT_IRQS = 4;
 
 		// NMI
 		uint32_t NMI_INST[25] = { IDLE,
@@ -596,10 +596,10 @@ namespace MSXHawk
 				if (TraceCallback) { TraceCallback(0); }
 
 				bank_num = bank_offset = RegPCget();
+				RegPCset(bank_num + 1);
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
 				opcode = MemoryMap[bank_num][bank_offset];
-				RegPCset(RegPCget() + 1);
 				FetchInstruction();
 
 				temp_R = (Regs[R] & 0x7F);
@@ -859,11 +859,12 @@ namespace MSXHawk
 				}
 
 				bank_num = bank_offset = RegPCget();
+				RegPCset(bank_num + 1);
 				bank_offset &= low_mask;
 				bank_num = (bank_num >> bank_shift)& high_mask;
-				opcode = MemoryMap[bank_num][bank_offset];
-				RegPCset(RegPCget() + 1);
+				opcode = MemoryMap[bank_num][bank_offset];			
 				FetchInstruction();
+
 				instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
 				I_skip = true;
 				break;
@@ -1255,10 +1256,10 @@ namespace MSXHawk
 				// otherwise start a new normal access
 				else if (!halted)
 				{
-					cur_instr_ofst = &HALT_INST[0];
-					cur_bus_ofst = &HALT_BUSRQ[0];
-					cur_mem_ofst = &HALT_MEMRQ[0];
-					cur_irqs_ofst = &HALT_IRQS;
+					cur_instr_ofst = &NO_HALT_INST[0];
+					cur_bus_ofst = &NO_HALT_BUSRQ[0];
+					cur_mem_ofst = &NO_HALT_MEMRQ[0];
+					cur_irqs_ofst = &NO_HALT_IRQS;
 
 					instr_bank = 11;
 
@@ -5530,10 +5531,10 @@ namespace MSXHawk
 			}
 			else if (instr_bank == 11)
 			{
-				cur_instr_ofst = &HALT_INST[0];
-				cur_bus_ofst = &HALT_BUSRQ[0];
-				cur_mem_ofst = &HALT_MEMRQ[0];
-				cur_irqs_ofst = &HALT_IRQS;
+				cur_instr_ofst = &NO_HALT_INST[0];
+				cur_bus_ofst = &NO_HALT_BUSRQ[0];
+				cur_mem_ofst = &NO_HALT_MEMRQ[0];
+				cur_irqs_ofst = &NO_HALT_IRQS;
 			}
 			else if (instr_bank == 12)
 			{
