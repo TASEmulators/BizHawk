@@ -10,6 +10,9 @@
 		<Reference Include="System.Windows.Forms" />
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="All" />
+		<Reference Include="SlimDX"
+			HintPath="../../References/x64/SlimDX.dll"
+			Private="true" />
 		<ProjectReference Include="../../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
@@ -19,6 +22,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="GLControlWrapper_GdiPlus.cs" SubType="Component" />
+		<Compile Update="GLControlWrapper_SlimDX9.cs" SubType="Component" />
 		<Compile Update="GraphicsControl.cs" SubType="UserControl" />
 		<Compile Update="GraphicsControl_TK.cs" SubType="UserControl" />
 		<Compile Update="IGuiRenderer.cs" SubType="Code" />

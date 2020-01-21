@@ -1,6 +1,5 @@
 ﻿using System;
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.SlimDX;
 
 namespace BizHawk.Client.Common
 {

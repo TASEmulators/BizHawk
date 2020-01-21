@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+					GlobalWin.GL = new Bizware.BizwareGL.IGL_SlimDX9();
 				}
 				catch(Exception ex)
 				{

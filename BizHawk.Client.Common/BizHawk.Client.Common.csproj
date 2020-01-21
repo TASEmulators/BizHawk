@@ -34,7 +34,6 @@
 	<ItemGroup>
 		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
 		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.SlimDX/BizHawk.Bizware.BizwareGL.SlimDX.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="../Version/svnrev.cs" />

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
+﻿namespace BizHawk.Bizware.BizwareGL
 {
 	public static class Extensions
 	{

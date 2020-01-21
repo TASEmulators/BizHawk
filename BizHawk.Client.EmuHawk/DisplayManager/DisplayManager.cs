@@ -9,7 +9,6 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.SlimDX;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Emulation.Common;

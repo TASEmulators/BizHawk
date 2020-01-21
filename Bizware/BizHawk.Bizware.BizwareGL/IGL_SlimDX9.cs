@@ -21,7 +21,7 @@ using gl=OpenTK.Graphics.OpenGL;
 
 //todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 
-namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
+namespace BizHawk.Bizware.BizwareGL
 {
 
 	public class IGL_SlimDX9 : IGL
