@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable InconsistentNaming
@@ -279,72 +278,9 @@ namespace BizHawk.Client.Common
 		public int GifWriterDelay = -1;
 		public bool VideoWriterAudioSync = true;
 
-		#region emulation core settings
-
+		// Emulation core settings
 		public Dictionary<string, object> CoreSettings = new Dictionary<string, object>();
 		public Dictionary<string, object> CoreSyncSettings = new Dictionary<string, object>();
-
-		public object GetCoreSettings<T>()
-			where T : IEmulator
-		{
-			return GetCoreSettings(typeof(T));
-		}
-
-		public object GetCoreSettings(Type t)
-		{
-			CoreSettings.TryGetValue(t.ToString(), out var ret);
-			return ret;
-		}
-
-		public void PutCoreSettings<T>(object o)
-			where T : IEmulator
-		{
-			PutCoreSettings(o, typeof(T));
-		}
-
-		public void PutCoreSettings(object o, Type t)
-		{
-			if (o != null)
-			{
-				CoreSettings[t.ToString()] = o;
-			}
-			else
-			{
-				CoreSettings.Remove(t.ToString());
-			}
-		}
-
-		public object GetCoreSyncSettings<T>()
-			where T : IEmulator
-		{
-			return GetCoreSyncSettings(typeof(T));
-		}
-
-		public object GetCoreSyncSettings(Type t)
-		{
-			CoreSyncSettings.TryGetValue(t.ToString(), out var ret);
-			return ret;
-		}
-
-		public void PutCoreSyncSettings<T>(object o)
-			where T : IEmulator
-		{
-			PutCoreSyncSettings(o, typeof(T));
-		}
-
-		public void PutCoreSyncSettings(object o, Type t)
-		{
-			if (o != null)
-			{
-				CoreSyncSettings[t.ToString()] = o;
-			}
-			else
-			{
-				CoreSyncSettings.Remove(t.ToString());
-			}
-		}
-
-		#endregion
 
 		public Dictionary<string, ToolDialogSettings> CommonToolSettings = new Dictionary<string, ToolDialogSettings>();
 		public Dictionary<string, Dictionary<string, object>> CustomToolSettings = new Dictionary<string, Dictionary<string, object>>();
