@@ -149,12 +149,6 @@
 		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj"
 			Name="BizHawk.Emulation.Cores"
 			Project="{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/BizHawk.Bizware.BizwareGL.GdiPlus.csproj"
-			Name="BizHawk.Bizware.BizwareGL.GdiPlus"
-			Project="{337CA23E-65E7-44E1-9411-97EE08BB8116}" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.OpenTK/BizHawk.Bizware.BizwareGL.OpenTK.csproj"
-			Name="BizHawk.Bizware.BizwareGL.OpenTK"
-			Project="{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}" />
 		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.SlimDX/BizHawk.Bizware.BizwareGL.SlimDX.csproj"
 			Name="BizHawk.Bizware.BizwareGL.SlimDX"
 			Project="{E6B436B1-A3CD-4C9A-8F76-5D7154726884}" />

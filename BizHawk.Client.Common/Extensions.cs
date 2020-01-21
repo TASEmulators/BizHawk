@@ -1,7 +1,5 @@
 ﻿using System;
 using BizHawk.Bizware.BizwareGL;
-using BizHawk.Bizware.BizwareGL.Drivers.GdiPlus;
-using BizHawk.Bizware.BizwareGL.Drivers.OpenTK;
 using BizHawk.Bizware.BizwareGL.Drivers.SlimDX;
 
 namespace BizHawk.Client.Common

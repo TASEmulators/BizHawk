@@ -25,7 +25,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using otkg = OpenTK.Graphics;
 
-namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
+namespace BizHawk.Bizware.BizwareGL
 {
 	/// <summary>
 	/// OpenTK implementation of the BizwareGL.IGL interface. 

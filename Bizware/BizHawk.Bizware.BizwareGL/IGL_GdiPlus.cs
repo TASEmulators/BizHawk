@@ -16,7 +16,7 @@ using BizHawk.Bizware.BizwareGL;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
 
-namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
+namespace BizHawk.Bizware.BizwareGL
 {
 	public class IGL_GdiPlus : IGL
 	{

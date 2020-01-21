@@ -33,8 +33,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.GdiPlus/BizHawk.Bizware.BizwareGL.GdiPlus.csproj" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.OpenTK/BizHawk.Bizware.BizwareGL.OpenTK.csproj" />
+		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL.SlimDX/BizHawk.Bizware.BizwareGL.SlimDX.csproj" />
 	</ItemGroup>
 	<ItemGroup>

@@ -11,9 +11,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 	/// Handles RetroArch's GLSL shader pass format
 	/// This isnt implemented in BizwareGL abstract layer because it relies too much on GLSL peculiarities
 	/// </summary>
-	public class RetroShader : IDisposable
+	public class RetroShader_OpenTK : IDisposable
 	{
-		public RetroShader(IGL owner, string source, bool debug = false)
+		public RetroShader_OpenTK(IGL owner, string source, bool debug = false)
 		{
 			Owner = owner as IGL_TK;
 

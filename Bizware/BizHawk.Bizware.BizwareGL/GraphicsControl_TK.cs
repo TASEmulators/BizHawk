@@ -11,7 +11,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
+namespace BizHawk.Bizware.BizwareGL
 {
 	class GLControlWrapper : GLControl, IGraphicsControl
 	{

@@ -10,7 +10,7 @@ using System.Drawing.Imaging;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
+namespace BizHawk.Bizware.BizwareGL
 {
 	public class GDIPlusGuiRenderer : IGuiRenderer
 	{

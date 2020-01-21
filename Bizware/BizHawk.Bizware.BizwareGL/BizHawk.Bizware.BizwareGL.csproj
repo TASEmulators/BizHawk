@@ -7,28 +7,20 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<!--<Reference Include="Microsoft.CSharp" />-->
-		<!--<Reference Include="System" />-->
-		<!--<Reference Include="System.Core" />-->
-		<!--<Reference Include="System.Data" />-->
-		<!--<Reference Include="System.Data.DataSetExtensions" />-->
-		<!--<Reference Include="System.Drawing" />-->
 		<Reference Include="System.Windows.Forms" />
-		<!--<Reference Include="System.Xml" />-->
-		<!--<Reference Include="System.Xml.Linq" />-->
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
-	</ItemGroup>
-	<ItemGroup>
+		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="All" />
 		<ProjectReference Include="../../BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="CacheBlendState.cs" />
 		<Compile Remove="GuiRendererBase.cs" />
+		<Compile Remove="RetroShader_OpenTK.cs" />
 	</ItemGroup>
 	<ItemGroup>
+		<Compile Update="GLControlWrapper_GdiPlus.cs" SubType="Component" />
 		<Compile Update="GraphicsControl.cs" SubType="UserControl" />
+		<Compile Update="GraphicsControl_TK.cs" SubType="UserControl" />
 		<Compile Update="IGuiRenderer.cs" SubType="Code" />
 		<Compile Update="RetainedGraphicsControl.cs" SubType="UserControl" />
 	</ItemGroup>
