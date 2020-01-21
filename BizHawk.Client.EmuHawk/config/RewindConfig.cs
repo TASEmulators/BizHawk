@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _stateSize;
 		private int _mediumStateSize;
 		private int _largeStateSize;
-		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = larg //TODO: enum
+		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = large // TODO: enum
 
 		public RewindConfig(Rewinder rewinder, Config config, IStatable statableCore)
 		{
@@ -109,34 +109,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetStateSize()
 		{
-			double num = _stateSize / 1024.0;
-
 			StateSizeLabel.Text = FormatKB(_stateSize);
 
-			SmallLabel1.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
-			MediumLabel1.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
-			LargeLabel1.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
+			SmallLabel.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
+			MediumLabel.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
+			LargeLabel.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
 
 			if (_stateSize >= _largeStateSize)
 			{
 				_stateSizeCategory = 3;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
 			}
 			else if (_stateSize >= _mediumStateSize)
 			{
 				_stateSizeCategory = 2;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 			}
 			else
 			{
 				_stateSizeCategory = 1;
-				SmallLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Italic);
-				MediumLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
-				LargeLabel1.Font = new Font(SmallLabel1.Font, FontStyle.Regular);
+				SmallLabel.Font = new Font(SmallLabel.Font, FontStyle.Italic);
+				MediumLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
+				LargeLabel.Font = new Font(SmallLabel.Font, FontStyle.Regular);
 			}
 
 			CalculateEstimates();
@@ -196,21 +194,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSmallEnabled()
 		{
-			SmallLabel1.Enabled = SmallLabel2.Enabled
+			SmallLabel.Enabled = SmallLabel2.Enabled
 				= SmallSavestateNumeric.Enabled = SmallLabel3.Enabled
 				= SmallStateEnabledBox.Checked;
 		}
 
 		private void SetMediumEnabled()
 		{
-			MediumLabel1.Enabled = MediumLabel2.Enabled
+			MediumLabel.Enabled = MediumLabel2.Enabled
 				= MediumSavestateNumeric.Enabled = MediumLabel3.Enabled
 				= MediumStateEnabledBox.Checked;
 		}
 
 		private void SetLargeEnabled()
 		{
-			LargeLabel1.Enabled = LargeLabel2.Enabled
+			LargeLabel.Enabled = LargeLabel2.Enabled
 				= LargeSavestateNumeric.Enabled = LargeLabel3.Enabled
 				= LargeStateEnabledBox.Checked;
 		}
@@ -230,22 +228,22 @@ namespace BizHawk.Client.EmuHawk
 			SetLargeEnabled();
 		}
 
-		private void LargeLabel1_Click(object sender, EventArgs e)
+		private void LargeLabel_Click(object sender, EventArgs e)
 		{
 			LargeStateEnabledBox.Checked ^= true;
 		}
 
-		private void MediumLabel1_Click(object sender, EventArgs e)
+		private void MediumLabel_Click(object sender, EventArgs e)
 		{
 			MediumStateEnabledBox.Checked ^= true;
 		}
 
-		private void SmallLabel1_Click(object sender, EventArgs e)
+		private void SmallLabel_Click(object sender, EventArgs e)
 		{
 			SmallStateEnabledBox.Checked ^= true;
 		}
 
-		private void MediumStateTrackbar_ValueChanged(object sender, EventArgs e)
+		private void MediumStateTrackBar_ValueChanged(object sender, EventArgs e)
 		{
 			MediumStateUpDown.Value = ((TrackBar)sender).Value;
 			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
@@ -273,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 			SetStateSize();
 		}
 
-		private void LargeStateTrackbar_ValueChanged(object sender, EventArgs e)
+		private void LargeStateTrackBar_ValueChanged(object sender, EventArgs e)
 		{
 			if (LargeStateTrackbar.Value < MediumStateTrackbar.Value)
 			{
