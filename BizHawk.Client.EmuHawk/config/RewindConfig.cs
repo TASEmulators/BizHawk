@@ -39,24 +39,24 @@ namespace BizHawk.Client.EmuHawk
 				RewindFramesUsedLabel.Text = "N/A";
 			}
 
-			RewindSpeedNumeric.Value = _config.RewindSpeedMultiplier;
-			DiskBufferCheckbox.Checked = _config.Rewind_OnDisk;
-			RewindIsThreadedCheckbox.Checked = _config.Rewind_IsThreaded;
+			RewindSpeedNumeric.Value = _config.Rewind.SpeedMultiplier;
+			DiskBufferCheckbox.Checked = _config.Rewind.OnDisk;
+			RewindIsThreadedCheckbox.Checked = _config.Rewind.IsThreaded;
 			_stateSize = _statableCore.SaveStateBinary().Length;
-			BufferSizeUpDown.Value = Math.Max(_config.Rewind_BufferSize, BufferSizeUpDown.Minimum);
+			BufferSizeUpDown.Value = Math.Max(_config.Rewind.BufferSize, BufferSizeUpDown.Minimum);
 
-			_mediumStateSize = _config.Rewind_MediumStateSize;
-			_largeStateSize = _config.Rewind_LargeStateSize;
+			_mediumStateSize = _config.Rewind.MediumStateSize;
+			_largeStateSize = _config.Rewind.LargeStateSize;
 
-			UseDeltaCompression.Checked = _config.Rewind_UseDelta;
+			UseDeltaCompression.Checked = _config.Rewind.UseDelta;
 
-			SmallSavestateNumeric.Value = _config.RewindFrequencySmall;
-			MediumSavestateNumeric.Value = _config.RewindFrequencyMedium;
-			LargeSavestateNumeric.Value = _config.RewindFrequencyLarge;
+			SmallSavestateNumeric.Value = _config.Rewind.FrequencySmall;
+			MediumSavestateNumeric.Value = _config.Rewind.FrequencyMedium;
+			LargeSavestateNumeric.Value = _config.Rewind.FrequencyLarge;
 
-			SmallStateEnabledBox.Checked = _config.RewindEnabledSmall;
-			MediumStateEnabledBox.Checked = _config.RewindEnabledMedium;
-			LargeStateEnabledBox.Checked = _config.RewindEnabledLarge;
+			SmallStateEnabledBox.Checked = _config.Rewind.EnabledSmall;
+			MediumStateEnabledBox.Checked = _config.Rewind.EnabledMedium;
+			LargeStateEnabledBox.Checked = _config.Rewind.EnabledLarge;
 
 			SetSmallEnabled();
 			SetMediumEnabled();
@@ -64,8 +64,8 @@ namespace BizHawk.Client.EmuHawk
 
 			SetStateSize();
 
-			var mediumStateSizeKb = _config.Rewind_MediumStateSize / 1024;
-			var largeStateSizeKb = _config.Rewind_LargeStateSize / 1024;
+			var mediumStateSizeKb = _config.Rewind.MediumStateSize / 1024;
+			var largeStateSizeKb = _config.Rewind.LargeStateSize / 1024;
 
 			MediumStateTrackbar.Value = mediumStateSizeKb;
 			MediumStateUpDown.Value = mediumStateSizeKb;
@@ -147,39 +147,40 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool TriggerRewindSettingsReload { get; set; }
 
-		private void PutRewindSetting<T>(ref T setting, T value) where T : IEquatable<T>
+		private T PutRewindSetting<T>(T setting, T value) where T : IEquatable<T>
 		{
 			if (setting.Equals(value))
 			{
-				return;
+				return setting;
 			}
 
-			setting = value;
 			TriggerRewindSettingsReload = true;
+			return value;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
-			PutRewindSetting(ref _config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
-			PutRewindSetting(ref _config.RewindEnabledMedium, MediumStateEnabledBox.Checked);
-			PutRewindSetting(ref _config.RewindEnabledLarge, LargeStateEnabledBox.Checked);
-			PutRewindSetting(ref _config.RewindFrequencySmall, (int)SmallSavestateNumeric.Value);
-			PutRewindSetting(ref _config.RewindFrequencyMedium, (int)MediumSavestateNumeric.Value);
-			PutRewindSetting(ref _config.RewindFrequencyLarge, (int)LargeSavestateNumeric.Value);
-			PutRewindSetting(ref _config.Rewind_OnDisk, DiskBufferCheckbox.Checked);
-			PutRewindSetting(ref _config.Rewind_UseDelta, UseDeltaCompression.Checked);
-			PutRewindSetting(ref _config.Rewind_IsThreaded, RewindIsThreadedCheckbox.Checked);
-			PutRewindSetting(ref _config.Rewind_BufferSize, (int)BufferSizeUpDown.Value);
-			PutRewindSetting(ref _config.Rewind_MediumStateSize, (int)MediumStateUpDown.Value * 1024);
-			PutRewindSetting(ref _config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			_config.Rewind.UseDelta = PutRewindSetting(_config.Rewind.UseDelta, UseDeltaCompression.Checked);
+			_config.Rewind.EnabledSmall = PutRewindSetting(_config.Rewind.EnabledSmall, SmallStateEnabledBox.Checked);
+			_config.Rewind.EnabledMedium = PutRewindSetting(_config.Rewind.EnabledMedium, MediumStateEnabledBox.Checked);
+			_config.Rewind.EnabledLarge = PutRewindSetting(_config.Rewind.EnabledLarge, LargeStateEnabledBox.Checked);
+			_config.Rewind.FrequencySmall = PutRewindSetting(_config.Rewind.FrequencySmall, (int)SmallSavestateNumeric.Value);
+			_config.Rewind.FrequencyMedium = PutRewindSetting(_config.Rewind.FrequencyMedium, (int)MediumSavestateNumeric.Value);
+			_config.Rewind.FrequencyLarge = PutRewindSetting(_config.Rewind.FrequencyLarge, (int)LargeSavestateNumeric.Value);
+			_config.Rewind.MediumStateSize = PutRewindSetting(_config.Rewind.MediumStateSize, (int)MediumStateUpDown.Value * 1024);
+			_config.Rewind.LargeStateSize = PutRewindSetting(_config.Rewind.LargeStateSize, (int)LargeStateUpDown.Value * 1024);
+			_config.Rewind.BufferSize = PutRewindSetting(_config.Rewind.BufferSize, (int)BufferSizeUpDown.Value);
+			_config.Rewind.OnDisk = PutRewindSetting(_config.Rewind.OnDisk, DiskBufferCheckbox.Checked);
+			_config.Rewind.IsThreaded = PutRewindSetting(_config.Rewind.IsThreaded, RewindIsThreadedCheckbox.Checked);
+
 			if (TriggerRewindSettingsReload)
 			{
 				_rewinder.Initialize();
 			}
 
 			// These settings are not used by DoRewindSettings
-			_config.RewindSpeedMultiplier = (int)RewindSpeedNumeric.Value;
+			_config.Rewind.SpeedMultiplier = (int)RewindSpeedNumeric.Value;
 			_config.SaveStateCompressionLevelNormal = (int)nudCompression.Value;
 			if (rbStatesDefault.Checked) _config.SaveStateType = SaveStateTypeE.Default;
 			if (rbStatesBinary.Checked) _config.SaveStateType = SaveStateTypeE.Binary;

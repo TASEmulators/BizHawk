@@ -87,9 +87,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.BackupSavestates = false;
 
 				_config.SaveStateCompressionLevelNormal = 0;
-				_config.RewindEnabledLarge = false;
-				_config.RewindEnabledMedium = false;
-				_config.RewindEnabledSmall = true;
+				_config.Rewind.EnabledLarge = false;
+				_config.Rewind.EnabledMedium = false;
+				_config.Rewind.EnabledSmall = true;
 				_config.SkipLagFrame = false;
 
 				// N64
@@ -137,9 +137,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.SkipLagFrame = false;
 				_config.SaveStateCompressionLevelNormal = 5;
 
-				_config.RewindEnabledLarge = false;
-				_config.RewindEnabledMedium = false;
-				_config.RewindEnabledSmall = true;
+				_config.Rewind.EnabledLarge = false;
+				_config.Rewind.EnabledMedium = false;
+				_config.Rewind.EnabledSmall = true;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
@@ -188,9 +188,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.SaveStateCompressionLevelNormal = 5;
 
 				// Rewind
-				_config.RewindEnabledLarge = false;
-				_config.RewindEnabledMedium = false;
-				_config.RewindEnabledSmall = false;
+				_config.Rewind.EnabledLarge = false;
+				_config.Rewind.EnabledMedium = false;
+				_config.Rewind.EnabledSmall = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
@@ -239,9 +239,9 @@ namespace BizHawk.Client.EmuHawk
 				_config.SaveStateCompressionLevelNormal = 0;
 
 				// Rewind
-				_config.RewindEnabledLarge = false;
-				_config.RewindEnabledMedium = false;
-				_config.RewindEnabledSmall = false;
+				_config.Rewind.EnabledLarge = false;
+				_config.Rewind.EnabledMedium = false;
+				_config.Rewind.EnabledSmall = false;
 
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();

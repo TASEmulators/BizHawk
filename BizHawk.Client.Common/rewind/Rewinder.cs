@@ -44,20 +44,20 @@ namespace BizHawk.Client.Common
 			{
 				int stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
 
-				if (stateSize >= Global.Config.Rewind_LargeStateSize)
+				if (stateSize >= Global.Config.Rewind.LargeStateSize)
 				{
-					RewindEnabled = Global.Config.RewindEnabledLarge;
-					RewindFrequency = Global.Config.RewindFrequencyLarge;
+					RewindEnabled = Global.Config.Rewind.EnabledLarge;
+					RewindFrequency = Global.Config.Rewind.FrequencyLarge;
 				}
-				else if (stateSize >= Global.Config.Rewind_MediumStateSize)
+				else if (stateSize >= Global.Config.Rewind.MediumStateSize)
 				{
-					RewindEnabled = Global.Config.RewindEnabledMedium;
-					RewindFrequency = Global.Config.RewindFrequencyMedium;
+					RewindEnabled = Global.Config.Rewind.EnabledMedium;
+					RewindFrequency = Global.Config.Rewind.FrequencyMedium;
 				}
 				else
 				{
-					RewindEnabled = Global.Config.RewindEnabledSmall;
-					RewindFrequency = Global.Config.RewindFrequencySmall;
+					RewindEnabled = Global.Config.Rewind.EnabledSmall;
+					RewindFrequency = Global.Config.Rewind.FrequencySmall;
 				}
 			}
 
@@ -65,15 +65,14 @@ namespace BizHawk.Client.Common
 				$"Rewind enabled, frequency: {RewindFrequency}" :
 				"Rewind disabled");
 
-			_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
+			_rewindDeltaEnable = Global.Config.Rewind.UseDelta;
 
 			if (RewindActive)
 			{
-				var capacity = Global.Config.Rewind_BufferSize * 1048576L;
+				var capacity = Global.Config.Rewind.BufferSize * 1048576L;
+				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind.OnDisk, capacity, BufferManage);
 
-				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
-
-				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind_IsThreaded);
+				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind.IsThreaded);
 			}
 		}
 

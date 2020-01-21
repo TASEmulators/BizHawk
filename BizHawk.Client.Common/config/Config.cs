@@ -140,20 +140,7 @@ namespace BizHawk.Client.Common
 		public bool AutoMinimizeSkipping = true;
 		public bool VSyncThrottle = false;
 
-		// Rewind settings
-		public bool Rewind_UseDelta = true;
-		public bool RewindEnabledSmall = true;
-		public bool RewindEnabledMedium = false;
-		public bool RewindEnabledLarge = false;
-		public int RewindFrequencySmall = 1;
-		public int RewindFrequencyMedium = 4;
-		public int RewindFrequencyLarge = 60;
-		public int Rewind_MediumStateSize = 262144; // 256kb
-		public int Rewind_LargeStateSize = 1048576; // 1mb
-		public int Rewind_BufferSize = 128; // in mb
-		public bool Rewind_OnDisk = false;
-		public bool Rewind_IsThreaded = Environment.ProcessorCount > 1;
-		public int RewindSpeedMultiplier = 1;
+		public RewindConfig Rewind { get; set; } = new RewindConfig();
 
 		// Savestate settings
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
