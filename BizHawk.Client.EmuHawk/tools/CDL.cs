@@ -28,6 +28,15 @@ namespace BizHawk.Client.EmuHawk
 			set => _recentFld = value;
 		}
 
+		[ConfigPersist]
+		private bool CDLAutoSave { get; set; } = true;
+
+		[ConfigPersist]
+		private bool CDLAutoStart { get; set; } = true;
+		
+		[ConfigPersist]
+		private bool CDLAutoResume { get; set; } = true;
+
 		void SetCurrentFilename(string fname)
 		{
 			_currentFilename = fname;
@@ -192,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 
 			// try auto-saving if appropriate
-			if (Config.CDLAutoSave)
+			if (CDLAutoSave)
 			{
 				if (_currentFilename != null)
 				{
@@ -250,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 				//ok, it's all good:
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
-				if (tsbLoggingActive.Checked || Config.CDLAutoStart)
+				if (tsbLoggingActive.Checked || CDLAutoStart)
 				{
 					tsbLoggingActive.Checked = true;
 					CodeDataLogger.SetCDL(_cdl);
@@ -271,9 +280,9 @@ namespace BizHawk.Client.EmuHawk
 				DisassembleMenuItem.Enabled =
 				_cdl != null;
 
-			miAutoSave.Checked = Config.CDLAutoSave;
-			miAutoStart.Checked = Config.CDLAutoStart;
-			miAutoResume.Checked = Config.CDLAutoResume;
+			miAutoSave.Checked = CDLAutoSave;
+			miAutoStart.Checked = CDLAutoStart;
+			miAutoResume.Checked = CDLAutoResume;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -287,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			_cdl = new CodeDataLog();
 			CodeDataLogger.NewCDL(_cdl);
 
-			if (tsbLoggingActive.Checked || Config.CDLAutoStart)
+			if (tsbLoggingActive.Checked || CDLAutoStart)
 				CodeDataLogger.SetCDL(_cdl);
 			else CodeDataLogger.SetCDL(null);
 
@@ -464,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			if (Config.CDLAutoStart)
+			if (CDLAutoStart)
 			{
 				if (_cdl == null)
 					NewFileLogic();
@@ -479,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CDL_Load(object sender, EventArgs e)
 		{
-			if (Config.CDLAutoResume)
+			if (CDLAutoResume)
 			{
 				try
 				{
@@ -571,17 +580,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void miAutoSave_Click(object sender, EventArgs e)
 		{
-			Config.CDLAutoSave ^= true;
+			CDLAutoSave ^= true;
 		}
 
 		private void miAutoStart_Click(object sender, EventArgs e)
 		{
-			Config.CDLAutoStart ^= true;
+			CDLAutoStart ^= true;
 		}
 
 		private void miAutoResume_Click(object sender, EventArgs e)
 		{
-			Config.CDLAutoResume ^= true;
+			CDLAutoResume ^= true;
 		}
 	}
 }

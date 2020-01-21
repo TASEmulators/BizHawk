@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -105,7 +104,6 @@ namespace BizHawk.Client.Common
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
 		public bool SkipOutdatedOSCheck = false;
-		public bool CDLAutoSave = true, CDLAutoStart = true, CDLAutoResume = true;
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
