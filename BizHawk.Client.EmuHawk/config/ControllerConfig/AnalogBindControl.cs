@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public AnalogBindControl(string buttonName, Config.AnalogBind bind)
+		public AnalogBindControl(string buttonName, AnalogBind bind)
 			: this()
 		{
 			_bind = bind;
@@ -26,9 +26,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public string ButtonName { get; }
-		public Config.AnalogBind Bind => _bind;
+		public AnalogBind Bind => _bind;
 
-		private Config.AnalogBind _bind;
+		private AnalogBind _bind;
 		private bool _listening;
 
 		private void Timer1_Tick(object sender, EventArgs e)

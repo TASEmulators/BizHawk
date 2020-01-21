@@ -382,24 +382,7 @@ namespace BizHawk.Client.Common
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;
 
-		public struct AnalogBind
-		{
-			/// <summary>the physical stick that we're bound to</summary>
-			public string Value;
-
-			/// <summary>sensitivity and flip</summary>
-			public float Mult;
-
-			/// <summary>portion of axis to ignore</summary>
-			public float Deadzone;
-
-			public AnalogBind(string value, float mult, float deadzone)
-			{
-				Value = value;
-				Mult = mult;
-				Deadzone = deadzone;
-			}
-		}
+		
 
 		// [ControllerType][ButtonName] => Physical Bind
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
@@ -428,6 +411,6 @@ namespace BizHawk.Client.Common
 	{
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
-		public Dictionary<string, Dictionary<string, Config.AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, Config.AnalogBind>>();
+		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 	}
 }

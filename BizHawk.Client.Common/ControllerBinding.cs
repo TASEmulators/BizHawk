@@ -35,7 +35,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
 		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
-		private readonly Dictionary<string, Config.AnalogBind> _floatBinds = new Dictionary<string, Config.AnalogBind>();
+		private readonly Dictionary<string, AnalogBind> _floatBinds = new Dictionary<string, AnalogBind>();
 
 		private ControllerDefinition _type;
 
@@ -209,7 +209,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void BindFloat(string button, Config.AnalogBind bind)
+		public void BindFloat(string button, AnalogBind bind)
 		{
 			_floatBinds[button] = bind;
 		}

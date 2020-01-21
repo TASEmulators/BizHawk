@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
 			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
-			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);			
+			ControllerImages.Add("MAME Controller", Properties.Resources.ArcadeController);
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			return cp;
 		}
 
-		private static Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
+		private static Control CreateAnalogPanel(Dictionary<string, AnalogBind> settings, List<string> buttons, Size size)
 		{
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
@@ -225,11 +225,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadPanels(
 			IDictionary<string, Dictionary<string, string>> normal,
 			IDictionary<string, Dictionary<string, string>> autofire,
-			IDictionary<string, Dictionary<string, Config.AnalogBind>> analog)
+			IDictionary<string, Dictionary<string, AnalogBind>> analog)
 		{
 			LoadToPanel(NormalControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, normal, "", CreateNormalPanel);
 			LoadToPanel(AutofireControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.BoolButtons, _emulator.ControllerDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.FloatControls, _emulator.ControllerDefinition.CategoryLabels, analog, new Config.AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(AnalogControlsTab, _emulator.ControllerDefinition.Name, _emulator.ControllerDefinition.FloatControls, _emulator.ControllerDefinition.CategoryLabels, analog, new AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{
@@ -434,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 				var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
 				cd.AllTrollers[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
-				cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name] = new Dictionary<string, Config.AnalogBind>();
+				cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name] = new Dictionary<string, AnalogBind>();
 
 				SaveToDefaults(cd);
 
