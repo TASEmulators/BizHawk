@@ -515,9 +515,9 @@ namespace BizHawk.Client.EmuHawk
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
 			bool arActive = Global.Config.DispFixAspectRatio;
-			bool arSystem = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
-			bool arCustom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
-			bool arCustomRatio = Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio;
+			bool arSystem = Global.Config.DispManagerAR == EDispManagerAR.System;
+			bool arCustom = Global.Config.DispManagerAR == EDispManagerAR.Custom;
+			bool arCustomRatio = Global.Config.DispManagerAR == EDispManagerAR.CustomRatio;
 			bool arCorrect = arSystem || arCustom || arCustomRatio;
 			bool arInteger = Global.Config.DispFixScaleInteger;
 
@@ -706,17 +706,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.DispFixAspectRatio)
 			{
-				if (Global.Config.DispManagerAR == Config.EDispManagerAR.System)
+				if (Global.Config.DispManagerAR == EDispManagerAR.System)
 				{
 					vw = videoProvider.VirtualWidth;
 					vh = videoProvider.VirtualHeight;
 				}
-				if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
+				if (Global.Config.DispManagerAR == EDispManagerAR.Custom)
 				{
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
 				}
-				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				if (Global.Config.DispManagerAR == EDispManagerAR.CustomRatio)
 				{
 					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}

@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_dispSettingsSet)
 			{
-				_config.DispManagerAR = Config.EDispManagerAR.System;
+				_config.DispManagerAR = EDispManagerAR.System;
 				_config.DispFixAspectRatio = true;
 				_config.DispFixScaleInteger = false;
 				_config.DispFinalFilter = 1; // bilinear, I hope

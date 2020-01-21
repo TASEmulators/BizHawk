@@ -43,9 +43,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
 			if (_config.DispSpeedupFeatures == 0) rbDisplayAbsoluteZero.Checked = true;
 
-			rbOpenGL.Checked = _config.DispMethod == Config.EDispMethod.OpenGL;
-			rbGDIPlus.Checked = _config.DispMethod == Config.EDispMethod.GdiPlus;
-			rbD3D9.Checked = _config.DispMethod == Config.EDispMethod.SlimDX9;
+			rbOpenGL.Checked = _config.DispMethod == EDispMethod.OpenGL;
+			rbGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
+			rbD3D9.Checked = _config.DispMethod == EDispMethod.SlimDX9;
 
 			cbStatusBarWindowed.Checked = _config.DispChrome_StatusBarWindowed;
 			cbCaptionWindowed.Checked = _config.DispChrome_CaptionWindowed;
@@ -60,13 +60,13 @@ namespace BizHawk.Client.EmuHawk
 
 			nudPrescale.Value = _config.DispPrescale;
 
-			if (_config.DispManagerAR == Config.EDispManagerAR.None)
+			if (_config.DispManagerAR == EDispManagerAR.None)
 				rbUseRaw.Checked = true;
-			else if (_config.DispManagerAR == Config.EDispManagerAR.System)
+			else if (_config.DispManagerAR == EDispManagerAR.System)
 				rbUseSystem.Checked = true;
-			else if (_config.DispManagerAR == Config.EDispManagerAR.Custom)
+			else if (_config.DispManagerAR == EDispManagerAR.Custom)
 				rbUseCustom.Checked = true;
-			else if (_config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+			else if (_config.DispManagerAR == EDispManagerAR.CustomRatio)
 				rbUseCustomRatio.Checked = true;
 
 			if(_config.DispCustomUserARWidth != -1)
@@ -138,13 +138,13 @@ namespace BizHawk.Client.EmuHawk
 			if (rbDisplayAbsoluteZero.Checked) _config.DispSpeedupFeatures = 0;
 
 			if (rbUseRaw.Checked)
-				_config.DispManagerAR = Config.EDispManagerAR.None;
+				_config.DispManagerAR = EDispManagerAR.None;
 			else if (rbUseSystem.Checked)
-				_config.DispManagerAR = Config.EDispManagerAR.System;
+				_config.DispManagerAR = EDispManagerAR.System;
 			else if (rbUseCustom.Checked)
-				_config.DispManagerAR = Config.EDispManagerAR.Custom;
+				_config.DispManagerAR = EDispManagerAR.Custom;
 			else if (rbUseCustomRatio.Checked)
-				_config.DispManagerAR = Config.EDispManagerAR.CustomRatio;
+				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 
 			if (txtCustomARWidth.Text != "")
 				int.TryParse(txtCustomARWidth.Text, out _config.DispCustomUserARWidth);
@@ -161,11 +161,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var oldDisplayMethod = _config.DispMethod;
 			if(rbOpenGL.Checked)
-				_config.DispMethod = Config.EDispMethod.OpenGL;
+				_config.DispMethod = EDispMethod.OpenGL;
 			if(rbGDIPlus.Checked)
-				_config.DispMethod = Config.EDispMethod.GdiPlus;
+				_config.DispMethod = EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
-				_config.DispMethod = Config.EDispMethod.SlimDX9;
+				_config.DispMethod = EDispMethod.SlimDX9;
 
 			int.TryParse(txtCropLeft.Text, out _config.DispCropLeft);
 			int.TryParse(txtCropTop.Text, out _config.DispCropTop);

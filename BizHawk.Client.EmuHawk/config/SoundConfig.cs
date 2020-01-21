@@ -35,9 +35,9 @@ namespace BizHawk.Client.EmuHawk
 				rbOutputMethodXAudio2.Enabled = false;
 			}
 
-			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
-			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
-			rbOutputMethodOpenAL.Checked = _config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
+			rbOutputMethodDirectSound.Checked = _config.SoundOutputMethod == ESoundOutputMethod.DirectSound;
+			rbOutputMethodXAudio2.Checked = _config.SoundOutputMethod == ESoundOutputMethod.XAudio2;
+			rbOutputMethodOpenAL.Checked = _config.SoundOutputMethod == ESoundOutputMethod.OpenAL;
 			BufferSizeNumeric.Value = _config.SoundBufferSizeMs;
 			tbNormal.Value = _config.SoundVolume;
 			nudNormal.Value = _config.SoundVolume;
@@ -61,9 +61,9 @@ namespace BizHawk.Client.EmuHawk
 			_config.SoundEnabledNormal = cbEnableNormal.Checked;
 			_config.SoundEnabledRWFF = cbEnableRWFF.Checked;
 			_config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
-			if (rbOutputMethodDirectSound.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
-			if (rbOutputMethodXAudio2.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
-			if (rbOutputMethodOpenAL.Checked) _config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
+			if (rbOutputMethodDirectSound.Checked) _config.SoundOutputMethod = ESoundOutputMethod.DirectSound;
+			if (rbOutputMethodXAudio2.Checked) _config.SoundOutputMethod = ESoundOutputMethod.XAudio2;
+			if (rbOutputMethodOpenAL.Checked) _config.SoundOutputMethod = ESoundOutputMethod.OpenAL;
 			_config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
 			_config.SoundVolume = tbNormal.Value;
 			_config.SoundVolumeRWFF = tbRWFF.Value;

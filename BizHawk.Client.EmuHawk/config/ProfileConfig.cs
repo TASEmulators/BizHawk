@@ -40,17 +40,17 @@ namespace BizHawk.Client.EmuHawk
 			switch (_config.SelectedProfile)
 			{
 				default:
-				case Config.ClientProfile.Custom: // For now
-				case Config.ClientProfile.Casual:
+				case ClientProfile.Custom: // For now
+				case ClientProfile.Casual:
 					ProfileSelectComboBox.SelectedItem = "Casual Gaming";
 					break;
-				case Config.ClientProfile.Longplay:
+				case ClientProfile.Longplay:
 					ProfileSelectComboBox.SelectedItem = "Longplays";
 					break;
-				case Config.ClientProfile.Tas:
+				case ClientProfile.Tas:
 					ProfileSelectComboBox.SelectedItem = "Tool-assisted Speedruns";
 					break;
-				case Config.ClientProfile.N64Tas:
+				case ClientProfile.N64Tas:
 					ProfileSelectComboBox.SelectedItem = "N64 Tool-assisted Speedruns";
 					break;
 			}
@@ -65,20 +65,20 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case "Custom Profile": // For now
 				case "Casual Gaming":
-					_config.SelectedProfile = Config.ClientProfile.Casual;
+					_config.SelectedProfile = ClientProfile.Casual;
 					break;
 				case "Longplays":
-					_config.SelectedProfile = Config.ClientProfile.Longplay;
+					_config.SelectedProfile = ClientProfile.Longplay;
 					break;
 				case "Tool-assisted Speedruns":
-					_config.SelectedProfile = Config.ClientProfile.Tas;
+					_config.SelectedProfile = ClientProfile.Tas;
 					break;
 				case "N64 Tool-assisted Speedruns":
-					_config.SelectedProfile = Config.ClientProfile.N64Tas;
+					_config.SelectedProfile = ClientProfile.N64Tas;
 					break;
 			}
 
-			if (_config.SelectedProfile == Config.ClientProfile.Casual)
+			if (_config.SelectedProfile == ClientProfile.Casual)
 			{
 				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				_config.NES_InQuickNES = true;
 			}
-			else if (_config.SelectedProfile == Config.ClientProfile.Longplay)
+			else if (_config.SelectedProfile == ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
@@ -175,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				_config.NES_InQuickNES = true;
 			}
-			else if (_config.SelectedProfile == Config.ClientProfile.Tas)
+			else if (_config.SelectedProfile == ClientProfile.Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				_config.NES_InQuickNES = true;
 			}
-			else if (_config.SelectedProfile == Config.ClientProfile.N64Tas)
+			else if (_config.SelectedProfile == ClientProfile.N64Tas)
 			{
 				DisplayProfileSettingBoxes(false);
 
@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				_config.NES_InQuickNES = true;
 			}
-			else if (_config.SelectedProfile == Config.ClientProfile.Custom)
+			else if (_config.SelectedProfile == ClientProfile.Custom)
 			{
 				// Disabled for now
 				////DisplayProfileSettingBoxes(true);

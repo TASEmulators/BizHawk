@@ -3148,13 +3148,13 @@ namespace BizHawk.Client.EmuHawk
 			SavestateTextContextMenuItem.Checked = false;
 			switch (Config.SaveStateType)
 			{
-				case Config.SaveStateTypeE.Binary:
+				case SaveStateTypeE.Binary:
 					SavestateBinaryContextMenuItem.Checked = true;
 					break;
-				case Config.SaveStateTypeE.Text:
+				case SaveStateTypeE.Text:
 					SavestateTextContextMenuItem.Checked = true;
 					break;
-				case Config.SaveStateTypeE.Default:
+				case SaveStateTypeE.Default:
 					SavestateTypeDefaultContextMenuItem.Checked = true;
 					break;
 			}

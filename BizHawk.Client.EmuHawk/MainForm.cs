@@ -339,14 +339,14 @@ namespace BizHawk.Client.EmuHawk
 			catch
 			{
 				string message = "Couldn't initialize sound device! Try changing the output method in Sound config.";
-				if (Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+				if (Config.SoundOutputMethod == ESoundOutputMethod.DirectSound)
 				{
 					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
 				}
 
 				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-				Config.SoundOutputMethod = Config.ESoundOutputMethod.Dummy;
+				Config.SoundOutputMethod = ESoundOutputMethod.Dummy;
 				GlobalWin.Sound = new Sound(Handle);
 			}
 
@@ -1190,7 +1190,7 @@ namespace BizHawk.Client.EmuHawk
 				// Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
 				if (!OSTailoredCode.IsUnixHost
 					&& Config.DispFullscreenHacks
-					&& Config.DispMethod == Config.EDispMethod.OpenGL)
+					&& Config.DispMethod == EDispMethod.OpenGL)
 				{
 					// ATTENTION: this causes the StatusBar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
 					// It seems that some StatusBar elements composite with the backcolor. 

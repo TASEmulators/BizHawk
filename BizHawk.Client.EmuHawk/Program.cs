@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			// super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			if (Array.Exists(args, arg => arg.StartsWith("--gdi", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				Global.Config.DispMethod = EDispMethod.GdiPlus;
 			}
 
 			// create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
@@ -138,11 +138,11 @@ namespace BizHawk.Client.EmuHawk
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
 		REDO_DISPMETHOD:
-			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+			if (Global.Config.DispMethod == EDispMethod.GdiPlus)
 			{
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 			}
-			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+			else if (Global.Config.DispMethod == EDispMethod.SlimDX9)
 			{
 				try
 				{
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 					new ExceptionBox(new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex)).ShowDialog();
 
 					// fallback
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					Global.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
 			}
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 				if (GlobalWin.IGL_GL.Version < 200)
 				{
 					// fallback
-					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					Global.Config.DispMethod = EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
 			}
@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				new ExceptionBox(new Exception("Initialization of Display Method failed; falling back to GDI+", ex)).ShowDialog();
 
 				//fallback
-				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				Global.Config.DispMethod = EDispMethod.GdiPlus;
 				goto REDO_DISPMETHOD;
 			}
 

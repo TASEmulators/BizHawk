@@ -69,10 +69,10 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (_config.LuaEngine)
 			{
-				case Config.ELuaEngine.LuaPlusLuaInterface:
+				case ELuaEngine.LuaPlusLuaInterface:
 					LuaInterfaceRadio.Checked = true;
 					break;
-				case Config.ELuaEngine.NLuaPlusKopiLua:
+				case ELuaEngine.NLuaPlusKopiLua:
 					NLuaRadio.Checked = true;
 					break;
 				default:
@@ -105,8 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			_config.MoviesInAWE = cbMoviesInAWE.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
-			if (LuaInterfaceRadio.Checked) _config.LuaEngine = Config.ELuaEngine.LuaPlusLuaInterface;
-			else if (NLuaRadio.Checked) _config.LuaEngine = Config.ELuaEngine.NLuaPlusKopiLua;
+			if (LuaInterfaceRadio.Checked) _config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
+			else if (NLuaRadio.Checked) _config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
 
 			Close();
 			DialogResult = DialogResult.OK;

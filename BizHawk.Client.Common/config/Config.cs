@@ -122,54 +122,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public int FlushSaveRamFrames;
 
-		public enum ELuaEngine
-		{
-			/// <remarks>Don't change this member's ordinal (don't reorder) without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
-			LuaPlusLuaInterface,
-			NLuaPlusKopiLua
-		}
-
 		/// <remarks>Don't rename this without changing <c>BizHawk.Client.EmuHawk.Program.CurrentDomain_AssemblyResolve</c></remarks>
 		public ELuaEngine LuaEngine = ELuaEngine.LuaPlusLuaInterface;
 
 		public bool TurboSeek { get; set; }
 
-		public enum EDispMethod
-		{
-			OpenGL, GdiPlus, SlimDX9
-		}
-
-		public enum ESoundOutputMethod
-		{
-			DirectSound, XAudio2, OpenAL, Dummy
-		}
-
-		public enum EDispManagerAR
-		{
-			None,
-			System, 
-
-			// actually, custom SIZE (fixme on major release)
-			Custom, 
-			CustomRatio
-		}
-
-		public enum SaveStateTypeE
-		{
-			Default, Binary, Text
-		}
-
 		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
-
-		public enum ClientProfile
-		{
-			Unknown = 0,
-			Casual = 1,
-			Longplay = 2,
-			Tas = 3,
-			N64Tas = 4,
-			Custom = 99
-		}
 
 		public ClientProfile SelectedProfile = ClientProfile.Unknown;
 

@@ -16,8 +16,8 @@ namespace BizHawk.Client.Common
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using var bs = new BinaryStateSaver(filename);
-			if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text
-				|| (Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
+			if (Global.Config.SaveStateType == SaveStateTypeE.Text
+				|| (Global.Config.SaveStateType == SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
 			{
 				// text savestate format
 				using (new SimpleTime("Save Core"))
