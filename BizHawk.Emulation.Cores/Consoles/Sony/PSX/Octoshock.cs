@@ -16,10 +16,13 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
+
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
+using BizHawk.Emulation.DiscSystem;
 
 #pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
 
@@ -456,6 +459,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 		}
 
+		public string CalculateDiscHashes()
+		{
+			var sb = new StringBuilder();
+			try
+			{
+				foreach (var disc in Discs)
+				{
+					sb.Append($"{new DiscHasher(disc).Calculate_PSX_RedumpHash():X8} {disc.Name}\r\n");
+				}
+			}
+			catch
+			{
+				// ignored
+			}
+			return sb.ToString();
+		}
 
 		public void ResetCounters()
 		{
