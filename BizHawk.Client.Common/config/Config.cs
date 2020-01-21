@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		{
 			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
 			{
-				var cd = ConfigService.Load<ControlDefaults>(ControlDefaultPath);
+				var cd = ConfigService.Load<DefaultControls>(ControlDefaultPath);
 				AllTrollers = cd.AllTrollers;
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
@@ -382,8 +382,6 @@ namespace BizHawk.Client.Common
 		public int Analog_LargeChange = 10;
 		public int Analog_SmallChange = 1;
 
-		
-
 		// [ControllerType][ButtonName] => Physical Bind
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
 		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
@@ -404,13 +402,5 @@ namespace BizHawk.Client.Common
 
 		public string LastWrittenFrom = VersionInfo.Mainversion;
 		public string LastWrittenFromDetailed = VersionInfo.GetEmuVersion();
-	}
-
-	// These are used in the defctrl.json or wherever
-	public class ControlDefaults
-	{
-		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
-		public Dictionary<string, Dictionary<string, string>> AllTrollersAutoFire = new Dictionary<string, Dictionary<string, string>>();
-		public Dictionary<string, Dictionary<string, AnalogBind>> AllTrollersAnalog = new Dictionary<string, Dictionary<string, AnalogBind>>();
 	}
 }

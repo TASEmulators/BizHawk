@@ -237,7 +237,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadPanels(ControlDefaults cd)
+		private void LoadPanels(DefaultControls cd)
 		{
 			LoadPanels(cd.AllTrollers, cd.AllTrollersAutoFire, cd.AllTrollersAnalog);
 		}
@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(_config.AllTrollersAnalog[_emulator.ControllerDefinition.Name]));
 		}
 
-		private void SaveToDefaults(ControlDefaults cd)
+		private void SaveToDefaults(DefaultControls cd)
 		{
 			ActOnControlCollection<ControllerConfigPanel>(NormalControlsTab, c => c.Save(cd.AllTrollers[_emulator.ControllerDefinition.Name]));
 			ActOnControlCollection<ControllerConfigPanel>(AutofireControlsTab, c => c.Save(cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name]));
@@ -398,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 			// load panels directly from the default config.
 			// this means that the changes are NOT committed.  so "Cancel" works right and you
 			// still have to hit OK at the end.
-			var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
+			var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
 			LoadPanels(cd);
 
 			tabControl1.SelectTab(wasTabbedMain);
@@ -431,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to overwrite defaults for current control scheme?", "Save Defaults", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				var cd = ConfigService.Load<ControlDefaults>(Config.ControlDefaultPath);
+				var cd = ConfigService.Load<DefaultControls>(Config.ControlDefaultPath);
 				cd.AllTrollers[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAutoFire[_emulator.ControllerDefinition.Name] = new Dictionary<string, string>();
 				cd.AllTrollersAnalog[_emulator.ControllerDefinition.Name] = new Dictionary<string, AnalogBind>();
