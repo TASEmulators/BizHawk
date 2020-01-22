@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Bizware.BizwareGL",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizHawk.Client.ApiHawk", "BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj", "{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.BizInvoke", "BizHawk.BizInvoke\BizHawk.BizInvoke.csproj", "{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D76DC1-84A8-47AF-BE25-E76F06D2FBBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace BizHawk.Common.BizInvoke
+namespace BizHawk.BizInvoke
 {
 	public sealed class MemoryBlock : MemoryBlockBase
 	{

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Common.BizInvoke
+namespace BizHawk.BizInvoke
 {
 	/// <summary>
 	/// create interop delegates and function pointers for a particular calling convention

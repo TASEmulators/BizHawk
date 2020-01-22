@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Common.BizInvoke
+using BizHawk.Common;
+
+namespace BizHawk.BizInvoke
 {
 	public abstract class MemoryBlockBase : IDisposable
 	{

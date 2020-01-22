@@ -1,4 +1,4 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.BizInvoke;
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;

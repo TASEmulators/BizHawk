@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 
-using static BizHawk.Common.POSIXLibC;
+using static BizHawk.BizInvoke.POSIXLibC;
 
-namespace BizHawk.Common.BizInvoke
+namespace BizHawk.BizInvoke
 {
 	public sealed class MemoryBlockUnix : MemoryBlockBase
 	{

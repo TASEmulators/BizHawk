@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Common.BizInvoke
+namespace BizHawk.BizInvoke
 {
 	public static class BizInvokeUtilities
 	{

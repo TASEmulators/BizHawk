@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
-namespace BizHawk.Common.BizInvoke
+namespace BizHawk.BizInvoke
 {
 	public static class BizInvoker
 	{
@@ -60,7 +60,7 @@ namespace BizHawk.Common.BizInvoke
 		/// get an implementation proxy for an interop class
 		/// </summary>
 		/// <typeparam name="T">The class type that represents the DLL</typeparam>
-		/// <exception cref="InvalidOperationException"><see cref="GetInvoker{T}(BizHawk.Common.IImportResolver,BizHawk.Common.IMonitor,BizHawk.Common.BizInvoke.ICallingConventionAdapter)"/> previously called with <paramref name="dll"/></exception>
+		/// <exception cref="InvalidOperationException"><see cref="GetInvoker{T}(BizHawk.Common.IImportResolver,BizHawk.Common.IMonitor,BizHawk.BizInvoke.ICallingConventionAdapter)"/> overload previously called with <paramref name="dll"/></exception>
 		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{

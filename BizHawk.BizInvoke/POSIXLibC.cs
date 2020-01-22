@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-using static BizHawk.Common.BizInvoke.MemoryBlockBase;
+using static BizHawk.BizInvoke.MemoryBlockBase;
 
-namespace BizHawk.Common
+namespace BizHawk.BizInvoke
 {
 	public static class POSIXLibC
 	{

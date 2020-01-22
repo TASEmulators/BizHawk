@@ -6,7 +6,9 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BizHawk.Common.BizInvoke
+using BizHawk.Common;
+
+namespace BizHawk.BizInvoke
 {
 	public static class BizExvoker
 	{

@@ -1,4 +1,4 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.BizInvoke;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
