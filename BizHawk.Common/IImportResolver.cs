@@ -64,9 +64,7 @@ namespace BizHawk.Common
 		{
 			// copy the dll to a temp directory
 			var path = TempFileManager.GetTempFilename(Path.GetFileNameWithoutExtension(dllPath), ".dll", false);
-			using var stream = new FileStream(path, FileMode.Create, FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None);
-			using var sdll = File.OpenRead(dllPath);
-			sdll.CopyTo(stream);
+			File.Copy(dllPath, path, true);
 			// try to locate dlls in the current directory (for libretro cores)
 			// this isn't foolproof but it's a little better than nothing
 			// setting PWD temporarily doesn't work. that'd be ideal since it supposedly gets searched early on,
