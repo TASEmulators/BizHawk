@@ -722,13 +722,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public List<CartInfo> Identify(string sha1)
 			{
-				lock (syncroot)
-				{
-					if (!sha1_table.ContainsKey(sha1))
-						return new List<CartInfo>();
-					else
-						return sha1_table[sha1];
-				}
+				lock (syncroot) return sha1_table[sha1];
 			}
 		}
 	}

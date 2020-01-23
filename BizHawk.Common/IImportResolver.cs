@@ -1,11 +1,8 @@
-﻿#nullable disable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
 
 namespace BizHawk.Common
 {
@@ -23,7 +20,7 @@ namespace BizHawk.Common
 	{
 		private static readonly Lazy<IEnumerable<string>> asdf = new Lazy<IEnumerable<string>>(() =>
 		{
-			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace("file:", "");
+			var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase)?.Replace("file:", "") ?? string.Empty;
 			return new[] { "/usr/lib/", "/usr/lib/bizhawk/", "./", "./dll/" }.Select(dir => dir[0] == '.' ? currDir + dir.Substring(1) : dir);
 		});
 
