@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<!-- This stuff was unique to this project and also not mentioned in the tutorial, so I've left them commented here. -->
@@ -52,19 +51,19 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
 		<Reference Include="PeNet"
-			HintPath="../References/PeNet.dll"
+			HintPath="$(SolutionDir)References/PeNet.dll"
 			Private="true" />
 		<Reference Include="Virtu"
-			HintPath="../References/Virtu.dll"
+			HintPath="$(SolutionDir)References/Virtu.dll"
 			Private="true" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
-		<ProjectReference Include="../BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.BizInvoke/BizHawk.BizInvoke.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Common/BizHawk.Emulation.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="../Version/svnrev.cs" />
-		<Compile Include="../Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="CPUs/MOS 6502X/6502XXX/**/*" />
@@ -125,5 +124,5 @@
 		<Compile Update="Properties/Resources.Designer.cs" AutoGen="true" DependentUpon="Resources.resx" DesignTime="true" />
 		<EmbeddedResource Update="Properties/Resources.resx" LastGenOutput="Resources.Designer.cs" />
 	</ItemGroup>
-	<Import Project="../NamespaceAliasHack.abs.targets" />
+	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
-	<Import Project="../CommonNullable.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
+	<Import Project="$(SolutionDir)CommonNullable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
@@ -11,8 +10,8 @@
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="../Version/svnrev.cs" />
-		<Compile Include="../Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 		<Compile Remove="Extensions/BinaryReaderExtensions.cs" />
 		<Compile Remove="SuperGloballyUniqueID.cs" />
 	</ItemGroup>

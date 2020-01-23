@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 </Project>

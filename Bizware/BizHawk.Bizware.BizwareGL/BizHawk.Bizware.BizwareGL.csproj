@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
@@ -11,9 +10,9 @@
 		<PackageReference Include="OpenTK" Version="3.0.1" PrivateAssets="All" />
 		<PackageReference Include="OpenTK.GLControl" Version="3.0.1" PrivateAssets="All" />
 		<Reference Include="SlimDX"
-			HintPath="../../References/x64/SlimDX.dll"
+			HintPath="$(SolutionDir)References/x64/SlimDX.dll"
 			Private="true" />
-		<ProjectReference Include="../../BizHawk.Common/BizHawk.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="CacheBlendState.cs" />

@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
@@ -16,11 +15,11 @@
 		<!--<Reference Include="System.Xml.Linq" />-->
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.Common/BizHawk.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="../Version/svnrev.cs" />
-		<Compile Include="../Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 </Project>
 

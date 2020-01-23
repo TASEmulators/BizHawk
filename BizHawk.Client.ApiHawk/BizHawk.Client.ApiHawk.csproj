@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
@@ -18,11 +17,11 @@
 		<!--<Reference Include="System.Xml.Linq" />-->
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Classes/Api/PluginBase.cs" />
 		<Compile Remove="Interfaces/IPlugin.cs" />
 	</ItemGroup>
-	<Import Project="../NamespaceAliasHack.abs.targets" />
+	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

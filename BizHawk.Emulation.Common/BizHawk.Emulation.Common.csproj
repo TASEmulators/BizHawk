@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
@@ -19,11 +18,11 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.DiscSystem/BizHawk.Emulation.DiscSystem.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="../Version/svnrev.cs" />
-		<Compile Include="../Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Interfaces/IHookManager.cs" />

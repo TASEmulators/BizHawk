@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="../Common.abs.props" />
+	<Import Project="$(SolutionDir)Common.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<OutputPath>../output/dll</OutputPath>
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
@@ -14,7 +13,7 @@
 		<!--<Reference Include="System.Data.DataSetExtensions" />-->
 		<Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
 			<SpecificVersion>False</SpecificVersion>
-			<HintPath>../References/x64/SQLite/System.Data.SQLite.dll</HintPath>
+			<HintPath>$(SolutionDir)References/x64/SQLite/System.Data.SQLite.dll</HintPath>
 		</Reference>
 		<!--<Reference Include="System.Drawing" />-->
 		<Reference Include="System.IO.Compression" />
@@ -26,18 +25,18 @@
 		<PackageReference Include="Ionic.Zip" Version="1.9.1.8" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
 		<Reference Include="NLua"
-			HintPath="../output/dll/nlua/NLua.dll"
+			HintPath="$(SolutionDir)output/dll/nlua/NLua.dll"
 			Private="False" />
 		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="All" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
-		<ProjectReference Include="../Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
+		<ProjectReference Include="$(SolutionDir)BizHawk.Emulation.Cores/BizHawk.Emulation.Cores.csproj" />
+		<ProjectReference Include="$(SolutionDir)Bizware/BizHawk.Bizware.BizwareGL/BizHawk.Bizware.BizwareGL.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Include="../Version/svnrev.cs" />
-		<Compile Include="../Version/VersionInfo.cs" />
+		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
+		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="lua/LuaExamples.cs" />
@@ -51,5 +50,5 @@
 		<Compile Update="movie/tasproj/TasMovie.Editing.cs" DependentUpon="TasMovie.cs" />
 		<Compile Update="movie/tasproj/TasMovie.IO.cs" DependentUpon="TasMovie.cs" />
 	</ItemGroup>
-	<Import Project="../NamespaceAliasHack.abs.targets" />
+	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>
