@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<RuleSet Name="BizHawk Rules" Description="Applies to all projects in the solution -- or, it will eventually." ToolsVersion="14.0">
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpecialRules">
+		<!-- XML comment analysis disabled -->
+		<Rule Id="SA0001" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.SpacingRules">
+		<!-- Keywords should be spaced correctly -->
+		<Rule Id="SA1000" Action="Hidden" />
+
+		<!-- Commas should be spaced correctly -->
+		<Rule Id="SA1001" Action="Hidden" />
+
+		<!-- Semicolons should be spaced correctly -->
+		<Rule Id="SA1002" Action="Hidden" />
+
+		<!-- Symbols should be spaced correctly -->
+		<Rule Id="SA1003" Action="Hidden" />
+
+		<!-- Documentation lines should begin with single space -->
+		<Rule Id="SA1004" Action="Hidden" />
+
+		<!-- Single line comments should begin with single space -->
+		<Rule Id="SA1005" Action="Hidden" />
+
+		<!-- Preprocessor keywords should not be preceded by space -->
+		<Rule Id="SA1006" Action="Hidden" />
+
+		<!-- Opening parenthesis should be spaced correctly -->
+		<Rule Id="SA1008" Action="Hidden" />
+
+		<!-- Closing parenthesis should be spaced correctly -->
+		<Rule Id="SA1009" Action="Hidden" />
+
+		<!-- Opening square brackets should be spaced correctly -->
+		<Rule Id="SA1010" Action="Hidden" />
+
+		<!-- Closing square brackets should be spaced correctly -->
+		<Rule Id="SA1011" Action="Hidden" />
+
+		<!-- Opening braces should be spaced correctly -->
+		<Rule Id="SA1012" Action="Hidden" />
+
+		<!-- Closing braces should be spaced correctly -->
+		<Rule Id="SA1013" Action="Hidden" />
+
+		<!-- Closing generic brackets should be spaced correctly -->
+		<Rule Id="SA1015" Action="Hidden" />
+
+		<!-- Member access symbols should be spaced correctly -->
+		<Rule Id="SA1019" Action="Hidden" />
+
+		<!-- Negative signs should be spaced correctly -->
+		<Rule Id="SA1021" Action="Hidden" />
+
+		<!-- Dereference and access of symbols should be spaced correctly -->
+		<Rule Id="SA1023" Action="Hidden" />
+
+		<!-- Colons should be spaced correctly -->
+		<Rule Id="SA1024" Action="Hidden" />
+
+		<!-- Code should not contain multiple whitespace in a row -->
+		<Rule Id="SA1025" Action="Hidden" />
+
+		<!-- Code should not contain space after new or stackalloc keyword in implicitly typed array allocation -->
+		<Rule Id="SA1026" Action="Hidden" />
+
+		<!-- Use tabs correctly -->
+		<Rule Id="SA1027" Action="Hidden" />
+
+		<!-- Code should not contain trailing whitespace -->
+		<Rule Id="SA1028" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.ReadabilityRules">
+		<!-- Do not prefix calls with base unless local implementation exists -->
+		<Rule Id="SA1100" Action="Hidden" />
+
+		<!-- Prefix local calls with this -->
+		<Rule Id="SA1101" Action="Hidden" />
+
+		<!-- Code should not contain empty statements -->
+		<Rule Id="SA1106" Action="Hidden" />
+
+		<!-- Code should not contain multiple statements on one line -->
+		<Rule Id="SA1107" Action="Hidden" />
+
+		<!-- Block statements should not contain embedded comments -->
+		<Rule Id="SA1108" Action="Hidden" />
+
+		<!-- Opening parenthesis or bracket should be on declaration line -->
+		<Rule Id="SA1110" Action="Hidden" />
+
+		<!-- Closing parenthesis should be on line of last parameter -->
+		<Rule Id="SA1111" Action="Hidden" />
+
+		<!-- Comma should be on the same line as previous parameter -->
+		<Rule Id="SA1113" Action="Hidden" />
+
+		<!-- Parameter list should follow declaration -->
+		<Rule Id="SA1114" Action="Hidden" />
+
+		<!-- Parameter should follow comma -->
+		<Rule Id="SA1115" Action="Hidden" />
+
+		<!-- Split parameters should start on line after declaration -->
+		<Rule Id="SA1116" Action="Hidden" />
+
+		<!-- Parameters should be on same line or separate lines -->
+		<Rule Id="SA1117" Action="Hidden" />
+
+		<!-- Parameter should not span multiple lines -->
+		<Rule Id="SA1118" Action="Hidden" />
+
+		<!-- Comments should contain text -->
+		<Rule Id="SA1120" Action="Hidden" />
+
+		<!-- Use built-in type alias -->
+		<Rule Id="SA1121" Action="Hidden" />
+
+		<!-- Use string.Empty for empty strings -->
+		<Rule Id="SA1122" Action="Hidden" />
+
+		<!-- Do not place regions within elements -->
+		<Rule Id="SA1123" Action="Hidden" />
+
+		<!-- Do not use regions -->
+		<Rule Id="SA1124" Action="Hidden" />
+
+		<!-- Generic type constraints should be on their own line -->
+		<Rule Id="SA1127" Action="Hidden" />
+
+		<!-- Put constructor initializers on their own line -->
+		<Rule Id="SA1128" Action="Hidden" />
+
+		<!-- Do not use default value type constructor -->
+		<Rule Id="SA1129" Action="Hidden" />
+
+		<!-- Use lambda syntax -->
+		<Rule Id="SA1130" Action="Hidden" />
+
+		<!-- Use readable conditions -->
+		<Rule Id="SA1131" Action="Hidden" />
+
+		<!-- Do not combine fields -->
+		<Rule Id="SA1132" Action="Hidden" />
+
+		<!-- Do not combine attributes -->
+		<Rule Id="SA1133" Action="Hidden" />
+
+		<!-- Attributes should not share line -->
+		<Rule Id="SA1134" Action="Hidden" />
+
+		<!-- Enum values should be on separate lines -->
+		<Rule Id="SA1136" Action="Hidden" />
+
+		<!-- Elements should have the same indentation -->
+		<Rule Id="SA1137" Action="Hidden" />
+
+		<!-- Use literal suffix notation instead of casting -->
+		<Rule Id="SA1139" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.OrderingRules">
+		<!-- Using directives should be placed correctly -->
+		<Rule Id="SA1200" Action="Hidden" />
+
+		<!-- Elements should appear in the correct order -->
+		<Rule Id="SA1201" Action="Hidden" />
+
+		<!-- Elements should be ordered by access -->
+		<Rule Id="SA1202" Action="Hidden" />
+
+		<!-- Constants should appear before fields -->
+		<Rule Id="SA1203" Action="Hidden" />
+
+		<!-- Static elements should appear before instance elements -->
+		<Rule Id="SA1204" Action="Hidden" />
+
+		<!-- Partial elements should declare access -->
+		<Rule Id="SA1205" Action="Hidden" />
+
+		<!-- Declaration keywords should follow order -->
+		<Rule Id="SA1206" Action="Hidden" />
+
+		<!-- System using directives should be placed before other using directives -->
+		<Rule Id="SA1208" Action="Hidden" />
+
+		<!-- Using alias directives should be placed after other using directives -->
+		<Rule Id="SA1209" Action="Hidden" />
+
+		<!-- Using directives should be ordered alphabetically by namespace -->
+		<Rule Id="SA1210" Action="Hidden" />
+
+		<!-- Using alias directives should be ordered alphabetically by alias name -->
+		<Rule Id="SA1211" Action="Hidden" />
+
+		<!-- Property accessors should follow order -->
+		<Rule Id="SA1212" Action="Hidden" />
+
+		<!-- Readonly fields should appear before non-readonly fields -->
+		<Rule Id="SA1214" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.NamingRules">
+		<!-- Element should begin with upper-case letter -->
+		<Rule Id="SA1300" Action="Hidden" />
+
+		<!-- Interface names should begin with I -->
+		<Rule Id="SA1302" Action="Hidden" />
+
+		<!-- Const field names should begin with upper-case letter -->
+		<Rule Id="SA1303" Action="Hidden" />
+
+		<!-- Non-private readonly fields should begin with upper-case letter -->
+		<Rule Id="SA1304" Action="Hidden" />
+
+		<!-- Field names should begin with lower-case letter -->
+		<Rule Id="SA1306" Action="Hidden" />
+
+		<!-- Accessible fields should begin with upper-case letter -->
+		<Rule Id="SA1307" Action="Hidden" />
+
+		<!-- Variable names should not be prefixed -->
+		<Rule Id="SA1308" Action="Hidden" />
+
+		<!-- Field names should not begin with underscore -->
+		<Rule Id="SA1309" Action="Hidden" />
+
+		<!-- Field names should not contain underscore -->
+		<Rule Id="SA1310" Action="Hidden" />
+
+		<!-- Static readonly fields should begin with upper-case letter -->
+		<Rule Id="SA1311" Action="Hidden" />
+
+		<!-- Variable names should begin with lower-case letter -->
+		<Rule Id="SA1312" Action="Hidden" />
+
+		<!-- Parameter names should begin with lower-case letter -->
+		<Rule Id="SA1313" Action="Hidden" />
+
+		<!-- Type parameter names should begin with T -->
+		<Rule Id="SA1314" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.MaintainabilityRules">
+		<!-- I put this rule in this section because the defaults put it here. -->
+		<!-- Statement should not use unnecessary parenthesis -->
+		<Rule Id="SA1119" Action="Hidden" />
+
+		<!-- Access modifier should be declared -->
+		<Rule Id="SA1400" Action="Hidden" />
+
+		<!-- Fields should be private -->
+		<Rule Id="SA1401" Action="Hidden" />
+
+		<!-- File may only contain a single type -->
+		<Rule Id="SA1402" Action="Hidden" />
+
+		<!-- Debug.Assert should provide message text -->
+		<Rule Id="SA1405" Action="Hidden" />
+
+		<!-- Arithmetic expressions should declare precedence -->
+		<Rule Id="SA1407" Action="Hidden" />
+
+		<!-- Conditional expressions should declare precedence -->
+		<Rule Id="SA1408" Action="Hidden" />
+
+		<!-- Remove delegate parenthesis when possible -->
+		<Rule Id="SA1410" Action="Hidden" />
+
+		<!-- Use trailing comma in multi-line initializers -->
+		<Rule Id="SA1413" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.LayoutRules">
+		<!-- Braces for multi-line statements should not share line -->
+		<Rule Id="SA1500" Action="Hidden" />
+
+		<!-- Statement should not be on a single line -->
+		<Rule Id="SA1501" Action="Hidden" />
+
+		<!-- Element should not be on a single line -->
+		<Rule Id="SA1502" Action="Hidden" />
+
+		<!-- Braces should not be omitted -->
+		<Rule Id="SA1503" Action="Hidden" />
+
+		<!-- All accessors should be single-line or multi-line -->
+		<Rule Id="SA1504" Action="Hidden" />
+
+		<!-- Opening braces should not be followed by blank line -->
+		<Rule Id="SA1505" Action="Hidden" />
+
+		<!-- Code should not contain multiple blank lines in a row -->
+		<Rule Id="SA1507" Action="Hidden" />
+
+		<!-- Closing braces should not be preceded by blank line -->
+		<Rule Id="SA1508" Action="Hidden" />
+
+		<!-- Opening braces should not be preceded by blank line -->
+		<Rule Id="SA1509" Action="Hidden" />
+
+		<!-- Chained statement blocks should not be preceded by blank line -->
+		<Rule Id="SA1510" Action="Hidden" />
+
+		<!-- Single-line comments should not be followed by blank line -->
+		<Rule Id="SA1512" Action="Hidden" />
+
+		<!-- Closing brace should be followed by blank line -->
+		<Rule Id="SA1513" Action="Hidden" />
+
+		<!-- Element documentation header should be preceded by blank line -->
+		<Rule Id="SA1514" Action="Hidden" />
+
+		<!-- Single-line comment should be preceded by blank line -->
+		<Rule Id="SA1515" Action="Hidden" />
+
+		<!-- Elements should be separated by blank line -->
+		<Rule Id="SA1516" Action="Hidden" />
+
+		<!-- Code should not contain blank lines at start of file -->
+		<Rule Id="SA1517" Action="Hidden" />
+
+		<!-- Use line endings correctly at end of file -->
+		<Rule Id="SA1518" Action="Hidden" />
+
+		<!-- Braces should not be omitted from multi-line child statement -->
+		<Rule Id="SA1519" Action="Hidden" />
+
+		<!-- Use braces consistently -->
+		<Rule Id="SA1520" Action="Hidden" />
+	</Rules>
+
+	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.DocumentationRules">
+		<!-- Element parameter documentation should match element parameters -->
+		<Rule Id="SA1612" Action="Hidden" />
+
+		<!-- Property summary documentation should match accessors -->
+		<Rule Id="SA1623" Action="Hidden" />
+
+		<!-- Single-line comments should not use documentation style slashes -->
+		<Rule Id="SA1626" Action="Hidden" />
+
+		<!-- Documentation text should not be empty -->
+		<Rule Id="SA1627" Action="Hidden" />
+
+		<!-- Documentation text should end with a period -->
+		<Rule Id="SA1629" Action="Hidden" />
+
+		<!-- File should have header -->
+		<Rule Id="SA1633" Action="Hidden" />
+
+		<!-- Constructor summary documentation should begin with standard text -->
+		<Rule Id="SA1642" Action="Hidden" />
+
+		<!-- File name should match first type name -->
+		<Rule Id="SA1649" Action="Hidden" />
+	</Rules>
+</RuleSet>

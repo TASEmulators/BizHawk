@@ -1,12 +1,12 @@
-﻿namespace BizHawk.Common
-{
-	using System;
-	using System.Collections.Generic;
-	using System.IO;
-	using System.IO.Compression;
-	using System.Linq;
-	using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading;
 
+namespace BizHawk.Common
+{
 	public static unsafe class Util
 	{
 		public static void CopyStream(Stream src, Stream dest, long len)

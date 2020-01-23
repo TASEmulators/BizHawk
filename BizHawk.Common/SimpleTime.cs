@@ -1,8 +1,8 @@
-﻿namespace BizHawk.Common
-{
-	using System;
-	using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
+namespace BizHawk.Common
+{
 	/// <summary>Create a new instance of this class in a <see langword="using"/> block, and it will measure the time elapsed until the block finishes executing. Provide a label to print to stdout or provide a callback for custom behaviour.</summary>
 	public class SimpleTime : IDisposable
 	{

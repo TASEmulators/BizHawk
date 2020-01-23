@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using BizHawk.Common.NumberExtensions;
+
 namespace BizHawk.Common
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-
-	using BizHawk.Common.NumberExtensions;
-
 	/// <summary>semantically similar to <see cref="Range{T}"/>, but obviously does no checks at runtime</summary>
 	public struct RangeStruct<T> where T : unmanaged, IComparable<T>
 	{

@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
+		<CodeAnalysisRuleSet>$(SolutionDir)Common.ruleset</CodeAnalysisRuleSet>
 		<ErrorReport>prompt</ErrorReport>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>8.0</LangVersion>
@@ -17,4 +18,8 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
+		<!--<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113" PrivateAssets="All" />-->
+	</ItemGroup>
 </Project>

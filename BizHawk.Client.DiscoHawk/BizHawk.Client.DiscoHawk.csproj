@@ -71,6 +71,7 @@
 			<Install>true</Install>
 		</BootstrapperPackage>
 	</ItemGroup>
+	<Import Project="../CommonStyleCopAnalyzer.abs.props" />
 	<Import Project="../CommonRefAssemblies.abs.props" Condition=" '$(OS)' != 'Windows_NT' " />
 	<ItemGroup>
 		<Reference Include="System" />
