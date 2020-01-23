@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Common
+﻿#nullable disable
+
+namespace BizHawk.Common
 {
 	public static class BitReverse
 	{

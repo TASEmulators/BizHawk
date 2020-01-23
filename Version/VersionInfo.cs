@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.IO;
 
 internal static class VersionInfo

@@ -1,0 +1,9 @@
+<Project>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<!--<PackageReference Include="Nullable" Version="1.2.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />-->
+		<PackageReference Include="Nullable" Version="1.2.0" PrivateAssets="all" />
+	</ItemGroup>
+</Project>
