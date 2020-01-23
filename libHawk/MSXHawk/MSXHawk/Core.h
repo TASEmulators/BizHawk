@@ -5,7 +5,7 @@
 
 #include "Z80A.h"
 #include "PSG.h"
-#include "VDP.h"
+#include "TMS9918A.h"
 #include "Memory.h"
 
 namespace MSXHawk
@@ -24,14 +24,19 @@ namespace MSXHawk
 			psg.Clock_Divider = 16;
 		};
 
-		VDP vdp;
+		TMS9918A vdp;
 		Z80A cpu;
 		SN76489sms psg;
 		MemoryManager MemMap;
 
-		void Load_ROM(uint8_t* ext_rom, uint32_t ext_rom_size, uint32_t ext_rom_mapper)
+		void Load_BIOS(uint8_t* bios, uint8_t* basic)
 		{
-			MemMap.Load_ROM(ext_rom, ext_rom_size, ext_rom_mapper);
+			MemMap.Load_BIOS(bios, basic);
+		}
+
+		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
+		{
+			MemMap.Load_ROM(ext_rom_1, ext_rom_size_1, ext_rom_mapper_1, ext_rom_2, ext_rom_size_2, ext_rom_mapper_2);
 		}
 
 		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, bool render, bool rendersound)
@@ -41,23 +46,28 @@ namespace MSXHawk
 			MemMap.start_pressed = (controller_1 & 0x80) > 0;
 			MemMap.lagged = true;
 
-			int scanlinesPerFrame = 262;
+			uint32_t scanlinesPerFrame = 262;
 			vdp.SpriteLimit = true;
 
 			psg.num_samples_L = 0;
 			psg.num_samples_R = 0;
 			psg.sampleclock = 0;
 
-			for (int i = 0; i < scanlinesPerFrame; i++)
+			for (uint32_t i = 0; i < scanlinesPerFrame; i++)
 			{
 				vdp.ScanLine = i;
 
-				vdp.RenderCurrentScanline(render);
+				vdp.RenderScanline(i);
 
-				vdp.ProcessFrameInterrupt();
-				vdp.ProcessLineInterrupt();
+				if (vdp.ScanLine == 192)
+				{
+					vdp.InterruptPendingSet(true);
 
-				for (int j = 0; j < vdp.IPeriod; j++)
+					if (vdp.EnableInterrupts())
+						cpu.NonMaskableInterruptset(true);
+				}
+
+				for (uint32_t j = 0; j < vdp.IPeriod; j++)
 				{
 					cpu.ExecuteOne();
 
@@ -69,27 +79,16 @@ namespace MSXHawk
 					}
 					psg.sampleclock++;						
 				}
-
-				if (vdp.ScanLine == scanlinesPerFrame - 1)
-				{
-					vdp.ProcessGGScreen();
-					//vdp.ProcessOverscan();
-				}
 			}
 
 			return MemMap.lagged;
 		}
 
 		void GetVideo(uint32_t* dest) {
-			uint32_t* src = vdp.GameGearFrameBuffer;
+			uint32_t* src = vdp.FrameBuffer;
 			uint32_t* dst = dest;
 
-			for (int i = 0; i < 144; i++)
-			{
-				std::memcpy(dst, src, sizeof uint32_t * 160);
-				src += 160;
-				dst += 160;
-			}
+			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
 		}
 
 		uint32_t GetAudio(uint32_t* dest_L, uint32_t* dest_R, uint32_t* n_samp_L, uint32_t* n_samp_R) 

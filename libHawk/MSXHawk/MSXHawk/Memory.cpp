@@ -5,7 +5,7 @@
 
 #include "Memory.h"
 #include "Z80A.h"
-#include "VDP.h"
+#include "TMS9918A.h"
 #include "PSG.h"
 
 using namespace std;
@@ -15,143 +15,172 @@ namespace MSXHawk
 	uint8_t MemoryManager::HardwareRead(uint32_t port)
 	{
 		port &= 0xFF;
-		if (port < 0x40) // General IO ports
-		{
 
-			switch (port)
-			{
-			case 0x00: return ReadPort0();
-			case 0x01: return Port01;
-			case 0x02: return Port02;
-			case 0x03: return Port03;
-			case 0x04: return Port04;
-			case 0x05: return Port05;
-			case 0x06: return 0xFF;
-			case 0x3E: return Port3E;
-			default: return 0xFF;
-			}
-		}
-		if (port < 0x80)  // VDP Vcounter/HCounter
-		{
-			if ((port & 1) == 0)
-				return vdp_pntr->ReadVLineCounter();
-			else
-				return vdp_pntr->ReadHLineCounter();
-		}
-		if (port < 0xC0) // VDP data/control ports
+		if (port >= 0xA0 && port < 0xC0) // VDP data/control ports
 		{
 			if ((port & 1) == 0)
 				return vdp_pntr->ReadData();
 			else
 				return vdp_pntr->ReadVdpStatus();
 		}
-		switch (port)
-		{
-		case 0xC0:
-		case 0xDC: return ReadControls1();
-		case 0xC1:
-		case 0xDD: return ReadControls2();
-		case 0xDE: return PortDEEnabled ? PortDE : 0xFF;
-		case 0xF2: return 0xFF;
-		default: return 0xFF;
-		}
+		
+		return 0xFF;
 	}
 	
 	void MemoryManager::HardwareWrite(uint32_t port, uint8_t value)
 	{
 		port &= 0xFF;
-		if (port < 0x40) // general IO ports
+
+		if (port == 0x98) // VDP
 		{
-			switch (port & 0xFF)
-			{
-			case 0x01: Port01 = value; break;
-			case 0x02: Port02 = value; break;
-			case 0x03: Port03 = value; break;
-			case 0x04: /*Port04 = value*/; break; // receive port, not sure what writing does
-			case 0x05: Port05 = (uint8_t)(value & 0xF8); break;
-			case 0x06: psg_pntr->Set_Panning(value); break;
-			case 0x3E: Port3E = value; break;
-			case 0x3F: Port3F = value; break;
-			}
-		}
-		else if (port < 0x80) // PSG
+			vdp_pntr->WriteVdpData(value);
+		}				
+		else if(port == 0x99) // VDP
+		{
+			vdp_pntr->WriteVdpControl(value);
+		}				
+		else if (port == 0xA1)
 		{
 			psg_pntr->WriteReg(value);
 		}
-		else if (port < 0xC0) // VDP
+		else if (port == 0xA8)
 		{
-			if ((port & 1) == 0) 
-			{
-				vdp_pntr->WriteVdpData(value);
-			}				
-			else
-			{
-				vdp_pntr->WriteVdpControl(value);
-			}				
+			PortA8 = value;
+			remap();
 		}
-		else if (port == 0xDE && PortDEEnabled) PortDE = value;
 	}
 	
-	void MemoryManager::remap_ROM_0()
+	void MemoryManager::remap()
 	{
-		// 0x0000 - 0x03FF always maps to start of ROM
-		cpu_pntr->MemoryMap[0] = &rom[0];
-		cpu_pntr->MemoryMapMask[0] = 0;
-
-		for (uint32_t i = 1; i < 16; i++)
-		{
-			cpu_pntr->MemoryMap[i] = &rom[(reg_FFFD % rom_size) * 0x4000 + (0x400 * i)];
-			cpu_pntr->MemoryMapMask[i] = 0;
-		}
-	}
-
-	void MemoryManager::remap_ROM_1()
-	{
-		for (uint32_t i = 0; i < 16; i++)
-		{
-			cpu_pntr->MemoryMap[i + 16] = &rom[(reg_FFFE % rom_size) * 0x4000 + (0x400 * i)];
-			cpu_pntr->MemoryMapMask[i + 16] = 0;
-		}
-	}
-
-	void MemoryManager::remap_ROM_2()
-	{
-		if ((reg_FFFC & 0x8) > 0)
+		if ((PortA8 & 3) == 0) 
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 32] = &cart_ram[((reg_FFFC >> 2) & 0x1) * 0x4000 + (0x400 * i)];
-				cpu_pntr->MemoryMapMask[i + 32] = 0xFF;
+				cpu_pntr->MemoryMap[i] = &bios_rom[(0x400 * i)];
+				cpu_pntr->MemoryMapMask[i] = 0;
 			}
 		}
-		else
+		else if ((PortA8 & 3) == 1)
 		{
-			for (int i = 0; i < 16; i++)
+			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 32] = &rom[(reg_FFFF % rom_size) * 0x4000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i] = &rom_1[(0x400 * i)];
+				cpu_pntr->MemoryMapMask[i] = 0;
+			}
+		}
+		else if ((PortA8 & 3) == 2)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i] = &rom_2[(0x400 * i)];
+				cpu_pntr->MemoryMapMask[i] = 0;
+			}
+		}
+		else if ((PortA8 & 3) == 3)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i] = &ram[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i] = 0xFF;
+			}
+		}
+
+		if (((PortA8 >> 2) & 3) == 0)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 16] = &basic_rom[(0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 16] = 0;
+			}
+		}
+		else if (((PortA8 >> 2) & 3) == 1)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 16] = &rom_1[04000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 16] = 0;
+			}
+		}
+		else if (((PortA8 >> 2) & 3) == 2)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 16] = &rom_2[04000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 16] = 0;
+			}
+		}
+		else if (((PortA8 >> 2) & 3) == 3)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 16] = &ram[0x8000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 16] = 0xFF;
+			}
+		}
+
+		if (((PortA8 >> 4) & 3) == 0)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 32] = &unmapped[0];
 				cpu_pntr->MemoryMapMask[i + 32] = 0;
 			}
 		}
-	}
-	
-	void MemoryManager::remap_RAM()
-	{
-		if ((reg_FFFC & 0x10) > 0)
+		else if (((PortA8 >> 4) & 3) == 1)
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 48] = &cart_ram[(0x400 * i)];
-				cpu_pntr->MemoryMapMask[i + 48] = 0xFF;
+				cpu_pntr->MemoryMap[i + 32] = &rom_1[0x8000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 32] = 0;
 			}
 		}
-		else
+		else if (((PortA8 >> 4) & 3) == 2)
 		{
-			for (uint32_t i = 0; i < 8; i++)
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 32] = &rom_2[0x8000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 32] = 0;
+			}
+		}
+		else if (((PortA8 >> 4) & 3) == 3)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 32] = &ram[0x4000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 32] = 0xFF;
+			}
+		}
+
+		if (((PortA8 >> 6) & 3) == 0)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 48] = &unmapped[0];
+				cpu_pntr->MemoryMapMask[i + 48] = 0;
+			}
+		}
+		else if (((PortA8 >> 6) & 3) == 1)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 48] = &rom_1[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 48] = 0;
+			}
+		}
+		else if (((PortA8 >> 6) & 3) == 2)
+		{
+			for (uint32_t i = 0; i < 16; i++)
+			{
+				cpu_pntr->MemoryMap[i + 48] = &rom_2[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMapMask[i + 48] = 0;
+			}
+		}
+		else if (((PortA8 >> 6) & 3) == 3)
+		{
+			for (uint32_t i = 0; i < 16; i++)
 			{
 				cpu_pntr->MemoryMap[i + 48] = &ram[(0x400 * i)];
-				cpu_pntr->MemoryMap[i + 48 + 8] = &ram[(0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 48] = 0xFF;
-				cpu_pntr->MemoryMapMask[i + 48 + 8] = 0xFF;
 			}
 		}
 	}

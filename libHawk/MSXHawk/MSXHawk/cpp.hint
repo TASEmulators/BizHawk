@@ -1,2 +1,2 @@
-#define MSXHAWK_API __declspec(dllexport)
-#define MSXHAWK_API __declspec(dllimport)
+#define MSXHawk_API __declspec(dllexport)
+#define MSXHawk_API __declspec(dllimport)

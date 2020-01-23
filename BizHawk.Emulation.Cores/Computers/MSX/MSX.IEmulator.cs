@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		#region Video
 		public int _frameHz = 60;
 
-		public int[] _vidbuffer = new int[160 * 144];
+		public int[] _vidbuffer = new int[192 * 256];
 
 		public int[] GetVideoBuffer()
 		{
