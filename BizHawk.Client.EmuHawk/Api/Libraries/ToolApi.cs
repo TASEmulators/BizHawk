@@ -10,14 +10,14 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Type GetTool(string name)
 		{
-			var toolType = ReflectionUtil.GetTypeByName(name).FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
+			var toolType = Util.GetTypeByName(name).FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
 			if (toolType != null) GlobalWin.Tools.Load(toolType);
 			return GlobalWin.Tools.AvailableTools.FirstOrDefault(tool => tool.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
 		}
 
 		public object CreateInstance(string name)
 		{
-			var found = ReflectionUtil.GetTypeByName(name).FirstOrDefault();
+			var found = Util.GetTypeByName(name).FirstOrDefault();
 			return found != null ? Activator.CreateInstance(found) : null;
 		}
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -386,6 +385,38 @@ namespace BizHawk.Client.Common
 
 				Global.Emulator.AsStatable().LoadStateBinary(reader);
 			}
+		}
+	}
+
+	public static class VLInteger
+	{
+		public static void WriteUnsigned(uint value, byte[] data, ref int index)
+		{
+			// This is optimized for good performance on both the x86 and x64 JITs. Don't change anything without benchmarking.
+			do
+			{
+				var x = value & 0x7FU;
+				value >>= 7;
+				data[index++] = (byte)((value != 0U ? 0x80U : 0U) | x);
+			}
+			while (value != 0U);
+		}
+
+		public static uint ReadUnsigned(byte[] data, ref int index)
+		{
+			// This is optimized for good performance on both the x86 and x64 JITs. Don't change anything without benchmarking.
+			var value = 0U;
+			var shiftCount = 0;
+			bool isLastByte; // Negating the comparison and moving it earlier in the loop helps a lot on x86 for some reason
+			do
+			{
+				var x = (uint)data[index++];
+				isLastByte = (x & 0x80U) == 0U;
+				value |= (x & 0x7FU) << shiftCount;
+				shiftCount += 7;
+			}
+			while (!isLastByte);
+			return value;
 		}
 	}
 }

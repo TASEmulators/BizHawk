@@ -261,7 +261,7 @@ namespace BizHawk.Client.Common
 			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
 			{
 				// hex
-				return Util.HexStringToBytes(blob.Substring(2));
+				return blob.Substring(2).HexStringToBytes();
 			}
 
 			// base64

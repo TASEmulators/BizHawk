@@ -14,5 +14,6 @@
 		<Compile Include="../Version/svnrev.cs" />
 		<Compile Include="../Version/VersionInfo.cs" />
 		<Compile Remove="Extensions/BinaryReaderExtensions.cs" />
+		<Compile Remove="SuperGloballyUniqueID.cs" />
 	</ItemGroup>
 </Project>
