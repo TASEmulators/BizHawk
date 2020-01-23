@@ -15,8 +15,7 @@
 			var buffer = new byte[size];
 			while (len > 0)
 			{
-				var todo = Math.Min(len, size);
-				var n = src.Read(buffer, 0, (int) todo);
+				var n = src.Read(buffer, 0, (int) Math.Min(len, size));
 				dest.Write(buffer, 0, n);
 				len -= n;
 			}
@@ -134,9 +133,9 @@
 
 		public static float[] ToFloatBuffer(this byte[] buf)
 		{
-			var len = buf.Length / 4;
-			var ret = new float[len];
-			Buffer.BlockCopy(buf, 0, ret, 0, len); //TODO bug? the last arg should be in bytes
+			var len = buf.Length;
+			var ret = new float[len / 4];
+			Buffer.BlockCopy(buf, 0, ret, 0, len);
 			return ret;
 		}
 
