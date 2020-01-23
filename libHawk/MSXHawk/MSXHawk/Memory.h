@@ -52,18 +52,27 @@ namespace MSXHawk
 
 		void remap();
 
+		// NOTE: only called from source when both are available and of correct size (0x4000)
 		void Load_BIOS(uint8_t* bios, uint8_t* basic) 
 		{
-			bios_rom = bios;
-			basic_rom = basic;
+			bios_rom = new uint8_t[0x4000];
+			basic_rom = new uint8_t[0x4000];
+			
+			memcpy(bios_rom, bios, 0x4000);
+			memcpy(basic_rom, basic, 0x4000);
 		}
 
 		void Load_ROM(uint8_t* ext_rom_1, uint32_t ext_rom_size_1, uint32_t ext_rom_mapper_1, uint8_t* ext_rom_2, uint32_t ext_rom_size_2, uint32_t ext_rom_mapper_2)
 		{
-			rom_1 = ext_rom_1;
+			rom_1 = new uint8_t[ext_rom_size_1];
+			rom_2 = new uint8_t[ext_rom_size_2];
+
+			memcpy(rom_1, ext_rom_1, ext_rom_size_1);
+			memcpy(rom_2, ext_rom_2, ext_rom_size_2);
+
 			rom_size_1 = ext_rom_size_1 / 0x4000;
 			rom_mapper_1 = ext_rom_mapper_1;
-			rom_2 = ext_rom_2;
+
 			rom_size_2 = ext_rom_size_2 / 0x4000;
 			rom_mapper_2 = ext_rom_mapper_2;
 

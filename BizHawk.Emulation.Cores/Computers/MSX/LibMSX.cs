@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Cores.Computers.MSX
 {
 	/// <summary>
-	/// static bindings into MSXHAWK.dll
+	/// static bindings into MSXHawk.dll
 	/// </summary>
 	public static class LibMSX
 	{

@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			}
 
-			byte[] Bios = null;
-			byte[] Basic = null;
 			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios", true, "BIOS Not Found, Cannot Load");
 			Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic", true, "BIOS Not Found, Cannot Load");
 
@@ -68,8 +66,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		IntPtr MSX_Pntr { get; set; } = IntPtr.Zero;
 		byte[] MSX_core = new byte[0x20000];
-		public byte[] _bios;
-		public byte[] _basic;
+		public static byte[] Bios;
+		public static byte[] Basic;
 
 		// Constants
 		private const int BankSize = 16384;

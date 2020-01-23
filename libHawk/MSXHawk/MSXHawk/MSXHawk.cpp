@@ -21,6 +21,10 @@ MSXHawk_EXPORT MSXCore* MSX_create()
 // free the memory from the core pointer
 MSXHawk_EXPORT void MSX_destroy(MSXCore* p)
 {
+	delete p->MemMap.bios_rom;
+	delete p->MemMap.basic_rom;
+	delete p->MemMap.rom_1;
+	delete p->MemMap.rom_2;
 	std::free(p);
 }
 

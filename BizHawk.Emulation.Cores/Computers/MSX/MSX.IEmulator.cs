@@ -157,10 +157,10 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			return _vidbuffer;
 		}
 
-		public int VirtualWidth => 160;
-		public int VirtualHeight => 144;
-		public int BufferWidth => 160;
-		public int BufferHeight => 144;
+		public int VirtualWidth => 256;
+		public int VirtualHeight => 192;
+		public int BufferWidth => 256;
+		public int BufferHeight => 192;
 		public int BackgroundColor => unchecked((int)0xFF000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
