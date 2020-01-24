@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			// todo: more precise?
 			uint spsnum = (uint)sps * 1000;
-			uint spsden = (uint)1000;
+			uint spsden = 1000U;
 
 			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
 		}

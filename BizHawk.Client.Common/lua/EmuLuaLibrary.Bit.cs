@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 		[LuaMethod("set", "Sets the bit 'pos' in 'num'")]
 		public static uint Set(uint num, int pos)
 		{
-			return (uint)(num | (uint)1 << pos);
+			return (uint)(num | 1U << pos);
 		}
 
 		[LuaMethodExample("local lobitcle = bit.clear( 25, 35 );")]

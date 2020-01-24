@@ -50,20 +50,20 @@ namespace BizHawk.Client.EmuHawk
 		private void WriteHeaders()
 		{
 			_file.Write(Encoding.ASCII.GetBytes("RIFF")); // ChunkID
-			_file.Write((uint)0); // ChunkSize
+			_file.Write(0U); // ChunkSize
 			_file.Write(Encoding.ASCII.GetBytes("WAVE")); // Format
 
 			_file.Write(Encoding.ASCII.GetBytes("fmt ")); // SubchunkID
-			_file.Write((uint)16); // SubchunkSize
-			_file.Write((ushort)1); // AudioFormat (PCM)
+			_file.Write(16U); // SubchunkSize
+			_file.Write((ushort)1U); // AudioFormat (PCM)
 			_file.Write((ushort)_numChannels); // NumChannels
 			_file.Write((uint)_sampleRate); // SampleRate
 			_file.Write((uint)(_sampleRate * _numChannels * 2)); // ByteRate
 			_file.Write((ushort)(_numChannels * 2)); // BlockAlign
-			_file.Write((ushort)16); // BitsPerSample
+			_file.Write((ushort)16U); // BitsPerSample
 
 			_file.Write(Encoding.ASCII.GetBytes("data")); // SubchunkID
-			_file.Write((uint)0); // SubchunkSize
+			_file.Write(0U); // SubchunkSize
 		}
 
 		/// <summary>

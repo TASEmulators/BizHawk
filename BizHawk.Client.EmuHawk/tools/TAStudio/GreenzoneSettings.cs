@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StateHistorySettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / 1024;
+			_stateSizeMb = Statable.SaveStateBinary().Length / 1048576.0M;
 
 			MemCapacityNumeric.Maximum = 1024 * 8;
 			MemCapacityNumeric.Minimum = _stateSizeMb + 1;

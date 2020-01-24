@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		private void SetupAudio()
 		{
-			Period = (double)1 / SampleRate;
+			Period = 1.0 / SampleRate;
 			SamplesPerFrame = (int)(SampleRate / refreshRate);
 			CyclesPerSample = (double)ClockPerFrame / (double)SamplesPerFrame;
 			SampleBuffer = new short[SamplesPerFrame];

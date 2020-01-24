@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int end = _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].DataPeriods.Count;
             double p = 0;
             if (end != 0)
-                p = ((double)pos / (double)end) * (double)100;
+                p = ((double)pos / (double)end) * 100.0;
 
             sb.Append(p.ToString("N0") + "%");
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -425,7 +425,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             // work out overall position within the tape
             p = 0;
-            p = ((double)ourPos / (double)cnt) * (double)100;
+            p = ((double)ourPos / (double)cnt) * 100.0;
             sb.Append(p.ToString("N0") + "%");
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }

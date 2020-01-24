@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 			tb.MetaData = db.MetaData;
 			tb.PauseInMS = db.PauseInMS;
 
-			double multiplier = (double)4 / (double)3.5;
+			double multiplier = 8.0 / 7.0;
 			//double cycleScale = ((40 << 16) / 35);
 			double origPeriods = db.DataPeriods.Count();
 

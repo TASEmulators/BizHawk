@@ -72,25 +72,25 @@ namespace BizHawk.Common
 			AddW<sbyte>(r => r.Write((sbyte)0));
 
 			AddR<byte>(r => r.ReadByte());
-			AddW<byte>(r => r.Write((byte)0));
+			AddW<byte>(r => r.Write((byte)0U));
 
 			AddR<short>(r => r.ReadInt16());
 			AddW<short>(r => r.Write((short)0));
 
 			AddR<ushort>(r => r.ReadUInt16());
-			AddW<ushort>(r => r.Write((ushort)0));
+			AddW<ushort>(r => r.Write((ushort)0U));
 
 			AddR<int>(r => r.ReadInt32());
-			AddW<int>(r => r.Write((int)0));
+			AddW<int>(r => r.Write(0));
 
 			AddR<uint>(r => r.ReadUInt32());
-			AddW<uint>(r => r.Write((uint)0));
+			AddW<uint>(r => r.Write(0U));
 
 			AddR<long>(r => r.ReadInt64());
-			AddW<long>(r => r.Write((long)0));
+			AddW<long>(r => r.Write(0L));
 
 			AddR<ulong>(r => r.ReadUInt64());
-			AddW<ulong>(r => r.Write((ulong)0));
+			AddW<ulong>(r => r.Write(0UL));
 		}
 
 		#endregion

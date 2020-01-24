@@ -210,9 +210,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 					TIM_mult = ((value & 0x10) == 0x10) ? 1800 : 1620;
 
-					TIM_hit = (int)Math.Floor((double)TIM_mult / (3 + TIM_frq * 2));
-
-					TIM_hit = (int)Math.Floor((double)6000000 / TIM_hit);
+					TIM_hit = (int) Math.Floor(6000000.0 / Math.Floor((double) TIM_mult / (2 * TIM_frq + 3)));
 
 					// Bit 0 is some form of memory mapping
 
