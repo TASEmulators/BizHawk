@@ -9,6 +9,16 @@
 		"indentation": {
 			"useTabs": true
 		},
+		"layoutRules": {
+			"allowConsecutiveUsings": false,
+			"newlineAtEndOfFile": "require"
+		},
+		"maintainabilityRules": {
+			"topLevelTypes": []
+		},
+		"namingRules": {
+			"allowedHungarianPrefixes": [ "dx", "dy", "k", "sa" ]
+		},
 		"orderingRules": {
 			"usingDirectivesPlacement": "outsideNamespace"
 		}

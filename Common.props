@@ -21,6 +21,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
-		<!--<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113" PrivateAssets="All" />-->
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113" PrivateAssets="All" />
 	</ItemGroup>
 </Project>
