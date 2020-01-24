@@ -474,7 +474,7 @@ namespace MSXHawk
 		inline bool NonMaskableInterruptget() { return nonMaskableInterrupt; };
 		inline void NonMaskableInterruptset(bool value)
 		{
-			if (value && !nonMaskableInterrupt) nonMaskableInterruptPending = true;
+			if (value && !nonMaskableInterrupt) { nonMaskableInterruptPending = true; }
 			nonMaskableInterrupt = value;
 		}
 		

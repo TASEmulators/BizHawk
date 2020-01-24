@@ -17,8 +17,8 @@ namespace MSXHawk
 
 		}
 
-		// external pointers to CPU
-		bool* INT_FLAG = nullptr;
+		bool* IRQ_PTR = nullptr;
+
 		// external flags to display background or sprites
 		bool SHOW_BG, SHOW_SPRITES;
 		bool SpriteLimit;
@@ -35,8 +35,7 @@ namespace MSXHawk
 		uint8_t Registers[8] = {};
 		uint8_t VRAM[0x4000]; //16kb video RAM
 
-		int32_t ScanLine;
-		uint32_t IPeriod = 228;
+		int32_t ScanLine;	
 		uint32_t VdpAddress;
 		uint32_t TmsMode;
 		uint32_t ColorTableBase;
@@ -47,7 +46,9 @@ namespace MSXHawk
 
 		uint32_t FrameBuffer[192 * 256] = {};
 
+		// constants after load, not stated
 		uint32_t BackgroundColor = 0;
+		uint32_t IPeriod = 228;
 
 		uint32_t PaletteTMS9918[16] =
 		{
@@ -134,7 +135,7 @@ namespace MSXHawk
 				break;
 			case 1: // Mode Control Register 2
 				CheckVideoMode();
-				INT_FLAG[0] = (EnableInterrupts() && InterruptPendingGet());
+				IRQ_PTR[0] = (EnableInterrupts() && InterruptPendingGet());
 				break;
 			case 2: // Name Table Base Address
 				TmsPatternNameTableBase = (Registers[2] << 10) & 0x3C00;
@@ -159,7 +160,7 @@ namespace MSXHawk
 			VdpWaitingForLatchByte = true;
 			uint8_t returnValue = StatusByte;
 			StatusByte &= 0x1F;
-			INT_FLAG[0] = false;
+			IRQ_PTR[0] = false;
 
 			return returnValue;
 		}
@@ -508,13 +509,83 @@ namespace MSXHawk
 
 		uint8_t* SaveState(uint8_t* saver)
 		{
+			*saver = (uint8_t)(VdpWaitingForLatchInt ? 1 : 0); saver++;
+			*saver = (uint8_t)(VdpWaitingForLatchByte ? 1 : 0); saver++;
+			*saver = (uint8_t)(VIntPending ? 1 : 0); saver++;
+			*saver = (uint8_t)(HIntPending ? 1 : 0); saver++;
+
+			*saver = StatusByte; saver++;
+			*saver = VdpLatch; saver++;
+			*saver = VdpBuffer; saver++;
+
+			std::memcpy(saver, &Registers, 8); saver += 8;
+			std::memcpy(saver, &VRAM, 0x4000); saver += 0x4000;
+
+			*saver = (uint8_t)(ScanLine & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((ScanLine >> 16) & 0xFF); saver++; *saver = (uint8_t)((ScanLine >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(VdpAddress & 0xFF); saver++; *saver = (uint8_t)((VdpAddress >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((VdpAddress >> 16) & 0xFF); saver++; *saver = (uint8_t)((VdpAddress >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(TmsMode & 0xFF); saver++; *saver = (uint8_t)((TmsMode >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TmsMode >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsMode >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(ColorTableBase & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((ColorTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 24) & 0xFF); saver++;
+			
+			*saver = (uint8_t)(PatternGeneratorBase & 0xFF); saver++; *saver = (uint8_t)((PatternGeneratorBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((PatternGeneratorBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((PatternGeneratorBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(SpritePatternGeneratorBase & 0xFF); saver++; *saver = (uint8_t)((SpritePatternGeneratorBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((SpritePatternGeneratorBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((SpritePatternGeneratorBase >> 24) & 0xFF); saver++;
+			
+			*saver = (uint8_t)(TmsPatternNameTableBase & 0xFF); saver++; *saver = (uint8_t)((TmsPatternNameTableBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TmsPatternNameTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsPatternNameTableBase >> 24) & 0xFF); saver++;
+
+			*saver = (uint8_t)(TmsSpriteAttributeBase & 0xFF); saver++; *saver = (uint8_t)((TmsSpriteAttributeBase >> 8) & 0xFF); saver++;
+			*saver = (uint8_t)((TmsSpriteAttributeBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsSpriteAttributeBase >> 24) & 0xFF); saver++;
 
 			return saver;
 		}
 
 		uint8_t* LoadState(uint8_t* loader)
 		{
+			VdpWaitingForLatchInt = *loader == 1; loader++;
+			VdpWaitingForLatchByte = *loader == 1; loader++;
+			VIntPending = *loader == 1; loader++;
+			HIntPending = *loader == 1; loader++;
 
+			StatusByte = *loader; loader++;
+			VdpLatch = *loader; loader++;
+			VdpBuffer = *loader; loader++;
+			
+			std::memcpy(&Registers, loader, 8); loader += 8;
+			std::memcpy(&VRAM, loader, 0x4000); loader += 0x4000;
+
+			ScanLine = *loader; loader++; ScanLine |= (*loader << 8); loader++;
+			ScanLine |= (*loader << 16); loader++; ScanLine |= (*loader << 24); loader++;
+
+			VdpAddress = *loader; loader++; VdpAddress |= (*loader << 8); loader++;
+			VdpAddress |= (*loader << 16); loader++; VdpAddress |= (*loader << 24); loader++;
+
+			TmsMode = *loader; loader++; TmsMode |= (*loader << 8); loader++;
+			TmsMode |= (*loader << 16); loader++; TmsMode |= (*loader << 24); loader++;
+
+			ColorTableBase = *loader; loader++; ColorTableBase |= (*loader << 8); loader++;
+			ColorTableBase |= (*loader << 16); loader++; ColorTableBase |= (*loader << 24); loader++;
+
+			PatternGeneratorBase = *loader; loader++; PatternGeneratorBase |= (*loader << 8); loader++;
+			PatternGeneratorBase |= (*loader << 16); loader++; PatternGeneratorBase |= (*loader << 24); loader++;
+
+			SpritePatternGeneratorBase = *loader; loader++; SpritePatternGeneratorBase |= (*loader << 8); loader++;
+			SpritePatternGeneratorBase |= (*loader << 16); loader++; SpritePatternGeneratorBase |= (*loader << 24); loader++;
+
+			TmsPatternNameTableBase = *loader; loader++; TmsPatternNameTableBase |= (*loader << 8); loader++;
+			TmsPatternNameTableBase |= (*loader << 16); loader++; TmsPatternNameTableBase |= (*loader << 24); loader++;
+
+			TmsSpriteAttributeBase = *loader; loader++; TmsSpriteAttributeBase |= (*loader << 8); loader++;
+			TmsSpriteAttributeBase |= (*loader << 16); loader++; TmsSpriteAttributeBase |= (*loader << 24); loader++;
+			
 			return loader;
 		}
 

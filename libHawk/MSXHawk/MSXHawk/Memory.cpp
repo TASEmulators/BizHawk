@@ -16,12 +16,21 @@ namespace MSXHawk
 	{
 		port &= 0xFF;
 
-		if (port >= 0xA0 && port < 0xC0) // VDP data/control ports
+		if (port == 0x98) // VDP
 		{
-			if ((port & 1) == 0)
-				return vdp_pntr->ReadData();
-			else
-				return vdp_pntr->ReadVdpStatus();
+			return vdp_pntr->ReadData();
+		}
+		else if (port == 0x99) // VDP
+		{
+			return vdp_pntr->ReadVdpStatus();
+		}
+		else if (port == 0xA1)
+		{
+			// not readable
+		}
+		else if (port == 0xA8)
+		{
+			return PortA8;
 		}
 		
 		return 0xFF;
@@ -80,7 +89,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i] = &ram[0xC000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i] = &ram[(0x400 * i)];
 				cpu_pntr->MemoryMapMask[i] = 0xFF;
 			}
 		}
@@ -97,7 +106,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 16] = &rom_1[04000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 16] = &rom_1[0x4000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 16] = 0;
 			}
 		}
@@ -105,7 +114,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 16] = &rom_2[04000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 16] = &rom_2[0x4000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 16] = 0;
 			}
 		}
@@ -113,7 +122,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 16] = &ram[0x8000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 16] = &ram[0x4000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 16] = 0xFF;
 			}
 		}
@@ -146,7 +155,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 32] = &ram[0x4000 + (0x400 * i)];
+				cpu_pntr->MemoryMap[i + 32] = &ram[0x8000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 32] = 0xFF;
 			}
 		}
@@ -179,7 +188,7 @@ namespace MSXHawk
 		{
 			for (uint32_t i = 0; i < 16; i++)
 			{
-				cpu_pntr->MemoryMap[i + 48] = &ram[(0x400 * i)];
+				cpu_pntr->MemoryMap[i + 48] = &ram[0xC000 + (0x400 * i)];
 				cpu_pntr->MemoryMapMask[i + 48] = 0xFF;
 			}
 		}

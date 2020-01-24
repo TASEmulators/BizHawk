@@ -41,9 +41,10 @@ MSXHawk_EXPORT void MSX_load(MSXCore* p, uint8_t* rom_1, uint32_t size_1, uint32
 }
 
 // advance a frame
-MSXHawk_EXPORT void MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, bool render, bool sound)
+MSXHawk_EXPORT bool MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, bool render, bool sound)
 {
 	p->FrameAdvance(ctrl1, ctrl2, render, sound);
+	return p->vdp.EnableInterrupts();
 }
 
 // send video data to external video provider

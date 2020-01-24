@@ -137,7 +137,7 @@ namespace MSXHawk
 			*saver = reg_FFFE; saver++;
 			*saver = reg_FFFF; saver++;
 
-			std::memcpy(saver, &ram, 0x2000); saver += 0x2000;
+			std::memcpy(saver, &ram, 0x10000); saver += 0x10000;
 			std::memcpy(saver, &cart_ram, 0x8000); saver += 0x8000;
 
 			return saver;

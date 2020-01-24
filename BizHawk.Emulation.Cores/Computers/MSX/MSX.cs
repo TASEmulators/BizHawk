@@ -27,8 +27,16 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			}
 
+			// we want all ROMS to be multiples of 64K for easy memory mapping later
+			if (RomData.Length != 0x10000)
+			{
+				Array.Resize(ref RomData, 0x10000);
+			}
+
 			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios", true, "BIOS Not Found, Cannot Load");
 			Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic", true, "BIOS Not Found, Cannot Load");
+
+			Basic = new byte[0x4000];
 
 			MSX_Pntr = LibMSX.MSX_create();
 

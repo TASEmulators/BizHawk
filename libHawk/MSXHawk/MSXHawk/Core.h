@@ -19,7 +19,7 @@ namespace MSXHawk
 			MemMap.vdp_pntr = &vdp;
 			MemMap.psg_pntr = &psg;
 			cpu.mem_ctrl = &MemMap;
-			vdp.INT_FLAG = &cpu.FlagI;
+			vdp.IRQ_PTR = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
 			psg.Clock_Divider = 16;
 		};
@@ -63,8 +63,7 @@ namespace MSXHawk
 				{
 					vdp.InterruptPendingSet(true);
 
-					if (vdp.EnableInterrupts())
-						cpu.NonMaskableInterruptset(true);
+					if (vdp.EnableInterrupts()) { cpu.FlagI = true; }						
 				}
 
 				for (uint32_t j = 0; j < vdp.IPeriod; j++)
