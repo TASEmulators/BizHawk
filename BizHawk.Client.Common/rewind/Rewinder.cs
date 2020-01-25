@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 
 			if (RewindActive)
 			{
-				var capacity = Global.Config.Rewind.BufferSize * (long)(1024 * 1024);
+				var capacity = Global.Config.Rewind.BufferSize * 1024L * 1024L;
 				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind.OnDisk, capacity, BufferManage);
 
 				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind.IsThreaded);
