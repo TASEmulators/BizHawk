@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Threading;
-
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.DiscSystem;
 
@@ -35,16 +27,16 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void ExitButton_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
 		{
-			List<string> files = validateDrop(e.Data);
+			List<string> files = ValidateDrop(e.Data);
 			if (files.Count == 0) return;
 			try
 			{
-				this.Cursor = Cursors.WaitCursor;
+				Cursor = Cursors.WaitCursor;
 				foreach (var file in files)
 				{
 					var job = new DiscMountJob { IN_FromPath = file };
@@ -52,7 +44,7 @@ namespace BizHawk.Client.DiscoHawk
 					var disc = job.OUT_Disc;
 					if (job.OUT_ErrorLevel)
 					{
-						System.Windows.Forms.MessageBox.Show(job.OUT_Log, "Error loading disc");
+						MessageBox.Show(job.OUT_Log, "Error loading disc");
 						break;
 					}
 
@@ -61,7 +53,8 @@ namespace BizHawk.Client.DiscoHawk
 					string outfile = $"{Path.Combine(Path.GetDirectoryName(file), baseName)}.ccd";
 					CCD_Format.Dump(disc, outfile);
 				}
-				this.Cursor = Cursors.Default;
+
+				Cursor = Cursors.Default;
 			}
 			catch (Exception ex)
 			{
@@ -97,47 +90,47 @@ namespace BizHawk.Client.DiscoHawk
 		}
 #endif
 
-		private void lblMagicDragArea_DragEnter(object sender, DragEventArgs e)
+		private void LblMagicDragArea_DragEnter(object sender, DragEventArgs e)
 		{
-			List<string> files = validateDrop(e.Data);
-			if (files.Count > 0)
-				e.Effect = DragDropEffects.Link;
-			else e.Effect = DragDropEffects.None;
+			List<string> files = ValidateDrop(e.Data);
+			e.Effect = files.Count > 0
+				? DragDropEffects.Link
+				: DragDropEffects.None;
 		}
 
-		List<string> validateDrop(IDataObject ido)
+		private List<string> ValidateDrop(IDataObject ido)
 		{
 			List<string> ret = new List<string>();
 			string[] files = (string[])ido.GetData(System.Windows.Forms.DataFormats.FileDrop);
 			if (files == null) return new List<string>();
 			foreach (string str in files)
 			{
-				string ext = Path.GetExtension(str).ToUpper();
-				if(!ext.In(new string[]{".CUE",".ISO",".CCD", ".MDS"}))
+				string ext = Path.GetExtension(str)?.ToUpper();
+				if(!ext.In(".CUE", ".ISO", ".CCD", ".MDS"))
 				{
 					return new List<string>();
 				}
+
 				ret.Add(str);
 			}
+
 			return ret;
 		}
 
-		private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
+		private void LblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
-			var files = validateDrop(e.Data);
+			var files = ValidateDrop(e.Data);
 			if (files.Count == 0) return;
 			foreach (var file in files)
 			{
-				using (var disc = Disc.LoadAutomagic(file))
-				{
-					var path = Path.GetDirectoryName(file);
-					var filename = Path.GetFileNameWithoutExtension(file);
-					AudioExtractor.Extract(disc, path, filename);
-				}
+				using var disc = Disc.LoadAutomagic(file);
+				var path = Path.GetDirectoryName(file);
+				var filename = Path.GetFileNameWithoutExtension(file);
+				AudioExtractor.Extract(disc, path, filename);
 			}
 		}
 
-		private void btnAbout_Click(object sender, EventArgs e)
+		private void BtnAbout_Click(object sender, EventArgs e)
 		{
 			new About().ShowDialog();
 		}

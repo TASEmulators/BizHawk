@@ -75,7 +75,7 @@
 			this.lblMagicDragArea.Size = new System.Drawing.Size(200, 100);
 			this.lblMagicDragArea.TabIndex = 1;
 			this.lblMagicDragArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.lblMagicDragArea_DragDrop);
-			this.lblMagicDragArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.lblMagicDragArea_DragEnter);
+			this.lblMagicDragArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.LblMagicDragArea_DragEnter);
 			// 
 			// label1
 			// 
@@ -94,8 +94,8 @@
 			this.lblMp3ExtractMagicArea.Name = "lblMp3ExtractMagicArea";
 			this.lblMp3ExtractMagicArea.Size = new System.Drawing.Size(200, 100);
 			this.lblMp3ExtractMagicArea.TabIndex = 2;
-			this.lblMp3ExtractMagicArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.lblMp3ExtractMagicArea_DragDrop);
-			this.lblMp3ExtractMagicArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.lblMagicDragArea_DragEnter);
+			this.lblMp3ExtractMagicArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.LblMp3ExtractMagicArea_DragDrop);
+			this.lblMp3ExtractMagicArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.LblMagicDragArea_DragEnter);
 			// 
 			// label2
 			// 
@@ -113,7 +113,7 @@
 			this.btnAbout.TabIndex = 3;
 			this.btnAbout.Text = "&About";
 			this.btnAbout.UseVisualStyleBackColor = true;
-			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+			this.btnAbout.Click += new System.EventHandler(this.BtnAbout_Click);
 			// 
 			// radioButton1
 			// 

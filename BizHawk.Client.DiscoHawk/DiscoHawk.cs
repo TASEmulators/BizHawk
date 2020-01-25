@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
@@ -10,12 +8,12 @@ using System.IO;
 
 using BizHawk.Emulation.DiscSystem;
 
-//cue format preferences notes
+// cue format preferences notes
 
-//pcejin -
-//does not like session commands
-//it can handle binpercue
-//it seems not to be able to handle binpertrack, or maybe i am doing something wrong (still havent ruled it out)
+// PCEjin -
+// does not like session commands
+// it can handle binpercue
+// it seems not to be able to handle binpertrack, or maybe i am doing something wrong (still haven't ruled it out)
 
 namespace BizHawk.Client.DiscoHawk
 {
@@ -24,17 +22,17 @@ namespace BizHawk.Client.DiscoHawk
 		static Program()
 		{
 #if WINDOWS
-			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
+			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 			// this will look in subdirectory "dll" to load pinvoked stuff
-			string dllDir = System.IO.Path.Combine(GetExeDirectoryAbsolute(), "dll");
+			string dllDir = Path.Combine(GetExeDirectoryAbsolute(), "dll");
 			SetDllDirectory(dllDir);
 
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			//in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
-			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
-			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
+			// but before we even try doing that, whack the MOTW from everything in that directory (that's a dll)
+			// otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
+			// some people are getting MOTW through a combination of browser used to download BizHawk, and program used to dearchive it
 			WhackAllMOTW(dllDir);
 #endif
 		}
@@ -45,9 +43,10 @@ namespace BizHawk.Client.DiscoHawk
 			SubMain(args);
 		}
 
-		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
+		// NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which haven't been setup by the resolver yet... or something like that
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+
 		private static class Win32
 		{
 			[DllImport("kernel32.dll")]
@@ -60,11 +59,11 @@ namespace BizHawk.Client.DiscoHawk
 
 		static void SubMain(string[] args)
 		{
-			//MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESNT WORK ANYMORE
-			//WELL, OBVIOUSLY IT DOES SOMETIMES. I DONT REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
+			// MICROSOFT BROKE DRAG AND DROP IN WINDOWS 7. IT DOESN'T WORK ANYMORE
+			// WELL, OBVIOUSLY IT DOES SOMETIMES. I DON'T REMEMBER THE DETAILS OR WHY WE HAD TO DO THIS SHIT
 #if WINDOWS
-			//BUT THE FUNCTION WE NEED DOESNT EXIST UNTIL WINDOWS 7, CONVENIENTLY
-			//SO CHECK FOR IT
+			// BUT THE FUNCTION WE NEED DOESN'T EXIST UNTIL WINDOWS 7, CONVENIENTLY
+			// SO CHECK FOR IT
 			IntPtr lib = Win32.LoadLibrary("user32.dll");
 			IntPtr proc = Win32.GetProcAddress(lib, "ChangeWindowMessageFilterEx");
 			if (proc != IntPtr.Zero)
@@ -102,11 +101,12 @@ namespace BizHawk.Client.DiscoHawk
 						return asm;
 
 				//load missing assemblies by trying to find them in the dll directory
-				string dllname = $"{new AssemblyName(args.Name).Name}.dll";
+				string dllName = $"{new AssemblyName(args.Name).Name}.dll";
 				string directory = Path.Combine(GetExeDirectoryAbsolute(), "dll");
-				string fname = Path.Combine(directory, dllname);
+				string fname = Path.Combine(directory, dllName);
 				if (!File.Exists(fname)) return null;
-				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
+
+				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return Assembly.LoadFile(fname);
 			}
 		}
@@ -129,7 +129,7 @@ namespace BizHawk.Client.DiscoHawk
 			while (todo.Count > 0)
 			{
 				var di = todo.Dequeue();
-				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
+				foreach (var diSub in di.GetDirectories()) todo.Enqueue(diSub);
 				foreach (var fi in di.GetFiles("*.dll"))
 					RemoveMOTW(fi.FullName);
 				foreach (var fi in di.GetFiles("*.exe"))
@@ -230,12 +230,13 @@ namespace BizHawk.Client.DiscoHawk
 			if (hawk)
 			{
 				if (infile == null)
+				{
 					return;
+				}
 
-				//TODO - write it out
+				// TODO - write it out
 				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
 				dmj.Run();
-				//var disc = dmj.OUT_Disc;
 			}
 
 			bool verbose = true;
@@ -248,7 +249,6 @@ namespace BizHawk.Client.DiscoHawk
 				var cts = new CancellationTokenSource();
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
-				//po.MaxDegreeOfParallelism = System.Environment.ProcessorCount - 2; //I'm disk or network bound, no sense hammering this
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
 				object olock = new object();
 				int ctr=0;
@@ -263,14 +263,12 @@ namespace BizHawk.Client.DiscoHawk
 							int strlen = todo.Count.ToString().Length;
 							string fmt = string.Format("{{0,{0}}}/{{1,{0}}} {{2}}", strlen);
 							Console.WriteLine(fmt, ctr, todo.Count, Path.GetFileNameWithoutExtension(fp));
-							//if (fp.Contains("Break Out"))
-							//  blocked = false;
 						}
 
 						if(!blocked)
 							foreach (var cmpif in compareDiscInterfaces)
 							{
-								StringWriter sw = new StringWriter();
+								var sw = new StringWriter();
 								bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
 								if (!success)
 								{
@@ -280,7 +278,7 @@ namespace BizHawk.Client.DiscoHawk
 									cts.Cancel();
 									return;
 								}
-						}
+							}
 					});
 				}
 				catch (AggregateException ae) {
@@ -296,13 +294,15 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (compareDiscInterfaces.Count != 0)
 			{
-				StringWriter sw = new StringWriter();
+				var sw = new StringWriter();
 				foreach (var cmpif in compareDiscInterfaces)
+				{
 					CompareFile(infile, loadDiscInterface, cmpif, verbose, null, sw);
+				}
+
 				sw.Flush();
 				string results = sw.ToString();
-				var cr = new ComparisonResults();
-				cr.textBox1.Text = results;
+				var cr = new ComparisonResults { textBox1 = { Text = results } };
 				cr.ShowDialog();
 			}
 
@@ -311,7 +311,7 @@ namespace BizHawk.Client.DiscoHawk
 
 		static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
 		{
-			Disc src_disc = null, dst_disc = null;
+			Disc srcDisc = null, dstDisc = null;
 
 			try
 			{
@@ -327,50 +327,58 @@ namespace BizHawk.Client.DiscoHawk
 				}
 				dmj.Run();
 
-				src_disc = dmj.OUT_Disc;
+				srcDisc = dmj.OUT_Disc;
 
-				var dst_dmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
-				dst_dmj.Run();
-				dst_disc = dst_dmj.OUT_Disc;
+				var dstDmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
+				dstDmj.Run();
+				dstDisc = dstDmj.OUT_Disc;
 
-				var src_dsr = new DiscSectorReader(src_disc);
-				var dst_dsr = new DiscSectorReader(dst_disc);
+				var srcDsr = new DiscSectorReader(srcDisc);
+				var dstDsr = new DiscSectorReader(dstDisc);
 
-				var src_toc = src_disc.TOC;
-				var dst_toc = dst_disc.TOC;
+				var srcToc = srcDisc.TOC;
+				var dstToc = dstDisc.TOC;
 
-				var src_databuf = new byte[2448];
-				var dst_databuf = new byte[2448];
+				var srcDataBuf = new byte[2448];
+				var dstDataBuf = new byte[2448];
 
-				Action<DiscTOC.TOCItem> sw_dump_toc_one = (item) =>
+				void SwDumpTocOne(DiscTOC.TOCItem item)
 				{
 					if (!item.Exists)
+					{
 						sw.Write("(---missing---)");
+					}
 					else
-						sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBA);
-				};
+					{
+						sw.Write("({0:X2} - {1})", (byte) item.Control, item.LBA);
+					}
+				}
 
 
-				Action<int> sw_dump_toc = (index) =>
+				void SwDumpToc(int index)
 				{
-					sw.Write("SRC TOC#{0,3} ", index); sw_dump_toc_one(src_toc.TOCItems[index]); sw.WriteLine();
-					sw.Write("DST TOC#{0,3} ", index); sw_dump_toc_one(dst_toc.TOCItems[index]); sw.WriteLine();
-				};
+					sw.Write("SRC TOC#{0,3} ", index);
+					SwDumpTocOne(srcToc.TOCItems[index]);
+					sw.WriteLine();
+					sw.Write("DST TOC#{0,3} ", index);
+					SwDumpTocOne(dstToc.TOCItems[index]);
+					sw.WriteLine();
+				}
 
 				//verify sector count
-				if (src_disc.Session1.LeadoutLBA != dst_disc.Session1.LeadoutLBA)
+				if (srcDisc.Session1.LeadoutLBA != dstDisc.Session1.LeadoutLBA)
 				{
-					sw.Write("LeadoutTrack.LBA {0} vs {1}\n", src_disc.Session1.LeadoutTrack.LBA, dst_disc.Session1.LeadoutTrack.LBA);
+					sw.Write("LeadoutTrack.LBA {0} vs {1}\n", srcDisc.Session1.LeadoutTrack.LBA, dstDisc.Session1.LeadoutTrack.LBA);
 					goto SKIPPO;
 				}
 
 				//verify TOC match
-				if (src_disc.TOC.FirstRecordedTrackNumber != dst_disc.TOC.FirstRecordedTrackNumber
-					|| src_disc.TOC.LastRecordedTrackNumber != dst_disc.TOC.LastRecordedTrackNumber)
+				if (srcDisc.TOC.FirstRecordedTrackNumber != dstDisc.TOC.FirstRecordedTrackNumber
+					|| srcDisc.TOC.LastRecordedTrackNumber != dstDisc.TOC.LastRecordedTrackNumber)
 				{
 					sw.WriteLine("Mismatch of RecordedTrackNumbers: {0}-{1} vs {2}-{3}",
-						src_disc.TOC.FirstRecordedTrackNumber, src_disc.TOC.LastRecordedTrackNumber,
-						dst_disc.TOC.FirstRecordedTrackNumber, dst_disc.TOC.LastRecordedTrackNumber
+						srcDisc.TOC.FirstRecordedTrackNumber, srcDisc.TOC.LastRecordedTrackNumber,
+						dstDisc.TOC.FirstRecordedTrackNumber, dstDisc.TOC.LastRecordedTrackNumber
 						);
 					goto SKIPPO;
 				}
@@ -378,20 +386,20 @@ namespace BizHawk.Client.DiscoHawk
 				bool badToc = false;
 				for (int t = 0; t < 101; t++)
 				{
-					if (src_toc.TOCItems[t].Exists != dst_toc.TOCItems[t].Exists
-						|| src_toc.TOCItems[t].Control != dst_toc.TOCItems[t].Control
-						|| src_toc.TOCItems[t].LBA != dst_toc.TOCItems[t].LBA
+					if (srcToc.TOCItems[t].Exists != dstToc.TOCItems[t].Exists
+						|| srcToc.TOCItems[t].Control != dstToc.TOCItems[t].Control
+						|| srcToc.TOCItems[t].LBA != dstToc.TOCItems[t].LBA
 						)
 					{
 						sw.WriteLine("Mismatch in TOCItem");
-						sw_dump_toc(t);
+						SwDumpToc(t);
 						badToc = true;
 					}
 				}
 				if (badToc)
 					goto SKIPPO;
 
-				Action<string, int, byte[], int, int> sw_dump_chunk_one = (comment, lba, buf, addr, count) =>
+				void SwDumpChunkOne(string comment, int lba, byte[] buf, int addr, int count)
 				{
 					sw.Write("{0} -  ", comment);
 					for (int i = 0; i < count; i++)
@@ -399,29 +407,43 @@ namespace BizHawk.Client.DiscoHawk
 						if (i + addr >= buf.Length) continue;
 						sw.Write("{0:X2}{1}", buf[addr + i], (i == count - 1) ? " " : "  ");
 					}
+
 					sw.WriteLine();
-				};
+				}
 
 				int[] offenders = new int[12];
-				Action<int, int, int, int, int> sw_dump_chunk = (lba, dispaddr, addr, count, numoffenders) =>
+
+				void SwDumpChunk(int lba, int dispAddr, int addr, int count, int numOffenders)
 				{
 					var hashedOffenders = new HashSet<int>();
-					for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
+					for (int i = 0; i < numOffenders; i++)
+					{
+						hashedOffenders.Add(offenders[i]);
+					}
+
 					sw.Write("                          ");
-					for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
+					for (int i = 0; i < count; i++)
+					{
+						sw.Write((hashedOffenders.Contains(dispAddr + i)) ? "vvv " : "    ");
+					}
+
 					sw.WriteLine();
 					sw.Write("                          ");
-					for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
+					for (int i = 0; i < count; i++)
+					{
+						sw.Write("{0:X3} ", dispAddr + i, (i == count - 1) ? " " : "  ");
+					}
+
 					sw.WriteLine();
 					sw.Write("                          ");
 					sw.Write(new string('-', count * 4));
 					sw.WriteLine();
-					sw_dump_chunk_one($"SRC #{lba,6} ({new Timestamp(lba)})", lba, src_databuf, addr, count);
-					sw_dump_chunk_one($"DST #{lba,6} ({new Timestamp(lba)})", lba, dst_databuf, addr, count);
-				};
+					SwDumpChunkOne($"SRC #{lba,6} ({new Timestamp(lba)})", lba, srcDataBuf, addr, count);
+					SwDumpChunkOne($"DST #{lba,6} ({new Timestamp(lba)})", lba, dstDataBuf, addr, count);
+				}
 
 				//verify each sector contents
-				int nSectors = src_disc.Session1.LeadoutLBA;
+				int nSectors = srcDisc.Session1.LeadoutLBA;
 				for (int lba = -150; lba < nSectors; lba++)
 				{
 					if (verbose)
@@ -432,46 +454,47 @@ namespace BizHawk.Client.DiscoHawk
 						if (cancelToken.Token.IsCancellationRequested)
 							return false;
 
-					src_dsr.ReadLBA_2448(lba, src_databuf, 0);
-					dst_dsr.ReadLBA_2448(lba, dst_databuf, 0);
+					srcDsr.ReadLBA_2448(lba, srcDataBuf, 0);
+					dstDsr.ReadLBA_2448(lba, dstDataBuf, 0);
 
 					//check the header
 					for (int b = 0; b < 16; b++)
 					{
-						if (src_databuf[b] != dst_databuf[b])
+						if (srcDataBuf[b] != dstDataBuf[b])
 						{
 							sw.WriteLine("Mismatch in sector header at byte {0}", b);
 							offenders[0] = b;
-							sw_dump_chunk(lba, 0, 0, 16, 1);
+							SwDumpChunk(lba, 0, 0, 16, 1);
 							goto SKIPPO;
 						}
 					}
 
-					//check userdata
+					// check userData
 					for (int b = 16; b < 2352; b++)
 					{
-						if (src_databuf[b] != dst_databuf[b])
+						if (srcDataBuf[b] != dstDataBuf[b])
 						{
 							sw.Write("LBA {0} mismatch at userdata byte {1}; terminating sector cmp\n", lba, b);
 							goto SKIPPO;
 						}
 					}
 
-					//check subchannels
+					// check subChannels
 					for (int c = 0, b = 2352; c < 8; c++)
 					{
 						int numOffenders = 0;
 						for (int e = 0; e < 12; e++, b++)
 						{
-							if (src_databuf[b] != dst_databuf[b])
+							if (srcDataBuf[b] != dstDataBuf[b])
 							{
 								offenders[numOffenders++] = e;
 							}
 						}
+
 						if (numOffenders != 0)
 						{
 							sw.Write("LBA {0} mismatch(es) at subchannel {1}; terminating sector cmp\n", lba, (char)('P' + c));
-							sw_dump_chunk(lba, 0, 2352 + c * 12, 12, numOffenders);
+							SwDumpChunk(lba, 0, 2352 + c * 12, 12, numOffenders);
 							goto SKIPPO;
 						}
 					}
@@ -487,10 +510,10 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			finally
 			{
-				if (src_disc != null)
-					src_disc.Dispose();
-				if (dst_disc != null)
-					dst_disc.Dispose();
+				if (srcDisc != null)
+					srcDisc.Dispose();
+				if (dstDisc != null)
+					dstDisc.Dispose();
 			}
 		
 		} //CompareFile

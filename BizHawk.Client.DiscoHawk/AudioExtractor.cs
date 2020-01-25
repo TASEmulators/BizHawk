@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.IO;
-using System.Linq;
-using System.Text;
-
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.DiscoHawk
 {
-	class AudioExtractor
+	public class AudioExtractor
 	{
 		public static string FFmpegPath;
 
-		public static void Extract(Disc disc, string path, string filebase)
+		public static void Extract(Disc disc, string path, string fileBase)
 		{
 			var dsr = new DiscSectorReader(disc);
 
@@ -29,9 +23,11 @@ namespace BizHawk.Client.DiscoHawk
 				var waveData = new byte[trackLength * 2352];
 				int startLba = track.LBA;
 				for (int sector = 0; sector < trackLength; sector++)
+				{
 					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
+				}
 
-				string mp3Path = $"{Path.Combine(path, filebase)} - Track {track.Number:D2}.mp3";
+				string mp3Path = $"{Path.Combine(path, fileBase)} - Track {track.Number:D2}.mp3";
 				if (File.Exists(mp3Path))
 				{
 					if (!confirmed)
@@ -40,6 +36,7 @@ namespace BizHawk.Client.DiscoHawk
 						if (dr == DialogResult.Cancel) return;
 						confirmed = true;
 					}
+
 					File.Delete(mp3Path);
 				}
 
