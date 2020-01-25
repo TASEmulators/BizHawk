@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _currentLine;
 		public int CurrentLine
 		{
-			get { return _currentLine; }
+			get => _currentLine;
 			set
 			{
 				// bits 0-3 contain the line
@@ -34,22 +34,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private bool[] _keyStatus;
 		public bool[] KeyStatus
 		{
-			get { return _keyStatus; }
-			set { _keyStatus = value; }
+			get => _keyStatus;
+			set => _keyStatus = value;
 		}
 
 		private string[] _keyboardMatrix;
 		public string[] KeyboardMatrix
 		{
-			get { return _keyboardMatrix; }
-			set { _keyboardMatrix = value; }
+			get => _keyboardMatrix;
+			set => _keyboardMatrix = value;
 		}
 
 		private string[] _nonMatrixKeys;
 		public string[] NonMatrixKeys
 		{
-			get { return _nonMatrixKeys; }
-			set { _nonMatrixKeys = value; }
+			get => _nonMatrixKeys;
+			set => _nonMatrixKeys = value;
 		}
 
 		public StandardKeyboard(CPCBase machine)

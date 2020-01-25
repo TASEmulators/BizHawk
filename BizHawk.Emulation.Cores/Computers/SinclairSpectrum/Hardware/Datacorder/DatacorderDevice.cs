@@ -96,8 +96,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private List<TapeDataBlock> _dataBlocks = new List<TapeDataBlock>();
 		public List<TapeDataBlock> DataBlocks
 		{
-			get { return _dataBlocks; }
-			set { _dataBlocks = value; }
+			get => _dataBlocks;
+			set => _dataBlocks = value;
 		}
 
 		/// <summary>

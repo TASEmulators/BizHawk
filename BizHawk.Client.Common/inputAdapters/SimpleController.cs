@@ -24,8 +24,8 @@ namespace BizHawk.Client.Common
 
 		public bool this[string button]
 		{
-			get { return Buttons[button]; }
-			set { Buttons[button] = value; }
+			get => Buttons[button];
+			set => Buttons[button] = value;
 		}
 
 		public virtual bool IsPressed(string button)

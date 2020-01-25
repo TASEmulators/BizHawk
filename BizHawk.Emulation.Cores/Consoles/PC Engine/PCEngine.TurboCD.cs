@@ -9,32 +9,32 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool IntADPCM // INTA
 		{
-			get { return (CdIoPorts[3] & 0x04) != 0; }
-			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (CdIoPorts[3] & 0x04) != 0;
+			set => CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		public bool IntStop // INTSTOP
 		{
-			get { return (CdIoPorts[3] & 0x08) != 0; }
-			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x08) | (value ? 0x8 : 0x00)); }
+			get => (CdIoPorts[3] & 0x08) != 0;
+			set => CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x08) | (value ? 0x8 : 0x00));
 		}
 
 		public bool IntSubchannel // INTSUB
 		{
-			get { return (CdIoPorts[3] & 0x10) != 0; }
-			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (CdIoPorts[3] & 0x10) != 0;
+			set => CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		public bool IntDataTransferComplete // INTM
 		{
-			get { return (CdIoPorts[3] & 0x20) != 0; }
-			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (CdIoPorts[3] & 0x20) != 0;
+			set => CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		public bool IntDataTransferReady // INTD
 		{
-			get { return (CdIoPorts[3] & 0x40) != 0; }
-			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (CdIoPorts[3] & 0x40) != 0;
+			set => CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		private void SetCDAudioCallback()

@@ -170,55 +170,91 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 			[Description("Show layer BG0")]
 			[DefaultValue(true)]
-			public bool ShowLayerBG0 { get { return _showLayerBG0; } set { _showLayerBG0 = value; } }
+			public bool ShowLayerBG0
+			{
+				get => _showLayerBG0;
+				set => _showLayerBG0 = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerBG0;
 
 			[Description("Show layer BG1")]
 			[DefaultValue(true)]
-			public bool ShowLayerBG1 { get { return _showLayerBG1; } set { _showLayerBG1 = value; } }
+			public bool ShowLayerBG1
+			{
+				get => _showLayerBG1;
+				set => _showLayerBG1 = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerBG1;
 
 			[Description("Show layer BG2")]
 			[DefaultValue(true)]
-			public bool ShowLayerBG2 { get { return _showLayerBG2; } set { _showLayerBG2 = value; } }
+			public bool ShowLayerBG2
+			{
+				get => _showLayerBG2;
+				set => _showLayerBG2 = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerBG2;
 
 			[Description("Show layer BG3")]
 			[DefaultValue(true)]
-			public bool ShowLayerBG3 { get { return _showLayerBG3; } set { _showLayerBG3 = value; } }
+			public bool ShowLayerBG3
+			{
+				get => _showLayerBG3;
+				set => _showLayerBG3 = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerBG3;
 
 			[Description("Show layer VDC-A BG")]
 			[DefaultValue(true)]
-			public bool ShowLayerVDCABG { get { return _showLayerVDCABG; } set { _showLayerVDCABG = value; } }
+			public bool ShowLayerVDCABG
+			{
+				get => _showLayerVDCABG;
+				set => _showLayerVDCABG = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerVDCABG;
 
 			[Description("Show layer VDC-A SPR")]
 			[DefaultValue(true)]
-			public bool ShowLayerVDCASPR { get { return _showLayerVDCASPR; } set { _showLayerVDCASPR = value; } }
+			public bool ShowLayerVDCASPR
+			{
+				get => _showLayerVDCASPR;
+				set => _showLayerVDCASPR = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerVDCASPR;
 
 			[Description("Show layer VDC-B BG")]
 			[DefaultValue(true)]
-			public bool ShowLayerVDCBBG { get { return _showLayerVDCBBG; } set { _showLayerVDCBBG = value; } }
+			public bool ShowLayerVDCBBG
+			{
+				get => _showLayerVDCBBG;
+				set => _showLayerVDCBBG = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerVDCBBG;
 
 			[Description("Show layer VDC-B SPR")]
 			[DefaultValue(true)]
-			public bool ShowLayerVDCBSPR { get { return _showLayerVDCBSPR; } set { _showLayerVDCBSPR = value; } }
+			public bool ShowLayerVDCBSPR
+			{
+				get => _showLayerVDCBSPR;
+				set => _showLayerVDCBSPR = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerVDCBSPR;
 
 			[Description("Show layer RAINBOW")]
 			[DefaultValue(true)]
-			public bool ShowLayerRAINBOW { get { return _showLayerRAINBOW; } set { _showLayerRAINBOW = value; } }
+			public bool ShowLayerRAINBOW
+			{
+				get => _showLayerRAINBOW;
+				set => _showLayerRAINBOW = value;
+			}
 			[DeepEqualsIgnore]
 			private bool _showLayerRAINBOW;
 

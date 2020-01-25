@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool InterruptPending
 		{
-			get { return (StatusByte & 0x80) != 0; }
-			set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
+			get => (StatusByte & 0x80) != 0;
+			set => StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00));
 		}
 
 		private int ColorTableBase;

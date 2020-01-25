@@ -297,7 +297,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		int timeFrameCounter;
-		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
+		public int Frame
+		{
+			get => timeFrameCounter;
+			set => timeFrameCounter = value;
+		}
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 		public string SystemId { get { return "Libretro"; } }
@@ -344,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 
 			[FeatureNotImplemented]
-			set { throw new NotImplementedException(); }
+			set => throw new NotImplementedException();
 		}
 
 		#endregion

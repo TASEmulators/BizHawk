@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string Cpu
 		{
-			get { return "R3000A"; }
+			get => "R3000A";
 			set { }
 		}
 

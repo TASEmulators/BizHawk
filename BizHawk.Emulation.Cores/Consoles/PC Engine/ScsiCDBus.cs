@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool BSY
 		{
-			get { return bsy; }
+			get => bsy;
 			set
 			{
 				if (value != BSY) signalsChanged = true;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool SEL
 		{
-			get { return sel; }
+			get => sel;
 			set
 			{
 				if (value != SEL) signalsChanged = true;
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool CD // CONTROL = true, DATA = false
 		{
-			get { return cd; }
+			get => cd;
 			set
 			{
 				if (value != CD) signalsChanged = true;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool IO // INPUT = true, OUTPUT = false
 		{
-			get { return io; }
+			get => io;
 			set
 			{
 				if (value != IO) signalsChanged = true;
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool MSG
 		{
-			get { return msg; }
+			get => msg;
 			set
 			{
 				if (value != MSG) signalsChanged = true;
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool REQ
 		{
-			get { return req; }
+			get => req;
 			set
 			{
 				if (value != REQ) signalsChanged = true;
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool ACK
 		{
-			get { return ack; }
+			get => ack;
 			set
 			{
 				if (value != ACK) signalsChanged = true;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool ATN
 		{
-			get { return atn; }
+			get => atn;
 			set
 			{
 				if (value != ATN) signalsChanged = true;
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool RST
 		{
-			get { return rst; }
+			get => rst;
 			set
 			{
 				if (value != RST) signalsChanged = true;

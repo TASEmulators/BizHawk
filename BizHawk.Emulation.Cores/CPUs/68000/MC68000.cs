@@ -22,12 +22,17 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		int usp, ssp;
 
 		/// <summary>Machine/Interrupt mode</summary>
-		public bool M { get { return m; } set { m = value; } } // TODO probably have some switch logic maybe
+		/// <remarks>TODO probably have some switch logic maybe</remarks>
+		public bool M
+		{
+			get => m;
+			set => m = value;
+		}
 
 		/// <summary>Supervisor/User mode</summary>
 		public bool S
 		{
-			get { return s; }
+			get => s;
 			set
 			{
 				if (value == s) return;

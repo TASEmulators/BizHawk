@@ -160,7 +160,11 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The raw non-negated output
 			/// </summary>
-			public uint Current { get { return current; } set { current = value; } }
+			public uint Current
+			{
+				get => current;
+				set => current = value;
+			}
 
 			uint gf2_matrix_times(uint[] mat, uint vec)
 			{

@@ -62,8 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public Action<TraceInfo> TraceCallback
 		{
-			get { return _cpu.TraceCallback; }
-			set { _cpu.TraceCallback = value; }
+			get => _cpu.TraceCallback;
+			set => _cpu.TraceCallback = value;
 		}
 
 		public void HardReset()

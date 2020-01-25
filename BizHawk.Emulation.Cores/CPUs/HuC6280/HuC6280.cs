@@ -164,57 +164,57 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		/// <summary>Carry Flag</summary>
 		private bool FlagC
 		{
-			get { return (P & 0x01) != 0; }
-			set { P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (P & 0x01) != 0;
+			set => P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>Zero Flag</summary>
 		private bool FlagZ
 		{
-			get { return (P & 0x02) != 0; }
-			set { P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (P & 0x02) != 0;
+			set => P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
 		private bool FlagI
 		{
-			get { return (P & 0x04) != 0; }
-			set { P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (P & 0x04) != 0;
+			set => P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
 		private bool FlagD
 		{
-			get { return (P & 0x08) != 0; }
-			set { P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (P & 0x08) != 0;
+			set => P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>Break Flag</summary>
 		private bool FlagB
 		{
-			get { return (P & 0x10) != 0; }
-			set { P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (P & 0x10) != 0;
+			set => P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>T... Flag</summary>
 		private bool FlagT
 		{
-			get { return (P & 0x20) != 0; }
-			set { P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (P & 0x20) != 0;
+			set => P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		/// <summary>Overflow Flag</summary>
 		private bool FlagV
 		{
-			get { return (P & 0x40) != 0; }
-			set { P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (P & 0x40) != 0;
+			set => P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		/// <summary>Negative Flag</summary>
 		private bool FlagN
 		{
-			get { return (P & 0x80) != 0; }
-			set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (P & 0x80) != 0;
+			set => P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		// ==== Memory ====

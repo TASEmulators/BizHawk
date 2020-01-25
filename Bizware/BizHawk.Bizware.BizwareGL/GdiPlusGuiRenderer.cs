@@ -98,7 +98,7 @@ namespace BizHawk.Bizware.BizwareGL
 		MatrixStack _Projection, _Modelview;
 		public MatrixStack Projection
 		{
-			get { return _Projection; }
+			get => _Projection;
 			set
 			{
 				_Projection = value;
@@ -107,7 +107,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 		public MatrixStack Modelview
 		{
-			get { return _Modelview; }
+			get => _Modelview;
 			set
 			{
 				_Modelview = value;

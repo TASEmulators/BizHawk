@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 	{
 		public string Cpu
 		{
-			get { return "6280"; }
+			get => "6280";
 			set { }
 		}
 

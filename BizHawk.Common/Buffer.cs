@@ -76,11 +76,11 @@ namespace BizHawk.Common
 		public byte this[int index]
 		{
 			#if DEBUG
-				get { return this.Arr[index]; }
-				set { this.Arr[index] = value; }
+				get => this.Arr[index];
+				set => this.Arr[index] = value;
 			#else
-				set { Write08(index, value); } 
-				get { return Read08(index);}
+				set => Write08(index, value);
+				get => Read08(index);
 			#endif
 		}
 	}
@@ -92,11 +92,11 @@ namespace BizHawk.Common
 		public int this[int index]
 		{
 			#if DEBUG
-				get { return this.Arr[index]; }
-				set { this.Arr[index] = value; }
+				get => this.Arr[index];
+				set => this.Arr[index] = value;
 			#else
-				set { Write32(index<<2, (uint) value); }
-				get { return (int)Read32(index<<2);}
+				set => Write32(index<<2, (uint) value);
+				get => (int)Read32(index<<2);
 			#endif
 		}
 	}
@@ -108,11 +108,11 @@ namespace BizHawk.Common
 		public short this[int index]
 		{
 #if DEBUG
-				get { return this.Arr[index]; }
-				set { this.Arr[index] = value; }
+				get => this.Arr[index];
+				set => this.Arr[index] = value;
 #else
-			set { Write32(index << 1, (uint)value); }
-			get { return (short)Read16(index << 1); }
+			set => Write32(index << 1, (uint)value);
+			get => (short)Read16(index << 1);
 #endif
 		}
 	}

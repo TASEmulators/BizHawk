@@ -13,8 +13,18 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		internal bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, Interruptible, Interrupted;
 		//private bool MSync;
 		internal ushort[] Register = new ushort[8];
-		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
-		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
+
+		private ushort RegisterSP
+		{
+			get => Register[6];
+			set => Register[6] = value;
+		}
+
+		private ushort RegisterPC
+		{
+			get => Register[7];
+			set => Register[7] = value;
+		}
 
 		public string TraceHeader
 		{

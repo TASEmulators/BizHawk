@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		public int LagCount
 		{
-			get { return _lagcount; }
-			set { _lagcount = value; }
+			get => _lagcount;
+			set => _lagcount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get { return islag; }
-			set { islag = value; }
+			get => islag;
+			set => islag = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks

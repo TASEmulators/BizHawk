@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int RandomCounter
 		{
-			get { return _randomCounter; }
+			get => _randomCounter;
 			set
 			{
 				_randomCounter = value;

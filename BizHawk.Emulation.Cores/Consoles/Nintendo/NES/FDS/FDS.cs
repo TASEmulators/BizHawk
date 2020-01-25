@@ -235,8 +235,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			IRQSignal = _diskirq || _timerirq;
 		}
-		bool diskirq { get { return _diskirq; } set { _diskirq = value; SetIRQ(); } }
-		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
+		bool diskirq
+		{
+			get => _diskirq;
+			set { _diskirq = value; SetIRQ(); }
+		}
+		bool timerirq
+		{
+			get => _timerirq;
+			set { _timerirq = value; SetIRQ(); }
+		}
 		int timerirq_cd;
 		bool timer_irq_active;
 

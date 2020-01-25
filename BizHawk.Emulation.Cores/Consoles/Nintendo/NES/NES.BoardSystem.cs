@@ -82,7 +82,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			Dictionary<string, string> _initialRegisterValues = new Dictionary<string, string>();
-			public Dictionary<string, string> InitialRegisterValues { get { return _initialRegisterValues; } set { _initialRegisterValues = value; } }
+			public Dictionary<string, string> InitialRegisterValues
+			{
+				get => _initialRegisterValues;
+				set => _initialRegisterValues = value;
+			}
 
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
@@ -110,7 +114,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			private bool irq_signal;
-			public bool IRQSignal { get { return irq_signal; } set { irq_signal = value; } }
+			public bool IRQSignal
+			{
+				get => irq_signal;
+				set => irq_signal = value;
+			}
 
 			public virtual void Dispose() { }
 
@@ -295,8 +303,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-			public byte[] WRAM { get { return wram; } set { wram = value; } }
-			public byte[] VRAM { get { return vram; } set { vram = value; } }
+			public byte[] WRAM
+			{
+				get => wram;
+				set => wram = value;
+			}
+			public byte[] VRAM
+			{
+				get => vram;
+				set => vram = value;
+			}
 			public byte[] ROM { get; set; }
 			public byte[] VROM { get; set; }
 			byte[] wram, vram;

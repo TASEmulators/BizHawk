@@ -324,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 
 		public string Cpu
 		{
-			get { return "F3850"; }
+			get => "F3850";
 			set { }
 		}
 

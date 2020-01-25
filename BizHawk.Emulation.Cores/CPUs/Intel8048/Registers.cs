@@ -61,13 +61,13 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public bool Flag3
 		{
-			get { return (Regs[PSW] & 0x08) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x08) | 0x08); }
+			get => (Regs[PSW] & 0x08) != 0;
+			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x08) | 0x08);
 		}
 
 		public bool FlagBS
 		{
-			get { return (Regs[PSW] & 0x10) != 0; }
+			get => (Regs[PSW] & 0x10) != 0;
 			set
 			{
 				// change register bank also
@@ -86,20 +86,20 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 
 		public bool FlagF0
 		{
-			get { return (Regs[PSW] & 0x20) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (Regs[PSW] & 0x20) != 0;
+			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		public bool FlagAC
 		{
-			get { return (Regs[PSW] & 0x40) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (Regs[PSW] & 0x40) != 0;
+			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		public bool FlagC
 		{
-			get { return (Regs[PSW] & 0x80) != 0; }
-			set { Regs[PSW] = (byte)((Regs[PSW] & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (Regs[PSW] & 0x80) != 0;
+			set => Regs[PSW] = (byte)((Regs[PSW] & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		private void ResetRegisters()

@@ -262,14 +262,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public bool DriveLightEnabled
 		{
-			get { return _driveLightEnabled; }
-			protected set { _driveLightEnabled = value; }
+			get => _driveLightEnabled;
+			protected set => _driveLightEnabled = value;
 		}
 
 		public bool DriveLightOn
 		{
-			get { return _driveLightOn; }
-			protected set { _driveLightOn = value; }
+			get => _driveLightOn;
+			protected set => _driveLightOn = value;
 		}
 	}
 }

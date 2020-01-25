@@ -1164,14 +1164,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		[JsonIgnore]
 		private bool _Famicom;
-		public bool Famicom { get { return _Famicom; } set { _Famicom = value; } }
+		public bool Famicom
+		{
+			get => _Famicom;
+			set => _Famicom = value;
+		}
 		[JsonIgnore]
 		private string _NesLeftPort;
 		[JsonIgnore]
 		private string _NesRightPort;
 		public string NesLeftPort
 		{
-			get { return _NesLeftPort; }
+			get => _NesLeftPort;
 			set
 			{
 				if (NesPortDevices.ContainsKey(value))
@@ -1182,7 +1186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		public string NesRightPort
 		{
-			get { return _NesRightPort; }
+			get => _NesRightPort;
 			set
 			{
 				if (NesPortDevices.ContainsKey(value))
@@ -1195,7 +1199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private string _FamicomExpPort;
 		public string FamicomExpPort
 		{
-			get { return _FamicomExpPort; }
+			get => _FamicomExpPort;
 			set
 			{
 				if (FamicomExpansions.ContainsKey(value))

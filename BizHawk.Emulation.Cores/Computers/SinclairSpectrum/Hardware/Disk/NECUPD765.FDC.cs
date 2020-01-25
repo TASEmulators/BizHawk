@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public int CMDIndex
         {
-            get { return _cmdIndex; }
+            get => _cmdIndex;
             set
             {
                 _cmdIndex = value;

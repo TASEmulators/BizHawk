@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public byte[] RomBytes
 		{
-			get { return _romBytes; }
-			set { _romBytes = value; }
+			get => _romBytes;
+			set => _romBytes = value;
 		}
 
 		/// <summary>
@@ -20,28 +20,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public ushort SaveBytesRoutineAddress
 		{
-			get { return _saveBytesRoutineAddress; }
-			set { _saveBytesRoutineAddress = value; }
+			get => _saveBytesRoutineAddress;
+			set => _saveBytesRoutineAddress = value;
 		}
 		public ushort LoadBytesRoutineAddress
 		{
-			get { return _loadBytesRoutineAddress; }
-			set { _loadBytesRoutineAddress = value; }
+			get => _loadBytesRoutineAddress;
+			set => _loadBytesRoutineAddress = value;
 		}
 		public ushort SaveBytesResumeAddress
 		{
-			get { return _saveBytesResumeAddress; }
-			set { _saveBytesResumeAddress = value; }
+			get => _saveBytesResumeAddress;
+			set => _saveBytesResumeAddress = value;
 		}
 		public ushort LoadBytesResumeAddress
 		{
-			get { return _loadBytesResumeAddress; }
-			set { _loadBytesResumeAddress = value; }
+			get => _loadBytesResumeAddress;
+			set => _loadBytesResumeAddress = value;
 		}
 		public ushort LoadBytesInvalidHeaderAddress
 		{
-			get { return _loadBytesInvalidHeaderAddress; }
-			set { _loadBytesInvalidHeaderAddress = value; }
+			get => _loadBytesInvalidHeaderAddress;
+			set => _loadBytesInvalidHeaderAddress = value;
 		}
 
 		private byte[] _romBytes;

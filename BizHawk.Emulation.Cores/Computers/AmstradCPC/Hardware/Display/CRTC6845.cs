@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _CharacterCTR;
 		private int CharacterCTR
 		{
-			get { return _CharacterCTR; }
+			get => _CharacterCTR;
 			set
 			{
 				if (value > 255)
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _HorizontalSyncWidthCTR;
 		private int HorizontalSyncWidthCTR
 		{
-			get { return _HorizontalSyncWidthCTR; }
+			get => _HorizontalSyncWidthCTR;
 			set
 			{
 				if (value > 15)
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _VerticalSyncWidthCTR;
 		private int VerticalSyncWidthCTR
 		{
-			get { return _VerticalSyncWidthCTR; }
+			get => _VerticalSyncWidthCTR;
 			set
 			{
 				if (value > 15)
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _LineCTR;
 		private int LineCTR
 		{
-			get { return _LineCTR; }
+			get => _LineCTR;
 			set
 			{
 				if (value > 127)
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _RasterCTR;
 		private int RasterCTR
 		{
-			get { return _RasterCTR; }
+			get => _RasterCTR;
 			set
 			{
 				if (value > 31)

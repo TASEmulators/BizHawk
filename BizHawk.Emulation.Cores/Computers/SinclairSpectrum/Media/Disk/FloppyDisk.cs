@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// </summary>
 		public int RandomCounter
 		{
-			get { return _randomCounter; }
+			get => _randomCounter;
 			set
 			{
 				_randomCounter = value;

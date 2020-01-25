@@ -126,8 +126,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool EqualLengthFrames
 			{
-				get { return _equalLengthFrames; }
-				set { _equalLengthFrames = value; }
+				get => _equalLengthFrames;
+				set => _equalLengthFrames = value;
 			}
 
 			[JsonIgnore]

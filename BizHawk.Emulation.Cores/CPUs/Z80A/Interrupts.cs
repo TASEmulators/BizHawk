@@ -5,25 +5,37 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 	public partial class Z80A
 	{
 		private bool iff1;
-		public bool IFF1 { get { return iff1; } set { iff1 = value; } }
+		public bool IFF1
+		{
+			get => iff1;
+			set => iff1 = value;
+		}
 
 		private bool iff2;
-		public bool IFF2 { get { return iff2; } set { iff2 = value; } }
+		public bool IFF2
+		{
+			get => iff2;
+			set => iff2 = value;
+		}
 
 		private bool nonMaskableInterrupt;
 		public bool NonMaskableInterrupt
 		{
-			get { return nonMaskableInterrupt; }
+			get => nonMaskableInterrupt;
 			set { if (value && !nonMaskableInterrupt) NonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
 		}
 
 		private bool nonMaskableInterruptPending;
-		public bool NonMaskableInterruptPending { get { return nonMaskableInterruptPending; } set { nonMaskableInterruptPending = value; } }
+		public bool NonMaskableInterruptPending
+		{
+			get => nonMaskableInterruptPending;
+			set => nonMaskableInterruptPending = value;
+		}
 
 		private int interruptMode;
 		public int InterruptMode
 		{
-			get { return interruptMode; }
+			get => interruptMode;
 			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
 		}
 

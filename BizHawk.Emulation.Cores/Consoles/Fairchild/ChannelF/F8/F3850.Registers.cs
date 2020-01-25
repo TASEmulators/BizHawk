@@ -101,8 +101,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public bool FlagS
 		{
-			get { return (Regs[W] & 0x01) != 0; }
-			set { Regs[W] = (byte)((Regs[W] & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (Regs[W] & 0x01) != 0;
+			set => Regs[W] = (byte)((Regs[W] & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public bool FlagC
 		{
-			get { return (Regs[W] & 0x02) != 0; }
-			set { Regs[W] = (byte)((Regs[W] & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (Regs[W] & 0x02) != 0;
+			set => Regs[W] = (byte)((Regs[W] & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>
@@ -119,8 +119,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public bool FlagZ
 		{
-			get { return (Regs[W] & 0x04) != 0; }
-			set { Regs[W] = (byte)((Regs[W] & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (Regs[W] & 0x04) != 0;
+			set => Regs[W] = (byte)((Regs[W] & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>
@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public bool FlagO
 		{
-			get { return (Regs[W] & 0x08) != 0; }
-			set { Regs[W] = (byte)((Regs[W] & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (Regs[W] & 0x08) != 0;
+			set => Regs[W] = (byte)((Regs[W] & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>
@@ -137,8 +137,8 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public bool FlagICB
 		{
-			get { return (Regs[W] & 0x10) != 0; }
-			set { Regs[W] = (byte)((Regs[W] & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (Regs[W] & 0x10) != 0;
+			set => Regs[W] = (byte)((Regs[W] & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public ushort RegPC0
 		{
-			get { return (ushort)(Regs[PC0l] | (Regs[PC0h] << 8)); }
+			get => (ushort)(Regs[PC0l] | (Regs[PC0h] << 8));
 			set
 			{
 				Regs[PC0l] = (byte)(value & 0xFF);
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public ushort RegPC1
 		{
-			get { return (ushort)(Regs[PC1l] | (Regs[PC1h] << 8)); }
+			get => (ushort)(Regs[PC1l] | (Regs[PC1h] << 8));
 			set
 			{
 				Regs[PC1l] = (byte)(value & 0xFF);
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Consoles.ChannelF
 		/// </summary>
 		public ushort RegDC0
 		{
-			get { return (ushort)(Regs[DC0l] | (Regs[DC0h] << 8)); }
+			get => (ushort)(Regs[DC0l] | (Regs[DC0h] << 8));
 			set
 			{
 				Regs[DC0l] = (byte)(value & 0xFF);

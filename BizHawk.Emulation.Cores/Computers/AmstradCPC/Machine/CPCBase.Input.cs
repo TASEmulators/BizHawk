@@ -288,8 +288,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private bool inputRead;
 		public bool InputRead
 		{
-			get { return inputRead; }
-			set { inputRead = value; }
+			get => inputRead;
+			set => inputRead = value;
 		}
 	}
 }

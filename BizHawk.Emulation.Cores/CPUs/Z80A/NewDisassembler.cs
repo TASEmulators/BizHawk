@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string Cpu
 		{
-			get { return "Z80"; }
+			get => "Z80";
 			set { }
 		}
 

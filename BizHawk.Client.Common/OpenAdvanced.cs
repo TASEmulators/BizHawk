@@ -122,7 +122,11 @@ namespace BizHawk.Client.Common
 			tw.Write(JsonConvert.SerializeObject(token));
 		}
 
-		public string CorePath { get { return token.CorePath; } set { token.CorePath = value; } }
+		public string CorePath
+		{
+			get => token.CorePath;
+			set => token.CorePath = value;
+		}
 	}
 
 	public class OpenAdvanced_LibretroNoGame : IOpenAdvanced, IOpenAdvancedLibretro
@@ -159,7 +163,11 @@ namespace BizHawk.Client.Common
 			tw.Write(_corePath);
 		}
 
-		public string CorePath { get { return _corePath; } set { _corePath = value; } }
+		public string CorePath
+		{
+			get => _corePath;
+			set => _corePath = value;
+		}
 	}
 
 	public class OpenAdvanced_OpenRom : IOpenAdvanced

@@ -19,26 +19,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public bool IsIssue2Keyboard
 		{
-			get { return _isIssue2Keyboard; }
-			set { _isIssue2Keyboard = value; }
+			get => _isIssue2Keyboard;
+			set => _isIssue2Keyboard = value;
 		}
 
 		public int[] KeyLine
 		{
-			get { return _keyLine; }
-			set { _keyLine = value; }
+			get => _keyLine;
+			set => _keyLine = value;
 		}
 
 		public string[] KeyboardMatrix
 		{
-			get { return _keyboardMatrix; }
-			set { _keyboardMatrix = value; }
+			get => _keyboardMatrix;
+			set => _keyboardMatrix = value;
 		}
 
 		public string[] NonMatrixKeys
 		{
-			get { return _nonMatrixKeys; }
-			set { _nonMatrixKeys = value; }
+			get => _nonMatrixKeys;
+			set => _nonMatrixKeys = value;
 		}
 
 		public StandardKeyboard(SpectrumBase machine)

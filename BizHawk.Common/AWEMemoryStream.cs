@@ -90,10 +90,7 @@ namespace BizHawk.Common
 		public override long Length { get { return mLength; } }
 		public override long Position
 		{
-			get
-			{
-				return mPosition;
-			}
+			get => mPosition;
 			set
 			{
 				if (!Ensure(value + 1))
@@ -239,14 +236,14 @@ namespace BizHawk.Common
 
 				public uint LowPart
 				{
-					get { return lp; }
-					set { lp = value; }
+					get => lp;
+					set => lp = value;
 				}
 
 				public int HighPart
 				{
-					get { return hp; }
-					set { hp = value; }
+					get => hp;
+					set => hp = value;
 				}
 			}
 
@@ -258,14 +255,14 @@ namespace BizHawk.Common
 
 				public LUID LUID
 				{
-					get { return luid; }
-					set { luid = value; }
+					get => luid;
+					set => luid = value;
 				}
 
 				public uint Attributes
 				{
-					get { return attributes; }
-					set { attributes = value; }
+					get => attributes;
+					set => attributes = value;
 				}
 			}
 
@@ -278,14 +275,14 @@ namespace BizHawk.Common
 
 				public uint PrivilegeCount
 				{
-					get { return prvct; }
-					set { prvct = value; }
+					get => prvct;
+					set => prvct = value;
 				}
 
 				public LUID_AND_ATTRIBUTES[] Privileges
 				{
-					get { return privileges; }
-					set { privileges = value; }
+					get => privileges;
+					set => privileges = value;
 				}
 			}
 

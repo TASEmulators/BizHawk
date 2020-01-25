@@ -84,10 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public AYPanConfig PanningConfiguration
 		{
-			get
-			{
-				return _currentPanTab;
-			}
+			get => _currentPanTab;
 			set
 			{
 				if (value != _currentPanTab)
@@ -104,10 +101,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int Volume
 		{
-			get
-			{
-				return _volume;
-			}
+			get => _volume;
 			set
 			{
 				//value = Math.Max(0, value);
@@ -126,11 +120,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public int SelectedRegister
 		{
-			get { return _activeRegister; }
-			set
-			{
-				_activeRegister = (byte)value;
-			}
+			get => _activeRegister;
+			set => _activeRegister = (byte)value;
 		}
 
 		#endregion

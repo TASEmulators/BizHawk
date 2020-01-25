@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 return rp;
             }
-            set { ROMPaged = value; }
+            set => ROMPaged = value;
         }
     }
 }

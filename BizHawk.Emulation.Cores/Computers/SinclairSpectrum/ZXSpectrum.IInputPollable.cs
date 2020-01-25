@@ -11,14 +11,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
         public int LagCount
         {
-            get { return _lagCount; }
-            set { _lagCount = value; }
+            get => _lagCount;
+            set => _lagCount = value;
         }
 
         public bool IsLagFrame
         {
-            get { return _isLag; }
-            set { _isLag = value; }
+            get => _isLag;
+            set => _isLag = value;
         }
 
         public IInputCallbackSystem InputCallbacks { get; }

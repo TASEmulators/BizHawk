@@ -228,19 +228,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			byte _BG4_Prio0, _BG4_Prio1;
 			byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
 
-			public bool BG1_Prio0 { get { return _BG1_Prio0 != 0; } set { _BG1_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG1_Prio1 { get { return _BG1_Prio1 != 0; } set { _BG1_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG2_Prio0 { get { return _BG2_Prio0 != 0; } set { _BG2_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG2_Prio1 { get { return _BG2_Prio1 != 0; } set { _BG2_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG3_Prio0 { get { return _BG3_Prio0 != 0; } set { _BG3_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG3_Prio1 { get { return _BG3_Prio1 != 0; } set { _BG3_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool BG4_Prio0 { get { return _BG4_Prio0 != 0; } set { _BG4_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool BG4_Prio1 { get { return _BG4_Prio1 != 0; } set { _BG4_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool BG1_Prio0
+			{
+				get => _BG1_Prio0 != 0;
+				set => _BG1_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG1_Prio1
+			{
+				get => _BG1_Prio1 != 0;
+				set => _BG1_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG2_Prio0
+			{
+				get => _BG2_Prio0 != 0;
+				set => _BG2_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG2_Prio1
+			{
+				get => _BG2_Prio1 != 0;
+				set => _BG2_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG3_Prio0
+			{
+				get => _BG3_Prio0 != 0;
+				set => _BG3_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG3_Prio1
+			{
+				get => _BG3_Prio1 != 0;
+				set => _BG3_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool BG4_Prio0
+			{
+				get => _BG4_Prio0 != 0;
+				set => _BG4_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool BG4_Prio1
+			{
+				get => _BG4_Prio1 != 0;
+				set => _BG4_Prio1 = (byte)(value ? 1 : 0);
+			}
 
-			public bool Obj_Prio0 { get { return _Obj_Prio0 != 0; } set { _Obj_Prio0 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio1 { get { return _Obj_Prio1 != 0; } set { _Obj_Prio1 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio2 { get { return _Obj_Prio2 != 0; } set { _Obj_Prio2 = (byte)(value ? 1 : 0); } }
-			public bool Obj_Prio3 { get { return _Obj_Prio3 != 0; } set { _Obj_Prio3 = (byte)(value ? 1 : 0); } }
+			public bool Obj_Prio0
+			{
+				get => _Obj_Prio0 != 0;
+				set => _Obj_Prio0 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio1
+			{
+				get => _Obj_Prio1 != 0;
+				set => _Obj_Prio1 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio2
+			{
+				get => _Obj_Prio2 != 0;
+				set => _Obj_Prio2 = (byte)(value ? 1 : 0);
+			}
+			public bool Obj_Prio3
+			{
+				get => _Obj_Prio3 != 0;
+				set => _Obj_Prio3 = (byte)(value ? 1 : 0);
+			}
 		}
 
 		[StructLayout(LayoutKind.Explicit)]

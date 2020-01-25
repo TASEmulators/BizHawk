@@ -284,9 +284,6 @@
 		<!-- Braces should not be omitted -->
 		<Rule Id="SA1503" Action="Hidden" />
 
-		<!-- All accessors should be single-line or multi-line -->
-		<Rule Id="SA1504" Action="Hidden" />
-
 		<!-- Opening braces should not be followed by blank line -->
 		<Rule Id="SA1505" Action="Hidden" />
 

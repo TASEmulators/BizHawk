@@ -29,7 +29,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public bool Retain
 		{
-			get { return _retain; }
+			get => _retain;
 			set
 			{
 				if (_retain && !value)

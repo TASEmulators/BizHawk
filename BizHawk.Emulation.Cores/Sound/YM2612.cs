@@ -989,7 +989,7 @@ namespace BizHawk.Emulation.Cores.Components
 			private int egAttenuation = MaxAttenuation;                 // 10-bit attenuation value output from envelope generator
 			public int EgAttenuation
 			{
-				get { return egAttenuation; }
+				get => egAttenuation;
 				set
 				{
 					egAttenuation = value;

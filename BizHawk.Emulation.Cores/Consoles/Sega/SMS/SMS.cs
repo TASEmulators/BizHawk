@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public string _region;
 		public string RegionStr
 		{
-			get { return _region; }
+			get => _region;
 			set
 			{
 				if (value.NotIn(validRegions))

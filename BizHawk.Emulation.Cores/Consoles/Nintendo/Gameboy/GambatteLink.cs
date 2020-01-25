@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private bool _disposed = false;

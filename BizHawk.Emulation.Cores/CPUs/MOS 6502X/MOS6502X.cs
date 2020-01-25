@@ -163,57 +163,57 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		/// <summary>Carry Flag</summary>
 		public bool FlagC
 		{
-			get { return (P & 0x01) != 0; }
-			private set { P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00)); }
+			get => (P & 0x01) != 0;
+			private set => P = (byte)((P & ~0x01) | (value ? 0x01 : 0x00));
 		}
 
 		/// <summary>Zero Flag</summary>
 		public bool FlagZ
 		{
-			get { return (P & 0x02) != 0; }
-			private set { P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00)); }
+			get => (P & 0x02) != 0;
+			private set => P = (byte)((P & ~0x02) | (value ? 0x02 : 0x00));
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
 		public bool FlagI
 		{
-			get { return (P & 0x04) != 0; }
-			set { P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00)); }
+			get => (P & 0x04) != 0;
+			set => P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00));
 		}
 
 		/// <summary>Decimal Mode Flag</summary>
 		public bool FlagD
 		{
-			get { return (P & 0x08) != 0; }
-			private set { P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00)); }
+			get => (P & 0x08) != 0;
+			private set => P = (byte)((P & ~0x08) | (value ? 0x08 : 0x00));
 		}
 
 		/// <summary>Break Flag</summary>
 		public bool FlagB
 		{
-			get { return (P & 0x10) != 0; }
-			private set { P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (P & 0x10) != 0;
+			private set => P = (byte)((P & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		/// <summary>T... Flag</summary>
 		public bool FlagT
 		{
-			get { return (P & 0x20) != 0; }
-			private set { P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (P & 0x20) != 0;
+			private set => P = (byte)((P & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		/// <summary>Overflow Flag</summary>
 		public bool FlagV
 		{
-			get { return (P & 0x40) != 0; }
-			private set { P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (P & 0x40) != 0;
+			private set => P = (byte)((P & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		/// <summary>Negative Flag</summary>
 		public bool FlagN
 		{
-			get { return (P & 0x80) != 0; }
-			private set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (P & 0x80) != 0;
+			private set => P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		public long TotalExecutedCycles;

@@ -29,31 +29,31 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 
 		public bool FlagC
 		{
-			get { return (Regs[5] & 0x10) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00)); }
+			get => (Regs[5] & 0x10) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x10) | (value ? 0x10 : 0x00));
 		}
 
 		public bool FlagH
 		{
-			get { return (Regs[5] & 0x20) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00)); }
+			get => (Regs[5] & 0x20) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x20) | (value ? 0x20 : 0x00));
 		}
 
 		public bool FlagN
 		{
-			get { return (Regs[5] & 0x40) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00)); }
+			get => (Regs[5] & 0x40) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x40) | (value ? 0x40 : 0x00));
 		}
 
 		public bool FlagZ
 		{
-			get { return (Regs[5] & 0x80) != 0; }
-			set { Regs[5] = (ushort)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00)); }
+			get => (Regs[5] & 0x80) != 0;
+			set => Regs[5] = (ushort)((Regs[5] & ~0x80) | (value ? 0x80 : 0x00));
 		}
 
 		public ushort RegPC
 		{
-			get { return (ushort)(Regs[0] | (Regs[1] << 8)); }
+			get => (ushort)(Regs[0] | (Regs[1] << 8));
 			set
 			{
 				Regs[0] = (ushort)(value & 0xFF);

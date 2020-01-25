@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public override long Position
 		{
-			get { return currPosition; }
+			get => currPosition;
 			set
 			{
 				currPosition = value;

@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(ControllerType.Default)]
 			public ControllerType GBController
 			{
-				get { return _GBController; }
+				get => _GBController;
 				set
 				{
 					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
@@ -111,8 +111,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(0)]
 			public int RTCInitialTime
 			{
-				get { return _RTCInitialTime; }
-				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime;
+				set => _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Offset")]
@@ -120,8 +120,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(0)]
 			public int RTCOffset
 			{
-				get { return _RTCOffset; }
-				set { _RTCOffset = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset;
+				set => _RTCOffset = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]

@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Sound
 		/// </summary>
 		public int Volume
 		{
-			get { return VolumeConverterOut(_volume); }
+			get => VolumeConverterOut(_volume);
 			set
 			{
 				var newVol = VolumeConverterIn(value);

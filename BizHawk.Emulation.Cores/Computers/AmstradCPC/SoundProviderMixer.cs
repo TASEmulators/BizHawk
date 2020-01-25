@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private bool _stereo = true;
 		public bool Stereo
 		{
-			get { return _stereo; }
-			set { _stereo = value; }
+			get => _stereo;
+			set => _stereo = value;
 		}
 
 		private readonly List<Provider> SoundProviders;

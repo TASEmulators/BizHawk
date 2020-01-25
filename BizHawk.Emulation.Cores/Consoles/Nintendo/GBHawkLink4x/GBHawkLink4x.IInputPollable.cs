@@ -6,14 +6,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 	{
 		public int LagCount
 		{
-			get { return _lagcount; }
-			set { _lagcount = value; }
+			get => _lagcount;
+			set => _lagcount = value;
 		}
 
 		public bool IsLagFrame
 		{
-			get { return _islag; }
-			set { _islag = value; }
+			get => _islag;
+			set => _islag = value;
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();

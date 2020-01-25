@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public string Cpu
 		{
-			get { return "R4300"; }
+			get => "R4300";
 			set { }
 		}
 

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		EMMC3Type _mmc3type = EMMC3Type.None;
 		public EMMC3Type MMC3Type
 		{
-			get { return _mmc3type; }
+			get => _mmc3type;
 			set
 			{
 				_mmc3type = value;

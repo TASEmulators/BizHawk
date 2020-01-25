@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			/// </summary>
 			public N64ControllerPakType PakType
 			{
-				get { return _type; }
-				set { _type = value; }
+				get => _type;
+				set => _type = value;
 			}
 
 			[JsonIgnore]
@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			/// </summary>
 			public bool IsConnected
 			{
-				get { return _isConnected; }
-				set { _isConnected = value; }
+				get => _isConnected;
+				set => _isConnected = value;
 			}
 
 			/// <summary>

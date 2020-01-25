@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public byte[] RomBytes
 		{
-			get { return _romBytes; }
-			set { _romBytes = value; }
+			get => _romBytes;
+			set => _romBytes = value;
 		}
 		private byte[] _romBytes;
 

@@ -132,7 +132,7 @@ namespace BizHawk.BizInvoke
 			public override long Length => _length;
 			public override long Position
 			{
-				get { return _pos; }
+				get => _pos;
 				set
 				{
 					if (value < 0 || _length < value) throw new ArgumentOutOfRangeException();

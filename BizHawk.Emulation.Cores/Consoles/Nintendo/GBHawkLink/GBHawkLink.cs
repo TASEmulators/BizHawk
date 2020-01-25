@@ -95,8 +95,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink
 
 		public bool LinkConnected
 		{
-			get { return _cableconnected; }
-			set { _cableconnected = value; }
+			get => _cableconnected;
+			set => _cableconnected = value;
 		}
 
 		private void ExecFetch(ushort addr)

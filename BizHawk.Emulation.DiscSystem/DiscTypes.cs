@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int DecimalValue
 		{
-			get { return (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10; }
-			set { BCDValue = IntToBCD(value); }
+			get => (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10;
+			set => BCDValue = IntToBCD(value);
 		}
 
 		/// <summary>

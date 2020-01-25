@@ -195,31 +195,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int VirtualWidth
 		{
-			get { return _virtualWidth; }
-			set { _virtualWidth = value; }
+			get => _virtualWidth;
+			set => _virtualWidth = value;
 		}
 
 		public int VirtualHeight
 		{
-			get { return _virtualHeight; }
-			set { _virtualHeight = value; }
+			get => _virtualHeight;
+			set => _virtualHeight = value;
 		}
 
 		public int BufferWidth
 		{
-			get { return _bufferWidth; }
-			set { _bufferWidth = value; }
+			get => _bufferWidth;
+			set => _bufferWidth = value;
 		}
 
 		public int BufferHeight
 		{
-			get { return _bufferHeight; }
-			set { _bufferHeight = value; }
+			get => _bufferHeight;
+			set => _bufferHeight = value;
 		}
 
 		public int VsyncNumerator
 		{
-			get { return GateArray.Z80ClockSpeed * 50; }
+			get => GateArray.Z80ClockSpeed * 50;
 			set { }
 		}
 

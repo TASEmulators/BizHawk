@@ -105,8 +105,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_L
 			{
-				get { return _RTCInitialTime_L; }
-				set { _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_L;
+				set => _RTCInitialTime_L = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time C")]
@@ -114,8 +114,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_C
 			{
-				get { return _RTCInitialTime_C; }
-				set { _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_C;
+				set => _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time R")]
@@ -123,8 +123,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCInitialTime_R
 			{
-				get { return _RTCInitialTime_R; }
-				set { _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_R;
+				set => _RTCInitialTime_R = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Offset L")]
@@ -132,8 +132,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCOffset_L
 			{
-				get { return _RTCOffset_L; }
-				set { _RTCOffset_L = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_L;
+				set => _RTCOffset_L = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("RTC Offset C")]
@@ -141,8 +141,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCOffset_C
 			{
-				get { return _RTCOffset_C; }
-				set { _RTCOffset_C = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_C;
+				set => _RTCOffset_C = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("RTC Offset R")]
@@ -150,8 +150,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink3x
 			[DefaultValue(0)]
 			public int RTCOffset_R
 			{
-				get { return _RTCOffset_R; }
-				set { _RTCOffset_R = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_R;
+				set => _RTCOffset_R = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]

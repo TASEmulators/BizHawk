@@ -124,7 +124,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Background Layer A")]
 			[Description("True to draw BG layer A")]
 			[DefaultValue(true)]
-			public bool DrawBGA { get { return _DrawBGA; } set { _DrawBGA = value; } }
+			public bool DrawBGA
+			{
+				get => _DrawBGA;
+				set => _DrawBGA = value;
+			}
 
 			[DeepEqualsIgnore]
 			[JsonIgnore]
@@ -133,7 +137,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Background Layer B")]
 			[Description("True to draw BG layer B")]
 			[DefaultValue(true)]
-			public bool DrawBGB { get { return _DrawBGB; } set { _DrawBGB = value; } }
+			public bool DrawBGB
+			{
+				get => _DrawBGB;
+				set => _DrawBGB = value;
+			}
 
 			[DeepEqualsIgnore]
 			[JsonIgnore]
@@ -142,7 +150,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Background Layer W")]
 			[Description("True to draw BG layer W")]
 			[DefaultValue(true)]
-			public bool DrawBGW { get { return _DrawBGW; } set { _DrawBGW = value; } }
+			public bool DrawBGW
+			{
+				get => _DrawBGW;
+				set => _DrawBGW = value;
+			}
 
 			[DeepEqualsIgnore]
 			[JsonIgnore]
@@ -151,7 +163,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Sprite Layer")]
 			[Description("True to draw sprite layer")]
 			[DefaultValue(true)]
-			public bool DrawObj { get { return _DrawObj; } set { _DrawObj = value; } }
+			public bool DrawObj
+			{
+				get => _DrawObj;
+				set => _DrawObj = value;
+			}
 
 			[DeepEqualsIgnore]
 			[JsonIgnore]
@@ -160,7 +176,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Pad screen to 320")]
 			[Description("When using 1:1 aspect ratio, enable to make screen width constant (320) between game modes")]
 			[DefaultValue(false)]
-			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
+			public bool PadScreen320
+			{
+				get => _PadScreen320;
+				set => _PadScreen320 = value;
+			}
 
 
 			[DeepEqualsIgnore]
@@ -170,7 +190,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DisplayName("Use custom backdrop color")]
 			[Description("Filler when layers are off")]
 			[DefaultValue((bool)false)]
-			public bool Backdrop { get { return _Backdrop; } set { _Backdrop = value; } }
+			public bool Backdrop
+			{
+				get => _Backdrop;
+				set => _Backdrop = value;
+			}
 
 
 			public GPGXSettings()

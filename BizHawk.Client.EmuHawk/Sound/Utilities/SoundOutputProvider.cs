@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="InvalidOperationException">(from setter) constructed in standalone mode</exception>
 		public int MaxSamplesDeficit
 		{
-			get { return _maxSamplesDeficit; }
+			get => _maxSamplesDeficit;
 			set
 			{
 				if (_standaloneMode) throw new InvalidOperationException();

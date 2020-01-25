@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public int DiskDriveIndex
         {
-            get { return _diskDriveIndex; }
+            get => _diskDriveIndex;
             set
             {
                 // when index is changed update the ActiveDrive

@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _flag1;
 		public byte Flag1
 		{
-			get { return _flag1; }
-			set { _flag1 = value; }
+			get => _flag1;
+			set => _flag1 = value;
 		}
 
 		/// <summary>
@@ -42,8 +42,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _flag2;
 		public byte Flag2
 		{
-			get { return _flag2; }
-			set { _flag2 = value; }
+			get => _flag2;
+			set => _flag2 = value;
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST1MA
 		{
-			get { return NECUPD765.GetBit(0, _flag1); }
+			get => NECUPD765.GetBit(0, _flag1);
 			set
 			{
 				if (value) { NECUPD765.SetBit(0, ref _flag1); }
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST1ND
 		{
-			get { return NECUPD765.GetBit(2, _flag1); }
+			get => NECUPD765.GetBit(2, _flag1);
 			set
 			{
 				if (value) { NECUPD765.SetBit(2, ref _flag1); }
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST1DE
 		{
-			get { return NECUPD765.GetBit(5, _flag1); }
+			get => NECUPD765.GetBit(5, _flag1);
 			set
 			{
 				if (value) { NECUPD765.SetBit(5, ref _flag1); }
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST1EN
 		{
-			get { return NECUPD765.GetBit(7, _flag1); }
+			get => NECUPD765.GetBit(7, _flag1);
 			set
 			{
 				if (value) { NECUPD765.SetBit(7, ref _flag1); }
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST2MD
 		{
-			get { return NECUPD765.GetBit(0, _flag2); }
+			get => NECUPD765.GetBit(0, _flag2);
 			set
 			{
 				if (value) { NECUPD765.SetBit(0, ref _flag2); }
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST2BC
 		{
-			get { return NECUPD765.GetBit(1, _flag2); }
+			get => NECUPD765.GetBit(1, _flag2);
 			set
 			{
 				if (value) { NECUPD765.SetBit(1, ref _flag2); }
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST2WC
 		{
-			get { return NECUPD765.GetBit(4, _flag2); }
+			get => NECUPD765.GetBit(4, _flag2);
 			set
 			{
 				if (value) { NECUPD765.SetBit(4, ref _flag2); }
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST2DD
 		{
-			get { return NECUPD765.GetBit(5, _flag2); }
+			get => NECUPD765.GetBit(5, _flag2);
 			set
 			{
 				if (value) { NECUPD765.SetBit(5, ref _flag2); }
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public bool ST2CM
 		{
-			get { return NECUPD765.GetBit(6, _flag2); }
+			get => NECUPD765.GetBit(6, _flag2);
 			set
 			{
 				if (value) { NECUPD765.SetBit(6, ref _flag2); }

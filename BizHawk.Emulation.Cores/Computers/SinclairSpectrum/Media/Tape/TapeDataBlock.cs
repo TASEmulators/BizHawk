@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _blockID = -1;
 		public int BlockID
 		{
-			get { return _blockID; }
+			get => _blockID;
 			set
 			{
 				_blockID = value;
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private BlockType _blockType;
 		public BlockType BlockDescription
 		{
-			get { return _blockType; }
+			get => _blockType;
 			set
 			{
 				_blockType = value;
@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private byte[] _blockData;
 		public byte[] BlockData
 		{
-			get { return _blockData; }
-			set { _blockData = value; }
+			get => _blockData;
+			set => _blockData = value;
 		}
 
 		/*
@@ -125,8 +125,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private TapeCommand _command = TapeCommand.NONE;
 		public TapeCommand Command
 		{
-			get { return _command; }
-			set { _command = value; }
+			get => _command;
+			set => _command = value;
 		}
 
 		/// <summary>
@@ -135,8 +135,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _pauseInMS;
 		public int PauseInMS
 		{
-			get { return _pauseInMS; }
-			set { _pauseInMS = value; }
+			get => _pauseInMS;
+			set => _pauseInMS = value;
 		}
 
 

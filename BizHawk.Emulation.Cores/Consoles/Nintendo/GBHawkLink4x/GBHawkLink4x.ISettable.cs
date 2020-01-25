@@ -116,8 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCInitialTime_A
 			{
-				get { return _RTCInitialTime_A; }
-				set { _RTCInitialTime_A = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_A;
+				set => _RTCInitialTime_A = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time B")]
@@ -125,8 +125,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCInitialTime_B
 			{
-				get { return _RTCInitialTime_B; }
-				set { _RTCInitialTime_B = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_B;
+				set => _RTCInitialTime_B = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time C")]
@@ -134,8 +134,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCInitialTime_C
 			{
-				get { return _RTCInitialTime_C; }
-				set { _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_C;
+				set => _RTCInitialTime_C = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Initial Time D")]
@@ -143,8 +143,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCInitialTime_D
 			{
-				get { return _RTCInitialTime_D; }
-				set { _RTCInitialTime_D = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+				get => _RTCInitialTime_D;
+				set => _RTCInitialTime_D = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value));
 			}
 
 			[DisplayName("RTC Offset A")]
@@ -152,8 +152,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCOffset_A
 			{
-				get { return _RTCOffset_A; }
-				set { _RTCOffset_A = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_A;
+				set => _RTCOffset_A = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("RTC Offset B")]
@@ -161,8 +161,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCOffset_B
 			{
-				get { return _RTCOffset_B; }
-				set { _RTCOffset_B = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_B;
+				set => _RTCOffset_B = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("RTC Offset C")]
@@ -170,8 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCOffset_C
 			{
-				get { return _RTCOffset_C; }
-				set { _RTCOffset_C = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_C;
+				set => _RTCOffset_C = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("RTC Offset D")]
@@ -179,8 +179,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawkLink4x
 			[DefaultValue(0)]
 			public int RTCOffset_D
 			{
-				get { return _RTCOffset_D; }
-				set { _RTCOffset_D = Math.Max(-127, Math.Min(127, value)); }
+				get => _RTCOffset_D;
+				set => _RTCOffset_D = Math.Max(-127, Math.Min(127, value));
 			}
 
 			[DisplayName("Use Existing SaveRAM")]

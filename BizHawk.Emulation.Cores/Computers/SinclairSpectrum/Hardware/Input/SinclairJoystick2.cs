@@ -50,8 +50,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		private int _playerNumber;
 		public int PlayerNumber
 		{
-			get { return _playerNumber; }
-			set { _playerNumber = value; }
+			get => _playerNumber;
+			set => _playerNumber = value;
 		}
 
 		/// <summary>

@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController1
 			{
-				get { return _VectrexController1; }
+				get => _VectrexController1;
 				set
 				{
 					if (value == ControllerType.Digital) { Port1 = VectrexHawkControllerDeck.DefaultControllerName; }
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 			[DefaultValue(ControllerType.Digital)]
 			public ControllerType VectrexController2
 			{
-				get { return _VectrexController2; }
+				get => _VectrexController2;
 				set
 				{
 					if (value == ControllerType.Digital) { Port2 = VectrexHawkControllerDeck.DefaultControllerName; }

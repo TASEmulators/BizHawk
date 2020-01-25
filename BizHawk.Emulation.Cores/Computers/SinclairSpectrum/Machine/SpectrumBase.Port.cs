@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected byte LastULAOutByte;
         public byte LASTULAOutByte
         {
-            get { return LastULAOutByte; }
-            set { LastULAOutByte = value; }
+            get => LastULAOutByte;
+            set => LastULAOutByte = value;
         }
 
         public byte Last7ffd;

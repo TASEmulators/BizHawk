@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _PENR;
 		public byte PENR
 		{
-			get { return _PENR; }
+			get => _PENR;
 			set
 			{
 				_PENR = value;
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _INKR;
 		public byte INKR
 		{
-			get { return _INKR; }
+			get => _INKR;
 			set
 			{
 				_INKR = value;
@@ -248,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private byte _RMR;
 		public byte RMR
 		{
-			get { return _RMR; }
+			get => _RMR;
 			set
 			{
 				_RMR = value;
@@ -310,11 +310,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		/// </summary>
 		public byte RAMR
 		{
-			get { return _RAMR; }
-			set
-			{
-				_RAMR = value;
-			}
+			get => _RAMR;
+			set => _RAMR = value;
 		}
 
 		/// <summary>
@@ -328,8 +325,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _interruptCounter;
 		public int InterruptCounter
 		{
-			get { return _interruptCounter; }
-			set { _interruptCounter = value; }
+			get => _interruptCounter;
+			set => _interruptCounter = value;
 		}
 
 		/// <summary>
@@ -996,26 +993,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int VirtualWidth
 		{
-			get { return _virtualWidth; }
-			set { _virtualWidth = value; }
+			get => _virtualWidth;
+			set => _virtualWidth = value;
 		}
 
 		public int VirtualHeight
 		{
-			get { return _virtualHeight; }
-			set { _virtualHeight = value; }
+			get => _virtualHeight;
+			set => _virtualHeight = value;
 		}
 
 		public int BufferWidth
 		{
-			get { return _bufferWidth; }
-			set { _bufferWidth = value; }
+			get => _bufferWidth;
+			set => _bufferWidth = value;
 		}
 
 		public int BufferHeight
 		{
-			get { return _bufferHeight; }
-			set { _bufferHeight = value; }
+			get => _bufferHeight;
+			set => _bufferHeight = value;
 		}
 
 		public int SysBufferWidth;
@@ -1023,7 +1020,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public int VsyncNumerator
 		{
-			get { return 200000000; }
+			get => 200000000;
 			set { }
 		}
 
@@ -1185,8 +1182,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public AmstradCPC.BorderType borderType
 		{
-			get { return _borderType; }
-			set { _borderType = value; }
+			get => _borderType;
+			set => _borderType = value;
 		}
 
 		#endregion

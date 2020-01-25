@@ -829,31 +829,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public int VirtualWidth
 		{
-			get { return _virtualWidth; }
-			set { _virtualWidth = value; }
+			get => _virtualWidth;
+			set => _virtualWidth = value;
 		}
 
 		public int VirtualHeight
 		{
-			get { return _virtualHeight; }
-			set { _virtualHeight = value; }
+			get => _virtualHeight;
+			set => _virtualHeight = value;
 		}
 
 		public int BufferWidth
 		{
-			get { return _bufferWidth; }
-			set { _bufferWidth = value; }
+			get => _bufferWidth;
+			set => _bufferWidth = value;
 		}
 
 		public int BufferHeight
 		{
-			get { return _bufferHeight; }
-			set { _bufferHeight = value; }
+			get => _bufferHeight;
+			set => _bufferHeight = value;
 		}
 
 		public int VsyncNumerator
 		{
-			get { return ClockSpeed * 50; }// ClockSpeed; }
+			get => ClockSpeed * 50;  // ClockSpeed; }
 			set { }
 		}
 
@@ -1016,8 +1016,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public ZXSpectrum.BorderType borderType
 		{
-			get { return _borderType; }
-			set { _borderType = value; }
+			get => _borderType;
+			set => _borderType = value;
 		}
 
 		#endregion

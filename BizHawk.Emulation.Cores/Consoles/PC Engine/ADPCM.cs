@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		byte port180E;
 		public byte Port180E
 		{
-			get { return port180E; }
+			get => port180E;
 			set
 			{
 				port180E = value;

@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _sampleRate;
 		public int SampleRate
 		{
-			get { return _sampleRate; }
-			set { _sampleRate = value; }
+			get => _sampleRate;
+			set => _sampleRate = value;
 		}
 
 		/// <summary>
@@ -32,10 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 		private int _volume;
 		public int Volume
 		{
-			get
-			{
-				return VolumeConverterOut(_volume);
-			}
+			get => VolumeConverterOut(_volume);
 			set
 			{
 				var newVol = VolumeConverterIn(value);

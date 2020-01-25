@@ -15,7 +15,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool chopdot;
 		public enum Region { NTSC, PAL, Dendy, RGB };
 		Region _region;
-		public Region region { set { _region = value; SyncRegion(); } get { return _region; } }
+		public Region region
+		{
+			set { _region = value; SyncRegion(); }
+			get => _region;
+		}
 		void SyncRegion()
 		{
 			switch (region)
@@ -93,7 +97,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int[] _currentLuma = PaletteLumaNES;
 
-		public int[] CurrentLuma { get { return _currentLuma; } set { _currentLuma = value; } }
+		public int[] CurrentLuma
+		{
+			get => _currentLuma;
+			set => _currentLuma = value;
+		}
 
 		// true = light sensed
 		public bool LightGunCallback(int x, int y)
