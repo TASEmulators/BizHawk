@@ -49,6 +49,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			public List<RollColumn> Columns { get; set; }
+
+			public bool ReloadOnScriptFileChange { get; set; }
+			public bool ToggleAllIfNoneSelected { get; set; } = true;
 		}
 
 		[ConfigPersist]
@@ -233,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddFileWatches()
 		{
-			if (Config.LuaReloadOnScriptFileChange)
+			if (Settings.ReloadOnScriptFileChange)
 			{
 				_watches.Clear();
 				foreach (var item in LuaImp.ScriptList.Where(s => !s.IsSeparator))
@@ -314,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 					luaFile.State = LuaFile.RunState.Disabled;
 				}
 
-				if (Config.LuaReloadOnScriptFileChange)
+				if (Settings.ReloadOnScriptFileChange)
 				{
 					CreateFileWatcher(processedPath);
 				}
@@ -836,7 +839,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			var files = !SelectedFiles.Any() && Config.ToggleAllIfNoneSelected
+			var files = !SelectedFiles.Any() && Settings.ToggleAllIfNoneSelected
 				? LuaImp.ScriptList
 				: SelectedFiles;
 			foreach (var file in files)
@@ -1064,8 +1067,8 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DisableScriptsOnLoadMenuItem.Checked = Config.DisableLuaScriptsOnLoad;
-			ReturnAllIfNoneSelectedMenuItem.Checked = Config.ToggleAllIfNoneSelected;
-			ReloadWhenScriptFileChangesMenuItem.Checked = Config.LuaReloadOnScriptFileChange;
+			ReturnAllIfNoneSelectedMenuItem.Checked = Settings.ToggleAllIfNoneSelected;
+			ReloadWhenScriptFileChangesMenuItem.Checked = Settings.ReloadOnScriptFileChange;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
@@ -1075,14 +1078,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.ToggleAllIfNoneSelected ^= true;
+			Settings.ToggleAllIfNoneSelected ^= true;
 		}
 
 		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.LuaReloadOnScriptFileChange ^= true;
+			Settings.ReloadOnScriptFileChange ^= true;
 
-			if (Config.LuaReloadOnScriptFileChange)
+			if (Settings.ReloadOnScriptFileChange)
 			{
 				AddFileWatches();
 			}
