@@ -20,6 +20,8 @@ namespace BizHawk.Client.Common
 
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core => Global.Emulator.AsStatable();
+		private IEmulator Emulator => Global.Emulator;
+
 		private readonly StateManagerDecay _decay;
 		private readonly TasMovie _movie;
 
@@ -112,7 +114,7 @@ namespace BizHawk.Client.Common
 		public void Capture(bool force = false)
 		{
 			bool shouldCapture;
-			int frame = Global.Emulator.Frame;
+			int frame = Emulator.Frame;
 
 			if (_movie.StartsFromSavestate && frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
 			{
