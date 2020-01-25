@@ -1,10 +1,10 @@
-﻿using BizHawk.Common;
+﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	using System;
-
 	/*
 	* Spectravideo Compumate Add-on Kevtris Documentation
 

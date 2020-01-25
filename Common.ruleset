@@ -148,9 +148,6 @@
 	</Rules>
 
 	<Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers.OrderingRules">
-		<!-- Using directives should be placed correctly -->
-		<Rule Id="SA1200" Action="Hidden" />
-
 		<!-- Elements should appear in the correct order -->
 		<Rule Id="SA1201" Action="Hidden" />
 
