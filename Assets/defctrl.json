@@ -1238,7 +1238,27 @@
 			"A": "X, J1 B2, X1 A",
 			"Option": "Enter, J1 B10, X1 Start",
 			"Power": ""
-		}
+		},
+		"Vectrex Digital Controller": {
+			"Reset": "",
+			"Power": "",
+			"P1 Up": "Up, J1 POV1U, X1 DpadUp, X1 LStickUp",
+			"P1 Down": "Down, J1 POV1D, X1 DpadDown, X1 LStickDown",
+			"P1 Left": "Left, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+			"P1 Right": "Right, J1 POV1R, X1 DpadRight, X1 LStickRight",
+			"P1 Button 1": "Z, J1 B2, X1 A",
+			"P1 Button 2": "X, J1 B3, X1 B",
+			"P1 Button 3": "A, J1 B1, X1 X",
+			"P1 Button 4": "S, J1 B4, X1 Y"
+		},
+		"Vectrex Analog Controller": {
+			"Reset": "",
+			"Power": "",
+			"P1 Button 1": "Z, J1 B2, X1 A",
+			"P1 Button 2": "X, J1 B3, X1 B",
+			"P1 Button 3": "A, J1 B1, X1 X",
+			"P1 Button 4": "S, J1 B4, X1 Y"
+		},
 	},
 	"AllTrollersAutoFire": {
 		"NES Controller": {
