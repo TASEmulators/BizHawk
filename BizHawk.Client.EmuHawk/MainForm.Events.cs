@@ -2544,7 +2544,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VectrexSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GenericCoreConfig.DoDialog(this, "Vectrex Settings");
+			GenericCoreConfig.DoDialog(this, "Vectrex Settings", true, false);
 		}
 
 		#endregion
