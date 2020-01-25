@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Schema("PSX")]
 	// ReSharper disable once UnusedMember.Global
-	public class PSXSchema : IVirtualPadSchema
+	public class PsxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{

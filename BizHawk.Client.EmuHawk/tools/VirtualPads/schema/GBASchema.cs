@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	[Schema("GBA")]
 	// ReSharper disable once UnusedMember.Global
-	public class GBASchema : IVirtualPadSchema
+	public class GbaSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
