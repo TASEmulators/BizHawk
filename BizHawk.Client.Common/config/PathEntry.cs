@@ -15,12 +15,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasSystem(string systemID)
 		{
-			if (systemID == System)
-			{
-				return true;
-			}
-
-			return System.Split('_').Contains(systemID);
+			return systemID == System || System.Split('_').Contains(systemID);
 		}
 	}
 
@@ -46,23 +41,12 @@ namespace BizHawk.Client.Common
 			Paths.Add(p);
 		}
 
-		public IEnumerator<PathEntry> GetEnumerator()
-		{
-			return Paths.GetEnumerator();
-		}
+		public IEnumerator<PathEntry> GetEnumerator() => Paths.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public PathEntry this[string system, string type]
-		{
-			get
-			{
-				return Paths.FirstOrDefault(p => p.HasSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
-			}
-		}
+		public PathEntry this[string system, string type] =>
+			Paths.FirstOrDefault(p => p.HasSystem(system) && p.Type == type)
+			?? TryGetDebugPath(system, type);
 
 		private PathEntry TryGetDebugPath(string system, string type)
 		{
@@ -73,17 +57,17 @@ namespace BizHawk.Client.Common
 			}
 
 			// we don't have anything for the system in question.  add a set of stock paths
-			var systempath = $"{PathManager.RemoveInvalidFileSystemChars(system)}_INTERIM";
-			var systemdisp = $"{system} (INTERIM)";
+			var systemPath = $"{PathManager.RemoveInvalidFileSystemChars(system)}_INTERIM";
+			var systemDisp = $"{system} (INTERIM)";
 
 			Paths.AddRange(new[]
 			{
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "Base", Path = Path.Combine(".", systempath), Ordinal = 0 },
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "ROM", Path = ".", Ordinal = 1 },
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
-				new PathEntry { System = system, SystemDisplayName = systemdisp, Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 }
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "Base", Path = Path.Combine(".", systemPath), Ordinal = 0 },
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "ROM", Path = ".", Ordinal = 1 },
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+				new PathEntry { System = system, SystemDisplayName = systemDisp, Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 }
 			});
 
 			return this[system, type];
@@ -92,16 +76,16 @@ namespace BizHawk.Client.Common
 		public void ResolveWithDefaults()
 		{
 			// Add missing entries
-			foreach (PathEntry defaultpath in DefaultValues)
+			foreach (PathEntry defaultPath in DefaultValues)
 			{
-				var path = Paths.FirstOrDefault(p => p.System == defaultpath.System && p.Type == defaultpath.Type);
+				var path = Paths.FirstOrDefault(p => p.System == defaultPath.System && p.Type == defaultPath.Type);
 				if (path == null)
 				{
-					Paths.Add(defaultpath);
+					Paths.Add(defaultPath);
 				}
 			}
 
-			List<PathEntry> entriesToRemove = new List<PathEntry>();
+			var entriesToRemove = new List<PathEntry>();
 
 			// Remove entries that no longer exist in defaults
 			foreach (PathEntry pathEntry in Paths)
@@ -118,7 +102,7 @@ namespace BizHawk.Client.Common
 				Paths.Remove(entry);
 			}
 
-			// Add missing displaynames
+			// Add missing display names
 			var missingDisplayPaths = Paths.Where(p => p.SystemDisplayName == null);
 			foreach (PathEntry path in missingDisplayPaths)
 			{
