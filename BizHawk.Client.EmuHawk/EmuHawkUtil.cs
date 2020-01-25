@@ -43,11 +43,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (emulator is Cores.Nintendo.SNES9X.Snes9x)
 			{
-				return PromptToSwitchCore("Snes9x", "bsnes", () => Global.Config.SNES_InSnes9x = false);
+				return PromptToSwitchCore("Snes9x", "bsnes", () => Global.Config.SnesInSnes9x = false);
 			}
 			if (emulator is Cores.Consoles.Nintendo.QuickNES.QuickNES)
 			{
-				return PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.NES_InQuickNES = false);
+				return PromptToSwitchCore("QuickNes", "NesHawk", () => Global.Config.NesInQuickNes = false);
 			}
 
 			return true;

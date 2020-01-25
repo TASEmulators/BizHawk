@@ -54,8 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
-			IncludeSubDirectories.Checked = _config.PlayMovie_IncludeSubdir;
-			MatchHashCheckBox.Checked = _config.PlayMovie_MatchHash;
+			IncludeSubDirectories.Checked = _config.PlayMovieIncludeSubDir;
+			MatchHashCheckBox.Checked = _config.PlayMovieMatchHash;
 			ScanFiles();
 			PreHighlightMovie();
 			TurboCheckbox.Checked = _config.TurboSeek;
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// Don't do this from browse
 				if (movie.Hash == _game.Hash
-					|| _config.PlayMovie_MatchHash == false || force)
+					|| _config.PlayMovieMatchHash == false || force)
 				{
 					return movie;
 				}
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 				string dp = dpTodo.Dequeue();
 				
 				// enqueue subdirectories if appropriate
-				if (_config.PlayMovie_IncludeSubdir)
+				if (_config.PlayMovieIncludeSubDir)
 				{
 					foreach (var subDir in Directory.GetDirectories(dp))
 					{
@@ -602,14 +602,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
-			_config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
+			_config.PlayMovieIncludeSubDir = IncludeSubDirectories.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}
 
 		private void MatchHashCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			_config.PlayMovie_MatchHash = MatchHashCheckBox.Checked;
+			_config.PlayMovieMatchHash = MatchHashCheckBox.Checked;
 			ScanFiles();
 			PreHighlightMovie();
 		}

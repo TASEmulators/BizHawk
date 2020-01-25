@@ -53,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// allow suppression of the toggle.. but if shift is pressed, always do the toggle
 				bool allowSuppress = Control.ModifierKeys != Keys.Shift;
-				if (_config.DispChrome_AllowDoubleClickFullscreen || !allowSuppress)
+				if (_config.DispChromeAllowDoubleClickFullscreen || !allowSuppress)
 				{
 					_mainForm.ToggleFullscreen(allowSuppress);
 				}

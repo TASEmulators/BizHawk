@@ -618,7 +618,7 @@ namespace BizHawk.Client.ApiHawk
 
 		public static void SetScreenshotOSD(bool value)
 		{
-			Global.Config.Screenshot_CaptureOSD = value;
+			Global.Config.ScreenshotCaptureOsd = value;
 		}
 
 		public static int ScreenWidth()

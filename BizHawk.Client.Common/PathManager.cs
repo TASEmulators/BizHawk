@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetRomsPath(string sysId)
 		{
-			if (Global.Config.UseRecentForROMs)
+			if (Global.Config.UseRecentForRoms)
 			{
 				return Environment.SpecialFolder.Recent.ToString();
 			}

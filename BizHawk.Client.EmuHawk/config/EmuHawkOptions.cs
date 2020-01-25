@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			FrameAdvSkipLagCheckbox.Checked = _config.SkipLagFrame;
 			LuaDuringTurboCheckbox.Checked = _config.RunLuaDuringTurbo;
 			cbMoviesOnDisk.Checked = _config.MoviesOnDisk;
-			cbMoviesInAWE.Checked = _config.MoviesInAWE;
+			cbMoviesInAWE.Checked = _config.MoviesInAwe;
 
 			switch (_config.LuaEngine)
 			{
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
-			_config.MoviesInAWE = cbMoviesInAWE.Checked;
+			_config.MoviesInAwe = cbMoviesInAWE.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
 			if (LuaInterfaceRadio.Checked) _config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;

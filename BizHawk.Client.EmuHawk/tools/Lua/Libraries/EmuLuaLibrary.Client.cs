@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setscreenshotosd", "Sets the screenshot Capture OSD property of the client")]
 		public static void SetScreenshotOSD(bool value)
 		{
-			Global.Config.Screenshot_CaptureOSD = value;
+			Global.Config.ScreenshotCaptureOsd = value;
 		}
 
 		[LuaMethodExample("local incliscr = client.screenwidth( );")]

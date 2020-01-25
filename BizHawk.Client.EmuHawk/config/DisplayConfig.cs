@@ -47,16 +47,16 @@ namespace BizHawk.Client.EmuHawk
 			rbGDIPlus.Checked = _config.DispMethod == EDispMethod.GdiPlus;
 			rbD3D9.Checked = _config.DispMethod == EDispMethod.SlimDX9;
 
-			cbStatusBarWindowed.Checked = _config.DispChrome_StatusBarWindowed;
-			cbCaptionWindowed.Checked = _config.DispChrome_CaptionWindowed;
-			cbMenuWindowed.Checked = _config.DispChrome_MenuWindowed;
-			cbStatusBarFullscreen.Checked = _config.DispChrome_StatusBarFullscreen;
-			cbMenuFullscreen.Checked = _config.DispChrome_MenuFullscreen;
-			trackbarFrameSizeWindowed.Value = _config.DispChrome_FrameWindowed;
-			cbFSAutohideMouse.Checked = _config.DispChrome_Fullscreen_AutohideMouse;
+			cbStatusBarWindowed.Checked = _config.DispChromeStatusBarWindowed;
+			cbCaptionWindowed.Checked = _config.DispChromeCaptionWindowed;
+			cbMenuWindowed.Checked = _config.DispChromeMenuWindowed;
+			cbStatusBarFullscreen.Checked = _config.DispChromeStatusBarFullscreen;
+			cbMenuFullscreen.Checked = _config.DispChromeMenuFullscreen;
+			trackbarFrameSizeWindowed.Value = _config.DispChromeFrameWindowed;
+			cbFSAutohideMouse.Checked = _config.DispChromeFullscreenAutohideMouse;
 			SyncTrackBar();
 
-			cbAllowDoubleclickFullscreen.Checked = _config.DispChrome_AllowDoubleClickFullscreen;
+			cbAllowDoubleclickFullscreen.Checked = _config.DispChromeAllowDoubleClickFullscreen;
 
 			nudPrescale.Value = _config.DispPrescale;
 
@@ -73,10 +73,10 @@ namespace BizHawk.Client.EmuHawk
 				txtCustomARWidth.Text = _config.DispCustomUserARWidth.ToString();
 			if (_config.DispCustomUserARHeight != -1)
 				txtCustomARHeight.Text = _config.DispCustomUserARHeight.ToString();
-			if (_config.DispCustomUserARX != -1)
-				txtCustomARX.Text = _config.DispCustomUserARX.ToString();
-			if (_config.DispCustomUserARY != -1)
-				txtCustomARY.Text = _config.DispCustomUserARY.ToString();
+			if (_config.DispCustomUserArx != -1)
+				txtCustomARX.Text = _config.DispCustomUserArx.ToString();
+			if (_config.DispCustomUserAry != -1)
+				txtCustomARY.Text = _config.DispCustomUserAry.ToString();
 
 			txtCropLeft.Text = _config.DispCropLeft.ToString();
 			txtCropTop.Text = _config.DispCropTop.ToString();
@@ -124,14 +124,14 @@ namespace BizHawk.Client.EmuHawk
 			
 			_config.DispAlternateVsync = cbAlternateVsync.Checked;
 
-			_config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
-			_config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
-			_config.DispChrome_MenuWindowed = cbMenuWindowed.Checked;
-			_config.DispChrome_StatusBarFullscreen = cbStatusBarFullscreen.Checked;
-			_config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
-			_config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
-			_config.DispChrome_Fullscreen_AutohideMouse = cbFSAutohideMouse.Checked;
-			_config.DispChrome_AllowDoubleClickFullscreen = cbAllowDoubleclickFullscreen.Checked;
+			_config.DispChromeStatusBarWindowed = cbStatusBarWindowed.Checked;
+			_config.DispChromeCaptionWindowed = cbCaptionWindowed.Checked;
+			_config.DispChromeMenuWindowed = cbMenuWindowed.Checked;
+			_config.DispChromeStatusBarFullscreen = cbStatusBarFullscreen.Checked;
+			_config.DispChromeMenuFullscreen = cbMenuFullscreen.Checked;
+			_config.DispChromeFrameWindowed = trackbarFrameSizeWindowed.Value;
+			_config.DispChromeFullscreenAutohideMouse = cbFSAutohideMouse.Checked;
+			_config.DispChromeAllowDoubleClickFullscreen = cbAllowDoubleclickFullscreen.Checked;
 
 			if (rbDisplayFull.Checked) _config.DispSpeedupFeatures = 2;
 			if (rbDisplayMinimal.Checked) _config.DispSpeedupFeatures = 1;
@@ -153,11 +153,11 @@ namespace BizHawk.Client.EmuHawk
 				int.TryParse(txtCustomARHeight.Text, out _config.DispCustomUserARHeight);
 			else _config.DispCustomUserARHeight = -1;
 			if (txtCustomARX.Text != "")
-				float.TryParse(txtCustomARX.Text, out _config.DispCustomUserARX);
-			else _config.DispCustomUserARX = -1;
+				float.TryParse(txtCustomARX.Text, out _config.DispCustomUserArx);
+			else _config.DispCustomUserArx = -1;
 			if (txtCustomARY.Text != "")
-				float.TryParse(txtCustomARY.Text, out _config.DispCustomUserARY);
-			else _config.DispCustomUserARY = -1;
+				float.TryParse(txtCustomARY.Text, out _config.DispCustomUserAry);
+			else _config.DispCustomUserAry = -1;
 
 			var oldDisplayMethod = _config.DispMethod;
 			if(rbOpenGL.Checked)

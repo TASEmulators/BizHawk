@@ -213,9 +213,9 @@ namespace BizHawk.Client.EmuHawk
 			SuspendLayout();
 			LoadPanels(_config);
 
-			rbUDLRAllow.Checked = _config.AllowUD_LR;
-			rbUDLRForbid.Checked = _config.ForbidUD_LR;
-			rbUDLRPriority.Checked = !_config.AllowUD_LR && !_config.ForbidUD_LR;
+			rbUDLRAllow.Checked = _config.AllowUdlr;
+			rbUDLRForbid.Checked = _config.ForbidUdlr;
+			rbUDLRPriority.Checked = !_config.AllowUdlr && !_config.ForbidUdlr;
 			checkBoxAutoTab.Checked = _config.InputConfigAutoTab;
 
 			SetControllerPicture(_emulator.ControllerDefinition.Name);
@@ -353,8 +353,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			_config.AllowUD_LR = rbUDLRAllow.Checked;
-			_config.ForbidUD_LR = rbUDLRForbid.Checked;
+			_config.AllowUdlr = rbUDLRAllow.Checked;
+			_config.ForbidUdlr = rbUDLRForbid.Checked;
 			_config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
 			Save();

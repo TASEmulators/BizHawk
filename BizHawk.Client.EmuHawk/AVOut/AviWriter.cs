@@ -736,7 +736,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					// save to config and return it
-					Global.Config.AVICodecToken = ret.Serialize();
+					Global.Config.AviCodecToken = ret.Serialize();
 					return ret;
 				}
 
@@ -970,10 +970,10 @@ namespace BizHawk.Client.EmuHawk
 		/// <exception cref="Exception">no default codec token in config</exception>
 		public void SetDefaultVideoCodecToken()
 		{
-			CodecToken ct = CodecToken.DeSerialize(Global.Config.AVICodecToken);
+			CodecToken ct = CodecToken.DeSerialize(Global.Config.AviCodecToken);
 			if (ct == null)
 			{
-				throw new Exception($"No default {nameof(Global.Config.AVICodecToken)} in config!");
+				throw new Exception($"No default {nameof(Global.Config.AviCodecToken)} in config!");
 			}
 
 			_currVideoCodecToken = ct;

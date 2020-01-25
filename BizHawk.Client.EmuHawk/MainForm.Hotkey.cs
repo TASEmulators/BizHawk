@@ -729,28 +729,28 @@ namespace BizHawk.Client.EmuHawk
 
 				// Analog
 				case "Y Up Small":
-					Tools.VirtualPad.BumpAnalogValue(null, Config.Analog_SmallChange);
+					Tools.VirtualPad.BumpAnalogValue(null, Config.AnalogSmallChange);
 					break;
 				case "Y Up Large":
-					Tools.VirtualPad.BumpAnalogValue(null, Config.Analog_LargeChange);
+					Tools.VirtualPad.BumpAnalogValue(null, Config.AnalogLargeChange);
 					break;
 				case "Y Down Small":
-					Tools.VirtualPad.BumpAnalogValue(null, -Config.Analog_SmallChange);
+					Tools.VirtualPad.BumpAnalogValue(null, -Config.AnalogSmallChange);
 					break;
 				case "Y Down Large":
-					Tools.VirtualPad.BumpAnalogValue(null, -Config.Analog_LargeChange);
+					Tools.VirtualPad.BumpAnalogValue(null, -Config.AnalogLargeChange);
 					break;
 				case "X Up Small":
-					Tools.VirtualPad.BumpAnalogValue(Config.Analog_SmallChange, null);
+					Tools.VirtualPad.BumpAnalogValue(Config.AnalogSmallChange, null);
 					break;
 				case "X Up Large":
-					Tools.VirtualPad.BumpAnalogValue(Config.Analog_LargeChange, null);
+					Tools.VirtualPad.BumpAnalogValue(Config.AnalogLargeChange, null);
 					break;
 				case "X Down Small":
-					Tools.VirtualPad.BumpAnalogValue(-Config.Analog_SmallChange, null);
+					Tools.VirtualPad.BumpAnalogValue(-Config.AnalogSmallChange, null);
 					break;
 				case "X Down Large":
-					Tools.VirtualPad.BumpAnalogValue(-Config.Analog_LargeChange, null);
+					Tools.VirtualPad.BumpAnalogValue(-Config.AnalogLargeChange, null);
 					break;
 			}
 

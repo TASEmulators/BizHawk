@@ -510,15 +510,15 @@ namespace BizHawk.Client.EmuHawk
 			CodecToken ret = new CodecToken();
 
 			// load from config and sanitize
-			int t = Math.Min(Math.Max(Global.Config.JMDThreads, 1), 6);
+			int t = Math.Min(Math.Max(Global.Config.JmdThreads, 1), 6);
 
-			int c = Math.Min(Math.Max(Global.Config.JMDCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
+			int c = Math.Min(Math.Max(Global.Config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
 
 			if (!JmdForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, hwnd))
 				return null;
 
-			Global.Config.JMDThreads = ret.NumThreads = t;
-			Global.Config.JMDCompression = ret.CompressionLevel = c;
+			Global.Config.JmdThreads = ret.NumThreads = t;
+			Global.Config.JmdCompression = ret.CompressionLevel = c;
 
 			return ret;
 		}
@@ -760,9 +760,9 @@ namespace BizHawk.Client.EmuHawk
 			CodecToken ct = new CodecToken();
 
 			// load from config and sanitize
-			int t = Math.Min(Math.Max(Global.Config.JMDThreads, 1), 6);
+			int t = Math.Min(Math.Max(Global.Config.JmdThreads, 1), 6);
 
-			int c = Math.Min(Math.Max(Global.Config.JMDCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
+			int c = Math.Min(Math.Max(Global.Config.JmdCompression, Deflater.NO_COMPRESSION), Deflater.BEST_COMPRESSION);
 
 			ct.CompressionLevel = c;
 			ct.NumThreads = t;

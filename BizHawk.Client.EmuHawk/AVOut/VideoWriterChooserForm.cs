@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			_captureWidth = emulator.CoreComm.NominalWidth;
 			_captureHeight = emulator.CoreComm.NominalHeight;
 
-			if (config.AVI_CaptureOSD)
+			if (config.AviCaptureOsd)
 			{
 				using var bb = mainForm.CaptureOSD();
 				_captureWidth = bb.Width;

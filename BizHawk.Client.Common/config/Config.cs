@@ -3,17 +3,13 @@ using System.Collections.Generic;
 
 using BizHawk.Common;
 
-// ReSharper disable FieldCanBeMadeReadOnly.Global
-// ReSharper disable InconsistentNaming
-// ReSharper disable StyleCop.SA1310
-// ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.Common
 {
 	public class Config
 	{
 		public static string ControlDefaultPath => PathManager.MakeProgramRelativePath("defctrl.json");
 
-		public void ConfigCheckAllControlDefaults()
+		public Config()
 		{
 			if (AllTrollers.Count == 0 && AllTrollersAutoFire.Count == 0 && AllTrollersAnalog.Count == 0)
 			{
@@ -22,11 +18,6 @@ namespace BizHawk.Client.Common
 				AllTrollersAutoFire = cd.AllTrollersAutoFire;
 				AllTrollersAnalog = cd.AllTrollersAnalog;
 			}
-		}
-
-		public Config()
-		{
-			ConfigCheckAllControlDefaults();
 		}
 
 		public void ResolveDefaults()
@@ -47,7 +38,7 @@ namespace BizHawk.Client.Common
 		};
 
 		// Path Settings ************************************/
-		public bool UseRecentForROMs = false;
+		public bool UseRecentForRoms = false;
 		public string LastRomPath = ".";
 		public PathEntryCollection PathEntries = new PathEntryCollection();
 
@@ -55,7 +46,7 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> FirmwareUserSpecifications = new Dictionary<string, string>(); // key: sysid+firmwareId; value: absolute path
 
 		// General Client Settings
-		public int Input_Hotkey_OverrideOptions = 0;
+		public int InputHotkeyOverrideOptions = 0;
 		public bool StackOSDMessages = true;
 
 		public ZoomFactors TargetZoomFactors = new ZoomFactors();
@@ -76,12 +67,12 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInputControllerOnly = false;
 		public bool HandleAlternateKeyboardLayouts = false;
 		public bool SingleInstanceMode = false;
-		public bool AllowUD_LR = false;
-		public bool ForbidUD_LR = false;
+		public bool AllowUdlr = false;
+		public bool ForbidUdlr = false;
 		public bool ShowContextMenu = true;
 		public bool EnableBackupMovies = true;
 		public bool MoviesOnDisk = false;
-		public bool MoviesInAWE = false;
+		public bool MoviesInAwe = false;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
 		public bool BackupSavestates = true;
@@ -95,14 +86,14 @@ namespace BizHawk.Client.Common
 		public bool AutoLoadLastSaveSlot = false;
 		public bool SkipLagFrame = false;
 		public bool SuppressAskSave = false;
-		public bool AVI_CaptureOSD = false;
-		public bool Screenshot_CaptureOSD = false;
+		public bool AviCaptureOsd = false;
+		public bool ScreenshotCaptureOsd = false;
 		public bool FirstBoot = true;
-		public bool Update_AutoCheckEnabled = false;
-		public DateTime? Update_LastCheckTimeUTC = null;
-		public string Update_LatestVersion = "";
-		public string Update_IgnoreVersion = "";
-		public bool SkipOutdatedOSCheck = false;
+		public bool UpdateAutoCheckEnabled = false;
+		public DateTime? UpdateLastCheckTimeUtc = null;
+		public string UpdateLatestVersion = "";
+		public string UpdateIgnoreVersion = "";
+		public bool SkipOutdatedOsCheck = false;
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
@@ -162,7 +153,7 @@ namespace BizHawk.Client.Common
 		public bool DispAlternateVsync = false;
 
 		// Display options
-		public bool DisplayFPS = false;
+		public bool DisplayFps = false;
 		public bool DisplayFrameCounter = false;
 		public bool DisplayLagCounter = false;
 		public bool DisplayInput = false;
@@ -204,14 +195,14 @@ namespace BizHawk.Client.Common
 		/// <remarks>warning: we don't even want to deal with changing this at runtime. but we want it changed here for config purposes. so don't check this variable. check in GlobalWin or something like that.</remarks>
 		public EDispMethod DispMethod = DetectDirectX() ? EDispMethod.SlimDX9 : EDispMethod.OpenGL;
 
-		public int DispChrome_FrameWindowed = 2;
-		public bool DispChrome_StatusBarWindowed = true;
-		public bool DispChrome_CaptionWindowed = true;
-		public bool DispChrome_MenuWindowed = true;
-		public bool DispChrome_StatusBarFullscreen = false;
-		public bool DispChrome_MenuFullscreen = false;
-		public bool DispChrome_Fullscreen_AutohideMouse = true;
-		public bool DispChrome_AllowDoubleClickFullscreen = true;
+		public int DispChromeFrameWindowed = 2;
+		public bool DispChromeStatusBarWindowed = true;
+		public bool DispChromeCaptionWindowed = true;
+		public bool DispChromeMenuWindowed = true;
+		public bool DispChromeStatusBarFullscreen = false;
+		public bool DispChromeMenuFullscreen = false;
+		public bool DispChromeFullscreenAutohideMouse = true;
+		public bool DispChromeAllowDoubleClickFullscreen = true;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System;
 
@@ -220,8 +211,8 @@ namespace BizHawk.Client.Common
 		public int DispCustomUserARHeight = -1;
 
 		// these are more like the actual AR ratio (i.e. 4:3) (fixme on major release)
-		public float DispCustomUserARX = -1;
-		public float DispCustomUserARY = -1;
+		public float DispCustomUserArx = -1;
+		public float DispCustomUserAry = -1;
 
 		//these default to 0 because by default we crop nothing
 		public int DispCropLeft = 0;
@@ -256,11 +247,11 @@ namespace BizHawk.Client.Common
 
 		// Video dumping settings
 		public string VideoWriter = "";
-		public int JMDCompression = 3;
-		public int JMDThreads = 3;
+		public int JmdCompression = 3;
+		public int JmdThreads = 3;
 		public string FFmpegFormat = "";
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
-		public string AVICodecToken = "";
+		public string AviCodecToken = "";
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
 		public bool VideoWriterAudioSync = true;
@@ -293,17 +284,17 @@ namespace BizHawk.Client.Common
 		public bool MoviePlaybackPokeMode = false;
 
 		// Play Movie Dialog
-		public bool PlayMovie_IncludeSubdir = false;
-		public bool PlayMovie_MatchHash = true;
+		public bool PlayMovieIncludeSubDir = false;
+		public bool PlayMovieMatchHash = true;
 
 		// TI83
-		public bool TI83autoloadKeyPad = true;
+		public bool Ti83AutoloadKeyPad = true;
 
 		public BindingCollection HotkeyBindings = new BindingCollection();
 
 		// Analog Hotkey values
-		public int Analog_LargeChange = 10;
-		public int Analog_SmallChange = 1;
+		public int AnalogLargeChange = 10;
+		public int AnalogSmallChange = 1;
 
 		// [ControllerType][ButtonName] => Physical Bind
 		public Dictionary<string, Dictionary<string, string>> AllTrollers = new Dictionary<string, Dictionary<string, string>>();
@@ -313,17 +304,20 @@ namespace BizHawk.Client.Common
 		// Core Pick
 		// as this setting spans multiple cores and doesn't actually affect the behavior of any core,
 		// it hasn't been absorbed into the new system
-		public bool GB_AsSGB = false;
+		public bool GbAsSgb = false;
 		public bool UseSubNESHawk = false;
-		public bool NES_InQuickNES = true;
-		public bool SNES_InSnes9x = true;
-		public bool GBA_UsemGBA = true;
-		public bool SGB_UseBsnes = false;
-		public bool GB_UseGBHawk = false;
-		public bool CoreForcingViaGameDB = true;
+		public bool NesInQuickNes = true;
+		public bool SnesInSnes9x = true;
+		public bool GbaUsemGba = true;
+		public bool SgbUseBsnes = false;
+		public bool GbUseGbHawk = false;
+		public bool CoreForcingViaGameDb = true;
 		public string LibretroCore;
 
+		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFrom = VersionInfo.Mainversion;
+
+		// ReSharper disable once UnusedMember.Global
 		public string LastWrittenFromDetailed = VersionInfo.GetEmuVersion();
 	}
 }

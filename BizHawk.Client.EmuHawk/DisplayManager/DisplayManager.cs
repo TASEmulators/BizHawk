@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (arCustomRatio)
 			{
-				FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
+				FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
 			var padding = CalculateCompleteContentPadding(true, false);
@@ -716,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (Global.Config.DispManagerAR == EDispManagerAR.CustomRatio)
 				{
-					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
+					FixRatio(Global.Config.DispCustomUserArx, Global.Config.DispCustomUserAry, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 

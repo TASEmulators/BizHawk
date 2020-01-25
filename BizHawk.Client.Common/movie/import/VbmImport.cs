@@ -270,13 +270,13 @@ namespace BizHawk.Client.Common.movie.import
 
 			if (isGBA)
 			{
-				Global.Config.GBA_UsemGBA = true;
+				Global.Config.GbaUsemGba = true;
 				var ss = new MGBAHawk.SyncSettings { SkipBios = true };
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
 			}
 			else
 			{
-				Global.Config.GB_UseGBHawk = true;
+				Global.Config.GbUseGbHawk = true;
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(new GBHawk.GBSyncSettings());
 			}
 			

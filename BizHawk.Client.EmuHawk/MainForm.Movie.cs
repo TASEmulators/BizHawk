@@ -34,19 +34,19 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MovieSession.PreviousNES_InQuickNES.HasValue)
 			{
-				Config.NES_InQuickNES = MovieSession.PreviousNES_InQuickNES.Value;
+				Config.NesInQuickNes = MovieSession.PreviousNES_InQuickNES.Value;
 				MovieSession.PreviousNES_InQuickNES = null;
 			}
 
 			if (MovieSession.PreviousSNES_InSnes9x.HasValue)
 			{
-				Config.SNES_InSnes9x = MovieSession.PreviousSNES_InSnes9x.Value;
+				Config.SnesInSnes9x = MovieSession.PreviousSNES_InSnes9x.Value;
 				MovieSession.PreviousSNES_InSnes9x = null;
 			}
 
 			if (MovieSession.PreviousGBA_UsemGBA.HasValue)
 			{
-				Config.GBA_UsemGBA = MovieSession.PreviousGBA_UsemGBA.Value;
+				Config.GbaUsemGba = MovieSession.PreviousGBA_UsemGBA.Value;
 				MovieSession.PreviousGBA_UsemGBA = null;
 			}
 

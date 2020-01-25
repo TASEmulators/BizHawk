@@ -641,7 +641,7 @@ namespace BizHawk.Client.Common
 
 									var left = Database.GetGameInfo(leftBytes, "left.gb");
 									var right = Database.GetGameInfo(rightBytes, "right.gb");
-									if (Global.Config.GB_UseGBHawk)
+									if (Global.Config.GbUseGbHawk)
 									{
 										nextEmulator = new GBHawkLink(
 										nextComm,
@@ -996,8 +996,8 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SNES":
-								bool useSnes9x = Global.Config.SNES_InSnes9x;
-								if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+								bool useSnes9x = Global.Config.SnesInSnes9x;
+								if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
 								{
 									if (game.ForcedCore.ToLower() == "snes9x")
 									{
@@ -1028,13 +1028,13 @@ namespace BizHawk.Client.Common
 								{
 									// apply main spur-of-the-moment switcheroo as lowest priority
 									string preference = "neshawk";
-									if (Global.Config.NES_InQuickNES)
+									if (Global.Config.NesInQuickNes)
 									{
 										preference = "quicknes";
 									}
 
 									// if user has saw fit to override in gamedb, apply that
-									if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+									if (Global.Config.CoreForcingViaGameDb && !string.IsNullOrEmpty(game.ForcedCore))
 									{
 										preference = game.ForcedCore;
 									}
@@ -1065,9 +1065,9 @@ namespace BizHawk.Client.Common
 								break;
 
 							case "GB":
-								if (!Global.Config.GB_AsSGB)
+								if (!Global.Config.GbAsSgb)
 								{
-									if (Global.Config.GB_UseGBHawk)
+									if (Global.Config.GbUseGbHawk)
 									{
 										core = CoreInventory.Instance["GB", "GBHawk"];
 									}
@@ -1078,7 +1078,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									if (Global.Config.SGB_UseBsnes)
+									if (Global.Config.SgbUseBsnes)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
@@ -1092,9 +1092,9 @@ namespace BizHawk.Client.Common
 								}
 								break;
 							case "GBC":
-								if (!Global.Config.GB_AsSGB)
+								if (!Global.Config.GbAsSgb)
 								{
-									if (Global.Config.GB_UseGBHawk)
+									if (Global.Config.GbUseGbHawk)
 									{
 										core = CoreInventory.Instance["GBC", "GBHawk"];
 									}
@@ -1105,7 +1105,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									if (Global.Config.SGB_UseBsnes)
+									if (Global.Config.SgbUseBsnes)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
@@ -1143,7 +1143,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = cpc;
 								break;
 							case "GBA":
-								if (Global.Config.GBA_UsemGBA)
+								if (Global.Config.GbaUsemGba)
 								{
 									core = CoreInventory.Instance["GBA", "mGBA"];
 								}
@@ -1163,7 +1163,7 @@ namespace BizHawk.Client.Common
 								rom.GameInfo.Name = gameName;
 								break;
 							case "GEN":
-								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
+								if (Global.Config.CoreForcingViaGameDb && game.ForcedCore?.ToLower() == "pico")
 								{
 									core = CoreInventory.Instance["GEN", "PicoDrive"];
 								}
@@ -1234,7 +1234,7 @@ namespace BizHawk.Client.Common
 					{
 						// failed to load SGB bios or game does not support SGB mode. 
 						// To avoid catch-22, disable SGB mode
-						Global.Config.GB_AsSGB = false;
+						Global.Config.GbAsSgb = false;
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}

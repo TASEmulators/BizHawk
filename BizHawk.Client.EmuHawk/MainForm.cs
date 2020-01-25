@@ -502,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 				// I would like to trigger a repaint here, but this isn't done yet
 			};
 
-			if (!OSTailoredCode.IsUnixHost && !Config.SkipOutdatedOSCheck)
+			if (!OSTailoredCode.IsUnixHost && !Config.SkipOutdatedOsCheck)
 			{
 				static string GetRegValue(string key)
 				{
@@ -917,7 +917,7 @@ namespace BizHawk.Client.EmuHawk
 				// maybe because it doesn't make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
 				bool handled;
-				switch (Config.Input_Hotkey_OverrideOptions)
+				switch (Config.InputHotkeyOverrideOptions)
 				{
 					default:
 					case 0: // Both allowed
@@ -1031,7 +1031,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotToClipboard()
 		{
-			using (var bb = Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
 				Clipboard.SetImage(img);
@@ -1042,7 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, Config.Screenshot_CaptureOSD))
+			using (var bb = DisplayManager.RenderOffscreen(_currentVideoProvider, Config.ScreenshotCaptureOsd))
 			{
 				using var img = bb.ToSysdrawingBitmap();
 				Clipboard.SetImage(img);
@@ -1081,7 +1081,7 @@ namespace BizHawk.Client.EmuHawk
 				fi.Directory.Create();
 			}
 
-			using (var bb = Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
+			using (var bb = Config.ScreenshotCaptureOsd ? CaptureOSD() : MakeScreenshotImage())
 			{
 				using var img = bb.ToSysdrawingBitmap();
 				img.Save(fi.FullName, ImageFormat.Png);
@@ -1142,23 +1142,23 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO - maybe apply a hack tracked during fullscreen here to override it
 				FormBorderStyle = FormBorderStyle.None;
-				MainMenuStrip.Visible = Config.DispChrome_MenuFullscreen && !_argParser._chromeless;
-				MainStatusBar.Visible = Config.DispChrome_StatusBarFullscreen && !_argParser._chromeless;
+				MainMenuStrip.Visible = Config.DispChromeMenuFullscreen && !_argParser._chromeless;
+				MainStatusBar.Visible = Config.DispChromeStatusBarFullscreen && !_argParser._chromeless;
 			}
 			else
 			{
-				MainStatusBar.Visible = Config.DispChrome_StatusBarWindowed && !_argParser._chromeless;
-				MainMenuStrip.Visible = Config.DispChrome_MenuWindowed && !_argParser._chromeless;
-				MaximizeBox = MinimizeBox = Config.DispChrome_CaptionWindowed && !_argParser._chromeless;
-				if (Config.DispChrome_FrameWindowed == 0 || _argParser._chromeless)
+				MainStatusBar.Visible = Config.DispChromeStatusBarWindowed && !_argParser._chromeless;
+				MainMenuStrip.Visible = Config.DispChromeMenuWindowed && !_argParser._chromeless;
+				MaximizeBox = MinimizeBox = Config.DispChromeCaptionWindowed && !_argParser._chromeless;
+				if (Config.DispChromeFrameWindowed == 0 || _argParser._chromeless)
 				{
 					FormBorderStyle = FormBorderStyle.None;
 				}
-				else if (Config.DispChrome_FrameWindowed == 1)
+				else if (Config.DispChromeFrameWindowed == 1)
 				{
 					FormBorderStyle = FormBorderStyle.SizableToolWindow;
 				}
-				else if (Config.DispChrome_FrameWindowed == 2)
+				else if (Config.DispChromeFrameWindowed == 2)
 				{
 					FormBorderStyle = FormBorderStyle.Sizable;
 				}
@@ -1526,7 +1526,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_inFullscreen)
 			{
-				MainStatusBar.Visible = Config.DispChrome_StatusBarWindowed;
+				MainStatusBar.Visible = Config.DispChromeStatusBarWindowed;
 				PerformLayout();
 				FrameBufferResized();
 			}
@@ -1571,7 +1571,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!Config.DispChrome_CaptionWindowed || _argParser._chromeless)
+			if (!Config.DispChromeCaptionWindowed || _argParser._chromeless)
 			{
 				str = "";
 			}
@@ -2428,7 +2428,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleFps()
 		{
-			Config.DisplayFPS ^= true;
+			Config.DisplayFps ^= true;
 		}
 
 		private void ToggleFrameCounter()
@@ -2723,7 +2723,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateKeyPriorityIcon()
 		{
-			switch (Config.Input_Hotkey_OverrideOptions)
+			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
 				case 0:
@@ -2846,14 +2846,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleKeyPriority()
 		{
-			Config.Input_Hotkey_OverrideOptions++;
-			if (Config.Input_Hotkey_OverrideOptions > 2)
+			Config.InputHotkeyOverrideOptions++;
+			if (Config.InputHotkeyOverrideOptions > 2)
 			{
-				Config.Input_Hotkey_OverrideOptions = 0;
+				Config.InputHotkeyOverrideOptions = 0;
 			}
 
 			UpdateKeyPriorityIcon();
-			switch (Config.Input_Hotkey_OverrideOptions)
+			switch (Config.InputHotkeyOverrideOptions)
 			{
 				case 0:
 					AddOnScreenMessage("Key priority set to Both Hotkey and Input");
@@ -3280,7 +3280,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// THIS IS REALLY SLOPPY!
 					// PLEASE REDO ME TO NOT CARE WHICH AVWRITER IS USED!
-					if (usingAvi && !string.IsNullOrEmpty(Config.AVICodecToken))
+					if (usingAvi && !string.IsNullOrEmpty(Config.AviCodecToken))
 					{
 						aw.SetDefaultVideoCodecToken();
 					}
@@ -3448,7 +3448,7 @@ namespace BizHawk.Client.EmuHawk
 						Bitmap bmpIn = null;
 						try
 						{
-							bbIn = Config.AVI_CaptureOSD
+							bbIn = Config.AviCaptureOsd
 								? CaptureOSD()
 								: new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
 
@@ -3482,7 +3482,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						if (Config.AVI_CaptureOSD)
+						if (Config.AviCaptureOsd)
 						{
 							output = new BitmapBufferVideoProvider(CaptureOSD());
 							disposableOutput = (IDisposable)output;

@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			if (Global.Config.AllowUD_LR)
+			if (Global.Config.AllowUdlr)
 			{
 				return Source.IsPressed(button);
 			}
@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}
@@ -127,7 +127,7 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					if (Global.Config.ForbidUD_LR)
+					if (Global.Config.ForbidUdlr)
 					{
 						return false;
 					}

@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadSettings()
 		{
-			RecentForROMs.Checked = _config.UseRecentForROMs;
+			RecentForROMs.Checked = _config.UseRecentForRoms;
 
 			DoTabs(_config.PathEntries.ToList());
 			SetDefaultFocusedTab();
@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveSettings()
 		{
-			_config.UseRecentForROMs = RecentForROMs.Checked;
+			_config.UseRecentForRoms = RecentForROMs.Checked;
 
 			foreach (var t in AllPathBoxes)
 			{

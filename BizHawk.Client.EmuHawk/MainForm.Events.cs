@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Stop A/V"].Bindings;
-			CaptureOSDMenuItem.Checked = Config.AVI_CaptureOSD;
+			CaptureOSDMenuItem.Checked = Config.AviCaptureOsd;
 
 			RecordAVMenuItem.Enabled = !OSTailoredCode.IsUnixHost && !string.IsNullOrEmpty(Config.VideoWriter) && _currAviWriter == null;
 			SynclessRecordingMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
@@ -299,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotSubMenu_DropDownOpening(object sender, EventArgs e)
 		{
-			ScreenshotCaptureOSDMenuItem1.Checked = Config.Screenshot_CaptureOSD;
+			ScreenshotCaptureOSDMenuItem1.Checked = Config.ScreenshotCaptureOsd;
 			ScreenshotMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screenshot"].Bindings;
 			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["ScreenshotToClipboard"].Bindings;
 			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Screen Client to Clipboard"].Bindings;
@@ -615,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.AVI_CaptureOSD ^= true;
+			Config.AviCaptureOsd ^= true;
 		}
 
 		private void ScreenshotMenuItem_Click(object sender, EventArgs e)
@@ -652,7 +652,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.Screenshot_CaptureOSD ^= true;
+			Config.ScreenshotCaptureOsd ^= true;
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -731,7 +731,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ViewSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			DisplayFPSMenuItem.Checked = Config.DisplayFPS;
+			DisplayFPSMenuItem.Checked = Config.DisplayFps;
 			DisplayFrameCounterMenuItem.Checked = Config.DisplayFrameCounter;
 			DisplayLagCounterMenuItem.Checked = Config.DisplayLagCounter;
 			DisplayInputMenuItem.Checked = Config.DisplayInput;
@@ -744,7 +744,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayInputMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Input Display"].Bindings;
 			SwitchToFullscreenMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Full Screen"].Bindings;
 
-			DisplayStatusBarMenuItem.Checked = Config.DispChrome_StatusBarWindowed;
+			DisplayStatusBarMenuItem.Checked = Config.DispChromeStatusBarWindowed;
 			DisplayLogWindowMenuItem.Checked = Tools.IsLoaded<LogWindow>();
 
 			DisplayLagCounterMenuItem.Enabled = Emulator.CanPollInput();
@@ -832,7 +832,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.DispChrome_StatusBarWindowed ^= true;
+			Config.DispChromeStatusBarWindowed ^= true;
 			SetStatusBar();
 		}
 
@@ -907,7 +907,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			switch (Config.Input_Hotkey_OverrideOptions)
+			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
 				case 0:
@@ -930,8 +930,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			quickNESMenuItem.Checked = Config.NES_InQuickNES;
-			nesHawkMenuItem.Checked = !Config.NES_InQuickNES;
+			quickNESMenuItem.Checked = Config.NesInQuickNes;
+			nesHawkMenuItem.Checked = !Config.NesInQuickNes;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -1169,38 +1169,38 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.Input_Hotkey_OverrideOptions = 0;
+			Config.InputHotkeyOverrideOptions = 0;
 			UpdateKeyPriorityIcon();
 		}
 
 		private void InputOverHkMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.Input_Hotkey_OverrideOptions = 1;
+			Config.InputHotkeyOverrideOptions = 1;
 			UpdateKeyPriorityIcon();
 		}
 
 		private void HkOverInputMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.Input_Hotkey_OverrideOptions = 2;
+			Config.InputHotkeyOverrideOptions = 2;
 			UpdateKeyPriorityIcon();
 		}
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBInSGBMenuItem.Checked = Config.GB_AsSGB;
-			AllowGameDbCoreOverridesMenuItem.Checked = Config.CoreForcingViaGameDB;
+			GBInSGBMenuItem.Checked = Config.GbAsSgb;
+			AllowGameDbCoreOverridesMenuItem.Checked = Config.CoreForcingViaGameDb;
 		}
 
 		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			QuicknesCoreMenuItem.Checked = Config.NES_InQuickNES;
-			NesCoreMenuItem.Checked = !Config.NES_InQuickNES && !Config.UseSubNESHawk;
+			QuicknesCoreMenuItem.Checked = Config.NesInQuickNes;
+			NesCoreMenuItem.Checked = !Config.NesInQuickNes && !Config.UseSubNESHawk;
 			SubNesHawkMenuItem.Checked = Config.UseSubNESHawk;
 		}
 
 		private void QuickNesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.NES_InQuickNES = true;
+			Config.NesInQuickNes = true;
 			Config.UseSubNESHawk = false;
 
 			if (Emulator.SystemId == "NES")
@@ -1211,7 +1211,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NesCorePick_Click(object sender, EventArgs e)
 		{
-			Config.NES_InQuickNES = false;
+			Config.NesInQuickNes = false;
 			Config.UseSubNESHawk = false;
 
 			if (Emulator.SystemId == "NES")
@@ -1223,7 +1223,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SubNesCorePick_Click(object sender, EventArgs e)
 		{
 			Config.UseSubNESHawk = true;
-			Config.NES_InQuickNES = false;
+			Config.NesInQuickNes = false;
 
 			if (!Emulator.IsNull())
 			{
@@ -1233,13 +1233,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Coresnes9xMenuItem.Checked = Config.SNES_InSnes9x;
-			CorebsnesMenuItem.Checked = !Config.SNES_InSnes9x;
+			Coresnes9xMenuItem.Checked = Config.SnesInSnes9x;
+			CorebsnesMenuItem.Checked = !Config.SnesInSnes9x;
 		}
 
 		private void CoreSnesToggle_Click(object sender, EventArgs e)
 		{
-			Config.SNES_InSnes9x ^= true;
+			Config.SnesInSnes9x ^= true;
 
 			if (Emulator.SystemId == "SNES")
 			{
@@ -1249,13 +1249,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VbaNextCoreMenuItem.Checked = !Config.GBA_UsemGBA;
-			MgbaCoreMenuItem.Checked = Config.GBA_UsemGBA;
+			VbaNextCoreMenuItem.Checked = !Config.GbaUsemGba;
+			MgbaCoreMenuItem.Checked = Config.GbaUsemGba;
 		}
 
 		private void GbaCorePick_Click(object sender, EventArgs e)
 		{
-			Config.GBA_UsemGBA ^= true;
+			Config.GbaUsemGba ^= true;
 			if (Emulator.SystemId == "GBA")
 			{
 				FlagNeedsReboot();
@@ -1264,19 +1264,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SgbBsnesMenuItem.Checked = Config.SGB_UseBsnes;
-			SgbSameBoyMenuItem.Checked = !Config.SGB_UseBsnes;
+			SgbBsnesMenuItem.Checked = Config.SgbUseBsnes;
+			SgbSameBoyMenuItem.Checked = !Config.SgbUseBsnes;
 		}
 
 		private void GBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBGambatteMenuItem.Checked = !Config.GB_UseGBHawk;
-			GBGBHawkMenuItem.Checked = Config.GB_UseGBHawk;
+			GBGambatteMenuItem.Checked = !Config.GbUseGbHawk;
+			GBGBHawkMenuItem.Checked = Config.GbUseGbHawk;
 		}
 
 		private void SgbCorePick_Click(object sender, EventArgs e)
 		{
-			Config.SGB_UseBsnes ^= true;
+			Config.SgbUseBsnes ^= true;
 			// TODO: only flag if one of these cores
 			if (!Emulator.IsNull())
 			{
@@ -1286,7 +1286,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCorePick_Click(object sender, EventArgs e)
 		{
-			Config.GB_UseGBHawk ^= true;
+			Config.GbUseGbHawk ^= true;
 			// TODO: only flag if one of these cores
 			if (!Emulator.IsNull())
 			{
@@ -1296,7 +1296,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GB_AsSGB ^= true;
+			Config.GbAsSgb ^= true;
 
 			if (!Emulator.IsNull())
 			{
@@ -1306,7 +1306,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AllowGameDBCoreOverridesMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.CoreForcingViaGameDB ^= true;
+			Config.CoreForcingViaGameDb ^= true;
 		}
 
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -1532,13 +1532,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QuickNesMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.NES_InQuickNES = true;
+			Config.NesInQuickNes = true;
 			FlagNeedsReboot();
 		}
 
 		private void NesHawkMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.NES_InQuickNES = false;
+			Config.NesInQuickNes = false;
 			FlagNeedsReboot();
 		}
 
@@ -2094,7 +2094,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Ti83SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AutoloadKeypadMenuItem.Checked = Config.TI83autoloadKeyPad;
+			AutoloadKeypadMenuItem.Checked = Config.Ti83AutoloadKeyPad;
 		}
 
 		private void Ti83KeypadMenuItem_Click(object sender, EventArgs e)
@@ -2104,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoloadKeypadMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.TI83autoloadKeyPad ^= true;
+			Config.Ti83AutoloadKeyPad ^= true;
 		}
 
 		private void Ti83LoadTIFileMenuItem_Click(object sender, EventArgs e)
@@ -2194,7 +2194,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			LoadGBInSGBMenuItem.Checked = Config.GB_AsSGB;
+			LoadGBInSGBMenuItem.Checked = Config.GbAsSgb;
 			GBGPUViewerMenuItem.Enabled = !OSTailoredCode.IsUnixHost;
 		}
 
@@ -2246,13 +2246,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UsemGBAMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GBA_UsemGBA = true;
+			Config.GbaUsemGba = true;
 			FlagNeedsReboot();
 		}
 
 		private void UseVbaNextMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GBA_UsemGBA = false;
+			Config.GbaUsemGba = false;
 			FlagNeedsReboot();
 		}
 
@@ -2263,8 +2263,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			GBAmGBAMenuItem.Checked = Config.GBA_UsemGBA;
-			GBAVBANextMenuItem.Checked = !Config.GBA_UsemGBA;
+			GBAmGBAMenuItem.Checked = Config.GbaUsemGba;
+			GBAVBANextMenuItem.Checked = !Config.GbaUsemGba;
 		}
 
 		#endregion
@@ -2319,7 +2319,7 @@ namespace BizHawk.Client.EmuHawk
 			if (((LibsnesCore)Emulator).IsSGB)
 			{
 				SnesGBInSGBMenuItem.Visible = true;
-				SnesGBInSGBMenuItem.Checked = Config.GB_AsSGB;
+				SnesGBInSGBMenuItem.Checked = Config.GbAsSgb;
 			}
 			else
 			{
@@ -2346,7 +2346,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SnesGbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
-			Config.GB_AsSGB ^= true;
+			Config.GbAsSgb ^= true;
 			FlagNeedsReboot();
 		}
 
@@ -3309,17 +3309,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyPriorityStatusLabel_Click(object sender, EventArgs e)
 		{
-			switch (Config.Input_Hotkey_OverrideOptions)
+			switch (Config.InputHotkeyOverrideOptions)
 			{
 				default:
 				case 0:
-					Config.Input_Hotkey_OverrideOptions = 1;
+					Config.InputHotkeyOverrideOptions = 1;
 					break;
 				case 1:
-					Config.Input_Hotkey_OverrideOptions = 2;
+					Config.InputHotkeyOverrideOptions = 2;
 					break;
 				case 2:
-					Config.Input_Hotkey_OverrideOptions = 0;
+					Config.InputHotkeyOverrideOptions = 0;
 					break;
 			}
 
@@ -3358,7 +3358,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Sound.StopSound();
 			DialogResult result = MessageBox.Show(this,
-				$"Version {Config.Update_LatestVersion} is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
+				$"Version {Config.UpdateLatestVersion} is now available. Would you like to open the BizHawk homepage?\r\n\r\nClick \"No\" to hide the update notification for this version.",
 				"New Version Available", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 			Sound.StartSound();
 
@@ -3410,7 +3410,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TimerMouseIdle_Tick(object sender, EventArgs e)
 		{
-			if (_inFullscreen && Config.DispChrome_Fullscreen_AutohideMouse)
+			if (_inFullscreen && Config.DispChromeFullscreenAutohideMouse)
 			{
 				AutohideCursor(true);
 			}
@@ -3448,7 +3448,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
-			if (Emulator is TI83 && Config.TI83autoloadKeyPad)
+			if (Emulator is TI83 && Config.Ti83AutoloadKeyPad)
 			{
 				Tools.Load<TI83KeyPad>();
 			}

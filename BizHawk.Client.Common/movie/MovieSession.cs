@@ -472,13 +472,13 @@ namespace BizHawk.Client.Common
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
-					Global.Config.NES_InQuickNES = true;
+					PreviousNES_InQuickNES = Global.Config.NesInQuickNes;
+					Global.Config.NesInQuickNes = true;
 				}
 				else if (movie.Core == neshawkName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NES_InQuickNES;
-					Global.Config.NES_InQuickNES = false;
+					PreviousNES_InQuickNES = Global.Config.NesInQuickNes;
+					Global.Config.NesInQuickNes = false;
 				}
 			}
 			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
@@ -488,13 +488,13 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == snes9xName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
-					Global.Config.SNES_InSnes9x = true;
+					PreviousSNES_InSnes9x = Global.Config.SnesInSnes9x;
+					Global.Config.SnesInSnes9x = true;
 				}
 				else if (movie.Core == bsnesName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
-					Global.Config.SNES_InSnes9x = false;
+					PreviousSNES_InSnes9x = Global.Config.SnesInSnes9x;
+					Global.Config.SnesInSnes9x = false;
 				}
 			}
 			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
@@ -504,13 +504,13 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == mGBAName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
-					Global.Config.GBA_UsemGBA = true;
+					PreviousGBA_UsemGBA = Global.Config.GbaUsemGba;
+					Global.Config.GbaUsemGba = true;
 				}
 				else if (movie.Core == vbaNextName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
-					Global.Config.GBA_UsemGBA = false;
+					PreviousGBA_UsemGBA = Global.Config.GbaUsemGba;
+					Global.Config.GbaUsemGba = false;
 				}
 			}
 

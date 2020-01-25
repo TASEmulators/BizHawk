@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 				DrawOsdMessage(g, Global.MovieSession.MultiTrack.Status, FixedMessagesColor, point.X, point.Y);
 			}
 
-			if (Global.Config.DisplayFPS && Fps != null)
+			if (Global.Config.DisplayFps && Fps != null)
 			{
 				var point = GetCoordinates(g, Global.Config.Fps, Fps);
 				DrawOsdMessage(g, Fps, FixedMessagesColor, point.X, point.Y);

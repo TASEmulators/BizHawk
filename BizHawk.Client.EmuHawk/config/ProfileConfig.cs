@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			AutoCheckForUpdates.Checked = _config.Update_AutoCheckEnabled;
+			AutoCheckForUpdates.Checked = _config.UpdateAutoCheckEnabled;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = false;
-				_config.AllowUD_LR = false;
+				_config.AllowUdlr = false;
 				_config.BackupSavestates = false;
 
 				_config.SaveStateCompressionLevelNormal = 0;
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				_config.SNES_InSnes9x = true;
+				_config.SnesInSnes9x = true;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -125,14 +125,14 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				_config.NES_InQuickNES = true;
+				_config.NesInQuickNes = true;
 			}
 			else if (_config.SelectedProfile == ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = false;
-				_config.AllowUD_LR = false;
+				_config.AllowUdlr = false;
 				_config.BackupSavestates = false;
 				_config.SkipLagFrame = false;
 				_config.SaveStateCompressionLevelNormal = 5;
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				_config.SNES_InSnes9x = false;
+				_config.SnesInSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				_config.NES_InQuickNES = true;
+				_config.NesInQuickNes = true;
 			}
 			else if (_config.SelectedProfile == ClientProfile.Tas)
 			{
@@ -182,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 				// General
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = true;
-				_config.AllowUD_LR = true;
+				_config.AllowUdlr = true;
 				_config.BackupSavestates = true;
 				_config.SkipLagFrame = false;
 				_config.SaveStateCompressionLevelNormal = 5;
@@ -199,7 +199,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				_config.SNES_InSnes9x = false;
+				_config.SnesInSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				_config.NES_InQuickNES = true;
+				_config.NesInQuickNes = true;
 			}
 			else if (_config.SelectedProfile == ClientProfile.N64Tas)
 			{
@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 				// General
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = true;
-				_config.AllowUD_LR = true;
+				_config.AllowUdlr = true;
 				_config.BackupSavestates = false;
 				_config.SkipLagFrame = true;
 				_config.SaveStateCompressionLevelNormal = 0;
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				_config.SNES_InSnes9x = false;
+				_config.SnesInSnes9x = false;
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -276,7 +276,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<Atari2600>(a2600Settings);
 
 				// NES
-				_config.NES_InQuickNES = true;
+				_config.NesInQuickNes = true;
 			}
 			else if (_config.SelectedProfile == ClientProfile.Custom)
 			{
@@ -284,11 +284,11 @@ namespace BizHawk.Client.EmuHawk
 				////DisplayProfileSettingBoxes(true);
 			}
 
-			bool oldUpdateAutoCheckEnabled = _config.Update_AutoCheckEnabled;
-			_config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
-			if (_config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
+			bool oldUpdateAutoCheckEnabled = _config.UpdateAutoCheckEnabled;
+			_config.UpdateAutoCheckEnabled = AutoCheckForUpdates.Checked;
+			if (_config.UpdateAutoCheckEnabled != oldUpdateAutoCheckEnabled)
 			{
-				if (!_config.Update_AutoCheckEnabled)
+				if (!_config.UpdateAutoCheckEnabled)
 				{
 					UpdateChecker.ResetHistory();
 				}

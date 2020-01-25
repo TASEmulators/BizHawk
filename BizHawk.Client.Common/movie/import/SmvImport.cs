@@ -322,7 +322,7 @@ namespace BizHawk.Client.Common.movie.import
 				Result.Movie.AppendFrame(controllers);
 
 				Result.Movie.SyncSettingsJson = ConfigService.SaveWithType(ss);
-				Global.Config.SNES_InSnes9x = false;
+				Global.Config.SnesInSnes9x = false;
 			}
 		}
 	}
