@@ -1675,7 +1675,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				DataBlockType dataBlockType,
 				int pauseAfterBlock,
 				int pilotCount,
-
 				int pilotToneLength = 2168,
 				int sync1PulseLength = 667,
 				int sync2PulseLength = 735,
@@ -1897,7 +1896,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 				byte[] blockData,
 				DataBlockType dataBlockType,
 				int pauseAfterBlock,
-
 				int pilotToneLength = 2168,
 				int sync1PulseLength = 667,
 				int sync2PulseLength = 735,

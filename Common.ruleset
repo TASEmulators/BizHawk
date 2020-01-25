@@ -95,9 +95,6 @@
 		<!-- Parameter list should follow declaration -->
 		<Rule Id="SA1114" Action="Hidden" />
 
-		<!-- Parameter should follow comma -->
-		<Rule Id="SA1115" Action="Hidden" />
-
 		<!-- Split parameters should start on line after declaration -->
 		<Rule Id="SA1116" Action="Hidden" />
 
