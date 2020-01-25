@@ -13,14 +13,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			_settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
+			_settings = new TasStateManagerSettings(Global.Config.DefaultTasStateManagerSettings);
 
 			SettingsPropertyGrid.SelectedObject = _settings;
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			Global.Config.DefaultTasProjSettings = _settings;
+			Global.Config.DefaultTasStateManagerSettings = _settings;
 			Close();
 		}
 

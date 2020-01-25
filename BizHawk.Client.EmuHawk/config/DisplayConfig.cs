@@ -146,18 +146,53 @@ namespace BizHawk.Client.EmuHawk
 			else if (rbUseCustomRatio.Checked)
 				_config.DispManagerAR = EDispManagerAR.CustomRatio;
 
-			if (txtCustomARWidth.Text != "")
-				int.TryParse(txtCustomARWidth.Text, out _config.DispCustomUserARWidth);
-			else _config.DispCustomUserARWidth = -1;
-			if (txtCustomARHeight.Text != "")
-				int.TryParse(txtCustomARHeight.Text, out _config.DispCustomUserARHeight);
-			else _config.DispCustomUserARHeight = -1;
-			if (txtCustomARX.Text != "")
-				float.TryParse(txtCustomARX.Text, out _config.DispCustomUserArx);
-			else _config.DispCustomUserArx = -1;
-			if (txtCustomARY.Text != "")
-				float.TryParse(txtCustomARY.Text, out _config.DispCustomUserAry);
-			else _config.DispCustomUserAry = -1;
+			if (string.IsNullOrWhiteSpace(txtCustomARWidth.Text))
+			{
+				if (int.TryParse(txtCustomARWidth.Text, out int dispCustomUserARWidth))
+				{
+					_config.DispCustomUserARWidth = dispCustomUserARWidth;
+				}
+			}
+			else
+			{
+				_config.DispCustomUserARWidth = -1;
+			}
+
+			if (string.IsNullOrWhiteSpace(txtCustomARHeight.Text))
+			{
+				if (int.TryParse(txtCustomARHeight.Text, out int dispCustomUserARHeight))
+				{
+					_config.DispCustomUserARHeight = dispCustomUserARHeight;
+				}
+			}
+			else
+			{
+				_config.DispCustomUserARHeight = -1;
+			}
+
+			if (string.IsNullOrWhiteSpace(txtCustomARX.Text))
+			{
+				if (float.TryParse(txtCustomARX.Text, out float dispCustomUserArx))
+				{
+					_config.DispCustomUserArx = dispCustomUserArx;
+				}
+			}
+			else
+			{
+				_config.DispCustomUserArx = -1;
+			}
+
+			if (string.IsNullOrWhiteSpace(txtCustomARY.Text))
+			{
+				if (float.TryParse(txtCustomARY.Text, out float dispCustomUserAry))
+				{
+					_config.DispCustomUserAry = dispCustomUserAry;
+				}
+			}
+			else
+			{
+				_config.DispCustomUserAry = -1;
+			}
 
 			var oldDisplayMethod = _config.DispMethod;
 			if(rbOpenGL.Checked)
@@ -167,13 +202,30 @@ namespace BizHawk.Client.EmuHawk
 			if(rbD3D9.Checked)
 				_config.DispMethod = EDispMethod.SlimDX9;
 
-			int.TryParse(txtCropLeft.Text, out _config.DispCropLeft);
-			int.TryParse(txtCropTop.Text, out _config.DispCropTop);
-			int.TryParse(txtCropRight.Text, out _config.DispCropRight);
-			int.TryParse(txtCropBottom.Text, out _config.DispCropBottom);
+			if (int.TryParse(txtCropLeft.Text, out int dispCropLeft))
+			{
+				_config.DispCropLeft = dispCropLeft;
+			}
+
+			if (int.TryParse(txtCropTop.Text, out int dispCropTop))
+			{
+				_config.DispCropTop = dispCropTop;
+			}
+
+			if (int.TryParse(txtCropRight.Text, out int dispCropRight))
+			{
+				_config.DispCropRight = dispCropRight;
+			}
+
+			if (int.TryParse(txtCropBottom.Text, out int dispCropBottom))
+			{
+				_config.DispCropBottom = dispCropBottom;
+			}
 
 			if (oldDisplayMethod != _config.DispMethod)
+			{
 				NeedReset = true;
+			}
 
 			_config.DispUserFilterPath = _pathSelection;
 
@@ -181,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		void RefreshState()
+		private void RefreshState()
 		{
 			lblUserFilterName.Text = Path.GetFileNameWithoutExtension(_pathSelection);
 		}
@@ -208,7 +260,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 
-					//try compiling it
+					// try compiling it
 					bool ok = false;
 					string errors = "";
 					try 
