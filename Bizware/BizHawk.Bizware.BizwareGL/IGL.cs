@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Drawing;
-using swf=System.Windows.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+
+using swf = System.Windows.Forms;
 
 namespace BizHawk.Bizware.BizwareGL
 {

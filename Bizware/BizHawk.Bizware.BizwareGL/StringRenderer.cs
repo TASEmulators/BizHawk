@@ -2,9 +2,10 @@
 //http://cyotek.com/blog/angelcode-bitmap-font-parsing-using-csharp
 
 using System;
-using sd=System.Drawing;
 using System.Collections.Generic;
 using System.IO;
+
+using sd=System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {

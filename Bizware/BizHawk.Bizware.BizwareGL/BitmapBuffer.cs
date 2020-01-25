@@ -4,10 +4,11 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using sd = System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
+
+using sd = System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {

@@ -5,14 +5,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-using swf = System.Windows.Forms;
-using sd = System.Drawing;
-using sdi = System.Drawing.Imaging;
-
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 using BizHawk.Bizware.BizwareGL;
+
+using sd = System.Drawing;
+using sdi = System.Drawing.Imaging;
+using swf = System.Windows.Forms;
 
 //TODO - maybe a layer to cache Graphics parameters (notably, filtering) ?
 

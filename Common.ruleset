@@ -169,9 +169,6 @@
 		<!-- System using directives should be placed before other using directives -->
 		<Rule Id="SA1208" Action="Hidden" />
 
-		<!-- Using alias directives should be placed after other using directives -->
-		<Rule Id="SA1209" Action="Hidden" />
-
 		<!-- Using directives should be ordered alphabetically by namespace -->
 		<Rule Id="SA1210" Action="Hidden" />
 

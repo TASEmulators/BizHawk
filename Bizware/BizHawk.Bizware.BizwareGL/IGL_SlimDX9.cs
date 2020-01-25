@@ -7,17 +7,17 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 
-using swf = System.Windows.Forms;
-using sd = System.Drawing;
-using sdi = System.Drawing.Imaging;
-
 using BizHawk.Bizware.BizwareGL;
 
 using SlimDX.Direct3D9;
-using d3d9=SlimDX.Direct3D9;
 using OpenTK;
 using OpenTK.Graphics;
-using gl=OpenTK.Graphics.OpenGL;
+
+using d3d9 = SlimDX.Direct3D9;
+using gl = OpenTK.Graphics.OpenGL;
+using sd = System.Drawing;
+using sdi = System.Drawing.Imaging;
+using swf = System.Windows.Forms;
 
 //todo - do a better job selecting shader model? base on caps somehow? try several and catch compilation exceptions (yuck, exceptions)
 

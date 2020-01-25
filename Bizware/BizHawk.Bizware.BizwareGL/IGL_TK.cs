@@ -14,16 +14,16 @@ using System.Reflection;
 using System.Threading;
 using System.IO;
 using System.Collections.Generic;
-using sd = System.Drawing;
-using sdi = System.Drawing.Imaging;
-using swf=System.Windows.Forms;
 
 using BizHawk.Bizware.BizwareGL;
 
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using otkg = OpenTK.Graphics;
+
+using sd = System.Drawing;
+using sdi = System.Drawing.Imaging;
+using swf = System.Windows.Forms;
 
 namespace BizHawk.Bizware.BizwareGL
 {

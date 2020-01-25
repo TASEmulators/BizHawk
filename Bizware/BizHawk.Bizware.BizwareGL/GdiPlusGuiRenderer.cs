@@ -4,11 +4,12 @@ using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using sd = System.Drawing;
 using System.Drawing.Imaging;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+
+using sd = System.Drawing;
 
 namespace BizHawk.Bizware.BizwareGL
 {
