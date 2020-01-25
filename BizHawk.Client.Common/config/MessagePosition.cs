@@ -14,13 +14,10 @@
 			BottomRight = 3
 		}
 
-		public MessagePosition Clone()
-		{
-			return (MessagePosition)MemberwiseClone();
-		}
+		public MessagePosition Clone() => (MessagePosition)MemberwiseClone();
 	}
 
-	public static class MessageOptionExtensions
+	public static class MessagePositionExtensions
 	{
 		public static bool IsTop(this MessagePosition.AnchorType type)
 		{
