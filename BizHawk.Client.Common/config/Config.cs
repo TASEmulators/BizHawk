@@ -268,7 +268,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentCheats = new RecentFiles(8);
 
 		// TAStudio
-		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
+		public TasStateManagerSettings DefaultTasStateManagerSettings = new TasStateManagerSettings();
 
 		// Macro Tool
 		public RecentFiles RecentMacros = new RecentFiles(8);
