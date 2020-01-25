@@ -251,26 +251,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 					ProcessBlockID5A(data);
 					break;
 
-				#region Depreciated Blocks
-
-				// ID 16 - C64 ROM Type Data Block
+				// ID 16 - (deprecated) C64 ROM Type Data Block
 				case 0x16:
 					ProcessBlockID16(data);
 					break;
-				// ID 17 - C64 Turbo Tape Data Block
+				// ID 17 - (deprecated) C64 Turbo Tape Data Block
 				case 0x17:
 					ProcessBlockID17(data);
 					break;
-				// ID 34 - Emulation info
+				// ID 34 - (deprecated) Emulation info
 				case 0x34:
 					ProcessBlockID34(data);
 					break;
-				// ID 40 - Snapshot block
+				// ID 40 - (deprecated) Snapshot block
 				case 0x40:
 					ProcessBlockID40(data);
 					break;
-
-				#endregion
 
 				default:
 					ProcessUnidentifiedBlock(data);

@@ -2217,7 +2217,6 @@ namespace BizHawk.Client.EmuHawk
 			//Figure out how these work.
 			//NOTE:
 			//This is a Three Line Checker
-			#region "The Three Line Adds"
 			else if (RAMAddress.StartsWith("8022") == true)
 			{
 				// 802 Should be Changed to 020
@@ -2268,7 +2267,7 @@ namespace BizHawk.Client.EmuHawk
 				blnUnhandled = true;
 				return;
 			}
-			#endregion
+			// (end three line)
 			// 15) Special Codes
 			// -Master Code-
 			// address to patch AND $1FFFFFE Should be Changed to address to patch

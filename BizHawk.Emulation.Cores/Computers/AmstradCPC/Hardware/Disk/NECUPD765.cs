@@ -154,89 +154,92 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 		public void SyncState(Serializer ser)
 		{
-			ser.BeginSection("NEC-UPD765");
-
-			#region FDD
-
-			ser.Sync(nameof(FDD_FLAG_MOTOR), ref FDD_FLAG_MOTOR);
-
-			for (int i = 0; i < 4; i++)
+			void SyncFDDState(Serializer ser1)
 			{
-				ser.BeginSection("HITDrive_" + i);
-				DriveStates[i].SyncState(ser);
-				ser.EndSection();
+				ser1.Sync(nameof(FDD_FLAG_MOTOR), ref FDD_FLAG_MOTOR);
+
+				for (int i = 0; i < 4; i++)
+				{
+					ser1.BeginSection("HITDrive_" + i);
+					DriveStates[i].SyncState(ser1);
+					ser1.EndSection();
+				}
+
+				ser1.Sync(nameof(DiskDriveIndex), ref _diskDriveIndex);
+				// set active drive
+				DiskDriveIndex = _diskDriveIndex;
 			}
 
-			ser.Sync(nameof(DiskDriveIndex), ref _diskDriveIndex);
-			// set active drive
-			DiskDriveIndex = _diskDriveIndex;
+			void SyncRegisterState(Serializer ser1)
+			{
+				ser1.Sync("_RegMain", ref StatusMain);
+				ser1.Sync("_Reg0", ref Status0);
+				ser1.Sync("_Reg1", ref Status1);
+				ser1.Sync("_Reg2", ref Status2);
+				ser1.Sync("_Reg3", ref Status3);
+			}
 
-			#endregion
+			void SyncControllerState(Serializer ser1)
+			{
+				ser1.Sync(nameof(DriveLight), ref DriveLight);
+				ser1.SyncEnum(nameof(ActivePhase), ref ActivePhase);
+#if false
+				ser1.SyncEnum(nameof(ActiveDirection), ref ActiveDirection);
+#endif
+				ser1.SyncEnum(nameof(ActiveInterrupt), ref ActiveInterrupt);
+				ser1.Sync(nameof(CommBuffer), ref CommBuffer, false);
+				ser1.Sync(nameof(CommCounter), ref CommCounter);
+				ser1.Sync(nameof(ResBuffer), ref ResBuffer, false);
+				ser1.Sync(nameof(ExecBuffer), ref ExecBuffer, false);
+				ser1.Sync(nameof(ExecCounter), ref ExecCounter);
+				ser1.Sync(nameof(ExecLength), ref ExecLength);
+				ser1.Sync(nameof(InterruptResultBuffer), ref InterruptResultBuffer, false);
+				ser1.Sync(nameof(ResCounter), ref ResCounter);
+				ser1.Sync(nameof(ResLength), ref ResLength);
+				ser1.Sync(nameof(LastSectorDataWriteByte), ref LastSectorDataWriteByte);
+				ser1.Sync(nameof(LastSectorDataReadByte), ref LastSectorDataReadByte);
+				ser1.Sync(nameof(LastByteReceived), ref LastByteReceived);
 
-			#region Registers
+				ser1.Sync(nameof(_cmdIndex), ref _cmdIndex);
+				// resync the ActiveCommand
+				CMDIndex = _cmdIndex;
 
-			ser.Sync("_RegMain", ref StatusMain);
-			ser.Sync("_Reg0", ref Status0);
-			ser.Sync("_Reg1", ref Status1);
-			ser.Sync("_Reg2", ref Status2);
-			ser.Sync("_Reg3", ref Status3);
+				ActiveCommandParams.SyncState(ser1);
 
-			#endregion
+				ser1.Sync(nameof(IndexPulseCounter), ref IndexPulseCounter);
+#if false
+				ser1.SyncEnum(nameof(_activeStatus), ref _activeStatus);
+				ser1.SyncEnum(nameof(_statusRaised), ref _statusRaised);
+#endif
 
-			#region Controller state
+				ser1.Sync(nameof(CMD_FLAG_MT), ref CMD_FLAG_MT);
+				ser1.Sync(nameof(CMD_FLAG_MF), ref CMD_FLAG_MF);
+				ser1.Sync(nameof(CMD_FLAG_SK), ref CMD_FLAG_SK);
+				ser1.Sync(nameof(SRT), ref SRT);
+				ser1.Sync(nameof(HUT), ref HUT);
+				ser1.Sync(nameof(HLT), ref HLT);
+				ser1.Sync(nameof(ND), ref ND);
+				ser1.Sync(nameof(SRT_Counter), ref SRT_Counter);
+				ser1.Sync(nameof(HUT_Counter), ref HUT_Counter);
+				ser1.Sync(nameof(HLT_Counter), ref HLT_Counter);
 
-			ser.Sync(nameof(DriveLight), ref DriveLight);
-			ser.SyncEnum(nameof(ActivePhase), ref ActivePhase);
-			//ser.SyncEnum(nameof(ActiveDirection), ref ActiveDirection);
-			ser.SyncEnum(nameof(ActiveInterrupt), ref ActiveInterrupt);
-			ser.Sync(nameof(CommBuffer), ref CommBuffer, false);
-			ser.Sync(nameof(CommCounter), ref CommCounter);
-			ser.Sync(nameof(ResBuffer), ref ResBuffer, false);
-			ser.Sync(nameof(ExecBuffer), ref ExecBuffer, false);
-			ser.Sync(nameof(ExecCounter), ref ExecCounter);
-			ser.Sync(nameof(ExecLength), ref ExecLength);
-			ser.Sync(nameof(InterruptResultBuffer), ref InterruptResultBuffer, false);
-			ser.Sync(nameof(ResCounter), ref ResCounter);
-			ser.Sync(nameof(ResLength), ref ResLength);
-			ser.Sync(nameof(LastSectorDataWriteByte), ref LastSectorDataWriteByte);
-			ser.Sync(nameof(LastSectorDataReadByte), ref LastSectorDataReadByte);
-			ser.Sync(nameof(LastByteReceived), ref LastByteReceived);
+				ser1.Sync(nameof(SectorDelayCounter), ref SectorDelayCounter);
+				ser1.Sync(nameof(SectorID), ref SectorID);
+			}
 
-			ser.Sync(nameof(_cmdIndex), ref _cmdIndex);
-			// resync the ActiveCommand
-			CMDIndex = _cmdIndex;
+			void SyncTimingState(Serializer ser1)
+			{
+				ser1.Sync(nameof(LastCPUCycle), ref LastCPUCycle);
+				ser1.Sync(nameof(StatusDelay), ref StatusDelay);
+				ser1.Sync(nameof(TickCounter), ref TickCounter);
+				ser1.Sync(nameof(DriveCycleCounter), ref DriveCycleCounter);
+			}
 
-			ActiveCommandParams.SyncState(ser);
-
-			ser.Sync(nameof(IndexPulseCounter), ref IndexPulseCounter);
-			//ser.SyncEnum(nameof(_activeStatus), ref _activeStatus);
-			//ser.SyncEnum(nameof(_statusRaised), ref _statusRaised);
-
-			ser.Sync(nameof(CMD_FLAG_MT), ref CMD_FLAG_MT);
-			ser.Sync(nameof(CMD_FLAG_MF), ref CMD_FLAG_MF);
-			ser.Sync(nameof(CMD_FLAG_SK), ref CMD_FLAG_SK);
-			ser.Sync(nameof(SRT), ref SRT);
-			ser.Sync(nameof(HUT), ref HUT);
-			ser.Sync(nameof(HLT), ref HLT);
-			ser.Sync(nameof(ND), ref ND);
-			ser.Sync(nameof(SRT_Counter), ref SRT_Counter);
-			ser.Sync(nameof(HUT_Counter), ref HUT_Counter);
-			ser.Sync(nameof(HLT_Counter), ref HLT_Counter);
-
-			ser.Sync(nameof(SectorDelayCounter), ref SectorDelayCounter);
-			ser.Sync(nameof(SectorID), ref SectorID);
-
-			#endregion
-
-			#region Timing
-
-			ser.Sync(nameof(LastCPUCycle), ref LastCPUCycle);
-			ser.Sync(nameof(StatusDelay), ref StatusDelay);
-			ser.Sync(nameof(TickCounter), ref TickCounter);
-			ser.Sync(nameof(DriveCycleCounter), ref DriveCycleCounter);
-
-			#endregion
-
+			ser.BeginSection("NEC-UPD765");
+			SyncFDDState(ser);
+			SyncRegisterState(ser);
+			SyncControllerState(ser);
+			SyncTimingState(ser);
 			ser.EndSection();
 		}
 
