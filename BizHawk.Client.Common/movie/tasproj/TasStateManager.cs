@@ -34,10 +34,10 @@ namespace BizHawk.Client.Common
 		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		/// <exception cref="InvalidOperationException">loaded core expects savestate size of <c>0 B</c></exception>
-		public TasStateManager(TasMovie movie)
+		public TasStateManager(TasMovie movie, TasStateManagerSettings settings)
 		{
 			_movie = movie;
-			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
+			Settings = new TasStateManagerSettings(settings);
 
 			if (_movie.StartsFromSavestate)
 			{
