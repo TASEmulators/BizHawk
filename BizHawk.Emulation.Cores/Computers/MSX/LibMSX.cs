@@ -67,12 +67,10 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// Get Video data
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="aud_buf_L">where to send left audio to</param>
-		/// <param name="aud_buf_R">where to send right audio to</param>
-		/// <param name="n_samp_L">number of left samples</param>
-		/// <param name="n_samp_R">number of right samples</param>
+		/// <param name="aud_buf">where to send left audio to</param>
+		/// <param name="n_samp">number of left samples</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint MSX_get_audio(IntPtr core, uint[] aud_buf_L, uint[] aud_buf_R, ref uint n_samp_L, ref uint n_samp_R);
+		public static extern uint MSX_get_audio(IntPtr core, uint[] aud_buf,  ref uint n_samp);
 
 		#endregion
 

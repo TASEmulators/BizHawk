@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Z80A.h"
-#include "PSG.h"
+#include "AY_3_8910.h"
 #include "TMS9918A.h"
 #include "Memory.h"
 
@@ -26,7 +26,7 @@ namespace MSXHawk
 
 		TMS9918A vdp;
 		Z80A cpu;
-		SN76489sms psg;
+		AY_3_8910 psg;
 		MemoryManager MemMap;
 
 		void Load_BIOS(uint8_t* bios, uint8_t* basic)
@@ -49,8 +49,7 @@ namespace MSXHawk
 			uint32_t scanlinesPerFrame = 262;
 			vdp.SpriteLimit = true;
 
-			psg.num_samples_L = 0;
-			psg.num_samples_R = 0;
+			psg.num_samples = 0;
 			psg.sampleclock = 0;
 
 			for (uint32_t i = 0; i < scanlinesPerFrame; i++)
@@ -90,19 +89,13 @@ namespace MSXHawk
 			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
 		}
 
-		uint32_t GetAudio(uint32_t* dest_L, uint32_t* dest_R, uint32_t* n_samp_L, uint32_t* n_samp_R) 
+		uint32_t GetAudio(uint32_t* dest, uint32_t* n_samp) 
 		{
-			uint32_t* src_L = psg.samples_L;
-			uint32_t* dst_L = dest_L;
+			uint32_t* src = psg.samples;
+			uint32_t* dst = dest;
 
-			std::memcpy(dst_L, src_L, sizeof uint32_t * psg.num_samples_L * 2);
-			n_samp_L[0] = psg.num_samples_L;
-
-			uint32_t* src_R = psg.samples_R;
-			uint32_t* dst_R = dest_R;
-
-			std::memcpy(dst_R, src_R, sizeof uint32_t * psg.num_samples_R * 2);
-			n_samp_R[0] = psg.num_samples_R;
+			std::memcpy(dst, src, sizeof uint32_t * psg.num_samples * 2);
+			n_samp[0] = psg.num_samples;
 
 			return psg.sampleclock;
 		}

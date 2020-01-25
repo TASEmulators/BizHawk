@@ -161,7 +161,7 @@
     <ClInclude Include="Core.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="TMS9918A.h" />
-    <ClInclude Include="PSG.h" />
+    <ClInclude Include="AY_3_8910.h" />
     <ClInclude Include="Z80A.h" />
     <ClInclude Include="MSXHawk.h" />
   </ItemGroup>

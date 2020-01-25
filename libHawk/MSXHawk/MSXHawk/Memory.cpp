@@ -6,7 +6,7 @@
 #include "Memory.h"
 #include "Z80A.h"
 #include "TMS9918A.h"
-#include "PSG.h"
+#include "AY_3_8910.h"
 
 using namespace std;
 
@@ -24,9 +24,9 @@ namespace MSXHawk
 		{
 			return vdp_pntr->ReadVdpStatus();
 		}
-		else if (port == 0xA1)
+		else if (port == 0xA2)
 		{
-			// not readable
+			return psg_pntr->ReadReg();
 		}
 		else if (port == 0xA8)
 		{
@@ -47,7 +47,11 @@ namespace MSXHawk
 		else if(port == 0x99) // VDP
 		{
 			vdp_pntr->WriteVdpControl(value);
-		}				
+		}
+		else if (port == 0xA0)
+		{
+			psg_pntr->port_sel = (value & 0xF);
+		}
 		else if (port == 0xA1)
 		{
 			psg_pntr->WriteReg(value);

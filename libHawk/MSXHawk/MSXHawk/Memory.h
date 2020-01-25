@@ -9,14 +9,14 @@ namespace MSXHawk
 {
 	class Z80A;
 	class TMS9918A;
-	class SN76489sms;
+	class AY_3_8910;
 	
 	class MemoryManager
 	{
 	public:
 				
 		TMS9918A* vdp_pntr = nullptr;
-		SN76489sms* psg_pntr = nullptr;
+		AY_3_8910* psg_pntr = nullptr;
 		Z80A* cpu_pntr = nullptr;
 		uint8_t* rom_1 = nullptr;
 		uint8_t* rom_2 = nullptr;

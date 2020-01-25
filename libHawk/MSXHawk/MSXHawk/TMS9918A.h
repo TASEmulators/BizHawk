@@ -45,10 +45,34 @@ namespace MSXHawk
 		uint32_t TmsSpriteAttributeBase;
 
 		uint32_t FrameBuffer[192 * 256] = {};
+		uint8_t ScanlinePriorityBuffer[256] = {};
+		uint8_t SpriteCollisionBuffer[256] = {};
 
 		// constants after load, not stated
 		uint32_t BackgroundColor = 0;
 		uint32_t IPeriod = 228;
+
+		// temporary variables not stated if on frame boundary
+		bool is_top;
+		uint32_t yc;
+		uint32_t yofs;
+		uint32_t FrameBufferOffset;
+		uint32_t PatternNameOffset;
+		uint32_t ScreenBGColor;
+		uint32_t yrow;
+		uint32_t PatternGeneratorOffset;
+		uint32_t ColorOffset;
+		uint32_t pn;
+		uint32_t pv;
+		uint32_t colorEntry;
+		uint32_t fgIndex;
+		uint32_t bgIndex;
+		uint32_t fgColor;
+		uint32_t bgColor;
+		uint32_t lColorIndex;
+		uint32_t rColorIndex;
+		uint32_t lColor;
+		uint32_t rColor;
 
 		uint32_t PaletteTMS9918[16] =
 		{
@@ -105,8 +129,7 @@ namespace MSXHawk
 			case 0x40: // write VRAM
 				break;
 			case 0x80: // VDP register write
-				uint32_t reg = value & 0x0F;
-				WriteRegister(reg, VdpLatch);
+				WriteRegister(value & 0x0F, VdpLatch);
 				break;
 			}
 		}
@@ -218,21 +241,21 @@ namespace MSXHawk
 				return;
 			}
 
-			uint32_t yc = scanLine / 8;
-			uint32_t yofs = scanLine % 8;
-			uint32_t FrameBufferOffset = scanLine * 256;
-			uint32_t PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
-			uint32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			yc = scanLine / 8;
+			yofs = scanLine % 8;
+			FrameBufferOffset = scanLine * 256;
+			PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
+			ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
 			for (uint32_t xc = 0; xc < 32; xc++)
 			{
-				uint32_t pn = VRAM[PatternNameOffset++];
-				uint32_t pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
-				uint32_t colorEntry = VRAM[ColorTableBase + (pn / 8)];
-				uint32_t fgIndex = (colorEntry >> 4) & 0x0F;
-				uint32_t bgIndex = colorEntry & 0x0F;
-				uint32_t fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				uint32_t bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+				pn = VRAM[PatternNameOffset++];
+				pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
+				colorEntry = VRAM[ColorTableBase + (pn / 8)];
+				fgIndex = (colorEntry >> 4) & 0x0F;
+				bgIndex = colorEntry & 0x0F;
+				fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
@@ -253,21 +276,21 @@ namespace MSXHawk
 				return;
 			}
 
-			uint32_t yc = scanLine / 8;
-			uint32_t yofs = scanLine % 8;
-			uint32_t FrameBufferOffset = scanLine * 256;
-			uint32_t PatternNameOffset = TmsPatternNameTableBase + (yc * 40);
-			uint32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			yc = scanLine / 8;
+			yofs = scanLine % 8;
+			FrameBufferOffset = scanLine * 256;
+			PatternNameOffset = TmsPatternNameTableBase + (yc * 40);
+			ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
 			for (uint32_t xc = 0; xc < 40; xc++)
 			{
-				uint32_t pn = VRAM[PatternNameOffset++];
-				uint32_t pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
-				uint32_t colorEntry = Registers[7];
-				uint32_t fgIndex = (colorEntry >> 4) & 0x0F;
-				uint32_t bgIndex = colorEntry & 0x0F;
-				uint32_t fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				uint32_t bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+				pn = VRAM[PatternNameOffset++];
+				pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
+				colorEntry = Registers[7];
+				fgIndex = (colorEntry >> 4) & 0x0F;
+				bgIndex = colorEntry & 0x0F;
+				fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
@@ -286,23 +309,23 @@ namespace MSXHawk
 				return;
 			}
 
-			uint32_t yrow = scanLine / 8;
-			uint32_t yofs = scanLine % 8;
-			uint32_t FrameBufferOffset = scanLine * 256;
-			uint32_t PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
-			uint32_t PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);
-			uint32_t ColorOffset = (ColorTableBase & 0x2000);
-			uint32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			yrow = scanLine / 8;
+			yofs = scanLine % 8;
+			FrameBufferOffset = scanLine * 256;
+			PatternNameOffset = TmsPatternNameTableBase + (yrow * 32);
+			PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);
+			ColorOffset = (ColorTableBase & 0x2000);
+			ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
 			for (uint32_t xc = 0; xc < 32; xc++)
 			{
-				uint32_t pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
-				uint32_t pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
-				uint32_t colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
-				uint32_t fgIndex = (colorEntry >> 4) & 0x0F;
-				uint32_t bgIndex = colorEntry & 0x0F;
-				uint32_t fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
-				uint32_t bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+				pn = VRAM[PatternNameOffset++] + ((yrow / 8) * 0x100);
+				pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
+				colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
+				fgIndex = (colorEntry >> 4) & 0x0F;
+				bgIndex = colorEntry & 0x0F;
+				fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
 
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
@@ -323,21 +346,21 @@ namespace MSXHawk
 				return;
 			}
 
-			uint32_t yc = scanLine / 8;
-			bool top = (scanLine & 4) == 0; // am I in the top 4 pixels of an 8-pixel character?
-			uint32_t FrameBufferOffset = scanLine * 256;
-			uint32_t PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
-			uint32_t ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+			yc = scanLine / 8;
+			is_top = (scanLine & 4) == 0; // am I in the top 4 pixels of an 8-pixel character?
+			FrameBufferOffset = scanLine * 256;
+			PatternNameOffset = TmsPatternNameTableBase + (yc * 32);
+			ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
 			for (uint32_t xc = 0; xc < 32; xc++)
 			{
-				uint32_t pn = VRAM[PatternNameOffset++];
-				uint32_t pv = VRAM[PatternGeneratorBase + (pn * 8) + ((yc & 3) * 2) + (top ? 0 : 1)];
+				pn = VRAM[PatternNameOffset++];
+				pv = VRAM[PatternGeneratorBase + (pn * 8) + ((yc & 3) * 2) + (is_top ? 0 : 1)];
 
-				uint32_t lColorIndex = pv & 0xF;
-				uint32_t rColorIndex = pv >> 4;
-				uint32_t lColor = lColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[lColorIndex];
-				uint32_t rColor = rColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[rColorIndex];
+				lColorIndex = pv & 0xF;
+				rColorIndex = pv >> 4;
+				lColor = lColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[lColorIndex];
+				rColor = rColorIndex == 0 ? ScreenBGColor : PaletteTMS9918[rColorIndex];
 
 				FrameBuffer[FrameBufferOffset++] = lColor;
 				FrameBuffer[FrameBufferOffset++] = lColor;
@@ -349,9 +372,6 @@ namespace MSXHawk
 				FrameBuffer[FrameBufferOffset] = rColor;
 			}
 		}
-
-		uint8_t ScanlinePriorityBuffer[256] = {};
-		uint8_t SpriteCollisionBuffer[256] = {};
 
 		void RenderTmsSprites(int32_t scanLine)
 		{
