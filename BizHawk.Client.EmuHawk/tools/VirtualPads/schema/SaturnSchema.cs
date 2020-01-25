@@ -608,7 +608,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Console",
 				IsConsole = true,
-				DefaultSize = new Size(150, 50),
+				DefaultSize = new Size(250, 50),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonSchema
@@ -623,6 +623,20 @@ namespace BizHawk.Client.EmuHawk
 						Name = "Power",
 						DisplayName = "Power",
 						Location = new Point(58, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "Previous Disk",
+						DisplayName = "Prev Disc",
+						Location = new Point(108, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "Next Disk",
+						DisplayName = "Next Disc",
+						Location = new Point(175, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
 				}
