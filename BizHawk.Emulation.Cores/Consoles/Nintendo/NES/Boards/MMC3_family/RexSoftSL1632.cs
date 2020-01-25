@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetMirrorType(!exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
-		readonly static byte[] modes = { 5, 5, 3, 1 };
+		static readonly byte[] modes = { 5, 5, 3, 1 };
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)

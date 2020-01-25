@@ -163,9 +163,6 @@
 		<!-- Partial elements should declare access -->
 		<Rule Id="SA1205" Action="Hidden" />
 
-		<!-- Declaration keywords should follow order -->
-		<Rule Id="SA1206" Action="Hidden" />
-
 		<!-- System using directives should be placed before other using directives -->
 		<Rule Id="SA1208" Action="Hidden" />
 

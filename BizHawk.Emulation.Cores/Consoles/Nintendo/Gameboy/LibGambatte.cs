@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int gambatte_runfor(IntPtr core, short[] soundbuf, ref uint samples);
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		unsafe public static extern int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
+		public static extern unsafe int gambatte_runfor(IntPtr core, short* soundbuf, ref uint samples);
 
 		/// <summary>
 		/// blit from internal framebuffer to provided framebuffer
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="pitch">in pixels</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		unsafe public static extern void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
+		public static extern unsafe void gambatte_blitto(IntPtr core, int* videobuf, int pitch);
 		/// <summary>
 		/// blit from internal framebuffer to provided framebuffer
 		/// </summary>

@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			};
 		}
 
-		protected unsafe override void FrameAdvancePost()
+		protected override unsafe void FrameAdvancePost()
 		{
 			if (_scanlineCallback != null && _scanlineCallbackLine == -1)
 				_scanlineCallback(_core.GetIoReg(0x40));

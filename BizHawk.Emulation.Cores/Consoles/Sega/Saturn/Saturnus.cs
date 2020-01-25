@@ -631,7 +631,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				_resizedBuffer = new int[width * height];
 		}
 
-		protected unsafe override void FrameAdvancePost()
+		protected override unsafe void FrameAdvancePost()
 		{
 			//TODO: can we force the videoprovider to add a prescale instead of having to do it in software here?
 			//TODO: if not, actually do it in software, instead of relying on the virtual sizes

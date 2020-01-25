@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 
-		unsafe public void Cmp(int statex, int statey)
+		public unsafe void Cmp(int statex, int statey)
 		{
 			if (disposed) throw new ObjectDisposedException(this.GetType().ToString());
 			List<Tuple<int, int>> bads = new List<Tuple<int, int>>();
