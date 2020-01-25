@@ -92,9 +92,6 @@
 		<!-- Closing parenthesis should be on line of last parameter -->
 		<Rule Id="SA1111" Action="Hidden" />
 
-		<!-- Comma should be on the same line as previous parameter -->
-		<Rule Id="SA1113" Action="Hidden" />
-
 		<!-- Parameter list should follow declaration -->
 		<Rule Id="SA1114" Action="Hidden" />
 

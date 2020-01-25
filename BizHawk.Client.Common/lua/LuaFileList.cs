@@ -138,8 +138,8 @@ namespace BizHawk.Client.Common
 						sb
 							.Append(file.Enabled ? "1" : "0")
 							.Append(' ')
-							.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, "")
-								, Path.GetDirectoryName(path)))
+							.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, ""),
+								Path.GetDirectoryName(path)))
 							.AppendLine();
 					}
 				}

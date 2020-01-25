@@ -2129,8 +2129,8 @@ namespace BizHawk.Client.EmuHawk
 						var message =
 							$"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
 
-						if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel
-							, MessageBoxIcon.Question) == DialogResult.Yes)
+						if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel,
+							MessageBoxIcon.Question) == DialogResult.Yes)
 						{
 							ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 						}
