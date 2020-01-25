@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 			FetchOperand = 2,
 			Data = 4,
 			Write = 8
-		};
+		}
 
 		// Execute instructions
 		public void ExecuteOne()
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6809
 							Regs[reg_d_ad] = (ushort)((Regs[reg_h_ad] << 8) | Regs[reg_l_ad]);
 							break;
 						case JPE:
-							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; };
+							if (!FlagE) { instr_pntr = 44; irq_pntr = 10; }
 							break;
 						case IDX_DCDE:
 							Index_decode();

@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			SYSTEM_SPORTSPAD = 10,  // Sega Sports Pad -- Master System
 			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer 	
 			SYSTEM_WAYPLAY = 12,    // Multi Tap -- EA 4-Way Play -- use both ports
-		};
+		}
 
 		public enum INPUT_DEVICE : byte
 		{
@@ -113,13 +113,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_TEREBI = 0x08,   // Terebi Oekaki tablet
 			DEVICE_XE_A1P = 0x09,   // XE-A1P analog controller
 			DEVICE_ACTIVATOR = 0x0a,// Activator
-		};
+		}
 
 
 		public enum CDLog_AddrType
 		{
 			MDCART, RAM68k, RAMZ80, SRAM,
-		};
+		}
 
 		[Flags]
 		public enum CDLog_Flags
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			ExecZ80Operand = 0x10,
 			DataZ80 = 0x20,
 			DMASource = 0x40,
-		};
+		}
 
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			/* Menacer */
 			INPUT_MENACER_TRIGGER = 0x0040,
 			INPUT_MENACER_START = 0x0080,
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public class InputData

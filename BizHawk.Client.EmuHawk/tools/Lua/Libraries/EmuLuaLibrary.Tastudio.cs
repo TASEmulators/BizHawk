@@ -35,20 +35,20 @@ namespace BizHawk.Client.EmuHawk
 			public string Button;
 			public bool ValueBool;
 			public float ValueFloat;
-		};
+		}
 
 		public enum LuaChangeTypes
 		{
 			InputChange,
 			InsertFrames,
 			DeleteFrames,
-		};
+		}
 
 		private enum InputChangeTypes
 		{
 			Bool,
 			Float,
-		};
+		}
 
 		public class TastudioBranchInfo
 		{

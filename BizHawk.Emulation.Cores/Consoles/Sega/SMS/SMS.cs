@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					case 0x01: Port01 = value; break;
 					case 0x02: Port02 = value; break;
 					case 0x03: p3_write = true; Port03 = value; break;
-					case 0x04: /*Port04 = value*/; break; // receive port, not sure what writing does
+					case 0x04: /*Port04 = value;*/ break; // receive port, not sure what writing does
 					case 0x05: Port05 = (byte)(value & 0xF8); break;
 					case 0x06: PSG.Set_Panning(value); break;
 					case 0x3E: Port3E = value; break;

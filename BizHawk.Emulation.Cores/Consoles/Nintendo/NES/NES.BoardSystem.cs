@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			void ApplyCustomAudio(short[] samples);
 
 			Dictionary<string, string> InitialRegisterValues { get; set; }
-		};
+		}
 
 		[INESBoardImpl]
 		public abstract class NESBoardBase : INESBoard

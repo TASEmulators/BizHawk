@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public byte first_track;
 			public byte last_track;
 			public byte disc_type;
-		};
+		}
 
 		[StructLayout(LayoutKind.Explicit)]
 		public struct MednadiscTOCTrack
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.DiscSystem
 			[FieldOffset(8)] public byte _validByte;
 
 			public bool Valid { get { return _validByte != 0; } }
-		};
+		}
 
 		[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr mednadisc_LoadCD(string path);

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			public byte nt, at;
 			public byte pt_0, pt_1;
-		};
+		}
 
 		BGDataRecord[] bgdata = new BGDataRecord[34]; 
 

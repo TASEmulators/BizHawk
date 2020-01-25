@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 			FetchOperand = 2,
 			Data = 4,
 			Write = 8
-		};
+		}
 
 		// Execute instructions
 		public void ExecuteOne(ref byte interrupt_src, byte interrupt_enable)

@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					HIntPending = true;
 					if (EnableLineInterrupts)
-					{;
+					{
 						Cpu.FlagI = true;
 					}
 					lineIntLinesRemaining = Registers[0x0A];

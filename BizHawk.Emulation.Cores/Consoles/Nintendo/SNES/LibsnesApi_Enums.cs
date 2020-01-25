@@ -70,14 +70,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BRK_hook_read_smp,
 			eMessage_BRK_hook_write_smp,
 			eMessage_BRK_scanlineStart,
-		};
+		}
 
 		enum eStatus : int
 		{
 			eStatus_Idle,
 			eStatus_CMD,
 			eStatus_BRK
-		};
+		}
 
 		public enum SNES_INPUT_PORT : int
 		{

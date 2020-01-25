@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				NTSC,
 				PAL,
 				Dendy
-			};
+			}
 
 			public Region RegionOverride = Region.Default;
 

@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CARTROM, CARTRAM, WRAM, APURAM,
 			SGB_CARTROM, SGB_CARTRAM, SGB_WRAM, SGB_HRAM,
 			NUM
-		};
+		}
 
 		public enum eTRACE : uint
 		{
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			CPUData = 0x04,
 			DMAData = 0x08, //not supported yet
 			BRR = 0x80,
-		};
+		}
 
 		snes_video_refresh_t video_refresh;
 		snes_input_poll_t input_poll;

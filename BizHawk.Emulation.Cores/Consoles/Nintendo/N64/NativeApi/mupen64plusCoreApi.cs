@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64ERR_SYSTEM_FAIL,     /* A system function call, such as an SDL or file operation, failed */
 			M64ERR_UNSUPPORTED,     /* Function call is not supported (ie, core not built with debugger) */
 			M64ERR_WRONG_TYPE       /* A given input type parameter cannot be used for desired operation */
-		};
+		}
 
 		public enum m64p_plugin_type
 		{
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64PLUGIN_AUDIO,
 			M64PLUGIN_INPUT,
 			M64PLUGIN_CORE
-		};
+		}
 
 		private enum m64p_command
 		{
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64CMD_ADVANCE_FRAME,
 			M64CMD_SET_VI_CALLBACK,
 			M64CMD_SET_RENDER_CALLBACK
-		};
+		}
 
 		private enum m64p_dbg_bkp_command
 		{
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64P_BKP_CMD_ENABLE,
 			M64P_BKP_CMD_DISABLE,
 			M64P_BKP_CMD_CHECK
-		};
+		}
 
 		[Flags]
 		private enum m64p_dbg_bkp_flags
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64P_BPT_FLAG_WRITE = 0x10,
 			M64P_BPT_FLAG_EXEC = 0x20,
 			M64P_BPT_FLAG_LOG = 0x40
-		};
+		}
 
 		private enum m64p_dbg_state
 		{
@@ -117,21 +117,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64P_DBG_NUM_BREAKPOINTS,
 			M64P_DBG_CPU_DYNACORE,
 			M64P_DBG_CPU_NEXT_INTERRUPT
-		};
+		}
 
 		private enum m64p_dbg_runstate
 		{
 			M64P_DBG_RUNSTATE_PAUSED = 0,
 			M64P_DBG_RUNSTATE_STEPPING,
 			M64P_DBG_RUNSTATE_RUNNING
-		};
+		}
 
 		public enum m64p_emu_state
 		{
 			M64EMU_STOPPED = 1,
 			M64EMU_RUNNING,
 			M64EMU_PAUSED
-		};
+		}
 
 		public enum m64p_type
 		{
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			M64TYPE_FLOAT,
 			M64TYPE_BOOL,
 			M64TYPE_STRING
-		};
+		}
 
 		public enum N64_MEMORY : uint
 		{

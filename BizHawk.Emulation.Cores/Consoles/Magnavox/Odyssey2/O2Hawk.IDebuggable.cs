@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					break;
 				case "R2":
 					cpu.Regs[2 + cpu.RB] = (byte)value;
-					break; ;
+					break;
 				case "R3":
 					cpu.Regs[3 + cpu.RB] = (byte)value;
 					break;
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Consoles.O2Hawk
 					break;
 				case "R6":
 					cpu.Regs[6 + cpu.RB] = (byte)value;
-					break; ;
+					break;
 				case "R7":
 					cpu.Regs[7 + cpu.RB] = (byte)value;
 					break;

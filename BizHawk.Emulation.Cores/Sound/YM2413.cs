@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Components
 			Default = 0,
 			VRC7 = 1,
 			YMF281B = 2
-		};
+		}
 
 		public YM2413(ChipType type)
 		{
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Components
 		static OPLL_PATCH[,] default_patch = new OPLL_PATCH[OPLL_TONE_NUM, (16 + 3) * 2];
 
 		/* Definition of envelope mode */
-		public enum OPLL_EG_STATE { READY, ATTACK, DECAY, SUSHOLD, SUSTINE, RELEASE, SETTLE, FINISH };
+		public enum OPLL_EG_STATE { READY, ATTACK, DECAY, SUSHOLD, SUSTINE, RELEASE, SETTLE, FINISH }
 
 		/* Phase incr table for Attack */
 		static uint[,] dphaseARTable = new uint[16, 16];

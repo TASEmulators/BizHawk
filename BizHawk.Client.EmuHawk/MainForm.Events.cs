@@ -686,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 				&& MovieSession.Movie.Mode != MovieMode.Play;
 
 			HardResetMenuItem.Enabled = Emulator.ControllerDefinition.BoolButtons.Contains("Power")
-				&& MovieSession.Movie.Mode != MovieMode.Play;;
+				&& MovieSession.Movie.Mode != MovieMode.Play;
 
 			PauseMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Pause"].Bindings;
 			RebootCoreMenuItem.ShortcutKeyDisplayString = Config.HotkeyBindings["Reboot Core"].Bindings;

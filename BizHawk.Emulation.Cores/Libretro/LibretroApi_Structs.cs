@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			[MarshalAs(UnmanagedType.U1)]
 			public bool registered;
-		};
+		}
 
 		//perf callbacks
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

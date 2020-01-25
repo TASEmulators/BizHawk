@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 			ExecFirst = 0x01,
 			ExecOperand = 0x02,
 			Data = 0x04
-		};
+		}
 
 		private ICodeDataLog CDL;
 

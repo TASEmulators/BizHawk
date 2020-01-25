@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Components.I8048
 			FetchOperand = 2,
 			Data = 4,
 			Write = 8
-		};
+		}
 
 		// Execute instructions
 		public void ExecuteOne()

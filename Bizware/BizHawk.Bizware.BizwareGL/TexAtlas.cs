@@ -190,7 +190,7 @@ namespace BizHawk.Bizware.BizwareGL
 				public int height;
 
 				public RectItem ri;
-			};
+			}
 
 			/// Starts a new packing process to a bin of the given dimension.
 			public void Init(int width, int height)
@@ -317,7 +317,7 @@ namespace BizHawk.Bizware.BizwareGL
 				node.height = height;
 				return node;
 			}
-		};
+		}
 
 	}
 

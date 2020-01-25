@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		enum EState
 		{
 			Off, Select, Ignore, Address, Read, Write
-		};
+		}
 		EState State;
 
 		/// <summary>

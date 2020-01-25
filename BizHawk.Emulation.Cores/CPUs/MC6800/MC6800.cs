@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Components.MC6800
 			FetchOperand = 2,
 			Data = 4,
 			Write = 8
-		};
+		}
 
 		// Execute instructions
 		public void ExecuteOne()

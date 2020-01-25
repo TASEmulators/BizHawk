@@ -249,7 +249,7 @@ namespace BizHawk.Emulation.Cores.Components.W65816
 				default:
 					length = 1;
 					return "???";
-			};
+			}
 
 			// Parse out parameter list
 			switch (opcode)

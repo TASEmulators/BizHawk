@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			SIG_VideoUpdate,
 			SIG_Sample,
 			SIG_SampleBatch,
-		};
+		}
 
 
 		public enum RETRO_MEMORY
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			RTC = 1,
 			SYSTEM_RAM = 2,
 			VIDEO_RAM = 3,
-		};
+		}
 
 
 		public enum RETRO_DEVICE
@@ -55,14 +55,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 			ANALOG = 5,
 			POINTER = 6,
 			SENSOR_ACCELEROMETER = 7
-		};
+		}
 
 	public enum RETRO_DEVICE_ID_ANALOG
 		{
 			// LEFT / RIGHT?
 			X = 0,
 			Y = 1
-		};
+		}
 
 		public enum RETRO_DEVICE_ID_MOUSE
 		{
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			Y = 1,
 			LEFT = 2,
 			RIGHT = 3
-		};
+		}
 
 		public enum RETRO_DEVICE_ID_LIGHTGUN
 		{
@@ -81,14 +81,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 			TURBO = 4,
 			PAUSE = 5,
 			START = 6
-		};
+		}
 
 		public enum RETRO_DEVICE_ID_POINTER
 		{
 			X = 0,
 			Y = 1,
 			PRESSED = 2
-		};
+		}
 
 				public enum RETRO_KEY
 		{
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			UNDO = 322,
 
 			LAST
-		};
+		}
 
 		[Flags]
 		public enum RETRO_MOD
@@ -249,14 +249,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 			NUMLOCK = 16,
 			CAPSLOCK = 32,
 			SCROLLLOCK = 64
-		};
+		}
 
 		public enum RETRO_DEVICE_ID_SENSOR_ACCELEROMETER
 		{
 			X = 0,
 			Y = 1,
 			Z = 2
-		};
+		}
 
 		public enum RETRO_DEVICE_ID_JOYPAD
 		{
@@ -276,14 +276,14 @@ namespace BizHawk.Emulation.Cores.Libretro
 			R2 = 13,
 			L3 = 14,
 			R3 = 15
-		};
+		}
 
 		public enum eStatus : int
 		{
 			eStatus_Idle,
 			eStatus_CMD,
 			eStatus_BRK
-		};
+		}
 
 		public enum BufId : int
 		{
@@ -303,13 +303,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			XRGB1555 = 0,
 			XRGB8888 = 1,
 			RGB565 = 2
-		};
+		}
 
 		public enum retro_region : uint
 		{
 			NTSC = 0,
 			PAL = 1
-		};
+		}
 
 	}
 }

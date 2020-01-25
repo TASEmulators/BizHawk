@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			RESET,
 			/// <summary>nothing happening</summary>
 			IDLE,
-		};
+		}
 
 		/// <summary>
 		/// set cycleswaiting param after a state change

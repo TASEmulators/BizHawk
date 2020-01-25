@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 		public enum OutputChannel
 		{
 			ERROR, WARNING, INFO, DEBUG, VERBOSE, LOG, COUNT
-		};
+		}
 
 		// main launcher
 		[DllImport(dll, CallingConvention = cc)]

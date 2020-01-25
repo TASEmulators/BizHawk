@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common.Miniz
 			MZ_ZIP_FLAG_IGNORE_PATH = 0x0200,
 			MZ_ZIP_FLAG_COMPRESSED_DATA = 0x0400,
 			MZ_ZIP_FLAG_DO_NOT_SORT_CENTRAL_DIRECTORY = 0x0800
-		};
+		}
 
 		enum mz_compression_level : uint
 		{
@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common.Miniz
 			MZ_UBER_COMPRESSION = 10,
 			MZ_DEFAULT_LEVEL = 6,
 			MZ_DEFAULT_COMPRESSION = unchecked((uint)-1)
-		};
+		}
 
 		[DllImport(DllName, CallingConvention = CC)]
 		public static extern bool mz_zip_writer_init_file(IntPtr pZip, string pFilename, long size_to_reserve_at_beginning);

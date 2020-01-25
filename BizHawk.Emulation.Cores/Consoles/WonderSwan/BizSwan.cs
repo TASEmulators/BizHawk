@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			PS = 12,
 			SS = 13,
 			DS0 = 14
-		};
+		}
 
 		[Flags]
 		public enum Buttons : uint

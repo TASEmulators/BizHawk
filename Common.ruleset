@@ -80,9 +80,6 @@
 		<!-- Prefix local calls with this -->
 		<Rule Id="SA1101" Action="Hidden" />
 
-		<!-- Code should not contain empty statements -->
-		<Rule Id="SA1106" Action="Hidden" />
-
 		<!-- Code should not contain multiple statements on one line -->
 		<Rule Id="SA1107" Action="Hidden" />
 

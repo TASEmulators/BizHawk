@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			BG_PALETTE = 0,
 			SP1_PALETTE = 1,
 			SP2_PALETTE = 2
-		};
+		}
 
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="palnum">in [0, 2]: One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.</param>

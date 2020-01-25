@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 				Syncpoint = 0x4e4be4adeeca4569,
 				Index = 0x4e58dd672f23e64e,
 				Info = 0x4e49ab68b596ba78
-			};
+			}
 
 			private MemoryStream _data;
 			private readonly StartCode _startCode;

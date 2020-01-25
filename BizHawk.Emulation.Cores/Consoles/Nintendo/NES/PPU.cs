@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int preNMIlines;
 		int postNMIlines;
 		bool chopdot;
-		public enum Region { NTSC, PAL, Dendy, RGB };
+		public enum Region { NTSC, PAL, Dendy, RGB }
 		Region _region;
 		public Region region
 		{

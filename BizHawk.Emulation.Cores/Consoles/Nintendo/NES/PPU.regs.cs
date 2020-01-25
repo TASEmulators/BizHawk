@@ -256,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				v &= 1;
 				fv &= 7;
 			}
-		};
+		}
 
 		public sealed class Reg_2000
 		{

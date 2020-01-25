@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Teamplayer,
 			Wayplay,
 			Mouse
-		};
+		}
 
 
 		/// <summary>

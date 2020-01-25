@@ -58,5 +58,5 @@ namespace BizHawk.Emulation.DiscSystem
 
 	class DiscJobAbortException : Exception
 	{
-	};
+	}
 }

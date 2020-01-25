@@ -146,16 +146,16 @@ namespace BizHawk.Client.DiscoHawk
 		public enum ChangeWindowMessageFilterFlags : uint
 		{
 			Add = 1, Remove = 2
-		};
+		}
 		public enum MessageFilterInfo : uint
 		{
 			None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
-		};
+		}
 
 		public enum ChangeWindowMessageFilterExAction : uint
 		{
 			Reset = 0, Allow = 1, DisAllow = 2
-		};
+		}
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CHANGEFILTERSTRUCT
