@@ -32,6 +32,10 @@ namespace MSXHawk
 		{
 			return PortA8;
 		}
+		else if (port == 0xA9)
+		{
+			return 0xFF;
+		}
 		
 		return 0xFF;
 	}
@@ -55,6 +59,19 @@ namespace MSXHawk
 		else if (port == 0xA1)
 		{
 			psg_pntr->WriteReg(value);
+
+			// update controller port data if port F is written to
+			if (psg_pntr->port_sel == 0xF) 
+			{
+				if ((psg_pntr->Register[0xF] & 0x40) > 0)
+				{
+					psg_pntr->Register[0xE] = controller_byte_2;
+				}
+				else
+				{
+					psg_pntr->Register[0xE] = controller_byte_1;
+				}
+			}
 		}
 		else if (port == 0xA8)
 		{

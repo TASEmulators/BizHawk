@@ -41,6 +41,15 @@ namespace MSXHawk
 
 		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, bool render, bool rendersound)
 		{
+			if ((MemMap.psg_pntr->Register[0xF] & 0x40) > 0)
+			{
+				MemMap.psg_pntr->Register[0xE] = controller_2;
+			}
+			else 
+			{
+				MemMap.psg_pntr->Register[0xE] = controller_1;
+			}
+			
 			MemMap.controller_byte_1 = controller_1;
 			MemMap.controller_byte_2 = controller_2;
 			MemMap.start_pressed = (controller_1 & 0x80) > 0;

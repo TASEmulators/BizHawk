@@ -19,15 +19,15 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		{
 			_controller = controller;
 
-			byte ctrl1_byte = 0;
-			if (_controller.IsPressed("P1 Up")) ctrl1_byte |= 0x01;
-			if (_controller.IsPressed("P1 Down")) ctrl1_byte |= 0x02;
-			if (_controller.IsPressed("P1 Left")) ctrl1_byte |= 0x04;
-			if (_controller.IsPressed("P1 Right")) ctrl1_byte |= 0x08;
-			if (_controller.IsPressed("P1 B1")) ctrl1_byte |= 0x10;
-			if (_controller.IsPressed("P1 B2")) ctrl1_byte |= 0x20;
+			byte ctrl1_byte = 0xFF;
+			if (_controller.IsPressed("P1 Up")) ctrl1_byte -= 0x01;
+			if (_controller.IsPressed("P1 Down")) ctrl1_byte -= 0x02;
+			if (_controller.IsPressed("P1 Left")) ctrl1_byte -= 0x04;
+			if (_controller.IsPressed("P1 Right")) ctrl1_byte -= 0x08;
+			if (_controller.IsPressed("P1 B1")) ctrl1_byte -= 0x10;
+			if (_controller.IsPressed("P1 B2")) ctrl1_byte -= 0x20;
 
-			if (_controller.IsPressed("P1 Start")) ctrl1_byte |= 0x80;
+			//if (_controller.IsPressed("P1 Start")) ctrl1_byte |= 0x80;
 
 			_frame++;
 			
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
 
-			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, 0, true, true);
+			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, 0xFF, true, true);
 
 			return true;
 		}

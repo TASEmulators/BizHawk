@@ -146,7 +146,8 @@ namespace MSXHawk
 		{
 			value &= 0xFF;
 
-			Register[port_sel] = value;
+			if (port_sel != 0xE) { Register[port_sel] = value; }
+			
 
 			sync_psg_state();
 
