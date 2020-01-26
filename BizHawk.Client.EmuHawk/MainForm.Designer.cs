@@ -267,15 +267,6 @@
 			this.PCEAlwaysEqualizeVolumesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEArcadeCardRewindEnableMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSregionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsRegionExportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsRegionJapanMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsRegionKoreaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsRegionAutoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsDisplayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsDisplayNtscMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsDisplayPalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsDisplayAutoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsControllerStandardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsControllerPaddleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2484,8 +2475,6 @@
 			// SMSSubMenu
 			// 
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SMSregionToolStripMenuItem,
-			this.SmsDisplayMenuItem,
 			this.SMSControllerToolStripMenuItem,
 			this.SMStoolStripMenuItem2,
 			this.SmsSettingsMenuItem,
@@ -2505,76 +2494,6 @@
 			this.SMSSubMenu.Size = new System.Drawing.Size(39, 17);
 			this.SMSSubMenu.Text = "&SMS";
 			this.SMSSubMenu.DropDownOpened += new System.EventHandler(this.SmsSubMenu_DropDownOpened);
-			// 
-			// SMSregionToolStripMenuItem
-			// 
-			this.SMSregionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SmsRegionExportMenuItem,
-			this.SmsRegionJapanMenuItem,
-			this.SmsRegionKoreaMenuItem,
-			this.SmsRegionAutoMenuItem});
-			this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
-			this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SMSregionToolStripMenuItem.Text = "Region";
-			// 
-			// SMSregionExportToolStripMenuItem
-			// 
-			this.SmsRegionExportMenuItem.Name = "SmsRegionExportMenuItem";
-			this.SmsRegionExportMenuItem.Size = new System.Drawing.Size(106, 22);
-			this.SmsRegionExportMenuItem.Text = "Export";
-			this.SmsRegionExportMenuItem.Click += new System.EventHandler(this.SmsRegionExport_Click);
-			// 
-			// SMSregionJapanToolStripMenuItem
-			// 
-			this.SmsRegionJapanMenuItem.Name = "SmsRegionJapanMenuItem";
-			this.SmsRegionJapanMenuItem.Size = new System.Drawing.Size(106, 22);
-			this.SmsRegionJapanMenuItem.Text = "Japan";
-			this.SmsRegionJapanMenuItem.Click += new System.EventHandler(this.Sms_RegionJapan_Click);
-			// 
-			// SMSregionKoreaToolStripMenuItem
-			// 
-			this.SmsRegionKoreaMenuItem.Name = "SmsRegionKoreaMenuItem";
-			this.SmsRegionKoreaMenuItem.Size = new System.Drawing.Size(106, 22);
-			this.SmsRegionKoreaMenuItem.Text = "Korea";
-			this.SmsRegionKoreaMenuItem.Click += new System.EventHandler(this.Sms_RegionKorea_Click);
-			// 
-			// SMSregionAutoToolStripMenuItem
-			// 
-			this.SmsRegionAutoMenuItem.Name = "SmsRegionAutoMenuItem";
-			this.SmsRegionAutoMenuItem.Size = new System.Drawing.Size(106, 22);
-			this.SmsRegionAutoMenuItem.Text = "Auto";
-			this.SmsRegionAutoMenuItem.Click += new System.EventHandler(this.Sms_RegionAuto_Click);
-			// 
-			// SMSdisplayToolStripMenuItem
-			// 
-			this.SmsDisplayMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SmsDisplayNtscMenuItem,
-			this.SmsDisplayPalMenuItem,
-			this.SmsDisplayAutoMenuItem});
-			this.SmsDisplayMenuItem.Name = "SmsDisplayMenuItem";
-			this.SmsDisplayMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsDisplayMenuItem.Text = "Display Type";
-			// 
-			// SMSdisplayNtscToolStripMenuItem
-			// 
-			this.SmsDisplayNtscMenuItem.Name = "SmsDisplayNtscMenuItem";
-			this.SmsDisplayNtscMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.SmsDisplayNtscMenuItem.Text = "NTSC";
-			this.SmsDisplayNtscMenuItem.Click += new System.EventHandler(this.Sms_DisplayNtsc_Click);
-			// 
-			// SMSdisplayPalToolStripMenuItem
-			// 
-			this.SmsDisplayPalMenuItem.Name = "SmsDisplayPalMenuItem";
-			this.SmsDisplayPalMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.SmsDisplayPalMenuItem.Text = "PAL";
-			this.SmsDisplayPalMenuItem.Click += new System.EventHandler(this.Sms_DisplayPal_Click);
-			// 
-			// SMSdisplayAutoToolStripMenuItem
-			// 
-			this.SmsDisplayAutoMenuItem.Name = "SmsDisplayAutoMenuItem";
-			this.SmsDisplayAutoMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.SmsDisplayAutoMenuItem.Text = "Auto";
-			this.SmsDisplayAutoMenuItem.Click += new System.EventHandler(this.Sms_DisplayAuto_Click);
 			// 
 			// SMSControllerToolStripMenuItem
 			// 
@@ -4565,15 +4484,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SmsFix3DGameDisplayMenuItem;
 		private System.Windows.Forms.ToolStripSeparator SMStoolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SMSregionToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsRegionExportMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsRegionJapanMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsRegionKoreaMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsRegionAutoMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsDisplayMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsDisplayNtscMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsDisplayPalMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsDisplayAutoMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel CoreNameStatusBarButton;

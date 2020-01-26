@@ -1813,13 +1813,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((SMS)Emulator).GetSettings();
 			var ss = ((SMS)Emulator).GetSyncSettings();
-			SmsRegionExportMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Export;
-			SmsRegionJapanMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Japan;
-			SmsRegionKoreaMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Korea;
-			SmsRegionAutoMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Auto;
-			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Ntsc;
-			SmsDisplayPalMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Pal;
-			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Auto;
 			SmsControllerStandardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Standard;
 			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Paddle;
 			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
@@ -1844,7 +1837,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SmsOverclockMenuItem.Visible =
 				SmsForceStereoMenuItem.Visible =
-				SmsDisplayMenuItem.Visible =
 				Game.System != "GG";
 
 			SmsShowClippedRegionsMenuItem.Visible =
@@ -1856,76 +1848,6 @@ namespace BizHawk.Client.EmuHawk
 				SmsVdpViewerMenuItem.Visible =
 				SmsMenuSeparator.Visible =
 				Game.System != "SG";
-		}
-
-		private void SmsRegionExport_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Export;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_RegionJapan_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss =sms.GetSyncSettings();
-				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Japan;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_RegionKorea_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Korea;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_RegionAuto_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Auto;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_DisplayNtsc_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Ntsc;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_DisplayPal_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Pal;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void Sms_DisplayAuto_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Auto;
-				PutCoreSyncSettings(ss);
-			}
 		}
 
 		private void SmsBiosMenuItem_Click(object sender, EventArgs e)
