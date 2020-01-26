@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			switch (SyncSettings.ControllerType)
 			{
-				case "Paddle":
+				case SmsSyncSettings.ControllerTypes.Paddle:
 					{
 						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
 
@@ -200,11 +200,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Light Phaser":
+				case SmsSyncSettings.ControllerTypes.LightPhaser:
 					if (_controller.IsPressed("P1 Trigger")) value &= 0xEF;
 					break;
 
-				case "Sports Pad":
+				case SmsSyncSettings.ControllerTypes.SportsPad:
 					{
 						int p1X;
 						if (_controller.IsPressed("P1 Left"))
@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Keyboard":
+				case SmsSyncSettings.ControllerTypes.Keyboard:
 					{
 						// use keyboard map to get each bit
 
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			switch (SyncSettings.ControllerType)
 			{
-				case "Paddle":
+				case SmsSyncSettings.ControllerTypes.Paddle:
 					{
 						// use analog values from a controller, see http://www.smspower.org/Development/Paddle
 
@@ -427,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Light Phaser":
+				case SmsSyncSettings.ControllerTypes.LightPhaser:
 					if (LatchLightPhaser)
 					{
 						value &= 0xBF;
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Sports Pad":
+				case SmsSyncSettings.ControllerTypes.SportsPad:
 					{
 						int p2X;
 						if (_controller.IsPressed("P2 Left"))
@@ -510,7 +510,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 					break;
 
-				case "Keyboard":
+				case SmsSyncSettings.ControllerTypes.Keyboard:
 					{
 						value &= 0x7F;
 
@@ -563,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			const int phaserRadius = 4;
 
 			// specifically lightgun needs to do things on a per-line basis
-			if (SyncSettings.ControllerType == "Light Phaser")
+			if (SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.LightPhaser)
 			{
 				byte phaserX = (byte)(_controller.GetFloat("P1 X") + 20);
 				int phaserY = (int)_controller.GetFloat("P1 Y");

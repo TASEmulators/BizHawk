@@ -1820,11 +1820,11 @@ namespace BizHawk.Client.EmuHawk
 			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == "NTSC";
 			SmsDisplayPalMenuItem.Checked = ss.DisplayType == "PAL";
 			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == "Auto";
-			SmsControllerStandardMenuItem.Checked = ss.ControllerType == "Standard";
-			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == "Paddle";
-			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == "Light Phaser";
-			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == "Sports Pad";
-			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == "Keyboard";
+			SmsControllerStandardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Standard;
+			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Paddle;
+			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
+			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.SportsPad;
+			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Keyboard;
 			SmsEnableBiosMenuItem.Checked = ss.UseBios;
 			SmsEnableFMChipMenuItem.Checked = ss.EnableFm;
 			SmsOverclockMenuItem.Checked = ss.AllowOverClock;
@@ -2043,7 +2043,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var s = sms.GetSyncSettings();
-				s.ControllerType = "Standard";
+				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Standard;
 				PutCoreSyncSettings(s);
 			}
 		}
@@ -2053,7 +2053,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var s = sms.GetSyncSettings();
-				s.ControllerType = "Paddle";
+				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Paddle;
 				PutCoreSyncSettings(s);
 			}
 		}
@@ -2063,7 +2063,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var s = sms.GetSyncSettings();
-				s.ControllerType = "Light Phaser";
+				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
 				PutCoreSyncSettings(s);
 			}
 		}
@@ -2073,7 +2073,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var s = sms.GetSyncSettings();
-				s.ControllerType = "Sports Pad";
+				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.SportsPad;
 				PutCoreSyncSettings(s);
 			}
 		}
@@ -2083,7 +2083,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var s = sms.GetSyncSettings();
-				s.ControllerType = "Keyboard";
+				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Keyboard;
 				PutCoreSyncSettings(s);
 			}
 		}

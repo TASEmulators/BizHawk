@@ -95,7 +95,7 @@ namespace BizHawk.Client.Common.movie.import
 
 			var ss = new SMS.SmsSyncSettings
 			{
-				ControllerType = "Standard"
+				ControllerType = SMS.SmsSyncSettings.ControllerTypes.Standard
 			};
 
 			var controllers = new SimpleController

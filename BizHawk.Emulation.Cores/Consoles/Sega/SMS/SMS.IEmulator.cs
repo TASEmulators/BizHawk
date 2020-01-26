@@ -17,20 +17,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 
 				// Sorta a hack but why not
-				PortDEEnabled = SyncSettings.ControllerType == "Keyboard";
+				PortDEEnabled = SyncSettings.ControllerType == SmsSyncSettings.ControllerTypes.Keyboard;
 
 				switch(SyncSettings.ControllerType)
 				{
-					case "Paddle":
+					case SmsSyncSettings.ControllerTypes.Paddle:
 						return SMSPaddleController;
-					case "Light Phaser":
+					case SmsSyncSettings.ControllerTypes.LightPhaser:
 						// scale the vertical to the display mode
 						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.FloatRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
 
 						return SMSLightPhaserController;
-					case "Sports Pad":
+					case SmsSyncSettings.ControllerTypes.SportsPad:
 						return SMSSportsPadController;
-					case "Keyboard":
+					case SmsSyncSettings.ControllerTypes.Keyboard:
 						return SMSKeyboardController;
 					default:
 						return SmsController;

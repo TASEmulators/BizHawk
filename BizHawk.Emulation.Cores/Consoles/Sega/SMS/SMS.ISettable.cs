@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool UseBios = true;
 			public string ConsoleRegion = "Auto";
 			public string DisplayType = "Auto";
-			public string ControllerType = "Standard";
+			public ControllerTypes ControllerType = ControllerTypes.Standard;
 
 			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
 
@@ -66,6 +66,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					|| x.ConsoleRegion != y.ConsoleRegion
 					|| x.DisplayType != y.DisplayType
 					|| x.ControllerType != y.ControllerType;
+			}
+
+			public enum ControllerTypes
+			{
+				Standard,
+				Paddle,
+				LightPhaser,
+				SportsPad,
+				Keyboard
 			}
 		}
 	}
