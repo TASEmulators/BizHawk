@@ -1811,28 +1811,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
-
-			SmsVdpViewerMenuItem.Visible =
-				SmsMenuSeparator.Visible =
-				Game.System != "SG";
+			SmsVdpViewerMenuItem.Visible = Game.System != "SG";
 		}
 
 		private void SmsBiosMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Emulator is SMS sms)
-			{
-				GenericCoreConfig.DoDialog(this, "SMS Settings");
-			}
-		}
-
-		private void SmsGraphicsSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				using var form = new SmsGraphicsConfig(this, sms.GetSettings().Clone());
-				form.ShowDialog();
-			}
+			GenericCoreConfig.DoDialog(this, "SMS Settings");
 		}
 
 		private void GgGameGenieMenuItem_Click(object sender, EventArgs e)

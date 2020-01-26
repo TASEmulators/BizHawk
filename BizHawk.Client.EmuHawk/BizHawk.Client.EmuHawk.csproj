@@ -382,9 +382,6 @@
 		<Compile Update="config/RewindConfig.cs" SubType="Form" />
 		<Compile Update="config/RewindConfig.Designer.cs" DependentUpon="RewindConfig.cs" />
 		<EmbeddedResource Update="config/RewindConfig.resx" DependentUpon="RewindConfig.cs" />
-		<Compile Update="config/SMS/SMSGraphicsConfig.cs" SubType="Form" />
-		<Compile Update="config/SMS/SMSGraphicsConfig.Designer.cs" DependentUpon="SMSGraphicsConfig.cs" />
-		<EmbeddedResource Update="config/SMS/SMSGraphicsConfig.resx" DependentUpon="SMSGraphicsConfig.cs" />
 		<Compile Update="config/SNES/SNESControllerConfig.cs" SubType="Form" />
 		<Compile Update="config/SNES/SNESControllerConfig.Designer.cs" DependentUpon="SNESControllerConfig.cs" />
 		<EmbeddedResource Update="config/SNES/SNESControllerConfig.resx" DependentUpon="SNESControllerConfig.cs" />

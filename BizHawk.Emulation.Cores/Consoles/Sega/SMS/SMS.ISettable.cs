@@ -32,20 +32,27 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool ForceStereoSeparation { get; set; }
 			public bool SpriteLimit { get; set; }
 
+			[DisplayName("Fix 3D")]
 			[Description("SMS only")]
 			public bool Fix3D { get; set; } = true;
 
+			[DisplayName("Display Overscan")]
 			[Description("Not applicable to Game Gear")]
 			public bool DisplayOverscan { get; set; }
 
+			[DisplayName("Show Clipped Regions")]
 			[Description("Game Gear only")]
 			public bool ShowClippedRegions { get; set; }
 
+			[DisplayName("Highlight Active Display Region")]
 			[Description("Game Gear only")]
 			public bool HighlightActiveDisplayRegion { get; set; }
 
 			// graphics settings
+			[DisplayName("Display Background")]
 			public bool DispBG { get; set; } = true;
+
+			[DisplayName("Display Objects")]
 			public bool DispOBJ { get; set; } = true;
 
 			public SmsSettings Clone() => (SmsSettings)MemberwiseClone();
@@ -55,16 +62,26 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public class SmsSyncSettings
 		{
+			[DisplayName("Enable FM")]
 			[Description("SMS only")]
 			public bool EnableFm { get; set; } = true;
 
+			[DisplayName("Allow Overclock")]
 			[Description("SMS only")]
 			public bool AllowOverClock { get; set; }
 
+			[DisplayName("Use BIOS")]
 			[Description("Must be Enabled for TAS")]
 			public bool UseBios { get; set; } = true;
+
+			[DisplayName("Region")]
 			public Regions ConsoleRegion { get; set; } = Regions.Auto;
+
+			[DisplayName("Display Type")]
 			public DisplayTypes DisplayType { get; set; } = DisplayTypes.Auto;
+
+			[DisplayName("Controller Type")]
+			[Description("Currently controllers can not be configured separately")]
 			public ControllerTypes ControllerType { get; set; } = ControllerTypes.Standard;
 
 			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
@@ -99,9 +116,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			public enum DisplayTypes
 			{
-				Ntsc,
-				Pal,
-				Auto
+				Ntsc, Pal, Auto
 			}
 		}
 	}

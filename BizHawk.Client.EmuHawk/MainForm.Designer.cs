@@ -268,7 +268,6 @@
 			this.PCEArcadeCardRewindEnableMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.SmsVdpViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2461,7 +2460,6 @@
 			// 
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.SmsSettingsMenuItem,
-			this.SMSGraphicsSettingsMenuItem,
 			this.SmsMenuSeparator,
 			this.SmsVdpViewerMenuItem,
 			this.GGGameGenieMenuItem});
@@ -2476,13 +2474,6 @@
 			this.SmsSettingsMenuItem.Size = new System.Drawing.Size(262, 22);
 			this.SmsSettingsMenuItem.Text = "Settings...";
 			this.SmsSettingsMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
-			// 
-			// SMSGraphicsSettingsMenuItem
-			// 
-			this.SMSGraphicsSettingsMenuItem.Name = "SMSGraphicsSettingsMenuItem";
-			this.SMSGraphicsSettingsMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SMSGraphicsSettingsMenuItem.Text = "&Graphics Settings...";
-			this.SMSGraphicsSettingsMenuItem.Click += new System.EventHandler(this.SmsGraphicsSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator24
 			// 
@@ -4251,7 +4242,6 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEAlwaysEqualizeVolumesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEArcadeCardRewindEnableMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem SMSGraphicsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSubMenu;
