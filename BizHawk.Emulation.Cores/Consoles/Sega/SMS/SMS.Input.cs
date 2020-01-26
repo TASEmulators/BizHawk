@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else
 							p2Y = (int)_controller.GetFloat("P2 Y");
 
-						if (_region == "Japan")
+						if (_region == SmsSyncSettings.Regions.Japan)
 						{
 							p1X += 128;
 							p1Y += 128;
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller1SelectHigh && (Controller1State % 2 == 1))
 						{
-							if (++Controller1State == (_region == "Japan" ? 6 : 4))
+							if (++Controller1State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller1State = 0;
 						}
 						if (Controller2SelectHigh && (Controller2State % 2 == 0))
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
 						{
-							if (++Controller2State == (_region == "Japan" ? 6 : 4))
+							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller2State = 0;
 						}
 
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								break;
 						}
 
-						if (_region != "Japan")
+						if (_region != SmsSyncSettings.Regions.Japan)
 						{
 							// Buttons like normal in Export
 							if (_controller.IsPressed("P1 B1")) value &= 0xEF;
@@ -453,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else
 							p2Y = (int)_controller.GetFloat("P2 Y");
 
-						if (_region == "Japan")
+						if (_region == SmsSyncSettings.Regions.Japan)
 						{
 							p2X += 128;
 							p2Y += 128;
@@ -472,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 						else if (!Controller2SelectHigh && (Controller2State % 2 == 1))
 						{
-							if (++Controller2State == (_region == "Japan" ? 6 : 4))
+							if (++Controller2State == (_region == SmsSyncSettings.Regions.Japan ? 6 : 4))
 								Controller2State = 0;
 						}
 
@@ -495,7 +495,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 								if ((p2Y & 0x08) == 0) value &= 0xFD;
 								break;
 						}
-						if (_region != "Japan")
+						if (_region != SmsSyncSettings.Regions.Japan)
 						{
 							// Buttons like normal in Export
 							if (_controller.IsPressed("P2 B1")) value &= 0xFB;
@@ -542,7 +542,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if ((Port3F & 0x0F) == 5)
 			{
-				if (_region == "Japan")
+				if (_region == SmsSyncSettings.Regions.Japan)
 				{
 					value &= 0x3F;
 				}
@@ -601,7 +601,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				value ^= 0x80;
 			}
 
-			if (RegionStr == "Japan")
+			if (_region == SmsSyncSettings.Regions.Japan)
 			{
 				value ^= 0x40;
 			}
@@ -614,7 +614,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// The 3F port's TH slot is also used on games in some games in Export BIOS to clock the paddle state
 			// Re: the paddle: Yes it's silly considering the paddle was never released outside Japan but the games think otherwise
 
-			if (_region != "Japan")
+			if (_region != SmsSyncSettings.Regions.Japan)
 			{
 				if ((Port3F & 0x02) == 0x00)
 				{
@@ -637,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private void PostsetControllerState(int pin)
 		{
 			// for the benefit of the Japan region
-			if (_region == "Japan" && (++ControllerTick) == 2)
+			if (_region == SmsSyncSettings.Regions.Japan && (++ControllerTick) == 2)
 			{
 				ControllerTick = 0;
 
@@ -653,4 +653,4 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 	}
-}
+} 

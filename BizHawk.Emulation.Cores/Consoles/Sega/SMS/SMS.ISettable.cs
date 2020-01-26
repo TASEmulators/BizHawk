@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool EnableFm = true;
 			public bool AllowOverClock = false;
 			public bool UseBios = true;
-			public string ConsoleRegion = "Auto";
+			public Regions ConsoleRegion = Regions.Auto;
 			public string DisplayType = "Auto";
 			public ControllerTypes ControllerType = ControllerTypes.Standard;
 
@@ -75,6 +75,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				LightPhaser,
 				SportsPad,
 				Keyboard
+			}
+
+			public enum Regions
+			{
+				Export,
+				Japan,
+				Korea,
+				Auto
 			}
 		}
 	}

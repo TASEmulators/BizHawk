@@ -1813,10 +1813,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((SMS)Emulator).GetSettings();
 			var ss = ((SMS)Emulator).GetSyncSettings();
-			SmsRegionExportMenuItem.Checked = ss.ConsoleRegion == "Export";
-			SmsRegionJapanMenuItem.Checked = ss.ConsoleRegion == "Japan";
-			SmsRegionKoreaMenuItem.Checked = ss.ConsoleRegion == "Korea";
-			SmsRegionAutoMenuItem.Checked = ss.ConsoleRegion == "Auto";
+			SmsRegionExportMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Export;
+			SmsRegionJapanMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Japan;
+			SmsRegionKoreaMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Korea;
+			SmsRegionAutoMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Auto;
 			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == "NTSC";
 			SmsDisplayPalMenuItem.Checked = ss.DisplayType == "PAL";
 			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == "Auto";
@@ -1864,7 +1864,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = "Export";
+				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Export;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1874,7 +1874,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss =sms.GetSyncSettings();
-				ss.ConsoleRegion = "Japan";
+				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Japan;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1884,7 +1884,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = "Korea";
+				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Korea;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1894,7 +1894,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.ConsoleRegion = "Auto";
+				ss.ConsoleRegion = SMS.SmsSyncSettings.Regions.Auto;
 				PutCoreSyncSettings(ss);
 			}
 		}
