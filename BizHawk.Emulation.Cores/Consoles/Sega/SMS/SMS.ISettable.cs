@@ -28,18 +28,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public class SmsSettings
 		{
 			// Game settings
-			public bool ForceStereoSeparation = false;
-			public bool SpriteLimit = false;
-			public bool Fix3D = true;
-			public bool DisplayOverscan = false;
+			public bool ForceStereoSeparation { get; set; }
+			public bool SpriteLimit { get; set; }
+			public bool Fix3D { get; set; } = true;
+			public bool DisplayOverscan { get; set; }
 
 			// GG settings
-			public bool ShowClippedRegions = false;
-			public bool HighlightActiveDisplayRegion = false;
+			public bool ShowClippedRegions { get; set; }
+			public bool HighlightActiveDisplayRegion { get; set; }
 
 			// graphics settings
-			public bool DispBG = true;
-			public bool DispOBJ = true;
+			public bool DispBG { get; set; } = true;
+			public bool DispOBJ { get; set; } = true;
 
 			public SmsSettings Clone() => (SmsSettings)MemberwiseClone();
 
@@ -48,12 +48,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public class SmsSyncSettings
 		{
-			public bool EnableFm = true;
-			public bool AllowOverClock = false;
-			public bool UseBios = true;
-			public Regions ConsoleRegion = Regions.Auto;
-			public DisplayTypes DisplayType = DisplayTypes.Auto;
-			public ControllerTypes ControllerType = ControllerTypes.Standard;
+			public bool EnableFm { get; set; } = true;
+			public bool AllowOverClock { get; set; }
+			public bool UseBios { get; set; } = true;
+			public Regions ConsoleRegion { get; set; } = Regions.Auto;
+			public DisplayTypes DisplayType { get; set; } = DisplayTypes.Auto;
+			public ControllerTypes ControllerType { get; set; } = ControllerTypes.Standard;
 
 			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
 
