@@ -6,6 +6,8 @@
 		<LangVersion>8.0</LangVersion>
 		<OutputPath>$(SolutionDir)output/dll</OutputPath>
 		<PlatformTarget>x64</PlatformTarget>
+		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
+		<RunCodeAnalysis>false</RunCodeAnalysis>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -21,6 +23,5 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(SolutionDir).stylecop.json" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113" PrivateAssets="All" />
 	</ItemGroup>
 </Project>

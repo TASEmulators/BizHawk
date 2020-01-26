@@ -8,8 +8,8 @@
 	<ItemGroup>
 		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" PrivateAssets="All" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="All" />
-	</ItemGroup>
-	<ItemGroup>
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113"
+			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 		<Compile Remove="Extensions/BinaryReaderExtensions.cs" />
