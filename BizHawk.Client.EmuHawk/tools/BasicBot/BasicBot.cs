@@ -72,14 +72,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public class BasicBotSettings
 		{
-			public BasicBotSettings()
-			{
-				RecentBotFiles = new RecentFiles();
-				TurboWhenBotting = true;
-			}
-
-			public RecentFiles RecentBotFiles { get; set; }
-			public bool TurboWhenBotting { get; set; }
+			public RecentFiles RecentBotFiles { get; set; } = new RecentFiles();
+			public bool TurboWhenBotting { get; set; } = true;
 		}
 
 		#endregion
@@ -140,17 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaximizeAddress
 		{
-			get
-			{
-				int? addr = MaximizeAddressBox.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
+			get => MaximizeAddressBox.ToRawInt() ?? 0;
 			set => MaximizeAddressBox.SetFromRawInt(value);
 		}
 
@@ -159,28 +143,13 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int? addr = MaximizeAddressBox.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamValue(addr.Value);
-				}
-
-				return 0;
+				return addr.HasValue ? GetRamValue(addr.Value) : 0;
 			}
 		}
 
 		public int TieBreaker1Address
 		{
-			get
-			{
-				int? addr = TieBreaker1Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
+			get => TieBreaker1Box.ToRawInt() ?? 0;
 			set => TieBreaker1Box.SetFromRawInt(value);
 		}
 
@@ -189,28 +158,13 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int? addr = TieBreaker1Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamValue(addr.Value);
-				}
-
-				return 0;
+				return addr.HasValue ? GetRamValue(addr.Value) : 0;
 			}
 		}
 
 		public int TieBreaker2Address
 		{
-			get
-			{
-				int? addr = TieBreaker2Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
+			get => TieBreaker2Box.ToRawInt() ?? 0;
 			set => TieBreaker2Box.SetFromRawInt(value);
 		}
 
@@ -219,28 +173,13 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int? addr = TieBreaker2Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamValue(addr.Value);
-				}
-
-				return 0;
+				return addr.HasValue ? GetRamValue(addr.Value) : 0;
 			}
 		}
 
 		public int TieBreaker3Address
 		{
-			get
-			{
-				int? addr = TieBreaker3Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
+			get => TieBreaker3Box.ToRawInt() ?? 0;
 			set => TieBreaker3Box.SetFromRawInt(value);
 		}
 
@@ -249,23 +188,14 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				int? addr = TieBreaker3Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamValue(addr.Value);
-				}
-
-				return 0;
+				return addr.HasValue ? GetRamValue(addr.Value) : 0;
 			}
 		}
 
 		public byte MainComparisonType
 		{
 			get => (byte)MainOperator.SelectedIndex;
-			set
-			{
-				if (value < 5) MainOperator.SelectedIndex = value;
-				else MainOperator.SelectedIndex = 0;
-			}
+			set => MainOperator.SelectedIndex = value < 5 ? value : 0;
 		}
 
 		public byte Tie1ComparisonType
@@ -413,8 +343,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentFileName,
 					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
-					"bot"
-				);
+					"bot");
 
 			if (file != null)
 			{
@@ -436,8 +365,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentFileName,
 					PathManager.MakeAbsolutePath(Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
-					"bot"
-				);
+					"bot");
 
 			if (file != null)
 			{
@@ -749,8 +677,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool HasFrameAdvanced()
 		{
-			//If the emulator frame is different from the last time it tried calling
-			//the function then we can continue, otherwise we need to stop.
+			// If the emulator frame is different from the last time it tried calling
+			// the function then we can continue, otherwise we need to stop.
 			return _lastFrameAdvanced != Emulator.Frame;
 		}
 		private void SetupControlsAndProperties()
@@ -1176,8 +1104,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainBestRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				MainValueNumeric.Enabled = false;
 				_comparisonBotAttempt.Maximize = _bestBotAttempt?.Maximize ?? 0;
@@ -1186,8 +1113,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak1Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt?.TieBreak1 ?? 0;
@@ -1196,8 +1122,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak2Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt?.TieBreak2 ?? 0;
@@ -1206,8 +1131,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak3Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt?.TieBreak3 ?? 0;
@@ -1216,8 +1140,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				MainValueNumeric.Enabled = true;
 				_comparisonBotAttempt.Maximize = (int)MainValueNumeric.Value;
@@ -1226,8 +1149,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TieBreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak1Numeric.Enabled = true;
 				_comparisonBotAttempt.TieBreak1 = (int)TieBreak1Numeric.Value;
@@ -1236,8 +1158,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TieBreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak2Numeric.Enabled = true;
 				_comparisonBotAttempt.TieBreak2 = (int)TieBreak2Numeric.Value;
@@ -1246,8 +1167,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TieBreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
+			if (sender is RadioButton radioButton && radioButton.Checked)
 			{
 				TieBreak3Numeric.Enabled = true;
 				_comparisonBotAttempt.TieBreak3 = (int)TieBreak3Numeric.Value;
@@ -1276,9 +1196,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			_comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
-		}		
+		}
 
-		//Copy to Clipboard
+		// Copy to Clipboard
 		private void btnCopyBestInput_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(BestAttemptLogLabel.Text);
