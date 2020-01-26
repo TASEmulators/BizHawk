@@ -3879,7 +3879,7 @@ namespace MSXHawk
 			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
-			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 		}
@@ -3891,7 +3891,7 @@ namespace MSXHawk
 			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
-			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 
@@ -3905,7 +3905,7 @@ namespace MSXHawk
 			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
-			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 
@@ -3919,7 +3919,7 @@ namespace MSXHawk
 			bank_num = bank_offset = (uint32_t)(Regs[dest_l] | (Regs[dest_h]) << 8);
 			bank_offset &= low_mask;
 			bank_num = (bank_num >> bank_shift)& high_mask;
-			MemoryMap[bank_num][bank_offset] = MemoryMapMask[bank_num] & (Regs[src] & 0xFF);
+			MemoryMap[bank_num][bank_offset] = (MemoryMapMask[bank_num] & (Regs[src] & 0xFF)) | ((~MemoryMapMask[bank_num]) & MemoryMap[bank_num][bank_offset]);
 
 			Memory_Write((uint32_t)(Regs[dest_l] | (Regs[dest_h] << 8)), (uint8_t)(Regs[src] & 0xFF));
 

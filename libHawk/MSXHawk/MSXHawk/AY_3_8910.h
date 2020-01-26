@@ -42,7 +42,7 @@ namespace MSXHawk
 		uint32_t noise_per;
 		uint32_t noise = 0x1;
 
-		uint32_t old_sample;
+		int32_t old_sample;
 
 		// non stated if only on frame boundaries
 		bool sound_out_A;
@@ -51,10 +51,10 @@ namespace MSXHawk
 
 		uint8_t Clock_Divider;
 
-		uint32_t current_sample;
+		int32_t current_sample;
 		uint32_t sampleclock;
 		uint32_t num_samples;
-		uint32_t samples[9000] = {};
+		int32_t samples[9000] = {};
 
 		void Reset()
 		{
@@ -279,6 +279,8 @@ namespace MSXHawk
 			{
 				current_sample += (sound_out_C ? VolumeTable[vol_C] : 0);
 			}
+
+			current_sample *= 2;
 
 			if ((current_sample != old_sample) && (num_samples < 4500))
 			{

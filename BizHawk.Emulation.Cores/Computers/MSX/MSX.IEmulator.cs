@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		{
 			get
 			{
-				return GGController;
+				return MSXController;
 			}
 		}
 
@@ -27,7 +27,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (_controller.IsPressed("P1 B1")) ctrl1_byte -= 0x10;
 			if (_controller.IsPressed("P1 B2")) ctrl1_byte -= 0x20;
 
-			//if (_controller.IsPressed("P1 Start")) ctrl1_byte |= 0x80;
+			byte ctrl2_byte = 0xFF;
+			if (_controller.IsPressed("P2 Up")) ctrl1_byte -= 0x01;
+			if (_controller.IsPressed("P2 Down")) ctrl1_byte -= 0x02;
+			if (_controller.IsPressed("P2 Left")) ctrl1_byte -= 0x04;
+			if (_controller.IsPressed("P2 Right")) ctrl1_byte -= 0x08;
+			if (_controller.IsPressed("P2 B1")) ctrl1_byte -= 0x10;
+			if (_controller.IsPressed("P2 B2")) ctrl1_byte -= 0x20;
 
 			_frame++;
 			
@@ -42,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			LibMSX.MSX_settracecallback(MSX_Pntr, tracecb);
 
-			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, 0xFF, true, true);
+			LibMSX.MSX_frame_advance(MSX_Pntr, ctrl1_byte, ctrl2_byte, true, true);
 
 			return true;
 		}
@@ -81,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public BlipBuffer blip = new BlipBuffer(4500);
 
-		public uint[] Aud = new uint [9000];
+		public int[] Aud = new int [9000];
 		public uint num_samp;
 
 		const int blipbuffsize = 4500;
@@ -112,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			for (int i = 0; i < num_samp;i++)
 			{
-				blip.AddDelta(Aud[i * 2], (int)Aud[i * 2 + 1]);
+				blip.AddDelta((uint)Aud[i * 2], Aud[i * 2 + 1]);
 			}
 
 			blip.EndFrame(f_clock);

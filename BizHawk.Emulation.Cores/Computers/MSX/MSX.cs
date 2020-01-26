@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			CoreComm = comm;
 
 			RomData = rom;
+			int size = RomData.Length;
 
 			if (RomData.Length % BankSize != 0)
 			{
@@ -31,6 +32,30 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (RomData.Length != 0x10000)
 			{
 				Array.Resize(ref RomData, 0x10000);
+			}
+
+			// if the original was not 64 or 48 k, move it (may need to do this case by case)
+
+			if (size == 0x8000)
+			{
+				for (int i = 0x7FFF; i >= 0; i--)
+				{
+					RomData[i + 0x4000] = RomData[i];
+				}
+				for (int i = 0; i < 0x4000; i++)
+				{
+					RomData[i] = 0; 
+				}
+			}
+
+			if (size == 0x4000)
+			{
+				for (int i = 0; i < 0x4000; i++)
+				{
+					RomData[i + 0x4000] = RomData[i];
+					RomData[i + 0x8000] = RomData[i];
+					RomData[i + 0xC000] = RomData[i];
+				}
 			}
 
 			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios", true, "BIOS Not Found, Cannot Load");

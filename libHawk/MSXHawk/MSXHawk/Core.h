@@ -98,12 +98,12 @@ namespace MSXHawk
 			std::memcpy(dst, src, sizeof uint32_t * 256 * 192);
 		}
 
-		uint32_t GetAudio(uint32_t* dest, uint32_t* n_samp) 
+		uint32_t GetAudio(int32_t* dest, int32_t* n_samp) 
 		{
-			uint32_t* src = psg.samples;
-			uint32_t* dst = dest;
+			int32_t* src = psg.samples;
+			int32_t* dst = dest;
 
-			std::memcpy(dst, src, sizeof uint32_t * psg.num_samples * 2);
+			std::memcpy(dst, src, sizeof int32_t * psg.num_samples * 2);
 			n_samp[0] = psg.num_samples;
 
 			return psg.sampleclock;

@@ -54,7 +54,7 @@ MSXHawk_EXPORT void MSX_get_video(MSXCore* p, uint32_t* dest)
 }
 
 // send audio data to external audio provider
-MSXHawk_EXPORT uint32_t MSX_get_audio(MSXCore* p, uint32_t* dest, uint32_t* n_samp)
+MSXHawk_EXPORT uint32_t MSX_get_audio(MSXCore* p, int32_t* dest, int32_t* n_samp)
 {
 	return p->GetAudio(dest, n_samp);
 }

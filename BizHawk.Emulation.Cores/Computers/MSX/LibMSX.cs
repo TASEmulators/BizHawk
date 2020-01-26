@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <param name="aud_buf">where to send left audio to</param>
 		/// <param name="n_samp">number of left samples</param>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern uint MSX_get_audio(IntPtr core, uint[] aud_buf,  ref uint n_samp);
+		public static extern uint MSX_get_audio(IntPtr core, int[] aud_buf,  ref uint n_samp);
 
 		#endregion
 
