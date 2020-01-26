@@ -1825,7 +1825,7 @@ namespace BizHawk.Client.EmuHawk
 			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
 			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.SportsPad;
 			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Keyboard;
-			SmsEnableBiosMenuItem.Checked = ss.UseBios;
+
 			SmsEnableFMChipMenuItem.Checked = ss.EnableFm;
 			SmsOverclockMenuItem.Checked = ss.AllowOverClock;
 			SmsForceStereoMenuItem.Checked = s.ForceStereoSeparation;
@@ -1837,7 +1837,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SmsEnableFMChipMenuItem.Visible =
 				SmsFix3DGameDisplayMenuItem.Visible =
-				SmsEnableBiosMenuItem.Visible =
 				Game.System == "SMS";
 
 			SmsDisplayOverscanMenuItem.Visible =
@@ -1933,9 +1932,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is SMS sms)
 			{
-				var ss = sms.GetSyncSettings();
-				ss.UseBios ^= true;
-				PutCoreSyncSettings(ss);
+				GenericCoreConfig.DoDialog(this, "SMS Settings");
 			}
 		}
 

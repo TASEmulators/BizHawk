@@ -283,7 +283,7 @@
 			this.SmsControllerSportsPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsControllerKeyboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMStoolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-			this.SmsEnableBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsEnableFMChipMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsOverclockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsForceStereoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2488,7 +2488,7 @@
 			this.SmsDisplayMenuItem,
 			this.SMSControllerToolStripMenuItem,
 			this.SMStoolStripMenuItem2,
-			this.SmsEnableBiosMenuItem,
+			this.SmsSettingsMenuItem,
 			this.SmsEnableFMChipMenuItem,
 			this.SmsOverclockMenuItem,
 			this.SmsForceStereoMenuItem,
@@ -2628,12 +2628,12 @@
 			this.SMStoolStripMenuItem2.Name = "SMStoolStripMenuItem2";
 			this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(259, 6);
 			// 
-			// SMSenableBIOSToolStripMenuItem
+			// SmsSettingsMenuItem
 			// 
-			this.SmsEnableBiosMenuItem.Name = "SmsEnableBiosMenuItem";
-			this.SmsEnableBiosMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsEnableBiosMenuItem.Text = "Enable BIOS (Must be Enabled for TAS)";
-			this.SmsEnableBiosMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
+			this.SmsSettingsMenuItem.Name = "SmsSettingsMenuItem";
+			this.SmsSettingsMenuItem.Size = new System.Drawing.Size(262, 22);
+			this.SmsSettingsMenuItem.Text = "Settings...";
+			this.SmsSettingsMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
 			// 
 			// SMSEnableFMChipMenuItem
 			// 
@@ -4564,7 +4564,7 @@
 		private System.Windows.Forms.ToolStripMenuItem vDPViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsFix3DGameDisplayMenuItem;
 		private System.Windows.Forms.ToolStripSeparator SMStoolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem SmsEnableBiosMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsRegionExportMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsRegionJapanMenuItem;

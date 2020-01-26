@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.ComponentModel;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -30,11 +31,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			// Game settings
 			public bool ForceStereoSeparation { get; set; }
 			public bool SpriteLimit { get; set; }
+
+			[Description("SMS only")]
 			public bool Fix3D { get; set; } = true;
+
+			[Description("Not applicable to Game Gear")]
 			public bool DisplayOverscan { get; set; }
 
-			// GG settings
+			[Description("Game Gear only")]
 			public bool ShowClippedRegions { get; set; }
+
+			[Description("Game Gear only")]
 			public bool HighlightActiveDisplayRegion { get; set; }
 
 			// graphics settings
@@ -48,8 +55,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public class SmsSyncSettings
 		{
+			[Description("SMS only")]
 			public bool EnableFm { get; set; } = true;
+
+			[Description("SMS only")]
 			public bool AllowOverClock { get; set; }
+
+			[Description("Must be Enabled for TAS")]
 			public bool UseBios { get; set; } = true;
 			public Regions ConsoleRegion { get; set; } = Regions.Auto;
 			public DisplayTypes DisplayType { get; set; } = DisplayTypes.Auto;
