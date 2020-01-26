@@ -34,11 +34,11 @@ namespace BizHawk.Emulation.Cores.Sega.GGHawkLink
 
 			CoreComm = comm;
 
-			var temp_set_L = new SMS.SMSSettings();
-			var temp_set_R = new SMS.SMSSettings();
+			var temp_set_L = new SMS.SmsSettings();
+			var temp_set_R = new SMS.SmsSettings();
 
-			var temp_sync_L = new SMS.SMSSyncSettings();
-			var temp_sync_R = new SMS.SMSSyncSettings();
+			var temp_sync_L = new SMS.SmsSyncSettings();
+			var temp_sync_R = new SMS.SmsSyncSettings();
 
 			L = new SMS(new CoreComm(comm.ShowMessage, comm.Notify) { CoreFileProvider = comm.CoreFileProvider },
 				game_L, rom_L, temp_set_L, temp_sync_L);
