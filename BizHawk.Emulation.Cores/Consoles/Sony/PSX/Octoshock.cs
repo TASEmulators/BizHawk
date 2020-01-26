@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			StudySaveBufferSize();
 		}
 
-		public string SystemId { get { return "PSX"; } }
+		public string SystemId => "PSX";
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{

@@ -62,7 +62,6 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Lazy<Bitmap> NGPController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.NGPController"));
 		internal static readonly Lazy<Bitmap> PCEngineController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.PCEngineController"));
 		internal static readonly Lazy<Bitmap> psx_dualshock = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.psx_dualshock"));
-		internal static readonly Lazy<Bitmap> PSX_Original_Controller = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.PSX-Original-Controller"));
 		internal static readonly Lazy<Bitmap> SaturnController = new Lazy<Bitmap>(() => ReadEmbeddedBitmapAt("images.ControllerImages.SaturnController.jpg"));
 		internal static readonly Lazy<Bitmap> SMSController = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SMSController"));
 		internal static readonly Lazy<Bitmap> SNES_Controller = new Lazy<Bitmap>(() => ReadEmbeddedBitmap("ControllerImages.SNES_Controller"));
