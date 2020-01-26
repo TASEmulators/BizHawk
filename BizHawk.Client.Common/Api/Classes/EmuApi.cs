@@ -191,7 +191,7 @@ namespace BizHawk.Client.Common
 			NES nes => nes.PutSettings((NES.NESSettings) settings),
 			PCEngine pce => pce.PutSettings((PCEngine.PCESettings) settings),
 			QuickNES quickNes => quickNes.PutSettings((QuickNES.QuickNESSettings) settings),
-			SMS sms => sms.PutSettings((SMS.SMSSettings) settings),
+			SMS sms => sms.PutSettings((SMS.SmsSettings) settings),
 			WonderSwan ws => ws.PutSettings((WonderSwan.Settings) settings),
 			_ => false
 		};

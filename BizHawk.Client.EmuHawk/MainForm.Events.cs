@@ -1825,9 +1825,9 @@ namespace BizHawk.Client.EmuHawk
 			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == "Light Phaser";
 			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == "Sports Pad";
 			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == "Keyboard";
-			SmsEnableBiosMenuItem.Checked = ss.UseBIOS;
-			SmsEnableFMChipMenuItem.Checked = ss.EnableFM;
-			SmsOverclockMenuItem.Checked = ss.AllowOverlock;
+			SmsEnableBiosMenuItem.Checked = ss.UseBios;
+			SmsEnableFMChipMenuItem.Checked = ss.EnableFm;
+			SmsOverclockMenuItem.Checked = ss.AllowOverClock;
 			SmsForceStereoMenuItem.Checked = s.ForceStereoSeparation;
 			SmsSpriteLimitMenuItem.Checked = s.SpriteLimit;
 			SmsDisplayOverscanMenuItem.Checked = s.DisplayOverscan;
@@ -1934,7 +1934,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.UseBIOS ^= true;
+				ss.UseBios ^= true;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1944,7 +1944,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.EnableFM ^= true;
+				ss.EnableFm ^= true;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1954,7 +1954,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.AllowOverlock ^= true;
+				ss.AllowOverClock ^= true;
 				PutCoreSyncSettings(ss);
 			}
 		}

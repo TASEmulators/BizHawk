@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common.movie.import
 			byte[] md5 = r.ReadBytes(16);
 			Result.Movie.HeaderEntries[MD5] = md5.BytesToHexString().ToLower();
 
-			var ss = new SMS.SMSSyncSettings
+			var ss = new SMS.SmsSyncSettings
 			{
 				ControllerType = "Standard"
 			};

@@ -7,10 +7,10 @@ namespace BizHawk.Client.EmuHawk
 	public partial class SmsGraphicsConfig : Form
 	{
 		private readonly MainForm _mainForm;
-		private readonly SMS.SMSSettings _settings;
+		private readonly SMS.SmsSettings _settings;
 		public SmsGraphicsConfig(
 			MainForm mainForm,
-			SMS.SMSSettings settings)
+			SMS.SmsSettings settings)
 		{
 			_mainForm = mainForm;
 			_settings = settings;

@@ -22,14 +22,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
-		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
+		IDebuggable, ISettable<SMS.SmsSettings, SMS.SmsSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			Settings = (SMSSettings)settings ?? new SMSSettings();
-			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
+			Settings = (SmsSettings)settings ?? new SmsSettings();
+			SyncSettings = (SmsSyncSettings)syncSettings ?? new SmsSyncSettings();
 			CoreComm = comm;
 			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Korea for game compatibility.");
 			}
 
-			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
+			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFm && !IsGameGear)
 			{
 				HasYM2413 = true;
 			}
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				PSG.Set_Panning(ForceStereoByte);
 			}
 
-			if (SyncSettings.AllowOverlock && game["OverclockSafe"])
+			if (SyncSettings.AllowOverClock && game["OverclockSafe"])
 				Vdp.IPeriod = 512;
 
 			if (Settings.SpriteLimit)
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					throw new MissingFirmwareException("No BIOS found");
 				}				
-				else if (!game["RequireBios"] && !SyncSettings.UseBIOS)
+				else if (!game["RequireBios"] && !SyncSettings.UseBios)
 				{
 					// we are skipping the BIOS
 					// but only if it won't break the game
