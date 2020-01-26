@@ -288,10 +288,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return SmsSyncSettings.Regions.Japan;
 		}
 
-		private DisplayType DetermineDisplayType(string display, string region)
+		private DisplayType DetermineDisplayType(SmsSyncSettings.DisplayTypes display, string region)
 		{
-			if (display == "NTSC") return DisplayType.NTSC;
-			if (display == "PAL") return DisplayType.PAL;
+			if (display == SmsSyncSettings.DisplayTypes.Ntsc) return DisplayType.NTSC;
+			if (display == SmsSyncSettings.DisplayTypes.Pal) return DisplayType.PAL;
 			if (region != null && region == "Europe") return DisplayType.PAL;
 			return DisplayType.NTSC;
 		}

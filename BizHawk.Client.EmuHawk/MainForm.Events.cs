@@ -1817,9 +1817,9 @@ namespace BizHawk.Client.EmuHawk
 			SmsRegionJapanMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Japan;
 			SmsRegionKoreaMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Korea;
 			SmsRegionAutoMenuItem.Checked = ss.ConsoleRegion == SMS.SmsSyncSettings.Regions.Auto;
-			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == "NTSC";
-			SmsDisplayPalMenuItem.Checked = ss.DisplayType == "PAL";
-			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == "Auto";
+			SmsDisplayNtscMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Ntsc;
+			SmsDisplayPalMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Pal;
+			SmsDisplayAutoMenuItem.Checked = ss.DisplayType == SMS.SmsSyncSettings.DisplayTypes.Auto;
 			SmsControllerStandardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Standard;
 			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Paddle;
 			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
@@ -1904,7 +1904,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.DisplayType = "NTSC";
+				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Ntsc;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1914,7 +1914,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.DisplayType = "PAL";
+				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Pal;
 				PutCoreSyncSettings(ss);
 			}
 		}
@@ -1924,7 +1924,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				var ss = sms.GetSyncSettings();
-				ss.DisplayType = "Auto";
+				ss.DisplayType = SMS.SmsSyncSettings.DisplayTypes.Auto;
 				PutCoreSyncSettings(ss);
 			}
 		}

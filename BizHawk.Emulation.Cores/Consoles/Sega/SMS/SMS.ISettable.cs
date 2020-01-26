@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool AllowOverClock = false;
 			public bool UseBios = true;
 			public Regions ConsoleRegion = Regions.Auto;
-			public string DisplayType = "Auto";
+			public DisplayTypes DisplayType = DisplayTypes.Auto;
 			public ControllerTypes ControllerType = ControllerTypes.Standard;
 
 			public SmsSyncSettings Clone() => (SmsSyncSettings)MemberwiseClone();
@@ -82,6 +82,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Export,
 				Japan,
 				Korea,
+				Auto
+			}
+
+			public enum DisplayTypes
+			{
+				Ntsc,
+				Pal,
 				Auto
 			}
 		}
