@@ -1812,40 +1812,8 @@ namespace BizHawk.Client.EmuHawk
 		private void SmsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			var s = ((SMS)Emulator).GetSettings();
-			var ss = ((SMS)Emulator).GetSyncSettings();
-			SmsControllerStandardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Standard;
-			SmsControllerPaddleMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Paddle;
-			SmsControllerLightPhaserMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
-			SmsControllerSportsPadMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.SportsPad;
-			SmsControllerKeyboardMenuItem.Checked = ss.ControllerType == SMS.SmsSyncSettings.ControllerTypes.Keyboard;
 
-			SmsEnableFMChipMenuItem.Checked = ss.EnableFm;
-			SmsOverclockMenuItem.Checked = ss.AllowOverClock;
-			SmsForceStereoMenuItem.Checked = s.ForceStereoSeparation;
-			SmsSpriteLimitMenuItem.Checked = s.SpriteLimit;
-			SmsDisplayOverscanMenuItem.Checked = s.DisplayOverscan;
-			SmsFix3DGameDisplayMenuItem.Checked = s.Fix3D;
-			SmsShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
-			SmsHighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
-
-			SmsEnableFMChipMenuItem.Visible =
-				SmsFix3DGameDisplayMenuItem.Visible =
-				Game.System == "SMS";
-
-			SmsDisplayOverscanMenuItem.Visible =
-				Game.System == "SMS" || Game.System == "SG";
-
-			SmsOverclockMenuItem.Visible =
-				SmsForceStereoMenuItem.Visible =
-				Game.System != "GG";
-
-			SmsShowClippedRegionsMenuItem.Visible =
-				SmsHighlightActiveDisplayRegionMenuItem.Visible =
-				GGGameGenieMenuItem.Visible =
-				Game.System == "GG";
-
-			SmsOverclockMenuItem.Visible =
-				SmsVdpViewerMenuItem.Visible =
+			SmsVdpViewerMenuItem.Visible =
 				SmsMenuSeparator.Visible =
 				Game.System != "SG";
 		}
@@ -1855,86 +1823,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Emulator is SMS sms)
 			{
 				GenericCoreConfig.DoDialog(this, "SMS Settings");
-			}
-		}
-
-		private void SmsEnableFmChipMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.EnableFm ^= true;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void SmsOverclockMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var ss = sms.GetSyncSettings();
-				ss.AllowOverClock ^= true;
-				PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void SmsForceStereoMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.ForceStereoSeparation ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void SmsSpriteLimitMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.SpriteLimit ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void SmsDisplayOverscanMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.DisplayOverscan ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void SmsFix3DDisplayMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.Fix3D ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void SmsShowClippedRegionsMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.ShowClippedRegions ^= true;
-				PutCoreSettings(s);
-			}
-		}
-
-		private void SmsHighlightActiveDisplayRegionMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSettings();
-				s.HighlightActiveDisplayRegion ^= true;
-				PutCoreSettings(s);
 			}
 		}
 
@@ -1955,56 +1843,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			Tools.Load<SmsVdpViewer>();
-		}
-
-		private void SmsControllerStandardMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSyncSettings();
-				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Standard;
-				PutCoreSyncSettings(s);
-			}
-		}
-
-		private void SmsControllerPaddleMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSyncSettings();
-				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Paddle;
-				PutCoreSyncSettings(s);
-			}
-		}
-
-		private void SmsControllerLightPhaserMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSyncSettings();
-				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.LightPhaser;
-				PutCoreSyncSettings(s);
-			}
-		}
-
-		private void SmsControllerSportsPadMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSyncSettings();
-				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.SportsPad;
-				PutCoreSyncSettings(s);
-			}
-		}
-
-		private void SmsControllerKeyboardMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Emulator is SMS sms)
-			{
-				var s = sms.GetSyncSettings();
-				s.ControllerType = SMS.SmsSyncSettings.ControllerTypes.Keyboard;
-				PutCoreSyncSettings(s);
-			}
 		}
 
 		#endregion

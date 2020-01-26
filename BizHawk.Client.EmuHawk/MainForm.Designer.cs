@@ -267,22 +267,7 @@
 			this.PCEAlwaysEqualizeVolumesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PCEArcadeCardRewindEnableMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMSControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsControllerStandardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsControllerPaddleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsControllerLightPhaserMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsControllerSportsPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsControllerKeyboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SMStoolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.SmsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsEnableFMChipMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsOverclockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsForceStereoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsSpriteLimitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsDisplayOverscanMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsFix3DGameDisplayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsShowClippedRegionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SmsHighlightActiveDisplayRegionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSGraphicsSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SmsMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.SmsVdpViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2475,17 +2460,7 @@
 			// SMSSubMenu
 			// 
 			this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SMSControllerToolStripMenuItem,
-			this.SMStoolStripMenuItem2,
 			this.SmsSettingsMenuItem,
-			this.SmsEnableFMChipMenuItem,
-			this.SmsOverclockMenuItem,
-			this.SmsForceStereoMenuItem,
-			this.SmsSpriteLimitMenuItem,
-			this.SmsDisplayOverscanMenuItem,
-			this.SmsFix3DGameDisplayMenuItem,
-			this.SmsShowClippedRegionsMenuItem,
-			this.SmsHighlightActiveDisplayRegionMenuItem,
 			this.SMSGraphicsSettingsMenuItem,
 			this.SmsMenuSeparator,
 			this.SmsVdpViewerMenuItem,
@@ -2495,120 +2470,12 @@
 			this.SMSSubMenu.Text = "&SMS";
 			this.SMSSubMenu.DropDownOpened += new System.EventHandler(this.SmsSubMenu_DropDownOpened);
 			// 
-			// SMSControllerToolStripMenuItem
-			// 
-			this.SMSControllerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.SmsControllerStandardMenuItem,
-			this.SmsControllerPaddleMenuItem,
-			this.SmsControllerLightPhaserMenuItem,
-			this.SmsControllerSportsPadMenuItem,
-			this.SmsControllerKeyboardMenuItem});
-			this.SMSControllerToolStripMenuItem.Name = "SMSControllerToolStripMenuItem";
-			this.SMSControllerToolStripMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SMSControllerToolStripMenuItem.Text = "&Controller Type";
-			// 
-			// SMSControllerStandardToolStripMenuItem
-			// 
-			this.SmsControllerStandardMenuItem.Name = "SmsControllerStandardMenuItem";
-			this.SmsControllerStandardMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.SmsControllerStandardMenuItem.Text = "Standard";
-			this.SmsControllerStandardMenuItem.Click += new System.EventHandler(this.SmsControllerStandardMenuItem_Click);
-			// 
-			// SMSControllerPaddleToolStripMenuItem
-			// 
-			this.SmsControllerPaddleMenuItem.Name = "SmsControllerPaddleMenuItem";
-			this.SmsControllerPaddleMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.SmsControllerPaddleMenuItem.Text = "Paddle";
-			this.SmsControllerPaddleMenuItem.Click += new System.EventHandler(this.SmsControllerPaddleMenuItem_Click);
-			// 
-			// SMSControllerLightPhaserToolStripMenuItem
-			// 
-			this.SmsControllerLightPhaserMenuItem.Name = "SmsControllerLightPhaserMenuItem";
-			this.SmsControllerLightPhaserMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.SmsControllerLightPhaserMenuItem.Text = "Light Phaser";
-			this.SmsControllerLightPhaserMenuItem.Click += new System.EventHandler(this.SmsControllerLightPhaserMenuItem_Click);
-			// 
-			// SMSControllerSportsPadToolStripMenuItem
-			// 
-			this.SmsControllerSportsPadMenuItem.Name = "SmsControllerSportsPadMenuItem";
-			this.SmsControllerSportsPadMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.SmsControllerSportsPadMenuItem.Text = "Sports Pad";
-			this.SmsControllerSportsPadMenuItem.Click += new System.EventHandler(this.SmsControllerSportsPadMenuItem_Click);
-			// 
-			// SMSControllerKeyboardToolStripMenuItem
-			// 
-			this.SmsControllerKeyboardMenuItem.Name = "SmsControllerKeyboardMenuItem";
-			this.SmsControllerKeyboardMenuItem.Size = new System.Drawing.Size(133, 22);
-			this.SmsControllerKeyboardMenuItem.Text = "Keyboard";
-			this.SmsControllerKeyboardMenuItem.Click += new System.EventHandler(this.SmsControllerKeyboardMenuItem_Click);
-			// 
-			// SMStoolStripMenuItem2
-			// 
-			this.SMStoolStripMenuItem2.Name = "SMStoolStripMenuItem2";
-			this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(259, 6);
-			// 
 			// SmsSettingsMenuItem
 			// 
 			this.SmsSettingsMenuItem.Name = "SmsSettingsMenuItem";
 			this.SmsSettingsMenuItem.Size = new System.Drawing.Size(262, 22);
 			this.SmsSettingsMenuItem.Text = "Settings...";
 			this.SmsSettingsMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
-			// 
-			// SMSEnableFMChipMenuItem
-			// 
-			this.SmsEnableFMChipMenuItem.Name = "SmsEnableFMChipMenuItem";
-			this.SmsEnableFMChipMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsEnableFMChipMenuItem.Text = "&Enable FM Chip";
-			this.SmsEnableFMChipMenuItem.Click += new System.EventHandler(this.SmsEnableFmChipMenuItem_Click);
-			// 
-			// SMSOverclockMenuItem
-			// 
-			this.SmsOverclockMenuItem.Name = "SmsOverclockMenuItem";
-			this.SmsOverclockMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsOverclockMenuItem.Text = "&Overclock when Known Safe";
-			this.SmsOverclockMenuItem.Click += new System.EventHandler(this.SmsOverclockMenuItem_Click);
-			// 
-			// SMSForceStereoMenuItem
-			// 
-			this.SmsForceStereoMenuItem.Name = "SmsForceStereoMenuItem";
-			this.SmsForceStereoMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsForceStereoMenuItem.Text = "&Force Stereo Separation";
-			this.SmsForceStereoMenuItem.Click += new System.EventHandler(this.SmsForceStereoMenuItem_Click);
-			// 
-			// SMSSpriteLimitMenuItem
-			// 
-			this.SmsSpriteLimitMenuItem.Name = "SmsSpriteLimitMenuItem";
-			this.SmsSpriteLimitMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsSpriteLimitMenuItem.Text = "Sprite &Limit";
-			this.SmsSpriteLimitMenuItem.Click += new System.EventHandler(this.SmsSpriteLimitMenuItem_Click);
-			// 
-			// SMSDisplayOverscanMenuItem
-			// 
-			this.SmsDisplayOverscanMenuItem.Name = "SmsDisplayOverscanMenuItem";
-			this.SmsDisplayOverscanMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsDisplayOverscanMenuItem.Text = "Display Overscan";
-			this.SmsDisplayOverscanMenuItem.Click += new System.EventHandler(this.SmsDisplayOverscanMenuItem_Click);
-			// 
-			// SMSFix3DGameDisplayToolStripMenuItem
-			// 
-			this.SmsFix3DGameDisplayMenuItem.Name = "SmsFix3DGameDisplayMenuItem";
-			this.SmsFix3DGameDisplayMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsFix3DGameDisplayMenuItem.Text = "Fix 3D Game Display";
-			this.SmsFix3DGameDisplayMenuItem.Click += new System.EventHandler(this.SmsFix3DDisplayMenuItem_Click);
-			// 
-			// ShowClippedRegionsMenuItem
-			// 
-			this.SmsShowClippedRegionsMenuItem.Name = "SmsShowClippedRegionsMenuItem";
-			this.SmsShowClippedRegionsMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsShowClippedRegionsMenuItem.Text = "&Show Clipped Regions";
-			this.SmsShowClippedRegionsMenuItem.Click += new System.EventHandler(this.SmsShowClippedRegionsMenuItem_Click);
-			// 
-			// HighlightActiveDisplayRegionMenuItem
-			// 
-			this.SmsHighlightActiveDisplayRegionMenuItem.Name = "SmsHighlightActiveDisplayRegionMenuItem";
-			this.SmsHighlightActiveDisplayRegionMenuItem.Size = new System.Drawing.Size(262, 22);
-			this.SmsHighlightActiveDisplayRegionMenuItem.Text = "&Highlight Active Display Region";
-			this.SmsHighlightActiveDisplayRegionMenuItem.Click += new System.EventHandler(this.SmsHighlightActiveDisplayRegionMenuItem_Click);
 			// 
 			// SMSGraphicsSettingsMenuItem
 			// 
@@ -4385,11 +4252,6 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEArcadeCardRewindEnableMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SMSGraphicsSettingsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsEnableFMChipMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsOverclockMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsForceStereoMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsSpriteLimitMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsDisplayOverscanMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSubMenu;
@@ -4407,9 +4269,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SnesGBInSGBMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel RebootStatusBarIcon;
 		private System.Windows.Forms.ToolStripMenuItem TraceLoggerMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsShowClippedRegionsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator SmsMenuSeparator;
-		private System.Windows.Forms.ToolStripMenuItem SmsHighlightActiveDisplayRegionMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FDSControlsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieContextMenuItem;
@@ -4481,8 +4341,6 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEtileViewerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SmsVdpViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem vDPViewerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsFix3DGameDisplayMenuItem;
-		private System.Windows.Forms.ToolStripSeparator SMStoolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem SmsSettingsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
 		private System.Windows.Forms.ToolStripMenuItem extensionsToolStripMenuItem;
@@ -4626,12 +4484,6 @@
 		private System.Windows.Forms.ToolStripMenuItem GBGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem SMSControllerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsControllerStandardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsControllerPaddleMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsControllerLightPhaserMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsControllerSportsPadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SmsControllerKeyboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
