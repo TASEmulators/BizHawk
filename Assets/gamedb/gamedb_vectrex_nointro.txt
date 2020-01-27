@@ -1,0 +1,68 @@
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Type:	NO-INTRO
+;;; Source:	GCE - Vectrex - 20170908-211236
+;;; FileGen:	2020-01-27 13:44:59 (UTC)
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Bad Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Hacks
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Over Dumps
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Believed Good
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+00F768E79D6EBFE9BF920FFEC4C5C4F2		3D Crazy Coaster (USA)	VEC			USA
+1A81FEA8AC1C1D46DE7B633814130857		3D Mine Storm (USA)	VEC			USA
+F79C596A0205C5E7C427CDBBB1E16918		3D Narrow Escape (USA)	VEC			USA
+5E7A5DC59E32F2F63D85AE1F0201113A		AnimAction - Advanced Animation (USA)	VEC			USA
+9657037A461EEE919462EB6A01879685		Armor..Attack (World)	VEC			World
+972972F871916A922F20779DEED8A708		Art Master (USA)	VEC			USA
+268E75778F282D853D77ACF42C6C8734		Bedlam (USA, Europe)	VEC			USA, Europe
+640AE7BD4538BAD11256999DB68DE5A0		Berzerk (World)	VEC			World
+94F144C31FD4563F9473ED0563463E54		Blitz! - Action Football (USA, Europe) (0F11CE0C)	VEC			USA, Europe
+5D74770BB175357812E61EE7CA731270		Blitz! - Action Football (USA, Europe) (881B27C5)	VEC			USA, Europe
+A376D5648E08F348E5965C058C631C6D		Clean Sweep (World)	VEC			World
+9B61653ED9DAFD4CFB7F9D94404259AC		Cosmic Chasm (World)	VEC			World
+DB9929B0AD53C97AFDA065596806BF86		Dark Tower (USA) (Proto)	VEC			USA
+896793A17A32932BCD64C52C77B00D55		Engine Analyzer (USA) (Proto)	VEC			USA
+E65B3262E9447A747D93E0CCB1DBB7DF		Fortress of Narzod (USA, Europe)	VEC			USA, Europe
+501DD2845432F10E4B9531240F409B8C		Heads-Up - Action Soccer (USA)	VEC			USA
+7580926EE22F06FD2CCDE4B65184715F		HyperChase - Auto Race (World)	VEC			World
+E0DFC58763716C3B6A89E08F4869396E		Mail Plane (USA) (Proto) (05838962)	VEC			USA
+E6C821917E168B1E6E27BF2B90AD6CFB		Mail Plane (USA) (Proto) (DA1AC0DB)	VEC			USA
+80E72D7E1BB06FD5D5A24C93F1B61F14		Melody Master - Music Composition and Entertainment (USA)	VEC			USA
+EE19E350BE0AF2A509A202B057488DC8		Mine Storm (World)	VEC			World
+126FECBF4FB09FDB5A3C9AF92ABAED7C		Mine Storm II (USA) (Rev 2)	VEC			USA
+1C95CF8FCD2C98DB747208ADE464A44F		Mr. Boston Clean Sweep (Europe)	VEC			Europe
+E7BF7DE16B01419A819826CCE3DC25EE		Pitcher's Duel (USA) (Proto)	VEC			USA
+5C1C413E51AA282015807DC60213FD3D		Polar Rescue (USA)	VEC			USA
+F599DA79B5C324C2A11C117D256A64C0		Polar Rescue (USA) (Beta)	VEC			USA
+F94173910549038D4D8F329413A5AA54		Pole Position (USA) (A00ED3D6)	VEC			USA
+F85C521F445C82BF200B5B85B9B1CD60		Pole Position (USA) (C10F37D8)	VEC			USA
+4BB04A738C216E98CC07ED28F6CD4DB8		RA+A Spectrum I+ Stress Tester (USA) (Proto)	VEC			USA
+808E0501990BD01882C102DF00F20064		Rip Off (World)	VEC			World
+95370908561A782EDF138DF41CCB8F18		Scramble (USA, Europe)	VEC			USA, Europe
+CF6C01B0212E3B2191A97139CF1F427A		Sledge 3D (USA) (Sample)	VEC			USA
+11A9BD419CF094DE8CAA8A44D76B69AB		Solar Quest (World)	VEC			World
+2DECDF9F55DF7FB99761B2FE51425E40		Space Wars (World)	VEC			World
+5A90AB748F7B220EDAF8C1D67E0BFE89		Spike (USA, Europe)	VEC			USA, Europe
+ECC143F87A702AF7A1786B58A78ACE01		Spin ball (USA)	VEC			USA
+1224C9BEAE22EE7354E4220C46237696		Star Castle (USA)	VEC			USA
+47CEFE6F77DBAFB4475A64FE89DA02C0		Star Ship (Europe)	VEC			Europe
+0B67A6339E9C1D8385E8FDFC48F447BC		Star Trek - The Motion Picture (USA)	VEC			USA
+ADD42C10019E88F47DD98791F8DE3148		StarHawk (World)	VEC			World
+8D66945EB9826D91CE27E07B2F8854F9		Test Cartridge (USA) (Rev 4) (Proto)	VEC			USA
+8CE9091361E0884BCD60409FC3301EDC		Tour De France (USA) (Proto)	VEC			USA
+A3E0F44454D4100B18493F1BD2485D8B		WebWarp (Europe)	VEC			Europe
+A398C18B4CE87929471B559B2BC7E79F		WebWars (USA)	VEC			USA
