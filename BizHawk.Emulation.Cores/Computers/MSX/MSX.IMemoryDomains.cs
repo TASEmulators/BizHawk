@@ -30,6 +30,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 					(addr) => LibMSX.MSX_getvram(MSX_Pntr, (int)(addr & 0x3FFF)),
 					(addr, value) => { },
 					1),
+				new MemoryDomainDelegate(
+					"RAM",
+					0x10000,
+					MemoryDomain.Endian.Little,
+					(addr) => LibMSX.MSX_getram(MSX_Pntr, (int)(addr & 0xFFFF)),
+					(addr, value) => { },
+					1)
 			};
 
 			if (SaveRAM != null)

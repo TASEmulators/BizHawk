@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		/// <param name="sound">Mapper number to load core with</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool MSX_frame_advance(IntPtr core, byte ctrl1, byte ctrl2, bool render, bool sound);
+		public static extern bool MSX_frame_advance(IntPtr core, byte ctrl1, byte ctrl2, byte[] kbrows, bool render, bool sound);
 
 		/// <summary>
 		/// Get Video data
@@ -112,6 +112,13 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern byte MSX_getvram(IntPtr core, int addr);
 
+		/// <summary>
+		/// Read the RAM
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="addr">ram address</param>
+		[DllImport("MSXHawk.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte MSX_getram(IntPtr core, int addr);
 
 		#endregion
 

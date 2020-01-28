@@ -32,12 +32,12 @@ namespace MSXHawk
 		uint8_t StatusByte;		
 		uint8_t VdpLatch;	
 		uint8_t VdpBuffer;
+		uint8_t TmsMode;
 		uint8_t Registers[8] = {};
 		uint8_t VRAM[0x4000]; //16kb video RAM
 
 		int32_t ScanLine;	
 		uint32_t VdpAddress;
-		uint32_t TmsMode;
 		uint32_t ColorTableBase;
 		uint32_t PatternGeneratorBase;
 		uint32_t SpritePatternGeneratorBase;
@@ -373,7 +373,7 @@ namespace MSXHawk
 			}
 		}
 
-		void RenderTmsSprites(int32_t scanLine)
+		inline void RenderTmsSprites(int32_t scanLine)
 		{
 			if (EnableDoubledSprites() == false)
 			{
@@ -537,6 +537,7 @@ namespace MSXHawk
 			*saver = StatusByte; saver++;
 			*saver = VdpLatch; saver++;
 			*saver = VdpBuffer; saver++;
+			*saver = TmsMode; saver++;
 
 			std::memcpy(saver, &Registers, 8); saver += 8;
 			std::memcpy(saver, &VRAM, 0x4000); saver += 0x4000;
@@ -546,9 +547,6 @@ namespace MSXHawk
 
 			*saver = (uint8_t)(VdpAddress & 0xFF); saver++; *saver = (uint8_t)((VdpAddress >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((VdpAddress >> 16) & 0xFF); saver++; *saver = (uint8_t)((VdpAddress >> 24) & 0xFF); saver++;
-
-			*saver = (uint8_t)(TmsMode & 0xFF); saver++; *saver = (uint8_t)((TmsMode >> 8) & 0xFF); saver++;
-			*saver = (uint8_t)((TmsMode >> 16) & 0xFF); saver++; *saver = (uint8_t)((TmsMode >> 24) & 0xFF); saver++;
 
 			*saver = (uint8_t)(ColorTableBase & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 8) & 0xFF); saver++;
 			*saver = (uint8_t)((ColorTableBase >> 16) & 0xFF); saver++; *saver = (uint8_t)((ColorTableBase >> 24) & 0xFF); saver++;
@@ -578,6 +576,7 @@ namespace MSXHawk
 			StatusByte = *loader; loader++;
 			VdpLatch = *loader; loader++;
 			VdpBuffer = *loader; loader++;
+			TmsMode = *loader; loader++;
 			
 			std::memcpy(&Registers, loader, 8); loader += 8;
 			std::memcpy(&VRAM, loader, 0x4000); loader += 0x4000;
@@ -587,9 +586,6 @@ namespace MSXHawk
 
 			VdpAddress = *loader; loader++; VdpAddress |= (*loader << 8); loader++;
 			VdpAddress |= (*loader << 16); loader++; VdpAddress |= (*loader << 24); loader++;
-
-			TmsMode = *loader; loader++; TmsMode |= (*loader << 8); loader++;
-			TmsMode |= (*loader << 16); loader++; TmsMode |= (*loader << 24); loader++;
 
 			ColorTableBase = *loader; loader++; ColorTableBase |= (*loader << 8); loader++;
 			ColorTableBase |= (*loader << 16); loader++; ColorTableBase |= (*loader << 24); loader++;

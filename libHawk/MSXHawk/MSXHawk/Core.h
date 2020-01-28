@@ -39,7 +39,7 @@ namespace MSXHawk
 			MemMap.Load_ROM(ext_rom_1, ext_rom_size_1, ext_rom_mapper_1, ext_rom_2, ext_rom_size_2, ext_rom_mapper_2);
 		}
 
-		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, bool render, bool rendersound)
+		bool FrameAdvance(uint8_t controller_1, uint8_t controller_2, uint8_t* kb_rows_ptr, bool render, bool rendersound)
 		{
 			if ((MemMap.psg_pntr->Register[0xF] & 0x40) > 0)
 			{
@@ -52,6 +52,7 @@ namespace MSXHawk
 			
 			MemMap.controller_byte_1 = controller_1;
 			MemMap.controller_byte_2 = controller_2;
+			MemMap.kb_rows = kb_rows_ptr;
 			MemMap.start_pressed = (controller_1 & 0x80) > 0;
 			MemMap.lagged = true;
 
@@ -91,7 +92,8 @@ namespace MSXHawk
 			return MemMap.lagged;
 		}
 
-		void GetVideo(uint32_t* dest) {
+		void GetVideo(uint32_t* dest) 
+		{
 			uint32_t* src = vdp.FrameBuffer;
 			uint32_t* dst = dest;
 
@@ -143,6 +145,11 @@ namespace MSXHawk
 		uint8_t GetVRAM(uint32_t addr) 
 		{
 			return vdp.VRAM[addr & 0x3FFF];
+		}
+
+		uint8_t GetRAM(uint32_t addr)
+		{
+			return MemMap.ram[addr & 0xFFFF];
 		}
 
 		#pragma endregion

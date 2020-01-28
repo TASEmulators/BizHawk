@@ -41,10 +41,9 @@ MSXHawk_EXPORT void MSX_load(MSXCore* p, uint8_t* rom_1, uint32_t size_1, uint32
 }
 
 // advance a frame
-MSXHawk_EXPORT bool MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, bool render, bool sound)
+MSXHawk_EXPORT bool MSX_frame_advance(MSXCore* p, uint8_t ctrl1, uint8_t ctrl2, uint8_t* kbrows, bool render, bool sound)
 {
-	p->FrameAdvance(ctrl1, ctrl2, render, sound);
-	return p->vdp.EnableInterrupts();
+	return p->FrameAdvance(ctrl1, ctrl2, kbrows, render, sound);
 }
 
 // send video data to external video provider
@@ -84,6 +83,11 @@ MSXHawk_EXPORT uint8_t MSX_getsysbus(MSXCore* p, uint32_t addr) {
 MSXHawk_EXPORT uint8_t MSX_getvram(MSXCore* p, uint32_t addr) {
 	return p->GetVRAM(addr);
 }
+
+MSXHawk_EXPORT uint8_t MSX_getram(MSXCore* p, uint32_t addr) {
+	return p->GetRAM(addr);
+}
+
 #pragma endregion
 
 

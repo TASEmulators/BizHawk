@@ -29,12 +29,16 @@ namespace MSXHawk
 		uint32_t rom_size_2;
 		uint32_t rom_mapper_2;
 
+		// controls are not stated
+		uint8_t controller_byte_1, controller_byte_2;
+		uint8_t* kb_rows;
+
 		// State
 		bool PortDEEnabled = false;
 		bool lagged;
 		bool start_pressed;
 
-		uint8_t controller_byte_1, controller_byte_2;
+		uint8_t kb_rows_sel;
 		uint8_t PortA8 = 0x00;
 		uint8_t reg_FFFC, reg_FFFD, reg_FFFE, reg_FFFF;
 		uint8_t ram[0x10000] = {};
@@ -87,40 +91,6 @@ namespace MSXHawk
 
 		}
 
-		uint8_t ReadPort0()
-		{
-			lagged = false;
-
-			uint8_t value = 0xFF;
-			if (start_pressed)
-			{
-				value ^= 0x80;
-			}
-
-			return value;
-		}
-
-		uint8_t ReadControls1()
-		{
-			lagged = false;
-			uint8_t value = 0xFF;
-
-			value &= ~(controller_byte_1 & 0x3F);
-			value &= ~(controller_byte_2 & 0xC0);
-
-			return value;
-		}
-
-		uint8_t ReadControls2()
-		{
-			lagged = false;
-			uint8_t value = 0xFF;
-
-			value &= ~(controller_byte_2 & 0xF);
-
-			return value;
-		}
-
 		#pragma region State Save / Load
 
 		uint8_t* SaveState(uint8_t* saver)
@@ -129,8 +99,7 @@ namespace MSXHawk
 			*saver = (uint8_t)(lagged ? 1 : 0); saver++;
 			*saver = (uint8_t)(start_pressed ? 1 : 0); saver++;
 
-			*saver = controller_byte_1; saver++;
-			*saver = controller_byte_2; saver++;
+			*saver = kb_rows_sel; saver++;
 			*saver = PortA8; saver++;
 			*saver = reg_FFFC; saver++;
 			*saver = reg_FFFD; saver++;
@@ -149,8 +118,7 @@ namespace MSXHawk
 			lagged = *loader == 1; loader++;
 			start_pressed = *loader == 1; loader++;
 
-			controller_byte_1 = *loader; loader++;
-			controller_byte_2 = *loader; loader++;
+			kb_rows_sel = *loader; loader++;
 			PortA8 = *loader; loader++;
 			reg_FFFC = *loader; loader++;
 			reg_FFFD = *loader; loader++;

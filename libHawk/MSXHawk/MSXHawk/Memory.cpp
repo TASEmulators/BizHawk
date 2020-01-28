@@ -26,6 +26,7 @@ namespace MSXHawk
 		}
 		else if (port == 0xA2)
 		{
+			if (psg_pntr->port_sel == 0xE) { lagged = false; }
 			return psg_pntr->ReadReg();
 		}
 		else if (port == 0xA8)
@@ -34,7 +35,13 @@ namespace MSXHawk
 		}
 		else if (port == 0xA9)
 		{
-			return 0xFF;
+			lagged = false;
+			return ~kb_rows[kb_rows_sel];
+		}
+		else if (port == 0xAA)
+		{
+			// TODO: casette, caps lamp, keyboard sound click
+			return kb_rows_sel;
 		}
 		
 		return 0xFF;
@@ -76,6 +83,11 @@ namespace MSXHawk
 		else if (port == 0xA8)
 		{
 			PortA8 = value;
+			remap();
+		}
+		else if (port == 0xAA)
+		{
+			kb_rows_sel = value & 0xF;
 			remap();
 		}
 	}
