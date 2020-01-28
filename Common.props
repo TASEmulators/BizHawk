@@ -5,7 +5,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>8.0</LangVersion>
 		<OutputPath>$(SolutionDir)output/dll</OutputPath>
-		<PlatformTarget>x64</PlatformTarget>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>
 	</PropertyGroup>
