@@ -3,10 +3,10 @@
 	<Import Project="$(SolutionDir)CommonNullable.props" />
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" PrivateAssets="All" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
 		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" PrivateAssets="All" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113"
 			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />

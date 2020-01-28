@@ -115,6 +115,9 @@
 		<Reference Include="SlimDX"
 			HintPath="$(SolutionDir)References/x64/SlimDX.dll"
 			Private="true" />
+		<Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+			HintPath="$(SolutionDir)References/System.ComponentModel.Annotations.dll"
+			Private="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.CSharp" />
