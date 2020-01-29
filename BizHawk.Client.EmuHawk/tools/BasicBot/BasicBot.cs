@@ -933,9 +933,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartBot()
 		{
-			if (!CanStart())
+			var message = CanStart();
+			if (!string.IsNullOrWhiteSpace(message))
 			{
-				MessageBox.Show("Unable to run with current settings");
+				MessageBox.Show(message);
 				return;
 			}
 
@@ -972,24 +973,24 @@ namespace BizHawk.Client.EmuHawk
 			_logGenerator.SetSource(Global.ClickyVirtualPadController);
 		}
 
-		private bool CanStart()
+		private string CanStart()
 		{
 			if (!ControlProbabilities.Any(cp => cp.Value > 0))
 			{
-				return false;
+				return "At least one control must have a probability greater than 0.";
 			}
 
 			if (!MaximizeAddressBox.ToRawInt().HasValue)
 			{
-				return false;
+				return "A main value address is required.";
 			}
 
 			if (FrameLengthNumeric.Value == 0)
 			{
-				return false;
+				return "A frame count greater than 0 is required";
 			}
 
-			return true;
+			return null;
 		}
 
 		private void StopBot()
