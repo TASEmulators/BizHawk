@@ -1,1 +1,1 @@
-../.build_from_cwd_release.sh
+../.build_net48_from_cwd_release.sh

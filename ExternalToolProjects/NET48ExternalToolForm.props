@@ -1,0 +1,27 @@
+<Project>
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="BizHawk.Client.ApiHawk"
+			HintPath="$(ProjectDir)../../output/BizHawk.Client.ApiHawk.dll"
+			Private="true" />
+		<Reference Include="BizHawk.Client.Common"
+			HintPath="$(ProjectDir)../../output/BizHawk.Client.Common.dll"
+			Private="true" />
+		<Reference Include="BizHawk.Common"
+			HintPath="$(ProjectDir)../../output/BizHawk.Common.dll"
+			Private="true" />
+		<Reference Include="BizHawk.Emulation.Common"
+			HintPath="$(ProjectDir)../../output/BizHawk.Emulation.Common.dll"
+			Private="true" />
+		<Reference Include="BizHawk.Emulation.Cores"
+			HintPath="$(ProjectDir)../../output/BizHawk.Emulation.Cores.dll"
+			Private="true" />
+		<Reference Include="BizHawk.Emulation.DiscSystem"
+			HintPath="$(ProjectDir)../../output/BizHawk.Emulation.DiscSystem.dll"
+			Private="true" />
+	</ItemGroup>
+</Project>
