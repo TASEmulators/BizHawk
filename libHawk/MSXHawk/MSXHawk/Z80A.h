@@ -66,6 +66,7 @@ namespace MSXHawk
 
 		uint32_t PRE_SRC;		
 		// variables for executing instructions
+		uint32_t stepper = 0;
 		uint32_t instr_pntr = 0;
 		uint32_t bus_pntr = 0;
 		uint32_t mem_pntr = 0;
@@ -576,702 +577,705 @@ namespace MSXHawk
 		}
 
 		// Execute instructions
-		void ExecuteOne()
+		void ExecuteOne(uint32_t steps)
 		{
-			bus_pntr++; mem_pntr++;
-
-			switch (cur_instr_ofst[instr_pntr++])
+			for (stepper = 0; stepper < steps; stepper++)
 			{
-			case IDLE:
-				// do nothing
-				break;
-			case OP:
-				// should never reach here
+				bus_pntr++; mem_pntr++;
 
-				break;
-			case OP_F:
-				// Read the opcode of the next instruction	
-				//if (OnExecFetch != null) OnExecFetch(RegPC);
-
-				if (TraceCallback) { TraceCallback(0); }
-
-				bank_num = bank_offset = RegPCget();
-				RegPCset(bank_num + 1);
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				opcode = MemoryMap[bank_num][bank_offset];
-				FetchInstruction();
-
-				temp_R = (Regs[R] & 0x7F);
-				temp_R++;
-				temp_R &= 0x7F;
-				Regs[R] = ((Regs[R] & 0x80) | temp_R);
-
-				instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
-				I_skip = true;
-				break;
-			case HALT:
-				halted = true;
-				// NOTE: Check how halt state effects the DB
-				Regs[DB] = 0xFF;
-
-				temp_R = (Regs[R] & 0x7F);
-				temp_R++;
-				temp_R &= 0x7F;
-				Regs[R] = ((Regs[R] & 0x80) | temp_R);
-				break;
-			case RD:
-				Read_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case WR:
-				Write_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case RD_INC:
-				Read_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case RD_INC_TR_PC:
-				Read_INC_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case RD_OP:
-				if (cur_instr_ofst[instr_pntr++] == 1) { Read_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]); }
-				else { Read_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]); }
-				instr_pntr += 3;
-				switch (cur_instr_ofst[instr_pntr])
-				{
-				case ADD8:
-					ADD8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case ADC8:
-					ADC8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case SUB8:
-					SUB8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case SBC8:
-					SBC8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case AND8:
-					AND8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case XOR8:
-					XOR8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case OR8:
-					OR8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case CP8:
-					CP8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-					break;
-				case TR:
-					Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 2]];
-					break;
-				}
-				instr_pntr += 3;
-				break;
-			case WR_INC:
-				Write_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case WR_DEC:
-				Write_DEC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case WR_TR_PC:
-				Write_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case WR_INC_WA:
-				Write_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				Regs[W] = Regs[A];
-				break;
-			case TR:
-				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
-				instr_pntr += 2;
-				break;
-			case TR16:
-				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 2]];
-				Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 3]];
-				instr_pntr += 4;
-				break;
-			case ADD16:
-				ADD16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case ADD8:
-				ADD8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case SUB8:
-				SUB8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case ADC8:
-				ADC8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case ADC16:
-				ADC_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case SBC8:
-				SBC8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case SBC16:
-				SBC_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case INC16:
-				INC16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case INC8:
-				INC8_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case DEC16:
-				DEC16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case DEC8:
-				DEC8_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case RLC:
-				RLC_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case RL:
-				RL_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case RRC:
-				RRC_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case RR:
-				RR_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case CPL:
-				CPL_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case DA:
-				DA_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case SCF:
-				SCF_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case CCF:
-				CCF_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case AND8:
-				AND8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case XOR8:
-				XOR8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case OR8:
-				OR8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case CP8:
-				CP8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case SLA:
-				SLA_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case SRA:
-				SRA_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case SRL:
-				SRL_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case SLL:
-				SLL_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case BIT:
-				BIT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case I_BIT:
-				I_BIT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case RES:
-				Regs[cur_instr_ofst[instr_pntr + 1]] &= (uint32_t)(0xFF - (1 << cur_instr_ofst[instr_pntr]));
-				instr_pntr += 2;
-				break;
-			case SET:
-				Regs[cur_instr_ofst[instr_pntr + 1]] |= (uint32_t)(1 << cur_instr_ofst[instr_pntr]);
-				instr_pntr += 2;
-				break;
-			case EI:
-				EI_pending = 2;
-				break;
-			case DI:
-				IFF1 = IFF2 = false;
-				break;
-			case EXCH:
-				EXCH_16_Func(F_s, A_s, F, A);
-				break;
-			case EXX:
-				EXCH_16_Func(C_s, B_s, C, B);
-				EXCH_16_Func(E_s, D_s, E, D);
-				EXCH_16_Func(L_s, H_s, L, H);
-				break;
-			case EXCH_16:
-				EXCH_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case PREFIX:
-				NO_prefix = false;
-				if (PRE_SRC == CBpre) { CB_prefix = true; }
-				if (PRE_SRC == EXTDpre) { EXTD_prefix = true; }
-				if (PRE_SRC == IXpre) { IX_prefix = true; }
-				if (PRE_SRC == IYpre) { IY_prefix = true; }
-				if (PRE_SRC == IXCBpre) { IXCB_prefix = true; }
-				if (PRE_SRC == IYCBpre) { IYCB_prefix = true; }
-
-				// only the first prefix in a double prefix increases R, although I don't know how / why
-				if (PRE_SRC < 4)
-				{
-					temp_R = (Regs[R] & 0x7F);
-					temp_R++;
-					temp_R &= 0x7F;
-					Regs[R] = ((Regs[R] & 0x80) | temp_R);
-				}
-
-				bank_num = bank_offset = RegPCget();
-				RegPCset(bank_num + 1);
-				bank_offset &= low_mask;
-				bank_num = (bank_num >> bank_shift)& high_mask;
-				opcode = MemoryMap[bank_num][bank_offset];			
-				FetchInstruction();
-
-				instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
-				I_skip = true;
-				break;
-			case ASGN:
-				Regs[cur_instr_ofst[instr_pntr]] = cur_instr_ofst[instr_pntr + 1];
-				instr_pntr += 2;
-				break;
-			case ADDS:
-				ADDS_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-				instr_pntr += 4;
-				break;
-			case EI_RETI:
-				// NOTE: This is needed for systems using multiple interrupt sources, it triggers the next interrupt
-				// Not currently implemented here
-				IFF1 = IFF2;
-				break;
-			case EI_RETN:
-				IFF1 = IFF2;
-				break;
-			case OUT:
-				OUT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case OUT_INC:
-				OUT_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case IN:
-				IN_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case IN_INC:
-				IN_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case IN_A_N_INC:
-				IN_A_N_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-				break;
-			case NEG:
-				NEG_8_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 1;
-				break;
-			case INT_MODE:
-				interruptMode = cur_instr_ofst[instr_pntr];
-				instr_pntr += 1;
-				break;
-			case RRD:
-				RRD_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case RLD:
-				RLD_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
-				instr_pntr += 2;
-				break;
-			case SET_FL_LD_R:
-				DEC16_Func(C, B);
-				SET_FL_LD_Func();
-
-				Ztemp1 = cur_instr_ofst[instr_pntr++];
-				Ztemp2 = cur_instr_ofst[instr_pntr++];
-				Ztemp3 = cur_instr_ofst[instr_pntr++];
-
-				if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
-				{
-					cur_instr_ofst = &LD_OP_R_INST[0];
-					cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
-					cur_bus_ofst = &LD_OP_R_BUSRQ[0];
-					cur_mem_ofst = &LD_OP_R_MEMRQ[0];
-					cur_irqs_ofst = &LD_OP_R_IRQS;
-
-					instr_bank = 7;
-
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
-					I_skip = true;
-				}
-				else
-				{
-					if (Ztemp2 == INC16) { INC16_Func(E, D); }
-					else { DEC16_Func(E, D); }
-				}
-				break;
-			case SET_FL_CP_R:
-				SET_FL_CP_Func();
-
-				Ztemp1 = cur_instr_ofst[instr_pntr++];
-				Ztemp2 = cur_instr_ofst[instr_pntr++];
-				Ztemp3 = cur_instr_ofst[instr_pntr++];
-
-				if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZget())
-				{
-					cur_instr_ofst = &LD_CP_R_INST[0];
-					cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
-					cur_bus_ofst = &LD_CP_R_BUSRQ[0];
-					cur_mem_ofst = &LD_CP_R_MEMRQ[0];
-					cur_irqs_ofst = &LD_CP_R_IRQS;
-
-					instr_bank = 8;
-
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
-					I_skip = true;
-				}
-				else
-				{
-					if (Ztemp2 == INC16) { INC16_Func(L, H); }
-					else { DEC16_Func(L, H); }
-				}
-				break;
-			case SET_FL_IR:			
-				Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
-				SET_FL_IR_Func(cur_instr_ofst[instr_pntr]);
-				instr_pntr += 2;				
-				break;
-			case FTCH_DB:
-				FTCH_DB_Func();
-				break;
-			case WAIT:
-				if (FlagW)
-				{
-					instr_pntr--; bus_pntr--; mem_pntr--;
-					I_skip = true;
-				}
-				break;
-			case RST:
-				Regs[Z] = cur_instr_ofst[instr_pntr++];
-				Regs[W] = 0;
-				break;
-			case REP_OP_I:
-				Write_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-
-				Ztemp4 = cur_instr_ofst[instr_pntr++];
-				if (Ztemp4 == DEC16)
-				{
-					Regs[Z] = Regs[C];
-					Regs[W] = Regs[B];
-					DEC16_Func(Z, W);
-					DEC8_Func(B);
-
-					// take care of other flags
-					// taken from 'undocumented z80 documented' and Fuse
-					FlagNset((Regs[ALU] & 0x80) > 0);
-					FlagHset(((Regs[ALU] + Regs[C] - 1) & 0xFF) < Regs[ALU]);
-					FlagCset(((Regs[ALU] + Regs[C] - 1) & 0xFF) < Regs[ALU]);
-					FlagPset(TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]]);
-				}
-				else
-				{
-					Regs[Z] = Regs[C];
-					Regs[W] = Regs[B];
-					INC16_Func(Z, W);
-					DEC8_Func(B);
-
-					// take care of other flags
-					// taken from 'undocumented z80 documented' and Fuse
-					FlagNset((Regs[ALU] & 0x80) > 0);
-					FlagHset(((Regs[ALU] + Regs[C] + 1) & 0xFF) < Regs[ALU]);
-					FlagCset(((Regs[ALU] + Regs[C] + 1) & 0xFF) < Regs[ALU]);
-					FlagPset(TableParity[((Regs[ALU] + Regs[C] + 1) & 7) ^ Regs[B]]);
-				}
-
-				Ztemp1 = cur_instr_ofst[instr_pntr++];
-				Ztemp2 = cur_instr_ofst[instr_pntr++];
-				Ztemp3 = cur_instr_ofst[instr_pntr++];
-
-				if ((Regs[B] != 0) && (Ztemp3 > 0))
-				{
-					cur_instr_ofst = &REP_OP_I_INST[0];
-					cur_instr_ofst[8] = Ztemp2; Ztemp2_saver = Ztemp2;
-					cur_bus_ofst = &REP_OP_I_BUSRQ[0];
-					cur_mem_ofst = &REP_OP_I_MEMRQ[0];
-					cur_irqs_ofst = &REP_OP_I_IRQS;
-
-					instr_bank = 9;
-
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
-					I_skip = true;
-				}
-				else
-				{
-					if (Ztemp2 == INC16) { INC16_Func(L, H); }
-					else { DEC16_Func(L, H); }
-				}
-				break;
-			case REP_OP_O:
-				OUT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
-				instr_pntr += 3;
-
-				Ztemp4 = cur_instr_ofst[instr_pntr++];
-				if (Ztemp4 == DEC16)
-				{
-					DEC16_Func(L, H);
-					DEC8_Func(B);
-					Regs[Z] = Regs[C];
-					Regs[W] = Regs[B];
-					DEC16_Func(Z, W);
-				}
-				else
-				{
-					INC16_Func(L, H);
-					DEC8_Func(B);
-					Regs[Z] = Regs[C];
-					Regs[W] = Regs[B];
-					INC16_Func(Z, W);
-				}
-
-				// take care of other flags
-				// taken from 'undocumented z80 documented'
-				FlagNset((Regs[ALU] & 0x80) > 0);
-				FlagHset((Regs[ALU] + Regs[L]) > 0xFF);
-				FlagCset((Regs[ALU] + Regs[L]) > 0xFF);
-				FlagPset(TableParity[((Regs[ALU] + Regs[L]) & 7) ^ (Regs[B])]);
-
-				Ztemp1 = cur_instr_ofst[instr_pntr++];
-				Ztemp2 = cur_instr_ofst[instr_pntr++];
-				Ztemp3 = cur_instr_ofst[instr_pntr++];
-
-				if ((Regs[B] != 0) && (Ztemp3 > 0))
-				{
-					cur_instr_ofst = &REP_OP_O_INST[0];
-					cur_bus_ofst = &REP_OP_O_BUSRQ[0];
-					cur_mem_ofst = &REP_OP_O_MEMRQ[0];
-					cur_irqs_ofst = &REP_OP_O_IRQS;
-
-					instr_bank = 10;
-
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
-					I_skip = true;
-				}
-				break;
-			case IORQ:
-				//IRQACKCallback();
-				break;
-			case PREFT_ASGN:
-				if (cur_instr_ofst[instr_pntr++] == IXCBpre)
-				{
-					Regs[W] = Regs[Ixh];
-					Regs[Z] = Regs[Ixl];
-				}
-				else
-				{
-					Regs[W] = Regs[Iyh];
-					Regs[Z] = Regs[Iyl];
-				};
-				break;
-			case PREX_ASGN:
-				PRE_SRC = cur_instr_ofst[instr_pntr++];
-				break;
-			case JP_COND_TR:
-				if (jp_cond_chk)
-				{
-					Read_INC_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-					instr_pntr += 4;
-				}
-				else
-				{
-					// NOTE: Start at 1 since we skip the Z in the instruction vector
-					Read_INC_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
-					instr_pntr += 3;
-				}
-				break;
-			case ASGN_B:
-				Regs[B] = (uint8_t)((Regs[B] - 1) & 0xFF);
-				break;
-			case COND_CHK:
-				checker = false;
 				switch (cur_instr_ofst[instr_pntr++])
 				{
-				case ALWAYS_T:
-					checker = true;
+				case IDLE:
+					// do nothing
 					break;
-				case ALWAYS_F:
-					checker = false;
-					break;
-				case FLAG_Z:
-					checker = FlagZget();
-					break;
-				case FLAG_NZ:
-					checker = !FlagZget();
-					break;
-				case FLAG_C:
-					checker = FlagCget();
-					break;
-				case FLAG_NC:
-					checker = !FlagCget();
-					break;
-				case FLAG_P:
-					checker = FlagPget();
-					break;
-				case FLAG_NP:
-					checker = !FlagPget();
-					break;
-				case FLAG_S:
-					checker = FlagSget();
-					break;
-				case FLAG_NS:
-					checker = !FlagSget();
-					break;
-				case B_ZERO:
-					checker = (Regs[B] - 1) != 0;
-					break;
-				}
+				case OP:
+					// should never reach here
 
-				// true condition is what is representedin the instruction vectors
-				// for false condition, we need to advance the IRQS pointer dependent on which instruction is calling			
-				if (checker)
-				{
-					instr_pntr++;
-				}
-				else
-				{
-					// 0 = DJNZ, 1 = JR COND, 2 = JP COND, 3 = RET COND, 4 = CALL
-					cond_chk_fail = true;
-					cur_irqs_ofst = &False_IRQS[cur_instr_ofst[instr_pntr]];
-					IRQS_cond_offset = cur_instr_ofst[instr_pntr];
-					instr_pntr++;
-				}
+					break;
+				case OP_F:
+					// Read the opcode of the next instruction	
+					//if (OnExecFetch != null) OnExecFetch(RegPC);
 
-				jp_cond_chk = checker;
-				break;
-			}
+					if (TraceCallback) { TraceCallback(0); }
 
-			if (I_skip)
-			{
-				I_skip = false;
-			}
-			else if (++irq_pntr == cur_irqs_ofst[0])
-			{
-				cond_chk_fail = false;
-				
-				if (EI_pending > 0)
-				{
-					EI_pending--;
-					if (EI_pending == 0) { IFF1 = IFF2 = true; }
-				}
-
-				// NMI has priority
-				if (nonMaskableInterruptPending)
-				{
-					nonMaskableInterruptPending = false;
-
-					if (TraceCallback) { TraceCallback(1); }
-
-					IFF2 = IFF1;
-					IFF1 = false;
-					NMI_();
-					//NMICallback();
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					bank_num = bank_offset = RegPCget();
+					RegPCset(bank_num + 1);
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift)& high_mask;
+					opcode = MemoryMap[bank_num][bank_offset];
+					FetchInstruction();
 
 					temp_R = (Regs[R] & 0x7F);
 					temp_R++;
 					temp_R &= 0x7F;
 					Regs[R] = ((Regs[R] & 0x80) | temp_R);
 
-					halted = false;
-				}
-				// if we are processing an interrrupt, we need to modify the instruction vector
-				else if (IFF1 && FlagI)
-				{
-					IFF1 = IFF2 = false;
-					EI_pending = 0;
+					instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
+					I_skip = true;
+					break;
+				case HALT:
+					halted = true;
+					// NOTE: Check how halt state effects the DB
+					Regs[DB] = 0xFF;
 
-					if (TraceCallback) { TraceCallback(2); }
-
-					switch (interruptMode)
+					temp_R = (Regs[R] & 0x7F);
+					temp_R++;
+					temp_R &= 0x7F;
+					Regs[R] = ((Regs[R] & 0x80) | temp_R);
+					break;
+				case RD:
+					Read_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case WR:
+					Write_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case RD_INC:
+					Read_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case RD_INC_TR_PC:
+					Read_INC_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case RD_OP:
+					if (cur_instr_ofst[instr_pntr++] == 1) { Read_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]); }
+					else { Read_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]); }
+					instr_pntr += 3;
+					switch (cur_instr_ofst[instr_pntr])
 					{
-					case 0:
-						// Requires something to be pushed onto the data bus
-						// we'll assume it's a zero for now
-						INTERRUPT_0(0);
+					case ADD8:
+						ADD8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
 						break;
-					case 1:
-						INTERRUPT_1();
+					case ADC8:
+						ADC8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
 						break;
-					case 2:
-						INTERRUPT_2();
+					case SUB8:
+						SUB8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case SBC8:
+						SBC8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case AND8:
+						AND8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case XOR8:
+						XOR8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case OR8:
+						OR8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case CP8:
+						CP8_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+						break;
+					case TR:
+						Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 2]];
 						break;
 					}
-					//IRQCallback();
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					instr_pntr += 3;
+					break;
+				case WR_INC:
+					Write_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case WR_DEC:
+					Write_DEC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case WR_TR_PC:
+					Write_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case WR_INC_WA:
+					Write_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					Regs[W] = Regs[A];
+					break;
+				case TR:
+					Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
+					instr_pntr += 2;
+					break;
+				case TR16:
+					Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 2]];
+					Regs[cur_instr_ofst[instr_pntr + 1]] = Regs[cur_instr_ofst[instr_pntr + 3]];
+					instr_pntr += 4;
+					break;
+				case ADD16:
+					ADD16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case ADD8:
+					ADD8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case SUB8:
+					SUB8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case ADC8:
+					ADC8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case ADC16:
+					ADC_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case SBC8:
+					SBC8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case SBC16:
+					SBC_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case INC16:
+					INC16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case INC8:
+					INC8_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case DEC16:
+					DEC16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case DEC8:
+					DEC8_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case RLC:
+					RLC_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case RL:
+					RL_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case RRC:
+					RRC_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case RR:
+					RR_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case CPL:
+					CPL_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case DA:
+					DA_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case SCF:
+					SCF_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case CCF:
+					CCF_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case AND8:
+					AND8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case XOR8:
+					XOR8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case OR8:
+					OR8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case CP8:
+					CP8_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case SLA:
+					SLA_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case SRA:
+					SRA_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case SRL:
+					SRL_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case SLL:
+					SLL_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case BIT:
+					BIT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case I_BIT:
+					I_BIT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case RES:
+					Regs[cur_instr_ofst[instr_pntr + 1]] &= (uint32_t)(0xFF - (1 << cur_instr_ofst[instr_pntr]));
+					instr_pntr += 2;
+					break;
+				case SET:
+					Regs[cur_instr_ofst[instr_pntr + 1]] |= (uint32_t)(1 << cur_instr_ofst[instr_pntr]);
+					instr_pntr += 2;
+					break;
+				case EI:
+					EI_pending = 2;
+					break;
+				case DI:
+					IFF1 = IFF2 = false;
+					break;
+				case EXCH:
+					EXCH_16_Func(F_s, A_s, F, A);
+					break;
+				case EXX:
+					EXCH_16_Func(C_s, B_s, C, B);
+					EXCH_16_Func(E_s, D_s, E, D);
+					EXCH_16_Func(L_s, H_s, L, H);
+					break;
+				case EXCH_16:
+					EXCH_16_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case PREFIX:
+					NO_prefix = false;
+					if (PRE_SRC == CBpre) { CB_prefix = true; }
+					if (PRE_SRC == EXTDpre) { EXTD_prefix = true; }
+					if (PRE_SRC == IXpre) { IX_prefix = true; }
+					if (PRE_SRC == IYpre) { IY_prefix = true; }
+					if (PRE_SRC == IXCBpre) { IXCB_prefix = true; }
+					if (PRE_SRC == IYCBpre) { IYCB_prefix = true; }
 
-					temp_R = (Regs[R] & 0x7F);
-					temp_R++;
-					temp_R &= 0x7F;
-					Regs[R] = ((Regs[R] & 0x80) | temp_R);
+					// only the first prefix in a double prefix increases R, although I don't know how / why
+					if (PRE_SRC < 4)
+					{
+						temp_R = (Regs[R] & 0x7F);
+						temp_R++;
+						temp_R &= 0x7F;
+						Regs[R] = ((Regs[R] & 0x80) | temp_R);
+					}
 
-					halted = false;
+					bank_num = bank_offset = RegPCget();
+					RegPCset(bank_num + 1);
+					bank_offset &= low_mask;
+					bank_num = (bank_num >> bank_shift)& high_mask;
+					opcode = MemoryMap[bank_num][bank_offset];
+					FetchInstruction();
+
+					instr_pntr = bus_pntr = mem_pntr = irq_pntr = 0;
+					I_skip = true;
+					break;
+				case ASGN:
+					Regs[cur_instr_ofst[instr_pntr]] = cur_instr_ofst[instr_pntr + 1];
+					instr_pntr += 2;
+					break;
+				case ADDS:
+					ADDS_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+					instr_pntr += 4;
+					break;
+				case EI_RETI:
+					// NOTE: This is needed for systems using multiple interrupt sources, it triggers the next interrupt
+					// Not currently implemented here
+					IFF1 = IFF2;
+					break;
+				case EI_RETN:
+					IFF1 = IFF2;
+					break;
+				case OUT:
+					OUT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case OUT_INC:
+					OUT_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case IN:
+					IN_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case IN_INC:
+					IN_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case IN_A_N_INC:
+					IN_A_N_INC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+					break;
+				case NEG:
+					NEG_8_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 1;
+					break;
+				case INT_MODE:
+					interruptMode = cur_instr_ofst[instr_pntr];
+					instr_pntr += 1;
+					break;
+				case RRD:
+					RRD_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case RLD:
+					RLD_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1]);
+					instr_pntr += 2;
+					break;
+				case SET_FL_LD_R:
+					DEC16_Func(C, B);
+					SET_FL_LD_Func();
+
+					Ztemp1 = cur_instr_ofst[instr_pntr++];
+					Ztemp2 = cur_instr_ofst[instr_pntr++];
+					Ztemp3 = cur_instr_ofst[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
+					{
+						cur_instr_ofst = &LD_OP_R_INST[0];
+						cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
+						cur_bus_ofst = &LD_OP_R_BUSRQ[0];
+						cur_mem_ofst = &LD_OP_R_MEMRQ[0];
+						cur_irqs_ofst = &LD_OP_R_IRQS;
+
+						instr_bank = 7;
+
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+						I_skip = true;
+					}
+					else
+					{
+						if (Ztemp2 == INC16) { INC16_Func(E, D); }
+						else { DEC16_Func(E, D); }
+					}
+					break;
+				case SET_FL_CP_R:
+					SET_FL_CP_Func();
+
+					Ztemp1 = cur_instr_ofst[instr_pntr++];
+					Ztemp2 = cur_instr_ofst[instr_pntr++];
+					Ztemp3 = cur_instr_ofst[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZget())
+					{
+						cur_instr_ofst = &LD_CP_R_INST[0];
+						cur_instr_ofst[14] = Ztemp2; Ztemp2_saver = Ztemp2;
+						cur_bus_ofst = &LD_CP_R_BUSRQ[0];
+						cur_mem_ofst = &LD_CP_R_MEMRQ[0];
+						cur_irqs_ofst = &LD_CP_R_IRQS;
+
+						instr_bank = 8;
+
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+						I_skip = true;
+					}
+					else
+					{
+						if (Ztemp2 == INC16) { INC16_Func(L, H); }
+						else { DEC16_Func(L, H); }
+					}
+					break;
+				case SET_FL_IR:
+					Regs[cur_instr_ofst[instr_pntr]] = Regs[cur_instr_ofst[instr_pntr + 1]];
+					SET_FL_IR_Func(cur_instr_ofst[instr_pntr]);
+					instr_pntr += 2;
+					break;
+				case FTCH_DB:
+					FTCH_DB_Func();
+					break;
+				case WAIT:
+					if (FlagW)
+					{
+						instr_pntr--; bus_pntr--; mem_pntr--;
+						I_skip = true;
+					}
+					break;
+				case RST:
+					Regs[Z] = cur_instr_ofst[instr_pntr++];
+					Regs[W] = 0;
+					break;
+				case REP_OP_I:
+					Write_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+
+					Ztemp4 = cur_instr_ofst[instr_pntr++];
+					if (Ztemp4 == DEC16)
+					{
+						Regs[Z] = Regs[C];
+						Regs[W] = Regs[B];
+						DEC16_Func(Z, W);
+						DEC8_Func(B);
+
+						// take care of other flags
+						// taken from 'undocumented z80 documented' and Fuse
+						FlagNset((Regs[ALU] & 0x80) > 0);
+						FlagHset(((Regs[ALU] + Regs[C] - 1) & 0xFF) < Regs[ALU]);
+						FlagCset(((Regs[ALU] + Regs[C] - 1) & 0xFF) < Regs[ALU]);
+						FlagPset(TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]]);
+					}
+					else
+					{
+						Regs[Z] = Regs[C];
+						Regs[W] = Regs[B];
+						INC16_Func(Z, W);
+						DEC8_Func(B);
+
+						// take care of other flags
+						// taken from 'undocumented z80 documented' and Fuse
+						FlagNset((Regs[ALU] & 0x80) > 0);
+						FlagHset(((Regs[ALU] + Regs[C] + 1) & 0xFF) < Regs[ALU]);
+						FlagCset(((Regs[ALU] + Regs[C] + 1) & 0xFF) < Regs[ALU]);
+						FlagPset(TableParity[((Regs[ALU] + Regs[C] + 1) & 7) ^ Regs[B]]);
+					}
+
+					Ztemp1 = cur_instr_ofst[instr_pntr++];
+					Ztemp2 = cur_instr_ofst[instr_pntr++];
+					Ztemp3 = cur_instr_ofst[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr_ofst = &REP_OP_I_INST[0];
+						cur_instr_ofst[8] = Ztemp2; Ztemp2_saver = Ztemp2;
+						cur_bus_ofst = &REP_OP_I_BUSRQ[0];
+						cur_mem_ofst = &REP_OP_I_MEMRQ[0];
+						cur_irqs_ofst = &REP_OP_I_IRQS;
+
+						instr_bank = 9;
+
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+						I_skip = true;
+					}
+					else
+					{
+						if (Ztemp2 == INC16) { INC16_Func(L, H); }
+						else { DEC16_Func(L, H); }
+					}
+					break;
+				case REP_OP_O:
+					OUT_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2]);
+					instr_pntr += 3;
+
+					Ztemp4 = cur_instr_ofst[instr_pntr++];
+					if (Ztemp4 == DEC16)
+					{
+						DEC16_Func(L, H);
+						DEC8_Func(B);
+						Regs[Z] = Regs[C];
+						Regs[W] = Regs[B];
+						DEC16_Func(Z, W);
+					}
+					else
+					{
+						INC16_Func(L, H);
+						DEC8_Func(B);
+						Regs[Z] = Regs[C];
+						Regs[W] = Regs[B];
+						INC16_Func(Z, W);
+					}
+
+					// take care of other flags
+					// taken from 'undocumented z80 documented'
+					FlagNset((Regs[ALU] & 0x80) > 0);
+					FlagHset((Regs[ALU] + Regs[L]) > 0xFF);
+					FlagCset((Regs[ALU] + Regs[L]) > 0xFF);
+					FlagPset(TableParity[((Regs[ALU] + Regs[L]) & 7) ^ (Regs[B])]);
+
+					Ztemp1 = cur_instr_ofst[instr_pntr++];
+					Ztemp2 = cur_instr_ofst[instr_pntr++];
+					Ztemp3 = cur_instr_ofst[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr_ofst = &REP_OP_O_INST[0];
+						cur_bus_ofst = &REP_OP_O_BUSRQ[0];
+						cur_mem_ofst = &REP_OP_O_MEMRQ[0];
+						cur_irqs_ofst = &REP_OP_O_IRQS;
+
+						instr_bank = 10;
+
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+						I_skip = true;
+					}
+					break;
+				case IORQ:
+					//IRQACKCallback();
+					break;
+				case PREFT_ASGN:
+					if (cur_instr_ofst[instr_pntr++] == IXCBpre)
+					{
+						Regs[W] = Regs[Ixh];
+						Regs[Z] = Regs[Ixl];
+					}
+					else
+					{
+						Regs[W] = Regs[Iyh];
+						Regs[Z] = Regs[Iyl];
+					};
+					break;
+				case PREX_ASGN:
+					PRE_SRC = cur_instr_ofst[instr_pntr++];
+					break;
+				case JP_COND_TR:
+					if (jp_cond_chk)
+					{
+						Read_INC_TR_PC_Func(cur_instr_ofst[instr_pntr], cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+						instr_pntr += 4;
+					}
+					else
+					{
+						// NOTE: Start at 1 since we skip the Z in the instruction vector
+						Read_INC_Func(cur_instr_ofst[instr_pntr + 1], cur_instr_ofst[instr_pntr + 2], cur_instr_ofst[instr_pntr + 3]);
+						instr_pntr += 3;
+					}
+					break;
+				case ASGN_B:
+					Regs[B] = (uint8_t)((Regs[B] - 1) & 0xFF);
+					break;
+				case COND_CHK:
+					checker = false;
+					switch (cur_instr_ofst[instr_pntr++])
+					{
+					case ALWAYS_T:
+						checker = true;
+						break;
+					case ALWAYS_F:
+						checker = false;
+						break;
+					case FLAG_Z:
+						checker = FlagZget();
+						break;
+					case FLAG_NZ:
+						checker = !FlagZget();
+						break;
+					case FLAG_C:
+						checker = FlagCget();
+						break;
+					case FLAG_NC:
+						checker = !FlagCget();
+						break;
+					case FLAG_P:
+						checker = FlagPget();
+						break;
+					case FLAG_NP:
+						checker = !FlagPget();
+						break;
+					case FLAG_S:
+						checker = FlagSget();
+						break;
+					case FLAG_NS:
+						checker = !FlagSget();
+						break;
+					case B_ZERO:
+						checker = (Regs[B] - 1) != 0;
+						break;
+					}
+
+					// true condition is what is representedin the instruction vectors
+					// for false condition, we need to advance the IRQS pointer dependent on which instruction is calling			
+					if (checker)
+					{
+						instr_pntr++;
+					}
+					else
+					{
+						// 0 = DJNZ, 1 = JR COND, 2 = JP COND, 3 = RET COND, 4 = CALL
+						cond_chk_fail = true;
+						cur_irqs_ofst = &False_IRQS[cur_instr_ofst[instr_pntr]];
+						IRQS_cond_offset = cur_instr_ofst[instr_pntr];
+						instr_pntr++;
+					}
+
+					jp_cond_chk = checker;
+					break;
 				}
-				// otherwise start a new normal access
-				else if (!halted)
+
+				if (I_skip)
 				{
-					cur_instr_ofst = &NO_HALT_INST[0];
-					cur_bus_ofst = &NO_HALT_BUSRQ[0];
-					cur_mem_ofst = &NO_HALT_MEMRQ[0];
-					cur_irqs_ofst = &NO_HALT_IRQS;
-
-					instr_bank = 11;
-
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					I_skip = false;
 				}
-				else
+				else if (++irq_pntr == cur_irqs_ofst[0])
 				{
-					instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					cond_chk_fail = false;
+
+					if (EI_pending > 0)
+					{
+						EI_pending--;
+						if (EI_pending == 0) { IFF1 = IFF2 = true; }
+					}
+
+					// NMI has priority
+					if (nonMaskableInterruptPending)
+					{
+						nonMaskableInterruptPending = false;
+
+						if (TraceCallback) { TraceCallback(1); }
+
+						IFF2 = IFF1;
+						IFF1 = false;
+						NMI_();
+						//NMICallback();
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+
+						temp_R = (Regs[R] & 0x7F);
+						temp_R++;
+						temp_R &= 0x7F;
+						Regs[R] = ((Regs[R] & 0x80) | temp_R);
+
+						halted = false;
+					}
+					// if we are processing an interrrupt, we need to modify the instruction vector
+					else if (IFF1 && FlagI)
+					{
+						IFF1 = IFF2 = false;
+						EI_pending = 0;
+
+						if (TraceCallback) { TraceCallback(2); }
+
+						switch (interruptMode)
+						{
+						case 0:
+							// Requires something to be pushed onto the data bus
+							// we'll assume it's a zero for now
+							INTERRUPT_0(0);
+							break;
+						case 1:
+							INTERRUPT_1();
+							break;
+						case 2:
+							INTERRUPT_2();
+							break;
+						}
+						//IRQCallback();
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+
+						temp_R = (Regs[R] & 0x7F);
+						temp_R++;
+						temp_R &= 0x7F;
+						Regs[R] = ((Regs[R] & 0x80) | temp_R);
+
+						halted = false;
+					}
+					// otherwise start a new normal access
+					else if (!halted)
+					{
+						cur_instr_ofst = &NO_HALT_INST[0];
+						cur_bus_ofst = &NO_HALT_BUSRQ[0];
+						cur_mem_ofst = &NO_HALT_MEMRQ[0];
+						cur_irqs_ofst = &NO_HALT_IRQS;
+
+						instr_bank = 11;
+
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					}
+					else
+					{
+						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
+					}
 				}
+
+				TotalExecutedCycles++;
 			}
-
-			TotalExecutedCycles++;
 		}
 
 		/// <summary>

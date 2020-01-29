@@ -22,12 +22,15 @@ namespace MSXHawk
 			vdp.IRQ_PTR = &cpu.FlagI;
 			vdp.SHOW_BG = vdp.SHOW_SPRITES = true;
 			psg.Clock_Divider = 16;
+			sl_case = 0;
 		};
 
 		TMS9918A vdp;
 		Z80A cpu;
 		AY_3_8910 psg;
 		MemoryManager MemMap;
+
+		uint8_t sl_case = 0;
 
 		void Load_BIOS(uint8_t* bios, uint8_t* basic)
 		{
@@ -75,17 +78,64 @@ namespace MSXHawk
 					if (vdp.EnableInterrupts()) { cpu.FlagI = true; }						
 				}
 
-				for (uint32_t j = 0; j < vdp.IPeriod; j++)
+				switch (sl_case) 
 				{
-					cpu.ExecuteOne();
-
-					psg.psg_clock++;
-					if (psg.psg_clock == psg.Clock_Divider) 
+				case 0:
+					for (int i = 0; i < 14; i++) 
 					{
+						cpu.ExecuteOne(16);
+						psg.sampleclock+=16;
 						psg.generate_sound();
-						psg.psg_clock = 0;
 					}
-					psg.sampleclock++;						
+					cpu.ExecuteOne(4);
+					psg.sampleclock += 4;
+					sl_case = 1;
+					break;
+
+				case 1:
+					cpu.ExecuteOne(12);
+					psg.sampleclock += 12;
+					psg.generate_sound();
+					
+					for (int i = 0; i < 13; i++)
+					{
+						cpu.ExecuteOne(16);
+						psg.sampleclock += 16;
+						psg.generate_sound();
+					}
+					cpu.ExecuteOne(8);
+					psg.sampleclock += 8;
+					sl_case = 2;
+					break;
+
+				case 2:
+					cpu.ExecuteOne(8);
+					psg.sampleclock += 8;
+					psg.generate_sound();
+
+					for (int i = 0; i < 13; i++)
+					{
+						cpu.ExecuteOne(16);
+						psg.sampleclock += 16;
+						psg.generate_sound();
+					}
+					cpu.ExecuteOne(12);
+					psg.sampleclock += 12;
+					sl_case = 3;
+					break;
+				case 3:
+					cpu.ExecuteOne(4);
+					psg.sampleclock += 4;
+					psg.generate_sound();
+
+					for (int i = 0; i < 14; i++)
+					{
+						cpu.ExecuteOne(16);
+						psg.sampleclock += 16;
+						psg.generate_sound();
+					}
+					sl_case = 0;
+					break;
 				}
 			}
 
@@ -119,6 +169,8 @@ namespace MSXHawk
 			saver = cpu.SaveState(saver);
 			saver = psg.SaveState(saver);
 			saver = MemMap.SaveState(saver);
+
+			*saver = sl_case; saver++;
 		}
 
 		void LoadState(uint8_t* loader)
@@ -127,6 +179,8 @@ namespace MSXHawk
 			loader = cpu.LoadState(loader);
 			loader = psg.LoadState(loader);
 			loader = MemMap.LoadState(loader);
+
+			sl_case = *loader; loader++;
 		}
 
 		#pragma endregion
