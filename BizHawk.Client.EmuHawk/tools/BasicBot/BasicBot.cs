@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new BasicBotSettings();
 
 			_comparisonBotAttempt = new BotAttempt();
+			MainOperator.SelectedItem = ">=";
 		}
 
 		#region UI Bindings
