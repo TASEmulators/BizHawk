@@ -24,6 +24,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(ProjectDir)../../.stylecop.json" />
-		<Compile Remove="*.sh" />
+		<None Remove="*.sh" />
 	</ItemGroup>
 </Project>
