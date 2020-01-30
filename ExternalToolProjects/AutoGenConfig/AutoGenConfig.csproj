@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(ProjectDir)../Common.props" />
+	<Import Project="$(ProjectDir)../NET48ExternalToolForm.props" />
+	<ItemGroup>
+		<Compile Update="CustomMainForm.cs" SubType="Form" />
+	</ItemGroup>
+</Project>

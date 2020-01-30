@@ -47,7 +47,19 @@ namespace BizHawk.Client.Common
 
 		private readonly Action<string> LogCallback;
 
+		/// <summary>Using this property to get a reference to <see cref="Global.Config">Global.Config</see> is a terrible, horrible, no good, very bad idea. That's why it's not in the <see cref="IEmu">interface</see>.</summary>
+		public Config ForbiddenConfigReference
+		{
+			get
+			{
+				ForbiddenConfigReferenceUsed = true;
+				return Global.Config;
+			}
+		}
+
 		public Action FrameAdvanceCallback { get; set; }
+
+		public bool ForbiddenConfigReferenceUsed { get; private set; }
 
 		public Action YieldCallback { get; set; }
 
