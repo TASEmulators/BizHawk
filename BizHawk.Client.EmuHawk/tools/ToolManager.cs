@@ -94,84 +94,49 @@ namespace BizHawk.Client.EmuHawk
 		public T Load<T>(string toolPath, bool focus = true)
 			where T : class, IToolForm
 		{
-			bool isExternal = typeof(T) == typeof(IExternalToolForm);
+			if (!IsAvailable<T>()) return null;
 
-			if (!IsAvailable<T>() && !isExternal)
-			{
-				return null;
-			}
-
-			T existingTool;
-			if (isExternal)
-			{
-				existingTool = (T)_tools.FirstOrDefault(t => t is T && t.GetType().Assembly.Location == toolPath);
-			}
-			else
-			{
-				existingTool = (T)_tools.FirstOrDefault(t => t is T);
-			}
-
+			var existingTool = _tools.OfType<T>().FirstOrDefault();
 			if (existingTool != null)
 			{
-				if (existingTool.IsDisposed)
-				{
-					_tools.Remove(existingTool);
-				}
-				else
+				if (!existingTool.IsDisposed)
 				{
 					if (focus)
 					{
 						existingTool.Show();
 						existingTool.Focus();
 					}
-
 					return existingTool;
 				}
+				_tools.Remove(existingTool);
 			}
 
-			IToolForm newTool = CreateInstance<T>(toolPath);
+			var newTool = CreateInstance<T>(toolPath);
+			if (newTool == null) return null;
 
-			if (newTool == null)
-			{
-				return null;
-			}
-
-			if (newTool is Form form)
-			{
-				form.Owner = _owner;
-			}
-
-			if (isExternal)
-			{
-				ApiInjector.UpdateApis(_apiProvider, newTool);
-			}
-
+			if (newTool is Form form) form.Owner = _owner;
 			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
 			SetBaseProperties(newTool);
-			string toolType = typeof(T).ToString();
-
+			var toolTypeName = typeof(T).ToString();
 			// auto settings
-			if (newTool is IToolFormAutoConfig tool)
+			if (newTool is IToolFormAutoConfig autoConfigTool)
 			{
-				if (!_config.CommonToolSettings.TryGetValue(toolType, out var settings))
-				{
-					settings = new ToolDialogSettings();
-					_config.CommonToolSettings[toolType] = settings;
-				}
-
-				AttachSettingHooks(tool, settings);
+				AttachSettingHooks(
+					autoConfigTool,
+					_config.CommonToolSettings.TryGetValue(toolTypeName, out var settings)
+						? settings
+						: (_config.CommonToolSettings[toolTypeName] = new ToolDialogSettings())
+				);
 			}
-
 			// custom settings
 			if (HasCustomConfig(newTool))
 			{
-				if (!_config.CustomToolSettings.TryGetValue(toolType, out var settings))
-				{
-					settings = new Dictionary<string, object>();
-					_config.CustomToolSettings[toolType] = settings;
-				}
-
-				InstallCustomConfig(newTool, settings);
+				InstallCustomConfig(
+					newTool,
+					_config.CustomToolSettings.TryGetValue(toolTypeName, out var settings)
+						? settings
+						: (_config.CustomToolSettings[toolTypeName] = new Dictionary<string, object>())
+				);
 			}
 
 			newTool.Restart();
@@ -184,6 +149,56 @@ namespace BizHawk.Client.EmuHawk
 				newTool.Show();
 			}
 			return (T)newTool;
+		}
+
+		/// <summary>Loads the external tool's entry form.</summary>
+		public IExternalToolForm LoadExternalToolForm(string toolPath, string customFormTypeName, bool focus = true)
+		{
+			var existingTool = _tools.OfType<IExternalToolForm>().FirstOrDefault(t => t.GetType().Assembly.Location == toolPath);
+			if (existingTool != null)
+			{
+				if (!existingTool.IsDisposed)
+				{
+					if (focus)
+					{
+						existingTool.Show();
+						existingTool.Focus();
+					}
+					return existingTool;
+				}
+				_tools.Remove(existingTool);
+			}
+
+			var newTool = (IExternalToolForm) CreateInstance(typeof(IExternalToolForm), toolPath, customFormTypeName);
+			if (newTool == null) return null;
+			if (newTool is Form form) form.Owner = _owner;
+			ApiInjector.UpdateApis(_apiProvider, newTool);
+			ServiceInjector.UpdateServices(_emulator.ServiceProvider, newTool);
+			SetBaseProperties(newTool);
+			// auto settings
+			if (newTool is IToolFormAutoConfig autoConfigTool)
+			{
+				AttachSettingHooks(
+					autoConfigTool,
+					_config.CommonToolSettings.TryGetValue(customFormTypeName, out var settings)
+						? settings
+						: (_config.CommonToolSettings[customFormTypeName] = new ToolDialogSettings())
+				);
+			}
+			// custom settings
+			if (HasCustomConfig(newTool))
+			{
+				InstallCustomConfig(
+					newTool,
+					_config.CustomToolSettings.TryGetValue(customFormTypeName, out var settings)
+						? settings
+						: (_config.CustomToolSettings[customFormTypeName] = new Dictionary<string, object>())
+				);
+			}
+
+			newTool.Restart();
+			newTool.Show();
+			return newTool;
 		}
 
 		public void AutoLoad()
@@ -629,8 +644,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="toolType">Type of tool you want to create</param>
 		/// <param name="dllPath">Path dll for an external tool</param>
+		/// <param name="toolTypeName">For external tools, <see cref="Type.FullName"/> of the entry form's type (<paramref name="toolType"/> will be <see cref="IExternalToolForm"/>)</param>
 		/// <returns>New instance of an IToolForm</returns>
-		private IToolForm CreateInstance(Type toolType, string dllPath)
+		private IToolForm CreateInstance(Type toolType, string dllPath, string toolTypeName = null)
 		{
 			IToolForm tool;
 
@@ -645,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
+						tool = Activator.CreateInstanceFrom(dllPath, toolTypeName ?? "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 						if (tool == null)
 						{
 							MessageBox.Show($"It seems that the object CustomMainForm does not implement {nameof(IExternalToolForm)}. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

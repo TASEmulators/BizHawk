@@ -1415,7 +1415,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					item.Click += delegate
 					{
-						Tools.Load<IExternalToolForm>((string)item.Tag);
+						var (fileName, customFormTypeName) = ((string, string)) item.Tag;
+						Tools.LoadExternalToolForm(fileName, customFormTypeName);
 					};
 				}
 				else

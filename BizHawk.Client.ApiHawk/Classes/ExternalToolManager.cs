@@ -102,13 +102,15 @@ namespace BizHawk.Client.ApiHawk
 						}
 					}
 
-					var customFormType = externalToolFile.GetTypes().FirstOrDefault(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm");
+					var availTypes = externalToolFile.GetTypes();
+					var customFormType = availTypes.FirstOrDefault(t => t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm")
+						?? availTypes.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.CustomAttributes.Any(cad => cad.AttributeType == typeof(ExternalToolEntryPointFormAttribute)));
 					if (customFormType == null)
 					{
-						item.ToolTipText = "Does not have a CustomMainForm";
+						item.ToolTipText = "Does not have a correctly-formatted CustomMainForm or a form decorated with [ExternalToolEntryPointForm]";
 						item.Enabled = false;
 					}
-					item.Tag = fileName;
+					item.Tag = (fileName, customFormType?.FullName);
 
 					attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolUsageAttribute), false);
 					if (attributes != null && attributes.Length == 1)
