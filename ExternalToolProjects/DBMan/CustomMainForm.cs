@@ -5,12 +5,12 @@ using System.Windows.Forms;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 using BizHawk.Common;
-using BizHawk.DBManTool;
 
 using Community.CsharpSqlite.SQLiteClient;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.DBManTool
 {
+	[ExternalTool("DBMan", "DB Manager")]
 	public class CustomMainForm : Form, IExternalToolForm
 	{
 		public CustomMainForm()

@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿namespace HelloWorld
 {
 	public partial class CustomMainForm
 	{

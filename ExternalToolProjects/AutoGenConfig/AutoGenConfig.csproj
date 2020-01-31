@@ -2,6 +2,6 @@
 	<Import Project="$(ProjectDir)../Common.props" />
 	<Import Project="$(ProjectDir)../NET48ExternalToolForm.props" />
 	<ItemGroup>
-		<Compile Update="CustomMainForm.cs" SubType="Form" />
+		<Compile Update="AutoGenConfigForm.cs" SubType="Form" />
 	</ItemGroup>
 </Project>

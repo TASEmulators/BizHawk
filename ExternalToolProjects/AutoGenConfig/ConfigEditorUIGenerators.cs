@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Experiment.AutoGenConfig
 {
 	public static class ConfigEditorUIGenerators
 	{
@@ -19,39 +19,39 @@ namespace BizHawk.Client.EmuHawk
 
 		public static readonly IConfigPropEditorUIGen<GroupBox> FinalFallbackGenerator = new UnrepresentablePropEditorUIGen();
 
-		private static Color GetComparisonColorRefT<T>(string prop, T? currentValue, CustomMainForm parent, Func<T?, T?, bool> equalityFunc)
+		private static Color GetComparisonColorRefT<T>(string prop, T? currentValue, AutoGenConfigForm parent, Func<T?, T?, bool> equalityFunc)
 			where T : class
 			=> equalityFunc(currentValue, parent.BaselineValues[prop] as T)
 				? GetInitComparisonColorRefT(prop, currentValue, equalityFunc)
-				: equalityFunc(currentValue, CustomMainForm.DefaultValues[prop] as T)
-					? CustomMainForm.ComparisonColors.ChangedUnset
-					: CustomMainForm.ComparisonColors.Changed;
+				: equalityFunc(currentValue, AutoGenConfigForm.DefaultValues[prop] as T)
+					? AutoGenConfigForm.ComparisonColors.ChangedUnset
+					: AutoGenConfigForm.ComparisonColors.Changed;
 
-		private static Color GetComparisonColorValT<T>(string prop, T? currentValue, CustomMainForm parent, Func<T?, T?, bool> equalityFunc)
+		private static Color GetComparisonColorValT<T>(string prop, T? currentValue, AutoGenConfigForm parent, Func<T?, T?, bool> equalityFunc)
 			where T : struct
 			=> equalityFunc(currentValue, parent.BaselineValues[prop]?.Let(it => (T) it))
 				? GetInitComparisonColorValT(prop, currentValue, equalityFunc)
-				: equalityFunc(currentValue, CustomMainForm.DefaultValues[prop]?.Let(it => (T) it))
-					? CustomMainForm.ComparisonColors.ChangedUnset
-					: CustomMainForm.ComparisonColors.Changed;
+				: equalityFunc(currentValue, AutoGenConfigForm.DefaultValues[prop]?.Let(it => (T) it))
+					? AutoGenConfigForm.ComparisonColors.ChangedUnset
+					: AutoGenConfigForm.ComparisonColors.Changed;
 
 		private static Color GetInitComparisonColorRefT<T>(string prop, T? currentValue, Func<T?, T?, bool> equalityFunc)
 			where T : class
-			=> equalityFunc(currentValue, CustomMainForm.DefaultValues[prop] as T)
-				? CustomMainForm.ComparisonColors.UnchangedDefault
-				: CustomMainForm.ComparisonColors.Unchanged;
+			=> equalityFunc(currentValue, AutoGenConfigForm.DefaultValues[prop] as T)
+				? AutoGenConfigForm.ComparisonColors.UnchangedDefault
+				: AutoGenConfigForm.ComparisonColors.Unchanged;
 
 		private static Color GetInitComparisonColorValT<T>(string prop, T? currentValue, Func<T?, T?, bool> equalityFunc)
 			where T : struct
-			=> equalityFunc(currentValue, CustomMainForm.DefaultValues[prop]?.Let(it => (T) it))
-				? CustomMainForm.ComparisonColors.UnchangedDefault
-				: CustomMainForm.ComparisonColors.Unchanged;
+			=> equalityFunc(currentValue, AutoGenConfigForm.DefaultValues[prop]?.Let(it => (T) it))
+				? AutoGenConfigForm.ComparisonColors.UnchangedDefault
+				: AutoGenConfigForm.ComparisonColors.Unchanged;
 
-		private static CustomMainForm GetMainFormParent(Control c)
+		private static AutoGenConfigForm GetMainFormParent(Control c)
 		{
 			var parent = c.Parent;
-			while (!(parent is CustomMainForm)) parent = parent.Parent;
-			return (CustomMainForm) parent;
+			while (!(parent is AutoGenConfigForm)) parent = parent.Parent;
+			return (AutoGenConfigForm) parent;
 		}
 
 		private static string GetPropertyNameDesc(PropertyInfo pi)

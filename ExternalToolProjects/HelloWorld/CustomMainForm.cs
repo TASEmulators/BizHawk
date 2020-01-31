@@ -8,9 +8,12 @@ using BizHawk.Emulation.Common;
 
 using DisplayType = BizHawk.Client.Common.DisplayType;
 
-namespace BizHawk.Client.EmuHawk
+namespace HelloWorld
 {
-	/// <remarks><see cref="IExternalToolForm">ExternalToolForms</see> must be a class named <c>CustomMainForm</c> in namespace <c>BizHawk.Client.EmuHawk</c>.</remarks>
+	/// <remarks>All of this is example code, but it's at least a little more substantiative than a simple "hello world".</remarks>
+	[ExternalTool("HelloWorld", "An example of how to interact with EmuHawk")]
+//	[ExternalToolApplicability.SingleRom(CoreSystem.NES, "EA343F4E445A9050D4B4FBAC2C77D0693B1D0922")] // example of limiting tool usage (this is SMB1)
+	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
 	public partial class CustomMainForm : Form, IExternalToolForm
 	{
 		/// <remarks><see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.</remarks>

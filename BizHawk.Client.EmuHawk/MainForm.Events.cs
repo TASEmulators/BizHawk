@@ -1411,13 +1411,12 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var item in ExternalToolManager.ToolStripMenu)
 			{
-				if (item.Enabled)
+				if (item.Tag is ValueTuple<string, string> tuple)
 				{
-					item.Click += delegate
+					if (item.Enabled)
 					{
-						var (fileName, customFormTypeName) = ((string, string)) item.Tag;
-						Tools.LoadExternalToolForm(fileName, customFormTypeName);
-					};
+						item.Click += (clickEventSender, clickEventArgs) => Tools.LoadExternalToolForm(tuple.Item1, tuple.Item2);
+					}
 				}
 				else
 				{

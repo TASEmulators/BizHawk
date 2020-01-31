@@ -9,11 +9,12 @@ using System.Windows.Forms;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Client.Common;
 
-using static BizHawk.Client.EmuHawk.ConfigEditorUIGenerators;
+using static BizHawk.Experiment.AutoGenConfig.ConfigEditorUIGenerators;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Experiment.AutoGenConfig
 {
-	public class CustomMainForm : Form, IExternalToolForm
+	[ExternalTool("AutoGenConfig")]
+	public class AutoGenConfigForm : Form, IExternalToolForm
 	{
 		private static readonly IList<(PropertyInfo, IConfigPropEditorUIGen<Control>)> CachedControlGenerators;
 
@@ -28,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static readonly IDictionary<string, object?> DefaultValues;
 
-		static CustomMainForm()
+		static AutoGenConfigForm()
 		{
 			CachedControlGenerators = new List<(PropertyInfo, IConfigPropEditorUIGen<Control>)>();
 			DefaultValues = new Dictionary<string, object?>();
@@ -63,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-		public CustomMainForm()
+		public AutoGenConfigForm()
 		{
 			ClientSize = new Size(640, 720);
 			SuspendLayout();

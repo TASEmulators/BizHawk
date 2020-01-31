@@ -71,101 +71,78 @@ namespace BizHawk.Client.ApiHawk
 			}
 		}
 
-		/// <summary>
-		/// Generate a <see cref="ToolStripMenuItem"/> from an
-		/// external tool dll.
-		/// The assembly must have <see cref="BizHawkExternalToolAttribute"/> in its
-		/// assembly attributes
-		/// </summary>
-		/// <param name="fileName">File that will be reflected</param>
-		/// <returns>A new <see cref="ToolStripMenuItem"/>; assembly path can be found in the Tag property</returns>
-		/// <remarks>For the moment, you could only load a dll that have a form (which implements <see cref="IExternalToolForm"/>)</remarks>
+		/// <summary>Generates a <see cref="ToolStripMenuItem"/> from an assembly at <paramref name="fileName"/> containing an external tool.</summary>
+		/// <returns>
+		/// a <see cref="ToolStripMenuItem"/> with its <see cref="ToolStripItem.Tag"/> containing a <c>(string, string)</c>;
+		/// the first is the assembly path (<paramref name="fileName"/>) and the second is the <see cref="Type.FullName"/> of the entry point form's type
+		/// </returns>
 		private static ToolStripMenuItem GenerateToolTipFromFileName(string fileName)
 		{
-			ToolStripMenuItem item = null;
-
+			if (fileName == null) throw new Exception();
+			var item = new ToolStripMenuItem(Path.GetFileName(fileName)) { Enabled = false };
 			try
 			{
 				if (!OSTailoredCode.IsUnixHost) MotWHack.RemoveMOTW(fileName);
 				var externalToolFile = Assembly.LoadFrom(fileName);
-				object[] attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolAttribute), false);
-				if (attributes != null && attributes.Count() == 1)
+				var entryPoint = externalToolFile.GetTypes()
+					.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.GetCustomAttributes().OfType<ExternalToolAttribute>().Any());
+#pragma warning disable CS0618
+				if (entryPoint == null) throw new ExternalToolAttribute.MissingException(externalToolFile.GetCustomAttributes().OfType<BizHawkExternalToolAttribute>().Any());
+#pragma warning restore CS0618
+
+				var allAttrs = entryPoint.GetCustomAttributes().ToList();
+				var applicabilityAttrs = allAttrs.OfType<ExternalToolApplicabilityAttributeBase>().ToList();
+				if (applicabilityAttrs.Count > 1) throw new ExternalToolApplicabilityAttributeBase.DuplicateException();
+
+				var toolAttribute = allAttrs.OfType<ExternalToolAttribute>().First();
+				var embeddedIconAttr = allAttrs.OfType<ExternalToolEmbeddedIconAttribute>().FirstOrDefault();
+				if (embeddedIconAttr != null)
 				{
-					BizHawkExternalToolAttribute attribute = (BizHawkExternalToolAttribute)attributes[0];
-					item = new ToolStripMenuItem(attribute.Name) { ToolTipText = attribute.Description };
-					if (attribute.IconResourceName != "")
+					var rawIcon = externalToolFile.GetManifestResourceStream(embeddedIconAttr.ResourcePath);
+					if (rawIcon != null) item.Image = new Bitmap(rawIcon);
+				}
+				item.Text = toolAttribute.Name;
+				item.Tag = (externalToolFile.Location, entryPoint.FullName); // Tag set => no errors (show custom icon even when disabled)
+				if (applicabilityAttrs.Count == 1)
+				{
+					var system = ClientApi.SystemIdConverter.Convert(Global.Emulator.SystemId);
+					if (applicabilityAttrs[0].NotApplicableTo(system))
 					{
-						Stream s = externalToolFile.GetManifestResourceStream($"{externalToolFile.GetName().Name}.{attribute.IconResourceName}");
-						if (s != null)
-						{
-							item.Image = new Bitmap(s);
-						}
+						item.ToolTipText = system == CoreSystem.Null
+							? "This tool doesn't work when no rom is loaded"
+							: "This tool doesn't work with this system";
+						return item;
 					}
-
-					var availTypes = externalToolFile.GetTypes();
-					var customFormType = availTypes.FirstOrDefault(t => t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm")
-						?? availTypes.SingleOrDefault(t => typeof(IExternalToolForm).IsAssignableFrom(t) && t.CustomAttributes.Any(cad => cad.AttributeType == typeof(ExternalToolEntryPointFormAttribute)));
-					if (customFormType == null)
+					if (applicabilityAttrs[0].NotApplicableTo(Global.Game.Hash, system))
 					{
-						item.ToolTipText = "Does not have a correctly-formatted CustomMainForm or a form decorated with [ExternalToolEntryPointForm]";
-						item.Enabled = false;
-					}
-					item.Tag = (fileName, customFormType?.FullName);
-
-					attributes = externalToolFile.GetCustomAttributes(typeof(BizHawkExternalToolUsageAttribute), false);
-					if (attributes != null && attributes.Length == 1)
-					{
-						BizHawkExternalToolUsageAttribute attribute2 = (BizHawkExternalToolUsageAttribute)attributes[0];
-						if(Global.Emulator.SystemId == "NULL" && attribute2.ToolUsage != BizHawkExternalToolUsage.Global)
-						{
-							item.ToolTipText = "This tool doesn't work if nothing is loaded";
-							item.Enabled = false;
-						}
-						else if(attribute2.ToolUsage == BizHawkExternalToolUsage.EmulatorSpecific && Global.Emulator.SystemId != ClientApi.SystemIdConverter.ConvertBack(attribute2.System))
-						{
-							item.ToolTipText = "This tool doesn't work for current system";
-							item.Enabled = false;
-						}
-						else if (attribute2.ToolUsage == BizHawkExternalToolUsage.GameSpecific && Global.Game.Hash != attribute2.GameHash)
-						{
-							item.ToolTipText = "This tool doesn't work for current game";
-							item.Enabled = false;
-						}
+						item.ToolTipText = "This tool doesn't work with this game";
+						return item;
 					}
 				}
-				else
-				{
-					item = new ToolStripMenuItem(externalToolFile.GetName().Name)
-					{
-						ToolTipText = "BizHawkExternalTool attribute hasn't been found", Enabled = false
-					};
-				}
-			}
-			catch (BadImageFormatException)
-			{
-				item = new ToolStripMenuItem(fileName);
-				item.ToolTipText = "This is not an assembly";
-				item.Enabled = false;
-			}
 
-#if DEBUG //I added special debug stuff to get additional information. Don't think it can be useful for released versions
-			catch (ReflectionTypeLoadException ex)
+				item.Enabled = true;
+				if (!string.IsNullOrWhiteSpace(toolAttribute.Description)) item.ToolTipText = toolAttribute.Description;
+				return item;
+			}
+			catch (Exception e)
 			{
-				foreach (Exception e in ex.LoaderExceptions)
+#if DEBUG
+				if (e is ReflectionTypeLoadException rtle)
 				{
-					Debug.WriteLine(e.Message);
+					foreach (var e1 in rtle.LoaderExceptions) Debug.WriteLine(e1.Message);
 				}
-				item.ToolTipText = "Something goes wrong while trying to load";
-				item.Enabled = false;
-			}
-#else
-			catch (ReflectionTypeLoadException)
-			{
-				item.ToolTipText = "Something goes wrong while trying to load";
-				item.Enabled = false;
-			}
 #endif
-
+				item.ToolTipText = e switch
+				{
+					BadImageFormatException _ => "This assembly can't be loaded, probably because it's corrupt or targets an incompatible .NET runtime.",
+					ExternalToolApplicabilityAttributeBase.DuplicateException _ => "The IExternalToolForm has conflicting applicability attributes.",
+					ExternalToolAttribute.MissingException e1 => e1.OldAttributeFound
+						? "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].\nHowever, the assembly itself is annotated with [BizHawkExternalTool], which is now deprecated. Has the tool been updated since BizHawk 2.4?"
+						: "The assembly doesn't contain a class implementing IExternalToolForm and annotated with [ExternalTool].",
+					ReflectionTypeLoadException _ => "Something went wrong while trying to load the assembly.",
+					_ => $"An exception of type {e.GetType().FullName} was thrown while trying to load the assembly and look for an IExternalToolForm:\n{e.Message}"
+				};
+			}
 			return item;
 		}
 

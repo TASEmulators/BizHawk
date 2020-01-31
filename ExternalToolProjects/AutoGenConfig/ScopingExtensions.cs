@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Experiment.AutoGenConfig
 {
 	internal static class ScopingExtensions
 	{
