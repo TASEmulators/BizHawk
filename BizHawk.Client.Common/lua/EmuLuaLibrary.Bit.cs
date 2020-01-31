@@ -75,9 +75,9 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inbitars = bit.arshift( -1000, 4 );")]
 		[LuaMethod("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
-		public static int Arshift(int val, int amt)
+		public static int Arshift(uint val, int amt)
 		{
-			return val >> amt;
+			return (int)val >> amt;
 		}
 
 		[LuaMethodExample("if ( bit.check( -12345, 35 ) ) then\r\n\tconsole.log( \"Returns result of bit 'pos' being set in 'num'\" );\r\nend;")]
