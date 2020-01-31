@@ -359,6 +359,8 @@
 			this.GB3xsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GGLsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.VectrexsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
@@ -396,8 +398,6 @@
 			this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.VectrexSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.VectrexsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -517,8 +517,8 @@
             this.SaturnSubMenu,
             this.DGBSubMenu,
             this.DGBHawkSubMenu,
-            this.GB3xSubMenu,
-            this.GGLSubMenu,
+			this.GB3xSubMenu,
+			this.GGLSubMenu,
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
             this.AppleSubMenu,
@@ -529,7 +529,7 @@
             this.virtualBoyToolStripMenuItem,
             this.neoGeoPocketToolStripMenuItem,
             this.zXSpectrumToolStripMenuItem,
-            this.VectrexSubMenu,
+			this.VectrexSubMenu,
             this.HelpSubMenu,
             this.amstradCPCToolStripMenuItem});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
@@ -1167,7 +1167,7 @@
 			// 
 			this.RecordAVMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RecordHS;
 			this.RecordAVMenuItem.Name = "RecordAVMenuItem";
-			this.RecordAVMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.RecordAVMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.RecordAVMenuItem.Text = "&Record AVI/WAV";
 			this.RecordAVMenuItem.Click += new System.EventHandler(this.RecordAVMenuItem_Click);
 			// 
@@ -1175,7 +1175,7 @@
 			// 
 			this.ConfigAndRecordAVMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AVI;
 			this.ConfigAndRecordAVMenuItem.Name = "ConfigAndRecordAVMenuItem";
-			this.ConfigAndRecordAVMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.ConfigAndRecordAVMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
@@ -1183,26 +1183,26 @@
 			// 
 			this.StopAVIMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAVIMenuItem.Name = "StopAVIMenuItem";
-			this.StopAVIMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.StopAVIMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.StopAVIMenuItem.Text = "&Stop AVI/WAV";
 			this.StopAVIMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(222, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(220, 6);
 			// 
 			// CaptureOSDMenuItem
 			// 
 			this.CaptureOSDMenuItem.Name = "CaptureOSDMenuItem";
-			this.CaptureOSDMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.CaptureOSDMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.CaptureOSDMenuItem.Text = "Capture OSD";
 			this.CaptureOSDMenuItem.Click += new System.EventHandler(this.CaptureOSDMenuItem_Click);
 			// 
 			// SynclessRecordingMenuItem
 			// 
 			this.SynclessRecordingMenuItem.Name = "SynclessRecordingMenuItem";
-			this.SynclessRecordingMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.SynclessRecordingMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.SynclessRecordingMenuItem.Text = "S&yncless Recording Tools";
 			this.SynclessRecordingMenuItem.Click += new System.EventHandler(this.SynclessRecordingMenuItem_Click);
 			// 
@@ -1513,7 +1513,7 @@
 			// 
 			this.ControllersMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.ControllersMenuItem.Name = "ControllersMenuItem";
-			this.ControllersMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.ControllersMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.ControllersMenuItem.Text = "&Controllers...";
 			this.ControllersMenuItem.Click += new System.EventHandler(this.ControllersMenuItem_Click);
 			// 
@@ -1521,7 +1521,7 @@
 			// 
 			this.HotkeysMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.HotKeys;
 			this.HotkeysMenuItem.Name = "HotkeysMenuItem";
-			this.HotkeysMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.HotkeysMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.HotkeysMenuItem.Text = "&Hotkeys...";
 			this.HotkeysMenuItem.Click += new System.EventHandler(this.HotkeysMenuItem_Click);
 			// 
@@ -1529,7 +1529,7 @@
 			// 
 			this.DisplayConfigMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("DisplayConfigMenuItem.Image")));
 			this.DisplayConfigMenuItem.Name = "DisplayConfigMenuItem";
-			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.DisplayConfigMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.DisplayConfigMenuItem.Text = "Display...";
 			this.DisplayConfigMenuItem.Click += new System.EventHandler(this.DisplayConfigMenuItem_Click);
 			// 
@@ -1537,7 +1537,7 @@
 			// 
 			this.SoundMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AudioHS;
 			this.SoundMenuItem.Name = "SoundMenuItem";
-			this.SoundMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.SoundMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.SoundMenuItem.Text = "&Sound...";
 			this.SoundMenuItem.Click += new System.EventHandler(this.SoundMenuItem_Click);
 			// 
@@ -1545,7 +1545,7 @@
 			// 
 			this.PathsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CopyFolderHS;
 			this.PathsMenuItem.Name = "PathsMenuItem";
-			this.PathsMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.PathsMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.PathsMenuItem.Text = "Paths...";
 			this.PathsMenuItem.Click += new System.EventHandler(this.PathsMenuItem_Click);
 			// 
@@ -1553,7 +1553,7 @@
 			// 
 			this.FirmwaresMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("FirmwaresMenuItem.Image")));
 			this.FirmwaresMenuItem.Name = "FirmwaresMenuItem";
-			this.FirmwaresMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.FirmwaresMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.FirmwaresMenuItem.Text = "&Firmwares...";
 			this.FirmwaresMenuItem.Click += new System.EventHandler(this.FirmwaresMenuItem_Click);
 			// 
@@ -1561,7 +1561,7 @@
 			// 
 			this.MessagesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MessageConfig;
 			this.MessagesMenuItem.Name = "MessagesMenuItem";
-			this.MessagesMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.MessagesMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.MessagesMenuItem.Text = "&Messages...";
 			this.MessagesMenuItem.Click += new System.EventHandler(this.MessagesMenuItem_Click);
 			// 
@@ -1569,7 +1569,7 @@
 			// 
 			this.AutofireMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lightning;
 			this.AutofireMenuItem.Name = "AutofireMenuItem";
-			this.AutofireMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.AutofireMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.AutofireMenuItem.Text = "&Autofire...";
 			this.AutofireMenuItem.Click += new System.EventHandler(this.AutofireMenuItem_Click);
 			// 
@@ -1577,21 +1577,21 @@
 			// 
 			this.RewindOptionsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.RewindOptionsMenuItem.Name = "RewindOptionsMenuItem";
-			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.RewindOptionsMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.RewindOptionsMenuItem.Text = "&Rewind && States...";
 			this.RewindOptionsMenuItem.Click += new System.EventHandler(this.RewindOptionsMenuItem_Click);
 			// 
 			// extensionsToolStripMenuItem
 			// 
 			this.extensionsToolStripMenuItem.Name = "extensionsToolStripMenuItem";
-			this.extensionsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.extensionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.extensionsToolStripMenuItem.Text = "File Extensions...";
 			this.extensionsToolStripMenuItem.Click += new System.EventHandler(this.FileExtensionsMenuItem_Click);
 			// 
 			// ClientOptionsMenuItem
 			// 
 			this.ClientOptionsMenuItem.Name = "ClientOptionsMenuItem";
-			this.ClientOptionsMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.ClientOptionsMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.ClientOptionsMenuItem.Text = "&Customize...";
 			this.ClientOptionsMenuItem.Click += new System.EventHandler(this.CustomizeMenuItem_Click);
 			// 
@@ -1599,14 +1599,14 @@
 			// 
 			this.ProfilesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.user_blue_small;
 			this.ProfilesMenuItem.Name = "ProfilesMenuItem";
-			this.ProfilesMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.ProfilesMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.ProfilesMenuItem.Text = "&Profiles...";
 			this.ProfilesMenuItem.Click += new System.EventHandler(this.ProfilesMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(176, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(177, 6);
 			// 
 			// SpeedSkipSubMenu
 			// 
@@ -1629,7 +1629,7 @@
             this.Speed200MenuItem,
             this.Speed400MenuItem});
 			this.SpeedSkipSubMenu.Name = "SpeedSkipSubMenu";
-			this.SpeedSkipSubMenu.Size = new System.Drawing.Size(179, 22);
+			this.SpeedSkipSubMenu.Size = new System.Drawing.Size(180, 22);
 			this.SpeedSkipSubMenu.Text = "Speed/Skip";
 			this.SpeedSkipSubMenu.DropDownOpened += new System.EventHandler(this.FrameSkipMenuItem_DropDownOpened);
 			// 
@@ -1825,7 +1825,7 @@
             this.InputOverHkMenuItem,
             this.HkOverInputMenuItem});
 			this.KeyPrioritySubMenu.Name = "KeyPrioritySubMenu";
-			this.KeyPrioritySubMenu.Size = new System.Drawing.Size(179, 22);
+			this.KeyPrioritySubMenu.Size = new System.Drawing.Size(180, 22);
 			this.KeyPrioritySubMenu.Text = "Key Priority";
 			this.KeyPrioritySubMenu.DropDownOpened += new System.EventHandler(this.KeyPriorityMenuItem_DropDownOpened);
 			// 
@@ -1865,7 +1865,7 @@
             this.N64VideoPluginSettingsMenuItem,
             this.setLibretroCoreToolStripMenuItem});
 			this.CoresSubMenu.Name = "CoresSubMenu";
-			this.CoresSubMenu.Size = new System.Drawing.Size(179, 22);
+			this.CoresSubMenu.Size = new System.Drawing.Size(180, 22);
 			this.CoresSubMenu.Text = "Cores";
 			this.CoresSubMenu.DropDownOpened += new System.EventHandler(this.CoresSubMenu_DropDownOpened);
 			// 
@@ -1900,7 +1900,7 @@
 			this.toolStripSeparator38.Name = "toolStripSeparator38";
 			this.toolStripSeparator38.Size = new System.Drawing.Size(220, 6);
 			// 
-			// SubNesHawkMenuItem
+			// subFrameNesHawkTASOnlyToolStripMenuItem
 			// 
 			this.SubNesHawkMenuItem.Name = "SubNesHawkMenuItem";
 			this.SubNesHawkMenuItem.Size = new System.Drawing.Size(223, 22);
@@ -2045,20 +2045,20 @@
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(176, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(177, 6);
 			// 
 			// SaveConfigMenuItem
 			// 
 			this.SaveConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Save;
 			this.SaveConfigMenuItem.Name = "SaveConfigMenuItem";
-			this.SaveConfigMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.SaveConfigMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.SaveConfigMenuItem.Text = "Save Config";
 			this.SaveConfigMenuItem.Click += new System.EventHandler(this.SaveConfigMenuItem_Click);
 			// 
 			// SaveConfigAsMenuItem
 			// 
 			this.SaveConfigAsMenuItem.Name = "SaveConfigAsMenuItem";
-			this.SaveConfigAsMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.SaveConfigAsMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.SaveConfigAsMenuItem.Text = "Save Config As...";
 			this.SaveConfigAsMenuItem.Click += new System.EventHandler(this.SaveConfigAsMenuItem_Click);
 			// 
@@ -2066,14 +2066,14 @@
 			// 
 			this.LoadConfigMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
 			this.LoadConfigMenuItem.Name = "LoadConfigMenuItem";
-			this.LoadConfigMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.LoadConfigMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.LoadConfigMenuItem.Text = "Load Config";
 			this.LoadConfigMenuItem.Click += new System.EventHandler(this.LoadConfigMenuItem_Click);
 			// 
 			// LoadConfigFromMenuItem
 			// 
 			this.LoadConfigFromMenuItem.Name = "LoadConfigFromMenuItem";
-			this.LoadConfigFromMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.LoadConfigFromMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.LoadConfigFromMenuItem.Text = "Load Config From...";
 			this.LoadConfigFromMenuItem.Click += new System.EventHandler(this.LoadConfigFromMenuItem_Click);
 			// 
@@ -2102,7 +2102,7 @@
             this.batchRunnerToolStripMenuItem,
             this.ExperimentalToolsSubMenu});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
-			this.ToolsSubMenu.Size = new System.Drawing.Size(48, 19);
+			this.ToolsSubMenu.Size = new System.Drawing.Size(47, 19);
 			this.ToolsSubMenu.Text = "&Tools";
 			this.ToolsSubMenu.DropDownOpened += new System.EventHandler(this.ToolsSubMenu_DropDownOpened);
 			// 
@@ -2491,7 +2491,7 @@
 			// 
 			this.PceControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.PceControllerSettingsMenuItem.Name = "PceControllerSettingsMenuItem";
-			this.PceControllerSettingsMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PceControllerSettingsMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PceControllerSettingsMenuItem.Text = "Controller Settings";
 			this.PceControllerSettingsMenuItem.Click += new System.EventHandler(this.PceControllerSettingsMenuItem_Click);
 			// 
@@ -2499,59 +2499,59 @@
 			// 
 			this.PCEGraphicsSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
 			this.PCEGraphicsSettingsMenuItem.Name = "PCEGraphicsSettingsMenuItem";
-			this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEGraphicsSettingsMenuItem.Text = "Graphics Settings";
 			this.PCEGraphicsSettingsMenuItem.Click += new System.EventHandler(this.PceGraphicsSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator32
 			// 
 			this.toolStripSeparator32.Name = "toolStripSeparator32";
-			this.toolStripSeparator32.Size = new System.Drawing.Size(256, 6);
+			this.toolStripSeparator32.Size = new System.Drawing.Size(255, 6);
 			// 
 			// PCEBGViewerMenuItem
 			// 
 			this.PCEBGViewerMenuItem.Name = "PCEBGViewerMenuItem";
-			this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEBGViewerMenuItem.Text = "&BG Viewer";
 			this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PceBgViewerMenuItem_Click);
 			// 
 			// PCEtileViewerToolStripMenuItem
 			// 
 			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
-			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
 			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PceTileViewerMenuItem_Click);
 			// 
 			// PceSoundDebuggerToolStripMenuItem
 			// 
 			this.PceSoundDebuggerToolStripMenuItem.Name = "PceSoundDebuggerToolStripMenuItem";
-			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PceSoundDebuggerToolStripMenuItem.Text = "&Sound Debugger";
 			this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerMenuItem_Click);
 			// 
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(256, 6);
+			this.toolStripSeparator25.Size = new System.Drawing.Size(255, 6);
 			// 
 			// PCEAlwaysPerformSpriteLimitMenuItem
 			// 
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Name = "PCEAlwaysPerformSpriteLimitMenuItem";
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEAlwaysPerformSpriteLimitMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Text = "Always Perform Sprite Limit";
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Click += new System.EventHandler(this.PCEAlwaysPerformSpriteLimitMenuItem_Click);
 			// 
 			// PCEAlwaysEqualizeVolumesMenuItem
 			// 
 			this.PCEAlwaysEqualizeVolumesMenuItem.Name = "PCEAlwaysEqualizeVolumesMenuItem";
-			this.PCEAlwaysEqualizeVolumesMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEAlwaysEqualizeVolumesMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEAlwaysEqualizeVolumesMenuItem.Text = "Always Equalize Volumes (PCE-CD)";
 			this.PCEAlwaysEqualizeVolumesMenuItem.Click += new System.EventHandler(this.PCEAlwaysEqualizeVolumesMenuItem_Click);
 			// 
 			// PCEArcadeCardRewindEnableMenuItem
 			// 
 			this.PCEArcadeCardRewindEnableMenuItem.Name = "PCEArcadeCardRewindEnableMenuItem";
-			this.PCEArcadeCardRewindEnableMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.PCEArcadeCardRewindEnableMenuItem.Size = new System.Drawing.Size(258, 22);
 			this.PCEArcadeCardRewindEnableMenuItem.Text = "Arcade Card Rewind-Enable Hack";
 			this.PCEArcadeCardRewindEnableMenuItem.Click += new System.EventHandler(this.PCEArcadeCardRewindEnableMenuItem_Click);
 			// 
@@ -2588,7 +2588,7 @@
             this.SMSregionKoreaToolStripMenuItem,
             this.SMSregionAutoToolStripMenuItem});
 			this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
-			this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSregionToolStripMenuItem.Text = "Region";
 			// 
 			// SMSregionExportToolStripMenuItem
@@ -2626,7 +2626,7 @@
             this.SMSdisplayPalToolStripMenuItem,
             this.SMSdisplayAutoToolStripMenuItem});
 			this.SMSdisplayToolStripMenuItem.Name = "SMSdisplayToolStripMenuItem";
-			this.SMSdisplayToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSdisplayToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSdisplayToolStripMenuItem.Text = "Display Type";
 			// 
 			// SMSdisplayNtscToolStripMenuItem
@@ -2659,7 +2659,7 @@
             this.SMSControllerSportsPadToolStripMenuItem,
             this.SMSControllerKeyboardToolStripMenuItem});
 			this.SMSControllerToolStripMenuItem.Name = "SMSControllerToolStripMenuItem";
-			this.SMSControllerToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSControllerToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSControllerToolStripMenuItem.Text = "&Controller Type";
 			// 
 			// SMSControllerStandardToolStripMenuItem
@@ -2700,94 +2700,94 @@
 			// SMStoolStripMenuItem2
 			// 
 			this.SMStoolStripMenuItem2.Name = "SMStoolStripMenuItem2";
-			this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(275, 6);
+			this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(274, 6);
 			// 
 			// SMSenableBIOSToolStripMenuItem
 			// 
 			this.SMSenableBIOSToolStripMenuItem.Name = "SMSenableBIOSToolStripMenuItem";
-			this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSenableBIOSToolStripMenuItem.Text = "Enable BIOS (Must be Enabled for TAS)";
 			this.SMSenableBIOSToolStripMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
 			// 
 			// SMSEnableFMChipMenuItem
 			// 
 			this.SMSEnableFMChipMenuItem.Name = "SMSEnableFMChipMenuItem";
-			this.SMSEnableFMChipMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSEnableFMChipMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSEnableFMChipMenuItem.Text = "&Enable FM Chip";
 			this.SMSEnableFMChipMenuItem.Click += new System.EventHandler(this.SmsEnableFmChipMenuItem_Click);
 			// 
 			// SMSOverclockMenuItem
 			// 
 			this.SMSOverclockMenuItem.Name = "SMSOverclockMenuItem";
-			this.SMSOverclockMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSOverclockMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSOverclockMenuItem.Text = "&Overclock when Known Safe";
 			this.SMSOverclockMenuItem.Click += new System.EventHandler(this.SMSOverclockMenuItem_Click);
 			// 
 			// SMSForceStereoMenuItem
 			// 
 			this.SMSForceStereoMenuItem.Name = "SMSForceStereoMenuItem";
-			this.SMSForceStereoMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSForceStereoMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSForceStereoMenuItem.Text = "&Force Stereo Separation";
 			this.SMSForceStereoMenuItem.Click += new System.EventHandler(this.SMSForceStereoMenuItem_Click);
 			// 
 			// SMSSpriteLimitMenuItem
 			// 
 			this.SMSSpriteLimitMenuItem.Name = "SMSSpriteLimitMenuItem";
-			this.SMSSpriteLimitMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSSpriteLimitMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSSpriteLimitMenuItem.Text = "Sprite &Limit";
 			this.SMSSpriteLimitMenuItem.Click += new System.EventHandler(this.SMSSpriteLimitMenuItem_Click);
 			// 
 			// SMSDisplayOverscanMenuItem
 			// 
 			this.SMSDisplayOverscanMenuItem.Name = "SMSDisplayOverscanMenuItem";
-			this.SMSDisplayOverscanMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSDisplayOverscanMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSDisplayOverscanMenuItem.Text = "Display Overscan";
 			this.SMSDisplayOverscanMenuItem.Click += new System.EventHandler(this.SMSDisplayOverscanMenuItem_Click);
 			// 
 			// SMSFix3DGameDisplayToolStripMenuItem
 			// 
 			this.SMSFix3DGameDisplayToolStripMenuItem.Name = "SMSFix3DGameDisplayToolStripMenuItem";
-			this.SMSFix3DGameDisplayToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSFix3DGameDisplayToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSFix3DGameDisplayToolStripMenuItem.Text = "Fix 3D Game Display";
 			this.SMSFix3DGameDisplayToolStripMenuItem.Click += new System.EventHandler(this.SMSFix3DDisplayMenuItem_Click);
 			// 
 			// ShowClippedRegionsMenuItem
 			// 
 			this.ShowClippedRegionsMenuItem.Name = "ShowClippedRegionsMenuItem";
-			this.ShowClippedRegionsMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.ShowClippedRegionsMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.ShowClippedRegionsMenuItem.Text = "&Show Clipped Regions";
 			this.ShowClippedRegionsMenuItem.Click += new System.EventHandler(this.ShowClippedRegionsMenuItem_Click);
 			// 
 			// HighlightActiveDisplayRegionMenuItem
 			// 
 			this.HighlightActiveDisplayRegionMenuItem.Name = "HighlightActiveDisplayRegionMenuItem";
-			this.HighlightActiveDisplayRegionMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.HighlightActiveDisplayRegionMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.HighlightActiveDisplayRegionMenuItem.Text = "&Highlight Active Display Region";
 			this.HighlightActiveDisplayRegionMenuItem.Click += new System.EventHandler(this.HighlightActiveDisplayRegionMenuItem_Click);
 			// 
 			// SMSGraphicsSettingsMenuItem
 			// 
 			this.SMSGraphicsSettingsMenuItem.Name = "SMSGraphicsSettingsMenuItem";
-			this.SMSGraphicsSettingsMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSGraphicsSettingsMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSGraphicsSettingsMenuItem.Text = "&Graphics Settings...";
 			this.SMSGraphicsSettingsMenuItem.Click += new System.EventHandler(this.SMSGraphicsSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator24
 			// 
 			this.toolStripSeparator24.Name = "toolStripSeparator24";
-			this.toolStripSeparator24.Size = new System.Drawing.Size(275, 6);
+			this.toolStripSeparator24.Size = new System.Drawing.Size(274, 6);
 			// 
 			// SMSVDPViewerToolStripMenuItem
 			// 
 			this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
-			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
 			this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
 			// 
 			// GGGameGenieMenuItem
 			// 
 			this.GGGameGenieMenuItem.Name = "GGGameGenieMenuItem";
-			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.GGGameGenieMenuItem.Size = new System.Drawing.Size(277, 22);
 			this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
 			this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GGGameGenieMenuItem_Click);
 			// 
@@ -2950,7 +2950,7 @@
             this.GBAmGBAMenuItem,
             this.GBAVBANextMenuItem});
 			this.GBACoreSelectionSubMenu.Name = "GBACoreSelectionSubMenu";
-			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(180, 22);
+			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(135, 22);
 			this.GBACoreSelectionSubMenu.Text = "&Core";
 			this.GBACoreSelectionSubMenu.DropDownOpened += new System.EventHandler(this.GBACoreSelectionSubMenu_DropDownOpened);
 			// 
@@ -2971,19 +2971,19 @@
 			// GBAcoresettingsToolStripMenuItem1
 			// 
 			this.GBAcoresettingsToolStripMenuItem1.Name = "GBAcoresettingsToolStripMenuItem1";
-			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
 			this.GBAcoresettingsToolStripMenuItem1.Text = "&Settings...";
 			this.GBAcoresettingsToolStripMenuItem1.Click += new System.EventHandler(this.GBAcoresettingsToolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator33
 			// 
 			this.toolStripSeparator33.Name = "toolStripSeparator33";
-			this.toolStripSeparator33.Size = new System.Drawing.Size(177, 6);
+			this.toolStripSeparator33.Size = new System.Drawing.Size(132, 6);
 			// 
 			// GbaGpuViewerMenuItem
 			// 
 			this.GbaGpuViewerMenuItem.Name = "GbaGpuViewerMenuItem";
-			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
 			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
 			// 
@@ -3227,9 +3227,9 @@
 			// GB3xSubMenu
 			// 
 			this.GB3xSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GB3xsettingsToolStripMenuItem});
+			this.GB3xsettingsToolStripMenuItem});
 			this.GB3xSubMenu.Name = "GB3xSubMenu";
-			this.GB3xSubMenu.Size = new System.Drawing.Size(73, 19);
+			this.GB3xSubMenu.Size = new System.Drawing.Size(59, 19);
 			this.GB3xSubMenu.Text = "&GB Link 3x";
 			// 
 			// GB3xsettingsToolStripMenuItem
@@ -3253,6 +3253,21 @@
 			this.GGLsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.GGLsettingsToolStripMenuItem.Text = "Settings...";
 			this.GGLsettingsToolStripMenuItem.Click += new System.EventHandler(this.GGLSettingsMenuItem_Click);
+			// 
+			// VectrexSubMenu
+			// 
+			this.VectrexSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.VectrexsettingsToolStripMenuItem});
+			this.VectrexSubMenu.Name = "VectrexSubMenu";
+			this.VectrexSubMenu.Size = new System.Drawing.Size(60, 19);
+			this.VectrexSubMenu.Text = "&Vectrex";
+			// 
+			// VectrexsettingsToolStripMenuItem
+			// 
+			this.VectrexsettingsToolStripMenuItem.Name = "VectrexsettingsToolStripMenuItem";
+			this.VectrexsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.VectrexsettingsToolStripMenuItem.Text = "Settings...";
+			this.VectrexsettingsToolStripMenuItem.Click += new System.EventHandler(this.VectrexSettingsMenuItem_Click);
 			// 
 			// GenesisSubMenu
 			// 
@@ -3542,21 +3557,6 @@
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
 			this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
 			// 
-			// VectrexSubMenu
-			// 
-			this.VectrexSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.VectrexsettingsToolStripMenuItem});
-			this.VectrexSubMenu.Name = "VectrexSubMenu";
-			this.VectrexSubMenu.Size = new System.Drawing.Size(57, 19);
-			this.VectrexSubMenu.Text = "&Vectrex";
-			// 
-			// VectrexsettingsToolStripMenuItem
-			// 
-			this.VectrexsettingsToolStripMenuItem.Name = "VectrexsettingsToolStripMenuItem";
-			this.VectrexsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.VectrexsettingsToolStripMenuItem.Text = "Settings...";
-			this.VectrexsettingsToolStripMenuItem.Click += new System.EventHandler(this.VectrexSettingsMenuItem_Click);
-			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3656,7 +3656,7 @@
 			this.AmstradCPCTapesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cpct1ToolStripMenuItem});
 			this.AmstradCPCTapesSubMenu.Name = "AmstradCPCTapesSubMenu";
-			this.AmstradCPCTapesSubMenu.Size = new System.Drawing.Size(105, 22);
+			this.AmstradCPCTapesSubMenu.Size = new System.Drawing.Size(104, 22);
 			this.AmstradCPCTapesSubMenu.Text = "Tapes";
 			this.AmstradCPCTapesSubMenu.DropDownOpened += new System.EventHandler(this.AmstradCPCTapesSubMenu_DropDownOpened);
 			// 
@@ -3671,7 +3671,7 @@
 			this.AmstradCPCDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cpcd1ToolStripMenuItem});
 			this.AmstradCPCDisksSubMenu.Name = "AmstradCPCDisksSubMenu";
-			this.AmstradCPCDisksSubMenu.Size = new System.Drawing.Size(105, 22);
+			this.AmstradCPCDisksSubMenu.Size = new System.Drawing.Size(104, 22);
 			this.AmstradCPCDisksSubMenu.Text = "Disks";
 			this.AmstradCPCDisksSubMenu.DropDownOpened += new System.EventHandler(this.AmstradCPCDisksSubMenu_DropDownOpened);
 			// 
