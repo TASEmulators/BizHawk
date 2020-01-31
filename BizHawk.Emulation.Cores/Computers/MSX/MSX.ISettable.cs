@@ -55,6 +55,11 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				return (MSXSettings)MemberwiseClone();
 			}
 
+			public MSXSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
 			public static bool RebootNeeded(MSXSettings x, MSXSettings y)
 			{
 				return false;
@@ -63,9 +68,26 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		public class MSXSyncSettings
 		{
+			public enum ContrType
+			{
+				Joystick,
+				Keyboard
+			}
+
+			[DisplayName("Controller Configuration")]
+			[Description("Pick Between Controller Types")]
+			[DefaultValue(ContrType.Joystick)]
+			public ContrType Contr_Setting { get; set; }
+
+
 			public MSXSyncSettings Clone()
 			{
 				return (MSXSyncSettings)MemberwiseClone();
+			}
+
+			public MSXSyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
 			}
 
 			public static bool RebootNeeded(MSXSyncSettings x, MSXSyncSettings y)

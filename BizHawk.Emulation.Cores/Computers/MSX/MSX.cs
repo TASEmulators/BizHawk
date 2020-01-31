@@ -89,6 +89,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
+
+			current_controller = SyncSettings.Contr_Setting == MSXSyncSettings.ContrType.Keyboard ? MSXControllerKB : MSXControllerJS;
 		}
 
 		public void HardReset()
@@ -109,6 +111,8 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 
 		// Machine resources
 		private IController _controller = NullController.Instance;
+
+		private ControllerDefinition current_controller = null;
 
 		private int _frame = 0;
 

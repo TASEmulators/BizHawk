@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 		{
 			get
 			{
-				return MSXController;
+				return current_controller;		
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 			if (_controller.IsPressed("P2 B1")) ctrl2_byte -= 0x10;
 			if (_controller.IsPressed("P2 B2")) ctrl2_byte -= 0x20;
 
-			kb_rows_check(controller);
+			if (current_controller == MSXControllerKB) { kb_rows_check(controller); }		
 
 			_frame++;
 			
