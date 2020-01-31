@@ -16,10 +16,11 @@ namespace HelloWorld
 	[ExternalToolEmbeddedIcon("HelloWorld.icon_Hello.ico")]
 	public partial class CustomMainForm : Form, IExternalToolForm
 	{
-		/// <remarks><see cref="RequiredServiceAttribute">RequiredServices</see> are populated by EmuHawk at runtime.</remarks>
-		[RequiredService]
-		private IEmulator? _emu { get; set; }
+		/// <remarks><see cref="RequiredApiAttribute">RequiredApis</see> are populated by EmuHawk at runtime.</remarks>
+		[RequiredApi]
+		private IEmulation? _emu { get; set; }
 
+		/// <remarks><see cref="RequiredServiceAttribute">RequiredServices</see> are also populated at runtime as a hack.</remarks>
 		[RequiredService]
 		private IMemoryDomains? _memoryDomains { get; set; }
 
@@ -31,7 +32,7 @@ namespace HelloWorld
 			{
 				WatchList CreateWatches()
 				{
-					var w = new WatchList(_memoryDomains, _emu?.SystemId ?? string.Empty);
+					var w = new WatchList(_memoryDomains, _emu?.SystemID ?? string.Empty);
 					w.AddRange(new[] {
 						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x40, WatchSize.Byte, DisplayType.Hex, true),
 						Watch.GenerateWatch(_memoryDomains?.MainMemory, 0x50, WatchSize.Word, DisplayType.Unsigned, true),

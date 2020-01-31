@@ -17,16 +17,15 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		public GuiApi(Action<string> logCallback)
-		{
-			LogCallback = logCallback;
-		}
+		private CompositingMode _compositingMode = CompositingMode.SourceOver;
 
-		public GuiApi() : this(Console.WriteLine) {}
+		private int _defaultPixelFont = 1; // = "gens"
 
-		private readonly Action<string> LogCallback;
+		private DisplaySurface _GUISurface;
 
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+
+		private readonly Action<string> _logCallback;
 
 		private readonly Bitmap _nullGraphicsBitmap = new Bitmap(1, 1);
 
@@ -34,75 +33,51 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 
-		private ImageAttributes _attributes = new ImageAttributes();
+		public GuiApi(Action<string> logCallback)
+		{
+			_logCallback = logCallback;
+		}
 
-		private CompositingMode _compositingMode = CompositingMode.SourceOver;
+		public GuiApi() : this(Console.WriteLine) {}
 
-		private Color? _defaultBackground;
+		public ImageAttributes Attributes { get; set; } = new ImageAttributes();
 
-		private Color _defaultForeground = Color.White;
+		public Color? DefaultBackgroundColor { get; set; }
 
-		private int _defaultPixelFont = 1; // = "gens"
+		public Color DefaultForegroundColor { get; set; } = Color.White;
 
-		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
+		public string DefaultPixelFont
+		{
+			get => _defaultPixelFont switch
+			{
+				0 => "fceux",
+				1 => "gens",
+				_ => "unknown"
+			};
+			set
+			{
+				switch (value)
+				{
+					case "fceux":
+					case "0":
+						_defaultPixelFont = 0;
+						break;
+					case "gens":
+					case "1":
+						_defaultPixelFont = 1;
+						break;
+					default:
+						_logCallback($"Unable to find font family: {value}");
+						return;
+				}
+			}
+		}
 
-		private DisplaySurface _GUISurface;
-
-		private Padding _padding = new Padding(0);
+		public Color? DefaultTextBackground { get; set; } = Color.FromArgb(128, 0, 0, 0);
 
 		public bool HasGUISurface => _GUISurface != null;
 
-		private SolidBrush GetBrush(Color color) => _solidBrushes.TryGetValue(color, out var b) ? b : (_solidBrushes[color] = new SolidBrush(color));
-
-		private Pen GetPen(Color color) => _pens.TryGetValue(color, out var p) ? p : (_pens[color] = new Pen(color));
-
-		private Graphics GetGraphics()
-		{
-			var g = _GUISurface?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
-			// we don't like CoreComm, right? Someone should find a different way to do this then.
-			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
-			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
-			if (tx != 0 || ty != 0)
-			{
-				var transform = g.Transform;
-				transform.Translate(-tx, -ty);
-				g.Transform = transform;
-			}
-			return g;
-		}
-
-		public void ToggleCompositingMode() => _compositingMode = 1 - _compositingMode;
-
-		public ImageAttributes GetAttributes() => _attributes;
-
-		public void SetAttributes(ImageAttributes a) => _attributes = a;
-
-		public void DrawNew(string name, bool clear)
-		{
-			try
-			{
-				DrawFinish();
-				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear);
-			}
-			catch (InvalidOperationException ex)
-			{
-				LogCallback(ex.ToString());
-			}
-		}
-
-		public void DrawFinish()
-		{
-			if (_GUISurface != null) GlobalWin.DisplayManager.UnlockLuaSurface(_GUISurface);
-			_GUISurface = null;
-		}
-
-		public void SetPadding(int all) => _padding = new Padding(all);
-
-		public void SetPadding(int x, int y) => _padding = new Padding(x / 2, y / 2, x / 2 + x & 1, y / 2 + y & 1);
-
-		public void SetPadding(int l, int t, int r, int b) => _padding = new Padding(l, t, r, b);
-
-		public Padding GetPadding() => _padding;
+		public Padding Padding { get; set; } = new Padding(0);
 
 		public void AddMessage(string message) => GlobalWin.OSD.AddMessage(message);
 
@@ -112,41 +87,33 @@ namespace BizHawk.Client.EmuHawk
 			DrawFinish();
 		}
 
+		public void ClearImageCache()
+		{
+			foreach (var image in _imageCache) image.Value.Dispose();
+			_imageCache.Clear();
+		}
+
 		public void ClearText() => GlobalWin.OSD.ClearGuiText();
 
-		public void SetDefaultForegroundColor(Color color) => _defaultForeground = color;
-
-		public void SetDefaultBackgroundColor(Color color) => _defaultBackground = color;
-
-		public Color? GetDefaultTextBackground() => _defaultTextBackground;
-
-		public void SetDefaultTextBackground(Color color) => _defaultTextBackground = color;
-
-		public void SetDefaultPixelFont(string fontfamily)
+		public void Dispose()
 		{
-			switch (fontfamily)
-			{
-				case "fceux":
-				case "0":
-					_defaultPixelFont = 0;
-					break;
-				case "gens":
-				case "1":
-					_defaultPixelFont = 1;
-					break;
-				default:
-					LogCallback($"Unable to find font family: {fontfamily}");
-					return;
-			}
+			foreach (var brush in _solidBrushes.Values) brush.Dispose();
+			foreach (var brush in _pens.Values) brush.Dispose();
 		}
 
-		public void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color = null)
+		public void DrawAxis(int x, int y, int size, Color? color)
+		{
+			DrawLine(x + size, y, x - size, y, color ?? DefaultForegroundColor);
+			DrawLine(x, y + size, x, y - size, color ?? DefaultForegroundColor);
+		}
+
+		public void DrawBezier(Point p1, Point p2, Point p3, Point p4, Color? color)
 		{
 			try
 			{
 				using var g = GetGraphics();
 				g.CompositingMode = _compositingMode;
-				g.DrawBezier(GetPen(color ?? _defaultForeground), p1, p2, p3, p4);
+				g.DrawBezier(GetPen(color ?? DefaultForegroundColor), p1, p2, p3, p4);
 			}
 			catch (Exception)
 			{
@@ -154,13 +121,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawBeziers(Point[] points, Color? color = null)
+		public void DrawBeziers(Point[] points, Color? color)
 		{
 			try
 			{
 				using var g = GetGraphics();
 				g.CompositingMode = _compositingMode;
-				g.DrawBeziers(GetPen(color ?? _defaultForeground), points);
+				g.DrawBeziers(GetPen(color ?? DefaultForegroundColor), points);
 			}
 			catch (Exception)
 			{
@@ -168,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null)
+		public void DrawBox(int x, int y, int x2, int y2, Color? line, Color? background)
 		{
 			try
 			{
@@ -196,8 +163,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				using var g = GetGraphics();
 				g.CompositingMode = _compositingMode;
-				g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
-				var bg = background ?? _defaultBackground;
+				g.DrawRectangle(GetPen(line ?? DefaultForegroundColor), x, y, w, h);
+				var bg = background ?? DefaultBackgroundColor;
 				if (bg != null) g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
 			}
 			catch (Exception)
@@ -206,15 +173,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
+		public void DrawEllipse(int x, int y, int width, int height, Color? line, Color? background)
 		{
 			try
 			{
 				using var g = GetGraphics();
-				var bg = background ?? _defaultBackground;
+				var bg = background ?? DefaultBackgroundColor;
 				if (bg != null) g.FillEllipse(GetBrush(bg.Value), x, y, width, height);
 				g.CompositingMode = _compositingMode;
-				g.DrawEllipse(GetPen(line ?? _defaultForeground), x, y, width, height);
+				g.DrawEllipse(GetPen(line ?? DefaultForegroundColor), x, y, width, height);
 			}
 			catch (Exception)
 			{
@@ -222,7 +189,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
+		public void DrawFinish()
+		{
+			if (_GUISurface != null) GlobalWin.DisplayManager.UnlockLuaSurface(_GUISurface);
+			_GUISurface = null;
+		}
+
+		public void DrawIcon(string path, int x, int y, int? width, int? height)
 		{
 			try
 			{
@@ -247,11 +220,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
+		public void DrawImage(string path, int x, int y, int? width, int? height, bool cache)
 		{
 			if (!File.Exists(path))
 			{
-				LogCallback($"File not found: {path}");
+				_logCallback($"File not found: {path}");
 				return;
 			}
 			using var g = GetGraphics();
@@ -267,21 +240,15 @@ namespace BizHawk.Client.EmuHawk
 				img.Width,
 				img.Height,
 				GraphicsUnit.Pixel,
-				_attributes
+				Attributes
 			);
 		}
 
-		public void ClearImageCache()
-		{
-			foreach (var image in _imageCache) image.Value.Dispose();
-			_imageCache.Clear();
-		}
-
-		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width, int? dest_height)
 		{
 			if (!File.Exists(path))
 			{
-				LogCallback($"File not found: {path}");
+				_logCallback($"File not found: {path}");
 				return;
 			}
 			using var g = GetGraphics();
@@ -294,38 +261,45 @@ namespace BizHawk.Client.EmuHawk
 				source_width,
 				source_height,
 				GraphicsUnit.Pixel,
-				_attributes
+				Attributes
 			);
 		}
 
-		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
+		public void DrawLine(int x1, int y1, int x2, int y2, Color? color)
 		{
 			using var g = GetGraphics();
 			g.CompositingMode = _compositingMode;
-			g.DrawLine(GetPen(color ?? _defaultForeground), x1, y1, x2, y2);
+			g.DrawLine(GetPen(color ?? DefaultForegroundColor), x1, y1, x2, y2);
 		}
 
-		public void DrawAxis(int x, int y, int size, Color? color = null)
+		public void DrawNew(string name, bool clear)
 		{
-			DrawLine(x + size, y, x - size, y, color ?? _defaultForeground);
-			DrawLine(x, y + size, x, y - size, color ?? _defaultForeground);
+			try
+			{
+				DrawFinish();
+				_GUISurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear);
+			}
+			catch (InvalidOperationException ex)
+			{
+				_logCallback(ex.ToString());
+			}
 		}
 
-		public void DrawPie(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null, Color? background = null)
+		public void DrawPie(int x, int y, int width, int height, int startangle, int sweepangle, Color? line, Color? background)
 		{
 			using var g = GetGraphics();
 			g.CompositingMode = _compositingMode;
-			var bg = background ?? _defaultBackground;
+			var bg = background ?? DefaultBackgroundColor;
 			if (bg != null) g.FillPie(GetBrush(bg.Value), x, y, width, height, startangle, sweepangle);
-			g.DrawPie(GetPen(line ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
+			g.DrawPie(GetPen(line ?? DefaultForegroundColor), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
 		}
 
-		public void DrawPixel(int x, int y, Color? color = null)
+		public void DrawPixel(int x, int y, Color? color)
 		{
 			try
 			{
 				using var g = GetGraphics();
-				g.DrawLine(GetPen(color ?? _defaultForeground), x, y, x + 0.1F, y);
+				g.DrawLine(GetPen(color ?? DefaultForegroundColor), x, y, x + 0.1F, y);
 			}
 			catch (Exception)
 			{
@@ -333,13 +307,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawPolygon(Point[] points, Color? line = null, Color? background = null)
+		public void DrawPolygon(Point[] points, Color? line, Color? background)
 		{
 			try
 			{
 				using var g = GetGraphics();
-				g.DrawPolygon(GetPen(line ?? _defaultForeground), points);
-				var bg = background ?? _defaultBackground;
+				g.DrawPolygon(GetPen(line ?? DefaultForegroundColor), points);
+				var bg = background ?? DefaultBackgroundColor;
 				if (bg != null) g.FillPolygon(GetBrush(bg.Value), points);
 			}
 			catch (Exception)
@@ -348,17 +322,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null)
+		public void DrawRectangle(int x, int y, int width, int height, Color? line, Color? background)
 		{
 			using var g = GetGraphics();
 			var w = Math.Max(width, 0.1F);
 			var h = Math.Max(height, 0.1F);
-			g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
-			var bg = background ?? _defaultBackground;
+			g.DrawRectangle(GetPen(line ?? DefaultForegroundColor), x, y, w, h);
+			var bg = background ?? DefaultBackgroundColor;
 			if (bg != null) g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
 		}
 
-		public void DrawString(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null, string horizalign = null, string vertalign = null)
+		public void DrawString(int x, int y, string message, Color? forecolor, Color? backcolor, int? fontsize, string fontfamily, string fontstyle, string horizalign, string vertalign)
 		{
 			try
 			{
@@ -408,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 
-				var bg = backcolor ?? _defaultBackground;
+				var bg = backcolor ?? DefaultBackgroundColor;
 				if (bg != null)
 				{
 					var brush = GetBrush(bg.Value);
@@ -418,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+				g.DrawString(message, font, GetBrush(forecolor ?? DefaultForegroundColor), x, y);
 			}
 			catch (Exception)
 			{
@@ -426,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void DrawText(int x, int y, string message, Color? forecolor = null, Color? backcolor = null, string fontfamily = null)
+		public void DrawText(int x, int y, string message, Color? forecolor, Color? backcolor, string fontfamily)
 		{
 			try
 			{
@@ -444,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 					default:
 						if (!string.IsNullOrEmpty(fontfamily)) // not a typo
 						{
-							LogCallback($"Unable to find font family: {fontfamily}");
+							_logCallback($"Unable to find font family: {fontfamily}");
 							return;
 						}
 						index = _defaultPixelFont;
@@ -460,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 				).ToSize();
 				if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0)));
 				g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-				g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
+				g.DrawString(message, font, GetBrush(forecolor ?? DefaultForegroundColor), x, y);
 			}
 			catch (Exception)
 			{
@@ -468,7 +442,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void Text(int x, int y, string message, Color? forecolor = null, string anchor = null)
+		private SolidBrush GetBrush(Color color) => _solidBrushes.TryGetValue(color, out var b) ? b : (_solidBrushes[color] = new SolidBrush(color));
+
+		private Graphics GetGraphics()
+		{
+			var g = _GUISurface?.GetGraphics() ?? Graphics.FromImage(_nullGraphicsBitmap);
+			// we don't like CoreComm, right? Someone should find a different way to do this then.
+			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
+			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
+			if (tx != 0 || ty != 0)
+			{
+				var transform = g.Transform;
+				transform.Translate(-tx, -ty);
+				g.Transform = transform;
+			}
+			return g;
+		}
+
+		private Pen GetPen(Color color) => _pens.TryGetValue(color, out var p) ? p : (_pens[color] = new Pen(color));
+
+		public void Text(int x, int y, string message, Color? forecolor, string anchor)
 		{
 			int a = default;
 			if (!string.IsNullOrEmpty(anchor))
@@ -496,10 +489,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddGuiText(message,  pos, Color.Black, forecolor ?? Color.White);
 		}
 
-		public void Dispose()
-		{
-			foreach (var brush in _solidBrushes.Values) brush.Dispose();
-			foreach (var brush in _pens.Values) brush.Dispose();
-		}
+		public void ToggleCompositingMode() => _compositingMode = 1 - _compositingMode;
 	}
 }

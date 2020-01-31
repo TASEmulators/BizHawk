@@ -58,7 +58,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 		public readonly IDictionary<string, object?> BaselineValues = new Dictionary<string, object?>();
 
 		[RequiredApi]
-		private IEmu? EmuHawkAPI { get; set; }
+		private IEmulation? EmuHawkAPI { get; set; }
 
 		public override string Text => "AutoGenConfig";
 
@@ -113,7 +113,7 @@ namespace BizHawk.Experiment.AutoGenConfig
 			});
 			Load += (loadEventSender, loadEventArgs) =>
 			{
-				var config = (EmuHawkAPI as EmuApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
+				var config = (EmuHawkAPI as EmulationApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
 				flpMain.Controls.AddRange(CachedControlGenerators.Select(it => it.Item2.GenerateControl(it.Item1, config, BaselineValues)).ToArray());
 			};
 			ResumeLayout();

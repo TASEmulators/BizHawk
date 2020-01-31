@@ -17,6 +17,7 @@
 		</Reference>
 		<!--<Reference Include="System.Drawing" />-->
 		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Net.Http" />
 		<Reference Include="System.Windows.Forms" />
 		<!--<Reference Include="System.Xml" />-->
 		<!--<Reference Include="System.Xml.Linq" />-->
@@ -24,9 +25,7 @@
 	<ItemGroup>
 		<PackageReference Include="Ionic.Zip" Version="1.9.1.8" PrivateAssets="All" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" PrivateAssets="All" />
-		<Reference Include="NLua"
-			HintPath="$(SolutionDir)output/dll/nlua/NLua.dll"
-			Private="False" />
+		<Reference Include="NLua" HintPath="$(SolutionDir)output/dll/nlua/NLua.dll" Private="False" />
 		<PackageReference Include="SharpCompress" Version="0.24.0" PrivateAssets="All" />
 		<PackageReference Include="SharpZipLib" Version="1.1.0" PrivateAssets="All" />
 	</ItemGroup>

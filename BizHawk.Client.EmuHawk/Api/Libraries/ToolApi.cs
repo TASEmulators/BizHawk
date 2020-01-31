@@ -8,6 +8,12 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class ToolApi : ITool
 	{
+		public object CreateInstance(string name)
+		{
+			var found = Util.GetTypeByName(name).FirstOrDefault();
+			return found != null ? Activator.CreateInstance(found) : null;
+		}
+
 		public Type GetTool(string name)
 		{
 			var toolType = Util.GetTypeByName(name).FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
@@ -15,21 +21,15 @@ namespace BizHawk.Client.EmuHawk
 			return GlobalWin.Tools.AvailableTools.FirstOrDefault(tool => tool.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public object CreateInstance(string name)
-		{
-			var found = Util.GetTypeByName(name).FirstOrDefault();
-			return found != null ? Activator.CreateInstance(found) : null;
-		}
-
 		public void OpenCheats() => GlobalWin.Tools.Load<Cheats>();
 
 		public void OpenHexEditor() => GlobalWin.Tools.Load<HexEditor>();
 
-		public void OpenRamWatch() => GlobalWin.Tools.LoadRamWatch(loadDialog: true);
+		public void OpenRAMSearch() => GlobalWin.Tools.Load<RamSearch>();
 
-		public void OpenRamSearch() => GlobalWin.Tools.Load<RamSearch>();
+		public void OpenRAMWatch() => GlobalWin.Tools.LoadRamWatch(loadDialog: true);
 
-		public void OpenTasStudio() => GlobalWin.Tools.Load<TAStudio>();
+		public void OpenTASStudio() => GlobalWin.Tools.Load<TAStudio>();
 
 		public void OpenToolBox() => GlobalWin.Tools.Load<ToolBox>();
 

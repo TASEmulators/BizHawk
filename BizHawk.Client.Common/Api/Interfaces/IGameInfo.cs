@@ -4,12 +4,18 @@ namespace BizHawk.Client.Common
 {
 	public interface IGameInfo : IExternalApi
 	{
-		string GetRomName();
-		string GetRomHash();
-		bool InDatabase();
-		string GetStatus();
-		bool IsStatusBad();
-		string GetBoardType();
-		Dictionary<string, string> GetOptions();
+		string BoardType { get; }
+
+		bool IsStatusBad { get; }
+
+		string RomHash { get; }
+
+		string RomName { get; }
+
+		bool RomNotInDatabase { get; }
+
+		string RomStatus { get; }
+
+		IDictionary<string, string> GetOptions();
 	}
 }

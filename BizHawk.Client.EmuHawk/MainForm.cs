@@ -273,6 +273,7 @@ namespace BizHawk.Client.EmuHawk
 				GraphicsControl = { MainWindow = true }
 			};
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
+			Communication.RenderScreenshotCallback = GlobalWin.DisplayManager.RenderVideoProvider;
 			Controls.Add(PresentationPanel);
 			Controls.SetChildIndex(PresentationPanel, 0);
 

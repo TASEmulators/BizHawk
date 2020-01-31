@@ -8,14 +8,14 @@ namespace BizHawk.Client.EmuHawk
 {
 	public sealed class InputApi : IInput
 	{
-		public Dictionary<string, bool> Get()
+		public IDictionary<string, bool> Get()
 		{
 			var buttons = new Dictionary<string, bool>();
 			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons().Where(kvp => kvp.Value)) buttons[kvp.Key] = true;
 			return buttons;
 		}
 
-		public Dictionary<string, dynamic> GetMouse()
+		public IDictionary<string, dynamic> GetMouse()
 		{
 			var buttons = new Dictionary<string, dynamic>();
 			// TODO - need to specify whether in "emu" or "native" coordinate space.

@@ -5,42 +5,20 @@ namespace BizHawk.Client.Common
 {
 	public sealed class JoypadApi : IJoypad
 	{
+		private readonly Action<string> _logCallback;
+
 		public JoypadApi(Action<string> logCallback)
 		{
-			LogCallback = logCallback;
+			_logCallback = logCallback;
 		}
 
 		public JoypadApi() : this(Console.WriteLine) {}
 
-		private readonly Action<string> LogCallback;
+		public IDictionary<string, dynamic> Get(int? controller) => Global.AutofireStickyXORAdapter.ToDictionary(controller);
 
-		public IDictionary<string, dynamic> Get(int? controller = null)
-		{
-			return Global.AutofireStickyXORAdapter.ToDictionary(controller);
-		}
+		public IDictionary<string, dynamic> GetImmediate(int? controller) => Global.ActiveController.ToDictionary(controller);
 
-		public IDictionary<string, dynamic> GetImmediate(int? controller = null)
-		{
-			return Global.ActiveController.ToDictionary(controller);
-		}
-
-		public void SetFromMnemonicStr(string inputLogEntry)
-		{
-			var lg = Global.MovieSession.MovieControllerInstance();
-			try
-			{
-				lg.SetControllersAsMnemonic(inputLogEntry);
-			}
-			catch (Exception)
-			{
-				LogCallback($"invalid mnemonic string: {inputLogEntry}");
-				return;
-			}
-			foreach (var button in lg.Definition.BoolButtons) Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
-			foreach (var floatButton in lg.Definition.FloatControls) Global.ButtonOverrideAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
-		}
-
-		public void Set(Dictionary<string, bool> buttons, int? controller = null)
+		public void Set(IDictionary<string, bool> buttons, int? controller)
 		{
 			foreach (var button in Global.ActiveController.Definition.BoolButtons)
 			{
@@ -48,7 +26,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Set(string button, bool? state = null, int? controller = null)
+		public void Set(string button, bool? state, int? controller)
 		{
 			try
 			{
@@ -63,12 +41,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void SetAnalog(Dictionary<string, float> controls, object controller = null)
+		public void SetAnalog(IDictionary<string, float> controls, object controller)
 		{
 			foreach (var kvp in controls) SetAnalog(kvp.Key, kvp.Value, controller);
 		}
 
-		public void SetAnalog(string control, float? value = null, object controller = null)
+		public void SetAnalog(string control, float? value, object controller)
 		{
 			try
 			{
@@ -78,6 +56,22 @@ namespace BizHawk.Client.Common
 			{
 				// ignored
 			}
+		}
+
+		public void SetFromMnemonicStr(string inputLogEntry)
+		{
+			var lg = Global.MovieSession.MovieControllerInstance();
+			try
+			{
+				lg.SetControllersAsMnemonic(inputLogEntry);
+			}
+			catch (Exception)
+			{
+				_logCallback($"invalid mnemonic string: {inputLogEntry}");
+				return;
+			}
+			foreach (var button in lg.Definition.BoolButtons) Global.ButtonOverrideAdaptor.SetButton(button, lg.IsPressed(button));
+			foreach (var floatButton in lg.Definition.FloatControls) Global.ButtonOverrideAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
 		}
 	}
 }

@@ -2,11 +2,14 @@
 using System.Drawing;
 using System.Threading;
 
-using NLua;
 using BizHawk.Common.ReflectionExtensions;
+
+using NLua;
 
 namespace BizHawk.Client.Common
 {
+	/// <summary>Base class for all external APIs in Lua.</summary>
+	/// <seealso cref="IExternalApi"/>
 	public abstract class LuaLibraryBase
 	{
 		protected LuaLibraryBase(Lua lua)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -9,24 +10,18 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IBoardInfo BoardInfo { get; set; }
 
-		public string GetRomName() => Global.Game?.Name ?? "";
+		public string BoardType => BoardInfo?.BoardName ?? string.Empty;
 
-		public string GetRomHash() => Global.Game?.Hash ?? "";
+		public bool IsStatusBad => Global.Game?.IsRomStatusBad() != false;
 
-		public bool InDatabase() => Global.Game?.NotInDatabase == false;
+		public string RomHash => Global.Game?.Hash ?? string.Empty;
 
-		public string GetStatus() => Global.Game?.Status.ToString();
+		public string RomName => Global.Game?.Name ?? string.Empty;
 
-		public bool IsStatusBad() => Global.Game?.IsRomStatusBad() != false;
+		public bool RomNotInDatabase => Global.Game?.NotInDatabase != false;
 
-		public string GetBoardType() => BoardInfo?.BoardName ?? "";
+		public string RomStatus => Global.Game?.Status.ToString();
 
-		public Dictionary<string, string> GetOptions()
-		{
-			var options = new Dictionary<string, string>();
-			if (Global.Game == null) return options;
-			foreach (var option in Global.Game.GetOptionsDict()) options[option.Key] = option.Value;
-			return options;
-		}
+		public IDictionary<string, string> GetOptions() => Global.Game?.GetOptionsDict()?.SimpleCopy() ?? new Dictionary<string, string>();
 	}
 }

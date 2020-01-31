@@ -1,4 +1,5 @@
 ﻿using BizHawk.Bizware.BizwareGL;
+using BizHawk.Client.Common;
 
 // ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.EmuHawk

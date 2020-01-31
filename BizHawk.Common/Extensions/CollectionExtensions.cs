@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Common.CollectionExtensions
 {
@@ -95,6 +96,41 @@ namespace BizHawk.Common.CollectionExtensions
 			}
 
 			throw new InvalidOperationException("Item not found");
+		}
+
+#if true
+		public static Dictionary<TKey, TValue> SimpleCopy<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> dict)
+		{
+			var entryList = dict.ToList();
+			var copy = new Dictionary<TKey, TValue>();
+			for (int i = 0, l = entryList.Count; i != l; i++)
+			{
+				var entry = entryList[i];
+				copy.Add(entry.Key, entry.Value);
+			}
+			return copy;
+		}
+#else // faster?
+		public static Dictionary<TKey, TValue> SimpleCopy<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> dict)
+		{
+			var copy = new Dictionary<TKey, TValue>();
+			using var @enum = dict.GetEnumerator();
+			@enum.Reset();
+			KeyValuePair<TKey, TValue> entry;
+			while (@enum.MoveNext())
+			{
+				entry = @enum.Current;
+				copy.Add(entry.Key, entry.Value);
+			}
+			return copy;
+		}
+#endif
+
+		public static List<T> SimpleCopy<T>(this IList<T> list)
+		{
+			var copy = new List<T>();
+			for (int i = 0, l = list.Count; i != l; i++) copy[i] = list[i];
+			return copy;
 		}
 	}
 }

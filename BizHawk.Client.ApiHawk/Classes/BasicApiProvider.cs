@@ -16,18 +16,16 @@ namespace BizHawk.Client.ApiHawk
 	/// <seealso cref="IExternalApiProvider"/> 
 	public class BasicApiProvider : IExternalApiProvider
 	{
-		private readonly Dictionary<Type, IExternalApi> _apis;
+		private readonly IDictionary<Type, IExternalApi> _apis;
 
-		public BasicApiProvider(IApiContainer container)
+		public BasicApiProvider(IDictionary<Type, IExternalApi> container)
 		{
 			// simplified logic here doesn't scan for possible Apis; just adds what it knows is implemented by the PluginApi
 			// this removes the possibility of automagically picking up a Api in a nested class, (find the type, then
 			// find the field), but we're going to keep such logic out of the basic provider.  Anything the passed
 			// container doesn't implement directly needs to be added with Register()
 			// this also fully allows apis that are not IExternalApi
-			var libs = container.Libraries;
-
-			_apis = libs;
+			_apis = container;
 		}
 
 		/// <summary>the client can call this to register an additional API</summary>

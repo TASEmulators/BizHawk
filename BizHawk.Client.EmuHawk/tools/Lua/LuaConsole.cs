@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 						MainForm.FrameBufferResized();
 					}
 
-					LuaImp.GuiLibrary.DrawFinish();
+					LuaImp.GuiLibrary?.DrawFinish();
 					LuaImp?.Close();
 				}
 				else
@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaSandbox.DefaultLogger = WriteToOutputWindow;
 		}
 
-		public PlatformEmuLuaLibrary LuaImp { get; private set; }
+		public LuaLibraries LuaImp { get; private set; }
 
 		public bool UpdateBefore => true;
 
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
-			LuaImp = OSTailoredCode.IsUnixHost ? (PlatformEmuLuaLibrary) new NotReallyLuaLibrary() : new EmuLuaLibrary(Emulator.ServiceProvider, MainForm);
+			LuaImp = OSTailoredCode.IsUnixHost ? (LuaLibraries) new UnixLuaLibraries() : new WinLuaLibraries(Emulator.ServiceProvider, MainForm);
 			LuaImp.ScriptList.AddRange(currentScripts ?? Enumerable.Empty<LuaFile>());
 
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => $"{a.Library}.{a.Name}").ToArray());

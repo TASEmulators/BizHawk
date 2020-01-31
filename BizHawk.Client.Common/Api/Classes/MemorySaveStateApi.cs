@@ -11,27 +11,23 @@ namespace BizHawk.Client.Common
 		[RequiredService]
 		private IStatable StatableCore { get; set; }
 
+		private readonly Action<string> _logCallback;
+
+		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
+
 		public MemorySaveStateApi(Action<string> logCallback)
 		{
-			LogCallback = logCallback;
+			_logCallback = logCallback;
 		}
 
 		public MemorySaveStateApi() : this(Console.WriteLine) {}
 
-		private readonly Action<string> LogCallback;
+		public void ClearInMemoryStates() => _memorySavestates.Clear();
 
-		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
+		public void DeleteState(Guid guid) => _memorySavestates.Remove(guid);
 
-		public string SaveCoreStateToMemory()
+		public void LoadCoreStateFromMemory(Guid guid)
 		{
-			var guid = Guid.NewGuid();
-			_memorySavestates.Add(guid, (byte[]) StatableCore.SaveStateBinary().Clone());
-			return guid.ToString();
-		}
-
-		public void LoadCoreStateFromMemory(string identifier)
-		{
-			var guid = new Guid(identifier);
 			try
 			{
 				using var ms = new MemoryStream(_memorySavestates[guid]);
@@ -40,12 +36,15 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				LogCallback("Unable to find the given savestate in memory");
+				_logCallback("Unable to find the given savestate in memory");
 			}
 		}
 
-		public void DeleteState(string identifier) => _memorySavestates.Remove(new Guid(identifier));
-
-		public void ClearInMemoryStates() => _memorySavestates.Clear();
+		public Guid SaveCoreStateToMemory()
+		{
+			var guid = Guid.NewGuid();
+			_memorySavestates.Add(guid, (byte[]) StatableCore.SaveStateBinary().Clone());
+			return guid;
+		}
 	}
 }

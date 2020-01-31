@@ -2,10 +2,12 @@
 {
 	public interface IUserData : IExternalApi
 	{
-		void Set(string name, object value);
-		object Get(string key);
+		object this[string key] { get; set; }
+
 		void Clear();
-		bool Remove(string key);
+
 		bool ContainsKey(string key);
+
+		bool Remove(string key);
 	}
 }
