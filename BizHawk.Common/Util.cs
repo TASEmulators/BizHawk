@@ -496,6 +496,16 @@ namespace BizHawk.Common
 			dst[index + 2] = (byte)(value >> 16);
 			dst[index + 3] = (byte)(value >> 24);
 		}
+
+		public static ushort SwapEndianness(ushort value)
+		{
+			return (ushort)((value >> 8) | (value << 8));
+		}
+
+		public static uint SwapEndianness(uint value)
+		{
+			return (value >> 24) | ((value & 0x00ff0000) >> 8) | ((value & 0x0000ff00) << 8) | (value << 24);
+		}
 	}
 
 	public static class VLInteger
