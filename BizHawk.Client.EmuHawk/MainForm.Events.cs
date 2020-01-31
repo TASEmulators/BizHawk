@@ -907,7 +907,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.ShowLogWindow)
 			{
-				LogConsole.ShowConsole();
+				MessageBox.Show("Windows doesn't like changing standard output. Restart BizHawk to see the log window.", "restart required");
+				//LogConsole.ShowConsole();
 			}
 			else
 			{
