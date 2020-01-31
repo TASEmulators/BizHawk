@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 				| (controller.IsPressed("Touch") ? 0x2000 : 0)
 				| (controller.IsPressed("Lid") ? 0x4000 : 0);
 			FrameAdvance((short)buttons, (byte)controller.GetFloat("TouchX"), (byte)controller.GetFloat("TouchY"));
+			getNewBuffer = true;
 			return true;
 		}
 

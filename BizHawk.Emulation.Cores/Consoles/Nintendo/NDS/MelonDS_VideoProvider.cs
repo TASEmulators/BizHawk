@@ -33,14 +33,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.NDS
 		[DllImport(dllPath)]
 		private static extern void VideoBuffer32bit(int* dstBuffer);
 
+		// BizHawk needs to be able to modify the buffer when loading savestates.
+		private int[] buffer = new int[NATIVE_WIDTH * NATIVE_HEIGHT * 2];
+		private bool getNewBuffer = true;
 		public int[] GetVideoBuffer()
 		{
-			int[] ret = new int[NATIVE_WIDTH * NATIVE_HEIGHT * 2];
-			fixed (int* v = ret)
+			if (getNewBuffer)
 			{
-				VideoBuffer32bit(v);
+				fixed (int* v = buffer)
+				{
+					VideoBuffer32bit(v);
+				}
+				getNewBuffer = false;
 			}
-			return ret;
+			return buffer;
 		}
 	}
 }
