@@ -1,11 +1,16 @@
 ﻿using BizHawk.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
 	public class MemoryDomainDelegate : MemoryDomain
 	{
 		private Action<long, byte> _poke;
+
+		private Func<ICollection<long>, IEnumerable<byte>> _bulkPeekByte { get; set; }
+		private Func<ICollection<long>, bool, IEnumerable<ushort>> _bulkPeekUshort { get; set; }
+		private Func<ICollection<long>, bool, IEnumerable<uint>> _bulkPeekUint { get; set; }
 
 		public Func<long, byte> Peek { get; set; }
 
@@ -29,7 +34,43 @@ namespace BizHawk.Emulation.Common
 			_poke?.Invoke(addr, val);
 		}
 
-		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize)
+		public override IEnumerable<byte> BulkPeekByte(ICollection<long> addresses)
+		{
+			if (_bulkPeekByte != null)
+			{
+				return _bulkPeekByte.Invoke(addresses);
+			}
+			else
+			{
+				return base.BulkPeekByte(addresses);
+			}
+		}
+
+		public override IEnumerable<ushort> BulkPeekUshort(ICollection<long> addresses, bool bigEndian)
+		{
+			if (_bulkPeekUshort != null)
+			{
+				return _bulkPeekUshort.Invoke(addresses, EndianType == Endian.Big);
+			}
+			else
+			{
+				return base.BulkPeekUshort(addresses, EndianType == Endian.Big);
+			}
+		}
+
+		public override IEnumerable<uint> BulkPeekUint(ICollection<long> addresses, bool bigEndian)
+		{
+			if (_bulkPeekUint != null)
+			{
+				return _bulkPeekUint.Invoke(addresses, EndianType == Endian.Big);
+			}
+			else
+			{
+				return base.BulkPeekUint(addresses, EndianType == Endian.Big);
+			}
+		}
+
+		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize, Func<ICollection<long>, IEnumerable<byte>> bulkPeekByte = null, Func<ICollection<long>, bool, IEnumerable<ushort>> bulkPeekUshort = null, Func<ICollection<long>, bool, IEnumerable<uint>> bulkPeekUint = null)
 		{
 			Name = name;
 			EndianType = endian;
@@ -38,6 +79,9 @@ namespace BizHawk.Emulation.Common
 			_poke = poke;
 			Writable = poke != null;
 			WordSize = wordSize;
+			_bulkPeekByte = bulkPeekByte;
+			_bulkPeekUshort = bulkPeekUshort;
+			_bulkPeekUint = bulkPeekUint;
 		}
 	}
 
