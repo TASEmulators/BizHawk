@@ -742,6 +742,7 @@
 			this.MaximizeAddressBox.Nullable = true;
 			this.MaximizeAddressBox.Size = new System.Drawing.Size(67, 20);
 			this.MaximizeAddressBox.TabIndex = 1009;
+			this.MaximizeAddressBox.TextChanged += new System.EventHandler(this.MaximizeAddressBox_TextChanged);
 			// 
 			// maximizeLabeltext
 			// 
