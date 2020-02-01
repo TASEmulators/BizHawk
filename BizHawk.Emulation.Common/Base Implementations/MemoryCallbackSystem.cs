@@ -68,11 +68,13 @@ namespace BizHawk.Emulation.Common
 
 		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, uint value, uint flags, string scope)
 		{
-			foreach (var cb in cbs)
+			// ReSharper disable once ForCanBeConvertedToForeach
+			// Intentionally a for loop - https://github.com/TASVideos/BizHawk/issues/1823
+			for (int i = 0; i < cbs.Count; i++)
 			{
-				if (!cb.Address.HasValue || (cb.Scope == scope && cb.Address == (addr & cb.AddressMask)))
+				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
 				{
-					cb.Callback(addr, value, flags);
+					cbs[i].Callback(addr, value, flags);
 				}
 			}
 		}
