@@ -1017,7 +1017,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
+			Settings.BindMarkersToInput = CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
 		}
 
 		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)

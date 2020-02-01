@@ -105,6 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool DenoteMarkersWithBGColor { get; set; }
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
+			public bool BindMarkersToInput { get; set; }
 		}
 
 		#region Initializing
@@ -311,6 +312,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.Font = TasViewFont;
+			CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 			RefreshDialog();
 			_initialized = true;
 		}
@@ -561,6 +563,7 @@ namespace BizHawk.Client.EmuHawk
 			TasMovie newMovie = new TasMovie(startsFromSavestate: startsFromSavestate);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
+			newMovie.BindMarkersToInput = Settings.BindMarkersToInput;
 
 			BookMarkControl.LoadedCallback = BranchLoaded;
 			BookMarkControl.SavedCallback = BranchSaved;
@@ -613,8 +616,9 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				Global.MovieSession.Movie = new TasMovie();
+				CurrentTasMovie.BindMarkersToInput = Settings.BindMarkersToInput;
+
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
-				
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
 
 				BookMarkControl.LoadedCallback = BranchLoaded;
