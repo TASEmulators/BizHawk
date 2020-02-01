@@ -55,6 +55,9 @@ namespace BizHawk.Client.EmuHawk
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
 		
+		private bool _previousDisplayMessage;
+		private bool _previousInvisibleEmulation;
+
 		#region Services and Settings
 
 		[RequiredService]
@@ -74,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			public RecentFiles RecentBotFiles { get; set; } = new RecentFiles();
 			public bool TurboWhenBotting { get; set; } = true;
+			public bool InvisibleEmulation { get; set; }
 		}
 
 		#endregion
@@ -86,6 +90,12 @@ namespace BizHawk.Client.EmuHawk
 
 			_comparisonBotAttempt = new BotAttempt();
 			MainOperator.SelectedItem = ">=";
+		}
+
+		private void BasicBot_Load(object sender, EventArgs e)
+		{
+			_previousInvisibleEmulation = InvisibleEmulationCheckBox.Checked = Settings.InvisibleEmulation;
+			_previousDisplayMessage = Config.DisplayMessages;
 		}
 
 		#region UI Bindings
@@ -960,10 +970,19 @@ namespace BizHawk.Client.EmuHawk
 
 			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
+			_previousDisplayMessage = Config.DisplayMessages;
+			Config.DisplayMessages = false;
+
 			MainForm.UnpauseEmulator();
 			if (Settings.TurboWhenBotting)
 			{
 				SetMaxSpeed();
+			}
+
+			if (InvisibleEmulationCheckBox.Checked)
+			{
+				_previousInvisibleEmulation = MainForm.InvisibleEmulation;
+				MainForm.InvisibleEmulation = true;
 			}
 
 			UpdateBotStatusIcon();
@@ -1010,6 +1029,8 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
 			}
 
+			Config.DisplayMessages = _previousDisplayMessage;
+			MainForm.InvisibleEmulation = _previousInvisibleEmulation;
 			MainForm.PauseEmulator();
 			SetNormalSpeed();
 			UpdateBotStatusIcon();
@@ -1209,6 +1230,16 @@ namespace BizHawk.Client.EmuHawk
 		private void HelpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Process.Start("http://tasvideos.org/Bizhawk/BasicBot.html");
+		}
+
+		private void InvisibleEmulationCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			Settings.InvisibleEmulation ^= true;
+		}
+
+		private void MaximizeAddressBox_TextChanged(object sender, EventArgs e)
+		{
+			AssessRunButtonStatus();
 		}
 	}
 }
