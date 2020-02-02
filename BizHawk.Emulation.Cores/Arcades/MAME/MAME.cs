@@ -565,6 +565,22 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			}
 			else if (!_frameDone)
 			{
+				IntPtr ptr = LibMAME.mame_lua_get_string(MAMELuaCommand.GetSpaceBuffer, out var lengthInBytes);
+
+				if (ptr == IntPtr.Zero)
+				{
+					Console.WriteLine("LibMAME ERROR: audio buffer pointer is null");
+					return;
+				}
+
+				//byte[] buf = new byte[lengthInBytes];
+				//Marshal.Copy(ptr, buf, 0, lengthInBytes);
+
+				if (!LibMAME.mame_lua_free_string(ptr))
+				{
+					Console.WriteLine("LibMAME ERROR: audio buffer wasn't freed");
+				}
+
 				Update();
 				_frameDone = true;
 				_mameFrameComplete.Set();
@@ -695,6 +711,16 @@ namespace BizHawk.Emulation.Cores.Arcades.MAME
 			public const string GetSpaceAddressShift = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].shift";
 			public const string GetSpaceDataWidth = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].data_width";
 			public const string GetSpaceEndianness = "return manager:machine().devices[\":maincpu\"].spaces[\"program\"].endianness";
+			public const string GetSpaceBuffer =
+				"local space = manager:machine().devices[\":maincpu\"].spaces[\"program\"]" +
+				"local address_shift = space.shift " +
+				"local data_width = space.data_width " +
+				"local bit_step " +
+				"if     address_shift == 0 then bit_step = data_width " +
+				"elseif address_shift >  0 then bit_step = data_width << address_shift " +
+				"elseif address_shift<  0 then bit_step = 8 " +
+				"end " +
+				"return space:read_range(0, 0xfffffff, space.data_width, math.floor(bit_step / 8))";
 
 			// complex stuff
 			public const string GetBoundX =
