@@ -26,6 +26,5 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="Interfaces/IHookManager.cs" />
-		<Compile Remove="WorkingTypes/**/*.cs" />
 	</ItemGroup>
 </Project>
