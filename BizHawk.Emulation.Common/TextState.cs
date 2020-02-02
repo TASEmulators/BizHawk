@@ -23,11 +23,13 @@ namespace BizHawk.Emulation.Common
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
+			// ReSharper disable once UnusedMember.Global
 			public bool ShouldSerializeData()
 			{
 				return Data.Count > 0;
 			}
 
+			// ReSharper disable once UnusedMember.Global
 			public bool ShouldSerializeObjects()
 			{
 				return Objects.Count > 0;
