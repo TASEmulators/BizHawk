@@ -318,12 +318,7 @@ namespace BizHawk.Client.Common
 		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
 		public bool HandleMovieLoadState_HackyStep1(TextReader reader)
 		{
-			if (!Movie.IsActive())
-			{
-				return true;
-			}
-
-			if (ReadOnly)
+			if (Movie.IsActive() && ReadOnly)
 			{
 				var result = Movie.CheckTimeLines(reader, out var errorMsg);
 				if (!result)
@@ -331,7 +326,20 @@ namespace BizHawk.Client.Common
 					Output(errorMsg);
 					return false;
 				}
+			}
 
+			return true;
+		}
+
+		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
+		{
+			if (Movie.NotActive())
+			{
+				return true;
+			}
+
+			if (ReadOnly)
+			{
 				if (Movie.IsRecording())
 				{
 					Movie.SwitchToPlay();
@@ -351,23 +359,7 @@ namespace BizHawk.Client.Common
 				{
 					Movie.SwitchToRecord();
 				}
-			}
 
-			return true;
-		}
-
-		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
-		{
-			if (Movie.NotActive())
-			{
-				return true;
-			}
-
-			if (ReadOnly)
-			{
-			}
-			else
-			{
 				var result = Movie.ExtractInputLog(reader, out var errorMsg);
 				if (!result)
 				{
