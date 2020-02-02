@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 				for (var i = 0; i < _watches.Count; i++)
 				{
 					var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
-					GlobalWin.OSD.AddGuiText(
+					GlobalWin.OSD.AddRamWatch(
 						_watches[i].ToDisplayString(),
 						new MessagePosition
 						{
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			GlobalWin.OSD.ClearGuiText();
+			GlobalWin.OSD.ClearRamWatches();
 			if (_watches.Any())
 			{
 				_watches.UpdateValues();
@@ -997,7 +997,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!Config.DisplayRamWatch)
 			{
-				GlobalWin.OSD.ClearGuiText();
+				GlobalWin.OSD.ClearRamWatches();
 			}
 			else
 			{

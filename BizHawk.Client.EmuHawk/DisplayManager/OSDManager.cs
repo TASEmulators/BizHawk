@@ -95,10 +95,27 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<UIMessage> _messages = new List<UIMessage>(5);
 		private readonly List<UIDisplay> _guiTextList = new List<UIDisplay>();
+		private readonly List<UIDisplay> _ramWatchList = new List<UIDisplay>();
 
 		public void AddMessage(string message)
 		{
 			_messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
+		}
+
+		public void ClearRamWatches()
+		{
+			_ramWatchList.Clear();
+		}
+
+		public void AddRamWatch(string message, MessagePosition pos, Color backGround, Color foreColor)
+		{
+			_ramWatchList.Add(new UIDisplay
+			{
+				Message = message,
+				Position = pos,
+				BackGround = backGround,
+				ForeColor = foreColor
+			});
 		}
 
 		public void AddGuiText(string message, MessagePosition pos, Color backGround, Color foreColor)
@@ -156,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			foreach (var text in _guiTextList)
+			foreach (var text in _guiTextList.Concat(_ramWatchList))
 			{
 				try
 				{
