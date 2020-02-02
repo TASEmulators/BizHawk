@@ -24,7 +24,6 @@ namespace BizHawk.Client.Common
 		void HandleMovieOnFrameLoop();
 		void HandleMovieAfterFrameLoop();
 		void HandleMovieSaveState(TextWriter writer);
-		bool HandleMovieLoadState(string path);
 
 		// To function as a MovieSession, you must have hacky LoadState steps, non-hacky steps just won't do
 		bool HandleMovieLoadState_HackyStep1(TextReader reader);

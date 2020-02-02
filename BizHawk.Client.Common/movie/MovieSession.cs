@@ -315,12 +315,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool HandleMovieLoadState(string path)
-		{
-			using var sr = new StreamReader(path);
-			return HandleMovieLoadState(sr);
-		}
-
 		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
 		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
 		{
@@ -347,16 +341,6 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
-		}
-
-		public bool HandleMovieLoadState(TextReader reader)
-		{
-			if (!HandleMovieLoadState_HackyStep1(reader))
-			{
-				return false;
-			}
-
-			return HandleMovieLoadState_HackyStep2(reader);
 		}
 
 		public bool HandleMovieLoadState_HackyStep1(TextReader reader)
