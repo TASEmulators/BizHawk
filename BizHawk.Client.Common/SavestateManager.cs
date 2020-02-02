@@ -139,15 +139,10 @@ namespace BizHawk.Client.Common
 				{
 					var succeed = false;
 
+					// Movie timeline check must happen before the core state is loaded
 					if (Global.MovieSession.Movie.IsActive())
 					{
 						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.CheckSavestateTimeline(tr));
-						if (!succeed)
-						{
-							return false;
-						}
-
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
 						if (!succeed)
 						{
 							return false;
@@ -157,6 +152,16 @@ namespace BizHawk.Client.Common
 					using (new SimpleTime("Load Core"))
 					{
 						bl.GetCoreState(br => core.LoadStateBinary(br), tr => core.LoadStateText(tr));
+					}
+
+					// We must handle movie input AFTER the core is loaded to properly handle mode changes, and input latching
+					if (Global.MovieSession.Movie.IsActive())
+					{
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
+						if (!succeed)
+						{
+							return false;
+						}
 					}
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);

@@ -343,6 +343,10 @@ namespace BizHawk.Client.Common
 				{
 					Movie.SwitchToPlay();
 				}
+				else if (Movie.IsPlaying())
+				{
+					LatchInputFromLog();
+				}
 				else if (Movie.IsFinished())
 				{
 					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
