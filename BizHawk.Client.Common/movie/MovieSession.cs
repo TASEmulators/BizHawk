@@ -417,9 +417,9 @@ namespace BizHawk.Client.Common
 
 		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
 		// A more elegant approach would be appreciated
-		public bool? PreviousNES_InQuickNES { get; set; }
-		public bool? PreviousSNES_InSnes9x { get; set; }
-		public bool? PreviousGBA_UsemGBA { get; set; }
+		public bool? PreviousNesInQuickNES { get; set; }
+		public bool? PreviousSnesInSnes9x { get; set; }
+		public bool? PreviousGbaUsemGba { get; set; }
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
@@ -447,12 +447,12 @@ namespace BizHawk.Client.Common
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NesInQuickNes;
+					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
 					Global.Config.NesInQuickNes = true;
 				}
 				else if (movie.Core == neshawkName)
 				{
-					PreviousNES_InQuickNES = Global.Config.NesInQuickNes;
+					PreviousNesInQuickNES = Global.Config.NesInQuickNes;
 					Global.Config.NesInQuickNes = false;
 				}
 			}
@@ -463,12 +463,12 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == snes9xName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SnesInSnes9x;
+					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
 					Global.Config.SnesInSnes9x = true;
 				}
 				else if (movie.Core == bsnesName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.SnesInSnes9x;
+					PreviousSnesInSnes9x = Global.Config.SnesInSnes9x;
 					Global.Config.SnesInSnes9x = false;
 				}
 			}
@@ -479,12 +479,12 @@ namespace BizHawk.Client.Common
 
 				if (movie.Core == mGBAName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GbaUsemGba;
+					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
 					Global.Config.GbaUsemGba = true;
 				}
 				else if (movie.Core == vbaNextName)
 				{
-					PreviousGBA_UsemGBA = Global.Config.GbaUsemGba;
+					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
 					Global.Config.GbaUsemGba = false;
 				}
 			}

@@ -32,22 +32,22 @@ namespace BizHawk.Client.EmuHawk
 
 			RebootCore();
 
-			if (MovieSession.PreviousNES_InQuickNES.HasValue)
+			if (MovieSession.PreviousNesInQuickNES.HasValue)
 			{
-				Config.NesInQuickNes = MovieSession.PreviousNES_InQuickNES.Value;
-				MovieSession.PreviousNES_InQuickNES = null;
+				Config.NesInQuickNes = MovieSession.PreviousNesInQuickNES.Value;
+				MovieSession.PreviousNesInQuickNES = null;
 			}
 
-			if (MovieSession.PreviousSNES_InSnes9x.HasValue)
+			if (MovieSession.PreviousSnesInSnes9x.HasValue)
 			{
-				Config.SnesInSnes9x = MovieSession.PreviousSNES_InSnes9x.Value;
-				MovieSession.PreviousSNES_InSnes9x = null;
+				Config.SnesInSnes9x = MovieSession.PreviousSnesInSnes9x.Value;
+				MovieSession.PreviousSnesInSnes9x = null;
 			}
 
-			if (MovieSession.PreviousGBA_UsemGBA.HasValue)
+			if (MovieSession.PreviousGbaUsemGba.HasValue)
 			{
-				Config.GbaUsemGba = MovieSession.PreviousGBA_UsemGBA.Value;
-				MovieSession.PreviousGBA_UsemGBA = null;
+				Config.GbaUsemGba = MovieSession.PreviousGbaUsemGba.Value;
+				MovieSession.PreviousGbaUsemGba = null;
 			}
 
 			Config.RecentMovies.Add(movie.Filename);

@@ -17,9 +17,9 @@ namespace BizHawk.Client.Common
 		bool ReadOnly { get; set; }
 		bool MovieIsQueued { get; }
 
-		bool? PreviousNES_InQuickNES { get; set; }
-		bool? PreviousSNES_InSnes9x { get; set; }
-		bool? PreviousGBA_UsemGBA { get; set; }
+		bool? PreviousNesInQuickNES { get; set; }
+		bool? PreviousSnesInSnes9x { get; set; }
+		bool? PreviousGbaUsemGba { get; set; }
 
 		void HandleMovieOnFrameLoop();
 		void HandleMovieAfterFrameLoop();
