@@ -36,6 +36,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly int _defaultMainSplitDistance;
 		private readonly int _defaultBranchMarkerSplitDistance;
 
+		private bool _exiting;
+
 		/// <summary>
 		/// Gets a value that separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
@@ -518,6 +520,76 @@ namespace BizHawk.Client.EmuHawk
 				});
 		}
 
+		public void ClearFramesExternal()
+		{
+			ClearFramesMenuItem_Click(null, null);
+		}
+
+		public void InsertFrameExternal()
+		{
+			InsertFrameMenuItem_Click(null, null);
+		}
+
+		public void InsertNumFramesExternal()
+		{
+			InsertNumFramesMenuItem_Click(null, null);
+		}
+
+		public void DeleteFramesExternal()
+		{
+			DeleteFramesMenuItem_Click(null, null);
+		}
+
+		public void CloneFramesExternal()
+		{
+			CloneFramesMenuItem_Click(null, null);
+		}
+
+		public void UndoExternal()
+		{
+			UndoMenuItem_Click(null, null);
+		}
+
+		public void RedoExternal()
+		{
+			RedoMenuItem_Click(null, null);
+		}
+
+		public void SelectBetweenMarkersExternal()
+		{
+			SelectBetweenMarkersMenuItem_Click(null, null);
+		}
+
+		public void SelectAllExternal()
+		{
+			SelectAllMenuItem_Click(null, null);
+		}
+
+		public void ReselectClipboardExternal()
+		{
+			ReselectClipboardMenuItem_Click(null, null);
+		}
+
+		private int? FirstNonEmptySelectedFrame
+		{
+			get
+			{
+				var lg = CurrentTasMovie.LogGeneratorInstance();
+				lg.SetSource(Global.MovieSession.MovieControllerInstance());
+				var empty = lg.EmptyEntry;
+				foreach (var row in TasView.SelectedRows)
+				{
+
+					if (CurrentTasMovie[row].LogEntry != empty)
+					{
+						return row;
+					}
+				}
+
+				return null;
+			}
+		}
+
 		private void AddColumn(RollColumn column)
 		{
 			if (TasView.AllColumns[column.Name] == null)
@@ -785,6 +857,73 @@ namespace BizHawk.Client.EmuHawk
 			return Path.Combine(
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 				$"{PathManager.FilesystemSafeName(Global.Game)}.{TasMovie.Extension}");
+		}
+
+		private void SaveTas()
+		{
+			if (string.IsNullOrEmpty(CurrentTasMovie.Filename)
+				|| CurrentTasMovie.Filename == DefaultTasProjName())
+			{
+				SaveAsTas();
+			}
+			else
+			{
+				_autosaveTimer?.Stop();
+				GlobalWin.Sound.StopSound();
+				MessageStatusLabel.Text = "Saving...";
+				Cursor = Cursors.WaitCursor;
+				Update();
+				CurrentTasMovie.Save();
+				if (Settings.AutosaveInterval > 0)
+				{
+					_autosaveTimer?.Start();
+				}
+
+				MessageStatusLabel.Text = $"{CurrentTasMovie.Name} saved.";
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
+				Cursor = Cursors.Default;
+				GlobalWin.Sound.StartSound();
+			}
+		}
+
+		private void SaveAsTas()
+		{
+			_autosaveTimer.Stop();
+			GlobalWin.Sound.StopSound();
+			ClearLeftMouseStates();
+			var filename = CurrentTasMovie.Filename;
+			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
+			{
+				filename = SuggestedTasProjName();
+			}
+
+			var file = SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Config.PathEntries.MoviesPathFragment, null),
+				"Tas Project Files",
+				"tasproj");
+
+			if (file != null)
+			{
+				CurrentTasMovie.Filename = file.FullName;
+				MessageStatusLabel.Text = "Saving...";
+				Cursor = Cursors.WaitCursor;
+				Update();
+				CurrentTasMovie.Save();
+				Settings.RecentTas.Add(CurrentTasMovie.Filename);
+				SetTextProperty();
+				MessageStatusLabel.Text = $"{Path.GetFileName(CurrentTasMovie.Filename)} saved.";
+				Cursor = Cursors.Default;
+			}
+
+			// keep insisting
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Start();
+			}
+
+			MainForm.SetWindowText();
+			GlobalWin.Sound.StartSound();
 		}
 
 		private void SetTextProperty()
@@ -1122,7 +1261,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(Emulator.Frame - 1);
 					return true;
 				}
-				else if (!lagLog.WasLagged.Value && isLag)
+
+				if (!lagLog.WasLagged.Value && isLag)
 				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
 					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, false, $"Bind Input; Insert {Emulator.Frame - 1}");
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
@@ -1160,17 +1300,6 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Markers.Add(newMarker);
 				RefreshDialog();
 			}
-		}
-
-		private void NewFromSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			NewFromNowMenuItem.Enabled =
-				CurrentTasMovie.InputLogLength > 0
-				&& !CurrentTasMovie.StartsFromSaveRam;
-
-			NewFromCurrentSaveRamMenuItem.Enabled =
-				CurrentTasMovie.InputLogLength > 0
-				&& SaveRamEmulator != null;
 		}
 
 		private void TASMenu_MenuActivate(object sender, EventArgs e)
