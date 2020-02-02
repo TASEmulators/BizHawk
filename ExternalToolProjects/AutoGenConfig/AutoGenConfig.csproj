@@ -2,6 +2,7 @@
 	<Import Project="$(ProjectDir)../Common.props" />
 	<Import Project="$(ProjectDir)../NET48ExternalToolForm.props" />
 	<ItemGroup>
+		<Reference Include="System.ComponentModel.DataAnnotations" />
 		<Compile Update="AutoGenConfigForm.cs" SubType="Form" />
 	</ItemGroup>
 </Project>
