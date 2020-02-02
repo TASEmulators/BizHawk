@@ -141,13 +141,13 @@ namespace BizHawk.Client.Common
 
 					if (Global.MovieSession.Movie.IsActive())
 					{
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep1(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.CheckSavestateTimeline(tr));
 						if (!succeed)
 						{
 							return false;
 						}
 
-						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState_HackyStep2(tr));
+						bl.GetLump(BinaryStateLump.Input, true, tr => succeed = Global.MovieSession.HandleMovieLoadState(tr));
 						if (!succeed)
 						{
 							return false;
