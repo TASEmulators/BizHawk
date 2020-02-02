@@ -50,6 +50,12 @@ namespace BizHawk.Client.EmuHawk
 				MovieSession.PreviousGbaUsemGba = null;
 			}
 
+			if (MovieSession.PreviousGbUseGbHawk.HasValue)
+			{
+				Config.GbUseGbHawk = MovieSession.PreviousGbUseGbHawk.Value;
+				MovieSession.PreviousGbUseGbHawk = null;
+			}
+
 			Config.RecentMovies.Add(movie.Filename);
 
 			if (Emulator.HasSavestates() && movie.StartsFromSavestate)

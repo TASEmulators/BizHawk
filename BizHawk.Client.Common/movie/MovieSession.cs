@@ -3,10 +3,12 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 
 namespace BizHawk.Client.Common
 {
@@ -420,6 +422,7 @@ namespace BizHawk.Client.Common
 		public bool? PreviousNesInQuickNES { get; set; }
 		public bool? PreviousSnesInSnes9x { get; set; }
 		public bool? PreviousGbaUsemGba { get; set; }
+		public bool? PreviousGbUseGbHawk { get; set; }
 
 		/// <exception cref="MoviePlatformMismatchException"><paramref name="record"/> is <see langword="false"/> and <paramref name="movie"/>.<see cref="IMovie.SystemID"/> does not match <paramref name="emulator"/>.<see cref="IEmulator.SystemId"/></exception>
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
@@ -486,6 +489,22 @@ namespace BizHawk.Client.Common
 				{
 					PreviousGbaUsemGba = Global.Config.GbaUsemGba;
 					Global.Config.GbaUsemGba = false;
+				}
+			}
+			else if (!record && (emulator.SystemId == "GB" || emulator.SystemId == "GBC"))
+			{
+				var gbHawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(GBHawk), typeof(CoreAttribute))).CoreName;
+				var gambatteName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Gameboy), typeof(CoreAttribute))).CoreName;
+
+				if (movie.Core == gbHawkName)
+				{
+					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+					Global.Config.GbUseGbHawk = true;
+				}
+				else if (movie.Core == gambatteName)
+				{
+					PreviousGbUseGbHawk = Global.Config.GbUseGbHawk;
+					Global.Config.GbUseGbHawk = false;
 				}
 			}
 
