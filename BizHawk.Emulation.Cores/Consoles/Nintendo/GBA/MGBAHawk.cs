@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[Core("mGBA", "endrift", true, true, "0.7.2", "https://mgba.io/", false)]
+	[Core("mGBA", "endrift", true, true, "0.8", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public partial class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				_tracer = new TraceBuffer()
 				{
-					Header = "ARM7: PC, mnemonic, operands, registers (r0-r16)"
+					Header = "ARM7: PC, mnemonic, operands, registers"
 				};
 				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
 				ser.Register(_tracer);
