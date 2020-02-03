@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexColorsForm : Form
@@ -28,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexBackground_Click(object sender, MouseEventArgs e)
 		{
-			if (colorDialog1.ShowDialog() == DialogResult.OK)
+			if (colorDialog1.ShowDialog().IsOk())
 			{
 				_hexEditor.Colors.Background = colorDialog1.Color;
 				_hexEditor.Header.BackColor = colorDialog1.Color;
@@ -39,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexForeground_Click(object sender, MouseEventArgs e)
 		{
-			if (colorDialog1.ShowDialog() == DialogResult.OK)
+			if (colorDialog1.ShowDialog().IsOk())
 			{
 				_hexEditor.Colors.Foreground = colorDialog1.Color;
 				_hexEditor.Header.ForeColor = colorDialog1.Color;
@@ -50,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexMenuBar_Click(object sender, MouseEventArgs e)
 		{
-			if (colorDialog1.ShowDialog() == DialogResult.OK)
+			if (colorDialog1.ShowDialog().IsOk())
 			{
 				_hexEditor.Colors.MenuBar = colorDialog1.Color;
 				_hexEditor.HexMenuStrip.BackColor = _hexEditor.Colors.MenuBar;

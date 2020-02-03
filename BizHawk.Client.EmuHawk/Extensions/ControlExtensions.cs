@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 
-namespace BizHawk.Client.EmuHawk.WinFormExtensions
+namespace BizHawk.Client.EmuHawk
 {
 	public static class ControlExtensions
 	{

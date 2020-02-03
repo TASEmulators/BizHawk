@@ -8,8 +8,6 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
-using BizHawk.Client.EmuHawk.WinFormExtensions;
-
 namespace BizHawk.Client.EmuHawk
 {
 	// TODO - Allow relative paths in record TextBox

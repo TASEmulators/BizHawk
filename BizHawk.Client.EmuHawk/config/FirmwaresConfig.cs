@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 // notes: eventually, we intend to have a "firmware acquisition interface" exposed to the emulator cores.
 // it will be implemented by EmuHawk, and use firmware keys to fetch the firmware content.

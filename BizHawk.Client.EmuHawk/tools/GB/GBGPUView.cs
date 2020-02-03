@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Common;

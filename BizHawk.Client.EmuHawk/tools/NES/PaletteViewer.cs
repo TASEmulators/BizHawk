@@ -4,7 +4,6 @@ using System.IO;
 using System.Drawing.Imaging;
 
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {

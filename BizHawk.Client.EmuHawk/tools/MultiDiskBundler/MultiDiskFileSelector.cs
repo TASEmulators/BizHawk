@@ -3,7 +3,6 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.IO;
 
 namespace BizHawk.Client.EmuHawk

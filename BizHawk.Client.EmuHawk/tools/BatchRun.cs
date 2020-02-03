@@ -4,8 +4,6 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 
-using BizHawk.Client.EmuHawk.WinFormExtensions;
-
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BatchRun : Form
