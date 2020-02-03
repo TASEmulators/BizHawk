@@ -866,12 +866,7 @@ namespace BizHawk.Client.EmuHawk
 					item.State = LuaFile.RunState.Disabled;
 				});
 
-				// Shenanigans
-				// We want any gui.text messages from a script to immediately update even when paused
-				GlobalWin.OSD.ClearGuiText();
-				Tools.UpdateToolsAfter();
-				LuaImp.EndLuaDrawing();
-				LuaImp.StartLuaDrawing();
+				ReDraw();
 			}
 			catch (IOException)
 			{
@@ -881,6 +876,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show(ex.ToString());
 			}
+		}
+
+		private void ReDraw()
+		{
+			// Shenanigans
+			// We want any gui.text messages from a script to immediately update even when paused
+			GlobalWin.OSD.ClearGuiText();
+			Tools.UpdateToolsAfter();
+			LuaImp.EndLuaDrawing();
+			LuaImp.StartLuaDrawing();
 		}
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
@@ -1492,6 +1497,7 @@ namespace BizHawk.Client.EmuHawk
 
 				LuaImp.CallExitEvent(file);
 				file.Stop();
+				ReDraw();
 			}
 		}
 
