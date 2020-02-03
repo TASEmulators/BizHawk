@@ -86,6 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaImp.GuiLibrary.DrawFinish();
 					LuaImp?.Close();
+					GlobalWin.OSD.ClearGuiText();
 				}
 				else
 				{
