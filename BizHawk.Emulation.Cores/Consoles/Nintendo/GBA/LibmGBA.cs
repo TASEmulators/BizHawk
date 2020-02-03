@@ -141,5 +141,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern byte BizReadBus(IntPtr ctx, uint addr);
 
+		[UnmanagedFunctionPointer(cc)]
+		public delegate void TraceCallback(string msg);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetTraceCallback(TraceCallback cb);
+
 	}
 }

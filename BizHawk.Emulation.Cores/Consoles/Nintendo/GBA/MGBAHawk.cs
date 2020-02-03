@@ -55,6 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);
+
+				_tracer = new TraceBuffer()
+				{
+					Header = "ARM7: PC, mnemonic, operands, registers (r0-r16)"
+				};
+				_tracecb = new LibmGBA.TraceCallback((msg) => _tracer.Put(_traceInfo(msg)));
+				ser.Register(_tracer);
 			}
 			catch
 			{
@@ -67,6 +74,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public ControllerDefinition ControllerDefinition => GBA.GBAController;
 
+		private ITraceable _tracer { get; set; }
+
+		private LibmGBA.TraceCallback _tracecb { get; set; }
+
+		private TraceInfo _traceInfo(string msg)
+		{
+			var split = msg.Split('|');
+
+			return new TraceInfo
+			{
+				Disassembly = split[1].Trim().PadRight(40),
+				RegisterInfo = split[0]
+			};
+		}
+
 		public bool FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -77,6 +99,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				// BizReset caused memorydomain pointers to change.
 				WireMemoryDomainPointers();
 			}
+
+			LibmGBA.BizSetTraceCallback(_tracer.Enabled ? _tracecb : null);
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				_core,
