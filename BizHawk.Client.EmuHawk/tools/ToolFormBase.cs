@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void GenericDragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		protected void RefreshFloatingWindowControl(bool floatingWindow)

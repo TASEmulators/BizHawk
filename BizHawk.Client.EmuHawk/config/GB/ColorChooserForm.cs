@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
@@ -337,9 +338,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColorChooserForm_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
-				? DragDropEffects.Move
-				: DragDropEffects.None;
+			e.Set(DragDropEffects.Move);
 		}
 
 		private void Button7_Click(object sender, EventArgs e)
@@ -353,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = sfd.ShowDialog(this);
-			if (result == DialogResult.OK)
+			if (result.IsOk())
 			{
 				SaveColorFile(sfd.FileName);
 			}

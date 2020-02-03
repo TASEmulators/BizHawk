@@ -682,7 +682,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewCheatForm_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void CheatsContextMenu_Opening(object sender, CancelEventArgs e)

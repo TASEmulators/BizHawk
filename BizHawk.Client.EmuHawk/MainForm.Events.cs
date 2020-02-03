@@ -3236,7 +3236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)

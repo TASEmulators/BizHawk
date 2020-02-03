@@ -248,5 +248,15 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		{
 			return dialogResult == DialogResult.OK;
 		}
+
+		/// <summary>
+		/// Sets the desired effect if data is present, else None
+		/// </summary>
+		public static void Set(this DragEventArgs e, DragDropEffects effect)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+				? effect
+				: DragDropEffects.None;
+		}
 	}
 }

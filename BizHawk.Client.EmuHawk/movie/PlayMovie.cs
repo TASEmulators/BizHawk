@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Movie List
 
-		void RefreshMovieList()
+		private void RefreshMovieList()
 		{
 			MovieView.VirtualListSize = _movieList.Count;
 			UpdateList();
@@ -297,7 +297,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MovieView_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void MovieView_DragDrop(object sender, DragEventArgs e)

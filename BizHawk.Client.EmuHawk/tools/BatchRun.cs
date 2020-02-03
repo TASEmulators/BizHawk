@@ -20,9 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void listBox1_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
-				? DragDropEffects.Link
-				: DragDropEffects.None;
+			e.Set(DragDropEffects.Link);
 		}
 
 		private void SetCount()

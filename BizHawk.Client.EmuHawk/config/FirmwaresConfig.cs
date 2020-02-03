@@ -709,7 +709,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void lvFirmwares_DragDrop(object sender, DragEventArgs e)

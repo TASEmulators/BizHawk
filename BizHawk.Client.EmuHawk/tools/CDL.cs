@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 //TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
   //perhaps missing domains shouldnt fail a check
@@ -527,7 +528,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CDL_DragEnter(object sender, DragEventArgs e)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+			e.Set(DragDropEffects.Copy);
 		}
 
 		private void CDL_DragDrop(object sender, DragEventArgs e)
@@ -538,8 +539,6 @@ namespace BizHawk.Client.EmuHawk
 				LoadFile(filePaths[0]);
 			}
 		}
-
-	
 
 		private void tsbViewStyle_SelectedIndexChanged(object sender, EventArgs e)
 		{
