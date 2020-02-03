@@ -58,8 +58,9 @@ namespace BizHawk.Emulation.Cores.Computers.MSX
 				}
 			}
 
-			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios", true, "BIOS Not Found, Cannot Load");
-			Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic", true, "BIOS Not Found, Cannot Load");
+			Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios_test", true, "BIOS Not Found, Cannot Load");
+			//Basic = comm.CoreFileProvider.GetFirmware("MSX", "basic_test", true, "BIOS Not Found, Cannot Load");
+			//Bios = comm.CoreFileProvider.GetFirmware("MSX", "bios_jp", true, "BIOS Not Found, Cannot Load");
 
 			Basic = new byte[0x4000];
 
