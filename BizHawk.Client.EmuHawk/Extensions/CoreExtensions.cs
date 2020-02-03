@@ -10,6 +10,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Arcades.MAME;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk.CoreExtensions
@@ -58,6 +59,11 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			if (core is MAME)
 			{
 				return Properties.Resources.mame;
+			}
+
+			if (core is MGBAHawk)
+			{
+				return Properties.Resources.mGba;
 			}
 
 			return null;

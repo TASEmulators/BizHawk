@@ -114,6 +114,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
 		internal static readonly Bitmap luaPictureBox = ReadEmbeddedBitmap("luaPictureBox");
 		internal static readonly Bitmap mame = ReadEmbeddedBitmap("mame");
 		internal static readonly Bitmap MessageConfig = ReadEmbeddedBitmap("MessageConfig");
+		internal static readonly Bitmap mGba = ReadEmbeddedBitmap("mgba-16");
 		internal static readonly Icon monitor_MultiSize = ReadEmbeddedIcon("monitor");
 		internal static readonly Bitmap monitor = ReadEmbeddedBitmap("monitor");
 		internal static readonly Bitmap MoveBottom = ReadEmbeddedBitmapAt("Resources.MoveBottom.png");
