@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -28,19 +27,14 @@ namespace BizHawk.Client.EmuHawk
 			_emulator = emulator;
 			_config = config;
 			InitializeComponent();
+			Icon = Properties.Resources.user_blue;
 		}
 
 		private void ProfileConfig_Load(object sender, EventArgs e)
 		{
-			if (!VersionInfo.DeveloperBuild)
-			{
-				ProfileSelectComboBox.Items.Remove("Custom Profile");
-			}
-
 			switch (_config.SelectedProfile)
 			{
 				default:
-				case ClientProfile.Custom: // For now
 				case ClientProfile.Casual:
 					ProfileSelectComboBox.SelectedItem = "Casual Gaming";
 					break;
@@ -80,7 +74,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_config.SelectedProfile == ClientProfile.Casual)
 			{
-				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = false;
 				_config.AllowUdlr = false;
@@ -129,7 +122,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_config.SelectedProfile == ClientProfile.Longplay)
 			{
-				DisplayProfileSettingBoxes(false);
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = false;
 				_config.AllowUdlr = false;
@@ -177,8 +169,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_config.SelectedProfile == ClientProfile.Tas)
 			{
-				DisplayProfileSettingBoxes(false);
-
 				// General
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = true;
@@ -228,8 +218,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_config.SelectedProfile == ClientProfile.N64Tas)
 			{
-				DisplayProfileSettingBoxes(false);
-
 				// General
 				_config.NoLowResLargeScreenshotWithStates = false;
 				_config.SaveScreenshotWithStates = true;
@@ -278,11 +266,6 @@ namespace BizHawk.Client.EmuHawk
 				// NES
 				_config.NesInQuickNes = true;
 			}
-			else if (_config.SelectedProfile == ClientProfile.Custom)
-			{
-				// Disabled for now
-				////DisplayProfileSettingBoxes(true);
-			}
 
 			bool oldUpdateAutoCheckEnabled = _config.UpdateAutoCheckEnabled;
 			_config.UpdateAutoCheckEnabled = AutoCheckForUpdates.Checked;
@@ -304,44 +287,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
-		}
-
-		private void DisplayProfileSettingBoxes(bool cProfile)
-		{
-			if (cProfile)
-			{
-				ProfileDialogHelpTexBox.Location = new Point(217, 12);
-				ProfileDialogHelpTexBox.Size = new Size(165, 126);
-				SaveScreenshotStatesCheckBox.Visible = true;
-				SaveLargeScreenshotStatesCheckBox.Visible = true;
-				AllowUDLRCheckBox.Visible = true;
-				CustomProfileOptionsLabel.Visible = true;
-			}
-			else
-			{
-				ProfileDialogHelpTexBox.Location = new Point(184, 12);
-				ProfileDialogHelpTexBox.Size = new Size(198, 126);
-				ProfileDialogHelpTexBox.Text = "Options: \r\nCasual Gaming - All about performance! \r\n\nTool-Assisted Speedruns - Maximum Accuracy! \r\n\nLongplays - Stability is the key!";
-				SaveScreenshotStatesCheckBox.Visible = false;
-				SaveLargeScreenshotStatesCheckBox.Visible = false;
-				AllowUDLRCheckBox.Visible = false;
-				CustomProfileOptionsLabel.Visible = false;
-			}
-		}
-
-		private void SaveScreenshotStatesCheckBox_MouseHover(object sender, EventArgs e)
-		{
-			ProfileDialogHelpTexBox.Text = "Save Screenshot with Savestates: \r\n * Required for TASing \r\n * Not Recommended for \r\n   Longplays or Casual Gaming";
-		}
-
-		private void SaveLargeScreenshotStatesCheckBox_MouseHover(object sender, EventArgs e)
-		{
-			ProfileDialogHelpTexBox.Text = "Save Large Screenshot With States: \r\n * Required for TASing \r\n * Not Recommended for \r\n   Longplays or Casual Gaming";
-		}
-
-		private void AllowUDLRCheckBox_MouseHover(object sender, EventArgs e)
-		{
-			ProfileDialogHelpTexBox.Text = "All Up+Down or Left+Right: \r\n * Useful for TASing \r\n * Unchecked for Casual Gaming \r\n * Unknown for longplays";
 		}
 
 		private TSetting GetSyncSettings<TEmulator, TSetting>()
