@@ -74,197 +74,19 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_config.SelectedProfile == ClientProfile.Casual)
 			{
-				_config.NoLowResLargeScreenshotWithStates = false;
-				_config.SaveScreenshotWithStates = false;
-				_config.AllowUdlr = false;
-				_config.BackupSavestates = false;
-
-				_config.SaveStateCompressionLevelNormal = 0;
-				_config.Rewind.EnabledLarge = false;
-				_config.Rewind.EnabledMedium = false;
-				_config.Rewind.EnabledSmall = true;
-				_config.SkipLagFrame = false;
-
-				// N64
-				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
-				n64Settings.Core = N64SyncSettings.CoreType.Interpret;
-				_config.N64UseCircularAnalogConstraint = true;
-				PutSyncSettings<N64>(n64Settings);
-
-				// SNES
-				_config.SnesInSnes9x = true;
-
-				// Genesis
-				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
-				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutSyncSettings<GPGX>(genesisSettings);
-
-				// SMS
-				var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
-				smsSettings.UseBios = true;
-				PutSyncSettings<SMS>(smsSettings);
-
-				// Coleco
-				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
-				colecoSettings.SkipBiosIntro = false;
-				PutSyncSettings<ColecoVision>(colecoSettings);
-
-				// A2600
-				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
-				a2600Settings.FastScBios = true;
-				a2600Settings.LeftDifficulty = false;
-				a2600Settings.RightDifficulty = false;
-				PutSyncSettings<Atari2600>(a2600Settings);
-
-				// NES
-				_config.NesInQuickNes = true;
+				SetCasual();
 			}
 			else if (_config.SelectedProfile == ClientProfile.Longplay)
 			{
-				_config.NoLowResLargeScreenshotWithStates = false;
-				_config.SaveScreenshotWithStates = false;
-				_config.AllowUdlr = false;
-				_config.BackupSavestates = false;
-				_config.SkipLagFrame = false;
-				_config.SaveStateCompressionLevelNormal = 5;
-
-				_config.Rewind.EnabledLarge = false;
-				_config.Rewind.EnabledMedium = false;
-				_config.Rewind.EnabledSmall = true;
-
-				// N64
-				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				_config.N64UseCircularAnalogConstraint = true;
-				PutSyncSettings<N64>(n64Settings);
-
-				// SNES
-				_config.SnesInSnes9x = false;
-
-				// Genesis
-				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
-				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutSyncSettings<GPGX>(genesisSettings);
-
-				// SMS
-				var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
-				smsSettings.UseBios = true;
-				PutSyncSettings<SMS>(smsSettings);
-
-				// Coleco
-				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
-				colecoSettings.SkipBiosIntro = false;
-				PutSyncSettings<ColecoVision>(colecoSettings);
-
-				// A2600
-				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
-				a2600Settings.FastScBios = false;
-				a2600Settings.LeftDifficulty = true;
-				a2600Settings.RightDifficulty = true;
-				PutSyncSettings<Atari2600>(a2600Settings);
-
-				// NES
-				_config.NesInQuickNes = true;
+				SetLongPlay();
 			}
 			else if (_config.SelectedProfile == ClientProfile.Tas)
 			{
-				// General
-				_config.NoLowResLargeScreenshotWithStates = false;
-				_config.SaveScreenshotWithStates = true;
-				_config.AllowUdlr = true;
-				_config.BackupSavestates = true;
-				_config.SkipLagFrame = false;
-				_config.SaveStateCompressionLevelNormal = 5;
-
-				// Rewind
-				_config.Rewind.EnabledLarge = false;
-				_config.Rewind.EnabledMedium = false;
-				_config.Rewind.EnabledSmall = false;
-
-				// N64
-				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				_config.N64UseCircularAnalogConstraint = false;
-				PutSyncSettings<N64>(n64Settings);
-
-				// SNES
-				_config.SnesInSnes9x = false;
-
-				// Genesis
-				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
-				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutSyncSettings<GPGX>(genesisSettings);
-
-				// SMS
-				var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
-				smsSettings.UseBios = true;
-				PutSyncSettings<SMS>(smsSettings);
-
-				// Coleco
-				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
-				colecoSettings.SkipBiosIntro = true;
-				PutSyncSettings<ColecoVision>(colecoSettings);
-
-				// A2600
-				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
-				a2600Settings.FastScBios = false;
-				a2600Settings.LeftDifficulty = true;
-				a2600Settings.RightDifficulty = true;
-				PutSyncSettings<Atari2600>(a2600Settings);
-
-				// NES
-				_config.NesInQuickNes = true;
+				SetTas();
 			}
 			else if (_config.SelectedProfile == ClientProfile.N64Tas)
 			{
-				// General
-				_config.NoLowResLargeScreenshotWithStates = false;
-				_config.SaveScreenshotWithStates = true;
-				_config.AllowUdlr = true;
-				_config.BackupSavestates = false;
-				_config.SkipLagFrame = true;
-				_config.SaveStateCompressionLevelNormal = 0;
-
-				// Rewind
-				_config.Rewind.EnabledLarge = false;
-				_config.Rewind.EnabledMedium = false;
-				_config.Rewind.EnabledSmall = false;
-
-				// N64
-				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
-				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
-				n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
-				_config.N64UseCircularAnalogConstraint = false;
-				PutSyncSettings<N64>(n64Settings);
-
-				// SNES
-				_config.SnesInSnes9x = false;
-
-				// Genesis
-				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
-				genesisSettings.Region = LibGPGX.Region.Autodetect;
-				PutSyncSettings<GPGX>(genesisSettings);
-
-				// SMS
-				var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
-				smsSettings.UseBios = true;
-				PutSyncSettings<SMS>(smsSettings);
-
-				// Coleco
-				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
-				colecoSettings.SkipBiosIntro = true;
-				PutSyncSettings<ColecoVision>(colecoSettings);
-
-				// A2600
-				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
-				a2600Settings.FastScBios = false;
-				a2600Settings.LeftDifficulty = true;
-				a2600Settings.RightDifficulty = true;
-				PutSyncSettings<Atari2600>(a2600Settings);
-
-				// NES
-				_config.NesInQuickNes = true;
+				SetN64Tas();
 			}
 
 			bool oldUpdateAutoCheckEnabled = _config.UpdateAutoCheckEnabled;
@@ -287,6 +109,204 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
+		}
+
+		private void SetCasual()
+		{
+			_config.NoLowResLargeScreenshotWithStates = false;
+			_config.SaveScreenshotWithStates = false;
+			_config.AllowUdlr = false;
+			_config.BackupSavestates = false;
+
+			_config.SaveStateCompressionLevelNormal = 0;
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = true;
+			_config.SkipLagFrame = false;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
+			n64Settings.Core = N64SyncSettings.CoreType.Interpret;
+			_config.N64UseCircularAnalogConstraint = true;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.SnesInSnes9x = true;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// Coleco
+			var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+			colecoSettings.SkipBiosIntro = false;
+			PutSyncSettings<ColecoVision>(colecoSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = true;
+			a2600Settings.LeftDifficulty = false;
+			a2600Settings.RightDifficulty = false;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.NesInQuickNes = true;
+		}
+
+		private void SetLongPlay()
+		{
+			_config.NoLowResLargeScreenshotWithStates = false;
+			_config.SaveScreenshotWithStates = false;
+			_config.AllowUdlr = false;
+			_config.BackupSavestates = false;
+			_config.SkipLagFrame = false;
+			_config.SaveStateCompressionLevelNormal = 5;
+
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = true;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
+			_config.N64UseCircularAnalogConstraint = true;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.SnesInSnes9x = false;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// Coleco
+			var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+			colecoSettings.SkipBiosIntro = false;
+			PutSyncSettings<ColecoVision>(colecoSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = false;
+			a2600Settings.LeftDifficulty = true;
+			a2600Settings.RightDifficulty = true;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.NesInQuickNes = true;
+		}
+
+		private void SetTas()
+		{
+			// General
+			_config.NoLowResLargeScreenshotWithStates = false;
+			_config.SaveScreenshotWithStates = true;
+			_config.AllowUdlr = true;
+			_config.BackupSavestates = true;
+			_config.SkipLagFrame = false;
+			_config.SaveStateCompressionLevelNormal = 5;
+
+			// Rewind
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = false;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
+			_config.N64UseCircularAnalogConstraint = false;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.SnesInSnes9x = false;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// Coleco
+			var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+			colecoSettings.SkipBiosIntro = true;
+			PutSyncSettings<ColecoVision>(colecoSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = false;
+			a2600Settings.LeftDifficulty = true;
+			a2600Settings.RightDifficulty = true;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.NesInQuickNes = true;
+		}
+
+		private void SetN64Tas()
+		{
+			// General
+			_config.NoLowResLargeScreenshotWithStates = false;
+			_config.SaveScreenshotWithStates = true;
+			_config.AllowUdlr = true;
+			_config.BackupSavestates = false;
+			_config.SkipLagFrame = true;
+			_config.SaveStateCompressionLevelNormal = 0;
+
+			// Rewind
+			_config.Rewind.EnabledLarge = false;
+			_config.Rewind.EnabledMedium = false;
+			_config.Rewind.EnabledSmall = false;
+
+			// N64
+			var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
+			n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
+			n64Settings.Core = N64SyncSettings.CoreType.Pure_Interpret;
+			_config.N64UseCircularAnalogConstraint = false;
+			PutSyncSettings<N64>(n64Settings);
+
+			// SNES
+			_config.SnesInSnes9x = false;
+
+			// Genesis
+			var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
+			genesisSettings.Region = LibGPGX.Region.Autodetect;
+			PutSyncSettings<GPGX>(genesisSettings);
+
+			// SMS
+			var smsSettings = GetSyncSettings<SMS, SMS.SmsSyncSettings>();
+			smsSettings.UseBios = true;
+			PutSyncSettings<SMS>(smsSettings);
+
+			// Coleco
+			var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
+			colecoSettings.SkipBiosIntro = true;
+			PutSyncSettings<ColecoVision>(colecoSettings);
+
+			// A2600
+			var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
+			a2600Settings.FastScBios = false;
+			a2600Settings.LeftDifficulty = true;
+			a2600Settings.RightDifficulty = true;
+			PutSyncSettings<Atari2600>(a2600Settings);
+
+			// NES
+			_config.NesInQuickNes = true;
 		}
 
 		private TSetting GetSyncSettings<TEmulator, TSetting>()
