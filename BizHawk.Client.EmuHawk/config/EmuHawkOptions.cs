@@ -16,15 +16,24 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public int AutosaveSaveRAMSeconds {
-			get {
+		public int AutosaveSaveRAMSeconds
+		{
+			get
+			{
 				if (AutosaveSRAMradioButton1.Checked)
+				{
 					return 5;
+				}
+
 				if (AutosaveSRAMradioButton2.Checked)
+				{
 					return 5 * 60;
+				}
+
 				return (int)AutosaveSRAMtextBox.Value;
 			}
-			set {
+			set
+			{
 				switch (value)
 				{
 					case 5:
@@ -40,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 						AutosaveSRAMtextBox.Enabled = true;
 						break;
 				}
+
 				AutosaveSRAMtextBox.Value = value;
 			}
 		}
@@ -98,23 +108,33 @@ namespace BizHawk.Client.EmuHawk
 			_config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
 			_config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
 			if (_mainForm.AutoFlushSaveRamIn > _config.FlushSaveRamFrames)
+			{
 				_mainForm.AutoFlushSaveRamIn = _config.FlushSaveRamFrames;
+			}
+
 			_config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			_config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			_config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			_config.MoviesInAwe = cbMoviesInAWE.Checked;
 
 			var prevLuaEngine = _config.LuaEngine;
-			if (LuaInterfaceRadio.Checked) _config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
-			else if (NLuaRadio.Checked) _config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
+			if (LuaInterfaceRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.LuaPlusLuaInterface;
+			}
+			else if (NLuaRadio.Checked)
+			{
+				_config.LuaEngine = ELuaEngine.NLuaPlusKopiLua;
+			}
 
-			Close();
-			DialogResult = DialogResult.OK;
 			_mainForm.AddOnScreenMessage("Custom configurations saved.");
 			if (prevLuaEngine != _config.LuaEngine)
 			{
 				_mainForm.AddOnScreenMessage("Restart emulator for Lua change to take effect");
 			}
+
+			Close();
+			DialogResult = DialogResult.OK;
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.Filters;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -253,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 				//test the preset
 				using (var stream = File.OpenRead(choice))
 				{
-					var cgp = new BizHawk.Client.EmuHawk.Filters.RetroShaderPreset(stream);
+					var cgp = new RetroShaderPreset(stream);
 					if (cgp.ContainsGlsl)
 					{
 						MessageBox.Show("Specified CGP contains references to .glsl files. This is illegal. Use .cg");
@@ -265,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 					string errors = "";
 					try 
 					{
-						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
+						var filter = new RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;
 						errors = filter.Errors;
 					}
@@ -287,6 +288,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RefreshAspectRatioOptions();
 		}
+
 		private void checkPadInteger_CheckedChanged(object sender, EventArgs e)
 		{
 			RefreshAspectRatioOptions();
@@ -321,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 			SyncTrackBar();
 		}
 
-		void SyncTrackBar()
+		private void SyncTrackBar()
 		{
 			if (trackbarFrameSizeWindowed.Value == 0)
 			{
