@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using BizHawk.Client.ApiHawk;
@@ -17,65 +14,16 @@ namespace BizHawk.Experiment.AutoGenConfig
 	[ExternalTool("AutoGenConfig")]
 	public class AutoGenConfigForm : Form, IExternalToolForm
 	{
-		private static readonly IList<(string, FieldInfo)> CachedGroupings;
+		private static readonly WeakReference<ConfigEditorCache> _cache = new WeakReference<ConfigEditorCache>(new ConfigEditorCache(typeof(Config)));
 
-		private static readonly IList<(string, PropertyInfo, IConfigPropEditorUIGen<Control>)> CachedPropEditorUIGenerators;
+		private static ConfigEditorCache Cache => _cache.TryGetTarget(out var c) ? c : new ConfigEditorCache(typeof(Config)).Also(_cache.SetTarget);
 
-		public static ComparisonColors ComparisonColors = new ComparisonColors
-		{
-			Changed = Color.FromArgb(unchecked((int) 0xFFBF5F1F)),
-			ChangedInvalid = Color.FromArgb(unchecked((int) 0xFF9F0000)),
-			ChangedUnset = Color.FromArgb(unchecked((int) 0xFFBF1F5F)),
-			Unchanged = Color.FromArgb(unchecked((int) 0xFF00003F)),
-			UnchangedDefault = Color.Black
-		};
+		private readonly IDictionary<string, Control> GroupUIs = new Dictionary<string, Control>();
 
-		public static readonly IDictionary<string, object?> DefaultValues;
-
-		static AutoGenConfigForm()
-		{
-			CachedGroupings = new List<(string, FieldInfo)>();
-			CachedPropEditorUIGenerators = new List<(string, PropertyInfo, IConfigPropEditorUIGen<Control>)>();
-			DefaultValues = new Dictionary<string, object?>();
-			static void TraversePropertiesOf(Type type, string nesting)
-			{
-				foreach (var pi in type.GetProperties()
-					.Where(pi => pi.GetCustomAttributes(typeof(EditableAttribute), false).All(attr => ((EditableAttribute) attr).AllowEdit)))
-				{
-					CachedPropEditorUIGenerators.Add((nesting, pi, FallbackGenerators.TryGetValue(pi.PropertyType, out var gen) ? gen : FinalFallbackGenerator));
-					DefaultValues[$"{nesting}/{pi.Name}"] = pi.GetCustomAttributes(typeof(DefaultValueAttribute), false).FirstOrDefault()
-						?.Let(it => ((DefaultValueAttribute) it).Value)
-						?? TrueGenericDefault(pi.PropertyType);
-				}
-				foreach (var fi in type.GetFields()
-					.Where(fi => fi.CustomAttributes.Any(cad => cad.AttributeType == typeof(ConfigGroupingStructAttribute))))
-				{
-					CachedGroupings.Add((nesting, fi));
-					TraversePropertiesOf(fi.FieldType, $"{nesting}/{fi.Name}");
-				}
-			}
-			TraversePropertiesOf(typeof(Config), string.Empty);
-		}
-
-		/// <returns>value types: default(T); ref types: calls default (no-arg) ctor if it exists, else null</returns>
-		private static object? TrueGenericDefault(Type t)
-		{
-			try
-			{
-				return Activator.CreateInstance(t);
-			}
-			catch
-			{
-				return null;
-			}
-		}
-
-		public readonly IDictionary<string, object?> BaselineValues = new Dictionary<string, object?>();
+		private readonly ConfigEditorMetadata Metadata = new ConfigEditorMetadata(Cache);
 
 		[RequiredApi]
 		private IEmu? EmuHawkAPI { get; set; }
-
-		public readonly IDictionary<string, Control> GroupingUIs = new Dictionary<string, Control>();
 
 		public override string Text => "AutoGenConfig";
 
@@ -84,24 +32,25 @@ namespace BizHawk.Experiment.AutoGenConfig
 		public AutoGenConfigForm()
 		{
 			ClientSize = new Size(640, 720);
+			KeyPreview = true;
 			SuspendLayout();
 			Controls.Add(new FlowLayoutPanel {
 				Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
 				BorderStyle = BorderStyle.FixedSingle,
 				Controls = {
 					new Label { AutoSize = true, Text = "Legend:" },
-					new Label { AutoSize = true, ForeColor = ComparisonColors.UnchangedDefault, Text = "default, unchanged" },
-					new Label { AutoSize = true, ForeColor = ComparisonColors.Unchanged, Text = "custom, unchanged" },
-					new Label { AutoSize = true, ForeColor = ComparisonColors.ChangedUnset, Text = "default, was custom" },
-					new Label { AutoSize = true, ForeColor = ComparisonColors.ChangedInvalid, Text = "invalid" },
-					new Label { AutoSize = true, ForeColor = ComparisonColors.Changed, Text = "custom, changed" }
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.UnchangedDefault, Text = "default, unchanged" },
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.Unchanged, Text = "custom, unchanged" },
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.ChangedUnset, Text = "default, was custom" },
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.ChangedInvalid, Text = "invalid" },
+					new Label { AutoSize = true, ForeColor = Metadata.ComparisonColors.Changed, Text = "custom, changed" }
 				},
 				Location = new Point(4, 4),
 				Padding = new Padding(0, 4, 0, 0),
 				Size = new Size(ClientSize.Width - 8, 24),
 				WrapContents = false
 			});
-			Controls.Add(GroupingUIs[string.Empty] = new FlowLayoutPanel {
+			Controls.Add(GroupUIs[string.Empty] = new FlowLayoutPanel {
 				Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
 				AutoScroll = true,
 				FlowDirection = FlowDirection.TopDown,
@@ -109,6 +58,10 @@ namespace BizHawk.Experiment.AutoGenConfig
 				Size = new Size(ClientSize.Width - 8, ClientSize.Height - 64),
 				WrapContents = false
 			});
+			var discardButton = new Button {
+				Size = new Size(128, 24),
+				Text = "Discard Changes"
+			}.Also(it => it.Click += (clickEventSender, clickEventArgs) => Close());
 			Controls.Add(new FlowLayoutPanel {
 				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
 				AutoScroll = true,
@@ -116,23 +69,54 @@ namespace BizHawk.Experiment.AutoGenConfig
 				Controls = {
 					new Button {
 						Size = new Size(128, 24),
-						Text = "Discard Changes"
-					}.Also(it => it.Click += (clickEventSender, clickEventArgs) => Close()),
-					new Button {
-						Size = new Size(128, 24),
 						Text = "Review and Save..."
-					}.Also(it => it.Click += (clickEventSender, clickEventArgs) => Close())
+					}.Also(it => it.Click += (clickEventSender, clickEventArgs) =>
+					{
+						var state = GroupUIs.Values.SelectMany(group => group.Controls.Cast<Control>())
+							.Select(c => (c, (c.Tag as ConfigPropEditorUITag)?.Generator))
+							.Where(tuple =>
+								tuple.Generator != null // Already iterating nested-config groupboxes as GroupUIs.Values; maybe this can be changed to iterate recursively starting with `GroupUIs[""]`?
+									&& !tuple.Generator.MatchesBaseline(tuple.c, Metadata)
+							)
+							.Select(tuple => (tuple.c.Name, tuple.Generator, Baseline: Metadata.BaselineValues[tuple.c.Name], Current: tuple.Generator.GetTValue(tuple.c)))
+							.Where(tuple => tuple.Baseline != tuple.Current)
+							.ToList();
+						if (state.Count == 0) {
+							Close();
+							return;
+						}
+						string DescribeChange((string Name, IConfigPropEditorUIGen Generator, object? Baseline, object? Current) change)
+							=> $"{change.Name}: {change.Generator.SerializeTValue(change.Baseline)} => {change.Generator.SerializeTValue(change.Current)}{(change.Generator.TValueEquality(change.Current, Metadata.Cache.DefaultValues[change.Name]) ? " (default)" : string.Empty)}";
+						if (MessageBox.Show(
+							$"Choose OK to save these changes to the config (in-memory, close EmuHawk to save to disk):\n\n{string.Join("\n", state.Select(DescribeChange))}",
+							"Save changes?",
+							MessageBoxButtons.OKCancel
+						) == DialogResult.OK)
+						{
+							//TODO save
+							Close();
+						}
+					}),
+					discardButton
 				},
-				FlowDirection = FlowDirection.RightToLeft,
 				Location = new Point(ClientSize.Width - 201, ClientSize.Height - 31),
 				WrapContents = false
 			});
+			KeyDown += (keyDownEventSender, keyDownEventArgs) =>
+			{
+				// Eat TAB and Shift+TAB, do the expected tab behaviour. This means no tab in textboxes.
+				if (keyDownEventArgs.KeyCode == Keys.Tab)
+				{
+					ProcessTabKey(keyDownEventArgs.Modifiers != Keys.Shift);
+					keyDownEventArgs.Handled = true;
+				}
+			};
 			Load += (loadEventSender, loadEventArgs) =>
 			{
-				// This magic works so long as `GroupingUIs[""]` is set to the main FLP before loading, and we create all the GroupBoxes before trying to populate them.
-				foreach (var (nesting, fi) in CachedGroupings)
+				// This magic works so long as `GroupUIs[""]` is set to the main FLP before loading, and we create all the GroupBoxes before trying to populate them.
+				foreach (var (nesting, fi) in Metadata.Cache.Groups)
 				{
-					GroupingUIs[nesting].Controls.Add(new GroupBox {
+					GroupUIs[nesting].Controls.Add(new GroupBox {
 						Controls = {
 							new FlowLayoutPanel {
 								AutoScroll = true,
@@ -140,27 +124,28 @@ namespace BizHawk.Experiment.AutoGenConfig
 								Dock = DockStyle.Fill,
 								FlowDirection = FlowDirection.TopDown,
 								WrapContents = false
-							}.Also(it => GroupingUIs[$"{nesting}/{fi.Name}"] = it)
+							}.Also(it => GroupUIs[$"{nesting}/{fi.Name}"] = it)
 						},
-						Size = new Size(400, 300),
+						Size = new Size(560, 300),
 						Text = fi.Name
 					});
 				}
 				var config = (EmuHawkAPI as EmuApi ?? throw new Exception("required API wasn't fulfilled")).ForbiddenConfigReference;
 				var groupings = new Dictionary<string, object> { [string.Empty] = config };
-				void TraverseGroupings(object groupingObj, string nesting)
+				void TraverseGroupings(object groupingObj, string parentNesting)
 				{
-					foreach (var (_, fi) in CachedGroupings.Where(tuple => tuple.Item1 == nesting))
+					foreach (var (_, fi) in Metadata.Cache.Groups.Where(tuple => tuple.Item1 == parentNesting))
 					{
-						var newNesting = $"{nesting}/{fi.Name}";
-						TraverseGroupings(groupings[newNesting] = fi.GetValue(groupingObj), newNesting);
+						var nesting = $"{parentNesting}/{fi.Name}";
+						TraverseGroupings(groupings[nesting] = fi.GetValue(groupingObj), nesting);
 					}
 				}
 				TraverseGroupings(config, string.Empty);
-				foreach (var (nesting, pi, gen) in CachedPropEditorUIGenerators)
+				foreach (var (nesting, pi, gen) in Metadata.Cache.PropEditorUIGenerators)
 				{
-					GroupingUIs[nesting].Controls.Add(gen.GenerateControl(nesting, pi, groupings[nesting], BaselineValues));
+					GroupUIs[nesting].Controls.Add(gen.GenerateControl(nesting, pi, groupings[nesting], Metadata));
 				}
+				discardButton.Select();
 			};
 			ResumeLayout();
 		}

@@ -13,9 +13,6 @@ namespace BizHawk.Experiment.AutoGenConfig
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Let<T>(this T receiver, Action<T> func) where T : notnull => func(receiver);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TReturn Let<TRec, TReturn>(this TRec receiver, Func<TRec, TReturn> func) where TRec : notnull => func(receiver);
 	}
 }
