@@ -77,6 +77,13 @@ namespace BizHawk.DBManTool
 					new FlowLayoutPanel {
 						AutoSize = true,
 						Controls = {
+							btnDATConv,
+							CreateArgsLabel("DAT Converter")
+						}
+					},
+					new FlowLayoutPanel {
+						AutoSize = true,
+						Controls = {
 							btnDiscHash,
 							CreateArgsLabel("DBMan.exe --dischash"),
 							tbDiscHashArgs
@@ -106,14 +113,8 @@ namespace BizHawk.DBManTool
 							tbDiscCMPArgs
 						},
 						Enabled = false
-					},
-					new FlowLayoutPanel {
-						AutoSize = true,
-						Controls = {
-							btnDATConv,
-							CreateArgsLabel("DBMan.exe")
-						}
 					}
+					
 				},
 				Dock = DockStyle.Fill,
 				FlowDirection = FlowDirection.TopDown
