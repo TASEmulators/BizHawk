@@ -5,7 +5,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>
-		<OutputPath>$(ProjectDir)bin/$(Configuration)</OutputPath>
+		<OutputPath>$(ProjectDir)bin/$(Configuration)/</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<RunAnalyzersDuringBuild Condition=" '$(MachineRunAnalyzersDuringBuild)' == '' ">false</RunAnalyzersDuringBuild>
 		<RunCodeAnalysis>false</RunCodeAnalysis>

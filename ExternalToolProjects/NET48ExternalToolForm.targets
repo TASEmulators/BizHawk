@@ -24,4 +24,7 @@
 			HintPath="$(ProjectDir)../../output/BizHawk.Emulation.DiscSystem.dll"
 			Private="true" />
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Copy SourceFiles="$(OutputPath)$(MSBuildProjectName).dll" DestinationFolder="$(ProjectDir)../../output/ExternalTools" />
+	</Target>
 </Project>
