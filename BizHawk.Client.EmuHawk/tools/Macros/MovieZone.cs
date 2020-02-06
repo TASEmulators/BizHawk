@@ -49,6 +49,8 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					d.FloatControls.Add(k);
+					int rangeIndex = _emulator.ControllerDefinition.FloatControls.IndexOf(k);
+					d.FloatRanges.Add(_emulator.ControllerDefinition.FloatRanges[rangeIndex]);
 				}
 			}
 
@@ -212,12 +214,15 @@ namespace BizHawk.Client.EmuHawk
 			File.AppendAllLines(fileName, _log);
 		}
 
-		public MovieZone(string fileName)
+		public MovieZone(string fileName, IEmulator emulator = null, ToolManager tools = null)
 		{
 			if (!File.Exists(fileName))
 			{
 				return;
 			}
+
+			_emulator = emulator;
+			_tools = tools;
 
 			string[] readText = File.ReadAllLines(fileName);
 

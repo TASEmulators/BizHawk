@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -218,7 +218,9 @@ namespace BizHawk.Client.EmuHawk
 				TasView.FirstSelectedIndex ?? 0,
 				TasView.LastSelectedIndex ?? 0 - TasView.FirstSelectedIndex ?? 0 + 1);
 
-			new MacroInputTool().SaveMacroAs(macro);
+			//var macroTool = Tools.Load<MacroInputTool>(false);
+			var macroTool = new MacroInputTool() { Config = Global.Config };
+			macroTool.SaveMacroAs(macro);
 		}
 
 		private void PlaceMacroAtSelectionMenuItem_Click(object sender, EventArgs e)
@@ -228,7 +230,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var macro = new MacroInputTool().LoadMacro();
+			//var macroTool = Tools.Load<MacroInputTool>(false);
+			var macroTool = new MacroInputTool() { Config = Global.Config };
+			var macro = macroTool.LoadMacro(Emulator, Tools);
 			if (macro != null)
 			{
 				macro.Start = TasView.FirstSelectedIndex ?? 0;
