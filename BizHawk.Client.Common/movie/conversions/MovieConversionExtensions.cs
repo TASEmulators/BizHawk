@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SubNESHawk;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -328,6 +329,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 						movie.HeaderEntries.Add(key, firmware.Hash);
 					}
 				}
+			}
+
+			if (Global.Emulator is GBHawk && ((GBHawk)Global.Emulator).is_GBC)
+			{
+				movie.HeaderEntries.Add("IsCGBMode", "1");
 			}
 
 			if (Global.Emulator is Gameboy && ((Gameboy) Global.Emulator).IsCGBMode())
