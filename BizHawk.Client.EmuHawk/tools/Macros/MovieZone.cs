@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			File.AppendAllLines(fileName, _log);
 		}
 
-		public MovieZone(string fileName, IEmulator emulator = null, ToolManager tools = null)
+		public MovieZone(string fileName, IEmulator emulator, ToolManager tools)
 		{
 			if (!File.Exists(fileName))
 			{
