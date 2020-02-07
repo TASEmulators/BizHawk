@@ -8,8 +8,9 @@
 #include gamedb_gba.txt
 #include gamedb_gbc.txt
 #include gamedb_lynx.txt
-#include gamedb_msx1.txt
-#include gamedb_msx2.txt
+#include gamedb_msx.txt
+;#include gamedb_msx1-L.txt (legacy?)
+;#include gamedb_msx2-L.txt (legacy?)
 #include gamedb_n64.txt
 #include gamedb_nes.txt
 #include gamedb_Odyssey2.txt
