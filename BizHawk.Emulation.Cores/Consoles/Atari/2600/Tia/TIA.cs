@@ -996,21 +996,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else if (_core.ReadPot1(0) == -2)
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x10) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x1) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x1) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x20) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x4) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x4) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x40) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x7) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x7) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0xA) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0xA) { coll &= 0x7F; }
 					}
 				}
 				else
@@ -1029,21 +1030,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else if (_core.ReadPot1(1) == -2)
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x10) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x2) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x2) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x20) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x5) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x5) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x40) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x8) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x8) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x0) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x0) { coll &= 0x7F; }
 					}
 				}
 				else
@@ -1062,21 +1064,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else if (_core.ReadPot2(0) == -2)
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x1) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x1) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x4) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x4) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x7) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x7) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0xA) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0xA) { coll &= 0x7F; }
 					}
 				}
 				else
@@ -1095,21 +1098,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else if (_core.ReadPot2(1) == -2)
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x2) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x2) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x5) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x5) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x8) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x8) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x0) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x0) { coll &= 0x7F; }
 					}
 				}
 				else
@@ -1128,24 +1132,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x80)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x10) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x3) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x3) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x40)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x20) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x6) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x6) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x20)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x40) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0x9) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0x9) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x10)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x80) == 0x00)
 					{
-						if (_core.ReadControls1(peek) == 0xB) { coll |= 0x80; }
+						if (_core.ReadControls1(peek) == 0xB) { coll &= 0x7F; }
 					}
 				}
-					
+
 				mask = 0x7f;
 			}
 
@@ -1157,21 +1162,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 				else
 				{
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x08)
+					coll |= 0x80;
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x3) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x3) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x04)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x6) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x6) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x02) == 0x02)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x04) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0x9) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0x9) { coll &= 0x7F; }
 					}
-					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x01) == 0x01)
+					if (((_core._m6532._ddRa & _core._m6532._outputA) & 0x08) == 0x00)
 					{
-						if (_core.ReadControls2(peek) == 0xB) { coll |= 0x80; }
+						if (_core.ReadControls2(peek) == 0xB) { coll &= 0x7F; }
 					}
 				}
 
