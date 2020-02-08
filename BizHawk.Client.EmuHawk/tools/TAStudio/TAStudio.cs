@@ -12,6 +12,7 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -456,6 +457,18 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name.EndsWith("Disk")
 					|| c.Name.EndsWith("Block")
 					|| c.Name.EndsWith("Status"));
+
+			if (Emulator is N64)
+			{
+				var fakeAnalogControls = TasView.AllColumns
+					.Where(c =>
+						c.Name.EndsWith("A Up")
+						|| c.Name.EndsWith("A Down")
+						|| c.Name.EndsWith("A Left")
+						|| c.Name.EndsWith("A Right"));
+
+				columnsToHide = columnsToHide.Concat(fakeAnalogControls);
+			}
 
 			foreach (var column in columnsToHide)
 			{
