@@ -94,14 +94,8 @@
 		<Compile Include="**/*.cs" />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" Link="svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" Link="VersionInfo.cs" />
-		<Compile Remove="DiscoHawkDialog.cs" />
-		<Compile Remove="DiscoHawkDialog.Designer.cs" />
-		<Compile Remove="ProgressDialog.cs" />
-		<Compile Remove="ProgressDialog.Designer.cs" />
 		<Content Include="discohawk.ico" />
 		<EmbeddedResource Include="**/*.resx" />
-		<EmbeddedResource Remove="DiscoHawkDialog.resx" />
-		<EmbeddedResource Remove="ProgressDialog.resx" />
 		<None Include="app.config" />
 	</ItemGroup>
 	<ItemGroup>

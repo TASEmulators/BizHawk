@@ -66,9 +66,6 @@
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Remove="CPUs/MOS 6502X/6502XXX/**/*" />
-		<Compile Remove="ExternalCores/**/*" />
-		<Compile Remove="LibretroOld/**/*" />
 		<None Include="Resources/*" />
 	</ItemGroup>
 	<ItemGroup>

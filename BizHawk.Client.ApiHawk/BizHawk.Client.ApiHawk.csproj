@@ -19,9 +19,5 @@
 	<ItemGroup>
 		<ProjectReference Include="$(SolutionDir)BizHawk.Client.Common/BizHawk.Client.Common.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Classes/Api/PluginBase.cs" />
-		<Compile Remove="Interfaces/IPlugin.cs" />
-	</ItemGroup>
 	<Import Project="$(SolutionDir)NamespaceAliasHack.targets" />
 </Project>

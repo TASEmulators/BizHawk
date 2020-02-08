@@ -39,10 +39,6 @@
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Remove="lua/LuaExamples.cs" />
-		<Compile Remove="SharpZipWriter.cs" />
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Update="movie/bk2/Bk2Movie.HeaderApi.cs" DependentUpon="Bk2Movie.cs" />
 		<Compile Update="movie/bk2/Bk2Movie.InputLog.cs" DependentUpon="Bk2Movie.cs" />
 		<Compile Update="movie/bk2/Bk2Movie.IO.cs" DependentUpon="Bk2Movie.cs" />

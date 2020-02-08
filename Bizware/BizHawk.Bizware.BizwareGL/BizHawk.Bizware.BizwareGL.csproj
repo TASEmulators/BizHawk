@@ -15,11 +15,6 @@
 		<ProjectReference Include="$(SolutionDir)BizHawk.Common/BizHawk.Common.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Compile Remove="CacheBlendState.cs" />
-		<Compile Remove="GuiRendererBase.cs" />
-		<Compile Remove="RetroShader_OpenTK.cs" />
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Update="GLControlWrapper_GdiPlus.cs" SubType="Component" />
 		<Compile Update="GLControlWrapper_SlimDX9.cs" SubType="Component" />
 		<Compile Update="GraphicsControl.cs" SubType="UserControl" />

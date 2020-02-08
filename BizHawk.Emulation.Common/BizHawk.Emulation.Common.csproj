@@ -24,7 +24,4 @@
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Remove="Interfaces/IHookManager.cs" />
-	</ItemGroup>
 </Project>

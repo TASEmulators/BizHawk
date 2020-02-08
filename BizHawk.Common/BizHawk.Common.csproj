@@ -12,7 +12,5 @@
 			Condition=" '$(MachineRunAnalyzersDuringBuild)' != '' " />
 		<Compile Include="$(SolutionDir)Version/svnrev.cs" />
 		<Compile Include="$(SolutionDir)Version/VersionInfo.cs" />
-		<Compile Remove="Extensions/BinaryReaderExtensions.cs" />
-		<Compile Remove="SuperGloballyUniqueID.cs" />
 	</ItemGroup>
 </Project>
