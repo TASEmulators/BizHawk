@@ -214,6 +214,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie = MovieService.DefaultInstance,
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = AddOnScreenMessage,
+				PopupCallback = ShowMessageCoreComm,
 				AskYesNoCallback = StateErrorAskUser,
 				PauseCallback = PauseEmulator,
 				ModeChangedCallback = SetMainformMovieInfo

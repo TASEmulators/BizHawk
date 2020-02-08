@@ -32,6 +32,7 @@ namespace BizHawk.Client.Common
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; } = true;
 		public Action<string> MessageCallback { get; set; }
+		public Action<string> PopupCallback { get; set; }
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		/// <summary>
@@ -86,6 +87,11 @@ namespace BizHawk.Client.Common
 
 				return null;
 			}
+		}
+
+		private void PopupMessage(string message)
+		{
+			PopupCallback?.Invoke(message);
 		}
 
 		private void Output(string message)
