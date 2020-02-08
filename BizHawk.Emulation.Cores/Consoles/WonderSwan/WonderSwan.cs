@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
-			_Settings = (Settings)settings ?? new Settings();
-			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+			_settings = (Settings)settings ?? new Settings();
+			_syncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				throw new InvalidOperationException($"{nameof(BizSwan.bizswan_new)}() returned NULL!");
 			try
 			{
-				var ss = _SyncSettings.GetNativeSettings();
+				var ss = _syncSettings.GetNativeSettings();
 				if (deterministic)
 					ss.userealtime = false;
 
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				InitISaveRam();
 
 				InitVideo(rotate);
-				PutSettings(_Settings);
+				PutSettings(_settings);
 				InitIMemoryDomains();
 
 				InitIStatable();
