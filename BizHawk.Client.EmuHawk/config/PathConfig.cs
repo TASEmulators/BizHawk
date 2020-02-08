@@ -12,6 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PathConfig : Form
 	{
 		private readonly Config _config;
+		private readonly MainForm _mainForm;
 
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
@@ -40,8 +41,9 @@ namespace BizHawk.Client.EmuHawk
 			"..\\",
 		};
 
-		public PathConfig(Config config)
+		public PathConfig(MainForm mainForm, Config config)
 		{
+			_mainForm = mainForm;
 			_config = config;
 			InitializeComponent();
 		}
@@ -176,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 								return;
 							}
 
-							using var f = new FirmwaresConfig { TargetSystem = "Global" };
+							using var f = new FirmwaresConfig(_mainForm) { TargetSystem = "Global" };
 							f.ShowDialog(this);
 						};
 
@@ -324,14 +326,13 @@ namespace BizHawk.Client.EmuHawk
 			SaveSettings();
 
 			PathManager.RefreshTempPath();
-
-			GlobalWin.OSD.AddMessage("Path settings saved");
+			_mainForm.AddOnScreenMessage("Path settings saved");
 			Close();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
-			GlobalWin.OSD.AddMessage("Path config aborted");
+			_mainForm.AddOnScreenMessage("Path config aborted");
 			Close();
 		}
 

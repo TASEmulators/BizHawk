@@ -966,13 +966,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs args)
 			{
-				using var configForm = new FirmwaresConfig(true, args.RomPath);
+				using var configForm = new FirmwaresConfig(this, true, args.RomPath);
 				var result = configForm.ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
-				using var configForm = new FirmwaresConfig();
+				using var configForm = new FirmwaresConfig(this);
 				configForm.ShowDialog();
 			}
 		}
@@ -988,7 +988,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PathsMenuItem_Click(object sender, EventArgs e)
 		{
-			using var form = new PathConfig(Config);
+			using var form = new PathConfig(this, Config);
 			form.ShowDialog();
 		}
 

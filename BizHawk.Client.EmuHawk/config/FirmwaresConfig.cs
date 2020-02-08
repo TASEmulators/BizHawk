@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class FirmwaresConfig : Form
 	{
+		private readonly MainForm _mainForm;
+
 		// friendlier names than the system Ids
 		// Redundant with SystemLookup? Not so fast. That datadrives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
@@ -89,8 +91,9 @@ namespace BizHawk.Client.EmuHawk
 		private string _currSelectorDir;
 		private readonly ListViewSorter _listViewSorter;
 
-		public FirmwaresConfig(bool retryLoadRom = false, string reloadRomPath = null)
+		public FirmwaresConfig(MainForm mainForm, bool retryLoadRom = false, string reloadRomPath = null)
 		{
+			_mainForm = mainForm;
 			InitializeComponent();
 
 			// prep ImageList for ListView with 3 item states for {idUnsure, idMissing, idOk}
@@ -567,7 +570,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			using var pathConfig = new PathConfig(Global.Config);
+			using var pathConfig = new PathConfig(_mainForm, Global.Config);
 			pathConfig.ShowDialog(this);
 			RefreshBasePath();
 		}
